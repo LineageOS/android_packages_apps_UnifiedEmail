@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Unified Email</string>
+    <!-- Shown in Compose; the recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="to">To</string>
+    <!-- Shown in Compose; the cc recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="cc">Cc</string>
+    <!-- Shown in Compose; the bcc recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="bcc">Bcc</string>
+    <!-- Shown in Compose; the subject of the message [CHAR LIMIT=10] -->
+    <string name="subject_hint">Subject</string>
+</resources>
