@@ -16,6 +16,8 @@
 
 package com.google.android.unifiedemail;
 
+import com.google.android.unifiedemail.browse.LabelItem;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -24,28 +26,26 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class UnifiedEmail extends Activity implements OnClickListener {
+public class UnifiedEmail extends Activity {
+    void startActivityWithClass(Class <?> cls){
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(this, cls));
+        startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_tests);
-        ((Button)findViewById(R.id.compose)).setOnClickListener(this);
-        ((Button)findViewById(R.id.account_spinner)).setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        Intent intent = new Intent();
-        switch (id) {
-            case R.id.compose:
-                intent.setComponent(new ComponentName(this, ComposeActivity.class));
-                break;
-            case R.id.account_spinner:
-                intent.setComponent(new ComponentName(this, ComposeActivity.class));
-                break;
-        }
-        startActivity(intent);
+    public void labelSpinnerTest(View v){
+        startActivityWithClass(LabelItem.class);
+    }
+    public void accountSpinnerTest(View v){
+        startActivityWithClass(ComposeActivity.class);
+    }
+    public void composeTest(View v){
+        startActivityWithClass(ComposeActivity.class);
     }
 }

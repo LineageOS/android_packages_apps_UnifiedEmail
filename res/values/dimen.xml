@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 -->
+
 <resources>
+    <dimen name="account_dropdown_item_height">48dip</dimen>
     <dimen name="wide_senders_font_size">16sp</dimen>
     <dimen name="wide_subject_font_size">16sp</dimen>
     <dimen name="senders_font_size">18sp</dimen>
