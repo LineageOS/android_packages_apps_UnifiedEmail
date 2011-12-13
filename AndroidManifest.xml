@@ -15,5 +15,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ComposeActivity"
+                  android:theme="@android:style/Theme.Holo.Light" />
     </application>
 </manifest>

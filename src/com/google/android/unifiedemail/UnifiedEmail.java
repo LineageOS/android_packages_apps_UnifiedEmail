@@ -17,12 +17,35 @@
 package com.google.android.unifiedemail;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
-public class UnifiedEmail extends Activity {
+public class UnifiedEmail extends Activity implements OnClickListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.layout_tests);
+        ((Button)findViewById(R.id.compose)).setOnClickListener(this);
+        ((Button)findViewById(R.id.account_spinner)).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        Intent intent = new Intent();
+        switch (id) {
+            case R.id.compose:
+                intent.setComponent(new ComponentName(this, ComposeActivity.class));
+                break;
+            case R.id.account_spinner:
+                intent.setComponent(new ComponentName(this, ComposeActivity.class));
+                break;
+        }
+        startActivity(intent);
     }
 }
