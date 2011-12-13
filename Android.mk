@@ -2,8 +2,7 @@ LOCAL_PATH:= $(call my-dir)
 
 # Include res dir from chips
 chips_dir := ../../../frameworks/ex/chips/res
-mail_common_dir := ../../../frameworks/opt/mailcommon/res
-res_dirs := $(chips_dir) $(mail_common_dir) res
+res_dirs := $(chips_dir) res
 
 
 # Remove symlinks created by a previous Gmail ADT build

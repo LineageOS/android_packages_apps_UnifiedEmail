@@ -112,7 +112,7 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="AttachmentSize" parent="@style/attachment_name">
+    <style name="AttachmentSize" parent="@style/AttachmentName">
         <item name="android:textColor">#555555</item>
     </style>
 
@@ -134,7 +134,7 @@
         <item name="android:textColor">#bcbcbc</item>
     </style>
 
-    <style name="UnreadCountActionBar" parent="unreadCount">
+    <style name="UnreadCountActionBar" parent="UnreadCount">
         <item name="android:layout_marginRight">8dp</item>
         <item name="android:textColor">#bbbbbb</item>
         <!-- Use dp rather than sp for size since starts large and must not get too large -->

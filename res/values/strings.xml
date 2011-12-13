@@ -29,4 +29,33 @@
     <string name="subject_hint">Subject</string>
     <!-- Shown in Compose; the subject of the message [CHAR LIMIT=100] -->
     <string name="body_hint">Compose email</string>
+
+    <!-- Webview Context Menu Strings -->
+    <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
+    <string name="choosertitle_sharevia">Share via</string>
+
+    <!-- Menu item to open a link  [CHAR LIMIT=50]-->
+    <string name="contextmenu_openlink">Open in Browser</string>
+    <!-- Menu item to copy the selection  [CHAR LIMIT=50]-->
+    <string name="contextmenu_copy">Copy</string>
+    <!-- Menu item to copy a link  [CHAR LIMIT=50]-->
+    <string name="contextmenu_copylink">Copy link URL</string>
+    <!-- Menu item to dial a number  [CHAR LIMIT=50]-->
+    <string name="contextmenu_dial_dot">Dial\u2026</string>
+    <!-- Menu item to send an SMS  [CHAR LIMIT=50]-->
+    <string name="contextmenu_sms_dot">SMS\u2026</string>
+    <!-- Menu item to add a contact  [CHAR LIMIT=50]-->
+    <string name="contextmenu_add_contact">Add contact</string>
+    <!-- Menu item to send an email [CHAR LIMIT=50] -->
+    <string name="contextmenu_send_mail">Send email</string>
+    <!-- Menu item to show a map  [CHAR LIMIT=50]-->
+    <string name="contextmenu_map">Map</string>
+    <!-- Menu item to share link  [CHAR LIMIT=50]-->
+    <string name="contextmenu_sharelink">Share link</string>
+
+    <!-- Menu item that displays the help page for Gmail.  [CHAR LIMIT=50]-->
+    <string name="contextmenu_help">Help</string>
+
+    <!-- Solicit feedback string in about screen [CHAR LIMIT=50]-->
+    <string name="contextmenu_feedback">Send feedback</string>
 </resources>

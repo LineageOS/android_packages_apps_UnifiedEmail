@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/attachment_container">
+    style="@style/AttachmentContainer">
 
     <FrameLayout
         android:id="@+id/thumbnail"
@@ -25,11 +25,11 @@
 
         <ImageView
             android:src="@drawable/ic_attachment_holo_light"
-            style="@style/attachment_thumbnail"/>
+            style="@style/AttachmentThumbnail"/>
 
         <!--  Attachment preview -->
         <ImageView android:id="@+id/attachment_thumbnail"
-            style="@style/attachment_thumbnail"/>
+            style="@style/AttachmentThumbnail"/>
 
     </FrameLayout>
 
@@ -42,10 +42,10 @@
         android:layout_toRightOf="@+id/thumbnail">
 
         <TextView android:id="@+id/attachment_name"
-            style="@style/attachment_name" />
+            style="@style/AttachmentName" />
 
         <TextView android:id="@+id/attachment_size"
-            style="@style/attachment_size" />
+            style="@style/AttachmentSize" />
 
     </LinearLayout>
 
