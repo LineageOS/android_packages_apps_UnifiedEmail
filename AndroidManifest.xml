@@ -15,7 +15,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ComposeActivity"
+        <activity android:name=".compose.ComposeActivity"
                   android:theme="@android:style/Theme.Holo.Light" />
         <activity android:name=".browse.LabelItem"
                   android:theme="@android:style/Theme.Holo.Light" />

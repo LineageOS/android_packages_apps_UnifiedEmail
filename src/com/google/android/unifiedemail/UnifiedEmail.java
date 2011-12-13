@@ -17,6 +17,7 @@
 package com.google.android.unifiedemail;
 
 import com.google.android.unifiedemail.browse.LabelItem;
+import com.google.android.unifiedemail.compose.ComposeActivity;
 
 import android.app.Activity;
 import android.content.ComponentName;

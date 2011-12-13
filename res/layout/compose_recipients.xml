@@ -43,62 +43,11 @@
     </LinearLayout>
 
 
-    <RelativeLayout android:layout_height="wrap_content"
+    <com.google.android.unifiedemail.compose.CcBccView
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/cc_bcc_wrapper"
-        android:layout_below="@id/to_content">
-
-        <LinearLayout style="@style/RecipientComposeFieldLayout"
-            android:id="@+id/cc_content"
-            android:visibility="gone"
-            android:alpha="0"
-            android:layout_alignParentTop="true">
-
-            <LinearLayout android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:addStatesFromChildren="true"
-                android:gravity="center_vertical">
-
-                <TextView
-                    style="@style/RecipientComposeHeading"
-                    android:text="@string/cc"
-                    android:id="@+id/cc_label"
-                    android:contentDescription="@string/cc"/>
-
-                <com.android.ex.chips.RecipientEditTextView
-                    android:id="@+id/cc"
-                    style="@style/RecipientEditTextViewStyle"/>
-            </LinearLayout>
-
-            <View style="@style/RecipientComposeFieldSpacer"/>
-        </LinearLayout>
-
-        <LinearLayout style="@style/RecipientComposeFieldLayout"
-            android:id="@+id/bcc_content"
-            android:visibility="gone"
-            android:alpha="0"
-            android:layout_below="@id/cc_content">
-
-            <LinearLayout android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:addStatesFromChildren="true"
-                android:gravity="center_vertical">
-
-                <TextView style="@style/RecipientComposeHeading"
-                    android:text="@string/bcc"
-                    android:id="@+id/bcc_label"
-                    android:contentDescription="@string/bcc"/>
-
-                <com.android.ex.chips.RecipientEditTextView
-                    android:id="@+id/bcc"
-                    style="@style/RecipientEditTextViewStyle"/>
-
-            </LinearLayout>
-
-            <View style="@style/RecipientComposeFieldSpacer"/>
-        </LinearLayout>
-
-    </RelativeLayout>
+        android:layout_below="@id/to_content" />
 
     <RelativeLayout style="@style/ComposeFieldLayout"
                 android:layout_below="@id/cc_bcc_wrapper">
