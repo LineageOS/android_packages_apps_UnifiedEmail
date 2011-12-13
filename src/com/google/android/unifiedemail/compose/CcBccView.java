@@ -44,6 +44,7 @@ public class CcBccView extends RelativeLayout {
     public void show() {
         View cc = findViewById(R.id.cc_content);
         View bcc = findViewById(R.id.bcc_content);
+        boolean ccWasAlreadyShown = cc.isShown();
         cc.setVisibility(View.VISIBLE);
         bcc.setVisibility(View.VISIBLE);
 
@@ -60,11 +61,15 @@ public class CcBccView extends RelativeLayout {
         bccAnimator.setDuration(fadeDuration);
 
         AnimatorSet transitionSet = new AnimatorSet();
-
-        ObjectAnimator ccAnimator = ObjectAnimator.ofFloat(cc, "alpha", 0, 1);
-        ccAnimator.setDuration(fadeDuration);
-        Animator fadeAnimation = new AnimatorSet();
-        ((AnimatorSet) fadeAnimation).playTogether(ccAnimator, bccAnimator);
+        Animator fadeAnimation;
+        if (!ccWasAlreadyShown) {
+            ObjectAnimator ccAnimator = ObjectAnimator.ofFloat(cc, "alpha", 0, 1);
+            ccAnimator.setDuration(fadeDuration);
+            fadeAnimation = new AnimatorSet();
+            ((AnimatorSet) fadeAnimation).playTogether(ccAnimator, bccAnimator);
+        } else {
+            fadeAnimation = bccAnimator;
+        }
         transitionSet.playSequentially(heightAnimator, fadeAnimation);
         transitionSet.start();
     }

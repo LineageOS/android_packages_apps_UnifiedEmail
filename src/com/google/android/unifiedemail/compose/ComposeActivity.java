@@ -21,6 +21,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -53,5 +56,27 @@ public class ComposeActivity extends Activity implements OnClickListener {
                 mCcBccView.show();
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.compose_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        boolean handled = false;
+        switch (id) {
+            case R.id.add_cc:
+            case R.id.add_bcc:
+                mCcBccView.show();
+                handled = true;
+                break;
+        }
+        return !handled ? super.onOptionsItemSelected(item) : handled;
     }
 }

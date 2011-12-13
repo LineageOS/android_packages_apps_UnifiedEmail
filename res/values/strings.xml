@@ -37,6 +37,24 @@
     <string name="plus_bcc_label">+</string>
     <!--  Compose screen button. Add an attachment to this message [CHAR LIMIT=20] -->
     <string name="add_file_attachment">Attach file</string>
+    <!-- Button name: save this message as draft [CHAR LIMIT=25]-->
+    <string name="save_draft">Save draft</string>
+    <!-- Button name: save this message as adraft -->
+    <string name="save">Save draft</string>
+    <!--  Button name: discard this message -->
+    <string name="discard">Discard</string>
+    <!-- Menu item: launch the Settings activity -->
+    <string name="menu_preferences">Settings</string>
+    <!-- Menu item: send this message -->
+    <string name="send">Send</string>
+    <!-- Compose screen, menu item: add Cc/Bcc fields -->
+    <string name="add_cc_label">Add Cc/Bcc</string>
+    <!-- Compose screen, menu item: add Bcc field [CHAR_LIMIT=20]-->
+    <string name="add_bcc_label">Add Bcc</string>
+    <!-- Solicit feedback string in about screen [CHAR LIMIT=50]-->
+    <string name="feedback">Send feedback</string>
+    <!-- Menu item that displays the help page for Gmail. -->
+    <string name="help_and_info">Help</string>
 
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
