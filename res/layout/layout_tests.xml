@@ -26,11 +26,18 @@
         <Button android:id="@+id/compose"
             android:text="@string/test_compose"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"/>
+            android:layout_width="wrap_content"
+            android:onClick="composeTest"/>
         <Button android:id="@+id/account_spinner"
             android:text="@string/test_accountspinner"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"/>
+            android:layout_width="wrap_content"
+            android:onClick="accountSpinnerTest"/>
+        <Button android:id="@+id/label_spinner"
+            android:text="@string/test_labelspinner"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:onClick="labelSpinnerTest"/>
     </LinearLayout>
 
 </ScrollView>
