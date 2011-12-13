@@ -16,7 +16,7 @@ $(shell rm -f $(LOCAL_PATH)/mailcommon)
 include $(CLEAR_VARS)
 
 src_dirs := src-mailcommon
-LOCAL_MODULE := mail-common
+LOCAL_MODULE := mail-common-new
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-common-chips
 
@@ -34,8 +34,8 @@ include $(CLEAR_VARS)
 src_dirs := src
 LOCAL_PACKAGE_NAME := UnifiedEmail
 
-LOCAL_STATIC_JAVA_LIBRARIES := mail-common
-LOCAL_STATIC_JAVA_LIBRARIES := android-common-chips
+LOCAL_STATIC_JAVA_LIBRARIES := mail-common-new
+LOCAL_STATIC_JAVA_LIBRARIES += android-common-chips
 
 LOCAL_SDK_VERSION := current
 
