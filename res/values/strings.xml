@@ -31,6 +31,12 @@
     <string name="subject_hint">Subject</string>
     <!-- Shown in Compose; the subject of the message [CHAR LIMIT=100] -->
     <string name="body_hint">Compose email</string>
+    <!-- Compose screen, button: add Cc/Bcc fields [CHAR LIMIT=1]-->
+    <string name="plus_cc_label">+</string>
+    <!-- Compose screen, button: add bcc fields [CHAR LIMIT=1]-->
+    <string name="plus_bcc_label">+</string>
+    <!--  Compose screen button. Add an attachment to this message [CHAR LIMIT=20] -->
+    <string name="add_file_attachment">Attach file</string>
 
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->

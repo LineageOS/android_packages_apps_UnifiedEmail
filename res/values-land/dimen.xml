@@ -19,4 +19,5 @@
 -->
 <resources>
     <dimen name="actionbar_subject_padding_right">0dp</dimen>
+    <dimen name="compose_scrollview_width">800dp</dimen>
 </resources>

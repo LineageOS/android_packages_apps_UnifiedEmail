@@ -27,4 +27,5 @@
     <dimen name="date_font_size">12sp</dimen>
     <dimen name="account_dropdown_dropdownwidth">274dip</dimen>
     <dimen name="actionbar_subject_padding_right">8dp</dimen>
+    <dimen name="compose_scrollview_width">700dp</dimen>
 </resources>
