@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.android.unifiedemail.compose;
+package com.android.email.compose;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -24,7 +24,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
-import com.google.android.unifiedemail.R;
+import com.android.email.R;
 
 public class CcBccView extends RelativeLayout {
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.mailcommon;
+package com.android.email.browse;
 
 import android.app.Activity;
 import android.content.ClipData;

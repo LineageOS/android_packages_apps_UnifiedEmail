@@ -16,10 +16,10 @@
  */
 
 
-package com.android.mailcommon;
+package com.android.email.browse;
 
-import com.android.mailcommon.MergedAdapter.ListSpinnerAdapter;
-import com.android.mailcommon.MergedAdapter.LocalAdapterPosition;
+import com.android.email.browse.MergedAdapter.ListSpinnerAdapter;
+import com.android.email.browse.MergedAdapter.LocalAdapterPosition;
 
 import android.content.Context;
 import android.graphics.Rect;

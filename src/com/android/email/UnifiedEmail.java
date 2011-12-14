@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.android.unifiedemail;
+package com.android.email;
 
-import com.google.android.unifiedemail.browse.LabelItem;
-import com.google.android.unifiedemail.compose.ComposeActivity;
+import com.android.email.browse.LabelItem;
+import com.android.email.compose.ComposeActivity;
 
 import android.app.Activity;
 import android.content.ComponentName;

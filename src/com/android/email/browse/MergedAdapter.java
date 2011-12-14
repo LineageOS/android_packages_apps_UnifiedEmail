@@ -16,7 +16,7 @@
  */
 
 
-package com.android.mailcommon;
+package com.android.email.browse;
 
 import android.database.DataSetObserver;
 import android.view.View;

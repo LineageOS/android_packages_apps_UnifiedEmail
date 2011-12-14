@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.android.unifiedemail.browse;
+package com.android.email.browse;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.google.android.unifiedemail.R;
+import com.android.email.R;
 
 public class LabelItem extends Activity {
 

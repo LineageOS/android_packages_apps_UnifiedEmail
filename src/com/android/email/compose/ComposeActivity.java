@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.unifiedemail.compose;
+package com.android.email.compose;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -27,7 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import com.google.android.unifiedemail.R;
+import com.android.email.R;
 
 public class ComposeActivity extends Activity implements OnClickListener {
 
