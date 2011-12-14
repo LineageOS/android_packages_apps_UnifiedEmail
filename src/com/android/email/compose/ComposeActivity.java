@@ -27,12 +27,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import com.android.email.providers.protos.Attachment;
+import com.android.email.providers.protos.mock.MockAttachment;
 import com.android.email.R;
+import com.android.email.utils.MimeType;
 
 public class ComposeActivity extends Activity implements OnClickListener {
 
     private Button mCcBccButton;
     private CcBccView mCcBccView;
+    private AttachmentsView mAttachmentsView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,7 @@ public class ComposeActivity extends Activity implements OnClickListener {
             mCcBccButton.setOnClickListener(this);
         }
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
+        mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
     }
 
     @Override
@@ -71,6 +77,14 @@ public class ComposeActivity extends Activity implements OnClickListener {
         int id = item.getItemId();
         boolean handled = false;
         switch (id) {
+            case R.id.add_attachment:
+                MockAttachment attachment = new MockAttachment();
+                attachment.partId = "0";
+                attachment.name = "testattachment.png";
+                attachment.contentType = MimeType.inferMimeType(attachment.name, null);
+                attachment.originExtras = "";
+                mAttachmentsView.addAttachment(attachment);
+                break;
             case R.id.add_cc:
             case R.id.add_bcc:
                 mCcBccView.show();

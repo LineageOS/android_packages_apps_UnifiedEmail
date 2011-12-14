@@ -47,14 +47,14 @@
             </LinearLayout>
 
             <!--  Attachments -->
-            <!--<com.google.android.gm.AttachmentsView android:id="@+id/attachments"
+            <com.android.email.compose.AttachmentsView android:id="@+id/attachments"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:orientation="vertical"
                 android:paddingTop="2dip"
                 android:paddingRight="5dip"
                 android:paddingBottom="0dip"
-                android:paddingLeft="5dip" />-->
+                android:paddingLeft="5dip" />
 
             <!-- Body -->
             <include layout="@layout/compose_body"/>

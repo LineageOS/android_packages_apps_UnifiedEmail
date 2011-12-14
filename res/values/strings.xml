@@ -56,6 +56,33 @@
     <!-- Menu item that displays the help page for Gmail. -->
     <string name="help_and_info">Help</string>
 
+    <!-- Attachments -->
+    <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5]-->
+    <string name="bytes">B</string>
+    <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5] -->
+    <string name="kilobytes">KB</string>
+    <!-- Size unit, displayed in a button next to an attachment  [CHAR LIMIT=5]-->
+    <string name="megabytes">MB</string>
+    <!-- Attachment description for image files [CHAR LIMIT=30] -->
+    <string name="attachment_image">Image</string>
+    <!-- Attachment description for video files [CHAR LIMIT=30] -->
+    <string name="attachment_video">Video</string>
+    <!-- Attachment description for audio files [CHAR LIMIT=30] -->
+    <string name="attachment_audio">Audio</string>
+    <!-- Attachment description for text files [CHAR LIMIT=30] -->
+    <string name="attachment_text">Text</string>
+    <!-- Attachment description for .doc files [CHAR LIMIT=30] -->
+    <string name="attachment_application_msword">Document</string>
+    <!-- Attachment description for .ppt files [CHAR LIMIT=30] -->
+    <string name="attachment_application_vnd_ms_powerpoint">Presentation</string>
+    <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
+    <string name="attachment_application_vnd_ms_excel">Spreadsheet</string>
+    <!-- Attachment description for .pdf files [CHAR LIMIT=30] -->
+    <string name="attachment_application_pdf">PDF</string>
+    <!-- Attachment description for unknown files [CHAR LIMIT=30]-->
+    <string name="attachment_unknown"><xliff:g id="attachmentExtension">%s</xliff:g> File</string>
+
+
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
     <string name="choosertitle_sharevia">Share via</string>

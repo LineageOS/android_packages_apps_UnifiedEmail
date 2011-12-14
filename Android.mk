@@ -11,7 +11,8 @@ include $(CLEAR_VARS)
 src_dirs := src
 LOCAL_PACKAGE_NAME := UnifiedEmail
 
-LOCAL_STATIC_JAVA_LIBRARIES = android-common-chips
+LOCAL_STATIC_JAVA_LIBRARIES := android-common-chips
+LOCAL_STATIC_JAVA_LIBRARIES += guava
 
 LOCAL_SDK_VERSION := 14
 
