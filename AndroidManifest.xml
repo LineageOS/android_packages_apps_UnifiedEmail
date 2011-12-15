@@ -18,5 +18,12 @@
         <activity android:name=".compose.ComposeActivity" />
         <activity android:name=".browse.LabelItem" />
         <activity android:name=".browse.BrowseListActivity" />
+
+        <provider android:name=".providers.MockUiProvider"
+                  android:authorities="com.android.mail.mockprovider"
+                  android:label="@string/mock_content_provider"
+                  android:multiprocess="false" >
+            <grant-uri-permission android:pathPattern=".*" />
+        </provider>
     </application>
 </manifest>

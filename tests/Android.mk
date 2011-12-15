@@ -14,34 +14,26 @@
 
 LOCAL_PATH:= $(call my-dir)
 
-# Include res dir from chips
-chips_dir := ../../../frameworks/ex/chips/res
-res_dirs := $(chips_dir) res
+src_dirs := src
+res_dirs := res
 
 ##################################################
-# Build APK
+
 include $(CLEAR_VARS)
 
-src_dirs := src
-LOCAL_PACKAGE_NAME := UnifiedEmail
+# We only want this apk build for tests.
+LOCAL_MODULE_TAGS := tests
 
-LOCAL_STATIC_JAVA_LIBRARIES := android-common-chips
-LOCAL_STATIC_JAVA_LIBRARIES += guava
+LOCAL_JAVA_LIBRARIES := android.test.runner
 
-LOCAL_SDK_VERSION := 14
+LOCAL_PACKAGE_NAME := UnifiedEmailTests
+LOCAL_INSTRUMENTATION_FOR := UnifiedEmail
 
-LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs)) \
-        $(call all-logtags-files-under, $(src_dirs))
-LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs)) $(LOCAL_PATH)/res
+LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs))
+LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
 LOCAL_AAPT_FLAGS := --auto-add-overlay
-LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips
-
-LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 include $(BUILD_PACKAGE)
 
-
-##################################################
 # Build all sub-directories
-
 include $(call all-makefiles-under,$(LOCAL_PATH))
