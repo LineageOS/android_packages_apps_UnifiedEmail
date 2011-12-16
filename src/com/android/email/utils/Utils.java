@@ -15,10 +15,25 @@
  */
 package com.android.email.utils;
 
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+
 public class Utils {
     public static final String LOG_TAG = "Email";
 
     public String getLogTag() {
         return LOG_TAG;
     }
+
+     /**
+      * Sets WebView in a restricted mode suitable for email use.
+      * @param webView The WebView to restrict
+      */
+     public static void restrictWebView(WebView webView) {
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setSavePassword(false);
+        webSettings.setSaveFormData(false);
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setSupportZoom(false);
+     }
 }

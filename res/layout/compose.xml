@@ -60,9 +60,9 @@
             <include layout="@layout/compose_body"/>
 
             <!-- Quoted text -->
-            <!--<com.google.android.gm.QuotedTextView android:id="@+id/quoted_text_view"
+            <com.android.email.compose.QuotedTextView android:id="@+id/quoted_text_view"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent" />-->
+                android:layout_width="match_parent" />
 
             <View android:id="@+id/composearea_tap_trap_bottom"
                 android:clickable="true"

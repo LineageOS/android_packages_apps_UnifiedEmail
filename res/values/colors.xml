@@ -30,5 +30,10 @@
     <color name="date_text_color_read">@color/senders_text_color_read</color>
     <color name="label_list_heading_text_color">#777777</color>
     <color name="actionbar_secondary">#777777</color>
+
+    <!-- Compose colors -->
     <color name="compose_label_text">#aaaaaa</color>
+    <color name="quotedTextColor">#777777</color>
+    <string name="quotedTextBackgroundColorString" translatable="false">#ebebeb</string>
+    <string name="quotedTextFontColorString" translatable="false">#777777</string>
 </resources>

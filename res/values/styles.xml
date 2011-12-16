@@ -122,6 +122,18 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="QuotedTextHeaderStyle">
+        <item name="android:textColor">@color/quotedTextColor</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="RespondInlineButtonStyle">
+        <item name="android:textColor">@color/quotedTextColor</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <!-- End Compose styles -->
+
     <style name="UnreadCount">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

@@ -53,8 +53,14 @@
     <string name="add_bcc_label">Add Bcc</string>
     <!-- Solicit feedback string in about screen [CHAR LIMIT=50]-->
     <string name="feedback">Send feedback</string>
-    <!-- Menu item that displays the help page for Gmail. -->
+    <!-- Menu item that displays the help page for Gmail. [CHAR LIMIT=50]-->
     <string name="help_and_info">Help</string>
+    <!-- Compose screen, Prefix to quoted text in forwarded/replied message [CHAR LIMIT=50]-->
+    <string name="quoted_text">Include quoted text</string>
+    <!-- Compose screen, Prefix to quoted text in forwarded/replied message; label for the quoted text area. [CHAR LIMIT=25] -->
+    <string name="quoted_text_label">Quote text</string>
+    <!--  Button for including inline responses. [CHAR LIMIT=25] -->
+    <string name="respond_inline">Respond inline</string>
 
     <!-- Attachments -->
     <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5]-->
