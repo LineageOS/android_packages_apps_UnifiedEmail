@@ -18,11 +18,8 @@ package com.android.email.compose;
 import com.android.email.R;
 import com.android.email.utils.Utils;
 
-import com.android.email.html.parser.HtmlDocument;
-import com.android.email.html.parser.HtmlParser;
-import com.android.email.html.parser.HtmlTreeBuilder;
-
 import android.content.Context;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -204,11 +201,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     private void respondInline() {
         // Copy the text in the quoted message to the body of the
         // message after stripping the html.
-        HtmlParser parser = new HtmlParser();
-        HtmlDocument doc = parser.parse((String) getQuotedText());
-        HtmlTreeBuilder builder = new HtmlTreeBuilder();
-        doc.accept(builder);
-        mRespondInlineListener.onRespondInline("\n" + builder.getTree().getPlainText());
+        mRespondInlineListener.onRespondInline("\n" + Html.fromHtml((String)getQuotedText()));
         // Set quoted text to unchecked and not visible.
         updateCheckedState(false);
         mRespondInlineButton.setVisibility(View.GONE);
