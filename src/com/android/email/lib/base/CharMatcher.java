@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.android.email.base;
+package com.android.email.lib.base;
 
-import static com.android.email.base.Preconditions.checkArgument;
-import static com.android.email.base.Preconditions.checkNotNull;
+import static com.android.email.lib.base.Preconditions.checkArgument;
+import static com.android.email.lib.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;

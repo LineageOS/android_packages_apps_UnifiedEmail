@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.email.base;
+package com.android.email.lib.base;
 
 import java.util.NoSuchElementException;
 

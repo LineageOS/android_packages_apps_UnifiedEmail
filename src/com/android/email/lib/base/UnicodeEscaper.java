@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.email.base;
+package com.android.email.lib.base;
 
-import static com.android.email.base.Preconditions.checkNotNull;
-import static com.android.email.base.Preconditions.checkPositionIndexes;
+import static com.android.email.lib.base.Preconditions.checkNotNull;
+import static com.android.email.lib.base.Preconditions.checkPositionIndexes;
 
 import java.io.IOException;
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.email.base;
+package com.android.email.lib.base;
 
 /**
  * An object that converts literal text into a format safe for inclusion in a particular context

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.email.base;
+package com.android.email.lib.base;
 
-import static com.android.email.base.Preconditions.checkArgument;
+import static com.android.email.lib.base.Preconditions.checkArgument;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Joiner.MapJoiner;

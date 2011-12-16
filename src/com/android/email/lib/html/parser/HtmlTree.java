@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.email.html.parser;
+package com.android.email.lib.html.parser;
 
-import com.android.email.base.CharMatcher;
-import com.android.email.base.Preconditions;
-import com.android.email.base.X;
+import com.android.email.lib.base.CharMatcher;
+import com.android.email.lib.base.Preconditions;
+import com.android.email.lib.base.X;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.ArrayList;

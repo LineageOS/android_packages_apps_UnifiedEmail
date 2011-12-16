@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.email.html.parser;
+package com.android.email.lib.html.parser;
 
-import com.android.email.base.CharEscapers;
-import com.android.email.base.CharMatcher;
-import com.android.email.base.Preconditions;
-import com.android.email.base.StringUtil;
-import com.android.email.base.X;
+import com.android.email.lib.base.CharEscapers;
+import com.android.email.lib.base.CharMatcher;
+import com.android.email.lib.base.Preconditions;
+import com.android.email.lib.base.StringUtil;
+import com.android.email.lib.base.X;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;

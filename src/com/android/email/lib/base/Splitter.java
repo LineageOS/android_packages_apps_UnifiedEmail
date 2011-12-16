@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.email.base;
+package com.android.email.lib.base;
 
-import static com.android.email.base.Preconditions.checkArgument;
-import static com.android.email.base.Preconditions.checkNotNull;
-import static com.android.email.base.Preconditions.checkState;
+import static com.android.email.lib.base.Preconditions.checkArgument;
+import static com.android.email.lib.base.Preconditions.checkNotNull;
+import static com.android.email.lib.base.Preconditions.checkState;
 
 import com.google.common.base.Joiner;
 

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.email.html.parser;
+package com.android.email.lib.html.parser;
 
-import com.android.email.base.X;
-import com.android.email.html.parser.HtmlDocument.EndTag;
+import com.android.email.lib.base.X;
+import com.android.email.lib.html.parser.HtmlDocument.EndTag;
 import com.google.common.io.ByteStreams;
 
 import java.io.IOException;

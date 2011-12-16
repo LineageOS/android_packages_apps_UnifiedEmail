@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.email.base;
+package com.android.email.lib.base;
 
 /**
  * Static utility methods pertaining especially to byte arrays. Note that I/O-related functionality

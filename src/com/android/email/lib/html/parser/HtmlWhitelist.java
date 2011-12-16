@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.email.html.parser;
+package com.android.email.lib.html.parser;
 
 /**
  * HtmlWhitelist is an interface that defines methods required by HtmlParser for
