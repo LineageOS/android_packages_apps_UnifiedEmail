@@ -21,7 +21,7 @@
 
     <item android:id="@+id/send"
         android:showAsAction="ifRoom|withText"
-        android:icon="@drawable/ic_menu_send_holo_light"
+        android:icon="@drawable/send"
         android:title="@string/send"/>
 
     <item android:id="@+id/add_attachment"
