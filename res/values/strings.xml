@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-/*
- * Copyright (C) 2011 Google Inc.
- * Licensed to The Android Open Source Project.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
@@ -26,6 +24,7 @@
     <string name="test_conversationitems" translate="false">Test Conversation Items</string>
     <string name="test_endtoend" translate="false">Test End to End with provider</string>
     <string name="mock_content_provider">Mock Content Provider</string>
+    <string name="test_actionbar" translate="false">Test Actionbar Layout</string>
 
     <string name="app_name">Unified Email</string>
 
@@ -52,10 +51,76 @@
     <string name="save">Save draft</string>
     <!--  Button name: discard this message -->
     <string name="discard">Discard</string>
-    <!-- Menu item: launch the Settings activity -->
-    <string name="menu_preferences">Settings</string>
+    <!--  Button, star the current conversation -->
+    <string name="star">Star</string>
+
     <!-- Menu item: send this message -->
     <string name="send">Send</string>
+    <!-- Menu item: mark this conversation as read -->
+    <string name="mark_read">Mark read</string>
+    <!-- Menu item: mark this conversation as unread -->
+    <string name="mark_unread">Mark unread</string>
+    <!--  Menu item: mute this conversation -->
+    <string name="mute">Mute</string>
+    <!-- Menu item: add a star to this conversation -->
+    <string name="add_star">Add star</string>
+    <!-- Menu item: remove the star from this conversation -->
+    <string name="remove_star">Remove star</string>
+    <!-- Menu item: archive this conversation -->
+    <string name="archive">Archive</string>
+    <!-- Menu item: report this conversation as spam -->
+    <string name="report_spam">Report spam</string>
+    <!-- Menu item: delete this conversation -->
+    <string name="delete">Delete</string>
+    <!-- Menu item: next conversation -->
+    <string name="next">Older</string>
+    <!-- Menu item: previous conversation -->
+    <string name="previous">Newer</string>
+    <!-- Menu item: refresh the inbox -->
+    <string name="refresh">Refresh</string>
+    <!-- Menu item: reply to this message -->
+    <string name="reply">Reply</string>
+    <!-- Menu item: reply to all recipients in this message [CHAR LIMIT=12] -->
+    <string name="reply_all">Reply all</string>
+    <!-- Menu item: resume a draft message [CHAR LIMIT=12] -->
+    <string name="resume_draft">Edit</string>
+    <!-- Menu item: forward this message -->
+    <string name="forward">Forward</string>
+    <!-- Menu item: compose a new email -->
+    <string name="menu_compose">Compose</string>
+    <!-- Menu item: change the labels for this conversion. -->
+    <string name="menu_change_labels">Change labels</string>
+    <!-- Menu item: manages the labels for this account. [CHAR LIMIT = 30] -->
+    <string name="menu_manage_labels">Manage labels</string>
+    <!-- Title for the Label list screen. [CHAR LIMIT = 30] -->
+    <string name="label_list_title">Labels</string>
+    <!-- action bar sub title for manage label mode. [CHAR LIMIT = 30] -->
+    <string name="manage_labels_subtitle">Sync &amp; notify</string>
+    <!-- Menu item: options for this label. When source text cannot be translated within the char limit, please translate the shorter "Label options" instead. [CHAR LIMIT = 30] -->
+    <string name="menu_label_options">Label settings</string>
+    <!-- Menu item: done editing label options. [CHAR LIMIT = 30] -->
+    <string name="menu_done">Done</string>
+    <!-- Menu item: launch the Global Account Settings activity -->
+    <string name="menu_account_preferences">Account settings</string>
+    <!-- Menu item: launch the Settings activity -->
+    <string name="menu_preferences">Settings</string>
+    <!-- Menu item: search through the Gmail inbox -->
+    <string name="menu_search">Search</string>
+    <!-- Menu item: show more menu options in a popup. Portrait mode string. [CHAR LIMIT=15] -->
+    <string name="more">More</string>
+    <!-- Menu item: show message number out of total in conversation view [CHAR LIMIT=50]-->
+    <string name="message_count"><xliff:g id="count">%1$s</xliff:g> of <xliff:g id="total">%2$s</xliff:g></string>
+    <!--  Menu item: shown in conversation menu. Tap this to move to a newer message. [CHAR LIMIT=20] -->
+    <string name="newer">Newer</string>
+    <!--  Menu item: shown in conversation menu. Tap this to move to an older message. [CHAR LIMIT=20] -->
+    <string name="older">Older</string>
+    <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as important [CHAR LIMIT=30] -->
+
+    <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as important [CHAR LIMIT=30] -->
+    <string name="mark_important">Mark important</string>
+    <!--  Menu item: shown in conversation menu. Tap this to move to mark conversation as not important [CHAR LIMIT=30] -->
+    <string name="mark_not_important">Mark not important</string>
+
     <!-- Compose screen, menu item: add Cc/Bcc fields -->
     <string name="add_cc_label">Add Cc/Bcc</string>
     <!-- Compose screen, menu item: add Bcc field [CHAR_LIMIT=20]-->
@@ -97,6 +162,8 @@
     <!-- Attachment description for unknown files [CHAR LIMIT=30]-->
     <string name="attachment_unknown"><xliff:g id="attachmentExtension">%s</xliff:g> File</string>
 
+    <!-- Shown in light gray in the Search box when no text has been entered [CHAR LIMIT=30] -->
+    <string name="search_hint">Search mail</string>
 
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
@@ -153,6 +220,9 @@
     <string name="send_failed">Message wasn\'t sent.</string>
     <!-- Strings used to show myself in a To/Cc list. [CHAR LIMIT=15] -->
     <string name="me">me</string>
+    <string name="labels">Labels</string>
+    <!-- List item to open label view in account dropdown [CHAR LIMIT=50] -->
+    <string name="show_all_labels">Show all labels</string>
 
     <!-- Undo bar strings -->
     <!-- Displayed in the middle of the screen when the inbox is empty [CHAR LIMIT 100]-->
@@ -293,4 +363,15 @@
         <!-- Displayed while adding and removing labels to multiple conversations. [CHAR LIMIT=100] -->
         <item quantity="other">Changed labels.</item>
     </plurals>
+
+    <string name="searchMode" translate="false">Search Mode</string>
+    <string name="searchConversationMode" translate="false">Search Conversation Mode</string>
+    <string name="setBackButton" translate="false">Set Back Button</string>
+    <string name="removeBackButton" translate="false">Remove Back Button</string>
+    <string name="normalMode" translate="false">Set Normal Mode</string>
+    <string name="searchResultMode" translate="false">Search Result Mode</string>
+    <string name="labelMode" translate="false">Set Label Mode</string>
+
+    <!-- List header for recent labels for current account in account dropdown [CHAR LIMIT=100] -->
+    <string name="recent_labels">Recent</string>
 </resources>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<!--
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -23,17 +25,17 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="vertical">
-        <Button android:id="@+id/compose"
+        <Button
             android:text="@string/test_compose"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:onClick="composeTest"/>
-        <Button android:id="@+id/account_spinner"
+        <Button
             android:text="@string/test_accountspinner"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:onClick="accountSpinnerTest"/>
-        <Button android:id="@+id/label_spinner"
+        <Button
             android:text="@string/test_labelspinner"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
@@ -48,6 +50,10 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:onClick="uiProviderTest" />
+        <Button
+            android:text="@string/test_actionbar"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:onClick="actionbarTest"/>
     </LinearLayout>
-
 </ScrollView>

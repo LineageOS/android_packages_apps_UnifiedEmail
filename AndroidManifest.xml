@@ -1,30 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.android.email"
-      android:versionCode="1"
-      android:versionName="1.0">
+<!--
+     Copyright (C) 2012 The Android Open Source Project
 
-    <application android:icon="@mipmap/ic_launcher_mail"
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.email"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <application
+        android:icon="@mipmap/ic_launcher_mail"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo.Light">
-        <activity android:name=".UnifiedEmail"
-                  android:label="@string/app_name">
-            <intent-filter>
+        android:theme="@android:style/Theme.Holo.Light" >
+        <activity
+            android:label="@string/app_name"
+            android:name=".UnifiedEmail" >
+            <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".compose.ComposeActivity" />
-        <activity android:name=".browse.LabelItem" />
         <activity android:name=".browse.ConversationListActivity" />
+        <activity android:name=".browse.FolderItem" />
         <activity android:name=".EmailActivity" />
+        <activity
+           android:name=".browse.ActionbarActivity"
+           android:uiOptions="splitActionBarWhenNarrow" />
 
-        <provider android:name=".providers.protos.mock.MockUiProvider"
-                  android:authorities="com.android.mail.mockprovider"
-                  android:label="@string/mock_content_provider"
-                  android:multiprocess="false" >
+        <provider
+            android:authorities="com.android.mail.mockprovider"
+            android:label="@string/mock_content_provider"
+            android:multiprocess="false"
+            android:name=".providers.protos.mock.MockUiProvider" >
             <grant-uri-permission android:pathPattern=".*" />
         </provider>
     </application>
+
 </manifest>
