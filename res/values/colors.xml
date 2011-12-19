@@ -30,6 +30,11 @@
     <color name="date_text_color_read">@color/senders_text_color_read</color>
     <color name="label_list_heading_text_color">#777777</color>
     <color name="actionbar_secondary">#777777</color>
+    <color name="subject_text_color">#333333</color>
+    <color name="faded_conversation_header">#7f99d6eb</color>
+    <color name="faded_activated_conversation_header">#7faccbf9</color>
+    <color name="drafts">#ff990000</color>
+    <color name="light_text_color">#ff666666</color>
 
     <!-- Compose colors -->
     <color name="compose_label_text">#aaaaaa</color>

@@ -1,0 +1,9 @@
+# See system/core/logcat/event.logtags for a description of the format of this file.
+
+option java_package com.google.android.gm.perf
+
+# Gmail performance
+# @param action the gmail action being timed
+# @param cpu_time the number of cpu ms for this action
+# @param wall_time the SystemClock.uptimeMillis delta for this action
+206002 gmail_perf_end (action|3),(cpu_time|1|3),(wall_time|1|3),(num_sub_iteration|1)

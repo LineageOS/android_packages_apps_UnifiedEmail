@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 -->
-<resources>
-    <dimen name="senders_font_size">18sp</dimen>
-    <dimen name="account_dropdown_dropdownwidth">496dip</dimen>
-    <dimen name="wide_senders_margin_top">3sp</dimen>
-    <dimen name="wide_attachment_margin_top">2sp</dimen>
-    <dimen name="wide_date_margin_top">4sp</dimen>
-    <dimen name="max_total_label_width_wide">128dip</dimen>
-    <dimen name="wide_subject_margin_right">28dip</dimen>
-    <dimen name="subject_width">238dip</dimen>
-</resources>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true"
+          android:drawable="@drawable/list_pressed_holo" />
+    <item android:state_focused="true"
+          android:drawable="@drawable/list_focused_holo" />
+    <item android:state_selected="true"
+          android:drawable="@drawable/list_selected_holo" />
+    <item android:drawable="@drawable/list_unread_holo" />
+</selector>

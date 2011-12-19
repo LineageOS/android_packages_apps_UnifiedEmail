@@ -115,8 +115,39 @@
     <!-- Solicit feedback string in about screen [CHAR LIMIT=50]-->
     <string name="contextmenu_feedback">Send feedback</string>
 
+    <!-- Browse list item strings -->
+    <!--  Displayed when drag and drop conversations "Move ? conversations" [CHAR LIMIT=50] -->
+    <plurals name="move_conversation">
+        <!-- Move 1 conversation -->
+        <item quantity="one">Move conversation</item>
+        <!-- Move several conversations -->
+        <item quantity="other">Move <xliff:g>%1$d</xliff:g> conversations</item>
+    </plurals>
+    <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMI=250] -->
+    <string name="content_description">Subject: <xliff:g id="subject">%1$s</xliff:g> Snippet:<xliff:g id="snippet">%2$s</xliff:g></string>
+    <!-- Formatting string. If the subject contains the tag of a mailing-list (text surrounded with
+    return the subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello" [CHAR LIMIT=100] -->
+    <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
+    <!-- Displayed in Conversation Header View and Widget in the form of "subject - snippet"
+         [CHAR LIMIT=5] -->
+    <string name="subject_and_snippet"><xliff:g>%s</xliff:g> \u2014 <xliff:g>%s</xliff:g></string>
+    <!-- Displayed in browse list item when the list item is a draft message instead of showing the subject [CHAR LIMIT=100] -->
+    <plurals name="draft">
+        <!-- Title of the screen when there is exactly one draft -->
+        <item quantity="one">Draft</item>
+        <!-- Title of the screen when there are more than one draft -->
+        <item quantity="other">Drafts</item>
+    </plurals>
+    <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
+    <string name="sending">Sending\u2026</string>
+    <!-- Message displayed in a browse list item for one second after a send failed [CHAR LIMIT=20]-->
+    <string name="send_failed">Message wasn\'t sent.</string>
+    <!-- Strings used to show myself in a To/Cc list. [CHAR LIMIT=15] -->
+    <string name="me">me</string>
+
     <!-- Layout tests strings -->
     <string name="test_compose" translate="false">Test Compose Layout</string>
     <string name="test_accountspinner" translate="false">Test Account Spinner Layout</string>
     <string name="test_labelspinner" translate="false">Test Label Spinner Layout</string>
+    <string name="test_browseitems" translate="false">Test Browse Items</string>
 </resources>

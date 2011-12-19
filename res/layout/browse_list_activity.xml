@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2011 Google Inc. -->
+
+<!-- This layout is used as a template to create custom view CanvasConversationHeaderView
+    in normal mode. To be able to get the correct measurements, every source field should
+    be populated with data here. E.g:
+    - Text View should set text to a random long string (android:text="@string/long_string")
+    - Image View should set source to a specific asset -->
+<ListView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/browse_list"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+</ListView>

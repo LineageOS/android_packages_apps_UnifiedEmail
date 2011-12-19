@@ -38,6 +38,11 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:onClick="labelSpinnerTest"/>
+        <Button android:id="@+id/label_browseitem"
+            android:text="@string/test_browseitems"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:onClick="browseListItemTest"/>
     </LinearLayout>
 
 </ScrollView>

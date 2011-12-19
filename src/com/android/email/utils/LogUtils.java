@@ -22,7 +22,14 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 
 public class LogUtils {
-    private static final String TAG = "Gmail";
+    private static String LOG_TAG = "Email";
+
+    /**
+     * Get the log tag to apply to logging.
+     */
+    public String getLogTag() {
+        return LOG_TAG;
+    }
 
     /**
      * Priority constant for the println method; use LogUtils.v.
@@ -84,7 +91,7 @@ public class LogUtils {
         if (sDebugLoggingEnabledForTests != null) {
             return sDebugLoggingEnabledForTests.booleanValue();
         }
-        return Log.isLoggable(TAG, Log.DEBUG);
+        return Log.isLoggable(LOG_TAG, Log.DEBUG);
     }
 
     /**

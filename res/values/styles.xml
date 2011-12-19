@@ -172,4 +172,43 @@
     <style name="AccountSpinnerAnchorTextSecondary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
         <item name="android:textColor">@color/actionbar_secondary</item>
     </style>
+
+    <!-- Browse list item styles -->
+    <style name="PersonalIndicatorStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">8dip</item>
+        <item name="android:layout_marginTop">10sp</item>
+    </style>
+
+    <style name="SendersStyle">
+        <item name="android:layout_marginLeft">8dip</item>
+        <item name="android:layout_marginTop">8sp</item>
+    </style>
+
+    <style name="CheckmarkStyle">
+        <item name="android:layout_marginTop">-4sp</item>
+        <item name="android:layout_marginLeft">8dip</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="StarStyle">
+        <item name="android:layout_marginRight">16dip</item>
+        <item name="android:layout_marginTop">-4sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="SubjectStyle">
+        <item name="android:layout_marginLeft">8dip</item>
+        <item name="android:layout_marginTop">-4sp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/subject_text_color</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:lines">2</item>
+        <item name="android:layout_width">0dip</item>
+    </style>
+    <!-- End browser list item styles -->
 </resources>

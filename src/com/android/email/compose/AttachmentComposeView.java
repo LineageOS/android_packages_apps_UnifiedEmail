@@ -35,16 +35,17 @@ import com.android.email.utils.LogUtils;
 class AttachmentComposeView extends LinearLayout {
     private final long mSize;
     private final String mFilename;
+    private final static String LOG_TAG = new LogUtils().getLogTag();
 
     public AttachmentComposeView(Context c, Attachment attachment) {
         super(c);
         mFilename = attachment.getName();
         mSize = attachment.getSize();
 
-        LogUtils.d(Utils.LOG_TAG, ">>>>> Attachment uri: %s", attachment.getOriginExtras());
-        LogUtils.d(Utils.LOG_TAG, ">>>>>           type: %s", attachment.getContentType());
-        LogUtils.d(Utils.LOG_TAG, ">>>>>           name: %s", mFilename);
-        LogUtils.d(Utils.LOG_TAG, ">>>>>           size: %d", mSize);
+        LogUtils.d(LOG_TAG, ">>>>> Attachment uri: %s", attachment.getOriginExtras());
+        LogUtils.d(LOG_TAG, ">>>>>           type: %s", attachment.getContentType());
+        LogUtils.d(LOG_TAG, ">>>>>           name: %s", mFilename);
+        LogUtils.d(LOG_TAG, ">>>>>           size: %d", mSize);
 
         LayoutInflater factory = LayoutInflater.from(getContext());
 

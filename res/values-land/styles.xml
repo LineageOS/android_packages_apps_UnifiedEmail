@@ -18,7 +18,7 @@
  */
 -->
 <resources>
-
+    <!-- Compose styles -->
     <style name="ComposeEditTextView">
         <item name="android:minHeight">40dip</item>
         <item name="android:layout_gravity">center_vertical</item>
@@ -37,6 +37,7 @@
         <item name="android:minHeight">38dip</item>
         <item name="android:paddingTop">0dip</item>
     </style>
+    <!-- End compose styles -->
 
     <!-- Spinner primary text is smaller than usual due to extra vertical padding in spinner asset -->
     <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">

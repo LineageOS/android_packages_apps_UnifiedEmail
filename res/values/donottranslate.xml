@@ -17,13 +17,10 @@
  * limitations under the License.
  */
 -->
-<resources>
-    <dimen name="senders_font_size">18sp</dimen>
-    <dimen name="account_dropdown_dropdownwidth">496dip</dimen>
-    <dimen name="wide_senders_margin_top">3sp</dimen>
-    <dimen name="wide_attachment_margin_top">2sp</dimen>
-    <dimen name="wide_date_margin_top">4sp</dimen>
-    <dimen name="max_total_label_width_wide">128dip</dimen>
-    <dimen name="wide_subject_margin_right">28dip</dimen>
-    <dimen name="subject_width">238dip</dimen>
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- A random long string to be used in template XML files browse_item_view_*.xml -->
+    <string name="long_string">looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong</string>
+    <!-- A random date to be used in template XML files browse_item_view_*.xml -->
+    <string name="date">Aug 8, 2011</string>
 </resources>
