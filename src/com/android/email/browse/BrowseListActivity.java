@@ -30,6 +30,7 @@ public class BrowseListActivity extends Activity {
         itemOne.conversationId = 1;
         itemOne.snippet = "first snippet";
         itemOne.fromSnippetInstructions = "n\n3\n0\n0\nMindy\n0\n2\nAndy\n0\n1\nPaul\n";
+        itemOne.checkboxVisible = true;
         mTestBrowseItems.add(itemOne);
         mTestBrowseItems.add(itemOne);
         BrowseItemViewModel itemTwo = new BrowseItemViewModel();
@@ -38,6 +39,7 @@ public class BrowseListActivity extends Activity {
         itemTwo.conversationId = 2;
         itemTwo.snippet = "second snippet";
         itemTwo.fromSnippetInstructions = "n\n3\n0\n0\nMindy\n0\n2\nAndy\n0\n1\nPaul\n";
+        itemTwo.checkboxVisible = true;
         mTestBrowseItems.add(itemTwo);
         mTestBrowseItems.add(itemTwo);
         BrowseItemViewModel itemThree = new BrowseItemViewModel();
@@ -46,6 +48,7 @@ public class BrowseListActivity extends Activity {
         itemThree.conversationId = 3;
         itemThree.snippet = "third snippet";
         itemThree.fromSnippetInstructions = "n\n3\n0\n0\nMindy\n0\n2\nAndy\n0\n1\nPaul\n";
+        itemThree.checkboxVisible = true;
         mTestBrowseItems.add(itemThree);
         mTestBrowseItems.add(itemThree);
         BrowseItemViewModel itemFour = new BrowseItemViewModel();
@@ -54,6 +57,7 @@ public class BrowseListActivity extends Activity {
         itemFour.conversationId = 4;
         itemFour.fromSnippetInstructions = "n\n3\n0\n0\nMindy\n0\n2\nAndy\n0\n1\nPaul\n";
         itemFour.snippet = "fourth snippet";
+        itemFour.checkboxVisible = true;
         mTestBrowseItems.add(itemFour);
         mTestBrowseItems.add(itemFour);
         mAdapter.addAll(mTestBrowseItems);

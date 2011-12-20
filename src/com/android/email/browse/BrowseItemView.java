@@ -122,16 +122,13 @@ public class BrowseItemView extends View {
     @VisibleForTesting
     BrowseItemViewCoordinates mCoordinates;
 
-    // Current displayed label.
-    private CharSequence mDisplayedLabel;
-
     private final Context mContext;
-    private static UIProvider sProvider;
 
-    private StarHandler mStarHandler;
     private String mAccount;
     private BrowseItemViewModel mHeader;
     private ViewMode mViewMode;
+    private boolean mDownEvent;
+    private boolean mChecked;
     private static int sFadedColor = -1;
     private static int sFadedActivatedColor = -1;
 
@@ -198,9 +195,6 @@ public class BrowseItemView extends View {
             // Initialize static color.
             sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
             sLightTextStyle = new ForegroundColorSpan(LIGHT_TEXT_COLOR);
-
-            // Get a reference to the Gmail content provider mail access
-            sProvider = new UIProvider();
         }
     }
 
@@ -209,9 +203,7 @@ public class BrowseItemView extends View {
      */
     public void bind(BrowseItemViewModel model, StarHandler starHandler, String account,
             CharSequence displayedLabel, ViewMode viewMode) {
-        mStarHandler = starHandler;
         mAccount = account;
-        mDisplayedLabel = displayedLabel;
         mViewMode = viewMode;
         mHeader = model;
         setContentDescription(mHeader.getContentDescription(mContext));
@@ -664,7 +656,7 @@ public class BrowseItemView extends View {
     protected void onDraw(Canvas canvas) {
         // Check mark.
         if (mHeader.checkboxVisible) {
-            Bitmap checkmark = CHECKMARK_OFF;
+            Bitmap checkmark = mChecked ? CHECKMARK_ON : CHECKMARK_OFF;
             canvas.drawBitmap(checkmark, mCoordinates.checkmarkX, mCoordinates.checkmarkY, sPaint);
         }
 
@@ -772,5 +764,77 @@ public class BrowseItemView extends View {
                 setBackgroundResource(R.drawable.conversation_read_selector);
             }
         }
+    }
+
+    /**
+     * Toggle the check mark on this view and update the conversation
+     */
+    public void toggleCheckMark() {
+        mChecked = !mChecked;
+        // We update the background after the checked state has changed now that
+        // we have a selected background asset. Setting the background usually
+        // waits for a layout pass, but we don't need a full layout, just an
+        // update to the background.
+        requestLayout();
+    }
+
+    /**
+     * Toggle the star on this view and update the conversation.
+     */
+    private void toggleStar() {
+        mHeader.starred = !mHeader.starred;
+        mHeader.starBitmap = mHeader.starred ? STAR_ON : STAR_OFF;
+        postInvalidate(mCoordinates.starX, mCoordinates.starY, mCoordinates.starX
+                + mHeader.starBitmap.getWidth(),
+                mCoordinates.starY + mHeader.starBitmap.getHeight());
+    }
+
+    private boolean touchCheckmark(float x, float y) {
+        // Everything before senders and include a touch slop.
+        return mHeader.checkboxVisible && x < mCoordinates.sendersX + TOUCH_SLOP;
+    }
+
+    private boolean touchStar(float x, float y) {
+        // Everything after the star and include a touch slop.
+        return x > mCoordinates.starX - TOUCH_SLOP;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        boolean handled = false;
+
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mDownEvent = true;
+                if (touchCheckmark(x, y) || touchStar(x, y)) {
+                    handled = true;
+                }
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+                mDownEvent = false;
+                break;
+
+            case MotionEvent.ACTION_UP:
+                if (mDownEvent) {
+                    if (touchCheckmark(x, y)) {
+                        // Touch on the check mark
+                        toggleCheckMark();
+                    } else if (touchStar(x, y)) {
+                        // Touch on the star
+                        toggleStar();
+                    }
+                    handled = true;
+                }
+                break;
+        }
+
+        if (!handled) {
+            handled = super.onTouchEvent(event);
+        }
+
+        return handled;
     }
 }
