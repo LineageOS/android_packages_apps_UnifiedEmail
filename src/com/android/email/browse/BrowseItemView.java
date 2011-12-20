@@ -753,16 +753,40 @@ public class BrowseItemView extends View {
     private void updateBackground(boolean isUnread) {
         if (isUnread) {
             if (mViewMode.isTwoPane() && mViewMode.isConversationListMode()) {
-                setBackgroundResource(R.drawable.conversation_wide_unread_selector);
+                if (mChecked) {
+                    setBackgroundResource(R.drawable.list_conversation_wide_unread_selected_holo);
+                } else {
+                    setBackgroundResource(R.drawable.conversation_wide_unread_selector);
+                }
             } else {
-                setBackgroundResource(R.drawable.conversation_unread_selector);
+                if (mChecked) {
+                    setCheckedActivatedBackground();
+                } else {
+                    setBackgroundResource(R.drawable.conversation_unread_selector);
+                }
             }
         } else {
             if (mViewMode.isTwoPane() && mViewMode.isConversationListMode()) {
-                setBackgroundResource(R.drawable.conversation_wide_read_selector);
+                if (mChecked) {
+                    setBackgroundResource(R.drawable.list_conversation_wide_read_selected_holo);
+                } else {
+                    setBackgroundResource(R.drawable.conversation_wide_read_selector);
+                }
             } else {
-                setBackgroundResource(R.drawable.conversation_read_selector);
+                if (mChecked) {
+                    setCheckedActivatedBackground();
+                } else {
+                    setBackgroundResource(R.drawable.conversation_read_selector);
+                }
             }
+        }
+    }
+
+    private void setCheckedActivatedBackground() {
+        if (isActivated() && mViewMode.isTwoPane()) {
+            setBackgroundResource(R.drawable.list_arrow_selected_holo);
+        } else {
+            setBackgroundResource(R.drawable.list_selected_holo);
         }
     }
 
