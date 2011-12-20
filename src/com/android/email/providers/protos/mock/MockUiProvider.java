@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.email.providers;
+package com.android.email.providers.protos.mock;
 
 import com.android.email.providers.UIProvider.AccountCapabilities;
 import com.android.email.providers.UIProvider.AccountColumns;

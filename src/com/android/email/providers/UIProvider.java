@@ -16,7 +16,6 @@
 
 package com.android.email.providers;
 
-import android.net.Uri;
 import android.provider.BaseColumns;
 
 import java.lang.String;

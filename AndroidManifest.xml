@@ -19,7 +19,7 @@
         <activity android:name=".browse.LabelItem" />
         <activity android:name=".browse.BrowseListActivity" />
 
-        <provider android:name=".providers.MockUiProvider"
+        <provider android:name=".providers.protos.mock.MockUiProvider"
                   android:authorities="com.android.mail.mockprovider"
                   android:label="@string/mock_content_provider"
                   android:multiprocess="false" >

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.android.email.providers;
+package com.android.email.providers.protos.mock;
 
 import com.android.email.utils.LogUtils;
-import com.android.email.utils.Utils;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -25,12 +24,8 @@ import android.net.Uri;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.google.common.collect.Sets;
-
-import java.io.Console;
 import java.lang.Override;
 import java.lang.String;
-import java.lang.System;
 import java.util.HashSet;
 import java.util.Set;
 
