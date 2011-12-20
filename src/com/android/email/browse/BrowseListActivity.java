@@ -28,7 +28,8 @@ public class BrowseListActivity extends Activity {
         itemOne.subject = "First";
         itemOne.sendersText = "Mindy, Andy, Paul, Minh";
         itemOne.conversationId = 1;
-        itemOne.snippet = "first snippet";
+        itemOne.snippet = "first snippet with several lines of text so that we know "
+                + "ellipsizing and everything are working well";
         itemOne.fromSnippetInstructions = "n\n3\n0\n0\nMindy\n0\n2\nAndy\n0\n1\nPaul\n";
         itemOne.checkboxVisible = true;
         mTestBrowseItems.add(itemOne);
@@ -56,7 +57,8 @@ public class BrowseListActivity extends Activity {
         itemFour.sendersText = "Mindy, Andy, Paul, Minh";
         itemFour.conversationId = 4;
         itemFour.fromSnippetInstructions = "n\n3\n0\n0\nMindy\n0\n2\nAndy\n0\n1\nPaul\n";
-        itemFour.snippet = "fourth snippet";
+        itemFour.snippet = "fourth snippet with several lines of text so that we know "
+                + "ellipsizing and everything are working well";
         itemFour.checkboxVisible = true;
         mTestBrowseItems.add(itemFour);
         mTestBrowseItems.add(itemFour);
