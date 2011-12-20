@@ -29,7 +29,7 @@ public class BrowseListActivity extends Activity {
         itemOne.sendersText = "Mindy, Andy, Paul, Minh";
         itemOne.conversationId = 1;
         itemOne.snippet = "first snippet";
-        itemOne.fromSnippetInstructions = "schmindor@gmail.com";
+        itemOne.fromSnippetInstructions = "n\n3\n0\n0\nMindy\n0\n2\nAndy\n0\n1\nPaul\n";
         mTestBrowseItems.add(itemOne);
         mTestBrowseItems.add(itemOne);
         BrowseItemViewModel itemTwo = new BrowseItemViewModel();
@@ -37,7 +37,7 @@ public class BrowseListActivity extends Activity {
         itemTwo.sendersText = "Mindy, Andy, Paul, Minh";
         itemTwo.conversationId = 2;
         itemTwo.snippet = "second snippet";
-        itemTwo.fromSnippetInstructions = "schmindor@gmail.com";
+        itemTwo.fromSnippetInstructions = "n\n3\n0\n0\nMindy\n0\n2\nAndy\n0\n1\nPaul\n";
         mTestBrowseItems.add(itemTwo);
         mTestBrowseItems.add(itemTwo);
         BrowseItemViewModel itemThree = new BrowseItemViewModel();
@@ -45,14 +45,14 @@ public class BrowseListActivity extends Activity {
         itemThree.sendersText = "Mindy, Andy, Paul, Minh";
         itemThree.conversationId = 3;
         itemThree.snippet = "third snippet";
-        itemThree.fromSnippetInstructions = "schmindor@gmail.com";
+        itemThree.fromSnippetInstructions = "n\n3\n0\n0\nMindy\n0\n2\nAndy\n0\n1\nPaul\n";
         mTestBrowseItems.add(itemThree);
         mTestBrowseItems.add(itemThree);
         BrowseItemViewModel itemFour = new BrowseItemViewModel();
         itemFour.subject = "Fourth";
         itemFour.sendersText = "Mindy, Andy, Paul, Minh";
         itemFour.conversationId = 4;
-        itemFour.fromSnippetInstructions = "schmindor@gmail.com";
+        itemFour.fromSnippetInstructions = "n\n3\n0\n0\nMindy\n0\n2\nAndy\n0\n1\nPaul\n";
         itemFour.snippet = "fourth snippet";
         mTestBrowseItems.add(itemFour);
         mTestBrowseItems.add(itemFour);
