@@ -123,9 +123,19 @@ public class UIProvider {
         BaseColumns._ID,
         FolderColumns.NAME,
         FolderColumns.HAS_CHILDREN,
+        FolderColumns.CAPABILITIES,
+        FolderColumns.SYNC_FREQUENCY,
+        FolderColumns.SYNC_WINDOW,
         FolderColumns.CONVERSATION_LIST_URI,
         FolderColumns.CHILD_FOLDERS_LIST_URI
     };
+
+    public static final class FolderCapabilities {
+        public static final int SYNCABLE = 0x0001;
+        public static final int PARENT = 0x0002;
+        public static final int CAN_HOLD_MAIL = 0x0004;
+        public static final int CAN_ACCEPT_MOVED_MESSAGES = 0x0008;
+    }
 
     public static final class FolderColumns {
         /**
@@ -133,10 +143,23 @@ public class UIProvider {
          */
         public static final String NAME = "name";
         /**
+         * This int column represents the capabilities of the folder specified by
+         * FolderCapabilities flags.
+         */
+        public static String CAPABILITIES = "capabilities";
+        /**
          * This boolean column represents whether or not this folder has any
          * child folders.
          */
         public static String HAS_CHILDREN = "hasChildren";
+        /**
+         * This int column represents how often the folder should be synced.
+         */
+        public static String SYNC_FREQUENCY = "syncFrequency";
+        /**
+         * This int column represents how large the sync window is.
+         */
+        public static String SYNC_WINDOW = "syncWindow";
         /**
          * This string column contains the content provider uri to return the
          * list of conversations for this folder.

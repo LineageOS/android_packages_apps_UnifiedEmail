@@ -18,6 +18,7 @@ package com.android.email.providers.protos.mock;
 
 import com.android.email.providers.UIProvider.AccountCapabilities;
 import com.android.email.providers.UIProvider.AccountColumns;
+import com.android.email.providers.UIProvider.FolderCapabilities;
 import com.android.email.providers.UIProvider.FolderColumns;
 
 import android.content.ContentProvider;
@@ -106,6 +107,12 @@ public final class MockUiProvider extends ContentProvider {
         folderMap.put(FolderColumns.HAS_CHILDREN, new Integer(hasChildren ? 1 : 0));
         folderMap.put(FolderColumns.CONVERSATION_LIST_URI, folderUri + "/getConversations");
         folderMap.put(FolderColumns.CHILD_FOLDERS_LIST_URI, folderUri + "/getChildFolders");
+        folderMap.put(FolderColumns.CAPABILITIES,
+                Long.valueOf(
+                        FolderCapabilities.SYNCABLE |
+                        FolderCapabilities.PARENT |
+                        FolderCapabilities.CAN_HOLD_MAIL |
+                        FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
         return folderMap;
     }
 
