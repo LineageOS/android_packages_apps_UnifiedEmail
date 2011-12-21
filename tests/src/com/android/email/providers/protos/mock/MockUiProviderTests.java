@@ -59,9 +59,9 @@ public class MockUiProviderTests extends AndroidTestCase {
         final Uri accountsUri = MockUiProvider.getAccountsUri();
         MockUiProvider provider = new MockUiProvider();
         Cursor cursor = provider.query(accountsUri, null, null, null, null);
-        Uri foldersUri;
         ArrayList<Uri> folderUris = new ArrayList<Uri>();
         if (cursor != null) {
+            Uri foldersUri;
             int folderUriIndex = cursor.getColumnIndex(UIProvider.AccountColumns.FOLDER_LIST_URI);
             while (cursor.moveToNext()) {
                 // Verify that we can get the folders URI.
@@ -71,30 +71,60 @@ public class MockUiProviderTests extends AndroidTestCase {
             }
         }
         // Now, verify that we can get folders.
+        ArrayList<Uri> childUris = new ArrayList<Uri>();
         int count = 0;
         for (Uri u : folderUris) {
             Cursor foldersCursor = provider.query(u, null, null, null, null);
             assertNotNull(foldersCursor);
             assertEquals(foldersCursor.getCount(), 2);
+            Uri childUri;
             int name = foldersCursor.getColumnIndex(UIProvider.FolderColumns.NAME);
+            int childColumnIndex = foldersCursor
+                    .getColumnIndex(UIProvider.FolderColumns.CHILD_FOLDERS_LIST_URI);
+            int hasChildrenIndex = foldersCursor
+                    .getColumnIndex(UIProvider.FolderColumns.HAS_CHILDREN);
             while (foldersCursor.moveToNext()) {
                 switch (count) {
                     case 0:
                         assertEquals(foldersCursor.getString(name), "Folder zero");
+                        childUri = Uri.parse(foldersCursor.getString(childColumnIndex));
+                        assertNotNull(childUri);
+                        childUris.add(childUri);
+                        assertEquals(foldersCursor.getInt(hasChildrenIndex), 1);
                         break;
                     case 1:
                         assertEquals(foldersCursor.getString(name), "Folder one");
+                        assertEquals(foldersCursor.getInt(hasChildrenIndex), 0);
                         break;
                     case 2:
                         assertEquals(foldersCursor.getString(name), "Folder two");
+                        assertEquals(foldersCursor.getInt(hasChildrenIndex), 0);
                         break;
                     case 3:
                         assertEquals(foldersCursor.getString(name), "Folder three");
+                        assertEquals(foldersCursor.getInt(hasChildrenIndex), 0);
                         break;
                 }
                 count++;
             }
         }
+        count = 0;
+        for (Uri u : childUris) {
+            Cursor childFoldersCursor = provider.query(u, null, null, null, null);
+            int name = childFoldersCursor.getColumnIndex(UIProvider.FolderColumns.NAME);
+            while (childFoldersCursor.moveToNext()) {
+                switch (count) {
+                    case 0:
+                        assertEquals(childFoldersCursor.getString(name), "Folder zeroChild0");
+                        break;
+                    case 1:
+                        assertEquals(childFoldersCursor.getString(name), "Folder zeroChild1");
+                        break;
+                }
+                count++;
+            }
+        }
+        assertEquals(count, 2);
     }
 
     private void traverseUri(Uri uri) {

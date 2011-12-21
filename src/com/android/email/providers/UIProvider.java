@@ -82,8 +82,8 @@ public class UIProvider {
         public static final String CAPABILITIES = "capabilities";
 
         /**
-         * This string column contains the content provider uri to return the list of folders for
-         * this account.
+         * This string column contains the content provider uri to return the
+         * list of top level folders for this account.
          */
         public static final String FOLDER_LIST_URI = "folderListUri";
 
@@ -117,12 +117,14 @@ public class UIProvider {
     public static final String FOLDER_LIST_TYPE =
             "vnd.android.cursor.dir/vnd.com.android.mail.folder";
     public static final String FOLDER_TYPE =
-            "vnd.android.cursor.item/vnd.com.android.mail.foldert";
+            "vnd.android.cursor.item/vnd.com.android.mail.folder";
 
     public static final String[] FOLDERS_PROJECTION = {
         BaseColumns._ID,
         FolderColumns.NAME,
-        FolderColumns.CONVERSATION_LIST_URI
+        FolderColumns.HAS_CHILDREN,
+        FolderColumns.CONVERSATION_LIST_URI,
+        FolderColumns.CHILD_FOLDERS_LIST_URI
     };
 
     public static final class FolderColumns {
@@ -131,10 +133,20 @@ public class UIProvider {
          */
         public static final String NAME = "name";
         /**
-         * This string column contains the content provider uri to return the list of conversations
-         * for this folder.
+         * This boolean column represents whether or not this folder has any
+         * child folders.
+         */
+        public static String HAS_CHILDREN = "hasChildren";
+        /**
+         * This string column contains the content provider uri to return the
+         * list of conversations for this folder.
          */
         public static final String CONVERSATION_LIST_URI = "conversationListUri";
+        /**
+         * This string column contains the content provider uri to return the
+         * list of child folders of this folder.
+         */
+        public static String CHILD_FOLDERS_LIST_URI = "childFoldersListUri";
 
         public FolderColumns() {};
     }
