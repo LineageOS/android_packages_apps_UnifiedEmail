@@ -16,6 +16,7 @@
 
 package com.android.email.providers.protos.mock;
 
+import com.android.email.providers.UIProvider;
 import com.android.email.utils.LogUtils;
 
 import android.content.ContentResolver;
@@ -26,6 +27,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import java.lang.Override;
 import java.lang.String;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,6 +53,48 @@ public class MockUiProviderTests extends AndroidTestCase {
 
         mTraversedUris = new HashSet<String>();
         traverseUri(accountUri);
+    }
+
+    public void testGetFolders() {
+        final Uri accountsUri = MockUiProvider.getAccountsUri();
+        MockUiProvider provider = new MockUiProvider();
+        Cursor cursor = provider.query(accountsUri, null, null, null, null);
+        Uri foldersUri;
+        ArrayList<Uri> folderUris = new ArrayList<Uri>();
+        if (cursor != null) {
+            int folderUriIndex = cursor.getColumnIndex(UIProvider.AccountColumns.FOLDER_LIST_URI);
+            while (cursor.moveToNext()) {
+                // Verify that we can get the folders URI.
+                foldersUri = Uri.parse(cursor.getString(folderUriIndex));
+                assertNotNull(foldersUri);
+                folderUris.add(foldersUri);
+            }
+        }
+        // Now, verify that we can get folders.
+        int count = 0;
+        for (Uri u : folderUris) {
+            Cursor foldersCursor = provider.query(u, null, null, null, null);
+            assertNotNull(foldersCursor);
+            assertEquals(foldersCursor.getCount(), 2);
+            int name = foldersCursor.getColumnIndex(UIProvider.FolderColumns.NAME);
+            while (foldersCursor.moveToNext()) {
+                switch (count) {
+                    case 0:
+                        assertEquals(foldersCursor.getString(name), "Folder zero");
+                        break;
+                    case 1:
+                        assertEquals(foldersCursor.getString(name), "Folder one");
+                        break;
+                    case 2:
+                        assertEquals(foldersCursor.getString(name), "Folder two");
+                        break;
+                    case 3:
+                        assertEquals(foldersCursor.getString(name), "Folder three");
+                        break;
+                }
+                count++;
+            }
+        }
     }
 
     private void traverseUri(Uri uri) {

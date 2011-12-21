@@ -40,7 +40,7 @@ public class UIProvider {
             AccountColumns.SEARCH_URI,
             AccountColumns.ACCOUNT_FROM_ADDRESSES_URI,
             AccountColumns.SAVE_NEW_DRAFT_URI,
-            AccountColumns.SEND_MESSAGE_URI,
+            AccountColumns.SEND_MESSAGE_URI
     };
 
     public static final class AccountCapabilities {
@@ -111,8 +111,32 @@ public class UIProvider {
          * NOTE: This might be better to be an update operation on the messageUri.
          */
         public static final String SEND_MESSAGE_URI = "sendMessageUri";
+    }
 
-        private AccountColumns() {};
+    // We define a "folder" as anything that contains a list of conversations.
+    public static final String FOLDER_LIST_TYPE =
+            "vnd.android.cursor.dir/vnd.com.android.mail.folder";
+    public static final String FOLDER_TYPE =
+            "vnd.android.cursor.item/vnd.com.android.mail.foldert";
+
+    public static final String[] FOLDERS_PROJECTION = {
+        BaseColumns._ID,
+        FolderColumns.NAME,
+        FolderColumns.CONVERSATION_LIST_URI
+    };
+
+    public static final class FolderColumns {
+        /**
+         * This string column contains the human visible name for the folder.
+         */
+        public static final String NAME = "name";
+        /**
+         * This string column contains the content provider uri to return the list of conversations
+         * for this folder.
+         */
+        public static final String CONVERSATION_LIST_URI = "conversationListUri";
+
+        public FolderColumns() {};
     }
 
     /**

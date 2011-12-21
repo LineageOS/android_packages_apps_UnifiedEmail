@@ -18,6 +18,7 @@ package com.android.email.providers.protos.mock;
 
 import com.android.email.providers.UIProvider.AccountCapabilities;
 import com.android.email.providers.UIProvider.AccountColumns;
+import com.android.email.providers.UIProvider.FolderColumns;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -55,26 +56,45 @@ public final class MockUiProvider extends ContentProvider {
 
         // Add results for account list
         final List<Map<String, Object>> accountList = Lists.newArrayList();
-        Map<String, Object> accountDetailsMap;
+        Map<String, Object> accountDetailsMap1;
 
         // Account 1
-        accountDetailsMap = createAccountDetailsMap(0);
+        accountDetailsMap1 = createAccountDetailsMap(0);
 
-        accountList.add(accountDetailsMap);
-        String accountUri = (String)accountDetailsMap.get(AccountColumns.URI);
-        builder.put(accountUri, ImmutableList.of(accountDetailsMap));
+        accountList.add(accountDetailsMap1);
+        String accountUri1 = (String)accountDetailsMap1.get(AccountColumns.URI);
+        builder.put(accountUri1, ImmutableList.of(accountDetailsMap1));
 
         // Account 2
-        accountDetailsMap = createAccountDetailsMap(1);
-        accountList.add(accountDetailsMap);
+        Map<String, Object> accountDetailsMap2 = createAccountDetailsMap(1);
+        accountList.add(accountDetailsMap2);
 
-        accountUri = (String)accountDetailsMap.get(AccountColumns.URI);
-        builder.put(accountUri, ImmutableList.of(accountDetailsMap));
+        String accountUri2 = (String)accountDetailsMap2.get(AccountColumns.URI);
+        builder.put(accountUri2, ImmutableList.of(accountDetailsMap2));
 
         // Add the account list to the builder
         builder.put(getAccountsUri().toString(), accountList);
 
+        Map<String, Object> folderDetailsMap0 = createFolderDetailsMap(0, "zero");
+        Map<String, Object> folderDetailsMap1 = createFolderDetailsMap(1, "one");
+        builder.put(accountDetailsMap1.get(AccountColumns.FOLDER_LIST_URI).toString(),
+                ImmutableList.of(folderDetailsMap0, folderDetailsMap1));
+
+        Map<String, Object> folderDetailsMap2 = createFolderDetailsMap(2, "two");
+        Map<String, Object> folderDetailsMap3 = createFolderDetailsMap(3, "three");
+        builder.put(accountDetailsMap2.get(AccountColumns.FOLDER_LIST_URI).toString(),
+                ImmutableList.of(folderDetailsMap2, folderDetailsMap3));
+
         MOCK_QUERY_RESULTS = builder.build();
+    }
+
+    private static Map<String, Object> createFolderDetailsMap(int folderId, String name) {
+        final String folderUri = "content://" + AUTHORITY + "/folder/" + folderId;
+        Map<String, Object> folderMap = Maps.newHashMap();
+        folderMap.put(BaseColumns._ID, Long.valueOf(folderId));
+        folderMap.put(FolderColumns.NAME, "Folder " + name);
+        folderMap.put(FolderColumns.CONVERSATION_LIST_URI, folderUri + "/getConversations");
+        return folderMap;
     }
 
     private static Map<String, Object> createAccountDetailsMap(int accountId) {
