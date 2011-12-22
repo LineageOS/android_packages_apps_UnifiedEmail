@@ -16,14 +16,18 @@
 
 package com.android.email.browse;
 
+import android.provider.BaseColumns;
+import com.android.email.providers.UIProvider;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.android.email.R;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.text.SpannableStringBuilder;
 import android.text.StaticLayout;
+import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.util.LruCache;
 import android.util.Pair;
@@ -117,6 +121,23 @@ public class BrowseItemViewModel {
         }
     }
 
+    static BrowseItemViewModel forCursor(String account, Cursor cursor) {
+        BrowseItemViewModel header = new BrowseItemViewModel();
+        if (cursor != null) {
+            int idCol = cursor.getColumnIndex(BaseColumns._ID);
+            int subjectCol = cursor.getColumnIndex(UIProvider.ConversationColumns.SUBJECT);
+            int snippetCol = cursor.getColumnIndex(UIProvider.ConversationColumns.SNIPPET);
+            int dateCol = cursor.getColumnIndex(UIProvider.ConversationColumns.DATE_RECEIVED_MS);
+            header.conversationId = cursor.getLong(idCol);
+            header.dateMs = cursor.getLong(dateCol);
+            header.subject = cursor.getString(subjectCol);
+            header.snippet = cursor.getString(snippetCol);
+            header.faded = false;
+            header.checkboxVisible = true;
+        }
+        return header;
+    }
+
     /**
      * Returns the view model for a conversation. If this is the first time
      * call, a new view model will be returned. Note: this should only be called
@@ -170,6 +191,9 @@ public class BrowseItemViewModel {
     private static int getHashCode(Context context, String dateText, String fromSnippetInstructions) {
         if (dateText == null) {
             return -1;
+        }
+        if (TextUtils.isEmpty(fromSnippetInstructions)) {
+            fromSnippetInstructions = "fromSnippetInstructions";
         }
         return fromSnippetInstructions.hashCode() ^ dateText.hashCode();
     }

@@ -43,6 +43,11 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:onClick="browseListItemTest"/>
+        <Button android:id="@+id/label_endtoend"
+            android:text="@string/test_endtoend"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:onClick="uiProviderTest" />
     </LinearLayout>
 
 </ScrollView>

@@ -53,4 +53,7 @@ public class UnifiedEmail extends Activity {
     public void browseListItemTest(View v){
         startActivityWithClass(BrowseListActivity.class);
     }
+    public void uiProviderTest(View v){
+        startActivityWithClass(EmailActivity.class);
+    }
 }

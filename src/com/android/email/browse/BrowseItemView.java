@@ -27,6 +27,7 @@ import android.content.ClipData;
 import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -210,6 +211,15 @@ public class BrowseItemView extends View {
         requestLayout();
     }
 
+    public void bind(Cursor cursor, StarHandler starHandler, String account,
+            CharSequence displayedLabel, ViewMode viewMode) {
+        mAccount = account;
+        mViewMode = viewMode;
+        mHeader = BrowseItemViewModel.forCursor(account, cursor);
+        setContentDescription(mHeader.getContentDescription(mContext));
+        requestLayout();
+    }
+
     /**
      * Sets the mode. Only used for testing.
      */
@@ -382,6 +392,9 @@ public class BrowseItemView extends View {
      * Parses senders text into small fragments.
      */
     private void parseSendersFragments(boolean isUnread) {
+        if (TextUtils.isEmpty(mHeader.fromSnippetInstructions)) {
+            return;
+        }
         SpannableStringBuilder sendersBuilder = new SpannableStringBuilder();
         SpannableStringBuilder statusBuilder = new SpannableStringBuilder();
         Utils.getStyledSenderSnippet(mContext, mHeader.fromSnippetInstructions, sendersBuilder,

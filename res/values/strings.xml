@@ -150,6 +150,7 @@
     <string name="test_accountspinner" translate="false">Test Account Spinner Layout</string>
     <string name="test_labelspinner" translate="false">Test Label Spinner Layout</string>
     <string name="test_browseitems" translate="false">Test Browse Items</string>
+    <string name="test_endtoend" translate="false">Test End to End with provider</string>
 
     <string name="mock_content_provider">Mock Content Provider</string>
 

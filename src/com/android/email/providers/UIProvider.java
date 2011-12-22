@@ -182,8 +182,11 @@ public class UIProvider {
 
     public static final String[] CONVERSATION_PROJECTION = {
         BaseColumns._ID,
+        ConversationColumns.MESSAGE_LIST_URI,
         ConversationColumns.SUBJECT,
-        ConversationColumns.MESSAGE_LIST_URI
+        ConversationColumns.SNIPPET,
+        ConversationColumns.SENDER_INFO,
+        ConversationColumns.DATE_RECEIVED_MS
     };
 
     public static final class ConversationColumns {
