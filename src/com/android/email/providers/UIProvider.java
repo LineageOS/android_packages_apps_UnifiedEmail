@@ -188,15 +188,31 @@ public class UIProvider {
 
     public static final class ConversationColumns {
         /**
-         * This string column contains the subject string for a conversation.
-         */
-        public static final String SUBJECT = "subject";
-        /**
          * This string column contains the content provider uri to return the
          * list of messages for this conversation.
          */
         public static final String MESSAGE_LIST_URI = "messageListUri";
-        public ConversationColumns() {};
+        /**
+         * This string column contains the subject string for a conversation.
+         */
+        public static final String SUBJECT = "subject";
+        /**
+         * This string column contains the snippet string for a conversation.
+         */
+        public static final String SNIPPET = "snippet";
+        /**
+         * This string column contains the sender info string for a
+         * conversation.
+         */
+        public static final String SENDER_INFO = "senderInfo";
+        /**
+         * This long column contains the time in ms of the latest update to a
+         * conversation.
+         */
+        public static final String DATE_RECEIVED_MS = "dateReceivedMs";
+
+        public ConversationColumns() {
+        };
     }
 
     /**

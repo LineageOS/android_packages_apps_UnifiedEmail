@@ -39,6 +39,7 @@ import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -117,6 +118,9 @@ public final class MockUiProvider extends ContentProvider {
         conversationMap.put(BaseColumns._ID, Long.valueOf(conversationId));
         conversationMap.put(ConversationColumns.SUBJECT, "Conversation " + subject);
         conversationMap.put(ConversationColumns.MESSAGE_LIST_URI, conversationUri + "/getMessages");
+        conversationMap.put(ConversationColumns.SNIPPET, "snippet");
+        conversationMap.put(ConversationColumns.SENDER_INFO, "Conversation " + subject);
+        conversationMap.put(ConversationColumns.DATE_RECEIVED_MS, new Date().getTime());
         return conversationMap;
     }
 
