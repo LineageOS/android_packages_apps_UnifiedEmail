@@ -18,8 +18,10 @@ package com.android.email.providers.protos.mock;
 
 import com.android.email.providers.UIProvider.AccountCapabilities;
 import com.android.email.providers.UIProvider.AccountColumns;
+import com.android.email.providers.UIProvider.ConversationColumns;
 import com.android.email.providers.UIProvider.FolderCapabilities;
 import com.android.email.providers.UIProvider.FolderColumns;
+import com.android.email.providers.UIProvider.MessageColumns;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -82,6 +84,20 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(createFolderDetailsMap(10, "zeroChild0"),
                         createFolderDetailsMap(11, "zeroChild1")));
 
+        Map<String, Object> conv0 = createConversationDetailsMap("zeroConv0".hashCode(),
+                "zeroConv0");
+        Map<String, Object> conv1 = createConversationDetailsMap("zeroConv1".hashCode(),
+                "zeroConv1");
+        builder.put(folderDetailsMap0.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
+                ImmutableList.of(conv0, conv1));
+
+        Map<String, Object> message0 = createMessageDetailsMap("zeroConv0".hashCode(), "zeroConv0");
+        builder.put(conv0.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
+                ImmutableList.of(message0));
+        Map<String, Object> message1 = createMessageDetailsMap("zeroConv1".hashCode(), "zeroConv1");
+        builder.put(conv1.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
+                ImmutableList.of(message1));
+
         Map<String, Object> folderDetailsMap1 = createFolderDetailsMap(1, "one");
         builder.put(accountDetailsMap1.get(AccountColumns.FOLDER_LIST_URI).toString(),
                 ImmutableList.of(folderDetailsMap0, folderDetailsMap1));
@@ -92,6 +108,24 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(folderDetailsMap2, folderDetailsMap3));
 
         MOCK_QUERY_RESULTS = builder.build();
+    }
+
+    private static Map<String, Object> createConversationDetailsMap(int conversationId,
+            String subject) {
+        final String conversationUri = "content://" + AUTHORITY + "/conversation/" + conversationId;
+        Map<String, Object> conversationMap = Maps.newHashMap();
+        conversationMap.put(BaseColumns._ID, Long.valueOf(conversationId));
+        conversationMap.put(ConversationColumns.SUBJECT, "Conversation " + subject);
+        conversationMap.put(ConversationColumns.MESSAGE_LIST_URI, conversationUri + "/getMessages");
+        return conversationMap;
+    }
+
+    private static Map<String, Object> createMessageDetailsMap(int messageId,
+            String subject) {
+        Map<String, Object> messageMap = Maps.newHashMap();
+        messageMap.put(BaseColumns._ID, Long.valueOf(messageId));
+        messageMap.put(MessageColumns.SUBJECT, "Message " + subject);
+        return messageMap;
     }
 
     private static Map<String, Object> createFolderDetailsMap(int folderId, String name) {

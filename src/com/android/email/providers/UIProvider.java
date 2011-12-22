@@ -174,6 +174,31 @@ public class UIProvider {
         public FolderColumns() {};
     }
 
+    // We define a "folder" as anything that contains a list of conversations.
+    public static final String CONVERSATION_LIST_TYPE =
+            "vnd.android.cursor.dir/vnd.com.android.mail.conversation";
+    public static final String CONVERSATION_TYPE =
+            "vnd.android.cursor.item/vnd.com.android.mail.conversation";
+
+    public static final String[] CONVERSATION_PROJECTION = {
+        BaseColumns._ID,
+        ConversationColumns.SUBJECT,
+        ConversationColumns.MESSAGE_LIST_URI
+    };
+
+    public static final class ConversationColumns {
+        /**
+         * This string column contains the subject string for a conversation.
+         */
+        public static final String SUBJECT = "subject";
+        /**
+         * This string column contains the content provider uri to return the
+         * list of messages for this conversation.
+         */
+        public static final String MESSAGE_LIST_URI = "messageListUri";
+        public ConversationColumns() {};
+    }
+
     /**
      * Returns a uri that, when queried, will return a cursor with a list of information for the
      * list of configured accounts.
@@ -193,6 +218,35 @@ public class UIProvider {
         private DraftType() {}
     }
 
+    public static final String[] MESSAGE_PROJECTION = {
+        BaseColumns._ID,
+        MessageColumns.URI,
+        MessageColumns.MESSAGE_ID,
+        MessageColumns.CONVERSATION_ID,
+        MessageColumns.SUBJECT,
+        MessageColumns.SNIPPET,
+        MessageColumns.FROM,
+        MessageColumns.TO,
+        MessageColumns.CC,
+        MessageColumns.BCC,
+        MessageColumns.REPLY_TO,
+        MessageColumns.DATE_RECEIVED_MS,
+        MessageColumns.BODY_HTML,
+        MessageColumns.BODY_TEXT,
+        MessageColumns.EMBEDS_EXTERNAL_RESOURCES,
+        MessageColumns.REF_MESSAGE_ID,
+        MessageColumns.DRAFT_TYPE,
+        MessageColumns.INCLUDE_QUOTED_TEXT,
+        MessageColumns.QUOTE_START_POS,
+        MessageColumns.CLIENT_CREATED,
+        MessageColumns.CUSTOM_FROM_ADDRESS
+    };
+
+    // We define a "folder" as anything that contains a list of conversations.
+    public static final String MESSAGE_LIST_TYPE =
+            "vnd.android.cursor.dir/vnd.com.android.mail.message";
+    public static final String MESSAGE_TYPE =
+            "vnd.android.cursor.item/vnd.com.android.mail.message";
 
     public static final class MessageColumns {
         public static final String ID = "_id";
