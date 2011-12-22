@@ -108,6 +108,20 @@ public final class MockUiProvider extends ContentProvider {
         builder.put(accountDetailsMap2.get(AccountColumns.FOLDER_LIST_URI).toString(),
                 ImmutableList.of(folderDetailsMap2, folderDetailsMap3));
 
+        Map<String, Object> conv2 = createConversationDetailsMap("zeroConv2".hashCode(),
+                "zeroConv2");
+        Map<String, Object> conv3 = createConversationDetailsMap("zeroConv3".hashCode(),
+                "zeroConv3");
+        builder.put(folderDetailsMap2.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
+                ImmutableList.of(conv2, conv3));
+
+        Map<String, Object> message2 = createMessageDetailsMap("zeroConv2".hashCode(), "zeroConv2");
+        builder.put(conv2.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
+                ImmutableList.of(message2));
+        Map<String, Object> message3 = createMessageDetailsMap("zeroConv3".hashCode(), "zeroConv3");
+        builder.put(conv3.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
+                ImmutableList.of(message3));
+
         MOCK_QUERY_RESULTS = builder.build();
     }
 
