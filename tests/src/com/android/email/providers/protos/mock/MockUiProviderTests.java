@@ -174,19 +174,49 @@ public class MockUiProviderTests extends AndroidTestCase {
                 }
             }
         }
-        assertEquals(count, 2);
+        assertEquals(count, 4);
         count = 0;
+        ArrayList<Uri> attachmentUris = new ArrayList<Uri>();
         for (Uri u : messageUris) {
             Cursor messageCursor = provider.query(u, null, null, null, null);
             if (messageCursor != null) {
                 int subject = messageCursor.getColumnIndex(UIProvider.MessageColumns.SUBJECT);
+                int attachmentUriCol = messageCursor
+                        .getColumnIndex(UIProvider.MessageColumns.ATTACHMENT_LIST_URI);
+                int hasAttachments = messageCursor
+                        .getColumnIndex(UIProvider.MessageColumns.HAS_ATTACHMENTS);
                 while (messageCursor.moveToNext()) {
                     switch (count) {
                         case 0:
                             assertEquals(messageCursor.getString(subject), "Message zeroConv0");
+                            assertEquals(messageCursor.getInt(hasAttachments), 1);
+                            attachmentUris
+                                    .add(Uri.parse(messageCursor.getString(attachmentUriCol)));
                             break;
                         case 1:
                             assertEquals(messageCursor.getString(subject), "Message zeroConv1");
+                            assertEquals(messageCursor.getInt(hasAttachments), 1);
+                            attachmentUris
+                                    .add(Uri.parse(messageCursor.getString(attachmentUriCol)));
+                            break;
+                    }
+                    count++;
+                }
+            }
+        }
+        assertEquals(count, 2);
+        count = 0;
+        for (Uri u : attachmentUris) {
+            Cursor attachmentCursor = provider.query(u, null, null, null, null);
+            if (attachmentCursor != null) {
+                int name = attachmentCursor.getColumnIndex(UIProvider.AttachmentColumns.NAME);
+                while (attachmentCursor.moveToNext()) {
+                    switch (count) {
+                        case 0:
+                            assertEquals(attachmentCursor.getString(name), "Attachment zero");
+                            break;
+                        case 1:
+                            assertEquals(attachmentCursor.getString(name), "Attachment one");
                             break;
                     }
                     count++;

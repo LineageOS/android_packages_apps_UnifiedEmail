@@ -186,7 +186,8 @@ public class UIProvider {
         ConversationColumns.SUBJECT,
         ConversationColumns.SNIPPET,
         ConversationColumns.SENDER_INFO,
-        ConversationColumns.DATE_RECEIVED_MS
+        ConversationColumns.DATE_RECEIVED_MS,
+        ConversationColumns.HAS_ATTACHMENTS
     };
 
     public static final class ConversationColumns {
@@ -213,6 +214,12 @@ public class UIProvider {
          * conversation.
          */
         public static final String DATE_RECEIVED_MS = "dateReceivedMs";
+
+        /**
+         * This boolean column contains whether any messages in this conversation
+         * have attachments.
+         */
+        public static final String HAS_ATTACHMENTS = "hasAttachments";
 
         public ConversationColumns() {
         };
@@ -258,17 +265,24 @@ public class UIProvider {
         MessageColumns.INCLUDE_QUOTED_TEXT,
         MessageColumns.QUOTE_START_POS,
         MessageColumns.CLIENT_CREATED,
-        MessageColumns.CUSTOM_FROM_ADDRESS
+        MessageColumns.CUSTOM_FROM_ADDRESS,
+        MessageColumns.HAS_ATTACHMENTS,
+        MessageColumns.ATTACHMENT_LIST_URI
     };
 
-    // We define a "folder" as anything that contains a list of conversations.
     public static final String MESSAGE_LIST_TYPE =
             "vnd.android.cursor.dir/vnd.com.android.mail.message";
     public static final String MESSAGE_TYPE =
             "vnd.android.cursor.item/vnd.com.android.mail.message";
 
+    public static final class MessageFlags {
+        public static final int SYNCABLE = 0x0001;
+        public static final int PARENT = 0x0002;
+        public static final int CAN_HOLD_MAIL = 0x0004;
+        public static final int CAN_ACCEPT_MOVED_MESSAGES = 0x0008;
+    }
+
     public static final class MessageColumns {
-        public static final String ID = "_id";
         public static final String URI = "uri";
         public static final String MESSAGE_ID = "messageId";
         public static final String CONVERSATION_ID = "conversationId";
@@ -289,9 +303,36 @@ public class UIProvider {
         public static final String QUOTE_START_POS = "quoteStartPos";
         public static final String CLIENT_CREATED = "clientCreated";
         public static final String CUSTOM_FROM_ADDRESS = "customFromAddress";
-
+        public static final String HAS_ATTACHMENTS = "hasAttachments";
+        public static final String ATTACHMENT_LIST_URI = "attachmentListUri";
+        public static final String MESSAGE_FLAGS = "messagesFlags";
         // TODO: Add attachments, flags
 
         private MessageColumns() {}
+    }
+
+    // We define a "folder" as anything that contains a list of conversations.
+    public static final String ATTACHMENT_LIST_TYPE =
+            "vnd.android.cursor.dir/vnd.com.android.mail.attachment";
+    public static final String ATTACHMENT_TYPE =
+            "vnd.android.cursor.item/vnd.com.android.mail.attachment";
+
+    public static final String[] ATTACHMENT_PROJECTION = {
+        BaseColumns._ID,
+        AttachmentColumns.NAME,
+        AttachmentColumns.SIZE,
+        AttachmentColumns.ORIGIN,
+        AttachmentColumns.ORIGIN_EXTRAS,
+        AttachmentColumns.CONTENT_TYPE,
+        AttachmentColumns.SYNCED
+    };
+
+    public static final class AttachmentColumns {
+        public static final String NAME = "name";
+        public static final String SIZE = "size";
+        public static final String ORIGIN = "origin";
+        public static final String ORIGIN_EXTRAS = "originExtras";
+        public static final String CONTENT_TYPE = "contentType";
+        public static final String SYNCED = "synced";
     }
 }
