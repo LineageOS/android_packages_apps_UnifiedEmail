@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<!-- Copyright (C) 2010 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,9 +14,8 @@
      limitations under the License.
 -->
 <resources>
-    <integer name="expand_cc_bcc_dur">150</integer>
-    <integer name="fadein_cc_bcc_dur">150</integer>
-    <integer name="fade_duration">250</integer>
-    <integer name="dialog_animationDefaultDur">220</integer>
-    <integer name="dialog_animationShortDur">150</integer>
+    <integer name="html_conv_progress_display_time">600</integer>
+    <integer name="html_conv_progress_wait_time">600</integer>
+    <integer name="batch_progress_display_time">500</integer>
+    <integer name="batch_progress_wait_time">750</integer>
 </resources>

@@ -210,5 +210,25 @@
         <item name="android:lines">2</item>
         <item name="android:layout_width">0dip</item>
     </style>
-    <!-- End browser list item styles -->
+    <!-- End browse list item styles -->
+
+    <!-- Undo bar styles -->
+    <style name="UndoTextStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#aaaaaa</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- End undo bar styles -->
+
+    <!-- Min time progress styles -->
+    <style name="MinTimeAnimationStyle" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+    <style name="MinTimeProgressViewStyle" parent="@android:style/Widget.Holo.Light.ProgressBar" />
+    <style name="MinTimeProgressDialogStyle" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowAnimationStyle">@style/MinTimeAnimationStyle</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 </resources>

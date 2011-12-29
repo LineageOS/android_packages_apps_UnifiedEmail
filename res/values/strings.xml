@@ -18,6 +18,15 @@
  */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Layout tests strings -->
+    <string name="test_compose" translate="false">Test Compose Layout</string>
+    <string name="test_accountspinner" translate="false">Test Account Spinner Layout</string>
+    <string name="test_labelspinner" translate="false">Test Label Spinner Layout</string>
+    <string name="test_browseitems" translate="false">Test Browse Items</string>
+    <string name="test_endtoend" translate="false">Test End to End with provider</string>
+    <string name="mock_content_provider">Mock Content Provider</string>
+
     <string name="app_name">Unified Email</string>
 
     <!-- Compose -->
@@ -145,13 +154,143 @@
     <!-- Strings used to show myself in a To/Cc list. [CHAR LIMIT=15] -->
     <string name="me">me</string>
 
-    <!-- Layout tests strings -->
-    <string name="test_compose" translate="false">Test Compose Layout</string>
-    <string name="test_accountspinner" translate="false">Test Account Spinner Layout</string>
-    <string name="test_labelspinner" translate="false">Test Label Spinner Layout</string>
-    <string name="test_browseitems" translate="false">Test Browse Items</string>
-    <string name="test_endtoend" translate="false">Test End to End with provider</string>
+    <!-- Undo bar strings -->
+    <!-- Displayed in the middle of the screen when the inbox is empty [CHAR LIMIT 100]-->
+    <string name="no_conversations">No conversations.</string>
+    <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
+    <string name="undo">Undo</string>
+    <!-- Undo Strings: The following are shown in a dialog while we're waiting for the operation to complete --><skip />
+    <plurals name="conversation_muting">
+        <!-- Displayed while muting one conversation -->
+        <item quantity="one">Muting <xliff:g id="count">%1$d</xliff:g> conversation.</item>
+        <!-- Displayed while muting several conversations -->
+        <item quantity="other">Muting <xliff:g id="count">%1$d</xliff:g> conversations.</item>
+    </plurals>
 
-    <string name="mock_content_provider">Mock Content Provider</string>
+    <plurals name="conversation_spamming">
+        <!-- Displayed while reporting one conversation as spam -->
+        <item quantity="one">Reporting <xliff:g id="count">%1$d</xliff:g> conversation as spam.</item>
+        <!-- Displayed while reporting several conversations as spam -->
+        <item quantity="other">Reporting <xliff:g id="count">%1$d</xliff:g> conversations as spam.</item>
+    </plurals>
 
+    <plurals name="conversation_archiving">
+        <!-- Displayed while archiving one conversation -->
+        <item quantity="one">Archiving <xliff:g id="count">%1$d</xliff:g> conversation.</item>
+        <!-- Displayed while archiving multiple conversations -->
+        <item quantity="other">Archiving <xliff:g id="count">%1$d</xliff:g> conversations.</item>
+    </plurals>
+
+    <plurals name="conversation_deleting">
+        <!-- Displayed while deleting one conversation -->
+        <item quantity="one">Deleting <xliff:g id="count">%1$d</xliff:g> conversation.</item>
+        <!-- Displayed while deleting multiple conversations -->
+        <item quantity="other">Deleting <xliff:g id="count">%1$d</xliff:g> conversations.</item>
+    </plurals>
+
+    <plurals name="conversation_marking_read">
+        <!-- Displayed while marking one conversation read -->
+        <item quantity="one">Marking <xliff:g id="count">%1$d</xliff:g> conversation read.</item>
+        <!-- Displayed while marking multiple conversations read -->
+        <item quantity="other">Marking <xliff:g id="count">%1$d</xliff:g> conversations read.</item>
+    </plurals>
+
+    <plurals name="conversation_marking_unread">
+        <!-- Displayed while marking one conversation unread -->
+        <item quantity="one">Marking <xliff:g id="count">%1$d</xliff:g> conversation unread.</item>
+        <!-- Displayed while marking multiple conversations unread -->
+        <item quantity="other">Marking <xliff:g id="count">%1$d</xliff:g> conversations unread.</item>
+    </plurals>
+
+    <plurals name="conversation_starring">
+        <!-- Displayed while starring one conversation -->
+        <item quantity="one">Starring <xliff:g id="count">%1$d</xliff:g> conversation.</item>
+        <!-- Displayed while starring multiple conversations -->
+        <item quantity="other">Starring <xliff:g id="count">%1$d</xliff:g> conversations.</item>
+    </plurals>
+
+    <plurals name="conversation_unstarring">
+        <item quantity="one">Unstarring <xliff:g id="count">%1$d</xliff:g> conversation.</item>
+        <item quantity="other">Unstarring <xliff:g id="count">%1$d</xliff:g> conversations.</item>
+    </plurals>
+
+    <plurals name="conversation_unknown_operation">
+        <!-- Displayed while waiting for an operation one conversation -->
+        <item quantity="one">Waiting for operation on <xliff:g id="count">%1$d</xliff:g> conversation.</item>
+        <!-- Displayed while waiting for an operation on several conversations -->
+        <item quantity="other">Waiting for operation on <xliff:g id="count">%1$d</xliff:g> conversations.</item>
+    </plurals>
+
+    <!-- The following are shown as a toast after the operation has completed --><skip />
+    <plurals name="conversation_muted">
+        <!-- Displayed while muting one conversation -->
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> muted.</item>
+        <!-- Displayed while muting several conversations -->
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> muted.</item>
+    </plurals>
+
+    <plurals name="conversation_spammed">
+        <!-- Displayed while reporting one conversation as spam -->
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as spam.</item>
+        <!-- Displayed while reporting several conversations as spam -->
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as spam.</item>
+    </plurals>
+
+    <plurals name="conversation_archived">
+        <!-- Displayed while archiving one conversation -->
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> archived.</item>
+        <!-- Displayed while archiving multiple conversations -->
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> archived.</item>
+    </plurals>
+
+    <plurals name="conversation_moved_to_inbox">
+        <!-- Displayed while moving one conversation to the inbox. [CHAR LIMIT=80] -->
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> moved to the Inbox.</item>
+        <!-- Displayed while moving multiple conversations to the inbox. [CHAR LIMIT=80]-->
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> moved to the Inbox.</item>
+    </plurals>
+
+    <plurals name="conversation_deleted">
+        <!-- Displayed while deleting one conversation -->
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> deleted.</item>
+        <!-- Displayed while deleting multiple conversations -->
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> deleted.</item>
+    </plurals>
+
+    <plurals name="conversation_marked_important">
+        <!-- Displayed while marking a single conversation as important. [CHAR LIMIT=80] -->
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked important.</item>
+        <!-- Displayed while marking multiple conversations as important. [CHAR LIMIT=80] -->
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked important.</item>
+    </plurals>
+
+    <plurals name="conversation_marked_not_important">
+        <!-- Displayed while marking a single conversation as unimportant.
+             [CHAR LIMIT=80] -->
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked not important.</item>
+        <!-- Displayed while marking multiple conversations as unimportant.
+             [CHAR LIMIT=80] -->
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked not important.</item>
+    </plurals>
+
+    <plurals name="conversation_marked_read">
+        <!-- Displayed while marking a single conversation as read. [CHAR LIMIT=80] -->
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked read.</item>
+        <!-- Displayed while marking multiple conversations as read. [CHAR LIMIT=80]-->
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked read.</item>
+    </plurals>
+
+    <plurals name="conversation_marked_unread">
+        <!-- Displayed while marking a single conversation as unread. [CHAR LIMIT=80] -->
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked unread.</item>
+        <!-- Displayed while marking multiple conversations as unread. [CHAR LIMIT=80]-->
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked unread.</item>
+    </plurals>
+
+    <plurals name="conversation_label_changed">
+        <!-- Displayed while adding and removing labels to a single conversation. [CHAR LIMIT=100] -->
+        <item quantity="one">Changed label.</item>
+        <!-- Displayed while adding and removing labels to multiple conversations. [CHAR LIMIT=100] -->
+        <item quantity="other">Changed labels.</item>
+    </plurals>
 </resources>

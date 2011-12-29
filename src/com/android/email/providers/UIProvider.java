@@ -23,7 +23,7 @@ import java.lang.String;
 
 public class UIProvider {
     // The actual content provider should define its own authority
-    //public static final String AUTHORITY = "com.android.email.providers";
+    public static final String AUTHORITY = "com.android.email.providers";
 
     public static final String ACCOUNT_LIST_TYPE =
             "vnd.android.cursor.dir/vnd.com.android.mail.account";
@@ -190,6 +190,8 @@ public class UIProvider {
         ConversationColumns.HAS_ATTACHMENTS
     };
 
+    // These column indexes only work when the caller uses the
+    // default CONVERSATION_PROJECTION defined above.
     public static final int CONVERSATION_ID_COLUMN = 0;
     public static final int CONVERSATION_MESSAGE_LIST_URI_COLUMN = 1;
     public static final int CONVERSATION_SUBJECT_COLUMN = 2;
