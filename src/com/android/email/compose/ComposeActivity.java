@@ -16,11 +16,13 @@
 
 package com.android.email.compose;
 
+import android.accounts.Account;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.util.Rfc822Tokenizer;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,16 +30,23 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.android.common.Rfc822Validator;
 import com.android.email.providers.protos.Attachment;
 import com.android.email.providers.protos.mock.MockAttachment;
 import com.android.email.R;
 import com.android.email.utils.MimeType;
+import com.android.ex.chips.RecipientEditTextView;
 
 public class ComposeActivity extends Activity implements OnClickListener {
 
+    private RecipientEditTextView mTo;
+    private RecipientEditTextView mCc;
+    private RecipientEditTextView mBcc;
     private Button mCcBccButton;
     private CcBccView mCcBccView;
     private AttachmentsView mAttachmentsView;
+    private String mAccount;
+    private Rfc822Validator mRecipientValidator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,8 +56,28 @@ public class ComposeActivity extends Activity implements OnClickListener {
         if (mCcBccButton != null) {
             mCcBccButton.setOnClickListener(this);
         }
+        mAccount = "test@test.com";
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
+        mTo = setupRecipients(R.id.to);
+        mCc = setupRecipients(R.id.cc);
+        mBcc = setupRecipients(R.id.bcc);
+    }
+
+    private RecipientEditTextView setupRecipients(int id) {
+        RecipientEditTextView view = (RecipientEditTextView) findViewById(id);
+        view.setAdapter(new RecipientAdapter(this, mAccount));
+        view.setTokenizer(new Rfc822Tokenizer());
+        if (mRecipientValidator == null) {
+            int offset = mAccount.indexOf("@") + 1;
+            String account = mAccount;
+            if (offset > -1) {
+                account = account.substring(mAccount.indexOf("@") + 1);
+            }
+            mRecipientValidator = new Rfc822Validator(account);
+        }
+        view.setValidator(mRecipientValidator);
+        return view;
     }
 
     @Override
