@@ -124,16 +124,14 @@ public class BrowseItemViewModel {
     static BrowseItemViewModel forCursor(String account, Cursor cursor) {
         BrowseItemViewModel header = new BrowseItemViewModel();
         if (cursor != null) {
-            int idCol = cursor.getColumnIndex(BaseColumns._ID);
-            int subjectCol = cursor.getColumnIndex(UIProvider.ConversationColumns.SUBJECT);
-            int snippetCol = cursor.getColumnIndex(UIProvider.ConversationColumns.SNIPPET);
-            int dateCol = cursor.getColumnIndex(UIProvider.ConversationColumns.DATE_RECEIVED_MS);
-            header.conversationId = cursor.getLong(idCol);
-            header.dateMs = cursor.getLong(dateCol);
-            header.subject = cursor.getString(subjectCol);
-            header.snippet = cursor.getString(snippetCol);
+            header.conversationId = cursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
+            header.dateMs = cursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
+            header.subject = cursor.getString(UIProvider.CONVERSATION_SUBJECT_COLUMN);
+            header.snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
             header.faded = false;
             header.checkboxVisible = true;
+            header.hasAttachments = cursor
+                    .getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) == 1 ? true : false;
         }
         return header;
     }

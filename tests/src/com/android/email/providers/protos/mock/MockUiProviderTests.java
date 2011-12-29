@@ -150,10 +150,8 @@ public class MockUiProviderTests extends AndroidTestCase {
         for (Uri u : convUris) {
             Cursor convFoldersCursor = provider.query(u, null, null, null, null);
             if (convFoldersCursor != null) {
-                int subject = convFoldersCursor
-                        .getColumnIndex(UIProvider.ConversationColumns.SUBJECT);
-                int messageUriCol = convFoldersCursor
-                        .getColumnIndex(UIProvider.ConversationColumns.MESSAGE_LIST_URI);
+                int subject = UIProvider.CONVERSATION_SUBJECT_COLUMN;
+                int messageUriCol = UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN;
                 Uri messageUri;
                 while (convFoldersCursor.moveToNext()) {
                     switch (count) {

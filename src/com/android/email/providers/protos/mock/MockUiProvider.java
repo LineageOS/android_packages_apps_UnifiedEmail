@@ -87,18 +87,20 @@ public final class MockUiProvider extends ContentProvider {
                         createFolderDetailsMap(11, "zeroChild1")));
 
         Map<String, Object> conv0 = createConversationDetailsMap("zeroConv0".hashCode(),
-                "zeroConv0");
+                "zeroConv0", 1);
         Map<String, Object> conv1 = createConversationDetailsMap("zeroConv1".hashCode(),
-                "zeroConv1");
+                "zeroConv1", 1);
         builder.put(folderDetailsMap0.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
                 ImmutableList.of(conv0, conv1));
 
-        Map<String, Object> message0 = createMessageDetailsMap("zeroConv0".hashCode(), "zeroConv0");
+        Map<String, Object> message0 = createMessageDetailsMap("zeroConv0".hashCode(), "zeroConv0",
+                1);
         builder.put(conv0.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message0));
         builder.put(message0.get(MessageColumns.ATTACHMENT_LIST_URI).toString(),
                 ImmutableList.of(createAttachmentDetailsMap(0, "zero")));
-        Map<String, Object> message1 = createMessageDetailsMap("zeroConv1".hashCode(), "zeroConv1");
+        Map<String, Object> message1 = createMessageDetailsMap("zeroConv1".hashCode(), "zeroConv1",
+                1);
         builder.put(conv1.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message1));
         builder.put(message1.get(MessageColumns.ATTACHMENT_LIST_URI).toString(),
@@ -114,46 +116,45 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(folderDetailsMap2, folderDetailsMap3));
 
         Map<String, Object> conv2 = createConversationDetailsMap("zeroConv2".hashCode(),
-                "zeroConv2");
+                "zeroConv2", 0);
         Map<String, Object> conv3 = createConversationDetailsMap("zeroConv3".hashCode(),
-                "zeroConv3");
+                "zeroConv3", 0);
         builder.put(folderDetailsMap2.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
                 ImmutableList.of(conv2, conv3));
 
-        Map<String, Object> message2 = createMessageDetailsMap("zeroConv2".hashCode(), "zeroConv2");
+        Map<String, Object> message2 = createMessageDetailsMap("zeroConv2".hashCode(), "zeroConv2",
+                0);
         builder.put(conv2.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message2));
-        builder.put(message2.get(MessageColumns.ATTACHMENT_LIST_URI).toString(),
-                ImmutableList.of(createAttachmentDetailsMap(2, "two")));
-        Map<String, Object> message3 = createMessageDetailsMap("zeroConv3".hashCode(), "zeroConv3");
+        Map<String, Object> message3 = createMessageDetailsMap("zeroConv3".hashCode(), "zeroConv3",
+                0);
         builder.put(conv3.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message3));
-        builder.put(message3.get(MessageColumns.ATTACHMENT_LIST_URI).toString(),
-                ImmutableList.of(createAttachmentDetailsMap(3, "three")));
 
         MOCK_QUERY_RESULTS = builder.build();
     }
 
     private static Map<String, Object> createConversationDetailsMap(int conversationId,
-            String subject) {
+            String subject, int hasAttachments) {
         final String conversationUri = "content://" + AUTHORITY + "/conversation/" + conversationId;
         Map<String, Object> conversationMap = Maps.newHashMap();
         conversationMap.put(BaseColumns._ID, Long.valueOf(conversationId));
-        conversationMap.put(ConversationColumns.SUBJECT, "Conversation " + subject);
         conversationMap.put(ConversationColumns.MESSAGE_LIST_URI, conversationUri + "/getMessages");
+        conversationMap.put(ConversationColumns.SUBJECT, "Conversation " + subject);
         conversationMap.put(ConversationColumns.SNIPPET, "snippet");
         conversationMap.put(ConversationColumns.SENDER_INFO, "Conversation " + subject);
         conversationMap.put(ConversationColumns.DATE_RECEIVED_MS, new Date().getTime());
-        conversationMap.put(ConversationColumns.HAS_ATTACHMENTS, 1);
+        conversationMap.put(ConversationColumns.HAS_ATTACHMENTS, hasAttachments);
         return conversationMap;
     }
 
-    private static Map<String, Object> createMessageDetailsMap(int messageId, String subject) {
+    private static Map<String, Object> createMessageDetailsMap(int messageId, String subject,
+            int hasAttachments) {
         final String messageUri = "content://" + AUTHORITY + "/message/" + messageId;
         Map<String, Object> messageMap = Maps.newHashMap();
         messageMap.put(BaseColumns._ID, Long.valueOf(messageId));
         messageMap.put(MessageColumns.SUBJECT, "Message " + subject);
-        messageMap.put(MessageColumns.HAS_ATTACHMENTS, 1);
+        messageMap.put(MessageColumns.HAS_ATTACHMENTS, hasAttachments);
         messageMap.put(MessageColumns.ATTACHMENT_LIST_URI, messageUri + "/getAttachments");
         return messageMap;
     }
@@ -234,16 +235,12 @@ public final class MockUiProvider extends ContentProvider {
             // Get the projection.  If there are rows in the result set, pick the first item to
             // generate the projection
             // TODO (pwestbro): handle the case where we want to return an empty result.\
-
-            final Set<String> keys = queryResults.get(0).keySet();
-
-            final String[] resultSetProjection = keys.toArray(new String[keys.size()]);
-            MatrixCursor matrixCursor = new MatrixCursor(resultSetProjection, queryResults.size());
+            MatrixCursor matrixCursor = new MatrixCursor(projection, queryResults.size());
 
             for (Map<String, Object> queryResult : queryResults) {
                 MatrixCursor.RowBuilder rowBuilder = matrixCursor.newRow();
 
-                for (String key : keys) {
+                for (String key : projection) {
                     rowBuilder.add(queryResult.get(key));
                 }
             }

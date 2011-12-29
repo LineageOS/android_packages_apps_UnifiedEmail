@@ -190,6 +190,14 @@ public class UIProvider {
         ConversationColumns.HAS_ATTACHMENTS
     };
 
+    public static final int CONVERSATION_ID_COLUMN = 0;
+    public static final int CONVERSATION_MESSAGE_LIST_URI_COLUMN = 1;
+    public static final int CONVERSATION_SUBJECT_COLUMN = 2;
+    public static final int CONVERSATION_SNIPPET_COLUMN = 3;
+    public static final int CONVERSATION_SENDER_INFO_COLUMN = 4;
+    public static final int CONVERSATION_DATE_RECEIVED_MS_COLUMN = 5;
+    public static final int CONVERSATION_HAS_ATTACHMENTS_COLUMN = 6;
+
     public static final class ConversationColumns {
         /**
          * This string column contains the content provider uri to return the
