@@ -13,18 +13,18 @@ import com.android.email.ViewMode;
 
 import java.util.ArrayList;
 
-public class BrowseListActivity extends Activity {
+public class ConversationListActivity extends Activity {
 
     private ListView mListView;
     private BrowseItemAdapter mAdapter;
-    private ArrayList<BrowseItemViewModel> mTestBrowseItems = new ArrayList<BrowseItemViewModel>();
+    private ArrayList<ConversationItemViewModel> mTestBrowseItems = new ArrayList<ConversationItemViewModel>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.browse_list_activity);
-        mListView = (ListView) findViewById(R.id.browse_list);
-        mAdapter = new BrowseItemAdapter(this, R.layout.browse_item_view_normal);
-        BrowseItemViewModel itemOne = new BrowseItemViewModel();
+        setContentView(R.layout.conversation_list_activity);
+        mListView = (ListView) findViewById(R.id.conversation_list);
+        mAdapter = new BrowseItemAdapter(this, R.layout.conversation_item_view_normal);
+        ConversationItemViewModel itemOne = new ConversationItemViewModel();
         itemOne.subject = "First";
         itemOne.sendersText = "Mindy, Andy, Paul, Minh";
         itemOne.conversationId = 1;
@@ -34,7 +34,7 @@ public class BrowseListActivity extends Activity {
         itemOne.checkboxVisible = true;
         mTestBrowseItems.add(itemOne);
         mTestBrowseItems.add(itemOne);
-        BrowseItemViewModel itemTwo = new BrowseItemViewModel();
+        ConversationItemViewModel itemTwo = new ConversationItemViewModel();
         itemTwo.subject = "Second";
         itemTwo.sendersText = "Mindy, Andy, Paul, Minh";
         itemTwo.conversationId = 2;
@@ -43,7 +43,7 @@ public class BrowseListActivity extends Activity {
         itemTwo.checkboxVisible = true;
         mTestBrowseItems.add(itemTwo);
         mTestBrowseItems.add(itemTwo);
-        BrowseItemViewModel itemThree = new BrowseItemViewModel();
+        ConversationItemViewModel itemThree = new ConversationItemViewModel();
         itemThree.subject = "Third";
         itemThree.sendersText = "Mindy, Andy, Paul, Minh";
         itemThree.conversationId = 3;
@@ -52,7 +52,7 @@ public class BrowseListActivity extends Activity {
         itemThree.checkboxVisible = true;
         mTestBrowseItems.add(itemThree);
         mTestBrowseItems.add(itemThree);
-        BrowseItemViewModel itemFour = new BrowseItemViewModel();
+        ConversationItemViewModel itemFour = new ConversationItemViewModel();
         itemFour.subject = "Fourth";
         itemFour.sendersText = "Mindy, Andy, Paul, Minh";
         itemFour.conversationId = 4;
@@ -67,14 +67,14 @@ public class BrowseListActivity extends Activity {
         mListView.setAdapter(mAdapter);
     }
 
-    class BrowseItemAdapter extends ArrayAdapter<BrowseItemViewModel> {
+    class BrowseItemAdapter extends ArrayAdapter<ConversationItemViewModel> {
 
         public BrowseItemAdapter(Context context, int textViewResourceId) {
             super(context, textViewResourceId);
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            BrowseItemView view = new BrowseItemView(getContext(), "test@testaccount.com");
+            ConversationItemView view = new ConversationItemView(getContext(), "test@testaccount.com");
             view.bind(mAdapter.getItem(position), null, "test@testaccount.com", null,
                     new ViewMode(getContext()));
             return view;

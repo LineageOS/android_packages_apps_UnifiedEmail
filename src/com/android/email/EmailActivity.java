@@ -34,16 +34,16 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.android.email.EmailActivity.AccountsSpinnerAdapter;
-import com.android.email.EmailActivity.BrowseItemAdapter;
-import com.android.email.browse.BrowseItemView;
-import com.android.email.browse.BrowseItemViewModel;
+import com.android.email.EmailActivity.ConversationItemAdapter;
+import com.android.email.browse.ConversationItemView;
+import com.android.email.browse.ConversationItemViewModel;
 import com.android.email.providers.UIProvider;
 import com.android.email.providers.protos.mock.MockUiProvider;
 
 public class EmailActivity extends Activity implements OnItemSelectedListener {
 
     private ListView mListView;
-    private BrowseItemAdapter mListAdapter;
+    private ConversationItemAdapter mListAdapter;
     private Spinner mAccountsSpinner;
     private AccountsSpinnerAdapter mAccountsAdapter;
     private ContentResolver mResolver;
@@ -88,21 +88,21 @@ public class EmailActivity extends Activity implements OnItemSelectedListener {
         }
     }
 
-    class BrowseItemAdapter extends SimpleCursorAdapter {
+    class ConversationItemAdapter extends SimpleCursorAdapter {
 
-        public BrowseItemAdapter(Context context, int textViewResourceId, Cursor cursor) {
+        public ConversationItemAdapter(Context context, int textViewResourceId, Cursor cursor) {
             super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         }
 
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            BrowseItemView view = new BrowseItemView(context, "test@testaccount.com");
+            ConversationItemView view = new ConversationItemView(context, "test@testaccount.com");
             return view;
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            ((BrowseItemView) view).bind(cursor, null, "test@testaccount.com", null, new ViewMode(
-                    EmailActivity.this));
+            ((ConversationItemView) view).bind(cursor, null, "test@testaccount.com", null,
+                    new ViewMode(EmailActivity.this));
         }
     }
 
@@ -129,7 +129,8 @@ public class EmailActivity extends Activity implements OnItemSelectedListener {
             cursor = mResolver.query(conversationListUri, UIProvider.CONVERSATION_PROJECTION, null,
                     null, null);
         }
-        mListAdapter = new BrowseItemAdapter(this, R.layout.browse_item_view_normal, cursor);
+        mListAdapter = new ConversationItemAdapter(this, R.layout.conversation_item_view_normal,
+                cursor);
         mListView.setAdapter(mListAdapter);
     }
 

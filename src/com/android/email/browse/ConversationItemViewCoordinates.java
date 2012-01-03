@@ -24,7 +24,7 @@ import com.android.email.utils.Utils;
  *
  * @author phamm
  */
-public class BrowseItemViewCoordinates {
+public class ConversationItemViewCoordinates {
     // Modes.
     private static final int WIDE_MODE = 0;
     private static final int NORMAL_MODE = 1;
@@ -82,8 +82,8 @@ public class BrowseItemViewCoordinates {
     int paperclipY;
 
     // Cache to save Coordinates based on view width.
-    private static SparseArray<BrowseItemViewCoordinates> mCache =
-            new SparseArray<BrowseItemViewCoordinates>();
+    private static SparseArray<ConversationItemViewCoordinates> mCache =
+            new SparseArray<ConversationItemViewCoordinates>();
 
     private static TextPaint sPaint = new TextPaint();
 
@@ -115,9 +115,9 @@ public class BrowseItemViewCoordinates {
     private static int getLayoutId(int mode) {
         switch (mode) {
             case WIDE_MODE:
-                return R.layout.browse_item_view_wide;
+                return R.layout.conversation_item_view_wide;
             case NORMAL_MODE:
-                return R.layout.browse_item_view_normal;
+                return R.layout.conversation_item_view_normal;
             default:
                 throw new IllegalArgumentException("Unknown conversation header view mode " + mode);
         }
@@ -264,11 +264,11 @@ public class BrowseItemViewCoordinates {
      * Returns coordinates for elements inside a conversation header view given
      * the view width.
      */
-    public static BrowseItemViewCoordinates forWidth(Context context, int width, int mode,
+    public static ConversationItemViewCoordinates forWidth(Context context, int width, int mode,
             int standardScaledDimen) {
-        BrowseItemViewCoordinates coordinates = mCache.get(width ^ standardScaledDimen);
+        ConversationItemViewCoordinates coordinates = mCache.get(width ^ standardScaledDimen);
         if (coordinates == null) {
-            coordinates = new BrowseItemViewCoordinates();
+            coordinates = new ConversationItemViewCoordinates();
             mCache.put(width ^ standardScaledDimen, coordinates);
 
             // Layout the appropriate view.

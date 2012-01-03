@@ -15,7 +15,7 @@
  */
 package com.android.email.browse;
 
-import com.android.email.browse.BrowseItemViewModel.SenderFragment;
+import com.android.email.browse.ConversationItemViewModel.SenderFragment;
 import com.android.email.perf.Timer;
 import com.android.email.providers.UIProvider;
 import com.android.email.R;
@@ -58,7 +58,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import java.util.Map;
 
-public class BrowseItemView extends View {
+public class ConversationItemView extends View {
     // Timer.
     private static int sLayoutCount = 0;
     private static Timer sTimer; // Create the sTimer here if you need to do perf analysis.
@@ -121,12 +121,12 @@ public class BrowseItemView extends View {
     private boolean mTesting = false;
 
     @VisibleForTesting
-    BrowseItemViewCoordinates mCoordinates;
+    ConversationItemViewCoordinates mCoordinates;
 
     private final Context mContext;
 
     private String mAccount;
-    private BrowseItemViewModel mHeader;
+    private ConversationItemViewModel mHeader;
     private ViewMode mViewMode;
     private boolean mDownEvent;
     private boolean mChecked;
@@ -147,7 +147,7 @@ public class BrowseItemView extends View {
         public void toggleStar(boolean toggleOn, long conversationId, long maxMessageId);
     }
 
-    public BrowseItemView(Context context, String account) {
+    public ConversationItemView(Context context, String account) {
         super(context);
         mContext = context.getApplicationContext();
         mAccount = account;
@@ -202,7 +202,7 @@ public class BrowseItemView extends View {
     /**
      * Bind this view to the content of the cursor and request layout.
      */
-    public void bind(BrowseItemViewModel model, StarHandler starHandler, String account,
+    public void bind(ConversationItemViewModel model, StarHandler starHandler, String account,
             CharSequence displayedLabel, ViewMode viewMode) {
         mAccount = account;
         mViewMode = viewMode;
@@ -215,7 +215,7 @@ public class BrowseItemView extends View {
             CharSequence displayedLabel, ViewMode viewMode) {
         mAccount = account;
         mViewMode = viewMode;
-        mHeader = BrowseItemViewModel.forCursor(account, cursor);
+        mHeader = ConversationItemViewModel.forCursor(account, cursor);
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
     }
@@ -251,7 +251,7 @@ public class BrowseItemView extends View {
         if (width != mViewWidth) {
             mViewWidth = width;
             if (!mTesting) {
-                mMode = BrowseItemViewCoordinates.getMode(mContext, mViewMode);
+                mMode = ConversationItemViewCoordinates.getMode(mContext, mViewMode);
             }
         }
         mHeader.viewWidth = mViewWidth;
@@ -260,10 +260,10 @@ public class BrowseItemView extends View {
         if (mHeader.standardScaledDimen != sStandardScaledDimen) {
             // Large Text has been toggle on/off. Update the static dimens.
             sStandardScaledDimen = mHeader.standardScaledDimen;
-            BrowseItemViewCoordinates.refreshConversationHeights(mContext);
+            ConversationItemViewCoordinates.refreshConversationHeights(mContext);
             sDateBackgroundHeight = res.getDimensionPixelSize(R.dimen.date_background_height);
         }
-        mCoordinates = BrowseItemViewCoordinates.forWidth(mContext, mViewWidth, mMode,
+        mCoordinates = ConversationItemViewCoordinates.forWidth(mContext, mViewWidth, mMode,
                 mHeader.standardScaledDimen);
         calculateTextsAndBitmaps();
         calculateCoordinates();
@@ -398,7 +398,7 @@ public class BrowseItemView extends View {
         SpannableStringBuilder sendersBuilder = new SpannableStringBuilder();
         SpannableStringBuilder statusBuilder = new SpannableStringBuilder();
         Utils.getStyledSenderSnippet(mContext, mHeader.fromSnippetInstructions, sendersBuilder,
-                statusBuilder, BrowseItemViewCoordinates.getSubjectLength(mContext, mMode,
+                statusBuilder, ConversationItemViewCoordinates.getSubjectLength(mContext, mMode,
                         false, mHeader.hasAttachments), false,
                         false, mHeader.hasDraftMessage);
         mHeader.sendersText = sendersBuilder.toString();
@@ -477,7 +477,7 @@ public class BrowseItemView extends View {
 
         int cellWidth = mContext.getResources().getDimensionPixelSize(R.dimen.label_cell_width);
 
-        if (BrowseItemViewCoordinates.displayLabelsAboveDate(mMode)) {
+        if (ConversationItemViewCoordinates.displayLabelsAboveDate(mMode)) {
             mLabelsXEnd = mCoordinates.dateXEnd;
             mSendersWidth = mCoordinates.sendersWidth;
         } else {
@@ -517,7 +517,7 @@ public class BrowseItemView extends View {
 
         // Second pass to layout each fragment.
         int sendersY = mCoordinates.sendersY - mCoordinates.sendersAscent;
-        if (!BrowseItemViewCoordinates.displaySendersInline(mMode)) {
+        if (!ConversationItemViewCoordinates.displaySendersInline(mMode)) {
             sendersY += totalWidth <= mSendersWidth ? mCoordinates.sendersLineHeight / 2 : 0;
         }
         totalWidth = 0;
@@ -608,7 +608,7 @@ public class BrowseItemView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = measureWidth(widthMeasureSpec);
         int height = measureHeight(heightMeasureSpec,
-                BrowseItemViewCoordinates.getMode(mContext, mViewMode));
+                ConversationItemViewCoordinates.getMode(mContext, mViewMode));
         setMeasuredDimension(width, height);
     }
 
@@ -655,7 +655,7 @@ public class BrowseItemView extends View {
             result = specSize;
         } else {
             // Measure the text
-            result = BrowseItemViewCoordinates.getHeight(mContext, mode);
+            result = ConversationItemViewCoordinates.getHeight(mContext, mode);
             if (specMode == MeasureSpec.AT_MOST) {
                 // Respect AT_MOST value if that was what is called for by
                 // measureSpec
@@ -713,7 +713,7 @@ public class BrowseItemView extends View {
         // label.
         if (!isActivated()
                 && mHeader.hasAttachments
-                && BrowseItemViewCoordinates.showAttachmentBackground(mMode)) {
+                && ConversationItemViewCoordinates.showAttachmentBackground(mMode)) {
             mHeader.dateBackground = DATE_BACKGROUND;
             int leftOffset = (mHeader.hasAttachments ? mPaperclipX : mDateX)
                     - DATE_BACKGROUND_PADDING_LEFT;

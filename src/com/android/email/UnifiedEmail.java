@@ -16,7 +16,7 @@
 
 package com.android.email;
 
-import com.android.email.browse.BrowseListActivity;
+import com.android.email.browse.ConversationListActivity;
 import com.android.email.browse.LabelItem;
 import com.android.email.compose.ComposeActivity;
 
@@ -50,8 +50,8 @@ public class UnifiedEmail extends Activity {
     public void composeTest(View v){
         startActivityWithClass(ComposeActivity.class);
     }
-    public void browseListItemTest(View v){
-        startActivityWithClass(BrowseListActivity.class);
+    public void conversationListItemTest(View v){
+        startActivityWithClass(ConversationListActivity.class);
     }
     public void uiProviderTest(View v){
         startActivityWithClass(EmailActivity.class);

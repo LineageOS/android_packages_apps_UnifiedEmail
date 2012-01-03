@@ -17,7 +17,7 @@
 
         <activity android:name=".compose.ComposeActivity" />
         <activity android:name=".browse.LabelItem" />
-        <activity android:name=".browse.BrowseListActivity" />
+        <activity android:name=".browse.ConversationListActivity" />
         <activity android:name=".EmailActivity" />
 
         <provider android:name=".providers.protos.mock.MockUiProvider"

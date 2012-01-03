@@ -40,14 +40,14 @@ import java.util.Map;
  * information needed to layout a conversation header view. Each view model is
  * associated with a conversation and is cached to improve the relayout time.
  */
-public class BrowseItemViewModel {
+public class ConversationItemViewModel {
     private static final int MAX_CACHE_SIZE = 100;
 
     boolean faded = false;
     int fontColor;
     @VisibleForTesting
-    static LruCache<Pair<String, Long>, BrowseItemViewModel> sConversationHeaderMap
-        = new LruCache<Pair<String, Long>, BrowseItemViewModel>(MAX_CACHE_SIZE);
+    static LruCache<Pair<String, Long>, ConversationItemViewModel> sConversationHeaderMap
+        = new LruCache<Pair<String, Long>, ConversationItemViewModel>(MAX_CACHE_SIZE);
 
     // The hashcode used to detect if the conversation has changed.
     private int mDataHashCode;
@@ -113,7 +113,7 @@ public class BrowseItemViewModel {
      * @return the view model for this conversation, or null
      */
     @VisibleForTesting
-    static BrowseItemViewModel forConversationIdOrNull(
+    static ConversationItemViewModel forConversationIdOrNull(
             String account, long conversationId) {
         final Pair<String, Long> key = new Pair<String, Long>(account, conversationId);
         synchronized(sConversationHeaderMap) {
@@ -121,8 +121,8 @@ public class BrowseItemViewModel {
         }
     }
 
-    static BrowseItemViewModel forCursor(String account, Cursor cursor) {
-        BrowseItemViewModel header = new BrowseItemViewModel();
+    static ConversationItemViewModel forCursor(String account, Cursor cursor) {
+        ConversationItemViewModel header = new ConversationItemViewModel();
         if (cursor != null) {
             header.conversationId = cursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
             header.dateMs = cursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
@@ -146,20 +146,20 @@ public class BrowseItemViewModel {
      * @param cursor the cursor to use in populating/ updating the model.
      * @return the view model for this conversation
      */
-    static BrowseItemViewModel forConversationId(String account, long conversationId) {
+    static ConversationItemViewModel forConversationId(String account, long conversationId) {
         synchronized(sConversationHeaderMap) {
-            BrowseItemViewModel header =
+            ConversationItemViewModel header =
                     forConversationIdOrNull(account, conversationId);
             if (header == null) {
                 final Pair<String, Long> key = new Pair<String, Long>(account, conversationId);
-                header = new BrowseItemViewModel();
+                header = new ConversationItemViewModel();
                 sConversationHeaderMap.put(key, header);
             }
             return header;
         }
     }
 
-    public BrowseItemViewModel() {
+    public ConversationItemViewModel() {
         senderFragments = Lists.newArrayList();
     }
 
