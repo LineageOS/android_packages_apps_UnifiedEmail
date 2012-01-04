@@ -88,8 +88,12 @@ public final class MockUiProvider extends ContentProvider {
 
         Map<String, Object> conv0 = createConversationDetailsMap("zeroConv0".hashCode(),
                 "zeroConv0", 1);
+        builder.put(conv0.get(ConversationColumns.CONVERSATION_URI).toString(),
+                ImmutableList.of(conv0));
         Map<String, Object> conv1 = createConversationDetailsMap("zeroConv1".hashCode(),
                 "zeroConv1", 1);
+        builder.put(conv1.get(ConversationColumns.CONVERSATION_URI).toString(),
+                ImmutableList.of(conv1));
         builder.put(folderDetailsMap0.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
                 ImmutableList.of(conv0, conv1));
 
@@ -117,8 +121,12 @@ public final class MockUiProvider extends ContentProvider {
 
         Map<String, Object> conv2 = createConversationDetailsMap("zeroConv2".hashCode(),
                 "zeroConv2", 0);
+        builder.put(conv2.get(ConversationColumns.CONVERSATION_URI).toString(),
+                ImmutableList.of(conv2));
         Map<String, Object> conv3 = createConversationDetailsMap("zeroConv3".hashCode(),
                 "zeroConv3", 0);
+        builder.put(conv3.get(ConversationColumns.CONVERSATION_URI).toString(),
+                ImmutableList.of(conv3));
         builder.put(folderDetailsMap2.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
                 ImmutableList.of(conv2, conv3));
 
@@ -139,6 +147,7 @@ public final class MockUiProvider extends ContentProvider {
         final String conversationUri = "content://" + AUTHORITY + "/conversation/" + conversationId;
         Map<String, Object> conversationMap = Maps.newHashMap();
         conversationMap.put(BaseColumns._ID, Long.valueOf(conversationId));
+        conversationMap.put(ConversationColumns.CONVERSATION_URI, conversationUri);
         conversationMap.put(ConversationColumns.MESSAGE_LIST_URI, conversationUri + "/getMessages");
         conversationMap.put(ConversationColumns.SUBJECT, "Conversation " + subject);
         conversationMap.put(ConversationColumns.SNIPPET, "snippet");

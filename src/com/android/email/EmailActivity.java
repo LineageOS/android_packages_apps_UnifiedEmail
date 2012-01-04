@@ -16,6 +16,7 @@
  */
 package com.android.email;
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -26,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -38,21 +40,24 @@ import com.android.email.EmailActivity.AccountsSpinnerAdapter;
 import com.android.email.EmailActivity.ConversationItemAdapter;
 import com.android.email.browse.ConversationItemView;
 import com.android.email.browse.ConversationItemViewModel;
+import com.android.email.browse.ConversationViewActivity;
 import com.android.email.providers.UIProvider;
 import com.android.email.providers.protos.mock.MockUiProvider;
 
-public class EmailActivity extends Activity implements OnItemSelectedListener {
+public class EmailActivity extends Activity implements OnItemSelectedListener, OnItemClickListener {
 
     private ListView mListView;
     private ConversationItemAdapter mListAdapter;
     private Spinner mAccountsSpinner;
     private AccountsSpinnerAdapter mAccountsAdapter;
     private ContentResolver mResolver;
+    private String mSelectedAccount;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.email);
         mListView = (ListView) findViewById(R.id.browse_list);
+        mListView.setOnItemClickListener(this);
         mAccountsSpinner = (Spinner) findViewById(R.id.accounts_spinner);
         mResolver = getContentResolver();
         Cursor cursor = mResolver.query(MockUiProvider.getAccountsUri(),
@@ -114,6 +119,7 @@ public class EmailActivity extends Activity implements OnItemSelectedListener {
         if (cursor != null && cursor.moveToPosition(position)) {
             int uriCol = cursor.getColumnIndex(UIProvider.AccountColumns.FOLDER_LIST_URI);
             foldersUri = Uri.parse(cursor.getString(uriCol));
+            mSelectedAccount = cursor.getString(UIProvider.ACCOUNT_NAME_COLUMN);
             cursor.close();
         }
         Uri conversationListUri = null;
@@ -137,5 +143,12 @@ public class EmailActivity extends Activity implements OnItemSelectedListener {
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Cursor cursor = (Cursor) mListAdapter.getItem(position);
+        ConversationViewActivity.viewConversation(this,
+                cursor.getString(UIProvider.CONVERSATION_URI_COLUMN), mSelectedAccount);
     }
 }
