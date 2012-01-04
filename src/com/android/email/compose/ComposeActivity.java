@@ -21,6 +21,11 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.util.Rfc822Tokenizer;
 import android.view.Menu;
@@ -29,15 +34,37 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.common.Rfc822Validator;
+import com.android.email.providers.UIProvider;
 import com.android.email.providers.protos.Attachment;
 import com.android.email.providers.protos.mock.MockAttachment;
 import com.android.email.R;
 import com.android.email.utils.MimeType;
+import com.android.email.utils.Utils;
 import com.android.ex.chips.RecipientEditTextView;
 
 public class ComposeActivity extends Activity implements OnClickListener {
+    // Identifiers for which type of composition this is
+    static final int COMPOSE = -1;  // also used for editing a draft
+    static final int REPLY = 0;
+    static final int REPLY_ALL = 1;
+    static final int FORWARD = 2;
+
+    // Integer extra holding one of the above compose action
+    private static final String EXTRA_ACTION = "action";
+
+    /**
+     * Notifies the {@code Activity} that the caller is an Email
+     * {@code Activity}, so that the back behavior may be modified accordingly.
+     *
+     * @see #onAppUpPressed
+     */
+    private static final String EXTRA_FROM_EMAIL_TASK = "fromemail";
+
+    //  If this is a reply/forward then this extra will hold the original message uri
+    private static final String EXTRA_IN_REFERENCE_TO_MESSAGE_URI = "in-reference-to-uri";
 
     private RecipientEditTextView mTo;
     private RecipientEditTextView mCc;
@@ -47,6 +74,45 @@ public class ComposeActivity extends Activity implements OnClickListener {
     private AttachmentsView mAttachmentsView;
     private String mAccount;
     private Rfc822Validator mRecipientValidator;
+    private Uri mRefMessageUri;
+    private TextView mSubject;
+
+    /**
+     * Can be called from a non-UI thread.
+     */
+    public static void compose(Context launcher, String account) {
+        launch(launcher, account, null, COMPOSE);
+    }
+
+    /**
+     * Can be called from a non-UI thread.
+     */
+    public static void reply(Context launcher, String account, String uri) {
+        launch(launcher, account, uri, REPLY);
+    }
+
+    /**
+     * Can be called from a non-UI thread.
+     */
+    public static void replyAll(Context launcher, String account, String uri) {
+        launch(launcher, account, uri, REPLY_ALL);
+    }
+
+    /**
+     * Can be called from a non-UI thread.
+     */
+    public static void forward(Context launcher, String account, String uri) {
+        launch(launcher, account, uri, FORWARD);
+    }
+
+    private static void launch(Context launcher, String account, String uri, int action) {
+        Intent intent = new Intent(launcher, ComposeActivity.class);
+        intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
+        intent.putExtra(EXTRA_ACTION, action);
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account);
+        intent.putExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI, uri);
+        launcher.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +128,23 @@ public class ComposeActivity extends Activity implements OnClickListener {
         mTo = setupRecipients(R.id.to);
         mCc = setupRecipients(R.id.cc);
         mBcc = setupRecipients(R.id.bcc);
+        mSubject = (TextView) findViewById(R.id.subject);
+        Intent intent = getIntent();
+        int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
+        if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
+            mRefMessageUri = Uri.parse(intent.getStringExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI));
+            initFromRefMessage();
+        }
+    }
+
+    private void initFromRefMessage() {
+        ContentResolver resolver = getContentResolver();
+        Cursor refMessage = resolver.query(mRefMessageUri, UIProvider.MESSAGE_PROJECTION, null,
+                null, null);
+        if (refMessage != null) {
+            refMessage.moveToFirst();
+            mSubject.setText(refMessage.getString(UIProvider.MESSAGE_SUBJECT_COLUMN));
+        }
     }
 
     private RecipientEditTextView setupRecipients(int id) {

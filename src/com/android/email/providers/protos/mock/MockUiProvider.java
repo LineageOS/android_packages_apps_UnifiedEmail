@@ -74,13 +74,15 @@ public final class MockUiProvider extends ContentProvider {
         Map<String, Object> accountDetailsMap2 = createAccountDetailsMap(1);
         accountList.add(accountDetailsMap2);
 
-        String accountUri2 = (String)accountDetailsMap2.get(AccountColumns.URI);
+        String accountUri2 = (String) accountDetailsMap2.get(AccountColumns.URI);
         builder.put(accountUri2, ImmutableList.of(accountDetailsMap2));
 
         // Add the account list to the builder
         builder.put(getAccountsUri().toString(), accountList);
 
         Map<String, Object> folderDetailsMap0 = createFolderDetailsMap(0, "zero", true);
+        builder.put(folderDetailsMap0.get(FolderColumns.URI).toString(),
+                ImmutableList.of(folderDetailsMap0));
         builder.put(
                 folderDetailsMap0.get(FolderColumns.CHILD_FOLDERS_LIST_URI).toString(),
                 ImmutableList.of(createFolderDetailsMap(10, "zeroChild0"),
@@ -88,54 +90,67 @@ public final class MockUiProvider extends ContentProvider {
 
         Map<String, Object> conv0 = createConversationDetailsMap("zeroConv0".hashCode(),
                 "zeroConv0", 1);
-        builder.put(conv0.get(ConversationColumns.CONVERSATION_URI).toString(),
+        builder.put(conv0.get(ConversationColumns.URI).toString(),
                 ImmutableList.of(conv0));
         Map<String, Object> conv1 = createConversationDetailsMap("zeroConv1".hashCode(),
                 "zeroConv1", 1);
-        builder.put(conv1.get(ConversationColumns.CONVERSATION_URI).toString(),
+        builder.put(conv1.get(ConversationColumns.URI).toString(),
                 ImmutableList.of(conv1));
         builder.put(folderDetailsMap0.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
                 ImmutableList.of(conv0, conv1));
 
         Map<String, Object> message0 = createMessageDetailsMap("zeroConv0".hashCode(), "zeroConv0",
                 1);
+        builder.put(message0.get(MessageColumns.URI).toString(), ImmutableList.of(message0));
         builder.put(conv0.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message0));
         builder.put(message0.get(MessageColumns.ATTACHMENT_LIST_URI).toString(),
                 ImmutableList.of(createAttachmentDetailsMap(0, "zero")));
         Map<String, Object> message1 = createMessageDetailsMap("zeroConv1".hashCode(), "zeroConv1",
                 1);
+        builder.put(message1.get(MessageColumns.URI).toString(), ImmutableList.of(message1));
+        Map<String, Object> message1a = createMessageDetailsMap("zeroConv1a".hashCode(), "zeroConv1a",
+                2);
+        builder.put(message1a.get(MessageColumns.URI).toString(), ImmutableList.of(message1a));
         builder.put(conv1.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
-                ImmutableList.of(message1));
+                ImmutableList.of(message1, message1a));
         builder.put(message1.get(MessageColumns.ATTACHMENT_LIST_URI).toString(),
                 ImmutableList.of(createAttachmentDetailsMap(1, "one")));
 
         Map<String, Object> folderDetailsMap1 = createFolderDetailsMap(1, "one");
+        builder.put(folderDetailsMap1.get(FolderColumns.URI).toString(),
+                ImmutableList.of(folderDetailsMap1));
         builder.put(accountDetailsMap1.get(AccountColumns.FOLDER_LIST_URI).toString(),
                 ImmutableList.of(folderDetailsMap0, folderDetailsMap1));
 
         Map<String, Object> folderDetailsMap2 = createFolderDetailsMap(2, "two");
+        builder.put(folderDetailsMap2.get(FolderColumns.URI).toString(),
+                ImmutableList.of(folderDetailsMap2));
         Map<String, Object> folderDetailsMap3 = createFolderDetailsMap(3, "three");
+        builder.put(folderDetailsMap3.get(FolderColumns.URI).toString(),
+                ImmutableList.of(folderDetailsMap3));
         builder.put(accountDetailsMap2.get(AccountColumns.FOLDER_LIST_URI).toString(),
                 ImmutableList.of(folderDetailsMap2, folderDetailsMap3));
 
         Map<String, Object> conv2 = createConversationDetailsMap("zeroConv2".hashCode(),
                 "zeroConv2", 0);
-        builder.put(conv2.get(ConversationColumns.CONVERSATION_URI).toString(),
+        builder.put(conv2.get(ConversationColumns.URI).toString(),
                 ImmutableList.of(conv2));
         Map<String, Object> conv3 = createConversationDetailsMap("zeroConv3".hashCode(),
                 "zeroConv3", 0);
-        builder.put(conv3.get(ConversationColumns.CONVERSATION_URI).toString(),
+        builder.put(conv3.get(ConversationColumns.URI).toString(),
                 ImmutableList.of(conv3));
         builder.put(folderDetailsMap2.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
                 ImmutableList.of(conv2, conv3));
 
         Map<String, Object> message2 = createMessageDetailsMap("zeroConv2".hashCode(), "zeroConv2",
                 0);
+        builder.put(message2.get(MessageColumns.URI).toString(), ImmutableList.of(message2));
         builder.put(conv2.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message2));
         Map<String, Object> message3 = createMessageDetailsMap("zeroConv3".hashCode(), "zeroConv3",
                 0);
+        builder.put(message3.get(MessageColumns.URI).toString(), ImmutableList.of(message3));
         builder.put(conv3.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message3));
 
@@ -147,7 +162,7 @@ public final class MockUiProvider extends ContentProvider {
         final String conversationUri = "content://" + AUTHORITY + "/conversation/" + conversationId;
         Map<String, Object> conversationMap = Maps.newHashMap();
         conversationMap.put(BaseColumns._ID, Long.valueOf(conversationId));
-        conversationMap.put(ConversationColumns.CONVERSATION_URI, conversationUri);
+        conversationMap.put(ConversationColumns.URI, conversationUri);
         conversationMap.put(ConversationColumns.MESSAGE_LIST_URI, conversationUri + "/getMessages");
         conversationMap.put(ConversationColumns.SUBJECT, "Conversation " + subject);
         conversationMap.put(ConversationColumns.SNIPPET, "snippet");
@@ -162,7 +177,9 @@ public final class MockUiProvider extends ContentProvider {
         final String messageUri = "content://" + AUTHORITY + "/message/" + messageId;
         Map<String, Object> messageMap = Maps.newHashMap();
         messageMap.put(BaseColumns._ID, Long.valueOf(messageId));
+        messageMap.put(MessageColumns.URI, messageUri);
         messageMap.put(MessageColumns.SUBJECT, "Message " + subject);
+        messageMap.put(MessageColumns.SNIPPET, "SNIPPET");
         messageMap.put(MessageColumns.HAS_ATTACHMENTS, hasAttachments);
         messageMap.put(MessageColumns.ATTACHMENT_LIST_URI, messageUri + "/getAttachments");
         return messageMap;
@@ -184,6 +201,7 @@ public final class MockUiProvider extends ContentProvider {
         final String folderUri = "content://" + AUTHORITY + "/folder/" + folderId;
         Map<String, Object> folderMap = Maps.newHashMap();
         folderMap.put(BaseColumns._ID, Long.valueOf(folderId));
+        folderMap.put(FolderColumns.URI, folderUri);
         folderMap.put(FolderColumns.NAME, "Folder " + name);
         folderMap.put(FolderColumns.HAS_CHILDREN, new Integer(hasChildren ? 1 : 0));
         folderMap.put(FolderColumns.CONVERSATION_LIST_URI, folderUri + "/getConversations");

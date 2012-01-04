@@ -73,7 +73,7 @@ public class UIProvider {
         /**
          * This string column contains the uri to directly access the information for this account.
          */
-        public static final String URI = "uri";
+        public static final String URI = "accountUri";
 
         /**
          * This integer column contains a bit field of the possible cabibilities that this account
@@ -121,6 +121,7 @@ public class UIProvider {
 
     public static final String[] FOLDERS_PROJECTION = {
         BaseColumns._ID,
+        FolderColumns.URI,
         FolderColumns.NAME,
         FolderColumns.HAS_CHILDREN,
         FolderColumns.CAPABILITIES,
@@ -138,6 +139,7 @@ public class UIProvider {
     }
 
     public static final class FolderColumns {
+        public static String URI = "folderUri";
         /**
          * This string column contains the human visible name for the folder.
          */
@@ -182,7 +184,7 @@ public class UIProvider {
 
     public static final String[] CONVERSATION_PROJECTION = {
         BaseColumns._ID,
-        ConversationColumns.CONVERSATION_URI,
+        ConversationColumns.URI,
         ConversationColumns.MESSAGE_LIST_URI,
         ConversationColumns.SUBJECT,
         ConversationColumns.SNIPPET,
@@ -203,7 +205,7 @@ public class UIProvider {
     public static final int CONVERSATION_HAS_ATTACHMENTS_COLUMN = 7;
 
     public static final class ConversationColumns {
-        public static final String CONVERSATION_URI = "conversationUri";
+        public static final String URI = "conversationUri";
         /**
          * This string column contains the content provider uri to return the
          * list of messages for this conversation.
@@ -260,7 +262,6 @@ public class UIProvider {
     public static final String[] MESSAGE_PROJECTION = {
         BaseColumns._ID,
         MessageColumns.URI,
-        MessageColumns.MESSAGE_ID,
         MessageColumns.CONVERSATION_ID,
         MessageColumns.SUBJECT,
         MessageColumns.SNIPPET,
@@ -288,6 +289,12 @@ public class UIProvider {
     public static final String MESSAGE_TYPE =
             "vnd.android.cursor.item/vnd.com.android.mail.message";
 
+    public static final int MESSAGE_ID_COLUMN = 0;
+    public static final int MESSAGE_URI_COLUMN = 1;
+    public static final int MESSAGE_CONVERSATION_ID_COLUMN = 2;
+    public static final int MESSAGE_SUBJECT_COLUMN = 3;
+    public static final int MESSAGE_SNIPPET_COLUMN = 4;
+
     public static final class MessageFlags {
         public static final int SYNCABLE = 0x0001;
         public static final int PARENT = 0x0002;
@@ -296,8 +303,7 @@ public class UIProvider {
     }
 
     public static final class MessageColumns {
-        public static final String URI = "uri";
-        public static final String MESSAGE_ID = "messageId";
+        public static final String URI = "messageUri";
         public static final String CONVERSATION_ID = "conversationId";
         public static final String SUBJECT = "subject";
         public static final String SNIPPET = "snippet";
@@ -319,7 +325,6 @@ public class UIProvider {
         public static final String HAS_ATTACHMENTS = "hasAttachments";
         public static final String ATTACHMENT_LIST_URI = "attachmentListUri";
         public static final String MESSAGE_FLAGS = "messagesFlags";
-        // TODO: Add attachments, flags
 
         private MessageColumns() {}
     }

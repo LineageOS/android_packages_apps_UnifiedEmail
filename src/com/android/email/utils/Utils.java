@@ -58,6 +58,8 @@ public class Utils {
     private static final Pattern DATE_CLEANUP_PATTERN_WRONG_TIMEZONE =
             Pattern.compile("GMT([-+]\\d{4})$");
 
+    public static final String EXTRA_ACCOUNT = "account";
+
      /**
       * Sets WebView in a restricted mode suitable for email use.
       * @param webView The WebView to restrict

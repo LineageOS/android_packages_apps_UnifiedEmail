@@ -17,8 +17,9 @@
 package com.android.email.browse;
 
 import com.android.email.R;
+import com.android.email.ViewMode;
 import com.android.email.providers.UIProvider;
-import com.android.email.providers.protos.mock.MockUiProvider;
+import com.android.email.utils.Utils;
 
 import android.accounts.Account;
 import android.app.Activity;
@@ -28,27 +29,30 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class ConversationViewActivity extends Activity {
 
     private static final String EXTRA_CONVERSATION_LOOKUP = "conversationUri";
-    private static final String EXTRA_ACCOUNT = "account";
 
     private Uri mLookupUri;
     private ContentResolver mResolver;
     private Cursor mConversationCursor;
+    private Cursor mMessageCursor;
     private TextView mSubject;
+    private ListView mMessageList;
 
     public static void viewConversation(Context context, String uri, String account) {
         Intent intent = new Intent(context, ConversationViewActivity.class);
 
         intent.putExtra(EXTRA_CONVERSATION_LOOKUP, uri);
-        intent.putExtra(EXTRA_ACCOUNT, account);
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account);
         context.startActivity(intent);
     }
 
@@ -65,11 +69,32 @@ public class ConversationViewActivity extends Activity {
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mSubject = (TextView) findViewById(R.id.subject);
+        mMessageList = (ListView) findViewById(R.id.message_list);
         mConversationCursor = mResolver.query(mLookupUri, UIProvider.CONVERSATION_PROJECTION, null,
                 null, null);
         if (mConversationCursor != null) {
             mConversationCursor.moveToFirst();
             mSubject.setText(mConversationCursor.getString(UIProvider.CONVERSATION_SUBJECT_COLUMN));
+            mMessageCursor = mResolver.query(Uri.parse(mConversationCursor
+                    .getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN)),
+                    UIProvider.MESSAGE_PROJECTION, null, null, null);
+            mMessageList.setAdapter(new MessageListAdapter(this, mMessageCursor));
+        }
+    }
+
+    class MessageListAdapter extends SimpleCursorAdapter {
+        public MessageListAdapter(Context context, Cursor cursor) {
+            super(context, R.layout.message_list_item, cursor, UIProvider.MESSAGE_PROJECTION,
+                    new int[0], 0);
+        }
+
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+            return getLayoutInflater().inflate(R.layout.message_list_item, null);
+        }
+
+        public void bindView(View view, Context context, Cursor cursor) {
+            super.bindView(view, context, cursor);
+            ((MessageItemView)view).bind(cursor);
         }
     }
 }
