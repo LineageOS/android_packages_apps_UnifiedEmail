@@ -35,12 +35,24 @@ public class ViewMode {
     // Key used to save this {@link ViewMode}.
     private static final String VIEW_MODE_KEY = "view-mode";
 
-    public static final int MODE_UNKNOWN = 0;
-    public static final int MODE_LABEL_LIST = 1;
-    public static final int MODE_CONVERSATION_LIST = 2;
-    public static final int MODE_CONVERSATION = 3;
+    // Do not change the order of the values in the enum. The ordinal position is used in a
+    // saved instance bundle. When adding values, add them to the end of the enum.
+    enum Mode {
+        MODE_UNKNOWN,
+        MODE_LABEL_LIST,
+        MODE_CONVERSATION_LIST,
+        MODE_CONVERSATION,
+        MODE_SEARCH_RESULTS,
+    }
 
-    private int mMode = MODE_UNKNOWN;
+    // Handy names for external users of this class.
+    public static Mode UNKNOWN = Mode.MODE_UNKNOWN;
+    public static Mode LABEL_LIST = Mode.MODE_LABEL_LIST;
+    public static Mode CONVERSATION_LIST = Mode.MODE_CONVERSATION_LIST;
+    public static Mode CONVERSATION = Mode.MODE_CONVERSATION;
+    public static Mode SEARCH_RESULTS = Mode.MODE_SEARCH_RESULTS;
+
+    private Mode mMode = UNKNOWN;
     private final boolean mTwoPane;
     private final ArrayList<ModeChangeListener> mListeners = Lists.newArrayList();
 
@@ -53,7 +65,7 @@ public class ViewMode {
      * @return Whether or not a change occured.
      */
     public boolean transitionToConversationMode() {
-        return setModeInternal(MODE_CONVERSATION);
+        return setModeInternal(CONVERSATION);
     }
 
     /**
@@ -61,7 +73,7 @@ public class ViewMode {
      * @return Whether or not a change occured.
      */
     public boolean transitionToConversationListMode() {
-        return setModeInternal(MODE_CONVERSATION_LIST);
+        return setModeInternal(CONVERSATION_LIST);
     }
 
     /**
@@ -69,14 +81,14 @@ public class ViewMode {
      * @return Whether or not a change occured.
      */
     public boolean transitionToLabelListMode() {
-        return setModeInternal(MODE_LABEL_LIST);
+        return setModeInternal(LABEL_LIST);
     }
 
     /**
      * Sets the internal mode.
      * @return Whether or not a change occured.
      */
-    private boolean setModeInternal(int mode) {
+    private boolean setModeInternal(Mode mode) {
         if (mMode == mode) {
             return false;
         }
@@ -89,7 +101,7 @@ public class ViewMode {
     /**
      * @return The current mode.
      */
-    public int getMode() {
+    public Mode getMode() {
         return mMode;
     }
 
@@ -101,23 +113,23 @@ public class ViewMode {
     }
 
     public boolean isConversationMode() {
-        return mMode == MODE_CONVERSATION;
+        return mMode == CONVERSATION;
     }
 
     public boolean isConversationListMode() {
-        return mMode == MODE_CONVERSATION_LIST;
+        return mMode == CONVERSATION_LIST;
     }
 
     public boolean isLabelListMode() {
-        return mMode == MODE_LABEL_LIST;
+        return mMode == LABEL_LIST;
     }
 
     public void handleSaveInstanceState(Bundle outState) {
-        outState.putInt(VIEW_MODE_KEY, mMode);
+        outState.putInt(VIEW_MODE_KEY, mMode.ordinal());
     }
 
     public void handleRestore(Bundle inState) {
-        int mode = inState.getInt(VIEW_MODE_KEY, MODE_UNKNOWN);
+        Mode mode = Mode.values()[inState.getInt(VIEW_MODE_KEY, UNKNOWN.ordinal())];
         setModeInternal(mode);
     }
 
