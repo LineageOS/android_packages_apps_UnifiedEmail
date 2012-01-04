@@ -16,43 +16,43 @@
      limitations under the License.
 -->
 
-<!-- View shown in the navigation spinner in the actionbar.  -->
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/AccountSwitchSpinnerItem"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
     android:paddingLeft="0dip"
     android:layout_marginLeft="0dip">
 
-    <TextView
-        android:id="@+id/unread"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="4dp"
-        style="@style/UnreadCountActionBar" />
-
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/spinner"
+            style="?android:attr/actionDropDownStyle"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:gravity="center_vertical"
-            android:layout_toLeftOf="@id/unread">
+            android:gravity="center_vertical">
             <TextView
-                android:id="@+id/account_spinner_label"
-                style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title.Inverse"
+                android:id="@+id/label"
+                style="@style/AccountSpinnerAnchorTextPrimary"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:includeFontPadding="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
-                android:id="@+id/account_spinner_account_name"
-                style="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle.Inverse"
-                android:textColor="@color/actionbar_secondary"
+                android:id="@+id/name"
+                style="@style/AccountSpinnerAnchorTextSecondary"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:includeFontPadding="false"
                 android:layout_marginRight="4dp"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
+
+    <TextView
+        android:id="@+id/unread"
+        android:layout_marginLeft="24dp"
+        style="@style/UnreadCountActionBar" />
+        android:layout_toRightOf="@id/spinner_frame" />
+
 </RelativeLayout>

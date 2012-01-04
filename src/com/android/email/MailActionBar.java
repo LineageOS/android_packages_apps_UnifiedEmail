@@ -191,7 +191,6 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         // Set the mode to Navigation mode
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         mSpinner = new AccountSpinnerAdapter(getContext());
-
         mActionBar.setListNavigationCallbacks(mSpinner, this);
     }
 

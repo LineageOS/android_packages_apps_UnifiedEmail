@@ -15,6 +15,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+
+<!-- View shown for each entry in the dropdown list from the navigation spinner in the
+     actionbar. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="?android:attr/spinnerDropDownItemStyle"
     android:layout_width="match_parent"

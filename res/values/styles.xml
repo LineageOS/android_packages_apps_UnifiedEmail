@@ -157,14 +157,11 @@
 
     <style name="AccountSpinnerDropdownTextPrimary">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-    </style>
+        </style>
 
     <style name="AccountSpinnerDropdownTextSecondary">
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-        <item name="android:textColor">@android:color/black</item>
-    </style>
-
-    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/actionbar_secondary</item>
     </style>
 
     <style name="AccountSpinnerAnchorTextSecondary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">

@@ -22,9 +22,10 @@ import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-
 
 /**
  * An adapter to return the list of accounts and labels for the Account Spinner.
@@ -33,63 +34,73 @@ import android.widget.TextView;
  * @author viki@google.com (Vikram Aggarwal)
  *
  */
-public class AccountSpinnerAdapter implements SpinnerAdapter {
-    private String labels[];
-    private Integer unread_counts[];
+public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
+    private String mLabels[];
+    private Integer mUnreadCounts[];
     private LayoutInflater mInflater;
+    private String mCurrentAccount;
 
     /**
-     * A single view object consists of a text label and an unread count.
-     * @author viki@google.com (Vikram Aggarwal)
+     * When the user selects the spinner, a dropdown list of objects is shown. Each item in the
+     * dropdown list has two textviews.
      */
-    private static class ViewHolder {
+    private static class DropdownHolder {
         TextView label;
         TextView unread_count;
     }
 
-    public AccountSpinnerAdapter(Context context){
-        mInflater = LayoutInflater.from(context);
-        labels = new String[3];
-        labels[0] = "Inbox";
-        labels[1] = "Outbox";
-        labels[2] = "Drafts";
-        unread_counts = new Integer[3];
-        unread_counts[0] = 13;
-        unread_counts[1] = 1;
-        unread_counts[2] = 0;
+    /**
+     * The first dropdown item is a header.
+     */
+    private static class HeaderHolder {
+        TextView account;
     }
 
-    /* (non-Javadoc)
-     * @see android.widget.Adapter#getCount()
+    /**
+     * The spinner shows the name of the label, the account name, and the unread count.
      */
+    private static class ViewHolder {
+        TextView label;
+        TextView account;
+        TextView unread_count;
+    }
+
+    public AccountSpinnerAdapter(Context context) {
+        mInflater = LayoutInflater.from(context);
+        // Fake data.
+        mLabels = new String[3];
+        mLabels[0] = "Inbox";
+        mLabels[1] = "Outbox";
+        mLabels[2] = "Drafts";
+        mUnreadCounts = new Integer[3];
+        mUnreadCounts[0] = 13;
+        mUnreadCounts[1] = 1;
+        mUnreadCounts[2] = 0;
+        mCurrentAccount = "test@android.com";
+    }
+
     @Override
     public int getCount() {
-        return labels.length;
+        // All the labels, plus one header.
+        return mLabels.length + 1;
     }
 
-    /* (non-Javadoc)
-     * @see android.widget.Adapter#getItem(int)
-     */
     @Override
     public Object getItem(int position) {
-        // The item data is the name of the label.
-        return labels[position];
+        return mLabels[position - 1];
     }
 
-    /* (non-Javadoc)
-     * @see android.widget.Adapter#getItemId(int)
-     */
     @Override
     public long getItemId(int position) {
         // We use the position as the ID
         return position;
     }
 
-    /* (non-Javadoc)
-     * @see android.widget.Adapter#getItemViewType(int)
-     */
     @Override
     public int getItemViewType(int position) {
+        if (position == 0) {
+            return AdapterView.ITEM_VIEW_TYPE_HEADER_OR_FOOTER;
+        }
         // If there are a variety of views, this returns the kind of view that the position
         // represents. So if there are two views, and you have view types 0, and 1, then this
         // method returns which view type the 'position' represents.
@@ -98,40 +109,44 @@ public class AccountSpinnerAdapter implements SpinnerAdapter {
         return 0;
     }
 
-    /* (non-Javadoc)
-     * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
-     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        if (position == 0) {
+            // We can never select the header, and we want the default view to be the Inbox.
+            return getView(1, convertView, parent);
+        }
+        // Return a view with the label on the first line and the account name on the second.
         ViewHolder holder;
-        if (convertView == null){
-            convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.account_switch_spinner_item, null);
             holder = new ViewHolder();
-            holder.label = (TextView) convertView.findViewById(R.id.account_spinner_accountname);
+            holder.account =
+                    (TextView) convertView.findViewById(R.id.account_spinner_account_name);
+            holder.label =
+                    (TextView) convertView.findViewById(R.id.account_spinner_label);
             holder.unread_count =
-                    (TextView) convertView.findViewById(R.id.account_spinner_unread_count);
+                    (TextView) convertView.findViewById(R.id.unread);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-        holder.label.setText(labels[position]);
-        holder.unread_count.setText(unread_counts[position].toString());
+        holder.label.setText(mLabels[position - 1]);
+        holder.account.setText(mCurrentAccount);
+        holder.unread_count.setText(mUnreadCounts[position - 1].toString());
+        if (mUnreadCounts[position - 1] == 0) {
+            holder.unread_count.setVisibility(View.GONE);
+        } else {
+            holder.unread_count.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
 
-    /* (non-Javadoc)
-     * @see android.widget.Adapter#getViewTypeCount()
-     */
     @Override
     public int getViewTypeCount() {
-        // We always show the same view
-        return 1;
+        // One view, and one header
+        return 2;
     }
 
-    /* (non-Javadoc)
-     * @see android.widget.Adapter#hasStableIds()
-     */
     @Override
     public boolean hasStableIds() {
         // The data generated is static for now, the IDs are stable. However, in the future this
@@ -139,38 +154,74 @@ public class AccountSpinnerAdapter implements SpinnerAdapter {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see android.widget.Adapter#isEmpty()
-     */
     @Override
     public boolean isEmpty() {
         // Will always contain something.
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see android.widget.Adapter#registerDataSetObserver(android.database.DataSetObserver)
-     */
     @Override
     public void registerDataSetObserver(DataSetObserver observer) {
         // Don't do anything for now, since the data is mocked.
     }
 
-    /* (non-Javadoc)
-     * @see android.widget.Adapter#unregisterDataSetObserver(android.database.DataSetObserver)
-     */
     @Override
     public void unregisterDataSetObserver(DataSetObserver observer) {
         // Don't do anything for now, since the data is mocked.
     }
 
-    /* (non-Javadoc)
-     * @see
-     * android.widget.SpinnerAdapter#getDropDownView(int, android.view.View, android.view.ViewGroup)
-     */
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        // Return the same view as the items for now.
-        return getView(position, convertView, parent);
+        // At the top, we show a header. This is a special view.
+        if (position == 0) {
+            HeaderHolder holder;
+            if (convertView == null ||
+                    !(convertView.getTag() instanceof HeaderHolder)) {
+                convertView =
+                        mInflater.inflate(R.layout.account_switch_spinner_dropdown_header, null);
+                holder = new HeaderHolder();
+                holder.account =
+                        (TextView) convertView.findViewById(R.id.account_spinner_header_account);
+                convertView.setTag(holder);
+            } else {
+                holder = (HeaderHolder) convertView.getTag();
+            }
+            holder.account.setText(mCurrentAccount);
+            return convertView;
+        }
+
+        DropdownHolder holder;
+        if (convertView == null ||
+                !(convertView.getTag() instanceof DropdownHolder)) {
+            convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
+            holder = new DropdownHolder();
+            holder.label = (TextView) convertView.findViewById(R.id.account_spinner_accountname);
+            holder.unread_count =
+                    (TextView) convertView.findViewById(R.id.account_spinner_unread_count);
+            convertView.setTag(holder);
+        } else {
+            holder = (DropdownHolder) convertView.getTag();
+        }
+
+        holder.label.setText(mLabels[position - 1]);
+        holder.unread_count.setText(mUnreadCounts[position - 1].toString());
+        if (mUnreadCounts[position - 1] == 0) {
+            holder.unread_count.setVisibility(View.GONE);
+        } else {
+            holder.unread_count.setVisibility(View.VISIBLE);
+        }
+        return convertView;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        // Don't want the user selecting the header.
+        return position != 0;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        // The header is the only non-enabled item.
+        return false;
     }
 }
