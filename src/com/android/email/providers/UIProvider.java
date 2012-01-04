@@ -182,6 +182,7 @@ public class UIProvider {
 
     public static final String[] CONVERSATION_PROJECTION = {
         BaseColumns._ID,
+        ConversationColumns.CONVERSATION_URI,
         ConversationColumns.MESSAGE_LIST_URI,
         ConversationColumns.SUBJECT,
         ConversationColumns.SNIPPET,
@@ -193,14 +194,16 @@ public class UIProvider {
     // These column indexes only work when the caller uses the
     // default CONVERSATION_PROJECTION defined above.
     public static final int CONVERSATION_ID_COLUMN = 0;
-    public static final int CONVERSATION_MESSAGE_LIST_URI_COLUMN = 1;
-    public static final int CONVERSATION_SUBJECT_COLUMN = 2;
-    public static final int CONVERSATION_SNIPPET_COLUMN = 3;
-    public static final int CONVERSATION_SENDER_INFO_COLUMN = 4;
-    public static final int CONVERSATION_DATE_RECEIVED_MS_COLUMN = 5;
-    public static final int CONVERSATION_HAS_ATTACHMENTS_COLUMN = 6;
+    public static final int CONVERSATION_URI_COLUMN = 1;
+    public static final int CONVERSATION_MESSAGE_LIST_URI_COLUMN = 2;
+    public static final int CONVERSATION_SUBJECT_COLUMN = 3;
+    public static final int CONVERSATION_SNIPPET_COLUMN = 4;
+    public static final int CONVERSATION_SENDER_INFO_COLUMN = 5;
+    public static final int CONVERSATION_DATE_RECEIVED_MS_COLUMN = 6;
+    public static final int CONVERSATION_HAS_ATTACHMENTS_COLUMN = 7;
 
     public static final class ConversationColumns {
+        public static final String CONVERSATION_URI = "conversationUri";
         /**
          * This string column contains the content provider uri to return the
          * list of messages for this conversation.
@@ -336,6 +339,8 @@ public class UIProvider {
         AttachmentColumns.CONTENT_TYPE,
         AttachmentColumns.SYNCED
     };
+
+    public static final int ACCOUNT_NAME_COLUMN = 1;
 
     public static final class AttachmentColumns {
         public static final String NAME = "name";
