@@ -47,12 +47,20 @@
     <string name="add_file_attachment">Attach file</string>
     <!-- Button name: save this message as draft [CHAR LIMIT=25]-->
     <string name="save_draft">Save draft</string>
-    <!-- Button name: save this message as adraft -->
-    <string name="save">Save draft</string>
-    <!--  Button name: discard this message -->
+    <!--  Button name: discard this message [CHAR LIMIT=15] -->
     <string name="discard">Discard</string>
-    <!--  Button, star the current conversation -->
-    <string name="star">Star</string>
+    <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
+    <string name="compose">Compose</string>
+    <!-- The possible ways to reply to a message [CHAR LIMIT=15] -->
+    <string-array name="compose_modes">
+        <!-- Reply -->
+        <item>Reply</item>
+        <!-- Reply all -->
+        <item>Reply all</item>
+        <!-- Forward -->
+        <item>Forward</item>
+    </string-array>
+
 
     <!-- Menu item: send this message -->
     <string name="send">Send</string>
@@ -374,4 +382,40 @@
 
     <!-- List header for recent labels for current account in account dropdown [CHAR LIMIT=100] -->
     <string name="recent_labels">Recent</string>
+
+    <!-- Conversation message header strings -->
+    <!--  Icon name for expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
+    <string name="expand_recipient_details">Expand recipient details</string>
+    <!--  Icon name for collapsing recipient details in a message when viewing it. [CHAR LIMIT=40] -->
+    <string name="collapse_recipient_details">Collapse recipient details</string>
+    <!--  Icon name for showing sender contact information. [CHAR LIMIT=100] -->
+    <string name="contact_info_string">Show contact information for <xliff:g id="name">%1$s</xliff:g></string>
+    <!--  Icon name for showing sender contact information when we cannot get sender info. [CHAR LIMIT=100] -->
+    <string name="contact_info_string_default">Show contact information</string>
+    <!--  Div name for providing accessibility to collapsed read messages when viewing a conversation. [CHAR LIMIT=40] -->
+    <string name="expand_read_messages">Expand read messages</string>
+    <!-- Shown in collapsed mode when a conversation has more than one read message.
+         The message count is shown to the right of this text. [CHAR LIMIT=70] -->
+    <string name="show_messages_read">Previously read messages</string>
+    <!-- Shown to display the date of the message [CHAR LIMIT=10] -->
+    <string name="date_heading">Date:</string>
+    <!-- Shown to display the reply to address of the message [CHAR LIMIT=10] -->
+    <string name="replyto_heading">Reply-to:</string>
+    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="to_heading">To:</string>
+    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="cc_heading">Cc:</string>
+    <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
+    <string name="bcc_heading">Bcc:</string>
+    <!-- Displayed above an HTML message to show the images in that message [CHAR LIMIT=40] -->
+    <string name="show_images">Show pictures</string>
+    <!-- Displayed above an HTML message to always show images in messages from that sender [CHAR LIMIT=40] -->
+    <string name="always_show_images">Always show pictures from this sender</string>
+    <!-- Shown in a toast to acknowledge always showing images for a sender [CHAR LIMIT=100] -->
+    <string name="always_show_images_toast">Pictures from this sender will be shown automatically.</string>
+    <!-- Display format of an email recipient, displayed in expanded message details [CHAR LIMIT=10] -->
+    <string name="address_display_format"><xliff:g id="name">%1$s</xliff:g> &lt;<xliff:g id="email">%2$s</xliff:g>&gt;</string>
+
+    <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
+    <string name="enumeration_comma">,\u0020</string>
 </resources>

@@ -15,12 +15,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="false"
-        android:color="#ff999999"/>
-    <item android:state_activated="true"
-        android:color="@android:color/white" />
-    <item
-        android:color="@android:color/black" />
-</selector>
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/super_collapsed_thread_stack_2_holo_light"
+        android:minLevel="0"
+        android:maxLevel="2" />
+    <item android:drawable="@drawable/super_collapsed_thread_stack_3plus_holo_light"
+        android:minLevel="3"
+        android:maxLevel="100"/>
+</level-list>

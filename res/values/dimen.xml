@@ -42,4 +42,18 @@
     <dimen name="label_cell_width">8dip</dimen>
     <dimen name="triangle_width">15dip</dimen>
     <dimen name="label_list_heading_padding_side">8dp</dimen>
+    <dimen name="message_details_header_collapsed_height">48sp</dimen>
+    <dimen name="message_details_header_bottom_border_height">1dip</dimen>
+    <dimen name="message_details_header_date_margin_right">4dip</dimen>
+    <dimen name="message_header_vertical_margin">1dip</dimen>
+    <dimen name="message_details_header_padding_left">24dip</dimen>
+    <dimen name="message_details_header_padding_right">16dip</dimen>
+    <dimen name="message_header_height">48sp</dimen>
+    <dimen name="message_header_presence_top_margin">-4dp</dimen>
+    <dimen name="message_header_action_button_width">48dip</dimen>
+    <dimen name="message_header_title_container_margin_right">16dip</dimen>
+    <dimen name="message_header_padding_right">0dip</dimen>
+    <dimen name="contact_photo_width">48sp</dimen>
+    <dimen name="contact_photo_height">48sp</dimen>
+    <dimen name="message_header_inner_side_padding">8dip</dimen>
 </resources>

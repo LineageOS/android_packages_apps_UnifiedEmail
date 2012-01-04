@@ -15,12 +15,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="false"
-        android:color="#ff999999"/>
-    <item android:state_activated="true"
-        android:color="@android:color/white" />
-    <item
-        android:color="@android:color/black" />
-</selector>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mode"
+    style="?android:attr/spinnerItemStyle"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeightSmall"
+    android:ellipsize="end"/>

@@ -22,6 +22,9 @@ import java.lang.String;
 
 
 public class UIProvider {
+    public static final long INVALID_CONVERSATION_ID = -1;
+    public static final long INVALID_MESSAGE_ID = -1;
+
     // The actual content provider should define its own authority
     public static final String AUTHORITY = "com.android.email.providers";
 
@@ -261,6 +264,7 @@ public class UIProvider {
 
     public static final String[] MESSAGE_PROJECTION = {
         BaseColumns._ID,
+        MessageColumns.SERVER_ID,
         MessageColumns.URI,
         MessageColumns.CONVERSATION_ID,
         MessageColumns.SUBJECT,
@@ -281,7 +285,8 @@ public class UIProvider {
         MessageColumns.CLIENT_CREATED,
         MessageColumns.CUSTOM_FROM_ADDRESS,
         MessageColumns.HAS_ATTACHMENTS,
-        MessageColumns.ATTACHMENT_LIST_URI
+        MessageColumns.ATTACHMENT_LIST_URI,
+        MessageColumns.MESSAGE_FLAGS
     };
 
     public static final String MESSAGE_LIST_TYPE =
@@ -290,20 +295,41 @@ public class UIProvider {
             "vnd.android.cursor.item/vnd.com.android.mail.message";
 
     public static final int MESSAGE_ID_COLUMN = 0;
-    public static final int MESSAGE_URI_COLUMN = 1;
-    public static final int MESSAGE_CONVERSATION_ID_COLUMN = 2;
-    public static final int MESSAGE_SUBJECT_COLUMN = 3;
-    public static final int MESSAGE_SNIPPET_COLUMN = 4;
+    public static final int MESSAGE_SERVER_ID_COLUMN = 1;
+    public static final int MESSAGE_URI_COLUMN = 2;
+    public static final int MESSAGE_CONVERSATION_ID_COLUMN = 3;
+    public static final int MESSAGE_SUBJECT_COLUMN = 4;
+    public static final int MESSAGE_SNIPPET_COLUMN = 5;
+    public static final int MESSAGE_FROM_COLUMN = 6;
+    public static final int MESSAGE_TO_COLUMN = 7;
+    public static final int MESSAGE_CC_COLUMN = 8;
+    public static final int MESSAGE_BCC_COLUMN = 9;
+    public static final int MESSAGE_REPLY_TO_COLUMN = 10;
+    public static final int MESSAGE_DATE_RECEIVED_MS_COLUMN = 11;
+    public static final int MESSAGE_BODY_HTML = 12;
+    public static final int MESSAGE_BODY_TEXT = 13;
+    public static final int MESSAGE_EMBEDS_EXTERNAL_RESOURCES_COLUMN = 14;
+    public static final int MESSAGE_REF_MESSAGE_ID_COLUMN = 15;
+    public static final int MESSAGE_DRAFT_TYPE_COLUMN = 16;
+    public static final int MESSAGE_INCLUDE_QUOTED_TEXT_COLUMN = 17;
+    public static final int MESSAGE_QUOTE_START_POS_COLUMN = 18;
+    public static final int MESSAGE_CLIENT_CREATED_COLUMN = 19;
+    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 20;
+    public static final int MESSAGE_HAS_ATTACHMENTS_COLUMN = 21;
+    public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 22;
+    public static final int MESSAGE_FLAGS_COLUMN = 23;
 
     public static final class MessageFlags {
         public static final int SYNCABLE = 0x0001;
         public static final int PARENT = 0x0002;
         public static final int CAN_HOLD_MAIL = 0x0004;
         public static final int CAN_ACCEPT_MOVED_MESSAGES = 0x0008;
+        public static final int STARRED = 0x0012;
     }
 
     public static final class MessageColumns {
         public static final String URI = "messageUri";
+        public static final String SERVER_ID = "localMessageId";
         public static final String CONVERSATION_ID = "conversationId";
         public static final String SUBJECT = "subject";
         public static final String SNIPPET = "snippet";

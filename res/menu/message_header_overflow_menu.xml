@@ -16,11 +16,14 @@
      limitations under the License.
 -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="false"
-        android:color="#ff999999"/>
-    <item android:state_activated="true"
-        android:color="@android:color/white" />
-    <item
-        android:color="@android:color/black" />
-</selector>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/reply"
+          android:icon="@drawable/ic_reply_holo_dark"
+          android:title="@string/reply" />
+    <item android:id="@+id/reply_all"
+          android:icon="@drawable/ic_reply_all_holo_dark"
+          android:title="@string/reply_all" />
+    <item android:id="@+id/forward"
+          android:icon="@drawable/ic_forward_holo_dark"
+          android:title="@string/forward" />
+</menu>

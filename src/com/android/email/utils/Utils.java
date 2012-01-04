@@ -28,6 +28,9 @@ import android.text.TextUtils.SimpleStringSplitter;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.MeasureSpec;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -487,4 +490,26 @@ public class Utils {
          sb.append("0123456789ABCDEF".charAt(b & 0xF));
          return sb;
      }
+
+     /**
+      * Perform a simulated measure pass on the given child view, assuming the child has a ViewGroup
+      * parent and that it should be laid out within that parent with a matching width but variable
+      * height.
+      *
+      * Code largely lifted from AnimatedAdapter.measureChildHeight().
+      *
+      * @param child a child view that has already been placed within its parent ViewGroup
+      * @param parent the parent ViewGroup of child
+      * @return measured height of the child in px
+      */
+     public static int measureViewHeight(View child, ViewGroup parent) {
+         int parentWSpec = MeasureSpec.makeMeasureSpec(parent.getWidth(), MeasureSpec.EXACTLY);
+         int wSpec = ViewGroup.getChildMeasureSpec(parentWSpec,
+                 parent.getPaddingLeft() + parent.getPaddingRight(),
+                 ViewGroup.LayoutParams.MATCH_PARENT);
+         int hSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+         child.measure(wSpec, hSpec);
+         return child.getMeasuredHeight();
+     }
+
 }
