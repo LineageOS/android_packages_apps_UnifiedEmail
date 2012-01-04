@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.email.providers;
 
+import com.android.common.Rfc822Validator;
+import com.android.email.utils.LogUtils;
 import com.android.email.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.james.mime4j.codec.EncoderUtil;
 import org.apache.james.mime4j.decoder.DecoderUtil;
 
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -52,6 +55,15 @@ public class Address {
      */
     private String mPersonal;
 
+    /**
+     * When personal is set, it will return the first token of the personal
+     * string. Otherwise, it will return the e-mail address up to the '@' sign.
+     */
+    private String mSimplifiedName;
+
+    private static final Matcher sEmailMatcher =
+            Pattern.compile("\\\"?([^\"<]*?)\\\"?\\s*<(.*)>").matcher("");
+
     // Regex that matches address surrounded by '<>' optionally. '^<?([^>]+)>?$'
     private static final Pattern REMOVE_OPTIONAL_BRACKET = Pattern.compile("^<?([^>]+)>?$");
     // Regex that matches personal name surrounded by '""' optionally. '^"?([^"]+)"?$'
@@ -65,9 +77,70 @@ public class Address {
     private static final char LIST_DELIMITER_EMAIL = '\1';
     private static final char LIST_DELIMITER_PERSONAL = '\2';
 
+    private static final String LOG_TAG = new LogUtils().getLogTag();
+
     public Address(String address, String personal) {
         setAddress(address);
         setPersonal(personal);
+    }
+
+    /**
+     * Returns a simplified string for this e-mail address.
+     * When a name is known, it will return the first token of that name. Otherwise, it will
+     * return the e-mail address up to the '@' sign.
+     */
+    public String getSimplifiedName() {
+        if (mSimplifiedName == null) {
+            if (TextUtils.isEmpty(mPersonal) && !TextUtils.isEmpty(mAddress)) {
+                int atSign = mAddress.indexOf('@');
+                mSimplifiedName = (atSign != -1) ? mAddress.substring(0, atSign) : "";
+            } else if (!TextUtils.isEmpty(mPersonal)) {
+
+                // TODO: use Contacts' NameSplitter for more reliable first-name extraction
+
+                int end = mPersonal.indexOf(' ');
+                while (end > 0 && mPersonal.charAt(end - 1) == ',') {
+                    end--;
+                }
+                mSimplifiedName = (end < 1) ? mPersonal : mPersonal.substring(0, end);
+
+            } else {
+                LogUtils.w(LOG_TAG, "Unable to get a simplified name");
+                mSimplifiedName = "";
+            }
+        }
+        return mSimplifiedName;
+    }
+
+    static synchronized Address getEmailAddress(String rawAddress) {
+        String name, address;
+        Matcher m = sEmailMatcher.reset(rawAddress);
+        if (m.matches()) {
+            name = m.group(1);
+            address = m.group(2);
+            if (name == null) {
+                name = "";
+            } else {
+                name = Html.fromHtml(name.trim()).toString();
+            }
+            if (address == null) {
+                address = "";
+            } else {
+                address = Html.fromHtml(address).toString();
+            }
+        } else {
+            // Try and tokenize the string
+            final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(rawAddress);
+            if (tokens.length > 0) {
+                final String tokenizedName = tokens[0].getName();
+                name = tokenizedName != null ? Html.fromHtml(tokenizedName.trim()).toString() : "";
+                address = Html.fromHtml(tokens[0].getAddress()).toString();
+            } else {
+                name = "";
+                address = rawAddress == null ? "" : Html.fromHtml(rawAddress).toString();
+            }
+        }
+        return new Address(name, address);
     }
 
     public Address(String address) {
@@ -164,18 +237,12 @@ public class Address {
      */
     @VisibleForTesting
     static boolean isValidAddress(String address) {
-        // TODO: see if we can remove this logic and just use the Rfc822Validator.
-        // This was added to fix b/1676657.
-        // Note: Some email provider may violate the standard, so here we only check that
-        // address consists of two part that are separated by '@', and domain part contains
-        // at least one '.'.
-        int len = address.length();
-        int firstAt = address.indexOf('@');
-        int lastAt = address.lastIndexOf('@');
-        int firstDot = address.indexOf('.', lastAt + 1);
-        int lastDot = address.lastIndexOf('.');
-        return firstAt > 0 && firstAt == lastAt && lastAt + 1 < firstDot
-            && firstDot <= lastDot && lastDot < len - 1;
+        if (TextUtils.isEmpty(address)) {
+            return false;
+        }
+        int index = address.indexOf("@");
+        return index == -1 ? false : new Rfc822Validator(address.substring(0, index))
+                .isValid(address);
     }
 
     @Override
