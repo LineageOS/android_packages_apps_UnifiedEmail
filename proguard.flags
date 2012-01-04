@@ -23,3 +23,7 @@
 -keepclasseswithmembers class com.google.common.collect.Sets {
   *** of(...);
 }
+
+-keepclasseswithmembers class com.android.email.UnifiedEmail {
+  public <methods>;
+}
