@@ -60,7 +60,18 @@
         <!-- Forward -->
         <item>Forward</item>
     </string-array>
-
+        <!-- Formatting string for the subject when it contains a reply or forward identifier. Do not translate.-->
+    <string name="formatted_subject"><xliff:g id="prefix">%1$s</xliff:g> <xliff:g id="subject">%2$s</xliff:g></string>
+    <!-- Compose screen, prefixed to the subject of a message when replying to it (if not already present). Do not translate. -->
+    <string name="reply_subject_label" translatable="false">Re:</string>
+    <!-- Compose screen, Prefix to forwarded message subject. Do not translate. -->
+    <string name="forward_subject_label" translatable="false">Fwd:</string>
+    <!-- Compose screen, displayed at the top of a message being replied to. Please preserve the HTML entities (surrounded by & and ;).  The two %s strings will be replaced by 1) the date 2) the person who wrote the email being responded to. [CHAR LIMIT=1000]-->
+    <string name="reply_attribution">On <xliff:g id="date">%s</xliff:g>, <xliff:g id="person">%s</xliff:g> wrote:</string>
+    <!-- Compose screen, displayed at the top of a message being forwarded. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000] -->
+    <string name="forward_attribution">---------- Forwarded message ----------&lt;br&gt;From: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Date: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Subject: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;To: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
+    <!-- Compose screen, displayed at the top of a message being forwarded if there are any email addresses in the CC list. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000]-->
+    <string name="cc_attribution">Cc: <xliff:g id="cc">%1$s</xliff:g>&lt;br&gt;</string>
 
     <!-- Menu item: send this message -->
     <string name="send">Send</string>

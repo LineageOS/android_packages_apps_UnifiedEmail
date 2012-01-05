@@ -201,7 +201,12 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     private void respondInline() {
         // Copy the text in the quoted message to the body of the
         // message after stripping the html.
-        mRespondInlineListener.onRespondInline("\n" + Html.fromHtml((String)getQuotedText()));
+        String quotedText = (String) getQuotedText();
+        String html = TextUtils.isEmpty(quotedText) ?
+                "" : Html.fromHtml(quotedText).toString();
+        if (mRespondInlineListener != null) {
+            mRespondInlineListener.onRespondInline("\n" + html);
+        }
         // Set quoted text to unchecked and not visible.
         updateCheckedState(false);
         mRespondInlineButton.setVisibility(View.GONE);
