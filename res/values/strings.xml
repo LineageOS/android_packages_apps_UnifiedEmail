@@ -18,10 +18,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- Layout tests strings -->
-    <string name="test_compose" translate="false">Test Compose Layout</string>
     <string name="test_accountspinner" translate="false">Test Account Spinner Layout</string>
     <string name="test_labelspinner" translate="false">Test Label Spinner Layout</string>
-    <string name="test_conversationitems" translate="false">Test Conversation Items</string>
     <string name="test_endtoend" translate="false">Test End to End with provider</string>
     <string name="mock_content_provider">Mock Content Provider</string>
     <string name="account_cache_provider">Account Cache Provider</string>
