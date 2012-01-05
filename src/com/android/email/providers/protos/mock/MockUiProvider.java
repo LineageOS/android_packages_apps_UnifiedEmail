@@ -30,6 +30,7 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.text.Html;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -180,6 +181,9 @@ public final class MockUiProvider extends ContentProvider {
         messageMap.put(MessageColumns.URI, messageUri);
         messageMap.put(MessageColumns.SUBJECT, "Message " + subject);
         messageMap.put(MessageColumns.SNIPPET, "SNIPPET");
+        String html = "<html><body><b><i>This is some html!!!</i></b></body></html>";
+        messageMap.put(MessageColumns.BODY_HTML, html);
+        messageMap.put(MessageColumns.BODY_TEXT, Html.fromHtml(html));
         messageMap.put(MessageColumns.HAS_ATTACHMENTS, hasAttachments);
         messageMap.put(MessageColumns.ATTACHMENT_LIST_URI, messageUri + "/getAttachments");
         return messageMap;

@@ -512,4 +512,17 @@ public class Utils {
          return child.getMeasuredHeight();
      }
 
+    /**
+     * Encode the string in HTML.
+     *
+     * @param removeEmptyDoubleQuotes If true, also remove any occurrence of ""
+     *            found in the string
+     */
+     public static Object cleanUpString(String string, boolean removeEmptyDoubleQuotes) {
+        return !TextUtils.isEmpty(string) ?
+                TextUtils.htmlEncode(removeEmptyDoubleQuotes ? string.replace("\"\"", "")
+                        : string)
+                : "";
+     }
+
 }
