@@ -52,7 +52,7 @@ public class UnifiedEmail extends Activity {
     }
 
     public void composeTest(View v){
-        startActivityWithClass(ComposeActivity.class);
+        ComposeActivity.compose(this, "test@test.com");
     }
 
     public void conversationListItemTest(View v){

@@ -20,6 +20,8 @@
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <!-- Allows Email to access the user's contacts, for email address auto-completion -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <application
         android:icon="@mipmap/ic_launcher_mail"
