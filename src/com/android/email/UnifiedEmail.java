@@ -51,16 +51,8 @@ public class UnifiedEmail extends Activity {
         startActivityWithClass(ComposeActivity.class);
     }
 
-    public void composeTest(View v){
-        ComposeActivity.compose(this, "test@test.com");
-    }
-
-    public void conversationListItemTest(View v){
-        startActivityWithClass(ConversationListActivity.class);
-    }
-
     public void uiProviderTest(View v){
-        startActivityWithClass(EmailActivity.class);
+        startActivityWithClass(ConversationListActivity.class);
     }
 
     public void actionbarTest(View v){

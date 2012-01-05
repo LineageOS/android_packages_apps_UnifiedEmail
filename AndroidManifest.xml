@@ -40,7 +40,6 @@
         <activity android:name=".browse.ConversationListActivity" />
         <activity android:name=".browse.ConversationViewActivity" />
         <activity android:name=".browse.FolderItem" />
-        <activity android:name=".EmailActivity" />
         <activity
            android:name=".browse.ActionbarActivity"
            android:uiOptions="splitActionBarWhenNarrow" />
