@@ -190,6 +190,7 @@ public final class MockUiProvider extends ContentProvider {
         messageMap.put(MessageColumns.BODY_TEXT, Html.fromHtml(html));
         messageMap.put(MessageColumns.HAS_ATTACHMENTS, hasAttachments);
         messageMap.put(MessageColumns.ATTACHMENT_LIST_URI, messageUri + "/getAttachments");
+        messageMap.put(MessageColumns.TO, "account1@mock.com, account2@mock.com");
         return messageMap;
     }
 

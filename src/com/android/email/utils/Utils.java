@@ -28,6 +28,7 @@ import android.text.TextUtils.SimpleStringSplitter;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Patterns;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.MeasureSpec;
@@ -38,6 +39,7 @@ import com.android.email.R;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -525,4 +527,29 @@ public class Utils {
                 : "";
      }
 
+     /**
+      * Returns the email address in an address string
+      * @param addressString such as &quot;bobby&quot; &lt;bob@example.com&gt;
+      * @return returns the email address, such as bob@example.com from the example above
+      */
+     public static String getEmailFromAddressString(String addressString) {
+         if (TextUtils.isEmpty(addressString)) {
+             return "";
+         }
+         String result = addressString;
+         Matcher match = Patterns.EMAIL_ADDRESS.matcher(addressString);
+         if (match.find()) {
+             result = addressString.substring(match.start(), match.end());
+         }
+
+         return result;
+     }
+
+
+     /**
+      * Returns comma seperated strings as an array.
+      */
+     public static String[] splitCommaSeparatedString(String str) {
+         return TextUtils.isEmpty(str) ? new String[0] : TextUtils.split(str, ",");
+     }
 }

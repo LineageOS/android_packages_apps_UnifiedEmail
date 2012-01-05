@@ -341,13 +341,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             mTimestampShort = mDateBuilder.formatShortDate(mTimestampMs);
         }
 
-        String addresses = cursor.getString(UIProvider.MESSAGE_TO_COLUMN);
-        mTo = TextUtils.isEmpty(addresses) ? new String[0] : TextUtils.split(addresses, ",");
-        addresses = cursor.getString(UIProvider.MESSAGE_CC_COLUMN);
-        mCc = TextUtils.isEmpty(addresses) ? new String[0] : TextUtils.split(addresses, ",");
+        mTo = Utils.splitCommaSeparatedString(cursor.getString(UIProvider.MESSAGE_TO_COLUMN));
+        mCc = Utils.splitCommaSeparatedString(cursor.getString(UIProvider.MESSAGE_CC_COLUMN));
         mBcc = getBccAddresses(cursor);
-        addresses = cursor.getString(UIProvider.MESSAGE_REPLY_TO_COLUMN);
-        mReplyTo = TextUtils.isEmpty(addresses) ? new String[0] : TextUtils.split(addresses, ",");
+        mReplyTo = Utils.splitCommaSeparatedString(cursor
+                .getString(UIProvider.MESSAGE_REPLY_TO_COLUMN));
 
         /**
          * Turns draft mode on or off. Draft mode hides message operations other
@@ -485,7 +483,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * and draft/normal state.
      */
     private void updateChildVisibility() {
-
         // Too bad this can't be done with an XML state list...
 
         if (mIsExpanded) {
@@ -701,8 +698,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * @param messageCursor Cursor to query for label objects with
      */
     private static String[] getBccAddresses(Cursor cursor) {
-        String addresses = cursor.getString(UIProvider.MESSAGE_CC_COLUMN);
-        return TextUtils.isEmpty(addresses) ? new String[0] : TextUtils.split(addresses, ",");
+        return Utils.splitCommaSeparatedString(cursor.getString(UIProvider.MESSAGE_CC_COLUMN));
     }
 
     @Override

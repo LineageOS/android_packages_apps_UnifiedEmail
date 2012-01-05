@@ -51,6 +51,7 @@ import android.widget.TextView;
 
 import com.android.common.Rfc822Validator;
 import com.android.email.compose.QuotedTextView.RespondInlineListener;
+import com.android.email.providers.Address;
 import com.android.email.providers.UIProvider;
 import com.android.email.providers.Attachment;
 import com.android.email.providers.protos.mock.MockAttachment;
@@ -60,6 +61,7 @@ import com.android.email.utils.MimeType;
 import com.android.email.utils.Utils;
 import com.android.ex.chips.RecipientEditTextView;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Sets;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -69,6 +71,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, OnItemSelectedListener {
@@ -107,6 +110,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     //  If this is a reply/forward then this extra will hold the original message uri
     private static final String EXTRA_IN_REFERENCE_TO_MESSAGE_URI = "in-reference-to-uri";
+    private static final String END_TOKEN = ", ";
 
     private RecipientEditTextView mTo;
     private RecipientEditTextView mCc;
@@ -465,8 +469,166 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void initRecipientsFromRefMessageCursor(String recipientAddress, Cursor refMessage,
             int action) {
-        // TODO
+        // Don't populate the address if this is a forward.
+        if (action == ComposeActivity.FORWARD) {
+            return;
+        }
+        initReplyRecipients(mAccount, refMessage, action);
+    }
 
+    private void initReplyRecipients(String account, Cursor refMessage, int action) {
+        // This is the email address of the current user, i.e. the one composing
+        // the reply.
+        final String accountEmail = Utils.getEmailFromAddressString(account);
+        String fromAddress = refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN);
+        String[] sentToAddresses = Utils.splitCommaSeparatedString(refMessage
+                .getString(UIProvider.MESSAGE_TO_COLUMN));
+        String[] replytoAddresses = Utils.splitCommaSeparatedString(refMessage
+                .getString(UIProvider.MESSAGE_REPLY_TO_COLUMN));
+        final Collection<String> toAddresses = initToRecipients(account, accountEmail, fromAddress,
+                replytoAddresses, sentToAddresses);
+        addToAddresses(toAddresses);
+
+        // If this is a reply, the Cc list is empty. If this is a reply-all, the
+        // Cc list is the union of the To and Cc recipients of the original
+        // message, excluding the current user's email address and any addresses
+        // already
+        // on the To list.
+        if (action == ComposeActivity.REPLY_ALL) {
+            final Set<String> ccAddresses = Sets.newHashSet();
+            addRecipients(accountEmail, ccAddresses, sentToAddresses);
+            addRecipients(accountEmail, ccAddresses, Utils.splitCommaSeparatedString(refMessage
+                    .getString(UIProvider.MESSAGE_CC_COLUMN)));
+            addCcAddresses(ccAddresses, toAddresses);
+        }
+    }
+
+    private void addToAddresses(Collection<String> addresses) {
+        addAddressesToList(addresses, mTo);
+    }
+
+    private void addCcAddresses(Collection<String> addresses, Collection<String> toAddresses) {
+        addCcAddressesToList(tokenizeAddressList(addresses), tokenizeAddressList(toAddresses),
+                mCc);
+    }
+
+    private void addCcAddresses(Collection<String> addresses) {
+        addAddressesToList(tokenizeAddressList(addresses), mCc);
+    }
+
+    @VisibleForTesting
+    protected void addCcAddressesToList(List<Rfc822Token[]> addresses,
+            List<Rfc822Token[]> compareToList, RecipientEditTextView list) {
+        String address;
+
+        HashSet<String> compareTo = convertToHashSet(compareToList);
+        for (Rfc822Token[] tokens : addresses) {
+            for (int i = 0; i < tokens.length; i++) {
+                address = tokens[i].toString();
+                // Check if this is a duplicate:
+                if (!compareTo.contains(tokens[i].getAddress())) {
+                    // Get the address here
+                    list.append(address + END_TOKEN);
+                }
+            }
+        }
+    }
+
+    private void addAddressesToList(List<Rfc822Token[]> addresses, RecipientEditTextView list) {
+        String address;
+        for (Rfc822Token[] tokens : addresses) {
+            for (int i = 0; i < tokens.length; i++) {
+                address = tokens[i].toString();
+                list.append(address + END_TOKEN);
+            }
+        }
+    }
+
+    private HashSet<String> convertToHashSet(List<Rfc822Token[]> list) {
+        HashSet<String> hash = new HashSet<String>();
+        for (Rfc822Token[] tokens : list) {
+            for (int i = 0; i < tokens.length; i++) {
+                hash.add(tokens[i].getAddress());
+            }
+        }
+        return hash;
+    }
+
+    private void addBccAddresses(Collection<String> addresses) {
+        addAddressesToList(addresses, mBcc);
+    }
+
+    protected List<Rfc822Token[]> tokenizeAddressList(Collection<String> addresses) {
+        @VisibleForTesting
+        List<Rfc822Token[]> tokenized = new ArrayList<Rfc822Token[]>();
+
+        for (String address: addresses) {
+            tokenized.add(Rfc822Tokenizer.tokenize(address));
+        }
+        return tokenized;
+    }
+
+    @VisibleForTesting
+    void addAddressesToList(Collection<String> addresses, RecipientEditTextView list) {
+        for (String address : addresses) {
+            addAddressToList(address, list);
+        }
+    }
+
+    private void addAddressToList(String address, RecipientEditTextView list) {
+        if (address == null || list == null)
+            return;
+
+        Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(address);
+
+        for (int i = 0; i < tokens.length; i++) {
+            list.append(tokens[i] + END_TOKEN);
+        }
+    }
+
+    @VisibleForTesting
+    protected Collection<String> initToRecipients(String account, String accountEmail,
+            String senderAddress, String[] replyToAddresses, String[] inToAddresses) {
+        // The To recipient is the reply-to address specified in the original
+        // message, unless it is:
+        // the current user OR a custom from of the current user, in which case
+        // it's the To recipient list of the original message.
+        // OR missing, in which case use the sender of the original message
+        Set<String> toAddresses = Sets.newHashSet();
+        if (Utils.getEmailFromAddressString(senderAddress).equalsIgnoreCase(account)) {
+            // The sender address is this account, so reply acts like reply all.
+            toAddresses.addAll(Arrays.asList(inToAddresses));
+        } else if (replyToAddresses != null && replyToAddresses.length != 0) {
+            toAddresses.addAll(Arrays.asList(replyToAddresses));
+        } else {
+            // Check to see if the sender address is one of the user's custom
+            // from addresses.
+            if (senderAddress != null
+                    && !accountEmail.equalsIgnoreCase(Utils
+                            .getEmailFromAddressString(senderAddress))) {
+                // Replying to the sender of the original message is the most
+                // common case.
+                toAddresses.add(senderAddress);
+            } else {
+                // This happens if the user replies to a message they originally
+                // wrote. In this case, "reply" really means "re-send," so we
+                // target the original recipients. This works as expected even
+                // if the user sent the original message to themselves.
+                toAddresses.addAll(Arrays.asList(inToAddresses));
+            }
+        }
+        return toAddresses;
+    }
+
+    private static void addRecipients(String account, Set<String> recipients, String[] addresses) {
+        for (String email : addresses) {
+            // Do not add this account, or any of the custom froms, to the list
+            // of recipients.
+            final String recipientAddress = Utils.getEmailFromAddressString(email);
+            if (!account.equalsIgnoreCase(recipientAddress)) {
+                recipients.add(email.replace("\"\"", ""));
+            }
+        }
     }
 
     private void setSubject(Cursor refMessage, int action) {
