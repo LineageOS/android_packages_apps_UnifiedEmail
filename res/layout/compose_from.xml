@@ -24,7 +24,8 @@
     <LinearLayout android:id="@+id/spinner_from_content"
         style="@style/RecipientComposeFieldLayout"
         android:background="@android:color/transparent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <Spinner android:id="@+id/from_picker"
             android:layout_width="match_parent"
