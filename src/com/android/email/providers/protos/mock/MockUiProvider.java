@@ -228,7 +228,7 @@ public final class MockUiProvider extends ContentProvider {
         final String accountUri = getMockAccountUri(accountId);
         Map<String, Object> accountMap = Maps.newHashMap();
         accountMap.put(BaseColumns._ID, Long.valueOf(accountId));
-        accountMap.put(AccountColumns.NAME, "Account " + accountId);
+        accountMap.put(AccountColumns.NAME, "account" + accountId + "@mockuiprovider.com");
         accountMap.put(AccountColumns.PROVIDER_VERSION, Long.valueOf(1));
         accountMap.put(AccountColumns.URI, accountUri);
         accountMap.put(AccountColumns.CAPABILITIES,

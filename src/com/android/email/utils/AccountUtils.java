@@ -15,8 +15,8 @@
  */
 package com.android.email.utils;
 
+import com.android.email.providers.AccountCacheProvider;
 import com.android.email.providers.UIProvider;
-import com.android.email.providers.protos.mock.MockUiProvider;
 
 import android.accounts.Account;
 import android.accounts.AccountManagerCallback;
@@ -73,7 +73,7 @@ public class AccountUtils {
         // TODO: use account manager.
         // AccountManager.get(context).getAccountsByTypeAndFeatures(type, features, callback, null);
         ContentResolver resolver = context.getContentResolver();
-        Cursor accountsCursor = resolver.query(MockUiProvider.getAccountsUri(),
+        Cursor accountsCursor = resolver.query(AccountCacheProvider.getAccountsUri(),
                 UIProvider.ACCOUNTS_PROJECTION, null, null, null);
         ArrayList<Account> accounts = new ArrayList<Account>();
         if (accountsCursor != null) {
