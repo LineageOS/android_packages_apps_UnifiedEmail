@@ -51,9 +51,6 @@ public final class AccountCacheProvider extends ContentProvider {
 
     private final static Map<String, CachedAccount> ACCOUNT_CACHE = Maps.newHashMap();
 
-    private final static Set<String> VALID_ACCOUNT_PROJECTION_VALUES =
-            ImmutableSet.of(UIProvider.ACCOUNTS_PROJECTION);
-
     public static Uri getAccountsUri() {
         return Uri.parse(BASE_URI_STRING + "/");
     }
@@ -70,7 +67,7 @@ public final class AccountCacheProvider extends ContentProvider {
         // No reason to check the uri.  Currently only checking the projections
 
         // Validates and returns the projection that should be used.
-        final String[] resultProjection = getResultProjection(projection);
+        final String[] resultProjection = UIProviderValidator.validateAccountProjection(projection);
         final MatrixCursor cursor = new MatrixCursor(resultProjection);
 
         for (CachedAccount account : ACCOUNT_CACHE.values()) {
@@ -104,21 +101,6 @@ public final class AccountCacheProvider extends ContentProvider {
 
         }
         return cursor;
-    }
-
-    private String[] getResultProjection(String[] projection) throws IllegalArgumentException {
-        final String[] resultProjection;
-        if (projection != null) {
-            for (String column : projection) {
-                if (!VALID_ACCOUNT_PROJECTION_VALUES.contains(column)) {
-                    throw new IllegalArgumentException("Invalid projection");
-                }
-            }
-            resultProjection = projection;
-        } else {
-            resultProjection = UIProvider.ACCOUNTS_PROJECTION;
-        }
-        return resultProjection;
     }
 
     @Override
