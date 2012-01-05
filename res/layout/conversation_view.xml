@@ -24,7 +24,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"/>
+    <!-- TODO: set layout_height to wrap_content once the rest
+    of the conversation view is in place -->
     <ListView android:id="@+id/message_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>
