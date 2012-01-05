@@ -41,9 +41,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.common.Rfc822Validator;
@@ -52,6 +55,7 @@ import com.android.email.providers.UIProvider;
 import com.android.email.providers.Attachment;
 import com.android.email.providers.protos.mock.MockAttachment;
 import com.android.email.R;
+import com.android.email.utils.AccountUtils;
 import com.android.email.utils.MimeType;
 import com.android.email.utils.Utils;
 import com.android.ex.chips.RecipientEditTextView;
@@ -61,12 +65,13 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
-        RespondInlineListener {
+        RespondInlineListener, OnItemSelectedListener {
     // Identifiers for which type of composition this is
     static final int COMPOSE = -1;  // also used for editing a draft
     static final int REPLY = 0;
@@ -122,6 +127,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private boolean mAttachmentsChanged;
     private QuotedTextView mQuotedTextView;
     private TextView mBodyText;
+    private View mFromStatic;
+    private View mFromSpinner;
+    private Spinner mFrom;
+    private List<String[]> mReplyFromAccounts;
+    private boolean mAccountSpinnerReady;
+    private String[] mCurrentReplyFromAccount;
+    private boolean mMessageIsForwardOrReply;
+    private List<String> mAccounts;
 
     /**
      * Can be called from a non-UI thread.
@@ -174,13 +187,123 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         findViews();
         Intent intent = getIntent();
         int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
-        initActionBar(action);
         if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
             mRefMessageUri = Uri.parse(intent.getStringExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI));
             initFromRefMessage(action, mAccount);
         } else {
             setQuotedTextVisibility(false);
         }
+        initActionBar(action);
+        asyncInitFromSpinner();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Update the from spinner as other accounts
+        // may now be available.
+        asyncInitFromSpinner();
+    }
+
+    private void asyncInitFromSpinner() {
+        Account[] result = AccountUtils.getSyncingAccounts(this, null, null, null);
+        mAccounts = AccountUtils
+                .mergeAccountLists(mAccounts, result, true /* prioritizeAccountList */);
+        createReplyFromCache();
+        initFromSpinner();
+    }
+
+    /**
+     * Create a cache of all accounts a user could send mail from
+     */
+    private void createReplyFromCache() {
+        // Check for replyFroms.
+        List<String> accounts = null;
+        mReplyFromAccounts = new ArrayList<String[]>();
+
+        if (mMessageIsForwardOrReply) {
+            accounts = Collections.singletonList(mAccount);
+        } else {
+            accounts = mAccounts;
+        }
+        for (String account : accounts) {
+            // First add the account. First position is account, second
+            // is display of account, 3rd position is the REAL account this
+            // is being sent from / synced to.
+            mReplyFromAccounts.add(new String[] {
+                    account, account, account, "false"
+            });
+        }
+    }
+
+    private void initFromSpinner() {
+        // If there are not yet any accounts in the cached synced accounts
+        // because this is the first time Gmail was opened, and it was opened directly
+        // to the compose activity,don't bother populating the reply from spinner yet.
+        if (mReplyFromAccounts == null || mReplyFromAccounts.size() == 0) {
+            mAccountSpinnerReady = false;
+            return;
+        }
+        FromAddressSpinnerAdapter adapter = new FromAddressSpinnerAdapter(this);
+        int currentAccountIndex = 0;
+        String replyFromAccount = mAccount;
+
+        boolean checkRealAccount = mRecipient == null || mAccount.equals(mRecipient);
+
+        currentAccountIndex = addAccountsToAdapter(adapter, checkRealAccount, replyFromAccount);
+
+        mFrom.setAdapter(adapter);
+        mFrom.setSelection(currentAccountIndex, false);
+        mFrom.setOnItemSelectedListener(this);
+        mCurrentReplyFromAccount = mReplyFromAccounts.get(currentAccountIndex);
+
+        hideOrShowFromSpinner();
+        mAccountSpinnerReady = true;
+        adapter.setSpinner(mFrom);
+    }
+
+    private void hideOrShowFromSpinner() {
+        // Determine whether the from account spinner or the static
+        // from text should be show
+        // When the spinner is shown, the static from text
+        // is hidden
+        showFromSpinner(mFrom.getCount() > 1);
+    }
+
+    private int addAccountsToAdapter(FromAddressSpinnerAdapter adapter, boolean checkRealAccount,
+            String replyFromAccount) {
+        int currentIndex = 0;
+        int currentAccountIndex = 0;
+        // Get the position of the current account
+        for (String[] account : mReplyFromAccounts) {
+            // Add the account to the Adapter
+            // The reason that we are not adding the Account array, but adding
+            // the names of each account, is because Account returns a string
+            // that we don't want to display on toString()
+            adapter.add(account);
+            // Compare to the account address, not the real account being
+            // sent from.
+            if (checkRealAccount) {
+                // Need to check the real account and the account address
+                // so that we can send from the correct address on the
+                // correct account when the same address may exist across
+                // multiple accounts.
+                if (account[FromAddressSpinnerAdapter.REAL_ACCOUNT].equals(mAccount)
+                        && account[FromAddressSpinnerAdapter.ACCOUNT_ADDRESS]
+                                .equals(replyFromAccount)) {
+                    currentAccountIndex = currentIndex;
+                }
+            } else {
+                // Just need to check the account address.
+                if (replyFromAccount.equals(
+                        account[FromAddressSpinnerAdapter.ACCOUNT_ADDRESS])) {
+                    currentAccountIndex = currentIndex;
+                }
+            }
+
+            currentIndex++;
+        }
+        return currentAccountIndex;
     }
 
     private void findViews() {
@@ -197,6 +320,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mQuotedTextView = (QuotedTextView) findViewById(R.id.quoted_text_view);
         mQuotedTextView.setRespondInlineListener(this);
         mBodyText = (TextView) findViewById(R.id.body);
+        mFromStatic = findViewById(R.id.static_from_content);
+        mFromSpinner = findViewById(R.id.spinner_from_content);
+        mFrom = (Spinner) findViewById(R.id.from_picker);
+    }
+
+    /**
+     * Show the static from text view or the spinner
+     * @param showSpinner Whether the spinner should be shown
+     */
+    private void showFromSpinner(boolean showSpinner) {
+        // show/hide the static text
+        mFromStatic.setVisibility(
+                showSpinner ? View.GONE : View.VISIBLE);
+
+        // show/hide the spinner
+        mFromSpinner.setVisibility(
+                showSpinner ? View.VISIBLE : View.GONE);
     }
 
     private void setQuotedTextVisibility(boolean show) {
@@ -477,5 +617,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      */
     public void setBody(CharSequence text, boolean withSignature) {
         mBodyText.setText(text);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // TODO
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Do nothing.
     }
 }
