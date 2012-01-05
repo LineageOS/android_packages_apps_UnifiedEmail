@@ -24,6 +24,8 @@
     <string name="test_conversationitems" translate="false">Test Conversation Items</string>
     <string name="test_endtoend" translate="false">Test End to End with provider</string>
     <string name="mock_content_provider">Mock Content Provider</string>
+    <string name="account_cache_provider">Account Cache Provider</string>
+    <string name="dummy_gmail_provider">Dummy Gmail Provider</string>
     <string name="test_actionbar" translate="false">Test Actionbar Layout</string>
 
     <string name="app_name">Unified Email</string>

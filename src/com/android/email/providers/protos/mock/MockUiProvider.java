@@ -16,6 +16,7 @@
 
 package com.android.email.providers.protos.mock;
 
+import com.android.email.providers.AccountCacheProvider;
 import com.android.email.providers.UIProvider.AccountCapabilities;
 import com.android.email.providers.UIProvider.AccountColumns;
 import com.android.email.providers.UIProvider.AttachmentColumns;
@@ -32,6 +33,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.Html;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.ImmutableList;
@@ -52,6 +54,8 @@ public final class MockUiProvider extends ContentProvider {
 
 
     static final String BASE_URI_STRING = "content://" + AUTHORITY;
+
+    public static final int NUM_MOCK_ACCOUNTS = 2;
 
     // A map of query result for uris
     // TODO(pwestbro) read this map from an external
@@ -219,8 +223,9 @@ public final class MockUiProvider extends ContentProvider {
         return folderMap;
     }
 
-    private static Map<String, Object> createAccountDetailsMap(int accountId) {
-        final String accountUri =  "content://" + AUTHORITY + "/account/" + accountId;
+    // Temporarily made this public to allow the Gmail accounts to use the mock ui provider uris
+    public static Map<String, Object> createAccountDetailsMap(int accountId) {
+        final String accountUri = getMockAccountUri(accountId);
         Map<String, Object> accountMap = Maps.newHashMap();
         accountMap.put(BaseColumns._ID, Long.valueOf(accountId));
         accountMap.put(AccountColumns.NAME, "Account " + accountId);
@@ -245,7 +250,13 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI, accountUri + "/fromAddresses");
         accountMap.put(AccountColumns.SAVE_NEW_DRAFT_URI, accountUri + "/saveDraft");
         accountMap.put(AccountColumns.SEND_MESSAGE_URI, accountUri + "/sendMessage");
+
+        addAccountInfoToAccountCache(accountMap);
         return accountMap;
+    }
+
+    public static String getMockAccountUri(int accountId) {
+        return "content://" + AUTHORITY + "/account/" + accountId;
     }
 
     @Override
@@ -302,9 +313,26 @@ public final class MockUiProvider extends ContentProvider {
         return null;
     }
 
-    public static Uri getAccountsUri() {
+    @VisibleForTesting
+    static Uri getAccountsUri() {
         // TODO: this should probably return a different specific to the mock account list
         return Uri.parse(BASE_URI_STRING + "/");
+    }
+
+    private static void addAccountInfoToAccountCache(Map<String, Object> accountInfo) {
+        final AccountCacheProvider.CachedAccount account =
+                new AccountCacheProvider.CachedAccount((Long)accountInfo.get(BaseColumns._ID),
+                        (String)accountInfo.get(AccountColumns.NAME),
+                        (String)accountInfo.get(AccountColumns.URI),
+                        (Long)accountInfo.get(AccountColumns.CAPABILITIES),
+                        (String)accountInfo.get(AccountColumns.FOLDER_LIST_URI),
+                        (String)accountInfo.get(AccountColumns.SEARCH_URI),
+                        (String)accountInfo.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
+                        (String)accountInfo.get(AccountColumns.SAVE_NEW_DRAFT_URI),
+                        (String)accountInfo.get(AccountColumns.SEND_MESSAGE_URI));
+
+
+        AccountCacheProvider.addAccount(account);
     }
 }
 
