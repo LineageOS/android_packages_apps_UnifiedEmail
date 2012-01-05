@@ -182,10 +182,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.compose);
-        mAccount = "test@test.com";
-        findViews();
         Intent intent = getIntent();
+        mAccount = intent.getStringExtra(Utils.EXTRA_ACCOUNT);
+        setContentView(R.layout.compose);
+        findViews();
         int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
         if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
             mRefMessageUri = Uri.parse(intent.getStringExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI));

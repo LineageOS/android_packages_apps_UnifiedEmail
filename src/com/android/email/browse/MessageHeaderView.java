@@ -768,13 +768,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         switch (id) {
             case R.id.reply:
-                ComposeActivity.reply(getContext(), null, mUri);
+                ComposeActivity.reply(getContext(), mAccount, mUri);
                 break;
             case R.id.reply_all:
-                ComposeActivity.replyAll(getContext(), null, mUri);
+                ComposeActivity.replyAll(getContext(), mAccount, mUri);
                 break;
             case R.id.forward:
-                ComposeActivity.forward(getContext(), null, mUri);
+                ComposeActivity.forward(getContext(), mAccount, mUri);
                 break;
             case R.id.star: {
                 boolean newValue = !v.isSelected();
@@ -782,7 +782,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 break;
             }
             case R.id.edit_draft:
-                ComposeActivity.editDraft(getContext(), null, mLocalMessageId);
+                ComposeActivity.editDraft(getContext(), mAccount, mLocalMessageId);
                 break;
             case R.id.overflow: {
                 if (mPopup == null) {

@@ -101,13 +101,13 @@ public class EmailActivity extends Activity implements OnItemSelectedListener, O
         }
 
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            ConversationItemView view = new ConversationItemView(context, "test@testaccount.com");
+            ConversationItemView view = new ConversationItemView(context, mSelectedAccount);
             return view;
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            ((ConversationItemView) view).bind(cursor, null, "test@testaccount.com", null,
+            ((ConversationItemView) view).bind(cursor, null, mSelectedAccount, null,
                     new ViewMode(EmailActivity.this));
         }
     }

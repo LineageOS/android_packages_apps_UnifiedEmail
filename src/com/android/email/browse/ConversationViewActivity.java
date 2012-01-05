@@ -16,6 +16,7 @@
  */
 package com.android.email.browse;
 
+import com.android.email.FormattedDateBuilder;
 import com.android.email.R;
 import com.android.email.ViewMode;
 import com.android.email.providers.UIProvider;
@@ -47,6 +48,8 @@ public class ConversationViewActivity extends Activity {
     private Cursor mMessageCursor;
     private TextView mSubject;
     private ListView mMessageList;
+    private FormattedDateBuilder mDateBuilder;
+    private String mAccount;
 
     public static void viewConversation(Context context, String uri, String account) {
         Intent intent = new Intent(context, ConversationViewActivity.class);
@@ -62,6 +65,7 @@ public class ConversationViewActivity extends Activity {
         Intent intent = getIntent();
         mLookupUri = Uri.parse(intent.getStringExtra(EXTRA_CONVERSATION_LOOKUP));
         mResolver = getContentResolver();
+        mAccount = intent.getStringExtra(Utils.EXTRA_ACCOUNT);
         setContentView(R.layout.conversation_view);
     }
 
@@ -72,6 +76,7 @@ public class ConversationViewActivity extends Activity {
         mMessageList = (ListView) findViewById(R.id.message_list);
         mConversationCursor = mResolver.query(mLookupUri, UIProvider.CONVERSATION_PROJECTION, null,
                 null, null);
+        mDateBuilder = new FormattedDateBuilder(this);
         if (mConversationCursor != null) {
             mConversationCursor.moveToFirst();
             mSubject.setText(mConversationCursor.getString(UIProvider.CONVERSATION_SUBJECT_COLUMN));
@@ -90,7 +95,9 @@ public class ConversationViewActivity extends Activity {
 
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
-            ((MessageHeaderView) view).bind(cursor);
+            MessageHeaderView header = (MessageHeaderView) view;
+            header.initialize(mDateBuilder, mAccount, false, true, false);
+            header.bind(cursor);
         }
     }
 }
