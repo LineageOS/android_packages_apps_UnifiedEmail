@@ -41,8 +41,8 @@ import com.android.email.EmailActivity.ConversationItemAdapter;
 import com.android.email.browse.ConversationItemView;
 import com.android.email.browse.ConversationItemViewModel;
 import com.android.email.browse.ConversationViewActivity;
+import com.android.email.providers.AccountCacheProvider;
 import com.android.email.providers.UIProvider;
-import com.android.email.providers.protos.mock.MockUiProvider;
 
 public class EmailActivity extends Activity implements OnItemSelectedListener, OnItemClickListener {
 
@@ -60,7 +60,7 @@ public class EmailActivity extends Activity implements OnItemSelectedListener, O
         mListView.setOnItemClickListener(this);
         mAccountsSpinner = (Spinner) findViewById(R.id.accounts_spinner);
         mResolver = getContentResolver();
-        Cursor cursor = mResolver.query(MockUiProvider.getAccountsUri(),
+        Cursor cursor = mResolver.query(AccountCacheProvider.getAccountsUri(),
                 UIProvider.ACCOUNTS_PROJECTION, null, null, null);
         mAccountsAdapter = new AccountsSpinnerAdapter(this, cursor);
         mAccountsSpinner.setAdapter(mAccountsAdapter);
