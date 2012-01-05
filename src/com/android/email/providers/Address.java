@@ -53,7 +53,7 @@ public class Address {
      * Name part. No surrounding double quote, and no MIME/base64 encoding.
      * This must be null if Address has no name part.
      */
-    private String mPersonal;
+    private String mName;
 
     /**
      * When personal is set, it will return the first token of the personal
@@ -91,18 +91,18 @@ public class Address {
      */
     public String getSimplifiedName() {
         if (mSimplifiedName == null) {
-            if (TextUtils.isEmpty(mPersonal) && !TextUtils.isEmpty(mAddress)) {
+            if (TextUtils.isEmpty(mName) && !TextUtils.isEmpty(mAddress)) {
                 int atSign = mAddress.indexOf('@');
                 mSimplifiedName = (atSign != -1) ? mAddress.substring(0, atSign) : "";
-            } else if (!TextUtils.isEmpty(mPersonal)) {
+            } else if (!TextUtils.isEmpty(mName)) {
 
                 // TODO: use Contacts' NameSplitter for more reliable first-name extraction
 
-                int end = mPersonal.indexOf(' ');
-                while (end > 0 && mPersonal.charAt(end - 1) == ',') {
+                int end = mName.indexOf(' ');
+                while (end > 0 && mName.charAt(end - 1) == ',') {
                     end--;
                 }
-                mSimplifiedName = (end < 1) ? mPersonal : mPersonal.substring(0, end);
+                mSimplifiedName = (end < 1) ? mName : mName.substring(0, end);
 
             } else {
                 LogUtils.w(LOG_TAG, "Unable to get a simplified name");
@@ -112,7 +112,10 @@ public class Address {
         return mSimplifiedName;
     }
 
-    static synchronized Address getEmailAddress(String rawAddress) {
+    public static synchronized Address getEmailAddress(String rawAddress) {
+        if (TextUtils.isEmpty(rawAddress)) {
+            return null;
+        }
         String name, address;
         Matcher m = sEmailMatcher.reset(rawAddress);
         if (m.matches()) {
@@ -160,8 +163,8 @@ public class Address {
      *
      * @return Name part of email address. Returns null if it is omitted.
      */
-    public String getPersonal() {
-        return mPersonal;
+    public String getName() {
+        return mName;
     }
 
     /**
@@ -179,7 +182,7 @@ public class Address {
                 personal = null;
             }
         }
-        mPersonal = personal;
+        mName = personal;
     }
 
     /**
@@ -269,11 +272,11 @@ public class Address {
      */
     @Override
     public String toString() {
-        if (mPersonal != null && !mPersonal.equals(mAddress)) {
-            if (mPersonal.matches(".*[\\(\\)<>@,;:\\\\\".\\[\\]].*")) {
-                return Utils.ensureQuotedString(mPersonal) + " <" + mAddress + ">";
+        if (mName != null && !mName.equals(mAddress)) {
+            if (mName.matches(".*[\\(\\)<>@,;:\\\\\".\\[\\]].*")) {
+                return Utils.ensureQuotedString(mName) + " <" + mAddress + ">";
             } else {
-                return mPersonal + " <" + mAddress + ">";
+                return mName + " <" + mAddress + ">";
             }
         } else {
             return mAddress;
@@ -320,8 +323,8 @@ public class Address {
      * It may be surrounded by double quote or quoted and MIME/base64 encoded if necessary.
      */
     public String toHeader() {
-        if (mPersonal != null) {
-            return EncoderUtil.encodeAddressDisplayName(mPersonal) + " <" + mAddress + ">";
+        if (mName != null) {
+            return EncoderUtil.encodeAddressDisplayName(mName) + " <" + mAddress + ">";
         } else {
             return mAddress;
         }
@@ -357,8 +360,8 @@ public class Address {
      * personal part is not available
      */
     public String toFriendly() {
-        if (mPersonal != null && mPersonal.length() > 0) {
-            return mPersonal;
+        if (mName != null && mName.length() > 0) {
+            return mName;
         } else {
             return mAddress;
         }
@@ -485,7 +488,7 @@ public class Address {
         }
 
         // shortcut: one email with no displayName
-        if (nAddr == 1 && addresses[0].getPersonal() == null) {
+        if (nAddr == 1 && addresses[0].getName() == null) {
             return addresses[0].getAddress();
         }
 
@@ -496,7 +499,7 @@ public class Address {
             }
             final Address address = addresses[i];
             sb.append(address.getAddress());
-            final String displayName = address.getPersonal();
+            final String displayName = address.getName();
             if (displayName != null) {
                 sb.append(LIST_DELIMITER_PERSONAL);
                 sb.append(displayName);
@@ -510,7 +513,7 @@ public class Address {
      */
     public String pack() {
         final String address = getAddress();
-        final String personal = getPersonal();
+        final String personal = getName();
         if (personal == null) {
             return address;
         } else {

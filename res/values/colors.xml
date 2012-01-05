@@ -39,4 +39,8 @@
     <color name="quotedTextColor">#777777</color>
     <string name="quotedTextBackgroundColorString" translatable="false">#ebebeb</string>
     <string name="quotedTextFontColorString" translatable="false">#777777</string>
+
+    <!-- Conversation message header colors -->
+    <color name="conv_subject_border">#c0c0c0</color>
+    <color name="conv_header_text_light">#777777</color>
 </resources>

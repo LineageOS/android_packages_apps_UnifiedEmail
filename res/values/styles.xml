@@ -223,10 +223,87 @@
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
     </style>
+
     <style name="MinTimeProgressViewStyle" parent="@android:style/Widget.Holo.Light.ProgressBar" />
+
     <style name="MinTimeProgressDialogStyle" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowAnimationStyle">@style/MinTimeAnimationStyle</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+
+    <!-- Conversation view message header styles -->
+    <style name="MessageHeaderPresenceStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingRight">4dip</item>
+        <!-- note: presence asset dimensions differ betwen HC and ICS -->
+        <item name="android:layout_marginTop">@dimen/message_header_presence_top_margin</item>
+    </style>
+
+    <style name="MessageSenderNameStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/message_sender_name</item>
+        <item name="android:layout_marginTop">4dip</item>
+    </style>
+
+    <style name="MessageSenderEmailStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/message_sender_email</item>
+        <item name="android:layout_marginTop">-2dip</item>
+    </style>
+
+    <style name="MessageHeaderSmallStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/conv_header_text_light</item>
+    </style>
+
+    <style name="MessageHeaderExtraSmallStyle" parent="MessageHeaderSmallStyle">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="MessageHeaderDateTextStyle" parent="MessageHeaderSmallStyle">
+        <item name="android:layout_marginRight">@dimen/message_details_header_date_margin_right</item>
+    </style>
+
+    <style name="MessageDetailsItemStyle" parent="MessageHeaderSmallStyle">
+        <item name="android:lineSpacingMultiplier">1.5</item>
+    </style>
+
+    <style name="MessageDetailsHeadingStyle" parent="MessageDetailsItemStyle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:maxWidth">60dp</item>
+    </style>
+
+    <style name="MessageDetailsValueStyle" parent="MessageDetailsItemStyle">
+        <item name="android:layout_gravity">bottom</item>
+    </style>
+
+    <style name="MessageDetailsValueSelectableStyle" parent="MessageDetailsValueStyle">
+        <item name="android:textIsSelectable">true</item>
+    </style>
+
+    <style name="MessageHeaderActionButtonStyle" parent="android:Widget.Holo.Button.Borderless">
+        <item name="android:layout_width">@dimen/message_header_action_button_width</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
+    <style name="MessageHeaderExpanderMinimizedStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/ic_menu_expander_minimized_holo_light</item>
+        <item name="android:contentDescription">@string/expand_recipient_details</item>
+    </style>
+
+    <style name="MessageHeaderExpanderMaximizedStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/ic_menu_expander_maximized_holo_light</item>
+        <item name="android:contentDescription">@string/collapse_recipient_details</item>
+    </style>
+    <!-- End conversation view message header styles -->
 </resources>

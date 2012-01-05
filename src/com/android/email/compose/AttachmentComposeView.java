@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.email.providers.protos.Attachment;
+import com.android.email.providers.Attachment;
 import com.android.email.R;
 import com.android.email.utils.AttachmentUtils;
 import com.android.email.utils.LogUtils;

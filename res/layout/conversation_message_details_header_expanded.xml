@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/details_expanded_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:paddingLeft="@dimen/message_details_header_padding_left"
+    android:paddingRight="@dimen/message_details_header_padding_right"
+    android:gravity="center_vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="14dp"
+        android:paddingBottom="7dp"
+        android:shrinkColumns="1">
+        <TableRow>
+            <TextView
+                android:id="@+id/date_heading"
+                android:text="@string/date_heading"
+                style="@style/MessageDetailsHeadingStyle" />
+            <TextView
+                android:id="@+id/date_value"
+                style="@style/MessageDetailsValueStyle" />
+        </TableRow>
+        <TableRow
+            android:id="@+id/replyto_row"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/replyto_heading"
+                android:text="@string/replyto_heading"
+                style="@style/MessageDetailsHeadingStyle" />
+            <TextView
+                android:id="@+id/replyto_value"
+                android:autoLink="email"
+                style="@style/MessageDetailsValueSelectableStyle" />
+        </TableRow>
+        <TableRow
+            android:id="@+id/to_row"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/to_heading"
+                android:text="@string/to_heading"
+                style="@style/MessageDetailsHeadingStyle" />
+            <TextView
+                android:id="@+id/to_value"
+                android:autoLink="email"
+                style="@style/MessageDetailsValueSelectableStyle" />
+        </TableRow>
+        <TableRow
+            android:id="@+id/cc_row"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/cc_heading"
+                android:text="@string/cc_heading"
+                style="@style/MessageDetailsHeadingStyle" />
+            <TextView
+                android:id="@+id/cc_value"
+                android:autoLink="email"
+                style="@style/MessageDetailsValueSelectableStyle" />
+        </TableRow>
+        <TableRow
+            android:id="@+id/bcc_row"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/bcc_heading"
+                android:text="@string/bcc_heading"
+                style="@style/MessageDetailsHeadingStyle" />
+            <TextView
+                android:id="@+id/bcc_value"
+                android:autoLink="email"
+                style="@style/MessageDetailsValueSelectableStyle" />
+        </TableRow>
+    </TableLayout>
+
+    <ImageView
+        android:layout_gravity="top|right"
+        android:layout_marginTop="14dip"
+        style="@style/MessageHeaderExpanderMaximizedStyle" />
+
+</FrameLayout>

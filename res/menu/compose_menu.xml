@@ -36,7 +36,7 @@
         android:showAsAction="never" />
 
     <item android:id="@+id/save"
-        android:title="@string/save"
+        android:title="@string/save_draft"
         android:showAsAction="never" />
 
     <item android:id="@+id/discard"

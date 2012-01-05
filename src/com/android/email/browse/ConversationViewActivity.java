@@ -84,17 +84,13 @@ public class ConversationViewActivity extends Activity {
 
     class MessageListAdapter extends SimpleCursorAdapter {
         public MessageListAdapter(Context context, Cursor cursor) {
-            super(context, R.layout.message_list_item, cursor, UIProvider.MESSAGE_PROJECTION,
-                    new int[0], 0);
-        }
-
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return getLayoutInflater().inflate(R.layout.message_list_item, null);
+            super(context, R.layout.conversation_message_header, cursor,
+                    UIProvider.MESSAGE_PROJECTION, new int[0], 0);
         }
 
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
-            ((MessageItemView)view).bind(cursor);
+            ((MessageHeaderView) view).bind(cursor);
         }
     }
 }

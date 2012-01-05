@@ -15,7 +15,7 @@
  */
 package com.android.email.compose;
 
-import com.android.email.providers.protos.Attachment;
+import com.android.email.providers.Attachment;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 

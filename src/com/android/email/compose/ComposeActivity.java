@@ -20,6 +20,8 @@ import android.accounts.Account;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -28,24 +30,27 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.util.Rfc822Tokenizer;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.common.Rfc822Validator;
 import com.android.email.providers.UIProvider;
-import com.android.email.providers.protos.Attachment;
+import com.android.email.providers.Attachment;
 import com.android.email.providers.protos.mock.MockAttachment;
 import com.android.email.R;
 import com.android.email.utils.MimeType;
 import com.android.email.utils.Utils;
 import com.android.ex.chips.RecipientEditTextView;
 
-public class ComposeActivity extends Activity implements OnClickListener {
+public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener {
     // Identifiers for which type of composition this is
     static final int COMPOSE = -1;  // also used for editing a draft
     static final int REPLY = 0;
@@ -76,6 +81,16 @@ public class ComposeActivity extends Activity implements OnClickListener {
     private Rfc822Validator mRecipientValidator;
     private Uri mRefMessageUri;
     private TextView mSubject;
+
+    private ActionBar mActionBar;
+    private ComposeModeAdapter mComposeModeAdapter;
+    private int mComposeMode = -1;
+
+    /**
+     * Can be called from a non-UI thread.
+     */
+    public static void editDraft(Context context, String account, long mLocalMessageId) {
+    }
 
     /**
      * Can be called from a non-UI thread.
@@ -131,13 +146,41 @@ public class ComposeActivity extends Activity implements OnClickListener {
         mSubject = (TextView) findViewById(R.id.subject);
         Intent intent = getIntent();
         int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
+        initActionBar(action);
         if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
             mRefMessageUri = Uri.parse(intent.getStringExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI));
-            initFromRefMessage();
+            initFromRefMessage(action);
         }
     }
 
-    private void initFromRefMessage() {
+    private void initActionBar(int action) {
+        mComposeMode = action;
+        mActionBar = getActionBar();
+        if (action == ComposeActivity.COMPOSE) {
+            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            mActionBar.setTitle(R.string.compose);
+        } else {
+            mActionBar.setTitle(null);
+            if (mComposeModeAdapter == null) {
+                mComposeModeAdapter = new ComposeModeAdapter(this);
+            }
+            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            mActionBar.setListNavigationCallbacks(mComposeModeAdapter, this);
+            switch (action) {
+                case ComposeActivity.REPLY:
+                    mActionBar.setSelectedNavigationItem(0);
+                    break;
+                case ComposeActivity.REPLY_ALL:
+                    mActionBar.setSelectedNavigationItem(1);
+                    break;
+                case ComposeActivity.FORWARD:
+                    mActionBar.setSelectedNavigationItem(2);
+                    break;
+            }
+        }
+    }
+
+    private void initFromRefMessage(int action) {
         ContentResolver resolver = getContentResolver();
         Cursor refMessage = resolver.query(mRefMessageUri, UIProvider.MESSAGE_PROJECTION, null,
                 null, null);
@@ -204,5 +247,43 @@ public class ComposeActivity extends Activity implements OnClickListener {
                 break;
         }
         return !handled ? super.onOptionsItemSelected(item) : handled;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(int position, long itemId) {
+        if (position == ComposeActivity.REPLY) {
+            mComposeMode = ComposeActivity.REPLY;
+        } else if (position == ComposeActivity.REPLY_ALL) {
+            mComposeMode = ComposeActivity.REPLY_ALL;
+        } else if (position == ComposeActivity.FORWARD) {
+            mComposeMode = ComposeActivity.FORWARD;
+        }
+        return true;
+    }
+
+    private class ComposeModeAdapter extends ArrayAdapter<String> {
+
+        private LayoutInflater mInflater;
+
+        public ComposeModeAdapter(Context context) {
+            super(context, R.layout.compose_mode_item, R.id.mode, getResources()
+                    .getStringArray(R.array.compose_modes));
+        }
+
+        private LayoutInflater getInflater() {
+            if (mInflater == null) {
+                mInflater = LayoutInflater.from(getContext());
+            }
+            return mInflater;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = getInflater().inflate(R.layout.compose_mode_display_item, null);
+            }
+            ((TextView) convertView.findViewById(R.id.mode)).setText(getItem(position));
+            return super.getView(position, convertView, parent);
+        }
     }
 }

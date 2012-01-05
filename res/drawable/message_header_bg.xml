@@ -15,12 +15,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="false"
-        android:color="#ff999999"/>
     <item android:state_activated="true"
-        android:color="@android:color/white" />
+        android:drawable="@drawable/header_convo_view_sender_bg_holo" />
     <item
-        android:color="@android:color/black" />
+        android:drawable="@drawable/header_convo_view_thread_bg_holo_repeat" />
 </selector>

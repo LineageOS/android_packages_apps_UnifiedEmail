@@ -15,7 +15,7 @@
  */
 package com.android.email.providers.protos.mock;
 
-import com.android.email.providers.protos.Attachment;
+import com.android.email.providers.Attachment;
 
 import java.io.Serializable;
 
