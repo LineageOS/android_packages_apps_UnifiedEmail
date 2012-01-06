@@ -527,24 +527,6 @@ public class Utils {
                 : "";
      }
 
-     /**
-      * Returns the email address in an address string
-      * @param addressString such as &quot;bobby&quot; &lt;bob@example.com&gt;
-      * @return returns the email address, such as bob@example.com from the example above
-      */
-     public static String getEmailFromAddressString(String addressString) {
-         if (TextUtils.isEmpty(addressString)) {
-             return "";
-         }
-         String result = addressString;
-         Matcher match = Patterns.EMAIL_ADDRESS.matcher(addressString);
-         if (match.find()) {
-             result = addressString.substring(match.start(), match.end());
-         }
-
-         return result;
-     }
-
 
      /**
       * Returns comma seperated strings as an array.

@@ -61,9 +61,6 @@ public class Address {
      */
     private String mSimplifiedName;
 
-    private static final Matcher sEmailMatcher =
-            Pattern.compile("\\\"?([^\"<]*?)\\\"?\\s*<(.*)>").matcher("");
-
     // Regex that matches address surrounded by '<>' optionally. '^<?([^>]+)>?$'
     private static final Pattern REMOVE_OPTIONAL_BRACKET = Pattern.compile("^<?([^>]+)>?$");
     // Regex that matches personal name surrounded by '""' optionally. '^"?([^"]+)"?$'
@@ -117,31 +114,14 @@ public class Address {
             return null;
         }
         String name, address;
-        Matcher m = sEmailMatcher.reset(rawAddress);
-        if (m.matches()) {
-            name = m.group(1);
-            address = m.group(2);
-            if (name == null) {
-                name = "";
-            } else {
-                name = Html.fromHtml(name.trim()).toString();
-            }
-            if (address == null) {
-                address = "";
-            } else {
-                address = Html.fromHtml(address).toString();
-            }
+        final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(rawAddress);
+        if (tokens.length > 0) {
+            final String tokenizedName = tokens[0].getName();
+            name = tokenizedName != null ? Html.fromHtml(tokenizedName.trim()).toString() : "";
+            address = Html.fromHtml(tokens[0].getAddress()).toString();
         } else {
-            // Try and tokenize the string
-            final Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(rawAddress);
-            if (tokens.length > 0) {
-                final String tokenizedName = tokens[0].getName();
-                name = tokenizedName != null ? Html.fromHtml(tokenizedName.trim()).toString() : "";
-                address = Html.fromHtml(tokens[0].getAddress()).toString();
-            } else {
-                name = "";
-                address = rawAddress == null ? "" : Html.fromHtml(rawAddress).toString();
-            }
+            name = "";
+            address = rawAddress == null ? "" : Html.fromHtml(rawAddress).toString();
         }
         return new Address(name, address);
     }

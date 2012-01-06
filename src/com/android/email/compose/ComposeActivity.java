@@ -479,7 +479,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void initReplyRecipients(String account, Cursor refMessage, int action) {
         // This is the email address of the current user, i.e. the one composing
         // the reply.
-        final String accountEmail = Utils.getEmailFromAddressString(account);
+        final String accountEmail = Address.getEmailAddress(account).getAddress();
         String fromAddress = refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN);
         String[] sentToAddresses = Utils.splitCommaSeparatedString(refMessage
                 .getString(UIProvider.MESSAGE_TO_COLUMN));
@@ -595,7 +595,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // it's the To recipient list of the original message.
         // OR missing, in which case use the sender of the original message
         Set<String> toAddresses = Sets.newHashSet();
-        if (Utils.getEmailFromAddressString(senderAddress).equalsIgnoreCase(account)) {
+        Address sender = Address.getEmailAddress(senderAddress);
+        if (sender != null && sender.getAddress().equalsIgnoreCase(account)) {
             // The sender address is this account, so reply acts like reply all.
             toAddresses.addAll(Arrays.asList(inToAddresses));
         } else if (replyToAddresses != null && replyToAddresses.length != 0) {
@@ -603,9 +604,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } else {
             // Check to see if the sender address is one of the user's custom
             // from addresses.
-            if (senderAddress != null
-                    && !accountEmail.equalsIgnoreCase(Utils
-                            .getEmailFromAddressString(senderAddress))) {
+            if (senderAddress != null && sender != null
+                    && !accountEmail.equalsIgnoreCase(sender.getAddress())) {
                 // Replying to the sender of the original message is the most
                 // common case.
                 toAddresses.add(senderAddress);
@@ -624,7 +624,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         for (String email : addresses) {
             // Do not add this account, or any of the custom froms, to the list
             // of recipients.
-            final String recipientAddress = Utils.getEmailFromAddressString(email);
+            final String recipientAddress = Address.getEmailAddress(email).getAddress();
             if (!account.equalsIgnoreCase(recipientAddress)) {
                 recipients.add(email.replace("\"\"", ""));
             }
