@@ -189,9 +189,9 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
 
     private void populateData() {
         String backgroundColor = getContext().getResources().getString(
-                R.string.quotedTextBackgroundColorString);
+                R.string.quoted_text_background_color_string);
         String fontColor = getContext().getResources().getString(
-                R.string.quotedTextFontColorString);
+                R.string.quoted_text_font_color_string);
         String html = "<head><style type=\"text/css\">* body { background-color: "
                 + backgroundColor + "; color: " + fontColor + "; }</style></head>"
                 + mQuotedText.toString();

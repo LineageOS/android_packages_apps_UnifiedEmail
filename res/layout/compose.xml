@@ -69,7 +69,8 @@
             <View android:id="@+id/composearea_tap_trap_bottom"
                 android:clickable="true"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:background="@color/compose_background_color"/>
 
         </LinearLayout>
 

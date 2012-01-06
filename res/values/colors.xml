@@ -36,9 +36,11 @@
 
     <!-- Compose colors -->
     <color name="compose_label_text">#aaaaaa</color>
-    <color name="quotedTextColor">#777777</color>
-    <string name="quotedTextBackgroundColorString" translatable="false">#ebebeb</string>
-    <string name="quotedTextFontColorString" translatable="false">#777777</string>
+    <color name="quoted_text_color">#777777</color>
+    <string name="quoted_text_background_color_string" translatable="false">#ebebeb</string>
+    <!-- Must match the quoted_text_background_color_string -->
+    <color name="compose_background_color">#ebebeb</color>
+    <string name="quoted_text_font_color_string" translatable="false">#777777</string>
 
     <!-- Conversation message header colors -->
     <color name="conv_subject_border">#c0c0c0</color>
