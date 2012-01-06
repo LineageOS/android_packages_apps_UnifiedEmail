@@ -27,13 +27,9 @@
         android:title="@string/add_file_attachment"
         android:showAsAction="never" />
 
-    <item android:id="@+id/add_cc"
+    <item android:id="@+id/add_cc_bcc"
         android:title="@string/add_cc_label"
         android:showAsAction="never"/>
-
-    <item android:id="@+id/add_bcc"
-        android:title="@string/add_bcc_label"
-        android:showAsAction="never" />
 
     <item android:id="@+id/save"
         android:title="@string/save_draft"

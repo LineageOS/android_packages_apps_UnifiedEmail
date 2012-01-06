@@ -456,7 +456,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void updateHideOrShowCcBcc() {
-        // TODO
+        // Its possible there is a menu item OR a button.
+        mCc.setVisibility(TextUtils.isEmpty(mCc.getText()) ? View.GONE : View.VISIBLE);
+        mBcc.setVisibility(TextUtils.isEmpty(mCc.getText()) ? View.GONE : View.VISIBLE);
+        if (mCcBccButton != null) {
+            if (!mCc.isShown() || !mBcc.isShown()) {
+                mCcBccButton.setVisibility(View.VISIBLE);
+                mCcBccButton.setText(getString(!mCc.isShown() ? R.string.add_cc_label
+                        : R.string.add_bcc_label));
+            } else {
+                mCcBccButton.setVisibility(View.GONE);
+            }
+        }
     }
 
     public void removeAllAttachments() {
@@ -691,6 +702,24 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem ccBcc = menu.findItem(R.id.add_cc_bcc);
+        if (ccBcc != null) {
+            // Its possible there is a menu item OR a button.
+            boolean ccFieldVisible = mCc.isShown();
+            boolean bccFieldVisible = mBcc.isShown();
+            if (!ccFieldVisible || !bccFieldVisible) {
+                ccBcc.setVisible(true);
+                ccBcc.setTitle(getString(!ccFieldVisible ? R.string.add_cc_label
+                        : R.string.add_bcc_label));
+            } else {
+                ccBcc.setVisible(false);
+            }
+        }
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         boolean handled = false;
@@ -703,13 +732,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 attachment.originExtras = "";
                 mAttachmentsView.addAttachment(attachment);
                 break;
-            case R.id.add_cc:
-            case R.id.add_bcc:
-                mCcBccView.show();
+            case R.id.add_cc_bcc:
+                showCcBccViews();
                 handled = true;
                 break;
         }
         return !handled ? super.onOptionsItemSelected(item) : handled;
+    }
+
+    private void showCcBccViews() {
+        mCcBccView.show();
+        if (mCcBccButton != null) {
+            mCcBccButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
