@@ -17,7 +17,10 @@
 package com.android.email.providers;
 
 import com.google.common.collect.ImmutableSet;
+
 import java.lang.IllegalArgumentException;
+import java.lang.String;
+import java.util.Arrays;
 import java.util.Set;
 
 
@@ -28,48 +31,52 @@ import java.util.Set;
  * functionionality.
  */
 public class UIProviderValidator {
-
-    private final static Set<String> VALID_ACCOUNT_PROJECTION_VALUES =
-            ImmutableSet.of(UIProvider.ACCOUNTS_PROJECTION);
-    private final static Set<String> VALID_FOLDER_PROJECTION_VALUES =
-            ImmutableSet.of(UIProvider.FOLDERS_PROJECTION);
-
     /**
      * Validates and returns the projection that can be used for an account query,
      */
-    public static String[] validateAccountProjection(String[] projection)
-            throws IllegalArgumentException {
-        final String[] resultProjection;
-        if (projection != null) {
-            for (String column : projection) {
-                if (!VALID_ACCOUNT_PROJECTION_VALUES.contains(column)) {
-                    throw new IllegalArgumentException("Invalid projection");
-                }
-            }
-            resultProjection = projection;
-        } else {
-            resultProjection = UIProvider.ACCOUNTS_PROJECTION;
-        }
-        return resultProjection;
+    public static String[] validateAccountProjection(String[] projection) {
+        return getValidProjection(projection, UIProvider.ACCOUNTS_PROJECTION);
     }
 
 
     /**
-     * Validates and returns the projection that can be used for an account query,
+     * Validates and returns the projection that can be used for a folder query,
      */
-    public static String[] validateFolderProjection(String[] projection)
-            throws IllegalArgumentException {
+    public static String[] validateFolderProjection(String[] projection) {
+        return getValidProjection(projection, UIProvider.FOLDERS_PROJECTION);
+    }
+
+    /**
+     * Validates and returns the projection that can be used for a conversation query,
+     */
+    public static String[] validateConversationProjection(String[] projection) {
+        return getValidProjection(projection, UIProvider.CONVERSATION_PROJECTION);
+    }
+
+    private static String[] getValidProjection(String[] requestedProjection,
+            String[] allColumnProjection) {
         final String[] resultProjection;
-        if (projection != null) {
-            for (String column : projection) {
-                if (!VALID_FOLDER_PROJECTION_VALUES.contains(column)) {
-                    throw new IllegalArgumentException("Invalid projection");
-                }
+        if (requestedProjection != null) {
+            if (isValidProjection(requestedProjection, ImmutableSet.of(allColumnProjection))) {
+                // The requested projection is valid, use it.
+                resultProjection = requestedProjection;
+            } else {
+                throw new IllegalArgumentException(
+                        "Invalid projection: " + Arrays.toString(requestedProjection));
             }
-            resultProjection = projection;
         } else {
-            resultProjection = UIProvider.FOLDERS_PROJECTION;
+            // If the caller specified a null projection, they want all columns
+            resultProjection = allColumnProjection;
         }
         return resultProjection;
+    }
+
+    private static boolean isValidProjection(String[] projection, Set<String> validColumns) {
+        for (String column : projection) {
+            if (!validColumns.contains(column)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
