@@ -15,6 +15,8 @@
  */
 package com.android.email.providers.protos.mock;
 
+import android.net.Uri;
+
 import com.android.email.providers.Attachment;
 
 import java.io.Serializable;
@@ -43,10 +45,11 @@ public class MockAttachment implements Serializable, Attachment {
      */
     public String simpleContentType;
 
+    public Uri origin;
+
     public String originExtras;
 
     public String cachedContent;
-
 
     @Override
     public String getName() {

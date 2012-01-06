@@ -387,4 +387,14 @@ public class UIProvider {
         public static final String CONTENT_TYPE = "contentType";
         public static final String SYNCED = "synced";
     }
+
+    public static int getMailMaxAttachmentSize(String account) {
+        // TODO: query the account to see what the max attachment size is?
+        return 5 * 1024 * 1024;
+    }
+
+    public static String getAttachmentTypeSetting() {
+        // TODO: query the account to see what kinds of attachments it supports?
+        return "com.google.android.gm.allowAddAnyAttachment";
+    }
 }
