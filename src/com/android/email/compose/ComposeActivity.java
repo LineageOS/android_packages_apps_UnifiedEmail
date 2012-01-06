@@ -305,7 +305,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void findViews() {
-        mCcBccButton = (Button) findViewById(R.id.add_cc);
+        mCcBccButton = (Button) findViewById(R.id.add_cc_bcc);
         if (mCcBccButton != null) {
             mCcBccButton.setOnClickListener(this);
         }
@@ -451,8 +451,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void updateHideOrShowCcBcc() {
         // Its possible there is a menu item OR a button.
-        mCc.setVisibility(TextUtils.isEmpty(mCc.getText()) ? View.GONE : View.VISIBLE);
-        mBcc.setVisibility(TextUtils.isEmpty(mCc.getText()) ? View.GONE : View.VISIBLE);
+        boolean ccVisible = !TextUtils.isEmpty(mCc.getText());
+        boolean bccVisible = !TextUtils.isEmpty(mBcc.getText());
+        if (ccVisible || bccVisible) {
+            mCcBccView.show(false, ccVisible, bccVisible);
+        }
         if (mCcBccButton != null) {
             if (!mCc.isShown() || !mBcc.isShown()) {
                 mCcBccButton.setVisibility(View.VISIBLE);
@@ -490,17 +493,20 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 .getString(UIProvider.MESSAGE_TO_COLUMN));
         String[] replytoAddresses = Utils.splitCommaSeparatedString(refMessage
                 .getString(UIProvider.MESSAGE_REPLY_TO_COLUMN));
-        final Collection<String> toAddresses = initToRecipients(account, accountEmail, fromAddress,
-                replytoAddresses, sentToAddresses);
-        addToAddresses(toAddresses);
+        final Collection<String> toAddresses;
 
         // If this is a reply, the Cc list is empty. If this is a reply-all, the
         // Cc list is the union of the To and Cc recipients of the original
         // message, excluding the current user's email address and any addresses
-        // already
-        // on the To list.
-        if (action == ComposeActivity.REPLY_ALL) {
+        // already on the To list.
+        if (action == ComposeActivity.REPLY) {
+            toAddresses = initToRecipients(account, accountEmail, fromAddress,
+                    replytoAddresses, new String[0]);
+            addToAddresses(toAddresses);
+        } else if (action == ComposeActivity.REPLY_ALL) {
             final Set<String> ccAddresses = Sets.newHashSet();
+            toAddresses = initToRecipients(account, accountEmail, fromAddress,
+                    replytoAddresses, new String[0]);
             addRecipients(accountEmail, ccAddresses, sentToAddresses);
             addRecipients(accountEmail, ccAddresses, Utils.splitCommaSeparatedString(refMessage
                     .getString(UIProvider.MESSAGE_CC_COLUMN)));
@@ -515,10 +521,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void addCcAddresses(Collection<String> addresses, Collection<String> toAddresses) {
         addCcAddressesToList(tokenizeAddressList(addresses), tokenizeAddressList(toAddresses),
                 mCc);
-    }
-
-    private void addCcAddresses(Collection<String> addresses) {
-        addAddressesToList(tokenizeAddressList(addresses), mCc);
     }
 
     @VisibleForTesting
@@ -678,11 +680,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.add_cc:
-            case R.id.add_bcc:
+            case R.id.add_cc_bcc:
                 // Verify that cc/ bcc aren't showing.
                 // Animate in cc/bcc.
-                mCcBccView.show();
+                showCcBccViews();
                 break;
         }
     }
@@ -735,7 +736,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void showCcBccViews() {
-        mCcBccView.show();
+        mCcBccView.show(true, true, true);
         if (mCcBccButton != null) {
             mCcBccButton.setVisibility(View.GONE);
         }
@@ -743,6 +744,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     public boolean onNavigationItemSelected(int position, long itemId) {
+        int initialComposeMode = mComposeMode;
         if (position == ComposeActivity.REPLY) {
             mComposeMode = ComposeActivity.REPLY;
         } else if (position == ComposeActivity.REPLY_ALL) {
@@ -750,7 +752,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } else if (position == ComposeActivity.FORWARD) {
             mComposeMode = ComposeActivity.FORWARD;
         }
-        initFromRefMessage(mComposeMode, mAccount);
+        if (initialComposeMode != mComposeMode) {
+            initFromRefMessage(mComposeMode, mAccount);
+        }
         return true;
     }
 

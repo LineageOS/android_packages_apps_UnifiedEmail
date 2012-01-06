@@ -75,9 +75,9 @@ public class Address {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
-    public Address(String address, String personal) {
+    public Address(String name, String address) {
+        setName(name);
         setAddress(address);
-        setPersonal(personal);
     }
 
     /**
@@ -152,16 +152,16 @@ public class Address {
      *
      * @param personal name part of email address as UTF-16 string. Null is acceptable.
      */
-    public void setPersonal(String personal) {
-        if (personal != null) {
-            personal = REMOVE_OPTIONAL_DQUOTE.matcher(personal).replaceAll("$1");
-            personal = UNQUOTE.matcher(personal).replaceAll("$1");
-            personal = DecoderUtil.decodeEncodedWords(personal);
-            if (personal.length() == 0) {
-                personal = null;
+    public void setName(String name) {
+        if (name != null) {
+            name = REMOVE_OPTIONAL_DQUOTE.matcher(name).replaceAll("$1");
+            name = UNQUOTE.matcher(name).replaceAll("$1");
+            name = DecoderUtil.decodeEncodedWords(name);
+            if (name.length() == 0) {
+                name = null;
             }
         }
-        mName = personal;
+        mName = name;
     }
 
     /**
@@ -206,7 +206,7 @@ public class Address {
                     if (TextUtils.isEmpty(name)) {
                         name = null;
                     }
-                    addresses.add(new Address(address, name));
+                    addresses.add(new Address(name, address));
                 }
             }
         }
@@ -432,10 +432,10 @@ public class Address {
             if (addressEndIndex == -1 || pairEndIndex <= addressEndIndex) {
                 // in this case the DELIMITER_PERSONAL is in a future pair,
                 // so don't use personal, and don't update addressEndIndex
-                address = new Address(addressList.substring(pairStartIndex, pairEndIndex), null);
+                address = new Address(null, addressList.substring(pairStartIndex, pairEndIndex));
             } else {
-                address = new Address(addressList.substring(pairStartIndex, addressEndIndex),
-                                      addressList.substring(addressEndIndex + 1, pairEndIndex));
+                address = new Address(addressList.substring(addressEndIndex + 1, pairEndIndex),
+                        addressList.substring(pairStartIndex, addressEndIndex));
                 // only update addressEndIndex when we use the LIST_DELIMITER_PERSONAL
                 addressEndIndex = addressList.indexOf(LIST_DELIMITER_PERSONAL, pairEndIndex + 1);
             }

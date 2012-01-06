@@ -28,8 +28,11 @@ import com.android.email.R;
 
 public class CcBccView extends RelativeLayout {
 
+    private final View mCc;
+    private final View mBcc;
+
     public CcBccView(Context context) {
-        super(context, null);
+        this(context, null);
     }
 
     public CcBccView(Context context, AttributeSet attrs) {
@@ -39,31 +42,49 @@ public class CcBccView extends RelativeLayout {
     public CcBccView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         LayoutInflater.from(context).inflate(R.layout.cc_bcc_view, this);
+        mCc = findViewById(R.id.cc_content);
+        mBcc = findViewById(R.id.bcc_content);
     }
 
-    public void show() {
-        View cc = findViewById(R.id.cc_content);
-        View bcc = findViewById(R.id.bcc_content);
-        boolean ccWasAlreadyShown = cc.isShown();
-        cc.setVisibility(View.VISIBLE);
-        bcc.setVisibility(View.VISIBLE);
+    public void show(boolean animate, boolean showCc, boolean showBcc) {
+        boolean ccWasAlreadyShown = mCc.isShown();
+        mCc.setVisibility(showCc ? View.VISIBLE : View.GONE);
+        mBcc.setVisibility(showBcc ? View.VISIBLE : View.GONE);
 
+        if (animate) {
+            animate(showCc, showBcc, ccWasAlreadyShown);
+        } else {
+            int ccHeight = showCc ? mCc.getLayoutParams().height : 0;
+            int bccHeight = showBcc ? mBcc.getLayoutParams().height : 0;
+            getLayoutParams().height = ccHeight + bccHeight;
+            if (showCc) {
+                mCc.setAlpha(1);
+            }
+            if (showBcc) {
+                mBcc.setAlpha(1);
+            }
+            requestLayout();
+        }
+    }
+
+    private void animate(Boolean showCc, boolean showBcc, boolean ccWasAlreadyShown) {
         Resources res = getResources();
         // First, have the height of the wrapper grow to fit the fields.
+        int ccHeight = showCc ? mCc.getLayoutParams().height : 0;
+        int bccHeight = showBcc ? mBcc.getLayoutParams().height : 0;
         ObjectAnimator heightAnimator = ObjectAnimator.ofInt(this, "ccBccHeight",
-                getLayoutParams().height, bcc.getLayoutParams().height
-                        + cc.getLayoutParams().height);
+                getLayoutParams().height, ccHeight + bccHeight);
         heightAnimator.setDuration(res.getInteger(R.integer.expand_cc_bcc_dur));
 
         // Then, have cc/ bcc fade in
         int fadeDuration = res.getInteger(R.integer.fadein_cc_bcc_dur);
-        ObjectAnimator bccAnimator = ObjectAnimator.ofFloat(bcc, "alpha", 0, 1);
+        ObjectAnimator bccAnimator = ObjectAnimator.ofFloat(mBcc, "alpha", 0, 1);
         bccAnimator.setDuration(fadeDuration);
 
         AnimatorSet transitionSet = new AnimatorSet();
         Animator fadeAnimation;
         if (!ccWasAlreadyShown) {
-            ObjectAnimator ccAnimator = ObjectAnimator.ofFloat(cc, "alpha", 0, 1);
+            ObjectAnimator ccAnimator = ObjectAnimator.ofFloat(mCc, "alpha", 0, 1);
             ccAnimator.setDuration(fadeDuration);
             fadeAnimation = new AnimatorSet();
             ((AnimatorSet) fadeAnimation).playTogether(ccAnimator, bccAnimator);
