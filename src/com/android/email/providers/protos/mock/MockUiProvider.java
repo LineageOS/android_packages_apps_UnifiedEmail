@@ -282,6 +282,10 @@ public final class MockUiProvider extends ContentProvider {
             // Get the projection.  If there are rows in the result set, pick the first item to
             // generate the projection
             // TODO (pwestbro): handle the case where we want to return an empty result.\
+            if (projection == null) {
+                Set<String> keys = queryResults.get(0).keySet();
+                projection = keys.toArray(new String[keys.size()]);
+            }
             MatrixCursor matrixCursor = new MatrixCursor(projection, queryResults.size());
 
             for (Map<String, Object> queryResult : queryResults) {

@@ -58,7 +58,8 @@ public class MockUiProviderTests extends AndroidTestCase {
     public void testGetFolders() {
         final Uri accountsUri = MockUiProvider.getAccountsUri();
         MockUiProvider provider = new MockUiProvider();
-        Cursor cursor = provider.query(accountsUri, null, null, null, null);
+        Cursor cursor = provider.query(accountsUri, UIProvider.ACCOUNTS_PROJECTION, null, null,
+                null);
         ArrayList<Uri> folderUris = new ArrayList<Uri>();
         if (cursor != null) {
             Uri foldersUri;
@@ -75,7 +76,8 @@ public class MockUiProviderTests extends AndroidTestCase {
         ArrayList<Uri> convUris = new ArrayList<Uri>();
         int count = 0;
         for (Uri u : folderUris) {
-            Cursor foldersCursor = provider.query(u, null, null, null, null);
+            Cursor foldersCursor = provider.query(u, UIProvider.FOLDERS_PROJECTION, null, null,
+                    null);
             assertNotNull(foldersCursor);
             assertEquals(foldersCursor.getCount(), 2);
             Uri childUri;
@@ -128,7 +130,8 @@ public class MockUiProviderTests extends AndroidTestCase {
         }
         count = 0;
         for (Uri u : childUris) {
-            Cursor childFoldersCursor = provider.query(u, null, null, null, null);
+            Cursor childFoldersCursor = provider.query(u, UIProvider.FOLDERS_PROJECTION, null,
+                    null, null);
             if (childFoldersCursor != null) {
                 int name = childFoldersCursor.getColumnIndex(UIProvider.FolderColumns.NAME);
                 while (childFoldersCursor.moveToNext()) {
@@ -148,7 +151,8 @@ public class MockUiProviderTests extends AndroidTestCase {
         count = 0;
         ArrayList<Uri> messageUris = new ArrayList<Uri>();
         for (Uri u : convUris) {
-            Cursor convFoldersCursor = provider.query(u, null, null, null, null);
+            Cursor convFoldersCursor = provider.query(u, UIProvider.CONVERSATION_PROJECTION, null,
+                    null, null);
             if (convFoldersCursor != null) {
                 int subject = UIProvider.CONVERSATION_SUBJECT_COLUMN;
                 int messageUriCol = UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN;
@@ -176,7 +180,8 @@ public class MockUiProviderTests extends AndroidTestCase {
         count = 0;
         ArrayList<Uri> attachmentUris = new ArrayList<Uri>();
         for (Uri u : messageUris) {
-            Cursor messageCursor = provider.query(u, null, null, null, null);
+            Cursor messageCursor = provider.query(u, UIProvider.MESSAGE_PROJECTION, null, null,
+                    null);
             if (messageCursor != null) {
                 int subject = messageCursor.getColumnIndex(UIProvider.MessageColumns.SUBJECT);
                 int attachmentUriCol = messageCursor
@@ -190,22 +195,24 @@ public class MockUiProviderTests extends AndroidTestCase {
                             assertEquals(messageCursor.getInt(hasAttachments), 1);
                             attachmentUris
                                     .add(Uri.parse(messageCursor.getString(attachmentUriCol)));
+                            count++;
                             break;
                         case 1:
                             assertEquals(messageCursor.getString(subject), "Message zeroConv1");
                             assertEquals(messageCursor.getInt(hasAttachments), 1);
                             attachmentUris
                                     .add(Uri.parse(messageCursor.getString(attachmentUriCol)));
+                            count++;
                             break;
                     }
-                    count++;
                 }
             }
         }
         assertEquals(count, 2);
         count = 0;
         for (Uri u : attachmentUris) {
-            Cursor attachmentCursor = provider.query(u, null, null, null, null);
+            Cursor attachmentCursor = provider.query(u, UIProvider.ATTACHMENT_PROJECTION, null,
+                    null, null);
             if (attachmentCursor != null) {
                 int name = attachmentCursor.getColumnIndex(UIProvider.AttachmentColumns.NAME);
                 while (attachmentCursor.moveToNext()) {
