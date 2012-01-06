@@ -131,7 +131,9 @@ public class UIProvider {
         FolderColumns.SYNC_FREQUENCY,
         FolderColumns.SYNC_WINDOW,
         FolderColumns.CONVERSATION_LIST_URI,
-        FolderColumns.CHILD_FOLDERS_LIST_URI
+        FolderColumns.CHILD_FOLDERS_LIST_URI,
+        FolderColumns.UNREAD_COUNT,
+        FolderColumns.TOTAL_COUNT
     };
 
     public static final class FolderCapabilities {
@@ -175,6 +177,10 @@ public class UIProvider {
          * list of child folders of this folder.
          */
         public static String CHILD_FOLDERS_LIST_URI = "childFoldersListUri";
+
+        public static String UNREAD_COUNT = "unreadCount";
+
+        public static String TOTAL_COUNT = "totalCount";
 
         public FolderColumns() {};
     }
