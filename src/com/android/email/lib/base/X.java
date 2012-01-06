@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.email.lib.base;
 
+package com.android.email.lib.base;
 
 /**
  * A utility class that contains some very widely used functionality.

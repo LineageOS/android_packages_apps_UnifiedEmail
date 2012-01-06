@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -44,8 +43,6 @@ import com.android.email.ViewMode;
 import com.android.email.compose.ComposeActivity;
 import com.android.email.providers.AccountCacheProvider;
 import com.android.email.providers.UIProvider;
-
-import java.util.ArrayList;
 
 public class ConversationListActivity extends Activity implements OnItemSelectedListener,
         OnItemClickListener {

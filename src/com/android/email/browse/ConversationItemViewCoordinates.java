@@ -28,7 +28,6 @@ import android.view.ViewParent;
 import android.widget.TextView;
 import com.android.email.R;
 import com.android.email.ViewMode;
-import com.android.email.utils.Utils;
 
 /**
  * Represents the coordinates of elements inside a CanvasConversationHeaderView

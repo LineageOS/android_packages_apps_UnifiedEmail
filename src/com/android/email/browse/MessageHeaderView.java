@@ -31,8 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.MarginLayoutParams;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -57,7 +55,6 @@ import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-import java.util.Map;
 
 // TODO: this will probably becomes the message header view?
 public class MessageHeaderView extends LinearLayout implements OnClickListener,

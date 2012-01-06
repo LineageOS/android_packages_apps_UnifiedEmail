@@ -17,7 +17,6 @@
 
 package com.android.email.browse;
 
-import com.android.email.ActionBarView;
 import com.android.email.ConversationListContext;
 import com.android.email.MailActionBar;
 import com.android.email.ActionBarView.Mode;
@@ -30,10 +29,8 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -117,86 +114,54 @@ public class ActionbarActivity extends Activity
         changeMode(Mode.LABEL);
     }
 
-    /* (non-Javadoc)
-     * @see com.android.email.MailActionBar.Callback#enterSearchMode()
-     */
     @Override
     public void enterSearchMode() {
         Toast.makeText(this, "Entering Search Mode", Toast.LENGTH_SHORT).show();
     }
 
-    /* (non-Javadoc)
-     * @see com.android.email.MailActionBar.Callback#exitSearchMode()
-     */
     @Override
     public void exitSearchMode() {
         // TODO(viki): Auto-generated method stub
     }
 
-    /* (non-Javadoc)
-     * @see com.android.email.MailActionBar.Callback#reloadSearch(java.lang.String)
-     */
     @Override
     public void reloadSearch(String string) {
         // TODO(viki): Auto-generated method stub
     }
 
-    /* (non-Javadoc)
-     * @see com.android.email.MailActionBar.Callback#navigateToAccount(java.lang.String)
-     */
     @Override
     public boolean navigateToAccount(String account) {
         // TODO(viki): Auto-generated method stub
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see com.android.email.MailActionBar.Callback#navigateToLabel(java.lang.String)
-     */
     @Override
     public void navigateToLabel(String labelCanonicalName) {
         // TODO(viki): Auto-generated method stub
     }
 
-    /* (non-Javadoc)
-     * @see com.android.email.MailActionBar.Callback#showLabelList()
-     */
     @Override
     public void showLabelList() {
         // TODO(viki): Auto-generated method stub
     }
 
-    /* (non-Javadoc)
-     * @see com.android.email.MailActionBar.Callback#getCurrentAccount()
-     */
     @Override
     public String getCurrentAccount() {
         // TODO(viki): Auto-generated method stub
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.android.email.MailActionBar.Callback#getCurrentListContext()
-     */
     @Override
     public ConversationListContext getCurrentListContext() {
         // TODO(viki): Auto-generated method stub
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see
-     * com.android.email.MailActionBar.Callback#startActionBarStatusCursorLoader(java.lang.String)
-     */
     @Override
     public void startActionBarStatusCursorLoader(String account) {
         // TODO(viki): Auto-generated method stub
     }
 
-    /* (non-Javadoc)
-     * @see
-     * com.android.email.MailActionBar.Callback#stopActionBarStatusCursorLoader(java.lang.String)
-     */
     @Override
     public void stopActionBarStatusCursorLoader(String account) {
         // TODO(viki): Auto-generated method stub

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package com.android.email.browse;
 
 import android.database.DataSetObserver;

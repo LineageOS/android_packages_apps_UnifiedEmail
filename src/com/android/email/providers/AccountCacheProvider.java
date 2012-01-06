@@ -24,15 +24,12 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.base.Objects;
 
-import java.lang.IllegalArgumentException;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.Map;
-import java.util.Set;
 
 
 /**

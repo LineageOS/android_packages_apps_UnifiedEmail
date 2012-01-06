@@ -17,9 +17,6 @@
 package com.android.email.compose;
 
 import android.accounts.Account;
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
@@ -30,10 +27,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
-import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,7 +40,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -53,7 +47,6 @@ import com.android.common.Rfc822Validator;
 import com.android.email.compose.QuotedTextView.RespondInlineListener;
 import com.android.email.providers.Address;
 import com.android.email.providers.UIProvider;
-import com.android.email.providers.Attachment;
 import com.android.email.providers.protos.mock.MockAttachment;
 import com.android.email.R;
 import com.android.email.utils.AccountUtils;

@@ -17,7 +17,6 @@
 
 package com.android.email.browse;
 
-import android.provider.BaseColumns;
 import com.android.email.providers.UIProvider;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
@@ -34,7 +33,6 @@ import android.util.LruCache;
 import android.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * This is the view model for the conversation header. It includes all the
@@ -90,7 +88,7 @@ public class ConversationItemViewModel {
     // Standard scaled dimen used to detect if the scale of text has changed.
     public int standardScaledDimen;
 
-    public long dateMs;;
+    public long dateMs;
 
     public String subject;
 

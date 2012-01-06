@@ -19,14 +19,11 @@ package com.android.email.browse;
 
 import com.android.email.browse.ConversationItemViewModel.SenderFragment;
 import com.android.email.perf.Timer;
-import com.android.email.providers.UIProvider;
 import com.android.email.R;
 import com.android.email.ViewMode;
 import com.android.email.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
-import android.content.ClipData;
-import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -34,11 +31,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Layout.Alignment;
@@ -53,12 +46,8 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.SparseArray;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
-
-import java.util.Map;
 
 public class ConversationItemView extends View {
     // Timer.

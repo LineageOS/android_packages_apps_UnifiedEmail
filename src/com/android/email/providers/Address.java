@@ -29,7 +29,6 @@ import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
