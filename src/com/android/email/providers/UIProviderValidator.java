@@ -31,6 +31,8 @@ public class UIProviderValidator {
 
     private final static Set<String> VALID_ACCOUNT_PROJECTION_VALUES =
             ImmutableSet.of(UIProvider.ACCOUNTS_PROJECTION);
+    private final static Set<String> VALID_FOLDER_PROJECTION_VALUES =
+            ImmutableSet.of(UIProvider.FOLDERS_PROJECTION);
 
     /**
      * Validates and returns the projection that can be used for an account query,
@@ -47,6 +49,26 @@ public class UIProviderValidator {
             resultProjection = projection;
         } else {
             resultProjection = UIProvider.ACCOUNTS_PROJECTION;
+        }
+        return resultProjection;
+    }
+
+
+    /**
+     * Validates and returns the projection that can be used for an account query,
+     */
+    public static String[] validateFolderProjection(String[] projection)
+            throws IllegalArgumentException {
+        final String[] resultProjection;
+        if (projection != null) {
+            for (String column : projection) {
+                if (!VALID_FOLDER_PROJECTION_VALUES.contains(column)) {
+                    throw new IllegalArgumentException("Invalid projection");
+                }
+            }
+            resultProjection = projection;
+        } else {
+            resultProjection = UIProvider.FOLDERS_PROJECTION;
         }
         return resultProjection;
     }
