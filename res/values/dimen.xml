@@ -56,4 +56,5 @@
     <dimen name="contact_photo_width">48sp</dimen>
     <dimen name="contact_photo_height">48sp</dimen>
     <dimen name="message_header_inner_side_padding">8dip</dimen>
+    <dimen name="attachment_toast_yoffset">-100dip</dimen>
 </resources>

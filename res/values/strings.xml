@@ -72,6 +72,12 @@
     <string name="forward_attribution">---------- Forwarded message ----------&lt;br&gt;From: <xliff:g id="from">%1$s</xliff:g>&lt;br&gt;Date: <xliff:g id="date">%2$s</xliff:g>&lt;br&gt;Subject: <xliff:g id="subject">%3$s</xliff:g>&lt;br&gt;To: <xliff:g id="to">%4$s</xliff:g>&lt;br&gt;</string>
     <!-- Compose screen, displayed at the top of a message being forwarded if there are any email addresses in the CC list. Please preserve the HTML entities (surrounded by & and ;). [CHAR LIMIT=1000]-->
     <string name="cc_attribution">Cc: <xliff:g id="cc">%1$s</xliff:g>&lt;br&gt;</string>
+    <!-- Dialog text: select the type of an attachment while composing [CHAR LIMIT=100]-->
+    <string name="select_attachment_type">Choose type of attachment</string>
+    <!-- Toast, attachment too large [CHAR LIMIT=100] -->
+    <string name="too_large_to_attach">File is too large to attach.</string>
+    <!-- Toast, problem attaching file [CHAR LIMIT=100] -->
+    <string name="generic_attachment_problem">Couldn\'t attach file.</string>
 
     <!-- Menu item: send this message -->
     <string name="send">Send</string>
