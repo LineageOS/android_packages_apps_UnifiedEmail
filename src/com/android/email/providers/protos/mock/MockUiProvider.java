@@ -85,13 +85,13 @@ public final class MockUiProvider extends ContentProvider {
         // Add the account list to the builder
         builder.put(getAccountsUri().toString(), accountList);
 
-        Map<String, Object> folderDetailsMap0 = createFolderDetailsMap(0, "zero", true);
+        Map<String, Object> folderDetailsMap0 = createFolderDetailsMap(0, "zero", true, 0, 2);
         builder.put(folderDetailsMap0.get(FolderColumns.URI).toString(),
                 ImmutableList.of(folderDetailsMap0));
         builder.put(
                 folderDetailsMap0.get(FolderColumns.CHILD_FOLDERS_LIST_URI).toString(),
-                ImmutableList.of(createFolderDetailsMap(10, "zeroChild0"),
-                        createFolderDetailsMap(11, "zeroChild1")));
+                ImmutableList.of(createFolderDetailsMap(10, "zeroChild0", 0, 0),
+                        createFolderDetailsMap(11, "zeroChild1", 0, 0)));
 
         Map<String, Object> conv0 = createConversationDetailsMap("zeroConv0".hashCode(),
                 "zeroConv0", 1);
@@ -122,16 +122,16 @@ public final class MockUiProvider extends ContentProvider {
         builder.put(message1.get(MessageColumns.ATTACHMENT_LIST_URI).toString(),
                 ImmutableList.of(createAttachmentDetailsMap(1, "one")));
 
-        Map<String, Object> folderDetailsMap1 = createFolderDetailsMap(1, "one");
+        Map<String, Object> folderDetailsMap1 = createFolderDetailsMap(1, "one", 0, 0);
         builder.put(folderDetailsMap1.get(FolderColumns.URI).toString(),
                 ImmutableList.of(folderDetailsMap1));
         builder.put(accountDetailsMap1.get(AccountColumns.FOLDER_LIST_URI).toString(),
                 ImmutableList.of(folderDetailsMap0, folderDetailsMap1));
 
-        Map<String, Object> folderDetailsMap2 = createFolderDetailsMap(2, "two");
+        Map<String, Object> folderDetailsMap2 = createFolderDetailsMap(2, "two", 2, 2);
         builder.put(folderDetailsMap2.get(FolderColumns.URI).toString(),
                 ImmutableList.of(folderDetailsMap2));
-        Map<String, Object> folderDetailsMap3 = createFolderDetailsMap(3, "three");
+        Map<String, Object> folderDetailsMap3 = createFolderDetailsMap(3, "three", 0, 0);
         builder.put(folderDetailsMap3.get(FolderColumns.URI).toString(),
                 ImmutableList.of(folderDetailsMap3));
         builder.put(accountDetailsMap2.get(AccountColumns.FOLDER_LIST_URI).toString(),
@@ -202,12 +202,13 @@ public final class MockUiProvider extends ContentProvider {
         return attachmentMap;
     }
 
-    private static Map<String, Object> createFolderDetailsMap(int folderId, String name) {
-        return createFolderDetailsMap(folderId, name, false);
+    private static Map<String, Object> createFolderDetailsMap(int folderId, String name,
+            int unread, int total) {
+        return createFolderDetailsMap(folderId, name, false, unread, total);
     }
 
     private static Map<String, Object> createFolderDetailsMap(int folderId, String name,
-            boolean hasChildren) {
+            boolean hasChildren, int unread, int total) {
         final String folderUri = "content://" + AUTHORITY + "/folder/" + folderId;
         Map<String, Object> folderMap = Maps.newHashMap();
         folderMap.put(BaseColumns._ID, Long.valueOf(folderId));
@@ -222,6 +223,8 @@ public final class MockUiProvider extends ContentProvider {
                         FolderCapabilities.PARENT |
                         FolderCapabilities.CAN_HOLD_MAIL |
                         FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
+        folderMap.put(FolderColumns.UNREAD_COUNT, unread);
+        folderMap.put(FolderColumns.TOTAL_COUNT, total);
         return folderMap;
     }
 
