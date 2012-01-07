@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.email.browse.MessageHeaderView
+<com.android.mail.browse.MessageHeaderView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,4 +27,4 @@
     <include layout="@layout/conversation_message_upper_header"
         android:id="@+id/upper_header" />
 
-</com.android.email.browse.MessageHeaderView>
+</com.android.mail.browse.MessageHeaderView>

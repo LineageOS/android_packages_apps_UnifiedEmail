@@ -7,15 +7,15 @@
 
 # keep names that are used by reflection, from javascript or from unit tests
 
--keepclasseswithmembers class com.android.email.providers.MockUiProvider {
+-keepclasseswithmembers class com.android.mail.providers.MockUiProvider {
   *** getAccountsUri(...);
 }
 
--keepclasseswithmembers class com.android.email.providers.UIProvider {
+-keepclasseswithmembers class com.android.mail.providers.UIProvider {
   *** getAccountsUri(...);
 }
 
--keepclasseswithmembers class com.android.email.utils.LogUtils {
+-keepclasseswithmembers class com.android.mail.utils.LogUtils {
   public <methods>;
 }
 
@@ -24,6 +24,6 @@
   *** of(...);
 }
 
--keepclasseswithmembers class com.android.email.UnifiedEmail {
+-keepclasseswithmembers class com.android.mail.UnifiedEmail {
   public <methods>;
 }

@@ -49,7 +49,7 @@
             </LinearLayout>
 
             <!--  Attachments -->
-            <com.android.email.compose.AttachmentsView android:id="@+id/attachments"
+            <com.android.mail.compose.AttachmentsView android:id="@+id/attachments"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:orientation="vertical"
@@ -62,7 +62,7 @@
             <include layout="@layout/compose_body"/>
 
             <!-- Quoted text -->
-            <com.android.email.compose.QuotedTextView android:id="@+id/quoted_text_view"
+            <com.android.mail.compose.QuotedTextView android:id="@+id/quoted_text_view"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent" />
 

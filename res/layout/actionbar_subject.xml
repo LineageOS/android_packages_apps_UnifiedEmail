@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 
-<com.android.email.browse.SnippetTextView
+<com.android.mail.browse.SnippetTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/conversation_subject"
     android:layout_width="match_parent"

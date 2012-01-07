@@ -45,7 +45,7 @@
     </LinearLayout>
 
 
-    <com.android.email.compose.CcBccView
+    <com.android.mail.compose.CcBccView
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/cc_bcc_wrapper"

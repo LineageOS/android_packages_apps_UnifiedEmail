@@ -21,7 +21,7 @@ package org.apache.james.mime4j.field;
 
 //BEGIN android-changed: Stubbing out logging
 
-import com.android.email.utils.Utils;
+import com.android.mail.utils.Utils;
 
 import org.apache.james.mime4j.Log;
 import org.apache.james.mime4j.LogFactory;
