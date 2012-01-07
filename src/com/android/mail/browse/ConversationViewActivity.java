@@ -88,6 +88,7 @@ public class ConversationViewActivity extends Activity {
                     UIProvider.MESSAGE_PROJECTION, new int[0], 0);
         }
 
+        @Override
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
             MessageHeaderView header = (MessageHeaderView) view;

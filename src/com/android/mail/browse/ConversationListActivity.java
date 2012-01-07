@@ -54,6 +54,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     private ContentResolver mResolver;
     private String mSelectedAccount;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conversation_list_activity);
@@ -76,6 +77,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         return true;
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
         int id = item.getItemId();
@@ -105,6 +107,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
             return getView(position, convertView, parent);
         }
 
+        @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             return mLayoutInflater.inflate(android.R.layout.simple_dropdown_item_1line, null);
         }
@@ -123,6 +126,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
             super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         }
 
+        @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             ConversationItemView view = new ConversationItemView(context, mSelectedAccount);
             return view;

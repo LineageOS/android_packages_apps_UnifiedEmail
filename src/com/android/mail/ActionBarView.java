@@ -22,8 +22,8 @@ import android.os.Bundle;
 import android.view.Menu;
 
 /**
- * ActionBarView is used to simplify supporting both the GmailActionBar and the
- * GmailActionBarDeprecated, used for pre-v14 devices.
+ * ActionBarView simplifies supporting both MailActionBar and MailActionBarDeprecated (used for
+ * pre-v14 devices).
  */
 
 public interface ActionBarView {
