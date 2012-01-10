@@ -20,11 +20,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
+
+import java.util.List;
 
 /**
  * FromAddressSpinnerAdapter returns the correct spinner adapter for reply from
@@ -40,8 +41,6 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<Account> {
     public static int ACCOUNT_ADDRESS = 1;
 
     private LayoutInflater mInflater;
-
-    private Spinner mSpinner;
 
     public FromAddressSpinnerAdapter(Context context) {
         super(context, R.layout.from_item, R.id.spinner_account_name);
@@ -74,25 +73,36 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<Account> {
         return fromEntry;
     }
 
-    /**
-     * Set the spinner this adapter for which this spinner is being used.
-     *
-     * @param spinner Spinner widget.
-     */
-    public void setSpinner(Spinner spinner) {
-        mSpinner = spinner;
-    }
+    public int addAccounts(boolean checkRealAccount, String replyFromAccount,
+            List<Account> replyFromAccounts) {
+        int currentIndex = 0;
+        int currentAccountIndex = 0;
+        // Get the position of the current account
+        for (Account account : replyFromAccounts) {
+            // Add the account to the Adapter
+            // The reason that we are not adding the Account array, but adding
+            // the names of each account, is because Account returns a string
+            // that we don't want to display on toString()
+            add(account);
+            // Compare to the account address, not the real account being
+            // sent from.
+            if (checkRealAccount) {
+                // Need to check the real account and the account address
+                // so that we can send from the correct address on the
+                // correct account when the same address may exist across
+                // multiple accounts.
+                if (account.name.equals(account) && account.name.equals(replyFromAccounts)) {
+                    currentAccountIndex = currentIndex;
+                }
+            } else {
+                // Just need to check the account address.
+                if (replyFromAccounts.equals(account.name)) {
+                    currentAccountIndex = currentIndex;
+                }
+            }
 
-    /**
-     * Get the spinner associated with this adapter.
-     *
-     * @return Spinner widget.
-     */
-    public Spinner getSpinner() {
-        return mSpinner;
-    }
-
-    public int getSelectedItemPosition() {
-        return mSpinner != null ? mSpinner.getSelectedItemPosition() : -1;
+            currentIndex++;
+        }
+        return currentAccountIndex;
     }
 }

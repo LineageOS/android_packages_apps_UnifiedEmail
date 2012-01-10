@@ -64,7 +64,8 @@
             <!-- Quoted text -->
             <com.android.mail.compose.QuotedTextView android:id="@+id/quoted_text_view"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent" />
+                android:layout_width="match_parent"
+                android:visibility="gone" />
 
             <View android:id="@+id/composearea_tap_trap_bottom"
                 android:clickable="true"

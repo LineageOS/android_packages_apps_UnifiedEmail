@@ -31,7 +31,7 @@ import java.util.ArrayList;
  */
 class AttachmentsView extends LinearLayout {
     private ArrayList<Attachment> mAttachments;
-    private AttachmentChangesListener mChangeListener;
+    private AttachmentDeletedListener mChangeListener;
 
     public AttachmentsView(Context context) {
         this(context, null);
@@ -46,7 +46,7 @@ class AttachmentsView extends LinearLayout {
      * Set a listener for changes to the attachments.
      * @param listener
      */
-    public void setAttachmentChangesListener(AttachmentChangesListener listener) {
+    public void setAttachmentChangesListener(AttachmentDeletedListener listener) {
         mChangeListener = listener;
     }
 
@@ -73,10 +73,6 @@ class AttachmentsView extends LinearLayout {
         addView(attachmentView, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT));
-
-        if (mChangeListener != null) {
-            mChangeListener.onAttachmentAdded();
-        }
     }
 
     @VisibleForTesting
@@ -136,8 +132,7 @@ class AttachmentsView extends LinearLayout {
      * @author mindyp@google.com
      *
      */
-    public interface AttachmentChangesListener {
+    public interface AttachmentDeletedListener {
         public void onAttachmentDeleted();
-        public void onAttachmentAdded();
     }
 }

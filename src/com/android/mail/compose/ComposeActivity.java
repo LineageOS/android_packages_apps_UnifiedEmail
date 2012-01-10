@@ -27,7 +27,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -54,6 +53,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.BaseInputConnection;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -63,6 +63,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.common.Rfc822Validator;
+import com.android.mail.compose.AttachmentsView.AttachmentDeletedListener;
 import com.android.mail.compose.QuotedTextView.RespondInlineListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
@@ -74,7 +75,6 @@ import com.android.mail.providers.protos.mock.MockAttachment;
 import com.android.mail.R;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
 import com.android.ex.chips.RecipientEditTextView;
 import com.google.common.annotations.VisibleForTesting;
@@ -83,21 +83,18 @@ import com.google.common.collect.Sets;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, OnItemSelectedListener, DialogInterface.OnClickListener,
-        TextWatcher {
+        TextWatcher, AttachmentDeletedListener {
     // Identifiers for which type of composition this is
     static final int COMPOSE = -1;  // also used for editing a draft
     static final int REPLY = 0;
@@ -153,25 +150,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Uri mRefMessageUri;
     private TextView mSubject;
 
-    private ActionBar mActionBar;
     private ComposeModeAdapter mComposeModeAdapter;
     private int mComposeMode = -1;
     private boolean mForward;
     private String mRecipient;
-    private boolean mAttachmentsChanged;
     private QuotedTextView mQuotedTextView;
-    private TextView mBodyText;
+    private TextView mBodyView;
     private View mFromStatic;
-    private View mFromSpinner;
-    private Spinner mFrom;
-    private List<Account> mReplyFromAccounts;
+    private View mFromSpinnerWrapper;
+    private Spinner mFromSpinner;
     private boolean mAccountSpinnerReady;
-    private Account mCurrentReplyFromAccount;
-    private boolean mMessageIsForwardOrReply;
     private List<Account> mAccounts;
     private boolean mAddingAttachment;
-    private boolean mAttachmentAddedOrRemoved;
-    private AlertDialog mSendConfirmDialog;
+    private boolean mAttachmentsChanged;
     private boolean mTextChanged;
     private boolean mReplyFromChanged;
     private MenuItem mSave;
@@ -179,7 +170,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Object mDraftIdLock = new Object();
     private long mRefMessageId;
     private AlertDialog mRecipientErrorDialog;
-
+    private AlertDialog mSendConfirmDialog;
     /**
      * Can be called from a non-UI thread.
      */
@@ -235,7 +226,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mRefMessageUri = Uri.parse(intent.getStringExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI));
             initFromRefMessage(action, mAccount.name);
         } else {
-            setQuotedTextVisibility(false);
+            mQuotedTextView.setVisibility(View.GONE);
         }
         initActionBar(action);
         asyncInitFromSpinner();
@@ -249,40 +240,51 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         asyncInitFromSpinner();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mSendConfirmDialog != null) {
+            mSendConfirmDialog.dismiss();
+        }
+        if (mRecipientErrorDialog != null) {
+            mRecipientErrorDialog.dismiss();
+        }
+
+        saveIfNeeded();
+    }
+
+    @Override
+    protected final void onActivityResult(int request, int result, Intent data) {
+        mAddingAttachment = false;
+
+        if (result == RESULT_OK && request == RESULT_PICK_ATTACHMENT) {
+            addAttachmentAndUpdateView(data);
+        }
+    }
+
+    @Override
+    public final void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        // onSaveInstanceState is only called if the user might come back to this activity so it is
+        // not an ideal location to save the draft. However, if we have never saved the draft before
+        // we have to save it here in order to have an id to save in the bundle.
+        saveIfNeededOnOrientationChanged();
+    }
+
     private void asyncInitFromSpinner() {
         Account[] result = AccountUtils.getSyncingAccounts(this, null, null, null);
         mAccounts = AccountUtils
                 .mergeAccountLists(mAccounts, result, true /* prioritizeAccountList */);
-        createReplyFromCache();
         initFromSpinner();
-    }
-
-    /**
-     * Create a cache of all accounts a user could send mail from
-     */
-    private void createReplyFromCache() {
-        // Check for replyFroms.
-        List<Account> accounts = null;
-        mReplyFromAccounts = new ArrayList<Account>();
-
-        if (mMessageIsForwardOrReply) {
-            accounts = Collections.singletonList(mAccount);
-        } else {
-            accounts = mAccounts;
-        }
-        for (Account account : accounts) {
-            // First add the account. First position is account, second
-            // is display of account, 3rd position is the REAL account this
-            // is being sent from / synced to.
-            mReplyFromAccounts.add(account);
-        }
     }
 
     private void initFromSpinner() {
         // If there are not yet any accounts in the cached synced accounts
         // because this is the first time Gmail was opened, and it was opened directly
         // to the compose activity,don't bother populating the reply from spinner yet.
-        if (mReplyFromAccounts == null || mReplyFromAccounts.size() == 0) {
+        if (mAccounts == null || mAccounts.size() == 0) {
             mAccountSpinnerReady = false;
             return;
         }
@@ -292,60 +294,22 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         boolean checkRealAccount = mRecipient == null || mAccount.equals(mRecipient);
 
-        currentAccountIndex = addAccountsToAdapter(adapter, checkRealAccount, replyFromAccount);
+        currentAccountIndex = adapter.addAccounts(checkRealAccount, replyFromAccount,
+                mAccounts);
 
-        mFrom.setAdapter(adapter);
-        mFrom.setSelection(currentAccountIndex, false);
-        mFrom.setOnItemSelectedListener(this);
-        mCurrentReplyFromAccount = mReplyFromAccounts.get(currentAccountIndex);
+        mFromSpinner.setAdapter(adapter);
+        mFromSpinner.setSelection(currentAccountIndex, false);
+        mFromSpinner.setOnItemSelectedListener(this);
+        mAccount = mAccounts.get(currentAccountIndex);
 
-        hideOrShowFromSpinner();
-        mAccountSpinnerReady = true;
-        adapter.setSpinner(mFrom);
-    }
-
-    private void hideOrShowFromSpinner() {
-        // Determine whether the from account spinner or the static
-        // from text should be show
-        // When the spinner is shown, the static from text
-        // is hidden
-        showFromSpinner(mFrom.getCount() > 1);
-    }
-
-    private int addAccountsToAdapter(FromAddressSpinnerAdapter adapter, boolean checkRealAccount,
-            String replyFromAccount) {
-        int currentIndex = 0;
-        int currentAccountIndex = 0;
-        // Get the position of the current account
-        for (Account account : mReplyFromAccounts) {
-            // Add the account to the Adapter
-            // The reason that we are not adding the Account array, but adding
-            // the names of each account, is because Account returns a string
-            // that we don't want to display on toString()
-            adapter.add(account);
-            // Compare to the account address, not the real account being
-            // sent from.
-            if (checkRealAccount) {
-                // Need to check the real account and the account address
-                // so that we can send from the correct address on the
-                // correct account when the same address may exist across
-                // multiple accounts.
-                if (account.name.equals(mAccount)
-                        && account.name
-                                .equals(replyFromAccount)) {
-                    currentAccountIndex = currentIndex;
-                }
-            } else {
-                // Just need to check the account address.
-                if (replyFromAccount.equals(
-                        account.name)) {
-                    currentAccountIndex = currentIndex;
-                }
-            }
-
-            currentIndex++;
-        }
-        return currentAccountIndex;
+        boolean showSpinner = mFromSpinner.getCount() > 1;
+        // If there is only 1 account, just show that account.
+        // Otherwise, give the user the ability to choose which account to send
+        // mail from / save drafts to.
+        mFromStatic.setVisibility(
+                showSpinner ? View.GONE : View.VISIBLE);
+        mFromSpinnerWrapper.setVisibility(
+                showSpinner ? View.VISIBLE : View.GONE);
     }
 
     private void findViews() {
@@ -355,62 +319,43 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
-        mTo = setupRecipients(R.id.to);
-        mCc = setupRecipients(R.id.cc);
-        mBcc = setupRecipients(R.id.bcc);
+        mAttachmentsView.setAttachmentChangesListener(this);
+        setupRecipients();
         // TODO: add special chips text change watchers before adding
         // this as a text changed watcher to the to, cc, bcc fields.
         mSubject = (TextView) findViewById(R.id.subject);
         mSubject.addTextChangedListener(this);
         mQuotedTextView = (QuotedTextView) findViewById(R.id.quoted_text_view);
         mQuotedTextView.setRespondInlineListener(this);
-        mBodyText = (TextView) findViewById(R.id.body);
-        mBodyText.addTextChangedListener(this);
+        mBodyView = (TextView) findViewById(R.id.body);
+        mBodyView.addTextChangedListener(this);
         mFromStatic = findViewById(R.id.static_from_content);
-        mFromSpinner = findViewById(R.id.spinner_from_content);
-        mFrom = (Spinner) findViewById(R.id.from_picker);
-    }
-
-    /**
-     * Show the static from text view or the spinner
-     * @param showSpinner Whether the spinner should be shown
-     */
-    private void showFromSpinner(boolean showSpinner) {
-        // show/hide the static text
-        mFromStatic.setVisibility(
-                showSpinner ? View.GONE : View.VISIBLE);
-
-        // show/hide the spinner
-        mFromSpinner.setVisibility(
-                showSpinner ? View.VISIBLE : View.GONE);
-    }
-
-    private void setQuotedTextVisibility(boolean show) {
-        mQuotedTextView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mFromSpinnerWrapper = findViewById(R.id.spinner_from_content);
+        mFromSpinner = (Spinner) findViewById(R.id.from_picker);
     }
 
     private void initActionBar(int action) {
         mComposeMode = action;
-        mActionBar = getActionBar();
+        ActionBar actionBar = getActionBar();
         if (action == ComposeActivity.COMPOSE) {
-            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            mActionBar.setTitle(R.string.compose);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            actionBar.setTitle(R.string.compose);
         } else {
-            mActionBar.setTitle(null);
+            actionBar.setTitle(null);
             if (mComposeModeAdapter == null) {
                 mComposeModeAdapter = new ComposeModeAdapter(this);
             }
-            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            mActionBar.setListNavigationCallbacks(mComposeModeAdapter, this);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            actionBar.setListNavigationCallbacks(mComposeModeAdapter, this);
             switch (action) {
                 case ComposeActivity.REPLY:
-                    mActionBar.setSelectedNavigationItem(0);
+                    actionBar.setSelectedNavigationItem(0);
                     break;
                 case ComposeActivity.REPLY_ALL:
-                    mActionBar.setSelectedNavigationItem(1);
+                    actionBar.setSelectedNavigationItem(1);
                     break;
                 case ComposeActivity.FORWARD:
-                    mActionBar.setSelectedNavigationItem(2);
+                    actionBar.setSelectedNavigationItem(2);
                     break;
             }
         }
@@ -429,7 +374,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 if (action == FORWARD) {
                     mForward = true;
                 }
-                setQuotedTextVisibility(true);
                 initRecipientsFromRefMessageCursor(recipientAddress, refMessage, action);
                 initBodyFromRefMessage(refMessage, action);
                 if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
@@ -445,7 +389,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
+    private void updateAttachments(int action, Cursor refMessage) {
+        // TODO: implement this when we do attachment handling.
+    }
+
     private void initBodyFromRefMessage(Cursor refMessage, int action) {
+        mQuotedTextView.setVisibility(View.VISIBLE);
         mQuotedTextView.setQuotedText(action, refMessage, action != FORWARD);
     }
 
@@ -471,21 +420,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mAttachmentsView.removeAllViews();
     }
 
-    private void updateAttachments(int action, Cursor refMessage) {
-        // TODO: when we hook up attachments, make this work properly.
-    }
-
-    @Override
-    protected final void onActivityResult(int request, int result, Intent data) {
-        mAddingAttachment = false;
-        if (result != RESULT_OK) {
-            return;
-        }
-
-        if (request == RESULT_PICK_ATTACHMENT) {
-            addAttachmentAndUpdateView(data);
-        }
-    }
     /**
      * Add attachment and update the compose area appropriately.
      * @param data
@@ -501,6 +435,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // A toast has already been shown to the user, no need to do anything.
                 LogUtils.e(LOG_TAG, e, "Error adding attachment");
             }
+            updateSaveUi();
         } else {
            showAttachmentTooBigToast();
         }
@@ -847,6 +782,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mSubject.setText(correctedSubject);
     }
 
+    private void setupRecipients() {
+        mTo = setupRecipients(R.id.to);
+        mCc = setupRecipients(R.id.cc);
+        mBcc = setupRecipients(R.id.bcc);
+    }
+
     private RecipientEditTextView setupRecipients(int id) {
         RecipientEditTextView view = (RecipientEditTextView) findViewById(id);
         String accountName = mAccount.name;
@@ -917,7 +858,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 handled = true;
                 break;
             case R.id.save:
-                doSave();
+                doSave(true, false);
                 handled = true;
                 break;
             case R.id.send:
@@ -932,8 +873,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         sendOrSaveWithSanityChecks(false, true, false);
     }
 
-    private void doSave() {
-        sendOrSaveWithSanityChecks(true, true, false);
+    private void doSave(boolean showToast, boolean resetIME) {
+        sendOrSaveWithSanityChecks(true, showToast, false);
+        if (resetIME) {
+            // Clear the IME composing suggestions from the body.
+            BaseInputConnection.removeComposingSpans(mBodyView.getEditableText());
+        }
     }
 
     /*package*/ interface SendOrSaveCallback {
@@ -970,9 +915,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     ContentResolver resolver = mContext.getContentResolver();
                     ContentValues values = new ContentValues();
                     values.put(BaseColumns._ID, messageId);
-                    resolver.update(Uri.parse(selectedAccount.expungeMessageUri), values, null,
-                            null);
-
+                    if (!TextUtils.isEmpty(selectedAccount.expungeMessageUri)) {
+                        resolver.update(Uri.parse(selectedAccount.expungeMessageUri), values, null,
+                                null);
+                    }
                     // reset messageId to 0, so a new message will be created
                     messageId = UIProvider.INVALID_MESSAGE_ID;
                 }
@@ -1116,7 +1062,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Update the state of the UI based on whether or not the current draft
      * needs to be saved and the message is not empty.
      */
-    public void updateUi() {
+    public void updateSaveUi() {
         if (mSave != null) {
             mSave.setEnabled((shouldSave() && !isBlank()));
         }
@@ -1131,7 +1077,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // It hasn't been sent AND
             // Some text has been added to the message OR
             // an attachment has been added or removed
-            return (mTextChanged || mAttachmentAddedOrRemoved ||
+            return (mTextChanged || mAttachmentsChanged ||
                     (mReplyFromChanged && !isBlank()));
         }
     }
@@ -1142,7 +1088,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      */
     public boolean isBlank() {
         return mSubject.getText().length() == 0
-               && mBodyText.getText().length() == 0
+               && mBodyView.getText().length() == 0
                && mTo.length() == 0
                && mCc.length() == 0
                && mBcc.length() == 0
@@ -1155,7 +1101,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      */
     private void discardChanges() {
         mTextChanged = false;
-        mAttachmentAddedOrRemoved = false;
+        mAttachmentsChanged = false;
         mReplyFromChanged = false;
     }
 
@@ -1169,7 +1115,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
    protected boolean sendOrSaveWithSanityChecks(final boolean save,
                final boolean showToast, final boolean orientationChanged) {
        String[] to, cc, bcc;
-       Editable body = mBodyText.getEditableText();
+       Editable body = mBodyView.getEditableText();
 
        if (orientationChanged) {
            to = cc = bcc = new String[0];
@@ -1202,7 +1148,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
            public void onClick(DialogInterface dialog, int which) {
-               sendOrSave(mBodyText.getEditableText(), save, showToast, orientationChanged);
+               sendOrSave(mBodyView.getEditableText(), save, showToast, orientationChanged);
            }
        };
 
@@ -1447,13 +1393,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
          };
 
        // Get the selected account if the from spinner has been setup.
-       Account selectedAccount = mCurrentReplyFromAccount;
-       String fromAddress = mCurrentReplyFromAccount.name;
+       Account selectedAccount = mAccount;
+       String fromAddress = selectedAccount.name;
        if (selectedAccount == null || fromAddress == null) {
            // We don't have either the selected account or from address,
            // use mAccount.
-           selectedAccount = mCurrentReplyFromAccount;
-           fromAddress = mCurrentReplyFromAccount.name;
+           selectedAccount = mAccount;
+           fromAddress = mAccount.name;
        }
 
        if (mSendSaveTaskHandler == null) {
@@ -1485,7 +1431,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
        // because the send or save completes asynchronously even though the
        // toast shows right away.
        discardChanges();
-       updateUi();
+       updateSaveUi();
 
        // If we are sending, finish the activity
        if (!save) {
@@ -1578,7 +1524,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @param withSignature True to append a signature.
      */
     public void appendToBody(CharSequence text, boolean withSignature) {
-        Editable bodyText = mBodyText.getEditableText();
+        Editable bodyText = mBodyView.getEditableText();
         if (bodyText != null && bodyText.length() > 0) {
             bodyText.append(text);
         } else {
@@ -1592,19 +1538,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @param withSignature True to append a signature.
      */
     public void setBody(CharSequence text, boolean withSignature) {
-        mBodyText.setText(text);
+        mBodyView.setText(text);
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Account selectedAccountInfo = (Account) mFrom.getSelectedItem();
-        boolean equalAccounts = selectedAccountInfo.name.equals(mCurrentReplyFromAccount.name);
-        // TODO: handle discarding attachments when switching accounts.
-        updateReplyFromAccount(equalAccounts, selectedAccountInfo);
-    }
+        Account selectedAccountInfo = (Account) mFromSpinner.getSelectedItem();
+        boolean equalAccounts = selectedAccountInfo.name.equals(mAccount.name);
+        mAccount = selectedAccountInfo;
 
-    private void updateReplyFromAccount(boolean equalAccounts, Account selectedAccountInfo) {
-        // If either the account has changed OR the custom address has
-        // changed, enable the save button.
+        // TODO: handle discarding attachments when switching accounts.
         if (!equalAccounts) {
             // Only enable save for this draft if there is any other content
             // in the message.
@@ -1612,8 +1554,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 enableSave(true);
             }
             mReplyFromChanged = true;
+            setupRecipients();
         }
-        mCurrentReplyFromAccount = selectedAccountInfo;
     }
 
     @Override
@@ -1665,7 +1607,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (mDraftId != UIProvider.INVALID_MESSAGE_ID) {
                 ContentValues values = new ContentValues();
                 values.put(MessageColumns.SERVER_ID, mDraftId);
-                getContentResolver().update(Uri.parse(mCurrentReplyFromAccount.expungeMessageUri),
+                getContentResolver().update(Uri.parse(mAccount.expungeMessageUri),
                         values, null, null);
                 // This is not strictly necessary (since we should not try to
                 // save the draft after calling this) but it ensures that if we
@@ -1691,7 +1633,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void afterTextChanged(Editable s) {
         mTextChanged = true;
-        updateUi();
+        updateSaveUi();
     }
 
     @Override
@@ -1702,5 +1644,52 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         // Do nothing.
+    }
+
+    private void saveIfNeeded() {
+        if (mAccount == null) {
+            // We have not chosen an account yet so there's no way that we can save. This is ok,
+            // though, since we are saving our state before AccountsActivity is activated. Thus, the
+            // user has not interacted with us yet and there is no real state to save.
+            return;
+        }
+
+        if (shouldSave()) {
+            doSave(!mAddingAttachment /* show toast */, true /* reset IME */);
+        }
+    }
+
+    private void saveIfNeededOnOrientationChanged() {
+        if (mAccount == null) {
+            // We have not chosen an account yet so there's no way that we can save. This is ok,
+            // though, since we are saving our state before AccountsActivity is activated. Thus, the
+            // user has not interacted with us yet and there is no real state to save.
+            return;
+        }
+
+        if (shouldSave()) {
+            doSaveOrientationChanged(!mAddingAttachment /* show toast */, true /* reset IME */);
+        }
+    }
+
+    /**
+     * Save a draft if a draft already exists or the message is not empty.
+     */
+    public void doSaveOrientationChanged(boolean showToast, boolean resetIME) {
+        saveOnOrientationChanged();
+        if (resetIME) {
+            // Clear the IME composing suggestions from the body.
+            BaseInputConnection.removeComposingSpans(mBodyView.getEditableText());
+        }
+    }
+
+    protected boolean saveOnOrientationChanged() {
+        return sendOrSaveWithSanityChecks(true, false, true);
+    }
+
+    @Override
+    public void onAttachmentDeleted() {
+        mAttachmentsChanged = true;
+        updateSaveUi();
     }
 }
