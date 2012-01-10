@@ -16,9 +16,15 @@
 package com.android.mail.compose;
 
 import com.android.mail.R;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.Utils;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import android.content.Context;
+import android.content.res.Resources;
+import android.database.Cursor;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -36,6 +42,23 @@ import android.widget.LinearLayout;
  * the quoted text from the message.
  */
 class QuotedTextView extends LinearLayout implements OnClickListener {
+    // HTML tags used to quote reply content
+    // The following style must be in-sync with
+    // pinto.app.MessageUtil.QUOTE_STYLE and
+    // java/com/google/caribou/ui/pinto/modules/app/messageutil.js
+    // BEG_QUOTE_BIDI is also available there when we support BIDI
+    private static final String BLOCKQUOTE_BEGIN = "<blockquote class=\"quote\" style=\""
+            + "margin:0 0 0 .8ex;" + "border-left:1px #ccc solid;" + "padding-left:1ex\">";
+    private static final String BLOCKQUOTE_END = "</blockquote>";
+    // HTML tags used to quote replies & forwards
+    /* package for testing */static final String QUOTE_BEGIN = "<div class=\"quote\">";
+    private static final String QUOTE_END = "</div>";
+
+    // Separates the attribution headers (Subject, To, etc) from the body in
+    // quoted text.
+    /* package for testing */  static final String HEADER_SEPARATOR = "<br type='attribution'>";
+    static final int HEADER_SEPARATOR_LENGTH = HEADER_SEPARATOR.length();
+
     private CharSequence mQuotedText;
     private WebView mQuotedTextWebView;
     private ShowHideQuotedTextListener mShowHideListener;
@@ -96,26 +119,6 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     public void allowRespondInline(boolean allow) {
         if (mRespondInlineButton != null) {
             mRespondInlineButton.setVisibility(allow? View.VISIBLE : View.GONE);
-        }
-    }
-
-    /**
-     * Set quoted text. Some use cases may not want to display the check box (i.e. forwarding) so
-     * allow control of that.
-     */
-    public void setQuotedText(CharSequence quotedText) {
-        mQuotedText = quotedText;
-        populateData();
-        if (mRespondInlineButton != null) {
-            if (!TextUtils.isEmpty(quotedText)) {
-                mRespondInlineButton.setVisibility(View.VISIBLE);
-                mRespondInlineButton.setEnabled(true);
-                mRespondInlineButton.setOnClickListener(this);
-            } else {
-                // No text to copy; disable the respond inline button.
-                mRespondInlineButton.setVisibility(View.GONE);
-                mRespondInlineButton.setEnabled(false);
-            }
         }
     }
 
@@ -201,7 +204,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     private void respondInline() {
         // Copy the text in the quoted message to the body of the
         // message after stripping the html.
-        String quotedText = (String) getQuotedText();
+        String quotedText = getQuotedText().toString();
         String html = TextUtils.isEmpty(quotedText) ?
                 "" : Html.fromHtml(quotedText).toString();
         if (mRespondInlineListener != null) {
@@ -231,5 +234,67 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
      */
     public interface RespondInlineListener {
         public void onRespondInline(String text);
+    }
+
+    public void setQuotedText(int action, Cursor refMessage, boolean allow) {
+        StringBuffer quotedText = new StringBuffer();
+        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
+        Date date = new Date(refMessage.getLong(UIProvider.MESSAGE_DATE_RECEIVED_MS_COLUMN));
+        Resources resources = getContext().getResources();
+        if (action == ComposeActivity.REPLY || action == ComposeActivity.REPLY_ALL) {
+            quotedText.append(QUOTE_BEGIN);
+            quotedText
+                    .append(String.format(
+                            resources.getString(R.string.reply_attribution),
+                            dateFormat.format(date),
+                            Utils.cleanUpString(
+                                    refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN), true)));
+            quotedText.append(HEADER_SEPARATOR);
+            quotedText.append(BLOCKQUOTE_BEGIN);
+            quotedText.append(refMessage.getString(UIProvider.MESSAGE_BODY_HTML));
+            quotedText.append(BLOCKQUOTE_END);
+            quotedText.append(QUOTE_END);
+        } else if (action == ComposeActivity.FORWARD) {
+            quotedText.append(QUOTE_BEGIN);
+            quotedText
+                    .append(String.format(resources.getString(R.string.forward_attribution), Utils
+                            .cleanUpString(refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN),
+                                    true /* remove empty quotes */), dateFormat.format(date), Utils
+                            .cleanUpString(refMessage.getString(UIProvider.MESSAGE_SUBJECT_COLUMN),
+                                    false /* don't remove empty quotes */), Utils.cleanUpString(
+                            refMessage.getString(UIProvider.MESSAGE_TO_COLUMN), true)));
+            String ccAddresses = refMessage.getString(UIProvider.MESSAGE_CC_COLUMN);
+            quotedText.append(String.format(resources.getString(R.string.cc_attribution),
+                    Utils.cleanUpString(ccAddresses, true /* remove empty quotes */)));
+        }
+        quotedText.append(HEADER_SEPARATOR);
+        quotedText.append(refMessage.getString(UIProvider.MESSAGE_BODY_HTML));
+        quotedText.append(QUOTE_END);
+        setQuotedText(quotedText);
+        allowQuotedText(allow);
+        // If there is quoted text, we always allow respond inline, since this
+        // may be a forward.
+        allowRespondInline(true);
+    }
+
+
+    /**
+     * Set quoted text. Some use cases may not want to display the check box (i.e. forwarding) so
+     * allow control of that.
+     */
+    private void setQuotedText(CharSequence quotedText) {
+        mQuotedText = quotedText;
+        populateData();
+        if (mRespondInlineButton != null) {
+            if (!TextUtils.isEmpty(quotedText)) {
+                mRespondInlineButton.setVisibility(View.VISIBLE);
+                mRespondInlineButton.setEnabled(true);
+                mRespondInlineButton.setOnClickListener(this);
+            } else {
+                // No text to copy; disable the respond inline button.
+                mRespondInlineButton.setVisibility(View.GONE);
+                mRespondInlineButton.setEnabled(false);
+            }
+        }
     }
 }
