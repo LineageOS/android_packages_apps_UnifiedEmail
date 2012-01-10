@@ -104,22 +104,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     static final int REPLY_ALL = 1;
     static final int FORWARD = 2;
 
-    // HTML tags used to quote reply content
-    // The following style must be in-sync with
-    // pinto.app.MessageUtil.QUOTE_STYLE and
-    // java/com/google/caribou/ui/pinto/modules/app/messageutil.js
-    // BEG_QUOTE_BIDI is also available there when we support BIDI
-    private static final String BLOCKQUOTE_BEGIN = "<blockquote class=\"quote\" style=\""
-            + "margin:0 0 0 .8ex;" + "border-left:1px #ccc solid;" + "padding-left:1ex\">";
-    private static final String BLOCKQUOTE_END = "</blockquote>";
-    // HTML tags used to quote replies & forwards
-    /* package for testing */static final String QUOTE_BEGIN = "<div class=\"quote\">";
-    private static final String QUOTE_END = "</div>";
-    // Separates the attribution headers (Subject, To, etc) from the body in
-    // quoted text.
-    /* package for testing */  static final String HEADER_SEPARATOR = "<br type='attribution'>";
-    private static final int HEADER_SEPARATOR_LENGTH = HEADER_SEPARATOR.length();
-
     // Integer extra holding one of the above compose action
     private static final String EXTRA_ACTION = "action";
 
@@ -462,56 +446,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initBodyFromRefMessage(Cursor refMessage, int action) {
-        boolean forward = action == FORWARD;
-        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
-        Date date = new Date(refMessage.getLong(UIProvider.MESSAGE_DATE_RECEIVED_MS_COLUMN));
-        StringBuffer quotedText = new StringBuffer();
-
-        if (action == ComposeActivity.REPLY || action == ComposeActivity.REPLY_ALL) {
-            quotedText.append(QUOTE_BEGIN);
-            quotedText
-                    .append(String.format(
-                            getString(R.string.reply_attribution),
-                            dateFormat.format(date),
-                            Utils.cleanUpString(
-                                    refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN), true)));
-            quotedText.append(HEADER_SEPARATOR);
-            quotedText.append(BLOCKQUOTE_BEGIN);
-            quotedText.append(refMessage.getString(UIProvider.MESSAGE_BODY_HTML));
-            quotedText.append(BLOCKQUOTE_END);
-            quotedText.append(QUOTE_END);
-        } else if (action == ComposeActivity.FORWARD) {
-            quotedText.append(QUOTE_BEGIN);
-            quotedText
-                    .append(String.format(getString(R.string.forward_attribution), Utils
-                            .cleanUpString(refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN),
-                                    true /* remove empty quotes */), dateFormat.format(date), Utils
-                            .cleanUpString(refMessage.getString(UIProvider.MESSAGE_SUBJECT_COLUMN),
-                                    false /* don't remove empty quotes */), Utils.cleanUpString(
-                            refMessage.getString(UIProvider.MESSAGE_TO_COLUMN), true)));
-            String ccAddresses = refMessage.getString(UIProvider.MESSAGE_CC_COLUMN);
-            quotedText.append(String.format(getString(R.string.cc_attribution),
-                    Utils.cleanUpString(ccAddresses, true /* remove empty quotes */)));
-        }
-        quotedText.append(HEADER_SEPARATOR);
-        quotedText.append(refMessage.getString(UIProvider.MESSAGE_BODY_HTML));
-        quotedText.append(QUOTE_END);
-        setQuotedText(quotedText.toString(), !forward);
-    }
-
-    /**
-     * Fill the quoted text WebView. There is no point in having a "Show quoted
-     * text" checkbox in a forwarded message so make sure mForward is
-     * initialized properly before calling this method so we can hide it.
-     */
-    public void setQuotedText(CharSequence text, boolean allow) {
-        // There is no way to retrieve this string from the WebView once it's
-        // been loaded, so we need to store it here.
-        mQuotedTextView.setQuotedText(text);
-        mQuotedTextView.allowQuotedText(allow);
-        // If there is quoted text, we always allow respond inline, since this
-        // may be a forward.
-        mQuotedTextView.allowRespondInline(true);
+        mQuotedTextView.setQuotedText(action, refMessage, action != FORWARD);
     }
 
     private void updateHideOrShowCcBcc() {
@@ -1385,9 +1320,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
            } else {
                // replies get full quoted text from server - HTMl gets converted to text for now
                final String text = quotedText.toString();
-               int pos = text.indexOf(HEADER_SEPARATOR);
+               int pos = text.indexOf(QuotedTextView.HEADER_SEPARATOR);
                if (pos >= 0) {
-                   pos += HEADER_SEPARATOR_LENGTH; // Skip over the <div> tag
+                   pos += QuotedTextView.HEADER_SEPARATOR_LENGTH; // Skip over the <div> tag
                    fullBody.append(text.substring(0, pos));
                    int quoteStartPos = fullBody.length();
                    MessageModification.putForward(values, forward);
