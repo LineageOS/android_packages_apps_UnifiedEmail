@@ -33,6 +33,7 @@ import android.accounts.OperationCanceledException;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.net.Uri;
 
 import java.io.IOException;
 import java.util.Map;
@@ -42,6 +43,19 @@ import java.util.Map;
  * A service to handle various intents asynchronously.
  */
 public class GmailIntentService extends IntentService {
+
+    private static final String GMAIL_UI_PROVIDER_AUTHORITY = "com.android.gmail.ui";
+    private static final String GMAIL_UI_PROVIDER_BASE_URI_STRING =
+            "content://" + GMAIL_UI_PROVIDER_AUTHORITY;
+
+    private static Uri getAccountUri(String account) {
+        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/account/" + account);
+    }
+
+    private static Uri getAccountFoldersUri(String account) {
+        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/labels");
+    }
+
     public GmailIntentService() {
         super("GmailIntentService");
     }
@@ -94,9 +108,9 @@ public class GmailIntentService extends IntentService {
             final AccountCacheProvider.CachedAccount cachedAccount =
                     new AccountCacheProvider.CachedAccount(gmailAccountId,
                             account.name,
-                            MockUiProvider.getMockAccountUri(gmailAccountId),
+                            getAccountUri(account.name).toString(),
                             (Long)mockAccountMap.get(AccountColumns.CAPABILITIES),
-                            (String)mockAccountMap.get(AccountColumns.FOLDER_LIST_URI),
+                            getAccountFoldersUri(account.name).toString(),
                             (String)mockAccountMap.get(AccountColumns.SEARCH_URI),
                             (String)mockAccountMap.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
                             (String)mockAccountMap.get(AccountColumns.SAVE_DRAFT_URI),
