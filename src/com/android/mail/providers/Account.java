@@ -17,6 +17,7 @@
 package com.android.mail.providers;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 
 
@@ -56,7 +57,8 @@ public class Account extends android.accounts.Account {
 
     /**
      * The content provider uri that can be used to save (insert) new draft
-     * messages for this account.
+     * messages for this account. NOTE: This might be better to be an update
+     * operation on the messageUri.
      */
     public String saveDraftUri;
 
@@ -68,6 +70,13 @@ public class Account extends android.accounts.Account {
      */
     public String sendMessageUri;
 
+    /**
+     * The content provider uri that can be used to expunge message from this
+     * account. NOTE: This might be better to be an update operation on the
+     * messageUri.
+     */
+    public String expungeMessageUri;
+
     public Account(Parcel in) {
         super(in);
         providerVersion = in.readInt();
@@ -78,6 +87,7 @@ public class Account extends android.accounts.Account {
         accountFromAddressesUri = in.readString();
         saveDraftUri = in.readString();
         sendMessageUri = in.readString();
+        expungeMessageUri = in.readString();
     }
 
     public Account(String address, String type) {
@@ -94,6 +104,7 @@ public class Account extends android.accounts.Account {
         searchUri = cursor.getString(UIProvider.ACCOUNT_SEARCH_URI_COLUMN);
         saveDraftUri = cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN);
         sendMessageUri = cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN);
+        expungeMessageUri = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
     }
 
     public void writeToParcel(Parcel dest, int flags) {
@@ -106,6 +117,7 @@ public class Account extends android.accounts.Account {
         dest.writeString(accountFromAddressesUri);
         dest.writeString(saveDraftUri);
         dest.writeString(sendMessageUri);
+        dest.writeString(expungeMessageUri);
     }
 
     public static final Creator<Account> CREATOR = new Creator<Account>() {

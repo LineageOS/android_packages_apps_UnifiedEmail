@@ -16,12 +16,18 @@
 
 package com.android.mail.providers;
 
+import android.content.Context;
 import android.provider.BaseColumns;
+import android.text.TextUtils;
+
+import com.android.common.contacts.DataUsageStatUpdater;
 
 import java.lang.String;
+import java.util.ArrayList;
 
 
 public class UIProvider {
+    public static final String EMAIL_SEPARATOR = "\n";
     public static final long INVALID_CONVERSATION_ID = -1;
     public static final long INVALID_MESSAGE_ID = -1;
 
@@ -43,7 +49,8 @@ public class UIProvider {
             AccountColumns.SEARCH_URI,
             AccountColumns.ACCOUNT_FROM_ADDRESSES_URI,
             AccountColumns.SAVE_DRAFT_URI,
-            AccountColumns.SEND_MESSAGE_URI
+            AccountColumns.SEND_MESSAGE_URI,
+            AccountColumns.EXPUNGE_MESSAGE_URI
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -56,6 +63,7 @@ public class UIProvider {
     public static final int ACCOUNT_FROM_ADDRESSES_URI_COLUMN = 7;
     public static final int ACCOUNT_SAVE_DRAFT_URI_COLUMN = 8;
     public static final int ACCOUNT_SEND_MESSAGE_URI_COLUMN = 9;
+    public static final int ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN = 10;
 
     public static final class AccountCapabilities {
         public static final int SYNCABLE_FOLDERS = 0x0001;
@@ -115,7 +123,8 @@ public class UIProvider {
 
         /**
          * This string column contains the content provider uri that can be used to save (insert)
-         * new draft messages for this account.
+         * new draft messages for this account. NOTE: This might be better to
+         * be an update operation on the messageUri.
          */
         public static final String SAVE_DRAFT_URI = "saveDraftUri";
 
@@ -125,6 +134,13 @@ public class UIProvider {
          * NOTE: This might be better to be an update operation on the messageUri.
          */
         public static final String SEND_MESSAGE_URI = "sendMessageUri";
+
+        /**
+         * This string column contains the content provider uri that can be used
+         * to expunge a message from this account. NOTE: This might be better to
+         * be an update operation on the messageUri.
+         */
+        public static final String EXPUNGE_MESSAGE_URI = "expungeMessageUri";
     }
 
     // We define a "folder" as anything that contains a list of conversations.
@@ -387,6 +403,7 @@ public class UIProvider {
         AttachmentColumns.CONTENT_TYPE,
         AttachmentColumns.SYNCED
     };
+    private static final String EMAIL_SEPARATOR_PATTERN = "\n";
 
     public static final class AttachmentColumns {
         public static final String NAME = "name";
@@ -405,5 +422,15 @@ public class UIProvider {
     public static String getAttachmentTypeSetting() {
         // TODO: query the account to see what kinds of attachments it supports?
         return "com.google.android.gm.allowAddAnyAttachment";
+    }
+
+    public static void incrementRecipientsTimesContacted(Context context, String addressString) {
+        DataUsageStatUpdater statsUpdater = new DataUsageStatUpdater(context);
+        ArrayList<String> recipients = new ArrayList<String>();
+        String[] addresses = TextUtils.split(addressString, EMAIL_SEPARATOR_PATTERN);
+        for (String address : addresses) {
+            recipients.add(address);
+        }
+        statsUpdater.updateWithAddress(recipients);
     }
 }

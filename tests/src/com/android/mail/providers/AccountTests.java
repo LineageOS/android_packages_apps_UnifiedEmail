@@ -33,6 +33,7 @@ public class AccountTests extends AndroidTestCase {
         account.searchUri = "searchUri";
         account.saveDraftUri = "saveDraftUri";
         account.sendMessageUri = "sendMessageUri";
+        account.expungeMessageUri = "sendMessageUri";
         Intent intent = new Intent();
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
         Account outAccount = (Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
@@ -45,5 +46,6 @@ public class AccountTests extends AndroidTestCase {
         assertEquals(outAccount.searchUri, account.searchUri);
         assertEquals(outAccount.saveDraftUri, account.saveDraftUri);
         assertEquals(outAccount.sendMessageUri, account.sendMessageUri);
+        assertEquals(outAccount.expungeMessageUri, account.expungeMessageUri);
     }
 }

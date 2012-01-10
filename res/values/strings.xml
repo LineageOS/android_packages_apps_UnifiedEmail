@@ -78,6 +78,18 @@
     <string name="too_large_to_attach">File is too large to attach.</string>
     <!-- Toast, problem attaching file [CHAR LIMIT=100] -->
     <string name="generic_attachment_problem">Couldn\'t attach file.</string>
+    <!-- Displayed for one second after trying to send with no recipients in To field [CHAR LIMIT=200]-->
+    <string name="recipient_needed">Add at least one recipient.</string>
+    <!-- Title for recipient error dialog [CHAR LIMIT=200]-->
+    <string name="recipient_error_dialog_title">Recipient error</string>
+    <!-- Title for send confirmation dialog [CHAR LIMIT=200]-->
+    <string name="confirm_send_title">Send message?</string>
+    <!-- Messages for send confirmation dialog [CHAR LIMIT=100]-->
+    <string name="confirm_send_message_with_no_subject">There\'s no text in the message subject.</string>
+    <string name="confirm_send_message_with_no_body">There\'s no text in the message body.</string>
+    <string name="confirm_send_message">Send this message?</string>
+    <!-- Displayed for one second after discarding draft message [CHAR LIMIT=50]-->
+    <string name="message_discarded">Message discarded.</string>
 
     <!-- Menu item: send this message -->
     <string name="send">Send</string>
@@ -432,7 +444,19 @@
     <string name="always_show_images_toast">Pictures from this sender will be shown automatically.</string>
     <!-- Display format of an email recipient, displayed in expanded message details [CHAR LIMIT=10] -->
     <string name="address_display_format"><xliff:g id="name">%1$s</xliff:g> &lt;<xliff:g id="email">%2$s</xliff:g>&gt;</string>
+    <!-- Displayed for one second after user saves message as draft [CHAR LIMIT=50]-->
+    <string name="message_saved">Message saved as draft.</string>
+    <!-- Displayed for one second while message is being sent [CHAR LIMIT=50]-->
+    <string name="sending_message">Sending message\u2026</string>
+    <!-- Displayed for one second after trying to send with invalid recipients [CHAR LIMIT=50]-->
+    <string name="invalid_recipient">The address <xliff:g id="wrongemail" example="foo@@gmail..com">%s</xliff:g> is invalid.</string>
 
     <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
     <string name="enumeration_comma">,\u0020</string>
+
+    <!-- Button name, displayed in dialogs [CHAR LIMIT=10]-->
+    <string name="ok">OK</string>
+    <string name="done">Done</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
 </resources>
