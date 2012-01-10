@@ -43,6 +43,7 @@ import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
@@ -129,7 +130,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private boolean mPreMeasuring;
 
-    private String mAccount;
+    private Account mAccount;
 
     private boolean mShowImagePrompt;
 
@@ -310,7 +311,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         updateChildVisibility();
     }
 
-    public void initialize(FormattedDateBuilder dateBuilder, String account, boolean expanded,
+    public void initialize(FormattedDateBuilder dateBuilder, Account account, boolean expanded,
             boolean showImagePrompt, boolean defaultReplyAll) {
         mDateBuilder = dateBuilder;
         mAccount = account;
@@ -369,7 +370,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         // the only possible fromAddress.
         String from = cursor.getString(UIProvider.MESSAGE_FROM_COLUMN);
         if (TextUtils.isEmpty(from)) {
-            from = mAccount;
+            from = mAccount.name;
         }
         mSender = Address.getEmailAddress(from);
 
@@ -986,7 +987,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             mCollapsedDetailsView.setOnClickListener(this);
 
             ((TextView) findViewById(R.id.recipients_summary)).setText(getRecipientSummaryText(
-                    getContext(), mAccount, mTo, mCc, mBcc));
+                    getContext(), mAccount.name, mTo, mCc, mBcc));
 
             ((TextView) findViewById(R.id.date_summary)).setText(mTimestampShort);
         }

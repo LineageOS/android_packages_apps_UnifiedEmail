@@ -15,16 +15,15 @@
  */
 package com.android.mail.utils;
 
+import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.UIProvider;
 
-import android.accounts.Account;
 import android.accounts.AccountManagerCallback;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +39,16 @@ public class AccountUtils {
      *            lists
      * @return Merged list of accounts.
      */
-    public static List<String> mergeAccountLists(List<String> existingList, Account[] accounts,
+    public static List<Account> mergeAccountLists(List<Account> inList, Account[] accounts,
             boolean prioritizeAccountList) {
 
-        List<String> newAccountList = new ArrayList<String>();
+        List<Account> newAccountList = new ArrayList<Account>();
+        List<String> existingList = new ArrayList<String>();
+        if (inList != null) {
+            for (Account account : inList) {
+                existingList.add(account.name);
+            }
+        }
         // Make sure the accounts are actually synchronized
         // (we won't be able to save/send for accounts that
         // have never been synchronized)
@@ -53,15 +58,13 @@ public class AccountUtils {
             // that we prioritize the list of Account objects, put it in the new list
             if (prioritizeAccountList
                     || (existingList != null && existingList.contains(accountName))) {
-                newAccountList.add(accountName);
+                newAccountList.add(accounts[i]);
             }
         }
         return newAccountList;
     }
 
     /**
-     * In the future, this will get syncing accounts from the account manager.
-     * Currently, it just gets all accounts from the UIProvider.
      * @param context
      * @param callback
      * @param type
@@ -70,16 +73,15 @@ public class AccountUtils {
      */
     public static Account[] getSyncingAccounts(Context context,
             AccountManagerCallback<Account[]> callback, String type, String[] features) {
-        // TODO: use account manager.
-        // AccountManager.get(context).getAccountsByTypeAndFeatures(type, features, callback, null);
         ContentResolver resolver = context.getContentResolver();
         Cursor accountsCursor = resolver.query(AccountCacheProvider.getAccountsUri(),
                 UIProvider.ACCOUNTS_PROJECTION, null, null, null);
         ArrayList<Account> accounts = new ArrayList<Account>();
+        Account account;
         if (accountsCursor != null) {
             while (accountsCursor.moveToNext()) {
-                accounts.add(new Account(accountsCursor.getString(UIProvider.ACCOUNT_NAME_COLUMN),
-                        "unknown"));
+                account = new Account(accountsCursor);
+                accounts.add(account);
             }
         }
         return accounts.toArray(new Account[accounts.size()]);

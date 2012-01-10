@@ -16,8 +16,8 @@
 package com.android.mail.compose;
 
 import com.android.ex.chips.BaseRecipientAdapter;
+import com.android.mail.providers.Account;
 
-import android.accounts.Account;
 import android.content.Context;
 
 public class RecipientAdapter extends BaseRecipientAdapter {

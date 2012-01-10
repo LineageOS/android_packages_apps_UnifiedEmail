@@ -89,7 +89,7 @@ public final class AccountCacheProvider extends ContentProvider {
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES_URI)) {
                     builder.add(account.mAccountFromAddressesUri);
-                } else if (TextUtils.equals(column, UIProvider.AccountColumns.SAVE_NEW_DRAFT_URI)) {
+                } else if (TextUtils.equals(column, UIProvider.AccountColumns.SAVE_DRAFT_URI)) {
                     builder.add(account.mSaveDraftUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SEND_MESSAGE_URI)) {
                     builder.add(account.mSendMessageUri);

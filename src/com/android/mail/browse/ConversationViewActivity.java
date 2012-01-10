@@ -18,6 +18,7 @@ package com.android.mail.browse;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.Utils;
 
@@ -44,11 +45,10 @@ public class ConversationViewActivity extends Activity {
     private TextView mSubject;
     private ListView mMessageList;
     private FormattedDateBuilder mDateBuilder;
-    private String mAccount;
+    private Account mAccount;
 
-    public static void viewConversation(Context context, String uri, String account) {
+    public static void viewConversation(Context context, String uri, Account account) {
         Intent intent = new Intent(context, ConversationViewActivity.class);
-
         intent.putExtra(EXTRA_CONVERSATION_LOOKUP, uri);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
         context.startActivity(intent);
@@ -60,7 +60,7 @@ public class ConversationViewActivity extends Activity {
         Intent intent = getIntent();
         mLookupUri = Uri.parse(intent.getStringExtra(EXTRA_CONVERSATION_LOOKUP));
         mResolver = getContentResolver();
-        mAccount = intent.getStringExtra(Utils.EXTRA_ACCOUNT);
+        mAccount = (Account)intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
         setContentView(R.layout.conversation_view);
     }
 

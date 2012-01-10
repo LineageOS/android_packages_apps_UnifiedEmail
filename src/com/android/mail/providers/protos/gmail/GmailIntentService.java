@@ -99,7 +99,7 @@ public class GmailIntentService extends IntentService {
                             (String)mockAccountMap.get(AccountColumns.FOLDER_LIST_URI),
                             (String)mockAccountMap.get(AccountColumns.SEARCH_URI),
                             (String)mockAccountMap.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
-                            (String)mockAccountMap.get(AccountColumns.SAVE_NEW_DRAFT_URI),
+                            (String)mockAccountMap.get(AccountColumns.SAVE_DRAFT_URI),
                             (String)mockAccountMap.get(AccountColumns.SEND_MESSAGE_URI));
 
             AccountCacheProvider.addAccount(cachedAccount);

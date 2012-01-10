@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.providers.Account;
 
 /**
  * FromAddressSpinnerAdapter returns the correct spinner adapter for reply from
@@ -31,7 +32,7 @@ import com.android.mail.R;
  *
  * @author mindyp@google.com
  */
-public class FromAddressSpinnerAdapter extends ArrayAdapter<String[]> {
+public class FromAddressSpinnerAdapter extends ArrayAdapter<Account> {
     public static int REAL_ACCOUNT = 2;
 
     public static int ACCOUNT_DISPLAY = 0;
@@ -56,20 +57,20 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<String[]> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String[] fromItem = getItem(position);
+        Account fromItem = getItem(position);
         View fromEntry = getInflater().inflate(R.layout.from_item, null);
         ((TextView) fromEntry.findViewById(R.id.spinner_account_name))
-                .setText(fromItem[ACCOUNT_ADDRESS]);
+                .setText(fromItem.name);
         return fromEntry;
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        String[] fromItem = getItem(position);
+        Account fromItem = getItem(position);
         View fromEntry = getInflater().inflate(R.layout.from_dropdown_item, null);
         TextView acctName = ((TextView) fromEntry.
                 findViewById(R.id.spinner_account_name));
-        acctName.setText(fromItem[ACCOUNT_DISPLAY]);
+        acctName.setText(fromItem.name);
         return fromEntry;
     }
 

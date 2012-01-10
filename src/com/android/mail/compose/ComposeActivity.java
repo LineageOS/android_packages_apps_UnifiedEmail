@@ -16,7 +16,6 @@
 
 package com.android.mail.compose;
 
-import android.accounts.Account;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
@@ -52,6 +51,7 @@ import android.widget.Toast;
 
 import com.android.common.Rfc822Validator;
 import com.android.mail.compose.QuotedTextView.RespondInlineListener;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
@@ -126,7 +126,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Button mCcBccButton;
     private CcBccView mCcBccView;
     private AttachmentsView mAttachmentsView;
-    private String mAccount;
+    private Account mAccount;
     private Rfc822Validator mRecipientValidator;
     private Uri mRefMessageUri;
     private TextView mSubject;
@@ -142,49 +142,49 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private View mFromStatic;
     private View mFromSpinner;
     private Spinner mFrom;
-    private List<String[]> mReplyFromAccounts;
+    private List<Account> mReplyFromAccounts;
     private boolean mAccountSpinnerReady;
-    private String[] mCurrentReplyFromAccount;
+    private Account mCurrentReplyFromAccount;
     private boolean mMessageIsForwardOrReply;
-    private List<String> mAccounts;
+    private List<Account> mAccounts;
     private boolean mAddingAttachment;
     private boolean mAttachmentAddedOrRemoved;
 
     /**
      * Can be called from a non-UI thread.
      */
-    public static void editDraft(Context context, String account, long mLocalMessageId) {
+    public static void editDraft(Context context, Account account, long mLocalMessageId) {
     }
 
     /**
      * Can be called from a non-UI thread.
      */
-    public static void compose(Context launcher, String account) {
+    public static void compose(Context launcher, Account account) {
         launch(launcher, account, null, COMPOSE);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
-    public static void reply(Context launcher, String account, String uri) {
+    public static void reply(Context launcher, Account account, String uri) {
         launch(launcher, account, uri, REPLY);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
-    public static void replyAll(Context launcher, String account, String uri) {
+    public static void replyAll(Context launcher, Account account, String uri) {
         launch(launcher, account, uri, REPLY_ALL);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
-    public static void forward(Context launcher, String account, String uri) {
+    public static void forward(Context launcher, Account account, String uri) {
         launch(launcher, account, uri, FORWARD);
     }
 
-    private static void launch(Context launcher, String account, String uri, int action) {
+    private static void launch(Context launcher, Account account, String uri, int action) {
         Intent intent = new Intent(launcher, ComposeActivity.class);
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(EXTRA_ACTION, action);
@@ -197,13 +197,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        mAccount = intent.getStringExtra(Utils.EXTRA_ACCOUNT);
+        mAccount = (Account)intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
         setContentView(R.layout.compose);
         findViews();
         int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
         if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
             mRefMessageUri = Uri.parse(intent.getStringExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI));
-            initFromRefMessage(action, mAccount);
+            initFromRefMessage(action, mAccount.name);
         } else {
             setQuotedTextVisibility(false);
         }
@@ -232,21 +232,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      */
     private void createReplyFromCache() {
         // Check for replyFroms.
-        List<String> accounts = null;
-        mReplyFromAccounts = new ArrayList<String[]>();
+        List<Account> accounts = null;
+        mReplyFromAccounts = new ArrayList<Account>();
 
         if (mMessageIsForwardOrReply) {
             accounts = Collections.singletonList(mAccount);
         } else {
             accounts = mAccounts;
         }
-        for (String account : accounts) {
+        for (Account account : accounts) {
             // First add the account. First position is account, second
             // is display of account, 3rd position is the REAL account this
             // is being sent from / synced to.
-            mReplyFromAccounts.add(new String[] {
-                    account, account, account, "false"
-            });
+            mReplyFromAccounts.add(account);
         }
     }
 
@@ -260,7 +258,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         FromAddressSpinnerAdapter adapter = new FromAddressSpinnerAdapter(this);
         int currentAccountIndex = 0;
-        String replyFromAccount = mAccount;
+        String replyFromAccount = mAccount.name;
 
         boolean checkRealAccount = mRecipient == null || mAccount.equals(mRecipient);
 
@@ -289,7 +287,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         int currentIndex = 0;
         int currentAccountIndex = 0;
         // Get the position of the current account
-        for (String[] account : mReplyFromAccounts) {
+        for (Account account : mReplyFromAccounts) {
             // Add the account to the Adapter
             // The reason that we are not adding the Account array, but adding
             // the names of each account, is because Account returns a string
@@ -302,15 +300,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // so that we can send from the correct address on the
                 // correct account when the same address may exist across
                 // multiple accounts.
-                if (account[FromAddressSpinnerAdapter.REAL_ACCOUNT].equals(mAccount)
-                        && account[FromAddressSpinnerAdapter.ACCOUNT_ADDRESS]
+                if (account.name.equals(mAccount)
+                        && account.name
                                 .equals(replyFromAccount)) {
                     currentAccountIndex = currentIndex;
                 }
             } else {
                 // Just need to check the account address.
                 if (replyFromAccount.equals(
-                        account[FromAddressSpinnerAdapter.ACCOUNT_ADDRESS])) {
+                        account.name)) {
                     currentAccountIndex = currentIndex;
                 }
             }
@@ -626,7 +624,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             attachment.name = uri.getLastPathSegment();
         }
 
-        int maxSize = UIProvider.getMailMaxAttachmentSize(mAccount);
+        int maxSize = UIProvider.getMailMaxAttachmentSize(mAccount.name);
 
         // Error getting the size or the size was too big.
         if (attachment.size == -1 || attachment.size > maxSize) {
@@ -698,7 +696,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (action == ComposeActivity.FORWARD) {
             return;
         }
-        initReplyRecipients(mAccount, refMessage, action);
+        initReplyRecipients(mAccount.name, refMessage, action);
     }
 
     private void initReplyRecipients(String account, Cursor refMessage, int action) {
@@ -879,13 +877,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private RecipientEditTextView setupRecipients(int id) {
         RecipientEditTextView view = (RecipientEditTextView) findViewById(id);
-        view.setAdapter(new RecipientAdapter(this, mAccount));
+        String accountName = mAccount.name;
+        view.setAdapter(new RecipientAdapter(this, accountName));
         view.setTokenizer(new Rfc822Tokenizer());
         if (mRecipientValidator == null) {
-            int offset = mAccount.indexOf("@") + 1;
-            String account = mAccount;
+            int offset = accountName.indexOf("@") + 1;
+            String account = accountName;
             if (offset > -1) {
-                account = account.substring(mAccount.indexOf("@") + 1);
+                account = account.substring(accountName.indexOf("@") + 1);
             }
             mRecipientValidator = new Rfc822Validator(account);
         }
@@ -943,8 +942,24 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 showCcBccViews();
                 handled = true;
                 break;
+            case R.id.save:
+                doSave();
+                handled = true;
+                break;
+            case R.id.send:
+                doSend();
+                handled = true;
+                break;
         }
         return !handled ? super.onOptionsItemSelected(item) : handled;
+    }
+
+    private void doSend() {
+        Uri sendUri = Uri.parse(mCurrentReplyFromAccount.sendMessageUri);
+    }
+
+    private void doSave() {
+        Uri saveUri = Uri.parse(mCurrentReplyFromAccount.saveDraftUri);
     }
 
     public void doAttach() {
@@ -979,7 +994,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mComposeMode = ComposeActivity.FORWARD;
         }
         if (initialComposeMode != mComposeMode) {
-            initFromRefMessage(mComposeMode, mAccount);
+            initFromRefMessage(mComposeMode, mAccount.name);
         }
         return true;
     }

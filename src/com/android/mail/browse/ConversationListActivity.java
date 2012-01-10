@@ -41,6 +41,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import com.android.mail.R;
 import com.android.mail.ViewMode;
 import com.android.mail.compose.ComposeActivity;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.UIProvider;
 
@@ -52,7 +53,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     private Spinner mAccountsSpinner;
     private AccountsSpinnerAdapter mAccountsAdapter;
     private ContentResolver mResolver;
-    private String mSelectedAccount;
+    private Account mSelectedAccount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -128,13 +129,13 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            ConversationItemView view = new ConversationItemView(context, mSelectedAccount);
+            ConversationItemView view = new ConversationItemView(context, mSelectedAccount.name);
             return view;
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            ((ConversationItemView) view).bind(cursor, null, mSelectedAccount, null,
+            ((ConversationItemView) view).bind(cursor, null, mSelectedAccount.name, null,
                     new ViewMode(ConversationListActivity.this));
         }
     }
@@ -146,7 +147,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         if (cursor != null && cursor.moveToPosition(position)) {
             int uriCol = cursor.getColumnIndex(UIProvider.AccountColumns.FOLDER_LIST_URI);
             foldersUri = Uri.parse(cursor.getString(uriCol));
-            mSelectedAccount = cursor.getString(UIProvider.ACCOUNT_NAME_COLUMN);
+            mSelectedAccount =  new Account(cursor);
             cursor.close();
         }
         Uri conversationListUri = null;

@@ -42,9 +42,20 @@ public class UIProvider {
             AccountColumns.FOLDER_LIST_URI,
             AccountColumns.SEARCH_URI,
             AccountColumns.ACCOUNT_FROM_ADDRESSES_URI,
-            AccountColumns.SAVE_NEW_DRAFT_URI,
+            AccountColumns.SAVE_DRAFT_URI,
             AccountColumns.SEND_MESSAGE_URI
     };
+
+    public static final int ACCOUNT_ID_COLUMN = 0;
+    public static final int ACCOUNT_NAME_COLUMN = 1;
+    public static final int ACCOUNT_PROVIDER_VERISON_COLUMN = 2;
+    public static final int ACCOUNT_URI_COLUMN = 3;
+    public static final int ACCOUNT_CAPABILITIES_COLUMN = 4;
+    public static final int ACCOUNT_FOLDER_LIST_URI_COLUMN = 5;
+    public static final int ACCOUNT_SEARCH_URI_COLUMN = 6;
+    public static final int ACCOUNT_FROM_ADDRESSES_URI_COLUMN = 7;
+    public static final int ACCOUNT_SAVE_DRAFT_URI_COLUMN = 8;
+    public static final int ACCOUNT_SEND_MESSAGE_URI_COLUMN = 9;
 
     public static final class AccountCapabilities {
         public static final int SYNCABLE_FOLDERS = 0x0001;
@@ -106,7 +117,7 @@ public class UIProvider {
          * This string column contains the content provider uri that can be used to save (insert)
          * new draft messages for this account.
          */
-        public static final String SAVE_NEW_DRAFT_URI = "saveNewDraftUri";
+        public static final String SAVE_DRAFT_URI = "saveDraftUri";
 
         /**
          * This string column contains the content provider uri that can be used to send
@@ -376,8 +387,6 @@ public class UIProvider {
         AttachmentColumns.CONTENT_TYPE,
         AttachmentColumns.SYNCED
     };
-
-    public static final int ACCOUNT_NAME_COLUMN = 1;
 
     public static final class AttachmentColumns {
         public static final String NAME = "name";
