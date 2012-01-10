@@ -255,6 +255,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI, accountUri + "/fromAddresses");
         accountMap.put(AccountColumns.SAVE_DRAFT_URI, accountUri + "/saveDraft");
         accountMap.put(AccountColumns.SEND_MESSAGE_URI, accountUri + "/sendMessage");
+        accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI, accountUri + "/expungeMessage");
 
         addAccountInfoToAccountCache(accountMap);
         return accountMap;

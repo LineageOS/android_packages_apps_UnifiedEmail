@@ -1320,9 +1320,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
            } else {
                // replies get full quoted text from server - HTMl gets converted to text for now
                final String text = quotedText.toString();
-               int pos = text.indexOf(QuotedTextView.HEADER_SEPARATOR);
-               if (pos >= 0) {
-                   pos += QuotedTextView.HEADER_SEPARATOR_LENGTH; // Skip over the <div> tag
+               if (QuotedTextView.containsQuotedText(text)) {
+                   int pos = QuotedTextView.getQuotedTextOffset(text);
                    fullBody.append(text.substring(0, pos));
                    int quoteStartPos = fullBody.length();
                    MessageModification.putForward(values, forward);

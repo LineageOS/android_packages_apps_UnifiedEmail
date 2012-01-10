@@ -56,8 +56,8 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
 
     // Separates the attribution headers (Subject, To, etc) from the body in
     // quoted text.
-    /* package for testing */  static final String HEADER_SEPARATOR = "<br type='attribution'>";
-    static final int HEADER_SEPARATOR_LENGTH = HEADER_SEPARATOR.length();
+    private static final String HEADER_SEPARATOR = "<br type='attribution'>";
+    private static final int HEADER_SEPARATOR_LENGTH = HEADER_SEPARATOR.length();
 
     private CharSequence mQuotedText;
     private WebView mQuotedTextWebView;
@@ -296,5 +296,14 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
                 mRespondInlineButton.setEnabled(false);
             }
         }
+    }
+
+    public static boolean containsQuotedText(String text) {
+        int pos = text.indexOf(QuotedTextView.HEADER_SEPARATOR);
+        return pos >= 0;
+    }
+
+    public static int getQuotedTextOffset(String text) {
+        return text.indexOf(QuotedTextView.HEADER_SEPARATOR) + HEADER_SEPARATOR_LENGTH;
     }
 }
