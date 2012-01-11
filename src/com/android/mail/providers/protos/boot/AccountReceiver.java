@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.mail.providers.protos.gmail;
+package com.android.mail.providers.protos.boot;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class GmailIntentReceiver extends BroadcastReceiver {
+public class AccountReceiver extends BroadcastReceiver {
+    /**
+     * Intent used to notify interested parties that the Mail provider has been created.
+     */
+    public static final String ACTION_PROVIDER_CREATED
+            = "com.android.mail.providers.protos.boot.intent.ACTION_PROVIDER_CREATED";
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        intent.setClass(context, GmailIntentService.class);
+        intent.setClass(context, GmailAccountService.class);
+        context.startService(intent);
+        intent.setClass(context, EmailAccountService.class);
         context.startService(intent);
     }
 }

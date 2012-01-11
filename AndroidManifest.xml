@@ -20,9 +20,10 @@
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <!-- Allows Email to access the user's contacts, for email address auto-completion -->
+    <!-- Allows mail to access the user's contacts, for email address auto-completion -->
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
-
+    <!-- Allows access to EmailProvider (EAS/IMAP/POP3) -->
+    <uses-permission android:name="com.android.email.permission.ACCESS_PROVIDER"/>
     <application
         android:icon="@mipmap/ic_launcher_mail"
         android:label="@string/app_name"
@@ -32,7 +33,6 @@
             android:name=".UnifiedEmail" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -68,13 +68,14 @@
             <grant-uri-permission android:pathPattern=".*" />
         </provider>
 
-        <receiver android:name=".providers.protos.gmail.GmailIntentReceiver">
+        <receiver android:name=".providers.protos.boot.AccountReceiver">
           <intent-filter>
-            <action android:name="com.android.mail.providers.protos.gmail.intent.ACTION_PROVIDER_CREATED" />
+              <action android:name="com.android.mail.providers.protos.boot.intent.ACTION_PROVIDER_CREATED" />
           </intent-filter>
         </receiver>
 
-        <service android:name=".providers.protos.gmail.GmailIntentService"/>
+        <service android:name=".providers.protos.boot.GmailAccountService"/>
+        <service android:name=".providers.protos.boot.EmailAccountService"/>
     </application>
 
 </manifest>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.mail.providers.protos.gmail;
+package com.android.mail.providers.protos.boot;
 
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.protos.mock.MockUiProvider;
@@ -42,7 +42,7 @@ import java.util.Map;
 /**
  * A service to handle various intents asynchronously.
  */
-public class GmailIntentService extends IntentService {
+public class GmailAccountService extends IntentService {
 
     private static final String GMAIL_UI_PROVIDER_AUTHORITY = "com.android.gmail.ui";
     private static final String GMAIL_UI_PROVIDER_BASE_URI_STRING =
@@ -56,14 +56,14 @@ public class GmailIntentService extends IntentService {
         return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/labels");
     }
 
-    public GmailIntentService() {
-        super("GmailIntentService");
+    public GmailAccountService() {
+        super("GmailAccountService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         final String action = intent.getAction();
-        if (DummyGmailProvider.ACTION_PROVIDER_CREATED.equals(action)) {
+        if (AccountReceiver.ACTION_PROVIDER_CREATED.equals(action)) {
             // Register all Gmail accounts
             getAndRegisterGmailAccounts();
         }

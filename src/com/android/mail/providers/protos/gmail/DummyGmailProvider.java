@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 
+import com.android.mail.providers.protos.boot.AccountReceiver;
+
 /**
  * The sole purpose of this provider is to leverage on the fact the the system will create any
  * listed content providers when the app starts up.  We use this fact to initiate the load of the
@@ -33,16 +35,10 @@ import android.net.Uri;
  */
 public final class DummyGmailProvider extends ContentProvider {
 
-    /**
-     * Intent used to notify interested parties that the Mail provbider has been created.
-     */
-    static final String ACTION_PROVIDER_CREATED
-            = "com.android.mail.providers.protos.gmail.intent.ACTION_PROVIDER_CREATED";
-
     @Override
     public boolean onCreate() {
 
-        final Intent intent = new Intent(ACTION_PROVIDER_CREATED);
+        final Intent intent = new Intent(AccountReceiver.ACTION_PROVIDER_CREATED);
         getContext().sendBroadcast(intent);
 
         // TODO(pwestbro): consider putting the retrieval of the account list here. This would
