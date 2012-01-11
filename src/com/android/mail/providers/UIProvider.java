@@ -182,7 +182,7 @@ public class UIProvider {
          */
         public static String CAPABILITIES = "capabilities";
         /**
-         * This boolean column represents whether or not this folder has any
+         * This int column represents whether or not this folder has any
          * child folders.
          */
         public static String HAS_CHILDREN = "hasChildren";
