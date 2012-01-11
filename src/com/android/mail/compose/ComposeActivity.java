@@ -29,14 +29,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
-import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.Html;
@@ -45,7 +42,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -64,6 +60,7 @@ import android.widget.Toast;
 
 import com.android.common.Rfc822Validator;
 import com.android.mail.compose.AttachmentsView.AttachmentDeletedListener;
+import com.android.mail.compose.AttachmentsView.AttachmentFailureException;
 import com.android.mail.compose.QuotedTextView.RespondInlineListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
@@ -71,7 +68,6 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.providers.MessageModification;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.MessageColumns;
-import com.android.mail.providers.protos.mock.MockAttachment;
 import com.android.mail.R;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogUtils;
@@ -81,12 +77,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -394,8 +387,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initBodyFromRefMessage(Cursor refMessage, int action) {
-        mQuotedTextView.setVisibility(View.VISIBLE);
-        mQuotedTextView.setQuotedText(action, refMessage, action != FORWARD);
+        if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
+            mQuotedTextView.setVisibility(View.VISIBLE);
+            mQuotedTextView.setQuotedText(action, refMessage, action != FORWARD);
+        }
     }
 
     private void updateHideOrShowCcBcc() {
@@ -426,188 +421,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      */
     public void addAttachmentAndUpdateView(Intent data) {
         Uri uri = data != null ? data.getData() : null;
-        if (uri != null && !TextUtils.isEmpty(uri.getPath())) {
-            mAttachmentsChanged = true;
-            String contentType = getContentResolver().getType(uri);
-            try {
-                addAttachment(uri, contentType, false /* doSave */);
-            } catch (AttachmentFailureException e) {
-                // A toast has already been shown to the user, no need to do anything.
-                LogUtils.e(LOG_TAG, e, "Error adding attachment");
-            }
-            updateSaveUi();
-        } else {
-           showAttachmentTooBigToast();
-        }
-    }
-
-    @VisibleForTesting
-    protected int getSizeFromFile(Uri uri, ContentResolver contentResolver) {
-        int size = -1;
-        ParcelFileDescriptor file = null;
         try {
-            file = contentResolver.openFileDescriptor(uri, "r");
-            size = (int) file.getStatSize();
-        } catch (FileNotFoundException e) {
-            LogUtils.w(LOG_TAG, "Error opening file to obtain size.");
-        } finally {
-            try {
-                if (file != null) {
-                    file.close();
-                }
-            } catch (IOException e) {
-                LogUtils.w(LOG_TAG, "Error closing file opened to obtain size.");
+            int size =  mAttachmentsView.addAttachment(mAccount, uri, false /* doSave */);
+            if (size > 0) {
+                mAttachmentsChanged = true;
+                updateSaveUi();
             }
-        }
-        return size;
-    }
-
-    /**
-     * Adds an attachment
-     * @param uri the uri to attach
-     * @param contentType the type of the resource pointed to by the URI or null if the type is
-     *   unknown
-     * @param doSave whether the message should be saved
-     *
-     * @return int size of the attachment added.
-     * @throws AttachmentFailureException if an error occurs adding the attachment.
-     */
-    private int addAttachment(Uri uri, String contentType, boolean doSave)
-            throws AttachmentFailureException {
-        final ContentResolver contentResolver = getContentResolver();
-        if (contentType == null) contentType = "";
-
-        MockAttachment attachment = new MockAttachment();
-        // partId will be assigned by the engine.
-        attachment.name = null;
-        attachment.contentType = contentType;
-        attachment.size = 0;
-        attachment.simpleContentType = contentType;
-        attachment.origin = uri;
-        attachment.originExtras = uri.toString();
-
-        Cursor metadataCursor = null;
-        try {
-            metadataCursor = contentResolver.query(
-                    uri, new String[]{OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE},
-                    null, null, null);
-            if (metadataCursor != null) {
-                try {
-                    if (metadataCursor.moveToNext()) {
-                        attachment.name = metadataCursor.getString(0);
-                        attachment.size = metadataCursor.getInt(1);
-                    }
-                } finally {
-                    metadataCursor.close();
-                }
-            }
-        } catch (SQLiteException ex) {
-            // One of the two columns is probably missing, let's make one more attempt to get at
-            // least one.
-            // Note that the documentations in Intent#ACTION_OPENABLE and
-            // OpenableColumns seem to contradict each other about whether these columns are
-            // required, but it doesn't hurt to fail properly.
-
-            // Let's try to get DISPLAY_NAME
-            try {
-                metadataCursor =
-                        getOptionalColumn(contentResolver, uri, OpenableColumns.DISPLAY_NAME);
-                if (metadataCursor != null && metadataCursor.moveToNext()) {
-                    attachment.name = metadataCursor.getString(0);
-                }
-            } finally {
-                if (metadataCursor != null) metadataCursor.close();
-            }
-
-            // Let's try to get SIZE
-            try {
-                metadataCursor =
-                        getOptionalColumn(contentResolver, uri, OpenableColumns.SIZE);
-                if (metadataCursor != null && metadataCursor.moveToNext()) {
-                    attachment.size = metadataCursor.getInt(0);
-                } else {
-                    // Unable to get the size from the metadata cursor. Open the file and seek.
-                    attachment.size = getSizeFromFile(uri, contentResolver);
-                }
-            } finally {
-                if (metadataCursor != null) metadataCursor.close();
-            }
-        } catch (SecurityException e) {
-            // We received a security exception when attempting to add an
-            // attachment.  Warn the user.
-            // TODO(pwestbro): determine if we need more specific text in the toast.
-            Toast.makeText(this,
-                    R.string.generic_attachment_problem, Toast.LENGTH_LONG).show();
-            throw new AttachmentFailureException("Security Exception from attachment uri", e);
-        }
-
-        if (attachment.name == null) {
-            attachment.name = uri.getLastPathSegment();
-        }
-
-        int maxSize = UIProvider.getMailMaxAttachmentSize(mAccount.name);
-
-        // Error getting the size or the size was too big.
-        if (attachment.size == -1 || attachment.size > maxSize) {
-            showAttachmentTooBigToast();
-            throw new AttachmentFailureException("Attachment too large to attach");
-        } else if ((mAttachmentsView.getTotalAttachmentsSize()
-                + attachment.size) > maxSize) {
-            showAttachmentTooBigToast();
-            throw new AttachmentFailureException("Attachment too large to attach");
-        } else {
-            addAttachment(attachment);
-        }
-
-        return attachment.size;
-    }
-
-    /**
-     * @return a cursor to the requested column or null if an exception occurs while trying
-     * to query it.
-     */
-    private Cursor getOptionalColumn(ContentResolver contentResolver, Uri uri, String columnName) {
-        Cursor result = null;
-        try {
-            result = contentResolver.query(uri, new String[]{columnName}, null, null, null);
-        } catch (SQLiteException ex) {
-            // ignore, leave result null
-        }
-        return result;
-    }
-
-    /**
-     * Add attachment.
-     * @param attachment
-     */
-    public void addAttachment(Attachment attachment) {
-        mAttachmentsView.addAttachment(attachment);
-    }
-
-    /**
-     * When an attachment is too large to be added to a message, show a toast.
-     * This method also updates the position of the toast so that it is shown
-     * clearly above they keyboard if it happens to be open.
-     */
-    private void showAttachmentTooBigToast() {
-        Toast t = Toast.makeText(this, R.string.generic_attachment_problem, Toast.LENGTH_LONG);
-        t.setText(R.string.too_large_to_attach);
-        t.setGravity(Gravity.CENTER_HORIZONTAL, 0, getResources()
-                .getDimensionPixelSize(R.dimen.attachment_toast_yoffset));
-        t.show();
-    }
-
-    /**
-     * Class containing information about failures when adding attachments.
-     */
-    class AttachmentFailureException extends Exception {
-        private static final long serialVersionUID = 1L;
-
-        public AttachmentFailureException(String error) {
-            super(error);
-        }
-        public AttachmentFailureException(String detailMessage, Throwable throwable) {
-            super(detailMessage, throwable);
+        } catch (AttachmentFailureException e) {
+            // A toast has already been shown to the user, no need to do
+            // anything.
+            LogUtils.e(LOG_TAG, e, "Error adding attachment");
         }
     }
 
