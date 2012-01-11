@@ -52,7 +52,6 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.BaseInputConnection;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -354,9 +353,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 initBodyFromRefMessage(refMessage, action);
                 if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
                     initAttachments(refMessage);
-                } else {
-                    // Clear the attachments.
-                    mAttachmentsView.deleteAllAttachments();
                 }
                 updateHideOrShowCcBcc();
             } finally {
@@ -444,6 +440,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             final Set<String> ccAddresses = Sets.newHashSet();
             toAddresses = initToRecipients(account, accountEmail, fromAddress,
                     replytoAddresses, new String[0]);
+            addToAddresses(toAddresses);
             addRecipients(accountEmail, ccAddresses, sentToAddresses);
             addRecipients(accountEmail, ccAddresses, Utils.splitCommaSeparatedString(refMessage
                     .getString(UIProvider.MESSAGE_CC_COLUMN)));
@@ -1284,9 +1281,33 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mComposeMode = ComposeActivity.FORWARD;
         }
         if (initialComposeMode != mComposeMode) {
+            resetMessageForModeChange();
             initFromRefMessage(mComposeMode, mAccount.name);
         }
         return true;
+    }
+
+    private void resetMessageForModeChange() {
+        // When switching between reply, reply all, forward,
+        // follow the behavior of webview.
+        // The contents of the following fields are cleared
+        // so that they can be populated directly from the
+        // ref message:
+        // 1) Any recipient fields
+        // 2) The subject
+        mTo.setText("");
+        mCc.setText("");
+        mBcc.setText("");
+        // Any edits to the subject are replaced with the original subject.
+        mSubject.setText("");
+
+        // Any changes to the contents of the following fields are kept:
+        // 1) Body
+        // 2) Attachments
+        // If the user made changes to attachments, keep their changes.
+        if (!mAttachmentsChanged) {
+            mAttachmentsView.deleteAllAttachments();
+        }
     }
 
     private class ComposeModeAdapter extends ArrayAdapter<String> {
