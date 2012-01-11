@@ -422,7 +422,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void addAttachmentAndUpdateView(Intent data) {
         Uri uri = data != null ? data.getData() : null;
         try {
-            int size =  mAttachmentsView.addAttachment(mAccount, uri, false /* doSave */);
+            long size =  mAttachmentsView.addAttachment(mAccount, uri, false /* doSave */);
             if (size > 0) {
                 mAttachmentsChanged = true;
                 updateSaveUi();

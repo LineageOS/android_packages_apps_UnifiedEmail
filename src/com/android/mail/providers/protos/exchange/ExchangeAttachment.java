@@ -15,64 +15,56 @@
  */
 package com.android.mail.providers.protos.exchange;
 
+import android.os.Parcel;
+
 import com.android.mail.providers.Attachment;
 
-import java.io.Serializable;
+public class ExchangeAttachment extends Attachment {
+    public String contentId;
+    public long messageKey;
+    public String location;
+    public String encoding;
+    public String content; // Not currently used
+    public int flags;
+    public long accountKey;
 
-public class ExchangeAttachment implements Serializable, Attachment {
-    private static final long serialVersionUID = 1L;
-
-    public String mFileName;
-    public String mMimeType;
-    public long mSize;
-    public String mContentId;
-    public String mContentUri;
-    public long mMessageKey;
-    public String mLocation;
-    public String mEncoding;
-    public String mContent; // Not currently used
-    public int mFlags;
-    public byte[] mContentBytes;
-    public long mAccountKey;
-
-
-    @Override
-    public String getName() {
-        return mFileName;
+    public ExchangeAttachment(Parcel in) {
+        super(in);
+        contentId = in.readString();
+        messageKey = in.readLong();
+        location = in.readString();
+        encoding = in.readString();
+        content = in.readString();
+        flags = in.readInt();
+        accountKey = in.readLong();
     }
 
     @Override
-    public long getSize() {
-        return mSize;
+    public int describeContents() {
+        return 0;
     }
 
     @Override
-    public String getOriginExtras() {
-        // TODO Auto-generated method stub
-        return null;
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(contentId);
+        dest.writeLong(messageKey);
+        dest.writeString(location);
+        dest.writeString(encoding);
+        dest.writeString(content);
+        dest.writeInt(flags);
+        dest.writeLong(accountKey);
     }
 
-    @Override
-    public String getContentType() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    public static final Creator<ExchangeAttachment> CREATOR = new Creator<ExchangeAttachment>() {
+        @Override
+        public ExchangeAttachment createFromParcel(Parcel source) {
+            return new ExchangeAttachment(source);
+        }
 
-    @Override
-    public Object getOrigin() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getPartId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean isSynced() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+        @Override
+        public ExchangeAttachment[] newArray(int size) {
+            return new ExchangeAttachment[size];
+        }
+    };
 }

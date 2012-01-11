@@ -126,7 +126,7 @@ class AttachmentsView extends LinearLayout {
      */
     public boolean areAttachmentsSynced() {
         for (Attachment a : mAttachments) {
-            if (a.isSynced()) {
+            if (a.isSynced) {
                 return true;
             }
         }
@@ -136,10 +136,10 @@ class AttachmentsView extends LinearLayout {
     /**
      * Get the total size of all attachments currently in this view.
      */
-    public int getTotalAttachmentsSize() {
-        int totalSize = 0;
+    public long getTotalAttachmentsSize() {
+        long totalSize = 0;
         for (Attachment attachment : mAttachments) {
-            totalSize += attachment.getSize();
+            totalSize += attachment.size;
         }
         return totalSize;
     }
@@ -177,7 +177,7 @@ class AttachmentsView extends LinearLayout {
      * @return int size of the attachment added.
      * @throws AttachmentFailureException if an error occurs adding the attachment.
      */
-    public int addAttachment(Account account, Uri uri, boolean doSave)
+    public long addAttachment(Account account, Uri uri, boolean doSave)
             throws AttachmentFailureException {
         final ContentResolver contentResolver = getContext().getContentResolver();
         String contentType = contentResolver.getType(uri);
@@ -188,13 +188,12 @@ class AttachmentsView extends LinearLayout {
 
         if (contentType == null) contentType = "";
 
-        MockAttachment attachment = new MockAttachment();
+        Attachment attachment = new Attachment();
         // partId will be assigned by the engine.
         attachment.name = null;
-        attachment.contentType = contentType;
+        attachment.mimeType = contentType;
         attachment.size = 0;
-        attachment.simpleContentType = contentType;
-        attachment.origin = uri;
+        attachment.contentUri = uri.toString();
         attachment.originExtras = uri.toString();
 
         Cursor metadataCursor = null;

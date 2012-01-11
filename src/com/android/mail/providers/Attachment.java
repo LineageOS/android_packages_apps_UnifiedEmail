@@ -15,19 +15,78 @@
  */
 package com.android.mail.providers;
 
-public interface Attachment {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    String getName();
+public class Attachment implements Parcelable {
+    /**
+     * Attachment name.
+     */
+    public String name;
+    /**
+     * Attachment origin info.
+     * TODO: do we want this? Or location?
+     */
+    public String originExtras;
+    /**
+     * Mime type of the file.
+     */
+    public String mimeType;
+    /**
+     * Content uri location of the attachment.
+     */
+    public String contentUri;
+    /**
+     * Part id of the attachment.
+     */
+    public String partId;
+    /**
+     * isSynced is true if the attachment is available locally on the device.
+     */
+    public boolean isSynced;
+    /**
+     * Attachment size in kb.
+     */
+    public long size;
 
-    long getSize();
+    public Attachment(Parcel in) {
+        name = in.readString();
+        originExtras = in.readString();
+        mimeType = in.readString();
+        contentUri = in.readString();
+        partId = in.readString();
+        isSynced = in.readInt() == 1 ? true : false;
+        size = in.readLong();
+    }
 
-    String getOriginExtras();
+    public Attachment() {
+    }
 
-    String getContentType();
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-    Object getOrigin();
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(originExtras);
+        dest.writeString(mimeType);
+        dest.writeString(contentUri);
+        dest.writeString(partId);
+        dest.writeInt(isSynced? 1 : 0);
+        dest.writeLong(size);
+    }
 
-    String getPartId();
+    public static final Creator<Attachment> CREATOR = new Creator<Attachment>() {
+        @Override
+        public Attachment createFromParcel(Parcel source) {
+            return new Attachment(source);
+        }
 
-    boolean isSynced();
+        @Override
+        public Attachment[] newArray(int size) {
+            return new Attachment[size];
+        }
+    };
 }

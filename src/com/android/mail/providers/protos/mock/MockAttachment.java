@@ -15,76 +15,15 @@
  */
 package com.android.mail.providers.protos.mock;
 
-import android.net.Uri;
+import android.os.Parcel;
 
 import com.android.mail.providers.Attachment;
 
-import java.io.Serializable;
 
 
+public class MockAttachment extends Attachment {
 
-public class MockAttachment implements Serializable, Attachment {
-
-    private static final long serialVersionUID = 1L;
-
-    /** Identifies the attachment uniquely when combined wih a message id.*/
-    public String partId;
-
-    /** The intended filename of the attachment.*/
-    public String name;
-
-    /** The native content type.*/
-    public String contentType;
-
-    /** The size of the attachment in its native form.*/
-    public int size;
-
-    /**
-     * The content type of the simple version of the attachment. Blank if no simple version is
-     * available.
-     */
-    public String simpleContentType;
-
-    public Uri origin;
-
-    public String originExtras;
-
-    public String cachedContent;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public long getSize() {
-        return size;
-    }
-
-    @Override
-    public String getOriginExtras() {
-        return originExtras;
-    }
-
-    @Override
-    public String getContentType() {
-        return contentType;
-    }
-
-    @Override
-    public Object getOrigin() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getPartId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean isSynced() {
-        return true;
+    public MockAttachment(Parcel in) {
+        super(in);
     }
 }
