@@ -77,16 +77,18 @@ public class ConversationViewActivity extends Activity {
 
     class MessageListAdapter extends SimpleCursorAdapter {
         public MessageListAdapter(Context context, Cursor cursor) {
-            super(context, R.layout.conversation_message_header, cursor,
+            super(context, R.layout.message, cursor,
                     UIProvider.MESSAGE_PROJECTION, new int[0], 0);
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
-            MessageHeaderView header = (MessageHeaderView) view;
+            MessageHeaderView header = (MessageHeaderView) view.findViewById(R.id.message_header);
             header.initialize(mDateBuilder, mAccount, true, true, false);
             header.bind(cursor);
+            MessageWebView webView = (MessageWebView) view.findViewById(R.id.body);
+            webView.loadData(cursor.getString(UIProvider.MESSAGE_BODY_HTML), "text/html", null);
         }
     }
 }
