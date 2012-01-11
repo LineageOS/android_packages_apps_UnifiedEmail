@@ -61,6 +61,7 @@ import android.widget.Toast;
 import com.android.common.Rfc822Validator;
 import com.android.mail.compose.AttachmentsView.AttachmentDeletedListener;
 import com.android.mail.compose.AttachmentsView.AttachmentFailureException;
+import com.android.mail.compose.FromAddressSpinner.OnAccountChangedListener;
 import com.android.mail.compose.QuotedTextView.RespondInlineListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
@@ -86,8 +87,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
-        RespondInlineListener, OnItemSelectedListener, DialogInterface.OnClickListener,
-        TextWatcher, AttachmentDeletedListener {
+        RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
+        AttachmentDeletedListener, OnAccountChangedListener {
     // Identifiers for which type of composition this is
     static final int COMPOSE = -1;  // also used for editing a draft
     static final int REPLY = 0;
@@ -151,7 +152,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private TextView mBodyView;
     private View mFromStatic;
     private View mFromSpinnerWrapper;
-    private Spinner mFromSpinner;
+    private FromAddressSpinner mFromSpinner;
     private boolean mAccountSpinnerReady;
     private List<Account> mAccounts;
     private boolean mAddingAttachment;
@@ -222,7 +223,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mQuotedTextView.setVisibility(View.GONE);
         }
         initActionBar(action);
-        asyncInitFromSpinner();
+        initFromSpinner();
     }
 
     @Override
@@ -230,7 +231,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         super.onResume();
         // Update the from spinner as other accounts
         // may now be available.
-        asyncInitFromSpinner();
+        mFromSpinner.asyncInitFromSpinner();
     }
 
     @Override
@@ -266,35 +267,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         saveIfNeededOnOrientationChanged();
     }
 
-    private void asyncInitFromSpinner() {
-        Account[] result = AccountUtils.getSyncingAccounts(this, null, null, null);
-        mAccounts = AccountUtils
-                .mergeAccountLists(mAccounts, result, true /* prioritizeAccountList */);
-        initFromSpinner();
-    }
-
     private void initFromSpinner() {
-        // If there are not yet any accounts in the cached synced accounts
-        // because this is the first time Gmail was opened, and it was opened directly
-        // to the compose activity,don't bother populating the reply from spinner yet.
-        if (mAccounts == null || mAccounts.size() == 0) {
-            mAccountSpinnerReady = false;
-            return;
-        }
-        FromAddressSpinnerAdapter adapter = new FromAddressSpinnerAdapter(this);
-        int currentAccountIndex = 0;
-        String replyFromAccount = mAccount.name;
-
-        boolean checkRealAccount = mRecipient == null || mAccount.equals(mRecipient);
-
-        currentAccountIndex = adapter.addAccounts(checkRealAccount, replyFromAccount,
-                mAccounts);
-
-        mFromSpinner.setAdapter(adapter);
-        mFromSpinner.setSelection(currentAccountIndex, false);
-        mFromSpinner.setOnItemSelectedListener(this);
-        mAccount = mAccounts.get(currentAccountIndex);
-
+        mFromSpinner.setCurrentAccount(mAccount);
+        mFromSpinner.asyncInitFromSpinner();
+        mFromSpinner.setOnAccountChangedListener(this);
         boolean showSpinner = mFromSpinner.getCount() > 1;
         // If there is only 1 account, just show that account.
         // Otherwise, give the user the ability to choose which account to send
@@ -324,7 +300,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mBodyView.addTextChangedListener(this);
         mFromStatic = findViewById(R.id.static_from_content);
         mFromSpinnerWrapper = findViewById(R.id.spinner_from_content);
-        mFromSpinner = (Spinner) findViewById(R.id.from_picker);
+        mFromSpinner = (FromAddressSpinner) findViewById(R.id.from_picker);
     }
 
     private void initActionBar(int action) {
@@ -1364,26 +1340,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mBodyView.setText(text);
     }
 
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Account selectedAccountInfo = (Account) mFromSpinner.getSelectedItem();
-        boolean equalAccounts = selectedAccountInfo.name.equals(mAccount.name);
+    @Override
+    public void onAccountChanged() {
+        Account selectedAccountInfo = mFromSpinner.getCurrentAccount();
         mAccount = selectedAccountInfo;
 
         // TODO: handle discarding attachments when switching accounts.
-        if (!equalAccounts) {
-            // Only enable save for this draft if there is any other content
-            // in the message.
-            if (!isBlank()) {
-                enableSave(true);
-            }
-            mReplyFromChanged = true;
-            setupRecipients();
+        // Only enable save for this draft if there is any other content
+        // in the message.
+        if (!isBlank()) {
+            enableSave(true);
         }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Do nothing.
+        mReplyFromChanged = true;
+        setupRecipients();
     }
 
     public void enableSave(boolean enabled) {

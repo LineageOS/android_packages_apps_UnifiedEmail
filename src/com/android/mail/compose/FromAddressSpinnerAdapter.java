@@ -73,32 +73,17 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<Account> {
         return fromEntry;
     }
 
-    public int addAccounts(boolean checkRealAccount, String replyFromAccount,
+    public int addAccounts(Account selectedAccount,
             List<Account> replyFromAccounts) {
         int currentIndex = 0;
         int currentAccountIndex = 0;
         // Get the position of the current account
         for (Account account : replyFromAccounts) {
             // Add the account to the Adapter
-            // The reason that we are not adding the Account array, but adding
-            // the names of each account, is because Account returns a string
-            // that we don't want to display on toString()
             add(account);
-            // Compare to the account address, not the real account being
-            // sent from.
-            if (checkRealAccount) {
-                // Need to check the real account and the account address
-                // so that we can send from the correct address on the
-                // correct account when the same address may exist across
-                // multiple accounts.
-                if (account.name.equals(account) && account.name.equals(replyFromAccounts)) {
-                    currentAccountIndex = currentIndex;
-                }
-            } else {
-                // Just need to check the account address.
-                if (replyFromAccounts.equals(account.name)) {
-                    currentAccountIndex = currentIndex;
-                }
+            // See if we have located the selected account.
+            if (selectedAccount.name.equals(account.name)) {
+                currentAccountIndex = currentIndex;
             }
 
             currentIndex++;
