@@ -273,6 +273,35 @@ class AttachmentsView extends LinearLayout {
     }
 
 
+    public void addAttachments(Account account, Cursor refMessage) {
+        boolean hasAttachments = refMessage.getInt(UIProvider.MESSAGE_HAS_ATTACHMENTS_COLUMN) == 1;
+        if (hasAttachments) {
+            String attachmentQuery = refMessage
+                    .getString(UIProvider.MESSAGE_ATTACHMENT_LIST_URI_COLUMN);
+            Cursor attachmentCursor = null;
+            try {
+                attachmentCursor = getContext().getContentResolver().query(
+                        Uri.parse(attachmentQuery), UIProvider.ATTACHMENT_PROJECTION, null, null,
+                        null);
+                String attachmentUri;
+                while (attachmentCursor.moveToNext()) {
+                    attachmentUri = attachmentCursor.getString(UIProvider.ATTACHMENT_URI_COLUMN);
+                    if (!TextUtils.isEmpty(attachmentUri)) {
+                        addAttachment(account, Uri.parse(attachmentUri), false);
+                    }
+                }
+            } catch (AttachmentFailureException e) {
+                // A toast has already been shown to the user, no need to do
+                // anything.
+                LogUtils.e(LOG_TAG, e, "Error adding attachment");
+            } finally {
+                if (attachmentCursor != null) {
+                    attachmentCursor.close();
+                }
+            }
+        }
+    }
+
     @VisibleForTesting
     protected int getSizeFromFile(Uri uri, ContentResolver contentResolver) {
         int size = -1;

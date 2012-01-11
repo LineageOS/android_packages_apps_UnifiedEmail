@@ -55,7 +55,7 @@ public class Attachment implements Parcelable {
         mimeType = in.readString();
         contentUri = in.readString();
         partId = in.readString();
-        isSynced = in.readInt() == 1 ? true : false;
+        isSynced = in.readInt() == 1;
         size = in.readLong();
     }
 

@@ -398,17 +398,21 @@ public class UIProvider {
         BaseColumns._ID,
         AttachmentColumns.NAME,
         AttachmentColumns.SIZE,
-        AttachmentColumns.ORIGIN,
+        AttachmentColumns.URI,
         AttachmentColumns.ORIGIN_EXTRAS,
         AttachmentColumns.CONTENT_TYPE,
         AttachmentColumns.SYNCED
     };
     private static final String EMAIL_SEPARATOR_PATTERN = "\n";
+    public static final int ATTACHMENT_ID_COLUMN = 0;
+    public static final int ATTACHMENT_NAME_COLUMN = 1;
+    public static final int ATTACHMENT_SIZE_COLUMN = 2;
+    public static final int ATTACHMENT_URI_COLUMN = 3;
 
     public static final class AttachmentColumns {
         public static final String NAME = "name";
         public static final String SIZE = "size";
-        public static final String ORIGIN = "origin";
+        public static final String URI = "uri";
         public static final String ORIGIN_EXTRAS = "originExtras";
         public static final String CONTENT_TYPE = "contentType";
         public static final String SYNCED = "synced";

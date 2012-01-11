@@ -50,11 +50,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.BaseInputConnection;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,7 +67,6 @@ import com.android.mail.providers.MessageModification;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.R;
-import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.android.ex.chips.RecipientEditTextView;
@@ -153,8 +149,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private View mFromStatic;
     private View mFromSpinnerWrapper;
     private FromAddressSpinner mFromSpinner;
-    private boolean mAccountSpinnerReady;
-    private List<Account> mAccounts;
     private boolean mAddingAttachment;
     private boolean mAttachmentsChanged;
     private boolean mTextChanged;
@@ -346,7 +340,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 initRecipientsFromRefMessageCursor(recipientAddress, refMessage, action);
                 initBodyFromRefMessage(refMessage, action);
                 if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
-                    updateAttachments(action, refMessage);
+                    initAttachments(refMessage);
                 } else {
                     // Clear the attachments.
                     removeAllAttachments();
@@ -358,8 +352,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private void updateAttachments(int action, Cursor refMessage) {
-        // TODO: implement this when we do attachment handling.
+    private void initAttachments(Cursor refMessage) {
+        mAttachmentsView.addAttachments(mAccount, refMessage);
     }
 
     private void initBodyFromRefMessage(Cursor refMessage, int action) {

@@ -200,6 +200,8 @@ public final class MockUiProvider extends ContentProvider {
         Map<String, Object> attachmentMap = Maps.newHashMap();
         attachmentMap.put(BaseColumns._ID, Long.valueOf(attachmentId));
         attachmentMap.put(AttachmentColumns.NAME, "Attachment " + name);
+        attachmentMap.put(AttachmentColumns.URI,
+                "attachmentUri/" + attachmentMap.get(AttachmentColumns.NAME));
         return attachmentMap;
     }
 
