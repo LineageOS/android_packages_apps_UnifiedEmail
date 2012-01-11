@@ -16,40 +16,39 @@
  */
 package com.android.mail.browse;
 
-import com.android.mail.FormattedDateBuilder;
-import com.android.mail.R;
-import com.android.mail.providers.Account;
-import com.android.mail.providers.UIProvider;
-import com.android.mail.utils.Utils;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.android.mail.FormattedDateBuilder;
+import com.android.mail.R;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.Utils;
+
 public class ConversationViewActivity extends Activity {
 
-    private static final String EXTRA_CONVERSATION_LOOKUP = "conversationUri";
+    private static final String EXTRA_CONVERSATION = "conversation";
 
-    private Uri mLookupUri;
+    private Conversation mConversation;
     private ContentResolver mResolver;
-    private Cursor mConversationCursor;
     private Cursor mMessageCursor;
     private TextView mSubject;
     private ListView mMessageList;
     private FormattedDateBuilder mDateBuilder;
     private Account mAccount;
 
-    public static void viewConversation(Context context, String uri, Account account) {
+    public static void viewConversation(Context context, Conversation conv, Account account) {
         Intent intent = new Intent(context, ConversationViewActivity.class);
-        intent.putExtra(EXTRA_CONVERSATION_LOOKUP, uri);
+        intent.putExtra(EXTRA_CONVERSATION, conv);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
         context.startActivity(intent);
     }
@@ -58,7 +57,7 @@ public class ConversationViewActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        mLookupUri = Uri.parse(intent.getStringExtra(EXTRA_CONVERSATION_LOOKUP));
+        mConversation = intent.getParcelableExtra(EXTRA_CONVERSATION);
         mResolver = getContentResolver();
         mAccount = (Account)intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
         setContentView(R.layout.conversation_view);
@@ -69,17 +68,11 @@ public class ConversationViewActivity extends Activity {
         super.onPostCreate(savedInstanceState);
         mSubject = (TextView) findViewById(R.id.subject);
         mMessageList = (ListView) findViewById(R.id.message_list);
-        mConversationCursor = mResolver.query(mLookupUri, UIProvider.CONVERSATION_PROJECTION, null,
-                null, null);
         mDateBuilder = new FormattedDateBuilder(this);
-        if (mConversationCursor != null) {
-            mConversationCursor.moveToFirst();
-            mSubject.setText(mConversationCursor.getString(UIProvider.CONVERSATION_SUBJECT_COLUMN));
-            mMessageCursor = mResolver.query(Uri.parse(mConversationCursor
-                    .getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN)),
-                    UIProvider.MESSAGE_PROJECTION, null, null, null);
-            mMessageList.setAdapter(new MessageListAdapter(this, mMessageCursor));
-        }
+        mSubject.setText(mConversation.subject);
+        mMessageCursor = mResolver.query(mConversation.messageListUri,
+                UIProvider.MESSAGE_PROJECTION, null, null, null);
+        mMessageList.setAdapter(new MessageListAdapter(this, mMessageCursor));
     }
 
     class MessageListAdapter extends SimpleCursorAdapter {
@@ -92,7 +85,7 @@ public class ConversationViewActivity extends Activity {
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
             MessageHeaderView header = (MessageHeaderView) view;
-            header.initialize(mDateBuilder, mAccount, false, true, false);
+            header.initialize(mDateBuilder, mAccount, true, true, false);
             header.bind(cursor);
         }
     }

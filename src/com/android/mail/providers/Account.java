@@ -17,7 +17,6 @@
 package com.android.mail.providers;
 
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Parcel;
 
 
@@ -107,6 +106,7 @@ public class Account extends android.accounts.Account {
         expungeMessageUri = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
     }
 
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(providerVersion);
@@ -120,11 +120,14 @@ public class Account extends android.accounts.Account {
         dest.writeString(expungeMessageUri);
     }
 
+    @SuppressWarnings("hiding")
     public static final Creator<Account> CREATOR = new Creator<Account>() {
+        @Override
         public Account createFromParcel(Parcel source) {
             return new Account(source);
         }
 
+        @Override
         public Account[] newArray(int size) {
             return new Account[size];
         }

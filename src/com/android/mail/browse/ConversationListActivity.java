@@ -43,6 +43,7 @@ import com.android.mail.ViewMode;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 
 public class ConversationListActivity extends Activity implements OnItemSelectedListener,
@@ -175,8 +176,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Cursor cursor = (Cursor) mListAdapter.getItem(position);
-        ConversationViewActivity.viewConversation(this,
-                cursor.getString(UIProvider.CONVERSATION_URI_COLUMN), mSelectedAccount);
+        Conversation conv = ((ConversationItemView) view).getConversation();
+        ConversationViewActivity.viewConversation(this, conv, mSelectedAccount);
     }
 }

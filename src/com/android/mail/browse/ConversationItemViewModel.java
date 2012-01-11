@@ -17,10 +17,8 @@
 
 package com.android.mail.browse;
 
-import com.android.mail.providers.UIProvider;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.android.mail.R;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -31,6 +29,9 @@ import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.util.LruCache;
 import android.util.Pair;
+
+import com.android.mail.R;
+import com.android.mail.providers.Conversation;
 
 import java.util.ArrayList;
 
@@ -73,8 +74,6 @@ public class ConversationItemViewModel {
     // A list of all the fragments that cover sendersText
     final ArrayList<SenderFragment> senderFragments;
 
-    boolean hasAttachments;
-
     boolean hasDraftMessage;
 
     // Subject
@@ -88,19 +87,13 @@ public class ConversationItemViewModel {
     // Standard scaled dimen used to detect if the scale of text has changed.
     public int standardScaledDimen;
 
-    public long dateMs;
-
-    public String subject;
-
-    public String snippet;
-
     public String fromSnippetInstructions;
-
-    public long conversationId;
 
     public long maxMessageId;
 
     public boolean checkboxVisible;
+
+    public Conversation conversation;
 
 
     /**
@@ -123,14 +116,9 @@ public class ConversationItemViewModel {
     static ConversationItemViewModel forCursor(String account, Cursor cursor) {
         ConversationItemViewModel header = new ConversationItemViewModel();
         if (cursor != null) {
-            header.conversationId = cursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
-            header.dateMs = cursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
-            header.subject = cursor.getString(UIProvider.CONVERSATION_SUBJECT_COLUMN);
-            header.snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
             header.faded = false;
             header.checkboxVisible = true;
-            header.hasAttachments = cursor
-                    .getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) == 1 ? true : false;
+            header.conversation = Conversation.from(cursor);
         }
         return header;
     }
@@ -266,6 +254,7 @@ public class ConversationItemViewModel {
      * Get conversation information to use for accessibility.
      */
     public CharSequence getContentDescription(Context context) {
-       return context.getString(R.string.content_description, subject, snippet);
+        return context.getString(R.string.content_description, conversation.subject,
+                conversation.snippet);
     }
 }

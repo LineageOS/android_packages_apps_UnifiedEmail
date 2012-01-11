@@ -273,7 +273,7 @@ public class UIProvider {
         public static final String HAS_ATTACHMENTS = "hasAttachments";
 
         public ConversationColumns() {
-        };
+        }
     }
 
     /**
@@ -383,7 +383,7 @@ public class UIProvider {
         public static final String CUSTOM_FROM_ADDRESS = "customFromAddress";
         public static final String HAS_ATTACHMENTS = "hasAttachments";
         public static final String ATTACHMENT_LIST_URI = "attachmentListUri";
-        public static final String MESSAGE_FLAGS = "messagesFlags";
+        public static final String MESSAGE_FLAGS = "messageFlags";
 
         private MessageColumns() {}
     }

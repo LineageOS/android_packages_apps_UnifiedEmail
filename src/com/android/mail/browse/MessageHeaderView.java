@@ -696,7 +696,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * @param messageCursor Cursor to query for label objects with
      */
     private static String[] getBccAddresses(Cursor cursor) {
-        return Utils.splitCommaSeparatedString(cursor.getString(UIProvider.MESSAGE_CC_COLUMN));
+        return Utils.splitCommaSeparatedString(cursor.getString(UIProvider.MESSAGE_BCC_COLUMN));
     }
 
     @Override

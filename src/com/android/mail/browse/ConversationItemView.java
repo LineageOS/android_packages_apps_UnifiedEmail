@@ -17,11 +17,6 @@
 
 package com.android.mail.browse;
 
-import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
-import com.android.mail.perf.Timer;
-import com.android.mail.R;
-import com.android.mail.ViewMode;
-import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
 import android.content.Context;
@@ -48,6 +43,13 @@ import android.text.style.StyleSpan;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.android.mail.R;
+import com.android.mail.ViewMode;
+import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
+import com.android.mail.perf.Timer;
+import com.android.mail.providers.Conversation;
+import com.android.mail.utils.Utils;
 
 public class ConversationItemView extends View {
     // Timer.
@@ -211,6 +213,10 @@ public class ConversationItemView extends View {
         requestLayout();
     }
 
+    public Conversation getConversation() {
+        return mHeader.conversation;
+    }
+
     /**
      * Sets the mode. Only used for testing.
      */
@@ -320,11 +326,12 @@ public class ConversationItemView extends View {
         mHeader.starBitmap = mHeader.starred ? STAR_ON : STAR_OFF;
 
         // Date.
-        mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext, mHeader.dateMs).toString();
+        mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
+                mHeader.conversation.dateMs).toString();
 
         // Paper clip icon.
         mHeader.paperclip = null;
-        if (mHeader.hasAttachments) {
+        if (mHeader.conversation.hasAttachments) {
             mHeader.paperclip = ATTACHMENT;
         }
 
@@ -344,8 +351,8 @@ public class ConversationItemView extends View {
     }
 
     private void createSubjectSpans(boolean isUnread) {
-        String subject = filterTag(mHeader.subject);
-        String snippet = mHeader.snippet;
+        final String subject = filterTag(mHeader.conversation.subject);
+        final String snippet = mHeader.conversation.snippet;
         int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
         int snippetColor = isUnread ? SNIPPET_TEXT_COLOR_UNREAD : SNIPPET_TEXT_COLOR_READ;
         mHeader.subjectText = new SpannableStringBuilder(mContext.getString(
@@ -390,7 +397,7 @@ public class ConversationItemView extends View {
         SpannableStringBuilder statusBuilder = new SpannableStringBuilder();
         Utils.getStyledSenderSnippet(mContext, mHeader.fromSnippetInstructions, sendersBuilder,
                 statusBuilder, ConversationItemViewCoordinates.getSubjectLength(mContext, mMode,
-                        false, mHeader.hasAttachments), false,
+                        false, mHeader.conversation.hasAttachments), false,
                         false, mHeader.hasDraftMessage);
         mHeader.sendersText = sendersBuilder.toString();
 
@@ -703,10 +710,10 @@ public class ConversationItemView extends View {
         // Date background: shown when there is an attachment or a visible
         // label.
         if (!isActivated()
-                && mHeader.hasAttachments
+                && mHeader.conversation.hasAttachments
                 && ConversationItemViewCoordinates.showAttachmentBackground(mMode)) {
             mHeader.dateBackground = DATE_BACKGROUND;
-            int leftOffset = (mHeader.hasAttachments ? mPaperclipX : mDateX)
+            int leftOffset = (mHeader.conversation.hasAttachments ? mPaperclipX : mDateX)
                     - DATE_BACKGROUND_PADDING_LEFT;
             int top = mCoordinates.labelsY;
             Rect src = new Rect(0, 0, mHeader.dateBackground.getWidth(), mHeader.dateBackground
