@@ -163,6 +163,18 @@ public class UIProvider {
         FolderColumns.TOTAL_COUNT
     };
 
+    public static final int FOLDER_ID_COLUMN = 0;
+    public static final int FOLDER_URI_COLUMN = 1;
+    public static final int FOLDER_NAME_COLUMN = 2;
+    public static final int FOLDER_HAS_CHILDREN_COLUMN = 3;
+    public static final int FOLDER_CAPABILITIES_COLUMN = 4;
+    public static final int FOLDER_SYNC_FREQUENCY_COLUMN = 5;
+    public static final int FOLDER_SYNC_WINDOW_COLUMN = 6;
+    public static final int FOLDER_CONVERSATION_LIST_URI_COLUMN = 7;
+    public static final int FOLDER_CHILD_FOLDERS_LIST_COLUMN = 8;
+    public static final int FOLDER_UNREAD_COUNT_COLUMN = 9;
+    public static final int FOLDER_TOTAL_COUNT_COLUMN = 10;
+
     public static final class FolderCapabilities {
         public static final int SYNCABLE = 0x0001;
         public static final int PARENT = 0x0002;

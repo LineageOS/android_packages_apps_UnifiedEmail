@@ -207,10 +207,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        mAccount = (Account)intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
         setContentView(R.layout.compose);
         findViews();
+        Intent intent = getIntent();
+        setAccount((Account)intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+        if (mAccount == null) {
+            return;
+        }
         int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
         if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
             mRefMessageUri = Uri.parse(intent.getStringExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI));
@@ -218,6 +221,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } else {
             mQuotedTextView.setVisibility(View.GONE);
         }
+        initRecipients();
         initActionBar(action);
         initFromSpinner();
         initChangeListeners();
@@ -228,7 +232,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         super.onResume();
         // Update the from spinner as other accounts
         // may now be available.
-        mFromSpinner.asyncInitFromSpinner();
+        if (mFromSpinner != null && mAccount != null) {
+            mFromSpinner.asyncInitFromSpinner();
+        }
     }
 
     @Override
@@ -264,6 +270,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         saveIfNeededOnOrientationChanged();
     }
 
+    @VisibleForTesting
+    void setAccount(Account account) {
+        mAccount = account;
+    }
+
     private void initFromSpinner() {
         mFromSpinner.setCurrentAccount(mAccount);
         mFromSpinner.asyncInitFromSpinner();
@@ -284,8 +295,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
-        mAttachmentsView.setAttachmentChangesListener(this);
-        setupRecipients();
+        mTo = (RecipientEditTextView) findViewById(R.id.to);
+        mCc = (RecipientEditTextView) findViewById(R.id.cc);
+        mBcc = (RecipientEditTextView) findViewById(R.id.bcc);
         // TODO: add special chips text change watchers before adding
         // this as a text changed watcher to the to, cc, bcc fields.
         mSubject = (TextView) findViewById(R.id.subject);
@@ -307,6 +319,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mCc.addTextChangedListener(new RecipientTextWatcher(mCc, this));
         mBcc.addTextChangedListener(new RecipientTextWatcher(mBcc, this));
         mFromSpinner.setOnAccountChangedListener(this);
+        mAttachmentsView.setAttachmentChangesListener(this);
     }
 
     private void initActionBar(int action) {
@@ -408,7 +421,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private void initRecipientsFromRefMessageCursor(String recipientAddress, Cursor refMessage,
+    void initRecipientsFromRefMessageCursor(String recipientAddress, Cursor refMessage,
             int action) {
         // Don't populate the address if this is a forward.
         if (action == ComposeActivity.FORWARD) {
@@ -417,7 +430,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         initReplyRecipients(mAccount.name, refMessage, action);
     }
 
-    private void initReplyRecipients(String account, Cursor refMessage, int action) {
+    @VisibleForTesting
+    void initReplyRecipients(String account, Cursor refMessage, int action) {
         // This is the email address of the current user, i.e. the one composing
         // the reply.
         final String accountEmail = Address.getEmailAddress(account).getAddress();
@@ -580,14 +594,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mSubject.setText(correctedSubject);
     }
 
-    private void setupRecipients() {
-        mTo = setupRecipients(R.id.to);
-        mCc = setupRecipients(R.id.cc);
-        mBcc = setupRecipients(R.id.bcc);
+    private void initRecipients() {
+        setupRecipients(mTo);
+        setupRecipients(mCc);
+        setupRecipients(mBcc);
     }
 
-    private RecipientEditTextView setupRecipients(int id) {
-        RecipientEditTextView view = (RecipientEditTextView) findViewById(id);
+    private void setupRecipients(RecipientEditTextView view) {
         String accountName = mAccount.name;
         view.setAdapter(new RecipientAdapter(this, accountName));
         view.setTokenizer(new Rfc822Tokenizer());
@@ -600,7 +613,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mValidator = new Rfc822Validator(account);
         }
         view.setValidator(mValidator);
-        return view;
     }
 
     @Override
@@ -628,7 +640,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem ccBcc = menu.findItem(R.id.add_cc_bcc);
-        if (ccBcc != null) {
+        if (ccBcc != null && mCc != null) {
             // Its possible there is a menu item OR a button.
             boolean ccFieldVisible = mCc.isShown();
             boolean bccFieldVisible = mBcc.isShown();
@@ -1378,7 +1390,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             enableSave(true);
         }
         mReplyFromChanged = true;
-        setupRecipients();
+        initRecipients();
     }
 
     public void enableSave(boolean enabled) {
