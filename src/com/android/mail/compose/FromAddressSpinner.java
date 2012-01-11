@@ -81,7 +81,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Account selection = (Account) getItemAtPosition(position);
-        if (!selection.name.equals(mAccount)) {
+        if (!selection.name.equals(mAccount.name)) {
             mAccount = selection;
             mAccountChangedListener.onAccountChanged();
         }
@@ -92,6 +92,12 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
         // Do nothing.
     }
 
+    /**
+     * Classes that want to know when a different account in the
+     * FromAddressSpinner has been selected should implement this interface.
+     * Note: if the user chooses the same account as the one that has already
+     * been selected, this method will not be called.
+     */
     public static interface OnAccountChangedListener {
         public void onAccountChanged();
     }

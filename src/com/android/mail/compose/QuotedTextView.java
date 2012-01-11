@@ -237,6 +237,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     }
 
     public void setQuotedText(int action, Cursor refMessage, boolean allow) {
+        setVisibility(View.VISIBLE);
         StringBuffer quotedText = new StringBuffer();
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
         Date date = new Date(refMessage.getLong(UIProvider.MESSAGE_DATE_RECEIVED_MS_COLUMN));

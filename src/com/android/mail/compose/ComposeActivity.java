@@ -52,6 +52,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.BaseInputConnection;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,9 +78,11 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
@@ -218,6 +221,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         initActionBar(action);
         initFromSpinner();
+        initChangeListeners();
     }
 
     @Override
@@ -264,7 +268,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void initFromSpinner() {
         mFromSpinner.setCurrentAccount(mAccount);
         mFromSpinner.asyncInitFromSpinner();
-        mFromSpinner.setOnAccountChangedListener(this);
         boolean showSpinner = mFromSpinner.getCount() > 1;
         // If there is only 1 account, just show that account.
         // Otherwise, give the user the ability to choose which account to send
@@ -287,14 +290,24 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // TODO: add special chips text change watchers before adding
         // this as a text changed watcher to the to, cc, bcc fields.
         mSubject = (TextView) findViewById(R.id.subject);
-        mSubject.addTextChangedListener(this);
         mQuotedTextView = (QuotedTextView) findViewById(R.id.quoted_text_view);
         mQuotedTextView.setRespondInlineListener(this);
         mBodyView = (TextView) findViewById(R.id.body);
-        mBodyView.addTextChangedListener(this);
         mFromStatic = findViewById(R.id.static_from_content);
         mFromSpinnerWrapper = findViewById(R.id.spinner_from_content);
         mFromSpinner = (FromAddressSpinner) findViewById(R.id.from_picker);
+    }
+
+    // Now that the message has been initialized from any existing draft or
+    // ref message data, set up listeners for any changes that occur to the
+    // message.
+    private void initChangeListeners() {
+        mSubject.addTextChangedListener(this);
+        mBodyView.addTextChangedListener(this);
+        mTo.addTextChangedListener(new RecipientTextWatcher(mTo, this));
+        mCc.addTextChangedListener(new RecipientTextWatcher(mCc, this));
+        mBcc.addTextChangedListener(new RecipientTextWatcher(mBcc, this));
+        mFromSpinner.setOnAccountChangedListener(this);
     }
 
     private void initActionBar(int action) {
@@ -343,7 +356,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     initAttachments(refMessage);
                 } else {
                     // Clear the attachments.
-                    removeAllAttachments();
+                    mAttachmentsView.deleteAllAttachments();
                 }
                 updateHideOrShowCcBcc();
             } finally {
@@ -358,7 +371,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void initBodyFromRefMessage(Cursor refMessage, int action) {
         if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
-            mQuotedTextView.setVisibility(View.VISIBLE);
             mQuotedTextView.setQuotedText(action, refMessage, action != FORWARD);
         }
     }
@@ -379,10 +391,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 mCcBccButton.setVisibility(View.GONE);
             }
         }
-    }
-
-    public void removeAllAttachments() {
-        mAttachmentsView.removeAllViews();
     }
 
     /**
@@ -635,28 +643,31 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 ccBcc.setVisible(false);
             }
         }
+        if (mSave != null) {
+            mSave.setEnabled(shouldSave());
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        boolean handled = false;
+        boolean handled = true;
         switch (id) {
             case R.id.add_attachment:
                 doAttach();
                 break;
             case R.id.add_cc_bcc:
                 showCcBccViews();
-                handled = true;
                 break;
             case R.id.save:
                 doSave(true, false);
-                handled = true;
                 break;
             case R.id.send:
                 doSend();
-                handled = true;
+                break;
+            default:
+                handled = false;
                 break;
         }
         return !handled ? super.onOptionsItemSelected(item) : handled;
@@ -1413,25 +1424,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         finish();
     }
 
-    /**
-     * This is called any time one of our text fields changes.
-     */
-    @Override
-    public void afterTextChanged(Editable s) {
-        mTextChanged = true;
-        updateSaveUi();
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // Do nothing.
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        // Do nothing.
-    }
-
     private void saveIfNeeded() {
         if (mAccount == null) {
             // We have not chosen an account yet so there's no way that we can save. This is ok,
@@ -1477,5 +1469,99 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void onAttachmentDeleted() {
         mAttachmentsChanged = true;
         updateSaveUi();
+    }
+
+
+    /**
+     * This is called any time one of our text fields changes.
+     */
+    public void afterTextChanged(Editable s) {
+        mTextChanged = true;
+        updateSaveUi();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // Do nothing.
+    }
+
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        // Do nothing.
+    }
+
+
+    // There is a big difference between the text associated with an address changing
+    // to add the display name or to format properly and a recipient being added or deleted.
+    // Make sure we only notify of changes when a recipient has been added or deleted.
+    private class RecipientTextWatcher implements TextWatcher {
+        private HashMap<String, Integer> mContent = new HashMap<String, Integer>();
+
+        private RecipientEditTextView mView;
+
+        private TextWatcher mListener;
+
+        public RecipientTextWatcher(RecipientEditTextView view, TextWatcher listener) {
+            mView = view;
+            mListener = listener;
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (hasChanged()) {
+                mListener.afterTextChanged(s);
+            }
+        }
+
+        private boolean hasChanged() {
+            String[] currRecips = tokenizeRecips(getAddressesFromList(mView));
+            int totalCount = currRecips.length;
+            int totalPrevCount = 0;
+            for (Entry<String, Integer> entry : mContent.entrySet()) {
+                totalPrevCount += entry.getValue();
+            }
+            if (totalCount != totalPrevCount) {
+                return true;
+            }
+
+            for (String recip : currRecips) {
+                if (!mContent.containsKey(recip)) {
+                    return true;
+                } else {
+                    int count = mContent.get(recip) - 1;
+                    if (count < 0) {
+                        return true;
+                    } else {
+                        mContent.put(recip, count);
+                    }
+                }
+            }
+            return false;
+        }
+
+        private String[] tokenizeRecips(String[] recips) {
+            // Tokenize them all and put them in the list.
+            String[] recipAddresses = new String[recips.length];
+            for (int i = 0; i < recips.length; i++) {
+                recipAddresses[i] = Rfc822Tokenizer.tokenize(recips[i])[0].getAddress();
+            }
+            return recipAddresses;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            String[] recips = tokenizeRecips(getAddressesFromList(mView));
+            for (String recip : recips) {
+                if (!mContent.containsKey(recip)) {
+                    mContent.put(recip, 1);
+                } else {
+                    mContent.put(recip, (mContent.get(recip)) + 1);
+                }
+            }
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            // Do nothing.
+        }
     }
 }
