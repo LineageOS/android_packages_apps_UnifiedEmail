@@ -390,70 +390,11 @@ public class ConversationItemView extends View {
      * Parses senders text into small fragments.
      */
     private void parseSendersFragments(boolean isUnread) {
-        if (TextUtils.isEmpty(mHeader.fromSnippetInstructions)) {
+        if (TextUtils.isEmpty(mHeader.conversation.senders)) {
             return;
         }
-        SpannableStringBuilder sendersBuilder = new SpannableStringBuilder();
-        SpannableStringBuilder statusBuilder = new SpannableStringBuilder();
-        Utils.getStyledSenderSnippet(mContext, mHeader.fromSnippetInstructions, sendersBuilder,
-                statusBuilder, ConversationItemViewCoordinates.getSubjectLength(mContext, mMode,
-                        false, mHeader.conversation.hasAttachments), false,
-                        false, mHeader.hasDraftMessage);
-        mHeader.sendersText = sendersBuilder.toString();
-
-        CharacterStyle[] spans = sendersBuilder.getSpans(0, sendersBuilder.length(),
-                CharacterStyle.class);
-        mHeader.clearSenderFragments();
-        int lastPosition = 0;
-        CharacterStyle style = sNormalTextStyle;
-        if (spans != null) {
-            for (CharacterStyle span : spans) {
-                style = span;
-                int start = sendersBuilder.getSpanStart(style);
-                int end = sendersBuilder.getSpanEnd(style);
-                if (start > lastPosition) {
-                    mHeader.addSenderFragment(lastPosition, start, sNormalTextStyle, false);
-                }
-                // From instructions won't be updated until the next sync. So we
-                // have to override the text style here to be consistent with
-                // the background color.
-                if (isUnread) {
-                    mHeader.addSenderFragment(start, end, style, false);
-                } else {
-                    mHeader.addSenderFragment(start, end, sNormalTextStyle, false);
-                }
-                lastPosition = end;
-            }
-        }
-        if (lastPosition < sendersBuilder.length()) {
-            style = sLightTextStyle;
-            mHeader.addSenderFragment(lastPosition, sendersBuilder.length(), style, true);
-        }
-        if (statusBuilder.length() > 0) {
-            if (mHeader.sendersText.length() > 0) {
-                mHeader.sendersText = mHeader.sendersText.concat(", ");
-
-                // Extend the last fragment to include the comma.
-                int lastIndex = mHeader.senderFragments.size() - 1;
-                int start = mHeader.senderFragments.get(lastIndex).start;
-                int end = mHeader.senderFragments.get(lastIndex).end + 2;
-                style = mHeader.senderFragments.get(lastIndex).style;
-
-                // The new fragment is only fixed if the previous fragment
-                // is fixed.
-                boolean isFixed = mHeader.senderFragments.get(lastIndex).isFixed;
-
-                // Remove the old fragment.
-                mHeader.senderFragments.remove(lastIndex);
-
-                // Add new fragment.
-                mHeader.addSenderFragment(start, end, style, isFixed);
-            }
-            int pos = mHeader.sendersText.length();
-            mHeader.sendersText = mHeader.sendersText.concat(statusBuilder.toString());
-            mHeader.addSenderFragment(pos, mHeader.sendersText.length(), new ForegroundColorSpan(
-                    DRAFT_TEXT_COLOR), true);
-        }
+        mHeader.sendersText = mHeader.conversation.senders;
+        mHeader.addSenderFragment(0, mHeader.sendersText.length(), sNormalTextStyle, true);
     }
 
     private boolean canFitFragment(int width, int line, int fixedWidth) {
