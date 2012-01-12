@@ -88,7 +88,7 @@ public class ConversationViewActivity extends Activity {
             header.initialize(mDateBuilder, mAccount, true, true, false);
             header.bind(cursor);
             MessageWebView webView = (MessageWebView) view.findViewById(R.id.body);
-            webView.loadData(cursor.getString(UIProvider.MESSAGE_BODY_HTML), "text/html", null);
+            webView.loadData(cursor.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN), "text/html", null);
         }
     }
 }
