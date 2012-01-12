@@ -373,7 +373,6 @@ public class UIProvider {
         MessageColumns.DRAFT_TYPE,
         MessageColumns.INCLUDE_QUOTED_TEXT,
         MessageColumns.QUOTE_START_POS,
-        MessageColumns.CLIENT_CREATED,
         MessageColumns.CUSTOM_FROM_ADDRESS,
         MessageColumns.HAS_ATTACHMENTS,
         MessageColumns.ATTACHMENT_LIST_URI,
@@ -404,43 +403,116 @@ public class UIProvider {
     public static final int MESSAGE_DRAFT_TYPE_COLUMN = 16;
     public static final int MESSAGE_INCLUDE_QUOTED_TEXT_COLUMN = 17;
     public static final int MESSAGE_QUOTE_START_POS_COLUMN = 18;
-    public static final int MESSAGE_CLIENT_CREATED_COLUMN = 19;
-    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 20;
-    public static final int MESSAGE_HAS_ATTACHMENTS_COLUMN = 21;
-    public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 22;
-    public static final int MESSAGE_FLAGS_COLUMN = 23;
+    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 19;
+    public static final int MESSAGE_HAS_ATTACHMENTS_COLUMN = 20;
+    public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 21;
+    public static final int MESSAGE_FLAGS_COLUMN = 22;
 
     public static final class MessageFlags {
-        public static final int SYNCABLE = 0x0001;
-        public static final int PARENT = 0x0002;
-        public static final int CAN_HOLD_MAIL = 0x0004;
-        public static final int CAN_ACCEPT_MOVED_MESSAGES = 0x0008;
-        public static final int STARRED = 0x0012;
+        public static final int STARRED =       1 << 0;
+        public static final int UNREAD =        1 << 1;
+        public static final int REPLIED =       1 << 2;
+        public static final int FORWARDED =     1 << 3;
     }
 
     public static final class MessageColumns {
+        /**
+         * This string column contains a content provider URI that points to this single message.
+         */
         public static final String URI = "messageUri";
-        public static final String SERVER_ID = "localMessageId";
+        /**
+         * This string column contains a server-assigned ID for this message.
+         */
+        public static final String SERVER_ID = "serverMessageId";
         public static final String CONVERSATION_ID = "conversationId";
+        /**
+         * This string column contains the subject of a message.
+         */
         public static final String SUBJECT = "subject";
+        /**
+         * This string column contains a snippet of the message body.
+         */
         public static final String SNIPPET = "snippet";
+        /**
+         * This string column contains the single email address (and optionally name) of the sender.
+         */
         public static final String FROM = "fromAddress";
+        /**
+         * This string column contains a comma-delimited list of "To:" recipient email addresses.
+         */
         public static final String TO = "toAddresses";
+        /**
+         * This string column contains a comma-delimited list of "CC:" recipient email addresses.
+         */
         public static final String CC = "ccAddresses";
+        /**
+         * This string column contains a comma-delimited list of "BCC:" recipient email addresses.
+         * This value will be null for incoming messages.
+         */
         public static final String BCC = "bccAddresses";
+        /**
+         * This string column contains the single email address (and optionally name) of the
+         * sender's reply-to address.
+         */
         public static final String REPLY_TO = "replyToAddress";
+        /**
+         * This long column contains the timestamp (in millis) of receipt of the message.
+         */
         public static final String DATE_RECEIVED_MS = "dateReceivedMs";
+        /**
+         * This string column contains the HTML form of the message body, if available. If not,
+         * a provider must populate BODY_TEXT.
+         */
         public static final String BODY_HTML = "bodyHtml";
+        /**
+         * This string column contains the plaintext form of the message body, if HTML is not
+         * otherwise available. If HTML is available, this value should be left empty (null).
+         */
         public static final String BODY_TEXT = "bodyText";
         public static final String EMBEDS_EXTERNAL_RESOURCES = "bodyEmbedsExternalResources";
         public static final String REF_MESSAGE_ID = "refMessageId";
+        /**
+         * This string column contains the type of this draft, or null/empty string if this message
+         * is not a draft. See {@link DraftType} for possible values.
+         */
         public static final String DRAFT_TYPE = "draftType";
+        /**
+         * This boolean column indicates whether an outgoing message should trigger special quoted
+         * text processing upon send. The value should default to zero (0) for protocols that do
+         * not support or require this flag, and for all incoming messages.
+         */
         public static final String INCLUDE_QUOTED_TEXT = "includeQuotedText";
+        /**
+         * This long column is an offset into the {@link MessageColumns#BODY_HTML} at which to begin
+         * special quoted-text handling for an outgoing message upon send. The value should default
+         * to zero (0) for protocols that do not support or require this value, and for all incoming
+         * messages.
+         */
         public static final String QUOTE_START_POS = "quoteStartPos";
+        // This is an implementation detail of Gmail. The UI never reads this value, and it's
+        // implied that insertion of a message means it's client-created.
+        // TODO: removeme
+        @Deprecated
         public static final String CLIENT_CREATED = "clientCreated";
+        /**
+         * This string column contains a custom {@link MessageColumns#FROM} address to use when
+         * sending an outgoing message. The default value is null for incoming messages and
+         * protocols that do not support the custom-from feature.
+         */
         public static final String CUSTOM_FROM_ADDRESS = "customFromAddress";
+        /**
+         * This boolean column indicates whether a message has attachments. The list of attachments
+         * can be retrieved using the URI in {@link MessageColumns#ATTACHMENT_LIST_URI}.
+         */
         public static final String HAS_ATTACHMENTS = "hasAttachments";
+        /**
+         * This string column contains content provider URI for the list of attachments associated
+         * with this message.
+         */
         public static final String ATTACHMENT_LIST_URI = "attachmentListUri";
+        /**
+         * This long column is a bit field of flags defined in {@link MessageFlags}.
+         */
         public static final String MESSAGE_FLAGS = "messageFlags";
 
         private MessageColumns() {}

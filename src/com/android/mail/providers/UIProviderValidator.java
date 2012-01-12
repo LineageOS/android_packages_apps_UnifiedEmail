@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public class UIProviderValidator {
     /**
-     * Validates and returns the projection that can be used for an account query,
+     * Validates and returns the projection that can be used for an account query.
      */
     public static String[] validateAccountProjection(String[] projection) {
         return getValidProjection(projection, UIProvider.ACCOUNTS_PROJECTION);
@@ -40,18 +40,26 @@ public class UIProviderValidator {
 
 
     /**
-     * Validates and returns the projection that can be used for a folder query,
+     * Validates and returns the projection that can be used for a folder query.
      */
     public static String[] validateFolderProjection(String[] projection) {
         return getValidProjection(projection, UIProvider.FOLDERS_PROJECTION);
     }
 
     /**
-     * Validates and returns the projection that can be used for a conversation query,
+     * Validates and returns the projection that can be used for a conversation query.
      */
     public static String[] validateConversationProjection(String[] projection) {
         return getValidProjection(projection, UIProvider.CONVERSATION_PROJECTION);
     }
+
+    /**
+     * Validates and returns the projection that can be used for a message query.
+     */
+    public static String[] validateMessageProjection(String[] projection) {
+        return getValidProjection(projection, UIProvider.MESSAGE_PROJECTION);
+    }
+
 
     private static String[] getValidProjection(String[] requestedProjection,
             String[] allColumnProjection) {
