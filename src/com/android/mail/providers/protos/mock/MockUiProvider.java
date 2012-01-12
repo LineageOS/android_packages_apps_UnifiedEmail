@@ -171,9 +171,13 @@ public final class MockUiProvider extends ContentProvider {
         conversationMap.put(ConversationColumns.MESSAGE_LIST_URI, conversationUri + "/getMessages");
         conversationMap.put(ConversationColumns.SUBJECT, "Conversation " + subject);
         conversationMap.put(ConversationColumns.SNIPPET, "snippet");
-        conversationMap.put(ConversationColumns.SENDER_INFO, "Conversation " + subject);
+        conversationMap.put(ConversationColumns.SENDER_INFO,
+                "<b>account1@mock.com</b>, <i>account2@mock.com</i>");
         conversationMap.put(ConversationColumns.DATE_RECEIVED_MS, new Date().getTime());
         conversationMap.put(ConversationColumns.HAS_ATTACHMENTS, hasAttachments);
+        conversationMap.put(ConversationColumns.NUM_MESSAGES, 1);
+        conversationMap.put(ConversationColumns.NUM_DRAFTS, 1);
+        conversationMap.put(ConversationColumns.SENDING_STATE, 1);
         return conversationMap;
     }
 
