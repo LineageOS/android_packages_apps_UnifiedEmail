@@ -200,7 +200,7 @@ public class UIProvider {
          */
         public static String HAS_CHILDREN = "hasChildren";
         /**
-         * This int column represents how often the folder should be synced.
+         * This int column represents how often the folder should be synchronized with the server.
          */
         public static String SYNC_FREQUENCY = "syncFrequency";
         /**
@@ -222,7 +222,7 @@ public class UIProvider {
 
         public static String TOTAL_COUNT = "totalCount";
 
-        public FolderColumns() {};
+        public FolderColumns() {}
     }
 
     // We define a "folder" as anything that contains a list of conversations.
