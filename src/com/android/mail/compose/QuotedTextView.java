@@ -252,7 +252,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
                                     refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN), true)));
             quotedText.append(HEADER_SEPARATOR);
             quotedText.append(BLOCKQUOTE_BEGIN);
-            quotedText.append(refMessage.getString(UIProvider.MESSAGE_BODY_HTML));
+            quotedText.append(refMessage.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN));
             quotedText.append(BLOCKQUOTE_END);
             quotedText.append(QUOTE_END);
         } else if (action == ComposeActivity.FORWARD) {
@@ -269,7 +269,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
                     Utils.cleanUpString(ccAddresses, true /* remove empty quotes */)));
         }
         quotedText.append(HEADER_SEPARATOR);
-        quotedText.append(refMessage.getString(UIProvider.MESSAGE_BODY_HTML));
+        quotedText.append(refMessage.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN));
         quotedText.append(QUOTE_END);
         setQuotedText(quotedText);
         allowQuotedText(allow);

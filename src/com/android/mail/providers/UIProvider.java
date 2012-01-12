@@ -352,8 +352,8 @@ public class UIProvider {
     public static final int MESSAGE_BCC_COLUMN = 9;
     public static final int MESSAGE_REPLY_TO_COLUMN = 10;
     public static final int MESSAGE_DATE_RECEIVED_MS_COLUMN = 11;
-    public static final int MESSAGE_BODY_HTML = 12;
-    public static final int MESSAGE_BODY_TEXT = 13;
+    public static final int MESSAGE_BODY_HTML_COLUMN = 12;
+    public static final int MESSAGE_BODY_TEXT_COLUMN = 13;
     public static final int MESSAGE_EMBEDS_EXTERNAL_RESOURCES_COLUMN = 14;
     public static final int MESSAGE_REF_MESSAGE_ID_COLUMN = 15;
     public static final int MESSAGE_DRAFT_TYPE_COLUMN = 16;
