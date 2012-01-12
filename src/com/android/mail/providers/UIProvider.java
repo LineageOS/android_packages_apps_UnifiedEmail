@@ -345,10 +345,11 @@ public class UIProvider {
 //    }
 
     public static final class DraftType {
-        public static final String COMPOSE = "compose";
-        public static final String REPLY = "reply";
-        public static final String REPLY_ALL = "replyAll";
-        public static final String FORWARD = "forward";
+        public static final int NOT_A_DRAFT = 0;
+        public static final int COMPOSE = 1;
+        public static final int REPLY = 2;
+        public static final int REPLY_ALL = 3;
+        public static final int FORWARD = 4;
 
         private DraftType() {}
     }
@@ -472,8 +473,8 @@ public class UIProvider {
         public static final String EMBEDS_EXTERNAL_RESOURCES = "bodyEmbedsExternalResources";
         public static final String REF_MESSAGE_ID = "refMessageId";
         /**
-         * This string column contains the type of this draft, or null/empty string if this message
-         * is not a draft. See {@link DraftType} for possible values.
+         * This integer column contains the type of this draft, or zero (0) if this message is not a
+         * draft. See {@link DraftType} for possible values.
          */
         public static final String DRAFT_TYPE = "draftType";
         /**
@@ -489,11 +490,6 @@ public class UIProvider {
          * messages.
          */
         public static final String QUOTE_START_POS = "quoteStartPos";
-        // This is an implementation detail of Gmail. The UI never reads this value, and it's
-        // implied that insertion of a message means it's client-created.
-        // TODO: removeme
-        @Deprecated
-        public static final String CLIENT_CREATED = "clientCreated";
         /**
          * This string column contains a custom {@link MessageColumns#FROM} address to use when
          * sending an outgoing message. The default value is null for incoming messages and

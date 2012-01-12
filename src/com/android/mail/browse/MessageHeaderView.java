@@ -350,7 +350,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
          * than "edit", hides contact photo, hides presence, and changes the
          * sender name to "Draft".
          */
-        mIsDraft = !TextUtils.isEmpty(cursor.getString(UIProvider.MESSAGE_DRAFT_TYPE_COLUMN));
+        mIsDraft = cursor.getInt(UIProvider.MESSAGE_DRAFT_TYPE_COLUMN) !=
+                UIProvider.DraftType.NOT_A_DRAFT;
         mIsSending = isInOutbox(cursor);
 
         updateChildVisibility();
