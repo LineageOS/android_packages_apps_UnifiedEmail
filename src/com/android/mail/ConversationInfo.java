@@ -14,19 +14,21 @@
  *      See the License for the specific language governing permissions and
  *      limitations under the License.
  *******************************************************************************/
+
 package com.android.mail;
 
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
-import com.google.common.base.Objects;
 
-import android.content.Context;
-import android.content.Intent;
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableMap;
+
 import android.content.UriMatcher;
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Helper class that holds the information specifying a conversation or a message (message id,
@@ -41,6 +43,12 @@ public class ConversationInfo implements Parcelable {
 
     // This defines an invalid conversation ID. Nobody should rely on its specific value.
     private static final long INVALID_CONVERSATION_ID = -1;
+
+    /**
+     * Mapping from name of folder to the Folder object. This is the list of all the folders that
+     * this conversation belongs to.
+     */
+    private final Map<String, Folder> mFolders;
 
     // TODO(viki) Get rid of this, and all references and side-effects should be changed
     // to something sane: like a boolean value indicating correctness.
@@ -57,15 +65,16 @@ public class ConversationInfo implements Parcelable {
     }
 
     public ConversationInfo(long conversationId, long localMessageId, long serverMessageId,
-            long maxMessageId) {
+            long maxMessageId, Map<String, Folder> folders) {
         mConversationId = conversationId;
         mLocalMessageId = localMessageId;
         mServerMessageId = serverMessageId;
         mMaxMessageId = maxMessageId;
+        mFolders = folders;
     }
 
-    public ConversationInfo(long conversationId, long maxMessageId) {
-        this(conversationId, 0, 0, maxMessageId);
+    public ConversationInfo(long conversationId, long maxMessageId, Map<String, Folder> folders) {
+        this(conversationId, 0, 0, maxMessageId, folders);
     }
 
     private ConversationInfo(long conversationId) {
@@ -73,34 +82,7 @@ public class ConversationInfo implements Parcelable {
         mServerMessageId = 0;
         mLocalMessageId = 0;
         mMaxMessageId = 0;
-    }
-
-    /**
-     * Builds a {@code ConversationInfo} from an {@link Intent} to view a
-     * conversation by the specified data URI in the {@link Intent}.
-     */
-    public static ConversationInfo forIntent(Context context, Intent intent) {
-        String action = intent.getAction();
-        if (Intent.ACTION_VIEW.equals(action)) {
-            Uri data = intent.getData();
-
-            if (data == null) {
-                return null;
-            }
-            // Expect: "content://mail-ls/account/EMAIL/label/LABEL" +
-            // "/conversationId/123/maxServerMessageId/456/labels/LABELS"
-            // Or: "content://mail-ls/account/EMAIL" +
-            // "/conversationId/123/maxServerMessageId/456/labels/LABELS"
-            int match = sUrlMatcher.match(data);
-            if (match == UriMatcher.NO_MATCH) {
-                return null;
-            }
-
-            List<String> parts = intent.getData().getPathSegments();
-            return new ConversationInfo(Long.parseLong(parts.get(5)), Long.parseLong(parts.get(7)));
-        } else {
-            return null;
-        }
+        mFolders = Collections.emptyMap();
     }
 
     @Override
@@ -114,8 +96,14 @@ public class ConversationInfo implements Parcelable {
         dest.writeLong(mLocalMessageId);
         dest.writeLong(mServerMessageId);
         dest.writeLong(mMaxMessageId);
+        synchronized (this){
+            dest.writeString(Folder.serialize(mFolders));
+        }
     }
 
+    /**
+     * Held together with hope and dreams. Write tests to verify this behavior.
+     */
     public static final Parcelable.Creator<ConversationInfo> CREATOR =
             new Parcelable.Creator<ConversationInfo>() {
         @Override
@@ -128,7 +116,8 @@ public class ConversationInfo implements Parcelable {
                     conversationId,
                     localMessageId,
                     serverMessageId,
-                    maxMessageId);
+                    maxMessageId,
+                    Folder.parseFoldersFromString(source.readString()));
         }
 
         @Override
@@ -164,11 +153,14 @@ public class ConversationInfo implements Parcelable {
                 return false;
             }
 
+            // TODO(viki): Confirm that keySet() is the correct thing to use here. Two folders
+            // with the same keys should be equal, irrespective of order.
             ConversationInfo other = (ConversationInfo) o;
             return mConversationId == other.mConversationId
                     && mLocalMessageId == other.mLocalMessageId
                     && mServerMessageId == other.mServerMessageId
-                    && mMaxMessageId == other.mMaxMessageId;
+                    && mMaxMessageId == other.mMaxMessageId
+                    && mFolders.keySet().equals(other.mFolders.keySet());
         }
     }
 
@@ -176,7 +168,7 @@ public class ConversationInfo implements Parcelable {
     public int hashCode() {
         synchronized(this) {
             return Objects.hashCode(mConversationId, mLocalMessageId, mServerMessageId,
-                    mMaxMessageId);
+                    mMaxMessageId, mFolders.keySet());
         }
     }
 
@@ -185,5 +177,29 @@ public class ConversationInfo implements Parcelable {
      */
     public void updateMaxMessageId(long maxMessageId) {
         mMaxMessageId = maxMessageId;
+    }
+
+    /**
+     * @return empty Map if the folders are null, nonempty copy of Folders otherwise
+     */
+    public Map<String, Folder> getFolders() {
+        // If we have an empty folder map, return an empty folder map rather than returning null.
+        if (mFolders == null){
+            return Collections.emptyMap();
+        }
+        return ImmutableMap.copyOf(mFolders);
+    }
+
+    /**
+     * Update a conversation info to add this folder to the update.
+     * @param folders
+     * @param added
+     */
+    public void updateFolder(Folder folders, boolean added) {
+        if (added){
+            mFolders.put(folders.name, folders);
+        } else {
+            mFolders.remove(folders.name);
+        }
     }
 }
