@@ -239,7 +239,11 @@ public class UIProvider {
         ConversationColumns.SNIPPET,
         ConversationColumns.SENDER_INFO,
         ConversationColumns.DATE_RECEIVED_MS,
-        ConversationColumns.HAS_ATTACHMENTS
+        ConversationColumns.HAS_ATTACHMENTS,
+        ConversationColumns.NUM_MESSAGES,
+        ConversationColumns.NUM_DRAFTS,
+        ConversationColumns.SENDING_STATE,
+        ConversationColumns.PRIORITY
     };
 
     // These column indexes only work when the caller uses the
@@ -252,6 +256,21 @@ public class UIProvider {
     public static final int CONVERSATION_SENDER_INFO_COLUMN = 5;
     public static final int CONVERSATION_DATE_RECEIVED_MS_COLUMN = 6;
     public static final int CONVERSATION_HAS_ATTACHMENTS_COLUMN = 7;
+    public static final int CONVERSATION_NUM_MESSAGES_COLUMN = 8;
+    public static final int CONVERSATION_NUM_DRAFTS_COLUMN = 9;
+    public static final int CONVERSATION_SENDING_STATE_COLUMN = 10;
+    public static final int CONVERSATION_PRIORITY_COLUMN = 11;
+
+    public static final class ConversationSendingState {
+        public static final int SENDING = 0;
+        public static final int SENT = 1;
+        public static final int SEND_ERROR = -1;
+    };
+
+    public static final class ConversationPriority {
+        public static final int LOW = 0;
+        public static final int HIGH = 1;
+    };
 
     public static final class ConversationColumns {
         public static final String URI = "conversationUri";
@@ -284,6 +303,31 @@ public class UIProvider {
          * have attachments.
          */
         public static final String HAS_ATTACHMENTS = "hasAttachments";
+
+        /**
+         * This int column contains the number of messages in this conversation.
+         * For unthreaded, this will always be 1.
+         */
+        public static String NUM_MESSAGES = "numMessages";
+
+        /**
+         * This int column contains the number of drafts associated with this
+         * conversation.
+         */
+        public static String NUM_DRAFTS = "numDrafts";
+
+        /**
+         * This int column contains the state of drafts and replies associated
+         * with this conversation. Use ConversationSendingState to interpret
+         * this field.
+         */
+        public static String SENDING_STATE = "sendingState";
+
+        /**
+         * This int column contains the priority of this conversation. Use
+         * ConversationPriority to interpret this field.
+         */
+        public static String PRIORITY = "priority";
 
         public ConversationColumns() {
         }

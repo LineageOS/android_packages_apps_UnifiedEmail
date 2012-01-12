@@ -29,6 +29,11 @@ public class Conversation implements Parcelable {
     public String snippet;
     public boolean hasAttachments;
     public Uri messageListUri;
+    public String senders;
+    public int numMessages;
+    public int numDrafts;
+    public int sendingState;
+    public int priority;
 
     @Override
     public int describeContents() {
@@ -43,6 +48,11 @@ public class Conversation implements Parcelable {
         dest.writeString(snippet);
         dest.writeByte(hasAttachments ? (byte) 1 : 0);
         dest.writeParcelable(messageListUri, flags);
+        dest.writeString(senders);
+        dest.writeInt(numMessages);
+        dest.writeInt(numDrafts);
+        dest.writeInt(sendingState);
+        dest.writeInt(priority);
     }
 
     private Conversation(Parcel in) {
@@ -52,6 +62,11 @@ public class Conversation implements Parcelable {
         snippet = in.readString();
         hasAttachments = (in.readByte() != 0);
         messageListUri = in.readParcelable(null);
+        senders = in.readString();
+        numMessages = in.readInt();
+        numDrafts = in.readInt();
+        sendingState = in.readInt();
+        priority = in.readInt();
     }
 
     @Override
@@ -87,6 +102,11 @@ public class Conversation implements Parcelable {
                     .getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) == 1 ? true : false;
             messageListUri = Uri.parse(cursor
                     .getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN));
+            senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
+            numMessages = cursor.getInt(UIProvider.CONVERSATION_NUM_MESSAGES_COLUMN);
+            numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
+            sendingState = cursor.getInt(UIProvider.CONVERSATION_SENDING_STATE_COLUMN);
+            priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
         }
     }
 
