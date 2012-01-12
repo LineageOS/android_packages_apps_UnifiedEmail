@@ -31,6 +31,8 @@ import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.utils.AccountUtils;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class ComposeActivityTest extends ActivityInstrumentationTestCase2<ComposeActivity> {
 
@@ -220,6 +222,16 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 assertTrue(to.length == 1);
                 assertEquals(refMessageFromAccount, Rfc822Tokenizer.tokenize(to[0])[0].getAddress());
                 assertEquals(cc.length, refMessageTo.length + refMessageCc.length);
+                HashSet<String> ccMap = new HashSet<String>();
+                for (String recip : cc) {
+                    ccMap.add(Rfc822Tokenizer.tokenize(recip.trim())[0].getAddress());
+                }
+                for (String toRecip : refMessageTo) {
+                    assertTrue(ccMap.contains(toRecip.trim()));
+                }
+                for (String ccRecip : refMessageCc) {
+                    assertTrue(ccMap.contains(ccRecip.trim()));
+                }
                 assertTrue(bcc.length == 0);
             }
         });
