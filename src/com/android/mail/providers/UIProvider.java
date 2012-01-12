@@ -262,8 +262,9 @@ public class UIProvider {
     public static final int CONVERSATION_PRIORITY_COLUMN = 11;
 
     public static final class ConversationSendingState {
-        public static final int SENDING = 0;
-        public static final int SENT = 1;
+        public static final int OTHER = 0;
+        public static final int SENDING = 1;
+        public static final int SENT = 2;
         public static final int SEND_ERROR = -1;
     };
 
