@@ -18,9 +18,10 @@ package com.android.mail.providers;
 
 import android.database.Cursor;
 import android.os.Parcel;
+import android.os.Parcelable;
 
 
-public class Account extends android.accounts.Account {
+public class Account extends android.accounts.Account implements Parcelable {
     /**
      * The version of the UI provider schema from which this account provider
      * will return results.

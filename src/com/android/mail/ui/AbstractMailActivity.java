@@ -27,8 +27,7 @@ import android.os.StrictMode;
 import android.view.WindowManager;
 
 import com.android.mail.R;
-import com.android.mail.RestrictedActivity;
-import com.android.mail.UiHandler;
+import com.android.mail.ui.ViewMode.Mode;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -46,7 +45,7 @@ import java.net.URLEncoder;
  *
  */
 public abstract class AbstractMailActivity extends Activity
-        implements HelpCallback, RestrictedActivity {
+        implements ControllableActivity {
 
     private NfcAdapter mNfcAdapter; // final after onCreate
     private NdefMessage mForegroundNdef;
@@ -86,11 +85,6 @@ public abstract class AbstractMailActivity extends Activity
             String realAccount = "test@android.com";
         }
         mUiHandler.setEnabled(true);
-    }
-
-    @Override
-    public Context getApplicationContext() {
-        return this;
     }
 
     @Override
@@ -182,5 +176,15 @@ public abstract class AbstractMailActivity extends Activity
         NdefRecord mailto = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_URI,
                 new byte[0], recordBytes);
         return new NdefMessage(new NdefRecord[] { mailto });
+    }
+
+    @Override
+    public ConversationSelectionSet getBatchConversations() {
+        return new ConversationSelectionSet();
+    }
+
+    @Override
+    public Mode getViewMode() {
+        return ViewMode.UNKNOWN;
     }
 }

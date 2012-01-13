@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.mail;
+package com.android.mail.ui;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.mail;
+package com.android.mail.ui;
 
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
@@ -37,19 +37,52 @@ public class ViewMode {
 
     // Do not change the order of the values in the enum. The ordinal position is used in a
     // saved instance bundle. When adding values, add them to the end of the enum.
-    enum Mode {
+    /**
+     * All possible modes that a Mail activity can be in.
+     */
+    public static enum Mode {
+        /**
+         * Uncertain mode. The mode has not been initialized.
+         */
         MODE_UNKNOWN,
-        MODE_LABEL_LIST,
+        /**
+         * Mode when showing a list of folders.
+         */
+        MODE_FOLDER_LIST,
+        /**
+         * Mode when showing a list of conversations
+         */
         MODE_CONVERSATION_LIST,
+        /**
+         * Mode when showing a single conversation.
+         */
         MODE_CONVERSATION,
+        /**
+         * Mode when showing results from user search.
+         */
         MODE_SEARCH_RESULTS,
     }
 
     // Handy names for external users of this class.
+    /**
+     * Uncertain mode. The mode has not been initialized.
+     */
     public static Mode UNKNOWN = Mode.MODE_UNKNOWN;
-    public static Mode LABEL_LIST = Mode.MODE_LABEL_LIST;
+    /**
+     * Mode when showing a list of folders.
+     */
+    public static Mode FOLDER_LIST = Mode.MODE_FOLDER_LIST;
+    /**
+     * Mode when showing a list of conversations
+     */
     public static Mode CONVERSATION_LIST = Mode.MODE_CONVERSATION_LIST;
+    /**
+     * Mode when showing a single conversation.
+     */
     public static Mode CONVERSATION = Mode.MODE_CONVERSATION;
+    /**
+     * Mode when showing results from user search.
+     */
     public static Mode SEARCH_RESULTS = Mode.MODE_SEARCH_RESULTS;
 
     private Mode mMode = UNKNOWN;
@@ -77,11 +110,11 @@ public class ViewMode {
     }
 
     /**
-     * Requests a transition of the mode to show the label list as the prominent view.
+     * Requests a transition of the mode to show the folder list as the prominent view.
      * @return Whether or not a change occured.
      */
-    public boolean transitionToLabelListMode() {
-        return setModeInternal(LABEL_LIST);
+    public boolean transitionToFolderListMode() {
+        return setModeInternal(FOLDER_LIST);
     }
 
     /**
@@ -120,8 +153,8 @@ public class ViewMode {
         return mMode == CONVERSATION_LIST;
     }
 
-    public boolean isLabelListMode() {
-        return mMode == LABEL_LIST;
+    public boolean isFolderListMode() {
+        return mMode == FOLDER_LIST;
     }
 
     public void handleSaveInstanceState(Bundle outState) {

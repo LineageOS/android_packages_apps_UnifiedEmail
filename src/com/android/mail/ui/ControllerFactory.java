@@ -17,7 +17,6 @@
 
 package com.android.mail.ui;
 
-import com.android.mail.ViewMode;
 
 /**
  * Creates the appropriate {@link ActivityController} to control {@link MailActivity}.

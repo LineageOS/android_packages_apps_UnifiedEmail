@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.mail;
+package com.android.mail.ui;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
@@ -30,8 +30,15 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.mail.R;
+import com.android.mail.AccountRecentLabelSpinner;
+import com.android.mail.AccountSpinnerAdapter;
+import com.android.mail.ConversationListContext;
+
 /**
  * View to manage the various states of the Gmail Action Bar
+ *
+ * TODO(viki): Include ConversatinSubjectDisplayer here as well.
  */
 public class MailActionBar extends LinearLayout implements ActionBarView, OnNavigationListener {
     /**
@@ -68,7 +75,7 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
          */
         boolean navigateToAccount(final String account);
 
-        void navigateToLabel(final String labelCanonicalName);
+        void navigateToFolder(final String folderCanonicalName);
 
         /**
          * Invoked when the user is already viewing search results
@@ -77,28 +84,28 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
          */
         void reloadSearch(String string);
 
-        void showLabelList();
+        void showFolderList();
 
         void startActionBarStatusCursorLoader(String account);
 
         void stopActionBarStatusCursorLoader(String account);
     }
 
+    private String[] mAccountNames;
     private ActionBar mActionBar;
     protected RestrictedActivity mActivity;
+    private Callback mCallback;
+    protected View mFolderView;
     private Mode mMode;
-    protected AccountRecentLabelSpinner mSpinnerView;
-    SpinnerAdapter mSpinner;
+
+    private MenuItem mRefreshItem;
+
     private MenuItem mSearch;
+    SpinnerAdapter mSpinner;
+    protected AccountRecentLabelSpinner mSpinnerView;
 
     // TODO(viki): This is a SnippetTextView in the Gmail source code. Resolve.
     private TextView mSubjectView;
-
-    protected View mLabelView;
-    private Callback mCallback;
-    private String[] mAccountNames;
-
-    private MenuItem mRefreshItem;
 
     public MailActionBar(Context context) {
         this(context, null);
@@ -114,9 +121,6 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         mMode = Mode.NORMAL;
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#createOptionsMenu(android.view.Menu)
-     */
     @Override
     public boolean createOptionsMenu(Menu menu) {
         // If the mode is valid, then set the initial menu
@@ -129,17 +133,11 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#getMode()
-     */
     @Override
     public Mode getMode() {
         return mMode;
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#getOptionsMenuId()
-     */
     @Override
     public int getOptionsMenuId() {
         switch (mMode){
@@ -147,7 +145,7 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
                 // Fallthrough
             case SEARCH_RESULTS:
                 return R.menu.conversation_list_menu;
-            case LABEL:
+            case FOLDER:
                 return R.menu.label_list_menu;
             case SEARCH_RESULTS_CONVERSATION:
                 return R.menu.conversation_actions;
@@ -157,27 +155,18 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         return 0;
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#handleRestore(android.os.Bundle)
-     */
     @Override
     public void handleRestore(Bundle savedInstanceState) {
         // TODO(viki): Auto-generated method stub
 
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#handleSaveInstanceState(android.os.Bundle)
-     */
     @Override
     public void handleSaveInstanceState(Bundle outState) {
         // TODO(viki): Auto-generated method stub
 
     }
 
-    /*
-     * @see com.android.mail.ActionBarView#initialize(com.android.mail.RestrictedActivity, com.android.mail.MailActionBar.Callback, com.android.mail.ViewMode, android.app.ActionBar)
-     */
     @Override
     public void initialize(RestrictedActivity activity, Callback callback, ViewMode viewMode,
             ActionBar actionBar) {
@@ -194,43 +183,38 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         mActionBar.setListNavigationCallbacks(mSpinner, this);
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#onPause()
-     */
+    @Override
+    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+        // Don't do anything. Toast on the action.
+        Toast.makeText(getContext(), "Selected item " + itemPosition, Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
     @Override
     public void onPause() {
         // TODO(viki): Auto-generated method stub
 
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#onResume()
-     */
     @Override
     public void onResume() {
         // TODO(viki): Auto-generated method stub
 
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#onStatusResult(java.lang.String, int)
-     */
     @Override
     public void onStatusResult(String account, int status) {
-        // Update the inbox label if required
+        // Update the inbox folder if required
         mCallback.stopActionBarStatusCursorLoader(account);
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#prepareOptionsMenu()
-     */
     @Override
     public boolean prepareOptionsMenu(Menu menu) {
         if (mSubjectView != null){
             mSubjectView.setVisibility(GONE);
         }
-        if (mLabelView != null){
-            mLabelView.setVisibility(GONE);
+        if (mFolderView != null){
+            mFolderView.setVisibility(GONE);
         }
 
         switch (mMode){
@@ -255,15 +239,12 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
                 if (mSearch != null) {
                     mSearch.collapseActionView();
                 }
-            case LABEL:
+            case FOLDER:
                 break;
         }
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#setActionBarIconHome()
-     */
     @Override
     public void removeBackButton() {
         if (mActionBar == null) {
@@ -276,9 +257,6 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         mActivity.getActionBar().setHomeButtonEnabled(false);
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#setActionBarIconBack()
-     */
     @Override
     public void setBackButton() {
         if (mActionBar == null){
@@ -291,41 +269,18 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         mActivity.getActionBar().setHomeButtonEnabled(true);
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#setLabel(java.lang.String)
-     */
     @Override
-    public void setLabel(String label) {
+    public void setFolder(String folder) {
         // TODO(viki): Add this functionality to change the label.
-//        if (mAdvancedSearchWrapper != null) {
-//            mAdvancedSearchWrapper.setLabel(label);
-//        }
-//        super.setLabel(label);
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#setMode(com.android.mail.ActionBarView.Mode)
-     */
     @Override
     public boolean setMode(Mode mode) {
         mMode = mode;
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see com.android.mail.ActionBarView#updateActionBar(java.lang.String[], java.lang.String)
-     */
     @Override
     public void updateActionBar(String[] accounts, String currentAccount) {
-    }
-
-    /* (non-Javadoc)
-     * @see android.app.ActionBar.OnNavigationListener#onNavigationItemSelected(int, long)
-     */
-    @Override
-    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-        // Don't do anything. Toast on the action.
-        Toast.makeText(getContext(), "Selected item " + itemPosition, Toast.LENGTH_SHORT).show();
-        return false;
     }
 }

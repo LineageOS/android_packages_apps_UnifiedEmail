@@ -15,15 +15,12 @@
  *      limitations under the License.
  *******************************************************************************/
 
-package com.android.mail.browse;
+package com.android.mail.ui;
 
 import com.android.mail.ConversationListContext;
-import com.android.mail.MailActionBar;
-import com.android.mail.ActionBarView.Mode;
-import com.android.mail.MailActionBar.Callback;
-import com.android.mail.RestrictedActivity;
 import com.android.mail.R;
-import com.android.mail.ViewMode;
+import com.android.mail.ui.ActionBarView.Mode;
+import com.android.mail.ui.MailActionBar.Callback;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -111,7 +108,7 @@ public class ActionbarActivity extends Activity
     }
 
     public void testLabelMode(View v){
-        changeMode(Mode.LABEL);
+        changeMode(Mode.FOLDER);
     }
 
     @Override
@@ -136,12 +133,12 @@ public class ActionbarActivity extends Activity
     }
 
     @Override
-    public void navigateToLabel(String labelCanonicalName) {
+    public void navigateToFolder(String folderCanonicalName) {
         // TODO(viki): Auto-generated method stub
     }
 
     @Override
-    public void showLabelList() {
+    public void showFolderList() {
         // TODO(viki): Auto-generated method stub
     }
 

@@ -26,7 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import com.android.mail.ViewMode.ModeChangeListener;
+import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
  * An Activity controller knows how to combine views and listeners into a functioning activity.
@@ -34,7 +34,7 @@ import com.android.mail.ViewMode.ModeChangeListener;
  * or respond to user action.
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
-        ConversationSetObserver, ModeChangeListener {
+        ConversationSetObserver, ModeChangeListener, MailActionBar.Callback {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
@@ -78,9 +78,12 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
     /**
-     * Called by the Mail activity when the back button is pressed.
+     * Called by the Mail activity when the back button is pressed. Returning true consumes the
+     * event and disallows the calling method from trying to handle the back button any other way.
+     *
      * @see android.app.Activity#onBackPressed()
-     * @return
+     * @return true if the back press was handled and the event was consumed. Return false if the
+     * event was not consumed.
      */
     boolean onBackPressed();
 

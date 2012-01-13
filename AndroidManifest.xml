@@ -24,6 +24,8 @@
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <!-- Allows access to EmailProvider (EAS/IMAP/POP3) -->
     <uses-permission android:name="com.android.email.permission.ACCESS_PROVIDER"/>
+    <uses-permission android:name="android.permission.NFC" />
+
     <application
         android:icon="@mipmap/ic_launcher_mail"
         android:label="@string/app_name"
@@ -41,7 +43,10 @@
         <activity android:name=".browse.ConversationViewActivity" />
         <activity android:name=".browse.FolderItem" />
         <activity
-           android:name=".browse.ActionbarActivity"
+           android:name=".ui.ActionbarActivity"
+           android:uiOptions="splitActionBarWhenNarrow" />
+        <activity
+           android:name=".ui.MailActivity"
            android:uiOptions="splitActionBarWhenNarrow" />
 
         <provider
