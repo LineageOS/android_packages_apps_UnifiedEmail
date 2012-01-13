@@ -79,7 +79,7 @@ public class EmailAccountService extends IntentService {
                             (String)mockAccountMap.get(AccountColumns.SEARCH_URI),
                             (String)mockAccountMap.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
                             (String)mockAccountMap.get(AccountColumns.SAVE_DRAFT_URI),
-                            (String)mockAccountMap.get(AccountColumns.SEND_MESSAGE_URI));
+                            getUriString("uisendmail", accountName));
 
                 AccountCacheProvider.addAccount(cachedAccount);
                 i++;
