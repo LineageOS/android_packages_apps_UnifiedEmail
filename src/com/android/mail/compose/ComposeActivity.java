@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -63,6 +62,7 @@ import com.android.mail.compose.QuotedTextView.RespondInlineListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Message;
 import com.android.mail.providers.MessageModification;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.MessageColumns;
@@ -75,7 +75,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -119,8 +118,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      */
     private static final String EXTRA_FROM_EMAIL_TASK = "fromemail";
 
-    //  If this is a reply/forward then this extra will hold the original message uri
-    private static final String EXTRA_IN_REFERENCE_TO_MESSAGE_URI = "in-reference-to-uri";
+    //  If this is a reply/forward then this extra will hold the original message
+    private static final String EXTRA_IN_REFERENCE_TO_MESSAGE = "in-reference-to-message";
     private static final String END_TOKEN = ", ";
     private static final String LOG_TAG = new LogUtils().getLogTag();
     // Request numbers for activities we start
@@ -139,7 +138,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private AttachmentsView mAttachmentsView;
     private Account mAccount;
     private Rfc822Validator mValidator;
-    private Uri mRefMessageUri;
     private TextView mSubject;
 
     private ComposeModeAdapter mComposeModeAdapter;
@@ -158,13 +156,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private MenuItem mSave;
     private MenuItem mSend;
     private Object mDraftIdLock = new Object();
-    private long mRefMessageId;
+    private String mRefMessageId;
     private AlertDialog mRecipientErrorDialog;
     private AlertDialog mSendConfirmDialog;
+    private Message mRefMessage;
+
     /**
      * Can be called from a non-UI thread.
      */
-    public static void editDraft(Context launcher, Account account, long localMessageId) {
+    public static void editDraft(Context launcher, Account account, Message message) {
     }
 
     /**
@@ -177,30 +177,30 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /**
      * Can be called from a non-UI thread.
      */
-    public static void reply(Context launcher, Account account, String uri) {
-        launch(launcher, account, uri, REPLY);
+    public static void reply(Context launcher, Account account, Message message) {
+        launch(launcher, account, message, REPLY);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
-    public static void replyAll(Context launcher, Account account, String uri) {
-        launch(launcher, account, uri, REPLY_ALL);
+    public static void replyAll(Context launcher, Account account, Message message) {
+        launch(launcher, account, message, REPLY_ALL);
     }
 
     /**
      * Can be called from a non-UI thread.
      */
-    public static void forward(Context launcher, Account account, String uri) {
-        launch(launcher, account, uri, FORWARD);
+    public static void forward(Context launcher, Account account, Message message) {
+        launch(launcher, account, message, FORWARD);
     }
 
-    private static void launch(Context launcher, Account account, String uri, int action) {
+    private static void launch(Context launcher, Account account, Message message, int action) {
         Intent intent = new Intent(launcher, ComposeActivity.class);
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(EXTRA_ACTION, action);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
-        intent.putExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI, uri);
+        intent.putExtra(EXTRA_IN_REFERENCE_TO_MESSAGE, message);
         launcher.startActivity(intent);
     }
 
@@ -215,14 +215,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return;
         }
         int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
-        String refUri = intent.getStringExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI);
+        mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
         if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
-            if (TextUtils.isEmpty(refUri)) {
-                LogUtils.w(LOG_TAG,
-                        "The message is a reply/forward, but there is not a valid ref message uri");
-            } else {
-                mRefMessageUri = Uri.parse(refUri);
-            }
             initFromRefMessage(action, mAccount.name);
         } else {
             mQuotedTextView.setVisibility(View.GONE);
@@ -356,35 +350,27 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initFromRefMessage(int action, String recipientAddress) {
-        ContentResolver resolver = getContentResolver();
-        Cursor refMessage = resolver.query(mRefMessageUri, UIProvider.MESSAGE_PROJECTION, null,
-                null, null);
-        if (refMessage != null) {
-            try {
-                refMessage.moveToFirst();
-                mRefMessageId = refMessage.getLong(UIProvider.MESSAGE_ID_COLUMN);
-                setSubject(refMessage, action);
-                // Setup recipients
-                if (action == FORWARD) {
-                    mForward = true;
-                }
-                initRecipientsFromRefMessageCursor(recipientAddress, refMessage, action);
-                initBodyFromRefMessage(refMessage, action);
-                if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
-                    initAttachments(refMessage);
-                }
-                updateHideOrShowCcBcc();
-            } finally {
-                refMessage.close();
+        if (mRefMessage != null) {
+            mRefMessageId = mRefMessage.refMessageId;
+            setSubject(mRefMessage, action);
+            // Setup recipients
+            if (action == FORWARD) {
+                mForward = true;
             }
+            initRecipientsFromRefMessage(recipientAddress, mRefMessage, action);
+            initBodyFromRefMessage(mRefMessage, action);
+            if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
+                initAttachments(mRefMessage);
+            }
+            updateHideOrShowCcBcc();
         }
     }
 
-    private void initAttachments(Cursor refMessage) {
+    private void initAttachments(Message refMessage) {
         mAttachmentsView.addAttachments(mAccount, refMessage);
     }
 
-    private void initBodyFromRefMessage(Cursor refMessage, int action) {
+    private void initBodyFromRefMessage(Message refMessage, int action) {
         if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
             mQuotedTextView.setQuotedText(action, refMessage, action != FORWARD);
         }
@@ -427,7 +413,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    void initRecipientsFromRefMessageCursor(String recipientAddress, Cursor refMessage,
+    void initRecipientsFromRefMessage(String recipientAddress, Message refMessage,
             int action) {
         // Don't populate the address if this is a forward.
         if (action == ComposeActivity.FORWARD) {
@@ -437,15 +423,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @VisibleForTesting
-    void initReplyRecipients(String account, Cursor refMessage, int action) {
+    void initReplyRecipients(String account, Message refMessage, int action) {
         // This is the email address of the current user, i.e. the one composing
         // the reply.
         final String accountEmail = Address.getEmailAddress(account).getAddress();
-        String fromAddress = refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN);
-        String[] sentToAddresses = Utils.splitCommaSeparatedString(refMessage
-                .getString(UIProvider.MESSAGE_TO_COLUMN));
-        String[] replytoAddresses = Utils.splitCommaSeparatedString(refMessage
-                .getString(UIProvider.MESSAGE_REPLY_TO_COLUMN));
+        String fromAddress = refMessage.from;
+        String[] sentToAddresses = Utils.splitCommaSeparatedString(refMessage.to);
+        String replytoAddress = refMessage.replyTo;
         final Collection<String> toAddresses;
 
         // If this is a reply, the Cc list is empty. If this is a reply-all, the
@@ -453,17 +437,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // message, excluding the current user's email address and any addresses
         // already on the To list.
         if (action == ComposeActivity.REPLY) {
-            toAddresses = initToRecipients(account, accountEmail, fromAddress,
-                    replytoAddresses, new String[0]);
+            toAddresses = initToRecipients(account, accountEmail, fromAddress, replytoAddress,
+                    new String[0]);
             addToAddresses(toAddresses);
         } else if (action == ComposeActivity.REPLY_ALL) {
             final Set<String> ccAddresses = Sets.newHashSet();
-            toAddresses = initToRecipients(account, accountEmail, fromAddress,
-                    replytoAddresses, new String[0]);
+            toAddresses = initToRecipients(account, accountEmail, fromAddress, replytoAddress,
+                    new String[0]);
             addToAddresses(toAddresses);
             addRecipients(accountEmail, ccAddresses, sentToAddresses);
-            addRecipients(accountEmail, ccAddresses, Utils.splitCommaSeparatedString(refMessage
-                    .getString(UIProvider.MESSAGE_CC_COLUMN)));
+            addRecipients(accountEmail, ccAddresses,
+                    Utils.splitCommaSeparatedString(refMessage.cc));
             addCcAddresses(ccAddresses, toAddresses);
         }
     }
@@ -535,34 +519,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     protected Collection<String> initToRecipients(String account, String accountEmail,
-            String senderAddress, String[] replyToAddresses, String[] inToAddresses) {
+            String senderAddress, String replyToAddress, String[] inToAddresses) {
         // The To recipient is the reply-to address specified in the original
         // message, unless it is:
         // the current user OR a custom from of the current user, in which case
         // it's the To recipient list of the original message.
         // OR missing, in which case use the sender of the original message
         Set<String> toAddresses = Sets.newHashSet();
-        Address sender = Address.getEmailAddress(senderAddress);
-        if (sender != null && sender.getAddress().equalsIgnoreCase(account)) {
-            // The sender address is this account, so reply acts like reply all.
-            toAddresses.addAll(Arrays.asList(inToAddresses));
-        } else if (replyToAddresses != null && replyToAddresses.length != 0) {
-            toAddresses.addAll(Arrays.asList(replyToAddresses));
+        if (!TextUtils.isEmpty(replyToAddress)) {
+            toAddresses.add(replyToAddress);
         } else {
-            // Check to see if the sender address is one of the user's custom
-            // from addresses.
-            if (senderAddress != null && sender != null
-                    && !accountEmail.equalsIgnoreCase(sender.getAddress())) {
-                // Replying to the sender of the original message is the most
-                // common case.
-                toAddresses.add(senderAddress);
-            } else {
-                // This happens if the user replies to a message they originally
-                // wrote. In this case, "reply" really means "re-send," so we
-                // target the original recipients. This works as expected even
-                // if the user sent the original message to themselves.
-                toAddresses.addAll(Arrays.asList(inToAddresses));
-            }
+            toAddresses.add(senderAddress);
         }
         return toAddresses;
     }
@@ -578,8 +545,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private void setSubject(Cursor refMessage, int action) {
-        String subject = refMessage.getString(UIProvider.MESSAGE_SUBJECT_COLUMN);
+    private void setSubject(Message refMessage, int action) {
+        String subject = refMessage.subject;
         String prefix;
         String correctedSubject = null;
         if (action == ComposeActivity.COMPOSE) {
@@ -782,12 +749,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         final Account mAccount;
         final Account mSelectedAccount;
         final ContentValues mValues;
-        final long mRefMessageId;
+        final String mRefMessageId;
         final boolean mSave;
         final int mRequestId;
 
         public SendOrSaveMessage(Account account, Account selectedAccount, ContentValues values,
-                long refMessageId, boolean save) {
+                String refMessageId, boolean save) {
             mAccount = account;
             mSelectedAccount = selectedAccount;
             mValues = values;
@@ -1065,7 +1032,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             final Account selectedAccount, String fromAddress, final Spanned body,
             final String[] to, final String[] cc, final String[] bcc, final String subject,
             final CharSequence quotedText, final List<Attachment> attachments,
-            final long refMessageId, SendOrSaveCallback callback, Handler handler, boolean save,
+            final String refMessageId, SendOrSaveCallback callback, Handler handler, boolean save,
             boolean forward) {
         ContentValues values = new ContentValues();
 
@@ -1089,10 +1056,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 if (QuotedTextView.containsQuotedText(text)) {
                     int pos = QuotedTextView.getQuotedTextOffset(text);
                     fullBody.append(text.substring(0, pos));
-                    int quoteStartPos = fullBody.length();
                     MessageModification.putForward(values, forward);
-                    MessageModification.putIncludeQuotedText(values, includeQuotedText);
-                    MessageModification.putQuoteStartPos(values, quoteStartPos);
+                    MessageModification.putAppendRefMessageContent(values, includeQuotedText);
                 } else {
                     LogUtils.w(LOG_TAG, "Couldn't find quoted text");
                     // This shouldn't happen, but just use what we have,

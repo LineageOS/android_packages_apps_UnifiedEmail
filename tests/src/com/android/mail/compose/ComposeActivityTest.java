@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import android.text.util.Rfc822Tokenizer;
 
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.utils.AccountUtils;
@@ -49,7 +50,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         super.setUp();
     }
 
-    private Cursor getRefMessage() {
+    private Message getRefMessage() {
         Cursor foldersCursor = mActivity.getContentResolver().query(
                 Uri.parse(mAccount.folderListUri), UIProvider.FOLDERS_PROJECTION, null, null, null);
         Uri convUri = null;
@@ -73,7 +74,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         if (msgCursor != null) {
             msgCursor.moveToFirst();
         }
-        return msgCursor;
+        return Message.from(msgCursor);
     }
 
     public void setAccount(String accountName) {
@@ -90,10 +91,10 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 
     public void testReply() {
         setAccount("account0@mockuiprovider.com");
-        final Cursor refMessage = getRefMessage();
+        final Message refMessage = getRefMessage();
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
-        final String refMessageFromAccount = refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN);
+        final String refMessageFromAccount = refMessage.from;
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -112,10 +113,10 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 
     public void testReplyWithReplyTo() {
         setAccount("account1@mockuiprovider.com");
-        final Cursor refMessage = getRefMessage();
+        final Message refMessage = getRefMessage();
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
-        final String refReplyToAccount = refMessage.getString(UIProvider.MESSAGE_REPLY_TO_COLUMN);
+        final String refReplyToAccount = refMessage.replyTo;
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -134,12 +135,11 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 
     public void testReplyAll() {
         setAccount("account0@mockuiprovider.com");
-        final Cursor refMessage = getRefMessage();
+        final Message refMessage = getRefMessage();
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
-        final String[] refMessageTo = TextUtils.split(
-                refMessage.getString(UIProvider.MESSAGE_TO_COLUMN), ",");
-        final String refMessageFromAccount = refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN);
+        final String[] refMessageTo = TextUtils.split(refMessage.to, ",");
+        final String refMessageFromAccount = refMessage.from;
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -158,12 +158,11 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 
     public void testReplyAllWithReplyTo() {
         setAccount("account1@mockuiprovider.com");
-        final Cursor refMessage = getRefMessage();
+        final Message refMessage = getRefMessage();
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
-        final String[] refMessageTo = TextUtils.split(
-                refMessage.getString(UIProvider.MESSAGE_TO_COLUMN), ",");
-        final String refReplyToAccount = refMessage.getString(UIProvider.MESSAGE_REPLY_TO_COLUMN);
+        final String[] refMessageTo = TextUtils.split(refMessage.to, ",");
+        final String refReplyToAccount = refMessage.replyTo;
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -179,7 +178,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         });
     }
 
-    private Cursor getRefMessageWithCc(long messageId, boolean hasAttachments) {
+    private Message getRefMessageWithCc(long messageId, boolean hasAttachments) {
         MatrixCursor cursor = new MatrixCursor(UIProvider.MESSAGE_PROJECTION);
         final String messageUri = "content://xxx/message/" + messageId;
         Object[] messageValues = new Object[UIProvider.MESSAGE_PROJECTION.length];
@@ -190,7 +189,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         String html = "<html><body><b><i>This is some html!!!</i></b></body></html>";
         messageValues[UIProvider.MESSAGE_BODY_HTML_COLUMN] = html;
         messageValues[UIProvider.MESSAGE_BODY_TEXT_COLUMN] = Html.fromHtml(html);
-        messageValues[UIProvider.MESSAGE_HAS_ATTACHMENTS_COLUMN] = new Boolean(hasAttachments);
+        messageValues[UIProvider.MESSAGE_HAS_ATTACHMENTS_COLUMN] = hasAttachments ? 1 : 0;
         messageValues[UIProvider.MESSAGE_DATE_RECEIVED_MS_COLUMN] = new Date().getTime();
         messageValues[UIProvider.MESSAGE_ATTACHMENT_LIST_URI_COLUMN] = messageUri
                 + "/getAttachments";
@@ -199,19 +198,17 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         messageValues[UIProvider.MESSAGE_CC_COLUMN] = "accountcc1@mock.com, accountcc2@mock.com";
         cursor.addRow(messageValues);
         cursor.moveToFirst();
-        return cursor;
+        return Message.from(cursor);
     }
 
     public void testReplyAllWithCc() {
         setAccount("account1@mockuiprovider.com");
-        final Cursor refMessage = getRefMessageWithCc(0, false);
+        final Message refMessage = getRefMessageWithCc(0, false);
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
-        final String[] refMessageTo = TextUtils.split(
-                refMessage.getString(UIProvider.MESSAGE_TO_COLUMN), ",");
-        final String[] refMessageCc = TextUtils.split(
-                refMessage.getString(UIProvider.MESSAGE_CC_COLUMN), ",");
-        final String refMessageFromAccount = refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN);
+        final String[] refMessageTo = TextUtils.split(refMessage.to, ",");
+        final String[] refMessageCc = TextUtils.split(refMessage.cc, ",");
+        final String refMessageFromAccount = refMessage.from;
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -239,7 +236,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 
     public void testForward() {
         setAccount("account0@mockuiprovider.com");
-        final Cursor refMessage = getRefMessage();
+        final Message refMessage = getRefMessage();
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
 
@@ -258,7 +255,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 
     public void testCompose() {
         setAccount("account0@mockuiprovider.com");
-        final Cursor refMessage = getRefMessage();
+        final Message refMessage = getRefMessage();
         final ComposeActivity activity = mActivity;
         final Account account = mAccount;
 

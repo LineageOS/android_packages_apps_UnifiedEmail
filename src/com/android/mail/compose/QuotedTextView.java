@@ -16,7 +16,7 @@
 package com.android.mail.compose;
 
 import com.android.mail.R;
-import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.Message;
 import com.android.mail.utils.Utils;
 
 import java.text.DateFormat;
@@ -24,7 +24,6 @@ import java.util.Date;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -236,11 +235,11 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         public void onRespondInline(String text);
     }
 
-    public void setQuotedText(int action, Cursor refMessage, boolean allow) {
+    public void setQuotedText(int action, Message refMessage, boolean allow) {
         setVisibility(View.VISIBLE);
         StringBuffer quotedText = new StringBuffer();
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
-        Date date = new Date(refMessage.getLong(UIProvider.MESSAGE_DATE_RECEIVED_MS_COLUMN));
+        Date date = new Date(refMessage.dateReceivedMs);
         Resources resources = getContext().getResources();
         if (action == ComposeActivity.REPLY || action == ComposeActivity.REPLY_ALL) {
             quotedText.append(QUOTE_BEGIN);
@@ -249,27 +248,27 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
                             resources.getString(R.string.reply_attribution),
                             dateFormat.format(date),
                             Utils.cleanUpString(
-                                    refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN), true)));
+                                    refMessage.from, true)));
             quotedText.append(HEADER_SEPARATOR);
             quotedText.append(BLOCKQUOTE_BEGIN);
-            quotedText.append(refMessage.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN));
+            quotedText.append(refMessage.bodyHtml);
             quotedText.append(BLOCKQUOTE_END);
             quotedText.append(QUOTE_END);
         } else if (action == ComposeActivity.FORWARD) {
             quotedText.append(QUOTE_BEGIN);
             quotedText
                     .append(String.format(resources.getString(R.string.forward_attribution), Utils
-                            .cleanUpString(refMessage.getString(UIProvider.MESSAGE_FROM_COLUMN),
+                            .cleanUpString(refMessage.from,
                                     true /* remove empty quotes */), dateFormat.format(date), Utils
-                            .cleanUpString(refMessage.getString(UIProvider.MESSAGE_SUBJECT_COLUMN),
+                            .cleanUpString(refMessage.subject,
                                     false /* don't remove empty quotes */), Utils.cleanUpString(
-                            refMessage.getString(UIProvider.MESSAGE_TO_COLUMN), true)));
-            String ccAddresses = refMessage.getString(UIProvider.MESSAGE_CC_COLUMN);
+                            refMessage.to, true)));
+            String ccAddresses = refMessage.cc;
             quotedText.append(String.format(resources.getString(R.string.cc_attribution),
                     Utils.cleanUpString(ccAddresses, true /* remove empty quotes */)));
         }
         quotedText.append(HEADER_SEPARATOR);
-        quotedText.append(refMessage.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN));
+        quotedText.append(refMessage.bodyHtml);
         quotedText.append(QUOTE_END);
         setQuotedText(quotedText);
         allowQuotedText(allow);

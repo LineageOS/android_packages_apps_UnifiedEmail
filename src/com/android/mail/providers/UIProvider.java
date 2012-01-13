@@ -372,9 +372,7 @@ public class UIProvider {
         MessageColumns.EMBEDS_EXTERNAL_RESOURCES,
         MessageColumns.REF_MESSAGE_ID,
         MessageColumns.DRAFT_TYPE,
-        MessageColumns.INCLUDE_QUOTED_TEXT,
-        MessageColumns.QUOTE_START_POS,
-        MessageColumns.CUSTOM_FROM_ADDRESS,
+        MessageColumns.APPEND_REF_MESSAGE_CONTENT,
         MessageColumns.HAS_ATTACHMENTS,
         MessageColumns.ATTACHMENT_LIST_URI,
         MessageColumns.MESSAGE_FLAGS
@@ -402,12 +400,10 @@ public class UIProvider {
     public static final int MESSAGE_EMBEDS_EXTERNAL_RESOURCES_COLUMN = 14;
     public static final int MESSAGE_REF_MESSAGE_ID_COLUMN = 15;
     public static final int MESSAGE_DRAFT_TYPE_COLUMN = 16;
-    public static final int MESSAGE_INCLUDE_QUOTED_TEXT_COLUMN = 17;
-    public static final int MESSAGE_QUOTE_START_POS_COLUMN = 18;
-    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 19;
-    public static final int MESSAGE_HAS_ATTACHMENTS_COLUMN = 20;
-    public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 21;
-    public static final int MESSAGE_FLAGS_COLUMN = 22;
+    public static final int MESSAGE_APPEND_REF_MESSAGE_CONTENT_COLUMN = 17;
+    public static final int MESSAGE_HAS_ATTACHMENTS_COLUMN = 18;
+    public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 19;
+    public static final int MESSAGE_FLAGS_COLUMN = 20;
 
     public static final class MessageFlags {
         public static final int STARRED =       1 << 0;
@@ -471,6 +467,9 @@ public class UIProvider {
          */
         public static final String BODY_TEXT = "bodyText";
         public static final String EMBEDS_EXTERNAL_RESOURCES = "bodyEmbedsExternalResources";
+        /**
+         * This string column contains an opaque string used by the sendMessage api.
+         */
         public static final String REF_MESSAGE_ID = "refMessageId";
         /**
          * This integer column contains the type of this draft, or zero (0) if this message is not a
@@ -482,20 +481,7 @@ public class UIProvider {
          * text processing upon send. The value should default to zero (0) for protocols that do
          * not support or require this flag, and for all incoming messages.
          */
-        public static final String INCLUDE_QUOTED_TEXT = "includeQuotedText";
-        /**
-         * This long column is an offset into the {@link MessageColumns#BODY_HTML} at which to begin
-         * special quoted-text handling for an outgoing message upon send. The value should default
-         * to zero (0) for protocols that do not support or require this value, and for all incoming
-         * messages.
-         */
-        public static final String QUOTE_START_POS = "quoteStartPos";
-        /**
-         * This string column contains a custom {@link MessageColumns#FROM} address to use when
-         * sending an outgoing message. The default value is null for incoming messages and
-         * protocols that do not support the custom-from feature.
-         */
-        public static final String CUSTOM_FROM_ADDRESS = "customFromAddress";
+        public static final String APPEND_REF_MESSAGE_CONTENT = "appendRefMessageContent";
         /**
          * This boolean column indicates whether a message has attachments. The list of attachments
          * can be retrieved using the URI in {@link MessageColumns#ATTACHMENT_LIST_URI}.

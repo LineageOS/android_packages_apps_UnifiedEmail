@@ -46,6 +46,7 @@ import com.android.mail.perf.Timer;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.R;
 import com.android.mail.SenderInfoLoader.ContactInfo;
@@ -160,9 +161,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      */
     private int mTitleContainerCollapsedMarginRight;
 
-    private String mUri;
-
     private PopupMenu mPopup;
+
+    private Message mMessage;
 
     public MessageHeaderView(Context context) {
         this(context, null);
@@ -324,7 +325,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         Timer t = new Timer();
         t.start(HEADER_RENDER_TAG);
 
-        mUri = cursor.getString(UIProvider.MESSAGE_URI_COLUMN);
+        mMessage = Message.from(cursor);
         mLocalMessageId = cursor.getLong(UIProvider.MESSAGE_ID_COLUMN);
         mServerMessageId = cursor.getLong(UIProvider.MESSAGE_SERVER_ID_COLUMN);
         mConversationId = cursor.getLong(UIProvider.MESSAGE_CONVERSATION_ID_COLUMN);
@@ -763,13 +764,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         switch (id) {
             case R.id.reply:
-                ComposeActivity.reply(getContext(), mAccount, mUri);
+                ComposeActivity.reply(getContext(), mAccount, mMessage);
                 break;
             case R.id.reply_all:
-                ComposeActivity.replyAll(getContext(), mAccount, mUri);
+                ComposeActivity.replyAll(getContext(), mAccount, mMessage);
                 break;
             case R.id.forward:
-                ComposeActivity.forward(getContext(), mAccount, mUri);
+                ComposeActivity.forward(getContext(), mAccount, mMessage);
                 break;
             case R.id.star: {
                 boolean newValue = !v.isSelected();
@@ -777,7 +778,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 break;
             }
             case R.id.edit_draft:
-                ComposeActivity.editDraft(getContext(), mAccount, mLocalMessageId);
+                ComposeActivity.editDraft(getContext(), mAccount, mMessage);
                 break;
             case R.id.overflow: {
                 if (mPopup == null) {

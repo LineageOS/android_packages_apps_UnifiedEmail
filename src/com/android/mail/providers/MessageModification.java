@@ -90,19 +90,8 @@ public class MessageModification {
      *            message
      * @param includeQuotedText the include quoted text flag
      */
-    public static void putIncludeQuotedText(ContentValues values, boolean includeQuotedText) {
-        values.put(MessageColumns.INCLUDE_QUOTED_TEXT, includeQuotedText);
-    }
-
-    /**
-     * Saves a quoted text starting position. Only valid for drafts not yet sent
-     * to / retrieved from server.
-     * @param values the ContentValues that will be used to create or update the
-     *            message
-     * @param quoteStartPos the starting position for quoted text
-     */
-    public static void putQuoteStartPos(ContentValues values, long quoteStartPos) {
-        values.put(MessageColumns.QUOTE_START_POS, quoteStartPos);
+    public static void putAppendRefMessageContent(ContentValues values, boolean includeQuotedText) {
+        values.put(MessageColumns.APPEND_REF_MESSAGE_CONTENT, includeQuotedText);
     }
 
     /**

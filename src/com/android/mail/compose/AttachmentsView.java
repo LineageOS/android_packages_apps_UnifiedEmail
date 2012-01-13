@@ -18,8 +18,8 @@ package com.android.mail.compose;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.protos.mock.MockAttachment;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
@@ -273,11 +273,10 @@ class AttachmentsView extends LinearLayout {
     }
 
 
-    public void addAttachments(Account account, Cursor refMessage) {
-        boolean hasAttachments = refMessage.getInt(UIProvider.MESSAGE_HAS_ATTACHMENTS_COLUMN) == 1;
+    public void addAttachments(Account account, Message refMessage) {
+        boolean hasAttachments = refMessage.hasAttachments;
         if (hasAttachments) {
-            String attachmentQuery = refMessage
-                    .getString(UIProvider.MESSAGE_ATTACHMENT_LIST_URI_COLUMN);
+            String attachmentQuery = refMessage.attachmentListUri;
             Cursor attachmentCursor = null;
             try {
                 attachmentCursor = getContext().getContentResolver().query(
