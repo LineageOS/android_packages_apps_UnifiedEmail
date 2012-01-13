@@ -17,15 +17,28 @@
 
 package com.android.mail.providers;
 
+import com.google.common.collect.Maps;
+
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+
 import com.android.mail.utils.LogUtils;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * A folder is a collection of conversations, and perhaps other folders.
  */
 public class Folder implements Parcelable {
+    /**
+     *
+     */
+    private static final String FOLDER_UNINITIALIZED = "Uninitialized!";
+
     // Try to match the order of members with the order of constants in UIProvider.
 
     /**
@@ -81,9 +94,33 @@ public class Folder implements Parcelable {
     public int totalCount;
 
     /**
+     * Total number of members that comprise an instance of a folder. Count up the members above.
+     * This is the number of members that need to be serialized or parceled.
+     */
+    private static final int NUMBER_MEMBERS = 10;
+
+    /**
      * Used only for debugging.
      */
     private static final String LOG_TAG = new LogUtils().getLogTag();
+
+    /**
+     * Examples of expected format for the joined label strings
+     *
+     * Example of a joined label string:
+     *       630107622^*^^i^*^^i^*^0
+     *       <id>^*^<canonical name>^*^<name>^*^<color index>
+     *
+     * The sqlite queries will return a list of labels strings separated with "^**^"
+     * Example of a query result:
+     *     630107622^*^^i^*^^i^*^0^**^630107626^*^^u^*^^u^*^0^**^630107627^*^^f^*^^f^*^0
+     */
+    private static final String LABEL_COMPONENT_SEPARATOR = "^*^";
+    private static final Pattern LABEL_COMPONENT_SEPARATOR_PATTERN =
+            Pattern.compile("\\^\\*\\^");
+
+    private static final String LABEL_SEPARATOR = "^**^";
+    private static final Pattern LABEL_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
 
     public Folder(Parcel in) {
         uri = in.readString();
@@ -128,6 +165,57 @@ public class Folder implements Parcelable {
         dest.writeInt(totalCount);
     }
 
+    /**
+     * Return a serialized String for this folder.
+     */
+    public synchronized String serialize(){
+        StringBuilder out = new StringBuilder();
+        out.append(uri).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(name).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(capabilities).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(hasChildren ? "1": "0").append(LABEL_COMPONENT_SEPARATOR);
+        out.append(syncFrequency).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(syncWindow).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(conversationListUri).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(childFoldersListUri).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(unreadCount).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(totalCount).append(LABEL_COMPONENT_SEPARATOR);
+        return out.toString();
+    }
+
+    /**
+     * Construct a new Folder instance from a previously serialized string.
+     * @param serializedFolder string obtained from {@link #serialize()} on a valid folder.
+     */
+    private Folder(String serializedFolder){
+        Folder out = new Folder();
+        String[] folderMembers = TextUtils.split(serializedFolder, LABEL_SEPARATOR_PATTERN);
+        if (folderMembers.length != NUMBER_MEMBERS) {
+            // This is a problem.
+            // TODO(viki): Find out the appropriate exception for this.
+            return;
+        }
+        uri = folderMembers[0];
+        name = folderMembers[1];
+        capabilities = Integer.valueOf(folderMembers[2]);
+        // 1 for true, 0 for false
+        hasChildren = folderMembers[3] == "1";
+        syncFrequency = Integer.valueOf(folderMembers[4]);
+        syncWindow = Integer.valueOf(folderMembers[5]);
+        conversationListUri = folderMembers[6];
+        childFoldersListUri = folderMembers[7];
+        unreadCount = Integer.valueOf(folderMembers[8]);
+        totalCount = Integer.valueOf(folderMembers[9]);
+    }
+
+    /**
+     * Constructor that leaves everything uninitialized. For use only by {@link #serialize()}
+     * which is responsible for filling in all the fields
+     */
+    private Folder() {
+        name = FOLDER_UNINITIALIZED;
+    }
+
     @SuppressWarnings("hiding")
     public static final Creator<Folder> CREATOR = new Creator<Folder>() {
         @Override
@@ -146,4 +234,49 @@ public class Folder implements Parcelable {
         // Return a sort of version number for this parcelable folder. Starting with zero.
         return 0;
     }
+
+    /**
+     * Create a Folder map from a string of serialized folders. This can only be done on the output
+     * of {@link #serialize(Map)}.
+     * @param serializedFolder A string obtained from {@link #serialize(Map)}
+     * @return a Map of folder name to folder.
+     */
+    public static Map<String, Folder> parseFoldersFromString(String serializedFolder) {
+        LogUtils.d(LOG_TAG, "label query result: %s", serializedFolder);
+
+        Map<String, Folder> folderMap = Maps.newHashMap();
+        if (serializedFolder == null || serializedFolder == "") {
+            return folderMap;
+        }
+        String[] folderPieces = TextUtils.split(
+                serializedFolder, LABEL_COMPONENT_SEPARATOR_PATTERN);
+        for (int i = 0, n = folderPieces.length; i < n; i++) {
+            Folder folder = new Folder(folderPieces[i]);
+            if (folder.name != FOLDER_UNINITIALIZED) {
+                folderMap.put(folder.name, folder);
+            }
+        }
+        return folderMap;
+    }
+
+    /**
+     * Serialize the given list of folders
+     * @param folderMap A valid map of folder names to Folders
+     * @return a string containing a serialized output of folder maps.
+     */
+    public static String serialize(Map<String, Folder> folderMap) {
+        Collection<Folder> folderCollection = folderMap.values();
+        Folder[] folderList = folderCollection.toArray(new Folder[]{} );
+        int numLabels = folderList.length;
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < numLabels; i++) {
+          if (i > 0) {
+              result.append(LABEL_SEPARATOR);
+          }
+          Folder folder = folderList[i];
+          result.append(folder.serialize());
+        }
+        return result.toString();
+    }
+
 }

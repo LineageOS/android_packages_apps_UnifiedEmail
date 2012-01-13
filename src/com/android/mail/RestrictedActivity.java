@@ -21,7 +21,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Application;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -34,60 +33,138 @@ import android.view.View;
 import android.view.Window;
 
 /**
- * {@link RestrictedActivity} gives access to a subset of {@link Activity} methods. Those methods
- * must match the signatures from {@link Activity}. It also includes a number of common methods in
- * all Gmail's {@link Activity}.
- *
- * @author phamm
+ * {@link RestrictedActivity} gives access to a subset of {@link Activity} methods. These methods
+ * match the signatures from {@link Activity}.
  */
 public interface RestrictedActivity {
-    Application getApplication();
+    /*
+     * All methods are from android.app.Activity, and the doc strings need to point to the
+     * underlying methods.
+     */
 
-    ComponentName getComponentName();
-
-    Window getWindow();
-
-    ContentResolver getContentResolver();
-
-    FragmentManager getFragmentManager();
-
-    LoaderManager getLoaderManager();
-
-    Intent getIntent();
-
-    MenuInflater getMenuInflater();
-
-    ActionBar getActionBar();
-
+    /**
+     * @see android.app.Activity#findViewById(int)
+     */
     View findViewById(int id);
 
-    boolean isChangingConfigurations();
-
-    boolean isFinishing();
-
-    void setDefaultKeyMode(int mode);
-
-    void setContentView(int layoutResId);
-
-    void setTitle(CharSequence title);
-
-    void invalidateOptionsMenu();
-
-    void startActivityForResult(Intent intent, int requestCode);
-
-    void setResult(int resultCode, Intent data);
-
-    void showDialog(int id);
-
-    ActionMode startActionMode(ActionMode.Callback callback);
-
-    void onBackPressed();
-
+    /**
+     * @see android.app.Activity#finish()
+     */
     void finish();
 
+    /**
+     * @see android.app.Activity#getActionBar()
+     */
+    ActionBar getActionBar();
+
+    /**
+     * @see android.app.Activity#getApplication()
+     */
+    Application getApplication();
+
+    /**
+     * @see android.app.Activity#getComponentName()
+     */
+    ComponentName getComponentName();
+
+    /**
+     * @see android.app.Activity#getContentResolver()
+     */
+    ContentResolver getContentResolver();
+
+    /**
+     * @see android.app.Activity#getFragmentManager()
+     */
+    FragmentManager getFragmentManager();
+
+    /**
+     * @see android.app.Activity#getIntent()
+     */
+    Intent getIntent();
+
+    /**
+     * @see android.app.Activity#getLoaderManager()
+     */
+    LoaderManager getLoaderManager();
+
+    /**
+     * @see android.app.Activity#getMenuInflater()
+     */
+    MenuInflater getMenuInflater();
+
+    /**
+     * @see android.app.Activity#getWindow()
+     */
+    Window getWindow();
+
+    /**
+     * @see android.app.Activity#invalidateOptionsMenu()
+     */
+    void invalidateOptionsMenu();
+
+    /**
+     * @see android.app.Activity#isChangingConfigurations()
+     */
+    boolean isChangingConfigurations();
+
+    /**
+     * @see android.app.Activity#isFinishing()
+     */
+    boolean isFinishing();
+
+    /**
+     * @see android.app.Activity#onBackPressed()
+     */
+    void onBackPressed();
+
+    /**
+     * @see android.app.Activity#onSearchRequested()
+     */
     public boolean onSearchRequested();
 
-    public void startSearch(String initialQuery, boolean selectInitialQuery,
+    /**
+     * @see android.app.Activity#setContentView(int)
+     */
+    void setContentView(int layoutResId);
+
+    /**
+     * @see android.app.Activity#setDefaultKeyMode(int)
+     */
+    void setDefaultKeyMode(int mode);
+
+    /**
+     * @see android.app.Activity#setResult(int, Intent)
+     */
+    void setResult(int resultCode, Intent data);
+
+    /**
+     * @see android.app.Activity#setTitle(CharSequence)
+     */
+    void setTitle(CharSequence title);
+
+    /**
+     * @see android.app.Activity#showDialog(int)
+     */
+    void showDialog(int id);
+
+    /**
+     * @see android.app.Activity#startActionMode(android.view.ActionMode.Callback)
+     */
+    ActionMode startActionMode(ActionMode.Callback callback);
+
+    /**
+     * @see android.app.Activity#startActivityForResult(Intent, int)
+     */
+    void startActivityForResult(Intent intent, int requestCode);
+
+    /**
+     * @see android.app.Activity#startSearch(String, boolean, Bundle, boolean)
+     */
+    void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch);
 
+    /**
+     * @see android.app.Activity#getApplicationContext()
+     */
+    Context getApplicationContext();
 }
