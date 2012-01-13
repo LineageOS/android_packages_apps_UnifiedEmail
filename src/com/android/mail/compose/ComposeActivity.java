@@ -215,8 +215,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             return;
         }
         int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
-        if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
-            mRefMessageUri = Uri.parse(intent.getStringExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI));
+        String refUri = intent.getStringExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI);
+        if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
+            if (TextUtils.isEmpty(refUri)) {
+                LogUtils.w(LOG_TAG,
+                        "The message is a reply/forward, but there is not a valid ref message uri");
+            } else {
+                mRefMessageUri = Uri.parse(refUri);
+            }
             initFromRefMessage(action, mAccount.name);
         } else {
             mQuotedTextView.setVisibility(View.GONE);
@@ -1055,46 +1061,48 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
    }
 
    /* package */
-   static int sendOrSaveInternal(Context context, final Account account,
-           final Account selectedAccount, String fromAddress, final Spanned body, final String[] to,
-           final String[] cc, final String[] bcc, final String subject,
-           final CharSequence quotedText, final List<Attachment> attachments,
-           final long refMessageId, SendOrSaveCallback callback, Handler handler, boolean save,
-           boolean forward) {
-       ContentValues values = new ContentValues();
+    static int sendOrSaveInternal(Context context, final Account account,
+            final Account selectedAccount, String fromAddress, final Spanned body,
+            final String[] to, final String[] cc, final String[] bcc, final String subject,
+            final CharSequence quotedText, final List<Attachment> attachments,
+            final long refMessageId, SendOrSaveCallback callback, Handler handler, boolean save,
+            boolean forward) {
+        ContentValues values = new ContentValues();
 
-       MessageModification.putToAddresses(values, to);
-       MessageModification.putCcAddresses(values, cc);
-       MessageModification.putBccAddresses(values, bcc);
+        MessageModification.putToAddresses(values, to);
+        MessageModification.putCcAddresses(values, cc);
+        MessageModification.putBccAddresses(values, bcc);
 
-       MessageModification.putSubject(values, subject);
-       String htmlBody = Html.toHtml(body);
-       boolean includeQuotedText = !TextUtils.isEmpty(quotedText);
-       StringBuilder fullBody = new StringBuilder(htmlBody);
-       if (includeQuotedText) {
-           if (forward) {
-               // forwarded messages get full text in HTML from client
-               fullBody.append(quotedText);
-               MessageModification.putForward(values, forward);
-           } else {
-               // replies get full quoted text from server - HTMl gets converted to text for now
-               final String text = quotedText.toString();
-               if (QuotedTextView.containsQuotedText(text)) {
-                   int pos = QuotedTextView.getQuotedTextOffset(text);
-                   fullBody.append(text.substring(0, pos));
-                   int quoteStartPos = fullBody.length();
-                   MessageModification.putForward(values, forward);
-                   MessageModification.putIncludeQuotedText(values, includeQuotedText);
-                   MessageModification.putQuoteStartPos(values, quoteStartPos);
-               } else {
-                   LogUtils.w(LOG_TAG, "Couldn't find quoted text");
-                   // This shouldn't happen, but just use what we have,
-                   //  and don't do server-side expansion
-                   fullBody.append(text);
-               }
-           }
-       }
-       MessageModification.putBody(values, fullBody.toString());
+        MessageModification.putSubject(values, subject);
+        String htmlBody = Html.toHtml(body);
+        boolean includeQuotedText = !TextUtils.isEmpty(quotedText);
+        StringBuilder fullBody = new StringBuilder(htmlBody);
+        if (includeQuotedText) {
+            if (forward) {
+                // forwarded messages get full text in HTML from client
+                fullBody.append(quotedText);
+                MessageModification.putForward(values, forward);
+            } else {
+                // replies get full quoted text from server - HTMl gets
+                // converted to text for now
+                final String text = quotedText.toString();
+                if (QuotedTextView.containsQuotedText(text)) {
+                    int pos = QuotedTextView.getQuotedTextOffset(text);
+                    fullBody.append(text.substring(0, pos));
+                    int quoteStartPos = fullBody.length();
+                    MessageModification.putForward(values, forward);
+                    MessageModification.putIncludeQuotedText(values, includeQuotedText);
+                    MessageModification.putQuoteStartPos(values, quoteStartPos);
+                } else {
+                    LogUtils.w(LOG_TAG, "Couldn't find quoted text");
+                    // This shouldn't happen, but just use what we have,
+                    // and don't do server-side expansion
+                    fullBody.append(text);
+                }
+            }
+        }
+        MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
+        MessageModification.putBodyHtml(values, fullBody.toString());
 
        SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(account, selectedAccount,
                values, refMessageId, save);
