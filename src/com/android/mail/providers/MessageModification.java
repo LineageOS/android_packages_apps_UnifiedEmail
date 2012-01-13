@@ -26,7 +26,7 @@ import com.android.mail.providers.UIProvider.MessageColumns;
  * A helper class for creating or updating messages. Use the putXxx methods to
  * provide initial or new values for the message. Then save or send the message.
  * To save or send an existing message without making other changes to it simply
- * provide an emty ContentValues.
+ * provide an empty ContentValues.
  */
 public class MessageModification {
 
@@ -113,5 +113,15 @@ public class MessageModification {
      */
     public static void putBody(ContentValues values, String body) {
         values.put(MessageColumns.BODY_TEXT, body);
+    }
+
+    /**
+     * Saves a new body for the message. Only valid for drafts.
+     * @param values the ContentValues that will be used to create or update the
+     *            message
+     * @param body the new body of the message
+     */
+    public static void putBodyHtml(ContentValues values, String body) {
+        values.put(MessageColumns.BODY_HTML, body);
     }
 }
