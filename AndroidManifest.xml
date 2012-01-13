@@ -76,6 +76,7 @@
 
         <service android:name=".providers.protos.boot.GmailAccountService"/>
         <service android:name=".providers.protos.boot.EmailAccountService"/>
+        <service android:name=".compose.EmptyService"/>
     </application>
 
 </manifest>

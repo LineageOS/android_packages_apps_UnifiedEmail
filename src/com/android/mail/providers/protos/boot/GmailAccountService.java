@@ -17,13 +17,7 @@ package com.android.mail.providers.protos.boot;
 
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.protos.mock.MockUiProvider;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
-import com.android.mail.providers.UIProvider.AttachmentColumns;
-import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.providers.UIProvider.FolderColumns;
-import com.android.mail.providers.UIProvider.MessageColumns;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -54,6 +48,10 @@ public class GmailAccountService extends IntentService {
 
     private static Uri getAccountFoldersUri(String account) {
         return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/labels");
+    }
+
+    private static Uri getAccountSendMessageUri(String account) {
+        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/messages");
     }
 
     public GmailAccountService() {
@@ -114,7 +112,7 @@ public class GmailAccountService extends IntentService {
                             (String)mockAccountMap.get(AccountColumns.SEARCH_URI),
                             (String)mockAccountMap.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
                             (String)mockAccountMap.get(AccountColumns.SAVE_DRAFT_URI),
-                            (String)mockAccountMap.get(AccountColumns.SEND_MESSAGE_URI));
+                            getAccountSendMessageUri(account.name).toString());
 
             AccountCacheProvider.addAccount(cachedAccount);
         }
