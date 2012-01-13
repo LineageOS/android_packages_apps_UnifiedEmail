@@ -43,7 +43,7 @@ public interface MenuCallback extends HelpCallback {
     /**
      * Invoked when the user requests search mode
      */
-    void enterSearchMode();
+    void handleSearchRequested();
 
     /**
      * Invoked when a bulk Operation is starting.

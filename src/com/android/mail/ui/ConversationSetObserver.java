@@ -35,10 +35,10 @@ public interface ConversationSetObserver {
     void onSetEmpty(ConversationSelectionSet set);
 
     /**
-     * Handle when the selection set becomes unempty. The observer should not make any
+     * Handle when the selection set is populated with some items. The observer should not make any
      * modifications to the set while handling this event.
      */
-    void onSetBecomeUnempty(ConversationSelectionSet set);
+    void onSetPopulated(ConversationSelectionSet set);
 
     /**
      * Handle when the selection set gets an element added or removed. The observer should not

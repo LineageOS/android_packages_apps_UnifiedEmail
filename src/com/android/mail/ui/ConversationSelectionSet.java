@@ -81,7 +81,7 @@ public class ConversationSelectionSet implements Parcelable {
     private synchronized void dispatchOnBecomeUnempty(
             ArrayList<ConversationSetObserver> observers) {
         for (ConversationSetObserver observer : observers) {
-            observer.onSetBecomeUnempty(this);
+            observer.onSetPopulated(this);
         }
     }
 

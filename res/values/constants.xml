@@ -20,4 +20,7 @@
     <integer name="use_tablet_ui">0</integer>
     <integer name="conversation_list_header_mode">1</integer>
     <integer name="conversation_header_mode">1</integer>
+
+    <!-- Boolean value indicating whether hardware acceleration should be used. -->
+    <integer name="use_hardware_acceleration">1</integer>
 </resources>
