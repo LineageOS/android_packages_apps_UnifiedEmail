@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -125,7 +126,10 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     class ConversationItemAdapter extends SimpleCursorAdapter {
 
         public ConversationItemAdapter(Context context, int textViewResourceId, Cursor cursor) {
-            super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
+            // Set requery/observer flags temporarily; we will be using loaders eventually so
+            // this is just a temporary hack to demonstrate push, etc.
+            super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null,
+                    CursorAdapter.FLAG_AUTO_REQUERY | CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         }
 
         @Override
