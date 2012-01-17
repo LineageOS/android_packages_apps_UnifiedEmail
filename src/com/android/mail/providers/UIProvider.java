@@ -504,7 +504,7 @@ public class UIProvider {
          * This string column contains a specially formatted string representing all
          * attachments that we added to a message that is being sent or saved.
          */
-        public static String JOINED_ATTACHMENT_INFOS;
+        public static String JOINED_ATTACHMENT_INFOS = "joinedAttachmentInfos";
 
         private MessageColumns() {}
     }
