@@ -17,7 +17,7 @@ package com.android.mail.providers;
 
 import android.test.AndroidTestCase;
 
-import com.android.mail.utils.AttachmentUtils;
+import com.android.mail.providers.Attachment;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class AttachmentTests extends AndroidTestCase {
         }
 
         message.joinedAttachmentInfos = MessageModification.joinedAttachmentsString(attachments);
-        ArrayList<Attachment> reformed = AttachmentUtils.getAttachmentsFromMessage(message);
+        ArrayList<Attachment> reformed = Attachment.getAttachmentsFromMessage(message);
         assertEquals(reformed.size(), 5);
         for (int i = 0; i < 5; i++) {
             assertEquals(reformed.get(i).name, "name" + i);

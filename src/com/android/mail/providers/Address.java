@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
  *
  */
 public class Address {
+    public static final String ADDRESS_DELIMETER = ",";
     /**
      *  Address part, in the form local_part@domain_part. No surrounding angle brackets.
      */
@@ -269,7 +270,7 @@ public class Address {
      * @return Human readable comma-delimited address string.
      */
     public static String toString(Address[] addresses) {
-        return toString(addresses, ",");
+        return toString(addresses, ADDRESS_DELIMETER);
     }
 
     /**

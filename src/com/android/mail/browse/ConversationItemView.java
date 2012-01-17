@@ -40,6 +40,8 @@ import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.util.Rfc822Token;
+import android.text.util.Rfc822Tokenizer;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,6 +50,7 @@ import com.android.mail.R;
 import com.android.mail.ViewMode;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
+import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.utils.Utils;
 
@@ -393,8 +396,26 @@ public class ConversationItemView extends View {
         if (TextUtils.isEmpty(mHeader.conversation.senders)) {
             return;
         }
-        mHeader.sendersText = mHeader.conversation.senders;
+        mHeader.sendersText = formatSenders(mHeader.conversation.senders);
         mHeader.addSenderFragment(0, mHeader.sendersText.length(), sNormalTextStyle, true);
+    }
+
+    private String formatSenders(String sendersString) {
+        String[] senders = TextUtils.split(sendersString, Address.ADDRESS_DELIMETER);
+        String[] namesOnly = new String[senders.length];
+        Rfc822Token[] senderTokens;
+        String display;
+        for (int i = 0; i < senders.length; i++) {
+            senderTokens = Rfc822Tokenizer.tokenize(senders[i]);
+            if (senderTokens != null && senderTokens.length > 0) {
+                display = senderTokens[0].getName();
+                if (TextUtils.isEmpty(display)) {
+                    display = senderTokens[0].getAddress();
+                }
+                namesOnly[i] = display;
+            }
+        }
+        return TextUtils.join(Address.ADDRESS_DELIMETER + " ", namesOnly);
     }
 
     private boolean canFitFragment(int width, int line, int fixedWidth) {

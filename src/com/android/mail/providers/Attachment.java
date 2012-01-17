@@ -21,6 +21,8 @@ import android.text.TextUtils;
 
 import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
+
 public class Attachment implements Parcelable {
     public static final int SERVER_ATTACHMENT = 0;
     /** Extras are "<path>". */
@@ -130,5 +132,36 @@ public class Attachment implements Parcelable {
 
     public boolean isImage() {
         return mimeType.startsWith("image");
+    }
+
+
+    /**
+     * Translate attachment info from a message into attachment objects.
+     * @param msg the message
+     * @return list of Attachment objects, or an empty list if the message
+     * had no associated attachments.
+     */
+    public static ArrayList<Attachment> getAttachmentsFromMessage(Message msg) {
+        return getAttachmentsFromJoinedAttachmentInfo(msg.joinedAttachmentInfos);
+    }
+
+    /**
+     * Translate joines attachment info from a message into attachment objects.
+     * @param infoString the joined attachment info string
+     * @return list of Attachment objects, or an empty list if the message
+     * had no associated attachments.
+     */
+    public static ArrayList<Attachment> getAttachmentsFromJoinedAttachmentInfo(String infoString) {
+        ArrayList<Attachment> infoList = new ArrayList<Attachment>();
+        if (!TextUtils.isEmpty(infoString)) {
+            Attachment attachment;
+            String[] attachmentStrings = infoString
+                    .split(UIProvider.MESSAGE_ATTACHMENT_INFO_SEPARATOR);
+            for (String attachmentString : attachmentStrings) {
+                attachment = new Attachment(attachmentString);
+                infoList.add(attachment);
+            }
+        }
+        return infoList;
     }
 }
