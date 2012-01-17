@@ -43,6 +43,7 @@ public class Message implements Parcelable {
     public boolean hasAttachments;
     public String attachmentListUri;
     public long messageFlags;
+    public String joinedAttachmentInfos;
 
     @Override
     public int describeContents() {
@@ -72,6 +73,10 @@ public class Message implements Parcelable {
         dest.writeInt(hasAttachments ? 1 : 0);
         dest.writeString(attachmentListUri);
         dest.writeLong(messageFlags);
+        dest.writeString(joinedAttachmentInfos);
+    }
+
+    public Message() {
     }
 
     private Message(Parcel in) {
@@ -96,6 +101,7 @@ public class Message implements Parcelable {
         hasAttachments = in.readInt() != 0;
         attachmentListUri = in.readString();
         messageFlags = in.readLong();
+        joinedAttachmentInfos = in.readString();
     }
 
     @Override
@@ -146,7 +152,8 @@ public class Message implements Parcelable {
             hasAttachments = cursor.getInt(UIProvider.MESSAGE_HAS_ATTACHMENTS_COLUMN) != 0;
             attachmentListUri = cursor.getString(UIProvider.MESSAGE_ATTACHMENT_LIST_URI_COLUMN);
             messageFlags = cursor.getLong(UIProvider.MESSAGE_FLAGS_COLUMN);
+            joinedAttachmentInfos = cursor
+                    .getString(UIProvider.MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN);
         }
     }
-
 }

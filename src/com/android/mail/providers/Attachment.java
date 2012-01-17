@@ -17,12 +17,22 @@ package com.android.mail.providers;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+
+import com.google.common.collect.Lists;
 
 public class Attachment implements Parcelable {
+    public static final int SERVER_ATTACHMENT = 0;
+    /** Extras are "<path>". */
+    public static final int  LOCAL_FILE = 1;
+
     /**
      * Attachment name.
      */
     public String name;
+
+    public int origin;
+
     /**
      * Attachment origin info.
      * TODO: do we want this? Or location?
@@ -57,9 +67,28 @@ public class Attachment implements Parcelable {
         partId = in.readString();
         isSynced = in.readInt() == 1;
         size = in.readLong();
+        origin = in.readInt();
     }
 
     public Attachment() {
+    }
+
+    public Attachment(String attachmentString) {
+        String[] attachmentValues = attachmentString.split("\\|");
+        if (attachmentValues != null) {
+            partId = attachmentValues[0];
+            name = attachmentValues[1];
+            mimeType = attachmentValues[2];
+            try {
+                size = Long.parseLong(attachmentValues[3]);
+            } catch (NumberFormatException e) {
+                size = 0;
+            }
+            mimeType = attachmentValues[4];
+            origin = Integer.parseInt(attachmentValues[5]);
+            contentUri = attachmentValues[6];
+            originExtras = attachmentValues[7];
+        }
     }
 
     @Override
@@ -76,6 +105,7 @@ public class Attachment implements Parcelable {
         dest.writeString(partId);
         dest.writeInt(isSynced? 1 : 0);
         dest.writeLong(size);
+        dest.writeInt(origin);
     }
 
     public static final Creator<Attachment> CREATOR = new Creator<Attachment>() {
@@ -89,4 +119,16 @@ public class Attachment implements Parcelable {
             return new Attachment[size];
         }
     };
+
+
+    public String toJoinedString() {
+        return TextUtils.join("|", Lists.newArrayList(partId == null ? "" : partId,
+                name == null ? "" : name.replaceAll("[|\n]", ""), mimeType, size, mimeType,
+                origin + "", contentUri, TextUtils.isEmpty(originExtras) ? contentUri
+                        : originExtras, ""));
+    }
+
+    public boolean isImage() {
+        return mimeType.startsWith("image");
+    }
 }

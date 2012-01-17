@@ -401,7 +401,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void addAttachmentAndUpdateView(Intent data) {
         Uri uri = data != null ? data.getData() : null;
         try {
-            long size =  mAttachmentsView.addAttachment(mAccount, uri, false /* doSave */);
+            long size =  mAttachmentsView.addAttachment(mAccount, uri, false /* doSave */,
+                    true /* local file */);
             if (size > 0) {
                 mAttachmentsChanged = true;
                 updateSaveUi();
@@ -1068,6 +1069,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
         MessageModification.putBodyHtml(values, fullBody.toString());
+        MessageModification.putAttachments(values, attachments);
 
        SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(account, selectedAccount,
                values, refMessageId, save);

@@ -375,9 +375,12 @@ public class UIProvider {
         MessageColumns.APPEND_REF_MESSAGE_CONTENT,
         MessageColumns.HAS_ATTACHMENTS,
         MessageColumns.ATTACHMENT_LIST_URI,
-        MessageColumns.MESSAGE_FLAGS
+        MessageColumns.MESSAGE_FLAGS,
+        MessageColumns.JOINED_ATTACHMENT_INFOS
     };
 
+    /** Separates attachment info parts in strings in a message. */
+    public static final String MESSAGE_ATTACHMENT_INFO_SEPARATOR = "\n";
     public static final String MESSAGE_LIST_TYPE =
             "vnd.android.cursor.dir/vnd.com.android.mail.message";
     public static final String MESSAGE_TYPE =
@@ -404,6 +407,7 @@ public class UIProvider {
     public static final int MESSAGE_HAS_ATTACHMENTS_COLUMN = 18;
     public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 19;
     public static final int MESSAGE_FLAGS_COLUMN = 20;
+    public static final int MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN = 21;
 
     public static final class MessageFlags {
         public static final int STARRED =       1 << 0;
@@ -496,6 +500,11 @@ public class UIProvider {
          * This long column is a bit field of flags defined in {@link MessageFlags}.
          */
         public static final String MESSAGE_FLAGS = "messageFlags";
+        /**
+         * This string column contains a specially formatted string representing all
+         * attachments that we added to a message that is being sent or saved.
+         */
+        public static String JOINED_ATTACHMENT_INFOS;
 
         private MessageColumns() {}
     }
@@ -520,6 +529,9 @@ public class UIProvider {
     public static final int ATTACHMENT_NAME_COLUMN = 1;
     public static final int ATTACHMENT_SIZE_COLUMN = 2;
     public static final int ATTACHMENT_URI_COLUMN = 3;
+    public static final int ATTACHMENT_ORIGIN_EXTRAS_COLUMN = 4;
+    public static final int ATTACHMENT_CONTENT_TYPE_COLUMN = 5;
+    public static final int ATTACHMENT_SYNCED_COLUMN = 6;
 
     public static final class AttachmentColumns {
         public static final String NAME = "name";

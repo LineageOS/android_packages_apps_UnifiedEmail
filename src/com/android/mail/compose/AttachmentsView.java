@@ -177,7 +177,7 @@ class AttachmentsView extends LinearLayout {
      * @return int size of the attachment added.
      * @throws AttachmentFailureException if an error occurs adding the attachment.
      */
-    public long addAttachment(Account account, Uri uri, boolean doSave)
+    public long addAttachment(Account account, Uri uri, boolean doSave, boolean isLocal)
             throws AttachmentFailureException {
         final ContentResolver contentResolver = getContext().getContentResolver();
         String contentType = contentResolver.getType(uri);
@@ -194,6 +194,7 @@ class AttachmentsView extends LinearLayout {
         attachment.mimeType = contentType;
         attachment.size = 0;
         attachment.contentUri = uri.toString();
+        attachment.origin = isLocal ? Attachment.LOCAL_FILE : Attachment.SERVER_ATTACHMENT;
         attachment.originExtras = uri.toString();
 
         Cursor metadataCursor = null;
@@ -286,7 +287,7 @@ class AttachmentsView extends LinearLayout {
                 while (attachmentCursor.moveToNext()) {
                     attachmentUri = attachmentCursor.getString(UIProvider.ATTACHMENT_URI_COLUMN);
                     if (!TextUtils.isEmpty(attachmentUri)) {
-                        addAttachment(account, Uri.parse(attachmentUri), false);
+                        addAttachment(account, Uri.parse(attachmentUri), false, false);
                     }
                 }
             } catch (AttachmentFailureException e) {

@@ -16,10 +16,15 @@
 package com.android.mail.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.android.mail.R;
+import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Message;
+import com.android.mail.providers.UIProvider;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class AttachmentUtils {
     private static final int KILO = 1024;
@@ -39,5 +44,26 @@ public class AttachmentUtils {
             return onePlace.format((float) size / (float) MEGA)
                     + context.getString(R.string.megabytes);
         }
+    }
+
+    /**
+     * Translate attachment info from a message into attachment objects.
+     * @param msg
+     * @return list of Attachment objects, or an empty list if the message
+     * had no associated attachments.
+     */
+    public static ArrayList<Attachment> getAttachmentsFromMessage(Message msg) {
+        String infoString = msg.joinedAttachmentInfos;
+        ArrayList<Attachment> infoList = new ArrayList<Attachment>();
+        if (!TextUtils.isEmpty(infoString)) {
+            Attachment attachment;
+            String[] attachmentStrings = infoString
+                    .split(UIProvider.MESSAGE_ATTACHMENT_INFO_SEPARATOR);
+            for (String attachmentString : attachmentStrings) {
+                attachment = new Attachment(attachmentString);
+                infoList.add(attachment);
+            }
+        }
+        return infoList;
     }
 }
