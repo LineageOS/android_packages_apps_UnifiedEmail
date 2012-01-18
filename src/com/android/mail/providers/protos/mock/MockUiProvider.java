@@ -264,7 +264,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.SEARCH_URI, accountUri + "/search");
         accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI, accountUri + "/fromAddresses");
         accountMap.put(AccountColumns.SAVE_DRAFT_URI, accountUri + "/saveDraft");
-        accountMap.put(AccountColumns.SEND_MESSAGE_URI, accountUri + "/sendMessage");
+        accountMap.put(AccountColumns.SEND_MAIL_URI, accountUri + "/sendMail");
         accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI, accountUri + "/expungeMessage");
 
         addAccountInfoToAccountCache(accountMap);
@@ -349,7 +349,8 @@ public final class MockUiProvider extends ContentProvider {
                         (String)accountInfo.get(AccountColumns.SEARCH_URI),
                         (String)accountInfo.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
                         (String)accountInfo.get(AccountColumns.SAVE_DRAFT_URI),
-                        (String)accountInfo.get(AccountColumns.SEND_MESSAGE_URI));
+                        (String)accountInfo.get(AccountColumns.SEND_MAIL_URI),
+                        (String)accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI));
 
 
         AccountCacheProvider.addAccount(account);

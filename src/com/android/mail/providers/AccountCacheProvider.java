@@ -91,8 +91,8 @@ public final class AccountCacheProvider extends ContentProvider {
                     builder.add(account.mAccountFromAddressesUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SAVE_DRAFT_URI)) {
                     builder.add(account.mSaveDraftUri);
-                } else if (TextUtils.equals(column, UIProvider.AccountColumns.SEND_MESSAGE_URI)) {
-                    builder.add(account.mSendMessageUri);
+                } else if (TextUtils.equals(column, UIProvider.AccountColumns.SEND_MAIL_URI)) {
+                    builder.add(account.mSendMailUri);
                 }
             }
 
@@ -149,11 +149,12 @@ public final class AccountCacheProvider extends ContentProvider {
         private final String mSearchUri;
         private final String mAccountFromAddressesUri;
         private final String mSaveDraftUri;
-        private final String mSendMessageUri;
+        private final String mSendMailUri;
+        private final String mExpungeMessageUri;
 
         public CachedAccount(long id, String name, String uri, long capabilities,
                 String folderListUri, String searchUri, String fromAddressesUri,
-                String saveDraftUri, String sendMessageUri) {
+                String saveDraftUri, String sendMailUri, String expungeMessageUri) {
             mId = id;
             mName = name;
             mUri = uri;
@@ -162,7 +163,8 @@ public final class AccountCacheProvider extends ContentProvider {
             mSearchUri = searchUri;
             mAccountFromAddressesUri = fromAddressesUri;
             mSaveDraftUri = saveDraftUri;
-            mSendMessageUri = sendMessageUri;
+            mSendMailUri = sendMailUri;
+            mExpungeMessageUri = expungeMessageUri;
         }
 
         @Override
@@ -182,13 +184,14 @@ public final class AccountCacheProvider extends ContentProvider {
                     TextUtils.equals(mSearchUri, other.mSearchUri) &&
                     TextUtils.equals(mAccountFromAddressesUri, other.mAccountFromAddressesUri) &&
                     TextUtils.equals(mSaveDraftUri, other.mSaveDraftUri) &&
-                    TextUtils.equals(mSendMessageUri, other.mSendMessageUri);
+                    TextUtils.equals(mSendMailUri, other.mSendMailUri) &&
+                    TextUtils.equals(mExpungeMessageUri, other.mExpungeMessageUri);
         }
 
         @Override
         public int hashCode() {
             return Objects.hashCode(mId, mName, mUri, mCapabilities, mFolderListUri, mSearchUri,
-                    mAccountFromAddressesUri, mSaveDraftUri, mSendMessageUri);
+                    mAccountFromAddressesUri, mSaveDraftUri, mSendMailUri, mExpungeMessageUri);
         }
     }
 }

@@ -50,7 +50,7 @@ public class UIProvider {
             AccountColumns.SEARCH_URI,
             AccountColumns.ACCOUNT_FROM_ADDRESSES_URI,
             AccountColumns.SAVE_DRAFT_URI,
-            AccountColumns.SEND_MESSAGE_URI,
+            AccountColumns.SEND_MAIL_URI,
             AccountColumns.EXPUNGE_MESSAGE_URI
     };
 
@@ -134,7 +134,7 @@ public class UIProvider {
          * a message for this account.
          * NOTE: This might be better to be an update operation on the messageUri.
          */
-        public static final String SEND_MESSAGE_URI = "sendMessageUri";
+        public static final String SEND_MAIL_URI = "sendMailUri";
 
         /**
          * This string column contains the content provider uri that can be used
@@ -376,7 +376,9 @@ public class UIProvider {
         MessageColumns.HAS_ATTACHMENTS,
         MessageColumns.ATTACHMENT_LIST_URI,
         MessageColumns.MESSAGE_FLAGS,
-        MessageColumns.JOINED_ATTACHMENT_INFOS
+        MessageColumns.JOINED_ATTACHMENT_INFOS,
+        MessageColumns.SAVE_MESSAGE_URI,
+        MessageColumns.SEND_MESSAGE_URI
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -408,6 +410,8 @@ public class UIProvider {
     public static final int MESSAGE_ATTACHMENT_LIST_URI_COLUMN = 19;
     public static final int MESSAGE_FLAGS_COLUMN = 20;
     public static final int MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN = 21;
+    public static final int MESSAGE_SAVE_URI_COLUMN = 22;
+    public static final int MESSAGE_SEND_URI_COLUMN = 23;
 
     public static final class MessageFlags {
         public static final int STARRED =       1 << 0;
@@ -492,8 +496,8 @@ public class UIProvider {
          */
         public static final String HAS_ATTACHMENTS = "hasAttachments";
         /**
-         * This string column contains content provider URI for the list of attachments associated
-         * with this message.
+         * This string column contains the content provider URI for the list of
+         * attachments associated with this message.
          */
         public static final String ATTACHMENT_LIST_URI = "attachmentListUri";
         /**
@@ -505,6 +509,16 @@ public class UIProvider {
          * attachments that we added to a message that is being sent or saved.
          */
         public static final String JOINED_ATTACHMENT_INFOS = "joinedAttachmentInfos";
+        /**
+         * This string column contains the content provider URI for saving this
+         * message.
+         */
+        public static final String SAVE_MESSAGE_URI = "saveMessageUri";
+        /**
+         * This string column contains content provider URI for sending this
+         * message.
+         */
+        public static final String SEND_MESSAGE_URI = "sendMessageUri";
 
         private MessageColumns() {}
     }

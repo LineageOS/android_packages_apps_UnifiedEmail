@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -155,11 +156,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private boolean mReplyFromChanged;
     private MenuItem mSave;
     private MenuItem mSend;
-    private Object mDraftIdLock = new Object();
     private String mRefMessageId;
     private AlertDialog mRecipientErrorDialog;
     private AlertDialog mSendConfirmDialog;
     private Message mRefMessage;
+    private long mDraftId = UIProvider.INVALID_MESSAGE_ID;
+    private Message mDraft;
+    private Object mDraftLock = new Object();
 
     /**
      * Can be called from a non-UI thread.
@@ -670,8 +673,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     /*package*/ interface SendOrSaveCallback {
         public void initializeSendOrSave(SendOrSaveTask sendOrSaveTask);
-        public void notifyMessageIdAllocated(SendOrSaveMessage message, long messageId);
-        public long getMessageId();
+        public void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage, Message message);
+        public Message getMessage();
         public void sendOrSaveFinished(SendOrSaveTask sendOrSaveTask, boolean success);
     }
 
@@ -690,14 +693,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         @Override
         public void run() {
-            final SendOrSaveMessage message = mSendOrSaveMessage;
+            final SendOrSaveMessage sendOrSaveMessage = mSendOrSaveMessage;
 
-            final Account selectedAccount = message.mSelectedAccount;
-            long messageId = mSendOrSaveCallback.getMessageId();
+            final Account selectedAccount = sendOrSaveMessage.mSelectedAccount;
+            Message message = mSendOrSaveCallback.getMessage();
+            long messageId = message != null ? message.id : UIProvider.INVALID_MESSAGE_ID;
             // If a previous draft has been saved, in an account that is different
             // than what the user wants to send from, remove the old draft, and treat this
             // as a new message
-            if (!selectedAccount.equals(message.mAccount)) {
+            if (!selectedAccount.equals(sendOrSaveMessage.mAccount)) {
                 if (messageId != UIProvider.INVALID_MESSAGE_ID) {
                     ContentResolver resolver = mContext.getContentResolver();
                     ContentValues values = new ContentValues();
@@ -712,28 +716,35 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
 
             final long messageIdToSave = messageId;
-            int newDraftId = -1;
             if (messageIdToSave != UIProvider.INVALID_MESSAGE_ID) {
+                sendOrSaveMessage.mValues.put(BaseColumns._ID, messageIdToSave);
                 mContext.getContentResolver().update(
-                        Uri.parse(message.mSave ? selectedAccount.saveDraftUri
-                                : selectedAccount.sendMessageUri), message.mValues, null, null);
+                        Uri.parse(sendOrSaveMessage.mSave ? message.saveUri : message.sendUri),
+                        sendOrSaveMessage.mValues, null, null);
             } else {
-                newDraftId = mContext.getContentResolver().update(
-                        Uri.parse(message.mSave ? selectedAccount.saveDraftUri
-                                : selectedAccount.sendMessageUri), message.mValues, null, null);
-
-                // Broadcast notification that a new message id has been
-                // allocated
-                mSendOrSaveCallback.notifyMessageIdAllocated(message, newDraftId);
+                ContentResolver resolver = mContext.getContentResolver();
+                Uri messageUri = resolver.insert(
+                        Uri.parse(sendOrSaveMessage.mSave ? selectedAccount.saveDraftUri
+                                : selectedAccount.sendMessageUri), sendOrSaveMessage.mValues);
+                if (sendOrSaveMessage.mSave && messageUri != null) {
+                    Cursor messageCursor = resolver.query(messageUri,
+                            UIProvider.MESSAGE_PROJECTION, null, null, null);
+                    if (messageCursor != null && messageCursor.moveToFirst()) {
+                        // Broadcast notification that a new message has
+                        // been allocated
+                        mSendOrSaveCallback.notifyMessageIdAllocated(sendOrSaveMessage,
+                                Message.from(messageCursor));
+                    }
+                }
             }
 
-            if (!message.mSave) {
+            if (!sendOrSaveMessage.mSave) {
                 UIProvider.incrementRecipientsTimesContacted(mContext,
-                        (String) message.mValues.get(UIProvider.MessageColumns.TO));
+                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.TO));
                 UIProvider.incrementRecipientsTimesContacted(mContext,
-                        (String) message.mValues.get(UIProvider.MessageColumns.CC));
+                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.CC));
                 UIProvider.incrementRecipientsTimesContacted(mContext,
-                        (String) message.mValues.get(UIProvider.MessageColumns.BCC));
+                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.BCC));
             }
             mSendOrSaveCallback.sendOrSaveFinished(SendOrSaveTask.this, true);
         }
@@ -744,7 +755,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /* package for testing */
     ArrayList<SendOrSaveTask> mActiveTasks = Lists.newArrayList();
     private int mRequestId;
-    private long mDraftId;
 
     /*package*/ static class SendOrSaveMessage {
         final Account mAccount;
@@ -859,7 +869,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Returns true if we need to save the current draft.
      */
     private boolean shouldSave() {
-        synchronized (mDraftIdLock) {
+        synchronized (mDraftLock) {
             // The message should only be saved if:
             // It hasn't been sent AND
             // Some text has been added to the message OR
@@ -1102,7 +1112,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
 
        SendOrSaveCallback callback = new SendOrSaveCallback() {
-               private long mDraftId;
             private int mRestoredRequestId;
 
             public void initializeSendOrSave(SendOrSaveTask sendOrSaveTask) {
@@ -1121,63 +1130,55 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                    }
                }
 
-               public void notifyMessageIdAllocated(SendOrSaveMessage message, long messageId) {
-                   synchronized(mDraftIdLock) {
-                       mDraftId = messageId;
-                       sRequestMessageIdMap.put(message.requestId(), messageId);
-
+            public void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage,
+                    Message message) {
+                   synchronized(mDraftLock) {
+                       mDraftId = message.id;
+                       mDraft = message;
+                    if (sRequestMessageIdMap != null) {
+                        sRequestMessageIdMap.put(sendOrSaveMessage.requestId(), mDraftId);
+                    }
                        // Cache request message map, in case the process is killed
                        saveRequestMap();
                    }
                    if (sTestSendOrSaveCallback != null) {
-                       sTestSendOrSaveCallback.notifyMessageIdAllocated(message, messageId);
+                    sTestSendOrSaveCallback.notifyMessageIdAllocated(sendOrSaveMessage, message);
                    }
                }
 
-               public long getMessageId() {
-                   synchronized(mDraftIdLock) {
-                       if (mDraftId == UIProvider.INVALID_MESSAGE_ID) {
-                           // We don't have the message Id, check to see if we have a restored
-                           // request id, and see if we have a message for that request.
-                           if (mRestoredRequestId != 0) {
-                               Long retrievedMessageId =
-                                       sRequestMessageIdMap.get(mRestoredRequestId);
-                               if (retrievedMessageId != null) {
-                                   mDraftId = retrievedMessageId.longValue();
-                               }
-                           }
-                       }
-                       return mDraftId;
-                   }
-               }
+            public Message getMessage() {
+                synchronized (mDraftLock) {
+                    return mDraft;
+                }
+            }
 
-               public void sendOrSaveFinished(SendOrSaveTask task, boolean success) {
-                   if (success) {
-                       // Successfully sent or saved so reset change markers
-                       discardChanges();
-                   } else {
-                       // A failure happened with saving/sending the draft
-                       // TODO(pwestbro): add a better string that should be used when failing to
-                       // send or save
-                       Toast.makeText(ComposeActivity.this, R.string.send_failed,
-                               Toast.LENGTH_SHORT).show();
-                   }
+            public void sendOrSaveFinished(SendOrSaveTask task, boolean success) {
+                if (success) {
+                    // Successfully sent or saved so reset change markers
+                    discardChanges();
+                } else {
+                    // A failure happened with saving/sending the draft
+                    // TODO(pwestbro): add a better string that should be used
+                    // when failing to send or save
+                    Toast.makeText(ComposeActivity.this, R.string.send_failed, Toast.LENGTH_SHORT)
+                            .show();
+                }
 
-                   int numTasks;
-                   synchronized(mActiveTasks) {
-                       // Remove the task from the list of active tasks
-                       mActiveTasks.remove(task);
-                       numTasks = mActiveTasks.size();
-                   }
+                int numTasks;
+                synchronized (mActiveTasks) {
+                    // Remove the task from the list of active tasks
+                    mActiveTasks.remove(task);
+                    numTasks = mActiveTasks.size();
+                }
 
-                   if (numTasks == 0) {
-                       // Stop service so we can be killed.
-                       stopService(new Intent(ComposeActivity.this, EmptyService.class));
-                   }
-                   if (sTestSendOrSaveCallback != null) {
-                       sTestSendOrSaveCallback.sendOrSaveFinished(task, success);
-                   }
-               }
+                if (numTasks == 0) {
+                    // Stop service so we can be killed.
+                    stopService(new Intent(ComposeActivity.this, EmptyService.class));
+                }
+                if (sTestSendOrSaveCallback != null) {
+                    sTestSendOrSaveCallback.sendOrSaveFinished(task, success);
+                }
+            }
          };
 
        // Get the selected account if the from spinner has been setup.
@@ -1408,7 +1409,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @param showToast show "Message discarded" toast if true
      */
     private void doDiscardWithoutConfirmation(boolean showToast) {
-        synchronized (mDraftIdLock) {
+        synchronized (mDraftLock) {
             if (mDraftId != UIProvider.INVALID_MESSAGE_ID) {
                 ContentValues values = new ContentValues();
                 values.put(MessageColumns.SERVER_ID, mDraftId);
