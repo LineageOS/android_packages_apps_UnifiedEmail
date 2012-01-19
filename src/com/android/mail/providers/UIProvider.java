@@ -161,7 +161,7 @@ public class UIProvider {
         FolderColumns.CONVERSATION_LIST_URI,
         FolderColumns.CHILD_FOLDERS_LIST_URI,
         FolderColumns.UNREAD_COUNT,
-        FolderColumns.TOTAL_COUNT
+        FolderColumns.TOTAL_COUNT,
     };
 
     public static final int FOLDER_ID_COLUMN = 0;
@@ -243,7 +243,9 @@ public class UIProvider {
         ConversationColumns.NUM_MESSAGES,
         ConversationColumns.NUM_DRAFTS,
         ConversationColumns.SENDING_STATE,
-        ConversationColumns.PRIORITY
+        ConversationColumns.PRIORITY,
+        ConversationColumns.READ,
+        ConversationColumns.STARRED
     };
 
     // These column indexes only work when the caller uses the
@@ -260,6 +262,8 @@ public class UIProvider {
     public static final int CONVERSATION_NUM_DRAFTS_COLUMN = 9;
     public static final int CONVERSATION_SENDING_STATE_COLUMN = 10;
     public static final int CONVERSATION_PRIORITY_COLUMN = 11;
+    public static final int CONVERSATION_READ_COLUMN = 12;
+    public static final int CONVERSATION_STARRED_COLUMN = 13;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -271,6 +275,13 @@ public class UIProvider {
     public static final class ConversationPriority {
         public static final int LOW = 0;
         public static final int HIGH = 1;
+    };
+
+    public static final class ConversationFlags {
+        public static final int READ = 1<<0;
+        public static final int STARRED = 1<<1;
+        public static final int REPLIED = 1<<2;
+        public static final int FORWARDED = 1<<3;
     };
 
     public static final class ConversationColumns {
@@ -329,6 +340,16 @@ public class UIProvider {
          * ConversationPriority to interpret this field.
          */
         public static String PRIORITY = "priority";
+
+        /**
+         * This boolean column indicates whether the conversation has been read
+         */
+        public static String READ = "read";
+
+        /**
+         * This boolean column indicates whether the conversation has been read
+         */
+        public static String STARRED = "starred";
 
         public ConversationColumns() {
         }

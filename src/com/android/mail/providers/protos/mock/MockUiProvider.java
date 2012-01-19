@@ -178,6 +178,8 @@ public final class MockUiProvider extends ContentProvider {
         conversationMap.put(ConversationColumns.NUM_MESSAGES, 1);
         conversationMap.put(ConversationColumns.NUM_DRAFTS, 1);
         conversationMap.put(ConversationColumns.SENDING_STATE, 1);
+        conversationMap.put(ConversationColumns.READ, 0);
+        conversationMap.put(ConversationColumns.STARRED, 0);
         return conversationMap;
     }
 

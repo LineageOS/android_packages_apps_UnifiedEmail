@@ -32,6 +32,8 @@ import android.util.Pair;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.ConversationFlags;
 
 import java.util.ArrayList;
 
@@ -118,7 +120,9 @@ public class ConversationItemViewModel {
         if (cursor != null) {
             header.faded = false;
             header.checkboxVisible = true;
-            header.conversation = Conversation.from(cursor);
+            Conversation conv = Conversation.from(cursor);
+            header.conversation = conv;
+            header.starred = conv.starred;
         }
         return header;
     }

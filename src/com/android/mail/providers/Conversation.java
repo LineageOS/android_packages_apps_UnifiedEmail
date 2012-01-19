@@ -16,6 +16,8 @@
 
 package com.android.mail.providers;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
@@ -34,6 +36,8 @@ public class Conversation implements Parcelable {
     public int numDrafts;
     public int sendingState;
     public int priority;
+    public boolean read;
+    public boolean starred;
 
     @Override
     public int describeContents() {
@@ -53,6 +57,8 @@ public class Conversation implements Parcelable {
         dest.writeInt(numDrafts);
         dest.writeInt(sendingState);
         dest.writeInt(priority);
+        dest.writeByte(read ? (byte) 1 : 0);
+        dest.writeByte(starred ? (byte) 1 : 0);
     }
 
     private Conversation(Parcel in) {
@@ -67,6 +73,8 @@ public class Conversation implements Parcelable {
         numDrafts = in.readInt();
         sendingState = in.readInt();
         priority = in.readInt();
+        read = (in.readByte() != 0);
+        starred = (in.readByte() != 0);
     }
 
     @Override
@@ -98,8 +106,7 @@ public class Conversation implements Parcelable {
             dateMs = cursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
             subject = cursor.getString(UIProvider.CONVERSATION_SUBJECT_COLUMN);
             snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
-            hasAttachments = cursor
-                    .getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) == 1 ? true : false;
+            hasAttachments = cursor.getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) == 1;
             messageListUri = Uri.parse(cursor
                     .getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN));
             senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
@@ -107,7 +114,22 @@ public class Conversation implements Parcelable {
             numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
             sendingState = cursor.getInt(UIProvider.CONVERSATION_SENDING_STATE_COLUMN);
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
+            read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) == 1;
+            starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) == 1;
         }
     }
 
+    // Below are methods that update Conversation data (update/delete)
+
+    public void updateBoolean(Context context, String columnName, boolean value) {
+        // For now, synchronous
+        ContentValues cv = new ContentValues();
+        cv.put(columnName, value);
+        context.getContentResolver().update(messageListUri, cv, null, null);
+    }
+
+    public void delete(Context context) {
+        // For now, synchronous
+        context.getContentResolver().delete(messageListUri, null, null);
+    }
 }

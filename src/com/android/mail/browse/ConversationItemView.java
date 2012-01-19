@@ -52,6 +52,7 @@ import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.Utils;
 
 public class ConversationItemView extends View {
@@ -784,6 +785,8 @@ public class ConversationItemView extends View {
         postInvalidate(mCoordinates.starX, mCoordinates.starY, mCoordinates.starX
                 + mHeader.starBitmap.getWidth(),
                 mCoordinates.starY + mHeader.starBitmap.getHeight());
+        // Generalize this...
+        mHeader.conversation.updateBoolean(mContext, ConversationColumns.STARRED, mHeader.starred);
     }
 
     private boolean touchCheckmark(float x, float y) {

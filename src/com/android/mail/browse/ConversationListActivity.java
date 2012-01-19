@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -48,7 +49,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 
 public class ConversationListActivity extends Activity implements OnItemSelectedListener,
-        OnItemClickListener {
+        OnItemClickListener, OnItemLongClickListener {
 
     private ListView mListView;
     private ConversationItemAdapter mListAdapter;
@@ -63,6 +64,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         setContentView(R.layout.conversation_list_activity);
         mListView = (ListView) findViewById(R.id.browse_list);
         mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
         mAccountsSpinner = (Spinner) findViewById(R.id.accounts_spinner);
         mResolver = getContentResolver();
         Cursor cursor = mResolver.query(AccountCacheProvider.getAccountsUri(),
@@ -125,11 +127,14 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
     class ConversationItemAdapter extends SimpleCursorAdapter {
 
-        public ConversationItemAdapter(Context context, int textViewResourceId, Cursor cursor) {
+        public ConversationItemAdapter(Context context, int textViewResourceId,
+                ConversationCursor cursor) {
             // Set requery/observer flags temporarily; we will be using loaders eventually so
             // this is just a temporary hack to demonstrate push, etc.
             super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null,
                     CursorAdapter.FLAG_AUTO_REQUERY | CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+            // UpdateCachingCursor needs to know about the adapter
+            cursor.setAdapter(this);
         }
 
         @Override
@@ -147,6 +152,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // Get an account and a folder list
         Uri foldersUri = null;
         Cursor cursor = mAccountsAdapter.getCursor();
         if (cursor != null && cursor.moveToPosition(position)) {
@@ -165,12 +171,17 @@ public class ConversationListActivity extends Activity implements OnItemSelected
                 cursor.close();
             }
         }
-        if (conversationListUri != null) {
-            cursor = mResolver.query(conversationListUri, UIProvider.CONVERSATION_PROJECTION, null,
-                    null, null);
+        // We need to have a conversation list here...
+        if (conversationListUri == null) {
+            throw new IllegalStateException("No conversation list for this account");
         }
+        // Create the cursor for the list using the update cache
+        ConversationCursor conversationListCursor =
+                new ConversationCursor(
+                    mResolver.query(conversationListUri, UIProvider.CONVERSATION_PROJECTION, null,
+                            null, null), this, UIProvider.ConversationColumns.MESSAGE_LIST_URI);
         mListAdapter = new ConversationItemAdapter(this, R.layout.conversation_item_view_normal,
-                cursor);
+                conversationListCursor);
         mListView.setAdapter(mListAdapter);
     }
 
@@ -182,5 +193,13 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Conversation conv = ((ConversationItemView) view).getConversation();
         ConversationViewActivity.viewConversation(this, conv, mSelectedAccount);
+    }
+
+    // Temporary to test deletion (we'll delete the convo on long click)
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Conversation conv = ((ConversationItemView) view).getConversation();
+        conv.delete(this);
+        return true;
     }
 }
