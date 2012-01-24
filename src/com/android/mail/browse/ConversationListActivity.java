@@ -47,9 +47,10 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.browse.ConversationSelectionSet.ConversationSetObserver;
 
 public class ConversationListActivity extends Activity implements OnItemSelectedListener,
-        OnItemClickListener, OnItemLongClickListener {
+        OnItemClickListener, ConversationSetObserver {
 
     private ListView mListView;
     private ConversationItemAdapter mListAdapter;
@@ -57,6 +58,9 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     private AccountsSpinnerAdapter mAccountsAdapter;
     private ContentResolver mResolver;
     private Account mSelectedAccount;
+    /** The selected conversations. */
+    protected ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
+    private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +68,6 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         setContentView(R.layout.conversation_list_activity);
         mListView = (ListView) findViewById(R.id.browse_list);
         mListView.setOnItemClickListener(this);
-        mListView.setOnItemLongClickListener(this);
         mAccountsSpinner = (Spinner) findViewById(R.id.accounts_spinner);
         mResolver = getContentResolver();
         Cursor cursor = mResolver.query(AccountCacheProvider.getAccountsUri(),
@@ -72,6 +75,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         mAccountsAdapter = new AccountsSpinnerAdapter(this, cursor);
         mAccountsSpinner.setAdapter(mAccountsAdapter);
         mAccountsSpinner.setOnItemSelectedListener(this);
+        mBatchConversations.addObserver(this);
     }
 
     @Override
@@ -146,7 +150,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             ((ConversationItemView) view).bind(cursor, null, mSelectedAccount.name, null,
-                    new ViewMode(ConversationListActivity.this));
+                    new ViewMode(ConversationListActivity.this), mBatchConversations);
         }
     }
 
@@ -195,11 +199,20 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         ConversationViewActivity.viewConversation(this, conv, mSelectedAccount);
     }
 
-    // Temporary to test deletion (we'll delete the convo on long click)
     @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Conversation conv = ((ConversationItemView) view).getConversation();
-        conv.delete(this);
-        return true;
+    public void onSetEmpty(ConversationSelectionSet set) {
+        mSelectedConversationsActionMenu = null;
+    }
+
+    @Override
+    public void onSetBecomeUnempty(ConversationSelectionSet set) {
+        mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(this,
+                mBatchConversations);
+        mSelectedConversationsActionMenu.activate();
+    }
+
+    @Override
+    public void onSetChanged(ConversationSelectionSet set) {
+        // Do nothing.
     }
 }

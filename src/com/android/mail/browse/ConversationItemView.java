@@ -129,6 +129,7 @@ public class ConversationItemView extends View {
     private boolean mChecked;
     private static int sFadedColor = -1;
     private static int sFadedActivatedColor = -1;
+    private ConversationSelectionSet mSelectedConversationSet;
 
     static {
         sPaint.setAntiAlias(true);
@@ -200,19 +201,21 @@ public class ConversationItemView extends View {
      * Bind this view to the content of the cursor and request layout.
      */
     public void bind(ConversationItemViewModel model, StarHandler starHandler, String account,
-            CharSequence displayedLabel, ViewMode viewMode) {
+            CharSequence displayedLabel, ViewMode viewMode, ConversationSelectionSet set) {
         mAccount = account;
         mViewMode = viewMode;
         mHeader = model;
+        mSelectedConversationSet = set;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
     }
 
     public void bind(Cursor cursor, StarHandler starHandler, String account,
-            CharSequence displayedLabel, ViewMode viewMode) {
+            CharSequence displayedLabel, ViewMode viewMode, ConversationSelectionSet set) {
         mAccount = account;
         mViewMode = viewMode;
         mHeader = ConversationItemViewModel.forCursor(account, cursor);
+        mSelectedConversationSet = set;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
     }
@@ -769,6 +772,7 @@ public class ConversationItemView extends View {
      */
     public void toggleCheckMark() {
         mChecked = !mChecked;
+        mSelectedConversationSet.toggle(mHeader.conversation);
         // We update the background after the checked state has changed now that
         // we have a selected background asset. Setting the background usually
         // waits for a layout pass, but we don't need a full layout, just an

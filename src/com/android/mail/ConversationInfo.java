@@ -77,7 +77,7 @@ public class ConversationInfo implements Parcelable {
         this(conversationId, 0, 0, maxMessageId, folders);
     }
 
-    private ConversationInfo(long conversationId) {
+    public ConversationInfo(long conversationId) {
         mConversationId = conversationId;
         mServerMessageId = 0;
         mLocalMessageId = 0;
