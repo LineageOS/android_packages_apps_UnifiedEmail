@@ -18,6 +18,8 @@ package com.android.mail;
 
 import android.os.Bundle;
 
+import com.android.mail.providers.Conversation;
+
 import java.util.Collection;
 
 /**
@@ -28,11 +30,11 @@ public class UndoOperation {
     private static final String DESCRIPTION = "undo-description";
     private static final String CONVERSATIONS = "undo-conversations";
 
-    public Collection<ConversationInfo> mConversations;
+    public Collection<Conversation> mConversations;
     public String mDescription;
     public String mAccount;
 
-    public UndoOperation(String account, Collection<ConversationInfo> conversations,
+    public UndoOperation(String account, Collection<Conversation> conversations,
             String description) {
         this(account, conversations, description, true /* undoAction */);
     }
@@ -47,7 +49,7 @@ public class UndoOperation {
      *        in order to perform the action.  This is only false when un-marshaling a
      *        previously existing UndoOperation
      */
-    private UndoOperation(String account, Collection<ConversationInfo> conversations,
+    private UndoOperation(String account, Collection<Conversation> conversations,
             String description, boolean undoAction) {
         mAccount = account;
         mConversations = conversations;
@@ -61,6 +63,6 @@ public class UndoOperation {
         extras.putString(ACCOUNT, mAccount);
         extras.putString(DESCRIPTION, mDescription);
         extras.putParcelableArray(CONVERSATIONS,
-                mConversations.toArray(new ConversationInfo[mConversations.size()]));
+                mConversations.toArray(new Conversation[mConversations.size()]));
     }
 }
