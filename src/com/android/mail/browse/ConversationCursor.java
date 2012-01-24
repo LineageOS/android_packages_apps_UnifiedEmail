@@ -27,8 +27,8 @@ import android.database.CursorWrapper;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.CursorAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,20 +51,24 @@ public class ConversationCursor extends CursorWrapper {
     private static final String DELETED_COLUMN = "__deleted__";
     // A sentinel value for the "index" of the deleted column; it's an int that is otherwise invalid
     private static final int DELETED_COLUMN_INDEX = -1;
+    // The current conversation cursor
+    private static ConversationCursor sConversationCursor;
+    // The index of the Uri whose data is reflected in the cached row
+    // Updates/Deletes to this Uri are cached
+    private static int sUriColumnIndex;
+    // The listener registered for this cursor
+    private static ConversationListener sListener;
 
     // The cursor underlying the caching cursor
     private final Cursor mUnderlying;
     // Column names for this cursor
     private final String[] mColumnNames;
-    // The index of the Uri whose data is reflected in the cached row
-    // Updates/Deletes to this Uri are cached
-    private final int mUriColumnIndex;
     // The resolver for the cursor instantiator's context
     private static ContentResolver mResolver;
     // An observer on the underlying cursor (so we can detect changes from outside the UI)
     private final CursorObserver mCursorObserver;
-    // The adapter using this cursor (which needs to refresh when data changes)
-    private static CursorAdapter mAdapter;
+    // Whether our observer is currently registered with the underlying cursor
+    private boolean mCursorObserverRegistered = false;
 
     // The current position of the cursor
     private int mPosition = -1;
@@ -73,18 +77,17 @@ public class ConversationCursor extends CursorWrapper {
 
     public ConversationCursor(Cursor cursor, Context context, String messageListColumn) {
         super(cursor);
+        sConversationCursor = this;
         mUnderlying = cursor;
         mCursorObserver = new CursorObserver();
         // New cursor -> clear the cache
         resetCache();
         mColumnNames = cursor.getColumnNames();
-        mUriColumnIndex = getColumnIndex(messageListColumn);
-        if (mUriColumnIndex < 0) {
+        sUriColumnIndex = getColumnIndex(messageListColumn);
+        if (sUriColumnIndex < 0) {
             throw new IllegalArgumentException("Cursor must include a message list column");
         }
         mResolver = context.getContentResolver();
-        // We'll observe the underlying cursor and act when it changes
-        //cursor.registerContentObserver(mCursorObserver);
     }
 
     /**
@@ -95,14 +98,17 @@ public class ConversationCursor extends CursorWrapper {
         sCacheMap.clear();
         sDeletedCount = 0;
         mPosition = -1;
-        mUnderlying.registerContentObserver(mCursorObserver);
+        if (!mCursorObserverRegistered) {
+            mUnderlying.registerContentObserver(mCursorObserver);
+            mCursorObserverRegistered = true;
+        }
     }
 
     /**
-     * Set the adapter for this cursor; we'll notify it when our data changes
+     * Set the listener for this cursor; we'll notify it when our data changes
      */
-    public void setAdapter(CursorAdapter adapter) {
-        mAdapter = adapter;
+    public void setListener(ConversationListener listener) {
+        sListener = listener;
     }
 
     /**
@@ -134,6 +140,23 @@ public class ConversationCursor extends CursorWrapper {
     }
 
     /**
+     * Given a uri string (for the conversation), return its position in the cursor (0 based)
+     * @param uriString the uri string to locate
+     * @return the position of the row holding uriString, or -1 if not found
+     */
+    private static int getPositionFromUriString(String uriString) {
+        sConversationCursor.moveToFirst();
+        int pos = 0;
+        while (sConversationCursor.moveToNext()) {
+            if (sConversationCursor.getUriString().equals(uriString)) {
+                return pos;
+            }
+            pos++;
+        }
+        return -1;
+    }
+
+    /**
      * Cache a column name/value pair for a given Uri
      * @param uriString the Uri for which the column name/value pair applies
      * @param columnName the column name
@@ -149,11 +172,20 @@ public class ConversationCursor extends CursorWrapper {
         }
         // If we're caching a deletion, add to our count
         if ((columnName == DELETED_COLUMN) && (map.get(columnName) == null)) {
-            sDeletedCount++;
+           sDeletedCount++;
             if (DEBUG) {
                 Log.d(TAG, "Deleted " + uriString);
             }
-        }
+            // Tell the listener what we deleted
+            if (sListener != null) {
+                int pos = getPositionFromUriString(uriString);
+                if (pos >= 0) {
+                    ArrayList<Integer> positions = new ArrayList<Integer>();
+                    positions.add(pos);
+                    sListener.onDeletedItems(positions);
+                }
+            }
+         }
         // ContentValues has no generic "put", so we must test.  For now, the only classes of
         // values implemented are Boolean/Integer/String, though others are trivially added
         if (value instanceof Boolean) {
@@ -167,11 +199,13 @@ public class ConversationCursor extends CursorWrapper {
             throw new IllegalArgumentException("Value class not compatible with cache: " + cname);
         }
 
-        // Since we've changed the data, alert the adapter to redraw
-        mAdapter.notifyDataSetChanged();
         if (DEBUG && (columnName != DELETED_COLUMN)) {
             Log.d(TAG, "Caching value for " + uriString + ": " + columnName);
         }
+    }
+
+    private String getUriString() {
+        return super.getString(sUriColumnIndex);
     }
 
     /**
@@ -180,7 +214,7 @@ public class ConversationCursor extends CursorWrapper {
      * @return the cached value for this column, or null if there is none
      */
     private Object getCachedValue(int columnIndex) {
-        String uri = super.getString(mUriColumnIndex);
+        String uri = super.getString(sUriColumnIndex);
         ContentValues uriMap = sCacheMap.get(uri);
         if (uriMap != null) {
             String columnName;
@@ -195,17 +229,25 @@ public class ConversationCursor extends CursorWrapper {
     }
 
     /**
-     * When the underlying cursor changes, we want to force a requery to get the new provider data;
-     * the cache must also be reset here since it's no longer fresh
+     * When the underlying cursor changes, we want to alert the listener
      */
     private void underlyingChanged() {
-        super.requery();
-        resetCache();
+        if (sListener != null) {
+            if (mCursorObserverRegistered) {
+                mUnderlying.unregisterContentObserver(mCursorObserver);
+                mCursorObserverRegistered = false;
+            }
+            sListener.onNewSyncData();
+        }
     }
 
-    // We don't want to do anything when we get a requery, as our data is updated immediately from
-    // the UI and we detect changes on the underlying provider above
+    /**
+     * When we get a requery from the UI, we'll do it, but also clear the cache
+     * NOTE: This will have to change, of course, when we start using loaders...
+     */
     public boolean requery() {
+        super.requery();
+        resetCache();
         return true;
     }
 
@@ -330,7 +372,7 @@ public class ConversationCursor extends CursorWrapper {
     public String getString(int columnIndex) {
         // If we're asking for the Uri for the conversation list, we return a forwarding URI
         // so that we can intercept update/delete and handle it ourselves
-        if (columnIndex == mUriColumnIndex) {
+        if (columnIndex == sUriColumnIndex) {
             Uri uri = Uri.parse(super.getString(columnIndex));
             return uriToCachingUriString(uri);
         }
@@ -363,7 +405,6 @@ public class ConversationCursor extends CursorWrapper {
             }
             // It's not at all obvious to me why we must unregister/re-register after the requery
             // However, if we don't we'll only get one notification and no more...
-            mUnderlying.unregisterContentObserver(mCursorObserver);
             ConversationCursor.this.underlyingChanged();
         }
     }
@@ -468,5 +509,16 @@ public class ConversationCursor extends CursorWrapper {
             ProviderExecute.opUpdate(uri, values);
             return 0;
         }
+    }
+
+    /**
+     * For now, a single listener can be associated with the cursor, and for now we'll just
+     * notify on deletions
+     */
+    public interface ConversationListener {
+        // The UI has deleted items at the positions referenced in the array
+        public void onDeletedItems(ArrayList<Integer> positions);
+        // We've received new data from a sync (i.e. outside the UI)
+        public void onNewSyncData();
     }
 }

@@ -47,10 +47,13 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationSelectionSet.ConversationSetObserver;
 
+import java.util.ArrayList;
+
 public class ConversationListActivity extends Activity implements OnItemSelectedListener,
-        OnItemClickListener, ConversationSetObserver {
+        OnItemClickListener, ConversationSetObserver, ConversationListener {
 
     private ListView mListView;
     private ConversationItemAdapter mListAdapter;
@@ -138,7 +141,6 @@ public class ConversationListActivity extends Activity implements OnItemSelected
             super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null,
                     CursorAdapter.FLAG_AUTO_REQUERY | CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
             // UpdateCachingCursor needs to know about the adapter
-            cursor.setAdapter(this);
         }
 
         @Override
@@ -187,6 +189,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         mListAdapter = new ConversationItemAdapter(this, R.layout.conversation_item_view_normal,
                 conversationListCursor);
         mListView.setAdapter(mListAdapter);
+        conversationListCursor.setListener(this);
     }
 
     @Override
@@ -214,5 +217,20 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     @Override
     public void onSetChanged(ConversationSelectionSet set) {
         // Do nothing.
+    }
+
+    // ConversationListener implementation
+
+    @Override
+    public void onDeletedItems(ArrayList<Integer> positions) {
+        // For now, redraw the list
+        // Trigger of delete animation code would go here...
+        mListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onNewSyncData() {
+        // Refresh the query and redraw
+        mListAdapter.getCursor().requery();
     }
 }
