@@ -459,10 +459,6 @@ public class ConversationCursor extends CursorWrapper {
                 new Thread(new ProviderExecute(DELETE, uri)).start();
             }
 
-            static void opInsert(Uri uri, ContentValues values) {
-                new Thread(new ProviderExecute(INSERT, uri, values)).start();
-            }
-
             static void opUpdate(Uri uri, ContentValues values) {
                 new Thread(new ProviderExecute(UPDATE, uri, values)).start();
             }
@@ -483,10 +479,10 @@ public class ConversationCursor extends CursorWrapper {
             }
         }
 
+        // Synchronous for now; we'll revisit all this in a later design review
         @Override
         public Uri insert(Uri uri, ContentValues values) {
-            ProviderExecute.opInsert(uri, values);
-            return null;
+            return mResolver.insert(uri, values);
         }
 
         @Override
