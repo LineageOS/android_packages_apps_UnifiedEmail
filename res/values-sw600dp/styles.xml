@@ -54,14 +54,14 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:textColor">@color/compose_label_text</item>
         <item name="android:layout_gravity">center_vertical</item>
-     </style>
+    </style>
 
     <style name="RecipientComposeHeading" parent="@style/ComposeHeading">
         <item name="android:layout_marginRight">4dip</item>
         <item name="android:layout_marginTop">4dip</item>
         <item name="android:paddingLeft">0dip</item>
         <item name="android:layout_marginLeft">0dip</item>
-     </style>
+    </style>
 
     <style name="ComposeFieldLayout" parent="android:Widget.Holo.Light.EditText">
         <item name="android:layout_height">wrap_content</item>
@@ -82,8 +82,7 @@
         <item name="android:layout_width">332dip</item>
     </style>
 
-    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-    </style>
+    <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title"></style>
 
     <!-- Browse list item styles -->
     <style name="PersonalIndicatorStyle">
@@ -116,6 +115,10 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="ConversationListFade" parent="@android:attr/listViewWhiteStyle">
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+    </style>
+
     <style name="StarStyle">
         <item name="android:layout_marginRight">12dip</item>
         <item name="android:layout_marginTop">-6sp</item>
@@ -123,4 +126,5 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
     <!-- End browse list item styles -->
+
 </resources>

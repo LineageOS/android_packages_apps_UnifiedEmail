@@ -406,6 +406,9 @@
         <item quantity="other">Changed labels.</item>
     </plurals>
 
+    <!-- Search Results: Text for header that is shown above search results [CHAR LIMIT=30] -->
+    <string name="search_results_header">Results</string>
+
     <string name="searchMode" translate="false">Search Mode</string>
     <string name="searchConversationMode" translate="false">Search Conversation Mode</string>
     <string name="setBackButton" translate="false">Set Back Button</string>
@@ -413,6 +416,8 @@
     <string name="normalMode" translate="false">Set Normal Mode</string>
     <string name="searchResultMode" translate="false">Search Result Mode</string>
     <string name="labelMode" translate="false">Set Label Mode</string>
+    <!-- Search Results: Text for header that is shown above search results, while waiting for search results from the server [CHAR LIMIT=30] -->
+    <string name="search_results_searching_header">Searching\u2026</string>
 
     <!-- List header for recent labels for current account in account dropdown [CHAR LIMIT=100] -->
     <string name="recent_labels">Recent</string>

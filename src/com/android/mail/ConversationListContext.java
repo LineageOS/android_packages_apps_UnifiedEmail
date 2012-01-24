@@ -82,6 +82,16 @@ public class ConversationListContext {
     }
 
     /**
+     * Builds a context for a view to a Gmail folder. Note that folder may be null, in which case
+     * the context defaults to a view of the inbox.
+     */
+    private static ConversationListContext forFolder(
+            Context context, Account account, String folder) {
+        // Mock stuff for now.
+        return new ConversationListContext(account, null, folder);
+    }
+
+    /**
      * Resolves an intent and builds an appropriate context for it.
      */
     public static ConversationListContext forIntent
@@ -100,16 +110,6 @@ public class ConversationListContext {
     }
 
     /**
-     * Builds a context for a view to a Gmail folder. Note that folder may be null, in which case
-     * the context defaults to a view of the inbox.
-     */
-    private static ConversationListContext forFolder(
-            Context context, Account account, String folder) {
-        // Mock stuff for now.
-        return new ConversationListContext(account, null, folder);
-    }
-
-    /**
      * Internal constructor
      *
      * To create a class, use the static {@link #forIntent} or {@link #forBundle(Bundle)} method.
@@ -121,6 +121,14 @@ public class ConversationListContext {
         mAccount = account;
         mSearchQuery = searchQuery;
         mFolderName = folder;
+    }
+
+    /**
+     * Returns true if the current list is showing search results
+     * @return true if list is showing search results. False otherwise
+     */
+    public boolean isSearchResult() {
+        return false;
     }
 
     /**

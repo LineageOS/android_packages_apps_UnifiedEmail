@@ -17,6 +17,7 @@
 -->
 
 <resources>
+
     <dimen name="account_dropdown_item_height">48dip</dimen>
     <dimen name="wide_senders_font_size">16sp</dimen>
     <dimen name="wide_subject_font_size">16sp</dimen>
@@ -53,8 +54,10 @@
     <dimen name="message_header_action_button_width">48dip</dimen>
     <dimen name="message_header_title_container_margin_right">16dip</dimen>
     <dimen name="message_header_padding_right">0dip</dimen>
+    <dimen name="notification_view_height">36dip</dimen>
     <dimen name="contact_photo_width">48sp</dimen>
     <dimen name="contact_photo_height">48sp</dimen>
     <dimen name="message_header_inner_side_padding">8dip</dimen>
     <dimen name="attachment_toast_yoffset">-100dip</dimen>
+
 </resources>
