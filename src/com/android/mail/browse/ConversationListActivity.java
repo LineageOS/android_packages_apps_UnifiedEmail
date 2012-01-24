@@ -41,14 +41,15 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.android.mail.R;
-import com.android.mail.ViewMode;
+import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.browse.ConversationCursor.ConversationListener;
-import com.android.mail.browse.ConversationSelectionSet.ConversationSetObserver;
+import com.android.mail.ui.ConversationSelectionSet;
+import com.android.mail.ui.ConversationSetObserver;
+import com.android.mail.ui.ViewMode;
 
 import java.util.ArrayList;
 
@@ -203,12 +204,12 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     }
 
     @Override
-    public void onSetEmpty(ConversationSelectionSet set) {
+    public void onSetEmpty() {
         mSelectedConversationsActionMenu = null;
     }
 
     @Override
-    public void onSetBecomeUnempty(ConversationSelectionSet set) {
+    public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(this,
                 mBatchConversations);
         mSelectedConversationsActionMenu.activate();

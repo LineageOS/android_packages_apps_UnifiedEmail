@@ -18,9 +18,10 @@
 package com.android.mail;
 
 import com.android.mail.browse.ConversationListActivity;
-import com.android.mail.browse.ActionbarActivity;
 import com.android.mail.browse.FolderItem;
 import com.android.mail.compose.ComposeActivity;
+import com.android.mail.ui.ActionbarActivity;
+import com.android.mail.ui.MailActivity;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -55,5 +56,13 @@ public class UnifiedEmail extends Activity {
 
     public void actionbarTest(View v){
         startActivityWithClass(ActionbarActivity.class);
+    }
+
+    /**
+     * Try out the real mail activity now.
+     * @param v
+     */
+    public void unifiedMail(View v){
+        startActivityWithClass(MailActivity.class);
     }
 }

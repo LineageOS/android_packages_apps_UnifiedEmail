@@ -47,12 +47,13 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.mail.R;
-import com.android.mail.ViewMode;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.ui.ConversationSelectionSet;
+import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
 
 public class ConversationItemView extends View {

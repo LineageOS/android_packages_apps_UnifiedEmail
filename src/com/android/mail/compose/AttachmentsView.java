@@ -81,6 +81,7 @@ class AttachmentsView extends LinearLayout {
             new AttachmentComposeView(getContext(), attachment);
 
         attachmentView.addDeleteListener(new OnClickListener() {
+            @Override
             public void onClick(View v) {
                 deleteAttachment(attachmentView, attachment);
             }

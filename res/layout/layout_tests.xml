@@ -45,5 +45,10 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:onClick="actionbarTest"/>
+        <Button
+            android:text="@string/test_application"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:onClick="unifiedMail"/>
     </LinearLayout>
 </ScrollView>

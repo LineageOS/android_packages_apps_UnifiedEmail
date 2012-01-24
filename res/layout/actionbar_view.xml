@@ -20,7 +20,7 @@
      The custom action bar view Gmail uses (containing drop down account spinner,
     label, and subject).
 -->
-<com.android.mail.MailActionBar xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.mail.ui.MailActionBar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:email="http://schemas.android.com/apk/res/com.android.mail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,4 +36,4 @@
 
     <include layout="@layout/actionbar_subject" />
 
-</com.android.mail.MailActionBar>
+</com.android.mail.ui.MailActionBar>

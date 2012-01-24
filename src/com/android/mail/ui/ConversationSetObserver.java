@@ -29,10 +29,9 @@ public interface ConversationSetObserver {
     // implementation, the observers can wreck the selection set unknowingly!!
 
     /**
-     * Called when the selection set becomes empty. The observer should not make any
-     * modifications to the set while handling this event.
+     * Called when the selection set becomes empty.
      */
-    void onSetEmpty(ConversationSelectionSet set);
+    void onSetEmpty();
 
     /**
      * Handle when the selection set is populated with some items. The observer should not make any

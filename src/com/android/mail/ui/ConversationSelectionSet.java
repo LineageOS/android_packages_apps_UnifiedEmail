@@ -23,14 +23,10 @@ import com.google.common.collect.Lists;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.android.mail.ConversationInfo;
-import com.android.mail.providers.Folder;
-
+import com.android.mail.providers.Conversation;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A simple thread-safe wrapper over a set of conversations representing a
@@ -40,8 +36,29 @@ import java.util.Map;
  * responding to change events.
  */
 public class ConversationSelectionSet implements Parcelable {
-    private final HashMap<Long, ConversationInfo> mInternalMap =
-            new HashMap<Long, ConversationInfo>();
+    public static final Parcelable.Creator<ConversationSelectionSet> CREATOR =
+            new Parcelable.Creator<ConversationSelectionSet>() {
+
+        @Override
+        public ConversationSelectionSet createFromParcel(Parcel source) {
+            ConversationSelectionSet result = new ConversationSelectionSet();
+            Parcelable[] conversations = source.readParcelableArray(
+                            Conversation.class.getClassLoader());
+            for (Parcelable parceled : conversations) {
+                        Conversation conversation = (Conversation) parceled;
+                        result.put(conversation.id, conversation);
+            }
+            return result;
+        }
+
+        @Override
+        public ConversationSelectionSet[] newArray(int size) {
+            return new ConversationSelectionSet[size];
+        }
+    };
+
+    private final HashMap<Long, Conversation> mInternalMap =
+            new HashMap<Long, Conversation>();
 
     @VisibleForTesting
     final ArrayList<ConversationSetObserver> mObservers = new ArrayList<ConversationSetObserver>();
@@ -55,13 +72,33 @@ public class ConversationSelectionSet implements Parcelable {
         mObservers.add(observer);
     }
 
-    /**
-     * Unregisters an observer for change events.
-     *
-     * @param observer the observer to unregister.
-     */
-    public synchronized void removeObserver(ConversationSetObserver observer) {
-        mObservers.remove(observer);
+    /** @see java.util.HashMap#clear */
+    public synchronized void clear() {
+        boolean initiallyNotEmpty = !mInternalMap.isEmpty();
+        mInternalMap.clear();
+
+        if (mInternalMap.isEmpty() && initiallyNotEmpty) {
+            ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
+            dispatchOnChange(observersCopy);
+            dispatchOnEmpty(observersCopy);
+        }
+    }
+
+    /** @see java.util.HashMap#containsKey */
+    private synchronized boolean containsKey(Long key) {
+        return mInternalMap.containsKey(key);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    private synchronized void dispatchOnBecomeUnempty(
+            ArrayList<ConversationSetObserver> observers) {
+        for (ConversationSetObserver observer : observers) {
+            observer.onSetPopulated(this);
+        }
     }
 
     private synchronized void dispatchOnChange(ArrayList<ConversationSetObserver> observers) {
@@ -74,24 +111,25 @@ public class ConversationSelectionSet implements Parcelable {
 
     private synchronized void dispatchOnEmpty(ArrayList<ConversationSetObserver> observers) {
         for (ConversationSetObserver observer : observers) {
-            observer.onSetEmpty(this);
-        }
-    }
-
-    private synchronized void dispatchOnBecomeUnempty(
-            ArrayList<ConversationSetObserver> observers) {
-        for (ConversationSetObserver observer : observers) {
-            observer.onSetPopulated(this);
+            observer.onSetEmpty();
         }
     }
 
     /** @see java.util.HashMap#get */
-    private synchronized ConversationInfo get(Long id) {
+    private synchronized Conversation get(Long id) {
         return mInternalMap.get(id);
     }
 
+    /**
+     * Is this conversation set empty?
+     * @return true if the conversation selection set is empty. False otherwise.
+     */
+    public synchronized boolean isEmpty() {
+        return mInternalMap.isEmpty();
+    }
+
     /** @see java.util.HashMap#put */
-    private synchronized void put(Long id, ConversationInfo info) {
+    private synchronized void put(Long id, Conversation info) {
         boolean initiallyEmpty = mInternalMap.isEmpty();
         mInternalMap.put(id, info);
 
@@ -114,99 +152,42 @@ public class ConversationSelectionSet implements Parcelable {
         }
     }
 
+    /**
+     * Unregisters an observer for change events.
+     *
+     * @param observer the observer to unregister.
+     */
+    public synchronized void removeObserver(ConversationSetObserver observer) {
+        mObservers.remove(observer);
+    }
+
     /** @see java.util.HashMap#size */
-    private synchronized int size() {
+    public synchronized int size() {
         return mInternalMap.size();
     }
 
-    /** @see java.util.HashMap#values */
-    private synchronized Collection<ConversationInfo> values() {
-        return mInternalMap.values();
-    }
-
-    /** @see java.util.HashMap#containsKey */
-    private synchronized boolean containsKey(Long key) {
-        return mInternalMap.containsKey(key);
-    }
-
-    /** @see java.util.HashMap#clear */
-    private synchronized void clear() {
-        boolean initiallyNotEmpty = !mInternalMap.isEmpty();
-        mInternalMap.clear();
-
-        if (mInternalMap.isEmpty() && initiallyNotEmpty) {
-            ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
-            dispatchOnChange(observersCopy);
-            dispatchOnEmpty(observersCopy);
-        }
-    }
-
     /**
-     * Determines the set of labels associated with the selected conversations.
-     * If the set of labels differ between the conversations, it will return the
-     * set by the first one in the iterator order.
-     *
-     * @return the set of labels associated with the selection set.
+     * Toggle a checkmark for the given conversation.
+     * @param conversation
      */
-    public synchronized Map<String, Folder> getFolders() {
-        if (mInternalMap.isEmpty()) {
-            return Collections.emptyMap();
+    public void toggle(Conversation conversation) {
+        long conversationId = conversation.id;
+        if (containsKey(conversationId)) {
+            remove(conversationId);
         } else {
-            return mInternalMap.values().iterator().next().getFolders();
+            put(conversationId, conversation);
         }
+
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    /** @see java.util.HashMap#values */
+    public synchronized Collection<Conversation> values() {
+        return mInternalMap.values();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        ConversationInfo[] values = values().toArray(new ConversationInfo[size()]);
+        Conversation[] values = values().toArray(new Conversation[size()]);
         dest.writeParcelableArray(values, flags);
     }
-
-    public static final Parcelable.Creator<ConversationSelectionSet> CREATOR =
-            new Parcelable.Creator<ConversationSelectionSet>() {
-
-        @Override
-        public ConversationSelectionSet createFromParcel(Parcel source) {
-            ConversationSelectionSet result = new ConversationSelectionSet();
-            Parcelable[] conversations = source.readParcelableArray(
-                    ConversationInfo.class.getClassLoader());
-            for (Parcelable parceled : conversations) {
-                ConversationInfo conversation = (ConversationInfo) parceled;
-                result.put(conversation.getConversationId(), conversation);
-            }
-            return result;
-        }
-
-        @Override
-        public ConversationSelectionSet[] newArray(int size) {
-            return new ConversationSelectionSet[size];
-        }
-    };
-
-    /**
-     * Toggles the given conversation in the selection set.
-     */
-     public synchronized void toggle(long conversationId, long maxMessageId,
-             Map<String, Folder> folders) {
-         if (containsKey(conversationId)) {
-             remove(conversationId);
-         } else {
-             put(conversationId, new ConversationInfo(conversationId, maxMessageId, folders));
-         }
-     }
-
-     /**
-      * Updates the label a given conversation in the set may have.
-      */
-     public synchronized void onLabelChanged(Folder folders, long conversationId, boolean added) {
-         if (containsKey(conversationId)) {
-             ConversationInfo info = get(conversationId);
-             info.updateFolder(folders, added);
-         }
-     }
 }

@@ -26,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import com.android.mail.ViewMode;
 
 /**
  * This is the root activity container that holds the left navigation fragment
@@ -34,6 +33,10 @@ import com.android.mail.ViewMode;
  * conversation list or a conversation view).
  */
 public class MailActivity extends AbstractMailActivity {
+    // TODO(viki) This class lacks: Conversation Position tracking
+    // TODO(viki) This class lacks: What's New dialog
+    // TODO(viki) This class lacks: Sync Window Upgrade dialog
+
     /**
      * The activity controller to which we delegate most Activity lifecycle events.
      */
@@ -43,6 +46,13 @@ public class MailActivity extends AbstractMailActivity {
      */
     private ViewMode mViewMode;
 
+    /**
+     * A clean launch is when the activity is not resumed. We want to show a "What's New" dialog
+     * on a clean launch: when the user started the Activity by tapping on the icon: not when he
+     * selected "Up" from compose, not when he resumed the activity, etc.
+     */
+    private boolean mLaunchedCleanly = false;
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         // TODO(viki): Why is there a check for null only in in this method?
@@ -51,6 +61,11 @@ public class MailActivity extends AbstractMailActivity {
             mController.dispatchTouchEvent(ev);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public ConversationSelectionSet getBatchConversations() {
+        return mController.getBatchConversations();
     }
 
     @Override
@@ -93,12 +108,14 @@ public class MailActivity extends AbstractMailActivity {
         // activity launched directly from a send-to intent. (in that case the
         // action is null.)
         if (savedState == null && intent.getAction() != null) {
+            mLaunchedCleanly = true;
         }
     }
 
     @Override
     public Dialog onCreateDialog(int id, Bundle bundle) {
         Dialog dialog = mController.onCreateDialog(id, bundle);
+        // TODO(viki): Handle what's new and the sync window upgrade dialog here.
         return dialog == null ? super.onCreateDialog(id, bundle) : dialog;
     }
 
@@ -144,7 +161,6 @@ public class MailActivity extends AbstractMailActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         mController.onSaveInstanceState(outState);
     }
 
@@ -157,8 +173,9 @@ public class MailActivity extends AbstractMailActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        // TODO(viki): Show a "what's new screen"
+        if (mLaunchedCleanly) {
+            // TODO(viki): Show a "what's new screen"
+        }
     }
 
     @Override

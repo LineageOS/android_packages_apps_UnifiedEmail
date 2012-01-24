@@ -17,7 +17,10 @@
 
 package com.android.mail.ui;
 
-import com.android.mail.ViewMode;
+import android.os.Bundle;
+import android.view.Window;
+
+import com.android.mail.R;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -25,8 +28,7 @@ import com.android.mail.ViewMode;
  */
 
 // Called OnePaneActivityController in Gmail.
-public class OnePaneController extends AbstractActivityController {
-
+public final class OnePaneController extends AbstractActivityController {
     /**
      * @param activity
      * @param viewMode
@@ -36,4 +38,19 @@ public class OnePaneController extends AbstractActivityController {
         // TODO(viki): Auto-generated constructor stub
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // Request opaque actionbar
+        mActivity.getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        // Set 1-pane content view.
+        mActivity.setContentView(R.layout.one_pane_activity);
+
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected boolean isConversationListVisible() {
+        // TODO(viki): Auto-generated method stub
+        return false;
+    }
 }

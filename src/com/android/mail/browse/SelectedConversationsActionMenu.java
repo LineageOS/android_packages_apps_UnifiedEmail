@@ -18,8 +18,9 @@
 package com.android.mail.browse;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationSelectionSet.ConversationSetObserver;
 import com.android.mail.providers.Conversation;
+import com.android.mail.ui.ConversationSelectionSet;
+import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -124,12 +125,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     @Override
-    public void onSetBecomeUnempty(ConversationSelectionSet set) {
+    public void onSetPopulated(ConversationSelectionSet set) {
         // Noop. This object can only exist while the set is non-empty.
     }
 
     @Override
-    public void onSetEmpty(ConversationSelectionSet set) {
+    public void onSetEmpty() {
         destroy();
     }
 
@@ -185,7 +186,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      */
     public void destroy() {
         deactivate();
-
         mSelectionSet.removeObserver(this);
         mSelectionSet.clear();
     }

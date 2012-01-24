@@ -33,12 +33,12 @@ public interface MenuCallback extends HelpCallback {
     /**
      * Invoked whenever a label is added or removed.
      */
-    void onLabelChanged(Folder label, long conversationId, boolean added);
+    void onFolderChanged(Folder label, long conversationId, boolean added);
 
     /**
      * Invoked once all the modifications on the labels have been performed.
      */
-    void doneChangingLabels(FolderOperations labelOperations);
+    void doneChangingFolders(FolderOperations labelOperations);
 
     /**
      * Invoked when the user requests search mode

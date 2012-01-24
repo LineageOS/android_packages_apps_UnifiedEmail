@@ -17,28 +17,25 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.ui.ViewMode.Mode;
 
 /**
- * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
- * limited.
+ * A controllable activity is an Activity that has a Controller attached. This activity must be
+ * able to attach the various view fragments and delegate the method calls between them.
  */
-
-// Called OnePaneActivityController in Gmail.
-public final class TwoPaneController extends AbstractActivityController {
+public interface ControllableActivity extends HelpCallback, RestrictedActivity {
+    /**
+     * Returns the conversations selected by the user for performing a batch action like archive,
+     * delete, etc.
+     * @return conversations selected
+     */
+    ConversationSelectionSet getBatchConversations();
 
     /**
-     * @param activity
-     * @param viewMode
+     * Returns the mode that the activity is currently in.
+     * @see com.android.mail.ui.ViewMode.Mode
+     * @return the mode the activity is currently in.
      */
-    public TwoPaneController(MailActivity activity, ViewMode viewMode) {
-        super(activity, viewMode);
-        // TODO(viki): Auto-generated constructor stub
-    }
-
-    @Override
-    protected boolean isConversationListVisible() {
-        // TODO(viki): Auto-generated method stub
-        return false;
-    }
+    Mode getViewMode();
 
 }

@@ -27,7 +27,7 @@ import android.view.View.MeasureSpec;
 import android.view.ViewParent;
 import android.widget.TextView;
 import com.android.mail.R;
-import com.android.mail.ViewMode;
+import com.android.mail.ui.ViewMode;
 
 /**
  * Represents the coordinates of elements inside a CanvasConversationHeaderView

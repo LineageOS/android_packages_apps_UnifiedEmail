@@ -15,7 +15,7 @@
  *      limitations under the License.
  *******************************************************************************/
 
-package com.android.mail;
+package com.android.mail.ui;
 
 import android.app.ActionBar;
 import android.os.Bundle;
@@ -54,9 +54,9 @@ public interface ActionBarView {
          */
         SEARCH_RESULTS,
         /**
-         * Viewing a list of labels
+         * Viewing a list of folders
          */
-        LABEL,
+        FOLDER,
         /**
          * Viewing a conversation from search results
          */
@@ -118,10 +118,10 @@ public interface ActionBarView {
     void updateActionBar(String[] mAccountNames, String currentAccount);
 
     /**
-     * Update the label that the user is currently viewing??
-     * @param label
+     * Update the folder that the user is currently viewing??
+     * @param folder
      */
-    void setLabel(String label);
+    void setFolder(String folder);
 
     /**
      * Returns the menu ID for the menu in this actionbar.
