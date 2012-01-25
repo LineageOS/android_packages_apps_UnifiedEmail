@@ -306,7 +306,7 @@ public class ConversationItemView extends View {
             mHeader.fontColor = fontColor;
         }
 
-        boolean isUnread = true;
+        boolean isUnread = mHeader.unread;
 
         final boolean checkboxEnabled = true;
         if (mHeader.checkboxVisible != checkboxEnabled) {
@@ -648,7 +648,7 @@ public class ConversationItemView extends View {
         // Senders.
         sPaint.setTextSize(mCoordinates.sendersFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
-        boolean isUnread = true;
+        boolean isUnread = mHeader.unread;
         int sendersColor = getFontColor(isUnread ? SENDERS_TEXT_COLOR_UNREAD
                 : SENDERS_TEXT_COLOR_READ);
         sPaint.setColor(sendersColor);

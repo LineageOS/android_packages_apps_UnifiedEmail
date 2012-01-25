@@ -46,6 +46,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.ViewMode;
@@ -200,6 +201,11 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Conversation conv = ((ConversationItemView) view).getConversation();
         ConversationViewActivity.viewConversation(this, conv, mSelectedAccount);
+        // Quick and dirty flag change
+        if (!conv.read) {
+            conv.read = true;
+            conv.updateBoolean(this, ConversationColumns.READ, true);
+        }
     }
 
     @Override
@@ -226,6 +232,14 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         // For now, redraw the list
         // Trigger of delete animation code would go here...
         mListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onChangedItems(String columnName, ArrayList<Integer> positions) {
+        // For now, redraw the list if change in read; remember that starred is redrawn elsewhere
+        if (columnName.equals(ConversationColumns.READ)) {
+            mListAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

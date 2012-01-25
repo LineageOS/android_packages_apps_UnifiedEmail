@@ -18,14 +18,19 @@
 package com.android.mail.browse;
 
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.RemoteException;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -58,6 +63,8 @@ public class ConversationCursor extends CursorWrapper {
     private static int sUriColumnIndex;
     // The listener registered for this cursor
     private static ConversationListener sListener;
+    // The ConversationProvider instance
+    private static ConversationProvider sProvider;
 
     // The cursor underlying the caching cursor
     private final Cursor mUnderlying;
@@ -156,12 +163,25 @@ public class ConversationCursor extends CursorWrapper {
         return -1;
     }
 
+    private static ArrayList<Integer> getPositionsFromUriString(String uriString) {
+        int pos = getPositionFromUriString(uriString);
+        if (pos >= 0) {
+            ArrayList<Integer> positions = new ArrayList<Integer>();
+            positions.add(pos);
+            return positions;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Cache a column name/value pair for a given Uri
      * @param uriString the Uri for which the column name/value pair applies
      * @param columnName the column name
      * @param value the value to be cached
      */
+    // TODO: Process multiple items at the same time so that listener will get fewer pings
+    // TODO: Don't calculate position like this; we should know it somehow (from the UI)
     private static void cacheValue(String uriString, String columnName, Object value) {
         // Get the map for our uri
         ContentValues map = sCacheMap.get(uriString);
@@ -170,22 +190,20 @@ public class ConversationCursor extends CursorWrapper {
             map = new ContentValues();
             sCacheMap.put(uriString, map);
         }
+        ArrayList<Integer> positions = getPositionsFromUriString(uriString);
         // If we're caching a deletion, add to our count
         if ((columnName == DELETED_COLUMN) && (map.get(columnName) == null)) {
-           sDeletedCount++;
+            sDeletedCount++;
             if (DEBUG) {
                 Log.d(TAG, "Deleted " + uriString);
             }
             // Tell the listener what we deleted
-            if (sListener != null) {
-                int pos = getPositionFromUriString(uriString);
-                if (pos >= 0) {
-                    ArrayList<Integer> positions = new ArrayList<Integer>();
-                    positions.add(pos);
-                    sListener.onDeletedItems(positions);
-                }
+            if (sListener != null && positions != null) {
+                sListener.onDeletedItems(positions);
             }
-         }
+        } else if (sListener != null && positions != null) {
+            sListener.onChangedItems(columnName, positions);
+        }
         // ContentValues has no generic "put", so we must test.  For now, the only classes of
         // values implemented are Boolean/Integer/String, though others are trivially added
         if (value instanceof Boolean) {
@@ -419,9 +437,12 @@ public class ConversationCursor extends CursorWrapper {
      * will cause a redraw of the list with updated values.
      */
     public static class ConversationProvider extends ContentProvider {
+        public static final String AUTHORITY = sAuthority;
+
         @Override
         public boolean onCreate() {
-            return false;
+            sProvider = this;
+            return true;
         }
 
         @Override
@@ -459,55 +480,171 @@ public class ConversationCursor extends CursorWrapper {
                 this(code, uri, null);
             }
 
-            static void opDelete(Uri uri) {
-                new Thread(new ProviderExecute(DELETE, uri)).start();
+            static Uri opInsert(Uri uri, ContentValues values) {
+                ProviderExecute e = new ProviderExecute(INSERT, uri, values);
+                if (offUiThread()) return (Uri)e.go();
+                new Thread(e).start();
+                return null;
             }
 
-            static void opUpdate(Uri uri, ContentValues values) {
-                new Thread(new ProviderExecute(UPDATE, uri, values)).start();
+            static int opDelete(Uri uri) {
+                ProviderExecute e = new ProviderExecute(DELETE, uri);
+                if (offUiThread()) return (Integer)e.go();
+                new Thread(new ProviderExecute(DELETE, uri)).start();
+                return 0;
+            }
+
+            static int opUpdate(Uri uri, ContentValues values) {
+                ProviderExecute e = new ProviderExecute(UPDATE, uri, values);
+                if (offUiThread()) return (Integer)e.go();
+                new Thread(e).start();
+                return 0;
             }
 
             @Override
             public void run() {
+                go();
+            }
+
+            public Object go() {
                 switch(mCode) {
                     case DELETE:
-                        mResolver.delete(mUri, null, null);
-                        break;
+                        return mResolver.delete(mUri, null, null);
                     case INSERT:
-                        mResolver.insert(mUri, mValues);
-                        break;
+                        return mResolver.insert(mUri, mValues);
                     case UPDATE:
-                        mResolver.update(mUri,  mValues, null, null);
-                        break;
+                        return mResolver.update(mUri,  mValues, null, null);
+                    default:
+                        return null;
                 }
             }
         }
 
-        // Synchronous for now; we'll revisit all this in a later design review
+        private void insertLocal(Uri uri, ContentValues values) {
+            // Placeholder for now; there's no local insert
+        }
+
         @Override
         public Uri insert(Uri uri, ContentValues values) {
-            return mResolver.insert(uri, values);
+            insertLocal(uri, values);
+            return ProviderExecute.opInsert(uri, values);
+        }
+
+        private void deleteLocal(Uri uri) {
+            Uri underlyingUri = uriFromCachingUri(uri);
+            String uriString = underlyingUri.toString();
+            cacheValue(uriString, DELETED_COLUMN, true);
         }
 
         @Override
         public int delete(Uri uri, String selection, String[] selectionArgs) {
+            deleteLocal(uri);
             Uri underlyingUri = uriFromCachingUri(uri);
             String uriString = underlyingUri.toString();
             cacheValue(uriString, DELETED_COLUMN, true);
-            ProviderExecute.opDelete(uri);
-            return 0;
+            return ProviderExecute.opDelete(uri);
         }
 
-        @Override
-        public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+       private void updateLocal(Uri uri, ContentValues values) {
             Uri underlyingUri = uriFromCachingUri(uri);
             // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
             String uriString =  Uri.decode(underlyingUri.toString());
             for (String columnName: values.keySet()) {
                 cacheValue(uriString, columnName, values.get(columnName));
             }
-            ProviderExecute.opUpdate(uri, values);
-            return 0;
+        }
+
+        @Override
+        public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+            updateLocal(uri, values);
+            return ProviderExecute.opUpdate(uri, values);
+        }
+
+        static boolean offUiThread() {
+            return Looper.getMainLooper().getThread() != Thread.currentThread();
+        }
+
+        public ContentProviderResult[] apply(ArrayList<ConversationOperation> ops) {
+            final HashMap<String, ArrayList<ContentProviderOperation>> batchMap =
+                    new HashMap<String, ArrayList<ContentProviderOperation>>();
+            for (ConversationOperation op: ops) {
+                Uri underlyingUri = uriFromCachingUri(op.mUri);
+                String authority = underlyingUri.getAuthority();
+                ArrayList<ContentProviderOperation> authOps = batchMap.get(authority);
+                if (authOps == null) {
+                    authOps = new ArrayList<ContentProviderOperation>();
+                    batchMap.put(authority, authOps);
+                }
+                authOps.add(op.execute(underlyingUri));
+            }
+            for (String authority: batchMap.keySet()) {
+                try {
+                    if (offUiThread()) {
+                        return mResolver.applyBatch(authority, batchMap.get(authority));
+                    } else {
+                        final String auth = authority;
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    mResolver.applyBatch(auth, batchMap.get(auth));
+                                } catch (RemoteException e) {
+                                } catch (OperationApplicationException e) {
+                                }
+                           }
+                        }).start();
+                        return new ContentProviderResult[ops.size()];
+                    }
+                } catch (RemoteException e) {
+                } catch (OperationApplicationException e) {
+                }
+            }
+            // Need to put together the results; ugh, in order
+            return null;
+        }
+    }
+
+    /**
+     * ConversationOperation is the encapsulation of a ContentProvider operation to be performed
+     * atomically as part of a "batch" operation.
+     */
+    public static class ConversationOperation {
+        public static final int DELETE = 0;
+        public static final int INSERT = 1;
+        public static final int UPDATE = 2;
+
+        private final int mType;
+        private final Uri mUri;
+        private final ContentValues mValues;
+
+        public ConversationOperation(int type, Uri uri) {
+            this(type, uri, null);
+        }
+
+        public ConversationOperation(int type, Uri uri, ContentValues values) {
+            mType = type;
+            mUri = uri;
+            mValues = values;
+        }
+
+        private ContentProviderOperation execute(Uri underlyingUri) {
+            switch(mType) {
+                case DELETE:
+                    sProvider.deleteLocal(mUri);
+                    return ContentProviderOperation.newDelete(underlyingUri).build();
+                case UPDATE:
+                    sProvider.updateLocal(mUri, mValues);
+                    return ContentProviderOperation.newUpdate(underlyingUri)
+                            .withValues(mValues)
+                            .build();
+                case INSERT:
+                    sProvider.insertLocal(mUri, mValues);
+                    return ContentProviderOperation.newInsert(underlyingUri)
+                            .withValues(mValues).build();
+                default:
+                    throw new UnsupportedOperationException(
+                            "No such ConversationOperation type: " + mType);
+            }
         }
     }
 
@@ -518,6 +655,8 @@ public class ConversationCursor extends CursorWrapper {
     public interface ConversationListener {
         // The UI has deleted items at the positions referenced in the array
         public void onDeletedItems(ArrayList<Integer> positions);
+        // The UI has changeditems at the positions referenced in the array
+        public void onChangedItems(String columnName, ArrayList<Integer> positions);
         // We've received new data from a sync (i.e. outside the UI)
         public void onNewSyncData();
     }

@@ -16,12 +16,19 @@
 
 package com.android.mail.providers;
 
+import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.android.mail.browse.ConversationCursor.ConversationOperation;
+import com.android.mail.browse.ConversationCursor.ConversationProvider;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class Conversation implements Parcelable {
 
@@ -121,15 +128,74 @@ public class Conversation implements Parcelable {
 
     // Below are methods that update Conversation data (update/delete)
 
+    /**
+     * Update a boolean column for a single conversation
+     * @param context the caller's context
+     * @param columnName the column to update
+     * @param value the new value
+     */
     public void updateBoolean(Context context, String columnName, boolean value) {
-        // For now, synchronous
         ContentValues cv = new ContentValues();
         cv.put(columnName, value);
         context.getContentResolver().update(messageListUri, cv, null, null);
     }
 
+    /**
+     * Update a boolean column for a group of conversations, immediately in the UI and in a single
+     * transaction in the underlying provider
+     * @param conversations a collection of conversations
+     * @param context the caller's context
+     * @param columnName the column to update
+     * @param value the new value
+     */
+    public static void updateBoolean(Context context, Collection<Conversation> conversations,
+            String columnName, boolean value) {
+        ContentValues cv = new ContentValues();
+        cv.put(columnName, value);
+        ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+        for (Conversation conv: conversations) {
+            ConversationOperation op =
+                    new ConversationOperation(ConversationOperation.UPDATE, conv.messageListUri,
+                            cv);
+            ops.add(op);
+        }
+        apply(context, ops);
+    }
+
+    /**
+     * Delete a single conversation
+     * @param context the caller's context
+     */
     public void delete(Context context) {
-        // For now, synchronous
         context.getContentResolver().delete(messageListUri, null, null);
     }
+
+    /**
+     * Delete a group of conversations immediately in the UI and in a single transaction in the
+     * underlying provider
+     * @param context the caller's context
+     * @param conversations a collection of conversations
+     */
+    public static void delete(Context context, Collection<Conversation> conversations) {
+        ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+        for (Conversation conv: conversations) {
+            ConversationOperation op =
+                    new ConversationOperation(ConversationOperation.DELETE, conv.messageListUri);
+            ops.add(op);
+        }
+        apply(context, ops);
+    }
+
+    // Convenience methods
+    private static void apply(Context context, ArrayList<ConversationOperation> operations) {
+        ContentProviderClient client =
+                context.getContentResolver().acquireContentProviderClient(
+                        ConversationProvider.AUTHORITY);
+        try {
+            ConversationProvider cp = (ConversationProvider)client.getLocalContentProvider();
+            cp.apply(operations);
+        } finally {
+            client.release();
+        }
+    }    
 }

@@ -19,12 +19,14 @@ package com.android.mail.browse;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import android.app.Activity;
 import android.content.Context;
@@ -67,11 +69,27 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         boolean handled = true;
+        Collection<Conversation> conversations = mSelectionSet.values();
         switch (item.getItemId()) {
             case R.id.delete:
-                Collection<Conversation> conversations = mSelectionSet.values();
-                for (Conversation conv : conversations) {
-                    conv.delete(mActivity);
+                Conversation.delete(mActivity, conversations);
+                mSelectionSet.clear();
+                break;
+            case R.id.read_unread:
+                Iterator<Conversation> it = conversations.iterator();
+                if (it.hasNext()) {
+                    Conversation conv = (Conversation)it.next();
+                    // Is this right?  I'm guessing they must all be in the same state
+                    boolean read = conv.read;
+                    Conversation.updateBoolean(mActivity, conversations, ConversationColumns.READ,
+                            !read);
+                }
+                mSelectionSet.clear();
+                break;
+            case R.id.star:
+                if (conversations.size() > 0) {
+                     Conversation.updateBoolean(mActivity, conversations,
+                             ConversationColumns.STARRED, true);
                 }
                 mSelectionSet.clear();
                 break;

@@ -57,6 +57,8 @@ public class ConversationItemViewModel {
 
     // Star
     boolean starred;
+    // Unread
+    boolean unread;
 
     Bitmap starBitmap;
 
@@ -123,6 +125,7 @@ public class ConversationItemViewModel {
             Conversation conv = Conversation.from(cursor);
             header.conversation = conv;
             header.starred = conv.starred;
+            header.unread = !conv.read;
         }
         return header;
     }
