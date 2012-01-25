@@ -85,7 +85,7 @@ public class ConversationSelectionSet implements Parcelable {
     }
 
     /** @see java.util.HashMap#containsKey */
-    private synchronized boolean containsKey(Long key) {
+    public synchronized boolean containsKey(Long key) {
         return mInternalMap.containsKey(key);
     }
 

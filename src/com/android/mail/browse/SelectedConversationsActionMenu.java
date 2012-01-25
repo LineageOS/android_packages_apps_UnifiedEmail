@@ -73,6 +73,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 for (Conversation conv : conversations) {
                     conv.delete(mActivity);
                 }
+                mSelectionSet.clear();
                 break;
             default:
                 handled = false;

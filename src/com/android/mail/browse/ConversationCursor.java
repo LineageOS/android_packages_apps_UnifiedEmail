@@ -178,7 +178,7 @@ public class ConversationCursor extends CursorWrapper {
             }
             // Tell the listener what we deleted
             if (sListener != null) {
-                int pos = getPositionFromUriString(uriString);
+                int pos = 0; //getPositionFromUriString(uriString);
                 if (pos >= 0) {
                     ArrayList<Integer> positions = new ArrayList<Integer>();
                     positions.add(pos);

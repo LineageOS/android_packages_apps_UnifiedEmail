@@ -296,7 +296,8 @@ public class ConversationItemView extends View {
 
     private void calculateTextsAndBitmaps() {
         startTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
-
+        mChecked = mSelectedConversationSet != null
+                && mSelectedConversationSet.containsKey(mHeader.conversation.id);
         // Update font color.
         int fontColor = getFontColor(DEFAULT_TEXT_COLOR);
         boolean fontChanged = false;
