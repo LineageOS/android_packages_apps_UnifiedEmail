@@ -145,7 +145,7 @@ public class ConversationCursor extends CursorWrapper {
      * @return the position of the row holding uriString, or -1 if not found
      */
     private static int getPositionFromUriString(String uriString) {
-        sConversationCursor.moveToFirst();
+        sConversationCursor.moveBeforeFirst();
         int pos = 0;
         while (sConversationCursor.moveToNext()) {
             if (sConversationCursor.getUriString().equals(uriString)) {
@@ -178,7 +178,7 @@ public class ConversationCursor extends CursorWrapper {
             }
             // Tell the listener what we deleted
             if (sListener != null) {
-                int pos = 0; //getPositionFromUriString(uriString);
+                int pos = getPositionFromUriString(uriString);
                 if (pos >= 0) {
                     ArrayList<Integer> positions = new ArrayList<Integer>();
                     positions.add(pos);
@@ -292,6 +292,10 @@ public class ConversationCursor extends CursorWrapper {
      */
     public int getCount() {
         return super.getCount() - sDeletedCount;
+    }
+
+    private void moveBeforeFirst() {
+        super.moveToPosition(-1);
     }
 
     public boolean moveToFirst() {
