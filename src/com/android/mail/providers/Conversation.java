@@ -112,6 +112,10 @@ public class Conversation implements Parcelable {
             id = cursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
             dateMs = cursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
             subject = cursor.getString(UIProvider.CONVERSATION_SUBJECT_COLUMN);
+            // Don't allow null subject
+            if (subject == null) {
+                subject = "";
+            }
             snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
             hasAttachments = cursor.getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) == 1;
             messageListUri = Uri.parse(cursor
