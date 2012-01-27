@@ -236,8 +236,12 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
     @Override
     public void onChangedItems(String columnName, ArrayList<Integer> positions) {
-        // For now, redraw the list if change in read; remember that starred is redrawn elsewhere
+        // For now, redraw the list if change in read
         if (columnName.equals(ConversationColumns.READ)) {
+            mListAdapter.notifyDataSetChanged();
+        } else if (columnName.equals(ConversationColumns.STARRED)) {
+            // Note that a single star-tap directly modifies the view, BUT the multiple selected
+            // "add start" doesn't.  We need to do one or the other; for now, always udpate list
             mListAdapter.notifyDataSetChanged();
         }
     }
