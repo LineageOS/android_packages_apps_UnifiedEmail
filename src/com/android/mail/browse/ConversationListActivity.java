@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -58,6 +57,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
     private ListView mListView;
     private ConversationItemAdapter mListAdapter;
+    private ConversationCursor mConversationListCursor;
     private Spinner mAccountsSpinner;
     private AccountsSpinnerAdapter mAccountsAdapter;
     private ContentResolver mResolver;
@@ -137,11 +137,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
         public ConversationItemAdapter(Context context, int textViewResourceId,
                 ConversationCursor cursor) {
-            // Set requery/observer flags temporarily; we will be using loaders eventually so
-            // this is just a temporary hack to demonstrate push, etc.
-            super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null,
-                    CursorAdapter.FLAG_AUTO_REQUERY | CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-            // UpdateCachingCursor needs to know about the adapter
+            super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         }
 
         @Override
@@ -183,14 +179,13 @@ public class ConversationListActivity extends Activity implements OnItemSelected
             throw new IllegalStateException("No conversation list for this account");
         }
         // Create the cursor for the list using the update cache
-        ConversationCursor conversationListCursor =
-                new ConversationCursor(
-                    mResolver.query(conversationListUri, UIProvider.CONVERSATION_PROJECTION, null,
-                            null, null), this, UIProvider.ConversationColumns.MESSAGE_LIST_URI);
+        mConversationListCursor =
+                ConversationCursor.create(this, UIProvider.ConversationColumns.MESSAGE_LIST_URI,
+                        conversationListUri, UIProvider.CONVERSATION_PROJECTION, null, null, null);
         mListAdapter = new ConversationItemAdapter(this, R.layout.conversation_item_view_normal,
-                conversationListCursor);
+                mConversationListCursor);
         mListView.setAdapter(mListAdapter);
-        conversationListCursor.setListener(this);
+        mConversationListCursor.setListener(this);
     }
 
     @Override
@@ -246,9 +241,32 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         }
     }
 
+    // Underlying provider updates, etc.
+
+    /**
+     * Called when there is new data at the underlying provider
+     * refresh() here causes the new data to be retrieved asynchronously
+     * NOTE: The UI needn't take any action immediately (i.e. it might wait until a more
+     * convenient time to get the update from the provider)
+     */
     @Override
-    public void onNewSyncData() {
-        // Refresh the query and redraw
-        mListAdapter.getCursor().requery();
+    public void onRefreshRequired() {
+        // Refresh the query in the background
+        mConversationListCursor.refresh();
+    }
+
+    /**
+     * Called when new data from the underlying provider is ready for use
+     * swapCursors() causes the cursor to reflect the refreshed data
+     * notifyDataSetChanged() causes the list to redraw
+     * NOTE: The UI needn't take any action immediately if it's otherwise engaged (animating, for
+     * example)
+     */
+    @Override
+    public void onRefreshReady() {
+        // Swap cursors
+        mConversationListCursor.swapCursors();
+        // Redraw with new data
+        mListAdapter.notifyDataSetChanged();
     }
 }
