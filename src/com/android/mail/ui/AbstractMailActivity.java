@@ -27,7 +27,6 @@ import android.os.StrictMode;
 import android.view.WindowManager;
 
 import com.android.mail.R;
-import com.android.mail.ui.ViewMode.Mode;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

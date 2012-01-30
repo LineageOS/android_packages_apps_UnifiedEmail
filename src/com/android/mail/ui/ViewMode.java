@@ -26,40 +26,12 @@ import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 
-
 /**
  * Represents the view mode for the tablet Gmail activity.
  * Transitions between modes should be done through this central object, and UI components that are
  * dependent on the mode should listen to changes on this object.
  */
 public class ViewMode {
-    // Do not change the order of the values in the enum. The ordinal position is used in a
-    // saved instance bundle. When adding values, add them to the end of the enum.
-    /**
-     * All possible modes that a Mail activity can be in.
-     */
-    public static enum Mode {
-        /** Mode when showing a single conversation.
-         */
-        MODE_CONVERSATION,
-        /**
-         * Mode when showing a list of conversations
-         */
-        MODE_CONVERSATION_LIST,
-        /**
-         * Mode when showing a list of folders.
-         */
-        MODE_FOLDER_LIST,
-        /**
-         * Mode when showing results from user search.
-         */
-        MODE_SEARCH_RESULTS,
-        /**
-         * Uncertain mode. The mode has not been initialized.
-         */
-        MODE_UNKNOWN,
-    }
-
     /**
      * A listener for changes on a ViewMode.
      */
@@ -71,31 +43,30 @@ public class ViewMode {
     }
 
     /**
-     *  Mode when showing a single conversation.
+     * Mode when showing a single conversation.
      */
-    public static Mode CONVERSATION = Mode.MODE_CONVERSATION;
+    public static int CONVERSATION = 1;
     /**
      * Mode when showing a list of conversations
      */
-    public static Mode CONVERSATION_LIST = Mode.MODE_CONVERSATION_LIST;
+    public static int CONVERSATION_LIST = 2;
     /**
      * Mode when showing a list of folders.
      */
-    public static Mode FOLDER_LIST = Mode.MODE_FOLDER_LIST;
+    public static int FOLDER_LIST = 3;
     /**
      * Mode when showing results from user search.
      */
-    public static Mode SEARCH_RESULTS = Mode.MODE_SEARCH_RESULTS;
-    // Handy names for external users of this class.
+    public static int SEARCH_RESULTS = 4;
     /**
      * Uncertain mode. The mode has not been initialized.
      */
-    public static Mode UNKNOWN = Mode.MODE_UNKNOWN;
+    public static int UNKNOWN = 0;
 
     // Key used to save this {@link ViewMode}.
     private static final String VIEW_MODE_KEY = "view-mode";
     private final ArrayList<ModeChangeListener> mListeners = Lists.newArrayList();
-    private Mode mMode = UNKNOWN;
+    private int mMode = UNKNOWN;
     private boolean mTwoPane;
 
     public ViewMode(Context context) {
@@ -124,17 +95,16 @@ public class ViewMode {
     /**
      * @return The current mode.
      */
-    public Mode getMode() {
+    public int getMode() {
         return mMode;
     }
 
     public void handleRestore(Bundle inState) {
-        Mode mode = Mode.values()[inState.getInt(VIEW_MODE_KEY, UNKNOWN.ordinal())];
-        setModeInternal(mode);
+        mMode = inState.getInt(VIEW_MODE_KEY);
     }
 
     public void handleSaveInstanceState(Bundle outState) {
-        outState.putInt(VIEW_MODE_KEY, mMode.ordinal());
+        outState.putInt(VIEW_MODE_KEY, mMode);
     }
 
     public boolean isConversationListMode() {
@@ -168,7 +138,7 @@ public class ViewMode {
      * Sets the internal mode.
      * @return Whether or not a change occured.
      */
-    private boolean setModeInternal(Mode mode) {
+    private boolean setModeInternal(int mode) {
         if (mMode == mode) {
             return false;
         }
