@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class Conversation implements Parcelable {
+    public static final int NO_POSITION = -1;
 
     public long id;
     public String subject;
@@ -45,6 +46,7 @@ public class Conversation implements Parcelable {
     public int priority;
     public boolean read;
     public boolean starred;
+    public transient int position;
 
     @Override
     public int describeContents() {
@@ -82,6 +84,7 @@ public class Conversation implements Parcelable {
         priority = in.readInt();
         read = (in.readByte() != 0);
         starred = (in.readByte() != 0);
+        position = NO_POSITION;
     }
 
     @Override
@@ -127,6 +130,7 @@ public class Conversation implements Parcelable {
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) == 1;
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) == 1;
+            position = NO_POSITION;
         }
     }
 
@@ -159,8 +163,7 @@ public class Conversation implements Parcelable {
         ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
         for (Conversation conv: conversations) {
             ConversationOperation op =
-                    new ConversationOperation(ConversationOperation.UPDATE, conv.messageListUri,
-                            cv);
+                    new ConversationOperation(ConversationOperation.UPDATE, conv, cv);
             ops.add(op);
         }
         apply(context, ops);
@@ -184,7 +187,7 @@ public class Conversation implements Parcelable {
         ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
         for (Conversation conv: conversations) {
             ConversationOperation op =
-                    new ConversationOperation(ConversationOperation.DELETE, conv.messageListUri);
+                    new ConversationOperation(ConversationOperation.DELETE, conv);
             ops.add(op);
         }
         apply(context, ops);

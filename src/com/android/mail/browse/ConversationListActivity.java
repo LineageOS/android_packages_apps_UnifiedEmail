@@ -23,6 +23,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -227,18 +228,17 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         // For now, redraw the list
         // Trigger of delete animation code would go here...
         mListAdapter.notifyDataSetChanged();
+        // Temporary logging
+        Log.d("Deleted", "" + positions);
     }
 
     @Override
-    public void onChangedItems(String columnName, ArrayList<Integer> positions) {
-        // For now, redraw the list if change in read
-        if (columnName.equals(ConversationColumns.READ)) {
-            mListAdapter.notifyDataSetChanged();
-        } else if (columnName.equals(ConversationColumns.STARRED)) {
-            // Note that a single star-tap directly modifies the view, BUT the multiple selected
-            // "add start" doesn't.  We need to do one or the other; for now, always udpate list
-            mListAdapter.notifyDataSetChanged();
-        }
+    public void onUpdatedItems(ArrayList<Integer> positions) {
+        // For now, redraw the list
+        // Could just update individual views, if desired
+        mListAdapter.notifyDataSetChanged();
+        // Temporary logging
+        Log.d("Updated", "" + positions);
     }
 
     // Underlying provider updates, etc.
