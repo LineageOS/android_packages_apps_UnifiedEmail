@@ -16,12 +16,18 @@
 package com.android.mail.utils;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class LogUtils {
+
+    // "GMT" + "+" or "-" + 4 digits
+    private static final Pattern DATE_CLEANUP_PATTERN_WRONG_TIMEZONE =
+            Pattern.compile("GMT([-+]\\d{4})$");
     private static String LOG_TAG = "Email";
 
     /**
@@ -378,4 +384,34 @@ public class LogUtils {
     public static int wtf(String tag, Throwable tr, String format, Object... args) {
         return Log.wtf(tag, String.format(format, args), tr);
     }
+
+
+    /**
+     * Try to make a date MIME(RFC 2822/5322)-compliant.
+     *
+     * It fixes:
+     * - "Thu, 10 Dec 09 15:08:08 GMT-0700" to "Thu, 10 Dec 09 15:08:08 -0700"
+     *   (4 digit zone value can't be preceded by "GMT")
+     *   We got a report saying eBay sends a date in this format
+     */
+    public static String cleanUpMimeDate(String date) {
+        if (TextUtils.isEmpty(date)) {
+            return date;
+        }
+        date = DATE_CLEANUP_PATTERN_WRONG_TIMEZONE.matcher(date).replaceFirst("$1");
+        return date;
+    }
+
+
+    public static String byteToHex(int b) {
+        return byteToHex(new StringBuilder(), b).toString();
+    }
+
+    public static StringBuilder byteToHex(StringBuilder sb, int b) {
+        b &= 0xFF;
+        sb.append("0123456789ABCDEF".charAt(b >> 4));
+        sb.append("0123456789ABCDEF".charAt(b & 0xF));
+        return sb;
+    }
+
 }

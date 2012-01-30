@@ -57,9 +57,6 @@ public class Utils {
             SENDER_LIST_SEPARATOR);
     public static String[] sSenderFragments = new String[8];
 
-    // "GMT" + "+" or "-" + 4 digits
-    private static final Pattern DATE_CLEANUP_PATTERN_WRONG_TIMEZONE =
-            Pattern.compile("GMT([-+]\\d{4})$");
 
     public static final String EXTRA_ACCOUNT = "account";
 
@@ -462,33 +459,6 @@ public class Utils {
       */
      public static boolean useTabletUI(Context context) {
          return context.getResources().getInteger(R.integer.use_tablet_ui) != 0;
-     }
-
-     /**
-      * Try to make a date MIME(RFC 2822/5322)-compliant.
-      *
-      * It fixes:
-      * - "Thu, 10 Dec 09 15:08:08 GMT-0700" to "Thu, 10 Dec 09 15:08:08 -0700"
-      *   (4 digit zone value can't be preceded by "GMT")
-      *   We got a report saying eBay sends a date in this format
-      */
-     public static String cleanUpMimeDate(String date) {
-         if (TextUtils.isEmpty(date)) {
-             return date;
-         }
-         date = DATE_CLEANUP_PATTERN_WRONG_TIMEZONE.matcher(date).replaceFirst("$1");
-         return date;
-     }
-
-     public static String byteToHex(int b) {
-         return byteToHex(new StringBuilder(), b).toString();
-     }
-
-     public static StringBuilder byteToHex(StringBuilder sb, int b) {
-         b &= 0xFF;
-         sb.append("0123456789ABCDEF".charAt(b >> 4));
-         sb.append("0123456789ABCDEF".charAt(b & 0xF));
-         return sb;
      }
 
      /**

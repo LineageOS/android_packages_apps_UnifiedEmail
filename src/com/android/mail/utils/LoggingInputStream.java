@@ -89,7 +89,7 @@ public class LoggingInputStream extends FilterInputStream {
         } else {
             // email protocols are supposed to be all 7bits, but there are wrong implementations
             // that do send 8 bit characters...
-            mSb.append("\\x" + Utils.byteToHex(oneByte));
+            mSb.append("\\x" + LogUtils.byteToHex(oneByte));
         }
     }
 
