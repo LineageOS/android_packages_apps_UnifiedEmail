@@ -188,6 +188,10 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="ConversationListFade" parent="@android:attr/listViewWhiteStyle">
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+    </style>
+
     <style name="StarStyle">
         <item name="android:layout_marginRight">16dip</item>
         <item name="android:layout_marginTop">-4sp</item>

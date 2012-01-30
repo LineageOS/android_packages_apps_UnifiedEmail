@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +15,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+
 <resources>
-    <!-- Boolean value indicating whether the table UI should be used. -->
-    <integer name="use_tablet_ui">0</integer>
-    <integer name="conversation_list_header_mode">1</integer>
-    <integer name="conversation_header_mode">1</integer>
-
-    <!-- Boolean value indicating whether hardware acceleration should be used. -->
-    <integer name="use_hardware_acceleration">1</integer>
-
-    <!-- Frequency (in milliseconds) for the refresh of timestamps in conversation list fragments. -->
-    <integer name="timestamp_update_interval">60000</integer>
+    <dimen name="label_list_pane_width">320dip</dimen>
+    <dimen name="new_message_notification_margin_left">32dip</dimen>
+    <dimen name="new_message_notification_margin_right">32dip</dimen>
+    <dimen name="new_message_notification_margin_bottom">12dip</dimen>
+    <dimen name="new_message_notification_width">896dip</dimen>
+    <dimen name="empty_view_top_padding">104dip</dimen>
 </resources>

@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -38,6 +39,20 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
+
+    /**
+     * Attach the conversation list fragment to the appropriate view.
+     * @param conversationListFragment
+     */
+    // TODO(viki): Why does the activity controller have such a deep knowledge of the conversation
+    // list fragment? Calls to the fragment show up in handleLoadFinished, isConversationListMode,
+    // onDestructiveCommand, restoreState, showConversationAtCursor, handleKeyDown, etc.
+    // Instead, it might be beneficial to have a layout controller a la TriStateSplitLayout which
+    // exists both for one pane and two pane modes. The layout controller should know about the
+    // fragment, and send appropriate calls to it. Such a scheme will allow some separation of
+    // control and view logic, which is spread between the activity controller and the fragment
+    // currently.
+    void attachConversationList(ConversationListFragment conversationListFragment);
 
     /**
      * @see android.app.Activity#dispatchTouchEvent(MotionEvent)

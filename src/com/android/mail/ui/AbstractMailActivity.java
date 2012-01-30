@@ -45,7 +45,7 @@ import java.net.URLEncoder;
  *
  */
 public abstract class AbstractMailActivity extends Activity
-        implements ControllableActivity {
+        implements HelpCallback, RestrictedActivity {
 
     private NfcAdapter mNfcAdapter; // final after onCreate
     private NdefMessage mForegroundNdef;
@@ -176,15 +176,5 @@ public abstract class AbstractMailActivity extends Activity
         NdefRecord mailto = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_URI,
                 new byte[0], recordBytes);
         return new NdefMessage(new NdefRecord[] { mailto });
-    }
-
-    @Override
-    public ConversationSelectionSet getBatchConversations() {
-        return new ConversationSelectionSet();
-    }
-
-    @Override
-    public Mode getViewMode() {
-        return ViewMode.UNKNOWN;
     }
 }

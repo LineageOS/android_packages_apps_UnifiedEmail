@@ -19,13 +19,12 @@ package com.android.mail.ui;
 
 
 import android.app.ActionBar;
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -34,8 +33,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
-import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 
@@ -64,12 +63,18 @@ public abstract class AbstractActivityController implements ActivityController {
     protected final RestrictedActivity mActivity;
     private ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
     protected final Context mContext;
+    protected ConversationListFragment mConversationListFragment;
     protected final ViewMode mViewMode;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
+    }
+
+    @Override
+    public void attachConversationList(ConversationListFragment conversationList) {
+        mConversationListFragment = conversationList;
     }
 
     @Override
@@ -259,15 +264,15 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // TODO(viki): Auto-generated method stub
-        return false;
-    }
-
-    @Override
     public void onFolderChanged(Folder folder, long conversationId, boolean added) {
         // TODO(viki): Auto-generated method stub
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // TODO(viki): Auto-generated method stub
+        return false;
     }
 
     @Override

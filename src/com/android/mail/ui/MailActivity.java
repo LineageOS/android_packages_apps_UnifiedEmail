@@ -32,7 +32,7 @@ import android.view.MotionEvent;
  * (usually a list of labels), and the main content fragment (either a
  * conversation list or a conversation view).
  */
-public class MailActivity extends AbstractMailActivity {
+public class MailActivity extends AbstractMailActivity implements ControllableActivity {
     // TODO(viki) This class lacks: Conversation Position tracking
     // TODO(viki) This class lacks: What's New dialog
     // TODO(viki) This class lacks: Sync Window Upgrade dialog
@@ -42,16 +42,21 @@ public class MailActivity extends AbstractMailActivity {
      */
     private ActivityController mController;
     /**
-     * The specific view mode that we are in.
-     */
-    private ViewMode mViewMode;
-
-    /**
      * A clean launch is when the activity is not resumed. We want to show a "What's New" dialog
      * on a clean launch: when the user started the Activity by tapping on the icon: not when he
      * selected "Up" from compose, not when he resumed the activity, etc.
      */
     private boolean mLaunchedCleanly = false;
+
+    /**
+     * The specific view mode that we are in.
+     */
+    private ViewMode mViewMode;
+
+    @Override
+    public void attachConversationList(ConversationListFragment fragment) {
+        mController.attachConversationList(fragment);
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -66,6 +71,14 @@ public class MailActivity extends AbstractMailActivity {
     @Override
     public ConversationSelectionSet getBatchConversations() {
         return mController.getBatchConversations();
+    }
+
+    /**
+     * Default implementation returns a null view mode.
+     */
+    @Override
+    public ViewMode getViewMode() {
+        return mViewMode;
     }
 
     @Override
