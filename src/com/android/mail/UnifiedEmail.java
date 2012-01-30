@@ -18,7 +18,6 @@
 package com.android.mail;
 
 import com.android.mail.browse.ConversationListActivity;
-import com.android.mail.browse.FolderItem;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.ui.ActionbarActivity;
 import com.android.mail.ui.MailActivity;
@@ -40,10 +39,6 @@ public class UnifiedEmail extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_tests);
-    }
-
-    public void labelSpinnerTest(View v){
-        startActivityWithClass(FolderItem.class);
     }
 
     public void accountSpinnerTest(View v){
