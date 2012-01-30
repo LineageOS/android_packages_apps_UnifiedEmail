@@ -35,6 +35,8 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.android.mail.providers.Conversation;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -247,41 +249,11 @@ public final class ConversationCursor implements Cursor {
     }
 
     /**
-     * Given a uri string (for the conversation), return its position in the cursor (0 based)
-     * @param uriString the uri string to locate
-     * @return the position of the row holding uriString, or -1 if not found
-     */
-    private static int getPositionFromUriString(String uriString) {
-        sConversationCursor.moveBeforeFirst();
-        int pos = 0;
-        while (sConversationCursor.moveToNext()) {
-            if (sConversationCursor.getUriString().equals(uriString)) {
-                return pos;
-            }
-            pos++;
-        }
-        return -1;
-    }
-
-    private static ArrayList<Integer> getPositionsFromUriString(String uriString) {
-        int pos = getPositionFromUriString(uriString);
-        if (pos >= 0) {
-            ArrayList<Integer> positions = new ArrayList<Integer>();
-            positions.add(pos);
-            return positions;
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Cache a column name/value pair for a given Uri
      * @param uriString the Uri for which the column name/value pair applies
      * @param columnName the column name
      * @param value the value to be cached
      */
-    // TODO: Process multiple items at the same time so that listener will get fewer pings
-    // TODO: Don't calculate position like this; we should know it somehow (from the UI)
     private static void cacheValue(String uriString, String columnName, Object value) {
         synchronized (sCacheMapLock) {
             // Get the map for our uri
@@ -291,19 +263,12 @@ public final class ConversationCursor implements Cursor {
                 map = new ContentValues();
                 sCacheMap.put(uriString, map);
             }
-            ArrayList<Integer> positions = getPositionsFromUriString(uriString);
             // If we're caching a deletion, add to our count
             if ((columnName == DELETED_COLUMN) && (map.get(columnName) == null)) {
                 sDeletedCount++;
                 if (DEBUG) {
                     Log.d(TAG, "Deleted " + uriString);
                 }
-                // Tell the listener what we deleted
-                if (sListener != null && positions != null) {
-                    sListener.onDeletedItems(positions);
-                }
-            } else if (sListener != null && positions != null) {
-                sListener.onChangedItems(columnName, positions);
             }
             // ContentValues has no generic "put", so we must test.  For now, the only classes of
             // values implemented are Boolean/Integer/String, though others are trivially added
@@ -325,10 +290,6 @@ public final class ConversationCursor implements Cursor {
                 Log.d(TAG, "Caching value for " + uriString + ": " + columnName);
             }
         }
-    }
-
-    private String getUriString() {
-        return sUnderlyingCursor.getString(sUriColumnIndex);
     }
 
     /**
@@ -442,10 +403,6 @@ public final class ConversationCursor implements Cursor {
      */
     public int getCount() {
         return sUnderlyingCursor.getCount() - sDeletedCount;
-    }
-
-    private void moveBeforeFirst() {
-        sUnderlyingCursor.moveToPosition(-1);
     }
 
     public boolean moveToFirst() {
@@ -585,6 +542,24 @@ public final class ConversationCursor implements Cursor {
         }
 
         @Override
+        public Uri insert(Uri uri, ContentValues values) {
+            insertLocal(uri, values);
+            return ProviderExecute.opInsert(uri, values);
+        }
+
+        @Override
+        public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+            updateLocal(uri, values, false);
+            return ProviderExecute.opUpdate(uri, values);
+        }
+
+        @Override
+        public int delete(Uri uri, String selection, String[] selectionArgs) {
+            deleteLocal(uri, false);
+            return ProviderExecute.opDelete(uri);
+        }
+
+        @Override
         public String getType(Uri uri) {
             return null;
         }
@@ -656,49 +631,72 @@ public final class ConversationCursor implements Cursor {
             // Placeholder for now; there's no local insert
         }
 
-        @Override
-        public Uri insert(Uri uri, ContentValues values) {
-            insertLocal(uri, values);
-            return ProviderExecute.opInsert(uri, values);
-        }
-
-        private void deleteLocal(Uri uri) {
+        private void deleteLocal(Uri uri, boolean batch) {
             Uri underlyingUri = uriFromCachingUri(uri);
             String uriString = underlyingUri.toString();
             cacheValue(uriString, DELETED_COLUMN, true);
+            if (!batch && sListener != null) {
+                ArrayList<Integer> positions = getPositionsFromUriString(uriString);
+                if (positions != null) {
+                    sListener.onDeletedItems(positions);
+                }
+            }
         }
 
-        @Override
-        public int delete(Uri uri, String selection, String[] selectionArgs) {
-            deleteLocal(uri);
-            Uri underlyingUri = uriFromCachingUri(uri);
-            String uriString = underlyingUri.toString();
-            cacheValue(uriString, DELETED_COLUMN, true);
-            return ProviderExecute.opDelete(uri);
-        }
-
-       private void updateLocal(Uri uri, ContentValues values) {
+       private void updateLocal(Uri uri, ContentValues values, boolean batch) {
             Uri underlyingUri = uriFromCachingUri(uri);
             // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
             String uriString =  Uri.decode(underlyingUri.toString());
             for (String columnName: values.keySet()) {
                 cacheValue(uriString, columnName, values.get(columnName));
             }
+            if (!batch && sListener != null) {
+                ArrayList<Integer> positions = getPositionsFromUriString(uriString);
+                if (positions != null) {
+                    sListener.onUpdatedItems(positions);
+                }
+            }
         }
 
-        @Override
-        public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-            updateLocal(uri, values);
-            return ProviderExecute.opUpdate(uri, values);
-        }
+       /**
+        * Given a uri string (for the conversation), return its position in the cursor (0 based)
+        * @param uriString the uri string to locate
+        * @return the position of the row holding uriString, or -1 if not found
+        */
+       private static int getPositionFromUriString(String uriString) {
+           sUnderlyingCursor.moveToPosition(-1);
+           int pos = 0;
+           while (sConversationCursor.moveToNext()) {
+               if (sUnderlyingCursor.getString(sUriColumnIndex).equals(uriString)) {
+                   return pos;
+               }
+               pos++;
+           }
+           return -1;
+       }
 
-        static boolean offUiThread() {
+       private static ArrayList<Integer> getPositionsFromUriString(String uriString) {
+           int pos = getPositionFromUriString(uriString);
+           if (pos >= 0) {
+               ArrayList<Integer> positions = new ArrayList<Integer>();
+               positions.add(pos);
+               return positions;
+           } else {
+               return null;
+           }
+       }
+
+       static boolean offUiThread() {
             return Looper.getMainLooper().getThread() != Thread.currentThread();
         }
 
         public ContentProviderResult[] apply(ArrayList<ConversationOperation> ops) {
             final HashMap<String, ArrayList<ContentProviderOperation>> batchMap =
                     new HashMap<String, ArrayList<ContentProviderOperation>>();
+            final ArrayList<Integer> deletePositions = new ArrayList<Integer>();
+            final ArrayList<Integer> updatePositions = new ArrayList<Integer>();
+
+            // Execute locally and build CPO's for underlying provider
             for (ConversationOperation op: ops) {
                 Uri underlyingUri = uriFromCachingUri(op.mUri);
                 String authority = underlyingUri.getAuthority();
@@ -708,7 +706,27 @@ public final class ConversationCursor implements Cursor {
                     batchMap.put(authority, authOps);
                 }
                 authOps.add(op.execute(underlyingUri));
+                int position = op.mPosition;
+                if (position != Conversation.NO_POSITION) {
+                    if (op.mType == ConversationOperation.DELETE) {
+                        deletePositions.add(position);
+                    } else if (op.mType == ConversationOperation.UPDATE) {
+                        updatePositions.add(position);
+                    }
+                }
             }
+
+            // Send out notifications for what we've done
+            if (sListener != null) {
+                if (!deletePositions.isEmpty()) {
+                    sListener.onDeletedItems(deletePositions);
+                }
+                if (!updatePositions.isEmpty()) {
+                    sListener.onUpdatedItems(updatePositions);
+                }
+            }
+
+            // Send changes to underlying provider
             for (String authority: batchMap.keySet()) {
                 try {
                     if (offUiThread()) {
@@ -748,24 +766,26 @@ public final class ConversationCursor implements Cursor {
         private final int mType;
         private final Uri mUri;
         private final ContentValues mValues;
+        private final int mPosition;
 
-        public ConversationOperation(int type, Uri uri) {
-            this(type, uri, null);
+        public ConversationOperation(int type, Conversation conv) {
+            this(type, conv, null);
         }
 
-        public ConversationOperation(int type, Uri uri, ContentValues values) {
+        public ConversationOperation(int type, Conversation conv, ContentValues values) {
             mType = type;
-            mUri = uri;
+            mUri = conv.messageListUri;
             mValues = values;
+            mPosition = conv.position;
         }
 
         private ContentProviderOperation execute(Uri underlyingUri) {
             switch(mType) {
                 case DELETE:
-                    sProvider.deleteLocal(mUri);
+                    sProvider.deleteLocal(mUri, true);
                     return ContentProviderOperation.newDelete(underlyingUri).build();
                 case UPDATE:
-                    sProvider.updateLocal(mUri, mValues);
+                    sProvider.updateLocal(mUri, mValues, true);
                     return ContentProviderOperation.newUpdate(underlyingUri)
                             .withValues(mValues)
                             .build();
@@ -787,8 +807,8 @@ public final class ConversationCursor implements Cursor {
     public interface ConversationListener {
         // The UI has deleted items at the positions referenced in the array
         public void onDeletedItems(ArrayList<Integer> positions);
-        // The UI has changed items at the positions referenced in the array
-        public void onChangedItems(String columnName, ArrayList<Integer> positions);
+        // The UI has updated items at the positions referenced in the array
+        public void onUpdatedItems(ArrayList<Integer> positions);
         // Data in the underlying provider has changed; a refresh is required to sync up
         public void onRefreshRequired();
         // We've completed a requested refresh of the underlying cursor

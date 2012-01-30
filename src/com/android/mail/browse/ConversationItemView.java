@@ -45,6 +45,7 @@ import android.text.util.Rfc822Tokenizer;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ListView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
@@ -774,7 +775,11 @@ public class ConversationItemView extends View {
      */
     public void toggleCheckMark() {
         mChecked = !mChecked;
-        mSelectedConversationSet.toggle(mHeader.conversation);
+        Conversation conv = mHeader.conversation;
+        // Set the list position of this item in the conversation
+        conv.position = mChecked ? ((ListView)getParent()).getPositionForView(this)
+                : Conversation.NO_POSITION;
+        mSelectedConversationSet.toggle(conv);
         // We update the background after the checked state has changed now that
         // we have a selected background asset. Setting the background usually
         // waits for a layout pass, but we don't need a full layout, just an
