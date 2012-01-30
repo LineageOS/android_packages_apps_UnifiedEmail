@@ -17,17 +17,19 @@
 
 package com.android.mail.browse;
 
+import android.app.Activity;
 import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.OperationApplicationException;
+import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.CursorWrapper;
+import android.database.DataSetObserver;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
@@ -35,6 +37,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -42,7 +45,7 @@ import java.util.List;
  * caching for quick UI response. This is effectively a singleton class, as the cache is
  * implemented as a static HashMap.
  */
-public class ConversationCursor extends CursorWrapper {
+public final class ConversationCursor implements Cursor {
     private static final String TAG = "ConversationCursor";
     private static final boolean DEBUG = true;  // STOPSHIP Set to false before shipping
 
@@ -50,10 +53,20 @@ public class ConversationCursor extends CursorWrapper {
     // This string must match the declaration in AndroidManifest.xml
     private static final String sAuthority = "com.android.mail.conversation.provider";
 
+    // The cursor instantiator's activity
+    private static Activity sActivity;
+    // The cursor underlying the caching cursor
+    private static Cursor sUnderlyingCursor;
+    // The new cursor obtained via a requery
+    private static Cursor sRequeryCursor;
     // A mapping from Uri to updated ContentValues
     private static HashMap<String, ContentValues> sCacheMap = new HashMap<String, ContentValues>();
+    // Cache map lock (will be used only very briefly - few ms at most)
+    private static Object sCacheMapLock = new Object();
     // A deleted row is indicated by the presence of DELETED_COLUMN in the cache map
     private static final String DELETED_COLUMN = "__deleted__";
+    // An row cached during a requery is indicated by the presence of REQUERY_COLUMN in the map
+    private static final String REQUERY_COLUMN = "__requery__";
     // A sentinel value for the "index" of the deleted column; it's an int that is otherwise invalid
     private static final int DELETED_COLUMN_INDEX = -1;
     // The current conversation cursor
@@ -65,9 +78,9 @@ public class ConversationCursor extends CursorWrapper {
     private static ConversationListener sListener;
     // The ConversationProvider instance
     private static ConversationProvider sProvider;
+    // Set when we're in the middle of a requery of the underlying cursor
+    private static boolean sRequeryInProgress = false;
 
-    // The cursor underlying the caching cursor
-    private final Cursor mUnderlying;
     // Column names for this cursor
     private final String[] mColumnNames;
     // The resolver for the cursor instantiator's context
@@ -82,33 +95,120 @@ public class ConversationCursor extends CursorWrapper {
     // The number of cached deletions from this cursor (used to quickly generate an accurate count)
     private static int sDeletedCount = 0;
 
-    public ConversationCursor(Cursor cursor, Context context, String messageListColumn) {
-        super(cursor);
+    // Parameters passed to the underlying query
+    private static Uri qUri;
+    private static String[] qProjection;
+    private static String qSelection;
+    private static String[] qSelectionArgs;
+    private static String qSortOrder;
+
+    private ConversationCursor(Cursor cursor, Activity activity, String messageListColumn) {
+        sActivity = activity;
+        mResolver = activity.getContentResolver();
         sConversationCursor = this;
-        mUnderlying = cursor;
+        sUnderlyingCursor = cursor;
         mCursorObserver = new CursorObserver();
-        // New cursor -> clear the cache
-        resetCache();
+        resetCursor(null);
         mColumnNames = cursor.getColumnNames();
-        sUriColumnIndex = getColumnIndex(messageListColumn);
+        sUriColumnIndex = cursor.getColumnIndex(messageListColumn);
         if (sUriColumnIndex < 0) {
             throw new IllegalArgumentException("Cursor must include a message list column");
         }
-        mResolver = context.getContentResolver();
     }
 
     /**
-     * Reset the cache; this involves clearing out our cache map and resetting our various counts
-     * The cache should be reset whenever we get fresh data from the underlying cursor
+     * Create a ConversationCursor; this should be called by the ListActivity using that cursor
+     * @param activity the activity creating the cursor
+     * @param messageListColumn the column used for individual cursor items
+     * @param uri the query uri
+     * @param projection the query projecion
+     * @param selection the query selection
+     * @param selectionArgs the query selection args
+     * @param sortOrder the query sort order
+     * @return a ConversationCursor
      */
-    private void resetCache() {
-        sCacheMap.clear();
-        sDeletedCount = 0;
-        mPosition = -1;
-        if (!mCursorObserverRegistered) {
-            mUnderlying.registerContentObserver(mCursorObserver);
-            mCursorObserverRegistered = true;
+    public static ConversationCursor create(Activity activity, String messageListColumn, Uri uri,
+            String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        qUri = uri;
+        qProjection = projection;
+        qSelection = selection;
+        qSelectionArgs = selectionArgs;
+        qSortOrder = sortOrder;
+        Cursor cursor = activity.getContentResolver().query(uri, projection, selection,
+                selectionArgs, sortOrder);
+        return new ConversationCursor(cursor, activity, messageListColumn);
+    }
+
+    /**
+     * Return whether the uri string (message list uri) is in the underlying cursor
+     * @param uriString the uri string we're looking for
+     * @return true if the uri string is in the cursor; false otherwise
+     */
+    private boolean isInUnderlyingCursor(String uriString) {
+        sUnderlyingCursor.moveToPosition(-1);
+        while (sUnderlyingCursor.moveToNext()) {
+            if (uriString.equals(sUnderlyingCursor.getString(sUriColumnIndex))) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    /**
+     * Reset the cursor; this involves clearing out our cache map and resetting our various counts
+     * The cursor should be reset whenever we get fresh data from the underlying cursor. The cache
+     * is locked during the reset, which will block the UI, but for only a very short time
+     * (estimated at a few ms, but we can profile this; remember that the cache will usually
+     * be empty or have a few entries)
+     */
+    private void resetCursor(Cursor newCursor) {
+        // Temporary, log time for reset
+        long startTime = System.currentTimeMillis();
+        synchronized (sCacheMapLock) {
+            // Walk through the cache.  Here are the cases:
+            // 1) The entry isn't marked with REQUERY - remove it from the cache. If DELETED is
+            //    set, decrement the deleted count
+            // 2) The REQUERY entry is still in the UP
+            //    2a) The REQUERY entry isn't DELETED; we're good, and the client change will remain
+            //    (i.e. client wins, it's on its way to the UP)
+            //    2b) The REQUERY entry is DELETED; we're good (client change remains, it's on
+            //        its way to the UP)
+            // 3) the REQUERY was deleted on the server (sheesh; this would be bizarre timing!) -
+            //    we need to throw the item out of the cache
+            // So ... the only interesting case is #3, we need to look for remaining deleted items
+            // and see if they're still in the UP
+            Iterator<HashMap.Entry<String, ContentValues>> iter = sCacheMap.entrySet().iterator();
+            while (iter.hasNext()) {
+                HashMap.Entry<String, ContentValues> entry = iter.next();
+                ContentValues values = entry.getValue();
+                if (values.containsKey(REQUERY_COLUMN) && isInUnderlyingCursor(entry.getKey())) {
+                    // If we're in a requery and we're still around, remove the requery key
+                    // We're good here, the cached change (delete/update) is on its way to UP
+                    values.remove(REQUERY_COLUMN);
+                } else {
+                    // Keep the deleted count up-to-date; remove the cache entry
+                    if (values.containsKey(DELETED_COLUMN)) {
+                        sDeletedCount--;
+                    }
+                    // Remove the entry
+                    iter.remove();
+                }
+            }
+
+            // Swap cursor
+            if (newCursor != null) {
+                sUnderlyingCursor.close();
+                sUnderlyingCursor = newCursor;
+            }
+
+            mPosition = -1;
+            sUnderlyingCursor.moveToPosition(mPosition);
+            if (!mCursorObserverRegistered) {
+                sUnderlyingCursor.registerContentObserver(mCursorObserver);
+                mCursorObserverRegistered = true;
+            }
+        }
+        Log.d(TAG, "resetCache time: " + ((System.currentTimeMillis() - startTime)) + "ms");
     }
 
     /**
@@ -183,47 +283,52 @@ public class ConversationCursor extends CursorWrapper {
     // TODO: Process multiple items at the same time so that listener will get fewer pings
     // TODO: Don't calculate position like this; we should know it somehow (from the UI)
     private static void cacheValue(String uriString, String columnName, Object value) {
-        // Get the map for our uri
-        ContentValues map = sCacheMap.get(uriString);
-        // Create one if necessary
-        if (map == null) {
-            map = new ContentValues();
-            sCacheMap.put(uriString, map);
-        }
-        ArrayList<Integer> positions = getPositionsFromUriString(uriString);
-        // If we're caching a deletion, add to our count
-        if ((columnName == DELETED_COLUMN) && (map.get(columnName) == null)) {
-            sDeletedCount++;
-            if (DEBUG) {
-                Log.d(TAG, "Deleted " + uriString);
+        synchronized (sCacheMapLock) {
+            // Get the map for our uri
+            ContentValues map = sCacheMap.get(uriString);
+            // Create one if necessary
+            if (map == null) {
+                map = new ContentValues();
+                sCacheMap.put(uriString, map);
             }
-            // Tell the listener what we deleted
-            if (sListener != null && positions != null) {
-                sListener.onDeletedItems(positions);
+            ArrayList<Integer> positions = getPositionsFromUriString(uriString);
+            // If we're caching a deletion, add to our count
+            if ((columnName == DELETED_COLUMN) && (map.get(columnName) == null)) {
+                sDeletedCount++;
+                if (DEBUG) {
+                    Log.d(TAG, "Deleted " + uriString);
+                }
+                // Tell the listener what we deleted
+                if (sListener != null && positions != null) {
+                    sListener.onDeletedItems(positions);
+                }
+            } else if (sListener != null && positions != null) {
+                sListener.onChangedItems(columnName, positions);
             }
-        } else if (sListener != null && positions != null) {
-            sListener.onChangedItems(columnName, positions);
-        }
-        // ContentValues has no generic "put", so we must test.  For now, the only classes of
-        // values implemented are Boolean/Integer/String, though others are trivially added
-        if (value instanceof Boolean) {
-            map.put(columnName, ((Boolean)value).booleanValue() ? 1 : 0);
-        } else if (value instanceof Integer) {
-            map.put(columnName, (Integer)value);
-        } else if (value instanceof String) {
-            map.put(columnName, (String)value);
-        } else {
-            String cname = value.getClass().getName();
-            throw new IllegalArgumentException("Value class not compatible with cache: " + cname);
-        }
-
-        if (DEBUG && (columnName != DELETED_COLUMN)) {
-            Log.d(TAG, "Caching value for " + uriString + ": " + columnName);
+            // ContentValues has no generic "put", so we must test.  For now, the only classes of
+            // values implemented are Boolean/Integer/String, though others are trivially added
+            if (value instanceof Boolean) {
+                map.put(columnName, ((Boolean) value).booleanValue() ? 1 : 0);
+            } else if (value instanceof Integer) {
+                map.put(columnName, (Integer) value);
+            } else if (value instanceof String) {
+                map.put(columnName, (String) value);
+            } else {
+                String cname = value.getClass().getName();
+                throw new IllegalArgumentException("Value class not compatible with cache: "
+                        + cname);
+            }
+            if (sRequeryInProgress) {
+                map.put(REQUERY_COLUMN, 1);
+            }
+            if (DEBUG && (columnName != DELETED_COLUMN)) {
+                Log.d(TAG, "Caching value for " + uriString + ": " + columnName);
+            }
         }
     }
 
     private String getUriString() {
-        return super.getString(sUriColumnIndex);
+        return sUnderlyingCursor.getString(sUriColumnIndex);
     }
 
     /**
@@ -232,7 +337,7 @@ public class ConversationCursor extends CursorWrapper {
      * @return the cached value for this column, or null if there is none
      */
     private Object getCachedValue(int columnIndex) {
-        String uri = super.getString(sUriColumnIndex);
+        String uri = sUnderlyingCursor.getString(sUriColumnIndex);
         ContentValues uriMap = sCacheMap.get(uri);
         if (uriMap != null) {
             String columnName;
@@ -252,27 +357,54 @@ public class ConversationCursor extends CursorWrapper {
     private void underlyingChanged() {
         if (sListener != null) {
             if (mCursorObserverRegistered) {
-                mUnderlying.unregisterContentObserver(mCursorObserver);
+                sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
                 mCursorObserverRegistered = false;
             }
-            sListener.onNewSyncData();
+            sListener.onRefreshRequired();
         }
     }
 
+    public void swapCursors() {
+        if (sRequeryCursor == null) {
+            throw new IllegalStateException("Can't swap cursors; no requery done");
+        }
+        resetCursor(sRequeryCursor);
+        sRequeryCursor = null;
+    }
+
     /**
-     * When we get a requery from the UI, we'll do it, but also clear the cache
+     * When we get a requery from the UI, we'll do it, but also clear the cache. The listener is
+     * notified when the requery is complete
      * NOTE: This will have to change, of course, when we start using loaders...
      */
-    public boolean requery() {
-        super.requery();
-        resetCache();
+    public boolean refresh() {
+        if (sRequeryInProgress) {
+            return false;
+        }
+        // Say we're starting a requery
+        sRequeryInProgress = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Get new data
+                sRequeryCursor =
+                        mResolver.query(qUri, qProjection, qSelection, qSelectionArgs, qSortOrder);
+                // Make sure window is full
+                sRequeryCursor.getCount();
+                sActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sListener.onRefreshReady();
+                    }});
+            }
+        }).start();
         return true;
     }
 
     public void close() {
         // Unregister our observer on the underlying cursor and close as usual
-        mUnderlying.unregisterContentObserver(mCursorObserver);
-        super.close();
+        sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
+        sUnderlyingCursor.close();
     }
 
     /**
@@ -280,7 +412,7 @@ public class ConversationCursor extends CursorWrapper {
      */
     public boolean moveToNext() {
         while (true) {
-            boolean ret = super.moveToNext();
+            boolean ret = sUnderlyingCursor.moveToNext();
             if (!ret) return false;
             if (getCachedValue(DELETED_COLUMN_INDEX) instanceof Integer) continue;
             mPosition++;
@@ -293,7 +425,7 @@ public class ConversationCursor extends CursorWrapper {
      */
     public boolean moveToPrevious() {
         while (true) {
-            boolean ret = super.moveToPrevious();
+            boolean ret = sUnderlyingCursor.moveToPrevious();
             if (!ret) return false;
             if (getCachedValue(-1) instanceof Integer) continue;
             mPosition--;
@@ -309,15 +441,15 @@ public class ConversationCursor extends CursorWrapper {
      * The actual cursor's count must be decremented by the number we've deleted from the UI
      */
     public int getCount() {
-        return super.getCount() - sDeletedCount;
+        return sUnderlyingCursor.getCount() - sDeletedCount;
     }
 
     private void moveBeforeFirst() {
-        super.moveToPosition(-1);
+        sUnderlyingCursor.moveToPosition(-1);
     }
 
     public boolean moveToFirst() {
-        super.moveToPosition(-1);
+        sUnderlyingCursor.moveToPosition(-1);
         mPosition = -1;
         return moveToNext();
     }
@@ -359,35 +491,35 @@ public class ConversationCursor extends CursorWrapper {
     public double getDouble(int columnIndex) {
         Object obj = getCachedValue(columnIndex);
         if (obj != null) return (Double)obj;
-        return super.getDouble(columnIndex);
+        return sUnderlyingCursor.getDouble(columnIndex);
     }
 
     @Override
     public float getFloat(int columnIndex) {
         Object obj = getCachedValue(columnIndex);
         if (obj != null) return (Float)obj;
-        return super.getFloat(columnIndex);
+        return sUnderlyingCursor.getFloat(columnIndex);
     }
 
     @Override
     public int getInt(int columnIndex) {
         Object obj = getCachedValue(columnIndex);
         if (obj != null) return (Integer)obj;
-        return super.getInt(columnIndex);
+        return sUnderlyingCursor.getInt(columnIndex);
     }
 
     @Override
     public long getLong(int columnIndex) {
         Object obj = getCachedValue(columnIndex);
         if (obj != null) return (Long)obj;
-        return super.getLong(columnIndex);
+        return sUnderlyingCursor.getLong(columnIndex);
     }
 
     @Override
     public short getShort(int columnIndex) {
         Object obj = getCachedValue(columnIndex);
         if (obj != null) return (Short)obj;
-        return super.getShort(columnIndex);
+        return sUnderlyingCursor.getShort(columnIndex);
     }
 
     @Override
@@ -395,19 +527,19 @@ public class ConversationCursor extends CursorWrapper {
         // If we're asking for the Uri for the conversation list, we return a forwarding URI
         // so that we can intercept update/delete and handle it ourselves
         if (columnIndex == sUriColumnIndex) {
-            Uri uri = Uri.parse(super.getString(columnIndex));
+            Uri uri = Uri.parse(sUnderlyingCursor.getString(columnIndex));
             return uriToCachingUriString(uri);
         }
         Object obj = getCachedValue(columnIndex);
         if (obj != null) return (String)obj;
-        return super.getString(columnIndex);
+        return sUnderlyingCursor.getString(columnIndex);
     }
 
     @Override
     public byte[] getBlob(int columnIndex) {
         Object obj = getCachedValue(columnIndex);
         if (obj != null) return (byte[])obj;
-        return super.getBlob(columnIndex);
+        return sUnderlyingCursor.getBlob(columnIndex);
     }
 
     /**
@@ -421,7 +553,7 @@ public class ConversationCursor extends CursorWrapper {
         @Override
         public void onChange(boolean selfChange) {
             // If we're here, then something outside of the UI has changed the data, and we
-            // must requery to get that data from the underlying provider
+            // must query the underlying provider for that data
             if (DEBUG) {
                 Log.d(TAG, "Underlying conversation cursor changed; requerying");
             }
@@ -655,9 +787,122 @@ public class ConversationCursor extends CursorWrapper {
     public interface ConversationListener {
         // The UI has deleted items at the positions referenced in the array
         public void onDeletedItems(ArrayList<Integer> positions);
-        // The UI has changeditems at the positions referenced in the array
+        // The UI has changed items at the positions referenced in the array
         public void onChangedItems(String columnName, ArrayList<Integer> positions);
-        // We've received new data from a sync (i.e. outside the UI)
-        public void onNewSyncData();
+        // Data in the underlying provider has changed; a refresh is required to sync up
+        public void onRefreshRequired();
+        // We've completed a requested refresh of the underlying cursor
+        public void onRefreshReady();
+    }
+
+    @Override
+    public boolean isFirst() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isLast() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isBeforeFirst() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isAfterLast() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getColumnIndex(String columnName) {
+        return sUnderlyingCursor.getColumnIndex(columnName);
+    }
+
+    @Override
+    public int getColumnIndexOrThrow(String columnName) throws IllegalArgumentException {
+        return sUnderlyingCursor.getColumnIndexOrThrow(columnName);
+    }
+
+    @Override
+    public String getColumnName(int columnIndex) {
+        return sUnderlyingCursor.getColumnName(columnIndex);
+    }
+
+    @Override
+    public String[] getColumnNames() {
+        return sUnderlyingCursor.getColumnNames();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return sUnderlyingCursor.getColumnCount();
+    }
+
+    @Override
+    public void copyStringToBuffer(int columnIndex, CharArrayBuffer buffer) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getType(int columnIndex) {
+        return sUnderlyingCursor.getType(columnIndex);
+    }
+
+    @Override
+    public boolean isNull(int columnIndex) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void deactivate() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isClosed() {
+        return sUnderlyingCursor.isClosed();
+    }
+
+    @Override
+    public void registerContentObserver(ContentObserver observer) {
+    }
+
+    @Override
+    public void unregisterContentObserver(ContentObserver observer) {
+    }
+
+    @Override
+    public void registerDataSetObserver(DataSetObserver observer) {
+    }
+
+    @Override
+    public void unregisterDataSetObserver(DataSetObserver observer) {
+    }
+
+    @Override
+    public void setNotificationUri(ContentResolver cr, Uri uri) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean getWantsAllOnMoveCalls() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Bundle getExtras() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Bundle respond(Bundle extras) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean requery() {
+        return true;
     }
 }
