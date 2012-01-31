@@ -31,7 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -47,17 +46,18 @@ import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.ui.AnimatedAdapter;
+import com.android.mail.ui.AnimatedListView;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
-import com.android.mail.ui.ViewMode;
 
 import java.util.ArrayList;
 
 public class ConversationListActivity extends Activity implements OnItemSelectedListener,
         OnItemClickListener, ConversationSetObserver, ConversationListener {
 
-    private ListView mListView;
-    private ConversationItemAdapter mListAdapter;
+    private AnimatedListView mListView;
+    private AnimatedAdapter mListAdapter;
     private ConversationCursor mConversationListCursor;
     private Spinner mAccountsSpinner;
     private AccountsSpinnerAdapter mAccountsAdapter;
@@ -71,7 +71,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conversation_list_activity);
-        mListView = (ListView) findViewById(R.id.browse_list);
+        mListView = (AnimatedListView) findViewById(R.id.browse_list);
         mListView.setOnItemClickListener(this);
         mAccountsSpinner = (Spinner) findViewById(R.id.accounts_spinner);
         mResolver = getContentResolver();
@@ -134,26 +134,6 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         }
     }
 
-    class ConversationItemAdapter extends SimpleCursorAdapter {
-
-        public ConversationItemAdapter(Context context, int textViewResourceId,
-                ConversationCursor cursor) {
-            super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
-        }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            ConversationItemView view = new ConversationItemView(context, mSelectedAccount.name);
-            return view;
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            ((ConversationItemView) view).bind(cursor, null, mSelectedAccount.name, null,
-                    new ViewMode(ConversationListActivity.this), mBatchConversations);
-        }
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // Get an account and a folder list
@@ -183,8 +163,8 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         mConversationListCursor =
                 ConversationCursor.create(this, UIProvider.ConversationColumns.MESSAGE_LIST_URI,
                         conversationListUri, UIProvider.CONVERSATION_PROJECTION, null, null, null);
-        mListAdapter = new ConversationItemAdapter(this, R.layout.conversation_item_view_normal,
-                mConversationListCursor);
+        mListAdapter = new AnimatedAdapter(this, position, mConversationListCursor,
+                mBatchConversations, mSelectedAccount);
         mListView.setAdapter(mListAdapter);
         mConversationListCursor.setListener(this);
     }
@@ -212,7 +192,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(this,
-                mBatchConversations);
+                mBatchConversations, mListView);
         mSelectedConversationsActionMenu.activate();
     }
 
@@ -225,9 +205,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
     @Override
     public void onDeletedItems(ArrayList<Integer> positions) {
-        // For now, redraw the list
-        // Trigger of delete animation code would go here...
-        mListAdapter.notifyDataSetChanged();
+        // This is where we would validate the list adapter.
         // Temporary logging
         Log.d("Deleted", "" + positions);
     }

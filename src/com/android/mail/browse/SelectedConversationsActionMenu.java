@@ -20,6 +20,8 @@ package com.android.mail.browse;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.ui.AnimatedListView;
+import com.android.mail.ui.ActionCompleteListener;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.utils.LogUtils;
@@ -40,7 +42,7 @@ import android.view.MenuItem;
  * ContextMode} specific to operating on a set of conversations.
  */
 public class SelectedConversationsActionMenu implements ActionMode.Callback,
-        ConversationSetObserver {
+        ConversationSetObserver, ActionCompleteListener {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -60,10 +62,15 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private Menu mMenu;
 
-    public SelectedConversationsActionMenu(Activity activity, ConversationSelectionSet selectionSet) {
+    private AnimatedListView mList;
+
+    public SelectedConversationsActionMenu(Activity activity,
+            ConversationSelectionSet selectionSet, AnimatedListView list) {
         mSelectionSet = selectionSet;
         mActivity = activity;
         mContext = mActivity;
+        mList = list;
+        mList.setOnActionCompleteListener(this);
     }
 
     @Override
@@ -72,8 +79,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         Collection<Conversation> conversations = mSelectionSet.values();
         switch (item.getItemId()) {
             case R.id.delete:
-                Conversation.delete(mActivity, conversations);
-                mSelectionSet.clear();
+                mList.delete(conversations);
                 break;
             case R.id.read_unread:
                 Iterator<Conversation> it = conversations.iterator();
@@ -232,5 +238,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 item.setEnabled(enable);
             }
         }
+    }
+
+    @Override
+    public void onActionComplete() {
+        // This is where we actually delete.
+        Conversation.delete(mActivity, mSelectionSet.values());
+        mSelectionSet.clear();
     }
 }

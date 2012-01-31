@@ -1,0 +1,125 @@
+/*
+ * Copyright (C) 2012 Google Inc.
+ * Licensed to The Android Open Source Project.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.mail.ui;
+
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.database.Cursor;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.SimpleCursorAdapter;
+
+import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.ConversationItemView;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.ActionCompleteListener;
+import com.android.mail.ui.AnimatingItemView;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+public class AnimatedAdapter extends SimpleCursorAdapter implements
+        android.animation.Animator.AnimatorListener {
+    private HashSet<Integer> mDeletingItems = new HashSet<Integer>();
+    private Account mSelectedAccount;
+    private Context mContext;
+    private ConversationSelectionSet mBatchConversations;
+    private ActionCompleteListener mDeleteListener;
+
+    public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
+            ConversationSelectionSet batch, Account account) {
+        super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
+        mContext = context;
+        mBatchConversations = batch;
+        mSelectedAccount = account;
+    }
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        ConversationItemView view = new ConversationItemView(context, mSelectedAccount.name);
+        return view;
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        if (!isPositionAnimating(view)) {
+            ((ConversationItemView) view).bind(cursor, null, mSelectedAccount.name, null,
+                    new ViewMode(mContext), mBatchConversations);
+        }
+    }
+
+    private boolean isPositionAnimating(View view) {
+        return (view instanceof AnimatingItemView);
+    }
+
+    public void delete(ArrayList<Integer> positions, ActionCompleteListener listener) {
+        mDeletingItems.addAll(positions);
+        mDeleteListener = listener;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (isPositionAnimating(position)) {
+            return getAnimatingView(position, convertView, parent);
+        }
+        return super.getView(position, convertView, parent);
+    }
+
+    private View getAnimatingView(int position, View convertView, ViewGroup parent) {
+        Conversation conversation = Conversation.from((ConversationCursor) getItem(position));
+        conversation.position = position;
+        return new AnimatingItemView(mContext, conversation, this);
+    }
+
+    private boolean isPositionAnimating(int position) {
+        return mDeletingItems.contains(position);
+    }
+
+    @Override
+    public void onAnimationStart(Animator animation) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void onAnimationEnd(Animator animation) {
+        if (!mDeletingItems.isEmpty()) {
+            // See if we have received all the animations we expected; if so,
+            // call the listener and reset it.
+            int position = ((AnimatingItemView) ((ObjectAnimator) animation).getTarget()).getData().position;
+            mDeletingItems.remove(position);
+            if (mDeletingItems.isEmpty()) {
+                mDeleteListener.onActionComplete();
+                mDeleteListener = null;
+            }
+        }
+    }
+
+    @Override
+    public void onAnimationCancel(Animator animation) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator animation) {
+        // TODO Auto-generated method stub
+    }
+}

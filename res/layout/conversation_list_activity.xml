@@ -23,9 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
     </Spinner>
-    <ListView
+    <com.android.mail.ui.AnimatedListView
         android:id="@+id/browse_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </ListView>
+    </com.android.mail.ui.AnimatedListView>
 </LinearLayout>
