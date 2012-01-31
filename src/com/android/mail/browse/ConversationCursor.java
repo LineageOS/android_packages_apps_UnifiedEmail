@@ -549,13 +549,13 @@ public final class ConversationCursor implements Cursor {
 
         @Override
         public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-            updateLocal(uri, values, false);
+            updateLocal(uri, values);
             return ProviderExecute.opUpdate(uri, values);
         }
 
         @Override
         public int delete(Uri uri, String selection, String[] selectionArgs) {
-            deleteLocal(uri, false);
+            deleteLocal(uri);
             return ProviderExecute.opDelete(uri);
         }
 
@@ -631,70 +631,28 @@ public final class ConversationCursor implements Cursor {
             // Placeholder for now; there's no local insert
         }
 
-        private void deleteLocal(Uri uri, boolean batch) {
+        private void deleteLocal(Uri uri) {
             Uri underlyingUri = uriFromCachingUri(uri);
             String uriString = underlyingUri.toString();
             cacheValue(uriString, DELETED_COLUMN, true);
-            if (!batch && sListener != null) {
-                ArrayList<Integer> positions = getPositionsFromUriString(uriString);
-                if (positions != null) {
-                    sListener.onDeletedItems(positions);
-                }
-            }
         }
 
-       private void updateLocal(Uri uri, ContentValues values, boolean batch) {
+        private void updateLocal(Uri uri, ContentValues values) {
             Uri underlyingUri = uriFromCachingUri(uri);
             // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
             String uriString =  Uri.decode(underlyingUri.toString());
             for (String columnName: values.keySet()) {
                 cacheValue(uriString, columnName, values.get(columnName));
             }
-            if (!batch && sListener != null) {
-                ArrayList<Integer> positions = getPositionsFromUriString(uriString);
-                if (positions != null) {
-                    sListener.onUpdatedItems(positions);
-                }
-            }
         }
 
-       /**
-        * Given a uri string (for the conversation), return its position in the cursor (0 based)
-        * @param uriString the uri string to locate
-        * @return the position of the row holding uriString, or -1 if not found
-        */
-       private static int getPositionFromUriString(String uriString) {
-           sUnderlyingCursor.moveToPosition(-1);
-           int pos = 0;
-           while (sConversationCursor.moveToNext()) {
-               if (sUnderlyingCursor.getString(sUriColumnIndex).equals(uriString)) {
-                   return pos;
-               }
-               pos++;
-           }
-           return -1;
-       }
-
-       private static ArrayList<Integer> getPositionsFromUriString(String uriString) {
-           int pos = getPositionFromUriString(uriString);
-           if (pos >= 0) {
-               ArrayList<Integer> positions = new ArrayList<Integer>();
-               positions.add(pos);
-               return positions;
-           } else {
-               return null;
-           }
-       }
-
-       static boolean offUiThread() {
+        static boolean offUiThread() {
             return Looper.getMainLooper().getThread() != Thread.currentThread();
         }
 
         public ContentProviderResult[] apply(ArrayList<ConversationOperation> ops) {
             final HashMap<String, ArrayList<ContentProviderOperation>> batchMap =
                     new HashMap<String, ArrayList<ContentProviderOperation>>();
-            final ArrayList<Integer> deletePositions = new ArrayList<Integer>();
-            final ArrayList<Integer> updatePositions = new ArrayList<Integer>();
 
             // Execute locally and build CPO's for underlying provider
             for (ConversationOperation op: ops) {
@@ -706,24 +664,6 @@ public final class ConversationCursor implements Cursor {
                     batchMap.put(authority, authOps);
                 }
                 authOps.add(op.execute(underlyingUri));
-                int position = op.mPosition;
-                if (position != Conversation.NO_POSITION) {
-                    if (op.mType == ConversationOperation.DELETE) {
-                        deletePositions.add(position);
-                    } else if (op.mType == ConversationOperation.UPDATE) {
-                        updatePositions.add(position);
-                    }
-                }
-            }
-
-            // Send out notifications for what we've done
-            if (sListener != null) {
-                if (!deletePositions.isEmpty()) {
-                    sListener.onDeletedItems(deletePositions);
-                }
-                if (!updatePositions.isEmpty()) {
-                    sListener.onUpdatedItems(updatePositions);
-                }
             }
 
             // Send changes to underlying provider
@@ -766,7 +706,6 @@ public final class ConversationCursor implements Cursor {
         private final int mType;
         private final Uri mUri;
         private final ContentValues mValues;
-        private final int mPosition;
 
         public ConversationOperation(int type, Conversation conv) {
             this(type, conv, null);
@@ -776,16 +715,15 @@ public final class ConversationCursor implements Cursor {
             mType = type;
             mUri = conv.messageListUri;
             mValues = values;
-            mPosition = conv.position;
         }
 
         private ContentProviderOperation execute(Uri underlyingUri) {
             switch(mType) {
                 case DELETE:
-                    sProvider.deleteLocal(mUri, true);
+                    sProvider.deleteLocal(mUri);
                     return ContentProviderOperation.newDelete(underlyingUri).build();
                 case UPDATE:
-                    sProvider.updateLocal(mUri, mValues, true);
+                    sProvider.updateLocal(mUri, mValues);
                     return ContentProviderOperation.newUpdate(underlyingUri)
                             .withValues(mValues)
                             .build();
@@ -805,10 +743,6 @@ public final class ConversationCursor implements Cursor {
      * notify on deletions
      */
     public interface ConversationListener {
-        // The UI has deleted items at the positions referenced in the array
-        public void onDeletedItems(ArrayList<Integer> positions);
-        // The UI has updated items at the positions referenced in the array
-        public void onUpdatedItems(ArrayList<Integer> positions);
         // Data in the underlying provider has changed; a refresh is required to sync up
         public void onRefreshRequired();
         // We've completed a requested refresh of the underlying cursor

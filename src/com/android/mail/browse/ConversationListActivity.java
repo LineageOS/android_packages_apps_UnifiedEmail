@@ -181,6 +181,8 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         if (!conv.read) {
             conv.read = true;
             conv.updateBoolean(this, ConversationColumns.READ, true);
+            // For now, update the display
+            mListAdapter.notifyDataSetChanged();
         }
     }
 
@@ -202,23 +204,6 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     }
 
     // ConversationListener implementation
-
-    @Override
-    public void onDeletedItems(ArrayList<Integer> positions) {
-        // This is where we would validate the list adapter.
-        // Temporary logging
-        Log.d("Deleted", "" + positions);
-    }
-
-    @Override
-    public void onUpdatedItems(ArrayList<Integer> positions) {
-        // For now, redraw the list
-        // Could just update individual views, if desired
-        mListAdapter.notifyDataSetChanged();
-        // Temporary logging
-        Log.d("Updated", "" + positions);
-    }
-
     // Underlying provider updates, etc.
 
     /**

@@ -36,6 +36,7 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.SimpleCursorAdapter;
 
 /**
  * A component that displays a custom view for an {@code ActionBar}'s {@code
@@ -77,20 +78,18 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         boolean handled = true;
         Collection<Conversation> conversations = mSelectionSet.values();
+        SimpleCursorAdapter adapter = (SimpleCursorAdapter)mList.getAdapter();
         switch (item.getItemId()) {
             case R.id.delete:
                 mList.delete(conversations);
                 break;
             case R.id.read_unread:
-                Iterator<Conversation> it = conversations.iterator();
-                if (it.hasNext()) {
-                    Conversation conv = (Conversation)it.next();
-                    // Is this right?  I'm guessing they must all be in the same state
-                    boolean read = conv.read;
-                    Conversation.updateBoolean(mActivity, conversations, ConversationColumns.READ,
-                            !read);
-                }
+                // TODO: Interpret properly (rather than as "mark read")
+                Conversation.updateBoolean(mActivity, conversations, ConversationColumns.READ,
+                        true);
                 mSelectionSet.clear();
+                // Redraw with changes
+                adapter.notifyDataSetChanged();
                 break;
             case R.id.star:
                 if (conversations.size() > 0) {
@@ -98,6 +97,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                              ConversationColumns.STARRED, true);
                 }
                 mSelectionSet.clear();
+                // Redraw with changes
+                adapter.notifyDataSetChanged();
                 break;
             default:
                 handled = false;
