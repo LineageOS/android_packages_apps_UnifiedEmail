@@ -45,23 +45,23 @@ public class ViewMode {
     /**
      * Mode when showing a single conversation.
      */
-    public static int CONVERSATION = 1;
+    public static final int CONVERSATION = 1;
     /**
      * Mode when showing a list of conversations
      */
-    public static int CONVERSATION_LIST = 2;
+    public static final int CONVERSATION_LIST = 2;
     /**
      * Mode when showing a list of folders.
      */
-    public static int FOLDER_LIST = 3;
+    public static final int FOLDER_LIST = 3;
     /**
      * Mode when showing results from user search.
      */
-    public static int SEARCH_RESULTS = 4;
+    public static final int SEARCH_RESULTS = 4;
     /**
      * Uncertain mode. The mode has not been initialized.
      */
-    public static int UNKNOWN = 0;
+    public static final int UNKNOWN = 0;
 
     // Key used to save this {@link ViewMode}.
     private static final String VIEW_MODE_KEY = "view-mode";
