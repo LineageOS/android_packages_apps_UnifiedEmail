@@ -46,6 +46,7 @@ import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.ui.ActionCompleteListener;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.AnimatedListView;
 import com.android.mail.ui.ConversationSelectionSet;
@@ -54,7 +55,7 @@ import com.android.mail.ui.ConversationSetObserver;
 import java.util.ArrayList;
 
 public class ConversationListActivity extends Activity implements OnItemSelectedListener,
-        OnItemClickListener, ConversationSetObserver, ConversationListener {
+        OnItemClickListener, ConversationSetObserver, ConversationListener, ActionCompleteListener {
 
     private AnimatedListView mListView;
     private AnimatedAdapter mListAdapter;
@@ -219,6 +220,16 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     }
 
     /**
+     * Complete the cursor refresh process by swapping cursors and redrawing
+     */
+    private void finishRefresh() {
+        // Swap cursors
+        mConversationListCursor.swapCursors();
+        // Redraw with new data
+        mListAdapter.notifyDataSetChanged();
+    }
+
+    /**
      * Called when new data from the underlying provider is ready for use
      * swapCursors() causes the cursor to reflect the refreshed data
      * notifyDataSetChanged() causes the list to redraw
@@ -227,9 +238,17 @@ public class ConversationListActivity extends Activity implements OnItemSelected
      */
     @Override
     public void onRefreshReady() {
-        // Swap cursors
-        mConversationListCursor.swapCursors();
-        // Redraw with new data
-        mListAdapter.notifyDataSetChanged();
+        ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
+        // If we have any deletions from the server, animate them away
+        if (!deletedRows.isEmpty()) {
+            mListAdapter.delete(deletedRows, this);
+        } else {
+            finishRefresh();
+        }
+    }
+
+    @Override
+    public void onActionComplete() {
+        finishRefresh();
     }
 }

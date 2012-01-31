@@ -36,6 +36,8 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.ConversationColumns;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -325,12 +327,86 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
+    /**
+     * Put the refreshed cursor in place (called by the UI)
+     */
     public void swapCursors() {
         if (sRequeryCursor == null) {
             throw new IllegalStateException("Can't swap cursors; no requery done");
         }
         resetCursor(sRequeryCursor);
         sRequeryCursor = null;
+        sRequeryInProgress = false;
+    }
+
+    /**
+     * Cancel a refresh in progress
+     */
+    public void cancelRefresh() {
+        synchronized(sCacheMapLock) {
+            // Mark the requery closed
+            sRequeryInProgress = false;
+            // If we have the cursor, close it; otherwise, it will get closed when the query
+            // finishes (it checks sRequeryInProgress)
+            if (sRequeryCursor != null) {
+                sRequeryCursor.close();
+                sRequeryCursor = null;
+            }
+        }
+    }
+
+    /**
+     * Get a list of deletions from ConversationCursor to the refreshed cursor that hasn't yet
+     * been swapped into place; this allows the UI to animate these away if desired
+     * @return a list of positions deleted in ConversationCursor
+     */
+    public ArrayList<Integer> getRefreshDeletions () {
+        Cursor deviceCursor = sConversationCursor;
+        Cursor serverCursor = sRequeryCursor;
+        ArrayList<Integer> deleteList = new ArrayList<Integer>();
+        int serverCount = serverCursor.getCount();
+        int deviceCount = deviceCursor.getCount();
+        deviceCursor.moveToFirst();
+        serverCursor.moveToFirst();
+        while (serverCount > 0 || deviceCount > 0) {
+            if (serverCount == 0) {
+                for (; deviceCount > 0; deviceCount--)
+                    deleteList.add(deviceCursor.getPosition());
+                break;
+            } else if (deviceCount == 0) {
+                break;
+            }
+            long deviceMs = deviceCursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
+            long serverMs = serverCursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
+            String deviceUri = deviceCursor.getString(UIProvider.CONVERSATION_URI_COLUMN);
+            String serverUri = serverCursor.getString(UIProvider.CONVERSATION_URI_COLUMN);
+            deviceCursor.moveToNext();
+            serverCursor.moveToNext();
+            serverCount--;
+            deviceCount--;
+            if (serverMs == deviceMs) {
+                // Check for duplicates here; if our identical dates refer to different messages,
+                // we'll just quit here for now (at worst, this will cause a non-animating delete)
+                // My guess is that this happens VERY rarely, if at all
+                if (!deviceUri.equals(serverUri)) {
+                    // To do this right, we'd find all of the rows with the same ms (date), etc...
+                    //return deleteList;
+                }
+                continue;
+            } else if (deviceMs > serverMs) {
+                deleteList.add(deviceCursor.getPosition() - 1);
+                // Move back because we've already advanced cursor (that's why we subtract 1 above)
+                serverCount++;
+                serverCursor.moveToPrevious();
+            } else if (serverMs > deviceMs) {
+                // If we wanted to track insertions, we'd so so here
+                // Move back because we've already advanced cursor
+                deviceCount++;
+                deviceCursor.moveToPrevious();
+            }
+        }
+        Log.d(TAG, "Deletions: " + deleteList);
+        return deleteList;
     }
 
     /**
@@ -351,12 +427,18 @@ public final class ConversationCursor implements Cursor {
                 sRequeryCursor =
                         mResolver.query(qUri, qProjection, qSelection, qSelectionArgs, qSortOrder);
                 // Make sure window is full
-                sRequeryCursor.getCount();
-                sActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        sListener.onRefreshReady();
-                    }});
+                synchronized(sCacheMapLock) {
+                    if (sRequeryInProgress) {
+                        sRequeryCursor.getCount();
+                        sActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sListener.onRefreshReady();
+                            }});
+                    } else {
+                        cancelRefresh();
+                    }
+                }
             }
         }).start();
         return true;
