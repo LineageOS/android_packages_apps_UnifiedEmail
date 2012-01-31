@@ -34,6 +34,7 @@ import com.android.mail.ui.ActionCompleteListener;
 import com.android.mail.ui.AnimatingItemView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
@@ -43,6 +44,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Context mContext;
     private ConversationSelectionSet mBatchConversations;
     private ActionCompleteListener mDeleteListener;
+    private HashMap<Integer, AnimatingItemView> mAnimatingViews =
+            new HashMap<Integer, AnimatingItemView>();
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account) {
@@ -85,9 +88,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     private View getAnimatingView(int position, View convertView, ViewGroup parent) {
-        Conversation conversation = Conversation.from((ConversationCursor) getItem(position));
-        conversation.position = position;
-        return new AnimatingItemView(mContext, conversation, this);
+        AnimatingItemView view = mAnimatingViews.get(position);
+        if (view == null) {
+            Conversation conversation = Conversation.from((ConversationCursor) getItem(position));
+            conversation.position = position;
+            view = new AnimatingItemView(mContext, conversation, this);
+        }
+        return view;
     }
 
     private boolean isPositionAnimating(int position) {
@@ -104,9 +111,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (!mDeletingItems.isEmpty()) {
             // See if we have received all the animations we expected; if so,
             // call the listener and reset it.
-            int position = ((AnimatingItemView) ((ObjectAnimator) animation).getTarget()).getData().position;
+            int position = ((AnimatingItemView)
+                    ((ObjectAnimator) animation).getTarget()).getData().position;
             mDeletingItems.remove(position);
             if (mDeletingItems.isEmpty()) {
+                mAnimatingViews.clear();
                 mDeleteListener.onActionComplete();
                 mDeleteListener = null;
             }

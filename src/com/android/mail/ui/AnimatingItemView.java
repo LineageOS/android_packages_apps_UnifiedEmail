@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.R;
+
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -47,11 +49,11 @@ public class AnimatingItemView extends LinearLayout {
         this(context);
         mData = item;
         setMinimumHeight(140);
-        setBackgroundColor(0x33ccff);
+        setBackgroundResource(R.drawable.list_activated_holo);
         mAnimator = ObjectAnimator.ofInt(this, "animatedHeight", 140, 0);
         mAnimatedHeight = 140;
         mAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
-        mAnimator.setDuration(500);
+        mAnimator.setDuration(300);
         mAnimator.addListener(listener);
         mAnimator.start();
     }
