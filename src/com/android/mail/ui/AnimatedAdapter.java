@@ -118,13 +118,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 mAnimatingViews.clear();
                 mDeleteListener.onActionComplete();
                 mDeleteListener = null;
+                notifyDataSetChanged();
             }
         }
     }
 
     @Override
     public void onAnimationCancel(Animator animation) {
-        // TODO Auto-generated method stub
+        onAnimationEnd(animation);
     }
 
     @Override

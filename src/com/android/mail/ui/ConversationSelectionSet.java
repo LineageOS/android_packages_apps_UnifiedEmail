@@ -177,7 +177,6 @@ public class ConversationSelectionSet implements Parcelable {
         } else {
             put(conversationId, conversation);
         }
-
     }
 
     /** @see java.util.HashMap#values */
