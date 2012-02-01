@@ -84,6 +84,8 @@ public final class ConversationCursor implements Cursor {
     private static ConversationProvider sProvider;
     // Set when we're in the middle of a requery of the underlying cursor
     private static boolean sRequeryInProgress = false;
+    // Our sequence count (for changes sent to underlying provider)
+    private static int sSequence = 0;
 
     // Column names for this cursor
     private final String[] mColumnNames;
@@ -732,10 +734,11 @@ public final class ConversationCursor implements Cursor {
             return Looper.getMainLooper().getThread() != Thread.currentThread();
         }
 
-        public ContentProviderResult[] apply(ArrayList<ConversationOperation> ops) {
+        public void apply(ArrayList<ConversationOperation> ops) {
             final HashMap<String, ArrayList<ContentProviderOperation>> batchMap =
                     new HashMap<String, ArrayList<ContentProviderOperation>>();
-
+            // Increment sequence count
+            sSequence++;
             // Execute locally and build CPO's for underlying provider
             for (ConversationOperation op: ops) {
                 Uri underlyingUri = uriFromCachingUri(op.mUri);
@@ -752,7 +755,7 @@ public final class ConversationCursor implements Cursor {
             for (String authority: batchMap.keySet()) {
                 try {
                     if (offUiThread()) {
-                        return mResolver.applyBatch(authority, batchMap.get(authority));
+                        mResolver.applyBatch(authority, batchMap.get(authority));
                     } else {
                         final String auth = authority;
                         new Thread(new Runnable() {
@@ -765,14 +768,11 @@ public final class ConversationCursor implements Cursor {
                                 }
                            }
                         }).start();
-                        return new ContentProviderResult[ops.size()];
                     }
                 } catch (RemoteException e) {
                 } catch (OperationApplicationException e) {
                 }
             }
-            // Need to put together the results; ugh, in order
-            return null;
         }
     }
 
@@ -800,18 +800,21 @@ public final class ConversationCursor implements Cursor {
         }
 
         private ContentProviderOperation execute(Uri underlyingUri) {
+            Uri uri = underlyingUri.buildUpon()
+                    .appendQueryParameter("seq", Integer.toString(sSequence))
+                    .build();
             switch(mType) {
                 case DELETE:
                     sProvider.deleteLocal(mUri);
-                    return ContentProviderOperation.newDelete(underlyingUri).build();
+                    return ContentProviderOperation.newDelete(uri).build();
                 case UPDATE:
                     sProvider.updateLocal(mUri, mValues);
-                    return ContentProviderOperation.newUpdate(underlyingUri)
+                    return ContentProviderOperation.newUpdate(uri)
                             .withValues(mValues)
                             .build();
                 case INSERT:
                     sProvider.insertLocal(mUri, mValues);
-                    return ContentProviderOperation.newInsert(underlyingUri)
+                    return ContentProviderOperation.newInsert(uri)
                             .withValues(mValues).build();
                 default:
                     throw new UnsupportedOperationException(

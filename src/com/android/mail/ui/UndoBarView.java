@@ -17,12 +17,14 @@ package com.android.mail.ui;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.UIProvider;
 import com.google.common.collect.ImmutableSet;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorInflater;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -98,8 +100,13 @@ public class UndoBarView extends FrameLayout {
             @Override
             public void onClick(View widget) {
                 if (account.undoUri != null) {
-                    context.getContentResolver().query(Uri.parse(account.undoUri), null, null,
-                            null, null);
+                    // NOTE: We might want undo to return the messages affected, in which case
+                    // the resulting cursor might be interesting...
+                    Cursor c = context.getContentResolver().query(Uri.parse(account.undoUri),
+                            UIProvider.UNDO_PROJECTION, null, null, null);
+                    if (c != null) {
+                        c.close();
+                    }
                 }
                 hide(true);
             }
