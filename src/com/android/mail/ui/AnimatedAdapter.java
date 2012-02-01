@@ -34,6 +34,7 @@ import com.android.mail.ui.ActionCompleteListener;
 import com.android.mail.ui.AnimatingItemView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -43,7 +44,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Account mSelectedAccount;
     private Context mContext;
     private ConversationSelectionSet mBatchConversations;
-    private ActionCompleteListener mDeleteListener;
+    private ActionCompleteListener mActionCompleteListener;
     private HashMap<Integer, AnimatingItemView> mAnimatingViews =
             new HashMap<Integer, AnimatingItemView>();
 
@@ -73,9 +74,21 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return (view instanceof AnimatingItemView);
     }
 
-    public void delete(ArrayList<Integer> positions, ActionCompleteListener listener) {
-        mDeletingItems.addAll(positions);
-        mDeleteListener = listener;
+    public void delete(Collection<Conversation> conversations,
+            ActionCompleteListener listener) {
+        // Animate out the positions.
+        // Call when all the animations are complete.
+        ArrayList<Integer> positions = new ArrayList<Integer>();
+        for (Conversation c : conversations) {
+            positions.add(c.position);
+        }
+        mActionCompleteListener = listener;
+        delete(positions);
+    }
+
+
+    public void delete(ArrayList<Integer> deletedRows) {
+        mDeletingItems.addAll(deletedRows);
         notifyDataSetChanged();
     }
 
@@ -116,8 +129,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mDeletingItems.remove(position);
             if (mDeletingItems.isEmpty()) {
                 mAnimatingViews.clear();
-                mDeleteListener.onActionComplete();
-                mDeleteListener = null;
+                if (mActionCompleteListener != null) {
+                    mActionCompleteListener.onActionComplete();
+                    mActionCompleteListener = null;
+                }
                 notifyDataSetChanged();
             }
         }

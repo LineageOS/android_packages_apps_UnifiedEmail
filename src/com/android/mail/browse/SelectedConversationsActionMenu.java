@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.AnimatedListView;
 import com.android.mail.ui.ActionCompleteListener;
 import com.android.mail.ui.ConversationSelectionSet;
@@ -63,25 +64,23 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private Menu mMenu;
 
-    private AnimatedListView mList;
+    private AnimatedAdapter mListAdapter;
 
     public SelectedConversationsActionMenu(Activity activity,
-            ConversationSelectionSet selectionSet, AnimatedListView list) {
+            ConversationSelectionSet selectionSet, AnimatedAdapter adapter) {
         mSelectionSet = selectionSet;
         mActivity = activity;
         mContext = mActivity;
-        mList = list;
-        mList.setOnActionCompleteListener(this);
+        mListAdapter = adapter;
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         boolean handled = true;
         Collection<Conversation> conversations = mSelectionSet.values();
-        SimpleCursorAdapter adapter = (SimpleCursorAdapter)mList.getAdapter();
         switch (item.getItemId()) {
             case R.id.delete:
-                mList.delete(conversations);
+                mListAdapter.delete(conversations, this);
                 break;
             case R.id.read_unread:
                 // TODO: Interpret properly (rather than as "mark read")
@@ -89,7 +88,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                         true);
                 mSelectionSet.clear();
                 // Redraw with changes
-                adapter.notifyDataSetChanged();
+                mListAdapter.notifyDataSetChanged();
                 break;
             case R.id.star:
                 if (conversations.size() > 0) {
@@ -98,7 +97,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 }
                 mSelectionSet.clear();
                 // Redraw with changes
-                adapter.notifyDataSetChanged();
+                mListAdapter.notifyDataSetChanged();
                 break;
             default:
                 handled = false;

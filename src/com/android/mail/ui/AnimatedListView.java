@@ -21,14 +21,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
-import com.android.mail.providers.Conversation;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
-public class AnimatedListView extends ListView implements ActionCompleteListener {
-    private ActionCompleteListener mActionCompleteListener;
-
+public class AnimatedListView extends ListView {
     public AnimatedListView(Context context) {
         this(context, null);
     }
@@ -39,24 +32,5 @@ public class AnimatedListView extends ListView implements ActionCompleteListener
 
     public AnimatedListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-    }
-
-    public void delete(Collection<Conversation> conversations) {
-        // Animate out the positions.
-        // Call when all the animations are complete.
-        ArrayList<Integer> positions = new ArrayList<Integer>();
-        for (Conversation c : conversations) {
-            positions.add(c.position);
-        }
-        ((AnimatedAdapter)getAdapter()).delete(positions, this);
-    }
-
-    public void setOnActionCompleteListener(ActionCompleteListener listener) {
-        mActionCompleteListener = listener;
-    }
-
-    @Override
-    public void onActionComplete() {
-        mActionCompleteListener.onActionComplete();
     }
 }

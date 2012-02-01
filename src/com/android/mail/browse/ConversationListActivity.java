@@ -195,7 +195,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(this,
-                mBatchConversations, mListView);
+                mBatchConversations, mListAdapter);
         mSelectedConversationsActionMenu.activate();
     }
 
@@ -241,7 +241,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
         // If we have any deletions from the server, animate them away
         if (!deletedRows.isEmpty()) {
-            mListAdapter.delete(deletedRows, this);
+            mListAdapter.delete(deletedRows);
         } else {
             finishRefresh();
         }
