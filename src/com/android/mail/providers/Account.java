@@ -77,6 +77,12 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public String expungeMessageUri;
 
+    /**
+     * The content provider uri that can be used to undo the last operation
+     * performed.
+     */
+    public String undoUri;
+
     public Account(Parcel in) {
         super(in);
         providerVersion = in.readInt();
@@ -88,6 +94,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         saveDraftUri = in.readString();
         sendMessageUri = in.readString();
         expungeMessageUri = in.readString();
+        undoUri = in.readString();
     }
 
     public Account(String address, String type) {
@@ -105,6 +112,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         saveDraftUri = cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN);
         sendMessageUri = cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN);
         expungeMessageUri = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
+        undoUri = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
     }
 
     @Override
@@ -119,6 +127,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeString(saveDraftUri);
         dest.writeString(sendMessageUri);
         dest.writeString(expungeMessageUri);
+        dest.writeString(undoUri);
     }
 
     @SuppressWarnings("hiding")

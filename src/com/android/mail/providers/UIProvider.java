@@ -51,7 +51,8 @@ public class UIProvider {
             AccountColumns.ACCOUNT_FROM_ADDRESSES_URI,
             AccountColumns.SAVE_DRAFT_URI,
             AccountColumns.SEND_MAIL_URI,
-            AccountColumns.EXPUNGE_MESSAGE_URI
+            AccountColumns.EXPUNGE_MESSAGE_URI,
+            AccountColumns.UNDO_URI
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -65,6 +66,7 @@ public class UIProvider {
     public static final int ACCOUNT_SAVE_DRAFT_URI_COLUMN = 8;
     public static final int ACCOUNT_SEND_MESSAGE_URI_COLUMN = 9;
     public static final int ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN = 10;
+    public static final int ACCOUNT_UNDO_URI_COLUMN = 11;
 
     public static final class AccountCapabilities {
         public static final int SYNCABLE_FOLDERS = 0x0001;
@@ -142,6 +144,12 @@ public class UIProvider {
          * be an update operation on the messageUri.
          */
         public static final String EXPUNGE_MESSAGE_URI = "expungeMessageUri";
+
+        /**
+         * This string column contains the content provider uri that can be used
+         * to undo the last committed action.
+         */
+        public static String UNDO_URI = "undoUri";
     }
 
     // We define a "folder" as anything that contains a list of conversations.

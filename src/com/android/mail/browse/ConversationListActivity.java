@@ -23,7 +23,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +50,7 @@ import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.AnimatedListView;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
+import com.android.mail.ui.UndoBarView;
 
 import java.util.ArrayList;
 
@@ -67,6 +67,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     /** The selected conversations. */
     protected ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
     private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
+    private UndoBarView mUndoView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -195,7 +196,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(this,
-                mBatchConversations, mListAdapter);
+                mBatchConversations, mListAdapter, this);
         mSelectedConversationsActionMenu.activate();
     }
 
@@ -249,6 +250,11 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
     @Override
     public void onActionComplete() {
-        finishRefresh();
+        showUndo();
+    }
+
+    private void showUndo() {
+        mUndoView = (UndoBarView)findViewById(R.id.undo_view);
+        mUndoView.show(true, this, "undo", mSelectedAccount);
     }
 }

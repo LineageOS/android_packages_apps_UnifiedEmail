@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.mail;
+package com.android.mail.ui;
 
+import com.android.mail.R;
+import com.android.mail.providers.Account;
 import com.google.common.collect.ImmutableSet;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorInflater;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.Html;
@@ -89,26 +92,22 @@ public class UndoBarView extends FrameLayout {
      * Displays this view and makes it visible, binding the behavior to the
      * specified {@link UndoOperation}.
      */
-    public void show(final UndoHandler undoHandler, final UndoOperation undoOperation,
-            boolean animate) {
-        // If we have a null undo operation, don't show anything.
-        if (undoOperation == null) {
-            return;
-        }
+    public void show(boolean animate, final Context context, String description,
+            final Account account) {
         mUndoButtonView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View widget) {
-                undoHandler.performUndo(undoOperation);
+                if (account.undoUri != null) {
+                    context.getContentResolver().query(Uri.parse(account.undoUri), null, null,
+                            null, null);
+                }
+                hide(true);
             }
         });
         mStartShowTime = SystemClock.uptimeMillis();
         mHidden = false;
-        mUndoDescriptionView.setText(Html.fromHtml(undoOperation.mDescription));
-        if (animate) {
-            getUndoShowAnimation().start();
-        } else {
-            setVisibility(View.VISIBLE);
-        }
+        mUndoDescriptionView.setText(Html.fromHtml(description));
+        setVisibility(View.VISIBLE);
     }
 
     /**

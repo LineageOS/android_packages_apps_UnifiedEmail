@@ -21,7 +21,6 @@ import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
-import com.android.mail.ui.AnimatedListView;
 import com.android.mail.ui.ActionCompleteListener;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
@@ -29,7 +28,6 @@ import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,7 +35,6 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.SimpleCursorAdapter;
 
 /**
  * A component that displays a custom view for an {@code ActionBar}'s {@code
@@ -66,12 +63,16 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private AnimatedAdapter mListAdapter;
 
+    private ActionCompleteListener mActionCompleteListener;
+
     public SelectedConversationsActionMenu(Activity activity,
-            ConversationSelectionSet selectionSet, AnimatedAdapter adapter) {
+            ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
+            ActionCompleteListener listener) {
         mSelectionSet = selectionSet;
         mActivity = activity;
         mContext = mActivity;
         mListAdapter = adapter;
+        mActionCompleteListener = listener;
     }
 
     @Override
@@ -243,6 +244,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     @Override
     public void onActionComplete() {
         // This is where we actually delete.
+        mActionCompleteListener.onActionComplete();
         Conversation.delete(mActivity, mSelectionSet.values());
         mSelectionSet.clear();
     }
