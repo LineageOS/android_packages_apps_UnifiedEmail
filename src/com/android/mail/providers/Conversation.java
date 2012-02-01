@@ -155,8 +155,9 @@ public class Conversation implements Parcelable {
      * @param context the caller's context
      * @param columnName the column to update
      * @param value the new value
+     * @return the sequence number of the operation (for undo)
      */
-    public static void updateBoolean(Context context, Collection<Conversation> conversations,
+    public static int updateBoolean(Context context, Collection<Conversation> conversations,
             String columnName, boolean value) {
         ContentValues cv = new ContentValues();
         cv.put(columnName, value);
@@ -166,7 +167,7 @@ public class Conversation implements Parcelable {
                     new ConversationOperation(ConversationOperation.UPDATE, conv, cv);
             ops.add(op);
         }
-        apply(context, ops);
+        return apply(context, ops);
     }
 
     /**
@@ -182,25 +183,26 @@ public class Conversation implements Parcelable {
      * underlying provider
      * @param context the caller's context
      * @param conversations a collection of conversations
+     * @return the sequence number of the operation (for undo)
      */
-    public static void delete(Context context, Collection<Conversation> conversations) {
+    public static int delete(Context context, Collection<Conversation> conversations) {
         ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
         for (Conversation conv: conversations) {
             ConversationOperation op =
                     new ConversationOperation(ConversationOperation.DELETE, conv);
             ops.add(op);
         }
-        apply(context, ops);
+        return apply(context, ops);
     }
 
     // Convenience methods
-    private static void apply(Context context, ArrayList<ConversationOperation> operations) {
+    private static int apply(Context context, ArrayList<ConversationOperation> operations) {
         ContentProviderClient client =
                 context.getContentResolver().acquireContentProviderClient(
                         ConversationProvider.AUTHORITY);
         try {
             ConversationProvider cp = (ConversationProvider)client.getLocalContentProvider();
-            cp.apply(operations);
+            return cp.apply(operations);
         } finally {
             client.release();
         }

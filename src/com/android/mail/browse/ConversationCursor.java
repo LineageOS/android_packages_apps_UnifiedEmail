@@ -734,7 +734,7 @@ public final class ConversationCursor implements Cursor {
             return Looper.getMainLooper().getThread() != Thread.currentThread();
         }
 
-        public void apply(ArrayList<ConversationOperation> ops) {
+        public int apply(ArrayList<ConversationOperation> ops) {
             final HashMap<String, ArrayList<ContentProviderOperation>> batchMap =
                     new HashMap<String, ArrayList<ContentProviderOperation>>();
             // Increment sequence count
@@ -773,6 +773,7 @@ public final class ConversationCursor implements Cursor {
                 } catch (OperationApplicationException e) {
                 }
             }
+            return sSequence;
         }
     }
 
