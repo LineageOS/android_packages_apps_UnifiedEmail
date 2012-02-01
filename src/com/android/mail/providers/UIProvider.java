@@ -604,4 +604,9 @@ public class UIProvider {
         }
         statsUpdater.updateWithAddress(recipients);
     }
+
+    public static final String[] UNDO_PROJECTION = {
+        ConversationColumns.MESSAGE_LIST_URI
+    };
+    public static final int UNDO_MESSAGE_LIST_COLUMN = 0;
 }
