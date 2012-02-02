@@ -110,16 +110,14 @@ public class UndoBarView extends FrameLayout {
                         c.close();
                     }
                 }
-                hide(true);
+                setVisibility(View.GONE);
             }
         });
-        mStartShowTime = SystemClock.uptimeMillis();
-        mHidden = false;
         mUndoDescriptionView.setText(Html.fromHtml(description));
         mUndoDescriptionView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View widget) {
-                hide(true);
+                setVisibility(View.GONE);
             }
         });
         setVisibility(View.VISIBLE);

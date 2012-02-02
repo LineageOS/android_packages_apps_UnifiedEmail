@@ -15,35 +15,30 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:layout_width="match_parent">
 
     <Spinner android:id="@+id/accounts_spinner"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true">
     </Spinner>
 
-    <RelativeLayout
+    <com.android.mail.ui.AnimatedListView
+        android:id="@+id/browse_list"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_below="@id/accounts_spinner">
+    </com.android.mail.ui.AnimatedListView>
 
-        <com.android.mail.ui.AnimatedListView
-            android:id="@+id/browse_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true">
-        </com.android.mail.ui.AnimatedListView>
+    <com.android.mail.ui.UndoBarView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/undo_view"
+        android:layout_alignParentBottom="true">
+        <include layout="@layout/undo_bar"/>
+    </com.android.mail.ui.UndoBarView>
 
-        <com.android.mail.ui.UndoBarView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:id="@+id/undo_view"
-            android:layout_alignParentBottom="true">
-            <include layout="@layout/undo_bar"/>
-        </com.android.mail.ui.UndoBarView>
-
-    </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>
