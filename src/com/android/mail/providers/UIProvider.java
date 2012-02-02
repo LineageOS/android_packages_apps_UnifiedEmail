@@ -609,4 +609,7 @@ public class UIProvider {
         ConversationColumns.MESSAGE_LIST_URI
     };
     public static final int UNDO_MESSAGE_LIST_COLUMN = 0;
+
+    // Parameter used to indicate the sequence number for an undoable operation
+    public static final String SEQUENCE_QUERY_PARAMETER = "seq";
 }

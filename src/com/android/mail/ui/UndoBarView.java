@@ -102,6 +102,8 @@ public class UndoBarView extends FrameLayout {
                 if (account.undoUri != null) {
                     // NOTE: We might want undo to return the messages affected, in which case
                     // the resulting cursor might be interesting...
+                    // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate the set of
+                    // commands to undo
                     Cursor c = context.getContentResolver().query(Uri.parse(account.undoUri),
                             UIProvider.UNDO_PROJECTION, null, null, null);
                     if (c != null) {

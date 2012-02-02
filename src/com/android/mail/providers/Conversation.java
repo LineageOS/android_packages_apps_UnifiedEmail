@@ -141,11 +141,12 @@ public class Conversation implements Parcelable {
      * @param context the caller's context
      * @param columnName the column to update
      * @param value the new value
+     * @return the sequence number of the operation (for undo)
      */
-    public void updateBoolean(Context context, String columnName, boolean value) {
-        ContentValues cv = new ContentValues();
-        cv.put(columnName, value);
-        context.getContentResolver().update(messageListUri, cv, null, null);
+    public int updateBoolean(Context context, String columnName, boolean value) {
+        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
+        conversations.add(this);
+        return updateBoolean(context, conversations, columnName, value);
     }
 
     /**
@@ -173,9 +174,12 @@ public class Conversation implements Parcelable {
     /**
      * Delete a single conversation
      * @param context the caller's context
+     * @return the sequence number of the operation (for undo)
      */
-    public void delete(Context context) {
-        context.getContentResolver().delete(messageListUri, null, null);
+    public int delete(Context context) {
+        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
+        conversations.add(this);
+        return delete(context, conversations);
     }
 
     /**

@@ -20,7 +20,6 @@ package com.android.mail.browse;
 import android.app.Activity;
 import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.OperationApplicationException;
@@ -37,7 +36,6 @@ import android.util.Log;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.ConversationColumns;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -203,7 +201,7 @@ public final class ConversationCursor implements Cursor {
 
             // Swap cursor
             if (newCursor != null) {
-                sUnderlyingCursor.close();
+                close();
                 sUnderlyingCursor = newCursor;
             }
 
@@ -448,7 +446,10 @@ public final class ConversationCursor implements Cursor {
 
     public void close() {
         // Unregister our observer on the underlying cursor and close as usual
-        sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
+        if (mCursorObserverRegistered) {
+            sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
+            mCursorObserverRegistered = false;
+        }
         sUnderlyingCursor.close();
     }
 
@@ -496,6 +497,7 @@ public final class ConversationCursor implements Cursor {
     }
 
     public boolean moveToPosition(int pos) {
+        if (pos < -1 || pos >= getCount()) return false;
         if (pos == mPosition) return true;
         if (pos > mPosition) {
             while (pos > mPosition) {
@@ -802,7 +804,8 @@ public final class ConversationCursor implements Cursor {
 
         private ContentProviderOperation execute(Uri underlyingUri) {
             Uri uri = underlyingUri.buildUpon()
-                    .appendQueryParameter("seq", Integer.toString(sSequence))
+                    .appendQueryParameter(UIProvider.SEQUENCE_QUERY_PARAMETER,
+                            Integer.toString(sSequence))
                     .build();
             switch(mType) {
                 case DELETE:
@@ -907,18 +910,22 @@ public final class ConversationCursor implements Cursor {
 
     @Override
     public void registerContentObserver(ContentObserver observer) {
+        sUnderlyingCursor.registerContentObserver(observer);
     }
 
     @Override
     public void unregisterContentObserver(ContentObserver observer) {
+        sUnderlyingCursor.unregisterContentObserver(observer);
     }
 
     @Override
     public void registerDataSetObserver(DataSetObserver observer) {
+        sUnderlyingCursor.registerDataSetObserver(observer);
     }
 
     @Override
     public void unregisterDataSetObserver(DataSetObserver observer) {
+        sUnderlyingCursor.unregisterDataSetObserver(observer);
     }
 
     @Override

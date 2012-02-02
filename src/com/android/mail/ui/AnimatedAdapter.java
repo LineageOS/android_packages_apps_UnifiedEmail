@@ -23,6 +23,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 
 import com.android.mail.browse.ConversationCursor;
@@ -67,11 +68,33 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (!isPositionAnimating(view)) {
             ((ConversationItemView) view).bind(cursor, null, mSelectedAccount.name, null,
                     new ViewMode(mContext), mBatchConversations);
+        } else {
+            throw new IllegalStateException("Binding to animating view?");
         }
     }
 
     private boolean isPositionAnimating(View view) {
         return (view instanceof AnimatingItemView);
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return true;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        // Our normal view and the animating (not recycled) view
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        // Don't recycle animating views
+        if (isPositionAnimating(position)) {
+            return AdapterView.ITEM_VIEW_TYPE_IGNORE;
+        }
+        return 0;
     }
 
     public void delete(Collection<Conversation> conversations,
