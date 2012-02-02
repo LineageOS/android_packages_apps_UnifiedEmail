@@ -239,6 +239,7 @@ public class UIProvider {
     public static final String CONVERSATION_TYPE =
             "vnd.android.cursor.item/vnd.com.android.mail.conversation";
 
+
     public static final String[] CONVERSATION_PROJECTION = {
         BaseColumns._ID,
         ConversationColumns.URI,
