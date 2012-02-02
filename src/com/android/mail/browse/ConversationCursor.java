@@ -798,7 +798,7 @@ public final class ConversationCursor implements Cursor {
 
         public ConversationOperation(int type, Conversation conv, ContentValues values) {
             mType = type;
-            mUri = conv.messageListUri;
+            mUri = conv.uri;
             mValues = values;
         }
 

@@ -34,6 +34,7 @@ public class Conversation implements Parcelable {
     public static final int NO_POSITION = -1;
 
     public long id;
+    public Uri uri;
     public String subject;
     public long dateMs;
     public String snippet;
@@ -56,6 +57,7 @@ public class Conversation implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
+        dest.writeParcelable(uri, flags);
         dest.writeString(subject);
         dest.writeLong(dateMs);
         dest.writeString(snippet);
@@ -72,6 +74,7 @@ public class Conversation implements Parcelable {
 
     private Conversation(Parcel in) {
         id = in.readLong();
+        uri = in.readParcelable(null);
         subject = in.readString();
         dateMs = in.readLong();
         snippet = in.readString();
@@ -113,6 +116,7 @@ public class Conversation implements Parcelable {
     private Conversation(Cursor cursor) {
         if (cursor != null) {
             id = cursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
+            uri = Uri.parse(cursor.getString(UIProvider.CONVERSATION_URI_COLUMN));
             dateMs = cursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
             subject = cursor.getString(UIProvider.CONVERSATION_SUBJECT_COLUMN);
             // Don't allow null subject
