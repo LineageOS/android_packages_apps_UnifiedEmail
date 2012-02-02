@@ -118,7 +118,7 @@ public class ConversationItemViewCoordinates {
      */
     public static int getMode(Context context, ViewMode viewMode) {
         Resources res = context.getResources();
-        return viewMode.isConversationListMode() ? res
+        return viewMode.getMode() == ViewMode.CONVERSATION_LIST ? res
                 .getInteger(R.integer.conversation_list_header_mode) : res
                 .getInteger(R.integer.conversation_header_mode);
     }

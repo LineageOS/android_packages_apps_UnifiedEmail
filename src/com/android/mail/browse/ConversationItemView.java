@@ -118,6 +118,8 @@ public class ConversationItemView extends View {
 
     /** Whether we're running under test mode. */
     private boolean mTesting = false;
+    /** Whether we are on a tablet device or not */
+    private final boolean mTabletDevice;
 
     @VisibleForTesting
     ConversationItemViewCoordinates mCoordinates;
@@ -150,6 +152,8 @@ public class ConversationItemView extends View {
     public ConversationItemView(Context context, String account) {
         super(context);
         mContext = context.getApplicationContext();
+        mTabletDevice = Utils.useTabletUI(mContext);
+
         mAccount = account;
         Resources res = mContext.getResources();
 
@@ -380,7 +384,7 @@ public class ConversationItemView extends View {
     }
 
     private int getFontColor(int defaultColor) {
-        return isActivated() && mViewMode.isTwoPane() ? ACTIVATED_TEXT_COLOR
+        return isActivated() && mTabletDevice ? ACTIVATED_TEXT_COLOR
                 : defaultColor;
     }
 
@@ -732,7 +736,7 @@ public class ConversationItemView extends View {
 
     private void updateBackground(boolean isUnread) {
         if (isUnread) {
-            if (mViewMode.isTwoPane() && mViewMode.isConversationListMode()) {
+            if (mTabletDevice && mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
                 if (mChecked) {
                     setBackgroundResource(R.drawable.list_conversation_wide_unread_selected_holo);
                 } else {
@@ -746,7 +750,7 @@ public class ConversationItemView extends View {
                 }
             }
         } else {
-            if (mViewMode.isTwoPane() && mViewMode.isConversationListMode()) {
+            if (mTabletDevice && mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
                 if (mChecked) {
                     setBackgroundResource(R.drawable.list_conversation_wide_read_selected_holo);
                 } else {
@@ -763,7 +767,7 @@ public class ConversationItemView extends View {
     }
 
     private void setCheckedActivatedBackground() {
-        if (isActivated() && mViewMode.isTwoPane()) {
+        if (isActivated() && mTabletDevice) {
             setBackgroundResource(R.drawable.list_arrow_selected_holo);
         } else {
             setBackgroundResource(R.drawable.list_selected_holo);

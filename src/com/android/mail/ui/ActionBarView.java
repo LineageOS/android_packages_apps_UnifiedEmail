@@ -32,6 +32,7 @@ public interface ActionBarView {
      * This is a list of the modes.
      *
      */
+    // TODO(viki): Remove this and rely only on the ViewMode mode.
     enum Mode {
         /**
          * Default mode,

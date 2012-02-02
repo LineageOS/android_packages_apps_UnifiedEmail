@@ -39,6 +39,7 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 /**
  * The conversation list UI component.
@@ -72,6 +73,8 @@ public final class ConversationListFragment extends ListFragment
     private final Handler mHandler = new Handler();
     // True if the view is in CAB (Contextual Action Bar: some conversations are selected) mode
     private boolean mIsCabMode;
+    // True if we are on a tablet device
+    private static boolean mTabletDevice;
 
     // List save state.
     private Parcelable mListSavedState;
@@ -164,10 +167,12 @@ public final class ConversationListFragment extends ListFragment
         super.onActivityCreated(savedInstanceState);
         mActivity = (ControllableActivity) getActivity();
         mActivity.attachConversationList(this);
+        mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         bindActivityInfo();
 
-        // Set the current view mode.
-        onViewModeChanged(mViewMode);
+        // The onViewModeChanged callback doesn't get called when the mode object is created, so
+        // force setting the mode manually this time around.
+        onViewModeChanged(mViewMode.getMode());
 
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
@@ -308,11 +313,11 @@ public final class ConversationListFragment extends ListFragment
     }
 
     @Override
-    public void onViewModeChanged(ViewMode mode) {
+    public void onViewModeChanged(int newMode) {
         // Change the divider based on view mode.
         Resources res = getView().getResources();
-        if (mode.isTwoPane()) {
-            if (mode.isConversationMode()) {
+        if (mTabletDevice) {
+            if (newMode == ViewMode.CONVERSATION) {
                 mListView.setBackgroundResource(R.drawable.panel_conversation_leftstroke);
             } else {
                 mListView.setBackgroundDrawable(null);
@@ -320,7 +325,7 @@ public final class ConversationListFragment extends ListFragment
             mAnimateChanges = true;
         } else {
             mListView.setBackgroundDrawable(null);
-            mAnimateChanges = mode.isConversationListMode();
+            mAnimateChanges = newMode == ViewMode.CONVERSATION_LIST;
         }
     }
 

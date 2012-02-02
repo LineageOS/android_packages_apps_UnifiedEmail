@@ -26,6 +26,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import com.android.mail.utils.Utils;
+
 
 /**
  * This is the root activity container that holds the left navigation fragment
@@ -110,7 +112,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         super.onCreate(savedState);
 
         mViewMode = new ViewMode(this);
-        mController = ControllerFactory.forActivity(this, mViewMode);
+        final boolean tabletUi = Utils.useTabletUI(this);
+        mController = ControllerFactory.forActivity(this, mViewMode, tabletUi);
         mController.onCreate(savedState);
 
         Intent intent = getIntent();

@@ -37,6 +37,7 @@ import com.android.mail.R;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.Utils;
 
 /**
  * This is an abstract implementation of the Activity Controller. This class knows how to
@@ -64,12 +65,23 @@ public abstract class AbstractActivityController implements ActivityController {
     private ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
     protected final Context mContext;
     protected ConversationListFragment mConversationListFragment;
+    /**
+     * The current mode of the application. All changes in mode are initiated by the activity
+     * controller. View mode changes are propagated to classes that attach themselves as listeners
+     * of view mode changes.
+     */
     protected final ViewMode mViewMode;
+
+    /**
+     * Are we on a tablet device or not.
+     */
+    protected final boolean mTabletDevice;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
+        mTabletDevice = Utils.useTabletUI(mContext);
     }
 
     @Override
@@ -359,10 +371,29 @@ public abstract class AbstractActivityController implements ActivityController {
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * Subclasses must override this to listen to mode changes from the ViewMode. Subclasses
+     * <b>must</b> call the parent's onViewModeChanged since the parent will handle common state
+     * changes.
+     */
     @Override
-    public void onViewModeChanged(ViewMode mode) {
-        // TODO(viki): Auto-generated method stub
+    public void onViewModeChanged(int newMode) {
+        // Perform any mode specific work here.
+        // reset the action bar icon based on the mode. Why don't the individual controllers do
+        // this themselves?
 
+        // On conversation list mode, clean up the conversation.
+        if (newMode == ViewMode.CONVERSATION_LIST) {
+            // Clean up the conversation here.
+        }
+
+        // We don't want to invalidate the options menu when switching to conversation
+        // mode, as it will happen when the conversation finishes loading.
+        if (newMode != ViewMode.CONVERSATION) {
+            mActivity.invalidateOptionsMenu();
+        }
     }
 
     @Override
@@ -393,7 +424,6 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     private void restoreSelectedConversations(Bundle savedState) {
         if (savedState != null){
-            // Restore the view mode? This looks wrong.
             mBatchConversations = savedState.getParcelable(SAVED_CONVERSATIONS);
             if (mBatchConversations.isEmpty()) {
                 onSetPopulated(mBatchConversations);
@@ -415,10 +445,17 @@ public abstract class AbstractActivityController implements ActivityController {
         if (savedState != null) {
             restoreListContext(savedState);
             // Attach the menu handler here.
+
+            // Restore the view mode
+            mViewMode.handleRestore(savedState);
         } else {
             final Intent intent = mActivity.getIntent();
             //  TODO(viki): Show the list context from Intent
+            // Instead of this, switch to the conversation list mode and have that do the right
+            // things automatically.
             // showConversationList(ConversationListContext.forIntent(mContext, mAccount, intent));
+
+            mViewMode.enterConversationListMode();
         }
 
         // Set the correct mode based on the current context

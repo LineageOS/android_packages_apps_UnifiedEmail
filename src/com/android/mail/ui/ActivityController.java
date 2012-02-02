@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -56,9 +55,9 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
 
     /**
      * @see android.app.Activity#dispatchTouchEvent(MotionEvent)
-     * @param ev
+     * @param event
      */
-    void dispatchTouchEvent(MotionEvent ev);
+    void dispatchTouchEvent(MotionEvent event);
 
     /**
      * Returns the selected conversations in the current batch. These are conversations the user

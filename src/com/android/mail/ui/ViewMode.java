@@ -22,8 +22,6 @@ import com.google.common.collect.Lists;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.android.mail.utils.Utils;
-
 import java.util.ArrayList;
 
 /**
@@ -33,13 +31,15 @@ import java.util.ArrayList;
  */
 public class ViewMode {
     /**
-     * A listener for changes on a ViewMode.
+     * A listener for changes on a ViewMode. To listen to mode changes, implement this
+     * interface and register your object with the single ViewMode held by the ActivityController
+     * instance. On mode changes, the onViewModeChanged method will be called with the new mode.
      */
     public interface ModeChangeListener {
         /**
-         * Handles a mode change.
+         * Called when the mode has changed.
          */
-        void onViewModeChanged(ViewMode mode);
+        void onViewModeChanged(int newMode);
     }
 
     /**
@@ -66,11 +66,14 @@ public class ViewMode {
     // Key used to save this {@link ViewMode}.
     private static final String VIEW_MODE_KEY = "view-mode";
     private final ArrayList<ModeChangeListener> mListeners = Lists.newArrayList();
+    /**
+     * The actual mode the activity is in. We start out with an UNKNOWN mode, and require entering
+     * a valid mode after the object has been created.
+     */
     private int mMode = UNKNOWN;
-    private boolean mTwoPane;
 
     public ViewMode(Context context) {
-        mTwoPane = Utils.useTabletUI(context);
+        // Do nothing
     }
 
     /**
@@ -85,11 +88,36 @@ public class ViewMode {
      * Dispatches a change event for the mode.
      * Always happens in the UI thread.
      */
-    private void dispatchModeChange() {
+    private void dispatchModeChange(int newMode) {
+        mMode = newMode;
         ArrayList<ModeChangeListener> list = new ArrayList<ModeChangeListener>(mListeners);
         for (ModeChangeListener listener : list) {
-            listener.onViewModeChanged(this);
+            listener.onViewModeChanged(newMode);
         }
+    }
+
+    /**
+     * Requests a transition of the mode to show the conversation list as the prominent view.
+     * @return Whether or not a change occurred.
+     */
+    public boolean enterConversationListMode() {
+        return setModeInternal(CONVERSATION_LIST);
+    }
+
+    /**
+     * Requests a transition of the mode to show a conversation as the prominent view.
+     * @return Whether or not a change occurred.
+     */
+    public boolean enterConversationMode() {
+        return setModeInternal(CONVERSATION);
+    }
+
+    /**
+     * Requests a transition of the mode to show the folder list as the prominent view.
+     * @return Whether or not a change occurred.
+     */
+    public boolean enterFolderListMode() {
+        return setModeInternal(FOLDER_LIST);
     }
 
     /**
@@ -99,31 +127,21 @@ public class ViewMode {
         return mMode;
     }
 
+    /**
+     * Restoring from a saved state restores only the mode. It does not restore the listeners of
+     * this object.
+     * @param inState
+     */
     public void handleRestore(Bundle inState) {
         mMode = inState.getInt(VIEW_MODE_KEY);
     }
 
+    /**
+     * Save the existing mode only. Does not save the existing listeners.
+     * @param outState
+     */
     public void handleSaveInstanceState(Bundle outState) {
         outState.putInt(VIEW_MODE_KEY, mMode);
-    }
-
-    public boolean isConversationListMode() {
-        return mMode == CONVERSATION_LIST;
-    }
-
-    public boolean isConversationMode() {
-        return mMode == CONVERSATION;
-    }
-
-    public boolean isFolderListMode() {
-        return mMode == FOLDER_LIST;
-    }
-
-    /**
-     * @return Whether or not to display 2 pane.
-     */
-    public boolean isTwoPane() {
-        return mTwoPane;
     }
 
     /**
@@ -136,38 +154,13 @@ public class ViewMode {
 
     /**
      * Sets the internal mode.
-     * @return Whether or not a change occured.
+     * @return Whether or not a change occurred.
      */
     private boolean setModeInternal(int mode) {
         if (mMode == mode) {
             return false;
         }
-        mMode = mode;
-        dispatchModeChange();
+        dispatchModeChange(mode);
         return true;
-    }
-
-    /**
-     * Requests a transition of the mode to show the conversation list as the prominent view.
-     * @return Whether or not a change occured.
-     */
-    public boolean transitionToConversationListMode() {
-        return setModeInternal(CONVERSATION_LIST);
-    }
-
-    /**
-     * Requests a transition of the mode to show a conversation as the prominent view.
-     * @return Whether or not a change occured.
-     */
-    public boolean transitionToConversationMode() {
-        return setModeInternal(CONVERSATION);
-    }
-
-    /**
-     * Requests a transition of the mode to show the folder list as the prominent view.
-     * @return Whether or not a change occured.
-     */
-    public boolean transitionToFolderListMode() {
-        return setModeInternal(FOLDER_LIST);
     }
 }

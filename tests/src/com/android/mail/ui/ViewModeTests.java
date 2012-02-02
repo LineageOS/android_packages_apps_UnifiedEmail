@@ -34,11 +34,11 @@ public class ViewModeTests extends AndroidTestCase {
         Bundle state = new Bundle();
         ViewMode first = new ViewMode(this.mContext);
         // Set the state to something known.
-        assertTrue(first.transitionToConversationListMode());
+        assertTrue(first.enterConversationListMode());
         first.handleSaveInstanceState(state);
         ViewMode second = new ViewMode(this.mContext);
         second.handleRestore(state);
-        assertTrue(second.isConversationListMode());
+        assertEquals(ViewMode.CONVERSATION_LIST, second.getMode());
     }
 
     /**
@@ -52,7 +52,7 @@ public class ViewModeTests extends AndroidTestCase {
         class Ears implements ModeChangeListener {
             public int numCalls = 0;
             @Override
-            public void onViewModeChanged(ViewMode mode) {
+            public void onViewModeChanged(int mode) {
                 numCalls++;
             }
         }
@@ -60,10 +60,10 @@ public class ViewModeTests extends AndroidTestCase {
         ViewMode mode = new ViewMode(this.mContext);
         Ears ears = new Ears();
         mode.addListener(ears);
-        assertTrue(mode.transitionToConversationListMode());
+        assertTrue(mode.enterConversationListMode());
         assertEquals(ears.numCalls, 1);
         mode.removeListener(ears);
-        assertTrue(mode.transitionToConversationMode());
+        assertTrue(mode.enterConversationMode());
         assertEquals(ears.numCalls, 1);
     }
 
@@ -75,10 +75,10 @@ public class ViewModeTests extends AndroidTestCase {
         Bundle state = new Bundle();
         ViewMode first = new ViewMode(this.mContext);
         // Set the state to something known.
-        assertTrue(first.transitionToConversationListMode());
-        assertTrue(first.isConversationListMode());
+        assertTrue(first.enterConversationListMode());
+        assertEquals(ViewMode.CONVERSATION_LIST, first.getMode());
         // Cannot transition to Conversation List mode. I'm in it already.
-        assertFalse(first.transitionToConversationListMode());
-        assertTrue(first.isConversationListMode());
+        assertFalse(first.enterConversationListMode());
+        assertEquals(ViewMode.CONVERSATION_LIST, first.getMode());
     }
 }

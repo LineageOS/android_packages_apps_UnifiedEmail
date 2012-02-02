@@ -66,7 +66,7 @@ public class ActionbarActivity extends Activity
         ActionBar bar = this.getActionBar();
         mContext = getApplicationContext();
         mViewMode = new ViewMode(mContext);
-        mViewMode.transitionToConversationListMode();
+        mViewMode.enterConversationListMode();
 
         if (mActionBar == null){
             mActionBar = (MailActionBar) LayoutInflater.from(mContext).inflate(

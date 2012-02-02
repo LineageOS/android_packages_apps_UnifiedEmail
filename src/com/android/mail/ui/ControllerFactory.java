@@ -28,8 +28,9 @@ public class ControllerFactory {
      *
      * @return the appropriate {@link ActivityController} to control {@link MailActivity}.
      */
-    public static ActivityController forActivity(MailActivity activity, ViewMode viewMode) {
-        return viewMode.isTwoPane() ? new TwoPaneController(activity, viewMode)
+    public static ActivityController forActivity(MailActivity activity, ViewMode viewMode,
+            boolean isTabletDevice) {
+        return isTabletDevice ? new TwoPaneController(activity, viewMode)
         : new OnePaneController(activity, viewMode);
     }
 }
