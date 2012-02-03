@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import com.android.mail.ConversationListContext;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
@@ -67,6 +68,13 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
     ConversationSelectionSet getBatchConversations();
 
     /**
+     * Return the current mode the activity is in. Values need to be matched against constants in
+     * {@link ViewMode}.
+     * @return
+     */
+    int getMode();
+
+    /**
      *
      */
     void handleConversationLoadError();
@@ -103,13 +111,16 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
 
     /**
      * Called when the root activity calls onCreate. Any initialization needs to
-     * be done here. This was called initialize in Gmail. Nothing. Otherwise
-     * does nothing.
+     * be done here. Subclasses need to call their parents' onCreate method, since it performs
+     * valuable initialization common to all subclasses.
+     *
+     * This was called initialize in Gmail.
      *
      * @see android.app.Activity#onCreate
      * @param savedState
+     * @return true if the controller was able to initialize successfully, false otherwise.
      */
-    void onCreate(Bundle savedState);
+    boolean onCreate(Bundle savedState);
 
     /**
      * @see android.app.Activity#onCreateDialog(int, Bundle)
@@ -194,4 +205,17 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      */
     void onWindowFocusChanged(boolean hasFocus);
 
+    /**
+     * Set the Action Bar icon according to the mode. The Action Bar icon can contain a back button
+     * or not. The individual controller is responsible for changing the icon based on the mode.
+     */
+    void resetActionBarIcon();
+
+    /**
+     * Show the conversation List with the list context provided here. On certain layouts, this
+     * might show more than just the conversation list. For instance, on tablets this might show
+     * the conversations along with the conversation list.
+     * @param listContext context providing information on what conversation list to display.
+     */
+    void showConversationList(ConversationListContext listContext);
 }

@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Boolean value indicating whether the table UI should be used. -->
+    <!-- Boolean value indicating whether the tablet UI should be used. -->
     <integer name="use_tablet_ui">0</integer>
     <integer name="conversation_list_header_mode">1</integer>
     <integer name="conversation_header_mode">1</integer>
@@ -26,4 +26,17 @@
 
     <!-- Frequency (in milliseconds) for the refresh of timestamps in conversation list fragments. -->
     <integer name="timestamp_update_interval">60000</integer>
+
+    <!-- Boolean value indicating whether the conversation list be
+         removed from the UI. This is something only tablets can do,
+         so false in the default case.  Set this true for tablets. -->
+    <integer name="conversation_list_collapsible">0</integer>
+    <!-- Relative weights of the different views.  These three
+         determine how much of the screen width is taken by the
+         different views. For the default layout (phone), these values
+         are equal. These are only used in TwoPaneLayout, so they need
+         to be specified for sw600dp and sw720dp layouts. -->
+    <integer name="label_list_weight">1</integer>
+    <integer name="conversation_list_weight">1</integer>
+    <integer name="conversation_view_weight">1</integer>
 </resources>

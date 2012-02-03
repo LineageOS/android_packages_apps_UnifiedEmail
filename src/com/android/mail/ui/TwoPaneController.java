@@ -17,6 +17,14 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.ConversationListContext;
+import com.android.mail.R;
+
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.os.Bundle;
+import android.view.Window;
+
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -25,6 +33,8 @@ package com.android.mail.ui;
 
 // Called OnePaneActivityController in Gmail.
 public final class TwoPaneController extends AbstractActivityController {
+    private boolean mJumpToFirstConversation;
+    private TwoPaneLayout mLayout;
 
     /**
      * @param activity
@@ -35,10 +45,72 @@ public final class TwoPaneController extends AbstractActivityController {
         // TODO(viki): Auto-generated constructor stub
     }
 
+    /**
+     * Display the conversation list fragment.
+     * @param show
+     */
+    private void initializeConversationListFragment(boolean show) {
+        if (show) {
+            mViewMode.enterConversationListMode();
+        }
+        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
+        // Use cross fading animation.
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        Fragment conversationListFragment = ConversationListFragment
+                .newInstance(mConversationListContext);
+        fragmentTransaction.replace(R.id.conversation_list_pane, conversationListFragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
     @Override
     protected boolean isConversationListVisible() {
         // TODO(viki): Auto-generated method stub
         return false;
+    }
+
+    @Override
+    public void showConversationList(ConversationListContext context) {
+        initializeConversationListFragment(true);
+    }
+
+    @Override
+    public boolean onCreate(Bundle savedState) {
+        mActivity.setContentView(R.layout.two_pane_activity);
+
+        mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
+        mLayout.initializeLayout(mActivity.getApplicationContext());
+
+        // The tablet layout needs to refer to mode changes.
+        mViewMode.addListener(mLayout);
+        // The activity controller needs to listen to layout changes.
+        mLayout.setListener(this);
+
+        final boolean isParentInitialized = super.onCreate(savedState);
+        if (isParentInitialized && savedState == null) {
+            // Show a Label list, in the real application
+            // renderLabelList();
+            // In our case, we show a conversation list for everything.
+        }
+        return isParentInitialized;
+    }
+
+    @Override
+    public void onViewModeChanged(int newMode) {
+        super.onViewModeChanged(newMode);
+        if (newMode != ViewMode.CONVERSATION) {
+            // Clear this flag if the user jumps out of conversation mode
+            // before a load completes.
+            mJumpToFirstConversation = false;
+        }
+    }
+
+    @Override
+    public void resetActionBarIcon() {
+        if (mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
+            mActionBarView.removeBackButton();
+        } else {
+            mActionBarView.setBackButton();
+        }
     }
 
 }

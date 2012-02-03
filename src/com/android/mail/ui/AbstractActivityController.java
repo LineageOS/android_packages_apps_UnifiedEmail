@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Window;
 import android.widget.LinearLayout;
 
 import com.android.mail.R;
@@ -58,12 +59,18 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_CONVERSATIONS = "saved-conversations";
     // Keys for serialization of various information in Bundles.
     private static final String SAVED_LIST_CONTEXT = "saved-list-context";
-    private Account mAccount;
-    private ActionBarView mActionBarView;
+    /**
+     * Are we on a tablet device or not.
+     */
+    public final boolean IS_TABLET_DEVICE;
 
+    protected Account mAccount;
+    protected ActionBarView mActionBarView;
     protected final RestrictedActivity mActivity;
     private ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
     protected final Context mContext;
+    protected ConversationListContext mConversationListContext;
+
     protected ConversationListFragment mConversationListFragment;
     /**
      * The current mode of the application. All changes in mode are initiated by the activity
@@ -72,16 +79,11 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     protected final ViewMode mViewMode;
 
-    /**
-     * Are we on a tablet device or not.
-     */
-    protected final boolean mTabletDevice;
-
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
-        mTabletDevice = Utils.useTabletUI(mContext);
+        IS_TABLET_DEVICE = Utils.useTabletUI(mContext);
     }
 
     @Override
@@ -140,6 +142,11 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public String getHelpContext() {
         return "Mail";
+    }
+
+    @Override
+    public int getMode() {
+        return mViewMode.getMode();
     }
 
     @Override
@@ -242,12 +249,16 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onCreate(Bundle savedState) {
+    public boolean onCreate(Bundle savedState) {
+        // Request opaque actionbar
+        mActivity.getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+
         // Initialize the action bar view.
         initCustomActionBarView();
 
         final Intent intent = mActivity.getIntent();
         // TODO(viki) Choose an account here.
+        // If we cannot choose an account, we return false
 
         // Allow shortcut keys to function for the ActionBar and menus.
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
@@ -255,6 +266,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         mViewMode.addListener(this);
         restoreState(savedState);
+        return true;
     }
 
     @Override
@@ -487,5 +499,4 @@ public abstract class AbstractActivityController implements ActivityController {
         // TODO(viki): Auto-generated method stub
 
     }
-
 }

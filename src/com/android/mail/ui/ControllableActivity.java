@@ -17,12 +17,23 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.ui.ViewMode.ModeChangeListener;
+
 
 /**
  * A controllable activity is an Activity that has a Controller attached. This activity must be
  * able to attach the various view fragments and delegate the method calls between them.
  */
 public interface ControllableActivity extends HelpCallback, RestrictedActivity {
+    /**
+     * Attaches the conversation list fragment to the activity controller. This callback is
+     * currently required because the Activity Controller directly calls methods on the conversation
+     * list fragment. This behavior should be modified to allow the controller to call a layout
+     * controller which knows about the fragments.
+     * @param conversationList
+     */
+    void attachConversationList(ConversationListFragment conversationList);
+
     /**
      * Returns the conversations selected by the user for performing a batch action like archive,
      * delete, etc.
@@ -35,15 +46,17 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity {
      * @see com.android.mail.ui.ViewMode
      * @return the mode the activity is currently in.
      */
-    ViewMode getViewMode();
+    int getViewMode();
 
     /**
-     * Attaches the conversation list fragment to the activity controller. This callback is
-     * currently required because the Activity Controller directly calls methods on the conversation
-     * list fragment. This behavior should be modified to allow the controller to call a layout
-     * controller which knows about the fragments.
-     * @param conversationList
+     * Sets the listener for receiving ViewMode changes.
+     * @param listener
      */
-    void attachConversationList(ConversationListFragment conversationList);
+    void setViewModeListener(ModeChangeListener listener);
 
+    /**
+     * Removes the given listener from receiving ViewMode changes.
+     * @param listener
+     */
+    void unsetViewModeListener(ModeChangeListener listener);
 }

@@ -77,7 +77,7 @@ public class ViewMode {
     }
 
     /**
-     *  Adds a listener from this view mode.
+     * Adds a listener from this view mode.
      * Must happen in the UI thread.
      */
     public void addListener(ModeChangeListener listener) {

@@ -56,6 +56,9 @@ public final class ConversationListFragment extends ListFragment
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
+    // True if we are on a tablet device
+    private static boolean mTabletDevice;
+
     /**
      * Frequency of update of timestamps. Initialized in {@link #onCreate(Bundle)} and final
      * afterwards.
@@ -65,16 +68,13 @@ public final class ConversationListFragment extends ListFragment
     private ControllableActivity mActivity;
 
     private boolean mAnimateChanges;
-
     // Control state.
     private ConversationListCallbacks mCallbacks;
-    private View mEmptyView;
 
+    private View mEmptyView;
     private final Handler mHandler = new Handler();
     // True if the view is in CAB (Contextual Action Bar: some conversations are selected) mode
     private boolean mIsCabMode;
-    // True if we are on a tablet device
-    private static boolean mTabletDevice;
 
     // List save state.
     private Parcelable mListSavedState;
@@ -97,9 +97,6 @@ public final class ConversationListFragment extends ListFragment
 
     private ConversationListContext mViewContext;
 
-    // Which mode is the underlying controller in?
-    private ViewMode mViewMode;
-
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized to display
      * conversation list context.
@@ -118,12 +115,8 @@ public final class ConversationListFragment extends ListFragment
     private void bindActivityInfo() {
         final Activity activity = getActivity();
         mCallbacks = (ConversationListCallbacks) activity;
-        mViewMode = mActivity.getViewMode();
         StarHandler starHandler = (StarHandler) activity;
-        if (mViewMode != null) {
-            mViewMode.addListener(this);
-        }
-
+        mActivity.setViewModeListener(this);
         mActivity.getBatchConversations().addObserver(this);
 
         // TODO(mindyp): find some way to make the notification container more re-usable.
@@ -172,7 +165,7 @@ public final class ConversationListFragment extends ListFragment
 
         // The onViewModeChanged callback doesn't get called when the mode object is created, so
         // force setting the mode manually this time around.
-        onViewModeChanged(mViewMode.getMode());
+        onViewModeChanged(mActivity.getViewMode());
 
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
@@ -239,7 +232,7 @@ public final class ConversationListFragment extends ListFragment
         // Clear the adapter.
         mListView.setAdapter(null);
 
-        mViewMode.removeListener(this);
+        mActivity.unsetViewModeListener(this);
         mActivity.attachConversationList(null);
         mActivity.getBatchConversations().removeObserver(this);
 
@@ -315,7 +308,6 @@ public final class ConversationListFragment extends ListFragment
     @Override
     public void onViewModeChanged(int newMode) {
         // Change the divider based on view mode.
-        Resources res = getView().getResources();
         if (mTabletDevice) {
             if (newMode == ViewMode.CONVERSATION) {
                 mListView.setBackgroundResource(R.drawable.panel_conversation_leftstroke);
@@ -328,7 +320,6 @@ public final class ConversationListFragment extends ListFragment
             mAnimateChanges = newMode == ViewMode.CONVERSATION_LIST;
         }
     }
-
 
     /**
      * Visually refresh the conversation list. This does not start a sync.
@@ -354,7 +345,6 @@ public final class ConversationListFragment extends ListFragment
             mListView.setItemChecked(mPosition, true);
         }
     }
-
 
     /**
      * View the message at the given position.

@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.Utils;
 
 
@@ -50,9 +51,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
      */
     private boolean mLaunchedCleanly = false;
 
-    /**
-     * The specific view mode that we are in.
-     */
     private ViewMode mViewMode;
 
     @Override
@@ -79,8 +77,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
      * Default implementation returns a null view mode.
      */
     @Override
-    public ViewMode getViewMode() {
-        return mViewMode;
+    public int getViewMode() {
+        return mViewMode.getMode();
     }
 
     @Override
@@ -204,5 +202,15 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         mController.onWindowFocusChanged(hasFocus);
+    }
+
+    @Override
+    public void setViewModeListener(ModeChangeListener listener) {
+        mViewMode.addListener(listener);
+    }
+
+    @Override
+    public void unsetViewModeListener(ModeChangeListener listener) {
+        mViewMode.removeListener(listener);
     }
 }
