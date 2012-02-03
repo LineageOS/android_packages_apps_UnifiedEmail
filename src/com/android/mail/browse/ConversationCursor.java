@@ -719,7 +719,8 @@ public final class ConversationCursor implements Cursor {
 
         private void deleteLocal(Uri uri) {
             Uri underlyingUri = uriFromCachingUri(uri);
-            String uriString = underlyingUri.toString();
+            // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
+            String uriString =  Uri.decode(underlyingUri.toString());
             cacheValue(uriString, DELETED_COLUMN, true);
         }
 

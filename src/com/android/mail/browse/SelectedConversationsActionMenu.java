@@ -246,6 +246,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // This is where we actually delete.
         mActionCompleteListener.onActionComplete();
         Conversation.delete(mActivity, mSelectionSet.values());
+        mListAdapter.notifyDataSetChanged();
         mSelectionSet.clear();
     }
 }

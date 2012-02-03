@@ -156,7 +156,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                     mActionCompleteListener.onActionComplete();
                     mActionCompleteListener = null;
                 }
-                notifyDataSetChanged();
             }
         }
     }
