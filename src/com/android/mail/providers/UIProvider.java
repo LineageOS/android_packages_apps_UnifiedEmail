@@ -311,7 +311,8 @@ public class UIProvider {
         ConversationColumns.SENDING_STATE,
         ConversationColumns.PRIORITY,
         ConversationColumns.READ,
-        ConversationColumns.STARRED
+        ConversationColumns.STARRED,
+        ConversationColumns.FOLDER_LIST
     };
 
     // These column indexes only work when the caller uses the
@@ -330,6 +331,7 @@ public class UIProvider {
     public static final int CONVERSATION_PRIORITY_COLUMN = 11;
     public static final int CONVERSATION_READ_COLUMN = 12;
     public static final int CONVERSATION_STARRED_COLUMN = 13;
+    public static final int CONVERSATION_FOLDER_LIST_COLUMN = 14;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -416,6 +418,12 @@ public class UIProvider {
          * This boolean column indicates whether the conversation has been read
          */
         public static String STARRED = "starred";
+
+        /**
+         * This string column contains a csv of all folders associated with this
+         * conversation
+         */
+        public static final String FOLDER_LIST = "folderList";
 
         public ConversationColumns() {
         }
