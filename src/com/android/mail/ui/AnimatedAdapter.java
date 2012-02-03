@@ -68,8 +68,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (!isPositionAnimating(view)) {
             ((ConversationItemView) view).bind(cursor, null, mSelectedAccount.name, null,
                     new ViewMode(mContext), mBatchConversations);
-        } else {
-            throw new IllegalStateException("Binding to animating view?");
         }
     }
 
