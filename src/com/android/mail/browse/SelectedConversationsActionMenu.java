@@ -62,6 +62,14 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      * The set of conversations to display the menu for.
      */
     protected final ConversationSelectionSet mSelectionSet;
+    /**
+     * The set of conversations to marked for deletion
+     */
+    protected Collection<Conversation> mDeletionSet;
+    /**
+     * The new folder list (after selection)
+     */
+    protected String mFolderChangeList;
 
     private final Activity mActivity;
 
@@ -128,7 +136,19 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         return handled;
     }
 
+    private static final String CHECKED_COLUMN_NAME = "checked";
+    // We only need _id because MatrixCursor insists
+    private static final String[] FOLDER_DIALOG_PROJECTION = new String[] {
+            BaseColumns._ID, UIProvider.FolderColumns.URI, UIProvider.FolderColumns.NAME,
+            CHECKED_COLUMN_NAME
+    };
+    private static final int FOLDERS_CURSOR_ID = 0;
+    private static final int FOLDERS_CURSOR_URI = 1;
+    private static final int FOLDERS_CURSOR_NAME = 2;
+    private static final int FOLDERS_CURSOR_CHECKED = 3;
+
     private void showChangeFoldersDialog() {
+        // Mapping of a folder's uri to its checked state
         final HashMap<String, Boolean> checkedState = new HashMap<String, Boolean>();
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle("Change folders");
@@ -142,60 +162,91 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                         checkedItems.add(entry.getKey());
                     }
                 }
-                String text = "";
-                for (String id : checkedItems) {
-                    text += id + ",";
+                StringBuilder folderUris = new StringBuilder();
+                boolean first = true;
+                for (String folderUri : checkedItems) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        folderUris.append(',');
+                    }
+                    folderUris.append(folderUri);
                 }
-                Toast.makeText(mActivity, text, Toast.LENGTH_LONG).show();
-                mSelectionSet.clear();
-                mListAdapter.notifyDataSetChanged();
+                mFolderChangeList = folderUris.toString();
+                // TODO: Make user-friendly toast
+                Toast.makeText(mActivity, mFolderChangeList, Toast.LENGTH_LONG).show();
+                // Do the change here...
+                final Collection<Conversation> conversations = mSelectionSet.values();
+                // Indicate delete on update (i.e. no longer in this folder)
+                mDeletionSet = new ArrayList<Conversation>();
+                for (Conversation conv: conversations) {
+                    conv.localDeleteOnUpdate = true;
+                    // For Gmail, add...  if (noLongerInList(conv))...
+                    mDeletionSet.add(conv);
+                }
+                // Delete the local delete items (all for now) and when done, update...
+                mListAdapter.delete(mDeletionSet, mFolderChangeListener);
             }
-        };
-        String[] folderProjection = new String[] {
-                BaseColumns._ID, UIProvider.FolderColumns.NAME
         };
         builder.setPositiveButton(R.string.ok, buttonListener);
         builder.setNegativeButton(R.string.cancel, buttonListener);
-        Cursor cursor = mActivity.getContentResolver().query(Uri.parse(mAccount.folderListUri),
-                folderProjection, null, null, null);
-        String checkedColumn = "checked";
-        final String[] projection = new String[] {
-                BaseColumns._ID, UIProvider.FolderColumns.NAME, checkedColumn
-        };
-        Object[] columnValues = new Object[projection.length];
-        final MatrixCursor foldersCursor = new MatrixCursor(projection);
-        while (cursor.moveToNext()) {
-            columnValues[0] = cursor.getLong(0);
-            columnValues[1] = cursor.getString(1);
-            columnValues[2] = 0;
-            foldersCursor.addRow(columnValues);
-            checkedState.put(cursor.getString(1), false);
+
+        // Get all of our folders
+        // TODO: Should only be folders that allow messages to be moved there!!
+        Cursor foldersCursor = mActivity.getContentResolver().query(
+                Uri.parse(mAccount.folderListUri), UIProvider.FOLDERS_PROJECTION, null, null, null);
+        // Get the id, name, and a placeholder for check information
+        Object[] columnValues = new Object[FOLDER_DIALOG_PROJECTION.length];
+        final MatrixCursor folderDialogCursor = new MatrixCursor(FOLDER_DIALOG_PROJECTION);
+        int i = 0;
+        while (foldersCursor.moveToNext()) {
+            String uri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
+            columnValues[FOLDERS_CURSOR_ID] = i++;
+            columnValues[FOLDERS_CURSOR_URI] = uri;
+            columnValues[FOLDERS_CURSOR_NAME] =
+                    foldersCursor.getString(UIProvider.FOLDER_NAME_COLUMN);
+            columnValues[FOLDERS_CURSOR_CHECKED] = 0;  // 0 = unchecked
+            folderDialogCursor.addRow(columnValues);
+            checkedState.put(uri, false);
         }
-        cursor.close();
-        if (!mAccount.supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
+        foldersCursor.close();
+
+        if (!mAccount.supportsCapability(
+                UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
             DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     checkedState.clear();
-                    foldersCursor.moveToPosition(which);
-                    checkedState.put(foldersCursor.getString(1), true);
+                    folderDialogCursor.moveToPosition(which);
+                    checkedState.put(folderDialogCursor.getString(FOLDERS_CURSOR_URI), true);
                 }
             };
-            builder.setSingleChoiceItems(foldersCursor, mCheckedItem,
+            builder.setSingleChoiceItems(folderDialogCursor, mCheckedItem,
                     UIProvider.FolderColumns.NAME, listener);
         } else {
-            builder.setMultiChoiceItems(foldersCursor, checkedColumn,
+            builder.setMultiChoiceItems(folderDialogCursor, CHECKED_COLUMN_NAME,
                     UIProvider.FolderColumns.NAME,
                     new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                            foldersCursor.moveToPosition(which);
-                            checkedState.put(foldersCursor.getString(1), isChecked);
+                            folderDialogCursor.moveToPosition(which);
+                            checkedState.put(
+                                    folderDialogCursor.getString(FOLDERS_CURSOR_URI), isChecked);
                         }
                     });
         }
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+    private ActionCompleteListener mFolderChangeListener = new ActionCompleteListener() {
+        @Override
+        public void onActionComplete() {
+            mActionCompleteListener.onActionComplete();
+            Conversation.updateString(mActivity, mSelectionSet.values(),
+                    ConversationColumns.FOLDER_LIST, mFolderChangeList);
+            mSelectionSet.clear();
+            mListAdapter.notifyDataSetChanged();
+        }};
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {

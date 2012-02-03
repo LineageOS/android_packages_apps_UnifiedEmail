@@ -47,7 +47,13 @@ public class Conversation implements Parcelable {
     public int priority;
     public boolean read;
     public boolean starred;
+    public String folderList;
+    // Used within the UI to indicate the adapter position of this conversation
     public transient int position;
+    // Used within the UI to indicate that a Conversation should be removed from the
+    // ConversationCursor when executing an update, e.g. the the Conversation is no longer
+    // in the ConversationList for the current folder, that is it's now in some other folder(s)
+    public transient boolean localDeleteOnUpdate;
 
     @Override
     public int describeContents() {
@@ -70,6 +76,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(priority);
         dest.writeByte(read ? (byte) 1 : 0);
         dest.writeByte(starred ? (byte) 1 : 0);
+        dest.writeString(folderList);
     }
 
     private Conversation(Parcel in) {
@@ -87,7 +94,9 @@ public class Conversation implements Parcelable {
         priority = in.readInt();
         read = (in.readByte() != 0);
         starred = (in.readByte() != 0);
+        folderList = in.readString();
         position = NO_POSITION;
+        localDeleteOnUpdate = false;
     }
 
     @Override
@@ -134,23 +143,50 @@ public class Conversation implements Parcelable {
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) == 1;
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) == 1;
+            folderList = cursor.getString(UIProvider.CONVERSATION_FOLDER_LIST_COLUMN);
             position = NO_POSITION;
+            localDeleteOnUpdate = false;
         }
     }
 
     // Below are methods that update Conversation data (update/delete)
 
     /**
-     * Update a boolean column for a single conversation
-     * @param context the caller's context
-     * @param columnName the column to update
-     * @param value the new value
-     * @return the sequence number of the operation (for undo)
+     * Update a boolean column for a single conversation (see updateBoolean below)
      */
     public int updateBoolean(Context context, String columnName, boolean value) {
         ArrayList<Conversation> conversations = new ArrayList<Conversation>();
         conversations.add(this);
         return updateBoolean(context, conversations, columnName, value);
+    }
+
+    /**
+     * Update a string column for a group of conversations (see updateValues below)
+     */
+    public static int updateBoolean(Context context, Collection<Conversation> conversations,
+            String columnName, boolean value) {
+        ContentValues cv = new ContentValues();
+        cv.put(columnName, value);
+        return updateValues(context, conversations, cv);
+    }
+
+    /**
+     * Update a string column for a single conversation (see updateString below)
+     */
+    public int updateString(Context context, String columnName, String value) {
+        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
+        conversations.add(this);
+        return updateString(context, conversations, columnName, value);
+    }
+
+    /**
+     * Update a string column for a group of conversations (see updateValues below)
+     */
+    public static int updateString(Context context, Collection<Conversation> conversations,
+            String columnName, String value) {
+        ContentValues cv = new ContentValues();
+        cv.put(columnName, value);
+        return updateValues(context, conversations, cv);
     }
 
     /**
@@ -162,14 +198,12 @@ public class Conversation implements Parcelable {
      * @param value the new value
      * @return the sequence number of the operation (for undo)
      */
-    public static int updateBoolean(Context context, Collection<Conversation> conversations,
-            String columnName, boolean value) {
-        ContentValues cv = new ContentValues();
-        cv.put(columnName, value);
+    private static int updateValues(Context context, Collection<Conversation> conversations,
+            ContentValues values) {
         ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
         for (Conversation conv: conversations) {
             ConversationOperation op =
-                    new ConversationOperation(ConversationOperation.UPDATE, conv, cv);
+                    new ConversationOperation(ConversationOperation.UPDATE, conv, values);
             ops.add(op);
         }
         return apply(context, ops);

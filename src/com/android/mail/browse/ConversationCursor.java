@@ -810,6 +810,10 @@ public final class ConversationCursor implements Cursor {
         private final int mType;
         private final Uri mUri;
         private final ContentValues mValues;
+        // True if an updated item should be removed locally (from ConversationCursor)
+        // This would be the case for a folder/label change in which the conversation is no longer
+        // in the folder represented by the ConversationCursor
+        private final boolean mLocalDeleteOnUpdate;
 
         public ConversationOperation(int type, Conversation conv) {
             this(type, conv, null);
@@ -819,6 +823,7 @@ public final class ConversationCursor implements Cursor {
             mType = type;
             mUri = conv.uri;
             mValues = values;
+            mLocalDeleteOnUpdate = conv.localDeleteOnUpdate;
         }
 
         private ContentProviderOperation execute(Uri underlyingUri) {
@@ -831,7 +836,11 @@ public final class ConversationCursor implements Cursor {
                     sProvider.deleteLocal(mUri);
                     return ContentProviderOperation.newDelete(uri).build();
                 case UPDATE:
-                    sProvider.updateLocal(mUri, mValues);
+                    if (mLocalDeleteOnUpdate) {
+                        sProvider.deleteLocal(uri);
+                    } else {
+                        sProvider.updateLocal(mUri, mValues);
+                    }
                     return ContentProviderOperation.newUpdate(uri)
                             .withValues(mValues)
                             .build();
