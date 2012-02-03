@@ -69,18 +69,74 @@ public class UIProvider {
     public static final int ACCOUNT_UNDO_URI_COLUMN = 11;
 
     public static final class AccountCapabilities {
+        /**
+         * Whether folders can be synchronized back to the server.
+         */
         public static final int SYNCABLE_FOLDERS = 0x0001;
+        /**
+         * Whether the server allows reporting spam back.
+         */
         public static final int REPORT_SPAM = 0x0002;
+        /**
+         * Whether the server supports a concept of Archive: removing mail from the Inbox but
+         * keeping it around.
+         */
         public static final int ARCHIVE = 0x0004;
+        /**
+         * Whether the server will stop notifying on updates to this thread? This requires
+         * THREADED_CONVERSATIONS to be true, otherwise it should be ignored.
+         */
         public static final int MUTE = 0x0008;
+        /**
+         * Whether the server supports searching over all messages. This requires SYNCABLE_FOLDERS
+         * to be true, otherwise it should be ignored.
+         */
         public static final int SERVER_SEARCH = 0x0010;
+        /**
+         * Whether the server supports constraining search to a single folder. Requires
+         * SYNCABLE_FOLDERS, otherwise it should be ignored.
+         */
         public static final int FOLDER_SERVER_SEARCH = 0x0020;
+        /**
+         * Whether the server sends us sanitized HTML (guaranteed to not contain malicious HTML).
+         */
         public static final int SANITIZED_HTML = 0x0040;
+        /**
+         * Whether the server allows synchronization of draft messages. This does NOT require
+         * SYNCABLE_FOLDERS to be set.
+         */
         public static final int DRAFT_SYNCHRONIZATION = 0x0080;
+        /**
+         * Does the server allow the user to compose mails (and reply) using addresses other than
+         * their account name? For instance, GMail allows users to set FROM addresses that are
+         * different from account@gmail.com address. For instance, user@gmail.com could have another
+         * FROM: address like user@android.com. If the user has enabled multiple FROM address, he
+         * can compose (and reply) using either address.
+         */
         public static final int MULTIPLE_FROM_ADDRESSES = 0x0100;
+        /**
+         * Whether the server allows the original message to be included in the reply by setting a
+         * flag on the reply. If we can avoid including the entire previous message, we save on
+         * bandwidth (replies are shorter).
+         */
         public static final int SMART_REPLY = 0x0200;
+        /**
+         * Does this account support searching locally, on the device? This requires the backend
+         * storage to support a mechanism for searching.
+         */
         public static final int LOCAL_SEARCH = 0x0400;
+        /**
+         * Whether the server supports a notion of threaded conversations: where replies to messages
+         * are tagged to keep conversations grouped. This could be full threading (each message
+         * lists its parent) or conversation-level threading (each message lists one conversation
+         * which it belongs to)
+         */
         public static final int THREADED_CONVERSATIONS = 0x0800;
+        /**
+         * Whether the server supports allowing a conversation to be in multiple folders. (Or allows
+         * multiple labels on a single conversation, since labels and folders are interchangeable
+         * in this application.)
+         */
         public static final int MULTIPLE_FOLDERS_PER_CONV = 0x1000;
     }
 
@@ -280,19 +336,19 @@ public class UIProvider {
         public static final int SENDING = 1;
         public static final int SENT = 2;
         public static final int SEND_ERROR = -1;
-    };
+    }
 
     public static final class ConversationPriority {
         public static final int LOW = 0;
         public static final int HIGH = 1;
-    };
+    }
 
     public static final class ConversationFlags {
         public static final int READ = 1<<0;
         public static final int STARRED = 1<<1;
         public static final int REPLIED = 1<<2;
         public static final int FORWARDED = 1<<3;
-    };
+    }
 
     public static final class ConversationColumns {
         public static final String URI = "conversationUri";
