@@ -42,6 +42,11 @@ public class Folder implements Parcelable {
     // Try to match the order of members with the order of constants in UIProvider.
 
     /**
+     * Unique id of this folder.
+     */
+    private long id;
+
+    /**
      * The content provider URI that returns this folder for this account.
      */
     public String uri;
@@ -123,6 +128,7 @@ public class Folder implements Parcelable {
     private static final Pattern LABEL_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
 
     public Folder(Parcel in) {
+        id = in.readLong();
         uri = in.readString();
         name = in.readString();
         capabilities = in.readInt();
@@ -137,6 +143,7 @@ public class Folder implements Parcelable {
     }
 
     public Folder(Cursor cursor) {
+        id = cursor.getLong(UIProvider.FOLDER_ID_COLUMN);
         uri = cursor.getString(UIProvider.FOLDER_URI_COLUMN);
         name = cursor.getString(UIProvider.FOLDER_NAME_COLUMN);
         capabilities = cursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
@@ -152,6 +159,7 @@ public class Folder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeString(uri);
         dest.writeString(name);
         dest.writeInt(capabilities);
@@ -170,6 +178,7 @@ public class Folder implements Parcelable {
      */
     public synchronized String serialize(){
         StringBuilder out = new StringBuilder();
+        out.append(id).append(LABEL_COMPONENT_SEPARATOR);
         out.append(uri).append(LABEL_COMPONENT_SEPARATOR);
         out.append(name).append(LABEL_COMPONENT_SEPARATOR);
         out.append(capabilities).append(LABEL_COMPONENT_SEPARATOR);

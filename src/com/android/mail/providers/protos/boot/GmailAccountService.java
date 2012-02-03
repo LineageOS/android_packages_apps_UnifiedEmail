@@ -17,6 +17,7 @@ package com.android.mail.providers.protos.boot;
 
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.protos.mock.MockUiProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 
 import android.accounts.Account;
@@ -107,11 +108,25 @@ public class GmailAccountService extends IntentService {
             // will not return a cursor.
             final Map<String, Object> mockAccountMap =
                     MockUiProvider.createAccountDetailsMap(i % MockUiProvider.NUM_MOCK_ACCOUNTS);
+            // TODO: where should this really be stored?
+            long capabilities = Long.valueOf(
+                    AccountCapabilities.SYNCABLE_FOLDERS |
+                    AccountCapabilities.REPORT_SPAM |
+                    AccountCapabilities.ARCHIVE |
+                    AccountCapabilities.MUTE |
+                    AccountCapabilities.SERVER_SEARCH |
+                    AccountCapabilities.FOLDER_SERVER_SEARCH |
+                    AccountCapabilities.SANITIZED_HTML |
+                    AccountCapabilities.DRAFT_SYNCHRONIZATION |
+                    AccountCapabilities.MULTIPLE_FROM_ADDRESSES |
+                    AccountCapabilities.LOCAL_SEARCH |
+                    AccountCapabilities.THREADED_CONVERSATIONS |
+                    AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
             final AccountCacheProvider.CachedAccount cachedAccount =
                     new AccountCacheProvider.CachedAccount(gmailAccountId,
                             account.name,
                             getAccountUri(account.name).toString(),
-                            (Long)mockAccountMap.get(AccountColumns.CAPABILITIES),
+                            capabilities,
                             getAccountFoldersUri(account.name).toString(),
                             (String)mockAccountMap.get(AccountColumns.SEARCH_URI),
                             (String)mockAccountMap.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),

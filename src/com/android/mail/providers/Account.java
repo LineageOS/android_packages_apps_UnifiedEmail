@@ -115,8 +115,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         undoUri = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
     }
 
-    public boolean supportsMultipleParentFolders() {
-        return (capabilities & UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV) == 1;
+    public boolean supportsCapability(int capability) {
+        return (capabilities & capability) != 0;
     }
 
     @Override

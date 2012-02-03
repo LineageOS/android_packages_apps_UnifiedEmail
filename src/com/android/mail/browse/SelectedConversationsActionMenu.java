@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ActionCompleteListener;
@@ -28,12 +29,20 @@ import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.net.Uri;
+import android.provider.BaseColumns;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -70,6 +79,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private ActionCompleteListener mActionCompleteListener;
 
     private Account mAccount;
+
+    protected int mCheckedItem = 0;
 
     public SelectedConversationsActionMenu(Activity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
@@ -118,25 +129,70 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     private void showChangeFoldersDialog() {
-        if (!mAccount.supportsMultipleParentFolders()) {
-            // Show list with single selection.
-            showChangeFolderDialog();
-        } else {
-            // Show list with checkboxes.
-        }
-    }
-
-    private void showChangeFolderDialog() {
-        final CharSequence[] items = {"Red", "Green", "Blue"};
-
+        final HashMap<String, Boolean> checkedState = new HashMap<String, Boolean>();
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle("Pick a color");
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+        builder.setTitle("Change folders");
+        DialogInterface.OnClickListener buttonListener = new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(mActivity, items[which], Toast.LENGTH_SHORT).show();
+                ArrayList<String> checkedItems = new ArrayList<String>();
+                Set<Entry<String, Boolean>> states = checkedState.entrySet();
+                for (Entry<String, Boolean> entry : states) {
+                    if (entry.getValue()) {
+                        checkedItems.add(entry.getKey());
+                    }
+                }
+                String text = "";
+                for (String id : checkedItems) {
+                    text += id + ",";
+                }
+                Toast.makeText(mActivity, text, Toast.LENGTH_LONG).show();
+                mSelectionSet.clear();
+                mListAdapter.notifyDataSetChanged();
             }
         };
-        builder.setItems(items, listener);;
+        String[] folderProjection = new String[] {
+                BaseColumns._ID, UIProvider.FolderColumns.NAME
+        };
+        builder.setPositiveButton(R.string.ok, buttonListener);
+        builder.setNegativeButton(R.string.cancel, buttonListener);
+        Cursor cursor = mActivity.getContentResolver().query(Uri.parse(mAccount.folderListUri),
+                folderProjection, null, null, null);
+        String checkedColumn = "checked";
+        final String[] projection = new String[] {
+                BaseColumns._ID, UIProvider.FolderColumns.NAME, checkedColumn
+        };
+        Object[] columnValues = new Object[projection.length];
+        final MatrixCursor foldersCursor = new MatrixCursor(projection);
+        while (cursor.moveToNext()) {
+            columnValues[0] = cursor.getLong(0);
+            columnValues[1] = cursor.getString(1);
+            columnValues[2] = 0;
+            foldersCursor.addRow(columnValues);
+            checkedState.put(cursor.getString(1), false);
+        }
+        cursor.close();
+        if (!mAccount.supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
+            DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    checkedState.clear();
+                    foldersCursor.moveToPosition(which);
+                    checkedState.put(foldersCursor.getString(1), true);
+                }
+            };
+            builder.setSingleChoiceItems(foldersCursor, mCheckedItem,
+                    UIProvider.FolderColumns.NAME, listener);
+        } else {
+            builder.setMultiChoiceItems(foldersCursor, checkedColumn,
+                    UIProvider.FolderColumns.NAME,
+                    new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                            foldersCursor.moveToPosition(which);
+                            checkedState.put(foldersCursor.getString(1), isChecked);
+                        }
+                    });
+        }
         AlertDialog alert = builder.create();
         alert.show();
     }

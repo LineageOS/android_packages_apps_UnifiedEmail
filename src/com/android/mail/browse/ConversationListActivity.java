@@ -196,7 +196,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(this,
-                mBatchConversations, mListAdapter, this);
+                mBatchConversations, mListAdapter, this, mSelectedAccount);
         mSelectedConversationsActionMenu.activate();
     }
 

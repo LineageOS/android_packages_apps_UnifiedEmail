@@ -261,7 +261,8 @@ public final class MockUiProvider extends ContentProvider {
                         AccountCapabilities.MULTIPLE_FROM_ADDRESSES |
                         AccountCapabilities.SMART_REPLY |
                         AccountCapabilities.LOCAL_SEARCH |
-                        AccountCapabilities.THREADED_CONVERSATIONS));
+                        AccountCapabilities.THREADED_CONVERSATIONS |
+                        AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV));
         accountMap.put(AccountColumns.FOLDER_LIST_URI, accountUri + "/folders");
         accountMap.put(AccountColumns.SEARCH_URI, accountUri + "/search");
         accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI, accountUri + "/fromAddresses");
