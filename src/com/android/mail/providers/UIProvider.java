@@ -81,6 +81,7 @@ public class UIProvider {
         public static final int SMART_REPLY = 0x0200;
         public static final int LOCAL_SEARCH = 0x0400;
         public static final int THREADED_CONVERSATIONS = 0x0800;
+        public static final int MULTIPLE_FOLDERS_PER_CONV = 0x1000;
     }
 
     public static final class AccountColumns {
