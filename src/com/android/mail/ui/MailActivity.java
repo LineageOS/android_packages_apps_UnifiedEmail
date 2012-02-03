@@ -106,6 +106,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
+    public void onConversationSelected(int position) {
+        // Do nothing for now. Allow the mController to handle these changes.
+    }
+
+    @Override
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
@@ -207,6 +212,12 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public void setViewModeListener(ModeChangeListener listener) {
         mViewMode.addListener(listener);
+    }
+
+    @Override
+    public void toggleStar(boolean toggleOn, long conversationId, long maxMessageId) {
+        // TODO(viki): Auto-generated method stub
+        // Do nothing for now, and let the mController handle this too.
     }
 
     @Override

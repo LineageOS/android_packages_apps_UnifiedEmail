@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 
@@ -24,7 +25,8 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * A controllable activity is an Activity that has a Controller attached. This activity must be
  * able to attach the various view fragments and delegate the method calls between them.
  */
-public interface ControllableActivity extends HelpCallback, RestrictedActivity {
+public interface ControllableActivity extends HelpCallback, RestrictedActivity,
+        ConversationListCallbacks, StarHandler {
     /**
      * Attaches the conversation list fragment to the activity controller. This callback is
      * currently required because the Activity Controller directly calls methods on the conversation

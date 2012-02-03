@@ -34,8 +34,6 @@ import com.android.mail.R;
 // Called OnePaneActivityController in Gmail.
 public final class OnePaneController extends AbstractActivityController {
 
-    private ConversationListContext mConversationListContext;
-
     /**
      * @param activity
      * @param viewMode

@@ -67,6 +67,9 @@ public abstract class AbstractActivityController implements ActivityController {
     protected Account mAccount;
     protected ActionBarView mActionBarView;
     protected final RestrictedActivity mActivity;
+    /**
+     * The currently selected conversations, if any.
+     */
     private ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
     protected final Context mContext;
     protected ConversationListContext mConversationListContext;
@@ -123,8 +126,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public ConversationSelectionSet getBatchConversations() {
-        // TODO(viki): Auto-generated method stub
-        return null;
+        return mBatchConversations;
     }
 
     @Override
@@ -250,9 +252,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public boolean onCreate(Bundle savedState) {
-        // Request opaque actionbar
-        mActivity.getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-
         // Initialize the action bar view.
         initCustomActionBarView();
 
@@ -334,8 +333,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        // TODO(viki): Auto-generated method stub
-
+        if (mConversationListContext != null) {
+            outState.putBundle(SAVED_LIST_CONTEXT, mConversationListContext.toBundle());
+        }
     }
 
     @Override
@@ -425,7 +425,10 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     protected void restoreListContext(Bundle savedState) {
         // TODO(viki): Auto-generated method stub
-
+        Bundle listContextBundle = savedState.getBundle(SAVED_LIST_CONTEXT);
+        if (listContextBundle != null) {
+            mConversationListContext = ConversationListContext.forBundle(listContextBundle);
+        }
     }
 
     /**
@@ -456,6 +459,9 @@ public abstract class AbstractActivityController implements ActivityController {
     protected void restoreState(Bundle savedState) {
         if (savedState != null) {
             restoreListContext(savedState);
+            // Restore the list context
+            restoreListContext(savedState);
+
             // Attach the menu handler here.
 
             // Restore the view mode
@@ -463,6 +469,8 @@ public abstract class AbstractActivityController implements ActivityController {
         } else {
             final Intent intent = mActivity.getIntent();
             //  TODO(viki): Show the list context from Intent
+            mConversationListContext = ConversationListContext.forIntent(
+                    mContext, mAccount, intent);
             // Instead of this, switch to the conversation list mode and have that do the right
             // things automatically.
             // showConversationList(ConversationListContext.forIntent(mContext, mAccount, intent));
