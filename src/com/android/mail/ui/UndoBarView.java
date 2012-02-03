@@ -17,12 +17,14 @@ package com.android.mail.ui;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.google.common.collect.ImmutableSet;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorInflater;
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -94,7 +96,7 @@ public class UndoBarView extends FrameLayout {
      * Displays this view and makes it visible, binding the behavior to the
      * specified {@link UndoOperation}.
      */
-    public void show(boolean animate, final Context context, String description,
+    public void show(boolean animate, final Activity activity, String description,
             final Account account) {
         mUndoButtonView.setOnClickListener(new OnClickListener() {
             @Override
@@ -104,11 +106,7 @@ public class UndoBarView extends FrameLayout {
                     // the resulting cursor might be interesting...
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate the set of
                     // commands to undo
-                    Cursor c = context.getContentResolver().query(Uri.parse(account.undoUri),
-                            UIProvider.UNDO_PROJECTION, null, null, null);
-                    if (c != null) {
-                        c.close();
-                    }
+                    Conversation.undo(activity, account.undoUri);
                 }
                 setVisibility(View.GONE);
             }

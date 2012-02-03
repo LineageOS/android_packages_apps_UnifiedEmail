@@ -172,6 +172,9 @@ public final class ConversationCursor implements Cursor {
     private void resetCursor(Cursor newCursor) {
         // Temporary, log time for reset
         long startTime = System.currentTimeMillis();
+        if (DEBUG) {
+            Log.d(TAG, "[--resetCursor--]");
+        }
         synchronized (sCacheMapLock) {
             // Walk through the cache.  Here are the cases:
             // 1) The entry isn't marked with REQUERY - remove it from the cache. If DELETED is
@@ -328,6 +331,9 @@ public final class ConversationCursor implements Cursor {
                 sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
                 mCursorObserverRegistered = false;
             }
+            if (DEBUG) {
+                Log.d(TAG, "[Notify: onRefreshRequired()]");
+            }
             sListener.onRefreshRequired();
             sRefreshRequired = true;
         }
@@ -339,6 +345,9 @@ public final class ConversationCursor implements Cursor {
     // NOTE: We don't like the name (it implies syncing with the server); suggestions gladly
     // taken - reset? syncToUnderlying? completeRefresh? align?
     public void sync() {
+        if (DEBUG) {
+            Log.d(TAG, "[sync() called]");
+        }
         if (sRequeryCursor == null) {
             throw new IllegalStateException("Can't swap cursors; no requery done");
         }
@@ -360,6 +369,9 @@ public final class ConversationCursor implements Cursor {
      * Cancel a refresh in progress
      */
     public void cancelRefresh() {
+        if (DEBUG) {
+            Log.d(TAG, "[cancelRefresh() called]");
+        }
         synchronized(sCacheMapLock) {
             // Mark the requery closed
             sRefreshInProgress = false;
@@ -378,6 +390,9 @@ public final class ConversationCursor implements Cursor {
      * @return a list of positions deleted in ConversationCursor
      */
     public ArrayList<Integer> getRefreshDeletions () {
+        if (DEBUG) {
+            Log.d(TAG, "[getRefreshDeletions() called]");
+        }
         Cursor deviceCursor = sConversationCursor;
         Cursor serverCursor = sRequeryCursor;
         ArrayList<Integer> deleteList = new ArrayList<Integer>();
@@ -432,6 +447,9 @@ public final class ConversationCursor implements Cursor {
      * NOTE: This will have to change, of course, when we start using loaders...
      */
     public boolean refresh() {
+        if (DEBUG) {
+            Log.d(TAG, "[refresh() called]");
+        }
         if (sRefreshInProgress) {
             return false;
         }
@@ -450,6 +468,9 @@ public final class ConversationCursor implements Cursor {
                         sActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                if (DEBUG) {
+                                    Log.d(TAG, "[Notify: onRefreshReady()]");
+                                }
                                 sListener.onRefreshReady();
                                 sRefreshReady = true;
                             }});

@@ -16,6 +16,7 @@
 
 package com.android.mail.providers;
 
+import android.app.Activity;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.ConversationCursor.ConversationProvider;
@@ -248,5 +250,23 @@ public class Conversation implements Parcelable {
         } finally {
             client.release();
         }
-    }    
+    }
+
+    public static void undo(final Activity activity, final String undoUri) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Cursor c = activity.getContentResolver().query(Uri.parse(undoUri),
+                        UIProvider.UNDO_PROJECTION, null, null, null);
+                if (c != null) {
+                    c.close();
+                }
+                // TODO: Do something better... :-)
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "Undone!", Toast.LENGTH_LONG).show();
+                    }});
+            }}).start();
+    }
 }
