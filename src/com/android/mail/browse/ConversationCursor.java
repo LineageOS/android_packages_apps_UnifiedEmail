@@ -80,8 +80,12 @@ public final class ConversationCursor implements Cursor {
     private static ConversationListener sListener;
     // The ConversationProvider instance
     private static ConversationProvider sProvider;
-    // Set when we're in the middle of a requery of the underlying cursor
-    private static boolean sRequeryInProgress = false;
+    // Set when we're in the middle of a refresh of the underlying cursor
+    private static boolean sRefreshInProgress = false;
+    // Set when we've sent refreshReady() to listeners
+    private static boolean sRefreshReady = false;
+    // Set when we've sent refreshRequired() to listeners
+    private static boolean sRefreshRequired = false;
     // Our sequence count (for changes sent to underlying provider)
     private static int sSequence = 0;
 
@@ -211,6 +215,7 @@ public final class ConversationCursor implements Cursor {
                 sUnderlyingCursor.registerContentObserver(mCursorObserver);
                 mCursorObserverRegistered = true;
             }
+            sRefreshRequired = false;
         }
         Log.d(TAG, "resetCache time: " + ((System.currentTimeMillis() - startTime)) + "ms");
     }
@@ -285,7 +290,7 @@ public final class ConversationCursor implements Cursor {
                 throw new IllegalArgumentException("Value class not compatible with cache: "
                         + cname);
             }
-            if (sRequeryInProgress) {
+            if (sRefreshInProgress) {
                 map.put(REQUERY_COLUMN, 1);
             }
             if (DEBUG && (columnName != DELETED_COLUMN)) {
@@ -324,19 +329,31 @@ public final class ConversationCursor implements Cursor {
                 mCursorObserverRegistered = false;
             }
             sListener.onRefreshRequired();
+            sRefreshRequired = true;
         }
     }
 
     /**
      * Put the refreshed cursor in place (called by the UI)
      */
-    public void swapCursors() {
+    // NOTE: We don't like the name (it implies syncing with the server); suggestions gladly
+    // taken - reset? syncToUnderlying? completeRefresh? align?
+    public void sync() {
         if (sRequeryCursor == null) {
             throw new IllegalStateException("Can't swap cursors; no requery done");
         }
         resetCursor(sRequeryCursor);
         sRequeryCursor = null;
-        sRequeryInProgress = false;
+        sRefreshInProgress = false;
+        sRefreshReady = false;
+    }
+
+    public boolean isRefreshRequired() {
+        return sRefreshRequired;
+    }
+
+    public boolean isRefreshReady() {
+        return sRefreshReady;
     }
 
     /**
@@ -345,7 +362,7 @@ public final class ConversationCursor implements Cursor {
     public void cancelRefresh() {
         synchronized(sCacheMapLock) {
             // Mark the requery closed
-            sRequeryInProgress = false;
+            sRefreshInProgress = false;
             // If we have the cursor, close it; otherwise, it will get closed when the query
             // finishes (it checks sRequeryInProgress)
             if (sRequeryCursor != null) {
@@ -415,11 +432,11 @@ public final class ConversationCursor implements Cursor {
      * NOTE: This will have to change, of course, when we start using loaders...
      */
     public boolean refresh() {
-        if (sRequeryInProgress) {
+        if (sRefreshInProgress) {
             return false;
         }
         // Say we're starting a requery
-        sRequeryInProgress = true;
+        sRefreshInProgress = true;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -428,12 +445,13 @@ public final class ConversationCursor implements Cursor {
                         mResolver.query(qUri, qProjection, qSelection, qSelectionArgs, qSortOrder);
                 // Make sure window is full
                 synchronized(sCacheMapLock) {
-                    if (sRequeryInProgress) {
+                    if (sRefreshInProgress) {
                         sRequeryCursor.getCount();
                         sActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 sListener.onRefreshReady();
+                                sRefreshReady = true;
                             }});
                     } else {
                         cancelRefresh();

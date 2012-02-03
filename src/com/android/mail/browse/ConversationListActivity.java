@@ -221,11 +221,11 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     }
 
     /**
-     * Complete the cursor refresh process by swapping cursors and redrawing
+     * Complete the cursor refresh process by syncing to the underlying cursor and redrawing
      */
     private void finishRefresh() {
         // Swap cursors
-        mConversationListCursor.swapCursors();
+        mConversationListCursor.sync();
         // Redraw with new data
         mListAdapter.notifyDataSetChanged();
     }
