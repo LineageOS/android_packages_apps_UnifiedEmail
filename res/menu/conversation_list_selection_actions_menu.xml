@@ -34,7 +34,7 @@
         android:icon="@drawable/trash"/>
 
     <item
-        android:id="@+id/change_labels"
+        android:id="@+id/change_folder"
         android:showAsAction="ifRoom"
         android:title="@string/menu_change_labels"
         android:icon="@drawable/ic_menu_labels_holo_light" />

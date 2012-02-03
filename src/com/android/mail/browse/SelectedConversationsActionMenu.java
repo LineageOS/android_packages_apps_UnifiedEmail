@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import com.android.mail.R;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
@@ -30,11 +31,14 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.Collection;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /**
  * A component that displays a custom view for an {@code ActionBar}'s {@code
@@ -65,14 +69,17 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private ActionCompleteListener mActionCompleteListener;
 
+    private Account mAccount;
+
     public SelectedConversationsActionMenu(Activity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            ActionCompleteListener listener) {
+            ActionCompleteListener listener, Account account) {
         mSelectionSet = selectionSet;
         mActivity = activity;
         mContext = mActivity;
         mListAdapter = adapter;
         mActionCompleteListener = listener;
+        mAccount = account;
     }
 
     @Override
@@ -100,11 +107,38 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 // Redraw with changes
                 mListAdapter.notifyDataSetChanged();
                 break;
+            case R.id.change_folder:
+                showChangeFoldersDialog();
+                break;
             default:
                 handled = false;
                 break;
         }
         return handled;
+    }
+
+    private void showChangeFoldersDialog() {
+        if (!mAccount.supportsMultipleParentFolders()) {
+            // Show list with single selection.
+            showChangeFolderDialog();
+        } else {
+            // Show list with checkboxes.
+        }
+    }
+
+    private void showChangeFolderDialog() {
+        final CharSequence[] items = {"Red", "Green", "Blue"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle("Pick a color");
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(mActivity, items[which], Toast.LENGTH_SHORT).show();
+            }
+        };
+        builder.setItems(items, listener);;
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
