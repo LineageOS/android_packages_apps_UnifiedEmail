@@ -115,6 +115,10 @@ public class Account extends android.accounts.Account implements Parcelable {
         undoUri = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
     }
 
+    public boolean supportsMultipleParentFolders() {
+        return (capabilities & UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV) == 1;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
