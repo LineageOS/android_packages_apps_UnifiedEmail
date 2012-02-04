@@ -200,6 +200,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MatrixCursor folderDialogCursor = new MatrixCursor(FOLDER_DIALOG_PROJECTION);
         int i = 0;
         while (foldersCursor.moveToNext()) {
+            int flags = foldersCursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
+            if ((flags & UIProvider.FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES) == 0) {
+                continue;
+            }
             String uri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
             columnValues[FOLDERS_CURSOR_ID] = i++;
             columnValues[FOLDERS_CURSOR_URI] = uri;

@@ -287,5 +287,4 @@ public class Folder implements Parcelable {
         }
         return result.toString();
     }
-
 }
