@@ -155,6 +155,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         DialogInterface.OnClickListener buttonListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_NEGATIVE) {
+                    return;
+                }
                 ArrayList<String> checkedItems = new ArrayList<String>();
                 Set<Entry<String, Boolean>> states = checkedState.entrySet();
                 for (Entry<String, Boolean> entry : states) {
