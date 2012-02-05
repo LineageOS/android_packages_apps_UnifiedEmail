@@ -162,6 +162,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
             throw new IllegalStateException("No conversation list for this account");
         }
         // Create the cursor for the list using the update cache
+        // Make this asynchronous
         mConversationListCursor =
                 ConversationCursor.create(this, UIProvider.ConversationColumns.URI,
                         conversationListUri, UIProvider.CONVERSATION_PROJECTION, null, null, null);
@@ -255,6 +256,6 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
     private void showUndo() {
         mUndoView = (UndoBarView)findViewById(R.id.undo_view);
-        mUndoView.show(true, this, "undo", mSelectedAccount);
+        mUndoView.show(true, this, "undo", mSelectedAccount, mListAdapter);
     }
 }

@@ -16,6 +16,7 @@
 package com.android.mail.ui;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationListActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
@@ -97,7 +98,7 @@ public class UndoBarView extends FrameLayout {
      * specified {@link UndoOperation}.
      */
     public void show(boolean animate, final Activity activity, String description,
-            final Account account) {
+            final Account account, final AnimatedAdapter listAdapter) {
         mUndoButtonView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View widget) {
@@ -107,6 +108,7 @@ public class UndoBarView extends FrameLayout {
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate the set of
                     // commands to undo
                     Conversation.undo(activity, account.undoUri);
+                    listAdapter.setUndo(true);
                 }
                 setVisibility(View.GONE);
             }

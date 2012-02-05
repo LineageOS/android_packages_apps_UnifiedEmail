@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
+import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
 
 public class AnimatingItemView extends LinearLayout {
@@ -45,13 +46,17 @@ public class AnimatingItemView extends LinearLayout {
     }
 
     public AnimatingItemView(Context context, Conversation item,
-            android.animation.Animator.AnimatorListener listener) {
+            android.animation.Animator.AnimatorListener listener, boolean undo) {
         this(context);
         mData = item;
         setMinimumHeight(140);
-        setBackgroundResource(R.drawable.list_activated_holo);
-        mAnimator = ObjectAnimator.ofInt(this, "animatedHeight", 140, 0);
-        mAnimatedHeight = 140;
+        int start = undo ? 0 : 140;
+        int end = undo ? 140: 0;
+        if (!undo) {
+            setBackgroundResource(R.drawable.list_activated_holo);
+        }
+        mAnimator = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
+        mAnimatedHeight = start;
         mAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
         mAnimator.setDuration(300);
         mAnimator.addListener(listener);

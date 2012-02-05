@@ -48,6 +48,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private ActionCompleteListener mActionCompleteListener;
     private HashMap<Integer, AnimatingItemView> mAnimatingViews =
             new HashMap<Integer, AnimatingItemView>();
+    private boolean mUndo = false;
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account) {
@@ -55,6 +56,19 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mContext = context;
         mBatchConversations = batch;
         mSelectedAccount = account;
+    }
+
+    public void setUndo(boolean state) {
+        mUndo = state;
+        if (mUndo) {
+            mDeletingItems.clear();
+            mDeletingItems.addAll(mLastDeletingItems);
+            mActionCompleteListener = new ActionCompleteListener() {
+                @Override
+                public void onActionComplete() {
+                    notifyDataSetChanged();
+                }};
+        }
     }
 
     @Override
@@ -69,10 +83,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             ((ConversationItemView) view).bind(cursor, null, mSelectedAccount.name, null,
                     new ViewMode(mContext), mBatchConversations);
         }
-    }
-
-    private boolean isPositionAnimating(View view) {
-        return (view instanceof AnimatingItemView);
     }
 
     @Override
@@ -108,7 +118,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
 
+    private ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
     public void delete(ArrayList<Integer> deletedRows) {
+        // Clear out any remaining items and add the new ones
+        mLastDeletingItems.clear();
+        mLastDeletingItems.addAll(deletedRows);
         mDeletingItems.addAll(deletedRows);
         notifyDataSetChanged();
     }
@@ -126,13 +140,17 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (view == null) {
             Conversation conversation = Conversation.from((ConversationCursor) getItem(position));
             conversation.position = position;
-            view = new AnimatingItemView(mContext, conversation, this);
+            view = new AnimatingItemView(mContext, conversation, this, mUndo);
         }
         return view;
     }
 
     private boolean isPositionAnimating(int position) {
         return mDeletingItems.contains(position);
+    }
+
+    private boolean isPositionAnimating(View view) {
+        return (view instanceof AnimatingItemView);
     }
 
     @Override
@@ -150,6 +168,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mDeletingItems.remove(position);
             if (mDeletingItems.isEmpty()) {
                 mAnimatingViews.clear();
+                if (mUndo) {
+                    mLastDeletingItems.clear();
+                    mUndo = false;
+                }
                 if (mActionCompleteListener != null) {
                     mActionCompleteListener.onActionComplete();
                     mActionCompleteListener = null;
