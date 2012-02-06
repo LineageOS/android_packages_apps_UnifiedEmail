@@ -858,7 +858,7 @@ public final class ConversationCursor implements Cursor {
                     return ContentProviderOperation.newDelete(uri).build();
                 case UPDATE:
                     if (mLocalDeleteOnUpdate) {
-                        sProvider.deleteLocal(uri);
+                        sProvider.deleteLocal(mUri);
                     } else {
                         sProvider.updateLocal(mUri, mValues);
                     }
