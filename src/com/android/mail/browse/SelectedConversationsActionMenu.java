@@ -26,6 +26,8 @@ import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ActionCompleteListener;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
+import com.android.mail.ui.FoldersSelectionDialog;
+import com.android.mail.ui.FoldersSelectionDialog.CommitListener;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -54,7 +56,7 @@ import android.widget.Toast;
  * ContextMode} specific to operating on a set of conversations.
  */
 public class SelectedConversationsActionMenu implements ActionMode.Callback,
-        ConversationSetObserver, ActionCompleteListener {
+        ConversationSetObserver, ActionCompleteListener, CommitListener {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -136,113 +138,27 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         return handled;
     }
 
-    private static final String CHECKED_COLUMN_NAME = "checked";
-    // We only need _id because MatrixCursor insists
-    private static final String[] FOLDER_DIALOG_PROJECTION = new String[] {
-            BaseColumns._ID, UIProvider.FolderColumns.URI, UIProvider.FolderColumns.NAME,
-            CHECKED_COLUMN_NAME
-    };
-    private static final int FOLDERS_CURSOR_ID = 0;
-    private static final int FOLDERS_CURSOR_URI = 1;
-    private static final int FOLDERS_CURSOR_NAME = 2;
-    private static final int FOLDERS_CURSOR_CHECKED = 3;
-
     private void showChangeFoldersDialog() {
-        // Mapping of a folder's uri to its checked state
-        final HashMap<String, Boolean> checkedState = new HashMap<String, Boolean>();
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle("Change folders");
-        DialogInterface.OnClickListener buttonListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == DialogInterface.BUTTON_NEGATIVE) {
-                    return;
-                }
-                ArrayList<String> checkedItems = new ArrayList<String>();
-                Set<Entry<String, Boolean>> states = checkedState.entrySet();
-                for (Entry<String, Boolean> entry : states) {
-                    if (entry.getValue()) {
-                        checkedItems.add(entry.getKey());
-                    }
-                }
-                StringBuilder folderUris = new StringBuilder();
-                boolean first = true;
-                for (String folderUri : checkedItems) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        folderUris.append(',');
-                    }
-                    folderUris.append(folderUri);
-                }
-                mFolderChangeList = folderUris.toString();
-                // TODO: Make user-friendly toast
-                Toast.makeText(mActivity, mFolderChangeList, Toast.LENGTH_LONG).show();
-                // Do the change here...
-                final Collection<Conversation> conversations = mSelectionSet.values();
-                // Indicate delete on update (i.e. no longer in this folder)
-                mDeletionSet = new ArrayList<Conversation>();
-                for (Conversation conv: conversations) {
-                    conv.localDeleteOnUpdate = true;
-                    // For Gmail, add...  if (noLongerInList(conv))...
-                    mDeletionSet.add(conv);
-                }
-                // Delete the local delete items (all for now) and when done, update...
-                mListAdapter.delete(mDeletionSet, mFolderChangeListener);
-            }
-        };
-        builder.setPositiveButton(R.string.ok, buttonListener);
-        builder.setNegativeButton(R.string.cancel, buttonListener);
+        new FoldersSelectionDialog(mActivity, mAccount, this).show();
+    }
 
-        // Get all of our folders
-        // TODO: Should only be folders that allow messages to be moved there!!
-        Cursor foldersCursor = mActivity.getContentResolver().query(
-                Uri.parse(mAccount.folderListUri), UIProvider.FOLDERS_PROJECTION, null, null, null);
-        // Get the id, name, and a placeholder for check information
-        Object[] columnValues = new Object[FOLDER_DIALOG_PROJECTION.length];
-        final MatrixCursor folderDialogCursor = new MatrixCursor(FOLDER_DIALOG_PROJECTION);
-        int i = 0;
-        while (foldersCursor.moveToNext()) {
-            int flags = foldersCursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
-            if ((flags & UIProvider.FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES) == 0) {
-                continue;
-            }
-            String uri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
-            columnValues[FOLDERS_CURSOR_ID] = i++;
-            columnValues[FOLDERS_CURSOR_URI] = uri;
-            columnValues[FOLDERS_CURSOR_NAME] =
-                    foldersCursor.getString(UIProvider.FOLDER_NAME_COLUMN);
-            columnValues[FOLDERS_CURSOR_CHECKED] = 0;  // 0 = unchecked
-            folderDialogCursor.addRow(columnValues);
-            checkedState.put(uri, false);
+    @Override
+    public void onCommit(String folderChangeList) {
+        mFolderChangeList = folderChangeList;
+        // TODO: Make user-friendly toast
+        Toast.makeText(mContext, folderChangeList, Toast.LENGTH_LONG).show();
+        // Do the change here...
+        final Collection<Conversation> conversations = mSelectionSet.values();
+        // Indicate delete on update (i.e. no longer in this folder)
+        mDeletionSet = new ArrayList<Conversation>();
+        for (Conversation conv : conversations) {
+            conv.localDeleteOnUpdate = true;
+            // For Gmail, add... if (noLongerInList(conv))...
+            mDeletionSet.add(conv);
         }
-        foldersCursor.close();
-
-        if (!mAccount.supportsCapability(
-                UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
-            DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    checkedState.clear();
-                    folderDialogCursor.moveToPosition(which);
-                    checkedState.put(folderDialogCursor.getString(FOLDERS_CURSOR_URI), true);
-                }
-            };
-            builder.setSingleChoiceItems(folderDialogCursor, mCheckedItem,
-                    UIProvider.FolderColumns.NAME, listener);
-        } else {
-            builder.setMultiChoiceItems(folderDialogCursor, CHECKED_COLUMN_NAME,
-                    UIProvider.FolderColumns.NAME,
-                    new DialogInterface.OnMultiChoiceClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                            folderDialogCursor.moveToPosition(which);
-                            checkedState.put(
-                                    folderDialogCursor.getString(FOLDERS_CURSOR_URI), isChecked);
-                        }
-                    });
-        }
-        AlertDialog alert = builder.create();
-        alert.show();
+        // Delete the local delete items (all for now) and when done,
+        // update...
+        mListAdapter.delete(mDeletionSet, mFolderChangeListener);
     }
 
     private ActionCompleteListener mFolderChangeListener = new ActionCompleteListener() {
