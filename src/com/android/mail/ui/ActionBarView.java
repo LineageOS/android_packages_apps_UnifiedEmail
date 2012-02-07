@@ -92,8 +92,10 @@ public interface ActionBarView {
 
     /**
      * Change the mode of the actionbar.
+     * <p> TODO(viki): Why does the Actionbar have its own mode? The actionbar should use the view
+     * mode, just like everyone else.
      * @param mode
-     * @return true if the change in mode was successful
+     * @return true if the change in mode was successful.
      */
     boolean setMode(Mode mode);
 
