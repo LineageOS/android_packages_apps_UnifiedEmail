@@ -36,6 +36,7 @@ import android.util.Log;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
+import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +59,8 @@ public final class ConversationCursor implements Cursor {
     // The cursor instantiator's activity
     private static Activity sActivity;
     // The cursor underlying the caching cursor
-    private static Cursor sUnderlyingCursor;
+    @VisibleForTesting
+    static Cursor sUnderlyingCursor;
     // The new cursor obtained via a requery
     private static Cursor sRequeryCursor;
     // A mapping from Uri to updated ContentValues
@@ -79,7 +81,8 @@ public final class ConversationCursor implements Cursor {
     // The listener registered for this cursor
     private static ConversationListener sListener;
     // The ConversationProvider instance
-    private static ConversationProvider sProvider;
+    @VisibleForTesting
+    static ConversationProvider sProvider;
     // Set when we're in the middle of a refresh of the underlying cursor
     private static boolean sRefreshInProgress = false;
     // Set when we've sent refreshReady() to listeners
@@ -756,14 +759,16 @@ public final class ConversationCursor implements Cursor {
             // Placeholder for now; there's no local insert
         }
 
-        private void deleteLocal(Uri uri) {
+        @VisibleForTesting
+        void deleteLocal(Uri uri) {
             Uri underlyingUri = uriFromCachingUri(uri);
             // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
             String uriString =  Uri.decode(underlyingUri.toString());
             cacheValue(uriString, DELETED_COLUMN, true);
         }
 
-        private void updateLocal(Uri uri, ContentValues values) {
+        @VisibleForTesting
+        void updateLocal(Uri uri, ContentValues values) {
             Uri underlyingUri = uriFromCachingUri(uri);
             // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
             String uriString =  Uri.decode(underlyingUri.toString());
