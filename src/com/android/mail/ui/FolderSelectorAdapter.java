@@ -30,6 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
 
 import java.util.Collections;
 import java.util.List;
@@ -78,15 +80,15 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     private List<FolderRow> mFolderRows = Lists.newArrayList();
     private LayoutInflater mInflater;
+    private int mLayout;
+    private boolean mSingle;
 
-    private final Map<Integer, PaintDrawable> mColorBlockCache = Maps.newHashMap();
-
-    private static int DEFAULT_LABEL_BACKGROUND_COLOR = android.R.color.white;
 
     public FolderSelectorAdapter(Context context, Cursor folders,
-            Set<String> initiallySelected) {
+            Set<String> initiallySelected, boolean single) {
         mInflater = LayoutInflater.from(context);
-
+        mSingle = single;
+        mLayout = single? R.layout.single_folders_view : R.layout.multi_folders_view;
         processLists(folders, initiallySelected);
     }
 
@@ -118,27 +120,26 @@ public class FolderSelectorAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        CheckBox checkBox;
+        CompoundButton checkBox = null;
         View colorBlock;
 
         if (view == null) {
-            view = mInflater.inflate(R.layout.folders_view, parent, false);
-            checkBox = (CheckBox) view.findViewById(R.id.checkbox);
-            // Suppress the checkbox selection, and handle the toggling of the label
-            // on the parent list item's click handler.
+            view = mInflater.inflate(mLayout, parent, false);
+            checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
+            // Suppress the checkbox selection, and handle the toggling of the
+            // folder on the parent list item's click handler.
             checkBox.setClickable(false);
-            colorBlock = view.findViewById(R.id.color_block);
+            checkBox.setClickable(false);
             view.setTag(R.id.checkbox, checkBox);
+            colorBlock = view.findViewById(R.id.color_block);
             view.setTag(R.id.color_block, colorBlock);
         } else {
-            checkBox = (CheckBox) view.getTag(R.id.checkbox);
+            checkBox = (CompoundButton) view.getTag(R.id.checkbox);
             colorBlock = (View) view.getTag(R.id.color_block);
         }
 
         FolderRow row = getItem(position);
-        Folder folder = row.getFolder();
-
-        checkBox.setText(folder.name);
+        checkBox.setText(row.getFolder().name);
         checkBox.setChecked(row.isPresent());
 
         return view;
