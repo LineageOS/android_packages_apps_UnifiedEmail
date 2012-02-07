@@ -63,44 +63,46 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         mCommitListener = commitListener;
         // Mapping of a folder's uri to its checked state
         mCheckedState = new HashMap<String, Boolean>();
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Change folders");
-        builder.setPositiveButton(R.string.ok, this);
-        builder.setNegativeButton(R.string.cancel, this);
-
-        // Get all of our folders
-        // TODO: Should only be folders that allow messages to be moved there!!
-        Cursor foldersCursor = context.getContentResolver().query(Uri.parse(account.folderListUri),
-                UIProvider.FOLDERS_PROJECTION, null, null, null);
-        // Get the id, name, and a placeholder for check information
-        Object[] columnValues = new Object[FOLDER_DIALOG_PROJECTION.length];
-        mFolderDialogCursor = new MatrixCursor(FOLDER_DIALOG_PROJECTION);
-        int i = 0;
-        while (foldersCursor.moveToNext()) {
-            int flags = foldersCursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
-            if ((flags & UIProvider.FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES) == 0) {
-                continue;
-            }
-            String uri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
-            columnValues[FOLDERS_CURSOR_ID] = i++;
-            columnValues[FOLDERS_CURSOR_URI] = uri;
-            columnValues[FOLDERS_CURSOR_NAME] = foldersCursor
-                    .getString(UIProvider.FOLDER_NAME_COLUMN);
-            columnValues[FOLDERS_CURSOR_CHECKED] = 0; // 0 = unchecked
-            mFolderDialogCursor.addRow(columnValues);
-            mCheckedState.put(uri, false);
-        }
-        foldersCursor.close();
 
         if (!account.supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Change folders");
+            builder.setPositiveButton(R.string.ok, this);
+            builder.setNegativeButton(R.string.cancel, this);
+
+            // Get all of our folders
+            // TODO: Should only be folders that allow messages to be moved
+            // there!!
+            Cursor foldersCursor = context.getContentResolver().query(
+                    Uri.parse(account.folderListUri), UIProvider.FOLDERS_PROJECTION, null, null,
+                    null);
+            // Get the id, name, and a placeholder for check information
+            Object[] columnValues = new Object[FOLDER_DIALOG_PROJECTION.length];
+            mFolderDialogCursor = new MatrixCursor(FOLDER_DIALOG_PROJECTION);
+            int i = 0;
+            while (foldersCursor.moveToNext()) {
+                int flags = foldersCursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
+                if ((flags & UIProvider.FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES) == 0) {
+                    continue;
+                }
+                String uri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
+                columnValues[FOLDERS_CURSOR_ID] = i++;
+                columnValues[FOLDERS_CURSOR_URI] = uri;
+                columnValues[FOLDERS_CURSOR_NAME] = foldersCursor
+                        .getString(UIProvider.FOLDER_NAME_COLUMN);
+                columnValues[FOLDERS_CURSOR_CHECKED] = 1; // 0 = unchecked
+                mFolderDialogCursor.addRow(columnValues);
+                mCheckedState.put(uri, true);
+            }
+            foldersCursor.close();
             mSingle = true;
             builder.setSingleChoiceItems(mFolderDialogCursor, mCheckedItem,
                     UIProvider.FolderColumns.NAME, this);
+            mDialog = builder.create();
         } else {
-            builder.setMultiChoiceItems(mFolderDialogCursor, CHECKED_COLUMN_NAME,
-                    UIProvider.FolderColumns.NAME, this);
+            mSingle = false;
+            mDialog = new ApplyRemoveFolderDialog(context, commitListener, account);
         }
-        mDialog = builder.create();
     }
 
     public void show() {
@@ -144,10 +146,11 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
         mFolderDialogCursor.moveToPosition(which);
         if (mSingle) {
+            // Clear any other checked items.
             mCheckedState.clear();
-            mCheckedState.put(mFolderDialogCursor.getString(FOLDERS_CURSOR_URI), true);
-        } else {
-            mCheckedState.put(mFolderDialogCursor.getString(FOLDERS_CURSOR_URI), isChecked);
+            isChecked = true;
         }
+        mCheckedState.put(mFolderDialogCursor.getString(FOLDERS_CURSOR_URI), isChecked);
+        mDialog.getListView().setItemChecked(which, false);
     }
 }
