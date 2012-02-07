@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.Utils;
 
@@ -103,11 +104,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         if (!mController.onBackPressed()) {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onConversationSelected(int position) {
-        // Do nothing for now. Allow the mController to handle these changes.
     }
 
     @Override
@@ -215,13 +211,17 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public void toggleStar(boolean toggleOn, long conversationId, long maxMessageId) {
-        // TODO(viki): Auto-generated method stub
-        // Do nothing for now, and let the mController handle this too.
+    public void unsetViewModeListener(ModeChangeListener listener) {
+        mViewMode.removeListener(listener);
     }
 
     @Override
-    public void unsetViewModeListener(ModeChangeListener listener) {
-        mViewMode.removeListener(listener);
+    public ConversationListCallbacks getListHandler() {
+        return mController;
+    }
+
+    @Override
+    public StarHandler getStarHandler() {
+        return mController;
     }
 }

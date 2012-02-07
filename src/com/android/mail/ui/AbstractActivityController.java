@@ -507,4 +507,16 @@ public abstract class AbstractActivityController implements ActivityController {
         // TODO(viki): Auto-generated method stub
 
     }
+
+    @Override
+    public void toggleStar(boolean toggleOn, long conversationId, long maxMessageId) {
+        // TODO(viki): Auto-generated method stub
+
+    }
+
+    @Override
+    public void onConversationSelected(int position) {
+        // TODO(viki): Auto-generated method stub
+
+    }
 }

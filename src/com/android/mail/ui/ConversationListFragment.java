@@ -98,6 +98,11 @@ public final class ConversationListFragment extends ListFragment
     private ConversationListContext mViewContext;
 
     /**
+     * Object to deal with starring of messages.
+     */
+    private StarHandler mStarHandler;
+
+    /**
      * Creates a new instance of {@link ConversationListFragment}, initialized to display
      * conversation list context.
      */
@@ -113,18 +118,15 @@ public final class ConversationListFragment extends ListFragment
      * Initializes all internal state for a rendering.
      */
     private void bindActivityInfo() {
-        final Activity activity = getActivity();
-        mCallbacks = (ConversationListCallbacks) activity;
-        StarHandler starHandler = (StarHandler) activity;
         mActivity.setViewModeListener(this);
         mActivity.getBatchConversations().addObserver(this);
 
         // TODO(mindyp): find some way to make the notification container more re-usable.
         // TODO(viki): refactor according to comment in configureSearchResultHandler()
-        mSearchStatusView = activity.findViewById(R.id.search_status_view);
-        mSearchStatusTextView = (TextView) activity.findViewById(R.id.search_status_text_view);
-        mSearchResultCountTextView = (TextView) activity
-                .findViewById(R.id.search_result_count_view);
+        mSearchStatusView = mActivity.findViewById(R.id.search_status_view);
+        mSearchStatusTextView = (TextView) mActivity.findViewById(R.id.search_status_text_view);
+        mSearchResultCountTextView = (TextView) mActivity.findViewById(
+                R.id.search_result_count_view);
     }
 
     /**
@@ -159,6 +161,9 @@ public final class ConversationListFragment extends ListFragment
                 this);
         super.onActivityCreated(savedInstanceState);
         mActivity = (ControllableActivity) getActivity();
+        mCallbacks = mActivity.getListHandler();
+        mStarHandler = mActivity.getStarHandler();
+
         mActivity.attachConversationList(this);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         bindActivityInfo();

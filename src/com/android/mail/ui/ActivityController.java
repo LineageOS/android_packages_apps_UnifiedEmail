@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import com.android.mail.ConversationListContext;
+import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
@@ -35,7 +36,8 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * or respond to user action.
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
-        ConversationSetObserver, ModeChangeListener, MailActionBar.Callback {
+        ConversationSetObserver, ModeChangeListener, MailActionBar.Callback, StarHandler,
+        ConversationListCallbacks {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
