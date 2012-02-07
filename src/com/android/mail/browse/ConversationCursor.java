@@ -52,10 +52,6 @@ public final class ConversationCursor implements Cursor {
     private static final String TAG = "ConversationCursor";
     private static final boolean DEBUG = true;  // STOPSHIP Set to false before shipping
 
-    // The authority of our conversation provider (a forwarding provider)
-    // This string must match the declaration in AndroidManifest.xml
-    private static final String sAuthority = "com.android.mail.conversation.provider";
-
     // The cursor instantiator's activity
     private static Activity sActivity;
     // The cursor underlying the caching cursor
@@ -243,7 +239,8 @@ public final class ConversationCursor implements Cursor {
      */
     private static String uriToCachingUriString (Uri uri) {
         String provider = uri.getAuthority();
-        return uri.getScheme() + "://" + sAuthority + "/" + provider + uri.getPath();
+        return uri.getScheme() + "://" + ConversationProvider.AUTHORITY
+                + "/" + provider + uri.getPath();
     }
 
     /**
@@ -653,12 +650,18 @@ public final class ConversationCursor implements Cursor {
      * and inserts directly, and caches updates/deletes before passing them through.  The caching
      * will cause a redraw of the list with updated values.
      */
-    public static class ConversationProvider extends ContentProvider {
-        public static final String AUTHORITY = sAuthority;
+    public abstract static class ConversationProvider extends ContentProvider {
+        public static String AUTHORITY;
+
+        /**
+         * Allows the implmenting provider to specify the authority that should be used.
+         */
+        protected abstract String getAuthority();
 
         @Override
         public boolean onCreate() {
             sProvider = this;
+            AUTHORITY = getAuthority();
             return true;
         }
 

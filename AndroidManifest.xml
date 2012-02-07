@@ -64,7 +64,7 @@
             android:authorities="com.android.mail.conversation.provider"
             android:label="@string/conversation_content_provider"
             android:multiprocess="false"
-            android:name=".browse.ConversationCursor$ConversationProvider" >
+            android:name=".browse.UnifiedConversationProvider" >
             <grant-uri-permission android:pathPattern=".*" />
         </provider>
 
@@ -72,7 +72,7 @@
             android:authorities="com.android.mail.accountcache"
             android:label="@string/account_cache_provider"
             android:multiprocess="false"
-            android:name=".providers.AccountCacheProvider" >
+            android:name=".providers.UnifiedAccountCacheProvider" >
             <grant-uri-permission android:pathPattern=".*" />
         </provider>
 

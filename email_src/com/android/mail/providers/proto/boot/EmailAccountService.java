@@ -65,7 +65,8 @@ public class EmailAccountService extends IntentService {
             int i = 0;
             while (c.moveToNext()) {
                 final Map<String, Object> mockAccountMap =
-                    MockUiProvider.createAccountDetailsMap(i % MockUiProvider.NUM_MOCK_ACCOUNTS);
+                    MockUiProvider.createAccountDetailsMap(i % MockUiProvider.NUM_MOCK_ACCOUNTS,
+                            true);
                 // Send our account information to the cache provider
                 String accountName = c.getString(Account.CONTENT_EMAIL_ADDRESS_COLUMN);
                 final AccountCacheProvider.CachedAccount cachedAccount =

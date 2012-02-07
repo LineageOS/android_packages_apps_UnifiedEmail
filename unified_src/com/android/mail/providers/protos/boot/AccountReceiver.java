@@ -15,6 +15,7 @@
  */
 package com.android.mail.providers.protos.boot;
 
+import com.android.mail.providers.protos.mock.MockUiProvider;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +29,7 @@ public class AccountReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        MockUiProvider.initializeMockProvider();
         intent.setClass(context, GmailAccountService.class);
         context.startService(intent);
         intent.setClass(context, EmailAccountService.class);

@@ -107,7 +107,8 @@ public class GmailAccountService extends IntentService {
             // NOTE: This doesn't completely populate the provider.  A query for the account uri
             // will not return a cursor.
             final Map<String, Object> mockAccountMap =
-                    MockUiProvider.createAccountDetailsMap(i % MockUiProvider.NUM_MOCK_ACCOUNTS);
+                    MockUiProvider.createAccountDetailsMap(i % MockUiProvider.NUM_MOCK_ACCOUNTS,
+                            false /* don't cache */);
             // TODO: where should this really be stored?
             long capabilities = Long.valueOf(
                     AccountCapabilities.SYNCABLE_FOLDERS |

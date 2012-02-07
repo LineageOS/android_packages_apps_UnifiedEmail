@@ -41,19 +41,25 @@ import java.util.Map;
  * In the future, once other processes can add new accounts, this could allow other "mail"
  * applications have their content appear within the application
  */
-public final class AccountCacheProvider extends ContentProvider {
-
-    private static final String AUTHORITY = "com.android.mail.accountcache";
-    private static final String BASE_URI_STRING = "content://" + AUTHORITY;
+public abstract class AccountCacheProvider extends ContentProvider {
 
     private final static Map<String, CachedAccount> ACCOUNT_CACHE = Maps.newHashMap();
 
+    private static String sAuthority;
+
+    /**
+     * Allows the implmenting provider to specify the authority that should be used.
+     */
+    protected abstract String getAuthority();
+
+
     public static Uri getAccountsUri() {
-        return Uri.parse(BASE_URI_STRING + "/");
+        return Uri.parse("content://" + sAuthority + "/");
     }
 
     @Override
     public boolean onCreate() {
+        sAuthority = getAuthority();
         return true;
     }
 

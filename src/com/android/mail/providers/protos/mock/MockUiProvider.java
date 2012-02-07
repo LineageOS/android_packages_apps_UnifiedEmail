@@ -59,9 +59,10 @@ public final class MockUiProvider extends ContentProvider {
 
     // A map of query result for uris
     // TODO(pwestbro) read this map from an external
-    private static final Map<String, List<Map<String, Object>>> MOCK_QUERY_RESULTS;
+    private static Map<String, List<Map<String, Object>>> MOCK_QUERY_RESULTS = Maps.newHashMap();
 
-    static {
+
+    public static void initializeMockProvider() {
         ImmutableMap.Builder<String, List<Map<String, Object>>> builder = ImmutableMap.builder();
 
         // Add results for account list
@@ -69,14 +70,14 @@ public final class MockUiProvider extends ContentProvider {
         Map<String, Object> accountDetailsMap0;
 
         // Account 1
-        accountDetailsMap0 = createAccountDetailsMap(0);
+        accountDetailsMap0 = createAccountDetailsMap(0, true);
 
         accountList.add(accountDetailsMap0);
         String accountUri1 = (String)accountDetailsMap0.get(AccountColumns.URI);
         builder.put(accountUri1, ImmutableList.of(accountDetailsMap0));
 
         // Account 2
-        Map<String, Object> accountDetailsMap1 = createAccountDetailsMap(1);
+        Map<String, Object> accountDetailsMap1 = createAccountDetailsMap(1, true);
         accountList.add(accountDetailsMap1);
 
         String accountUri2 = (String) accountDetailsMap1.get(AccountColumns.URI);
@@ -241,7 +242,7 @@ public final class MockUiProvider extends ContentProvider {
     }
 
     // Temporarily made this public to allow the Gmail accounts to use the mock ui provider uris
-    public static Map<String, Object> createAccountDetailsMap(int accountId) {
+    public static Map<String, Object> createAccountDetailsMap(int accountId, boolean cacheMap) {
         final String accountUri = getMockAccountUri(accountId);
         Map<String, Object> accountMap = Maps.newHashMap();
         accountMap.put(BaseColumns._ID, Long.valueOf(accountId));
@@ -271,7 +272,9 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI, accountUri + "/expungeMessage");
         accountMap.put(AccountColumns.UNDO_URI, accountUri + "/undo");
 
-        addAccountInfoToAccountCache(accountMap);
+        if (cacheMap) {
+            addAccountInfoToAccountCache(accountMap);
+        }
         return accountMap;
     }
 
