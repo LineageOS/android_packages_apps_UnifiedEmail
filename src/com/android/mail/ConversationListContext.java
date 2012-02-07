@@ -48,16 +48,15 @@ public class ConversationListContext {
     /**
      * The account for whom we are showing a list
      */
-    private final Account mAccount;
+    public final Account mAccount;
     /**
      * The folder whose conversations we are displaying, if any.
      */
-    private final String mFolderName;
-
+    public final String mFolderName;
     /**
      * The search query whose results we are displaying, if any.
      */
-    private final String mSearchQuery;
+    public final String mSearchQuery;
 
     // Tokenized search terms for search queries.
     private ArrayList<String> mSearchTerms;

@@ -17,13 +17,18 @@
 
 package com.android.mail.ui;
 
+import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.app.Activity;
 import android.app.ListFragment;
+import android.content.ContentResolver;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,7 +41,11 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.ConversationListContext;
+import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView.StarHandler;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -47,7 +56,7 @@ import com.android.mail.utils.Utils;
 public final class ConversationListFragment extends ListFragment
         implements ConversationSetObserver,
         OnItemLongClickListener,
-        ModeChangeListener {
+        ModeChangeListener, UndoBarView.OnUndoCancelListener {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
 
@@ -65,19 +74,39 @@ public final class ConversationListFragment extends ListFragment
      */
     private static int TIMESTAMP_UPDATE_INTERVAL = 0;
 
-    private ControllableActivity mActivity;
+    private static final AnimatorListener UNDO_HIDE_ANIMATOR_LISTENER = new AnimatorListener() {
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            // Do nothing.
+        }
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            // Do nothing.
+        }
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+            // Do nothing.
+        }
+        @Override
+        public void onAnimationStart(Animator animation) {
+            // Do nothing.
+        }
+    };
 
+    private ControllableActivity mActivity;
     private boolean mAnimateChanges;
+
     // Control state.
     private ConversationListCallbacks mCallbacks;
-
+    private ConversationCursor mConversationListCursor;
     private View mEmptyView;
+
     private final Handler mHandler = new Handler();
     // True if the view is in CAB (Contextual Action Bar: some conversations are selected) mode
     private boolean mIsCabMode;
-
     // List save state.
     private Parcelable mListSavedState;
+
     // The internal view objects.
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
@@ -86,9 +115,23 @@ public final class ConversationListFragment extends ListFragment
     private TextView mSearchStatusTextView;
 
     private View mSearchStatusView;
+
     private int mSelectedCursorPosition = mPosition;
 
-    private AnimatorListener mUndoHideListener;
+    /**
+     * Current Account being viewed
+     */
+    private String mAccount;
+    /**
+     * Current label/folder being viewed.
+     */
+    private String mFolder;
+    /**
+     * Object to deal with starring of messages.
+     */
+    private StarHandler mStarHandler;
+
+    private UndoBarView mUndoView;
 
     /**
      * A simple method to update the timestamps of conversations periodically.
@@ -96,12 +139,11 @@ public final class ConversationListFragment extends ListFragment
     private Runnable mUpdateTimestampsRunnable = null;
 
     private ConversationListContext mViewContext;
+    private ContentResolver mResolver;
 
-    /**
-     * Object to deal with starring of messages.
-     */
-    private StarHandler mStarHandler;
+    private AnimatedAdapter mListAdapter;
 
+    private ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized to display
      * conversation list context.
@@ -112,21 +154,6 @@ public final class ConversationListFragment extends ListFragment
         args.putBundle(CONVERSATION_LIST_KEY, viewContext.toBundle());
         fragment.setArguments(args);
         return fragment;
-    }
-
-    /**
-     * Initializes all internal state for a rendering.
-     */
-    private void bindActivityInfo() {
-        mActivity.setViewModeListener(this);
-        mActivity.getBatchConversations().addObserver(this);
-
-        // TODO(mindyp): find some way to make the notification container more re-usable.
-        // TODO(viki): refactor according to comment in configureSearchResultHandler()
-        mSearchStatusView = mActivity.findViewById(R.id.search_status_view);
-        mSearchStatusTextView = (TextView) mActivity.findViewById(R.id.search_status_text_view);
-        mSearchResultCountTextView = (TextView) mActivity.findViewById(
-                R.id.search_result_count_view);
     }
 
     /**
@@ -151,6 +178,31 @@ public final class ConversationListFragment extends ListFragment
         mListView.setLayoutParams(layoutParams);
     }
 
+    /**
+     * Hides the control for an {@link UndoOperation}
+     * @param animate if true, hiding the undo view will be animated.
+     */
+    private void hideUndoView(boolean animate) {
+        if (mUndoView.isShown()) {
+            mUndoView.hide(animate);
+        }
+    }
+
+    /**
+     * Initializes all internal state for a rendering.
+     */
+    private void initializeUiForFirstDisplay() {
+        // TODO(mindyp): find some way to make the notification container more re-usable.
+        // TODO(viki): refactor according to comment in configureSearchResultHandler()
+        mSearchStatusView = mActivity.findViewById(R.id.search_status_view);
+        mSearchStatusTextView = (TextView) mActivity.findViewById(R.id.search_status_text_view);
+        mSearchResultCountTextView = (TextView) mActivity.findViewById(
+                R.id.search_result_count_view);
+        mUndoView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
+        mUndoView.setOnCancelListener(this);
+        mUndoView.setUndoHideListener(UNDO_HIDE_ANIMATOR_LISTENER);
+    }
+
     private boolean isSearchResult() {
         return mViewContext != null && mViewContext.isSearchResult();
     }
@@ -160,13 +212,25 @@ public final class ConversationListFragment extends ListFragment
         LogUtils.v(LOG_TAG, "onActivityCreated in ConversationListFragment(this=%s)",
                 this);
         super.onActivityCreated(savedInstanceState);
-        mActivity = (ControllableActivity) getActivity();
+        // Strictly speaking, we get back an android.app.Activity from getActivity. However, the
+        // only activity creating a ConversationListContext is a MailActivity which is of type
+        // ControllableActivity, so this cast should be safe. If this cast fails, some other
+        // activity is creating ConversationListFragments. This activity must be of type
+        // ControllableActivity.
+        final Activity activity = getActivity();
+        if (! (activity instanceof ControllableActivity)){
+            LogUtils.e(LOG_TAG, "ConversationListFragment expects only a ControllableActivity to" +
+                    "create it. Cannot proceed.");
+        }
+        mActivity = (ControllableActivity) activity;
         mCallbacks = mActivity.getListHandler();
         mStarHandler = mActivity.getStarHandler();
-
+        mActivity.getBatchConversations().addObserver(this);
+        mActivity.setViewModeListener(this);
         mActivity.attachConversationList(this);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
-        bindActivityInfo();
+        mResolver = mActivity.getContentResolver();
+        initializeUiForFirstDisplay();
 
         // The onViewModeChanged callback doesn't get called when the mode object is created, so
         // force setting the mode manually this time around.
@@ -197,12 +261,13 @@ public final class ConversationListFragment extends ListFragment
             }
         };
 
+        // Get the context from the arguments
         Bundle args = getArguments();
         mViewContext = ConversationListContext.forBundle(args.getBundle(CONVERSATION_LIST_KEY));
+
         if (savedInstanceState != null) {
             mListSavedState = savedInstanceState.getParcelable(LIST_STATE_KEY);
         }
-
         setRetainInstance(true);
     }
 
@@ -311,6 +376,11 @@ public final class ConversationListFragment extends ListFragment
     }
 
     @Override
+    public void onUndoCancel() {
+        mUndoView.hide(false);
+    }
+
+    @Override
     public void onViewModeChanged(int newMode) {
         // Change the divider based on view mode.
         if (mTabletDevice) {
@@ -338,6 +408,39 @@ public final class ConversationListFragment extends ListFragment
      * a label. This will initiate a data load, and hence must be called on the UI thread.
      */
     private void showList() {
+        mListView.setEmptyView(null);
+
+        // Get an account and a folder list
+        Uri foldersUri = Uri.parse(mViewContext.mAccount.folderListUri);
+        // TODO(viki) fill with real position
+        final int position = 0;
+        Account mSelectedAccount = mViewContext.mAccount;
+
+        Uri conversationListUri = null;
+        if (foldersUri != null) {
+            // TODO(viki): Look up the folder from the ConversationListContext rather than the first
+            // folder here.
+            Cursor cursor = mResolver.query(AccountCacheProvider.getAccountsUri(),
+                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+            if (cursor != null) {
+                try {
+                    final int uriCol = cursor.getColumnIndex(
+                            UIProvider.FolderColumns.CONVERSATION_LIST_URI);
+                    cursor.moveToFirst();
+                    conversationListUri = Uri.parse(cursor.getString(uriCol));
+                } finally {
+                    cursor.close();
+                }
+            }
+        }
+        // Create the cursor for the list using the update cache
+        // Make this asynchronous
+        mConversationListCursor = ConversationCursor.create((Activity) mActivity, //f unsafe
+                UIProvider.ConversationColumns.URI, conversationListUri,
+                UIProvider.CONVERSATION_PROJECTION, null, null, null);
+        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), position,
+                mConversationListCursor, mBatchConversations, mSelectedAccount);
+        mListView.setAdapter(mListAdapter);
         configureSearchResultHeader();
     }
 

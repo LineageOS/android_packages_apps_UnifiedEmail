@@ -57,7 +57,7 @@ public final class TwoPaneController extends AbstractActivityController {
         // Use cross fading animation.
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         Fragment conversationListFragment = ConversationListFragment
-                .newInstance(mConversationListContext);
+                .newInstance(mConvListContext);
         fragmentTransaction.replace(R.id.conversation_list_pane, conversationListFragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
