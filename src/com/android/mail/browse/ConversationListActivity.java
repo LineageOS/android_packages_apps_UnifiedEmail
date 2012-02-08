@@ -163,6 +163,9 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         }
         // Create the cursor for the list using the update cache
         // Make this asynchronous
+        if (mConversationListCursor != null) {
+            mConversationListCursor.close();
+        }
         mConversationListCursor =
                 ConversationCursor.create(this, UIProvider.ConversationColumns.URI,
                         conversationListUri, UIProvider.CONVERSATION_PROJECTION, null, null, null);
