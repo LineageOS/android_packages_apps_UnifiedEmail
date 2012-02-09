@@ -17,6 +17,7 @@
 package com.android.mail.providers;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -45,7 +46,9 @@ public abstract class AccountCacheProvider extends ContentProvider {
 
     private final static Map<String, CachedAccount> ACCOUNT_CACHE = Maps.newHashMap();
 
+    private ContentResolver mResolver;
     private static String sAuthority;
+    private static AccountCacheProvider sInstance;
 
     /**
      * Allows the implmenting provider to specify the authority that should be used.
@@ -59,8 +62,15 @@ public abstract class AccountCacheProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        sInstance = this;
         sAuthority = getAuthority();
+        mResolver = getContext().getContentResolver();
         return true;
+    }
+
+    @Override
+    public void shutdown() {
+        sInstance = null;
     }
 
     @Override
@@ -110,6 +120,9 @@ public abstract class AccountCacheProvider extends ContentProvider {
             }
 
         }
+
+        cursor.setNotificationUri(mResolver, getAccountsUri());
+
         return cursor;
     }
 
@@ -141,6 +154,9 @@ public abstract class AccountCacheProvider extends ContentProvider {
                 ACCOUNT_CACHE.put(account.mUri, account);
             }
         }
+        // Explicitly calling this out of the synchronized block in case any of the observers get
+        // called synchronously.
+        broadcastAccountChange();
     }
 
     public static void removeAccount(String accountUri) {
@@ -150,6 +166,18 @@ public abstract class AccountCacheProvider extends ContentProvider {
             if (account != null) {
                 ACCOUNT_CACHE.remove(account);
             }
+        }
+
+        // Explicitly calling this out of the synchronized block in case any of the observers get
+        // called synchronously.
+        broadcastAccountChange();
+    }
+
+    private static void broadcastAccountChange() {
+        final AccountCacheProvider provider = sInstance;
+
+        if (provider != null) {
+            provider.mResolver.notifyChange(getAccountsUri(), null);
         }
     }
 
