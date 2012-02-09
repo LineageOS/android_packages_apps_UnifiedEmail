@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,8 @@
      limitations under the License.
 -->
 <resources>
-    <dimen name="senders_font_size">18sp</dimen>
-    <dimen name="account_dropdown_dropdownwidth">496dip</dimen>
-    <dimen name="wide_senders_margin_top">3sp</dimen>
-    <dimen name="wide_attachment_margin_top">2sp</dimen>
-    <dimen name="wide_date_margin_top">4sp</dimen>
-    <dimen name="max_total_label_width_wide">128dip</dimen>
-    <dimen name="wide_subject_margin_right">28dip</dimen>
-    <dimen name="subject_width">238dip</dimen>
-    <dimen name="spinner_frame_width">180dp</dimen>
+    <style name="unreadCountActionBarTablet" parent="@style/UnreadCountActionBar">
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
 </resources>

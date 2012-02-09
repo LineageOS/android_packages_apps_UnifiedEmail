@@ -174,7 +174,6 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         mActionBar = actionBar;
         mCallback = callback;
         mActivity = activity;
-
         mSpinnerView = (AccountRecentLabelSpinner) findViewById(R.id.account_spinner);
 
         // Set the mode to Navigation mode
@@ -250,7 +249,6 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         if (mActionBar == null) {
             return;
         }
-
         mActionBar.setDisplayOptions(
                 ActionBar.DISPLAY_SHOW_HOME,
                 ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
@@ -262,7 +260,6 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         if (mActionBar == null){
             return;
         }
-
         mActionBar.setDisplayOptions(
                 ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME,
                 ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);

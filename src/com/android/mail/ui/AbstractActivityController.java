@@ -22,9 +22,13 @@ import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -37,7 +41,9 @@ import android.widget.LinearLayout;
 import com.android.mail.R;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.Utils;
 
 /**
@@ -72,7 +78,7 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     private ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
     protected final Context mContext;
-    protected ConversationListContext mConversationListContext;
+    protected ConversationListContext mConvListContext;
 
     protected ConversationListFragment mConversationListFragment;
     /**
@@ -81,6 +87,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * of view mode changes.
      */
     protected final ViewMode mViewMode;
+    protected ContentResolver mResolver;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -261,8 +268,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         // Allow shortcut keys to function for the ActionBar and menus.
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
-        final Context context = mActivity.getApplicationContext();
-
+        mResolver = mActivity.getContentResolver();
         mViewMode.addListener(this);
         restoreState(savedState);
         return true;
@@ -333,8 +339,8 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (mConversationListContext != null) {
-            outState.putBundle(SAVED_LIST_CONTEXT, mConversationListContext.toBundle());
+        if (mConvListContext != null) {
+            outState.putBundle(SAVED_LIST_CONTEXT, mConvListContext.toBundle());
         }
     }
 
@@ -427,7 +433,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // TODO(viki): Auto-generated method stub
         Bundle listContextBundle = savedState.getBundle(SAVED_LIST_CONTEXT);
         if (listContextBundle != null) {
-            mConversationListContext = ConversationListContext.forBundle(listContextBundle);
+            mConvListContext = ConversationListContext.forBundle(listContextBundle);
         }
     }
 
@@ -467,14 +473,24 @@ public abstract class AbstractActivityController implements ActivityController {
             // Restore the view mode
             mViewMode.handleRestore(savedState);
         } else {
+            // Null saved state. We have to initialize the activity to a sane first state
+
+            // Set the account. Use the first account for want of anything better.
+            // TODO(viki): Use a cursor loader here to notice changes to the underlying data.
+            final Cursor accountCursor = mResolver.query(AccountCacheProvider.getAccountsUri(),
+                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+            if (accountCursor != null && accountCursor.moveToFirst()) {
+                final int uriCol = accountCursor.getColumnIndex(
+                        UIProvider.AccountColumns.FOLDER_LIST_URI);
+                mAccount = new Account(accountCursor);
+            }
+
             final Intent intent = mActivity.getIntent();
             //  TODO(viki): Show the list context from Intent
-            mConversationListContext = ConversationListContext.forIntent(
-                    mContext, mAccount, intent);
+            mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
             // Instead of this, switch to the conversation list mode and have that do the right
             // things automatically.
-            // showConversationList(ConversationListContext.forIntent(mContext, mAccount, intent));
-
+            showConversationList(mConvListContext);
             mViewMode.enterConversationListMode();
         }
 

@@ -46,7 +46,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void resetActionBarIcon() {
         final int mode = mViewMode.getMode();
-        if ((mode == ViewMode.CONVERSATION_LIST && mConversationListContext.isSearchResult())
+        if ((mode == ViewMode.CONVERSATION_LIST && mConvListContext.isSearchResult())
                 || mode == ViewMode.CONVERSATION || mode == ViewMode.FOLDER_LIST) {
             mActionBarView.setBackButton();
         } else {
@@ -97,8 +97,8 @@ public final class OnePaneController extends AbstractActivityController {
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
         fragmentTransaction.setTransition(transition);
 
-        Fragment conversationListFragment = ConversationListFragment
-                .newInstance(mConversationListContext);
+        Fragment conversationListFragment = ConversationListFragment.newInstance(
+                mConvListContext);
         fragmentTransaction.replace(R.id.content_pane, conversationListFragment);
 
         fragmentTransaction.commitAllowingStateLoss();
