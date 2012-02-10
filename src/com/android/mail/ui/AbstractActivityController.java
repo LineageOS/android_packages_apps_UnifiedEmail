@@ -342,6 +342,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mConvListContext != null) {
             outState.putBundle(SAVED_LIST_CONTEXT, mConvListContext.toBundle());
         }
+        outState.putParcelable(SAVED_CONVERSATIONS, mBatchConversations);
     }
 
     @Override
