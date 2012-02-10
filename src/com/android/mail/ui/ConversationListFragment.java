@@ -420,8 +420,8 @@ public final class ConversationListFragment extends ListFragment
         if (foldersUri != null) {
             // TODO(viki): Look up the folder from the ConversationListContext rather than the first
             // folder here.
-            Cursor cursor = mResolver.query(AccountCacheProvider.getAccountsUri(),
-                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+            Cursor cursor = mResolver.query(foldersUri, UIProvider.FOLDERS_PROJECTION, null, null,
+                    null);
             if (cursor != null) {
                 try {
                     final int uriCol = cursor.getColumnIndex(
