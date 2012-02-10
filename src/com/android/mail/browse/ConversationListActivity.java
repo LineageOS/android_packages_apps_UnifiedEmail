@@ -18,8 +18,11 @@
 package com.android.mail.browse;
 
 import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -55,7 +58,8 @@ import com.android.mail.ui.UndoBarView;
 import java.util.ArrayList;
 
 public class ConversationListActivity extends Activity implements OnItemSelectedListener,
-        OnItemClickListener, ConversationSetObserver, ConversationListener, ActionCompleteListener {
+        OnItemClickListener, ConversationSetObserver, ConversationListener, ActionCompleteListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private AnimatedListView mListView;
     private AnimatedAdapter mListAdapter;
@@ -77,12 +81,21 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         mListView.setOnItemClickListener(this);
         mAccountsSpinner = (Spinner) findViewById(R.id.accounts_spinner);
         mResolver = getContentResolver();
-        Cursor cursor = mResolver.query(AccountCacheProvider.getAccountsUri(),
-                UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-        mAccountsAdapter = new AccountsSpinnerAdapter(this, cursor);
+        // TODO: determine if we need to create a fake cursor that contains the account list from
+        // last time that the application was run.  If getting the list of accounts take a long
+        // time, this would prevent an empty spinner from being shown.
+        mAccountsAdapter = new AccountsSpinnerAdapter(this, null);
         mAccountsSpinner.setAdapter(mAccountsAdapter);
         mAccountsSpinner.setOnItemSelectedListener(this);
         mBatchConversations.addObserver(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Prepare the loader.  Either re-connect with an existing one,
+        // or start a new one.
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -106,6 +119,25 @@ public class ConversationListActivity extends Activity implements OnItemSelected
                 break;
         }
         return handled;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // Currently this activity only creates a single loader (Account List)
+        return new CursorLoader(this, AccountCacheProvider.getAccountsUri(),
+                UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // Set the new data in the adapter.
+        mAccountsAdapter.changeCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // Clear the data in the adapter.
+        mAccountsAdapter.changeCursor(null);
     }
 
     class AccountsSpinnerAdapter extends SimpleCursorAdapter implements SpinnerAdapter {
