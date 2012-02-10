@@ -27,6 +27,7 @@ import com.android.mail.ui.ActionCompleteListener;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.FoldersSelectionDialog;
+import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.FoldersSelectionDialog.CommitListener;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
@@ -73,7 +74,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      */
     protected String mFolderChangeList;
 
-    private final Activity mActivity;
+    private final RestrictedActivity mActivity;
 
     private final Context mContext;
 
@@ -92,12 +93,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     protected int mCheckedItem = 0;
 
-    public SelectedConversationsActionMenu(Activity activity,
+    public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
             ActionCompleteListener listener, Account account) {
         mSelectionSet = selectionSet;
         mActivity = activity;
-        mContext = mActivity;
+        mContext = mActivity.getApplicationContext();
         mListAdapter = adapter;
         mActionCompleteListener = listener;
         mAccount = account;
@@ -113,16 +114,15 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 break;
             case R.id.read_unread:
                 // TODO: Interpret properly (rather than as "mark read")
-                Conversation.updateBoolean(mActivity, conversations, ConversationColumns.READ,
-                        true);
+                Conversation.updateBoolean(mContext, conversations, ConversationColumns.READ, true);
                 mSelectionSet.clear();
                 // Redraw with changes
                 mListAdapter.notifyDataSetChanged();
                 break;
             case R.id.star:
                 if (conversations.size() > 0) {
-                     Conversation.updateBoolean(mActivity, conversations,
-                             ConversationColumns.STARRED, true);
+                    Conversation.updateBoolean(mContext, conversations,
+                            ConversationColumns.STARRED, true);
                 }
                 mSelectionSet.clear();
                 // Redraw with changes
@@ -139,7 +139,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     private void showChangeFoldersDialog() {
-        new FoldersSelectionDialog(mActivity, mAccount, this, mSelectionSet.values()).show();
+        new FoldersSelectionDialog(mContext, mAccount, this, mSelectionSet.values()).show();
     }
 
     @Override
@@ -165,7 +165,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         @Override
         public void onActionComplete() {
             mActionCompleteListener.onActionComplete();
-            Conversation.updateString(mActivity, mSelectionSet.values(),
+            Conversation.updateString(mContext, mSelectionSet.values(),
                     ConversationColumns.FOLDER_LIST, mFolderChangeList);
             mSelectionSet.clear();
             mListAdapter.notifyDataSetChanged();
@@ -232,7 +232,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         if (set.isEmpty()) {
             return;
         }
-
         updateCount();
     }
 
@@ -309,7 +308,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     public void onActionComplete() {
         // This is where we actually delete.
         mActionCompleteListener.onActionComplete();
-        Conversation.delete(mActivity, mSelectionSet.values());
+        Conversation.delete(mContext, mSelectionSet.values());
         mListAdapter.notifyDataSetChanged();
         mSelectionSet.clear();
     }

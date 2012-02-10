@@ -36,13 +36,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity {
     void attachConversationList(ConversationListFragment conversationList);
 
     /**
-     * Returns the conversations selected by the user for performing a batch action like archive,
-     * delete, etc.
-     * @return conversations selected
-     */
-    ConversationSelectionSet getBatchConversations();
-
-    /**
      * Returns the mode that the activity is currently in.
      * @see com.android.mail.ui.ViewMode
      * @return the mode the activity is currently in.

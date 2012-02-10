@@ -36,8 +36,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * or respond to user action.
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
-        ConversationSetObserver, ModeChangeListener, MailActionBar.Callback, StarHandler,
-        ConversationListCallbacks {
+        ModeChangeListener, MailActionBar.Callback, StarHandler, ConversationListCallbacks {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
@@ -61,13 +60,6 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * @param event
      */
     void dispatchTouchEvent(MotionEvent event);
-
-    /**
-     * Returns the selected conversations in the current batch. These are conversations the user
-     * has selected for performing some bulk action on: delete, archive, etc.
-     * @return
-     */
-    ConversationSelectionSet getBatchConversations();
 
     /**
      * Return the current mode the activity is in. Values need to be matched against constants in

@@ -62,7 +62,6 @@ import com.android.mail.utils.Utils;
 public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_CONVERSATION = "saved-conversation";
     private static final String SAVED_CONVERSATION_POSITION = "saved-conv-pos";
-    private static final String SAVED_CONVERSATIONS = "saved-conversations";
     // Keys for serialization of various information in Bundles.
     private static final String SAVED_LIST_CONTEXT = "saved-list-context";
     /**
@@ -73,10 +72,6 @@ public abstract class AbstractActivityController implements ActivityController {
     protected Account mAccount;
     protected ActionBarView mActionBarView;
     protected final RestrictedActivity mActivity;
-    /**
-     * The currently selected conversations, if any.
-     */
-    private ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
     protected final Context mContext;
     protected ConversationListContext mConvListContext;
 
@@ -129,11 +124,6 @@ public abstract class AbstractActivityController implements ActivityController {
     public void exitSearchMode() {
         // TODO(viki): Auto-generated method stub
 
-    }
-
-    @Override
-    public ConversationSelectionSet getBatchConversations() {
-        return mBatchConversations;
     }
 
     @Override
@@ -331,7 +321,7 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onResume() {
         // TODO(viki): Auto-generated method stub
-        mBatchConversations.addObserver(this);
+        //        mBatchConversations.addObserver(this);
         if (mActionBarView != null) {
             mActionBarView.onResume();
         }
@@ -342,26 +332,10 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mConvListContext != null) {
             outState.putBundle(SAVED_LIST_CONTEXT, mConvListContext.toBundle());
         }
-        outState.putParcelable(SAVED_CONVERSATIONS, mBatchConversations);
     }
 
     @Override
     public void onSearchRequested() {
-        // TODO(viki): Auto-generated method stub
-
-    }
-
-    @Override
-    public void onSetChanged(ConversationSelectionSet set) {
-        // We don't care about changes to the set. Ignore.
-    }
-
-    @Override
-    public void onSetEmpty() {
-    }
-
-    @Override
-    public void onSetPopulated(ConversationSelectionSet set) {
         // TODO(viki): Auto-generated method stub
 
     }
@@ -439,26 +413,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Restore the state of selected conversations. This needs to be done after the correct mode
-     * is set and the action bar is fully initialized. If not, several key pieces of state
-     * information will be missing, and the split views may not be initialized correctly.
-     * @param savedState
-     */
-    private void restoreSelectedConversations(Bundle savedState) {
-        if (savedState != null){
-            mBatchConversations = savedState.getParcelable(SAVED_CONVERSATIONS);
-            if (mBatchConversations.isEmpty()) {
-                onSetPopulated(mBatchConversations);
-                onConversationVisibilityChanged(isConversationListVisible());
-            } else {
-                onSetEmpty();
-            }
-        } else {
-            onSetEmpty();
-        }
-    }
-
-    /**
      * Restore the state from the previous bundle. Subclasses should call this method from the
      * parent class, since it performs important UI initialization.
      * @param savedState
@@ -496,9 +450,6 @@ public abstract class AbstractActivityController implements ActivityController {
         }
 
         // Set the correct mode based on the current context
-
-        // And restore the state of selected conversations
-        restoreSelectedConversations(savedState);
     }
 
     @Override

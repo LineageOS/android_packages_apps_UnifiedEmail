@@ -130,7 +130,7 @@ public class ConversationItemView extends View {
     private ConversationItemViewModel mHeader;
     private ViewMode mViewMode;
     private boolean mDownEvent;
-    private boolean mChecked;
+    private boolean mChecked = false;
     private static int sFadedColor = -1;
     private static int sFadedActivatedColor = -1;
     private ConversationSelectionSet mSelectedConversationSet;
@@ -201,19 +201,6 @@ public class ConversationItemView extends View {
             sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
             sLightTextStyle = new ForegroundColorSpan(LIGHT_TEXT_COLOR);
         }
-    }
-
-    /**
-     * Bind this view to the content of the cursor and request layout.
-     */
-    public void bind(ConversationItemViewModel model, StarHandler starHandler, String account,
-            CharSequence displayedLabel, ViewMode viewMode, ConversationSelectionSet set) {
-        mAccount = account;
-        mViewMode = viewMode;
-        mHeader = model;
-        mSelectedConversationSet = set;
-        setContentDescription(mHeader.getContentDescription(mContext));
-        requestLayout();
     }
 
     public void bind(Cursor cursor, StarHandler starHandler, String account,
@@ -301,8 +288,9 @@ public class ConversationItemView extends View {
 
     private void calculateTextsAndBitmaps() {
         startTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
-        mChecked = mSelectedConversationSet != null
-                && mSelectedConversationSet.containsKey(mHeader.conversation.id);
+        if (mSelectedConversationSet != null) {
+            mChecked = mSelectedConversationSet.contains(mHeader.conversation);
+        }
         // Update font color.
         int fontColor = getFontColor(DEFAULT_TEXT_COLOR);
         boolean fontChanged = false;
@@ -333,7 +321,6 @@ public class ConversationItemView extends View {
 
         // Initialize label displayer.
         startTimer(PERF_TAG_CALCULATE_LABELS);
-
         pauseTimer(PERF_TAG_CALCULATE_LABELS);
 
         // Star.
@@ -783,7 +770,9 @@ public class ConversationItemView extends View {
         // Set the list position of this item in the conversation
         conv.position = mChecked ? ((ListView)getParent()).getPositionForView(this)
                 : Conversation.NO_POSITION;
-        mSelectedConversationSet.toggle(conv);
+        if (mSelectedConversationSet != null) {
+            mSelectedConversationSet.toggle(conv);
+        }
         // We update the background after the checked state has changed now that
         // we have a selected background asset. Setting the background usually
         // waits for a layout pass, but we don't need a full layout, just an

@@ -69,11 +69,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         return super.dispatchTouchEvent(ev);
     }
 
-    @Override
-    public ConversationSelectionSet getBatchConversations() {
-        return mController.getBatchConversations();
-    }
-
     /**
      * Default implementation returns a null view mode.
      */

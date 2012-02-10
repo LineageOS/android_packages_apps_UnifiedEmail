@@ -72,7 +72,9 @@ public class ConversationSelectionSet implements Parcelable {
         mObservers.add(observer);
     }
 
-    /** @see java.util.HashMap#clear */
+    /**
+     * Clear the selected set entirely.
+     */
     public synchronized void clear() {
         boolean initiallyNotEmpty = !mInternalMap.isEmpty();
         mInternalMap.clear();
@@ -84,9 +86,23 @@ public class ConversationSelectionSet implements Parcelable {
         }
     }
 
-    /** @see java.util.HashMap#containsKey */
+    /**
+     * Returns true if the given key exists in the conversation selection set. This assumes
+     * the internal representation holds conversation.id values.
+     * @param key the id of the conversation
+     * @return true if the key exists in this selected set.
+     */
     public synchronized boolean containsKey(Long key) {
         return mInternalMap.containsKey(key);
+    }
+
+    /**
+     * Returns true if the given conversation is stored in the selection set.
+     * @param conversation
+     * @return true if the conversation exists in the selected set.
+     */
+    public synchronized boolean contains(Conversation conversation) {
+        return mInternalMap.containsKey(conversation.id);
     }
 
     @Override
@@ -113,11 +129,6 @@ public class ConversationSelectionSet implements Parcelable {
         for (ConversationSetObserver observer : observers) {
             observer.onSetEmpty();
         }
-    }
-
-    /** @see java.util.HashMap#get */
-    private synchronized Conversation get(Long id) {
-        return mInternalMap.get(id);
     }
 
     /**
@@ -161,13 +172,18 @@ public class ConversationSelectionSet implements Parcelable {
         mObservers.remove(observer);
     }
 
-    /** @see java.util.HashMap#size */
+    /**
+     * Returns the number of conversations that are currently selected
+     * @return the number of selected conversations.
+     */
     public synchronized int size() {
         return mInternalMap.size();
     }
 
     /**
-     * Toggle a checkmark for the given conversation.
+     * Toggles the existence of the given conversation in the selection set. If the conversation is
+     * currently selected, it is deselected. If it doesn't exist in the selection set, then it is
+     * selected.
      * @param conversation
      */
     public void toggle(Conversation conversation) {

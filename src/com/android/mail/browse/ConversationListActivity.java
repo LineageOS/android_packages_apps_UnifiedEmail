@@ -53,13 +53,14 @@ import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.AnimatedListView;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
+import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.UndoBarView;
 
 import java.util.ArrayList;
 
 public class ConversationListActivity extends Activity implements OnItemSelectedListener,
         OnItemClickListener, ConversationSetObserver, ConversationListener, ActionCompleteListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, RestrictedActivity {
 
     private AnimatedListView mListView;
     private AnimatedAdapter mListAdapter;
@@ -238,7 +239,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
 
     @Override
     public void onSetChanged(ConversationSelectionSet set) {
-        // Do nothing.
+        // Do nothing, we don't care about changes to the selection set.
     }
 
     // ConversationListener implementation
@@ -293,4 +294,5 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         mUndoView = (UndoBarView)findViewById(R.id.undo_view);
         mUndoView.show(true, this, "undo", mSelectedAccount, mListAdapter);
     }
+
 }

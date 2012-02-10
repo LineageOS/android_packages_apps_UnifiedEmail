@@ -42,9 +42,12 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.ConversationItemView;
+import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
@@ -53,16 +56,15 @@ import com.android.mail.utils.Utils;
 /**
  * The conversation list UI component.
  */
-public final class ConversationListFragment extends ListFragment
-        implements ConversationSetObserver,
-        OnItemLongClickListener,
-        ModeChangeListener, UndoBarView.OnUndoCancelListener {
+public final class ConversationListFragment extends ListFragment implements
+        OnItemLongClickListener, ModeChangeListener, UndoBarView.OnUndoCancelListener,
+        ConversationSetObserver, ActionCompleteListener {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
-
+    // Batch conversations stored in the Bundle using this key.
+    private static final String SAVED_CONVERSATIONS = "saved-conversations";
     // Key used to keep track of the scroll state of the list.
     private static final String LIST_STATE_KEY = "list-state";
-
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     // True if we are on a tablet device
@@ -121,7 +123,7 @@ public final class ConversationListFragment extends ListFragment
     /**
      * Current Account being viewed
      */
-    private String mAccount;
+    private Account mAccount;
     /**
      * Current label/folder being viewed.
      */
@@ -143,7 +145,22 @@ public final class ConversationListFragment extends ListFragment
 
     private AnimatedAdapter mListAdapter;
 
-    private ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
+    /**
+     * Selected conversations, if any.
+     */
+    private ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
+    private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
+
+    /**
+     * Hidden constructor.
+     */
+    private ConversationListFragment() {
+        super();
+        // Allow the fragment to observe changes to its own selection set. No other object is
+        // aware of the selected set.
+        mSelectedSet.addObserver(this);
+    }
+
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized to display
      * conversation list context.
@@ -209,8 +226,6 @@ public final class ConversationListFragment extends ListFragment
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        LogUtils.v(LOG_TAG, "onActivityCreated in ConversationListFragment(this=%s)",
-                this);
         super.onActivityCreated(savedInstanceState);
         // Strictly speaking, we get back an android.app.Activity from getActivity. However, the
         // only activity creating a ConversationListContext is a MailActivity which is of type
@@ -225,7 +240,8 @@ public final class ConversationListFragment extends ListFragment
         mActivity = (ControllableActivity) activity;
         mCallbacks = mActivity.getListHandler();
         mStarHandler = mActivity.getStarHandler();
-        mActivity.getBatchConversations().addObserver(this);
+        // Don't need to add ourselves to our own set observer.
+        // mActivity.getBatchConversations().addObserver(this);
         mActivity.setViewModeListener(this);
         mActivity.attachConversationList(this);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
@@ -246,9 +262,9 @@ public final class ConversationListFragment extends ListFragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedState) {
         LogUtils.v(LOG_TAG, "onCreate in ConversationListFragment(this=%s)", this);
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedState);
 
         // Initialize fragment constants from resources
         Resources res = getResources();
@@ -265,10 +281,30 @@ public final class ConversationListFragment extends ListFragment
         Bundle args = getArguments();
         mViewContext = ConversationListContext.forBundle(args.getBundle(CONVERSATION_LIST_KEY));
 
-        if (savedInstanceState != null) {
-            mListSavedState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+        if (savedState != null) {
+            mListSavedState = savedState.getParcelable(LIST_STATE_KEY);
         }
         setRetainInstance(true);
+    }
+
+    /**
+     * Restore the state of selected conversations. This needs to be done after the correct mode
+     * is set and the action bar is fully initialized. If not, several key pieces of state
+     * information will be missing, and the split views may not be initialized correctly.
+     * @param savedState
+     */
+    private void restoreSelectedConversations(Bundle savedState) {
+        if (savedState == null) {
+            onSetEmpty();
+            return;
+        }
+        mSelectedSet = savedState.getParcelable(SAVED_CONVERSATIONS);
+        if (mSelectedSet.isEmpty()) {
+            onSetEmpty();
+            return;
+        }
+        // We have some selected conversations. Perform all the actions needed.
+        onSetPopulated(mSelectedSet);
     }
 
     @Override
@@ -304,7 +340,6 @@ public final class ConversationListFragment extends ListFragment
 
         mActivity.unsetViewModeListener(this);
         mActivity.attachConversationList(null);
-        mActivity.getBatchConversations().removeObserver(this);
 
         if (!mActivity.isChangingConfigurations()) {
             mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
@@ -315,7 +350,25 @@ public final class ConversationListFragment extends ListFragment
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        // TODO(viki): Add some functionality here.
+        // Long click is for adding conversations to a selection. Add conversation here.
+
+        // TODO(viki): True for now. We need to look at settings and perform a different action if
+        // check boxes are not visible.
+        final boolean isCheckBoxVisible = true;
+        if (isCheckBoxVisible && mTabletDevice && mIsCabMode) {
+            viewConversation(position);
+            return true;
+        }
+        assert (view instanceof ConversationItemView);
+        ConversationItemView item = (ConversationItemView) view;
+        // Handle drag mode if allowed, otherwise toggle selection.
+        //        if (!mViewMode.getMode() == ViewMode.CONVERSATION_LIST || !mTabletDevice) {
+        // Add this conversation to the selected set.
+        final Conversation conversation = item.getConversation();
+        // mSelectedSet.toggle(conversation);
+        item.toggleCheckMark();
+        // Verify that the checkbox is in sync with the selection set.
+        //assert (item.isSelected() == mSelectedSet.contains(conversation));
         return true;
     }
 
@@ -338,37 +391,14 @@ public final class ConversationListFragment extends ListFragment
     }
 
     @Override
-    public void onSetChanged(ConversationSelectionSet set) {
-        // No-op, since all set operations will cause a list refresh anyways, except for batch
-        // operations like "select all" or "deselect all" which are done through menus external
-        // to the list.
-    }
-
-    @Override
-    public void onSetEmpty() {
-        mIsCabMode = false;
-        refreshList();
-    }
-
-    @Override
-    public void onSetPopulated(ConversationSelectionSet set) {
-        mIsCabMode = true;
-        refreshList();
-    }
-
-    @Override
     public void onStart() {
-        LogUtils.v(LOG_TAG, "onStart in ConversationListFragment(this=%s)", this);
         super.onStart();
-
         mHandler.postDelayed(mUpdateTimestampsRunnable, TIMESTAMP_UPDATE_INTERVAL);
     }
 
     @Override
     public void onStop() {
-        LogUtils.v(LOG_TAG, "onStop in ConversationListFragment(this=%s)", this);
         super.onStop();
-
         mHandler.removeCallbacks(mUpdateTimestampsRunnable);
     }
 
@@ -414,7 +444,7 @@ public final class ConversationListFragment extends ListFragment
         Uri foldersUri = Uri.parse(mViewContext.mAccount.folderListUri);
         // TODO(viki) fill with real position
         final int position = 0;
-        Account mSelectedAccount = mViewContext.mAccount;
+        Account mCurrentAccount = mViewContext.mAccount;
 
         Uri conversationListUri = null;
         if (foldersUri != null) {
@@ -435,11 +465,12 @@ public final class ConversationListFragment extends ListFragment
         }
         // Create the cursor for the list using the update cache
         // Make this asynchronous
-        mConversationListCursor = ConversationCursor.create((Activity) mActivity, //f unsafe
+        mConversationListCursor = ConversationCursor.create((Activity) mActivity,
                 UIProvider.ConversationColumns.URI, conversationListUri,
                 UIProvider.CONVERSATION_PROJECTION, null, null, null);
+        // TODO(viki): The AnimatedAdapter shouldn't pass the selected set around like this.
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), position,
-                mConversationListCursor, mBatchConversations, mSelectedAccount);
+                mConversationListCursor, mSelectedSet, mCurrentAccount);
         mListView.setAdapter(mListAdapter);
         configureSearchResultHeader();
     }
@@ -460,5 +491,27 @@ public final class ConversationListFragment extends ListFragment
      */
     private void viewConversation(int position){
         mCallbacks.onConversationSelected(position);
+    }
+
+    @Override
+    public void onSetEmpty() {
+        mSelectedConversationsActionMenu = null;
+    }
+
+    @Override
+    public void onSetPopulated(ConversationSelectionSet set) {
+        mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(mActivity,
+                mSelectedSet, mListAdapter, this, mAccount);
+        mSelectedConversationsActionMenu.activate();
+    }
+
+    @Override
+    public void onActionComplete() {
+        // Do nothing for now, and show an Undo in the general case.
+    }
+
+    @Override
+    public void onSetChanged(ConversationSelectionSet set) {
+        // Do nothing. We don't care about changes to the set.
     }
 }

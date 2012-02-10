@@ -17,6 +17,17 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.browse.SelectedConversationsActionMenu;
+
+/**
+ * Interface for listening to completed UI actions like Archive, Delete, star, etc.
+ * Implement this interface and use this interface in the constructor of
+ * {@link SelectedConversationsActionMenu}. Once the actions are completed, the method
+ * {@link #onActionComplete()} will get called.
+ */
 public interface ActionCompleteListener {
+    /**
+     * Called when the {@link SelectedConversationsActionMenu} completes a UI action.
+     */
     public void onActionComplete();
 }

@@ -117,13 +117,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         delete(positions);
     }
 
-
     private ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
+
     public void delete(ArrayList<Integer> deletedRows) {
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
         mLastDeletingItems.addAll(deletedRows);
         mDeletingItems.addAll(deletedRows);
+        // TODO(viki): Rather than notifying for a full data set change, perhaps we can mark
+        // only the affected conversations?
         notifyDataSetChanged();
     }
 
