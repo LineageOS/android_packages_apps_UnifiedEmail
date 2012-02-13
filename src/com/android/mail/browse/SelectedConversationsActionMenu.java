@@ -95,10 +95,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            ActionCompleteListener listener, Account account) {
+            ActionCompleteListener listener, Account account, Context context) {
         mSelectionSet = selectionSet;
         mActivity = activity;
-        mContext = mActivity.getApplicationContext();
+        mContext = context;
         mListAdapter = adapter;
         mActionCompleteListener = listener;
         mAccount = account;

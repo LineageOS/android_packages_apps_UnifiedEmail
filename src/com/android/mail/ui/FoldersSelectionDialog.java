@@ -34,6 +34,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.FolderSelectorAdapter.FolderRow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,16 +67,22 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         Cursor foldersCursor = context.getContentResolver().query(Uri.parse(account.folderListUri),
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
         HashSet<String> conversationLabels = new HashSet<String>();
-        String[] labels;
         for (Conversation conversation: selectedConversations) {
-            labels = TextUtils.isEmpty(conversation.folderList) ? new String[0]
-                    : conversation.folderList.split(",");
-            for (String label : labels) {
-                conversationLabels.add(label);
+            if (!TextUtils.isEmpty(conversation.folderList)) {
+                conversationLabels.addAll(Arrays.asList(conversation.folderList.split(",")));
             }
         }
         mAdapter = new FolderSelectorAdapter(context, foldersCursor, conversationLabels, mSingle);
         builder.setAdapter(mAdapter, this);
+        String folderId;
+        // Pre-load existing conversation folders.
+        foldersCursor.moveToFirst();
+        do {
+            folderId = foldersCursor.getString(UIProvider.FOLDER_ID_COLUMN);
+            if (conversationLabels.contains(folderId)) {
+                mCheckedState.put(foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN), true);
+            }
+        } while (foldersCursor.moveToNext());
         mDialog = builder.create();
     }
 

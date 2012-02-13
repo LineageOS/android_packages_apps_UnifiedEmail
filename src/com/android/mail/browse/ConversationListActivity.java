@@ -90,7 +90,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         mAccountsSpinner.setOnItemSelectedListener(this);
         mBatchConversations.addObserver(this);
     }
-
+    
     @Override
     public void onResume() {
         super.onResume();
@@ -233,7 +233,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(this,
-                mBatchConversations, mListAdapter, this, mSelectedAccount);
+                mBatchConversations, mListAdapter, this, mSelectedAccount, this);
         mSelectedConversationsActionMenu.activate();
     }
 
