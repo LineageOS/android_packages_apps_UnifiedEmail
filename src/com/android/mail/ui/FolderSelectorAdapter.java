@@ -81,13 +81,11 @@ public class FolderSelectorAdapter extends BaseAdapter {
     private List<FolderRow> mFolderRows = Lists.newArrayList();
     private LayoutInflater mInflater;
     private int mLayout;
-    private boolean mSingle;
 
 
     public FolderSelectorAdapter(Context context, Cursor folders,
             Set<String> initiallySelected, boolean single) {
         mInflater = LayoutInflater.from(context);
-        mSingle = single;
         mLayout = single? R.layout.single_folders_view : R.layout.multi_folders_view;
         processLists(folders, initiallySelected);
     }
@@ -96,7 +94,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
         while (folders.moveToNext()) {
             Folder folder = new Folder(folders);
 
-            FolderRow row = new FolderRow(folder, initiallySelected.contains(folder.name));
+            FolderRow row = new FolderRow(folder, initiallySelected.contains(folder.id+""));
             mFolderRows.add(row);
         }
         Collections.sort(mFolderRows);

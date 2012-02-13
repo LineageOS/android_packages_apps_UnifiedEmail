@@ -139,7 +139,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     private void showChangeFoldersDialog() {
-        new FoldersSelectionDialog(mActivity, mAccount, this).show();
+        new FoldersSelectionDialog(mActivity, mAccount, this, mSelectionSet.values()).show();
     }
 
     @Override

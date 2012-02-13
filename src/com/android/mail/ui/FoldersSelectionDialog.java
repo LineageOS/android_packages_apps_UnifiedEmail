@@ -23,15 +23,18 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.FolderSelectorAdapter.FolderRow;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,7 +52,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
     }
 
     public FoldersSelectionDialog(final Context context, Account account,
-            final CommitListener commitListener) {
+            final CommitListener commitListener, Collection<Conversation> selectedConversations) {
         mCommitListener = commitListener;
         // Mapping of a folder's uri to its checked state
         mCheckedState = new HashMap<String, Boolean>();
@@ -62,7 +65,16 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         // TODO: (mindyp) make async
         Cursor foldersCursor = context.getContentResolver().query(Uri.parse(account.folderListUri),
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
-        mAdapter = new FolderSelectorAdapter(context, foldersCursor, new HashSet<String>(), mSingle);
+        HashSet<String> conversationLabels = new HashSet<String>();
+        String[] labels;
+        for (Conversation conversation: selectedConversations) {
+            labels = TextUtils.isEmpty(conversation.folderList) ? new String[0]
+                    : conversation.folderList.split(",");
+            for (String label : labels) {
+                conversationLabels.add(label);
+            }
+        }
+        mAdapter = new FolderSelectorAdapter(context, foldersCursor, conversationLabels, mSingle);
         builder.setAdapter(mAdapter, this);
         mDialog = builder.create();
     }

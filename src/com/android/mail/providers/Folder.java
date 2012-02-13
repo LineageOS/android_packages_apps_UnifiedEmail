@@ -44,7 +44,7 @@ public class Folder implements Parcelable {
     /**
      * Unique id of this folder.
      */
-    private long id;
+    public long id;
 
     /**
      * The content provider URI that returns this folder for this account.
