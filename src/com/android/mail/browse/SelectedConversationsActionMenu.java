@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
@@ -34,18 +35,8 @@ import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Set;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.net.Uri;
-import android.provider.BaseColumns;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -97,15 +88,18 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     protected int mCheckedItem = 0;
 
+    private Folder mFolder;
+
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            ActionCompleteListener listener, Account account) {
+            ActionCompleteListener listener, Account account, Folder folder) {
         mSelectionSet = selectionSet;
         mActivity = activity;
         mContext = mActivity.getActivityContext();
         mListAdapter = adapter;
         mActionCompleteListener = listener;
         mAccount = account;
+        mFolder = folder;
     }
 
     @Override
@@ -152,17 +146,24 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // TODO: Make user-friendly toast
         Toast.makeText(mContext, folderChangeList, Toast.LENGTH_LONG).show();
         // Do the change here...
-        final Collection<Conversation> conversations = mSelectionSet.values();
-        // Indicate delete on update (i.e. no longer in this folder)
-        mDeletionSet = new ArrayList<Conversation>();
-        for (Conversation conv : conversations) {
-            conv.localDeleteOnUpdate = true;
-            // For Gmail, add... if (noLongerInList(conv))...
-            mDeletionSet.add(conv);
+        // Get currently active folder info and compare it to the list
+        // these conversations have been given; if they no longer contain
+        // the selected folder, delete them from the list.
+        if (!folderChangeList.contains(mFolder.id)) {
+            final Collection<Conversation> conversations = mSelectionSet.values();
+            // Indicate delete on update (i.e. no longer in this folder)
+            mDeletionSet = new ArrayList<Conversation>();
+            for (Conversation conv : conversations) {
+                conv.localDeleteOnUpdate = true;
+                // For Gmail, add... if (noLongerInList(conv))...
+                mDeletionSet.add(conv);
+            }
+            // Delete the local delete items (all for now) and when done,
+            // update...
+            mListAdapter.delete(mDeletionSet, mFolderChangeListener);
+        } else {
+            mFolderChangeListener.onActionComplete();
         }
-        // Delete the local delete items (all for now) and when done,
-        // update...
-        mListAdapter.delete(mDeletionSet, mFolderChangeListener);
     }
 
     private ActionCompleteListener mFolderChangeListener = new ActionCompleteListener() {

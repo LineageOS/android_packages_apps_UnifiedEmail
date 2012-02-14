@@ -46,6 +46,7 @@ import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.ActionCompleteListener;
@@ -73,6 +74,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     protected ConversationSelectionSet mBatchConversations = new ConversationSelectionSet();
     private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
     private UndoBarView mUndoView;
+    private Folder mSelectedFolder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -186,6 +188,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
             if (cursor != null) {
                 int uriCol = cursor.getColumnIndex(UIProvider.FolderColumns.CONVERSATION_LIST_URI);
                 cursor.moveToFirst();
+                mSelectedFolder = new Folder(cursor);
                 conversationListUri = Uri.parse(cursor.getString(uriCol));
                 cursor.close();
             }
@@ -233,7 +236,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(this,
-                mBatchConversations, mListAdapter, this, mSelectedAccount);
+                mBatchConversations, mListAdapter, this, mSelectedAccount, mSelectedFolder);
         mSelectedConversationsActionMenu.activate();
     }
 

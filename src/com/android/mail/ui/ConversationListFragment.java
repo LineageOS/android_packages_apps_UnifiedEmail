@@ -48,6 +48,7 @@ import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
@@ -127,7 +128,7 @@ public final class ConversationListFragment extends ListFragment implements
     /**
      * Current label/folder being viewed.
      */
-    private String mFolder;
+    private Folder mFolder;
     /**
      * Object to deal with starring of messages.
      */
@@ -457,6 +458,7 @@ public final class ConversationListFragment extends ListFragment implements
                     final int uriCol = cursor.getColumnIndex(
                             UIProvider.FolderColumns.CONVERSATION_LIST_URI);
                     cursor.moveToFirst();
+                    mFolder = new Folder(cursor);
                     conversationListUri = Uri.parse(cursor.getString(uriCol));
                 } finally {
                     cursor.close();
@@ -501,7 +503,7 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(mActivity,
-                mSelectedSet, mListAdapter, this, mAccount);
+                mSelectedSet, mListAdapter, this, mAccount, mFolder);
         mSelectedConversationsActionMenu.activate();
     }
 
