@@ -167,4 +167,13 @@ public interface RestrictedActivity {
      * @see android.app.Activity#getApplicationContext()
      */
     Context getApplicationContext();
+
+    /**
+     * Returns the context associated with the activity. This is different from the value returned
+     * by {@link #getApplicationContext()}, which is the single context of the root activity. Some
+     * components (dialogs) require the context of the activity. When implementing this, you can
+     * return this, since each activity is also a context.
+     * @return the context associated with this activity.
+     */
+    Context getActivityContext();
 }

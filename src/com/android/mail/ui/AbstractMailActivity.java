@@ -176,4 +176,9 @@ public abstract class AbstractMailActivity extends Activity
                 new byte[0], recordBytes);
         return new NdefMessage(new NdefRecord[] { mailto });
     }
+
+    @Override
+    public Context getActivityContext() {
+        return this;
+    }
 }

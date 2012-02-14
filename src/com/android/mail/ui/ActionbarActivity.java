@@ -163,4 +163,9 @@ public class ActionbarActivity extends Activity
     public void stopActionBarStatusCursorLoader(String account) {
         // TODO(viki): Auto-generated method stub
     }
+
+    @Override
+    public Context getActivityContext() {
+        return this;
+    }
 }

@@ -501,7 +501,7 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(mActivity,
-                mSelectedSet, mListAdapter, this, mAccount, mActivity.getApplicationContext());
+                mSelectedSet, mListAdapter, this, mAccount);
         mSelectedConversationsActionMenu.activate();
     }
 

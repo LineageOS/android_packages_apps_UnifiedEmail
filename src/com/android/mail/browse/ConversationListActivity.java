@@ -233,7 +233,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(this,
-                mBatchConversations, mListAdapter, this, mSelectedAccount, this);
+                mBatchConversations, mListAdapter, this, mSelectedAccount);
         mSelectedConversationsActionMenu.activate();
     }
 
@@ -295,4 +295,8 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         mUndoView.show(true, this, "undo", mSelectedAccount, mListAdapter);
     }
 
+    @Override
+    public Context getActivityContext() {
+        return this;
+    }
 }

@@ -76,6 +76,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private final RestrictedActivity mActivity;
 
+    /**
+     * Context of the activity. A dialog requires the context of an activity rather than the global
+     * root context of the process. So mContext = mActivity.getApplicationContext() will fail.
+     */
     private final Context mContext;
 
     @VisibleForTesting
@@ -95,10 +99,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            ActionCompleteListener listener, Account account, Context context) {
+            ActionCompleteListener listener, Account account) {
         mSelectionSet = selectionSet;
         mActivity = activity;
-        mContext = context;
+        mContext = mActivity.getActivityContext();
         mListAdapter = adapter;
         mActionCompleteListener = listener;
         mAccount = account;
