@@ -40,8 +40,14 @@
         android:icon="@drawable/ic_menu_labels_holo_light" />
 
     <item
-        android:id="@+id/read_unread"
+        android:id="@+id/read"
         android:title="@string/mark_read"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_menu_mark_read_holo_light" />
+
+    <item
+        android:id="@+id/unread"
+        android:title="@string/mark_unread"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_mark_unread_holo_light" />
 
@@ -49,6 +55,11 @@
         android:title="@string/add_star"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_star_holo_light" />
+
+    <item android:id="@+id/remove_star"
+        android:title="@string/remove_star"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_menu_star_off_holo_light" />
 
     <item
         android:id="@+id/mark_important"

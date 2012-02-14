@@ -110,21 +110,17 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             case R.id.delete:
                 mListAdapter.delete(conversations, this);
                 break;
-            case R.id.read_unread:
-                // TODO: Interpret properly (rather than as "mark read")
-                Conversation.updateBoolean(mContext, conversations, ConversationColumns.READ, true);
-                mSelectionSet.clear();
-                // Redraw with changes
-                mListAdapter.notifyDataSetChanged();
+            case R.id.read:
+                markConversationsRead(true);
+                break;
+            case R.id.unread:
+                markConversationsRead(false);
                 break;
             case R.id.star:
-                if (conversations.size() > 0) {
-                    Conversation.updateBoolean(mContext, conversations,
-                            ConversationColumns.STARRED, true);
-                }
-                mSelectionSet.clear();
-                // Redraw with changes
-                mListAdapter.notifyDataSetChanged();
+                starConversations(true);
+                break;
+            case R.id.remove_star:
+                starConversations(false);
                 break;
             case R.id.change_folder:
                 showChangeFoldersDialog();
@@ -134,6 +130,26 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 break;
         }
         return handled;
+    }
+
+    private void markConversationsRead(boolean read) {
+        Collection<Conversation> conversations = mSelectionSet.values();
+        // TODO: Interpret properly (rather than as "mark read")
+        Conversation.updateBoolean(mContext, conversations, ConversationColumns.READ, read);
+        mSelectionSet.clear();
+        // Redraw with changes
+        mListAdapter.notifyDataSetChanged();
+    }
+
+    private void starConversations(boolean star) {
+        Collection<Conversation> conversations = mSelectionSet.values();
+        if (conversations.size() > 0) {
+            Conversation.updateBoolean(mContext, conversations,
+                    ConversationColumns.STARRED, star);
+        }
+        mSelectionSet.clear();
+        // Redraw with changes
+        mListAdapter.notifyDataSetChanged();
     }
 
     private void showChangeFoldersDialog() {
@@ -189,6 +205,30 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        // Determine read/ unread
+        // Star/ unstar
+        Collection<Conversation> conversations = mSelectionSet.values();
+        boolean showStar = false;
+        boolean showMarkUnread = false;
+        for (Conversation conversation : conversations) {
+            if (!conversation.starred) {
+                showStar = true;
+            }
+            if (conversation.read) {
+                showMarkUnread = true;
+            }
+            if (showMarkUnread && showStar) {
+                break;
+            }
+        }
+        MenuItem star = menu.findItem(R.id.star);
+        star.setVisible(showStar);
+        MenuItem unstar = menu.findItem(R.id.remove_star);
+        unstar.setVisible(!showStar);
+        MenuItem read = menu.findItem(R.id.read);
+        read.setVisible(!showMarkUnread);
+        MenuItem unread = menu.findItem(R.id.unread);
+        unread.setVisible(showMarkUnread);
         return true;
     }
 
