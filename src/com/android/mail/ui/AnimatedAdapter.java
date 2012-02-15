@@ -21,6 +21,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,12 +32,9 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.ActionCompleteListener;
-import com.android.mail.ui.AnimatingItemView;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
@@ -46,8 +44,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Context mContext;
     private ConversationSelectionSet mBatchConversations;
     private ActionCompleteListener mActionCompleteListener;
-    private HashMap<Integer, AnimatingItemView> mAnimatingViews =
-            new HashMap<Integer, AnimatingItemView>();
+    private SparseArray<AnimatingItemView> mAnimatingViews = new SparseArray<AnimatingItemView>();
     private boolean mUndo = false;
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
