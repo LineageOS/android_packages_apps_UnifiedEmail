@@ -446,25 +446,8 @@ public final class ConversationListFragment extends ListFragment implements
         // TODO(viki) fill with real position
         final int position = 0;
         Account mCurrentAccount = mViewContext.mAccount;
-
-        Uri conversationListUri = null;
-        if (foldersUri != null) {
-            // TODO(viki): Look up the folder from the ConversationListContext rather than the first
-            // folder here.
-            Cursor cursor = mResolver.query(foldersUri, UIProvider.FOLDERS_PROJECTION, null, null,
-                    null);
-            if (cursor != null) {
-                try {
-                    final int uriCol = cursor.getColumnIndex(
-                            UIProvider.FolderColumns.CONVERSATION_LIST_URI);
-                    cursor.moveToFirst();
-                    mFolder = new Folder(cursor);
-                    conversationListUri = Uri.parse(cursor.getString(uriCol));
-                } finally {
-                    cursor.close();
-                }
-            }
-        }
+        mFolder = mViewContext.mFolder;
+        Uri conversationListUri = Uri.parse(mFolder.conversationListUri);
         // Create the cursor for the list using the update cache
         // Make this asynchronous
         mConversationListCursor = ConversationCursor.create((Activity) mActivity,

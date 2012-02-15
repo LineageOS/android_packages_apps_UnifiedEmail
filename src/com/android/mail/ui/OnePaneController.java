@@ -97,8 +97,7 @@ public final class OnePaneController extends AbstractActivityController {
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
         fragmentTransaction.setTransition(transition);
 
-        Fragment folderListFragment = FolderListFragment.newInstance(
-                mAccount.folderListUri);
+        Fragment folderListFragment = FolderListFragment.newInstance(this, mAccount.folderListUri);
         fragmentTransaction.replace(R.id.content_pane, folderListFragment);
 
         fragmentTransaction.commitAllowingStateLoss();

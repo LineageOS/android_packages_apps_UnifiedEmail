@@ -64,20 +64,23 @@ public final class FolderListFragment extends ListFragment {
     private ContentResolver mResolver;
 
     private String mFolderListUri;
+
+    private FolderListCallbacks mCallback;
     /**
      * Hidden constructor.
      */
-    private FolderListFragment(String uri) {
+    private FolderListFragment(FolderListCallbacks callback, String uri) {
         super();
+        mCallback = callback;
         mFolderListUri = uri;
     }
 
     /**
-     * Creates a new instance of {@link ConversationListFragment}, initialized to display
-     * conversation list context.
+     * Creates a new instance of {@link ConversationListFragment}, initialized
+     * to display conversation list context.
      */
-    public static FolderListFragment newInstance(String uri) {
-        FolderListFragment fragment = new FolderListFragment(uri);
+    public static FolderListFragment newInstance(FolderListCallbacks callback, String uri) {
+        FolderListFragment fragment = new FolderListFragment(callback, uri);
         return fragment;
     }
 
@@ -161,13 +164,14 @@ public final class FolderListFragment extends ListFragment {
             fragmentTransaction.setTransition(transition);
 
             Fragment folderListFragment = FolderListFragment
-                    .newInstance(selected.childFoldersListUri);
+                    .newInstance(mCallback, selected.childFoldersListUri);
             fragmentTransaction.replace(R.id.content_pane, folderListFragment);
 
             fragmentTransaction.commitAllowingStateLoss();
 
         } else {
             // Go to the conversation list for this folder.
+            mCallback.onFolderSelected(selected);
         }
     }
 

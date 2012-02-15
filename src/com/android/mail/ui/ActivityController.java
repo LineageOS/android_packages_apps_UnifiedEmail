@@ -36,7 +36,8 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * or respond to user action.
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
-        ModeChangeListener, MailActionBar.Callback, StarHandler, ConversationListCallbacks {
+        ModeChangeListener, MailActionBar.Callback, StarHandler, ConversationListCallbacks,
+        FolderListCallbacks {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
@@ -54,6 +55,12 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
     // control and view logic, which is spread between the activity controller and the fragment
     // currently.
     void attachConversationList(ConversationListFragment conversationListFragment);
+
+    /**
+     * Attach the folder list fragment to the appropriate view.
+     * @param folderListFragment
+     */
+    void attachFolderList(FolderListFragment folderListFragment);
 
     /**
      * @see android.app.Activity#dispatchTouchEvent(MotionEvent)

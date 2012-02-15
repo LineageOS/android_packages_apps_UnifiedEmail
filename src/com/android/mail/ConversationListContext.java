@@ -20,8 +20,11 @@ package com.android.mail;
 import android.content.Context;
 import android.content.Intent;
 import android.content.UriMatcher;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 
 import java.util.ArrayList;
@@ -38,7 +41,7 @@ import java.util.ArrayList;
  */
 public class ConversationListContext {
     private static final String EXTRA_ACCOUNT = "account";
-    private static final String EXTRA_FOLDER = "folder";
+    public static final String EXTRA_FOLDER = "folder";
     private static final String EXTRA_SEARCH_QUERY = "query";
 
     /**
@@ -52,7 +55,7 @@ public class ConversationListContext {
     /**
      * The folder whose conversations we are displaying, if any.
      */
-    public final String mFolderName;
+    public final Folder mFolder;
     /**
      * The search query whose results we are displaying, if any.
      */
@@ -74,10 +77,8 @@ public class ConversationListContext {
         // The account is created here as a new object. This is probably not the best thing to do.
         // We should probably be reading an account instance from our controller.
         Account account = bundle.getParcelable(EXTRA_ACCOUNT);
-        return new ConversationListContext(
-                account,
-                bundle.getString(EXTRA_SEARCH_QUERY),
-                bundle.getString(EXTRA_FOLDER));
+        Folder folder = bundle.getParcelable(EXTRA_FOLDER);
+        return new ConversationListContext(account, bundle.getString(EXTRA_SEARCH_QUERY), folder);
     }
 
     /**
@@ -85,25 +86,47 @@ public class ConversationListContext {
      * the context defaults to a view of the inbox.
      */
     public static ConversationListContext forFolder(
-            Context context, Account account, String folder) {
+            Context context, Account account, Folder folder) {
         // Mock stuff for now.
         return new ConversationListContext(account, null, folder);
+    }
+
+
+    public static ConversationListContext forFolder(Context mContext, Account mAccount2,
+            String inboxFolder) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**
      * Resolves an intent and builds an appropriate context for it.
      */
-    public static ConversationListContext forIntent
-            (Context context, Account callerAccount, Intent intent) {
+    public static ConversationListContext forIntent(Context context, Account callerAccount,
+            Intent intent) {
         Account account = callerAccount;
-        String folder = null;
         String action = intent.getAction();
-        // TODO(viki): Implement the other intents: Intent.SEARCH, Intent.PROVIDER_CHANGED.
+        // TODO(viki): Implement the other intents: Intent.SEARCH,
+        // Intent.PROVIDER_CHANGED.
         if (Intent.ACTION_VIEW.equals(action) && intent.getData() != null) {
-            // TODO(viki): Look through the URI to find the account and the folder.
+            // TODO(viki): Look through the URI to find the account and the
+            // folder.
         }
+        Folder folder = (Folder) intent.getParcelableExtra(EXTRA_FOLDER);
         if (folder == null) {
-            folder = intent.getStringExtra(EXTRA_FOLDER);
+            Cursor cursor = null;
+            try {
+                cursor = context.getContentResolver().query(Uri.parse(callerAccount.folderListUri),
+                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    folder = new Folder(cursor);
+                }
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+
         }
         return forFolder(context, account, folder);
     }
@@ -116,10 +139,10 @@ public class ConversationListContext {
      * @param searchQuery
      * @param folder
      */
-    private ConversationListContext(Account account, String searchQuery, String folder) {
+    private ConversationListContext(Account account, String searchQuery, Folder folder) {
         mAccount = account;
         mSearchQuery = searchQuery;
-        mFolderName = folder;
+        mFolder = folder;
     }
 
     /**
@@ -137,7 +160,7 @@ public class ConversationListContext {
         Bundle result = new Bundle();
         result.putParcelable(EXTRA_ACCOUNT, mAccount);
         result.putString(EXTRA_SEARCH_QUERY, mSearchQuery);
-        result.putString(EXTRA_FOLDER, mFolderName);
+        result.putParcelable(EXTRA_FOLDER, mFolder);
         return result;
     }
 }

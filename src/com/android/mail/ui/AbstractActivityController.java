@@ -84,6 +84,7 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     protected final ViewMode mViewMode;
     protected ContentResolver mResolver;
+    private FolderListFragment mFolderListFragment;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -95,6 +96,11 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void attachConversationList(ConversationListFragment conversationList) {
         mConversationListFragment = conversationList;
+    }
+
+    @Override
+    public void attachFolderList(FolderListFragment folderList) {
+        mFolderListFragment = folderList;
     }
 
     @Override
@@ -495,5 +501,17 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onConversationSelected(int position) {
         // TODO(viki): Auto-generated method stub
 
+    }
+
+    @Override
+    public void onFolderSelected(Folder folder) {
+        final Intent intent = mActivity.getIntent();
+        intent.putExtra(ConversationListContext.EXTRA_FOLDER, folder);
+        //  TODO(viki): Show the list context from Intent
+        mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
+        // Instead of this, switch to the conversation list mode and have that do the right
+        // things automatically.
+        showConversationList(mConvListContext);
+        mViewMode.enterConversationListMode();
     }
 }

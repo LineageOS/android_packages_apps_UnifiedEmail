@@ -192,7 +192,6 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
                 mCallback.navigateToAccount((Account) mSpinner.getItem(itemPosition));
                 break;
         }
-        Toast.makeText(getContext(), "Selected item " + itemPosition, Toast.LENGTH_SHORT).show();
         return false;
     }
 
