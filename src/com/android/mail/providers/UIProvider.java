@@ -53,7 +53,8 @@ public class UIProvider {
             AccountColumns.SEND_MAIL_URI,
             AccountColumns.EXPUNGE_MESSAGE_URI,
             AccountColumns.UNDO_URI,
-            AccountColumns.STATUS_URI
+            AccountColumns.STATUS_URI,
+            AccountColumns.SETTINGS_INTENT_URI
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -69,6 +70,7 @@ public class UIProvider {
     public static final int ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN = 10;
     public static final int ACCOUNT_UNDO_URI_COLUMN = 11;
     public static final int ACCOUNT_STATUS_URI_COLUMN = 12;
+    public static final int SETTINGS_INTENT_URI_COLUMN = 13;
 
     public static final class AccountCapabilities {
         /**
@@ -214,6 +216,14 @@ public class UIProvider {
          * cursor that reflects the sync status of this account.
          */
         public static final String STATUS_URI = "statusUri";
+
+        /**
+         * Uri for VIEW intent that will cause the settings screens for this account type to be
+         * shown.
+         * TODO: When we want to support a heterogeneous set of account types, this value may need
+         * to be moved to a global content provider.
+         */
+        public static String SETTINGS_INTENT_URI = "accountSettingsIntentUri";
     }
 
     // We define a "folder" as anything that contains a list of conversations.

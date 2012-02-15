@@ -158,6 +158,11 @@ public interface RestrictedActivity {
     void startActivityForResult(Intent intent, int requestCode);
 
     /**
+     * @see android.app.Activity#startActivityForResult(Intent, int)
+     */
+    void startActivity(Intent intent);
+
+    /**
      * @see android.app.Activity#startSearch(String, boolean, Bundle, boolean)
      */
     void startSearch(String initialQuery, boolean selectInitialQuery,

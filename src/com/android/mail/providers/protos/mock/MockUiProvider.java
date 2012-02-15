@@ -272,6 +272,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI, accountUri + "/expungeMessage");
         accountMap.put(AccountColumns.UNDO_URI, accountUri + "/undo");
         accountMap.put(AccountColumns.STATUS_URI, accountUri + "/status");
+        accountMap.put(AccountColumns.SETTINGS_INTENT_URI, "http://www.google.com");
 
         if (cacheMap) {
             addAccountInfoToAccountCache(accountMap);
@@ -360,7 +361,8 @@ public final class MockUiProvider extends ContentProvider {
                         (String)accountInfo.get(AccountColumns.SEND_MAIL_URI),
                         (String)accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI),
                         (String)accountInfo.get(AccountColumns.UNDO_URI),
-                        (String)accountInfo.get(AccountColumns.STATUS_URI));
+                        (String)accountInfo.get(AccountColumns.STATUS_URI),
+                        (String)accountInfo.get(AccountColumns.SETTINGS_INTENT_URI));
 
 
         AccountCacheProvider.addAccount(account);

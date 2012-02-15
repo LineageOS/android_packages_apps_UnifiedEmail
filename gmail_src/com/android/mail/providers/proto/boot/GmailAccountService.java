@@ -43,6 +43,8 @@ public class GmailAccountService extends IntentService {
     private static final String GMAIL_UI_PROVIDER_BASE_URI_STRING =
             "content://" + GMAIL_UI_PROVIDER_AUTHORITY;
 
+    private static final Uri BASE_SETTINGS_URI = Uri.parse("setting://gmail/");
+
     private static Uri getAccountUri(String account) {
         return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/account/" + account);
     }
@@ -57,6 +59,10 @@ public class GmailAccountService extends IntentService {
 
     private static Uri getAccountUndoUri(String account) {
         return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/undo");
+    }
+
+    private static Uri getAccountSettingUri(String account) {
+        return BASE_SETTINGS_URI.buildUpon().appendQueryParameter("account", account).build();
     }
 
     private static Uri getAccountSaveDraftUri(String account) {
@@ -139,7 +145,8 @@ public class GmailAccountService extends IntentService {
                             getAccountSendMailUri(account.name).toString(),
                             (String)mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
                             getAccountUndoUri(account.name).toString(),
-                            (String)mockAccountMap.get(AccountColumns.STATUS_URI));
+                            (String)mockAccountMap.get(AccountColumns.STATUS_URI),
+                            getAccountSettingUri(account.name).toString());
 
             AccountCacheProvider.addAccount(cachedAccount);
         }

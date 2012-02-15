@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.net.Uri;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -341,6 +342,9 @@ public abstract class AbstractActivityController implements ActivityController {
             case R.id.refresh:
                 requestFolderRefresh();
                 break;
+            case R.id.preferences:
+                showPreferences();
+                break;
             default:
                 handled = false;
                 break;
@@ -385,6 +389,13 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mConvListContext != null) {
             outState.putBundle(SAVED_LIST_CONTEXT, mConvListContext.toBundle());
         }
+    }
+
+    @Override
+    public void showPreferences() {
+        final Intent preferenceIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(mAccount.settingIntentUri));
+        mActivity.startActivity(preferenceIntent);
     }
 
     @Override

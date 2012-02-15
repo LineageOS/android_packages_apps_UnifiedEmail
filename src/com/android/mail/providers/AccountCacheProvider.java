@@ -116,6 +116,9 @@ public abstract class AccountCacheProvider extends ContentProvider {
                     builder.add(account.mUndoUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.STATUS_URI)) {
                     builder.add(account.mStatusUri);
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SETTINGS_INTENT_URI)) {
+                    builder.add(account.mSettingsIntentUri);
                 } else {
                     throw new IllegalStateException("Column not found: " + column);
                 }
@@ -196,11 +199,12 @@ public abstract class AccountCacheProvider extends ContentProvider {
         private final String mExpungeMessageUri;
         private final String mUndoUri;
         private final String mStatusUri;
+        private final String mSettingsIntentUri;
 
         public CachedAccount(long id, String name, String uri, long capabilities,
                 String folderListUri, String searchUri, String fromAddressesUri,
                 String saveDraftUri, String sendMailUri, String expungeMessageUri,
-                String undoUri, String statusUri) {
+                String undoUri, String statusUri, String settingsIntentUri) {
             mId = id;
             mName = name;
             mUri = uri;
@@ -213,6 +217,7 @@ public abstract class AccountCacheProvider extends ContentProvider {
             mExpungeMessageUri = expungeMessageUri;
             mUndoUri = undoUri;
             mStatusUri = statusUri;
+            mSettingsIntentUri = settingsIntentUri;
         }
 
         @Override
@@ -235,14 +240,15 @@ public abstract class AccountCacheProvider extends ContentProvider {
                     TextUtils.equals(mSendMailUri, other.mSendMailUri) &&
                     TextUtils.equals(mExpungeMessageUri, other.mExpungeMessageUri) &&
                     TextUtils.equals(mUndoUri, other.mUndoUri) &&
-                    TextUtils.equals(mStatusUri, other.mStatusUri);
+                    TextUtils.equals(mStatusUri, other.mStatusUri) &&
+                    TextUtils.equals(mSettingsIntentUri, other.mSettingsIntentUri);
         }
 
         @Override
         public int hashCode() {
             return Objects.hashCode(mId, mName, mUri, mCapabilities, mFolderListUri, mSearchUri,
                     mAccountFromAddressesUri, mSaveDraftUri, mSendMailUri, mExpungeMessageUri,
-                    mUndoUri, mStatusUri);
+                    mUndoUri, mStatusUri, mSettingsIntentUri);
         }
     }
 }

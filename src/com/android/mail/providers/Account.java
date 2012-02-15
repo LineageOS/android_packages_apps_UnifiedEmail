@@ -20,47 +20,46 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
 public class Account extends android.accounts.Account implements Parcelable {
     /**
      * The version of the UI provider schema from which this account provider
      * will return results.
      */
-    public int providerVersion;
+    public final int providerVersion;
 
     /**
      * The uri to directly access the information for this account.
      */
-    public String accountUri;
+    public final String accountUri;
 
     /**
      * The possible capabilities that this account supports.
      */
-    public int capabilities;
+    public final int capabilities;
 
     /**
      * The content provider uri to return the list of top level folders for this
      * account.
      */
-    public String folderListUri;
+    public final String folderListUri;
 
     /**
      * The content provider uri that can be queried for search results.
      */
-    public String searchUri;
+    public final String searchUri;
 
     /**
      * The content provider uri that can be queried to access the from addresses
      * for this account.
      */
-    public String accountFromAddressesUri;
+    public final String accountFromAddressesUri;
 
     /**
      * The content provider uri that can be used to save (insert) new draft
      * messages for this account. NOTE: This might be better to be an update
      * operation on the messageUri.
      */
-    public String saveDraftUri;
+    public final String saveDraftUri;
 
     /**
      * The content provider uri that can be used to send a message for this
@@ -68,26 +67,32 @@ public class Account extends android.accounts.Account implements Parcelable {
      * NOTE: This might be better to be an update operation on the
      * messageUri.
      */
-    public String sendMessageUri;
+    public final String sendMessageUri;
 
     /**
      * The content provider uri that can be used to expunge message from this
      * account. NOTE: This might be better to be an update operation on the
      * messageUri.
      */
-    public String expungeMessageUri;
+    public final String expungeMessageUri;
 
     /**
      * The content provider uri that can be used to undo the last operation
      * performed.
      */
-    public String undoUri;
+    public final String undoUri;
 
     /**
      * The content provider uri that can be used to get a status cursor for this
      * account.
      */
-    public String statusUri;
+    public final String statusUri;
+
+    /**
+     * Uri for VIEW intent that will cause the settings screens for this account type to be
+     * shown.
+     */
+    public final String settingIntentUri;
 
     public Account(Parcel in) {
         super(in);
@@ -102,10 +107,27 @@ public class Account extends android.accounts.Account implements Parcelable {
         expungeMessageUri = in.readString();
         undoUri = in.readString();
         statusUri = in.readString();
+        settingIntentUri = in.readString();
     }
 
+    // TODO(pwestbro): remove this constructor.
+    // This constructor should't be necessary.  Any usage of an Account object constructed
+    // this way may have unexpected results.
+    @Deprecated
     public Account(String address, String type) {
         super(address, type);
+        providerVersion = -1;
+        accountUri = null;
+        capabilities = 0;
+        folderListUri = null;
+        searchUri = null;
+        accountFromAddressesUri = null;
+        saveDraftUri = null;
+        sendMessageUri = null;
+        expungeMessageUri = null;
+        undoUri = null;
+        statusUri = null;
+        settingIntentUri = null;
     }
 
     public Account(Cursor cursor) {
@@ -121,6 +143,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         expungeMessageUri = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
         undoUri = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
         statusUri = cursor.getString(UIProvider.ACCOUNT_STATUS_URI_COLUMN);
+        settingIntentUri = cursor.getString(UIProvider.SETTINGS_INTENT_URI_COLUMN);
     }
 
     public boolean supportsCapability(int capability) {
@@ -141,6 +164,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeString(expungeMessageUri);
         dest.writeString(undoUri);
         dest.writeString(statusUri);
+        dest.writeString(settingIntentUri);
     }
 
     @SuppressWarnings("hiding")
