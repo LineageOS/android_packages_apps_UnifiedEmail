@@ -34,6 +34,7 @@ import com.android.mail.R;
 import com.android.mail.AccountRecentLabelSpinner;
 import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.ConversationListContext;
+import com.android.mail.providers.Account;
 
 /**
  * View to manage the various states of the Gmail Action Bar
@@ -73,7 +74,7 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
          *
          * @return whether the account can be switched successfully.
          */
-        boolean navigateToAccount(final String account);
+        boolean navigateToAccount(final Account account);
 
         void navigateToFolder(final String folderCanonicalName);
 
@@ -185,6 +186,12 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
         // Don't do anything. Toast on the action.
+        int type = mSpinner.getItemViewType(itemPosition);
+        switch (type) {
+            case AccountSpinnerAdapter.TYPE_ACCOUNT:
+                mCallback.navigateToAccount((Account) mSpinner.getItem(itemPosition));
+                break;
+        }
         Toast.makeText(getContext(), "Selected item " + itemPosition, Toast.LENGTH_SHORT).show();
         return false;
     }

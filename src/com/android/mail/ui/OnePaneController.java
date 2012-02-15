@@ -87,6 +87,25 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
+    public void showFolderList() {
+        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
+        fragmentTransaction.addToBackStack(null);
+        final boolean accountChanged = false;
+        // TODO(viki): This account transition looks strange in two pane mode. Revisit as the app
+        // is coming together and improve the look and feel.
+        final int transition = accountChanged ? FragmentTransaction.TRANSIT_FRAGMENT_FADE :
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
+        fragmentTransaction.setTransition(transition);
+
+        Fragment folderListFragment = FolderListFragment.newInstance(
+                mAccount.folderListUri);
+        fragmentTransaction.replace(R.id.content_pane, folderListFragment);
+
+        fragmentTransaction.commitAllowingStateLoss();
+        resetActionBarIcon();
+    }
+
+    @Override
     public void showConversationList(ConversationListContext listContext) {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack(null);

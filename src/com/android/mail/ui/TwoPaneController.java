@@ -74,6 +74,11 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
+    public void showFolderList() {
+        // TODO: auto-generated method stub.
+    }
+
+    @Override
     public boolean onCreate(Bundle savedState) {
         mActivity.setContentView(R.layout.two_pane_activity);
 

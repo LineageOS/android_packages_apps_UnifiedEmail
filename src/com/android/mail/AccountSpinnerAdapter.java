@@ -30,6 +30,7 @@ import android.widget.ListAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
@@ -99,9 +100,9 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
         TextView unread_count;
     }
 
-    private static final int TYPE_ACCOUNT = 0;
-    private static final int TYPE_HEADER = 1;
-    private static final int TYPE_FOLDER = 2;
+    public static final int TYPE_ACCOUNT = 0;
+    public static final int TYPE_HEADER = 1;
+    public static final int TYPE_FOLDER = 2;
 
     private int getType(int position) {
         // First the accounts
@@ -177,12 +178,12 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
         switch (getType(position)) {
             case TYPE_ACCOUNT:
                 // The default Inbox for the given account
-                accountName = getAccount(position);
+                accountName = getAccountLabel(position);
                 folderName = "Inbox";
                 break;
             case TYPE_HEADER:
                 // We can never select the header, and we want the default view to be the Inbox.
-                accountName = getAccount(0);
+                accountName = getAccountLabel(0);
                 folderName = "Inbox";
                 break;
             default:
@@ -279,7 +280,7 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
                 header.account.setText(mCurrentAccount);
                 return convertView;
             case TYPE_ACCOUNT:
-                textLabel = getAccount(position);
+                textLabel = getAccountLabel(position);
                 break;
             case TYPE_FOLDER:
                 final int offset = position - numAccounts - 1;
@@ -316,10 +317,20 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
      * @param position
      * @return
      */
-    private String getAccount(int position) {
+    private String getAccountLabel(int position) {
         mAccountCursor.moveToPosition(position);
         final int accountNameCol = mAccountCursor.getColumnIndex(UIProvider.AccountColumns.NAME);
         return mAccountCursor.getString(accountNameCol);
+    }
+
+    /**
+     * Returns the account given position in the spinner.
+     * @param position
+     * @return
+     */
+    private Account getAccount(int position) {
+        mAccountCursor.moveToPosition(position);
+        return new Account(mAccountCursor);
     }
 
 

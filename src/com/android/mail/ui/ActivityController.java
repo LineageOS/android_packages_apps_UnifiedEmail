@@ -212,4 +212,9 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * @param listContext context providing information on what conversation list to display.
      */
     void showConversationList(ConversationListContext listContext);
+
+    /**
+     * Show the folder list associated with the currently selected account.
+     */
+    void showFolderList();
 }

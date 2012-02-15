@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.providers.Account;
 import com.android.mail.ui.ActionBarView.Mode;
 import com.android.mail.ui.MailActionBar.Callback;
 
@@ -127,7 +128,7 @@ public class ActionbarActivity extends Activity
     }
 
     @Override
-    public boolean navigateToAccount(String account) {
+    public boolean navigateToAccount(Account account) {
         // TODO(viki): Auto-generated method stub
         return false;
     }

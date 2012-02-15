@@ -33,6 +33,7 @@ import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Window;
@@ -196,9 +197,17 @@ public abstract class AbstractActivityController implements ActivityController {
     protected abstract boolean isConversationListVisible();
 
     @Override
-    public boolean navigateToAccount(String account) {
-        // TODO(viki): Auto-generated method stub
-        return false;
+    public boolean navigateToAccount(Account account) {
+        if (!account.equals(mAccount)) {
+            mAccount = account;
+
+            final Intent intent = mActivity.getIntent();
+            // TODO(viki): Show the list context from Intent
+            mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
+            showConversationList(mConvListContext);
+            mViewMode.enterConversationListMode();
+        }
+        return true;
     }
 
     @Override
@@ -272,8 +281,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // TODO(viki): Auto-generated method stub
-        return false;
+        MenuInflater inflater = mActivity.getMenuInflater();
+        inflater.inflate(R.menu.conversation_list_menu, menu);
+        return true;
     }
 
     @Override
@@ -296,7 +306,12 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO(viki): Auto-generated method stub
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.show_all_folders:
+                showFolderList();
+                break;
+        }
         return false;
     }
 
@@ -456,12 +471,6 @@ public abstract class AbstractActivityController implements ActivityController {
     public void setSubject(String subject) {
         // Do something useful with the subject. This requires changing the
         // conversation view's subject text.
-    }
-
-    @Override
-    public void showFolderList() {
-        // TODO(viki): Auto-generated method stub
-
     }
 
     @Override

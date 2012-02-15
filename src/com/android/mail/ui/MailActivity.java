@@ -219,4 +219,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public StarHandler getStarHandler() {
         return mController;
     }
+
+    @Override
+    public void attachFolderList(FolderListFragment folderListFragment) {
+        // TODO Auto-generated method stub
+    }
 }

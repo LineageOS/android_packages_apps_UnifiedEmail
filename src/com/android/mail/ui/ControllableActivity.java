@@ -66,4 +66,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity {
      * @return
      */
     StarHandler getStarHandler();
+
+    void attachFolderList(FolderListFragment folderListFragment);
 }
