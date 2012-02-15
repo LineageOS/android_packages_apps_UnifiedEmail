@@ -307,4 +307,10 @@
         <item name="android:contentDescription">@string/collapse_recipient_details</item>
     </style>
     <!-- End conversation view message header styles -->
+
+    <!-- Folder styles -->
+    <style name="FolderItemIcon">
+        <item name="android:layout_height">@dimen/folder_swatch_height</item>
+        <item name="android:layout_width">@dimen/folder_list_folder_color_width</item>
+    </style>
 </resources>

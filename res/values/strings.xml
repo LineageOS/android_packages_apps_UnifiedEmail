@@ -263,8 +263,8 @@
     <!-- Strings used to show myself in a To/Cc list. [CHAR LIMIT=15] -->
     <string name="me">me</string>
     <string name="labels">Labels</string>
-    <!-- List item to open label view in account dropdown [CHAR LIMIT=50] -->
-    <string name="show_all_labels">Show all labels</string>
+    <!-- List item to open fodlers view in account dropdown [CHAR LIMIT=50] -->
+    <string name="show_all_folders">Show all folders</string>
 
     <!-- Undo bar strings -->
     <!-- Displayed in the middle of the screen when the inbox is empty [CHAR LIMIT 100]-->
@@ -469,4 +469,8 @@
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
+
+    <!-- Folders -->
+    <!-- Displayed in the middle of the Folders screen when no folders have been defined -->
+    <string name="folders_activity_instructions">No folders have been set for this account.</string>
 </resources>

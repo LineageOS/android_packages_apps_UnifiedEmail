@@ -117,11 +117,18 @@ public class ConversationListActivity extends Activity implements OnItemSelected
             case R.id.compose:
                 ComposeActivity.compose(this, mSelectedAccount);
                 break;
+            case R.id.show_all_folders:
+                showAllFolders();
+                break;
             default:
                 handled = false;
                 break;
         }
         return handled;
+    }
+
+    private void showAllFolders() {
+        FoldersListActivity.launch(this, mSelectedAccount);
     }
 
     @Override

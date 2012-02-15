@@ -60,4 +60,11 @@
     <dimen name="message_header_inner_side_padding">8dip</dimen>
     <dimen name="attachment_toast_yoffset">-100dip</dimen>
     <dimen name="spinner_frame_width">168dip</dimen>
+    <dimen name="folder_list_heading_padding_side">8dp</dimen>
+    <dimen name="folder_list_item_left_margin">24dp</dimen>
+    <dimen name="folder_list_item_right_margin">16dp</dimen>
+    <dimen name="folder_swatch_height">8dip</dimen>
+    <dimen name="folder_list_popup_width">200dip</dimen>
+    <dimen name="folder_list_folder_color_width">36dip</dimen>
+    <dimen name="folder_list_minimum_height">48dip</dimen>
 </resources>

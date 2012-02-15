@@ -44,6 +44,7 @@
         <activity android:name=".compose.ComposeActivity" />
         <activity android:name=".browse.ConversationListActivity" />
         <activity android:name=".browse.ConversationViewActivity" />
+        <activity android:name=".browse.FoldersListActivity" />
         <activity android:name=".browse.FolderItem" />
         <activity
            android:name=".ui.ActionbarActivity"

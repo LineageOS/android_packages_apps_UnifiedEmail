@@ -45,4 +45,7 @@
     <!-- Conversation message header colors -->
     <color name="conv_subject_border">#c0c0c0</color>
     <color name="conv_header_text_light">#777777</color>
+
+    <!-- Folder colors -->
+    <color name="folder_disabled_drop_target_text_color">#999999</color>
 </resources>
