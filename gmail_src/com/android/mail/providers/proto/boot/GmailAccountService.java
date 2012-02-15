@@ -55,6 +55,10 @@ public class GmailAccountService extends IntentService {
         return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/sendNewMessage");
     }
 
+    private static Uri getAccountUndoUri(String account) {
+        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/undo");
+    }
+
     private static Uri getAccountSaveDraftUri(String account) {
         return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/saveNewMessage");
     }
@@ -134,7 +138,7 @@ public class GmailAccountService extends IntentService {
                             getAccountSaveDraftUri(account.name).toString(),
                             getAccountSendMailUri(account.name).toString(),
                             (String)mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
-                            (String)mockAccountMap.get(AccountColumns.UNDO_URI));
+                            getAccountUndoUri(account.name).toString());
 
             AccountCacheProvider.addAccount(cachedAccount);
         }
