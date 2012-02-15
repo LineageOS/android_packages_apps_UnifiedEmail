@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import com.android.mail.R;
 
+import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -45,13 +46,18 @@ public class AnimatingItemView extends LinearLayout {
         super(context, attrs, defStyle);
     }
 
-    public AnimatingItemView(Context context, Conversation item,
-            android.animation.Animator.AnimatorListener listener, boolean undo) {
-        this(context);
+    /**
+     * Start the animation on an animating view.
+     * @param item the conversation to animate
+     * @param listener the method to call when the animation is done
+     * @param undo true if an operation is being undone. We animate the item away during delete.
+     * Undoing populates the item.
+     */
+    public void startAnimation(Conversation item, AnimatorListener listener, boolean undo) {
         mData = item;
         setMinimumHeight(140);
-        int start = undo ? 0 : 140;
-        int end = undo ? 140: 0;
+        final int start = undo ? 0 : 140;
+        final int end = undo ? 140 : 0;
         if (!undo) {
             setBackgroundResource(R.drawable.list_activated_holo);
         }
@@ -61,6 +67,13 @@ public class AnimatingItemView extends LinearLayout {
         mAnimator.setDuration(300);
         mAnimator.addListener(listener);
         mAnimator.start();
+    }
+
+    public AnimatingItemView(Context context, Conversation item, AnimatorListener listener,
+            boolean undo) {
+        // The context stays the same when views are recycled.
+        this(context);
+        startAnimation(item, listener, undo);
     }
 
     public Conversation getData() {

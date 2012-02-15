@@ -44,8 +44,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Context mContext;
     private ConversationSelectionSet mBatchConversations;
     private ActionCompleteListener mActionCompleteListener;
-    private SparseArray<AnimatingItemView> mAnimatingViews = new SparseArray<AnimatingItemView>();
     private boolean mUndo = false;
+    private ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account) {
@@ -106,15 +106,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             ActionCompleteListener listener) {
         // Animate out the positions.
         // Call when all the animations are complete.
-        ArrayList<Integer> positions = new ArrayList<Integer>();
+        final ArrayList<Integer> positions = new ArrayList<Integer>();
         for (Conversation c : conversations) {
             positions.add(c.position);
         }
         mActionCompleteListener = listener;
         delete(positions);
     }
-
-    private ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
 
     public void delete(ArrayList<Integer> deletedRows) {
         // Clear out any remaining items and add the new ones
@@ -134,13 +132,21 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return super.getView(position, convertView, parent);
     }
 
+    /**
+     * Get an animating view. This happens when a list item is in the process of being removed
+     * from the list (items being deleted).
+     * @param position the position of the view inside the list
+     * @param convertView if null, a recycled view that we can reuse
+     * @param parent the parent view
+     * @return the view to show when animating an operation.
+     */
     private View getAnimatingView(int position, View convertView, ViewGroup parent) {
-        AnimatingItemView view = mAnimatingViews.get(position);
-        if (view == null) {
-            Conversation conversation = Conversation.from((ConversationCursor) getItem(position));
-            conversation.position = position;
-            view = new AnimatingItemView(mContext, conversation, this, mUndo);
-        }
+        assert (convertView instanceof AnimatingItemView);
+        Conversation conversation = Conversation.from((ConversationCursor) getItem(position));
+        conversation.position = position;
+        final AnimatingItemView view = (convertView == null) ? new AnimatingItemView(mContext) :
+                (AnimatingItemView) convertView;
+        view.startAnimation(conversation, this, mUndo);
         return view;
     }
 
@@ -166,7 +172,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                     ((ObjectAnimator) animation).getTarget()).getData().position;
             mDeletingItems.remove(position);
             if (mDeletingItems.isEmpty()) {
-                mAnimatingViews.clear();
                 if (mUndo) {
                     mLastDeletingItems.clear();
                     mUndo = false;
