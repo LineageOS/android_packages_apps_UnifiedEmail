@@ -162,7 +162,7 @@ public final class FolderListFragment extends ListFragment {
 
             Fragment folderListFragment = FolderListFragment
                     .newInstance(selected.childFoldersListUri);
-            fragmentTransaction.add(R.id.content_pane, folderListFragment);
+            fragmentTransaction.replace(R.id.content_pane, folderListFragment);
 
             fragmentTransaction.commitAllowingStateLoss();
 
