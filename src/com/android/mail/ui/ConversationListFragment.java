@@ -455,7 +455,7 @@ public final class ConversationListFragment extends ListFragment implements
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), position,
                 mConversationListCursor, mSelectedSet, mAccount);
         mListView.setAdapter(mListAdapter);
-        mConversationListCursor.setListener(this);
+        mConversationListCursor.addListener(this);
         configureSearchResultHeader();
     }
 

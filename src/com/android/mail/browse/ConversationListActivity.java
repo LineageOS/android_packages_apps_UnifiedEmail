@@ -215,7 +215,7 @@ public class ConversationListActivity extends Activity implements OnItemSelected
         mListAdapter = new AnimatedAdapter(this, position, mConversationListCursor,
                 mBatchConversations, mSelectedAccount);
         mListView.setAdapter(mListAdapter);
-        mConversationListCursor.setListener(this);
+        mConversationListCursor.addListener(this);
     }
 
     @Override

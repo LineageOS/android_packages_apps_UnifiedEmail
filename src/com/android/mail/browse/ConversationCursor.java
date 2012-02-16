@@ -74,8 +74,9 @@ public final class ConversationCursor implements Cursor {
     // The index of the Uri whose data is reflected in the cached row
     // Updates/Deletes to this Uri are cached
     private static int sUriColumnIndex;
-    // The listener registered for this cursor
-    private static ConversationListener sListener;
+    // The listeners registered for this cursor
+    private static ArrayList<ConversationListener> sListeners =
+        new ArrayList<ConversationListener>();
     // The ConversationProvider instance
     @VisibleForTesting
     static ConversationProvider sProvider;
@@ -114,6 +115,7 @@ public final class ConversationCursor implements Cursor {
         mResolver = activity.getContentResolver();
         sConversationCursor = this;
         sUnderlyingCursor = cursor;
+        sListeners.clear();
         mCursorObserver = new CursorObserver();
         resetCursor(null);
         mColumnNames = cursor.getColumnNames();
@@ -223,10 +225,17 @@ public final class ConversationCursor implements Cursor {
     }
 
     /**
-     * Set the listener for this cursor; we'll notify it when our data changes
+     * Add a listener for this cursor; we'll notify it when our data changes
      */
-    public void setListener(ConversationListener listener) {
-        sListener = listener;
+    public void addListener(ConversationListener listener) {
+        sListeners.add(listener);
+    }
+
+    /**
+     * Remove a listener for this cursor
+     */
+    public void removeListener(ConversationListener listener) {
+        sListeners.remove(listener);
     }
 
     /**
@@ -326,17 +335,17 @@ public final class ConversationCursor implements Cursor {
      * When the underlying cursor changes, we want to alert the listener
      */
     private void underlyingChanged() {
-        if (sListener != null) {
-            if (mCursorObserverRegistered) {
-                sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
-                mCursorObserverRegistered = false;
-            }
-            if (DEBUG) {
-                Log.d(TAG, "[Notify: onRefreshRequired()]");
-            }
-            sListener.onRefreshRequired();
-            sRefreshRequired = true;
+        if (mCursorObserverRegistered) {
+            sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
+            mCursorObserverRegistered = false;
         }
+        if (DEBUG) {
+            Log.d(TAG, "[Notify: onRefreshRequired()]");
+        }
+        for (ConversationListener listener: sListeners) {
+            listener.onRefreshRequired();
+        }
+        sRefreshRequired = true;
     }
 
     /**
@@ -471,7 +480,9 @@ public final class ConversationCursor implements Cursor {
                                 if (DEBUG) {
                                     Log.d(TAG, "[Notify: onRefreshReady()]");
                                 }
-                                sListener.onRefreshReady();
+                                for (ConversationListener listener: sListeners) {
+                                    listener.onRefreshReady();
+                                }
                                 sRefreshReady = true;
                             }});
                     } else {
@@ -483,6 +494,7 @@ public final class ConversationCursor implements Cursor {
         return true;
     }
 
+    @Override
     public void close() {
         // Unregister our observer on the underlying cursor and close as usual
         if (mCursorObserverRegistered) {
@@ -495,6 +507,7 @@ public final class ConversationCursor implements Cursor {
     /**
      * Move to the next not-deleted item in the conversation
      */
+    @Override
     public boolean moveToNext() {
         while (true) {
             boolean ret = sUnderlyingCursor.moveToNext();
@@ -508,6 +521,7 @@ public final class ConversationCursor implements Cursor {
     /**
      * Move to the previous not-deleted item in the conversation
      */
+    @Override
     public boolean moveToPrevious() {
         while (true) {
             boolean ret = sUnderlyingCursor.moveToPrevious();
@@ -518,6 +532,7 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
+    @Override
     public int getPosition() {
         return mPosition;
     }
@@ -525,16 +540,19 @@ public final class ConversationCursor implements Cursor {
     /**
      * The actual cursor's count must be decremented by the number we've deleted from the UI
      */
+    @Override
     public int getCount() {
         return sUnderlyingCursor.getCount() - sDeletedCount;
     }
 
+    @Override
     public boolean moveToFirst() {
         sUnderlyingCursor.moveToPosition(-1);
         mPosition = -1;
         return moveToNext();
     }
 
+    @Override
     public boolean moveToPosition(int pos) {
         if (pos < -1 || pos >= getCount()) return false;
         if (pos == mPosition) return true;
@@ -557,10 +575,12 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
+    @Override
     public boolean moveToLast() {
         throw new UnsupportedOperationException("moveToLast unsupported!");
     }
 
+    @Override
     public boolean move(int offset) {
         throw new UnsupportedOperationException("move unsupported!");
     }
