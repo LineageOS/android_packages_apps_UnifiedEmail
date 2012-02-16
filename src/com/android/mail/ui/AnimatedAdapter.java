@@ -144,8 +144,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         assert (convertView instanceof AnimatingItemView);
         Conversation conversation = Conversation.from((ConversationCursor) getItem(position));
         conversation.position = position;
-        final AnimatingItemView view = (convertView == null) ? new AnimatingItemView(mContext) :
-                (AnimatingItemView) convertView;
+        final AnimatingItemView view = (convertView == null) ? new AnimatingItemView(mContext)
+                : (AnimatingItemView) convertView;
         view.startAnimation(conversation, this, mUndo);
         return view;
     }

@@ -40,6 +40,7 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.ConversationItemView.StarHandler;
@@ -51,12 +52,14 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
+import java.util.ArrayList;
+
 /**
  * The conversation list UI component.
  */
 public final class ConversationListFragment extends ListFragment implements
         OnItemLongClickListener, ModeChangeListener, UndoBarView.OnUndoCancelListener,
-        ConversationSetObserver, ActionCompleteListener {
+        ConversationSetObserver, ActionCompleteListener, ConversationListener {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     // Batch conversations stored in the Bundle using this key.
@@ -452,6 +455,7 @@ public final class ConversationListFragment extends ListFragment implements
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), position,
                 mConversationListCursor, mSelectedSet, mAccount);
         mListView.setAdapter(mListAdapter);
+        mConversationListCursor.setListener(this);
         configureSearchResultHeader();
     }
 
@@ -501,5 +505,38 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onSetChanged(ConversationSelectionSet set) {
         // Do nothing. We don't care about changes to the set.
+    }
+
+    /**
+     * Called when there is new data at the underlying provider
+     * refresh() here causes the new data to be retrieved asynchronously
+     * NOTE: The UI needn't take any action immediately (i.e. it might wait until a more
+     * convenient time to get the update from the provider)
+     */
+    @Override
+    public void onRefreshRequired() {
+        // Refresh the query in the background
+        mConversationListCursor.refresh();
+    }
+
+    @Override
+    public void onRefreshReady() {
+        ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
+        // If we have any deletions from the server, animate them away
+        if (!deletedRows.isEmpty()) {
+            mListAdapter.delete(deletedRows);
+        } else {
+            finishRefresh();
+        }
+    }
+
+    /**
+     * Complete the cursor refresh process by syncing to the underlying cursor and redrawing
+     */
+    private void finishRefresh() {
+        // Swap cursors
+        mConversationListCursor.sync();
+        // Redraw with new data
+        mListAdapter.notifyDataSetChanged();
     }
 }
