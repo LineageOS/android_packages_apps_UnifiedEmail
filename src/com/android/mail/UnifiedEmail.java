@@ -41,10 +41,6 @@ public class UnifiedEmail extends Activity {
         setContentView(R.layout.layout_tests);
     }
 
-    public void accountSpinnerTest(View v){
-        startActivityWithClass(ComposeActivity.class);
-    }
-
     public void actionbarTest(View v){
         startActivityWithClass(ActionbarActivity.class);
     }

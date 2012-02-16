@@ -26,11 +26,6 @@
         android:layout_width="match_parent"
         android:orientation="vertical">
         <Button
-            android:text="@string/test_accountspinner"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:onClick="accountSpinnerTest"/>
-        <Button
             android:text="@string/test_actionbar"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
