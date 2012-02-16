@@ -20,10 +20,11 @@ package com.android.mail.ui;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -141,8 +142,9 @@ public final class ConversationViewFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new UIProviderCursorLoader(mActivity.getActivityContext(),
-                UIProvider.MESSAGE_PROJECTION, mConversation.messageListUri);
+        return new CursorLoader(mActivity.getActivityContext(),
+                Uri.parse(mConversation.messageListUri), UIProvider.MESSAGE_PROJECTION, null, null,
+                null);
     }
 
     @Override

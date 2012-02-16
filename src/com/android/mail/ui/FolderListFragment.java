@@ -23,8 +23,10 @@ import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -171,8 +173,8 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new UIProviderCursorLoader(mActivity.getActivityContext(),
-                UIProvider.FOLDERS_PROJECTION, mFolderListUri);
+        return new CursorLoader(mActivity.getActivityContext(), Uri.parse(mFolderListUri),
+                UIProvider.FOLDERS_PROJECTION, null, null, null);
     }
 
     @Override

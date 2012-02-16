@@ -29,11 +29,22 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
+    <ImageView
+        android:id="@+id/folder_parent_icon"
+        android:layout_width="16dip"
+        android:layout_height="16dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:src="@drawable/folder_parent_icon" />
+
     <TextView
         android:id="@+id/unread"
         style="@style/UnreadCount"
         android:layout_marginRight="@dimen/folder_list_item_right_margin"
+        android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@id/folder_parent_icon"
         android:textColor="@color/text_color_unread_invertible" />
 
     <RelativeLayout

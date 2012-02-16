@@ -17,6 +17,7 @@ package com.android.mail.ui;
 
 import com.android.mail.R;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.mail.providers.Folder;
@@ -28,6 +29,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.DragEvent;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 /**
@@ -52,6 +54,7 @@ public class FolderItemView extends RelativeLayout {
     private TextView mFolderTextView;
     private TextView mUnreadCountTextView;
     private DropHandler mDropHandler;
+    private ImageView mFolderParentIcon;
 
 
     /**
@@ -102,12 +105,16 @@ public class FolderItemView extends RelativeLayout {
         mBackground = getBackground();
         mInitialLabelTextColor = mFolderTextView.getTextColors();
         mInitialUnreadCountTextColor = mUnreadCountTextView.getTextColors();
+        mFolderParentIcon = (ImageView) findViewById(R.id.folder_parent_icon);
     }
 
     public void bind(Folder folder, DropHandler dropHandler) {
         mFolder = folder;
         mDropHandler = dropHandler;
         mFolderTextView.setText(folder.name);
+        if (mFolder.hasChildren) {
+            mFolderParentIcon.setVisibility(View.VISIBLE);
+        }
     }
 
     private boolean isDroppableTarget(DragEvent event) {
