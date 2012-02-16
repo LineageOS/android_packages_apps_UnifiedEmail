@@ -41,8 +41,10 @@ import android.widget.LinearLayout;
 
 import com.android.mail.R;
 import com.android.mail.ConversationListContext;
+import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.Utils;
@@ -75,6 +77,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected final RestrictedActivity mActivity;
     protected final Context mContext;
     protected ConversationListContext mConvListContext;
+    protected Conversation mCurrentConversation;
 
     protected ConversationListFragment mConversationListFragment;
     /**
@@ -85,6 +88,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected final ViewMode mViewMode;
     protected ContentResolver mResolver;
     protected FolderListFragment mFolderListFragment;
+    protected ConversationViewFragment mConversationViewFragment;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -101,6 +105,11 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void attachFolderList(FolderListFragment folderList) {
         mFolderListFragment = folderList;
+    }
+
+    @Override
+    public void attachConversationView(ConversationViewFragment conversationViewFragment) {
+        mConversationViewFragment = conversationViewFragment;
     }
 
     @Override
@@ -313,12 +322,19 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        boolean handled = true;
         switch (id) {
+            case R.id.compose:
+                ComposeActivity.compose(mActivity.getActivityContext(), mAccount);
+                break;
             case R.id.show_all_folders:
                 showFolderList();
                 break;
+            default:
+                handled = false;
+                break;
         }
-        return false;
+        return handled;
     }
 
     @Override
@@ -450,7 +466,6 @@ public abstract class AbstractActivityController implements ActivityController {
             mViewMode.handleRestore(savedState);
         } else {
             // Null saved state. We have to initialize the activity to a sane first state
-
             // Set the account. Use the first account for want of anything better.
             // TODO(viki): Use a cursor loader here to notice changes to the underlying data.
             final Cursor accountCursor = mResolver.query(AccountCacheProvider.getAccountsUri(),
@@ -467,10 +482,10 @@ public abstract class AbstractActivityController implements ActivityController {
             // Instead of this, switch to the conversation list mode and have that do the right
             // things automatically.
             showConversationList(mConvListContext);
+
+            // Set the correct mode based on the current context
             mViewMode.enterConversationListMode();
         }
-
-        // Set the correct mode based on the current context
     }
 
     @Override
@@ -498,9 +513,10 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onConversationSelected(int position) {
-        // TODO(viki): Auto-generated method stub
-
+    public void onConversationSelected(Conversation conversation) {
+        mCurrentConversation = conversation;
+        showConversation(mCurrentConversation);
+        mViewMode.enterConversationMode();
     }
 
     @Override

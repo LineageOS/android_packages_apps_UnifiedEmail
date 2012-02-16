@@ -474,8 +474,9 @@ public final class ConversationListFragment extends ListFragment implements
      * View the message at the given position.
      * @param position
      */
-    private void viewConversation(int position){
-        mCallbacks.onConversationSelected(position);
+    private void viewConversation(int position) {
+        mConversationListCursor.moveToPosition(position);
+        mCallbacks.onConversationSelected(Conversation.from(mConversationListCursor));
     }
 
     @Override

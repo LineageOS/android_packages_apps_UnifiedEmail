@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.providers.Conversation;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -116,6 +117,11 @@ public final class TwoPaneController extends AbstractActivityController {
         } else {
             mActionBarView.setBackButton();
         }
+    }
+
+    @Override
+    public void showConversation(Conversation conversation) {
+        // TODO Auto-generated method stub
     }
 
 }

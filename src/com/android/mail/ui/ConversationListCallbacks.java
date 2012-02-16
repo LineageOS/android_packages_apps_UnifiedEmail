@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.providers.Conversation;
+
 /**
  * A controller interface that is to receive user initiated events and handle them.
  */
@@ -26,5 +28,5 @@ public interface ConversationListCallbacks {
      *
      * @param position The position in the list clicked.
      */
-    void onConversationSelected(int position);
+    void onConversationSelected(Conversation conversation);
 }

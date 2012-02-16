@@ -25,6 +25,7 @@ import android.view.Window;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.providers.Conversation;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -87,40 +88,46 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public void showFolderList() {
-        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
-        fragmentTransaction.addToBackStack(null);
-        final boolean accountChanged = false;
-        // TODO(viki): This account transition looks strange in two pane mode. Revisit as the app
-        // is coming together and improve the look and feel.
-        final int transition = accountChanged ? FragmentTransaction.TRANSIT_FRAGMENT_FADE :
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
-        fragmentTransaction.setTransition(transition);
-
-        Fragment folderListFragment = FolderListFragment.newInstance(this, mAccount.folderListUri);
-        fragmentTransaction.replace(R.id.content_pane, folderListFragment);
-
-        fragmentTransaction.commitAllowingStateLoss();
-        resetActionBarIcon();
-    }
-
-    @Override
     public void showConversationList(ConversationListContext listContext) {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack(null);
         final boolean accountChanged = false;
-        // TODO(viki): This account transition looks strange in two pane mode. Revisit as the app
+        // TODO(viki): This account transition looks strange in two pane mode.
+        // Revisit as the app
         // is coming together and improve the look and feel.
-        final int transition = accountChanged ? FragmentTransaction.TRANSIT_FRAGMENT_FADE :
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
+        final int transition = accountChanged ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
+                : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
+        if (listContext == null) {
+            listContext = getCurrentListContext();
+        }
         fragmentTransaction.setTransition(transition);
 
-        Fragment conversationListFragment = ConversationListFragment.newInstance(
-                mConvListContext);
+        Fragment conversationListFragment = ConversationListFragment.newInstance(mConvListContext);
         fragmentTransaction.replace(R.id.content_pane, conversationListFragment);
 
         fragmentTransaction.commitAllowingStateLoss();
         resetActionBarIcon();
     }
 
+    @Override
+    public void showConversation(Conversation conversation) {
+        replaceFragment(ConversationViewFragment.newInstance(mAccount, conversation));
+    }
+
+    @Override
+    public void showFolderList() {
+        replaceFragment(FolderListFragment.newInstance(this, mAccount.folderListUri));
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
+        fragmentTransaction.addToBackStack(null);
+        final int transition = FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
+        fragmentTransaction.setTransition(transition);
+
+        fragmentTransaction.replace(R.id.content_pane, fragment);
+
+        fragmentTransaction.commitAllowingStateLoss();
+        resetActionBarIcon();
+    }
 }

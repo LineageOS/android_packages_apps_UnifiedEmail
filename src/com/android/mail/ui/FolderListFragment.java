@@ -48,7 +48,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 
 /**
- * The conversation list UI component.
+ * The folder list UI component.
  */
 public final class FolderListFragment extends ListFragment {
     private static final String LOG_TAG = new LogUtils().getLogTag();

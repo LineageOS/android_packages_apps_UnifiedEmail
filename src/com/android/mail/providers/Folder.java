@@ -220,7 +220,7 @@ public class Folder implements Parcelable {
      * Constructor that leaves everything uninitialized. For use only by {@link #serialize()}
      * which is responsible for filling in all the fields
      */
-    private Folder() {
+    public Folder() {
         name = FOLDER_UNINITIALIZED;
     }
 

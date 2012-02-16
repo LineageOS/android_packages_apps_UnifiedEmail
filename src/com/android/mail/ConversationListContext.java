@@ -92,10 +92,9 @@ public class ConversationListContext {
     }
 
 
-    public static ConversationListContext forFolder(Context mContext, Account mAccount2,
+    public static ConversationListContext forFolder(Context context, Account account,
             String inboxFolder) {
-        // TODO Auto-generated method stub
-        return null;
+        return new ConversationListContext(account, null, new Folder());
     }
 
     /**

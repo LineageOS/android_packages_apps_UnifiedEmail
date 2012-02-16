@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationItemView.StarHandler;
+import com.android.mail.providers.Conversation;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
@@ -61,6 +62,12 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * @param folderListFragment
      */
     void attachFolderList(FolderListFragment folderListFragment);
+
+    /**
+     * Attach the conversation view fragment to the appropriate view.
+     * @param conversationViewFragment
+     */
+    void attachConversationView(ConversationViewFragment conversationViewFragment);
 
     /**
      * @see android.app.Activity#dispatchTouchEvent(MotionEvent)
@@ -219,6 +226,12 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * @param listContext context providing information on what conversation list to display.
      */
     void showConversationList(ConversationListContext listContext);
+
+    /**
+     * Show the conversation provided here.
+     * @param Converseation conversation to display.
+     */
+    void showConversation(Conversation conversation);
 
     /**
      * Show the folder list associated with the currently selected account.

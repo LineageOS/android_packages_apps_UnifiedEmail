@@ -60,6 +60,16 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
+    public void attachFolderList(FolderListFragment fragment) {
+        mController.attachFolderList(fragment);
+    }
+
+    @Override
+    public void attachConversationView(ConversationViewFragment fragment) {
+        mController.attachConversationView(fragment);
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         // TODO(viki): Why is there a check for null only in in this method?
         // onTouchEvent should only be sent when the activity is in focus...
@@ -218,10 +228,5 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public StarHandler getStarHandler() {
         return mController;
-    }
-
-    @Override
-    public void attachFolderList(FolderListFragment folderListFragment) {
-        // TODO Auto-generated method stub
     }
 }
