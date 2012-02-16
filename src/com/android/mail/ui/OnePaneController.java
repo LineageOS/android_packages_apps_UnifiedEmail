@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -72,13 +73,6 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onViewModeChanged(int newMode) {
         super.onViewModeChanged(newMode);
-        if (newMode == ViewMode.CONVERSATION_LIST) {
-            // TODO(viki): Get name of inbox from the Account
-            final String inboxFolder = "inbox";
-            ConversationListContext listContext = ConversationListContext.forFolder(mContext,
-                    mAccount, inboxFolder);
-            showConversationList(listContext);
-        }
 
         // We don't want to invalidate the options menu when switching to conversation
         // mode, as it will happen when the conversation finishes loading.
@@ -89,6 +83,8 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void showConversationList(ConversationListContext listContext) {
+        mViewMode.enterConversationListMode();
+
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack(null);
         final boolean accountChanged = false;
@@ -102,7 +98,7 @@ public final class OnePaneController extends AbstractActivityController {
         }
         fragmentTransaction.setTransition(transition);
 
-        Fragment conversationListFragment = ConversationListFragment.newInstance(mConvListContext);
+        Fragment conversationListFragment = ConversationListFragment.newInstance(listContext);
         fragmentTransaction.replace(R.id.content_pane, conversationListFragment);
 
         fragmentTransaction.commitAllowingStateLoss();
@@ -111,11 +107,13 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void showConversation(Conversation conversation) {
+        mViewMode.enterConversationMode();
         replaceFragment(ConversationViewFragment.newInstance(mAccount, conversation));
     }
 
     @Override
     public void showFolderList() {
+        mViewMode.enterFolderListMode();
         replaceFragment(FolderListFragment.newInstance(this, mAccount.folderListUri));
     }
 
@@ -129,5 +127,20 @@ public final class OnePaneController extends AbstractActivityController {
 
         fragmentTransaction.commitAllowingStateLoss();
         resetActionBarIcon();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        // TODO: (mindyp) We have just 1 item on the back stack, so just pop
+        // back out to the start screen in this app. We won't need this once we
+        // remove the starting buttons screen.
+        int mode = mViewMode.getMode();
+        if (mode == ViewMode.CONVERSATION_LIST) {
+            mActivity.finish();
+            return true;
+        } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.FOLDER_LIST) {
+            mViewMode.enterConversationListMode();
+        }
+        return false;
     }
 }
