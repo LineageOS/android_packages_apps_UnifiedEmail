@@ -118,6 +118,12 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
     boolean onBackPressed();
 
     /**
+     * Called by the Mail activity when the up button is pressed.
+     * @return
+     */
+    boolean onUpPressed();
+
+    /**
      * Called when the root activity calls onCreate. Any initialization needs to
      * be done here. Subclasses need to call their parents' onCreate method, since it performs
      * valuable initialization common to all subclasses.

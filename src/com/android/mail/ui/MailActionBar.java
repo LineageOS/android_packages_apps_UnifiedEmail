@@ -97,7 +97,7 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
     protected RestrictedActivity mActivity;
     private Callback mCallback;
     protected View mFolderView;
-    private Mode mMode;
+    private int mMode;
 
     private MenuItem mRefreshItem;
 
@@ -119,13 +119,13 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
 
     public MailActionBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mMode = Mode.NORMAL;
+        mMode = ViewMode.UNKNOWN;
     }
 
     @Override
     public boolean createOptionsMenu(Menu menu) {
         // If the mode is valid, then set the initial menu
-        if (mMode == Mode.INVALID) {
+        if (mMode == ViewMode.UNKNOWN) {
             return false;
         }
         mActivity.getMenuInflater().inflate(getOptionsMenuId(), menu);
@@ -135,22 +135,22 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
     }
 
     @Override
-    public Mode getMode() {
+    public int getMode() {
         return mMode;
     }
 
     @Override
     public int getOptionsMenuId() {
         switch (mMode){
-            case NORMAL:
+            case ViewMode.UNKNOWN:
                 // Fallthrough
-            case SEARCH_RESULTS:
+            case ViewMode.SEARCH_RESULTS:
                 return R.menu.conversation_list_menu;
-            case FOLDER:
-                return R.menu.label_list_menu;
-            case SEARCH_RESULTS_CONVERSATION:
-                return R.menu.conversation_actions;
-            case CONVERSATION_SUBJECT:
+            case ViewMode.FOLDER_LIST:
+                return R.menu.folder_list_menu;
+            case ViewMode.CONVERSATION_LIST:
+                return R.menu.conversation_list_menu;
+            case ViewMode.CONVERSATION:
                 return R.menu.conversation_actions;
         }
         return 0;
@@ -223,28 +223,25 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         }
 
         switch (mMode){
-            case NORMAL:
+            case ViewMode.UNKNOWN:
                 mSpinnerView.setVisibility(VISIBLE);
                 if (mSearch != null){
                     mSearch.collapseActionView();
                 }
                 break;
-            case CONVERSATION_LIST:
+            case ViewMode.CONVERSATION_LIST:
                 // Do nothing?
                 break;
-            case CONVERSATION:
+            case ViewMode.CONVERSATION:
                 // Do nothing?
                 break;
-            case CONVERSATION_SUBJECT:
-                mSpinnerView.setVisibility(GONE);
-                break;
-            case SEARCH_RESULTS:
+            case ViewMode.SEARCH_RESULTS:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 mSpinnerView.setVisibility(GONE);
                 if (mSearch != null) {
                     mSearch.collapseActionView();
                 }
-            case FOLDER:
+            case ViewMode.FOLDER_LIST:
                 break;
         }
         return false;
@@ -278,7 +275,7 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
     }
 
     @Override
-    public boolean setMode(Mode mode) {
+    public boolean setMode(int mode) {
         mMode = mode;
         return true;
     }

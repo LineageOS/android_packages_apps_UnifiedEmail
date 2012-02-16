@@ -28,47 +28,6 @@ import android.view.Menu;
 
 public interface ActionBarView {
     /**
-     * The action bar can be in a variety of modes, which determine the actions available.
-     * This is a list of the modes.
-     *
-     */
-    // TODO(viki): Remove this and rely only on the ViewMode mode.
-    enum Mode {
-        /**
-         * Default mode,
-         */
-        NORMAL,
-        /**
-         * Viewing a conversation
-         */
-        CONVERSATION,
-        /**
-         * Viewing a list of conversation
-         */
-        CONVERSATION_LIST,
-        /**
-         * Viewing a single conversation?
-         */
-        CONVERSATION_SUBJECT,
-        /**
-         * Viewing results from user search
-         */
-        SEARCH_RESULTS,
-        /**
-         * Viewing a list of folders
-         */
-        FOLDER,
-        /**
-         * Viewing a conversation from search results
-         */
-        SEARCH_RESULTS_CONVERSATION,
-        /**
-         * Abnormal mode
-         */
-        INVALID
-    }
-
-    /**
      * Initialize the ActionBarView
      * @param activity
      * @param callback
@@ -82,7 +41,7 @@ public interface ActionBarView {
      * Return the mode that the action bar is in.
      * @return The mode the action bar is in.
      */
-    Mode getMode();
+    int getMode();
 
     /**
      * Handle handleRestore from the Android framework.
@@ -92,12 +51,10 @@ public interface ActionBarView {
 
     /**
      * Change the mode of the actionbar.
-     * <p> TODO(viki): Why does the Actionbar have its own mode? The actionbar should use the view
-     * mode, just like everyone else.
      * @param mode
      * @return true if the change in mode was successful.
      */
-    boolean setMode(Mode mode);
+    boolean setMode(int mode);
 
     /**
      * Handle onResume from the Android framework.

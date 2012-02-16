@@ -250,12 +250,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public boolean onBackPressed() {
-        // TODO(viki): Auto-generated method stub
-        return false;
-    }
-
-    @Override
     public void onConversationListVisibilityChanged(boolean visible) {
         // TODO(viki): Auto-generated method stub
 
@@ -297,7 +291,7 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = mActivity.getMenuInflater();
-        inflater.inflate(R.menu.conversation_list_menu, menu);
+        inflater.inflate(mActionBarView.getOptionsMenuId(), menu);
         return true;
     }
 
@@ -324,6 +318,9 @@ public abstract class AbstractActivityController implements ActivityController {
         int id = item.getItemId();
         boolean handled = true;
         switch (id) {
+            case android.R.id.home:
+                onUpPressed();
+                break;
             case R.id.compose:
                 ComposeActivity.compose(mActivity.getActivityContext(), mAccount);
                 break;
@@ -410,6 +407,8 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void onViewModeChanged(int newMode) {
+        // Update action bar mode.
+        mActionBarView.setMode(newMode);
         // Perform any mode specific work here.
         // reset the action bar icon based on the mode. Why don't the individual controllers do
         // this themselves?

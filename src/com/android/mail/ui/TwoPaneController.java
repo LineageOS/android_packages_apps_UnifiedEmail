@@ -124,4 +124,13 @@ public final class TwoPaneController extends AbstractActivityController {
         // TODO Auto-generated method stub
     }
 
+    @Override
+    public boolean onUpPressed() {
+        return false;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return false;
+    }
 }

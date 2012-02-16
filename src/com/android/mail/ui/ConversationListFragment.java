@@ -23,12 +23,10 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.ContentResolver;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,7 +44,6 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -442,8 +439,6 @@ public final class ConversationListFragment extends ListFragment implements
     private void showList() {
         mListView.setEmptyView(null);
 
-        // Get an account and a folder list
-        Uri foldersUri = Uri.parse(mViewContext.mAccount.folderListUri);
         // TODO(viki) fill with real position
         final int position = 0;
         mFolder = mViewContext.mFolder;

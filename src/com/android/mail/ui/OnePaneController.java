@@ -18,11 +18,8 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.Window;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -131,16 +128,32 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public boolean onBackPressed() {
-        // TODO: (mindyp) We have just 1 item on the back stack, so just pop
-        // back out to the start screen in this app. We won't need this once we
-        // remove the starting buttons screen.
         int mode = mViewMode.getMode();
         if (mode == ViewMode.CONVERSATION_LIST) {
             mActivity.finish();
             return true;
         } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.FOLDER_LIST) {
-            mViewMode.enterConversationListMode();
+            transitionBackToConversationListMode();
         }
         return false;
+    }
+
+    @Override
+    public boolean onUpPressed() {
+        int mode = mViewMode.getMode();
+        if (mode == ViewMode.CONVERSATION_LIST || mode == ViewMode.CONVERSATION
+                || mode == ViewMode.FOLDER_LIST) {
+            // Same as go back.
+            mActivity.onBackPressed();
+        } else if (mode == ViewMode.SEARCH_RESULTS) {
+            mActivity.finish();
+        }
+        return true;
+    }
+
+    private void transitionBackToConversationListMode() {
+        mViewMode.enterConversationListMode();
+        mActivity.invalidateOptionsMenu();
+        resetActionBarIcon();
     }
 }

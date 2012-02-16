@@ -20,7 +20,6 @@ package com.android.mail.ui;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
-import com.android.mail.ui.ActionBarView.Mode;
 import com.android.mail.ui.MailActionBar.Callback;
 
 import android.app.ActionBar;
@@ -40,7 +39,7 @@ public class ActionbarActivity extends Activity
         implements View.OnCreateContextMenuListener,RestrictedActivity, Callback {
     private MailActionBar mActionBar;
     private Context mContext;
-    private MailActionBar.Mode mActionBarMode;
+    private int mActionBarMode;
     private ViewMode mViewMode;
 
     /**
@@ -48,7 +47,7 @@ public class ActionbarActivity extends Activity
      */
     public ActionbarActivity() {
         super();
-        mActionBarMode = Mode.NORMAL;
+        mActionBarMode = ViewMode.UNKNOWN;
     }
 
     @Override
@@ -81,7 +80,7 @@ public class ActionbarActivity extends Activity
      * Change the action bar mode, and redraw the actionbar.
      * @param mode
      */
-    private void changeMode(Mode mode){
+    private void changeMode(int mode){
         mActionBar.setMode(mode);
         // Tell the framework to redraw the Action Bar
         invalidateOptionsMenu();
@@ -97,19 +96,19 @@ public class ActionbarActivity extends Activity
     }
 
     public void testSearchConversationMode(View v){
-        changeMode(Mode.SEARCH_RESULTS_CONVERSATION);
+        changeMode(ViewMode.SEARCH_RESULTS);
     }
 
     public void testNormalMode(View v){
-        changeMode(Mode.NORMAL);
+        changeMode(ViewMode.UNKNOWN);
     }
 
     public void testSearchResultMode(View v){
-        changeMode(Mode.SEARCH_RESULTS);
+        changeMode(ViewMode.SEARCH_RESULTS);
     }
 
     public void testLabelMode(View v){
-        changeMode(Mode.FOLDER);
+        changeMode(ViewMode.FOLDER_LIST);
     }
 
     @Override
