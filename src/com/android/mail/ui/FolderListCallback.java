@@ -21,7 +21,7 @@ import com.android.mail.providers.Folder;
 /**
  * The callback interface for when a list item has been selected.
  */
-public interface FolderListCallbacks {
+public interface FolderListCallback {
     /**
      * Handles selecting a folder from within the {@link FolderListFragment}.
      *

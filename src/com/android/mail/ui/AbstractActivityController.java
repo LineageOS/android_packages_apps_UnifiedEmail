@@ -84,7 +84,7 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     protected final ViewMode mViewMode;
     protected ContentResolver mResolver;
-    private FolderListFragment mFolderListFragment;
+    protected FolderListFragment mFolderListFragment;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;

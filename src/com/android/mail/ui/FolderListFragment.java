@@ -65,11 +65,11 @@ public final class FolderListFragment extends ListFragment {
 
     private String mFolderListUri;
 
-    private FolderListCallbacks mCallback;
+    private FolderListCallback mCallback;
     /**
      * Hidden constructor.
      */
-    private FolderListFragment(FolderListCallbacks callback, String uri) {
+    private FolderListFragment(FolderListCallback callback, String uri) {
         super();
         mCallback = callback;
         mFolderListUri = uri;
@@ -79,7 +79,7 @@ public final class FolderListFragment extends ListFragment {
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
      */
-    public static FolderListFragment newInstance(FolderListCallbacks callback, String uri) {
+    public static FolderListFragment newInstance(FolderListCallback callback, String uri) {
         FolderListFragment fragment = new FolderListFragment(callback, uri);
         return fragment;
     }

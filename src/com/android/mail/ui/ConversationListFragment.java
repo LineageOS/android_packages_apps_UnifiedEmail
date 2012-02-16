@@ -281,6 +281,7 @@ public final class ConversationListFragment extends ListFragment implements
         // Get the context from the arguments
         Bundle args = getArguments();
         mViewContext = ConversationListContext.forBundle(args.getBundle(CONVERSATION_LIST_KEY));
+        mAccount = mViewContext.mAccount;
 
         if (savedState != null) {
             mListSavedState = savedState.getParcelable(LIST_STATE_KEY);
@@ -445,7 +446,6 @@ public final class ConversationListFragment extends ListFragment implements
         Uri foldersUri = Uri.parse(mViewContext.mAccount.folderListUri);
         // TODO(viki) fill with real position
         final int position = 0;
-        Account mCurrentAccount = mViewContext.mAccount;
         mFolder = mViewContext.mFolder;
         Uri conversationListUri = Uri.parse(mFolder.conversationListUri);
         // Create the cursor for the list using the update cache
@@ -455,7 +455,7 @@ public final class ConversationListFragment extends ListFragment implements
                 UIProvider.CONVERSATION_PROJECTION, null, null, null);
         // TODO(viki): The AnimatedAdapter shouldn't pass the selected set around like this.
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), position,
-                mConversationListCursor, mSelectedSet, mCurrentAccount);
+                mConversationListCursor, mSelectedSet, mAccount);
         mListView.setAdapter(mListAdapter);
         configureSearchResultHeader();
     }
@@ -492,7 +492,14 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onActionComplete() {
-        // Do nothing for now, and show an Undo in the general case.
+        showUndo();
+    }
+
+    private void showUndo() {
+        if (mUndoView == null) {
+            mUndoView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
+        }
+        mUndoView.show(true, mActivity.getActivityContext(), "undo", mAccount, mListAdapter);
     }
 
     @Override

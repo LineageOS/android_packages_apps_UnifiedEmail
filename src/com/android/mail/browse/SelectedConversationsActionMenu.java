@@ -34,9 +34,12 @@ import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -165,7 +168,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // Get currently active folder info and compare it to the list
         // these conversations have been given; if they no longer contain
         // the selected folder, delete them from the list.
-        if (!folderChangeList.contains(mFolder.id)) {
+        HashSet<String> folderUris = new HashSet<String>();
+        if (!TextUtils.isEmpty(folderChangeList)) {
+            folderUris.addAll(Arrays.asList(folderChangeList.split(",")));
+        }
+        if (!folderUris.contains(mFolder.uri)) {
             final Collection<Conversation> conversations = mSelectionSet.values();
             // Indicate delete on update (i.e. no longer in this folder)
             mDeletionSet = new ArrayList<Conversation>();

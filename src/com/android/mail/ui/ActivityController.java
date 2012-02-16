@@ -37,7 +37,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
         ModeChangeListener, MailActionBar.Callback, StarHandler, ConversationListCallbacks,
-        FolderListCallbacks {
+        FolderListCallback {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.

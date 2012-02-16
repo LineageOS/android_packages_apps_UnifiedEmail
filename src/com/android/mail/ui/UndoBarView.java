@@ -97,7 +97,7 @@ public class UndoBarView extends FrameLayout {
      * Displays this view and makes it visible, binding the behavior to the
      * specified {@link UndoOperation}.
      */
-    public void show(boolean animate, final Activity activity, String description,
+    public void show(boolean animate, final Context context, String description,
             final Account account, final AnimatedAdapter listAdapter) {
         mUndoButtonView.setOnClickListener(new OnClickListener() {
             @Override
@@ -107,7 +107,7 @@ public class UndoBarView extends FrameLayout {
                     // the resulting cursor might be interesting...
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate the set of
                     // commands to undo
-                    Conversation.undo(activity, account.undoUri);
+                    Conversation.undo(context, account.undoUri);
                     listAdapter.setUndo(true);
                 }
                 setVisibility(View.GONE);

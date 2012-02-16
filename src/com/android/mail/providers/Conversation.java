@@ -252,21 +252,16 @@ public class Conversation implements Parcelable {
         }
     }
 
-    public static void undo(final Activity activity, final String undoUri) {
+    public static void undo(final Context context, final String undoUri) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Cursor c = activity.getContentResolver().query(Uri.parse(undoUri),
+                Cursor c = context.getContentResolver().query(Uri.parse(undoUri),
                         UIProvider.UNDO_PROJECTION, null, null, null);
                 if (c != null) {
                     c.close();
                 }
-                // TODO: Do something better... :-)
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(activity, "Undone!", Toast.LENGTH_LONG).show();
-                    }});
-            }}).start();
+            }
+        });
     }
 }
