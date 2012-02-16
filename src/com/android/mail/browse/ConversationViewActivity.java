@@ -21,6 +21,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -70,7 +71,7 @@ public class ConversationViewActivity extends Activity {
         mMessageList = (ListView) findViewById(R.id.message_list);
         mDateBuilder = new FormattedDateBuilder(this);
         mSubject.setText(mConversation.subject);
-        mMessageCursor = mResolver.query(mConversation.messageListUri,
+        mMessageCursor = mResolver.query(Uri.parse(mConversation.messageListUri),
                 UIProvider.MESSAGE_PROJECTION, null, null, null);
         mMessageList.setAdapter(new MessageListAdapter(this, mMessageCursor));
     }
