@@ -261,7 +261,6 @@ public class Conversation implements Parcelable {
                 if (c != null) {
                     c.close();
                 }
-            }
-        });
+            }}).start();
     }
 }
