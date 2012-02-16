@@ -19,8 +19,10 @@ package com.android.mail.ui;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -42,12 +44,14 @@ import com.android.mail.utils.LogUtils;
 /**
  * The conversation view UI component.
  */
-public final class ConversationViewFragment extends Fragment {
+public final class ConversationViewFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor> {
+
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
-    private ControllableActivity mActivity;
+    private static final int MESSAGE_LOADER_ID = 0;
 
-    private ContentResolver mResolver;
+    private ControllableActivity mActivity;
 
     private Conversation mConversation;
 
@@ -96,7 +100,6 @@ public final class ConversationViewFragment extends Fragment {
             return;
         }
         mActivity.attachConversationView(this);
-        mResolver = mActivity.getContentResolver();
         mDateBuilder = new FormattedDateBuilder(mActivity.getActivityContext());
         // Show conversation and start loading messages.
         showConversation();
@@ -133,10 +136,25 @@ public final class ConversationViewFragment extends Fragment {
      */
     private void showConversation() {
         mSubject.setText(mConversation.subject);
-        mMessageCursor = mResolver.query(mConversation.messageListUri,
-                UIProvider.MESSAGE_PROJECTION, null, null, null);
+        getLoaderManager().initLoader(MESSAGE_LOADER_ID, Bundle.EMPTY, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new UIProviderCursorLoader(mActivity.getActivityContext(),
+                UIProvider.MESSAGE_PROJECTION, mConversation.messageListUri);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mMessageCursor = data;
         mMessageList.setAdapter(new MessageListAdapter(mActivity.getActivityContext(),
                 mMessageCursor));
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // Do nothing.
     }
 
     class MessageListAdapter extends SimpleCursorAdapter {

@@ -16,19 +16,14 @@
 package com.android.mail.ui;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationListActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.UIProvider;
 import com.google.common.collect.ImmutableSet;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorInflater;
-import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.Html;

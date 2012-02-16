@@ -407,6 +407,9 @@ public final class ConversationCursor implements Cursor {
         }
         Cursor deviceCursor = sConversationCursor;
         Cursor serverCursor = sRequeryCursor;
+        // TODO: (mindyp) saw some instability here. Adding an assert to try to
+        // catch it.
+        assert(sRequeryCursor != null);
         ArrayList<Integer> deleteList = new ArrayList<Integer>();
         int serverCount = serverCursor.getCount();
         int deviceCount = deviceCursor.getCount();

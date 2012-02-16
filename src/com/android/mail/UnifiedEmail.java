@@ -17,7 +17,6 @@
 
 package com.android.mail;
 
-import com.android.mail.browse.ConversationListActivity;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.ui.ActionbarActivity;
 import com.android.mail.ui.MailActivity;
