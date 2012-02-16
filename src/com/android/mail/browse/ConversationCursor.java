@@ -336,7 +336,11 @@ public final class ConversationCursor implements Cursor {
      */
     private void underlyingChanged() {
         if (mCursorObserverRegistered) {
-            sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
+            try {
+                sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
+            } catch (IllegalStateException e) {
+                // Maybe the cursor was GC'd?
+            }
             mCursorObserverRegistered = false;
         }
         if (DEBUG) {
@@ -496,12 +500,18 @@ public final class ConversationCursor implements Cursor {
 
     @Override
     public void close() {
-        // Unregister our observer on the underlying cursor and close as usual
-        if (mCursorObserverRegistered) {
-            sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
-            mCursorObserverRegistered = false;
+        if (!sUnderlyingCursor.isClosed()) {
+            // Unregister our observer on the underlying cursor and close as usual
+            if (mCursorObserverRegistered) {
+                try {
+                    sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
+                } catch (IllegalStateException e) {
+                    // Maybe the cursor got GC'd?
+                }
+                mCursorObserverRegistered = false;
+            }
+            sUnderlyingCursor.close();
         }
-        sUnderlyingCursor.close();
     }
 
     /**
