@@ -29,7 +29,6 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.util.Log;
@@ -659,7 +658,7 @@ public final class ConversationCursor implements Cursor {
      */
     private class CursorObserver extends ContentObserver {
         public CursorObserver() {
-            super(new Handler());
+            super(null);
         }
 
         @Override

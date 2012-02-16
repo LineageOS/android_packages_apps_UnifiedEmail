@@ -17,30 +17,20 @@
 
 package com.android.mail.ui;
 
-import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
-import android.content.ContentResolver;
+import android.app.LoaderManager;
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.MarginLayoutParams;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
@@ -50,7 +40,8 @@ import com.android.mail.utils.LogUtils;
 /**
  * The folder list UI component.
  */
-public final class FolderListFragment extends ListFragment {
+public final class FolderListFragment extends ListFragment implements
+        LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     private ControllableActivity mActivity;
@@ -61,11 +52,11 @@ public final class FolderListFragment extends ListFragment {
     // The internal view objects.
     private ListView mListView;
 
-    private ContentResolver mResolver;
-
     private String mFolderListUri;
 
     private FolderListCallback mCallback;
+
+    private static final int FOLDER_LOADER_ID = 0;
     /**
      * Hidden constructor.
      */
@@ -99,15 +90,13 @@ public final class FolderListFragment extends ListFragment {
         }
         mActivity = (ControllableActivity) activity;
         mActivity.attachFolderList(this);
-        mResolver = mActivity.getContentResolver();
 
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
             return;
         }
-
-        // Show list and start loading list.
-        showList();
+        mListView.setEmptyView(null);
+        getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
     }
 
     @Override
@@ -134,7 +123,7 @@ public final class FolderListFragment extends ListFragment {
     @Override
     public void onDestroyView() {
         // Clear the adapter.
-        mListView.setAdapter(null);
+        setListAdapter(null);
 
         mActivity.attachFolderList(null);
 
@@ -180,17 +169,22 @@ public final class FolderListFragment extends ListFragment {
         super.onPause();
     }
 
-    /**
-     * Handles a request to show a new conversation list, either from a search query or for viewing
-     * a label. This will initiate a data load, and hence must be called on the UI thread.
-     */
-    private void showList() {
-        mListView.setEmptyView(null);
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new UIProviderCursorLoader(mActivity.getActivityContext(),
+                UIProvider.FOLDERS_PROJECTION, mFolderListUri);
+    }
 
-        mFolderListCursor = mResolver.query(Uri.parse(mFolderListUri),
-                UIProvider.FOLDERS_PROJECTION, null, null, null);
-        mListView.setAdapter(new FolderListAdapter(mActivity.getActivityContext(),
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mFolderListCursor = data;
+        setListAdapter(new FolderListAdapter(mActivity.getActivityContext(),
                 R.layout.folder_item, mFolderListCursor, null, null));
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // Do nothing.
     }
 
     private class FolderListAdapter extends SimpleCursorAdapter {

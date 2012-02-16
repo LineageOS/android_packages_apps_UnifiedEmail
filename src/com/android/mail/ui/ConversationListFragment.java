@@ -21,9 +21,10 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.app.Activity;
 import android.app.ListFragment;
+import android.app.LoaderManager;
 import android.content.ContentResolver;
+import android.content.Loader;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -59,7 +60,8 @@ import java.util.ArrayList;
  */
 public final class ConversationListFragment extends ListFragment implements
         OnItemLongClickListener, ModeChangeListener, UndoBarView.OnUndoCancelListener,
-        ConversationSetObserver, ActionCompleteListener, ConversationListener {
+        ConversationSetObserver, ActionCompleteListener, ConversationListener,
+        LoaderManager.LoaderCallbacks<ConversationCursor> {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     // Batch conversations stored in the Bundle using this key.
@@ -95,6 +97,7 @@ public final class ConversationListFragment extends ListFragment implements
             // Do nothing.
         }
     };
+    private static final int CONVERSATION_LOADER_ID = 0;
 
     private ControllableActivity mActivity;
     private boolean mAnimateChanges;
@@ -427,36 +430,14 @@ public final class ConversationListFragment extends ListFragment implements
             mAnimateChanges = newMode == ViewMode.CONVERSATION_LIST;
         }
     }
-
-    /**
-     * Visually refresh the conversation list. This does not start a sync.
-     */
-    private void refreshList() {
-        // Do nothing for now.
-    }
-
     /**
      * Handles a request to show a new conversation list, either from a search query or for viewing
      * a label. This will initiate a data load, and hence must be called on the UI thread.
      */
     private void showList() {
         mListView.setEmptyView(null);
-
-        // TODO(viki) fill with real position
-        final int position = 0;
         mFolder = mViewContext.mFolder;
-        Uri conversationListUri = Uri.parse(mFolder.conversationListUri);
-        // Create the cursor for the list using the update cache
-        // Make this asynchronous
-        mConversationListCursor = ConversationCursor.create((Activity) mActivity,
-                UIProvider.ConversationColumns.URI, conversationListUri,
-                UIProvider.CONVERSATION_PROJECTION, null, null, null);
-        // TODO(viki): The AnimatedAdapter shouldn't pass the selected set around like this.
-        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), position,
-                mConversationListCursor, mSelectedSet, mAccount);
-        mListView.setAdapter(mListAdapter);
-        mConversationListCursor.addListener(this);
-        configureSearchResultHeader();
+        getLoaderManager().initLoader(CONVERSATION_LOADER_ID, Bundle.EMPTY, this);
     }
 
     public void updateSelectedPosition() {
@@ -538,5 +519,29 @@ public final class ConversationListFragment extends ListFragment implements
         mConversationListCursor.sync();
         // Redraw with new data
         mListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
+        return new ConversationCursorLoader((Activity) mActivity,
+                UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
+        // TODO: (mindyp) use real selected position.
+        int position = 0;
+        mConversationListCursor = data;
+        // TODO(viki): The AnimatedAdapter shouldn't pass the selected set around like this.
+        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), position,
+                mConversationListCursor, mSelectedSet, mAccount);
+        mListView.setAdapter(mListAdapter);
+        mConversationListCursor.addListener(this);
+        configureSearchResultHeader();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ConversationCursor> loader) {
+        // Do nothing.
     }
 }
