@@ -430,6 +430,10 @@
     <string name="sending_message">Sending message\u2026</string>
     <!-- Displayed for one second after trying to send with invalid recipients [CHAR LIMIT=50]-->
     <string name="invalid_recipient">The address <xliff:g id="wrongemail" example="foo@@gmail..com">%s</xliff:g> is invalid.</string>
+    <!-- Shown in HTML to allow the user to see quoted text; should match Gmail web UI. 25B6 is Unicode for a right-pointing triangle. [CHAR LIMIT=50] -->
+    <string name="show_elided">\u25B6 Show quoted text</string>
+    <!-- Shown in HTML to allow the user to hide quoted text; should match Gmail web UI. 25BC is Unicode for a downward-pointing triangle. [CHAR LIMIT=50] -->
+    <string name="hide_elided">\u25BC Hide quoted text</string>
 
     <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
     <string name="enumeration_comma">,\u0020</string>

@@ -17,7 +17,6 @@
 package com.android.mail.browse;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.provider.ContactsContract;
@@ -164,6 +163,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private PopupMenu mPopup;
 
     private Message mMessage;
+
+    private boolean mCollapsedDetailsValid;
+    private boolean mExpandedDetailsValid;
 
     public MessageHeaderView(Context context) {
         this(context, null);
@@ -321,46 +323,47 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mDefaultReplyAll = defaultReplyAll;
     }
 
-    public int bind(Cursor cursor) {
+    public int bind(Message message) {
         Timer t = new Timer();
         t.start(HEADER_RENDER_TAG);
 
-        mMessage = new Message(cursor);
-        mLocalMessageId = cursor.getLong(UIProvider.MESSAGE_ID_COLUMN);
-        mServerMessageId = cursor.getLong(UIProvider.MESSAGE_SERVER_ID_COLUMN);
-        mConversationId = cursor.getLong(UIProvider.MESSAGE_CONVERSATION_ID_COLUMN);
+        mCollapsedDetailsValid = false;
+        mExpandedDetailsValid = false;
+
+        mMessage = message;
+        mLocalMessageId = mMessage.id;
+        mServerMessageId = mMessage.serverId;
+        mConversationId = mMessage.conversationId;
         if (mCallbacks != null) {
             mCallbacks.onHeaderCreated(mLocalMessageId);
         }
 
         setTag(mLocalMessageId);
 
-        mTimestampMs = cursor.getLong(UIProvider.MESSAGE_DATE_RECEIVED_MS_COLUMN);
+        mTimestampMs = mMessage.dateReceivedMs;
         if (mDateBuilder != null) {
             mTimestampShort = mDateBuilder.formatShortDate(mTimestampMs);
         }
 
-        mTo = Utils.splitCommaSeparatedString(cursor.getString(UIProvider.MESSAGE_TO_COLUMN));
-        mCc = Utils.splitCommaSeparatedString(cursor.getString(UIProvider.MESSAGE_CC_COLUMN));
-        mBcc = getBccAddresses(cursor);
-        mReplyTo = Utils.splitCommaSeparatedString(cursor
-                .getString(UIProvider.MESSAGE_REPLY_TO_COLUMN));
+        mTo = Utils.splitCommaSeparatedString(mMessage.to);
+        mCc = Utils.splitCommaSeparatedString(mMessage.cc);
+        mBcc = getBccAddresses(mMessage);
+        mReplyTo = Utils.splitCommaSeparatedString(mMessage.replyTo);
 
         /**
          * Turns draft mode on or off. Draft mode hides message operations other
          * than "edit", hides contact photo, hides presence, and changes the
          * sender name to "Draft".
          */
-        mIsDraft = cursor.getInt(UIProvider.MESSAGE_DRAFT_TYPE_COLUMN) !=
-                UIProvider.DraftType.NOT_A_DRAFT;
-        mIsSending = isInOutbox(cursor);
+        mIsDraft = mMessage.draftType != UIProvider.DraftType.NOT_A_DRAFT;
+        mIsSending = isInOutbox();
 
         updateChildVisibility();
 
-        if (mIsDraft || isInOutbox(cursor)) {
-            mSnippet = makeSnippet(cursor.getString(UIProvider.MESSAGE_SNIPPET_COLUMN));
+        if (mIsDraft || isInOutbox()) {
+            mSnippet = makeSnippet(mMessage.snippet);
         } else {
-            mSnippet = cursor.getString(UIProvider.MESSAGE_SNIPPET_COLUMN);
+            mSnippet = mMessage.snippet;
         }
 
         // If this was a sent message AND:
@@ -370,7 +373,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         // 2. the account has no custom froms, fromAddress will be empty, and we
         // can safely fall back and show the account name as sender since it's
         // the only possible fromAddress.
-        String from = cursor.getString(UIProvider.MESSAGE_FROM_COLUMN);
+        String from = mMessage.from;
         if (TextUtils.isEmpty(from)) {
             from = mAccount.name;
         }
@@ -384,8 +387,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             upperDateView.setText(mTimestampShort);
         }
 
-        mStarView.setSelected((cursor.getInt(UIProvider.MESSAGE_FLAGS_COLUMN)
-                & UIProvider.MessageFlags.STARRED) == 1);
+        mStarView.setSelected((mMessage.messageFlags & UIProvider.MessageFlags.STARRED) == 1);
         mStarView.setContentDescription(getResources().getString(
                 mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
 
@@ -406,7 +408,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return h;
     }
 
-    private boolean isInOutbox(Cursor cursor) {
+    private boolean isInOutbox() {
         // TODO: what should this read? Folder info?
         return false;
     }
@@ -697,8 +699,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      *
      * @param messageCursor Cursor to query for label objects with
      */
-    private static String[] getBccAddresses(Cursor cursor) {
-        return Utils.splitCommaSeparatedString(cursor.getString(UIProvider.MESSAGE_BCC_COLUMN));
+    private static String[] getBccAddresses(Message m) {
+        return Utils.splitCommaSeparatedString(m.bcc);
     }
 
     @Override
@@ -987,11 +989,14 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             mCollapsedDetailsView = (ViewGroup) findViewById(R.id.details_collapsed_content);
 
             mCollapsedDetailsView.setOnClickListener(this);
-
+        }
+        if (!mCollapsedDetailsValid) {
             ((TextView) findViewById(R.id.recipients_summary)).setText(getRecipientSummaryText(
                     getContext(), mAccount.name, mTo, mCc, mBcc));
 
             ((TextView) findViewById(R.id.date_summary)).setText(mTimestampShort);
+
+            mCollapsedDetailsValid = true;
         }
         mCollapsedDetailsView.setVisibility(VISIBLE);
     }
@@ -1016,6 +1021,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             addView(v, indexOfChild(mCollapsedDetailsView) + 1);
             v.setOnClickListener(this);
 
+            mExpandedDetailsView = (ViewGroup) v;
+        }
+        if (!mExpandedDetailsValid) {
             CharSequence longTimestamp = mDateBuilder != null ? mDateBuilder
                     .formatLongDateTime(mTimestampMs) : mTimestampMs + "";
             ((TextView) findViewById(R.id.date_value)).setText(longTimestamp);
@@ -1023,10 +1031,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             renderEmailList(R.id.to_row, R.id.to_value, mTo);
             renderEmailList(R.id.cc_row, R.id.cc_value, mCc);
             renderEmailList(R.id.bcc_row, R.id.bcc_value, mBcc);
-            // don't need these any more, release them
-            mReplyTo = mTo = mCc = mBcc = null;
 
-            mExpandedDetailsView = (ViewGroup) v;
+            mExpandedDetailsValid = true;
         }
         mExpandedDetailsView.setVisibility(VISIBLE);
     }

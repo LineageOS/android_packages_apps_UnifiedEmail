@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import com.google.common.collect.Maps;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -24,24 +26,30 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.MessageHeaderView;
-import com.android.mail.browse.MessageWebView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
+
+import java.util.Map;
 
 /**
  * The conversation view UI component.
@@ -55,32 +63,44 @@ public final class ConversationViewFragment extends Fragment implements
 
     private ControllableActivity mActivity;
 
-    private final Conversation mConversation;
+    private Context mContext;
+
+    private Conversation mConversation;
 
     private TextView mSubject;
 
-    private ListView mMessageList;
+    private ConversationContainer mConversationContainer;
 
-    private FormattedDateBuilder mDateBuilder;
+    private Account mAccount;
 
-    private Cursor mMessageCursor;
+    private ConversationWebView mWebView;
 
-    private final Account mAccount;
-    /**
-     * Hidden constructor.
-     */
-    private ConversationViewFragment(Account account, Conversation conversation) {
-        super();
-        mConversation = conversation;
-        mAccount = account;
+    private HtmlConversationTemplates mTemplates;
+
+    private String mBaseUri;
+
+    private final Handler mHandler = new Handler();
+
+    private final MailJsBridge mJsBridge = new MailJsBridge();
+
+    private static final String ARG_ACCOUNT = "account";
+    private static final String ARG_CONVERSATION = "conversation";
+
+    public ConversationViewFragment() {
     }
 
     /**
      * Creates a new instance of {@link ConversationViewFragment}, initialized
      * to display conversation.
      */
-    public static ConversationViewFragment newInstance(Account account, Conversation conversation) {
-       return new ConversationViewFragment(account, conversation);
+    public static ConversationViewFragment newInstance(Account account,
+            Conversation conversation) {
+       ConversationViewFragment f = new ConversationViewFragment();
+       Bundle args = new Bundle();
+       args.putParcelable(ARG_ACCOUNT, account);
+       args.putParcelable(ARG_CONVERSATION, conversation);
+       f.setArguments(args);
+       return f;
     }
 
     @Override
@@ -93,16 +113,17 @@ public final class ConversationViewFragment extends Fragment implements
         // ControllableActivity.
         final Activity activity = getActivity();
         if (! (activity instanceof ControllableActivity)){
-            LogUtils.wtf(LOG_TAG, "ConversationViewFragment expects only a ControllableActivity to" +
-                    "create it. Cannot proceed.");
+            LogUtils.wtf(LOG_TAG, "ConversationViewFragment expects only a ControllableActivity to"
+                    + "create it. Cannot proceed.");
         }
         mActivity = (ControllableActivity) activity;
+        mContext = mActivity.getApplicationContext();
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
             return;
         }
         mActivity.attachConversationView(this);
-        mDateBuilder = new FormattedDateBuilder(mActivity.getActivityContext());
+        mTemplates = new HtmlConversationTemplates(mContext);
         // Show conversation and start loading messages.
         showConversation();
     }
@@ -111,6 +132,11 @@ public final class ConversationViewFragment extends Fragment implements
     public void onCreate(Bundle savedState) {
         LogUtils.v(LOG_TAG, "onCreate in FolderListFragment(this=%s)", this);
         super.onCreate(savedState);
+
+        Bundle args = getArguments();
+        mAccount = args.getParcelable(ARG_ACCOUNT);
+        mConversation = args.getParcelable(ARG_CONVERSATION);
+        mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
     }
 
     @Override
@@ -118,7 +144,35 @@ public final class ConversationViewFragment extends Fragment implements
             ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.conversation_view, null);
         mSubject = (TextView) rootView.findViewById(R.id.subject);
-        mMessageList = (ListView) rootView.findViewById(R.id.message_list);
+        mConversationContainer = (ConversationContainer) rootView
+                .findViewById(R.id.conversation_container);
+        mWebView = (ConversationWebView) rootView.findViewById(R.id.webview);
+
+        mWebView.addScrollListener(mConversationContainer);
+
+        mWebView.addJavascriptInterface(mJsBridge, "mail");
+
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                LogUtils.i(LOG_TAG, "JS: %s (%s:%d)", consoleMessage.message(),
+                        consoleMessage.sourceId(), consoleMessage.lineNumber());
+                return true;
+            }
+        });
+
+        WebSettings settings = mWebView.getSettings();
+
+        settings.setBlockNetworkImage(true);
+
+        settings.setJavaScriptEnabled(true);
+        settings.setUseWideViewPort(true);
+
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
 
         return rootView;
     }
@@ -126,7 +180,7 @@ public final class ConversationViewFragment extends Fragment implements
     @Override
     public void onDestroyView() {
         // Clear the adapter.
-        mMessageList.setAdapter(null);
+        mConversationContainer.setOverlayAdapter(null);
         mActivity.attachConversationView(null);
 
         super.onDestroyView();
@@ -143,16 +197,17 @@ public final class ConversationViewFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(mActivity.getActivityContext(),
-                Uri.parse(mConversation.messageListUri), UIProvider.MESSAGE_PROJECTION, null, null,
-                null);
+        return new CursorLoader(mContext, Uri.parse(mConversation.messageListUri),
+                UIProvider.MESSAGE_PROJECTION, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mMessageCursor = data;
-        mMessageList.setAdapter(new MessageListAdapter(mActivity.getActivityContext(),
-                mMessageCursor));
+        MessageCursor messageCursor = new MessageCursor(data);
+        mWebView.loadDataWithBaseURL(mBaseUri, renderMessageBodies(messageCursor), "text/html",
+                "utf-8", null);
+        mConversationContainer.setOverlayAdapter(
+                new MessageListAdapter(mContext, messageCursor, mAccount));
     }
 
     @Override
@@ -160,26 +215,81 @@ public final class ConversationViewFragment extends Fragment implements
         // Do nothing.
     }
 
-    class MessageListAdapter extends SimpleCursorAdapter {
-        public MessageListAdapter(Context context, Cursor cursor) {
-            super(context, R.layout.message, cursor,
-                    UIProvider.MESSAGE_PROJECTION, new int[0], 0);
+    private String renderMessageBodies(MessageCursor messageCursor) {
+        int pos = -1;
+        mTemplates.startConversation(0);
+        while (messageCursor.moveToPosition(++pos)) {
+            mTemplates.appendMessageHtml(messageCursor.get(), true, false, 1.0f, 96);
         }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            super.bindView(view, context, cursor);
-            MessageHeaderView header = (MessageHeaderView) view.findViewById(R.id.message_header);
-            header.initialize(mDateBuilder, mAccount, true, true, false);
-            header.bind(cursor);
-            MessageWebView webView = (MessageWebView) view.findViewById(R.id.body);
-            webView.loadData(cursor.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN), "text/html",
-                    null);
-        }
+        return mTemplates.endConversation(mBaseUri, 320);
     }
 
     public void onTouchEvent(MotionEvent event) {
         // TODO: (mindyp) when there is an undo bar, check for event !in undo bar
         // if its not in undo bar, dismiss the undo bar.
     }
+
+    private static class MessageCursor extends CursorWrapper {
+
+        private Map<Long, Message> mCache = Maps.newHashMap();
+
+        public MessageCursor(Cursor inner) {
+            super(inner);
+        }
+
+        public Message get() {
+            long id = getWrappedCursor().getLong(0);
+            Message m = mCache.get(id);
+            if (m == null) {
+                m = new Message(this);
+                mCache.put(id, m);
+            }
+            return m;
+        }
+    }
+
+    private static class MessageListAdapter extends ResourceCursorAdapter {
+
+        private final FormattedDateBuilder mDateBuilder;
+        private final Account mAccount;
+
+        public MessageListAdapter(Context context, Cursor cursor, Account account) {
+            super(context, R.layout.conversation_message_header, cursor, 0);
+            mDateBuilder = new FormattedDateBuilder(context);
+            mAccount = account;
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            Message m = ((MessageCursor) cursor).get();
+            MessageHeaderView header = (MessageHeaderView) view;
+            header.initialize(mDateBuilder, mAccount, true, false, false);
+            header.bind(m);
+        }
+    }
+
+    /**
+     * NOTE: all public methods must be listed in the proguard flags so that they can be accessed
+     * via reflection and not stripped.
+     *
+     */
+    private class MailJsBridge {
+
+        @SuppressWarnings("unused")
+        public void onWebContentGeometryChange(final String[] messageTopStrs) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    final int len = messageTopStrs.length;
+                    int[] messageTops = new int[len];
+                    for (int i = 0; i < len; i++) {
+                        messageTops[i] = Integer.parseInt(messageTopStrs[i]);
+                    }
+                    mConversationContainer.onGeometryChange(messageTops);
+                }
+            });
+        }
+
+    }
+
 }

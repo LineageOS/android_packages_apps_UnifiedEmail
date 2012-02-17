@@ -16,6 +16,8 @@
 
 package com.android.mail.utils;
 
+import com.google.common.collect.Maps;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -32,8 +34,8 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.MeasureSpec;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -41,7 +43,6 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
-import com.google.common.collect.Maps;
 
 import java.util.Map;
 
@@ -214,7 +215,7 @@ public class Utils {
      * conversation and then describe the most important messages in order,
      * indicating the priority of each message and whether the message is
      * unread.
-     * 
+     *
      * @param instructions instructions as described above
      * @param senderBuilder the SpannableStringBuilder to append to for sender
      *            information
@@ -431,7 +432,7 @@ public class Utils {
 
     /**
      * Adds a fragment with given style to a string builder.
-     * 
+     *
      * @param builder the current string builder
      * @param fragment the fragment to be added
      * @param style the style of the fragment
@@ -479,7 +480,7 @@ public class Utils {
      * child has a ViewGroup parent and that it should be laid out within that
      * parent with a matching width but variable height. Code largely lifted
      * from AnimatedAdapter.measureChildHeight().
-     * 
+     *
      * @param child a child view that has already been placed within its parent
      *            ViewGroup
      * @param parent the parent ViewGroup of child
