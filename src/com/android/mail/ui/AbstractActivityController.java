@@ -17,14 +17,16 @@
 
 package com.android.mail.ui;
 
-
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -89,6 +91,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected ContentResolver mResolver;
     protected FolderListFragment mFolderListFragment;
     protected ConversationViewFragment mConversationViewFragment;
+    protected boolean isLoaderInitialized = false;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -269,11 +272,9 @@ public abstract class AbstractActivityController implements ActivityController {
     public boolean onCreate(Bundle savedState) {
         // Initialize the action bar view.
         initCustomActionBarView();
-
         final Intent intent = mActivity.getIntent();
-        // TODO(viki) Choose an account here.
-        // If we cannot choose an account, we return false
-
+        // Get a Loader to the Account
+        mActivity.getLoaderManager().initLoader(0, null, this);
         // Allow shortcut keys to function for the ActionBar and menus.
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
         mResolver = mActivity.getContentResolver();
@@ -336,8 +337,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onPause() {
-        // TODO(viki): Auto-generated method stub
-
+        isLoaderInitialized = false;
     }
 
     @Override
@@ -463,27 +463,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
             // Restore the view mode
             mViewMode.handleRestore(savedState);
-        } else {
-            // Null saved state. We have to initialize the activity to a sane first state
-            // Set the account. Use the first account for want of anything better.
-            // TODO(viki): Use a cursor loader here to notice changes to the underlying data.
-            final Cursor accountCursor = mResolver.query(AccountCacheProvider.getAccountsUri(),
-                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-            if (accountCursor != null && accountCursor.moveToFirst()) {
-                final int uriCol = accountCursor.getColumnIndex(
-                        UIProvider.AccountColumns.FOLDER_LIST_URI);
-                mAccount = new Account(accountCursor);
-            }
-
-            final Intent intent = mActivity.getIntent();
-            //  TODO(viki): Show the list context from Intent
-            mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
-            // Instead of this, switch to the conversation list mode and have that do the right
-            // things automatically.
-            showConversationList(mConvListContext);
-
-            // Set the correct mode based on the current context
-            mViewMode.enterConversationListMode();
         }
     }
 
@@ -528,5 +507,63 @@ public abstract class AbstractActivityController implements ActivityController {
         // things automatically.
         showConversationList(mConvListContext);
         mViewMode.enterConversationListMode();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // Create a loader to listen in on account changes.
+        return new CursorLoader(mContext, AccountCacheProvider.getAccountsUri(),
+                UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+    }
+
+    /**
+     * Return whether the given account exists in the cursor.
+     * @param accountCursor
+     * @param account
+     * @return true if the account exists in the account cursor, false otherwise.
+     */
+    private boolean existsInCursor(Cursor accountCursor, Account account) {
+        accountCursor.moveToFirst();
+        do {
+            if (account.equals(new Account(accountCursor)))
+                return true;
+        } while (accountCursor.moveToNext());
+        return false;
+    }
+
+    /**
+     * Update the accounts on the device. This currently loads the first account in the list.
+     * @param loader
+     * @param data
+     * @return true if the update was successful, false otherwise
+     */
+    private boolean updateAccounts(Loader<Cursor> loader, Cursor accounts) {
+        // Load the first account in the absence of any other information.
+        if (accounts == null || !accounts.moveToFirst()) {
+            return false;
+        }
+        mAccount = new Account(accounts);
+        final Intent intent = mActivity.getIntent();
+        mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
+        // TODO(viki): Rely on the ViewMode transition to do the right things automatically. The
+        // next line should be unnecessary.
+        showConversationList(mConvListContext);
+        mViewMode.enterConversationListMode();
+        return true;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // We want to reinitialize only if we haven't ever been initialized, or if the current
+        // account has vanished.
+        if (!isLoaderInitialized || !existsInCursor(data, mAccount)) {
+            isLoaderInitialized = updateAccounts(loader, data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // Do nothing for now, since we don't have any state. When a load is finished, the
+        // onLoadFinished will be called and we will be fine.
     }
 }
