@@ -99,10 +99,15 @@ public class Folder implements Parcelable {
     public int totalCount;
 
     /**
+     * The content provider URI to force a refresh of this folder.
+     */
+    public String refreshUri;
+
+    /**
      * Total number of members that comprise an instance of a folder. Count up the members above.
      * This is the number of members that need to be serialized or parceled.
      */
-    private static final int NUMBER_MEMBERS = 10;
+    private static final int NUMBER_MEMBERS = 11;
 
     /**
      * Used only for debugging.
@@ -140,6 +145,7 @@ public class Folder implements Parcelable {
         childFoldersListUri = in.readString();
         unreadCount = in.readInt();
         totalCount = in.readInt();
+        refreshUri = in.readString();
     }
 
     public Folder(Cursor cursor) {
@@ -155,6 +161,7 @@ public class Folder implements Parcelable {
         childFoldersListUri = cursor.getString(UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN);
         unreadCount = cursor.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
         totalCount = cursor.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
+        refreshUri = cursor.getString(UIProvider.FOLDER_REFRESH_URI_COLUMN);
     }
 
     @Override
@@ -171,6 +178,7 @@ public class Folder implements Parcelable {
         dest.writeString(childFoldersListUri);
         dest.writeInt(unreadCount);
         dest.writeInt(totalCount);
+        dest.writeString(refreshUri);
     }
 
     /**
@@ -189,6 +197,7 @@ public class Folder implements Parcelable {
         out.append(childFoldersListUri).append(LABEL_COMPONENT_SEPARATOR);
         out.append(unreadCount).append(LABEL_COMPONENT_SEPARATOR);
         out.append(totalCount).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(refreshUri).append(LABEL_COMPONENT_SEPARATOR);
         return out.toString();
     }
 
@@ -214,6 +223,7 @@ public class Folder implements Parcelable {
         childFoldersListUri = folderMembers[7];
         unreadCount = Integer.valueOf(folderMembers[8]);
         totalCount = Integer.valueOf(folderMembers[9]);
+        refreshUri = folderMembers[10];
     }
 
     /**
