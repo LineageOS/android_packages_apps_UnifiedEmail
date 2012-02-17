@@ -24,12 +24,6 @@
     android:background="@drawable/folder_item">
 
     <ImageView
-        android:id="@+id/folder_box"
-        style="@style/FolderItemIcon"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
-
-    <ImageView
         android:id="@+id/folder_parent_icon"
         android:layout_width="16dip"
         android:layout_height="16dip"
