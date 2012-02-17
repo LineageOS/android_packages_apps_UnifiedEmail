@@ -37,6 +37,7 @@ import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.Folder;
 
 /**
  * View to manage the various states of the Mail Action Bar
@@ -76,15 +77,6 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
         ConversationListContext getCurrentListContext();
 
         /**
-         * Invoked when the user uses the {@link MailActionBar} to change accounts.
-         *
-         * @return whether the account can be switched successfully.
-         */
-        boolean navigateToAccount(final Account account);
-
-        void navigateToFolder(final String folderCanonicalName);
-
-        /**
          * Invoked when the user is already viewing search results
          * and enters a new query.
          * @param string Query
@@ -101,7 +93,7 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
     private String[] mAccountNames;
     private ActionBar mActionBar;
     private RestrictedActivity mActivity;
-    private Callback mCallback;
+    private ActivityController mCallback;
     private View mFolderView;
     /**
      * The current mode of the ActionBar. This references constants in {@link ViewMode}
@@ -176,7 +168,7 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
     }
 
     @Override
-    public void initialize(RestrictedActivity activity, Callback callback, ViewMode viewMode,
+    public void initialize(RestrictedActivity activity, ActivityController callback, ViewMode viewMode,
             ActionBar actionBar) {
         // TODO(viki): Auto-generated method stub
         mActionBar = actionBar;
@@ -195,7 +187,7 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
         final int type = mSpinner.getItemViewType(position);
         switch (type) {
             case AccountSpinnerAdapter.TYPE_ACCOUNT:
-                mCallback.navigateToAccount((Account) mSpinner.getItem(position));
+                mCallback.onAccountChanged((Account) mSpinner.getItem(position));
                 // Get the capabilities associated with this account.
                 final Object item = mSpinner.getItem(position);
                 assert (item instanceof Account);

@@ -43,9 +43,6 @@
         </activity>
         <activity android:name=".compose.ComposeActivity" />
         <activity
-           android:name=".ui.ActionbarActivity"
-           android:uiOptions="splitActionBarWhenNarrow" />
-        <activity
            android:name=".ui.MailActivity"
            android:uiOptions="splitActionBarWhenNarrow" />
 

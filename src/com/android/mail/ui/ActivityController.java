@@ -40,7 +40,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
         ModeChangeListener, MailActionBar.Callback, StarHandler, ConversationListCallbacks,
-        FolderListCallback, LoaderManager.LoaderCallbacks<Cursor> {
+        FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
@@ -70,12 +70,6 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * @param conversationViewFragment
      */
     void attachConversationView(ConversationViewFragment conversationViewFragment);
-
-    /**
-     * @see android.app.Activity#dispatchTouchEvent(MotionEvent)
-     * @param event
-     */
-    void dispatchTouchEvent(MotionEvent event);
 
     /**
      * Return the current mode the activity is in. Values need to be matched against constants in

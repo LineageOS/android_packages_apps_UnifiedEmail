@@ -21,14 +21,12 @@ import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -37,7 +35,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.Window;
 import android.widget.LinearLayout;
 
 import com.android.mail.R;
@@ -74,6 +71,7 @@ public abstract class AbstractActivityController implements ActivityController {
     public final boolean IS_TABLET_DEVICE;
 
     protected Account mAccount;
+    protected Folder mFolder;
     protected ActionBarView mActionBarView;
     protected final RestrictedActivity mActivity;
     protected final Context mContext;
@@ -131,18 +129,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void clearSubject() {
-        // TODO(viki): Auto-generated method stub
-
-    }
-
-    @Override
-    public void dispatchTouchEvent(MotionEvent ev) {
-        // TODO(viki): Auto-generated method stub
-
-    }
-
-    @Override
-    public void doneChangingFolders(FolderOperations folderOperations) {
         // TODO(viki): Auto-generated method stub
 
     }
@@ -229,23 +215,32 @@ public abstract class AbstractActivityController implements ActivityController {
     protected abstract boolean isConversationListVisible();
 
     @Override
-    public boolean navigateToAccount(Account account) {
+    public void onAccountChanged(Account account) {
         if (!account.equals(mAccount)) {
             mAccount = account;
 
             final Intent intent = mActivity.getIntent();
             // TODO(viki): Show the list context from Intent
             mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
+            mFolder = mConvListContext.mFolder;
             showConversationList(mConvListContext);
             mViewMode.enterConversationListMode();
         }
-        return true;
     }
 
     @Override
-    public void navigateToFolder(String folderCanonicalName) {
-        // TODO(viki): Auto-generated method stub
-
+    public void onFolderChanged(Folder folder) {
+        if (!folder.equals(mFolder)) {
+            mFolder = folder;
+            final Intent intent = mActivity.getIntent();
+            intent.putExtra(ConversationListContext.EXTRA_FOLDER, mFolder);
+            //  TODO(viki): Show the list context from Intent
+            mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
+            // Instead of this, switch to the conversation list mode and have that do the right
+            // things automatically.
+            showConversationList(mConvListContext);
+            mViewMode.enterConversationListMode();
+        }
     }
 
     @Override
@@ -324,12 +319,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onFolderChanged(Folder folder, long conversationId, boolean added) {
-        // TODO(viki): Auto-generated method stub
-
-    }
-
-    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO(viki): Auto-generated method stub
         return false;
@@ -349,11 +338,20 @@ public abstract class AbstractActivityController implements ActivityController {
             case R.id.show_all_folders:
                 showFolderList();
                 break;
+            case R.id.refresh:
+                requestFolderRefresh();
+                break;
             default:
                 handled = false;
                 break;
         }
         return handled;
+    }
+
+    private void requestFolderRefresh() {
+        if (mFolder != null) {
+            new AsyncRefreshTask(mContext, mFolder).execute();
+        }
     }
 
     @Override
@@ -517,18 +515,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onFolderSelected(Folder folder) {
-        final Intent intent = mActivity.getIntent();
-        intent.putExtra(ConversationListContext.EXTRA_FOLDER, folder);
-        //  TODO(viki): Show the list context from Intent
-        mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
-        // Instead of this, switch to the conversation list mode and have that do the right
-        // things automatically.
-        showConversationList(mConvListContext);
-        mViewMode.enterConversationListMode();
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Create a loader to listen in on account changes.
         return new CursorLoader(mContext, AccountCacheProvider.getAccountsUri(),
@@ -564,6 +550,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mAccount = new Account(accounts);
         final Intent intent = mActivity.getIntent();
         mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
+        mFolder = mConvListContext.mFolder;
         // TODO(viki): Rely on the ViewMode transition to do the right things automatically. The
         // next line should be unnecessary.
         showConversationList(mConvListContext);

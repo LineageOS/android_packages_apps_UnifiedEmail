@@ -16,16 +16,16 @@
  *******************************************************************************/
 package com.android.mail.ui;
 
-import com.android.mail.providers.Folder;
+import com.android.mail.providers.Account;
 
 /**
  * The callback interface for when a list item has been selected.
  */
-public interface FolderListCallback {
+public interface AccountChangeListener {
     /**
      * Handles selecting a folder from within the {@link FolderListFragment}.
      *
      * @param folder the selected folder
      */
-    void onFolderSelected(Folder folder);
+    void onAccountChanged(Account account);
 }

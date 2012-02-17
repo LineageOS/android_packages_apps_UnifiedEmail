@@ -14,41 +14,18 @@
  *      See the License for the specific language governing permissions and
  *      limitations under the License.
  *******************************************************************************/
-
 package com.android.mail.ui;
 
+import com.android.mail.providers.Folder;
 
 /**
- * This interface is used to send notifications back to the calling
- * activity. MenuHandler takes care of updating the provider, so this
- * interface should be used for notification purposes only (such as updating
- * the UI).
+ * The callback interface for when a list item has been selected.
  */
-// Called MenuHandler.ActivityCallback in the previous code.
-public interface MenuCallback extends HelpCallback {
+public interface FolderChangeListener {
     /**
-     * Invoked when the user requests search mode
+     * Handles selecting a folder from within the {@link FolderListFragment}.
+     *
+     * @param folder the selected folder
      */
-    void handleSearchRequested();
-
-    /**
-     * Invoked when a bulk Operation is starting.
-     */
-    void onStartBulkOperation();
-
-    /**
-     * Invoked when a bulk Operation has finished.
-     */
-    void onEndBulkOperation();
-
-    /**
-     * Invoked when user starts drag and drop mode.
-     */
-    void onStartDragMode();
-
-    /**
-     * Invoked when user stops drag and drop mode.
-     */
-    void onStopDragMode();
+    void onFolderChanged(Folder folder);
 }
-

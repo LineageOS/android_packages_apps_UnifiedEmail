@@ -56,15 +56,15 @@ public final class FolderListFragment extends ListFragment implements
 
     private String mFolderListUri;
 
-    private FolderListCallback mCallback;
+    private FolderChangeListener mListener;
 
     private static final int FOLDER_LOADER_ID = 0;
     /**
      * Hidden constructor.
      */
-    private FolderListFragment(FolderListCallback callback, String uri) {
+    private FolderListFragment(FolderChangeListener listener, String uri) {
         super();
-        mCallback = callback;
+        mListener = listener;
         mFolderListUri = uri;
     }
 
@@ -72,8 +72,8 @@ public final class FolderListFragment extends ListFragment implements
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
      */
-    public static FolderListFragment newInstance(FolderListCallback callback, String uri) {
-        FolderListFragment fragment = new FolderListFragment(callback, uri);
+    public static FolderListFragment newInstance(FolderChangeListener listener, String uri) {
+        FolderListFragment fragment = new FolderListFragment(listener, uri);
         return fragment;
     }
 
@@ -139,8 +139,8 @@ public final class FolderListFragment extends ListFragment implements
 
     private void viewFolder(int position) {
         mFolderListCursor.moveToPosition(position);
-        Folder selected = new Folder(mFolderListCursor);
-        if (selected.hasChildren) {
+        Folder selectedFolder = new Folder(mFolderListCursor);
+        if (selectedFolder.hasChildren) {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children.
             FragmentTransaction fragmentTransaction = mActivity.getFragmentManager()
@@ -155,14 +155,14 @@ public final class FolderListFragment extends ListFragment implements
             fragmentTransaction.setTransition(transition);
 
             Fragment folderListFragment = FolderListFragment
-                    .newInstance(mCallback, selected.childFoldersListUri);
+                    .newInstance(mListener, selectedFolder.childFoldersListUri);
             fragmentTransaction.replace(R.id.content_pane, folderListFragment);
 
             fragmentTransaction.commitAllowingStateLoss();
 
         } else {
             // Go to the conversation list for this folder.
-            mCallback.onFolderSelected(selected);
+            mListener.onFolderChanged(selectedFolder);
         }
     }
 

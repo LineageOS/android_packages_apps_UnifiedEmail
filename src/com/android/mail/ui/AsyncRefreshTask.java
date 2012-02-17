@@ -17,38 +17,30 @@
 
 package com.android.mail.ui;
 
+import android.content.Context;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.text.TextUtils;
 
-/**
- * This interface is used to send notifications back to the calling
- * activity. MenuHandler takes care of updating the provider, so this
- * interface should be used for notification purposes only (such as updating
- * the UI).
- */
-// Called MenuHandler.ActivityCallback in the previous code.
-public interface MenuCallback extends HelpCallback {
-    /**
-     * Invoked when the user requests search mode
-     */
-    void handleSearchRequested();
+import com.android.mail.providers.Folder;
 
-    /**
-     * Invoked when a bulk Operation is starting.
-     */
-    void onStartBulkOperation();
+public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
+    private Context mContext;
+    private Folder mFolder;
 
-    /**
-     * Invoked when a bulk Operation has finished.
-     */
-    void onEndBulkOperation();
+    public AsyncRefreshTask(Context context, Folder folder) {
+        mContext = context;
+        mFolder = folder;
+    }
 
-    /**
-     * Invoked when user starts drag and drop mode.
-     */
-    void onStartDragMode();
+    @Override
+    protected Void doInBackground(Void ...voids) {
+        String refreshUri = mFolder.refreshUri;
+        if (!TextUtils.isEmpty(refreshUri)) {
+            mContext.getContentResolver()
+                    .query(Uri.parse(refreshUri), null, null, null, null);
+        }
+        return null;
+    }
 
-    /**
-     * Invoked when user stops drag and drop mode.
-     */
-    void onStopDragMode();
 }
-

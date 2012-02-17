@@ -35,8 +35,8 @@ public interface ActionBarView extends OnNavigationListener, ViewMode.ModeChange
      * @param viewMode
      * @param actionBar
      */
-    void initialize(RestrictedActivity activity, MailActionBar.Callback callback,
-            ViewMode viewMode, ActionBar actionBar);
+    void initialize(RestrictedActivity activity, ActivityController controller, ViewMode viewMode,
+            ActionBar actionBar);
 
     /**
      * Handle handleRestore from the Android framework.
