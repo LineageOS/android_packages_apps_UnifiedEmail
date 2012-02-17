@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- no translation found for test_labelspinner (5476419887402258065) -->
+    <skip />
+    <!-- no translation found for mock_content_provider (7444679250201027030) -->
+    <skip />
+    <!-- no translation found for conversation_content_provider (3662935025292495273) -->
+    <skip />
+    <!-- no translation found for account_cache_provider (3195603659417337226) -->
+    <skip />
+    <!-- no translation found for dummy_gmail_provider (2411244445674142698) -->
+    <skip />
+    <!-- no translation found for test_actionbar (4342258854237017083) -->
+    <skip />
+    <!-- no translation found for test_application (5613907578447924035) -->
+    <skip />
+    <!-- no translation found for app_name (8197930422134712215) -->
+    <skip />
+    <string name="to" msgid="4392614766835725698">"Za"</string>
+    <string name="cc" msgid="7017720927911078193">"Kp"</string>
+    <string name="bcc" msgid="3098643138241111579">"Skp"</string>
+    <string name="subject_hint" msgid="7253964583324677128">"Zadeva"</string>
+    <string name="body_hint" msgid="4279864165439577668">"Novo e-poštno sporočilo"</string>
+    <!-- no translation found for plus_cc_label (6986556712069681038) -->
+    <skip />
+    <!-- no translation found for plus_bcc_label (3466026399539734378) -->
+    <skip />
+    <string name="add_file_attachment" msgid="2203398371671979481">"Priloži datoteko"</string>
+    <!-- no translation found for save_draft (5555744208032445632) -->
+    <skip />
+    <!-- no translation found for discard (1714960202994370243) -->
+    <skip />
+    <!-- no translation found for compose (1473559896062432878) -->
+    <skip />
+    <!-- no translation found for compose_modes:0 (8631190144210933782) -->
+    <!-- no translation found for compose_modes:1 (4085029907540221568) -->
+    <!-- no translation found for compose_modes:2 (857480048798815437) -->
+    <!-- no translation found for reply_attribution (717207316577386788) -->
+    <skip />
+    <!-- no translation found for forward_attribution (1498936339458535158) -->
+    <skip />
+    <!-- no translation found for cc_attribution (374493748526504562) -->
+    <skip />
+    <!-- no translation found for select_attachment_type (4711524151968942082) -->
+    <skip />
+    <!-- no translation found for too_large_to_attach (6355534239324333583) -->
+    <skip />
+    <!-- no translation found for generic_attachment_problem (8775959340559458709) -->
+    <skip />
+    <!-- no translation found for recipient_needed (999037027358925655) -->
+    <skip />
+    <!-- no translation found for recipient_error_dialog_title (6051694305498669180) -->
+    <skip />
+    <!-- no translation found for confirm_send_title (5663602035452564062) -->
+    <skip />
+    <!-- no translation found for confirm_send_message_with_no_subject (8900379985826988281) -->
+    <skip />
+    <!-- no translation found for confirm_send_message_with_no_body (4606328514693368953) -->
+    <skip />
+    <!-- no translation found for confirm_send_message (3221546155385562874) -->
+    <skip />
+    <!-- no translation found for message_discarded (5079975378884765445) -->
+    <skip />
+    <!-- no translation found for send (8242003661397555986) -->
+    <skip />
+    <!-- no translation found for mark_read (8438349154394313195) -->
+    <skip />
+    <!-- no translation found for mark_unread (6231373939351125713) -->
+    <skip />
+    <!-- no translation found for mute (1995954983688603977) -->
+    <skip />
+    <!-- no translation found for add_star (2866003744391266498) -->
+    <skip />
+    <!-- no translation found for remove_star (4372327933122106128) -->
+    <skip />
+    <!-- no translation found for archive (847250094775910499) -->
+    <skip />
+    <!-- no translation found for report_spam (6467567747975393907) -->
+    <skip />
+    <!-- no translation found for delete (844871204175957681) -->
+    <skip />
+    <!-- no translation found for next (4674401197968248302) -->
+    <skip />
+    <!-- no translation found for previous (309943944831349924) -->
+    <skip />
+    <!-- no translation found for refresh (490989798005710951) -->
+    <skip />
+    <!-- no translation found for reply (2032052598496088561) -->
+    <skip />
+    <!-- no translation found for reply_all (7257248094625487557) -->
+    <skip />
+    <!-- no translation found for resume_draft (6450150180834092146) -->
+    <skip />
+    <!-- no translation found for forward (6822914459902983767) -->
+    <skip />
+    <!-- no translation found for menu_compose (6274193058224230645) -->
+    <skip />
+    <!-- no translation found for menu_change_labels (9121087142079721959) -->
+    <skip />
+    <!-- no translation found for menu_manage_labels (8618788259638720538) -->
+    <skip />
+    <!-- no translation found for label_list_title (7948730824763052410) -->
+    <skip />
+    <!-- no translation found for manage_labels_subtitle (8802709983773098505) -->
+    <skip />
+    <!-- no translation found for menu_label_options (1811414840489117457) -->
+    <skip />
+    <!-- no translation found for menu_done (5791134842152855128) -->
+    <skip />
+    <!-- no translation found for menu_account_preferences (825820027931270435) -->
+    <skip />
+    <!-- no translation found for menu_preferences (8957431987536606063) -->
+    <skip />
+    <!-- no translation found for menu_search (5297197523031943248) -->
+    <skip />
+    <!-- no translation found for more (1238344647379009858) -->
+    <skip />
+    <!-- no translation found for message_count (1032500151281269302) -->
+    <skip />
+    <!-- no translation found for newer (1007166236908596854) -->
+    <skip />
+    <!-- no translation found for older (6651690916337202936) -->
+    <skip />
+    <!-- no translation found for mark_important (6904096897104265870) -->
+    <skip />
+    <!-- no translation found for mark_not_important (4550967327747977068) -->
+    <skip />
+    <!-- no translation found for add_cc_label (504861315425773180) -->
+    <skip />
+    <!-- no translation found for add_bcc_label (7432027645493843336) -->
+    <skip />
+    <!-- no translation found for feedback (79365993169715049) -->
+    <skip />
+    <!-- no translation found for help_and_info (7873089811705257882) -->
+    <skip />
+    <!-- no translation found for quoted_text (7250749398672037355) -->
+    <skip />
+    <!-- no translation found for quoted_text_label (541007446961960617) -->
+    <skip />
+    <!-- no translation found for respond_inline (6797117334768201180) -->
+    <skip />
+    <!-- no translation found for bytes (8851050881674287386) -->
+    <skip />
+    <!-- no translation found for kilobytes (8506546136898321025) -->
+    <skip />
+    <!-- no translation found for megabytes (1469217534120857347) -->
+    <skip />
+    <!-- no translation found for attachment_image (3832985223906528449) -->
+    <skip />
+    <!-- no translation found for attachment_video (7526134752988603154) -->
+    <skip />
+    <!-- no translation found for attachment_audio (135527133955622936) -->
+    <skip />
+    <!-- no translation found for attachment_text (5544874374971562759) -->
+    <skip />
+    <!-- no translation found for attachment_application_msword (2326909450865637910) -->
+    <skip />
+    <!-- no translation found for attachment_application_vnd_ms_powerpoint (861348289167216897) -->
+    <skip />
+    <!-- no translation found for attachment_application_vnd_ms_excel (5861224590731578901) -->
+    <skip />
+    <!-- no translation found for attachment_application_pdf (6922990425001131901) -->
+    <skip />
+    <!-- no translation found for attachment_unknown (6005445955982153931) -->
+    <skip />
+    <!-- no translation found for search_hint (3625734263059221350) -->
+    <skip />
+    <!-- no translation found for choosertitle_sharevia (6142681649048665134) -->
+    <skip />
+    <!-- no translation found for contextmenu_openlink (2176176524824953775) -->
+    <skip />
+    <!-- no translation found for contextmenu_copy (4604170699444153037) -->
+    <skip />
+    <!-- no translation found for contextmenu_copylink (3580131515400610839) -->
+    <skip />
+    <!-- no translation found for contextmenu_dial_dot (9104426720103729453) -->
+    <skip />
+    <!-- no translation found for contextmenu_sms_dot (6481040539501081547) -->
+    <skip />
+    <!-- no translation found for contextmenu_add_contact (8395100913366045250) -->
+    <skip />
+    <!-- no translation found for contextmenu_send_mail (8301941130009797208) -->
+    <skip />
+    <!-- no translation found for contextmenu_map (7721544518698532954) -->
+    <skip />
+    <!-- no translation found for contextmenu_sharelink (6213520416250245200) -->
+    <skip />
+    <!-- no translation found for contextmenu_help (4651718679842414097) -->
+    <skip />
+    <!-- no translation found for contextmenu_feedback (4429118420169571473) -->
+    <skip />
+    <!-- no translation found for num_selected (2943309946439316255) -->
+    <skip />
+    <!-- no translation found for move_conversation:one (3657821200245019288) -->
+    <!-- no translation found for move_conversation:other (1685896770174368261) -->
+    <!-- no translation found for content_description (5986818539537753005) -->
+    <skip />
+    <!-- no translation found for filtered_tag (6470627954465675488) -->
+    <skip />
+    <!-- no translation found for subject_and_snippet (7884124651812798896) -->
+    <skip />
+    <!-- no translation found for draft:one (333591132893648383) -->
+    <!-- no translation found for draft:other (6961049507579977505) -->
+    <!-- no translation found for sending (8214361929125649771) -->
+    <skip />
+    <!-- no translation found for send_failed (750908595144529579) -->
+    <skip />
+    <!-- no translation found for me (6480762904022198669) -->
+    <skip />
+    <!-- no translation found for labels (1519770547536283663) -->
+    <skip />
+    <!-- no translation found for show_all_folders (3281420732307737553) -->
+    <skip />
+    <!-- no translation found for no_conversations (35400008890372241) -->
+    <skip />
+    <!-- no translation found for undo (6070869718469782251) -->
+    <skip />
+    <!-- no translation found for conversation_muting:one (3339369590668913905) -->
+    <!-- no translation found for conversation_muting:other (7732711630827590665) -->
+    <!-- no translation found for conversation_spamming:one (2595708219821799225) -->
+    <!-- no translation found for conversation_spamming:other (1772788567015816651) -->
+    <!-- no translation found for conversation_archiving:one (868228767335919035) -->
+    <!-- no translation found for conversation_archiving:other (2233711130311549549) -->
+    <!-- no translation found for conversation_deleting:one (1715640568204501903) -->
+    <!-- no translation found for conversation_deleting:other (4729328961071737560) -->
+    <!-- no translation found for conversation_marking_read:one (394911867474214874) -->
+    <!-- no translation found for conversation_marking_read:other (247178462544083532) -->
+    <!-- no translation found for conversation_marking_unread:one (2959859634779672558) -->
+    <!-- no translation found for conversation_marking_unread:other (6577233770583912846) -->
+    <!-- no translation found for conversation_starring:one (8780588287902503608) -->
+    <!-- no translation found for conversation_starring:other (44965256231544025) -->
+    <!-- no translation found for conversation_unstarring:one (9149763486272528029) -->
+    <!-- no translation found for conversation_unstarring:other (460057780793159215) -->
+    <!-- no translation found for conversation_unknown_operation:one (235911194119829184) -->
+    <!-- no translation found for conversation_unknown_operation:other (850868849811019745) -->
+    <!-- no translation found for conversation_muted:one (3197365771487542615) -->
+    <!-- no translation found for conversation_muted:other (1941193356069303587) -->
+    <!-- no translation found for conversation_spammed:one (3060864972122279220) -->
+    <!-- no translation found for conversation_spammed:other (5071459475389411227) -->
+    <!-- no translation found for conversation_archived:one (5457612502965117672) -->
+    <!-- no translation found for conversation_archived:other (3012054504370916482) -->
+    <!-- no translation found for conversation_moved_to_inbox:one (8031416635831380071) -->
+    <!-- no translation found for conversation_moved_to_inbox:other (395816799927580909) -->
+    <!-- no translation found for conversation_deleted:one (4398693029405479323) -->
+    <!-- no translation found for conversation_deleted:other (8630099095360065837) -->
+    <!-- no translation found for conversation_marked_important:one (2335171317119674993) -->
+    <!-- no translation found for conversation_marked_important:other (709648106181749594) -->
+    <!-- no translation found for conversation_marked_not_important:one (63750576337670941) -->
+    <!-- no translation found for conversation_marked_not_important:other (6160886583510022920) -->
+    <!-- no translation found for conversation_marked_read:one (7853066345561670409) -->
+    <!-- no translation found for conversation_marked_read:other (6554100868671029370) -->
+    <!-- no translation found for conversation_marked_unread:one (365581967734960166) -->
+    <!-- no translation found for conversation_marked_unread:other (858491333253953462) -->
+    <!-- no translation found for conversation_label_changed:one (479306722425460870) -->
+    <!-- no translation found for conversation_label_changed:other (6656208328661529588) -->
+    <!-- no translation found for search_results_header (4669917471897026269) -->
+    <skip />
+    <!-- no translation found for searchMode (3329807422114758583) -->
+    <skip />
+    <!-- no translation found for searchConversationMode (8015441927706455618) -->
+    <skip />
+    <!-- no translation found for setBackButton (3004728881963818222) -->
+    <skip />
+    <!-- no translation found for removeBackButton (860383341267568260) -->
+    <skip />
+    <!-- no translation found for normalMode (4250277414924926730) -->
+    <skip />
+    <!-- no translation found for searchResultMode (3564180712046711968) -->
+    <skip />
+    <!-- no translation found for labelMode (1821987146443702635) -->
+    <skip />
+    <!-- no translation found for search_results_searching_header (3821361153909466819) -->
+    <skip />
+    <!-- no translation found for recent_labels (5539494776429934547) -->
+    <skip />
+    <!-- no translation found for expand_recipient_details (2266544827446346880) -->
+    <skip />
+    <!-- no translation found for collapse_recipient_details (3608892454869745927) -->
+    <skip />
+    <!-- no translation found for contact_info_string (6911322458329265644) -->
+    <skip />
+    <!-- no translation found for contact_info_string_default (596531738469809159) -->
+    <skip />
+    <!-- no translation found for expand_read_messages (7458927270492299063) -->
+    <skip />
+    <!-- no translation found for show_messages_read (9132147830566909631) -->
+    <skip />
+    <!-- no translation found for date_heading (2414358582984879303) -->
+    <skip />
+    <!-- no translation found for replyto_heading (2081358811894701297) -->
+    <skip />
+    <!-- no translation found for to_heading (3219994961726691756) -->
+    <skip />
+    <!-- no translation found for cc_heading (8116221732072085180) -->
+    <skip />
+    <!-- no translation found for bcc_heading (5528824453033598299) -->
+    <skip />
+    <!-- no translation found for show_images (1875700481186331432) -->
+    <skip />
+    <!-- no translation found for always_show_images (5966408990164581801) -->
+    <skip />
+    <!-- no translation found for always_show_images_toast (6218061921546973716) -->
+    <skip />
+    <!-- no translation found for address_display_format (7394762772703217683) -->
+    <skip />
+    <!-- no translation found for message_saved (7073947895562277576) -->
+    <skip />
+    <!-- no translation found for sending_message (1498583163419122128) -->
+    <skip />
+    <!-- no translation found for invalid_recipient (2161317422860961623) -->
+    <skip />
+    <!-- no translation found for enumeration_comma (5191660524342286026) -->
+    <skip />
+    <!-- no translation found for ok (8339355733816891026) -->
+    <skip />
+    <!-- no translation found for done (3079981801778027540) -->
+    <skip />
+    <!-- no translation found for cancel (8762981157252199115) -->
+    <skip />
+    <!-- no translation found for close (419945428844076406) -->
+    <skip />
+    <!-- no translation found for folders_activity_instructions (5237801615196958918) -->
+    <skip />
+    <!-- no translation found for widget_large_unread_count (5668393672379294516) -->
+    <skip />
+</resources>
