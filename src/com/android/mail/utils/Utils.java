@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.android.mail.utils;
 
 import android.content.Context;
@@ -57,56 +58,60 @@ public class Utils {
             SENDER_LIST_SEPARATOR);
     public static String[] sSenderFragments = new String[8];
 
-
     public static final String EXTRA_ACCOUNT = "account";
 
-     /**
-      * Sets WebView in a restricted mode suitable for email use.
-      * @param webView The WebView to restrict
-      */
-     public static void restrictWebView(WebView webView) {
+    /**
+     * Sets WebView in a restricted mode suitable for email use.
+     *
+     * @param webView The WebView to restrict
+     */
+    public static void restrictWebView(WebView webView) {
         WebSettings webSettings = webView.getSettings();
         webSettings.setSavePassword(false);
         webSettings.setSaveFormData(false);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSupportZoom(false);
-     }
+    }
 
-     /**
-      * Format a plural string.
-      * @param resource The identity of the resource, which must be a R.plurals
-      * @param count The number of items.
-      */
-     public static String formatPlural(Context context, int resource, int count) {
-         CharSequence formatString = context.getResources().getQuantityText(resource, count);
-         return String.format(formatString.toString(), count);
-     }
+    /**
+     * Format a plural string.
+     *
+     * @param resource The identity of the resource, which must be a R.plurals
+     * @param count The number of items.
+     */
+    public static String formatPlural(Context context, int resource, int count) {
+        CharSequence formatString = context.getResources().getQuantityText(resource, count);
+        return String.format(formatString.toString(), count);
+    }
 
-     /**
-      * @return an ellipsized String that's at most maxCharacters long.  If the text passed is
-      * longer, it will be abbreviated.  If it contains a suffix, the ellipses will be inserted
-      * in the middle and the suffix will be preserved.
-      */
-     public static String ellipsize(String text, int maxCharacters) {
-         int length = text.length();
-         if (length < maxCharacters) return text;
+    /**
+     * @return an ellipsized String that's at most maxCharacters long. If the
+     *         text passed is longer, it will be abbreviated. If it contains a
+     *         suffix, the ellipses will be inserted in the middle and the
+     *         suffix will be preserved.
+     */
+    public static String ellipsize(String text, int maxCharacters) {
+        int length = text.length();
+        if (length < maxCharacters)
+            return text;
 
-         int realMax = Math.min(maxCharacters, length);
-         // Preserve the suffix if any
-         int index = text.lastIndexOf(".");
-         String extension = "\u2026"; // "...";
-         if (index >= 0) {
-             // Limit the suffix to dot + four characters
-             if (length - index <= FILE_EXTENSION_MAX_CHARS + 1) {
-                 extension = extension + text.substring(index + 1);
-             }
-         }
-         realMax -= extension.length();
-         if (realMax < 0) realMax = 0;
-         return text.substring(0, realMax) + extension;
-     }
+        int realMax = Math.min(maxCharacters, length);
+        // Preserve the suffix if any
+        int index = text.lastIndexOf(".");
+        String extension = "\u2026"; // "...";
+        if (index >= 0) {
+            // Limit the suffix to dot + four characters
+            if (length - index <= FILE_EXTENSION_MAX_CHARS + 1) {
+                extension = extension + text.substring(index + 1);
+            }
+        }
+        realMax -= extension.length();
+        if (realMax < 0)
+            realMax = 0;
+        return text.substring(0, realMax) + extension;
+    }
 
-     /**
+    /**
      * Ensures that the given string starts and ends with the double quote
      * character. The string is not modified in any way except to add the double
      * quote character to start and end if it's not already there. sample ->
@@ -114,61 +119,56 @@ public class Utils {
      * "sample"" -> "sample" sa"mp"le -> "sa"mp"le" "sa"mp"le" -> "sa"mp"le"
      * (empty string) -> "" " -> ""
      */
-     public static String ensureQuotedString(String s) {
-         if (s == null) {
-             return null;
-         }
-         if (!s.matches("^\".*\"$")) {
-             return "\"" + s + "\"";
-         }
-         else {
-             return s;
-         }
-     }
+    public static String ensureQuotedString(String s) {
+        if (s == null) {
+            return null;
+        }
+        if (!s.matches("^\".*\"$")) {
+            return "\"" + s + "\"";
+        } else {
+            return s;
+        }
+    }
 
-     // TODO: Move this to the UI Provider.
-     private static CharacterStyle sUnreadStyleSpan = null;
-     private static CharacterStyle sReadStyleSpan;
-     private static CharacterStyle sDraftsStyleSpan;
-     private static CharSequence sMeString;
-     private static CharSequence sDraftSingularString;
-     private static CharSequence sDraftPluralString;
-     private static CharSequence sSendingString;
-     private static CharSequence sSendFailedString;
+    // TODO: Move this to the UI Provider.
+    private static CharacterStyle sUnreadStyleSpan = null;
+    private static CharacterStyle sReadStyleSpan;
+    private static CharacterStyle sDraftsStyleSpan;
+    private static CharSequence sMeString;
+    private static CharSequence sDraftSingularString;
+    private static CharSequence sDraftPluralString;
+    private static CharSequence sSendingString;
+    private static CharSequence sSendFailedString;
 
-     public static void getStyledSenderSnippet(
-             Context context, String senderInstructions,
-             SpannableStringBuilder senderBuilder,
-             SpannableStringBuilder statusBuilder,
-             int maxChars, boolean forceAllUnread, boolean forceAllRead, boolean allowDraft) {
-         Resources res = context.getResources();
-         if (sUnreadStyleSpan == null) {
-             sUnreadStyleSpan = new StyleSpan(Typeface.BOLD);
-             sReadStyleSpan = new StyleSpan(Typeface.NORMAL);
-             sDraftsStyleSpan = new ForegroundColorSpan(res.getColor(R.color.drafts));
+    private static int sMaxUnreadCount = -1;
+    private static String sUnreadText;
 
-             sMeString = context.getText(R.string.me);
-             sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
-             sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
-             SpannableString sendingString = new SpannableString(context.getText(R.string.sending));
-             sendingString.setSpan(
-                     CharacterStyle.wrap(sDraftsStyleSpan), 0, sendingString.length(), 0);
-             sSendingString = sendingString;
-             sSendFailedString = context.getText(R.string.send_failed);
-         }
+    public static void getStyledSenderSnippet(Context context, String senderInstructions,
+            SpannableStringBuilder senderBuilder, SpannableStringBuilder statusBuilder,
+            int maxChars, boolean forceAllUnread, boolean forceAllRead, boolean allowDraft) {
+        Resources res = context.getResources();
+        if (sUnreadStyleSpan == null) {
+            sUnreadStyleSpan = new StyleSpan(Typeface.BOLD);
+            sReadStyleSpan = new StyleSpan(Typeface.NORMAL);
+            sDraftsStyleSpan = new ForegroundColorSpan(res.getColor(R.color.drafts));
 
-         getSenderSnippet(
-                 senderInstructions, senderBuilder, statusBuilder, maxChars,
-                 sUnreadStyleSpan,
-                 sReadStyleSpan,
-                 sDraftsStyleSpan,
-                 sMeString,
-                 sDraftSingularString, sDraftPluralString,
-                 sSendingString, sSendFailedString,
-                 forceAllUnread, forceAllRead, allowDraft);
-     }
+            sMeString = context.getText(R.string.me);
+            sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
+            sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
+            SpannableString sendingString = new SpannableString(context.getText(R.string.sending));
+            sendingString.setSpan(CharacterStyle.wrap(sDraftsStyleSpan), 0, sendingString.length(),
+                    0);
+            sSendingString = sendingString;
+            sSendFailedString = context.getText(R.string.send_failed);
+        }
 
-     /**
+        getSenderSnippet(senderInstructions, senderBuilder, statusBuilder, maxChars,
+                sUnreadStyleSpan, sReadStyleSpan, sDraftsStyleSpan, sMeString,
+                sDraftSingularString, sDraftPluralString, sSendingString, sSendFailedString,
+                forceAllUnread, forceAllRead, allowDraft);
+    }
+
+    /**
      * Uses sender instructions to build a formatted string.
      * <p>
      * Sender list instructions contain compact information about the sender
@@ -202,7 +202,7 @@ public class Utils {
      * conversation and then describe the most important messages in order,
      * indicating the priority of each message and whether the message is
      * unread.
-     *
+     * 
      * @param instructions instructions as described above
      * @param senderBuilder the SpannableStringBuilder to append to for sender
      *            information
@@ -218,207 +218,210 @@ public class Utils {
      * @param draftString the string to use for "Draft"
      * @param draftPluralString the string to use for "Drafts"
      */
-     public static synchronized void getSenderSnippet(
-             String instructions, SpannableStringBuilder senderBuilder,
-             SpannableStringBuilder statusBuilder, int maxChars,
-             CharacterStyle unreadStyle,
-             CharacterStyle readStyle,
-             CharacterStyle draftsStyle,
-             CharSequence meString, CharSequence draftString, CharSequence draftPluralString,
-             CharSequence sendingString, CharSequence sendFailedString,
-             boolean forceAllUnread, boolean forceAllRead, boolean allowDraft) {
-         assert !(forceAllUnread && forceAllRead);
-         boolean unreadStatusIsForced = forceAllUnread || forceAllRead;
-         boolean forcedUnreadStatus = forceAllUnread;
+    public static synchronized void getSenderSnippet(String instructions,
+            SpannableStringBuilder senderBuilder, SpannableStringBuilder statusBuilder,
+            int maxChars, CharacterStyle unreadStyle, CharacterStyle readStyle,
+            CharacterStyle draftsStyle, CharSequence meString, CharSequence draftString,
+            CharSequence draftPluralString, CharSequence sendingString,
+            CharSequence sendFailedString, boolean forceAllUnread, boolean forceAllRead,
+            boolean allowDraft) {
+        assert !(forceAllUnread && forceAllRead);
+        boolean unreadStatusIsForced = forceAllUnread || forceAllRead;
+        boolean forcedUnreadStatus = forceAllUnread;
 
-         // Measure each fragment. It's ok to iterate over the entire set of fragments because it is
-         // never a long list, even if there are many senders.
-         final Map<Integer, Integer> priorityToLength = sPriorityToLength;
-         priorityToLength.clear();
+        // Measure each fragment. It's ok to iterate over the entire set of
+        // fragments because it is
+        // never a long list, even if there are many senders.
+        final Map<Integer, Integer> priorityToLength = sPriorityToLength;
+        priorityToLength.clear();
 
-         int maxFoundPriority = Integer.MIN_VALUE;
-         int numMessages = 0;
-         int numDrafts = 0;
-         CharSequence draftsFragment = "";
-         CharSequence sendingFragment = "";
-         CharSequence sendFailedFragment = "";
+        int maxFoundPriority = Integer.MIN_VALUE;
+        int numMessages = 0;
+        int numDrafts = 0;
+        CharSequence draftsFragment = "";
+        CharSequence sendingFragment = "";
+        CharSequence sendFailedFragment = "";
 
-         sSenderListSplitter.setString(instructions);
-         int numFragments = 0;
-         String[] fragments = sSenderFragments;
-         int currentSize = fragments.length;
-         while (sSenderListSplitter.hasNext()) {
-             fragments[numFragments++] = sSenderListSplitter.next();
-             if (numFragments == currentSize) {
-                 sSenderFragments = new String[2 * currentSize];
-                 System.arraycopy(fragments, 0, sSenderFragments, 0, currentSize);
-                 currentSize *= 2;
-                 fragments = sSenderFragments;
-             }
-         }
+        sSenderListSplitter.setString(instructions);
+        int numFragments = 0;
+        String[] fragments = sSenderFragments;
+        int currentSize = fragments.length;
+        while (sSenderListSplitter.hasNext()) {
+            fragments[numFragments++] = sSenderListSplitter.next();
+            if (numFragments == currentSize) {
+                sSenderFragments = new String[2 * currentSize];
+                System.arraycopy(fragments, 0, sSenderFragments, 0, currentSize);
+                currentSize *= 2;
+                fragments = sSenderFragments;
+            }
+        }
 
-         for (int i = 0; i < numFragments;) {
-             String fragment0 = fragments[i++];
-             if ("".equals(fragment0)) {
-                 // This should be the final fragment.
-             } else if (SENDER_LIST_TOKEN_ELIDED.equals(fragment0)) {
-                 // ignore
-             } else if (SENDER_LIST_TOKEN_NUM_MESSAGES.equals(fragment0)) {
-                 numMessages = Integer.valueOf(fragments[i++]);
-             } else if (SENDER_LIST_TOKEN_NUM_DRAFTS.equals(fragment0)) {
-                 String numDraftsString = fragments[i++];
-                 numDrafts = Integer.parseInt(numDraftsString);
-                 draftsFragment = numDrafts == 1 ? draftString :
-                         draftPluralString + " (" + numDraftsString + ")";
-             } else if (SENDER_LIST_TOKEN_LITERAL.equals(fragment0)) {
-                 senderBuilder.append(Html.fromHtml(fragments[i++]));
-                 return;
-             } else if (SENDER_LIST_TOKEN_SENDING.equals(fragment0)) {
-                 sendingFragment = sendingString;
-             } else if (SENDER_LIST_TOKEN_SEND_FAILED.equals(fragment0)) {
-                 sendFailedFragment = sendFailedString;
-             } else {
-                 String priorityString = fragments[i++];
-                 CharSequence nameString = fragments[i++];
-                 if (nameString.length() == 0) nameString = meString;
-                 int priority = Integer.parseInt(priorityString);
-                 priorityToLength.put(priority, nameString.length());
-                 maxFoundPriority = Math.max(maxFoundPriority, priority);
-             }
-         }
-         String numMessagesFragment =
-                 (numMessages != 0) ? " \u00A0" + Integer.toString(numMessages + numDrafts) : "";
+        for (int i = 0; i < numFragments;) {
+            String fragment0 = fragments[i++];
+            if ("".equals(fragment0)) {
+                // This should be the final fragment.
+            } else if (SENDER_LIST_TOKEN_ELIDED.equals(fragment0)) {
+                // ignore
+            } else if (SENDER_LIST_TOKEN_NUM_MESSAGES.equals(fragment0)) {
+                numMessages = Integer.valueOf(fragments[i++]);
+            } else if (SENDER_LIST_TOKEN_NUM_DRAFTS.equals(fragment0)) {
+                String numDraftsString = fragments[i++];
+                numDrafts = Integer.parseInt(numDraftsString);
+                draftsFragment = numDrafts == 1 ? draftString : draftPluralString + " ("
+                        + numDraftsString + ")";
+            } else if (SENDER_LIST_TOKEN_LITERAL.equals(fragment0)) {
+                senderBuilder.append(Html.fromHtml(fragments[i++]));
+                return;
+            } else if (SENDER_LIST_TOKEN_SENDING.equals(fragment0)) {
+                sendingFragment = sendingString;
+            } else if (SENDER_LIST_TOKEN_SEND_FAILED.equals(fragment0)) {
+                sendFailedFragment = sendFailedString;
+            } else {
+                String priorityString = fragments[i++];
+                CharSequence nameString = fragments[i++];
+                if (nameString.length() == 0)
+                    nameString = meString;
+                int priority = Integer.parseInt(priorityString);
+                priorityToLength.put(priority, nameString.length());
+                maxFoundPriority = Math.max(maxFoundPriority, priority);
+            }
+        }
+        String numMessagesFragment = (numMessages != 0) ? " \u00A0"
+                + Integer.toString(numMessages + numDrafts) : "";
 
-         // Don't allocate fixedFragment unless we need it
-         SpannableStringBuilder fixedFragment = null;
-         int fixedFragmentLength = 0;
-         if (draftsFragment.length() != 0 && allowDraft) {
-             if (fixedFragment == null) {
-                 fixedFragment = new SpannableStringBuilder();
-             }
-             fixedFragment.append(draftsFragment);
-             if (draftsStyle != null) {
-                 fixedFragment.setSpan(
-                         CharacterStyle.wrap(draftsStyle),
-                         0, fixedFragment.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-             }
-         }
-         if (sendingFragment.length() != 0) {
-             if (fixedFragment == null) {
-                 fixedFragment = new SpannableStringBuilder();
-             }
-             if (fixedFragment.length() != 0) fixedFragment.append(", ");
-             fixedFragment.append(sendingFragment);
-         }
-         if (sendFailedFragment.length() != 0) {
-             if (fixedFragment == null) {
-                 fixedFragment = new SpannableStringBuilder();
-             }
-             if (fixedFragment.length() != 0) fixedFragment.append(", ");
-             fixedFragment.append(sendFailedFragment);
-         }
+        // Don't allocate fixedFragment unless we need it
+        SpannableStringBuilder fixedFragment = null;
+        int fixedFragmentLength = 0;
+        if (draftsFragment.length() != 0 && allowDraft) {
+            if (fixedFragment == null) {
+                fixedFragment = new SpannableStringBuilder();
+            }
+            fixedFragment.append(draftsFragment);
+            if (draftsStyle != null) {
+                fixedFragment.setSpan(CharacterStyle.wrap(draftsStyle), 0, fixedFragment.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        if (sendingFragment.length() != 0) {
+            if (fixedFragment == null) {
+                fixedFragment = new SpannableStringBuilder();
+            }
+            if (fixedFragment.length() != 0)
+                fixedFragment.append(", ");
+            fixedFragment.append(sendingFragment);
+        }
+        if (sendFailedFragment.length() != 0) {
+            if (fixedFragment == null) {
+                fixedFragment = new SpannableStringBuilder();
+            }
+            if (fixedFragment.length() != 0)
+                fixedFragment.append(", ");
+            fixedFragment.append(sendFailedFragment);
+        }
 
-         if (fixedFragment != null) {
-             fixedFragmentLength = fixedFragment.length();
-         }
-         maxChars -= fixedFragmentLength;
+        if (fixedFragment != null) {
+            fixedFragmentLength = fixedFragment.length();
+        }
+        maxChars -= fixedFragmentLength;
 
-         final boolean normalMessagesExist =
-                 numMessagesFragment.length() != 0 || maxFoundPriority != Integer.MIN_VALUE;
-         int maxPriorityToInclude = -1; // inclusive
-         int numCharsUsed = numMessagesFragment.length();
-         int numSendersUsed = 0;
-         while (maxPriorityToInclude < maxFoundPriority) {
-             if (priorityToLength.containsKey(maxPriorityToInclude + 1)) {
-                 int length = numCharsUsed + priorityToLength.get(maxPriorityToInclude + 1);
-                 if (numCharsUsed > 0) length += 2;
-                 // We must show at least two senders if they exist. If we don't have space for both
-                 // then we will truncate names.
-                 if (length > maxChars && numSendersUsed >= 2) {
-                     break;
-                 }
-                 numCharsUsed = length;
-                 numSendersUsed++;
-             }
-             maxPriorityToInclude++;
-         }
+        final boolean normalMessagesExist = numMessagesFragment.length() != 0
+                || maxFoundPriority != Integer.MIN_VALUE;
+        int maxPriorityToInclude = -1; // inclusive
+        int numCharsUsed = numMessagesFragment.length();
+        int numSendersUsed = 0;
+        while (maxPriorityToInclude < maxFoundPriority) {
+            if (priorityToLength.containsKey(maxPriorityToInclude + 1)) {
+                int length = numCharsUsed + priorityToLength.get(maxPriorityToInclude + 1);
+                if (numCharsUsed > 0)
+                    length += 2;
+                // We must show at least two senders if they exist. If we don't
+                // have space for both
+                // then we will truncate names.
+                if (length > maxChars && numSendersUsed >= 2) {
+                    break;
+                }
+                numCharsUsed = length;
+                numSendersUsed++;
+            }
+            maxPriorityToInclude++;
+        }
 
-         int numCharsToRemovePerWord = 0;
-         if (numCharsUsed > maxChars) {
-             numCharsToRemovePerWord = (numCharsUsed - maxChars) / numSendersUsed;
-         }
+        int numCharsToRemovePerWord = 0;
+        if (numCharsUsed > maxChars) {
+            numCharsToRemovePerWord = (numCharsUsed - maxChars) / numSendersUsed;
+        }
 
-         String lastFragment = null;
-         CharacterStyle lastStyle = null;
-         for (int i = 0; i < numFragments;) {
-             String fragment0 = fragments[i++];
-             if ("".equals(fragment0)) {
-                 // This should be the final fragment.
-             } else if (SENDER_LIST_TOKEN_ELIDED.equals(fragment0)) {
-                 if (lastFragment != null) {
-                     addStyledFragment(senderBuilder, lastFragment, lastStyle, false);
-                     senderBuilder.append(" ");
-                     addStyledFragment(senderBuilder, "..", lastStyle, true);
-                     senderBuilder.append(" ");
-                 }
-                 lastFragment = null;
-             } else if (SENDER_LIST_TOKEN_NUM_MESSAGES.equals(fragment0)) {
-                 i++;
-             } else if (SENDER_LIST_TOKEN_NUM_DRAFTS.equals(fragment0)) {
-                 i++;
-             } else if (SENDER_LIST_TOKEN_SENDING.equals(fragment0)) {
-             } else if (SENDER_LIST_TOKEN_SEND_FAILED.equals(fragment0)) {
-             } else {
-                 final String unreadString = fragment0;
-                 final String priorityString = fragments[i++];
-                 String nameString = fragments[i++];
-                 if (nameString.length() == 0) {
-                     nameString = meString.toString();
-                 } else {
-                     nameString = Html.fromHtml(nameString).toString();
-                 }
-                 if (numCharsToRemovePerWord != 0) {
-                     nameString = nameString.substring(
-                             0, Math.max(nameString.length() - numCharsToRemovePerWord, 0));
-                 }
-                 final boolean unread = unreadStatusIsForced
-                         ? forcedUnreadStatus : Integer.parseInt(unreadString) != 0;
-                 final int priority = Integer.parseInt(priorityString);
-                 if (priority <= maxPriorityToInclude) {
-                     if (lastFragment != null && !lastFragment.equals(nameString)) {
-                         addStyledFragment(
-                                 senderBuilder, lastFragment.concat(","), lastStyle, false);
-                         senderBuilder.append(" ");
-                     }
-                     lastFragment = nameString;
-                     lastStyle = unread ? unreadStyle : readStyle;
-                 } else {
-                     if (lastFragment != null) {
-                         addStyledFragment(senderBuilder, lastFragment, lastStyle, false);
-                         // Adjacent spans can cause the TextView in Gmail widget
-                         // confused and leads to weird behavior on scrolling.
-                         // Our workaround here is to separate the spans by
-                         // spaces.
-                         senderBuilder.append(" ");
-                         addStyledFragment(senderBuilder, "..", lastStyle, true);
-                         senderBuilder.append(" ");
-                     }
-                     lastFragment = null;
-                 }
-             }
-         }
-         if (lastFragment != null) {
-             addStyledFragment(senderBuilder, lastFragment, lastStyle, false);
-         }
-         senderBuilder.append(numMessagesFragment);
-         if (fixedFragmentLength != 0) {
-             statusBuilder.append(fixedFragment);
-         }
-     }
+        String lastFragment = null;
+        CharacterStyle lastStyle = null;
+        for (int i = 0; i < numFragments;) {
+            String fragment0 = fragments[i++];
+            if ("".equals(fragment0)) {
+                // This should be the final fragment.
+            } else if (SENDER_LIST_TOKEN_ELIDED.equals(fragment0)) {
+                if (lastFragment != null) {
+                    addStyledFragment(senderBuilder, lastFragment, lastStyle, false);
+                    senderBuilder.append(" ");
+                    addStyledFragment(senderBuilder, "..", lastStyle, true);
+                    senderBuilder.append(" ");
+                }
+                lastFragment = null;
+            } else if (SENDER_LIST_TOKEN_NUM_MESSAGES.equals(fragment0)) {
+                i++;
+            } else if (SENDER_LIST_TOKEN_NUM_DRAFTS.equals(fragment0)) {
+                i++;
+            } else if (SENDER_LIST_TOKEN_SENDING.equals(fragment0)) {
+            } else if (SENDER_LIST_TOKEN_SEND_FAILED.equals(fragment0)) {
+            } else {
+                final String unreadString = fragment0;
+                final String priorityString = fragments[i++];
+                String nameString = fragments[i++];
+                if (nameString.length() == 0) {
+                    nameString = meString.toString();
+                } else {
+                    nameString = Html.fromHtml(nameString).toString();
+                }
+                if (numCharsToRemovePerWord != 0) {
+                    nameString = nameString.substring(0,
+                            Math.max(nameString.length() - numCharsToRemovePerWord, 0));
+                }
+                final boolean unread = unreadStatusIsForced ? forcedUnreadStatus : Integer
+                        .parseInt(unreadString) != 0;
+                final int priority = Integer.parseInt(priorityString);
+                if (priority <= maxPriorityToInclude) {
+                    if (lastFragment != null && !lastFragment.equals(nameString)) {
+                        addStyledFragment(senderBuilder, lastFragment.concat(","), lastStyle,
+                                false);
+                        senderBuilder.append(" ");
+                    }
+                    lastFragment = nameString;
+                    lastStyle = unread ? unreadStyle : readStyle;
+                } else {
+                    if (lastFragment != null) {
+                        addStyledFragment(senderBuilder, lastFragment, lastStyle, false);
+                        // Adjacent spans can cause the TextView in Gmail widget
+                        // confused and leads to weird behavior on scrolling.
+                        // Our workaround here is to separate the spans by
+                        // spaces.
+                        senderBuilder.append(" ");
+                        addStyledFragment(senderBuilder, "..", lastStyle, true);
+                        senderBuilder.append(" ");
+                    }
+                    lastFragment = null;
+                }
+            }
+        }
+        if (lastFragment != null) {
+            addStyledFragment(senderBuilder, lastFragment, lastStyle, false);
+        }
+        senderBuilder.append(numMessagesFragment);
+        if (fixedFragmentLength != 0) {
+            statusBuilder.append(fixedFragment);
+        }
+    }
 
     /**
      * Adds a fragment with given style to a string builder.
-     *
+     * 
      * @param builder the current string builder
      * @param fragment the fragment to be added
      * @param style the style of the fragment
@@ -454,33 +457,33 @@ public class Utils {
         }
     }
 
-     /**
-      * Returns a boolean indicating whether the table UI should be shown.
-      */
-     public static boolean useTabletUI(Context context) {
-         return context.getResources().getInteger(R.integer.use_tablet_ui) != 0;
-     }
+    /**
+     * Returns a boolean indicating whether the table UI should be shown.
+     */
+    public static boolean useTabletUI(Context context) {
+        return context.getResources().getInteger(R.integer.use_tablet_ui) != 0;
+    }
 
-     /**
-      * Perform a simulated measure pass on the given child view, assuming the child has a ViewGroup
-      * parent and that it should be laid out within that parent with a matching width but variable
-      * height.
-      *
-      * Code largely lifted from AnimatedAdapter.measureChildHeight().
-      *
-      * @param child a child view that has already been placed within its parent ViewGroup
-      * @param parent the parent ViewGroup of child
-      * @return measured height of the child in px
-      */
-     public static int measureViewHeight(View child, ViewGroup parent) {
-         int parentWSpec = MeasureSpec.makeMeasureSpec(parent.getWidth(), MeasureSpec.EXACTLY);
-         int wSpec = ViewGroup.getChildMeasureSpec(parentWSpec,
-                 parent.getPaddingLeft() + parent.getPaddingRight(),
-                 ViewGroup.LayoutParams.MATCH_PARENT);
-         int hSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-         child.measure(wSpec, hSpec);
-         return child.getMeasuredHeight();
-     }
+    /**
+     * Perform a simulated measure pass on the given child view, assuming the
+     * child has a ViewGroup parent and that it should be laid out within that
+     * parent with a matching width but variable height. Code largely lifted
+     * from AnimatedAdapter.measureChildHeight().
+     * 
+     * @param child a child view that has already been placed within its parent
+     *            ViewGroup
+     * @param parent the parent ViewGroup of child
+     * @return measured height of the child in px
+     */
+    public static int measureViewHeight(View child, ViewGroup parent) {
+        int parentWSpec = MeasureSpec.makeMeasureSpec(parent.getWidth(), MeasureSpec.EXACTLY);
+        int wSpec = ViewGroup.getChildMeasureSpec(parentWSpec,
+                parent.getPaddingLeft() + parent.getPaddingRight(),
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        int hSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        child.measure(wSpec, hSpec);
+        return child.getMeasuredHeight();
+    }
 
     /**
      * Encode the string in HTML.
@@ -488,18 +491,37 @@ public class Utils {
      * @param removeEmptyDoubleQuotes If true, also remove any occurrence of ""
      *            found in the string
      */
-     public static Object cleanUpString(String string, boolean removeEmptyDoubleQuotes) {
-        return !TextUtils.isEmpty(string) ?
-                TextUtils.htmlEncode(removeEmptyDoubleQuotes ? string.replace("\"\"", "")
-                        : string)
-                : "";
-     }
+    public static Object cleanUpString(String string, boolean removeEmptyDoubleQuotes) {
+        return !TextUtils.isEmpty(string) ? TextUtils.htmlEncode(removeEmptyDoubleQuotes ? string
+                .replace("\"\"", "") : string) : "";
+    }
 
+    /**
+     * Returns comma seperated strings as an array.
+     */
+    public static String[] splitCommaSeparatedString(String str) {
+        return TextUtils.isEmpty(str) ? new String[0] : TextUtils.split(str, ",");
+    }
 
-     /**
-      * Returns comma seperated strings as an array.
-      */
-     public static String[] splitCommaSeparatedString(String str) {
-         return TextUtils.isEmpty(str) ? new String[0] : TextUtils.split(str, ",");
-     }
+    /**
+     * Get the correct display string for the unread count of a folder.
+     */
+    public static String getUnreadCountString(Context context, int unreadCount) {
+        String unreadCountString;
+        Resources resources = context.getResources();
+        if (sMaxUnreadCount == -1) {
+            sMaxUnreadCount = resources.getInteger(R.integer.maxUnreadCount);
+        }
+        if (unreadCount > sMaxUnreadCount) {
+            if (sUnreadText == null) {
+                sUnreadText = resources.getString(R.string.widget_large_unread_count);
+            }
+            unreadCountString = String.format(sUnreadText, sMaxUnreadCount);
+        } else if (unreadCount <= 0) {
+            unreadCountString = "";
+        } else {
+            unreadCountString = String.valueOf(unreadCount);
+        }
+        return unreadCountString;
+    }
 }

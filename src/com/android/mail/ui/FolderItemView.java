@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.Utils;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -47,7 +49,7 @@ public class FolderItemView extends RelativeLayout {
     private static Drawable DRAG_STEADY_STATE_BACKGROUND;
 
     private Drawable mBackground;
-    private ColorStateList mInitialLabelTextColor;
+    private ColorStateList mInitialFolderTextColor;
     private ColorStateList mInitialUnreadCountTextColor;
 
     private Folder mFolder;
@@ -103,7 +105,7 @@ public class FolderItemView extends RelativeLayout {
         mFolderTextView = (TextView)findViewById(R.id.name);
         mUnreadCountTextView = (TextView)findViewById(R.id.unread);
         mBackground = getBackground();
-        mInitialLabelTextColor = mFolderTextView.getTextColors();
+        mInitialFolderTextColor = mFolderTextView.getTextColors();
         mInitialUnreadCountTextColor = mUnreadCountTextView.getTextColors();
         mFolderParentIcon = (ImageView) findViewById(R.id.folder_parent_icon);
     }
@@ -114,6 +116,11 @@ public class FolderItemView extends RelativeLayout {
         mFolderTextView.setText(folder.name);
         if (mFolder.hasChildren) {
             mFolderParentIcon.setVisibility(View.VISIBLE);
+        }
+        if (mFolder.unreadCount > 0) {
+            mUnreadCountTextView.setVisibility(View.VISIBLE);
+            mUnreadCountTextView.setText(Utils.getUnreadCountString(getContext(),
+                    mFolder.unreadCount));
         }
     }
 
@@ -133,7 +140,7 @@ public class FolderItemView extends RelativeLayout {
                 // If this label is not a drop target, dim the text.
                 if (!isDroppableTarget(event)) {
                     // Make sure we update this at the time we drop on the target.
-                    mInitialLabelTextColor = mFolderTextView.getTextColors();
+                    mInitialFolderTextColor = mFolderTextView.getTextColors();
                     mInitialUnreadCountTextColor = mUnreadCountTextView.getTextColors();
                     mFolderTextView.setTextColor(NON_DROPPABLE_TARGET_TEXT_COLOR);
                     mUnreadCountTextView.setTextColor(NON_DROPPABLE_TARGET_TEXT_COLOR);
@@ -162,7 +169,7 @@ public class FolderItemView extends RelativeLayout {
             case DragEvent.ACTION_DRAG_ENDED:
                 // Reset the text of the non draggable views back to the color it had been..
                 if (!isDroppableTarget(event)) {
-                    mFolderTextView.setTextColor(mInitialLabelTextColor);
+                    mFolderTextView.setTextColor(mInitialFolderTextColor);
                     mUnreadCountTextView.setTextColor(mInitialUnreadCountTextColor);
                 }
                 // Restore the background of the view.

@@ -471,4 +471,6 @@
     <!-- Folders -->
     <!-- Displayed in the middle of the Folders screen when no folders have been defined -->
     <string name="folders_activity_instructions">No folders have been set for this account.</string>
+    <!-- Displayed in widget when unread count > 100. [CHAR LIMIT=4] -->
+    <string name="widget_large_unread_count">%d+</string>
 </resources>
