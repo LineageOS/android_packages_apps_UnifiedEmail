@@ -227,6 +227,7 @@ public class UIProvider {
         FolderColumns.CHILD_FOLDERS_LIST_URI,
         FolderColumns.UNREAD_COUNT,
         FolderColumns.TOTAL_COUNT,
+        FolderColumns.REFRESH_URI
     };
 
     public static final int FOLDER_ID_COLUMN = 0;
@@ -240,6 +241,7 @@ public class UIProvider {
     public static final int FOLDER_CHILD_FOLDERS_LIST_COLUMN = 8;
     public static final int FOLDER_UNREAD_COUNT_COLUMN = 9;
     public static final int FOLDER_TOTAL_COUNT_COLUMN = 10;
+    public static final int FOLDER_REFRESH_URI_COLUMN = 11;
 
     public static final class FolderCapabilities {
         public static final int SYNCABLE = 0x0001;
@@ -286,6 +288,11 @@ public class UIProvider {
         public static String UNREAD_COUNT = "unreadCount";
 
         public static String TOTAL_COUNT = "totalCount";
+        /**
+         * This string column contains the content provider uri to force a
+         * refresh of this folder.
+         */
+        public static String REFRESH_URI = "refreshUri";
 
         public FolderColumns() {}
     }
