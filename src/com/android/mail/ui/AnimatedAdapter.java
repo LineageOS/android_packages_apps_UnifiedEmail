@@ -32,13 +32,14 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
-        android.animation.Animator.AnimatorListener {
+        android.animation.Animator.AnimatorListener, OnUndoCancelListener {
     private HashSet<Integer> mDeletingItems = new HashSet<Integer>();
     private Account mSelectedAccount;
     private Context mContext;
@@ -192,5 +193,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public void onAnimationRepeat(Animator animation) {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void onUndoCancel() {
+        mLastDeletingItems.clear();
     }
 }

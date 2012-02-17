@@ -27,6 +27,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -175,5 +176,10 @@ public final class ConversationViewFragment extends Fragment implements
             webView.loadData(cursor.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN), "text/html",
                     null);
         }
+    }
+
+    public void onTouchEvent(MotionEvent event) {
+        // TODO: (mindyp) when there is an undo bar, check for event !in undo bar
+        // if its not in undo bar, dismiss the undo bar.
     }
 }

@@ -221,7 +221,6 @@ public final class ConversationListFragment extends ListFragment implements
                 R.id.search_result_count_view);
         mUndoView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
         mUndoView.setOnCancelListener(this);
-        mUndoView.setUndoHideListener(UNDO_HIDE_ANIMATOR_LISTENER);
     }
 
     private boolean isSearchResult() {
@@ -408,6 +407,9 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     public void onTouchEvent(MotionEvent event) {
+        if (!mUndoView.isEventInUndo(event)) {
+            mUndoView.doHide();
+        }
     }
 
     @Override
@@ -480,6 +482,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (mUndoView == null) {
             mUndoView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
         }
+        mUndoView.setOnCancelListener(mListAdapter);
         mUndoView.show(true, mActivity.getActivityContext(), "undo", mAccount, mListAdapter);
     }
 

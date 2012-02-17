@@ -245,4 +245,9 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * Show the folder list associated with the currently selected account.
      */
     void showFolderList();
+
+    /**
+     * Handle a touch event.
+     */
+    void onTouchEvent(MotionEvent event);
 }
