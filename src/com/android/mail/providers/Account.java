@@ -83,6 +83,12 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public String undoUri;
 
+    /**
+     * The content provider uri that can be used to get a status cursor for this
+     * account.
+     */
+    public String statusUri;
+
     public Account(Parcel in) {
         super(in);
         providerVersion = in.readInt();
@@ -95,6 +101,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         sendMessageUri = in.readString();
         expungeMessageUri = in.readString();
         undoUri = in.readString();
+        statusUri = in.readString();
     }
 
     public Account(String address, String type) {
@@ -113,6 +120,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         sendMessageUri = cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN);
         expungeMessageUri = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
         undoUri = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
+        statusUri = cursor.getString(UIProvider.ACCOUNT_STATUS_URI_COLUMN);
     }
 
     public boolean supportsCapability(int capability) {
@@ -132,6 +140,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeString(sendMessageUri);
         dest.writeString(expungeMessageUri);
         dest.writeString(undoUri);
+        dest.writeString(statusUri);
     }
 
     @SuppressWarnings("hiding")
