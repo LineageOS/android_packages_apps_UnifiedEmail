@@ -18,7 +18,9 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -38,7 +40,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
         ModeChangeListener, MailActionBar.Callback, StarHandler, ConversationListCallbacks,
-        FolderListCallback {
+        FolderListCallback, LoaderManager.LoaderCallbacks<Cursor> {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
