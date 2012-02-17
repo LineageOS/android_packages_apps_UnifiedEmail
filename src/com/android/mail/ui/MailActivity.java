@@ -71,11 +71,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        // TODO(viki): Why is there a check for null only in in this method?
-        // onTouchEvent should only be sent when the activity is in focus...
-        if (mController != null) {
-            mController.dispatchTouchEvent(ev);
-        }
+        mController.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
 

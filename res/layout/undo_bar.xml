@@ -34,8 +34,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:paddingLeft="16dip"
-            android:layout_weight="1"
-            android:clickable="true"/>
+            android:layout_weight="1"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"

@@ -566,4 +566,17 @@ public abstract class AbstractActivityController implements ActivityController {
         // Do nothing for now, since we don't have any state. When a load is finished, the
         // onLoadFinished will be called and we will be fine.
     }
+
+
+    @Override
+    public void onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            int mode = mViewMode.getMode();
+            if (mode == ViewMode.CONVERSATION_LIST) {
+                mConversationListFragment.onTouchEvent(event);
+            } else if (mode == ViewMode.CONVERSATION) {
+                mConversationViewFragment.onTouchEvent(event);
+            }
+        }
+    }
 }
