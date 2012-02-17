@@ -104,10 +104,15 @@ public class Folder implements Parcelable {
     public String refreshUri;
 
     /**
+     * The content provider URI to get a status cursor for this folder.
+     */
+    public String statusUri;
+
+    /**
      * Total number of members that comprise an instance of a folder. Count up the members above.
      * This is the number of members that need to be serialized or parceled.
      */
-    private static final int NUMBER_MEMBERS = 11;
+    private static final int NUMBER_MEMBERS = 12;
 
     /**
      * Used only for debugging.
@@ -146,6 +151,7 @@ public class Folder implements Parcelable {
         unreadCount = in.readInt();
         totalCount = in.readInt();
         refreshUri = in.readString();
+        statusUri = in.readString();
     }
 
     public Folder(Cursor cursor) {
@@ -162,6 +168,7 @@ public class Folder implements Parcelable {
         unreadCount = cursor.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
         totalCount = cursor.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
         refreshUri = cursor.getString(UIProvider.FOLDER_REFRESH_URI_COLUMN);
+        statusUri = cursor.getString(UIProvider.FOLDER_STATUS_URI_COLUMN);
     }
 
     @Override
@@ -179,6 +186,7 @@ public class Folder implements Parcelable {
         dest.writeInt(unreadCount);
         dest.writeInt(totalCount);
         dest.writeString(refreshUri);
+        dest.writeString(statusUri);
     }
 
     /**
@@ -198,6 +206,7 @@ public class Folder implements Parcelable {
         out.append(unreadCount).append(LABEL_COMPONENT_SEPARATOR);
         out.append(totalCount).append(LABEL_COMPONENT_SEPARATOR);
         out.append(refreshUri).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(statusUri).append(LABEL_COMPONENT_SEPARATOR);
         return out.toString();
     }
 
@@ -224,6 +233,7 @@ public class Folder implements Parcelable {
         unreadCount = Integer.valueOf(folderMembers[8]);
         totalCount = Integer.valueOf(folderMembers[9]);
         refreshUri = folderMembers[10];
+        refreshUri = folderMembers[11];
     }
 
     /**

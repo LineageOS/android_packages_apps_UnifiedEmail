@@ -227,7 +227,8 @@ public class UIProvider {
         FolderColumns.CHILD_FOLDERS_LIST_URI,
         FolderColumns.UNREAD_COUNT,
         FolderColumns.TOTAL_COUNT,
-        FolderColumns.REFRESH_URI
+        FolderColumns.REFRESH_URI,
+        FolderColumns.STATUS_URI
     };
 
     public static final int FOLDER_ID_COLUMN = 0;
@@ -242,6 +243,7 @@ public class UIProvider {
     public static final int FOLDER_UNREAD_COUNT_COLUMN = 9;
     public static final int FOLDER_TOTAL_COUNT_COLUMN = 10;
     public static final int FOLDER_REFRESH_URI_COLUMN = 11;
+    public static final int FOLDER_STATUS_URI_COLUMN = 12;
 
     public static final class FolderCapabilities {
         public static final int SYNCABLE = 0x0001;
@@ -251,7 +253,7 @@ public class UIProvider {
     }
 
     public static final class FolderColumns {
-        public static String URI = "folderUri";
+        public static final String URI = "folderUri";
         /**
          * This string column contains the human visible name for the folder.
          */
@@ -283,16 +285,21 @@ public class UIProvider {
          * This string column contains the content provider uri to return the
          * list of child folders of this folder.
          */
-        public static String CHILD_FOLDERS_LIST_URI = "childFoldersListUri";
+        public static final String CHILD_FOLDERS_LIST_URI = "childFoldersListUri";
 
-        public static String UNREAD_COUNT = "unreadCount";
+        public static final String UNREAD_COUNT = "unreadCount";
 
-        public static String TOTAL_COUNT = "totalCount";
+        public static final String TOTAL_COUNT = "totalCount";
         /**
          * This string column contains the content provider uri to force a
          * refresh of this folder.
          */
-        public static String REFRESH_URI = "refreshUri";
+        public static final  String REFRESH_URI = "refreshUri";
+        /**
+         * This string column contains the content provider uri for getting a
+         * cursor that reflects the sync status of this folder.
+         */
+        public static final String STATUS_URI  = "statusUri";
 
         public FolderColumns() {}
     }
