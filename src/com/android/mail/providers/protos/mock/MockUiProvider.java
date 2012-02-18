@@ -271,6 +271,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.SEND_MAIL_URI, accountUri + "/sendMail");
         accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI, accountUri + "/expungeMessage");
         accountMap.put(AccountColumns.UNDO_URI, accountUri + "/undo");
+        accountMap.put(AccountColumns.STATUS_URI, accountUri + "/status");
 
         if (cacheMap) {
             addAccountInfoToAccountCache(accountMap);
@@ -358,7 +359,8 @@ public final class MockUiProvider extends ContentProvider {
                         (String)accountInfo.get(AccountColumns.SAVE_DRAFT_URI),
                         (String)accountInfo.get(AccountColumns.SEND_MAIL_URI),
                         (String)accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI),
-                        (String)accountInfo.get(AccountColumns.UNDO_URI));
+                        (String)accountInfo.get(AccountColumns.UNDO_URI),
+                        (String)accountInfo.get(AccountColumns.STATUS_URI));
 
 
         AccountCacheProvider.addAccount(account);
