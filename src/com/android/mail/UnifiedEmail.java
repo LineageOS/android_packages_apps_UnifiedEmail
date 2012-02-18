@@ -17,8 +17,6 @@
 
 package com.android.mail;
 
-import com.android.mail.compose.ComposeActivity;
-import com.android.mail.ui.ActionbarActivity;
 import com.android.mail.ui.MailActivity;
 
 import android.app.Activity;
@@ -38,10 +36,6 @@ public class UnifiedEmail extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_tests);
-    }
-
-    public void actionbarTest(View v){
-        startActivityWithClass(ActionbarActivity.class);
     }
 
     /**
