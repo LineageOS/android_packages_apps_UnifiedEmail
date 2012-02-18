@@ -52,7 +52,8 @@ public class UIProvider {
             AccountColumns.SAVE_DRAFT_URI,
             AccountColumns.SEND_MAIL_URI,
             AccountColumns.EXPUNGE_MESSAGE_URI,
-            AccountColumns.UNDO_URI
+            AccountColumns.UNDO_URI,
+            AccountColumns.STATUS_URI
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -67,6 +68,7 @@ public class UIProvider {
     public static final int ACCOUNT_SEND_MESSAGE_URI_COLUMN = 9;
     public static final int ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN = 10;
     public static final int ACCOUNT_UNDO_URI_COLUMN = 11;
+    public static final int ACCOUNT_STATUS_URI_COLUMN = 12;
 
     public static final class AccountCapabilities {
         /**
@@ -206,7 +208,12 @@ public class UIProvider {
          * This string column contains the content provider uri that can be used
          * to undo the last committed action.
          */
-        public static String UNDO_URI = "undoUri";
+        public static final String UNDO_URI = "undoUri";
+        /**
+         * This string column contains the content provider uri for getting a
+         * cursor that reflects the sync status of this account.
+         */
+        public static final String STATUS_URI = "statusUri";
     }
 
     // We define a "folder" as anything that contains a list of conversations.
