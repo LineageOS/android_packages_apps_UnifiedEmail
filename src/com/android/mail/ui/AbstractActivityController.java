@@ -30,7 +30,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -101,13 +100,28 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void attachConversationList(ConversationListFragment conversationList) {
-        mConversationListFragment = conversationList;
+    public synchronized void attachConversationList(ConversationListFragment fragment) {
+        // If there is an existing fragment, unregister it
+        if (mConversationListFragment != null) {
+            mViewMode.removeListener(mConversationListFragment);
+        }
+        mConversationListFragment = fragment;
+        // If the current fragment is non-null, add it as a listener.
+        if (fragment != null) {
+            mViewMode.addListener(mConversationListFragment);
+        }
     }
 
     @Override
-    public void attachFolderList(FolderListFragment folderList) {
-        mFolderListFragment = folderList;
+    public synchronized void attachFolderList(FolderListFragment fragment) {
+        // If there is an existing fragment, unregister it
+        if (mFolderListFragment != null) {
+            mViewMode.removeListener(mFolderListFragment);
+        }
+        mFolderListFragment = fragment;
+        if (fragment != null) {
+            mViewMode.addListener(mFolderListFragment);
+        }
     }
 
     @Override
@@ -278,7 +292,14 @@ public abstract class AbstractActivityController implements ActivityController {
         // Allow shortcut keys to function for the ActionBar and menus.
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
         mResolver = mActivity.getContentResolver();
+
+        // All the individual UI components listen for ViewMode changes. This simplifies the
+        // amount of logic in the AbstractActivityController, but increases the possibility of
+        // timing-related bugs.
         mViewMode.addListener(this);
+        assert (mActionBarView != null);
+        mViewMode.addListener(mActionBarView);
+
         restoreState(savedState);
         return true;
     }
@@ -407,8 +428,6 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void onViewModeChanged(int newMode) {
-        // Update action bar mode.
-        mActionBarView.setMode(newMode);
         // Perform any mode specific work here.
         // reset the action bar icon based on the mode. Why don't the individual controllers do
         // this themselves?

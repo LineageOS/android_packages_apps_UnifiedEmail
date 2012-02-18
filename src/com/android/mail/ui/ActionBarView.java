@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.os.Bundle;
 import android.view.Menu;
 
@@ -26,7 +27,7 @@ import android.view.Menu;
  * pre-v14 devices).
  */
 
-public interface ActionBarView {
+public interface ActionBarView extends OnNavigationListener, ViewMode.ModeChangeListener {
     /**
      * Initialize the ActionBarView
      * @param activity
@@ -38,23 +39,10 @@ public interface ActionBarView {
             ViewMode viewMode, ActionBar actionBar);
 
     /**
-     * Return the mode that the action bar is in.
-     * @return The mode the action bar is in.
-     */
-    int getMode();
-
-    /**
      * Handle handleRestore from the Android framework.
      * @param savedInstanceState
      */
     void handleRestore(Bundle savedInstanceState);
-
-    /**
-     * Change the mode of the actionbar.
-     * @param mode
-     * @return true if the change in mode was successful.
-     */
-    boolean setMode(int mode);
 
     /**
      * Handle onResume from the Android framework.
@@ -113,7 +101,7 @@ public interface ActionBarView {
     boolean createOptionsMenu(Menu menu);
 
     /**
-     * Update sthe action bar based on a new status received from the server.
+     * Updates the action bar based on a new status received from the server.
      * @param account
      * @param status
      */

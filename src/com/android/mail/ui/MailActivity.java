@@ -54,6 +54,10 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     private ViewMode mViewMode;
 
+    public MailActivity() {
+        super();
+    }
+
     @Override
     public void attachConversationList(ConversationListFragment fragment) {
         mController.attachConversationList(fragment);

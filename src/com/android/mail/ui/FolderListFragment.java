@@ -43,7 +43,7 @@ import com.android.mail.utils.LogUtils;
  * The folder list UI component.
  */
 public final class FolderListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, ViewMode.ModeChangeListener {
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     private ControllableActivity mActivity;
@@ -208,5 +208,10 @@ public final class FolderListFragment extends ListFragment implements
             folderItemView.bind(new Folder(getCursor()), null);
             return folderItemView;
         }
+    }
+
+    @Override
+    public void onViewModeChanged(int newMode) {
+        // Listen on mode changes, when we move to Label list mode, change accordingly.
     }
 }

@@ -21,7 +21,6 @@ import com.google.common.collect.Lists;
 
 import android.content.Context;
 import android.os.Bundle;
-
 import java.util.ArrayList;
 
 /**
@@ -92,6 +91,7 @@ public class ViewMode {
         mMode = newMode;
         ArrayList<ModeChangeListener> list = new ArrayList<ModeChangeListener>(mListeners);
         for (ModeChangeListener listener : list) {
+            assert (listener != null);
             listener.onViewModeChanged(newMode);
         }
     }

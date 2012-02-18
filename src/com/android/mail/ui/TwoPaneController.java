@@ -26,7 +26,6 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Window;
 
-
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
  * limited.

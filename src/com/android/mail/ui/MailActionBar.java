@@ -22,6 +22,7 @@ import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,19 +36,24 @@ import com.android.mail.AccountRecentLabelSpinner;
 import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 
 /**
- * View to manage the various states of the Gmail Action Bar
+ * View to manage the various states of the Mail Action Bar
  *
- * TODO(viki): Include ConversatinSubjectDisplayer here as well.
+ * TODO(viki): Include ConversationSubjectDisplayer here as well.
  */
-public class MailActionBar extends LinearLayout implements ActionBarView, OnNavigationListener {
+public final class MailActionBar extends LinearLayout implements ActionBarView {
     /**
      * This interface is used to send notifications back to the calling
      * activity. MenuHandler takes care of updating the provider, so this
      * interface should be used for notification purposes only (such as updating
      * the UI).
      */
+    // TODO(viki): This callback is currently unused and may be entirely unnecessary in the new
+    // code, where the Actionbar is switched into navigation mode, relying on the framework for most
+    // heavy lifting. Also, we can switch ViewMode to the appropriate mode and rely on all UI
+    // components updating through ViewMode change listeners.
     public interface Callback {
         /**
          * Enter search mode
@@ -94,16 +100,23 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
 
     private String[] mAccountNames;
     private ActionBar mActionBar;
-    protected RestrictedActivity mActivity;
+    private RestrictedActivity mActivity;
     private Callback mCallback;
-    protected View mFolderView;
-    private int mMode;
+    private View mFolderView;
+    /**
+     * The current mode of the ActionBar. This references constants in {@link ViewMode}
+     */
+    private int mMode = ViewMode.UNKNOWN;
 
     private MenuItem mRefreshItem;
 
     private MenuItem mSearch;
     SpinnerAdapter mSpinner;
-    protected AccountRecentLabelSpinner mSpinnerView;
+    private AccountRecentLabelSpinner mSpinnerView;
+    /**
+     * We need to know what each account is capable of, so we can tailor the menu accordingly.
+     */
+    private int mAccountCapabilities;
 
     // TODO(viki): This is a SnippetTextView in the Gmail source code. Resolve.
     private TextView mSubjectView;
@@ -116,10 +129,8 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
         this(context, attrs, 0);
     }
 
-
     public MailActionBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mMode = ViewMode.UNKNOWN;
     }
 
     @Override
@@ -135,25 +146,21 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
     }
 
     @Override
-    public int getMode() {
-        return mMode;
-    }
-
-    @Override
     public int getOptionsMenuId() {
-        switch (mMode){
-            case ViewMode.UNKNOWN:
-                // Fallthrough
-            case ViewMode.SEARCH_RESULTS:
-                return R.menu.conversation_list_menu;
-            case ViewMode.FOLDER_LIST:
-                return R.menu.folder_list_menu;
-            case ViewMode.CONVERSATION_LIST:
-                return R.menu.conversation_list_menu;
-            case ViewMode.CONVERSATION:
-                return R.menu.conversation_actions;
-        }
-        return 0;
+        // Relies on the ordering of the view modes, since they are integer constants.
+        final int[] modeMenu = {
+                // 0: UNKNOWN
+                R.menu.conversation_list_menu,
+                // 1: CONVERSATION
+                R.menu.conversation_actions,
+                // 2: CONVERSATION_LIST
+                R.menu.conversation_list_menu,
+                // 3: FOLDER_LIST
+                R.menu.folder_list_menu,
+                // 4: SEARCH_RESULTS
+                R.menu.conversation_list_menu
+        };
+        return modeMenu[mMode];
     }
 
     @Override
@@ -184,12 +191,16 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
     }
 
     @Override
-    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-        // Don't do anything. Toast on the action.
-        int type = mSpinner.getItemViewType(itemPosition);
+    public boolean onNavigationItemSelected(int position, long id) {
+        final int type = mSpinner.getItemViewType(position);
         switch (type) {
             case AccountSpinnerAdapter.TYPE_ACCOUNT:
-                mCallback.navigateToAccount((Account) mSpinner.getItem(itemPosition));
+                mCallback.navigateToAccount((Account) mSpinner.getItem(position));
+                // Get the capabilities associated with this account.
+                final Object item = mSpinner.getItem(position);
+                assert (item instanceof Account);
+                mAccountCapabilities = ((Account) item).capabilities;
+                Log.d("viki", "Account capabilities are " + mAccountCapabilities);
                 break;
         }
         return false;
@@ -214,7 +225,30 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
     }
 
     @Override
+    public void onViewModeChanged(int newMode) {
+        mMode = newMode;
+
+        // Always update the options menu and redraw. This will read the new mode and redraw
+        // the options menu.
+        mActivity.invalidateOptionsMenu();
+    }
+
+    /**
+     * If shouldSetView is true, then the view is made visible, otherwise its visiblity is View.GONE
+     * @param view the view whose visibility is modified
+     * @param shouldSetView if true, the view is made visible, GONE otherwise
+     */
+    private void setVisibility(int resourceId, boolean shouldSetView) {
+        final View view = findViewById(resourceId);
+        assert (view != null);
+        final int visibility = shouldSetView ? View.VISIBLE : View.GONE;
+        view.setVisibility(visibility);
+    }
+
+    @Override
     public boolean prepareOptionsMenu(Menu menu) {
+        // We start out with every option enabled. Based on the current view, we disable actions
+        // that are possible.
         if (mSubjectView != null){
             mSubjectView.setVisibility(GONE);
         }
@@ -230,7 +264,10 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
                 }
                 break;
             case ViewMode.CONVERSATION_LIST:
-                // Do nothing?
+                // Show compose, search, labels, and sync based on the account
+                // The only option that needs to be disabled is search
+                setVisibility (R.id.search,
+                        (mAccountCapabilities & AccountCapabilities.FOLDER_SERVER_SEARCH) != 0);
                 break;
             case ViewMode.CONVERSATION:
                 // Do nothing?
@@ -272,12 +309,6 @@ public class MailActionBar extends LinearLayout implements ActionBarView, OnNavi
     @Override
     public void setFolder(String folder) {
         // TODO(viki): Add this functionality to change the label.
-    }
-
-    @Override
-    public boolean setMode(int mode) {
-        mMode = mode;
-        return true;
     }
 
     @Override

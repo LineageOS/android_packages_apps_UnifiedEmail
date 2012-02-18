@@ -17,45 +17,52 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <!-- Always available -->
     <item android:id="@+id/compose"
         android:title="@string/menu_compose"
         android:showAsAction="always"
         android:icon="@drawable/ic_menu_compose_normal_holo_light"
         android:alphabeticShortcut="@string/trigger_compose_char" />
 
-    <item android:id="@+id/search"
-        android:title="@string/menu_search"
-        android:showAsAction="always|collapseActionView"
-        android:icon="@drawable/ic_menu_search_holo_light"
-        android:actionLayout="@layout/mail_actionbar_searchview" />
+    <!-- Available only for accounts with SERVER_SEARCH and in a folder
+      that suppors FOLDER_SERVER_SEARCH -->
+    <item android:id="@+id/search" android:title="@string/menu_search"
+    android:showAsAction="always|collapseActionView"
+    android:icon="@drawable/ic_menu_search_holo_light"
+    android:actionLayout="@layout/mail_actionbar_searchview" />
 
+    <!-- Always available -->
     <item android:id="@+id/show_all_folders"
         android:title="@string/show_all_folders"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_labels_holo_light" />
 
+    <!-- Always available -->
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
 
+    <!-- Always available -->
     <item android:id="@+id/label_options"
         android:title="@string/menu_label_options"
         android:showAsAction="never" />
 
+    <!-- Always available -->
     <item android:id="@+id/preferences"
         android:title="@string/menu_preferences"
         android:showAsAction="never"
         android:icon="@android:drawable/ic_menu_preferences" />
 
+    <!-- Always available -->
     <item
         android:id="@+id/help_info_menu_item"
         android:icon="@android:drawable/ic_menu_help"
         android:showAsAction="never"
         android:title="@string/help_and_info" />
 
+    <!-- Always available -->
     <item
         android:id="@+id/feedback_menu_item"
         android:icon="@android:drawable/ic_menu_send"

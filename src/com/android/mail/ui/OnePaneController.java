@@ -32,14 +32,13 @@ import com.android.mail.providers.Conversation;
 
 // Called OnePaneActivityController in Gmail.
 public final class OnePaneController extends AbstractActivityController {
-
+    private boolean mConversationListVisible = false;
     /**
      * @param activity
      * @param viewMode
      */
     public OnePaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
-        // TODO(viki): Auto-generated constructor stub
     }
 
     @Override
@@ -63,65 +62,54 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     protected boolean isConversationListVisible() {
-        // TODO(viki): Auto-generated method stub
-        return false;
+        return mConversationListVisible;
     }
 
     @Override
     public void onViewModeChanged(int newMode) {
         super.onViewModeChanged(newMode);
-
-        // We don't want to invalidate the options menu when switching to conversation
-        // mode, as it will happen when the conversation finishes loading.
-        if (newMode != ViewMode.CONVERSATION) {
-            mActivity.invalidateOptionsMenu();
-        }
     }
 
     @Override
     public void showConversationList(ConversationListContext listContext) {
         mViewMode.enterConversationListMode();
 
-        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
-        fragmentTransaction.addToBackStack(null);
+        // TODO(viki): Check if the account has been changed since the previous time.
         final boolean accountChanged = false;
         // TODO(viki): This account transition looks strange in two pane mode.
-        // Revisit as the app
-        // is coming together and improve the look and feel.
+        // Revisit as the app is coming together and improve the look and feel.
         final int transition = accountChanged ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
                 : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
         if (listContext == null) {
             listContext = getCurrentListContext();
         }
-        fragmentTransaction.setTransition(transition);
 
         Fragment conversationListFragment = ConversationListFragment.newInstance(listContext);
-        fragmentTransaction.replace(R.id.content_pane, conversationListFragment);
-
-        fragmentTransaction.commitAllowingStateLoss();
-        resetActionBarIcon();
+        replaceFragment(conversationListFragment, transition);
+        mConversationListVisible = true;
     }
 
     @Override
     public void showConversation(Conversation conversation) {
         mViewMode.enterConversationMode();
-        replaceFragment(ConversationViewFragment.newInstance(mAccount, conversation));
+        replaceFragment(ConversationViewFragment.newInstance(mAccount, conversation),
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        mConversationListVisible = false;
     }
 
     @Override
     public void showFolderList() {
         mViewMode.enterFolderListMode();
-        replaceFragment(FolderListFragment.newInstance(this, mAccount.folderListUri));
+        replaceFragment(FolderListFragment.newInstance(this, mAccount.folderListUri),
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        mConversationListVisible = false;
     }
 
-    private void replaceFragment(Fragment fragment) {
+    private void replaceFragment(Fragment fragment, int transition) {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack(null);
-        final int transition = FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
         fragmentTransaction.setTransition(transition);
-
         fragmentTransaction.replace(R.id.content_pane, fragment);
-
         fragmentTransaction.commitAllowingStateLoss();
         resetActionBarIcon();
     }
@@ -153,7 +141,6 @@ public final class OnePaneController extends AbstractActivityController {
 
     private void transitionBackToConversationListMode() {
         mViewMode.enterConversationListMode();
-        mActivity.invalidateOptionsMenu();
         resetActionBarIcon();
     }
 }
