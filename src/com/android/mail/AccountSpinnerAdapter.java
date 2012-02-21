@@ -182,6 +182,7 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
                 break;
             case TYPE_HEADER:
                 // We can never select the header, and we want the default view to be the Inbox.
+                // TODO: This should handle an empty account cursor
                 accountName = getAccountLabel(0);
                 folderName = "Inbox";
                 break;
@@ -317,9 +318,13 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
      * @return
      */
     private String getAccountLabel(int position) {
-        mAccountCursor.moveToPosition(position);
-        final int accountNameCol = mAccountCursor.getColumnIndex(UIProvider.AccountColumns.NAME);
-        return mAccountCursor.getString(accountNameCol);
+        if (mAccountCursor.moveToPosition(position)) {
+            final int accountNameCol =
+                    mAccountCursor.getColumnIndex(UIProvider.AccountColumns.NAME);
+            return mAccountCursor.getString(accountNameCol);
+        } else {
+            return "";
+        }
     }
 
     /**
