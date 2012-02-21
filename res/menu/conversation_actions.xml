@@ -18,60 +18,69 @@
 <!-- Action bar items for the tablet when viewing a conversation -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Depends on AccountCapabilities.ARCHIVE -->
     <item
         android:id="@+id/y_button"
         android:title="@string/archive"
         android:showAsAction="ifRoom"
         android:icon="@drawable/archive"
         android:alphabeticShortcut="@string/trigger_y_char" />
-
+    <!-- Always available -->
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
         android:showAsAction="ifRoom"
         android:icon="@drawable/trash" />
 
+    <!-- Always available -->
     <item
         android:id="@+id/change_labels"
         android:title="@string/menu_change_labels"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_labels_holo_light" />
 
+    <!-- Always available -->
     <item
         android:id="@+id/inside_conversation_unread"
         android:title="@string/mark_unread"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_mark_unread_holo_light" />
 
+    <!-- Always available -->
     <item
         android:id="@+id/mark_important"
         android:title="@string/mark_important"
         android:icon="@drawable/ic_email_caret_double" />
 
+    <!-- Always available -->
     <item
         android:id="@+id/mark_not_important"
         android:title="@string/mark_not_important"
         android:icon="@drawable/ic_email_caret_single"
         android:visible="false" />
 
+    <!-- Depends on AccountCapabilities.MUTE -->
     <item
         android:id="@+id/mute"
         android:title="@string/mute" />
-
+    <!-- Depends on AccountCapabilities.REPORT_SPAM -->
     <item
         android:id="@+id/report_spam"
         android:title="@string/report_spam"
         android:icon="@drawable/ic_spam_normal_holo_light" />
 
+    <!-- Always available -->
     <item android:id="@+id/preferences"
         android:title="@string/menu_preferences"
         android:icon="@android:drawable/ic_menu_preferences" />
 
+    <!-- Always available -->
     <item
         android:id="@+id/help_info_menu_item"
         android:icon="@android:drawable/ic_menu_help"
         android:title="@string/help_and_info" />
 
+    <!-- Always available -->
     <item
         android:id="@+id/feedback_menu_item"
         android:icon="@android:drawable/ic_menu_send"

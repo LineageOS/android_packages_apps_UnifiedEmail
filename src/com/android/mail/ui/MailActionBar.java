@@ -114,9 +114,9 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
     SpinnerAdapter mSpinner;
     private AccountRecentLabelSpinner mSpinnerView;
     /**
-     * We need to know what each account is capable of, so we can tailor the menu accordingly.
+     * The account currently being shown
      */
-    private int mAccountCapabilities;
+    private Account mAccount;
 
     // TODO(viki): This is a SnippetTextView in the Gmail source code. Resolve.
     private TextView mSubjectView;
@@ -199,8 +199,7 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
                 // Get the capabilities associated with this account.
                 final Object item = mSpinner.getItem(position);
                 assert (item instanceof Account);
-                mAccountCapabilities = ((Account) item).capabilities;
-                Log.d("viki", "Account capabilities are " + mAccountCapabilities);
+                mAccount = (Account) item;
                 break;
         }
         return false;
@@ -266,11 +265,15 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
             case ViewMode.CONVERSATION_LIST:
                 // Show compose, search, labels, and sync based on the account
                 // The only option that needs to be disabled is search
-                setVisibility (R.id.search,
-                        (mAccountCapabilities & AccountCapabilities.FOLDER_SERVER_SEARCH) != 0);
+                setVisibility(R.id.search, mAccount.supportsCapability(
+                        AccountCapabilities.FOLDER_SERVER_SEARCH));
                 break;
             case ViewMode.CONVERSATION:
-                // Do nothing?
+                setVisibility(R.id.y_button, mAccount.supportsCapability(
+                        AccountCapabilities.ARCHIVE));
+                setVisibility(R.id.report_spam, mAccount.supportsCapability(
+                        AccountCapabilities.REPORT_SPAM));
+                setVisibility(R.id.mute, mAccount.supportsCapability(AccountCapabilities.MUTE));
                 break;
             case ViewMode.SEARCH_RESULTS:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
