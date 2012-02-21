@@ -27,6 +27,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.net.Uri;
 import android.view.ActionMode;
@@ -90,6 +91,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected FolderListFragment mFolderListFragment;
     protected ConversationViewFragment mConversationViewFragment;
     protected boolean isLoaderInitialized = false;
+    private AsyncRefreshTask mAsyncRefreshTask;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -354,7 +356,11 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private void requestFolderRefresh() {
         if (mFolder != null) {
-            new AsyncRefreshTask(mContext, mFolder).execute();
+            if (mAsyncRefreshTask != null) {
+                mAsyncRefreshTask.cancel(true);
+            }
+            mAsyncRefreshTask = new AsyncRefreshTask(mContext, mFolder);
+            mAsyncRefreshTask.execute();
         }
     }
 
