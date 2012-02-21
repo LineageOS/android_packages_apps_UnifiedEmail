@@ -155,10 +155,7 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
     private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
 
-    /**
-     * Hidden constructor.
-     */
-    private ConversationListFragment() {
+    public ConversationListFragment() {
         super();
         // Allow the fragment to observe changes to its own selection set. No other object is
         // aware of the selected set.
