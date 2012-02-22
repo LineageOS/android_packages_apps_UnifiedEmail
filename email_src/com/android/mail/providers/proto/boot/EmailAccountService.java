@@ -18,6 +18,7 @@ package com.android.mail.providers.protos.boot;
 import android.app.IntentService;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 
 import com.android.emailcommon.provider.Account;
 import com.android.emailcommon.provider.EmailContent;
@@ -41,8 +42,14 @@ public class EmailAccountService extends IntentService {
         AccountCapabilities.SERVER_SEARCH |
         AccountCapabilities.UNDO;
 
+    private static final Uri BASE_SETTINGS_URI = Uri.parse("setting://email/");
+
     private static String getUriString(String type, String accountName) {
         return EmailContent.CONTENT_URI.toString() + "/" + type + "/" + accountName;
+    }
+
+    private static Uri getAccountSettingUri(String account) {
+        return BASE_SETTINGS_URI.buildUpon().appendQueryParameter("account", account).build();
     }
 
     public EmailAccountService() {
@@ -85,7 +92,7 @@ public class EmailAccountService extends IntentService {
                             getUriString("uisendmail", accountName),
                             (String)mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
                             getUriString("uiundo", accountName),
-                            (String)mockAccountMap.get(AccountColumns.SETTINGS_INTENT_URI),
+                            getAccountSettingUri(accountName).toString(),
                             0);
 
                 AccountCacheProvider.addAccount(cachedAccount);
