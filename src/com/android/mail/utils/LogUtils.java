@@ -28,7 +28,7 @@ public class LogUtils {
     // "GMT" + "+" or "-" + 4 digits
     private static final Pattern DATE_CLEANUP_PATTERN_WRONG_TIMEZONE =
             Pattern.compile("GMT([-+]\\d{4})$");
-    private static String LOG_TAG = "Email";
+    private static String LOG_TAG = "UnifiedMail";
 
     /**
      * Get the log tag to apply to logging.

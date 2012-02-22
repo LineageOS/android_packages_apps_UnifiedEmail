@@ -18,10 +18,12 @@
 package com.android.mail.ui;
 
 import android.content.Context;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.android.mail.providers.Folder;
@@ -33,7 +35,7 @@ public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
     private Context mContext;
     private Folder mFolder;
     private Cursor mFolderCursor;
-    private DataSetObserver mFolderObserver;
+    private ContentObserver mFolderObserver;
 
     public AsyncRefreshTask(Context context, Folder folder) {
         mContext = context;
@@ -48,23 +50,45 @@ public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
             // Watch for changes on the folder.
             mFolderCursor = mContext.getContentResolver().query(Uri.parse(mFolder.uri),
                     UIProvider.FOLDERS_PROJECTION, null, null, null);
-            mFolderCursor.registerDataSetObserver(mFolderObserver);
+            mFolderCursor.registerContentObserver(mFolderObserver);
             // TODO: (mindyp) Start the spinner here.
             mContext.getContentResolver().query(Uri.parse(refreshUri), null, null, null, null);
         }
         return null;
     }
 
-    private class FolderObserver extends DataSetObserver {
-        /**
-         * This method is called when the entire data set has changed,
-         * most likely through a call to {@link Cursor#requery()} on a {@link Cursor}.
-         */
-        public void onChanged() {
+    private class FolderObserver extends ContentObserver {
+        public FolderObserver() {
+            super(null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
             // TODO: (mindyp) Check the new folder status. If syncing is
             // complete "SUCCESS", stop the spinner here.
             // If error, stop the spinner and show the error icon.
-            LogUtils.i(LOG_TAG, "FOLDER STATUS = ");
+            // Remove the listener.
+            if (mFolderObserver != null) {
+                mFolderCursor.unregisterContentObserver(mFolderObserver);
+                mFolderObserver = null;
+            }
+            // TODO: make this async.
+            mFolderCursor.close();
+            mFolderCursor = mContext.getContentResolver().query(Uri.parse(mFolder.uri),
+                    UIProvider.FOLDERS_PROJECTION, null, null, null);
+            mFolderCursor.moveToFirst();
+            Folder folder = new Folder(mFolderCursor);
+            switch (folder.syncStatus) {
+                case UIProvider.LastSyncResult.SUCCESS:
+                    // Stop the spinner here.
+                    // Don't add a new listener; the sync is done.
+                    break;
+                default:
+                    // re-add the listener
+                    mFolderCursor.registerContentObserver(mFolderObserver);
+                    break;
+            }
+            LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
         }
     }
 }
