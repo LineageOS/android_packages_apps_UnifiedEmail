@@ -871,6 +871,8 @@ public final class ConversationCursor implements Cursor {
         public static final int INSERT = 1;
         public static final int UPDATE = 2;
         public static final int ARCHIVE = 3;
+        public static final int MUTE = 4;
+        public static final int REPORT_SPAM = 5;
 
         private final int mType;
         private final Uri mUri;
@@ -915,6 +917,14 @@ public final class ConversationCursor implements Cursor {
                             .withValues(mValues).build();
                 case ARCHIVE:
                     // TODO: (mindyp) build out archive correctly.
+                    sProvider.deleteLocal(mUri);
+                    return ContentProviderOperation.newDelete(uri).build();
+                case MUTE:
+                    // TODO: (mindyp) build out mute correctly.
+                    sProvider.deleteLocal(mUri);
+                    return ContentProviderOperation.newDelete(uri).build();
+                case REPORT_SPAM:
+                    // TODO: (mindyp) build out report spam correctly.
                     sProvider.deleteLocal(mUri);
                     return ContentProviderOperation.newDelete(uri).build();
                 default:

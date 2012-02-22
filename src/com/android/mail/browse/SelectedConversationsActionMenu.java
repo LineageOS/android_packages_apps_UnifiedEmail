@@ -97,31 +97,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private Folder mFolder;
 
-    private ActionCompleteListener mDeleteListener = new ActionCompleteListener() {
-        @Override
-        public void onActionComplete() {
-            // This is where we actually delete.
-            Collection<Conversation> conversations = mSelectionSet.values();
-            mActionCompleteListener.onActionComplete();
-            mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), R.id.delete));
-            Conversation.delete(mContext, conversations);
-            mListAdapter.notifyDataSetChanged();
-            mSelectionSet.clear();
-        }
-    };
-
-    private ActionCompleteListener mArchiveListener = new ActionCompleteListener() {
-        @Override
-        public void onActionComplete() {
-            // This is where we actually delete.
-            Collection<Conversation> conversations = mSelectionSet.values();
-            mActionCompleteListener.onActionComplete();
-            mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), R.id.archive));
-            Conversation.archive(mContext, conversations);
-            mListAdapter.notifyDataSetChanged();
-            mSelectionSet.clear();
-        }
-    };
+    private ActionCompleteListener mDeleteListener = new DestructiveActionListener(R.id.delete);
+    private ActionCompleteListener mArchiveListener = new DestructiveActionListener(R.id.archive);
+    private ActionCompleteListener mMuteListener = new DestructiveActionListener(R.id.mute);
+    private ActionCompleteListener mSpamListener = new DestructiveActionListener(R.id.report_spam);
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
@@ -147,6 +126,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 break;
             case R.id.archive:
                 mListAdapter.delete(conversations, mArchiveListener);
+                break;
+            case R.id.mute:
+                mListAdapter.delete(conversations, mMuteListener);
+                break;
+            case R.id.report_spam:
+                mListAdapter.delete(conversations, mSpamListener);
                 break;
             case R.id.read:
                 markConversationsRead(true);
@@ -282,6 +267,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         unread.setVisible(showMarkUnread);
         MenuItem archive = menu.findItem(R.id.archive);
         archive.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE));
+        MenuItem spam = menu.findItem(R.id.report_spam);
+        spam.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM));
+        MenuItem mute = menu.findItem(R.id.mute);
+        mute.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.MUTE));
         return true;
     }
 
@@ -401,4 +390,36 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             }
         }
     }
+
+
+    private class DestructiveActionListener implements  ActionCompleteListener {
+        private int mAction;
+        public DestructiveActionListener(int action) {
+            mAction = action;
+        }
+
+        @Override
+        public void onActionComplete() {
+            // This is where we actually delete.
+            Collection<Conversation> conversations = mSelectionSet.values();
+            mActionCompleteListener.onActionComplete();
+            mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), mAction));
+            switch (mAction) {
+                case R.id.archive:
+                    Conversation.archive(mContext, conversations);
+                    break;
+                case R.id.delete:
+                    Conversation.delete(mContext, conversations);
+                    break;
+                case R.id.mute:
+                    Conversation.mute(mContext, conversations);
+                    break;
+                case R.id.report_spam:
+                    Conversation.reportSpam(mContext, conversations);
+                    break;
+            }
+            mListAdapter.notifyDataSetChanged();
+            mSelectionSet.clear();
+        }
+    };
 }

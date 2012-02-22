@@ -56,6 +56,12 @@ public class UndoOperation {
             case R.id.archive:
                 resId = R.plurals.conversation_archived;
                 break;
+            case R.id.report_spam:
+                resId = R.plurals.conversation_spammed;
+                break;
+            case R.id.mute:
+                resId = R.plurals.conversation_muted;
+                break;
             default:
                 resId = -1;
                 break;

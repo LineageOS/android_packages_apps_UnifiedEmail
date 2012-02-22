@@ -272,4 +272,24 @@ public class Conversation implements Parcelable {
         }
         return apply(context, ops);
     }
+
+    public static int mute(Context context, Collection<Conversation> conversations) {
+        ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+        for (Conversation conv: conversations) {
+            ConversationOperation op =
+                    new ConversationOperation(ConversationOperation.MUTE, conv);
+            ops.add(op);
+        }
+        return apply(context, ops);
+    }
+
+    public static int reportSpam(Context context, Collection<Conversation> conversations) {
+        ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+        for (Conversation conv: conversations) {
+            ConversationOperation op =
+                    new ConversationOperation(ConversationOperation.REPORT_SPAM, conv);
+            ops.add(op);
+        }
+        return apply(context, ops);
+    }
 }

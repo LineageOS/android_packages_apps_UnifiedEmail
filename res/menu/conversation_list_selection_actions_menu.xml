@@ -74,11 +74,13 @@
         android:showAsAction="never"
         android:icon="@drawable/ic_email_caret_single" />
 
+    <!-- Availability based on account -->
     <item
         android:id="@+id/mute"
         android:title="@string/mute"
         android:showAsAction="never" />
 
+    <!-- Availability based on account -->
     <item
         android:id="@+id/report_spam"
         android:title="@string/report_spam"
