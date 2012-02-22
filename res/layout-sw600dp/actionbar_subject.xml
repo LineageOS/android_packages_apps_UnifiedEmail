@@ -16,18 +16,8 @@
      limitations under the License.
 -->
 
-<!--
-     The custom action bar view Gmail uses (containing drop down account spinner,
-    label, and subject).
--->
-<com.android.mail.ui.MailActionBar xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:email="http://schemas.android.com/apk/res/com.android.mail"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal" >
-
-    <include layout="@layout/actionbar_label" />
-
-    <include layout="@layout/actionbar_subject" />
-
-</com.android.mail.ui.MailActionBar>
+<!-- conversation subject does not appear in action bar on tablets. -->
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:visibility="gone" />

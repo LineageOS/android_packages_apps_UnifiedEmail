@@ -426,7 +426,7 @@ public final class ConversationListFragment extends ListFragment implements
             mAnimateChanges = true;
         } else {
             mListView.setBackgroundDrawable(null);
-            mAnimateChanges = newMode == ViewMode.CONVERSATION_LIST;
+            mAnimateChanges = (newMode == ViewMode.CONVERSATION_LIST);
         }
     }
     /**

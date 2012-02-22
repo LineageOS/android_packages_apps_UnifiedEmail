@@ -16,9 +16,9 @@
      limitations under the License.
 -->
 
+    <!-- style="@style/AccountSwitchSpinnerItem" -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/AccountSwitchSpinnerItem"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:paddingLeft="0dip"
@@ -32,23 +32,23 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true">
 
+            <!-- style="?android:attr/actionDropDownStyle" -->
         <LinearLayout
             android:id="@+id/spinner"
-            style="?android:attr/actionDropDownStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center_vertical">
             <TextView
                 android:id="@+id/account_spinner_label"
-                style="@style/AccountSpinnerAnchorTextPrimary"
+                style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title.Inverse"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/account_spinner_account_name"
-                style="@style/AccountSpinnerAnchorTextSecondary"
+                style="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle.Inverse"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:layout_marginRight="4dp"

@@ -200,13 +200,11 @@ public abstract class AbstractActivityController implements ActivityController {
         if (actionBar != null && mActionBarView != null) {
             // Why have a different variable for the same thing? We should apply the same actions
             // on mActionBarView instead.
-            // mSubjectDisplayer = (ConversationSubjectDisplayer) mActionBarView;
             mActionBarView.initialize(mActivity, this, mViewMode, actionBar);
             actionBar.setCustomView((LinearLayout) mActionBarView, new ActionBar.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-                    ActionBar.DISPLAY_SHOW_CUSTOM
-                            | ActionBar.DISPLAY_SHOW_TITLE);
+                    ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_TITLE);
         }
     }
 

@@ -673,6 +673,12 @@ final class TwoPaneLayout extends LinearLayout
             case ViewMode.CONVERSATION_LIST:
                 enterConversationListMode();
                 break;
+            case ViewMode.FOLDER_LIST:
+                // Show Folder lists here
+                break;
+            case ViewMode.SEARCH_RESULTS:
+                // Show search results here
+                break;
         }
     }
 
@@ -720,7 +726,7 @@ final class TwoPaneLayout extends LinearLayout
         // Mindy points out that this is strange. Instead of requesting a layout for the labels
         // view, we should be requesting a layout for the entire view.
         // TODO(viki): Change to this.requestLayout() and see if there is any improvement or loss
-        mLabelsView.requestLayout();
+        requestLayout();
     }
 
     // TODO(viki): I think most of the next methods aren't being used. Rather than removing them,

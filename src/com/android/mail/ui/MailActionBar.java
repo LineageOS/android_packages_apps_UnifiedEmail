@@ -104,7 +104,6 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
 
     private MenuItem mSearch;
     SpinnerAdapter mSpinner;
-    private AccountRecentLabelSpinner mSpinnerView;
     /**
      * The account currently being shown
      */
@@ -157,24 +156,18 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
 
     @Override
     public void handleRestore(Bundle savedInstanceState) {
-        // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void handleSaveInstanceState(Bundle outState) {
-        // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void initialize(RestrictedActivity activity, ActivityController callback, ViewMode viewMode,
             ActionBar actionBar) {
-        // TODO(viki): Auto-generated method stub
         mActionBar = actionBar;
         mCallback = callback;
         mActivity = activity;
-        mSpinnerView = (AccountRecentLabelSpinner) findViewById(R.id.account_spinner);
 
         // Set the mode to Navigation mode
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -199,14 +192,10 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
 
     @Override
     public void onPause() {
-        // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void onResume() {
-        // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
@@ -249,7 +238,6 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
 
         switch (mMode){
             case ViewMode.UNKNOWN:
-                mSpinnerView.setVisibility(VISIBLE);
                 if (mSearch != null){
                     mSearch.collapseActionView();
                 }
@@ -269,7 +257,6 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
                 break;
             case ViewMode.SEARCH_RESULTS:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
-                mSpinnerView.setVisibility(GONE);
                 if (mSearch != null) {
                     mSearch.collapseActionView();
                 }

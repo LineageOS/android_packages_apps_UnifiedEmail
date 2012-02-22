@@ -42,7 +42,6 @@ public final class TwoPaneController extends AbstractActivityController {
      */
     public TwoPaneController(MailActivity activity, ViewMode viewMode) {
         super(activity, viewMode);
-        // TODO(viki): Auto-generated constructor stub
     }
 
     /**
@@ -120,7 +119,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void showConversation(Conversation conversation) {
-        // TODO Auto-generated method stub
+        mViewMode.enterConversationMode();
     }
 
     @Override
