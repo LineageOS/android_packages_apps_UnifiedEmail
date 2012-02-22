@@ -122,7 +122,7 @@
     <item quantity="one" msgid="3657821200245019288">"Konversation verschieben"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> Konversationen verschieben"</item>
   </plurals>
-    <string name="content_description" msgid="5986818539537753005">"Betreff: <xliff:g id="SUBJECT">%1$s</xliff:g> Snippet:<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="content_description" msgid="5986818539537753005">"Betreff: <xliff:g id="SUBJECT">%1$s</xliff:g> Snippet: <xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> – <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -217,9 +217,9 @@
     <string name="searchConversationMode" msgid="8015441927706455618">"Modus \"In Konversationen suchen\""</string>
     <string name="setBackButton" msgid="3004728881963818222">"Schaltfläche \"Zurück\" festlegen"</string>
     <string name="removeBackButton" msgid="860383341267568260">"Schaltfläche \"Zurück\" entfernen"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Normalen Modus einstellen"</string>
+    <string name="normalMode" msgid="4250277414924926730">"Normalen Modus festlegen"</string>
     <string name="searchResultMode" msgid="3564180712046711968">"Modus \"In Ergebnissen suchen\""</string>
-    <string name="labelMode" msgid="1821987146443702635">"Label-Modus einstellen"</string>
+    <string name="labelMode" msgid="1821987146443702635">"Label-Modus festlegen"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Wird gesucht..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Letzte"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Empfängerdetails maximieren"</string>
@@ -234,7 +234,7 @@
     <string name="cc_heading" msgid="8116221732072085180">"Cc:"</string>
     <string name="bcc_heading" msgid="5528824453033598299">"Bcc:"</string>
     <string name="show_images" msgid="1875700481186331432">"Bilder anzeigen"</string>
-    <string name="always_show_images" msgid="5966408990164581801">"Bilder von diesem Absender immer zeigen"</string>
+    <string name="always_show_images" msgid="5966408990164581801">"Bilder von diesem Absender immer anzeigen"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Bilder von diesem Absender werden automatisch angezeigt."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
     <string name="message_saved" msgid="7073947895562277576">"Nachricht wurde als Entwurf gespeichert."</string>

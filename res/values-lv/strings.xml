@@ -162,7 +162,7 @@
   </plurals>
   <plurals name="conversation_starring">
     <item quantity="one" msgid="8780588287902503608">"<xliff:g id="COUNT">%1$d</xliff:g> saruna tiek atzīmēta ar zvaigznīti."</item>
-    <item quantity="other" msgid="44965256231544025">"<xliff:g id="COUNT">%1$d</xliff:g> saruna(-as) tiek atzīmētas ar zvaigznīti."</item>
+    <item quantity="other" msgid="44965256231544025">"<xliff:g id="COUNT">%1$d</xliff:g> saruna(-as) tiek atzīmēta(-as) ar zvaigznīti."</item>
   </plurals>
   <plurals name="conversation_unstarring">
     <item quantity="one" msgid="9149763486272528029">"Tiek noņemta zvaigznīte no <xliff:g id="COUNT">%1$d</xliff:g> sarunas."</item>
@@ -232,7 +232,7 @@
     <string name="replyto_heading" msgid="2081358811894701297">"Atbildēt:"</string>
     <string name="to_heading" msgid="3219994961726691756">"Kam:"</string>
     <string name="cc_heading" msgid="8116221732072085180">"Kopija:"</string>
-    <string name="bcc_heading" msgid="5528824453033598299">"Diskr. k.:"</string>
+    <string name="bcc_heading" msgid="5528824453033598299">"Bcc:"</string>
     <string name="show_images" msgid="1875700481186331432">"Rādīt attēlus"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Vienmēr rādīt attēlus no šī sūtītāja"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Attēli no šī sūtītāja tiks rādīti automātiski."</string>
