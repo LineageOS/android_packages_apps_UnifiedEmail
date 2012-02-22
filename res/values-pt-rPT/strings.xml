@@ -40,7 +40,7 @@
     <item msgid="4085029907540221568">"Responder a todos"</item>
     <item msgid="857480048798815437">"Encaminhar"</item>
   </string-array>
-    <string name="reply_attribution" msgid="717207316577386788">"A <xliff:g id="DATE">%s</xliff:g>, <xliff:g id="PERSON">%s</xliff:g> escreveu:"</string>
+    <string name="reply_attribution" msgid="717207316577386788">"Em <xliff:g id="DATE">%s</xliff:g>, <xliff:g id="PERSON">%s</xliff:g> escreveu:"</string>
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Mensagem encaminhada ----------&lt;br&gt;De: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Data: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Assunto: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Para: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Escolher o tipo de anexo"</string>
@@ -56,7 +56,7 @@
     <string name="send" msgid="8242003661397555986">"Enviar"</string>
     <string name="mark_read" msgid="8438349154394313195">"Marcar como lida"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Marcar como não lida"</string>
-    <string name="mute" msgid="1995954983688603977">"Desativar som"</string>
+    <string name="mute" msgid="1995954983688603977">"Ignorar"</string>
     <string name="add_star" msgid="2866003744391266498">"Adicionar estrela"</string>
     <string name="remove_star" msgid="4372327933122106128">"Remover estrela"</string>
     <string name="archive" msgid="847250094775910499">"Arquivar"</string>
@@ -137,44 +137,44 @@
     <string name="no_conversations" msgid="35400008890372241">"Sem conversas."</string>
     <string name="undo" msgid="6070869718469782251">"Anular"</string>
   <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"A desativar o som de <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
-    <item quantity="other" msgid="7732711630827590665">"A desativar o som de <xliff:g id="COUNT">%1$d</xliff:g> conversas."</item>
+    <item quantity="one" msgid="3339369590668913905">"A ignorar <xliff:g id="COUNT">%1$d</xliff:g> conversa..."</item>
+    <item quantity="other" msgid="7732711630827590665">"A ignorar <xliff:g id="COUNT">%1$d</xliff:g> conversas..."</item>
   </plurals>
   <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"A denunciar <xliff:g id="COUNT">%1$d</xliff:g> conversa como spam."</item>
-    <item quantity="other" msgid="1772788567015816651">"A denunciar <xliff:g id="COUNT">%1$d</xliff:g> conversas como spam."</item>
+    <item quantity="one" msgid="2595708219821799225">"A denunciar <xliff:g id="COUNT">%1$d</xliff:g> conversa como spam..."</item>
+    <item quantity="other" msgid="1772788567015816651">"A denunciar <xliff:g id="COUNT">%1$d</xliff:g> conversas como spam..."</item>
   </plurals>
   <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"A arquivar <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
-    <item quantity="other" msgid="2233711130311549549">"A arquivar <xliff:g id="COUNT">%1$d</xliff:g> conversas."</item>
+    <item quantity="one" msgid="868228767335919035">"A arquivar <xliff:g id="COUNT">%1$d</xliff:g> conversa..."</item>
+    <item quantity="other" msgid="2233711130311549549">"A arquivar <xliff:g id="COUNT">%1$d</xliff:g> conversas..."</item>
   </plurals>
   <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"A eliminar <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
-    <item quantity="other" msgid="4729328961071737560">"A eliminar <xliff:g id="COUNT">%1$d</xliff:g> conversas."</item>
+    <item quantity="one" msgid="1715640568204501903">"A eliminar <xliff:g id="COUNT">%1$d</xliff:g> conversa..."</item>
+    <item quantity="other" msgid="4729328961071737560">"A eliminar <xliff:g id="COUNT">%1$d</xliff:g> conversas..."</item>
   </plurals>
   <plurals name="conversation_marking_read">
-    <item quantity="one" msgid="394911867474214874">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversa como lida."</item>
-    <item quantity="other" msgid="247178462544083532">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversas como lidas."</item>
+    <item quantity="one" msgid="394911867474214874">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversa como lida..."</item>
+    <item quantity="other" msgid="247178462544083532">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversas como lidas..."</item>
   </plurals>
   <plurals name="conversation_marking_unread">
-    <item quantity="one" msgid="2959859634779672558">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversa como não lida."</item>
-    <item quantity="other" msgid="6577233770583912846">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversas como não lidas."</item>
+    <item quantity="one" msgid="2959859634779672558">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversa como não lida..."</item>
+    <item quantity="other" msgid="6577233770583912846">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversas como não lidas..."</item>
   </plurals>
   <plurals name="conversation_starring">
-    <item quantity="one" msgid="8780588287902503608">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversa com estrela."</item>
-    <item quantity="other" msgid="44965256231544025">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversas com estrela."</item>
+    <item quantity="one" msgid="8780588287902503608">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversa com estrela..."</item>
+    <item quantity="other" msgid="44965256231544025">"A marcar <xliff:g id="COUNT">%1$d</xliff:g> conversas com estrela..."</item>
   </plurals>
   <plurals name="conversation_unstarring">
-    <item quantity="one" msgid="9149763486272528029">"A remover a estrela de <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
-    <item quantity="other" msgid="460057780793159215">"A remover a estrela de <xliff:g id="COUNT">%1$d</xliff:g> conversas."</item>
+    <item quantity="one" msgid="9149763486272528029">"A remover a estrela de <xliff:g id="COUNT">%1$d</xliff:g> conversa..."</item>
+    <item quantity="other" msgid="460057780793159215">"A remover a estrela de <xliff:g id="COUNT">%1$d</xliff:g> conversas..."</item>
   </plurals>
   <plurals name="conversation_unknown_operation">
-    <item quantity="one" msgid="235911194119829184">"A aguardar operação em <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
-    <item quantity="other" msgid="850868849811019745">"A aguardar operação em <xliff:g id="COUNT">%1$d</xliff:g> conversas."</item>
+    <item quantity="one" msgid="235911194119829184">"A aguardar operação em <xliff:g id="COUNT">%1$d</xliff:g> conversa..."</item>
+    <item quantity="other" msgid="850868849811019745">"A aguardar operação em <xliff:g id="COUNT">%1$d</xliff:g> conversas..."</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; silenciada."</item>
-    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; silenciadas."</item>
+    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ignorada."</item>
+    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ignoradas."</item>
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; denunciada como spam."</item>
@@ -214,7 +214,7 @@
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Resultados"</string>
     <string name="searchMode" msgid="3329807422114758583">"Modo de Pesquisa"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Modo de Conversa de Pesquisa"</string>
+    <string name="searchConversationMode" msgid="8015441927706455618">"Modo de Pesquisa de Conversas"</string>
     <string name="setBackButton" msgid="3004728881963818222">"Definir o Botão Anterior"</string>
     <string name="removeBackButton" msgid="860383341267568260">"Remover o Botão Anterior"</string>
     <string name="normalMode" msgid="4250277414924926730">"Definir Modo Normal"</string>
