@@ -68,7 +68,7 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
         /**
          * Returns the current account.
          */
-        String getCurrentAccount();
+        Account getCurrentAccount();
 
         /**
          * Called when the TwoPaneActionBar wants to get the current conversation list context.

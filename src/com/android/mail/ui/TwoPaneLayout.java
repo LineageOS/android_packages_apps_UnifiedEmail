@@ -58,14 +58,14 @@ import java.util.ArrayList;
  * according to the specific <i>modes</i> the {@link Activity} can be in.
  *
  * Currently, the layout differs in three dimensions: orientation, two aspects of view modes.
- * This results in essentially three states: One where the labels are on the left and conversation
+ * This results in essentially three states: One where the folders are on the left and conversation
  * list is on the right, and two states where the conversation list is on the left: one in which
  * it's collapsed and another where it is not.
  *
- * In Label or conversation list view, conversations are hidden and labels and conversation lists
+ * In folder or conversation list view, conversations are hidden and folders and conversation lists
  * are visible. This is the case in both portrait and landscape
  *
- * In Conversation List or Conversation View, labels are hidden, and conversation lists and
+ * In Conversation List or Conversation View, folders are hidden, and conversation lists and
  * conversation view is visible. This is the case in both portrait and landscape.
  *
  * In the Gmail source code, this was called TriStateSplitLayout
@@ -86,7 +86,7 @@ final class TwoPaneLayout extends LinearLayout
     private static int sAnimationSlideLeftDuration;
     private static int sAnimationSlideRightDuration;
     private static double sScaledConversationListWeight;
-    private static double sScaledLabelListWeight;
+    private static double sScaledFolderListWeight;
     /**
      * The current mode that the tablet layout is in. This is a constant integer that holds values
      * that are {@link ViewMode} constants like {@link ViewMode#CONVERSATION}.
@@ -106,8 +106,8 @@ final class TwoPaneLayout extends LinearLayout
     private View mConversationView;
     private View mConversationViewOverlay;
     /** Left position of each fragment. */
-    private int mLabelsLeft;
-    private View mLabelsView;
+    private int mFoldersLeft;
+    private View mFoldersView;
     private int mListAlpha;
 
     /** Captured bitmap of each fragment. */
@@ -197,7 +197,7 @@ final class TwoPaneLayout extends LinearLayout
         public void onAnimationStart(Animator animation) {
             switch (listener_type) {
                 case CONVERSATION_LIST:
-                    mLabelsView.setVisibility(View.VISIBLE);
+                    mFoldersView.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -290,7 +290,7 @@ final class TwoPaneLayout extends LinearLayout
     private int computeConversationListWidth(int totalWidth) {
         switch (currentMode) {
             case ViewMode.CONVERSATION_LIST:
-                return totalWidth - computeLabelListWidth();
+                return totalWidth - computeFolderListWidth();
             case ViewMode.CONVERSATION:
                 return (int) (totalWidth * sScaledConversationListWeight);
         }
@@ -322,17 +322,10 @@ final class TwoPaneLayout extends LinearLayout
     }
 
     /**
-     * Computes the width of the label list in stable state of the current mode.
+     * Computes the width of the folder list in stable state of the current mode.
      */
-    private int computeLabelListWidth() {
-        return computeLabelListWidth(getMeasuredWidth());
-    }
-
-    /**
-     * Computes the width of the label list in stable state of the current mode.
-     */
-    private int computeLabelListWidth(int totalWidth) {
-        return (int) (totalWidth * sScaledLabelListWeight);
+    private int computeFolderListWidth() {
+        return (int) (getMeasuredWidth() * sScaledFolderListWeight);
     }
 
     /**
@@ -374,8 +367,8 @@ final class TwoPaneLayout extends LinearLayout
         }
 
         canvas.save();
-        canvas.translate(mLabelsLeft, 0);
-        mLabelsView.draw(canvas);
+        canvas.translate(mFoldersLeft, 0);
+        mFoldersView.draw(canvas);
         canvas.restore();
 
         // The bitmap can be null if the view hasn't been drawn by the time we capture the bitmap.
@@ -402,21 +395,21 @@ final class TwoPaneLayout extends LinearLayout
         // On the initial call, measurements may not have been done (i.e. this
         // Layout has never been rendered), so no animation will be done.
         if (getMeasuredWidth() == 0) {
-            mLabelsView.setVisibility(View.VISIBLE);
+            mFoldersView.setVisibility(View.VISIBLE);
             onFinishEnteringConversationListMode();
             return;
         }
 
-        // Slide labels in from the left.
-        setLabelListWidth(computeLabelListWidth());
+        // Slide folder list in from the left.
+        final int folderListWidth = computeFolderListWidth();
+        setFolderListWidth(folderListWidth);
 
         // Prepare animation.
         mAnimatingFade = true;
         captureListBitmaps();
         ArrayList<PropertyValuesHolder> values = Lists.newArrayList();
 
-        int labelsWidth = computeLabelListWidth();
-        values.add(PropertyValuesHolder.ofInt("labelsLeft", -labelsWidth, 0));
+        values.add(PropertyValuesHolder.ofInt("foldersLeft", -folderListWidth, 0));
 
         // Reset the relative left of the list view.
         setConversationListLeft(0);
@@ -430,8 +423,8 @@ final class TwoPaneLayout extends LinearLayout
         animator.setDuration((long) (sAnimationSlideRightDuration * SLIDE_DURATION_SCALE));
         animator.setInterpolator(sRightInterpolator);
 
-        values.add(PropertyValuesHolder.ofInt("listBitmapLeft", 0, labelsWidth));
-        values.add(PropertyValuesHolder.ofInt("listLeft", 0, labelsWidth));
+        values.add(PropertyValuesHolder.ofInt("listBitmapLeft", 0, folderListWidth));
+        values.add(PropertyValuesHolder.ofInt("listLeft", 0, folderListWidth));
         values.add(PropertyValuesHolder.ofInt("listAlpha", 0, 255));
 
         // Slide conversation out to the right.
@@ -465,9 +458,9 @@ final class TwoPaneLayout extends LinearLayout
         captureListBitmaps();
         ArrayList<PropertyValuesHolder> values = Lists.newArrayList();
 
-        // Slide labels out towards the left off screen.
-        int labelsWidth = mLabelsView.getMeasuredWidth();
-        values.add(PropertyValuesHolder.ofInt("labelsLeft", 0, -labelsWidth));
+        // Slide folders out towards the left off screen.
+        int foldersWidth = mFoldersView.getMeasuredWidth();
+        values.add(PropertyValuesHolder.ofInt("foldersLeft", 0, -foldersWidth));
 
         // Shrink the conversation list to make room for the conversation, and default
         // it to collapsed in case it is collapsible.
@@ -475,7 +468,7 @@ final class TwoPaneLayout extends LinearLayout
         int targetWidth = computeConversationListWidth();
         setConversationListWidth(targetWidth);
 
-        int currentListLeft = labelsWidth + getConversationListLeft();
+        int currentListLeft = foldersWidth + getConversationListLeft();
         int targetListLeft = computeConversationListLeft(targetWidth);
         setConversationListLeft(targetListLeft);
         if (currentListLeft != targetListLeft) {
@@ -516,7 +509,7 @@ final class TwoPaneLayout extends LinearLayout
         mContext = context;
 
         Resources res = getResources();
-        mLabelsView = findViewById(R.id.labels_pane);
+        mFoldersView = findViewById(R.id.folders_pane);
         mConversationListContainer = findViewById(R.id.conversation_column_container);
         mListView = findViewById(R.id.conversation_list);
         mConversationView = findViewById(R.id.conversation_pane_container);
@@ -527,14 +520,13 @@ final class TwoPaneLayout extends LinearLayout
         sAnimationSlideLeftDuration = res.getInteger(R.integer.activity_slide_left_duration);
         sAnimationSlideRightDuration = res.getInteger(R.integer.activity_slide_right_duration);
         sAnimationCollapseDuration = res.getInteger(R.integer.activity_collapse_duration);
-        final int sLabelListWeight = res.getInteger(R.integer.label_list_weight);
+        final int sFolderListWeight = res.getInteger(R.integer.folder_list_weight);
         final int sConversationListWeight = res.getInteger(R.integer.conversation_list_weight);
         final int sConversationViewWeight = res.getInteger(R.integer.conversation_view_weight);
-        sScaledLabelListWeight = (double) sLabelListWeight
-                / (sLabelListWeight + sConversationListWeight);
+        sScaledFolderListWeight = (double) sFolderListWeight
+                / (sFolderListWeight + sConversationListWeight);
         sScaledConversationListWeight = (double) sConversationListWeight
                 / (sConversationListWeight + sConversationViewWeight);
-
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(android.R.color.white);
@@ -547,7 +539,7 @@ final class TwoPaneLayout extends LinearLayout
     }
 
     /**
-     * @return whether the conversation list can be collapsed or not.
+     * @return whether the conversation list can be collapsed or not. This depends on orientation.
      */
     public boolean isConversationListCollapsible() {
         return mContext.getResources().getInteger(R.integer.conversation_list_collapsible) != 0;
@@ -575,6 +567,7 @@ final class TwoPaneLayout extends LinearLayout
         mListCollapsed = false;
         mConversationView.setVisibility(View.GONE);
         mConversationViewOverlay.setVisibility(View.GONE);
+        mFoldersView.setVisibility(View.VISIBLE);
 
         // Once animations settle, the conversation list always takes up the
         // remaining space that is on the right, so avoid hard pixel values,
@@ -591,14 +584,11 @@ final class TwoPaneLayout extends LinearLayout
      * Finalizes state after animations settle when entering conversation mode.
      */
     private void onFinishEnteringConversationMode() {
-        mLabelsView.setVisibility(View.GONE);
-
+        mFoldersView.setVisibility(View.GONE);
         setConversationListWidth(computeConversationListWidth());
-
         if (isConversationListCollapsible()) {
             onCollapseList();
         }
-
         dispatchConversationVisibilityChanged(true);
     }
 
@@ -620,7 +610,7 @@ final class TwoPaneLayout extends LinearLayout
 
         switch (currentMode) {
             case ViewMode.CONVERSATION_LIST:
-                setLabelListWidth(computeLabelListWidth());
+                setFolderListWidth(computeFolderListWidth());
                 break;
 
             case ViewMode.CONVERSATION:
@@ -674,7 +664,6 @@ final class TwoPaneLayout extends LinearLayout
                 enterConversationListMode();
                 break;
             case ViewMode.FOLDER_LIST:
-                // Show Folder lists here
                 break;
             case ViewMode.SEARCH_RESULTS:
                 // Show search results here
@@ -718,12 +707,12 @@ final class TwoPaneLayout extends LinearLayout
     }
 
     /**
-     * Sets the width of the label list pane.
+     * Sets the width of the folder list pane.
      * Used internally and by animators. Not to be used externally.
      */
-    private void setLabelListWidth(int width) {
-        mLabelsView.getLayoutParams().width = width;
-        // Mindy points out that this is strange. Instead of requesting a layout for the labels
+    private void setFolderListWidth(int width) {
+        mFoldersView.getLayoutParams().width = width;
+        // Mindy points out that this is strange. Instead of requesting a layout for the folders
         // view, we should be requesting a layout for the entire view.
         // TODO(viki): Change to this.requestLayout() and see if there is any improvement or loss
         requestLayout();
@@ -732,12 +721,12 @@ final class TwoPaneLayout extends LinearLayout
     // TODO(viki): I think most of the next methods aren't being used. Rather than removing them,
     // I'm marking them private to remove once the application is complete.
     /**
-     * Sets the left position of the labels fragment. Used by animators. Not to
+     * Sets the left position of the folders fragment. Used by animators. Not to
      * be used externally.
      * @hide
      */
-    private void setLabelsLeft(int left) {
-        mLabelsLeft = left;
+    private void setFoldersLeft(int left) {
+        mFoldersLeft = left;
         invalidate();
     }
 

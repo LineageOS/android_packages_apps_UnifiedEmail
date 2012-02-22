@@ -149,15 +149,13 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public String getCurrentAccount() {
-        // TODO(viki): Auto-generated method stub
-        return null;
+    public Account getCurrentAccount() {
+        return mAccount;
     }
 
     @Override
     public ConversationListContext getCurrentListContext() {
-        // TODO(viki): Auto-generated method stub
-        return null;
+        return mConvListContext;
     }
 
     @Override
@@ -381,8 +379,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onResume() {
-        // TODO(viki): Auto-generated method stub
-        //        mBatchConversations.addObserver(this);
         if (mActionBarView != null) {
             mActionBarView.onResume();
         }
@@ -405,31 +401,26 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onSearchRequested() {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void onStartBulkOperation() {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void onStartDragMode() {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void onStop() {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void onStopDragMode() {
         // TODO(viki): Auto-generated method stub
-
     }
 
     /**
@@ -445,7 +436,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // reset the action bar icon based on the mode. Why don't the individual controllers do
         // this themselves?
 
-        // On conversation list mode, clean up the conversation.
+        // In conversation list mode, clean up the conversation.
         if (newMode == ViewMode.CONVERSATION_LIST) {
             // Clean up the conversation here.
         }
@@ -460,13 +451,11 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void reloadSearch(String string) {
         // TODO(viki): Auto-generated method stub
-
     }
 
     /**
@@ -488,9 +477,6 @@ public abstract class AbstractActivityController implements ActivityController {
     protected void restoreState(Bundle savedState) {
         if (savedState != null) {
             restoreListContext(savedState);
-            // Restore the list context
-            restoreListContext(savedState);
-
             // Attach the menu handler here.
 
             // Restore the view mode
@@ -507,19 +493,16 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void startActionBarStatusCursorLoader(String account) {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void stopActionBarStatusCursorLoader(String account) {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void toggleStar(boolean toggleOn, long conversationId, long maxMessageId) {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
@@ -587,7 +570,6 @@ public abstract class AbstractActivityController implements ActivityController {
         // Do nothing for now, since we don't have any state. When a load is finished, the
         // onLoadFinished will be called and we will be fine.
     }
-
 
     @Override
     public void onTouchEvent(MotionEvent event) {

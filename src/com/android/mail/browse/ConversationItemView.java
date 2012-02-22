@@ -176,7 +176,7 @@ public class ConversationItemView extends View {
             IMPORTANT_TO_OTHERS = BitmapFactory.decodeResource(res,
                     R.drawable.ic_email_caret_none_important_unread);
             ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
-            DATE_BACKGROUND = BitmapFactory.decodeResource(res, R.drawable.label_bg_holo_light);
+            DATE_BACKGROUND = BitmapFactory.decodeResource(res, R.drawable.folder_bg_holo_light);
 
             // Initialize colors.
             DEFAULT_TEXT_COLOR = res.getColor(R.color.default_text_color);
