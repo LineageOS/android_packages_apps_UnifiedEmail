@@ -578,10 +578,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void setupRecipients(RecipientEditTextView view) {
-        String accountName = mAccount.name;
-        view.setAdapter(new RecipientAdapter(this, accountName));
+        view.setAdapter(new RecipientAdapter(this, mAccount));
         view.setTokenizer(new Rfc822Tokenizer());
         if (mValidator == null) {
+            final String accountName = mAccount.name;
             int offset = accountName.indexOf("@") + 1;
             String account = accountName;
             if (offset > -1) {

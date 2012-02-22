@@ -109,26 +109,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         syncStatus = in.readInt();
     }
 
-    // TODO(pwestbro): remove this constructor.
-    // This constructor should't be necessary.  Any usage of an Account object constructed
-    // this way may have unexpected results.
-    @Deprecated
-    public Account(String address, String type) {
-        super(address, type);
-        providerVersion = -1;
-        accountUri = null;
-        capabilities = 0;
-        folderListUri = null;
-        searchUri = null;
-        accountFromAddressesUri = null;
-        saveDraftUri = null;
-        sendMessageUri = null;
-        expungeMessageUri = null;
-        undoUri = null;
-        settingIntentUri = null;
-        syncStatus = 0;
-    }
-
     public Account(Cursor cursor) {
         super(cursor.getString(UIProvider.ACCOUNT_NAME_COLUMN), "unknown");
         accountFromAddressesUri = cursor.getString(UIProvider.ACCOUNT_FROM_ADDRESSES_URI_COLUMN);

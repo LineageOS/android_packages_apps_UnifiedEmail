@@ -21,8 +21,8 @@ import com.android.mail.providers.Account;
 import android.content.Context;
 
 public class RecipientAdapter extends BaseRecipientAdapter {
-    public RecipientAdapter(Context context, String account) {
+    public RecipientAdapter(Context context, Account account) {
         super(context);
-        setAccount(new Account(account, "unknown"));
+        setAccount(account);
     }
 }
