@@ -268,34 +268,6 @@
     <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
     <string name="undo">Undo</string>
     <!-- Undo Strings: The following are shown in a dialog while we're waiting for the operation to complete --><skip />
-    <plurals name="conversation_muting">
-        <!-- Displayed while muting one conversation -->
-        <item quantity="one">Muting <xliff:g id="count">%1$d</xliff:g> conversation.</item>
-        <!-- Displayed while muting several conversations -->
-        <item quantity="other">Muting <xliff:g id="count">%1$d</xliff:g> conversations.</item>
-    </plurals>
-
-    <plurals name="conversation_spamming">
-        <!-- Displayed while reporting one conversation as spam -->
-        <item quantity="one">Reporting <xliff:g id="count">%1$d</xliff:g> conversation as spam.</item>
-        <!-- Displayed while reporting several conversations as spam -->
-        <item quantity="other">Reporting <xliff:g id="count">%1$d</xliff:g> conversations as spam.</item>
-    </plurals>
-
-    <plurals name="conversation_archiving">
-        <!-- Displayed while archiving one conversation -->
-        <item quantity="one">Archiving <xliff:g id="count">%1$d</xliff:g> conversation.</item>
-        <!-- Displayed while archiving multiple conversations -->
-        <item quantity="other">Archiving <xliff:g id="count">%1$d</xliff:g> conversations.</item>
-    </plurals>
-
-    <plurals name="conversation_deleting">
-        <!-- Displayed while deleting one conversation -->
-        <item quantity="one">Deleting <xliff:g id="count">%1$d</xliff:g> conversation.</item>
-        <!-- Displayed while deleting multiple conversations -->
-        <item quantity="other">Deleting <xliff:g id="count">%1$d</xliff:g> conversations.</item>
-    </plurals>
-
     <plurals name="conversation_marking_read">
         <!-- Displayed while marking one conversation read -->
         <item quantity="one">Marking <xliff:g id="count">%1$d</xliff:g> conversation read.</item>
@@ -395,11 +367,11 @@
         <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked unread.</item>
     </plurals>
 
-    <plurals name="conversation_label_changed">
-        <!-- Displayed while adding and removing labels to a single conversation. [CHAR LIMIT=100] -->
-        <item quantity="one">Changed label.</item>
-        <!-- Displayed while adding and removing labels to multiple conversations. [CHAR LIMIT=100] -->
-        <item quantity="other">Changed labels.</item>
+    <plurals name="conversation_folder_changed">
+        <!-- Displayed while adding and removing folders to a single conversation. [CHAR LIMIT=100] -->
+        <item quantity="one">Changed folder.</item>
+        <!-- Displayed while adding and removing folders to multiple conversations. [CHAR LIMIT=100] -->
+        <item quantity="other">Changed folders.</item>
     </plurals>
 
     <!-- Search Results: Text for header that is shown above search results [CHAR LIMIT=30] -->

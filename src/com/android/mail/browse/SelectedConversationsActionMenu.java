@@ -21,6 +21,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ActionCompleteListener;
@@ -109,6 +110,19 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     };
 
+    private ActionCompleteListener mArchiveListener = new ActionCompleteListener() {
+        @Override
+        public void onActionComplete() {
+            // This is where we actually delete.
+            Collection<Conversation> conversations = mSelectionSet.values();
+            mActionCompleteListener.onActionComplete();
+            mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), R.id.archive));
+            Conversation.archive(mContext, conversations);
+            mListAdapter.notifyDataSetChanged();
+            mSelectionSet.clear();
+        }
+    };
+
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
             ActionCompleteListener listener, UndoListener undoListener, Account account,
@@ -130,6 +144,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         switch (item.getItemId()) {
             case R.id.delete:
                 mListAdapter.delete(conversations, mDeleteListener);
+                break;
+            case R.id.archive:
+                mListAdapter.delete(conversations, mArchiveListener);
                 break;
             case R.id.read:
                 markConversationsRead(true);
@@ -211,11 +228,20 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         @Override
         public void onActionComplete() {
             mActionCompleteListener.onActionComplete();
+            Collection<Conversation> deletionSet = mDeletionSet;
+            // Only show undo if this was a destructive folder change.
+            UndoOperation undoOp = null;
+            if (deletionSet != null && deletionSet.size() > 0) {
+                undoOp = new UndoOperation(deletionSet.size(), R.id.change_folder);
+                mDeletionSet = null;
+            }
+            mUndoListener.onUndoAvailable(undoOp);
             Conversation.updateString(mContext, mSelectionSet.values(),
                     ConversationColumns.FOLDER_LIST, mFolderChangeList);
             mSelectionSet.clear();
             mListAdapter.notifyDataSetChanged();
-        }};
+        }
+    };
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -254,6 +280,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         read.setVisible(!showMarkUnread);
         MenuItem unread = menu.findItem(R.id.unread);
         unread.setVisible(showMarkUnread);
+        MenuItem archive = menu.findItem(R.id.archive);
+        archive.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE));
         return true;
     }
 

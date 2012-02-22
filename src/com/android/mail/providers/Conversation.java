@@ -262,4 +262,14 @@ public class Conversation implements Parcelable {
                 }
             }}).start();
     }
+
+    public static int archive(Context context, Collection<Conversation> conversations) {
+        ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+        for (Conversation conv: conversations) {
+            ConversationOperation op =
+                    new ConversationOperation(ConversationOperation.ARCHIVE, conv);
+            ops.add(op);
+        }
+        return apply(context, ops);
+    }
 }

@@ -48,7 +48,13 @@ public class UndoOperation {
         int resId = -1;
         switch (mAction) {
             case R.id.delete:
-                resId = R.plurals.conversation_deleting;
+                resId = R.plurals.conversation_deleted;
+                break;
+            case R.id.change_folder:
+                resId = R.plurals.conversation_folder_changed;
+                break;
+            case R.id.archive:
+                resId = R.plurals.conversation_archived;
                 break;
             default:
                 resId = -1;

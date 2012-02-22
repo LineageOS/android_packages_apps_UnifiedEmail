@@ -804,6 +804,9 @@ public final class ConversationCursor implements Cursor {
 
         @VisibleForTesting
         void updateLocal(Uri uri, ContentValues values) {
+            if (values == null) {
+                return;
+            }
             Uri underlyingUri = uriFromCachingUri(uri);
             // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
             String uriString =  Uri.decode(underlyingUri.toString());
@@ -867,6 +870,7 @@ public final class ConversationCursor implements Cursor {
         public static final int DELETE = 0;
         public static final int INSERT = 1;
         public static final int UPDATE = 2;
+        public static final int ARCHIVE = 3;
 
         private final int mType;
         private final Uri mUri;
@@ -909,6 +913,10 @@ public final class ConversationCursor implements Cursor {
                     sProvider.insertLocal(mUri, mValues);
                     return ContentProviderOperation.newInsert(uri)
                             .withValues(mValues).build();
+                case ARCHIVE:
+                    // TODO: (mindyp) build out archive correctly.
+                    sProvider.deleteLocal(mUri);
+                    return ContentProviderOperation.newDelete(uri).build();
                 default:
                     throw new UnsupportedOperationException(
                             "No such ConversationOperation type: " + mType);
