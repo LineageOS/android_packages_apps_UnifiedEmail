@@ -21,13 +21,13 @@ import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.net.Uri;
@@ -49,8 +49,10 @@ import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.AsyncRefreshTask.RefreshListener;
+import com.android.mail.ui.AsyncRefreshTask;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+
 
 /**
  * This is an abstract implementation of the Activity Controller. This class knows how to
@@ -70,6 +72,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_CONVERSATION_POSITION = "saved-conv-pos";
     // Keys for serialization of various information in Bundles.
     private static final String SAVED_LIST_CONTEXT = "saved-list-context";
+
     /**
      * Are we on a tablet device or not.
      */
@@ -95,6 +98,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected ConversationViewFragment mConversationViewFragment;
     protected boolean isLoaderInitialized = false;
     private AsyncRefreshTask mAsyncRefreshTask;
+
     private MenuItem mRefreshItem;
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
@@ -105,6 +109,9 @@ public abstract class AbstractActivityController implements ActivityController {
             mActivity.invalidateOptionsMenu();
         }
     };
+    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final int ACCOUNT_CURSOR_LOADER = 0;
+    private static final int FOLDER_CURSOR_LOADER = 1;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -234,7 +241,7 @@ public abstract class AbstractActivityController implements ActivityController {
             final Intent intent = mActivity.getIntent();
             // TODO(viki): Show the list context from Intent
             mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
-            mFolder = mConvListContext.mFolder;
+            setFolder(mConvListContext.mFolder);
             showConversationList(mConvListContext);
             mViewMode.enterConversationListMode();
         }
@@ -243,7 +250,7 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onFolderChanged(Folder folder) {
         if (!folder.equals(mFolder)) {
-            mFolder = folder;
+            setFolder(folder);
             final Intent intent = mActivity.getIntent();
             intent.putExtra(ConversationListContext.EXTRA_FOLDER, mFolder);
             //  TODO(viki): Show the list context from Intent
@@ -252,6 +259,15 @@ public abstract class AbstractActivityController implements ActivityController {
             // things automatically.
             showConversationList(mConvListContext);
             mViewMode.enterConversationListMode();
+        }
+    }
+
+    private void setFolder(Folder folder) {
+        // Start watching folder for sync status.
+        if (!folder.equals(mFolder)) {
+            mRefreshInProgress = false;
+            mFolder = folder;
+            mActivity.getLoaderManager().restartLoader(FOLDER_CURSOR_LOADER, null, this);
         }
     }
 
@@ -295,7 +311,7 @@ public abstract class AbstractActivityController implements ActivityController {
         initCustomActionBarView();
         final Intent intent = mActivity.getIntent();
         // Get a Loader to the Account
-        mActivity.getLoaderManager().initLoader(0, null, this);
+        mActivity.getLoaderManager().initLoader(ACCOUNT_CURSOR_LOADER, null, this);
         // Allow shortcut keys to function for the ActionBar and menus.
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
         mResolver = mActivity.getContentResolver();
@@ -369,21 +385,23 @@ public abstract class AbstractActivityController implements ActivityController {
             if (mAsyncRefreshTask != null) {
                 mAsyncRefreshTask.cancel(true);
             }
-            mAsyncRefreshTask = new AsyncRefreshTask(mContext, mFolder, this);
+            mAsyncRefreshTask = new AsyncRefreshTask(mContext, mFolder);
             mAsyncRefreshTask.execute();
         }
     }
 
-    @Override
     public void onRefreshStarted() {
-        mRefreshInProgress = true;
-        mHandler.post(mInvalidateMenu);
+        if (!mRefreshInProgress) {
+            mRefreshInProgress = true;
+            mHandler.post(mInvalidateMenu);
+        }
     }
 
-    @Override
     public void onRefreshStopped(int status) {
-        mRefreshInProgress = false;
-        mHandler.post(mInvalidateMenu);
+        if (mRefreshInProgress) {
+            mRefreshInProgress = false;
+            mHandler.post(mInvalidateMenu);
+        }
     }
 
     @Override
@@ -554,8 +572,15 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Create a loader to listen in on account changes.
-        return new CursorLoader(mContext, AccountCacheProvider.getAccountsUri(),
-                UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+        if (id == ACCOUNT_CURSOR_LOADER) {
+            return new CursorLoader(mContext,
+                    AccountCacheProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION, null,
+                    null, null);
+        } else if (id == FOLDER_CURSOR_LOADER) {
+            return new CursorLoader(mActivity.getActivityContext(),
+                    Uri.parse(mFolder.uri), UIProvider.FOLDERS_PROJECTION, null, null, null);
+        }
+        return null;
     }
 
     /**
@@ -587,7 +612,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mAccount = new Account(accounts);
         final Intent intent = mActivity.getIntent();
         mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
-        mFolder = mConvListContext.mFolder;
+        setFolder(mConvListContext.mFolder);
         // TODO(viki): Rely on the ViewMode transition to do the right things automatically. The
         // next line should be unnecessary.
         showConversationList(mConvListContext);
@@ -597,10 +622,32 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // We want to reinitialize only if we haven't ever been initialized, or if the current
-        // account has vanished.
-        if (!isLoaderInitialized || !existsInCursor(data, mAccount)) {
-            isLoaderInitialized = updateAccounts(loader, data);
+        // We want to reinitialize only if we haven't ever been initialized, or
+        // if the current account has vanished.
+        int id = loader.getId();
+        if (id == ACCOUNT_CURSOR_LOADER) {
+            if (!isLoaderInitialized || !existsInCursor(data, mAccount)) {
+                isLoaderInitialized = updateAccounts(loader, data);
+            }
+        } else if (id == FOLDER_CURSOR_LOADER) {
+            // Check status of the cursor.
+            if (data != null) {
+                data.moveToFirst();
+                Folder folder = new Folder(data);
+                switch (folder.syncStatus) {
+                    case UIProvider.SyncStatus.BACKGROUND_SYNC:
+                    case UIProvider.SyncStatus.USER_REFRESH:
+                        onRefreshStarted();
+                        break;
+                    case UIProvider.SyncStatus.NO_SYNC:
+                        // Stop the spinner here.
+                        onRefreshStopped(folder.lastSyncResult);
+                        break;
+                    default:
+                        break;
+                }
+                LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
+            }
         }
     }
 
@@ -621,4 +668,5 @@ public abstract class AbstractActivityController implements ActivityController {
             }
         }
     }
+
 }
