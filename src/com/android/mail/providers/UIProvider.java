@@ -23,7 +23,6 @@ import android.text.TextUtils;
 
 import com.android.common.contacts.DataUsageStatUpdater;
 
-import java.lang.String;
 import java.util.ArrayList;
 
 
@@ -31,6 +30,41 @@ public class UIProvider {
     public static final String EMAIL_SEPARATOR = "\n";
     public static final long INVALID_CONVERSATION_ID = -1;
     public static final long INVALID_MESSAGE_ID = -1;
+
+    /**
+     * Values for the current state of a Folder/Account; note that it's possible that more than one
+     * sync is in progress
+     */
+    public static final class SyncStatus {
+        // No sync in progress
+        public static final int NO_SYNC = 1<<0;
+        // A user-requested sync/refresh is in progress
+        public static final int USER_REFRESH = 1<<1;
+        // A user-requested query is in progress
+        public static final int USER_QUERY = 1<<2;
+        // A user request for additional results is in progress
+        public static final int USER_MORE_RESULTS = 1<<3;
+        // A background sync is in progress
+        public static final int BACKGROUND_SYNC = 1<<4;
+    }
+
+    /**
+     * Values for the result of the last attempted sync of a Folder/Account
+     */
+    public static final class LastSyncResult {
+        // The sync completed successfully
+        public static final int SUCCESS = 0;
+        // The sync wasn't completed due to a connection error
+        public static final int CONNECTION_ERROR = 1;
+        // The sync wasn't completed due to an authentication error
+        public static final int AUTH_ERROR = 2;
+        // The sync wasn't completed due to a security error
+        public static final int SECURITY_ERROR = 3;
+        // The sync wasn't completed due to a low memory condition
+        public static final int STORAGE_ERROR = 4;
+        // The sync wasn't completed due to an internal error/exception
+        public static final int INTERNAL_ERROR = 5;
+    }
 
     // The actual content provider should define its own authority
     public static final String AUTHORITY = "com.android.mail.providers";
@@ -53,8 +87,8 @@ public class UIProvider {
             AccountColumns.SEND_MAIL_URI,
             AccountColumns.EXPUNGE_MESSAGE_URI,
             AccountColumns.UNDO_URI,
-            AccountColumns.STATUS_URI,
-            AccountColumns.SETTINGS_INTENT_URI
+            AccountColumns.SETTINGS_INTENT_URI,
+            AccountColumns.SYNC_STATUS
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -69,8 +103,8 @@ public class UIProvider {
     public static final int ACCOUNT_SEND_MESSAGE_URI_COLUMN = 9;
     public static final int ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN = 10;
     public static final int ACCOUNT_UNDO_URI_COLUMN = 11;
-    public static final int ACCOUNT_STATUS_URI_COLUMN = 12;
-    public static final int SETTINGS_INTENT_URI_COLUMN = 13;
+    public static final int ACCOUNT_SETTINGS_INTENT_URI_COLUMN = 12;
+    public static final int ACCOUNT_SYNC_STATUS_COLUMN = 13;
 
     public static final class AccountCapabilities {
         /**
@@ -211,11 +245,6 @@ public class UIProvider {
          * to undo the last committed action.
          */
         public static final String UNDO_URI = "undoUri";
-        /**
-         * This string column contains the content provider uri for getting a
-         * cursor that reflects the sync status of this account.
-         */
-        public static final String STATUS_URI = "statusUri";
 
         /**
          * Uri for VIEW intent that will cause the settings screens for this account type to be
@@ -224,6 +253,12 @@ public class UIProvider {
          * to be moved to a global content provider.
          */
         public static String SETTINGS_INTENT_URI = "accountSettingsIntentUri";
+
+        /**
+         * This int column contains the current sync status of the account (the logical AND of the
+         * sync status of folders in this account)
+         */
+        public static final String SYNC_STATUS = "syncStatus";
     }
 
     // We define a "folder" as anything that contains a list of conversations.
@@ -245,7 +280,8 @@ public class UIProvider {
         FolderColumns.UNREAD_COUNT,
         FolderColumns.TOTAL_COUNT,
         FolderColumns.REFRESH_URI,
-        FolderColumns.STATUS_URI
+        FolderColumns.SYNC_STATUS,
+        FolderColumns.LAST_SYNC_RESULT
     };
 
     public static final int FOLDER_ID_COLUMN = 0;
@@ -260,7 +296,8 @@ public class UIProvider {
     public static final int FOLDER_UNREAD_COUNT_COLUMN = 9;
     public static final int FOLDER_TOTAL_COUNT_COLUMN = 10;
     public static final int FOLDER_REFRESH_URI_COLUMN = 11;
-    public static final int FOLDER_STATUS_URI_COLUMN = 12;
+    public static final int FOLDER_SYNC_STATUS_COLUMN = 12;
+    public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 13;
 
     public static final class FolderCapabilities {
         public static final int SYNCABLE = 0x0001;
@@ -313,10 +350,15 @@ public class UIProvider {
          */
         public static final  String REFRESH_URI = "refreshUri";
         /**
-         * This string column contains the content provider uri for getting a
-         * cursor that reflects the sync status of this folder.
+         * This int column contains current sync status of the folder; some combination of the
+         * SyncStatus bits defined above
          */
-        public static final String STATUS_URI  = "statusUri";
+        public static final String SYNC_STATUS  = "syncStatus";
+        /**
+         * This int column contains the sync status of the last sync attempt; one of the
+         * LastSyncStatus values defined above
+         */
+        public static final String LAST_SYNC_RESULT  = "lastSyncResult";
 
         public FolderColumns() {}
     }

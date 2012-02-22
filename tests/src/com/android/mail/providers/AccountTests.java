@@ -35,8 +35,8 @@ public class AccountTests extends AndroidTestCase {
         dest.writeString("sendMessageUri");
         dest.writeString("expungeMessageUri");
         dest.writeString("undoUri");
-        dest.writeString("statusUri");
         dest.writeString("settingIntentUri");
+        dest.writeInt(0);
         Account account = new Account(dest);
         Intent intent = new Intent();
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);

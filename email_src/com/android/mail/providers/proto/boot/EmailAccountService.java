@@ -15,18 +15,19 @@
  */
 package com.android.mail.providers.protos.boot;
 
-import com.android.emailcommon.provider.Account;
-import com.android.emailcommon.provider.EmailContent;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.AccountColumns;
-import com.android.mail.providers.protos.mock.MockUiProvider;
-import com.android.mail.providers.AccountCacheProvider;
-
-import java.util.Map;
-
 import android.app.IntentService;
 import android.content.Intent;
 import android.database.Cursor;
+
+import com.android.emailcommon.provider.Account;
+import com.android.emailcommon.provider.EmailContent;
+import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.AccountColumns;
+import com.android.mail.providers.protos.boot.AccountReceiver;
+import com.android.mail.providers.protos.mock.MockUiProvider;
+
+import java.util.Map;
 
 /**
  * A service to handle various intents asynchronously.
@@ -83,8 +84,8 @@ public class EmailAccountService extends IntentService {
                             getUriString("uisendmail", accountName),
                             (String)mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
                             getUriString("uiundo", accountName),
-                            (String)mockAccountMap.get(AccountColumns.STATUS_URI),
-                            (String)mockAccountMap.get(AccountColumns.SETTINGS_INTENT_URI));
+                            (String)mockAccountMap.get(AccountColumns.SETTINGS_INTENT_URI),
+                            0);
 
                 AccountCacheProvider.addAccount(cachedAccount);
                 i++;

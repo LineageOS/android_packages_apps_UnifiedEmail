@@ -145,8 +145,8 @@ public class GmailAccountService extends IntentService {
                             getAccountSendMailUri(account.name).toString(),
                             (String)mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
                             getAccountUndoUri(account.name).toString(),
-                            (String)mockAccountMap.get(AccountColumns.STATUS_URI),
-                            getAccountSettingUri(account.name).toString());
+                            getAccountSettingUri(account.name).toString(),
+                            0);
 
             AccountCacheProvider.addAccount(cachedAccount);
         }

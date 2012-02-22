@@ -16,15 +16,6 @@
 
 package com.android.mail.providers.protos.mock;
 
-import com.android.mail.providers.AccountCacheProvider;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.AccountColumns;
-import com.android.mail.providers.UIProvider.AttachmentColumns;
-import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.providers.UIProvider.FolderColumns;
-import com.android.mail.providers.UIProvider.MessageColumns;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -33,16 +24,20 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.Html;
 
+import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.AccountColumns;
+import com.android.mail.providers.UIProvider.AttachmentColumns;
+import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.providers.UIProvider.FolderColumns;
+import com.android.mail.providers.UIProvider.MessageColumns;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-import java.lang.Long;
-import java.lang.Object;
-import java.lang.Override;
-import java.lang.String;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -238,6 +233,8 @@ public final class MockUiProvider extends ContentProvider {
                         FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
         folderMap.put(FolderColumns.UNREAD_COUNT, unread);
         folderMap.put(FolderColumns.TOTAL_COUNT, total);
+        folderMap.put(FolderColumns.SYNC_STATUS, 0);
+        folderMap.put(FolderColumns.LAST_SYNC_RESULT, 0);
         return folderMap;
     }
 
@@ -271,8 +268,8 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.SEND_MAIL_URI, accountUri + "/sendMail");
         accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI, accountUri + "/expungeMessage");
         accountMap.put(AccountColumns.UNDO_URI, accountUri + "/undo");
-        accountMap.put(AccountColumns.STATUS_URI, accountUri + "/status");
         accountMap.put(AccountColumns.SETTINGS_INTENT_URI, "http://www.google.com");
+        accountMap.put(AccountColumns.SYNC_STATUS, 0);
 
         if (cacheMap) {
             addAccountInfoToAccountCache(accountMap);
@@ -361,8 +358,8 @@ public final class MockUiProvider extends ContentProvider {
                         (String)accountInfo.get(AccountColumns.SEND_MAIL_URI),
                         (String)accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI),
                         (String)accountInfo.get(AccountColumns.UNDO_URI),
-                        (String)accountInfo.get(AccountColumns.STATUS_URI),
-                        (String)accountInfo.get(AccountColumns.SETTINGS_INTENT_URI));
+                        (String)accountInfo.get(AccountColumns.SETTINGS_INTENT_URI),
+                        (Integer)accountInfo.get(AccountColumns.SYNC_STATUS));
 
 
         AccountCacheProvider.addAccount(account);

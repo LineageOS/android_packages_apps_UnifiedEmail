@@ -83,16 +83,15 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final String undoUri;
 
     /**
-     * The content provider uri that can be used to get a status cursor for this
-     * account.
-     */
-    public final String statusUri;
-
-    /**
      * Uri for VIEW intent that will cause the settings screens for this account type to be
      * shown.
      */
     public final String settingIntentUri;
+
+    /**
+     * The sync status of the account
+     */
+    public final int syncStatus;
 
     public Account(Parcel in) {
         super(in);
@@ -106,8 +105,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sendMessageUri = in.readString();
         expungeMessageUri = in.readString();
         undoUri = in.readString();
-        statusUri = in.readString();
         settingIntentUri = in.readString();
+        syncStatus = in.readInt();
     }
 
     // TODO(pwestbro): remove this constructor.
@@ -126,8 +125,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sendMessageUri = null;
         expungeMessageUri = null;
         undoUri = null;
-        statusUri = null;
         settingIntentUri = null;
+        syncStatus = 0;
     }
 
     public Account(Cursor cursor) {
@@ -142,8 +141,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sendMessageUri = cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN);
         expungeMessageUri = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
         undoUri = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
-        statusUri = cursor.getString(UIProvider.ACCOUNT_STATUS_URI_COLUMN);
-        settingIntentUri = cursor.getString(UIProvider.SETTINGS_INTENT_URI_COLUMN);
+        settingIntentUri = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
+        syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
     }
 
     public boolean supportsCapability(int capability) {
@@ -163,8 +162,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeString(sendMessageUri);
         dest.writeString(expungeMessageUri);
         dest.writeString(undoUri);
-        dest.writeString(statusUri);
         dest.writeString(settingIntentUri);
+        dest.writeInt(syncStatus);
     }
 
     @SuppressWarnings("hiding")
