@@ -52,6 +52,13 @@ public final class TwoPaneController extends AbstractActivityController {
         if (show) {
             mViewMode.enterConversationListMode();
         }
+        renderConversationList();
+    }
+
+    /**
+     * Render the conversation list in the correct pane.
+     */
+    private void renderConversationList() {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         // Use cross fading animation.
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -59,6 +66,19 @@ public final class TwoPaneController extends AbstractActivityController {
                 .newInstance(mConvListContext);
         fragmentTransaction.replace(R.id.conversation_list_pane, conversationListFragment);
         fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    /**
+     * Render the folder list in the correct pane.
+     */
+    private void renderFolderList() {
+        Fragment folderListFragment = FolderListFragment.newInstance(this, mAccount.folderListUri);
+        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragmentTransaction.replace(R.id.folders_pane, folderListFragment);
+        fragmentTransaction.commitAllowingStateLoss();
+        // Since we are showing the folder list, we are at the start of the view stack.
+        resetActionBarIcon();
     }
 
     @Override
@@ -70,17 +90,19 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public void showConversationList(ConversationListContext context) {
         initializeConversationListFragment(true);
+        renderFolderList();
     }
 
     @Override
     public void showFolderList() {
-        // TODO: auto-generated method stub.
+        // On two-pane layouts, showing the folder list takes you to the top level of the
+        // application, which is the same as pressing the Up button
+        onUpPressed();
     }
 
     @Override
     public boolean onCreate(Bundle savedState) {
         mActivity.setContentView(R.layout.two_pane_activity);
-
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
         mLayout.initializeLayout(mActivity.getApplicationContext());
 
@@ -90,11 +112,6 @@ public final class TwoPaneController extends AbstractActivityController {
         mLayout.setListener(this);
 
         final boolean isParentInitialized = super.onCreate(savedState);
-        if (isParentInitialized && savedState == null) {
-            // Show a Label list, in the real application
-            // renderLabelList();
-            // In our case, we show a conversation list for everything.
-        }
         return isParentInitialized;
     }
 
@@ -122,13 +139,32 @@ public final class TwoPaneController extends AbstractActivityController {
         mViewMode.enterConversationMode();
     }
 
-    @Override
-    public boolean onUpPressed() {
+    /**
+     * Show the conversation list if it can be shown in the current orientation.
+     * @return true if the conversation list was shown
+     */
+    private boolean unhideConversationList(){
+        // Find if the conversation list can be shown
+        final boolean isConversationListShowable =
+                (mViewMode.getMode() == ViewMode.CONVERSATION &&
+                mLayout.isConversationListCollapsible());
+        if (isConversationListShowable) {
+            return mLayout.uncollapseList();
+        }
         return false;
     }
 
     @Override
+    public boolean onUpPressed() {
+        return unhideConversationList();
+    }
+
+    @Override
     public boolean onBackPressed() {
-        return false;
+        if (!(mViewMode.getMode() == ViewMode.CONVERSATION)){
+            return mViewMode.enterConversationListMode();
+        }
+        mActivity.finish();
+        return true;
     }
 }
