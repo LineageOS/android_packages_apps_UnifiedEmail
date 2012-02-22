@@ -91,7 +91,6 @@ public class UndoBarView extends FrameLayout {
      */
     public void show(boolean animate, final Context context, String description,
             final Account account, final AnimatedAdapter listAdapter) {
-        animate = false;
         mUndoButtonView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View widget) {
@@ -113,6 +112,7 @@ public class UndoBarView extends FrameLayout {
             getUndoShowAnimation().start();
         } else {
             setVisibility(View.VISIBLE);
+            setAlpha(1);
         }
     }
 
@@ -143,7 +143,6 @@ public class UndoBarView extends FrameLayout {
     }
 
     private void internalHide(boolean animate) {
-        animate = false;
         if (isShown()) {
             mUndoDescriptionView.setText("");
             mUndoButtonView.setOnClickListener(null);
@@ -151,6 +150,7 @@ public class UndoBarView extends FrameLayout {
             if (animate) {
                 getUndoHideAnimation().start();
             } else {
+                setAlpha(0);
                 setVisibility(View.GONE);
             }
             if (mOnCancelListener != null) {
@@ -163,6 +163,21 @@ public class UndoBarView extends FrameLayout {
         if (mUndoShowAnimation == null) {
             mUndoShowAnimation = AnimatorInflater.loadAnimator(getContext(),
                     R.animator.fade_in);
+            mUndoShowAnimation.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    setVisibility(View.VISIBLE);
+                }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
             mUndoShowAnimation.setTarget(this);
         }
         return mUndoShowAnimation;
@@ -172,6 +187,21 @@ public class UndoBarView extends FrameLayout {
         if (mUndoHideAnimation == null) {
             mUndoHideAnimation = AnimatorInflater.loadAnimator(getContext(),
                     R.animator.fade_out);
+            mUndoHideAnimation.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    setVisibility(View.GONE);
+                }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+            });
             mUndoHideAnimation.setTarget(this);
         }
         return mUndoHideAnimation;

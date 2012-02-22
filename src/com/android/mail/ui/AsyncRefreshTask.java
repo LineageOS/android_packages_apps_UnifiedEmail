@@ -60,7 +60,8 @@ public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
          */
         public void onChanged() {
             // TODO: (mindyp) Check the new folder status. If syncing is
-            // complete, stop the spinner here.
+            // complete ("SUCCESS", stop the spinner here.
+            // If error, stop the spinner and show the error icon.
             System.out.println("FOLDER STATUS = "); // + new Folder(mFolderCursor).status);
         }
     }
