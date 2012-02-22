@@ -16,53 +16,48 @@
  *******************************************************************************/
 package com.android.mail.ui;
 
-import android.os.Bundle;
-
-import com.android.mail.providers.Conversation;
-
-import java.util.Collection;
+import com.android.mail.R;
+import android.content.Context;
 
 /**
  * A simple holder class that stores the information to undo the application of a label.
  */
 public class UndoOperation {
-    private static final String ACCOUNT = "undo-account";
-    private static final String DESCRIPTION = "undo-description";
-    private static final String CONVERSATIONS = "undo-conversations";
+    public int mAction;
+    public int mCount;
 
-    public Collection<Conversation> mConversations;
-    public String mDescription;
-    public String mAccount;
-
-    public UndoOperation(String account, Collection<Conversation> conversations,
-            String description) {
-        this(account, conversations, description, true /* undoAction */);
-    }
 
     /**
      * Create an UndoOperation
-     * @param account Account that this operation is associated with
-     * @param conversations Collection of ConversationInfo objects that this operation
-     *        should be applied to
-     * @param description Desctiption text that should be shown to the user
-     * @param undoAction  Boolean indicating whether the operations should be reversed
-     *        in order to perform the action.  This is only false when un-marshaling a
-     *        previously existing UndoOperation
+     *
+     * @param count Number of conversations this undo would be applied to.
+     * @param menuId res id identifying the menu item tapped; used to determine
+     *            what action was performed
      */
-    private UndoOperation(String account, Collection<Conversation> conversations,
-            String description, boolean undoAction) {
-        mAccount = account;
-        mConversations = conversations;
-        mDescription = description;
+    public UndoOperation(int count, int menuId) {
+        mAction = menuId;
+        mCount = count;
     }
 
     /**
-     * Save this object into an extra object.
+     * Get a string description of the undo operation that will be performed
+     * when the user taps the undo bar.
      */
-    public void saveToExtras(Bundle extras) {
-        extras.putString(ACCOUNT, mAccount);
-        extras.putString(DESCRIPTION, mDescription);
-        extras.putParcelableArray(CONVERSATIONS,
-                mConversations.toArray(new Conversation[mConversations.size()]));
+    public String getDescription(Context context) {
+        String desc = "";
+        int resId = -1;
+        switch (mAction) {
+            case R.id.delete:
+                resId = R.plurals.conversation_deleting;
+                break;
+            default:
+                resId = -1;
+                break;
+        }
+        if (resId != -1) {
+            desc = String.format(
+                    context.getResources().getQuantityString(resId, mCount), mCount);
+        }
+        return desc;
     }
 }

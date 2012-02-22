@@ -21,7 +21,6 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ActionCompleteListener;
@@ -30,6 +29,8 @@ import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.FoldersSelectionDialog;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.FoldersSelectionDialog.CommitListener;
+import com.android.mail.ui.UndoBarView.UndoListener;
+import com.android.mail.ui.UndoOperation;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -51,7 +52,7 @@ import android.widget.Toast;
  * ContextMode} specific to operating on a set of conversations.
  */
 public class SelectedConversationsActionMenu implements ActionMode.Callback,
-        ConversationSetObserver, ActionCompleteListener, CommitListener {
+        ConversationSetObserver, CommitListener {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -87,20 +88,37 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private ActionCompleteListener mActionCompleteListener;
 
+    private UndoListener mUndoListener;
+
     private Account mAccount;
 
     protected int mCheckedItem = 0;
 
     private Folder mFolder;
 
+    private ActionCompleteListener mDeleteListener = new ActionCompleteListener() {
+        @Override
+        public void onActionComplete() {
+            // This is where we actually delete.
+            Collection<Conversation> conversations = mSelectionSet.values();
+            mActionCompleteListener.onActionComplete();
+            mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), R.id.delete));
+            Conversation.delete(mContext, conversations);
+            mListAdapter.notifyDataSetChanged();
+            mSelectionSet.clear();
+        }
+    };
+
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            ActionCompleteListener listener, Account account, Folder folder) {
+            ActionCompleteListener listener, UndoListener undoListener, Account account,
+            Folder folder) {
         mSelectionSet = selectionSet;
         mActivity = activity;
         mContext = mActivity.getActivityContext();
         mListAdapter = adapter;
         mActionCompleteListener = listener;
+        mUndoListener = undoListener;
         mAccount = account;
         mFolder = folder;
     }
@@ -111,7 +129,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         Collection<Conversation> conversations = mSelectionSet.values();
         switch (item.getItemId()) {
             case R.id.delete:
-                mListAdapter.delete(conversations, this);
+                mListAdapter.delete(conversations, mDeleteListener);
                 break;
             case R.id.read:
                 markConversationsRead(true);
@@ -354,14 +372,5 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 item.setEnabled(enable);
             }
         }
-    }
-
-    @Override
-    public void onActionComplete() {
-        // This is where we actually delete.
-        mActionCompleteListener.onActionComplete();
-        Conversation.delete(mContext, mSelectionSet.values());
-        mListAdapter.notifyDataSetChanged();
-        mSelectionSet.clear();
     }
 }

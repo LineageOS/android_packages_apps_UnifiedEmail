@@ -89,7 +89,7 @@ public class UndoBarView extends FrameLayout {
      * Displays this view and makes it visible, binding the behavior to the
      * specified {@link UndoOperation}.
      */
-    public void show(boolean animate, final Context context, String description,
+    public void show(boolean animate, final Context context, UndoOperation op,
             final Account account, final AnimatedAdapter listAdapter) {
         mUndoButtonView.setOnClickListener(new OnClickListener() {
             @Override
@@ -105,7 +105,7 @@ public class UndoBarView extends FrameLayout {
                 hide(true);
             }
         });
-        mUndoDescriptionView.setText(Html.fromHtml(description));
+        mUndoDescriptionView.setText(Html.fromHtml(op.getDescription(context)));
         mStartShowTime = SystemClock.uptimeMillis();
         mHidden = false;
         if (animate) {
@@ -228,7 +228,7 @@ public class UndoBarView extends FrameLayout {
     /**
      * Classes that can undo an operation should implement this interface.
      */
-    public interface UndoHandler {
-        public void performUndo(UndoOperation undoOp);
+    public interface UndoListener {
+        public void onUndoAvailable(UndoOperation undoOp);
     }
 }

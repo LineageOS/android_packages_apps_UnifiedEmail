@@ -17,12 +17,9 @@
 
 package com.android.mail.ui;
 
-import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -44,7 +41,6 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SelectedConversationsActionMenu;
-import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -61,7 +57,7 @@ import java.util.ArrayList;
 public final class ConversationListFragment extends ListFragment implements
         OnItemLongClickListener, ModeChangeListener, UndoBarView.OnUndoCancelListener,
         ConversationSetObserver, ActionCompleteListener, ConversationListener,
-        LoaderManager.LoaderCallbacks<ConversationCursor> {
+        LoaderManager.LoaderCallbacks<ConversationCursor>, UndoBarView.UndoListener {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     // Batch conversations stored in the Bundle using this key.
@@ -79,28 +75,9 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private static int TIMESTAMP_UPDATE_INTERVAL = 0;
 
-    private static final AnimatorListener UNDO_HIDE_ANIMATOR_LISTENER = new AnimatorListener() {
-        @Override
-        public void onAnimationCancel(Animator animation) {
-            // Do nothing.
-        }
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            // Do nothing.
-        }
-        @Override
-        public void onAnimationRepeat(Animator animation) {
-            // Do nothing.
-        }
-        @Override
-        public void onAnimationStart(Animator animation) {
-            // Do nothing.
-        }
-    };
     private static final int CONVERSATION_LOADER_ID = 0;
 
     private ControllableActivity mActivity;
-    private boolean mAnimateChanges;
 
     // Control state.
     private ConversationListCallbacks mCallbacks;
@@ -132,10 +109,6 @@ public final class ConversationListFragment extends ListFragment implements
      * Current label/folder being viewed.
      */
     private Folder mFolder;
-    /**
-     * Object to deal with starring of messages.
-     */
-    private StarHandler mStarHandler;
 
     private UndoBarView mUndoView;
 
@@ -145,7 +118,6 @@ public final class ConversationListFragment extends ListFragment implements
     private Runnable mUpdateTimestampsRunnable = null;
 
     private ConversationListContext mViewContext;
-    private ContentResolver mResolver;
 
     private AnimatedAdapter mListAdapter;
 
@@ -197,16 +169,6 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * Hides the control for an {@link UndoOperation}
-     * @param animate if true, hiding the undo view will be animated.
-     */
-    private void hideUndoView(boolean animate) {
-        if (mUndoView.isShown()) {
-            mUndoView.hide(animate);
-        }
-    }
-
-    /**
      * Initializes all internal state for a rendering.
      */
     private void initializeUiForFirstDisplay() {
@@ -239,13 +201,11 @@ public final class ConversationListFragment extends ListFragment implements
         }
         mActivity = (ControllableActivity) activity;
         mCallbacks = mActivity.getListHandler();
-        mStarHandler = mActivity.getStarHandler();
         // Don't need to add ourselves to our own set observer.
         // mActivity.getBatchConversations().addObserver(this);
         mActivity.setViewModeListener(this);
         mActivity.attachConversationList(this);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
-        mResolver = mActivity.getContentResolver();
         initializeUiForFirstDisplay();
 
         // The onViewModeChanged callback doesn't get called when the mode object is created, so
@@ -423,10 +383,8 @@ public final class ConversationListFragment extends ListFragment implements
             } else {
                 mListView.setBackgroundDrawable(null);
             }
-            mAnimateChanges = true;
         } else {
             mListView.setBackgroundDrawable(null);
-            mAnimateChanges = (newMode == ViewMode.CONVERSATION_LIST);
         }
     }
     /**
@@ -466,21 +424,24 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(mActivity,
-                mSelectedSet, mListAdapter, this, mAccount, mFolder);
+                mSelectedSet, mListAdapter, this, this, mAccount, mFolder);
         mSelectedConversationsActionMenu.activate();
     }
 
     @Override
     public void onActionComplete() {
-        showUndo();
+        // Nothing to do here.
     }
 
-    private void showUndo() {
-        if (mUndoView == null) {
-            mUndoView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
+    @Override
+    public void onUndoAvailable(UndoOperation op) {
+        if (op != null) {
+            if (mUndoView == null) {
+                mUndoView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
+            }
+            mUndoView.setOnCancelListener(mListAdapter);
+            mUndoView.show(true, mActivity.getActivityContext(), op, mAccount, mListAdapter);
         }
-        mUndoView.setOnCancelListener(mListAdapter);
-        mUndoView.show(true, mActivity.getActivityContext(), "undo", mAccount, mListAdapter);
     }
 
     @Override

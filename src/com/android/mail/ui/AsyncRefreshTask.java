@@ -26,8 +26,10 @@ import android.text.TextUtils;
 
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.LogUtils;
 
 public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
+    private static final String LOG_TAG = new LogUtils().getLogTag();
     private Context mContext;
     private Folder mFolder;
     private Cursor mFolderCursor;
@@ -60,9 +62,9 @@ public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
          */
         public void onChanged() {
             // TODO: (mindyp) Check the new folder status. If syncing is
-            // complete ("SUCCESS", stop the spinner here.
+            // complete "SUCCESS", stop the spinner here.
             // If error, stop the spinner and show the error icon.
-            System.out.println("FOLDER STATUS = "); // + new Folder(mFolderCursor).status);
+            LogUtils.i(LOG_TAG, "FOLDER STATUS = ");
         }
     }
 }
