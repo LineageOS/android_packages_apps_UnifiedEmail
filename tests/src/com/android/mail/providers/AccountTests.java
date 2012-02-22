@@ -16,6 +16,7 @@
 package com.android.mail.providers;
 
 import android.content.Intent;
+import android.os.Parcel;
 import android.test.AndroidTestCase;
 
 import com.android.mail.utils.Utils;
@@ -23,17 +24,20 @@ import com.android.mail.utils.Utils;
 public class AccountTests extends AndroidTestCase {
 
     public void testSerializeDeSerialize() {
-        String name = "account@account.com";
-        Account account = new Account(name, "uknown");
-        account.accountFromAddressesUri = "fromAddresses";
-        account.capabilities = 12345;
-        account.providerVersion = 1;
-        account.accountUri = "accountUri";
-        account.folderListUri = "foldersList";
-        account.searchUri = "searchUri";
-        account.saveDraftUri = "saveDraftUri";
-        account.sendMessageUri = "sendMessageUri";
-        account.expungeMessageUri = "sendMessageUri";
+        Parcel dest = Parcel.obtain();
+        dest.writeInt(0);
+        dest.writeString("accountUri");
+        dest.writeInt(12345);
+        dest.writeString("foldersList");
+        dest.writeString("searchUri");
+        dest.writeString("fromAddresses");
+        dest.writeString("saveDraftUri");
+        dest.writeString("sendMessageUri");
+        dest.writeString("expungeMessageUri");
+        dest.writeString("undoUri");
+        dest.writeString("statusUri");
+        dest.writeString("settingIntentUri");
+        Account account = new Account(dest);
         Intent intent = new Intent();
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
         Account outAccount = (Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
