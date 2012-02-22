@@ -29,6 +29,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.net.Uri;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -37,6 +38,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.android.mail.R;
@@ -47,6 +49,7 @@ import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.AsyncRefreshTask.RefreshListener;
 import com.android.mail.utils.Utils;
 
 /**
@@ -92,6 +95,16 @@ public abstract class AbstractActivityController implements ActivityController {
     protected ConversationViewFragment mConversationViewFragment;
     protected boolean isLoaderInitialized = false;
     private AsyncRefreshTask mAsyncRefreshTask;
+    private MenuItem mRefreshItem;
+    private View mRefreshActionView;
+    private boolean mRefreshInProgress;
+    private Handler mHandler = new Handler();
+    private Runnable mInvalidateMenu = new Runnable() {
+        @Override
+        public void run() {
+            mActivity.invalidateOptionsMenu();
+        }
+    };
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -308,6 +321,7 @@ public abstract class AbstractActivityController implements ActivityController {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(mActionBarView.getOptionsMenuId(), menu);
+        mRefreshItem = menu.findItem(R.id.refresh);
         return true;
     }
 
@@ -355,9 +369,21 @@ public abstract class AbstractActivityController implements ActivityController {
             if (mAsyncRefreshTask != null) {
                 mAsyncRefreshTask.cancel(true);
             }
-            mAsyncRefreshTask = new AsyncRefreshTask(mContext, mFolder);
+            mAsyncRefreshTask = new AsyncRefreshTask(mContext, mFolder, this);
             mAsyncRefreshTask.execute();
         }
+    }
+
+    @Override
+    public void onRefreshStarted() {
+        mRefreshInProgress = true;
+        mHandler.post(mInvalidateMenu);
+    }
+
+    @Override
+    public void onRefreshStopped(int status) {
+        mRefreshInProgress = false;
+        mHandler.post(mInvalidateMenu);
     }
 
     @Override
@@ -373,8 +399,21 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // TODO(viki): Auto-generated method stub
-        return false;
+        if (mRefreshInProgress) {
+            if (mRefreshItem != null) {
+                if (mRefreshActionView == null) {
+                    mRefreshItem.setActionView(R.layout.action_bar_indeterminate_progress);
+                    mRefreshActionView = mRefreshItem.getActionView();
+                } else {
+                    mRefreshItem.setActionView(mRefreshActionView);
+                }
+            }
+        } else {
+            if (mRefreshItem != null) {
+                mRefreshItem.setActionView(null);
+            }
+        }
+        return true;
     }
 
     @Override

@@ -20,14 +20,13 @@ package com.android.mail.ui;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.text.TextUtils;
 
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.SyncStatus;
 import com.android.mail.utils.LogUtils;
 
 public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
@@ -36,22 +35,28 @@ public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
     private Folder mFolder;
     private Cursor mFolderCursor;
     private ContentObserver mFolderObserver;
+    private final RefreshListener mRefreshListener;
 
-    public AsyncRefreshTask(Context context, Folder folder) {
+
+    private AsyncTask<Void, Void, Void> mRefreshAsyncTask;
+
+    public AsyncRefreshTask(Context context, Folder folder, RefreshListener listener) {
         mContext = context;
         mFolder = folder;
         mFolderObserver = new FolderObserver();
+        mRefreshListener = listener;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
         String refreshUri = mFolder.refreshUri;
         if (!TextUtils.isEmpty(refreshUri)) {
-            // Watch for changes on the folder.
+            // Let listeners know we are kicking off a refresh.
+            mRefreshListener.onRefreshStarted();
             mFolderCursor = mContext.getContentResolver().query(Uri.parse(mFolder.uri),
                     UIProvider.FOLDERS_PROJECTION, null, null, null);
+            // Watch for changes on the folder.
             mFolderCursor.registerContentObserver(mFolderObserver);
-            // TODO: (mindyp) Start the spinner here.
             mContext.getContentResolver().query(Uri.parse(refreshUri), null, null, null, null);
         }
         return null;
@@ -64,31 +69,51 @@ public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         public void onChange(boolean selfChange) {
-            // TODO: (mindyp) Check the new folder status. If syncing is
-            // complete "SUCCESS", stop the spinner here.
-            // If error, stop the spinner and show the error icon.
-            // Remove the listener.
+            // Unregister the current listener.
             if (mFolderObserver != null) {
                 mFolderCursor.unregisterContentObserver(mFolderObserver);
                 mFolderObserver = null;
             }
-            // TODO: make this async.
-            mFolderCursor.close();
-            mFolderCursor = mContext.getContentResolver().query(Uri.parse(mFolder.uri),
-                    UIProvider.FOLDERS_PROJECTION, null, null, null);
-            mFolderCursor.moveToFirst();
-            Folder folder = new Folder(mFolderCursor);
-            switch (folder.syncStatus) {
-                case UIProvider.LastSyncResult.SUCCESS:
-                    // Stop the spinner here.
-                    // Don't add a new listener; the sync is done.
-                    break;
-                default:
-                    // re-add the listener
-                    mFolderCursor.registerContentObserver(mFolderObserver);
-                    break;
+            if (mRefreshAsyncTask != null) {
+                mRefreshAsyncTask.cancel(true);
             }
-            LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
+            // Close the existing cursor.
+            mFolderCursor.close();
+            // Update the cursor.
+            mRefreshAsyncTask = new AsyncTask<Void, Void, Void>() {
+                protected Void doInBackground(Void... voids) {
+                    mFolderCursor = mContext.getContentResolver().query(Uri.parse(mFolder.uri),
+                            UIProvider.FOLDERS_PROJECTION, null, null, null);
+                    mFolderCursor.moveToFirst();
+                    Folder folder = new Folder(mFolderCursor);
+                    switch (folder.syncStatus) {
+                        case SyncStatus.NO_SYNC:
+                            // Stop the spinner here. Don't add a new listener;
+                            // the sync is done.
+                            mRefreshListener.onRefreshStopped(folder.lastSyncResult);
+                            break;
+                        default:
+                            // re-add the listener
+                            if (mFolderObserver == null) {
+                                mFolderObserver = new FolderObserver();
+                            }
+                            mFolderCursor.registerContentObserver(mFolderObserver);
+                            break;
+                    }
+                    LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
+                    return null;
+                }
+            };
+            mRefreshAsyncTask.execute();
         }
+    }
+
+    /**
+     * Classes which want to know about the status of a user requested
+     * refresh of the current folder should implement this interface.
+     */
+    public interface RefreshListener {
+        public void onRefreshStarted();
+        public void onRefreshStopped(int status);
     }
 }
