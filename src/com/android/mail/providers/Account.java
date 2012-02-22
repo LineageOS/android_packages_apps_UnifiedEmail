@@ -83,7 +83,7 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final String undoUri;
 
     /**
-     * Uri for VIEW intent that will cause the settings screens for this account type to be
+     * Uri for EDIT intent that will cause the settings screens for this account type to be
      * shown.
      */
     public final String settingIntentUri;

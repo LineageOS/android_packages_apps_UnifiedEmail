@@ -393,7 +393,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void showPreferences() {
-        final Intent preferenceIntent = new Intent(Intent.ACTION_VIEW,
+        final Intent preferenceIntent = new Intent(Intent.ACTION_EDIT,
                 Uri.parse(mAccount.settingIntentUri));
         mActivity.startActivity(preferenceIntent);
     }

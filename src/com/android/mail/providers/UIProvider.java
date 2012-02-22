@@ -251,7 +251,7 @@ public class UIProvider {
         public static final String UNDO_URI = "undoUri";
 
         /**
-         * Uri for VIEW intent that will cause the settings screens for this account type to be
+         * Uri for EDIT intent that will cause the settings screens for this account type to be
          * shown.
          * TODO: When we want to support a heterogeneous set of account types, this value may need
          * to be moved to a global content provider.

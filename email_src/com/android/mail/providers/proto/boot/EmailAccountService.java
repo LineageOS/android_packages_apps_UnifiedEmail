@@ -42,7 +42,8 @@ public class EmailAccountService extends IntentService {
         AccountCapabilities.SERVER_SEARCH |
         AccountCapabilities.UNDO;
 
-    private static final Uri BASE_SETTINGS_URI = Uri.parse("setting://email/");
+    private static final Uri BASE_SETTINGS_URI =
+            Uri.parse("content://ui.email.android.com/settings");
 
     private static String getUriString(String type, String accountName) {
         return EmailContent.CONTENT_URI.toString() + "/" + type + "/" + accountName;
