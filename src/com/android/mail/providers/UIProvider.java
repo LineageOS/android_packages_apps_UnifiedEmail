@@ -176,6 +176,10 @@ public class UIProvider {
          * in this application.)
          */
         public static final int MULTIPLE_FOLDERS_PER_CONV = 0x1000;
+        /**
+         * Whether the provider supports undoing operations. If it doesn't, never show the undo bar.
+         */
+        public static final int UNDO = 0x2000;
     }
 
     public static final class AccountColumns {

@@ -435,7 +435,7 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onUndoAvailable(UndoOperation op) {
-        if (op != null) {
+        if (op != null && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
             if (mUndoView == null) {
                 mUndoView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
             }

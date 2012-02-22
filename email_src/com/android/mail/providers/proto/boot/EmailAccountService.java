@@ -38,7 +38,8 @@ public class EmailAccountService extends IntentService {
         AccountCapabilities.FOLDER_SERVER_SEARCH |
         AccountCapabilities.SANITIZED_HTML |
         AccountCapabilities.SMART_REPLY |
-        AccountCapabilities.SERVER_SEARCH;
+        AccountCapabilities.SERVER_SEARCH |
+        AccountCapabilities.UNDO;
 
     private static String getUriString(String type, String accountName) {
         return EmailContent.CONTENT_URI.toString() + "/" + type + "/" + accountName;
