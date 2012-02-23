@@ -55,7 +55,7 @@ public final class ConversationViewFragment extends Fragment implements
 
     private ControllableActivity mActivity;
 
-    private Conversation mConversation;
+    private final Conversation mConversation;
 
     private TextView mSubject;
 
@@ -65,7 +65,7 @@ public final class ConversationViewFragment extends Fragment implements
 
     private Cursor mMessageCursor;
 
-    private Account mAccount;
+    private final Account mAccount;
     /**
      * Hidden constructor.
      */

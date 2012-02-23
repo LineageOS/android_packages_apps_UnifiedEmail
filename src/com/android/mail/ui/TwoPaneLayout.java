@@ -248,7 +248,7 @@ final class TwoPaneLayout extends LinearLayout
      * Collapses the conversation list to the left if it is in an expanded state.
      * Only applies in portrait mode.
      */
-    public boolean collapseList() {
+    private boolean collapseList() {
         if (mListCollapsed) {
             return false;
         }
