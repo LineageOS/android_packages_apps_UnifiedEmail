@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"顯示所有資料夾"</string>
     <string name="no_conversations" msgid="35400008890372241">"無會話群組。"</string>
     <string name="undo" msgid="6070869718469782251">"復原"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"正在忽略 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組。"</item>
-    <item quantity="other" msgid="7732711630827590665">"正在忽略 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組。"</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"正在將 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組回報為垃圾郵件。"</item>
-    <item quantity="other" msgid="1772788567015816651">"正在將 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組回報為垃圾郵件。"</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"正在封存 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組。"</item>
-    <item quantity="other" msgid="2233711130311549549">"正在封存 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組。"</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"正在刪除 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組。"</item>
-    <item quantity="other" msgid="4729328961071737560">"正在刪除 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組。"</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"正在將 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組標示為已讀取。"</item>
     <item quantity="other" msgid="247178462544083532">"正在將 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組標示為已讀取。"</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組標示為未讀取。"</item>
     <item quantity="other" msgid="858491333253953462">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組標示為未讀取。"</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"已變更標籤。"</item>
-    <item quantity="other" msgid="6656208328661529588">"已變更標籤。"</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"搜尋結果"</string>
     <string name="searchMode" msgid="3329807422114758583">"搜尋模式"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"搜尋會話群組模式"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"關閉"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"這個帳戶尚未設定資料夾。"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

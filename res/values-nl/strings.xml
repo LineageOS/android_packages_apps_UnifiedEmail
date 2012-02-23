@@ -21,7 +21,7 @@
     <string name="mock_content_provider" msgid="7444679250201027030">"Provider van nepinhoud"</string>
     <string name="conversation_content_provider" msgid="3662935025292495273">"Provider van conversatie-inhoud"</string>
     <string name="account_cache_provider" msgid="3195603659417337226">"Provider van accountcache"</string>
-    <string name="dummy_gmail_provider" msgid="2411244445674142698">"Provider van dummy-Gmail"</string>
+    <string name="dummy_gmail_provider" msgid="2411244445674142698">"Dummy Gmail-provider"</string>
     <string name="test_application" msgid="5613907578447924035">"Testapp"</string>
     <string name="app_name" msgid="8197930422134712215">"Gecombineerde e-mail"</string>
     <string name="to" msgid="4392614766835725698">"Aan"</string>
@@ -66,7 +66,7 @@
     <string name="previous" msgid="309943944831349924">"Nieuwer"</string>
     <string name="refresh" msgid="490989798005710951">"Vernieuwen"</string>
     <string name="reply" msgid="2032052598496088561">"Beantwoorden"</string>
-    <string name="reply_all" msgid="7257248094625487557">"Allen beantwoorden"</string>
+    <string name="reply_all" msgid="7257248094625487557">"Allen beantw."</string>
     <string name="resume_draft" msgid="6450150180834092146">"Bewerken"</string>
     <string name="forward" msgid="6822914459902983767">"Doorsturen"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Opstellen"</string>
@@ -130,28 +130,12 @@
     <item quantity="other" msgid="6961049507579977505">"Concepten"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Verzenden..."</string>
-    <string name="send_failed" msgid="750908595144529579">"Bericht is niet verzonden."</string>
+    <string name="send_failed" msgid="750908595144529579">"Niet verzonden."</string>
     <string name="me" msgid="6480762904022198669">"ik"</string>
     <string name="labels" msgid="1519770547536283663">"Labels"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Alle mappen weergeven"</string>
     <string name="no_conversations" msgid="35400008890372241">"Geen conversaties."</string>
     <string name="undo" msgid="6070869718469782251">"Ongedaan maken"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"<xliff:g id="COUNT">%1$d</xliff:g> conversatie dempen."</item>
-    <item quantity="other" msgid="7732711630827590665">"<xliff:g id="COUNT">%1$d</xliff:g> conversaties dempen."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"<xliff:g id="COUNT">%1$d</xliff:g> conversatie melden als spam."</item>
-    <item quantity="other" msgid="1772788567015816651">"<xliff:g id="COUNT">%1$d</xliff:g> conversaties melden als spam."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"<xliff:g id="COUNT">%1$d</xliff:g> conversatie archiveren."</item>
-    <item quantity="other" msgid="2233711130311549549">"<xliff:g id="COUNT">%1$d</xliff:g> conversaties archiveren."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"<xliff:g id="COUNT">%1$d</xliff:g> conversatie verwijderen."</item>
-    <item quantity="other" msgid="4729328961071737560">"<xliff:g id="COUNT">%1$d</xliff:g> conversaties verwijderen."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"<xliff:g id="COUNT">%1$d</xliff:g> conversatie markeren als gelezen."</item>
     <item quantity="other" msgid="247178462544083532">"<xliff:g id="COUNT">%1$d</xliff:g> conversaties markeren als gelezen."</item>
@@ -161,8 +145,8 @@
     <item quantity="other" msgid="6577233770583912846">"<xliff:g id="COUNT">%1$d</xliff:g> conversaties als ongelezen markeren."</item>
   </plurals>
   <plurals name="conversation_starring">
-    <item quantity="one" msgid="8780588287902503608">"Aan <xliff:g id="COUNT">%1$d</xliff:g> conversatie ster toekennen."</item>
-    <item quantity="other" msgid="44965256231544025">"Aan <xliff:g id="COUNT">%1$d</xliff:g> conversaties sterren toekennen."</item>
+    <item quantity="one" msgid="8780588287902503608">"Aan <xliff:g id="COUNT">%1$d</xliff:g> conversatie een ster toekennen."</item>
+    <item quantity="other" msgid="44965256231544025">"Aan <xliff:g id="COUNT">%1$d</xliff:g> conversaties een ster toekennen."</item>
   </plurals>
   <plurals name="conversation_unstarring">
     <item quantity="one" msgid="9149763486272528029">"Ster verwijderen uit <xliff:g id="COUNT">%1$d</xliff:g> conversatie."</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; gemarkeerd als ongelezen."</item>
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; gemarkeerd als ongelezen."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"Label gewijzigd."</item>
-    <item quantity="other" msgid="6656208328661529588">"Labels gewijzigd."</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Resultaten"</string>
     <string name="searchMode" msgid="3329807422114758583">"Zoekmodus"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Modus voor zoeken naar conversaties"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"Sluiten"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Er zijn geen mappen ingesteld voor dit account."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

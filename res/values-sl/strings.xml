@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"Pokaži vse mape"</string>
     <string name="no_conversations" msgid="35400008890372241">"Ni pogovorov."</string>
     <string name="undo" msgid="6070869718469782251">"Razveljavi"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"Prezrt <xliff:g id="COUNT">%1$d</xliff:g> pogovor."</item>
-    <item quantity="other" msgid="7732711630827590665">"Prezrtih toliko pogovorov: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"Prijavljanje <xliff:g id="COUNT">%1$d</xliff:g> pogovora kot vsiljene pošte."</item>
-    <item quantity="other" msgid="1772788567015816651">"Prijavljanje toliko pogovorov kot vsiljene pošte: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"Arhiviranje <xliff:g id="COUNT">%1$d</xliff:g> pogovora."</item>
-    <item quantity="other" msgid="2233711130311549549">"Arhiviranje pogovorov (<xliff:g id="COUNT">%1$d</xliff:g>)."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"Brisanje <xliff:g id="COUNT">%1$d</xliff:g> pogovora."</item>
-    <item quantity="other" msgid="4729328961071737560">"Brisanje pogovorov (<xliff:g id="COUNT">%1$d</xliff:g>)."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"Označevanje <xliff:g id="COUNT">%1$d</xliff:g> pogovora kot prebranega."</item>
     <item quantity="other" msgid="247178462544083532">"Označevanje toliko pogovorov kot prebranih: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; pogovor je označen kot neprebran."</item>
     <item quantity="other" msgid="858491333253953462">"Št. pogovorov, označenih kot neprebranih: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"Spremenjena oznaka."</item>
-    <item quantity="other" msgid="6656208328661529588">"Spremenjene oznake."</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Rezultati"</string>
     <string name="searchMode" msgid="3329807422114758583">"Način iskanja"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Način iskanja pogovora"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"Zapri"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Za ta račun ni nastavljenih map."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

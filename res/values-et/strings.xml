@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"Kuva kõik kaustad"</string>
     <string name="no_conversations" msgid="35400008890372241">"Meilivestlusi pole."</string>
     <string name="undo" msgid="6070869718469782251">"Võta tagasi"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"<xliff:g id="COUNT">%1$d</xliff:g> meilivestlus summutatakse."</item>
-    <item quantity="other" msgid="7732711630827590665">"<xliff:g id="COUNT">%1$d</xliff:g> meilivestlust summutatakse."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"<xliff:g id="COUNT">%1$d</xliff:g> meilivestlusest teatatakse kui rämpspostist."</item>
-    <item quantity="other" msgid="1772788567015816651">"<xliff:g id="COUNT">%1$d</xliff:g> meilivestlusest teatatakse kui rämpspostist."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"Arhiveeritakse <xliff:g id="COUNT">%1$d</xliff:g> meilivestlus."</item>
-    <item quantity="other" msgid="2233711130311549549">"Arhiveeritakse <xliff:g id="COUNT">%1$d</xliff:g> meilivestlust."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"Kustutatakse <xliff:g id="COUNT">%1$d</xliff:g> meilivestlus."</item>
-    <item quantity="other" msgid="4729328961071737560">"Kustutatakse <xliff:g id="COUNT">%1$d</xliff:g> meilivestlust."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"<xliff:g id="COUNT">%1$d</xliff:g> meilivestlus märgitakse loetuks."</item>
     <item quantity="other" msgid="247178462544083532">"<xliff:g id="COUNT">%1$d</xliff:g> meilivestlust märgitakse loetuks."</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; märgiti mitteloetuks."</item>
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; märgiti mitteloetuks."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"Muudetud silt."</item>
-    <item quantity="other" msgid="6656208328661529588">"Muudetud sildid."</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Tulemused"</string>
     <string name="searchMode" msgid="3329807422114758583">"Otsimisrežiim"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Vestluse otsimisrežiim"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"Sule"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Sellele kontole pole määratud ühtegi kausta."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

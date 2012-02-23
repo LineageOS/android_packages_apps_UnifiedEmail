@@ -32,7 +32,7 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_label" msgid="3466026399539734378">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Legg ved fil"</string>
-    <string name="save_draft" msgid="5555744208032445632">"Lagre kladd"</string>
+    <string name="save_draft" msgid="5555744208032445632">"Lagre utkast"</string>
     <string name="discard" msgid="1714960202994370243">"Forkast"</string>
     <string name="compose" msgid="1473559896062432878">"Skriv ny"</string>
   <string-array name="compose_modes">
@@ -60,7 +60,7 @@
     <string name="add_star" msgid="2866003744391266498">"Legg til stjerne"</string>
     <string name="remove_star" msgid="4372327933122106128">"Fjern stjerne"</string>
     <string name="archive" msgid="847250094775910499">"Arkivér"</string>
-    <string name="report_spam" msgid="6467567747975393907">"Rapporter nettsøppel"</string>
+    <string name="report_spam" msgid="6467567747975393907">"Rapportér nettsøppel"</string>
     <string name="delete" msgid="844871204175957681">"Slett"</string>
     <string name="next" msgid="4674401197968248302">"Eldre"</string>
     <string name="previous" msgid="309943944831349924">"Nyere"</string>
@@ -103,12 +103,12 @@
     <string name="attachment_application_vnd_ms_powerpoint" msgid="861348289167216897">"Presentasjon"</string>
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Regneark"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
-    <string name="attachment_unknown" msgid="6005445955982153931">"Fil av typen <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
+    <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>-fil"</string>
     <string name="search_hint" msgid="3625734263059221350">"Søk i e-post"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Del på"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Åpne i nettleser"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopiér"</string>
-    <string name="contextmenu_copylink" msgid="3580131515400610839">"Kopier koblingsadresse"</string>
+    <string name="contextmenu_copylink" msgid="3580131515400610839">"Kopiér koblingsadresse"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Ring"</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"Send SMS"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Legg til kontakt"</string>
@@ -126,8 +126,8 @@
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> – <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
-    <item quantity="one" msgid="333591132893648383">"Kladd"</item>
-    <item quantity="other" msgid="6961049507579977505">"Kladder"</item>
+    <item quantity="one" msgid="333591132893648383">"Utkast"</item>
+    <item quantity="other" msgid="6961049507579977505">"Utkast"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Sender …"</string>
     <string name="send_failed" msgid="750908595144529579">"E-post ikke sendt."</string>
@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"Vis alle mapper"</string>
     <string name="no_conversations" msgid="35400008890372241">"Ingen samtaler."</string>
     <string name="undo" msgid="6070869718469782251">"Angre"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"Ignorerer <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>
-    <item quantity="other" msgid="7732711630827590665">"Ignorerer <xliff:g id="COUNT">%1$d</xliff:g> samtaler."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"Rapporterer <xliff:g id="COUNT">%1$d</xliff:g> samtale som nettsøppel."</item>
-    <item quantity="other" msgid="1772788567015816651">"Rapporterer <xliff:g id="COUNT">%1$d</xliff:g> samtaler som nettsøppel."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"Arkiverer <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>
-    <item quantity="other" msgid="2233711130311549549">"Arkiverer <xliff:g id="COUNT">%1$d</xliff:g> samtaler."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"Sletter <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>
-    <item quantity="other" msgid="4729328961071737560">"Sletter <xliff:g id="COUNT">%1$d</xliff:g> samtaler."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"Merker <xliff:g id="COUNT">%1$d</xliff:g> samtale som lest."</item>
     <item quantity="other" msgid="247178462544083532">"Merker <xliff:g id="COUNT">%1$d</xliff:g> samtaler som lest."</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som ulest."</item>
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som ulest."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"Endret etikett."</item>
-    <item quantity="other" msgid="6656208328661529588">"Endret etiketter."</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Resultater"</string>
     <string name="searchMode" msgid="3329807422114758583">"Søkemodus"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Søk i samtalemodus"</string>
@@ -237,7 +219,7 @@
     <string name="always_show_images" msgid="5966408990164581801">"Vis alltid bilder fra denne avsenderen"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Bilder fra denne avsenderen blir vist automatisk."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <string name="message_saved" msgid="7073947895562277576">"E-posten er lagret som kladd."</string>
+    <string name="message_saved" msgid="7073947895562277576">"E-posten er lagret som utkast."</string>
     <string name="sending_message" msgid="1498583163419122128">"Sender e-post …"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Adressen <xliff:g id="WRONGEMAIL">%s</xliff:g> er ugyldig."</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"Lukk"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Ingen mapper er angitt for denne kontoen."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

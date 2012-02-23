@@ -92,8 +92,8 @@
     <string name="quoted_text" msgid="7250749398672037355">"Medtag citeret tekst"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Citat"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Svar indlejret"</string>
-    <string name="bytes" msgid="8851050881674287386">"B"</string>
-    <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
+    <string name="bytes" msgid="8851050881674287386">"b"</string>
+    <string name="kilobytes" msgid="8506546136898321025">"kB"</string>
     <string name="megabytes" msgid="1469217534120857347">"MB"</string>
     <string name="attachment_image" msgid="3832985223906528449">"Billede"</string>
     <string name="attachment_video" msgid="7526134752988603154">"Video"</string>
@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"Vis alle mapper"</string>
     <string name="no_conversations" msgid="35400008890372241">"Der er ingen samtaler."</string>
     <string name="undo" msgid="6070869718469782251">"Fortryd"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"Ignorerer <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>
-    <item quantity="other" msgid="7732711630827590665">"Ignorerer <xliff:g id="COUNT">%1$d</xliff:g> samtaler."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"Rapporterer <xliff:g id="COUNT">%1$d</xliff:g> samtale som spam."</item>
-    <item quantity="other" msgid="1772788567015816651">"Rapporterer <xliff:g id="COUNT">%1$d</xliff:g> samtaler som spam."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"Arkiverer <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>
-    <item quantity="other" msgid="2233711130311549549">"Arkiverer <xliff:g id="COUNT">%1$d</xliff:g> samtaler."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"Sletter <xliff:g id="COUNT">%1$d</xliff:g> samtale."</item>
-    <item quantity="other" msgid="4729328961071737560">"Sletter <xliff:g id="COUNT">%1$d</xliff:g> samtaler."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"Markerer <xliff:g id="COUNT">%1$d</xliff:g> samtale som læst."</item>
     <item quantity="other" msgid="247178462544083532">"Markerer <xliff:g id="COUNT">%1$d</xliff:g> samtaler som læste."</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er markeret som ulæst."</item>
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er markeret som ulæste."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"Ændret etiket."</item>
-    <item quantity="other" msgid="6656208328661529588">"Ændrede etiketter."</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Resultater"</string>
     <string name="searchMode" msgid="3329807422114758583">"Søgetilstand"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Tilstand for søgning i samtaler"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"Luk"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Der er ikke angivet nogen etiketter for denne konto."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

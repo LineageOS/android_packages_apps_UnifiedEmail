@@ -79,7 +79,7 @@
     <string name="menu_account_preferences" msgid="825820027931270435">"Настройки аккаунта"</string>
     <string name="menu_preferences" msgid="8957431987536606063">"Настройки"</string>
     <string name="menu_search" msgid="5297197523031943248">"Поиск"</string>
-    <string name="more" msgid="1238344647379009858">"Ещё"</string>
+    <string name="more" msgid="1238344647379009858">"Еще"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> из <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
     <string name="newer" msgid="1007166236908596854">"Более поздние"</string>
     <string name="older" msgid="6651690916337202936">"Более ранние"</string>
@@ -122,7 +122,7 @@
     <item quantity="one" msgid="3657821200245019288">"Переместить цепочку"</item>
     <item quantity="other" msgid="1685896770174368261">"Переместить цепочки (<xliff:g id="ID_1">%1$d</xliff:g>)"</item>
   </plurals>
-    <string name="content_description" msgid="5986818539537753005">"Тема: <xliff:g id="SUBJECT">%1$s</xliff:g> Фрагмент: <xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="content_description" msgid="5986818539537753005">"Тема: <xliff:g id="SUBJECT">%1$s</xliff:g>. Фрагмент: <xliff:g id="SNIPPET">%2$s</xliff:g>."</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> – <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -131,27 +131,11 @@
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Отправка…"</string>
     <string name="send_failed" msgid="750908595144529579">"Не отправлено."</string>
-    <string name="me" msgid="6480762904022198669">"я"</string>
+    <string name="me" msgid="6480762904022198669">"мне"</string>
     <string name="labels" msgid="1519770547536283663">"Ярлыки"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Показать все почтовые ящики"</string>
     <string name="no_conversations" msgid="35400008890372241">"Пока ничего нет"</string>
     <string name="undo" msgid="6070869718469782251">"Отмена"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"Скрываемых цепочек: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-    <item quantity="other" msgid="7732711630827590665">"Скрываемых цепочек: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"Цепочек, помечаемых как спам: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-    <item quantity="other" msgid="1772788567015816651">"Цепочек, помечаемых как спам: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"Архивируемых цепочек: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-    <item quantity="other" msgid="2233711130311549549">"Архивируемых цепочек: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"Удаляемых цепочек: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-    <item quantity="other" msgid="4729328961071737560">"Удаляемых цепочек: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"Цепочек, помечаемых как прочитанные: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
     <item quantity="other" msgid="247178462544083532">"Цепочек, помечаемых как прочитанные: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"Цепочек, помеченных как непрочитанные: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="858491333253953462">"Цепочек, помеченных как непрочитанные: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"Ярлык изменен."</item>
-    <item quantity="other" msgid="6656208328661529588">"Ярлыки изменены."</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Результаты"</string>
     <string name="searchMode" msgid="3329807422114758583">"Режим поиска"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Режим поиска цепочек"</string>
@@ -234,7 +216,7 @@
     <string name="cc_heading" msgid="8116221732072085180">"Копия:"</string>
     <string name="bcc_heading" msgid="5528824453033598299">"Скрытая:"</string>
     <string name="show_images" msgid="1875700481186331432">"Показать картинки"</string>
-    <string name="always_show_images" msgid="5966408990164581801">"Всегда показывать картинки с этого адреса"</string>
+    <string name="always_show_images" msgid="5966408990164581801">"Всегда открывать картинки с этого адреса"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Картинки, отправленные с этого адреса, будут всегда показываться."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
     <string name="message_saved" msgid="7073947895562277576">"Черновик сообщения сохранен."</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"Закрыть"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"В этом аккаунте нет папок."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

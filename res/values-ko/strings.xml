@@ -36,7 +36,7 @@
     <string name="discard" msgid="1714960202994370243">"삭제"</string>
     <string name="compose" msgid="1473559896062432878">"편지쓰기"</string>
   <string-array name="compose_modes">
-    <item msgid="8631190144210933782">"답글"</item>
+    <item msgid="8631190144210933782">"답장"</item>
     <item msgid="4085029907540221568">"전체답장"</item>
     <item msgid="857480048798815437">"전달"</item>
   </string-array>
@@ -56,7 +56,7 @@
     <string name="send" msgid="8242003661397555986">"보내기"</string>
     <string name="mark_read" msgid="8438349154394313195">"읽음으로 표시"</string>
     <string name="mark_unread" msgid="6231373939351125713">"읽지않음으로 표시"</string>
-    <string name="mute" msgid="1995954983688603977">"받은편지함 건너뛰기"</string>
+    <string name="mute" msgid="1995954983688603977">"숨기기"</string>
     <string name="add_star" msgid="2866003744391266498">"별표 표시"</string>
     <string name="remove_star" msgid="4372327933122106128">"별표 제거"</string>
     <string name="archive" msgid="847250094775910499">"보관처리"</string>
@@ -65,7 +65,7 @@
     <string name="next" msgid="4674401197968248302">"이전"</string>
     <string name="previous" msgid="309943944831349924">"최신"</string>
     <string name="refresh" msgid="490989798005710951">"새로고침"</string>
-    <string name="reply" msgid="2032052598496088561">"답글"</string>
+    <string name="reply" msgid="2032052598496088561">"답장"</string>
     <string name="reply_all" msgid="7257248094625487557">"전체답장"</string>
     <string name="resume_draft" msgid="6450150180834092146">"수정"</string>
     <string name="forward" msgid="6822914459902983767">"전달"</string>
@@ -92,7 +92,7 @@
     <string name="quoted_text" msgid="7250749398672037355">"받은메일 포함"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"받은메일"</string>
     <string name="respond_inline" msgid="6797117334768201180">"본문에 응답 삽입"</string>
-    <string name="bytes" msgid="8851050881674287386">"바이트"</string>
+    <string name="bytes" msgid="8851050881674287386">"B"</string>
     <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
     <string name="megabytes" msgid="1469217534120857347">"MB"</string>
     <string name="attachment_image" msgid="3832985223906528449">"이미지"</string>
@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"모든 폴더 표시"</string>
     <string name="no_conversations" msgid="35400008890372241">"대화가 없습니다."</string>
     <string name="undo" msgid="6070869718469782251">"실행취소"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개가 받은편지함을 건너뛰는 중입니다."</item>
-    <item quantity="other" msgid="7732711630827590665">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개가 받은편지함을 건너뛰는 중입니다."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 스팸으로 신고하는 중입니다."</item>
-    <item quantity="other" msgid="1772788567015816651">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 스팸으로 신고하는 중입니다."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 보관처리하는 중입니다."</item>
-    <item quantity="other" msgid="2233711130311549549">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 보관처리하는 중입니다."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 삭제하는 중입니다."</item>
-    <item quantity="other" msgid="4729328961071737560">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 삭제하는 중입니다."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 읽음으로 표시하는 중입니다."</item>
     <item quantity="other" msgid="247178462544083532">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 읽음으로 표시하는 중입니다."</item>
@@ -173,8 +157,8 @@
     <item quantity="other" msgid="850868849811019745">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개에 대한 작업을 기다리는 중입니다."</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 무시"</item>
-    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 무시"</item>
+    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개 숨기기"</item>
+    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개 숨기기"</item>
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 스팸으로 신고"</item>
@@ -193,8 +177,8 @@
     <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개 삭제됨"</item>
   </plurals>
   <plurals name="conversation_marked_important">
-    <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 중요로 표시"</item>
-    <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 중요로 표시"</item>
+    <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 중요 메일로 표시"</item>
+    <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 중요 메일로 표시"</item>
   </plurals>
   <plurals name="conversation_marked_not_important">
     <item quantity="one" msgid="63750576337670941">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 중요하지 않음으로 표시"</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 읽지않음으로 표시"</item>
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 읽지않음으로 표시"</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"라벨 변경"</item>
-    <item quantity="other" msgid="6656208328661529588">"라벨 변경"</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"검색결과"</string>
     <string name="searchMode" msgid="3329807422114758583">"검색 모드"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"대화 검색 모드"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"닫기"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"이 계정에 대한 폴더를 설정하지 않았습니다."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

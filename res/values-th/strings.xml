@@ -18,10 +18,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="mock_content_provider" msgid="7444679250201027030">"ตัวบริการเนื้อหาจำลอง"</string>
-    <string name="conversation_content_provider" msgid="3662935025292495273">"ตัวบริการเนื้อหาการสนทนา"</string>
-    <string name="account_cache_provider" msgid="3195603659417337226">"ตัวบริการแคชของบัญชี"</string>
-    <string name="dummy_gmail_provider" msgid="2411244445674142698">"ตัวบริการ Gmail จำลอง"</string>
+    <string name="mock_content_provider" msgid="7444679250201027030">"ผู้ให้บริการเนื้อหาจำลอง"</string>
+    <string name="conversation_content_provider" msgid="3662935025292495273">"ผู้ให้บริการเนื้อหาการสนทนา"</string>
+    <string name="account_cache_provider" msgid="3195603659417337226">"ผู้ให้บริการแคชของบัญชี"</string>
+    <string name="dummy_gmail_provider" msgid="2411244445674142698">"ผู้ให้บริการ Gmail จำลอง"</string>
     <string name="test_application" msgid="5613907578447924035">"ทดสอบแอปพลิเคชัน"</string>
     <string name="app_name" msgid="8197930422134712215">"อีเมลเดียว"</string>
     <string name="to" msgid="4392614766835725698">"ถึง"</string>
@@ -56,7 +56,7 @@
     <string name="send" msgid="8242003661397555986">"ส่ง"</string>
     <string name="mark_read" msgid="8438349154394313195">"ทำเครื่องหมายว่าอ่านแล้ว"</string>
     <string name="mark_unread" msgid="6231373939351125713">"ทำเครื่องหมายว่ายังไม่อ่าน"</string>
-    <string name="mute" msgid="1995954983688603977">"ปิดเสียง"</string>
+    <string name="mute" msgid="1995954983688603977">"ปิดรับ"</string>
     <string name="add_star" msgid="2866003744391266498">"เพิ่มดาว"</string>
     <string name="remove_star" msgid="4372327933122106128">"นำดาวออก"</string>
     <string name="archive" msgid="847250094775910499">"เก็บถาวร"</string>
@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"แสดงโฟลเดอร์ทั้งหมด"</string>
     <string name="no_conversations" msgid="35400008890372241">"ไม่มีการสนทนา"</string>
     <string name="undo" msgid="6070869718469782251">"เลิกทำ"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"กำลังปิดเสียงการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
-    <item quantity="other" msgid="7732711630827590665">"กำลังปิดเสียงการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"กำลังรายงานการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการว่าเป็นจดหมายขยะ"</item>
-    <item quantity="other" msgid="1772788567015816651">"กำลังรายงานการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการว่าเป็นจดหมายขยะ"</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"กำลังเก็บการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
-    <item quantity="other" msgid="2233711130311549549">"กำลังเก็บการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"กำลังลบการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
-    <item quantity="other" msgid="4729328961071737560">"กำลังลบการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"กำลังทำเครื่องหมายการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการว่าอ่านแล้ว"</item>
     <item quantity="other" msgid="247178462544083532">"กำลังทำเครื่องหมายการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการว่าอ่านแล้ว"</item>
@@ -165,16 +149,16 @@
     <item quantity="other" msgid="44965256231544025">"กำลังติดดาวการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
   </plurals>
   <plurals name="conversation_unstarring">
-    <item quantity="one" msgid="9149763486272528029">"กำลังยกเลิกการติดดาวการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
-    <item quantity="other" msgid="460057780793159215">"กำลังยกเลิกการติดดาวการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
+    <item quantity="one" msgid="9149763486272528029">"กำลังเลิกติดดาวการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
+    <item quantity="other" msgid="460057780793159215">"กำลังเลิกติดดาวการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
   </plurals>
   <plurals name="conversation_unknown_operation">
     <item quantity="one" msgid="235911194119829184">"กำลังรอการทำงานกับการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
     <item quantity="other" msgid="850868849811019745">"กำลังรอการทำงานกับการสนทนา <xliff:g id="COUNT">%1$d</xliff:g> รายการ"</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"ปิดเสียง &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
-    <item quantity="other" msgid="1941193356069303587">"ปิดเสียง &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
+    <item quantity="one" msgid="3197365771487542615">"ปิดรับ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
+    <item quantity="other" msgid="1941193356069303587">"ปิดรับ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one" msgid="3060864972122279220">"รายงานว่าเป็นจดหมายขยะ &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"ทำเครื่องหมายว่ายังไม่อ่าน &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
     <item quantity="other" msgid="858491333253953462">"ทำเครื่องหมายว่ายังไม่อ่าน &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; รายการ"</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"เปลี่ยนป้ายกำกับแล้ว"</item>
-    <item quantity="other" msgid="6656208328661529588">"เปลี่ยนป้ายกำกับแล้ว"</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"ผลการค้นหา"</string>
     <string name="searchMode" msgid="3329807422114758583">"โหมดการค้นหา"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"โหมดค้นหาการสนทนา"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"ปิด"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"ไม่ได้กำหนดโฟลเดอร์ใดไว้สำหรับบัญชีนี้"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

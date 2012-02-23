@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"Mostra totes les carpetes"</string>
     <string name="no_conversations" msgid="35400008890372241">"No hi ha cap conversa."</string>
     <string name="undo" msgid="6070869718469782251">"Desfés"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"S\'està silenciant <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
-    <item quantity="other" msgid="7732711630827590665">"S\'estan silenciant <xliff:g id="COUNT">%1$d</xliff:g> converses."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"S\'està marcant <xliff:g id="COUNT">%1$d</xliff:g> conversa com a correu brossa."</item>
-    <item quantity="other" msgid="1772788567015816651">"S\'estan marcant <xliff:g id="COUNT">%1$d</xliff:g> converses com a correu brossa."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"S\'està arxivant <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
-    <item quantity="other" msgid="2233711130311549549">"S\'estan arxivant <xliff:g id="COUNT">%1$d</xliff:g> converses."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"S\'està suprimint <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
-    <item quantity="other" msgid="4729328961071737560">"S\'estan suprimint <xliff:g id="COUNT">%1$d</xliff:g> converses."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"S\'està marcant <xliff:g id="COUNT">%1$d</xliff:g> conversa com a llegida."</item>
     <item quantity="other" msgid="247178462544083532">"S\'estan marcant <xliff:g id="COUNT">%1$d</xliff:g> converses com a llegides."</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"Se n\'ha marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a no llegida."</item>
     <item quantity="other" msgid="858491333253953462">"Se n\'ha marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a no llegida."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"S\'ha canviat l\'etiqueta."</item>
-    <item quantity="other" msgid="6656208328661529588">"S\'han canviat les etiquetes."</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Resultats"</string>
     <string name="searchMode" msgid="3329807422114758583">"Mode de cerca"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Cerca el mode de conversa"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"Tanca"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"No s\'ha definit cap carpeta per a aquest compte."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

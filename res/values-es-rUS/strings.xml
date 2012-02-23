@@ -23,7 +23,7 @@
     <string name="account_cache_provider" msgid="3195603659417337226">"Proveedor de caché de la cuenta"</string>
     <string name="dummy_gmail_provider" msgid="2411244445674142698">"Proveedor ficticio de Gmail"</string>
     <string name="test_application" msgid="5613907578447924035">"Probar aplicación"</string>
-    <string name="app_name" msgid="8197930422134712215">"Correo electrónico unificado"</string>
+    <string name="app_name" msgid="8197930422134712215">"Correo unificado"</string>
     <string name="to" msgid="4392614766835725698">"Para"</string>
     <string name="cc" msgid="7017720927911078193">"CC"</string>
     <string name="bcc" msgid="3098643138241111579">"CCO"</string>
@@ -52,18 +52,18 @@
     <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"El asunto del mensaje está vacío."</string>
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"El cuerpo del mensaje está vacío."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"¿Deseas enviar este mensaje?"</string>
-    <string name="message_discarded" msgid="5079975378884765445">"Mensaje descartado."</string>
+    <string name="message_discarded" msgid="5079975378884765445">"Mensaje descartado"</string>
     <string name="send" msgid="8242003661397555986">"Enviar"</string>
     <string name="mark_read" msgid="8438349154394313195">"Marcar como leída"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Marcar como no leída"</string>
     <string name="mute" msgid="1995954983688603977">"Silenciar"</string>
     <string name="add_star" msgid="2866003744391266498">"Destacar"</string>
     <string name="remove_star" msgid="4372327933122106128">"Eliminar estrella"</string>
-    <string name="archive" msgid="847250094775910499">"Guardar"</string>
+    <string name="archive" msgid="847250094775910499">"Archivar"</string>
     <string name="report_spam" msgid="6467567747975393907">"Notificar spam"</string>
     <string name="delete" msgid="844871204175957681">"Eliminar"</string>
     <string name="next" msgid="4674401197968248302">"Más antiguo"</string>
-    <string name="previous" msgid="309943944831349924">"Más recientes"</string>
+    <string name="previous" msgid="309943944831349924">"Más reciente"</string>
     <string name="refresh" msgid="490989798005710951">"Actualizar"</string>
     <string name="reply" msgid="2032052598496088561">"Responder"</string>
     <string name="reply_all" msgid="7257248094625487557">"Responder a todos"</string>
@@ -81,7 +81,7 @@
     <string name="menu_search" msgid="5297197523031943248">"Buscar"</string>
     <string name="more" msgid="1238344647379009858">"Más"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> de <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="newer" msgid="1007166236908596854">"Nuevos"</string>
+    <string name="newer" msgid="1007166236908596854">"Nuevo"</string>
     <string name="older" msgid="6651690916337202936">"Más antiguo"</string>
     <string name="mark_important" msgid="6904096897104265870">"Marcar como importante"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Marcar como no importante"</string>
@@ -112,7 +112,7 @@
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Marcar..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS..."</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Agregar contacto"</string>
-    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Enviar correo electrónico"</string>
+    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Enviar correo"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"Mapa"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Compartir vínculo"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Ayuda"</string>
@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"Mostrar todas las carpetas"</string>
     <string name="no_conversations" msgid="35400008890372241">"No hay conversaciones."</string>
     <string name="undo" msgid="6070869718469782251">"Deshacer"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"Silenciando <xliff:g id="COUNT">%1$d</xliff:g> conversación."</item>
-    <item quantity="other" msgid="7732711630827590665">"Silenciando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"Notificando <xliff:g id="COUNT">%1$d</xliff:g> conversación como spam."</item>
-    <item quantity="other" msgid="1772788567015816651">"Notificando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones como spam."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"Archivando <xliff:g id="COUNT">%1$d</xliff:g> conversación"</item>
-    <item quantity="other" msgid="2233711130311549549">"Archivando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones"</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"Eliminando <xliff:g id="COUNT">%1$d</xliff:g> conversación"</item>
-    <item quantity="other" msgid="4729328961071737560">"Eliminando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"Marcando <xliff:g id="COUNT">%1$d</xliff:g> conversación como leída."</item>
     <item quantity="other" msgid="247178462544083532">"Marcando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones como leídas."</item>
@@ -161,16 +145,16 @@
     <item quantity="other" msgid="6577233770583912846">"Marcando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones como no leídas."</item>
   </plurals>
   <plurals name="conversation_starring">
-    <item quantity="one" msgid="8780588287902503608">"Destacando <xliff:g id="COUNT">%1$d</xliff:g> conversación."</item>
-    <item quantity="other" msgid="44965256231544025">"Destacando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones."</item>
+    <item quantity="one" msgid="8780588287902503608">"Destacando <xliff:g id="COUNT">%1$d</xliff:g> conversación"</item>
+    <item quantity="other" msgid="44965256231544025">"Destacando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones"</item>
   </plurals>
   <plurals name="conversation_unstarring">
-    <item quantity="one" msgid="9149763486272528029">"Deseleccionando <xliff:g id="COUNT">%1$d</xliff:g> conversación."</item>
-    <item quantity="other" msgid="460057780793159215">"Deseleccionando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones."</item>
+    <item quantity="one" msgid="9149763486272528029">"Desmarcando <xliff:g id="COUNT">%1$d</xliff:g> conversación"</item>
+    <item quantity="other" msgid="460057780793159215">"Desmarcando <xliff:g id="COUNT">%1$d</xliff:g> conversaciones"</item>
   </plurals>
   <plurals name="conversation_unknown_operation">
-    <item quantity="one" msgid="235911194119829184">"Esperando operación en <xliff:g id="COUNT">%1$d</xliff:g> conversación."</item>
-    <item quantity="other" msgid="850868849811019745">"Esperando operación en <xliff:g id="COUNT">%1$d</xliff:g> conversaciones."</item>
+    <item quantity="one" msgid="235911194119829184">"Esperando operación en <xliff:g id="COUNT">%1$d</xliff:g> conversación"</item>
+    <item quantity="other" msgid="850868849811019745">"Esperando operación en <xliff:g id="COUNT">%1$d</xliff:g> conversaciones"</item>
   </plurals>
   <plurals name="conversation_muted">
     <item quantity="one" msgid="3197365771487542615">"Se silenció &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
@@ -208,18 +192,16 @@
     <item quantity="one" msgid="365581967734960166">"Se marcaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; como no leídas."</item>
     <item quantity="other" msgid="858491333253953462">"Se marcaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; como no leídas."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"Etiqueta modificada"</item>
-    <item quantity="other" msgid="6656208328661529588">"Etiquetas modificadas"</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Resultados"</string>
     <string name="searchMode" msgid="3329807422114758583">"Buscar modo"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Buscar modo de conversación"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Establecer el botón Atrás"</string>
+    <string name="setBackButton" msgid="3004728881963818222">"Definir el botón Atrás"</string>
     <string name="removeBackButton" msgid="860383341267568260">"Quitar el botón Atrás"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Establecer modo normal"</string>
+    <string name="normalMode" msgid="4250277414924926730">"Definir modo normal"</string>
     <string name="searchResultMode" msgid="3564180712046711968">"Buscar modo de resultados"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Establecer modo de etiqueta"</string>
+    <string name="labelMode" msgid="1821987146443702635">"Definir modo de etiqueta"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Buscando…"</string>
     <string name="recent_labels" msgid="5539494776429934547">"Recientes"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Expandir detalles del destinatario"</string>
@@ -237,7 +219,7 @@
     <string name="always_show_images" msgid="5966408990164581801">"Mostrar siempre las imágenes de este remitente"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Las imágenes de este remitente se mostrarán automáticamente."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <string name="message_saved" msgid="7073947895562277576">"Mensaje guardado como borrador."</string>
+    <string name="message_saved" msgid="7073947895562277576">"Mensaje guardado como borrador"</string>
     <string name="sending_message" msgid="1498583163419122128">"Enviando mensaje…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"La dirección <xliff:g id="WRONGEMAIL">%s</xliff:g> no es válida."</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
@@ -245,6 +227,12 @@
     <string name="done" msgid="3079981801778027540">"Listo"</string>
     <string name="cancel" msgid="8762981157252199115">"Cancelar"</string>
     <string name="close" msgid="419945428844076406">"Cerrar"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"No se configuraron carpetas para esta cuenta."</string>
+    <string name="folders_activity_instructions" msgid="5237801615196958918">"No se definieron carpetas para esta cuenta."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

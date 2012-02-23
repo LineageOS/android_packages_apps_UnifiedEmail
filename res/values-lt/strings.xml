@@ -68,7 +68,7 @@
     <string name="reply" msgid="2032052598496088561">"Atsakyti"</string>
     <string name="reply_all" msgid="7257248094625487557">"Atsakyt visiems"</string>
     <string name="resume_draft" msgid="6450150180834092146">"Redaguoti"</string>
-    <string name="forward" msgid="6822914459902983767">"Pirmyn"</string>
+    <string name="forward" msgid="6822914459902983767">"Persiųsti"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Sukurti"</string>
     <string name="menu_change_labels" msgid="9121087142079721959">"Keisti etiketes"</string>
     <string name="menu_manage_labels" msgid="8618788259638720538">"Tvarkyti etiketes"</string>
@@ -86,7 +86,7 @@
     <string name="mark_important" msgid="6904096897104265870">"Pažymėti kaip svarbų"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Pažymėti kaip nesvarbų"</string>
     <string name="add_cc_label" msgid="504861315425773180">"Pridėti Cc / Bcc"</string>
-    <string name="add_bcc_label" msgid="7432027645493843336">"Pridėti bcc"</string>
+    <string name="add_bcc_label" msgid="7432027645493843336">"Pridėti Bcc"</string>
     <string name="feedback" msgid="79365993169715049">"Siųsti atsiliepimus"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Pagalba"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Įtraukti cituojamą tekstą"</string>
@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"Rodyti visus aplankus"</string>
     <string name="no_conversations" msgid="35400008890372241">"Nėra pokalbių."</string>
     <string name="undo" msgid="6070869718469782251">"Anuliuoti"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"Nutildoma pokalbių: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-    <item quantity="other" msgid="7732711630827590665">"Nutildoma pokalbių: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"Apie <xliff:g id="COUNT">%1$d</xliff:g> pokalbį pranešama kaip apie šlamštą."</item>
-    <item quantity="other" msgid="1772788567015816651">"Apie <xliff:g id="COUNT">%1$d</xliff:g> pokalbius (-ių) pranešama kaip apie šlamštą."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"Archyvuojama pokalbių: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-    <item quantity="other" msgid="2233711130311549549">"Archyvuojama pokalbių: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"Trinama pokalbių: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-    <item quantity="other" msgid="4729328961071737560">"Trinama pokalbių: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"<xliff:g id="COUNT">%1$d</xliff:g> pokalbis žymimas kaip perskaitytas."</item>
     <item quantity="other" msgid="247178462544083532">"<xliff:g id="COUNT">%1$d</xliff:g> pokalbiai (-ių) žymimi (-a) kaip perskaityti."</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"Pažymėta kaip neskaityti: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="858491333253953462">"Pažymėta kaip neskaityti: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"Pakeista etiketė."</item>
-    <item quantity="other" msgid="6656208328661529588">"Pakeistos etiketės."</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Rezultatai"</string>
     <string name="searchMode" msgid="3329807422114758583">"Paieškos režimas"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Ieškoti pokalbių režimo"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"Uždaryti"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Šiai paskyrai nenustatyti jokie aplankai."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

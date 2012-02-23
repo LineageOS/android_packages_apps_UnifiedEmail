@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"Показване на всички папки"</string>
     <string name="no_conversations" msgid="35400008890372241">"Няма кореспонденции."</string>
     <string name="undo" msgid="6070869718469782251">"Отмяна"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"<xliff:g id="COUNT">%1$d</xliff:g> кореспонденция се спира."</item>
-    <item quantity="other" msgid="7732711630827590665">"<xliff:g id="COUNT">%1$d</xliff:g> кореспонденции се спират."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"Подава се сигнал за <xliff:g id="COUNT">%1$d</xliff:g> кореспонденция като спам."</item>
-    <item quantity="other" msgid="1772788567015816651">"Подава се сигнал за <xliff:g id="COUNT">%1$d</xliff:g> кореспонденции като спам."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"<xliff:g id="COUNT">%1$d</xliff:g> кореспонденция се архивира."</item>
-    <item quantity="other" msgid="2233711130311549549">"<xliff:g id="COUNT">%1$d</xliff:g> кореспонденции се архивират."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"<xliff:g id="COUNT">%1$d</xliff:g> кореспонденция се изтрива."</item>
-    <item quantity="other" msgid="4729328961071737560">"<xliff:g id="COUNT">%1$d</xliff:g> кореспонденции се изтриват."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"<xliff:g id="COUNT">%1$d</xliff:g> кореспонденция се означава като прочетена."</item>
     <item quantity="other" msgid="247178462544083532">"<xliff:g id="COUNT">%1$d</xliff:g> кореспонденции се означават като прочетени."</item>
@@ -208,10 +192,8 @@
     <item quantity="one" msgid="365581967734960166">"Означихте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; като непрочетена."</item>
     <item quantity="other" msgid="858491333253953462">"Означихте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; като непрочетени."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"Променихте етикета."</item>
-    <item quantity="other" msgid="6656208328661529588">"Променихте етикетите."</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Резултати"</string>
     <string name="searchMode" msgid="3329807422114758583">"Режим на търсене"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Режим  на търсене в кореспонденциите"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"Затваряне"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"В този профил не са зададени папки."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>

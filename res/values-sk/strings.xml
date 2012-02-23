@@ -18,7 +18,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="mock_content_provider" msgid="7444679250201027030">"Poskytovať simulovaného obsahu"</string>
+    <string name="mock_content_provider" msgid="7444679250201027030">"Poskytovateľ simulovaného obsahu"</string>
     <string name="conversation_content_provider" msgid="3662935025292495273">"Poskytovateľ obsahu konverzácií"</string>
     <string name="account_cache_provider" msgid="3195603659417337226">"Poskytovateľ vyrovnávacej pamäte účtu"</string>
     <string name="dummy_gmail_provider" msgid="2411244445674142698">"Poskytovateľ skúšobného účtu Gmail"</string>
@@ -48,7 +48,7 @@
     <string name="generic_attachment_problem" msgid="8775959340559458709">"Súbor sa nepodarilo pripojiť."</string>
     <string name="recipient_needed" msgid="999037027358925655">"Pridajte aspoň jedného príjemcu."</string>
     <string name="recipient_error_dialog_title" msgid="6051694305498669180">"Chyba príjemcu"</string>
-    <string name="confirm_send_title" msgid="5663602035452564062">"Chcete odoslať túto správu?"</string>
+    <string name="confirm_send_title" msgid="5663602035452564062">"Chcete túto správu odoslať?"</string>
     <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"V predmete správy nie je žiaden text."</string>
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"V tele správy nie je žiaden text."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Chcete odoslať túto správu?"</string>
@@ -136,22 +136,6 @@
     <string name="show_all_folders" msgid="3281420732307737553">"Zobraziť všetky priečinky"</string>
     <string name="no_conversations" msgid="35400008890372241">"Žiadne konverzácie."</string>
     <string name="undo" msgid="6070869718469782251">"Späť"</string>
-  <plurals name="conversation_muting">
-    <item quantity="one" msgid="3339369590668913905">"Je ignorovaná <xliff:g id="COUNT">%1$d</xliff:g> konverzácia."</item>
-    <item quantity="other" msgid="7732711630827590665">"Je ignorovaných <xliff:g id="COUNT">%1$d</xliff:g> konverzácií."</item>
-  </plurals>
-  <plurals name="conversation_spamming">
-    <item quantity="one" msgid="2595708219821799225">"Prebieha nahlasovanie konverzácií (počet: <xliff:g id="COUNT">%1$d</xliff:g>) ako spam."</item>
-    <item quantity="other" msgid="1772788567015816651">"Prebieha nahlasovanie konverzácií (počet: <xliff:g id="COUNT">%1$d</xliff:g>) ako spam."</item>
-  </plurals>
-  <plurals name="conversation_archiving">
-    <item quantity="one" msgid="868228767335919035">"Prebieha archivácia konverzácií (počet: <xliff:g id="COUNT">%1$d</xliff:g>)."</item>
-    <item quantity="other" msgid="2233711130311549549">"Prebieha archivácia konverzácií (počet: <xliff:g id="COUNT">%1$d</xliff:g>)."</item>
-  </plurals>
-  <plurals name="conversation_deleting">
-    <item quantity="one" msgid="1715640568204501903">"Prebieha odstraňovanie konverzácií (počet: <xliff:g id="COUNT">%1$d</xliff:g>)."</item>
-    <item quantity="other" msgid="4729328961071737560">"Prebieha odstraňovanie konverzácií (počet: <xliff:g id="COUNT">%1$d</xliff:g>)."</item>
-  </plurals>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"Prebieha označovanie <xliff:g id="COUNT">%1$d</xliff:g> konverzácie ako prečítanej."</item>
     <item quantity="other" msgid="247178462544083532">"Prebieha označovanie <xliff:g id="COUNT">%1$d</xliff:g> konverzácií ako prečítaných."</item>
@@ -193,25 +177,23 @@
     <item quantity="other" msgid="8630099095360065837">"Konverzácie boli odstránené (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
   </plurals>
   <plurals name="conversation_marked_important">
-    <item quantity="one" msgid="2335171317119674993">"Konverzácie boli označené ako dôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
-    <item quantity="other" msgid="709648106181749594">"Konverzácie boli označené ako dôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
+    <item quantity="one" msgid="2335171317119674993">"Konverzácie boli označené ako dôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
+    <item quantity="other" msgid="709648106181749594">"Konverzácie boli označené ako dôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
   </plurals>
   <plurals name="conversation_marked_not_important">
-    <item quantity="one" msgid="63750576337670941">"Konverzácie boli označené ako nedôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
-    <item quantity="other" msgid="6160886583510022920">"Konverzácie boli označené ako nedôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
+    <item quantity="one" msgid="63750576337670941">"Konverzácie boli označené ako nedôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
+    <item quantity="other" msgid="6160886583510022920">"Konverzácie boli označené ako nedôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
   </plurals>
   <plurals name="conversation_marked_read">
-    <item quantity="one" msgid="7853066345561670409">"Konverzácie boli označené ako prečítané (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
-    <item quantity="other" msgid="6554100868671029370">"Konverzácie boli označené ako prečítané (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
+    <item quantity="one" msgid="7853066345561670409">"Konverzácie boli označené ako prečítané (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
+    <item quantity="other" msgid="6554100868671029370">"Konverzácie boli označené ako prečítané (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
   </plurals>
   <plurals name="conversation_marked_unread">
-    <item quantity="one" msgid="365581967734960166">"Konverzácie boli označené ako neprečítané (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
-    <item quantity="other" msgid="858491333253953462">"Konverzácie boli označené ako neprečítané (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
+    <item quantity="one" msgid="365581967734960166">"Konverzácie boli označené ako neprečítané (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
+    <item quantity="other" msgid="858491333253953462">"Konverzácie boli označené ako neprečítané (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
   </plurals>
-  <plurals name="conversation_label_changed">
-    <item quantity="one" msgid="479306722425460870">"Zmenená menovka."</item>
-    <item quantity="other" msgid="6656208328661529588">"Zmenené menovky."</item>
-  </plurals>
+    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
+    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
     <string name="search_results_header" msgid="4669917471897026269">"Výsledky"</string>
     <string name="searchMode" msgid="3329807422114758583">"Režim vyhľadávania"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Režim vyhľadávania konverzácií"</string>
@@ -247,4 +229,10 @@
     <string name="close" msgid="419945428844076406">"Zavrieť"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Pre tento účet neboli nastavené žiadne priečinky."</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for sync_status:0 (2446076619901049026) -->
+    <!-- no translation found for sync_status:1 (5037283655022689372) -->
+    <!-- no translation found for sync_status:2 (4252875340758600974) -->
+    <!-- no translation found for sync_status:3 (7611299631880179587) -->
+    <!-- no translation found for sync_status:4 (665244114363057627) -->
+    <!-- no translation found for sync_status:5 (9190542479647789762) -->
 </resources>
