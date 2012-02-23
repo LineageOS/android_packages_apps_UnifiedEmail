@@ -1071,4 +1071,9 @@ public final class ConversationCursor implements Cursor {
     public boolean requery() {
         return true;
     }
+
+    @Override
+    protected void finalize() {
+        close();
+    }
 }

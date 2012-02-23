@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -39,6 +40,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     // TODO(viki) This class lacks: Conversation Position tracking
     // TODO(viki) This class lacks: What's New dialog
     // TODO(viki) This class lacks: Sync Window Upgrade dialog
+
+    private static final boolean STRICT_MODE = true;
 
     /**
      * The activity controller to which we delegate most Activity lifecycle events.
@@ -112,6 +115,21 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     @Override
     public void onCreate(Bundle savedState) {
+        if (STRICT_MODE) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectDiskReads()
+                    .detectDiskWrites()
+                    .detectNetwork()   // or .detectAll() for all detectable problems
+                    .penaltyLog()
+                    .penaltyFlashScreen()
+                    .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects()
+                    .detectLeakedClosableObjects()
+                    .penaltyLog()
+//                    .penaltyDeath()
+                    .build());
+        }
         super.onCreate(savedState);
 
         mViewMode = new ViewMode(this);
