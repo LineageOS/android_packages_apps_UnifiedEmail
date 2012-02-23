@@ -1,0 +1,310 @@
+/*
+ * Copyright (C) 2012 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.android.mail.ui;
+
+import com.android.mail.R;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import android.app.ActionBar;
+import android.app.ListActivity;
+import android.appwidget.AppWidgetManager;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * An activity that shows the list of all the available accounts and return the
+ * one selected in onResult().
+ */
+public class MailboxSelectionActivity extends ListActivity implements OnClickListener {
+
+    // Used to save our instance state
+    private static final String CREATE_SHORTCUT_KEY = "createShortcut";
+    private static final String CREATE_WIDGET_KEY = "createWidget";
+    private static final String WIDGET_ID_KEY = "widgetId";
+    private static final String WAITING_FOR_ADD_ACCOUNT_RESULT_KEY = "waitingForAddAccountResult";
+
+    private static final String ACCOUNT = "name";
+    private static final String[] COLUMN_NAMES = { ACCOUNT };
+    protected static final String LOG_TAG = new LogUtils().getLogTag();
+    private final int[] VIEW_IDS = { R.id.mailbox_name };
+    private boolean mCreateShortcut = false;
+    private boolean mConfigureWidget = false;
+    private SimpleAdapter mAdapter;
+    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+
+    // Boolean to indicate that we are waiting for the result from an add account
+    // operation.  This boolean is necessary, as there is no guarantee on whether the
+    // AccountManager callback or onResume will be called first.
+    boolean mWaitingForAddAccountResult = false;
+
+    // Can only do certain actions if the Activity is resumed (e.g. setVisible)
+    private boolean mResumed = false;
+
+    @Override
+    public void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
+
+        setContentView(R.layout.mailbox_selection_activity);
+        if (icicle != null) {
+            restoreState(icicle);
+        } else {
+            if (Intent.ACTION_CREATE_SHORTCUT.equals(getIntent().getAction())) {
+                mCreateShortcut = true;
+            }
+            mAppWidgetId = getIntent().getIntExtra(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+            if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                mConfigureWidget = true;
+            }
+        }
+        // We set the default title to "Gmail" or "Google Mail" for consistency
+        // in Task Switcher. If this is for create shortcut or configure widget,
+        // we should set the title to "Select account".
+        if (mCreateShortcut || mConfigureWidget) {
+            setTitle(getResources().getString(R.string.activity_mailbox_selection));
+            ActionBar actionBar = getActionBar();
+            if (actionBar != null) {
+                actionBar.setIcon(R.mipmap.ic_launcher_shortcut_folder);
+            }
+        }
+        ((Button) findViewById(R.id.cancel)).setOnClickListener(this);
+
+        // Initially, assume that the main view is invisible.  It will be made visible,
+        // if we display the account list
+        setVisible(false);
+        setResult(RESULT_CANCELED);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle icicle) {
+        super.onSaveInstanceState(icicle);
+
+        icicle.putBoolean(CREATE_SHORTCUT_KEY, mCreateShortcut);
+        icicle.putBoolean(CREATE_WIDGET_KEY, mConfigureWidget);
+        if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+            icicle.putInt(WIDGET_ID_KEY, mAppWidgetId);
+        }
+        icicle.putBoolean(WAITING_FOR_ADD_ACCOUNT_RESULT_KEY, mWaitingForAddAccountResult);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Initially set up the state, with cached data, unless we are configuring
+        // a widget, where we want to wait for the real data
+        if (!mConfigureWidget) {
+            setupWithCachedAccounts();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mResumed = true;
+        // Only fetch the accounts, if we are not handling a response from the
+        // launched child activity.
+        if (!mWaitingForAddAccountResult) {
+            setupWithAccounts();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mResumed = false;
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    /**
+     * Restores the activity state from a bundle
+     */
+    private void restoreState(Bundle icicle) {
+        if (icicle.containsKey(CREATE_SHORTCUT_KEY)) {
+            mCreateShortcut = icicle.getBoolean(CREATE_SHORTCUT_KEY);
+        }
+        if (icicle.containsKey(CREATE_WIDGET_KEY)) {
+            mConfigureWidget = icicle.getBoolean(CREATE_WIDGET_KEY);
+        }
+        if (icicle.containsKey(WIDGET_ID_KEY)) {
+            mAppWidgetId = icicle.getInt(WIDGET_ID_KEY);
+        }
+        if (icicle.containsKey(WAITING_FOR_ADD_ACCOUNT_RESULT_KEY)) {
+            mWaitingForAddAccountResult = icicle.getBoolean(WAITING_FOR_ADD_ACCOUNT_RESULT_KEY);
+        }
+    }
+
+    private void setupWithAccounts() {
+        final ContentResolver resolver = getContentResolver();
+        AsyncTask<Void, Void, Void> getAccounts = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                Cursor cursor = resolver.query(AccountCacheProvider.getAccountsUri(),
+                        UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+                Account[] accounts = new Account[0];
+                if (cursor != null) {
+                    accounts = new Account[cursor.getCount()];
+                    int i = 0;
+                    while (cursor.moveToNext()) {
+                        accounts[i] = new Account(cursor);
+                        i++;
+                    }
+                }
+                completeSetupWithAccounts(accounts);
+                return null;
+            }
+
+        }.execute();
+    }
+
+    private void setupWithCachedAccounts() {
+        // TODO: (mindyp) have the AccountCacheProvider cache accounts.
+    }
+
+    private void completeSetupWithAccounts(Account[] accounts) {
+        // TODO: Cache the latest set of accounts
+        // AccountCacheProvider.cacheAccountList(this, false /* synced */,
+        // accounts);
+
+        // Populate the map
+        final List<Map<String, Object>> listData = Lists.newArrayList();
+        for (int i = 0; i < accounts.length; i++) {
+            Map<String, Object> m = Maps.newHashMap();
+            final String account = accounts[i].name;
+            m.put(ACCOUNT, account);
+
+            listData.add(m);
+        }
+        updateAccountList(listData);
+    }
+
+    private void updateAccountList(final List<Map<String, Object>> accountData) {
+        boolean displayAccountList = true;
+        // Configuring a widget or shortcut.
+        if (mConfigureWidget || mCreateShortcut) {
+            if (accountData.size() == 0) {
+                // No account found, show Add Account screen, for both the widget or
+                // shortcut creation process
+                // TODO: (mindyp) allow for adding of account.
+                // No reason to display the account list
+                displayAccountList = false;
+
+                // Indicate that we need to handle the response from the add account action
+                // This allows us to process the results that we get in the AddAccountCallback
+                mWaitingForAddAccountResult = true;
+            } else if (mConfigureWidget && accountData.size() == 1) {
+                // When configuring a widget, if there is only one account, automatically
+                // choose that account.
+                selectAccount((String) accountData.get(0).get(ACCOUNT));
+                // No reason to display the account list
+                displayAccountList = false;
+            }
+        }
+
+        if (displayAccountList) {
+            // We are about to display the list, make this activity visible
+            // But only if the Activity is not paused!
+            if (mResumed) {
+                setVisible(true);
+            }
+
+            mAdapter = new SimpleAdapter(
+                    this, accountData, R.layout.mailbox_item, COLUMN_NAMES, VIEW_IDS) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View v = super.getView(position, convertView, parent);
+                    TextView accountView = (TextView) v.findViewById(R.id.mailbox_name);
+
+                    Map<String, Object> data = accountData.get(position);
+                    String account = (String) data.get(ACCOUNT);
+                    accountView.setText(account);
+
+                    // Set the tag here so we can get the account name in
+                    // OnListItemClick()
+                    v.setTag(account);
+
+                    return v;
+                }
+            };
+            setListAdapter(mAdapter);
+        }
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        if (v != null) {
+            String selectedAccount = (String) v.getTag();
+            selectAccount(selectedAccount);
+        }
+    }
+
+    private void selectAccount(String account) {
+        if (mCreateShortcut || mConfigureWidget) {
+            // Invoked for a shortcut creation
+            final Intent intent = new Intent(this, FolderSelectionActivity.class);
+            intent.setFlags(
+                    Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            intent.setAction(mCreateShortcut ?
+                    Intent.ACTION_CREATE_SHORTCUT : AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
+            if (mConfigureWidget) {
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+            }
+            intent.putExtra(FolderSelectionActivity.EXTRA_ACCOUNT_SHORTCUT, account);
+            startActivity(intent);
+            finish();
+        } else {
+            // TODO: (mindyp) handle changing the account for this shortcut.
+            finish();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.cancel:
+                setResult(RESULT_CANCELED);
+                finish();
+                break;
+        }
+    }
+}

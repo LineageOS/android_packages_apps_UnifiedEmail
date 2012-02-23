@@ -59,6 +59,9 @@ public final class FolderListFragment extends ListFragment implements
     private FolderChangeListener mListener;
 
     private static final int FOLDER_LOADER_ID = 0;
+
+    public static final int MODE_DEFAULT = 0;
+    public static final int MODE_PICK = 1;
     /**
      * Hidden constructor.
      */
@@ -73,6 +76,15 @@ public final class FolderListFragment extends ListFragment implements
      * to display conversation list context.
      */
     public static FolderListFragment newInstance(FolderChangeListener listener, String uri) {
+        return newInstance(listener, uri, MODE_DEFAULT);
+    }
+
+    /**
+     * Creates a new instance of {@link ConversationListFragment}, initialized
+     * to display conversation list context.
+     */
+    public static FolderListFragment newInstance(FolderChangeListener listener, String uri,
+            int mode) {
         FolderListFragment fragment = new FolderListFragment(listener, uri);
         return fragment;
     }

@@ -17,7 +17,6 @@
 -->
 
 <resources>
-
     <dimen name="account_dropdown_item_height">48dip</dimen>
     <dimen name="wide_senders_font_size">16sp</dimen>
     <dimen name="wide_subject_font_size">16sp</dimen>
@@ -67,4 +66,11 @@
     <dimen name="folder_list_popup_width">200dip</dimen>
     <dimen name="folder_list_folder_color_width">36dip</dimen>
     <dimen name="folder_list_minimum_height">48dip</dimen>
+    <dimen name="widget_senders_font_size">18sp</dimen>
+    <dimen name="widget_subject_font_size">14sp</dimen>
+    <dimen name="widget_date_font_size">12sp</dimen>
+    <dimen name="widget_margin_top">11dip</dimen>
+    <dimen name="widget_margin_left">17dip</dimen>
+    <dimen name="widget_margin_right">17dip</dimen>
+    <dimen name="widget_margin_bottom">22dip</dimen>
 </resources>

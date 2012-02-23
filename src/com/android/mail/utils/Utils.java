@@ -17,8 +17,10 @@
 package com.android.mail.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -36,10 +38,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationCursor;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class Utils {
     /**
@@ -59,6 +64,14 @@ public class Utils {
     public static String[] sSenderFragments = new String[8];
 
     public static final String EXTRA_ACCOUNT = "account";
+    /*
+     * Notifies that changes happened. Certain UI components, e.g., widgets, can
+     * register for this {@link Intent} and update accordingly. However, this
+     * can be very broad and is NOT the preferred way of getting notification.
+     */
+    // TODO: UI Provider has this notification URI?
+   public static final String ACTION_NOTIFY_DATASET_CHANGED =
+           "com.android.mail.ACTION_NOTIFY_DATASET_CHANGED";
 
     /**
      * Sets WebView in a restricted mode suitable for email use.
@@ -324,8 +337,6 @@ public class Utils {
         }
         maxChars -= fixedFragmentLength;
 
-        final boolean normalMessagesExist = numMessagesFragment.length() != 0
-                || maxFoundPriority != Integer.MIN_VALUE;
         int maxPriorityToInclude = -1; // inclusive
         int numCharsUsed = numMessagesFragment.length();
         int numSendersUsed = 0;
@@ -534,5 +545,29 @@ public class Utils {
             return "";
         }
         return errors[status];
+    }
+
+    /**
+     * @return an intent which, if launched, will display the corresponding conversation
+     */
+    public static Intent createViewConversationIntent(Context context,
+            Account account, Folder folder, long conversationId) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("content");
+        builder.authority(UIProvider.AUTHORITY);
+        builder.appendEncodedPath("account/" + account);
+        final String intentLabel = folder.name != null ? folder.name
+                : account.getAccountInbox().name;
+        builder.appendPath("label");
+        builder.appendPath(intentLabel);
+
+        if (conversationId != UIProvider.INVALID_CONVERSATION_ID) {
+            builder.appendEncodedPath("conversationId/" + conversationId);
+        }
+        intent.setDataAndType(builder.build(), "application/" + UIProvider.AUTHORITY);
+
+        return intent;
     }
 }

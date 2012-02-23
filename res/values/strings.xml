@@ -441,8 +441,6 @@
     <!-- Folders -->
     <!-- Displayed in the middle of the Folders screen when no folders have been defined -->
     <string name="folders_activity_instructions">No folders have been set for this account.</string>
-    <!-- Displayed in widget when unread count > 100. [CHAR LIMIT=4] -->
-    <string name="widget_large_unread_count">%d+</string>
 
     <!-- Sync status errors translate="false" [CHAR LIMIT=100] -->
     <string-array name="sync_status">
@@ -453,4 +451,51 @@
         <item>Storage error</item>
         <item>Internal error</item>
     </string-array>
+
+    <!-- Widget strings -->
+    <!-- Displayed when user adds a new widget. Tapping on the widget in this
+          mode will bring user to the account selection screen [CHAR LIMIT=35] -->
+    <string name="tap_to_configure">Touch to set up</string>
+
+    <!-- Displayed within a widget that was setup for a non-synced label [CHAR LIMIT=35] -->
+    <string name="non_synced_folder_description">To view conversations, sync this folder.</string>
+
+    <!-- Displayed within a widget that was setup for a non-synced folder.  This is the text of the
+         button that will allow the user to configure sync for the folder [CHAR LIMIT=35] -->
+    <string name="tap_to_configure_folder_sync">Sync Folder</string>
+
+    <!-- Displayed in widget when unread count > 100. [CHAR LIMIT=4] -->
+    <string name="widget_large_unread_count">%d+</string>
+
+    <!-- Displayed at the end of the conversation list in the widget. Tapping on this will open the default Inbox. [CHAR LIMIT=35] -->
+    <string name="view_more_conversations">View more conversations</string>
+
+    <!-- Displayed while we load a conversation. [CHAR LIMIT=100] -->
+    <string name="loading_conversation">Loading\u2026</string>
+
+    <!-- Name of the Mailboxes activity [CHAR LIMIT=30] -->
+    <string name="activity_mailbox_selection">Choose account</string>
+
+    <!-- Name of the Folders activity [CHAR LIMIT=30] -->
+    <string name="activity_folder_selection">Choose folder</string>
+
+    <!-- Manange folders mode, sync option: synchronize all conversations with this folder. [CHAR LIMIT=100] -->
+    <string name="sync_all">Sync: All</string>
+    <plurals name="sync_recent">
+        <!-- Manage folders mode, sync option: synchronize conversations in the last day with this folder [CHAR LIMIT=100] -->
+        <item quantity="one">Sync: Last <xliff:g id="count" example="1">%1$d</xliff:g> day</item>
+        <!-- Manage folders mode, sync option: synchronize conversations in the last 2+ day with this folder [CHAR LIMIT=100] -->
+        <item quantity="other">Sync: Last <xliff:g id="count" example="4">%1$d</xliff:g> days</item>
+    </plurals>
+    <!-- Manage folders mode, sync option: don't synchronize any conversation with this folder [CHAR LIMIT=100] -->
+    <string name="sync_none">Sync: None</string>
+
+    <!-- Title for dialog encouraging users enable sync for a currently non-synced folder [CHAR LIMIT=30] -->
+    <string name="folder_sync_for_widget_title">Sync folder</string>
+
+    <!-- Dialog text encouraging users to enable sync for a newly created widget [CHAR LIMIT=400] -->
+    <string name="folder_sync_for_widget_description">To view conversations in the widget, sync this folder.</string>
+
+    <!-- Checkbox text to enable sync for a folder where a widget is in the processes of being added, and sync had been not been enabled [CHAR LIMIT=30] -->
+    <string name="folder_sync_for_widget_checkbox">Sync last <xliff:g id="numSyncDays" example="30">%d</xliff:g> days</string>
 </resources>

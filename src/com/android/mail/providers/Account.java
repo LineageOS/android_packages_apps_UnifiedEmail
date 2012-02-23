@@ -146,6 +146,20 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeInt(syncStatus);
     }
 
+    /**
+     * Get the settings associated with this account.
+     * TODO: this method is just a stand-in.
+     */
+    public Cursor getSettings() {
+        return null;
+    }
+
+    public Folder getAccountInbox() {
+        // TODO: (mindyp) fill in with call to settings or reading of account settings
+        // to get the default inbox for this account.
+        return null;
+    }
+
     @SuppressWarnings("hiding")
     public static final Creator<Account> CREATOR = new Creator<Account>() {
         @Override
