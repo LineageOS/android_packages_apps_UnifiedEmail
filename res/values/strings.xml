@@ -443,4 +443,14 @@
     <string name="folders_activity_instructions">No folders have been set for this account.</string>
     <!-- Displayed in widget when unread count > 100. [CHAR LIMIT=4] -->
     <string name="widget_large_unread_count">%d+</string>
+
+    <!-- Sync status errors translate="false" [CHAR LIMIT=100] -->
+    <string-array name="sync_status">
+        <item>Success</item>
+        <item>Connection error</item>
+        <item>Authentication error</item>
+        <item>Security error</item>
+        <item>Storage error</item>
+        <item>Internal error</item>
+    </string-array>
 </resources>

@@ -40,6 +40,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.android.mail.R;
 import com.android.mail.ConversationListContext;
@@ -49,6 +50,7 @@ import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -391,6 +393,15 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onRefreshStopped(int status) {
         if (mRefreshInProgress) {
             mRefreshInProgress = false;
+            switch (status) {
+                case LastSyncResult.SUCCESS:
+                    break;
+                default:
+                    Context context = mActivity.getActivityContext();
+                    Toast.makeText(context, Utils.getSyncStatusText(context, status),
+                            Toast.LENGTH_LONG).show();
+                    break;
+            }
             mHandler.post(mInvalidateMenu);
         }
     }

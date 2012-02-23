@@ -524,4 +524,15 @@ public class Utils {
         }
         return unreadCountString;
     }
+
+    /**
+     * Get text matching the last sync status.
+     */
+    public static CharSequence getSyncStatusText(Context context, int status) {
+        String[] errors = context.getResources().getStringArray(R.array.sync_status);
+        if (status >= errors.length) {
+            return "";
+        }
+        return errors[status];
+    }
 }
