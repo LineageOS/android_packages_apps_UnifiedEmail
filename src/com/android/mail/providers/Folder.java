@@ -298,6 +298,16 @@ public class Folder implements Parcelable {
     }
 
     /**
+     * Returns a boolean indicating whether network activity (sync) is occuring for this folder.
+     */
+    public boolean isSyncInProgress() {
+        return 0 != (syncStatus & (UIProvider.SyncStatus.BACKGROUND_SYNC |
+                UIProvider.SyncStatus.USER_REFRESH |
+                UIProvider.SyncStatus.USER_QUERY |
+                UIProvider.SyncStatus.USER_MORE_RESULTS));
+    }
+
+    /**
      * Serialize the given list of folders
      * @param folderMap A valid map of folder names to Folders
      * @return a string containing a serialized output of folder maps.

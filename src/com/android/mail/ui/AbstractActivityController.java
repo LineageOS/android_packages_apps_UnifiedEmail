@@ -625,17 +625,11 @@ public abstract class AbstractActivityController implements ActivityController {
             if (data != null) {
                 data.moveToFirst();
                 Folder folder = new Folder(data);
-                switch (folder.syncStatus) {
-                    case UIProvider.SyncStatus.BACKGROUND_SYNC:
-                    case UIProvider.SyncStatus.USER_REFRESH:
-                        onRefreshStarted();
-                        break;
-                    case UIProvider.SyncStatus.NO_SYNC:
-                        // Stop the spinner here.
-                        onRefreshStopped(folder.lastSyncResult);
-                        break;
-                    default:
-                        break;
+                if (folder.isSyncInProgress()) {
+                    onRefreshStarted();
+                } else {
+                    // Stop the spinner here.
+                    onRefreshStopped(folder.lastSyncResult);
                 }
                 LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
             }

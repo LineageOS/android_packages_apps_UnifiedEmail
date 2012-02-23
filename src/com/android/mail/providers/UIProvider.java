@@ -37,15 +37,15 @@ public class UIProvider {
      */
     public static final class SyncStatus {
         // No sync in progress
-        public static final int NO_SYNC = 1<<0;
+        public static final int NO_SYNC = 0;
         // A user-requested sync/refresh is in progress
-        public static final int USER_REFRESH = 1<<1;
+        public static final int USER_REFRESH = 1<<0;
         // A user-requested query is in progress
-        public static final int USER_QUERY = 1<<2;
+        public static final int USER_QUERY = 1<<1;
         // A user request for additional results is in progress
-        public static final int USER_MORE_RESULTS = 1<<3;
+        public static final int USER_MORE_RESULTS = 1<<2;
         // A background sync is in progress
-        public static final int BACKGROUND_SYNC = 1<<4;
+        public static final int BACKGROUND_SYNC = 1<<3;
     }
 
     /**
