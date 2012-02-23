@@ -30,7 +30,6 @@ import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.Utils;
 
-
 /**
  * This is the root activity container that holds the left navigation fragment
  * (usually a list of labels), and the main content fragment (either a

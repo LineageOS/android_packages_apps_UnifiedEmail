@@ -153,19 +153,16 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void clearSubject() {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void enterSearchMode() {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void exitSearchMode() {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
@@ -197,13 +194,11 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void handleConversationLoadError() {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void handleSearchRequested() {
         // TODO(viki): Auto-generated method stub
-
     }
 
     /**
@@ -274,25 +269,21 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onActionModeFinished(ActionMode mode) {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void onActionModeStarted(ActionMode mode) {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
     public void onConversationListVisibilityChanged(boolean visible) {
         // TODO(viki): Auto-generated method stub
-
     }
 
     /**

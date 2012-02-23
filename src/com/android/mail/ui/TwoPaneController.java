@@ -166,10 +166,9 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public boolean onBackPressed() {
-        if (!(mViewMode.getMode() == ViewMode.CONVERSATION)){
+        if (mViewMode.getMode() == ViewMode.CONVERSATION) {
             return mViewMode.enterConversationListMode();
         }
-        mActivity.finish();
-        return true;
+        return false;
     }
 }
