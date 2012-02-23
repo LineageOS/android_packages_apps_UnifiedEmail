@@ -16,7 +16,6 @@
 
 package com.android.mail.widget;
 
-import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
@@ -27,20 +26,15 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 
-import android.accounts.AccountManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Parcel;
 import android.text.TextUtils;
 import android.view.View;
@@ -107,7 +101,6 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-
         // Receive notification for a certain account.
         if (Utils.ACTION_NOTIFY_DATASET_CHANGED.equals(intent.getAction())) {
             final String accountToBeUpdated = intent.getExtras().getString(Utils.EXTRA_ACCOUNT);
@@ -146,7 +139,6 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-
         // Update each of the widgets with a remote adapter
         for (int i = 0; i < appWidgetIds.length; ++i) {
             // Get the account for this widget from preference
@@ -174,9 +166,8 @@ public class BaseWidgetProvider extends AppWidgetProvider {
                 }
             }
             // account will be null the first time a widget is created. This is
-            // OK, as
-            // isAccountValid will return false, allowing the widget to be
-            // configured
+            // OK, as isAccountValid will return false, allowing the widget to
+            // be configured
             updateWidget(context, appWidgetIds[i], new Account(Parcel.obtain()),
                     new Folder(Parcel.obtain()));
         }
@@ -187,12 +178,14 @@ public class BaseWidgetProvider extends AppWidgetProvider {
             Cursor accountCursor = context.getContentResolver().query(
                     AccountCacheProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION, null,
                     null, null);
-            accountCursor.moveToFirst();
-            do {
-                if (account != null && account.equals(new Account(accountCursor)))
-                    return true;
-            } while (accountCursor.moveToNext());
-            return false;
+            if (accountCursor.moveToFirst()) {
+                Account newAccount = new Account(accountCursor);
+                do {
+                    if (account != null && newAccount != null
+                            && TextUtils.equals(account.name, newAccount.name))
+                        return true;
+                } while (accountCursor.moveToNext());
+            }
         }
         return false;
     }

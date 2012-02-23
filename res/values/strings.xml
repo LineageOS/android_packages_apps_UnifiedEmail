@@ -123,8 +123,8 @@
     <string name="forward">Forward</string>
     <!-- Menu item: compose a new email -->
     <string name="menu_compose">Compose</string>
-    <!-- Menu item: change the labels for this conversion. -->
-    <string name="menu_change_labels">Change labels</string>
+    <!-- Menu item: change the labels for this conversation. -->
+    <string name="menu_change_folders">Change folders</string>
     <!-- Menu item: manages the labels for this account. [CHAR LIMIT = 30] -->
     <string name="menu_manage_labels">Manage labels</string>
     <!-- Title for the Label list screen. [CHAR LIMIT = 30] -->
@@ -498,4 +498,8 @@
 
     <!-- Checkbox text to enable sync for a folder where a widget is in the processes of being added, and sync had been not been enabled [CHAR LIMIT=30] -->
     <string name="folder_sync_for_widget_checkbox">Sync last <xliff:g id="numSyncDays" example="30">%d</xliff:g> days</string>
+
+    <!-- Folder selection dialog -->
+    <!-- Title for change folders dialog [CHAR LIMIT=30] -->
+    <string name="folder_selection_dialog_title">Change folders</string>
 </resources>

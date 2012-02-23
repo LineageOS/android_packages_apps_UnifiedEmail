@@ -58,7 +58,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         // Mapping of a folder's uri to its checked state
         mCheckedState = new HashMap<String, Boolean>();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Change folders");
+        builder.setTitle(R.string.folder_selection_dialog_title);
         builder.setPositiveButton(R.string.ok, this);
         builder.setNegativeButton(R.string.cancel, this);
         mSingle = !account
