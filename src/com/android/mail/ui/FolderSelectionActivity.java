@@ -22,6 +22,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -32,9 +33,11 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.android.mail.widget.WidgetProvider;
@@ -46,7 +49,7 @@ import java.util.Set;
  * This activity displays the list of available folders for the current account.
  */
 public class FolderSelectionActivity extends Activity implements OnClickListener,
-        DialogInterface.OnClickListener, FolderChangeListener {
+        DialogInterface.OnClickListener, FolderChangeListener, ControllableActivity {
     public static final String EXTRA_ACCOUNT_SHORTCUT = "account-shortcut";
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
@@ -93,7 +96,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment fragment = FolderListFragment.newInstance(this, mAccount.folderListUri,
                 FolderListFragment.MODE_PICK);
-        fragmentTransaction.replace(R.id.folders_pane, fragment);
+        fragmentTransaction.replace(R.id.folder_list_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -208,5 +211,51 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                 }
             }
         }
+    }
+
+    @Override
+    public String getHelpContext() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Context getActivityContext() {
+        return this;
+    }
+
+    @Override
+    public void attachConversationList(ConversationListFragment conversationList) {
+    }
+
+    @Override
+    public int getViewMode() {
+        return 0;
+    }
+
+    @Override
+    public void setViewModeListener(ModeChangeListener listener) {
+    }
+
+    @Override
+    public void unsetViewModeListener(ModeChangeListener listener) {
+    }
+
+    @Override
+    public ConversationListCallbacks getListHandler() {
+        return null;
+    }
+
+    @Override
+    public StarHandler getStarHandler() {
+        return null;
+    }
+
+    @Override
+    public void attachFolderList(FolderListFragment folderListFragment) {
+    }
+
+    @Override
+    public void attachConversationView(ConversationViewFragment conversationViewFragment) {
     }
 }

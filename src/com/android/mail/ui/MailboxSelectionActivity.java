@@ -20,31 +20,23 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import android.app.ActionBar;
 import android.app.ListActivity;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An activity that shows the list of all the available accounts and return the
@@ -64,7 +56,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
     private final int[] VIEW_IDS = { R.id.mailbox_name };
     private boolean mCreateShortcut = false;
     private boolean mConfigureWidget = false;
-    private SimpleAdapter mAdapter;
+    private SimpleCursorAdapter mAdapter;
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     // Boolean to indicate that we are waiting for the result from an add account
@@ -74,11 +66,11 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
 
     // Can only do certain actions if the Activity is resumed (e.g. setVisible)
     private boolean mResumed = false;
+    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
         setContentView(R.layout.mailbox_selection_activity);
         if (icicle != null) {
             restoreState(icicle);
@@ -176,21 +168,12 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
 
     private void setupWithAccounts() {
         final ContentResolver resolver = getContentResolver();
-        AsyncTask<Void, Void, Void> getAccounts = new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 Cursor cursor = resolver.query(AccountCacheProvider.getAccountsUri(),
                         UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-                Account[] accounts = new Account[0];
-                if (cursor != null) {
-                    accounts = new Account[cursor.getCount()];
-                    int i = 0;
-                    while (cursor.moveToNext()) {
-                        accounts[i] = new Account(cursor);
-                        i++;
-                    }
-                }
-                completeSetupWithAccounts(accounts);
+                completeSetupWithAccounts(cursor);
                 return null;
             }
 
@@ -201,28 +184,23 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
         // TODO: (mindyp) have the AccountCacheProvider cache accounts.
     }
 
-    private void completeSetupWithAccounts(Account[] accounts) {
+    private void completeSetupWithAccounts(final Cursor accounts) {
         // TODO: Cache the latest set of accounts
         // AccountCacheProvider.cacheAccountList(this, false /* synced */,
         // accounts);
-
-        // Populate the map
-        final List<Map<String, Object>> listData = Lists.newArrayList();
-        for (int i = 0; i < accounts.length; i++) {
-            Map<String, Object> m = Maps.newHashMap();
-            final String account = accounts[i].name;
-            m.put(ACCOUNT, account);
-
-            listData.add(m);
-        }
-        updateAccountList(listData);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                updateAccountList(accounts);
+            }
+        });
     }
 
-    private void updateAccountList(final List<Map<String, Object>> accountData) {
+    private void updateAccountList(final Cursor accounts) {
         boolean displayAccountList = true;
         // Configuring a widget or shortcut.
         if (mConfigureWidget || mCreateShortcut) {
-            if (accountData.size() == 0) {
+            if (accounts == null || accounts.getCount() == 0) {
                 // No account found, show Add Account screen, for both the widget or
                 // shortcut creation process
                 // TODO: (mindyp) allow for adding of account.
@@ -232,10 +210,11 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                 // Indicate that we need to handle the response from the add account action
                 // This allows us to process the results that we get in the AddAccountCallback
                 mWaitingForAddAccountResult = true;
-            } else if (mConfigureWidget && accountData.size() == 1) {
+            } else if (mConfigureWidget && accounts.getCount() == 1) {
                 // When configuring a widget, if there is only one account, automatically
                 // choose that account.
-                selectAccount((String) accountData.get(0).get(ACCOUNT));
+                accounts.moveToFirst();
+                selectAccount(new Account(accounts));
                 // No reason to display the account list
                 displayAccountList = false;
             }
@@ -248,21 +227,13 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                 setVisible(true);
             }
 
-            mAdapter = new SimpleAdapter(
-                    this, accountData, R.layout.mailbox_item, COLUMN_NAMES, VIEW_IDS) {
+            mAdapter = new SimpleCursorAdapter(this, R.layout.mailbox_item, accounts,
+                    COLUMN_NAMES, VIEW_IDS, 0) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View v = super.getView(position, convertView, parent);
                     TextView accountView = (TextView) v.findViewById(R.id.mailbox_name);
-
-                    Map<String, Object> data = accountData.get(position);
-                    String account = (String) data.get(ACCOUNT);
-                    accountView.setText(account);
-
-                    // Set the tag here so we can get the account name in
-                    // OnListItemClick()
-                    v.setTag(account);
-
+                    accountView.setText(new Account((Cursor) getItem(position)).name);
                     return v;
                 }
             };
@@ -272,13 +243,10 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        if (v != null) {
-            String selectedAccount = (String) v.getTag();
-            selectAccount(selectedAccount);
-        }
+        selectAccount(new Account((Cursor)mAdapter.getItem(position)));
     }
 
-    private void selectAccount(String account) {
+    private void selectAccount(Account account) {
         if (mCreateShortcut || mConfigureWidget) {
             // Invoked for a shortcut creation
             final Intent intent = new Intent(this, FolderSelectionActivity.class);
