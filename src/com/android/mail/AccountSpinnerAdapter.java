@@ -17,50 +17,39 @@
 
 package com.android.mail;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import android.widget.SpinnerAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.android.mail.R;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.utils.LogUtils;
 
 /**
  * An adapter to return the list of accounts and labels for the Account Spinner.
- * This class gets a merge cursor and returns views that are appropriate for the
- * various objects that the merged cursor returns.
- * @author viki@google.com (Vikram Aggarwal)
- *
+ * This class keeps the account and folder information and returns appropriate views.
  */
-public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
+public class AccountSpinnerAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
     /**
      * The current account being viewed
      */
-    private String mCurrentAccount;
-    private final ContentResolver mResolver;
-
+    private Account mCurrentAccount = null;
     /**
      * Total number of accounts.
      */
-    private int numAccounts;
-
+    private int mNumAccounts = 0;
     /**
-     *  Cursor into the accounts database
+     * Array of all the accounts on the device.
      */
-    private final Cursor mAccountCursor;
+    private Account[] mAccounts = new Account[0];
 
     /**
-     *  The name of the account is the 2nd column in UIProvider.ACCOUNTS_PROJECTION
+     *  The name of the account is the 2nd column in {@link UIProvider#ACCOUNTS_PROJECTION}
      */
     static final int NAME_COLUMN = 2;
     /**
@@ -103,13 +92,21 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
     public static final int TYPE_HEADER = 1;
     public static final int TYPE_FOLDER = 2;
 
+    /**
+     * There can be three types of views: Accounts (test@android.com, fifi@example.com), folders
+     * (Inbox, Outbox) or header and footer. This method returns the type of account at given
+     * position in the drop down list.
+     * @param position
+     * @return the type of account: one of {@link #TYPE_ACCOUNT}, {@link #TYPE_HEADER}, or
+     * {@link #TYPE_FOLDER}.
+     */
     private int getType(int position) {
         // First the accounts
-        if (position < numAccounts) {
+        if (position < mNumAccounts) {
             return TYPE_ACCOUNT;
         }
         // Then the header
-        if (position == numAccounts) {
+        if (position == mNumAccounts) {
             return TYPE_HEADER;
         }
         // Finally, the recent folders.
@@ -118,12 +115,6 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
 
     public AccountSpinnerAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
-
-        // Get the data from the system Accounts
-        mResolver = context.getContentResolver();
-        mAccountCursor = mResolver.query(AccountCacheProvider.getAccountsUri(),
-                UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-        numAccounts = mAccountCursor.getCount();
         // Fake folder information
         mFolders = new String[3];
         mFolders[0] = "Drafts -fake";
@@ -131,10 +122,21 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
         mFolders[1] = "Starred -fake";
     }
 
+    /**
+     * Set the accounts for this spinner.
+     * @param accounts
+     */
+    public void setAccounts(Account[] accounts) {
+        mAccounts = accounts;
+        mCurrentAccount = mAccounts[0];
+        mNumAccounts = accounts.length;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         // All the accounts, plus one header, and optionally some labels
-        return numAccounts + 1 + mFolders.length;
+        return mNumAccounts + 1 + mFolders.length;
     }
 
     @Override
@@ -145,7 +147,7 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
             case TYPE_HEADER:
                 return "account spinner header";
             default:
-                return mFolders[position - numAccounts - 1];
+                return mFolders[position - mNumAccounts - 1];
         }
     }
 
@@ -182,14 +184,14 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
                 break;
             case TYPE_HEADER:
                 // We can never select the header, and we want the default view to be the Inbox.
-                // TODO: This should handle an empty account cursor
+                // TODO: This should handle an empty account array
                 accountName = getAccountLabel(0);
                 folderName = "Inbox";
                 break;
             default:
                 // Change the name of the current label
-                final int offset = position - numAccounts - 1;
-                accountName = mCurrentAccount;
+                final int offset = position - mNumAccounts - 1;
+                accountName = (mCurrentAccount == null) ? "" : mCurrentAccount.name;
                 folderName = mFolders[offset];
                 unreadCount = mUnreadCounts[offset];
                 break;
@@ -225,13 +227,11 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
         return convertView;
     }
 
-
     @Override
     public int getViewTypeCount() {
         // Two views, and one header
         return 3;
     }
-
 
     @Override
     public boolean hasStableIds() {
@@ -239,26 +239,11 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
         return false;
     }
 
-
     @Override
     public boolean isEmpty() {
         // No item will be empty.
         return false;
     }
-
-
-    @Override
-    public void registerDataSetObserver(DataSetObserver observer) {
-        // Don't do anything for now. In the future, we will want to re-read the account
-        // information. In particular: recalculating the total number of accounts.
-    }
-
-
-    @Override
-    public void unregisterDataSetObserver(DataSetObserver observer) {
-        // Don't do anything for now.
-    }
-
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -277,13 +262,14 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
                 } else {
                     header = (HeaderHolder) convertView.getTag();
                 }
-                header.account.setText(mCurrentAccount);
+                final String label = (mCurrentAccount == null) ? "" : mCurrentAccount.name;
+                header.account.setText(label);
                 return convertView;
             case TYPE_ACCOUNT:
                 textLabel = getAccountLabel(position);
                 break;
             case TYPE_FOLDER:
-                final int offset = position - numAccounts - 1;
+                final int offset = position - mNumAccounts - 1;
                 textLabel = mFolders[offset];
                 unreadCount = mUnreadCounts[offset];
                 break;
@@ -315,26 +301,22 @@ public class AccountSpinnerAdapter implements SpinnerAdapter,ListAdapter {
     /**
      * Returns the name of the label at the given position in the spinner.
      * @param position
-     * @return
+     * @return the label of the account at the given position.
      */
     private String getAccountLabel(int position) {
-        if (mAccountCursor.moveToPosition(position)) {
-            final int accountNameCol =
-                    mAccountCursor.getColumnIndex(UIProvider.AccountColumns.NAME);
-            return mAccountCursor.getString(accountNameCol);
-        } else {
+        if (position >= mNumAccounts) {
             return "";
         }
+        return mAccounts[position].name;
     }
 
     /**
      * Returns the account given position in the spinner.
      * @param position
-     * @return
+     * @return the account at the given position.
      */
     private Account getAccount(int position) {
-        mAccountCursor.moveToPosition(position);
-        return new Account(mAccountCursor);
+        return mAccounts[position];
     }
 
 

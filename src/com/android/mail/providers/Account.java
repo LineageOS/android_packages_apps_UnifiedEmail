@@ -23,6 +23,8 @@ import android.text.TextUtils;
 
 import java.util.regex.Pattern;
 
+import com.android.mail.utils.LogUtils;
+
 public class Account extends android.accounts.Account implements Parcelable {
     /**
      * The version of the UI provider schema from which this account provider
@@ -115,6 +117,7 @@ public class Account extends android.accounts.Account implements Parcelable {
     private static final String ACCOUNT_COMPONENT_SEPARATOR = "^*^";
     private static final Pattern ACCOUNT_COMPONENT_SEPARATOR_PATTERN =
             Pattern.compile("\\^\\*\\^");
+    private static final String LOG_TAG = new LogUtils().getLogTag();
 
     /**
      * Return a serialized String for this folder.
@@ -195,6 +198,30 @@ public class Account extends android.accounts.Account implements Parcelable {
         undoUri = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
         settingIntentUri = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
         syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
+    }
+
+    /**
+     * Returns an array of all Accounts located at this cursor.
+     * This method does not close the cursor.
+     * @param cursor cursor pointing to the list of accounts
+     * @return the array of all accounts stored at this cursor.
+     */
+    public static Account[] getAllAccounts(Cursor cursor) {
+        final int initialLength = cursor.getCount();
+        if (initialLength <= 0 || !cursor.moveToFirst()) {
+            // Return zero length account array rather than null
+            return new Account[0];
+        }
+
+        Account[] allAccounts = new Account[initialLength];
+        for (int i = 0; i < initialLength; i++) {
+            allAccounts[i] = new Account(cursor);
+            if (!cursor.moveToNext()) {
+                LogUtils.d(LOG_TAG, "Expecting " + initialLength + " accounts. Got: " + i);
+                break;
+            }
+        }
+        return allAccounts;
     }
 
     public boolean supportsCapability(int capability) {

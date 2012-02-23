@@ -231,13 +231,14 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
 
     /**
      * Show the conversation provided here.
-     * @param Converseation conversation to display.
+     * @param conversation conversation to display.
      */
     void showConversation(Conversation conversation);
 
     /**
      * Show the folder list associated with the currently selected account.
      */
+    @Override
     void showFolderList();
 
     /**

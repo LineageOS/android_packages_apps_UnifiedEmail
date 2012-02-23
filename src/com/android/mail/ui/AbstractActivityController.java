@@ -105,8 +105,8 @@ public abstract class AbstractActivityController implements ActivityController {
     private MenuItem mRefreshItem;
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
-    private Handler mHandler = new Handler();
-    private Runnable mInvalidateMenu = new Runnable() {
+    private final Handler mHandler = new Handler();
+    private final Runnable mInvalidateMenu = new Runnable() {
         @Override
         public void run() {
             mActivity.invalidateOptionsMenu();
@@ -575,6 +575,9 @@ public abstract class AbstractActivityController implements ActivityController {
         mViewMode.enterConversationMode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Create a loader to listen in on account changes.
@@ -617,14 +620,19 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         mAccount = new Account(accounts);
         fetchAccountFolderInfo();
-        return true;
+        final Account[] allAccounts = Account.getAllAccounts(accounts);
+        mActionBarView.setAccounts(allAccounts);
+        return (allAccounts.length > 0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // We want to reinitialize only if we haven't ever been initialized, or
         // if the current account has vanished.
-        int id = loader.getId();
+        final int id = loader.getId();
         if (id == ACCOUNT_CURSOR_LOADER) {
             if (!isLoaderInitialized || !existsInCursor(data, mAccount)) {
                 isLoaderInitialized = updateAccounts(loader, data);
@@ -645,6 +653,9 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         // Do nothing for now, since we don't have any state. When a load is finished, the
@@ -666,9 +677,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private class FetchAccountFolderTask extends AsyncTask<Void, Void, ConversationListContext> {
         @Override
         public ConversationListContext doInBackground(Void... params) {
-            final Intent intent = mActivity.getIntent();
-            // TODO(viki): Show the list context from Intent
-            return ConversationListContext.forIntent(mContext, mAccount, intent);
+          return ConversationListContext.forIntent(mContext, mAccount, mActivity.getIntent());
         }
 
         @Override

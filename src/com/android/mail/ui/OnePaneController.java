@@ -72,8 +72,6 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void showConversationList(ConversationListContext listContext) {
-        mViewMode.enterConversationListMode();
-
         // TODO(viki): Check if the account has been changed since the previous time.
         final boolean accountChanged = false;
         // TODO(viki): This account transition looks strange in two pane mode.

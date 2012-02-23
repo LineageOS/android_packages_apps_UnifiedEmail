@@ -22,7 +22,6 @@ import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -102,7 +101,7 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
     private MenuItem mRefreshItem;
 
     private MenuItem mSearch;
-    SpinnerAdapter mSpinner;
+    AccountSpinnerAdapter mSpinner;
     /**
      * The account currently being shown
      */
@@ -168,10 +167,15 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
         mCallback = callback;
         mActivity = activity;
 
-        // Set the mode to Navigation mode
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         mSpinner = new AccountSpinnerAdapter(getContext());
+        // Set the mode to Navigation mode and listen on navigation changes.
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         mActionBar.setListNavigationCallbacks(mSpinner, this);
+    }
+
+    @Override
+    public void setAccounts(Account[] accounts) {
+        mSpinner.setAccounts(accounts);
     }
 
     @Override
@@ -206,7 +210,6 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
     @Override
     public void onViewModeChanged(int newMode) {
         mMode = newMode;
-
         // Always update the options menu and redraw. This will read the new mode and redraw
         // the options menu.
         mActivity.invalidateOptionsMenu();

@@ -22,6 +22,8 @@ import android.app.ActionBar.OnNavigationListener;
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.android.mail.providers.Account;
+
 /**
  * ActionBarView simplifies supporting both MailActionBar and MailActionBarDeprecated (used for
  * pre-v14 devices).
@@ -106,4 +108,10 @@ public interface ActionBarView extends OnNavigationListener, ViewMode.ModeChange
      * @param status
      */
     void onStatusResult(String account, int status);
+
+    /**
+     * Sets the list of accounts in the drop-down navigation.
+     * @param accounts the array of accounts to be set.
+     */
+    void setAccounts(Account[] accounts);
 }
