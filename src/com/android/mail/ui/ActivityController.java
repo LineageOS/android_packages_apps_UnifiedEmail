@@ -31,7 +31,6 @@ import android.view.MotionEvent;
 import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.providers.Conversation;
-import com.android.mail.ui.AsyncRefreshTask.RefreshListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
@@ -41,8 +40,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
         ModeChangeListener, MailActionBar.Callback, StarHandler, ConversationListCallbacks,
-        FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
-        RefreshListener {
+        FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
