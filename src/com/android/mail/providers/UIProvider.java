@@ -17,12 +17,16 @@
 
 package com.android.mail.providers;
 
+import android.content.ContentProvider;
+import android.content.ContentValues;
 import android.content.Context;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
+import android.net.Uri;
 
 import com.android.common.contacts.DataUsageStatUpdater;
 
+import java.lang.String;
 import java.util.ArrayList;
 
 
@@ -306,6 +310,23 @@ public class UIProvider {
         public static final int PARENT = 0x0002;
         public static final int CAN_HOLD_MAIL = 0x0004;
         public static final int CAN_ACCEPT_MOVED_MESSAGES = 0x0008;
+        /**
+         * For accounts that support archive, this will indicate that this folder supports
+         * the archive functionality.
+         */
+        public static final int ARCHIVE = 0x0010;
+
+        /**
+         * For accounts that support report spam, this will indicate that this folder supports
+         * the report spam functionality.
+         */
+        public static final int REPORT_SPAM = 0x0020;
+
+        /**
+         * For accounts that support mute, this will indicate if a mute is performed from within
+         * this folder, the action is destructive.
+         */
+        public static final int DESTRUCTIVE_MUTE = 0x0040;
     }
 
     public static final class FolderColumns {
@@ -496,19 +517,46 @@ public class UIProvider {
          */
         public static final String FOLDER_LIST = "folderList";
 
-        public ConversationColumns() {
+        private ConversationColumns() {
         }
     }
 
     /**
-     * Returns a uri that, when queried, will return a cursor with a list of information for the
-     * list of configured accounts.
-     * @return
+     * List of operations that can can be performed on a conversation. These operations are applied
+     * with {@link ContentProvider#update(Uri, ContentValues, String, String[])}
+     * where the conversation uri is specified, and the ContentValues specifies the operation to
+     * be performed.
+     * <p/>
+     * The operation to be performed is specified in the ContentValues by
+     * the {@link ConversationOperations#OPERATION_KEY}
+     * <p/>
+     * Note not all UI providers will support these operations.  {@link AccountCapabilities} can
+     * be used to determine which operations are supported.
      */
-    // TODO: create a static registry for the starting point for the UI provider.
-//    public static Uri getAccountsUri() {
-//        return Uri.parse(BASE_URI_STRING + "/");
-//    }
+    public static final class ConversationOperations {
+        /**
+         * ContentValues key used to specify the operation to be performed
+         */
+        public static final String OPERATION_KEY = "operation";
+
+        /**
+         * Archive operation
+         */
+        public static final String ARCHIVE = "archive";
+
+        /**
+         * Mute operation
+         */
+        public static final String MUTE = "mute";
+
+        /**
+         * Report spam operation
+         */
+        public static final String REPORT_SPAM = "report_spam";
+
+        private ConversationOperations() {
+        }
+    }
 
     public static final class DraftType {
         public static final int NOT_A_DRAFT = 0;

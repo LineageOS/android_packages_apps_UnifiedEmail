@@ -316,4 +316,8 @@ public class Folder implements Parcelable {
         }
         return result.toString();
     }
+
+    public boolean supportsCapability(int capability) {
+        return (capabilities & capability) != 0;
+    }
 }

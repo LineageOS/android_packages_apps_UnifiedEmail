@@ -22,6 +22,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ActionCompleteListener;
@@ -257,19 +258,21 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 break;
             }
         }
-        MenuItem star = menu.findItem(R.id.star);
+        final MenuItem star = menu.findItem(R.id.star);
         star.setVisible(showStar);
-        MenuItem unstar = menu.findItem(R.id.remove_star);
+        final MenuItem unstar = menu.findItem(R.id.remove_star);
         unstar.setVisible(!showStar);
-        MenuItem read = menu.findItem(R.id.read);
+        final MenuItem read = menu.findItem(R.id.read);
         read.setVisible(!showMarkUnread);
-        MenuItem unread = menu.findItem(R.id.unread);
+        final MenuItem unread = menu.findItem(R.id.unread);
         unread.setVisible(showMarkUnread);
-        MenuItem archive = menu.findItem(R.id.archive);
-        archive.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE));
-        MenuItem spam = menu.findItem(R.id.report_spam);
-        spam.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM));
-        MenuItem mute = menu.findItem(R.id.mute);
+        final MenuItem archive = menu.findItem(R.id.archive);
+        archive.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE) &&
+                mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
+        final MenuItem spam = menu.findItem(R.id.report_spam);
+        spam.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM) &&
+                mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
+        final MenuItem mute = menu.findItem(R.id.mute);
         mute.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.MUTE));
         return true;
     }
@@ -412,6 +415,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     Conversation.delete(mContext, conversations);
                     break;
                 case R.id.mute:
+                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
+                        // Make sure to set the localDeleteOnUpdate flag for these conversatons.
+                        for (Conversation conversation: conversations) {
+                            conversation.localDeleteOnUpdate = true;
+                        }
+                    }
                     Conversation.mute(mContext, conversations);
                     break;
                 case R.id.report_spam:

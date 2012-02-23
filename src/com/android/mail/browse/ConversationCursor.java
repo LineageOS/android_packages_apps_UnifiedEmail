@@ -35,6 +35,7 @@ import android.util.Log;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
@@ -916,17 +917,28 @@ public final class ConversationCursor implements Cursor {
                     return ContentProviderOperation.newInsert(uri)
                             .withValues(mValues).build();
                 case ARCHIVE:
-                    // TODO: (mindyp) build out archive correctly.
                     sProvider.deleteLocal(mUri);
-                    return ContentProviderOperation.newDelete(uri).build();
+
+                    // Create an update operation that represents archive
+                    return ContentProviderOperation.newUpdate(uri).withValue(
+                            ConversationOperations.OPERATION_KEY, ConversationOperations.ARCHIVE)
+                            .build();
                 case MUTE:
-                    // TODO: (mindyp) build out mute correctly.
-                    sProvider.deleteLocal(mUri);
-                    return ContentProviderOperation.newDelete(uri).build();
+                    if (mLocalDeleteOnUpdate) {
+                        sProvider.deleteLocal(mUri);
+                    }
+
+                    // Create an update operation that represents mute
+                    return ContentProviderOperation.newUpdate(uri).withValue(
+                            ConversationOperations.OPERATION_KEY, ConversationOperations.MUTE)
+                            .build();
                 case REPORT_SPAM:
-                    // TODO: (mindyp) build out report spam correctly.
                     sProvider.deleteLocal(mUri);
-                    return ContentProviderOperation.newDelete(uri).build();
+
+                    // Create an update operation that represents report spam
+                    return ContentProviderOperation.newUpdate(uri).withValue(
+                            ConversationOperations.OPERATION_KEY,
+                            ConversationOperations.REPORT_SPAM).build();
                 default:
                     throw new UnsupportedOperationException(
                             "No such ConversationOperation type: " + mType);
