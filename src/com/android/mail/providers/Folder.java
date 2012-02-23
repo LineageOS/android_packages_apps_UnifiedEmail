@@ -67,11 +67,6 @@ public class Folder implements Parcelable {
     public boolean hasChildren;
 
     /**
-     * How often this folder should be synchronized with the server.
-     */
-    public int syncFrequency;
-
-    /**
      * How large the synchronization window is: how many days worth of data is retained on the
      * device.
      */
@@ -149,7 +144,6 @@ public class Folder implements Parcelable {
         capabilities = in.readInt();
         // 1 for true, 0 for false.
         hasChildren = in.readInt() == 1;
-        syncFrequency = in.readInt();
         syncWindow = in.readInt();
         conversationListUri = in.readString();
         childFoldersListUri = in.readString();
@@ -167,7 +161,6 @@ public class Folder implements Parcelable {
         capabilities = cursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
         // 1 for true, 0 for false.
         hasChildren = cursor.getInt(UIProvider.FOLDER_HAS_CHILDREN_COLUMN) == 1;
-        syncFrequency = cursor.getInt(UIProvider.FOLDER_SYNC_FREQUENCY_COLUMN);
         syncWindow = cursor.getInt(UIProvider.FOLDER_SYNC_WINDOW_COLUMN);
         conversationListUri = cursor.getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN);
         childFoldersListUri = cursor.getString(UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN);
@@ -186,7 +179,6 @@ public class Folder implements Parcelable {
         dest.writeInt(capabilities);
         // 1 for true, 0 for false.
         dest.writeInt(hasChildren ? 1 : 0);
-        dest.writeInt(syncFrequency);
         dest.writeInt(syncWindow);
         dest.writeString(conversationListUri);
         dest.writeString(childFoldersListUri);
@@ -207,7 +199,6 @@ public class Folder implements Parcelable {
         out.append(name).append(LABEL_COMPONENT_SEPARATOR);
         out.append(capabilities).append(LABEL_COMPONENT_SEPARATOR);
         out.append(hasChildren ? "1": "0").append(LABEL_COMPONENT_SEPARATOR);
-        out.append(syncFrequency).append(LABEL_COMPONENT_SEPARATOR);
         out.append(syncWindow).append(LABEL_COMPONENT_SEPARATOR);
         out.append(conversationListUri).append(LABEL_COMPONENT_SEPARATOR);
         out.append(childFoldersListUri).append(LABEL_COMPONENT_SEPARATOR);
@@ -235,7 +226,6 @@ public class Folder implements Parcelable {
         capabilities = Integer.valueOf(folderMembers[2]);
         // 1 for true, 0 for false
         hasChildren = folderMembers[3] == "1";
-        syncFrequency = Integer.valueOf(folderMembers[4]);
         syncWindow = Integer.valueOf(folderMembers[5]);
         conversationListUri = folderMembers[6];
         childFoldersListUri = folderMembers[7];

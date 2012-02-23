@@ -277,7 +277,6 @@ public class UIProvider {
         FolderColumns.NAME,
         FolderColumns.HAS_CHILDREN,
         FolderColumns.CAPABILITIES,
-        FolderColumns.SYNC_FREQUENCY,
         FolderColumns.SYNC_WINDOW,
         FolderColumns.CONVERSATION_LIST_URI,
         FolderColumns.CHILD_FOLDERS_LIST_URI,
@@ -293,15 +292,14 @@ public class UIProvider {
     public static final int FOLDER_NAME_COLUMN = 2;
     public static final int FOLDER_HAS_CHILDREN_COLUMN = 3;
     public static final int FOLDER_CAPABILITIES_COLUMN = 4;
-    public static final int FOLDER_SYNC_FREQUENCY_COLUMN = 5;
-    public static final int FOLDER_SYNC_WINDOW_COLUMN = 6;
-    public static final int FOLDER_CONVERSATION_LIST_URI_COLUMN = 7;
-    public static final int FOLDER_CHILD_FOLDERS_LIST_COLUMN = 8;
-    public static final int FOLDER_UNREAD_COUNT_COLUMN = 9;
-    public static final int FOLDER_TOTAL_COUNT_COLUMN = 10;
-    public static final int FOLDER_REFRESH_URI_COLUMN = 11;
-    public static final int FOLDER_SYNC_STATUS_COLUMN = 12;
-    public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 13;
+    public static final int FOLDER_SYNC_WINDOW_COLUMN = 5;
+    public static final int FOLDER_CONVERSATION_LIST_URI_COLUMN = 6;
+    public static final int FOLDER_CHILD_FOLDERS_LIST_COLUMN = 7;
+    public static final int FOLDER_UNREAD_COUNT_COLUMN = 8;
+    public static final int FOLDER_TOTAL_COUNT_COLUMN = 9;
+    public static final int FOLDER_REFRESH_URI_COLUMN = 10;
+    public static final int FOLDER_SYNC_STATUS_COLUMN = 11;
+    public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 12;
 
     public static final class FolderCapabilities {
         public static final int SYNCABLE = 0x0001;
@@ -326,10 +324,6 @@ public class UIProvider {
          * child folders.
          */
         public static String HAS_CHILDREN = "hasChildren";
-        /**
-         * This int column represents how often the folder should be synchronized with the server.
-         */
-        public static String SYNC_FREQUENCY = "syncFrequency";
         /**
          * This int column represents how large the sync window is.
          */
