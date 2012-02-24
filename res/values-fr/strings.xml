@@ -18,11 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="mock_content_provider" msgid="7444679250201027030">"Fournisseur de contenu factice"</string>
-    <string name="conversation_content_provider" msgid="3662935025292495273">"Fournisseur de contenu de conversation"</string>
-    <string name="account_cache_provider" msgid="3195603659417337226">"Fournisseur de cache de compte"</string>
-    <string name="dummy_gmail_provider" msgid="2411244445674142698">"Fournisseur Gmail factice"</string>
-    <string name="test_application" msgid="5613907578447924035">"Tester l\'application"</string>
     <string name="app_name" msgid="8197930422134712215">"Application E-mail unifiée"</string>
     <string name="to" msgid="4392614766835725698">"À"</string>
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
@@ -70,7 +65,8 @@
     <string name="resume_draft" msgid="6450150180834092146">"Modifier"</string>
     <string name="forward" msgid="6822914459902983767">"Transférer"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Nouveau message"</string>
-    <string name="menu_change_labels" msgid="9121087142079721959">"Modifier les libellés"</string>
+    <!-- no translation found for menu_change_folders (1542713666608888717) -->
+    <skip />
     <string name="menu_manage_labels" msgid="8618788259638720538">"Gérer les libellés"</string>
     <string name="label_list_title" msgid="7948730824763052410">"Libellés"</string>
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Synchroniser et signaler"</string>
@@ -192,8 +188,10 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation marquée comme non lue."</item>
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversations marquées comme non lues."</item>
   </plurals>
-    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
-    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
+  <plurals name="conversation_folder_changed">
+    <item quantity="one" msgid="4930161390461457462">"Dossier modifié."</item>
+    <item quantity="other" msgid="8918589141287976985">"Dossiers modifiés."</item>
+  </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Résultats"</string>
     <string name="searchMode" msgid="3329807422114758583">"Mode Recherche"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Mode Rechercher dans la conversation"</string>
@@ -228,11 +226,41 @@
     <string name="cancel" msgid="8762981157252199115">"Annuler"</string>
     <string name="close" msgid="419945428844076406">"Fermer"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Aucun dossier n\'a été défini pour ce compte."</string>
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Opération réussie."</item>
+    <item msgid="5037283655022689372">"Erreur de connexion."</item>
+    <item msgid="4252875340758600974">"Erreur d\'authentification."</item>
+    <item msgid="7611299631880179587">"Erreur liée à la sécurité."</item>
+    <item msgid="665244114363057627">"Erreur de stockage."</item>
+    <item msgid="9190542479647789762">"Erreur interne."</item>
+  </string-array>
+    <!-- no translation found for tap_to_configure (1181356242354390930) -->
+    <skip />
+    <!-- no translation found for non_synced_folder_description (6059194125558004080) -->
+    <skip />
+    <!-- no translation found for tap_to_configure_folder_sync (3846898229180591661) -->
+    <skip />
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <!-- no translation found for sync_status:0 (2446076619901049026) -->
-    <!-- no translation found for sync_status:1 (5037283655022689372) -->
-    <!-- no translation found for sync_status:2 (4252875340758600974) -->
-    <!-- no translation found for sync_status:3 (7611299631880179587) -->
-    <!-- no translation found for sync_status:4 (665244114363057627) -->
-    <!-- no translation found for sync_status:5 (9190542479647789762) -->
+    <!-- no translation found for view_more_conversations (3151067626309674344) -->
+    <skip />
+    <!-- no translation found for loading_conversation (489160038366067983) -->
+    <skip />
+    <!-- no translation found for activity_mailbox_selection (6876105223659297603) -->
+    <skip />
+    <!-- no translation found for activity_folder_selection (5161845867397316052) -->
+    <skip />
+    <!-- no translation found for sync_all (1057043212338233359) -->
+    <skip />
+    <!-- no translation found for sync_recent:one (137489911893192702) -->
+    <!-- no translation found for sync_recent:other (6856940335775567991) -->
+    <!-- no translation found for sync_none (3581727068747471804) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_title (6889243150191948255) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_description (3287913520283417367) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_checkbox (5810741160405575956) -->
+    <skip />
+    <!-- no translation found for folder_selection_dialog_title (9194093596644845383) -->
+    <skip />
 </resources>
