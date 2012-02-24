@@ -288,8 +288,8 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         // Launch an intent to avoid ANRs
         final Intent intent = new Intent(context, WidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        intent.putExtra(EXTRA_ACCOUNT, account.uri);
-        intent.putExtra(EXTRA_FOLDER, folder.uri);
+        intent.putExtra(EXTRA_ACCOUNT, account.serialize());
+        intent.putExtra(EXTRA_FOLDER, folder.serialize());
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         remoteViews.setRemoteAdapter(R.id.conversation_list, intent);
         // Open mail app when click on header

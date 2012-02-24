@@ -73,24 +73,13 @@ public class WidgetService extends RemoteViewsService {
         private boolean mShouldShowViewMore;
         private boolean mFolderInformationShown = false;
         private ContentResolver mResolver;
-        private String mFolderUri;
 
         public MailFactory(Context context, Intent intent) {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            String accountUri = intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT);
-            Cursor cursor = context.getContentResolver().query(Uri.parse(accountUri),
-                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-            cursor.moveToFirst();
-            mAccount = new Account(cursor);
-            cursor.close();
-            mFolderUri = intent.getStringExtra(WidgetProvider.EXTRA_FOLDER);
-            Cursor folderCursor = context.getContentResolver().query(Uri.parse(mFolderUri),
-                    UIProvider.FOLDERS_PROJECTION, null, null, null);
-            folderCursor.moveToFirst();
-            mFolder = new Folder(folderCursor);
-            folderCursor.close();
+            mAccount = new Account(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
+            mFolder = new Folder(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
             mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(mContext, mAccount);
             mResolver = context.getContentResolver();
         }
@@ -109,7 +98,7 @@ public class WidgetService extends RemoteViewsService {
             mConversationCursor = mResolver.query(Uri.parse(mFolder.conversationListUri),
                     UIProvider.CONVERSATION_PROJECTION, null, null, null);
 
-            mFolderLoader = new CursorLoader(mContext, Uri.parse(mFolderUri),
+            mFolderLoader = new CursorLoader(mContext, Uri.parse(mFolder.uri),
                     UIProvider.FOLDERS_PROJECTION, null, null, null);
             mFolderLoader.registerListener(0, this);
             mFolderUpdateHandler = new FolderUpdateHandler(mContext.getResources().getInteger(
