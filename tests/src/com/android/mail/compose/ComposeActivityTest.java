@@ -74,7 +74,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         if (msgCursor != null) {
             msgCursor.moveToFirst();
         }
-        return Message.from(msgCursor);
+        return new Message(msgCursor);
     }
 
     public void setAccount(String accountName) {
@@ -198,7 +198,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         messageValues[UIProvider.MESSAGE_CC_COLUMN] = "accountcc1@mock.com, accountcc2@mock.com";
         cursor.addRow(messageValues);
         cursor.moveToFirst();
-        return Message.from(cursor);
+        return new Message(cursor);
     }
 
     public void testReplyAllWithCc() {

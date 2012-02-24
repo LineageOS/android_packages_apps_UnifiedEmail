@@ -129,11 +129,7 @@ public class Message implements Parcelable {
 
     };
 
-    public static Message from(Cursor cursor) {
-        return new Message(cursor);
-    }
-
-    private Message(Cursor cursor) {
+    public Message(Cursor cursor) {
         if (cursor != null) {
             id = cursor.getLong(UIProvider.MESSAGE_ID_COLUMN);
             serverId = cursor.getLong(UIProvider.MESSAGE_SERVER_ID_COLUMN);

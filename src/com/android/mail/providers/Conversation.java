@@ -120,11 +120,7 @@ public class Conversation implements Parcelable {
 
     };
 
-    public static Conversation from(Cursor cursor) {
-        return new Conversation(cursor);
-    }
-
-    private Conversation(Cursor cursor) {
+    public Conversation(Cursor cursor) {
         if (cursor != null) {
             id = cursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
             uri = Uri.parse(cursor.getString(UIProvider.CONVERSATION_URI_COLUMN));

@@ -413,7 +413,7 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private void viewConversation(int position) {
         mConversationListCursor.moveToPosition(position);
-        mCallbacks.onConversationSelected(Conversation.from(mConversationListCursor));
+        mCallbacks.onConversationSelected(new Conversation(mConversationListCursor));
     }
 
     @Override

@@ -122,7 +122,7 @@ public class ConversationItemViewModel {
         if (cursor != null) {
             header.faded = false;
             header.checkboxVisible = true;
-            Conversation conv = Conversation.from(cursor);
+            Conversation conv = new Conversation(cursor);
             header.conversation = conv;
             header.starred = conv.starred;
             header.unread = !conv.read;

@@ -325,7 +325,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         Timer t = new Timer();
         t.start(HEADER_RENDER_TAG);
 
-        mMessage = Message.from(cursor);
+        mMessage = new Message(cursor);
         mLocalMessageId = cursor.getLong(UIProvider.MESSAGE_ID_COLUMN);
         mServerMessageId = cursor.getLong(UIProvider.MESSAGE_SERVER_ID_COLUMN);
         mConversationId = cursor.getLong(UIProvider.MESSAGE_CONVERSATION_ID_COLUMN);

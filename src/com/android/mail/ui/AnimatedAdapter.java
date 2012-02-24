@@ -143,7 +143,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      */
     private View getAnimatingView(int position, View convertView, ViewGroup parent) {
         assert (convertView instanceof AnimatingItemView);
-        Conversation conversation = Conversation.from((ConversationCursor) getItem(position));
+        Conversation conversation = new Conversation((ConversationCursor) getItem(position));
         conversation.position = position;
         final AnimatingItemView view = (convertView == null) ? new AnimatingItemView(mContext)
                 : (AnimatingItemView) convertView;

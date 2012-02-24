@@ -733,7 +733,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                         // Broadcast notification that a new message has
                         // been allocated
                         mSendOrSaveCallback.notifyMessageIdAllocated(sendOrSaveMessage,
-                                Message.from(messageCursor));
+                                new Message(messageCursor));
                     }
                 }
             }

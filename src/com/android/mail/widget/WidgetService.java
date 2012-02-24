@@ -178,7 +178,7 @@ public class WidgetService extends RemoteViewsService {
                     return getViewMoreConversationsView();
                 }
 
-                Conversation conversation = Conversation.from(mConversationCursor);
+                Conversation conversation = new Conversation(mConversationCursor);
                 // Split the senders and status from the instructions.
                 SpannableStringBuilder senderBuilder = new SpannableStringBuilder();
                 SpannableStringBuilder statusBuilder = new SpannableStringBuilder();
