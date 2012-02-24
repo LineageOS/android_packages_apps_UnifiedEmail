@@ -25,7 +25,6 @@ import com.android.emailcommon.provider.EmailContent;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
-import com.android.mail.providers.protos.boot.AccountReceiver;
 import com.android.mail.providers.protos.mock.MockUiProvider;
 
 import java.util.Map;
@@ -45,8 +44,8 @@ public class EmailAccountService extends IntentService {
     private static final Uri BASE_SETTINGS_URI =
             Uri.parse("content://ui.email.android.com/settings");
 
-    private static String getUriString(String type, String accountName) {
-        return EmailContent.CONTENT_URI.toString() + "/" + type + "/" + accountName;
+    private static String getUriString(String type, long accountId) {
+        return EmailContent.CONTENT_URI.toString() + "/" + type + "/" + accountId;
     }
 
     private static Uri getAccountSettingUri(String account) {
@@ -79,20 +78,21 @@ public class EmailAccountService extends IntentService {
                             false);
                 // Send our account information to the cache provider
                 String accountName = c.getString(Account.CONTENT_EMAIL_ADDRESS_COLUMN);
+                long id = c.getLong(Account.CONTENT_ID_COLUMN);
                 final AccountCacheProvider.CachedAccount cachedAccount =
                     new AccountCacheProvider.CachedAccount(
-                            c.getLong(Account.CONTENT_ID_COLUMN),
+                            id,
                             accountName,
-                            getUriString("uiaccount", accountName),
+                            getUriString("uiaccount", id),
                             // TODO: Check actual account protocol and return proper values
                             BASE_EAS_CAPABILITIES,
-                            getUriString("uifolders", accountName),
+                            getUriString("uifolders", id),
                             (String)mockAccountMap.get(AccountColumns.SEARCH_URI),
                             (String)mockAccountMap.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
-                            getUriString("uisavedraft", accountName),
-                            getUriString("uisendmail", accountName),
+                            getUriString("uisavedraft", id),
+                            getUriString("uisendmail", id),
                             (String)mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
-                            getUriString("uiundo", accountName),
+                            getUriString("uiundo", id),
                             getAccountSettingUri(accountName).toString(),
                             0);
 
