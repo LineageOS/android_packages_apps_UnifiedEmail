@@ -38,7 +38,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;

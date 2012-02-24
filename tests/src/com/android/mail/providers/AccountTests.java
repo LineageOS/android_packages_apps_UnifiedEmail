@@ -45,7 +45,7 @@ public class AccountTests extends AndroidTestCase {
         assertEquals(outAccount.accountFromAddressesUri, account.accountFromAddressesUri);
         assertEquals(outAccount.capabilities, account.capabilities);
         assertEquals(outAccount.providerVersion, account.providerVersion);
-        assertEquals(outAccount.accountUri, account.accountUri);
+        assertEquals(outAccount.uri, account.uri);
         assertEquals(outAccount.folderListUri, account.folderListUri);
         assertEquals(outAccount.searchUri, account.searchUri);
         assertEquals(outAccount.saveDraftUri, account.saveDraftUri);

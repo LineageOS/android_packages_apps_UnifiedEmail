@@ -16,7 +16,6 @@
 package com.android.mail.widget;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -41,8 +40,6 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-
-import java.util.Map;
 
 public class WidgetService extends RemoteViewsService {
     /**
@@ -76,14 +73,24 @@ public class WidgetService extends RemoteViewsService {
         private boolean mShouldShowViewMore;
         private boolean mFolderInformationShown = false;
         private ContentResolver mResolver;
+        private String mFolderUri;
 
         public MailFactory(Context context, Intent intent) {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            mAccount = intent.getParcelableExtra(WidgetProvider.EXTRA_ACCOUNT);
-            final Folder folder = intent.getParcelableExtra(WidgetProvider.EXTRA_FOLDER);
-            mFolder = folder != null ? folder : mAccount.getAccountInbox();
+            String accountUri = intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT);
+            Cursor cursor = context.getContentResolver().query(Uri.parse(accountUri),
+                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+            cursor.moveToFirst();
+            mAccount = new Account(cursor);
+            cursor.close();
+            mFolderUri = intent.getStringExtra(WidgetProvider.EXTRA_FOLDER);
+            Cursor folderCursor = context.getContentResolver().query(Uri.parse(mFolderUri),
+                    UIProvider.FOLDERS_PROJECTION, null, null, null);
+            folderCursor.moveToFirst();
+            mFolder = new Folder(folderCursor);
+            folderCursor.close();
             mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(mContext, mAccount);
             mResolver = context.getContentResolver();
         }
@@ -102,7 +109,7 @@ public class WidgetService extends RemoteViewsService {
             mConversationCursor = mResolver.query(Uri.parse(mFolder.conversationListUri),
                     UIProvider.CONVERSATION_PROJECTION, null, null, null);
 
-            mFolderLoader = new CursorLoader(mContext, Uri.parse(mFolder.uri),
+            mFolderLoader = new CursorLoader(mContext, Uri.parse(mFolderUri),
                     UIProvider.FOLDERS_PROJECTION, null, null, null);
             mFolderLoader.registerListener(0, this);
             mFolderUpdateHandler = new FolderUpdateHandler(mContext.getResources().getInteger(
@@ -186,8 +193,8 @@ public class WidgetService extends RemoteViewsService {
                 // Split the senders and status from the instructions.
                 SpannableStringBuilder senderBuilder = new SpannableStringBuilder();
                 SpannableStringBuilder statusBuilder = new SpannableStringBuilder();
-                Utils.getStyledSenderSnippet(mContext, conversation.senders, senderBuilder,
-                        statusBuilder, MAX_SENDERS_LENGTH, false, false, false);
+                senderBuilder.append(conversation.senders);
+                // TODO: (mindyp) create stylized sender text.
 
                 // Get styled date.
                 CharSequence date = DateUtils.getRelativeTimeSpanString(
