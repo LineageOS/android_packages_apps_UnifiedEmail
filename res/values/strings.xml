@@ -123,6 +123,8 @@
     <string name="forward">Forward</string>
     <!-- Menu item: compose a new email -->
     <string name="menu_compose">Compose</string>
+    <!-- Menu item: change the labels for this conversion. -->
+    <string name="menu_change_labels">Change labels</string>
     <!-- Menu item: change the labels for this conversation. -->
     <string name="menu_change_folders">Change folders</string>
     <!-- Menu item: manages the labels for this account. [CHAR LIMIT = 30] -->
