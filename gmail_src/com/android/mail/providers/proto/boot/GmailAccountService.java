@@ -45,6 +45,10 @@ public class GmailAccountService extends IntentService {
 
     private static final Uri BASE_SETTINGS_URI = Uri.parse("setting://gmail/");
 
+    public static final String DEFAULT_HELP_URL =
+            "http://www.google.com/support/mobile/?hl=%locale%";
+
+
     private static Uri getAccountUri(String account) {
         return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/account/" + account);
     }
@@ -63,6 +67,11 @@ public class GmailAccountService extends IntentService {
 
     private static Uri getAccountSettingUri(String account) {
         return BASE_SETTINGS_URI.buildUpon().appendQueryParameter("account", account).build();
+    }
+
+    private static String getHelpUri() {
+        // TODO(pwestbro): allow this url to be changed via Gservices
+        return DEFAULT_HELP_URL;
     }
 
     private static Uri getAccountSaveDraftUri(String account) {
@@ -133,7 +142,8 @@ public class GmailAccountService extends IntentService {
                     AccountCapabilities.LOCAL_SEARCH |
                     AccountCapabilities.THREADED_CONVERSATIONS |
                     AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV |
-                    AccountCapabilities.UNDO);
+                    AccountCapabilities.UNDO |
+                    AccountCapabilities.HELP_CONTENT);
             final AccountCacheProvider.CachedAccount cachedAccount =
                     new AccountCacheProvider.CachedAccount(gmailAccountId,
                             account.name,
@@ -147,6 +157,7 @@ public class GmailAccountService extends IntentService {
                             (String)mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
                             getAccountUndoUri(account.name).toString(),
                             getAccountSettingUri(account.name).toString(),
+                            getHelpUri(),
                             0);
 
             AccountCacheProvider.addAccount(cachedAccount);

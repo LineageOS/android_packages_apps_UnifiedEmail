@@ -55,7 +55,7 @@
         android:showAsAction="never"
         android:icon="@android:drawable/ic_menu_preferences" />
 
-    <!-- Always available -->
+    <!-- Available if the account specifies a help url -->
     <item
         android:id="@+id/help_info_menu_item"
         android:icon="@android:drawable/ic_menu_help"

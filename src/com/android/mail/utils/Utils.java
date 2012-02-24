@@ -20,9 +20,13 @@ import com.google.common.collect.Maps;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.provider.Browser;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -40,10 +44,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 
+import java.util.Locale;
 import java.util.Map;
 
 public class Utils {
@@ -70,8 +76,16 @@ public class Utils {
      * can be very broad and is NOT the preferred way of getting notification.
      */
     // TODO: UI Provider has this notification URI?
-   public static final String ACTION_NOTIFY_DATASET_CHANGED =
-           "com.android.mail.ACTION_NOTIFY_DATASET_CHANGED";
+    public static final String ACTION_NOTIFY_DATASET_CHANGED =
+            "com.android.mail.ACTION_NOTIFY_DATASET_CHANGED";
+
+    /** Parameter keys for context-aware help. */
+    private static final String SMART_HELP_LINK_PARAMETER_NAME = "p";
+
+    private static final String SMART_LINK_APP_VERSION = "version";
+    private static String sVersionCode = null;
+
+    private static final String LOG_TAG = new LogUtils().getLogTag();
 
     /**
      * Sets WebView in a restricted mode suitable for email use.
@@ -570,4 +584,88 @@ public class Utils {
 
         return intent;
     }
+
+    /**
+     * Helper method to show context-aware Gmail help.
+     *
+     * @param context Context to be used to open the help.
+     * @param fromWhere Information about the activity the user was in
+     * when they requested help.
+     */
+    public static void showHelp(Context context, String accountHelpUrl, String fromWhere) {
+        final Uri uri = addParamsToUrl(context, accountHelpUrl);
+        Uri.Builder builder = uri.buildUpon();
+        // Add the activity specific information parameter.
+        if (fromWhere != null) {
+            builder = builder.appendQueryParameter(SMART_HELP_LINK_PARAMETER_NAME, fromWhere);
+        }
+
+        openUrl(context, builder.build());
+    }
+
+    /**
+     * Helper method to open a link in a browser.
+     *
+     * @param context Context
+     * @param uri Uri to open.
+     */
+    private static void openUrl(Context context, Uri uri) {
+        if(uri == null || TextUtils.isEmpty(uri.toString())) {
+            LogUtils.wtf(LOG_TAG, "invalid url in Utils.openUrl(): %s", uri);
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
+        context.startActivity(intent);
+    }
+
+
+    private static Uri addParamsToUrl(Context context, String url) {
+        url = replaceLocale(url);
+        Uri.Builder builder = Uri.parse(url).buildUpon();
+        final String versionCode = getVersionCode(context);
+        if (versionCode != null) {
+            builder = builder.appendQueryParameter(SMART_LINK_APP_VERSION, versionCode);
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * Replaces the language/country of the device into the given string.  The pattern "%locale%"
+     * will be replaced with the <language_code>_<country_code> value.
+     *
+     * @param str the string to replace the language/country within
+     *
+     * @return the string with replacement
+     */
+    private static String replaceLocale(String str) {
+        // Substitute locale if present in string
+        if (str.contains("%locale%")) {
+            Locale locale = Locale.getDefault();
+            String tmp = locale.getLanguage() + "_" + locale.getCountry().toLowerCase();
+            str = str.replace("%locale%", tmp);
+        }
+        return str;
+    }
+
+    /**
+     * Returns the version code for the package, or null if it cannot be retrieved.
+     */
+    public static String getVersionCode(Context context) {
+        if (sVersionCode == null) {
+            try {
+                sVersionCode = String.valueOf(context.getPackageManager()
+                        .getPackageInfo(context.getPackageName(), 0 /* flags */)
+                        .versionCode);
+            } catch (NameNotFoundException e) {
+                LogUtils.e(Utils.LOG_TAG, "Error finding package %s",
+                        context.getApplicationInfo().packageName);
+            }
+        }
+        return sVersionCode;
+    }
+
+
+
 }

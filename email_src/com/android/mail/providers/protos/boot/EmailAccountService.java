@@ -94,6 +94,7 @@ public class EmailAccountService extends IntentService {
                             (String)mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
                             getUriString("uiundo", id),
                             getAccountSettingUri(accountName).toString(),
+                            null /* currently no help content */,
                             0);
 
                 AccountCacheProvider.addAccount(cachedAccount);

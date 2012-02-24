@@ -94,6 +94,12 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final String settingIntentUri;
 
     /**
+     * Uri for VIEW intent that will cause the help screens for this account type to be
+     * shown.
+     */
+    public final String helpIntentUri;
+
+    /**
      * The sync status of the account
      */
     public final int syncStatus;
@@ -104,7 +110,7 @@ public class Account extends android.accounts.Account implements Parcelable {
      * includes the members described above and name and type from the
      * superclass.
      */
-    private static final int NUMBER_MEMBERS = 14;
+    private static final int NUMBER_MEMBERS = 15;
 
     /**
      * Examples of expected format for the joined account strings
@@ -137,6 +143,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         out.append(expungeMessageUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(undoUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(settingIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(helpIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(syncStatus);
         return out.toString();
     }
@@ -165,7 +172,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         expungeMessageUri = accountMembers[10];
         undoUri = accountMembers[11];
         settingIntentUri = accountMembers[12];
-        syncStatus = Integer.valueOf(accountMembers[13]);
+        helpIntentUri = accountMembers[13];
+        syncStatus = Integer.valueOf(accountMembers[14]);
     }
 
     public Account(Parcel in) {
@@ -181,6 +189,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         expungeMessageUri = in.readString();
         undoUri = in.readString();
         settingIntentUri = in.readString();
+        helpIntentUri = in.readString();
         syncStatus = in.readInt();
     }
 
@@ -197,6 +206,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         expungeMessageUri = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
         undoUri = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
         settingIntentUri = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
+        helpIntentUri = cursor.getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN);
         syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
     }
 
@@ -242,6 +252,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeString(expungeMessageUri);
         dest.writeString(undoUri);
         dest.writeString(settingIntentUri);
+        dest.writeString(helpIntentUri);
         dest.writeInt(syncStatus);
     }
 

@@ -92,7 +92,8 @@ public class UIProvider {
             AccountColumns.EXPUNGE_MESSAGE_URI,
             AccountColumns.UNDO_URI,
             AccountColumns.SETTINGS_INTENT_URI,
-            AccountColumns.SYNC_STATUS
+            AccountColumns.SYNC_STATUS,
+            AccountColumns.HELP_INTENT_URI
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -109,6 +110,7 @@ public class UIProvider {
     public static final int ACCOUNT_UNDO_URI_COLUMN = 11;
     public static final int ACCOUNT_SETTINGS_INTENT_URI_COLUMN = 12;
     public static final int ACCOUNT_SYNC_STATUS_COLUMN = 13;
+    public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 14;
 
     public static final class AccountCapabilities {
         /**
@@ -184,6 +186,10 @@ public class UIProvider {
          * Whether the provider supports undoing operations. If it doesn't, never show the undo bar.
          */
         public static final int UNDO = 0x2000;
+        /**
+         * Whether the account provides help content.
+         */
+        public static final int HELP_CONTENT = 0x4000;
     }
 
     public static final class AccountColumns {
@@ -261,6 +267,14 @@ public class UIProvider {
          * to be moved to a global content provider.
          */
         public static String SETTINGS_INTENT_URI = "accountSettingsIntentUri";
+
+        /**
+         * Uri for VIEW intent that will cause the help screens for this account type to be
+         * shown.
+         * TODO: When we want to support a heterogeneous set of account types, this value may need
+         * to be moved to a global content provider.
+         */
+        public static String HELP_INTENT_URI = "helpIntentUri";
 
         /**
          * This int column contains the current sync status of the account (the logical AND of the

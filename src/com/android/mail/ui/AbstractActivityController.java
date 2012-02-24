@@ -32,6 +32,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -51,10 +52,13 @@ import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+
+import java.lang.Readable;
 
 /**
  * This is an abstract implementation of the Activity Controller. This class knows how to
@@ -103,6 +107,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private AsyncRefreshTask mAsyncRefreshTask;
 
     private MenuItem mRefreshItem;
+    private MenuItem mHelpItem;
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
     private final Handler mHandler = new Handler();
@@ -237,6 +242,8 @@ public abstract class AbstractActivityController implements ActivityController {
             mAccount = account;
 
             fetchAccountFolderInfo();
+
+            updateHelpMenuItem();
         }
     }
 
@@ -335,6 +342,7 @@ public abstract class AbstractActivityController implements ActivityController {
         MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(mActionBarView.getOptionsMenuId(), menu);
         mRefreshItem = menu.findItem(R.id.refresh);
+        mHelpItem = menu.findItem(R.id.help_info_menu_item);
         return true;
     }
 
@@ -369,6 +377,10 @@ public abstract class AbstractActivityController implements ActivityController {
                 break;
             case R.id.preferences:
                 showPreferences();
+                break;
+            case R.id.help_info_menu_item:
+                // TODO: enable context sensitive help
+                Utils.showHelp(mActivity.getActivityContext(), mAccount.helpIntentUri, null);
                 break;
             default:
                 handled = false;
@@ -437,7 +449,17 @@ public abstract class AbstractActivityController implements ActivityController {
                 mRefreshItem.setActionView(null);
             }
         }
+
+        // Show/hide the help menu item
+        updateHelpMenuItem();
         return true;
+    }
+
+    private void updateHelpMenuItem() {
+        if (mHelpItem != null) {
+            mHelpItem.setVisible(mAccount != null &&
+                    mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
+        }
     }
 
     @Override

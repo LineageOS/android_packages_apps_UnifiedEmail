@@ -116,6 +116,9 @@ public abstract class AccountCacheProvider extends ContentProvider {
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.SETTINGS_INTENT_URI)) {
                     builder.add(account.mSettingsIntentUri);
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.HELP_INTENT_URI)) {
+                    builder.add(account.mHelpIntentUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SYNC_STATUS)) {
                     builder.add(Integer.valueOf((int)account.mSyncStatus));
                 } else {
@@ -198,12 +201,13 @@ public abstract class AccountCacheProvider extends ContentProvider {
         private final String mExpungeMessageUri;
         private final String mUndoUri;
         private final String mSettingsIntentUri;
+        private final String mHelpIntentUri;
         private final int mSyncStatus;
 
         public CachedAccount(long id, String name, String uri, long capabilities,
                 String folderListUri, String searchUri, String fromAddressesUri,
                 String saveDraftUri, String sendMailUri, String expungeMessageUri,
-                String undoUri, String settingsIntentUri, int syncStatus) {
+                String undoUri, String settingsIntentUri, String helpIntentUri, int syncStatus) {
             mId = id;
             mName = name;
             mUri = uri;
@@ -216,6 +220,7 @@ public abstract class AccountCacheProvider extends ContentProvider {
             mExpungeMessageUri = expungeMessageUri;
             mUndoUri = undoUri;
             mSettingsIntentUri = settingsIntentUri;
+            mHelpIntentUri = helpIntentUri;
             mSyncStatus = syncStatus;
         }
 
@@ -240,6 +245,7 @@ public abstract class AccountCacheProvider extends ContentProvider {
                     TextUtils.equals(mExpungeMessageUri, other.mExpungeMessageUri) &&
                     TextUtils.equals(mUndoUri, other.mUndoUri) &&
                     TextUtils.equals(mSettingsIntentUri, other.mSettingsIntentUri) &&
+                    TextUtils.equals(mHelpIntentUri, other.mHelpIntentUri) &&
                     (mSyncStatus == other.mSyncStatus);
         }
 
@@ -247,7 +253,7 @@ public abstract class AccountCacheProvider extends ContentProvider {
         public int hashCode() {
             return Objects.hashCode(mId, mName, mUri, mCapabilities, mFolderListUri, mSearchUri,
                     mAccountFromAddressesUri, mSaveDraftUri, mSendMailUri, mExpungeMessageUri,
-                    mUndoUri, mSettingsIntentUri, mSyncStatus);
+                    mUndoUri, mSettingsIntentUri, mHelpIntentUri, mSyncStatus);
         }
     }
 }
