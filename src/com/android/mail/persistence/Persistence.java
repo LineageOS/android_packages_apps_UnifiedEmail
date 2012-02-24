@@ -27,7 +27,7 @@ import java.util.Set;
 
 /**
  * This class is used to read and write Mail data to the persistent store. Note that each
- * key is suffixed with the account name, which is why I need to do some manual work in
+ * key is prefixed with the account name, which is why I need to do some manual work in
  * order to get/set these values.
  */
 public class Persistence {

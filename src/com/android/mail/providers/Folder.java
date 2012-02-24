@@ -20,7 +20,6 @@ package com.android.mail.providers;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import android.text.TextUtils;
 
 import com.android.mail.utils.LogUtils;
@@ -109,10 +108,10 @@ public class Folder implements Parcelable {
     public int lastSyncResult;
 
     /**
-     * Total number of members that comprise an instance of a folder. Count up the members above.
-     * This is the number of members that need to be serialized or parceled.
+     * Total number of members that comprise an instance of a folder. This is
+     * the number of members that need to be serialized or parceled.
      */
-    private static final int NUMBER_MEMBERS = 14;
+    private static final int NUMBER_MEMBERS = UIProvider.FOLDERS_PROJECTION.length;
 
     /**
      * Used only for debugging.
@@ -120,22 +119,21 @@ public class Folder implements Parcelable {
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     /**
-     * Examples of expected format for the joined label strings
+     * Examples of expected format for the joined folder strings
      *
-     * Example of a joined label string:
+     * Example of a joined folder string:
      *       630107622^*^^i^*^^i^*^0
      *       <id>^*^<canonical name>^*^<name>^*^<color index>
      *
-     * The sqlite queries will return a list of labels strings separated with "^**^"
+     * The sqlite queries will return a list of folder strings separated with "^**^"
      * Example of a query result:
      *     630107622^*^^i^*^^i^*^0^**^630107626^*^^u^*^^u^*^0^**^630107627^*^^f^*^^f^*^0
      */
-    private static final String LABEL_COMPONENT_SEPARATOR = "^*^";
-    private static final Pattern LABEL_COMPONENT_SEPARATOR_PATTERN =
+    private static final String FOLDER_COMPONENT_SEPARATOR = "^*^";
+    private static final Pattern FOLDER_COMPONENT_SEPARATOR_PATTERN =
             Pattern.compile("\\^\\*\\^");
 
-    private static final String LABEL_SEPARATOR = "^**^";
-    private static final Pattern LABEL_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
+    private static final String FOLDER_SEPARATOR = "^**^";
 
     public Folder(Parcel in) {
         id = in.readString();
@@ -194,19 +192,19 @@ public class Folder implements Parcelable {
      */
     public synchronized String serialize(){
         StringBuilder out = new StringBuilder();
-        out.append(id).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(uri).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(name).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(capabilities).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(hasChildren ? "1": "0").append(LABEL_COMPONENT_SEPARATOR);
-        out.append(syncWindow).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(conversationListUri).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(childFoldersListUri).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(unreadCount).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(totalCount).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(refreshUri).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(syncStatus).append(LABEL_COMPONENT_SEPARATOR);
-        out.append(lastSyncResult).append(LABEL_COMPONENT_SEPARATOR);
+        out.append(id).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(uri).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(name).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(capabilities).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(hasChildren ? "1": "0").append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(syncWindow).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(conversationListUri).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(childFoldersListUri).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(unreadCount).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(totalCount).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(refreshUri).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(syncStatus).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(lastSyncResult);
         return out.toString();
     }
 
@@ -214,18 +212,19 @@ public class Folder implements Parcelable {
      * Construct a new Folder instance from a previously serialized string.
      * @param serializedFolder string obtained from {@link #serialize()} on a valid folder.
      */
-    private Folder(String serializedFolder){
-        String[] folderMembers = TextUtils.split(serializedFolder, LABEL_SEPARATOR_PATTERN);
+    public Folder(String serializedFolder){
+        String[] folderMembers = TextUtils.split(serializedFolder,
+                FOLDER_COMPONENT_SEPARATOR_PATTERN);
         if (folderMembers.length != NUMBER_MEMBERS) {
-            // This is a problem.
-            // TODO(viki): Find out the appropriate exception for this.
-            return;
+            throw new IllegalArgumentException(
+                    "Folder de-serializing failed. Wrong number of members detected.");
         }
-        uri = folderMembers[0];
-        name = folderMembers[1];
-        capabilities = Integer.valueOf(folderMembers[2]);
+        id = folderMembers[0];
+        uri = folderMembers[1];
+        name = folderMembers[2];
+        capabilities = Integer.valueOf(folderMembers[3]);
         // 1 for true, 0 for false
-        hasChildren = folderMembers[3] == "1";
+        hasChildren = folderMembers[4] == "1";
         syncWindow = Integer.valueOf(folderMembers[5]);
         conversationListUri = folderMembers[6];
         childFoldersListUri = folderMembers[7];
@@ -270,14 +269,14 @@ public class Folder implements Parcelable {
      * @return a Map of folder name to folder.
      */
     public static Map<String, Folder> parseFoldersFromString(String serializedFolder) {
-        LogUtils.d(LOG_TAG, "label query result: %s", serializedFolder);
+        LogUtils.d(LOG_TAG, "folder query result: %s", serializedFolder);
 
         Map<String, Folder> folderMap = Maps.newHashMap();
         if (serializedFolder == null || serializedFolder == "") {
             return folderMap;
         }
         String[] folderPieces = TextUtils.split(
-                serializedFolder, LABEL_COMPONENT_SEPARATOR_PATTERN);
+                serializedFolder, FOLDER_COMPONENT_SEPARATOR_PATTERN);
         for (int i = 0, n = folderPieces.length; i < n; i++) {
             Folder folder = new Folder(folderPieces[i]);
             if (folder.name != FOLDER_UNINITIALIZED) {
@@ -305,11 +304,11 @@ public class Folder implements Parcelable {
     public static String serialize(Map<String, Folder> folderMap) {
         Collection<Folder> folderCollection = folderMap.values();
         Folder[] folderList = folderCollection.toArray(new Folder[]{} );
-        int numLabels = folderList.length;
+        int numFolders = folderList.length;
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < numLabels; i++) {
+        for (int i = 0; i < numFolders; i++) {
           if (i > 0) {
-              result.append(LABEL_SEPARATOR);
+              result.append(FOLDER_SEPARATOR);
           }
           Folder folder = folderList[i];
           result.append(folder.serialize());

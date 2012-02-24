@@ -19,6 +19,9 @@ package com.android.mail.providers;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+
+import java.util.regex.Pattern;
 
 public class Account extends android.accounts.Account implements Parcelable {
     /**
@@ -92,6 +95,75 @@ public class Account extends android.accounts.Account implements Parcelable {
      * The sync status of the account
      */
     public final int syncStatus;
+
+    /**
+     * Total number of members that comprise an instance of an account. This is
+     * the number of members that need to be serialized or parceled. This
+     * includes the members described above and name and type from the
+     * superclass.
+     */
+    private static final int NUMBER_MEMBERS = 14;
+
+    /**
+     * Examples of expected format for the joined account strings
+     *
+     * Example of a joined account string:
+     *       630107622^*^^i^*^^i^*^0
+     *       <id>^*^<canonical name>^*^<name>^*^<color index>
+     *
+     */
+    private static final String ACCOUNT_COMPONENT_SEPARATOR = "^*^";
+    private static final Pattern ACCOUNT_COMPONENT_SEPARATOR_PATTERN =
+            Pattern.compile("\\^\\*\\^");
+
+    /**
+     * Return a serialized String for this folder.
+     */
+    public synchronized String serialize() {
+        StringBuilder out = new StringBuilder();
+        out.append(name).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(type).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(providerVersion).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(uri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(capabilities).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(folderListUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(searchUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(accountFromAddressesUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(saveDraftUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(sendMessageUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(expungeMessageUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(undoUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(settingIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(syncStatus);
+        return out.toString();
+    }
+
+    /**
+     * Construct a new Account instance from a previously serialized string.
+     * @param serializedAccount string obtained from {@link #serialize()} on a valid account.
+     */
+    public Account(String serializedAccount) {
+        super(TextUtils.split(serializedAccount, ACCOUNT_COMPONENT_SEPARATOR_PATTERN)[0], TextUtils
+                .split(serializedAccount, ACCOUNT_COMPONENT_SEPARATOR_PATTERN)[1]);
+        String[] accountMembers = TextUtils.split(serializedAccount,
+                ACCOUNT_COMPONENT_SEPARATOR_PATTERN);
+        if (accountMembers.length != NUMBER_MEMBERS) {
+            throw new IllegalArgumentException(
+                    "Account de-serializing failed. Wrong number of members detected.");
+        }
+        providerVersion = Integer.valueOf(accountMembers[2]);
+        uri = accountMembers[3];
+        capabilities = Integer.valueOf(accountMembers[4]);
+        folderListUri = accountMembers[5];
+        searchUri = accountMembers[6];
+        accountFromAddressesUri = accountMembers[7];
+        saveDraftUri = accountMembers[8];
+        sendMessageUri = accountMembers[9];
+        expungeMessageUri = accountMembers[10];
+        undoUri = accountMembers[11];
+        settingIntentUri = accountMembers[12];
+        syncStatus = Integer.valueOf(accountMembers[13]);
+    }
 
     public Account(Parcel in) {
         super(in);
