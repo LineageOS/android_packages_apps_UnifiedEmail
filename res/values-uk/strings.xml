@@ -18,11 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="mock_content_provider" msgid="7444679250201027030">"Постачальник фіктивного вмісту"</string>
-    <string name="conversation_content_provider" msgid="3662935025292495273">"Постачальник вмісту бесід"</string>
-    <string name="account_cache_provider" msgid="3195603659417337226">"Постачальник кешу облікового запису"</string>
-    <string name="dummy_gmail_provider" msgid="2411244445674142698">"Постачальник формальних облікових записів Gmail"</string>
-    <string name="test_application" msgid="5613907578447924035">"Тестувати програму"</string>
     <string name="app_name" msgid="8197930422134712215">"Об’єднана електронна пошта"</string>
     <string name="to" msgid="4392614766835725698">"Кому"</string>
     <string name="cc" msgid="7017720927911078193">"Копія"</string>
@@ -33,7 +28,7 @@
     <string name="plus_bcc_label" msgid="3466026399539734378">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Вкласти файл"</string>
     <string name="save_draft" msgid="5555744208032445632">"Зберегти як чернетку"</string>
-    <string name="discard" msgid="1714960202994370243">"Відхилити"</string>
+    <string name="discard" msgid="1714960202994370243">"Закрити"</string>
     <string name="compose" msgid="1473559896062432878">"Написати"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Відповісти"</item>
@@ -70,7 +65,8 @@
     <string name="resume_draft" msgid="6450150180834092146">"Редагувати"</string>
     <string name="forward" msgid="6822914459902983767">"Переслати"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Написати"</string>
-    <string name="menu_change_labels" msgid="9121087142079721959">"Змінити мітки"</string>
+    <!-- no translation found for menu_change_folders (1542713666608888717) -->
+    <skip />
     <string name="menu_manage_labels" msgid="8618788259638720538">"Керувати мітками"</string>
     <string name="label_list_title" msgid="7948730824763052410">"Мітки"</string>
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Синхронізація та сповіщення"</string>
@@ -138,23 +134,23 @@
     <string name="undo" msgid="6070869718469782251">"Відмінити"</string>
   <plurals name="conversation_marking_read">
     <item quantity="one" msgid="394911867474214874">"Позначення <xliff:g id="COUNT">%1$d</xliff:g> бесіди як прочитаної."</item>
-    <item quantity="other" msgid="247178462544083532">"Позначення <xliff:g id="COUNT">%1$d</xliff:g> бесід як прочитаних."</item>
+    <item quantity="other" msgid="247178462544083532">"Позначення бесід як прочитаних: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
   <plurals name="conversation_marking_unread">
     <item quantity="one" msgid="2959859634779672558">"Позначення <xliff:g id="COUNT">%1$d</xliff:g> бесіди як непрочитаної."</item>
-    <item quantity="other" msgid="6577233770583912846">"Позначення <xliff:g id="COUNT">%1$d</xliff:g> бесід як непрочитаних."</item>
+    <item quantity="other" msgid="6577233770583912846">"Позначення бесід як прочитаних: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
   <plurals name="conversation_starring">
     <item quantity="one" msgid="8780588287902503608">"Позначення <xliff:g id="COUNT">%1$d</xliff:g> бесіди зірочкою."</item>
-    <item quantity="other" msgid="44965256231544025">"Позначення <xliff:g id="COUNT">%1$d</xliff:g> бесід зірочкою."</item>
+    <item quantity="other" msgid="44965256231544025">"Позначення бесід зірочкою: <xliff:g id="COUNT">%1$d</xliff:g> ."</item>
   </plurals>
   <plurals name="conversation_unstarring">
     <item quantity="one" msgid="9149763486272528029">"Видалення зірочки з <xliff:g id="COUNT">%1$d</xliff:g> бесіди."</item>
-    <item quantity="other" msgid="460057780793159215">"Видалення зірочки з <xliff:g id="COUNT">%1$d</xliff:g> бесід."</item>
+    <item quantity="other" msgid="460057780793159215">"Видалення зірочки з бесід: <xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
   <plurals name="conversation_unknown_operation">
     <item quantity="one" msgid="235911194119829184">"Очікування на дію над <xliff:g id="COUNT">%1$d</xliff:g> бесідою."</item>
-    <item quantity="other" msgid="850868849811019745">"Очікування на дію над <xliff:g id="COUNT">%1$d</xliff:g> бесідами."</item>
+    <item quantity="other" msgid="850868849811019745">"Очікування на дію з бесідами: <xliff:g id="COUNT">%1$d</xliff:g> ."</item>
   </plurals>
   <plurals name="conversation_muted">
     <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; проігноровано."</item>
@@ -228,11 +224,39 @@
     <string name="cancel" msgid="8762981157252199115">"Скасувати"</string>
     <string name="close" msgid="419945428844076406">"Закрити"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Для цього облікового запису не визначено папок."</string>
-    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <!-- no translation found for sync_status:0 (2446076619901049026) -->
     <!-- no translation found for sync_status:1 (5037283655022689372) -->
     <!-- no translation found for sync_status:2 (4252875340758600974) -->
     <!-- no translation found for sync_status:3 (7611299631880179587) -->
     <!-- no translation found for sync_status:4 (665244114363057627) -->
     <!-- no translation found for sync_status:5 (9190542479647789762) -->
+    <!-- no translation found for tap_to_configure (1181356242354390930) -->
+    <skip />
+    <!-- no translation found for non_synced_folder_description (6059194125558004080) -->
+    <skip />
+    <!-- no translation found for tap_to_configure_folder_sync (3846898229180591661) -->
+    <skip />
+    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for view_more_conversations (3151067626309674344) -->
+    <skip />
+    <!-- no translation found for loading_conversation (489160038366067983) -->
+    <skip />
+    <!-- no translation found for activity_mailbox_selection (6876105223659297603) -->
+    <skip />
+    <!-- no translation found for activity_folder_selection (5161845867397316052) -->
+    <skip />
+    <!-- no translation found for sync_all (1057043212338233359) -->
+    <skip />
+    <!-- no translation found for sync_recent:one (137489911893192702) -->
+    <!-- no translation found for sync_recent:other (6856940335775567991) -->
+    <!-- no translation found for sync_none (3581727068747471804) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_title (6889243150191948255) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_description (3287913520283417367) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_checkbox (5810741160405575956) -->
+    <skip />
+    <!-- no translation found for folder_selection_dialog_title (9194093596644845383) -->
+    <skip />
 </resources>

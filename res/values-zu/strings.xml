@@ -18,11 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="mock_content_provider" msgid="7444679250201027030">"Umhlinzekeli wokuqukethwe we-Mock"</string>
-    <string name="conversation_content_provider" msgid="3662935025292495273">"Umhlinzekeli wokuqukethwe kwengxoxo"</string>
-    <string name="account_cache_provider" msgid="3195603659417337226">"Umhlinzekeli nge-akhawunti ye-Cache"</string>
-    <string name="dummy_gmail_provider" msgid="2411244445674142698">"Umhlinzekeli we-Dummy Gmail"</string>
-    <string name="test_application" msgid="5613907578447924035">"Uhlelo kusebenza lokuhlola"</string>
     <string name="app_name" msgid="8197930422134712215">"I-imeyili ehlanganisiwe"</string>
     <string name="to" msgid="4392614766835725698">"Kuya"</string>
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
@@ -34,7 +29,7 @@
     <string name="add_file_attachment" msgid="2203398371671979481">"Namathisela ifayela"</string>
     <string name="save_draft" msgid="5555744208032445632">"Londoloza okusazolungiswa"</string>
     <string name="discard" msgid="1714960202994370243">"Lahla"</string>
-    <string name="compose" msgid="1473559896062432878">"Dala"</string>
+    <string name="compose" msgid="1473559896062432878">"Bhala"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Phendula"</item>
     <item msgid="4085029907540221568">"Phendula konke"</item>
@@ -49,8 +44,8 @@
     <string name="recipient_needed" msgid="999037027358925655">"Ngeza okungenani umamukeli oyedwa."</string>
     <string name="recipient_error_dialog_title" msgid="6051694305498669180">"Iphutha Lomamukeli"</string>
     <string name="confirm_send_title" msgid="5663602035452564062">"Thumela umlayezo?"</string>
-    <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"Awukho umbhalo esihlokweni somyalezo."</string>
-    <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Awukho umbhalo kumyalezo"</string>
+    <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"Awukho umbhalo esihlokweni somlayezo."</string>
+    <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Awukho umbhalo emzimbeni walomlayezo."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Thumela lo mlayezo?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Umlayezo ulahliwe."</string>
     <string name="send" msgid="8242003661397555986">"Thumela"</string>
@@ -61,7 +56,7 @@
     <string name="remove_star" msgid="4372327933122106128">"Susa inkanyezi"</string>
     <string name="archive" msgid="847250094775910499">"Ingobo yomlando"</string>
     <string name="report_spam" msgid="6467567747975393907">"Bika ugaxekile"</string>
-    <string name="delete" msgid="844871204175957681">"Sula"</string>
+    <string name="delete" msgid="844871204175957681">"Susa"</string>
     <string name="next" msgid="4674401197968248302">"Okudadlana"</string>
     <string name="previous" msgid="309943944831349924">"Okusha"</string>
     <string name="refresh" msgid="490989798005710951">"Qala kabusha"</string>
@@ -69,18 +64,19 @@
     <string name="reply_all" msgid="7257248094625487557">"Phendula konke"</string>
     <string name="resume_draft" msgid="6450150180834092146">"Hlela"</string>
     <string name="forward" msgid="6822914459902983767">"Dlulisela"</string>
-    <string name="menu_compose" msgid="6274193058224230645">"Dala"</string>
-    <string name="menu_change_labels" msgid="9121087142079721959">"Shintsha amalebuli"</string>
+    <string name="menu_compose" msgid="6274193058224230645">"Bhala"</string>
+    <!-- no translation found for menu_change_folders (1542713666608888717) -->
+    <skip />
     <string name="menu_manage_labels" msgid="8618788259638720538">"Phatha amalebuli"</string>
     <string name="label_list_title" msgid="7948730824763052410">"Amalebuli"</string>
-    <string name="manage_labels_subtitle" msgid="8802709983773098505">"Ukuvumelanisa nokuqaphelisa"</string>
+    <string name="manage_labels_subtitle" msgid="8802709983773098505">"Ukuvumelanisa &amp; ukuqaphelisa"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"Izilungiselelo zelebuli"</string>
     <string name="menu_done" msgid="5791134842152855128">"Kwenziwe"</string>
     <string name="menu_account_preferences" msgid="825820027931270435">"Izilungiselelo ze-akhawunti"</string>
     <string name="menu_preferences" msgid="8957431987536606063">"Izilungiselelo"</string>
     <string name="menu_search" msgid="5297197523031943248">"Sesha"</string>
     <string name="more" msgid="1238344647379009858">"Okuningi"</string>
-    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> kuka-<xliff:g id="TOTAL">%2$s</xliff:g>"</string>
+    <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> koku-<xliff:g id="TOTAL">%2$s</xliff:g>"</string>
     <string name="newer" msgid="1007166236908596854">"Okusha"</string>
     <string name="older" msgid="6651690916337202936">"Okudadlana"</string>
     <string name="mark_important" msgid="6904096897104265870">"Maka njengokubalulekile"</string>
@@ -90,7 +86,7 @@
     <string name="feedback" msgid="79365993169715049">"Thumela impendulo"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Usizo"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Hlanganisa umbhalo ocashuniwe"</string>
-    <string name="quoted_text_label" msgid="541007446961960617">"umbhalo ocaphuniwe"</string>
+    <string name="quoted_text_label" msgid="541007446961960617">"Umbhalo ocaphuniwe"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Phendula uxhumekile kwi-inthanethi"</string>
     <string name="bytes" msgid="8851050881674287386">"B"</string>
     <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
@@ -108,13 +104,13 @@
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Abelana nge"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Vula kwisiphequluli"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopisha"</string>
-    <string name="contextmenu_copylink" msgid="3580131515400610839">"Kopisha isixhumanisi se-URL"</string>
+    <string name="contextmenu_copylink" msgid="3580131515400610839">"Kopisha i-URL yesixhumanisi"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Iyadayela..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"I-SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Faka oxhumana naye"</string>
     <string name="contextmenu_send_mail" msgid="8301941130009797208">"Thumela i-imeyili"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"Imephu"</string>
-    <string name="contextmenu_sharelink" msgid="6213520416250245200">"Yabelana ngesihlanganisi"</string>
+    <string name="contextmenu_sharelink" msgid="6213520416250245200">"Yabelana ngesixhumanisi"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Usizo"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"Thumela impendulo"</string>
     <string name="num_selected" msgid="2943309946439316255">"Engu-<xliff:g id="NUMBER">%d</xliff:g> ekhethiwe"</string>
@@ -130,30 +126,30 @@
     <item quantity="other" msgid="6961049507579977505">"Okusalungiswa"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Iyathumela..."</string>
-    <string name="send_failed" msgid="750908595144529579">"Umyalezo awuthunyelwanga."</string>
+    <string name="send_failed" msgid="750908595144529579">"Umlayezo awuthunyelwanga."</string>
     <string name="me" msgid="6480762904022198669">"mina"</string>
     <string name="labels" msgid="1519770547536283663">"Amalebuli"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Bonisa onke amafolda"</string>
     <string name="no_conversations" msgid="35400008890372241">"Azikho izingxoxo."</string>
-    <string name="undo" msgid="6070869718469782251">"Hoxisa"</string>
+    <string name="undo" msgid="6070869718469782251">"Hlehlisa"</string>
   <plurals name="conversation_marking_read">
-    <item quantity="one" msgid="394911867474214874">"Imaka ingxoxo engu-<xliff:g id="COUNT">%1$d</xliff:g> njengefundiwe."</item>
+    <item quantity="one" msgid="394911867474214874">"Imaka ingxoxo e-<xliff:g id="COUNT">%1$d</xliff:g> njengefundiwe."</item>
     <item quantity="other" msgid="247178462544083532">"Imaka izingxoxo ezingu-<xliff:g id="COUNT">%1$d</xliff:g> njengezifundiwe."</item>
   </plurals>
   <plurals name="conversation_marking_unread">
-    <item quantity="one" msgid="2959859634779672558">"Imaka ingxoxo engu-<xliff:g id="COUNT">%1$d</xliff:g> njengengafundiwe."</item>
+    <item quantity="one" msgid="2959859634779672558">"Imaka ingxoxo e-<xliff:g id="COUNT">%1$d</xliff:g> njengengafundiwe."</item>
     <item quantity="other" msgid="6577233770583912846">"Imaka izingxoxo ezingu-<xliff:g id="COUNT">%1$d</xliff:g> njengezingafundiwe."</item>
   </plurals>
   <plurals name="conversation_starring">
-    <item quantity="one" msgid="8780588287902503608">"Ifaka ingxoxo engu-<xliff:g id="COUNT">%1$d</xliff:g> inkanyezi."</item>
+    <item quantity="one" msgid="8780588287902503608">"Ifaka ingxoxo e-<xliff:g id="COUNT">%1$d</xliff:g> inkanyezi."</item>
     <item quantity="other" msgid="44965256231544025">"Ifaka izingxoxo ezingu-<xliff:g id="COUNT">%1$d</xliff:g> izinkanyezi."</item>
   </plurals>
   <plurals name="conversation_unstarring">
-    <item quantity="one" msgid="9149763486272528029">"Isusa izinkanyezi engxoxweni engu-<xliff:g id="COUNT">%1$d</xliff:g>."</item>
+    <item quantity="one" msgid="9149763486272528029">"Isusa izinkanyezi engxoxweni e-<xliff:g id="COUNT">%1$d</xliff:g>."</item>
     <item quantity="other" msgid="460057780793159215">"Isusa izinkanyezi ezingxoxweni ezingu-<xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
   <plurals name="conversation_unknown_operation">
-    <item quantity="one" msgid="235911194119829184">"Ilinde umsebenzi engxoxweni engu-<xliff:g id="COUNT">%1$d</xliff:g>."</item>
+    <item quantity="one" msgid="235911194119829184">"Ilinde umsebenzi engxoxweni e-<xliff:g id="COUNT">%1$d</xliff:g>."</item>
     <item quantity="other" msgid="850868849811019745">"Ilinde umsebenzi ezingxoxweni ezingu-<xliff:g id="COUNT">%1$d</xliff:g>."</item>
   </plurals>
   <plurals name="conversation_muted">
@@ -169,12 +165,12 @@
     <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; kufakwe kungobo yomlando"</item>
   </plurals>
   <plurals name="conversation_moved_to_inbox">
-    <item quantity="one" msgid="8031416635831380071">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ithuthelwe ebhokisini lemiyalezo engenayo"</item>
-    <item quantity="other" msgid="395816799927580909">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ithuthelwe ebhokisini lemiyalezo engenayo"</item>
+    <item quantity="one" msgid="8031416635831380071">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ithuthelwe ebhokisini lemiyalezo engenayo."</item>
+    <item quantity="other" msgid="395816799927580909">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ithuthelwe ebhokisini lemiyalezo engenayo."</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; isusiwe"</item>
-    <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; isusiwe"</item>
+    <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; isusiwe."</item>
+    <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; isusiwe."</item>
   </plurals>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; imakwe njengebalulekile."</item>
@@ -208,31 +204,59 @@
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Goqa imininingwane yomtholi"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Khombisa imininingwane yokuxhumana ka-<xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="contact_info_string_default" msgid="596531738469809159">"Bonisa ulwazi loxhumana naye"</string>
-    <string name="expand_read_messages" msgid="7458927270492299063">"Nweba ukufunda imyalezo"</string>
+    <string name="expand_read_messages" msgid="7458927270492299063">"Nweba ukufunda imilayezo"</string>
     <string name="show_messages_read" msgid="9132147830566909631">"Imilayezo efundwe ngaphambilini"</string>
     <string name="date_heading" msgid="2414358582984879303">"Usuku:"</string>
     <string name="replyto_heading" msgid="2081358811894701297">"Phendula-ku:"</string>
-    <string name="to_heading" msgid="3219994961726691756">"To:"</string>
+    <string name="to_heading" msgid="3219994961726691756">"Kuya ku:"</string>
     <string name="cc_heading" msgid="8116221732072085180">"Cc:"</string>
     <string name="bcc_heading" msgid="5528824453033598299">"Bcc:"</string>
     <string name="show_images" msgid="1875700481186331432">"Bonisa izithombe"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Njalo bonisa izithombe eziphuma kulo mthumeli"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Izithombe eziphuma kulo mthumeli zizoboniswa ngokuzenzakalelayo."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <string name="message_saved" msgid="7073947895562277576">"Umlayezo ulondolozwe njengokungaphelele."</string>
+    <string name="message_saved" msgid="7073947895562277576">"Umlayezo ulondolozwe njengokusalungiswa."</string>
     <string name="sending_message" msgid="1498583163419122128">"Ithumela umlayezo..."</string>
-    <string name="invalid_recipient" msgid="2161317422860961623">"Ikheli <xliff:g id="WRONGEMAIL">%s</xliff:g> alilungile."</string>
+    <string name="invalid_recipient" msgid="2161317422860961623">"Ikheli <xliff:g id="WRONGEMAIL">%s</xliff:g> alivumelekile."</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"KULUNGILE"</string>
     <string name="done" msgid="3079981801778027540">"Kwenziwe"</string>
     <string name="cancel" msgid="8762981157252199115">"Khansela"</string>
     <string name="close" msgid="419945428844076406">"Vala"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Awekho amafolda ahlelelwe le akhawunti."</string>
-    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <!-- no translation found for sync_status:0 (2446076619901049026) -->
     <!-- no translation found for sync_status:1 (5037283655022689372) -->
     <!-- no translation found for sync_status:2 (4252875340758600974) -->
     <!-- no translation found for sync_status:3 (7611299631880179587) -->
     <!-- no translation found for sync_status:4 (665244114363057627) -->
     <!-- no translation found for sync_status:5 (9190542479647789762) -->
+    <!-- no translation found for tap_to_configure (1181356242354390930) -->
+    <skip />
+    <!-- no translation found for non_synced_folder_description (6059194125558004080) -->
+    <skip />
+    <!-- no translation found for tap_to_configure_folder_sync (3846898229180591661) -->
+    <skip />
+    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for view_more_conversations (3151067626309674344) -->
+    <skip />
+    <!-- no translation found for loading_conversation (489160038366067983) -->
+    <skip />
+    <!-- no translation found for activity_mailbox_selection (6876105223659297603) -->
+    <skip />
+    <!-- no translation found for activity_folder_selection (5161845867397316052) -->
+    <skip />
+    <!-- no translation found for sync_all (1057043212338233359) -->
+    <skip />
+    <!-- no translation found for sync_recent:one (137489911893192702) -->
+    <!-- no translation found for sync_recent:other (6856940335775567991) -->
+    <!-- no translation found for sync_none (3581727068747471804) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_title (6889243150191948255) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_description (3287913520283417367) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_checkbox (5810741160405575956) -->
+    <skip />
+    <!-- no translation found for folder_selection_dialog_title (9194093596644845383) -->
+    <skip />
 </resources>

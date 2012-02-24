@@ -18,11 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="mock_content_provider" msgid="7444679250201027030">"Proveïdor de contingut fictici"</string>
-    <string name="conversation_content_provider" msgid="3662935025292495273">"Proveïdor de contingut de la conversa"</string>
-    <string name="account_cache_provider" msgid="3195603659417337226">"Proveïdor de memòria cau del compte"</string>
-    <string name="dummy_gmail_provider" msgid="2411244445674142698">"Proveïdor de Gmail fictici"</string>
-    <string name="test_application" msgid="5613907578447924035">"Aplicació de prova"</string>
     <string name="app_name" msgid="8197930422134712215">"Correu electrònic unificat"</string>
     <string name="to" msgid="4392614766835725698">"Per a:"</string>
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
@@ -70,7 +65,8 @@
     <string name="resume_draft" msgid="6450150180834092146">"Edita"</string>
     <string name="forward" msgid="6822914459902983767">"Reenvia"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Redacta"</string>
-    <string name="menu_change_labels" msgid="9121087142079721959">"Canvia les etiquetes"</string>
+    <!-- no translation found for menu_change_folders (1542713666608888717) -->
+    <skip />
     <string name="menu_manage_labels" msgid="8618788259638720538">"Gestiona les etiquetes"</string>
     <string name="label_list_title" msgid="7948730824763052410">"Etiquetes"</string>
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Sincronitza i notifica"</string>
@@ -149,7 +145,7 @@
     <item quantity="other" msgid="44965256231544025">"S\'estan destacant <xliff:g id="COUNT">%1$d</xliff:g> converses."</item>
   </plurals>
   <plurals name="conversation_unstarring">
-    <item quantity="one" msgid="9149763486272528029">"<xliff:g id="COUNT">%1$d</xliff:g> conversa sense destacar."</item>
+    <item quantity="one" msgid="9149763486272528029">"No destaquis <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
     <item quantity="other" msgid="460057780793159215">"No destaquis <xliff:g id="COUNT">%1$d</xliff:g> converses."</item>
   </plurals>
   <plurals name="conversation_unknown_operation">
@@ -158,11 +154,11 @@
   </plurals>
   <plurals name="conversation_muted">
     <item quantity="one" msgid="3197365771487542615">"Se n\'ha silenciat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="1941193356069303587">"Se n\'ha silenciat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="other" msgid="1941193356069303587">"Se n\'han silenciat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one" msgid="3060864972122279220">"S\'ha informat d\'&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversa com a activitat brossa."</item>
-    <item quantity="other" msgid="5071459475389411227">"S\'ha informat d\'&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversa com a activitat brossa."</item>
+    <item quantity="other" msgid="5071459475389411227">"S\'ha informat d\'&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; converses com a activitat brossa."</item>
   </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"Se n\'ha arxivat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
@@ -170,7 +166,7 @@
   </plurals>
   <plurals name="conversation_moved_to_inbox">
     <item quantity="one" msgid="8031416635831380071">"Se n\'ha mogut &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a la bústia d\'entrada."</item>
-    <item quantity="other" msgid="395816799927580909">"Se n\'ha mogut &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a la bústia d\'entrada."</item>
+    <item quantity="other" msgid="395816799927580909">"Se n\'han mogut &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a la bústia d\'entrada."</item>
   </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="4398693029405479323">"Se n\'han suprimit &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
@@ -178,19 +174,19 @@
   </plurals>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"Se n\'ha marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a important."</item>
-    <item quantity="other" msgid="709648106181749594">"Se n\'ha marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a important."</item>
+    <item quantity="other" msgid="709648106181749594">"Se n\'han marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a importants."</item>
   </plurals>
   <plurals name="conversation_marked_not_important">
-    <item quantity="one" msgid="63750576337670941">"Se n\'han marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a no importants."</item>
+    <item quantity="one" msgid="63750576337670941">"Se n\'ha marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a no important."</item>
     <item quantity="other" msgid="6160886583510022920">"Se n\'han marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a no importants."</item>
   </plurals>
   <plurals name="conversation_marked_read">
     <item quantity="one" msgid="7853066345561670409">"Se n\'ha marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a llegida."</item>
-    <item quantity="other" msgid="6554100868671029370">"Se n\'ha marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a llegida."</item>
+    <item quantity="other" msgid="6554100868671029370">"Se n\'han marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a llegides."</item>
   </plurals>
   <plurals name="conversation_marked_unread">
     <item quantity="one" msgid="365581967734960166">"Se n\'ha marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a no llegida."</item>
-    <item quantity="other" msgid="858491333253953462">"Se n\'ha marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a no llegida."</item>
+    <item quantity="other" msgid="858491333253953462">"Se n\'han marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a no llegides."</item>
   </plurals>
     <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
     <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
@@ -228,11 +224,39 @@
     <string name="cancel" msgid="8762981157252199115">"Cancel·la"</string>
     <string name="close" msgid="419945428844076406">"Tanca"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"No s\'ha definit cap carpeta per a aquest compte."</string>
-    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <!-- no translation found for sync_status:0 (2446076619901049026) -->
     <!-- no translation found for sync_status:1 (5037283655022689372) -->
     <!-- no translation found for sync_status:2 (4252875340758600974) -->
     <!-- no translation found for sync_status:3 (7611299631880179587) -->
     <!-- no translation found for sync_status:4 (665244114363057627) -->
     <!-- no translation found for sync_status:5 (9190542479647789762) -->
+    <!-- no translation found for tap_to_configure (1181356242354390930) -->
+    <skip />
+    <!-- no translation found for non_synced_folder_description (6059194125558004080) -->
+    <skip />
+    <!-- no translation found for tap_to_configure_folder_sync (3846898229180591661) -->
+    <skip />
+    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for view_more_conversations (3151067626309674344) -->
+    <skip />
+    <!-- no translation found for loading_conversation (489160038366067983) -->
+    <skip />
+    <!-- no translation found for activity_mailbox_selection (6876105223659297603) -->
+    <skip />
+    <!-- no translation found for activity_folder_selection (5161845867397316052) -->
+    <skip />
+    <!-- no translation found for sync_all (1057043212338233359) -->
+    <skip />
+    <!-- no translation found for sync_recent:one (137489911893192702) -->
+    <!-- no translation found for sync_recent:other (6856940335775567991) -->
+    <!-- no translation found for sync_none (3581727068747471804) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_title (6889243150191948255) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_description (3287913520283417367) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_checkbox (5810741160405575956) -->
+    <skip />
+    <!-- no translation found for folder_selection_dialog_title (9194093596644845383) -->
+    <skip />
 </resources>

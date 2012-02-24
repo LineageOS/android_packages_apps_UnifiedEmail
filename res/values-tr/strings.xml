@@ -18,11 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="mock_content_provider" msgid="7444679250201027030">"Taklit İçerik Sağlayıcı"</string>
-    <string name="conversation_content_provider" msgid="3662935025292495273">"İleti Dizisi İçerik Sağlayıcısı"</string>
-    <string name="account_cache_provider" msgid="3195603659417337226">"Hesap Önbellek Sağlayıcısı"</string>
-    <string name="dummy_gmail_provider" msgid="2411244445674142698">"Model Gmail Sağlayıcı"</string>
-    <string name="test_application" msgid="5613907578447924035">"Uygulamayı test et"</string>
     <string name="app_name" msgid="8197930422134712215">"Birleştirilmiş E-posta"</string>
     <string name="to" msgid="4392614766835725698">"Alıcı:"</string>
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
@@ -34,7 +29,7 @@
     <string name="add_file_attachment" msgid="2203398371671979481">"Dosya ekleyin"</string>
     <string name="save_draft" msgid="5555744208032445632">"Taslağı kaydet"</string>
     <string name="discard" msgid="1714960202994370243">"Sil"</string>
-    <string name="compose" msgid="1473559896062432878">"Oluştur"</string>
+    <string name="compose" msgid="1473559896062432878">"E-posta yaz"</string>
   <string-array name="compose_modes">
     <item msgid="8631190144210933782">"Yanıt"</item>
     <item msgid="4085029907540221568">"Tümünü yanıtla"</item>
@@ -65,12 +60,13 @@
     <string name="next" msgid="4674401197968248302">"Daha eski"</string>
     <string name="previous" msgid="309943944831349924">"Daha yeni"</string>
     <string name="refresh" msgid="490989798005710951">"Yenile"</string>
-    <string name="reply" msgid="2032052598496088561">"Yanıt"</string>
+    <string name="reply" msgid="2032052598496088561">"Yanıtla"</string>
     <string name="reply_all" msgid="7257248094625487557">"Tümünü yanıtla"</string>
     <string name="resume_draft" msgid="6450150180834092146">"Düzenle"</string>
     <string name="forward" msgid="6822914459902983767">"Yönlendir"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Oluştur"</string>
-    <string name="menu_change_labels" msgid="9121087142079721959">"Etiketleri değiştir"</string>
+    <!-- no translation found for menu_change_folders (1542713666608888717) -->
+    <skip />
     <string name="menu_manage_labels" msgid="8618788259638720538">"Etiketleri yönet"</string>
     <string name="label_list_title" msgid="7948730824763052410">"Etiketler"</string>
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Senkronize et ve bildir"</string>
@@ -129,7 +125,7 @@
     <item quantity="one" msgid="333591132893648383">"Taslak"</item>
     <item quantity="other" msgid="6961049507579977505">"Taslaklar"</item>
   </plurals>
-    <string name="sending" msgid="8214361929125649771">"Gönderiliyor ..."</string>
+    <string name="sending" msgid="8214361929125649771">"Gönderiliyor..."</string>
     <string name="send_failed" msgid="750908595144529579">"İleti gönderilmedi."</string>
     <string name="me" msgid="6480762904022198669">"ben"</string>
     <string name="labels" msgid="1519770547536283663">"Etiketler"</string>
@@ -153,12 +149,12 @@
     <item quantity="other" msgid="460057780793159215">"<xliff:g id="COUNT">%1$d</xliff:g> ileti dizisinin yıldızı kaldırılıyor."</item>
   </plurals>
   <plurals name="conversation_unknown_operation">
-    <item quantity="one" msgid="235911194119829184">"<xliff:g id="COUNT">%1$d</xliff:g> ileti dizisinde işlem yapmak için bekleniyor."</item>
-    <item quantity="other" msgid="850868849811019745">"<xliff:g id="COUNT">%1$d</xliff:g> ileti dizisinde işlem yapmak için bekleniyor."</item>
+    <item quantity="one" msgid="235911194119829184">"<xliff:g id="COUNT">%1$d</xliff:g> ileti dizisi üzerindeki işlemin tamamlanması bekleniyor."</item>
+    <item quantity="other" msgid="850868849811019745">"<xliff:g id="COUNT">%1$d</xliff:g> ileti dizisi üzerindeki işlemin tamamlanması bekleniyor."</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ileti dizisi kapatıldı."</item>
-    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ileti dizisi kapatıldı."</item>
+    <item quantity="one" msgid="3197365771487542615">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ileti dizisi yoksayıldı."</item>
+    <item quantity="other" msgid="1941193356069303587">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ileti dizisi yoksayıldı."</item>
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ileti dizisi spam olarak bildirildi."</item>
@@ -228,11 +224,39 @@
     <string name="cancel" msgid="8762981157252199115">"İptal"</string>
     <string name="close" msgid="419945428844076406">"Kapat"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Bu hesap için hiçbir klasör ayarlanmamış."</string>
-    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <!-- no translation found for sync_status:0 (2446076619901049026) -->
     <!-- no translation found for sync_status:1 (5037283655022689372) -->
     <!-- no translation found for sync_status:2 (4252875340758600974) -->
     <!-- no translation found for sync_status:3 (7611299631880179587) -->
     <!-- no translation found for sync_status:4 (665244114363057627) -->
     <!-- no translation found for sync_status:5 (9190542479647789762) -->
+    <!-- no translation found for tap_to_configure (1181356242354390930) -->
+    <skip />
+    <!-- no translation found for non_synced_folder_description (6059194125558004080) -->
+    <skip />
+    <!-- no translation found for tap_to_configure_folder_sync (3846898229180591661) -->
+    <skip />
+    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for view_more_conversations (3151067626309674344) -->
+    <skip />
+    <!-- no translation found for loading_conversation (489160038366067983) -->
+    <skip />
+    <!-- no translation found for activity_mailbox_selection (6876105223659297603) -->
+    <skip />
+    <!-- no translation found for activity_folder_selection (5161845867397316052) -->
+    <skip />
+    <!-- no translation found for sync_all (1057043212338233359) -->
+    <skip />
+    <!-- no translation found for sync_recent:one (137489911893192702) -->
+    <!-- no translation found for sync_recent:other (6856940335775567991) -->
+    <!-- no translation found for sync_none (3581727068747471804) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_title (6889243150191948255) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_description (3287913520283417367) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_checkbox (5810741160405575956) -->
+    <skip />
+    <!-- no translation found for folder_selection_dialog_title (9194093596644845383) -->
+    <skip />
 </resources>

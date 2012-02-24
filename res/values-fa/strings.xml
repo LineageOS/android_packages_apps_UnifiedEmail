@@ -18,11 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="mock_content_provider" msgid="7444679250201027030">"ارائه‌دهنده محتوای ساختگی"</string>
-    <string name="conversation_content_provider" msgid="3662935025292495273">"ارائه‌دهنده محتوای مکالمه"</string>
-    <string name="account_cache_provider" msgid="3195603659417337226">"ارائه‌دهنده حافظه پنهان حساب"</string>
-    <string name="dummy_gmail_provider" msgid="2411244445674142698">"ارائه‌دهنده ساختگی Gmail"</string>
-    <string name="test_application" msgid="5613907578447924035">"برنامه آزمایش"</string>
     <string name="app_name" msgid="8197930422134712215">"ایمیل یکپارچه"</string>
     <string name="to" msgid="4392614766835725698">"گیرنده"</string>
     <string name="cc" msgid="7017720927911078193">"گیرنده کپی"</string>
@@ -70,7 +65,8 @@
     <string name="resume_draft" msgid="6450150180834092146">"ویرایش"</string>
     <string name="forward" msgid="6822914459902983767">"باز ارسال"</string>
     <string name="menu_compose" msgid="6274193058224230645">"نوشتن نامه"</string>
-    <string name="menu_change_labels" msgid="9121087142079721959">"تغییر برچسب‌ها"</string>
+    <!-- no translation found for menu_change_folders (1542713666608888717) -->
+    <skip />
     <string name="menu_manage_labels" msgid="8618788259638720538">"مدیریت برچسب‌ها"</string>
     <string name="label_list_title" msgid="7948730824763052410">"برچسب‌ها"</string>
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"همگام‌سازی و اعلان"</string>
@@ -228,11 +224,39 @@
     <string name="cancel" msgid="8762981157252199115">"لغو"</string>
     <string name="close" msgid="419945428844076406">"بستن"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"پوشه‌ای برای این حساب تنظیم نشده است."</string>
-    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <!-- no translation found for sync_status:0 (2446076619901049026) -->
     <!-- no translation found for sync_status:1 (5037283655022689372) -->
     <!-- no translation found for sync_status:2 (4252875340758600974) -->
     <!-- no translation found for sync_status:3 (7611299631880179587) -->
     <!-- no translation found for sync_status:4 (665244114363057627) -->
     <!-- no translation found for sync_status:5 (9190542479647789762) -->
+    <!-- no translation found for tap_to_configure (1181356242354390930) -->
+    <skip />
+    <!-- no translation found for non_synced_folder_description (6059194125558004080) -->
+    <skip />
+    <!-- no translation found for tap_to_configure_folder_sync (3846898229180591661) -->
+    <skip />
+    <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
+    <!-- no translation found for view_more_conversations (3151067626309674344) -->
+    <skip />
+    <!-- no translation found for loading_conversation (489160038366067983) -->
+    <skip />
+    <!-- no translation found for activity_mailbox_selection (6876105223659297603) -->
+    <skip />
+    <!-- no translation found for activity_folder_selection (5161845867397316052) -->
+    <skip />
+    <!-- no translation found for sync_all (1057043212338233359) -->
+    <skip />
+    <!-- no translation found for sync_recent:one (137489911893192702) -->
+    <!-- no translation found for sync_recent:other (6856940335775567991) -->
+    <!-- no translation found for sync_none (3581727068747471804) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_title (6889243150191948255) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_description (3287913520283417367) -->
+    <skip />
+    <!-- no translation found for folder_sync_for_widget_checkbox (5810741160405575956) -->
+    <skip />
+    <!-- no translation found for folder_selection_dialog_title (9194093596644845383) -->
+    <skip />
 </resources>
