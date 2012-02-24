@@ -28,6 +28,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.net.Uri;
@@ -54,7 +55,6 @@ import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-
 
 /**
  * This is an abstract implementation of the Activity Controller. This class knows how to
@@ -86,6 +86,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected final RestrictedActivity mActivity;
     protected final Context mContext;
     protected ConversationListContext mConvListContext;
+    private FetchAccountFolderTask mFetchAccountFolderTask;
     protected Conversation mCurrentConversation;
 
     protected ConversationListFragment mConversationListFragment;
@@ -235,13 +236,16 @@ public abstract class AbstractActivityController implements ActivityController {
         if (!account.equals(mAccount)) {
             mAccount = account;
 
-            final Intent intent = mActivity.getIntent();
-            // TODO(viki): Show the list context from Intent
-            mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
-            setFolder(mConvListContext.mFolder);
-            showConversationList(mConvListContext);
-            mViewMode.enterConversationListMode();
+            fetchAccountFolderInfo();
         }
+    }
+
+    private void fetchAccountFolderInfo() {
+        if (mFetchAccountFolderTask != null) {
+            mFetchAccountFolderTask.cancel(true);
+        }
+        mFetchAccountFolderTask = new FetchAccountFolderTask();
+        mFetchAccountFolderTask.execute();
     }
 
     @Override
@@ -612,13 +616,7 @@ public abstract class AbstractActivityController implements ActivityController {
             return false;
         }
         mAccount = new Account(accounts);
-        final Intent intent = mActivity.getIntent();
-        mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
-        setFolder(mConvListContext.mFolder);
-        // TODO(viki): Rely on the ViewMode transition to do the right things automatically. The
-        // next line should be unnecessary.
-        showConversationList(mConvListContext);
-        mViewMode.enterConversationListMode();
+        fetchAccountFolderInfo();
         return true;
     }
 
@@ -665,4 +663,21 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
+    private class FetchAccountFolderTask extends AsyncTask<Void, Void, ConversationListContext> {
+        @Override
+        public ConversationListContext doInBackground(Void... params) {
+            final Intent intent = mActivity.getIntent();
+            // TODO(viki): Show the list context from Intent
+            return ConversationListContext.forIntent(mContext, mAccount, intent);
+        }
+
+        @Override
+        public void onPostExecute(ConversationListContext result) {
+            mConvListContext = result;
+            setFolder(mConvListContext.mFolder);
+            showConversationList(mConvListContext);
+            mViewMode.enterConversationListMode();
+            mFetchAccountFolderTask = null;
+        }
+    }
 }
