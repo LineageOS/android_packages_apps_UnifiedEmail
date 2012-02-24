@@ -22,6 +22,7 @@
     <string name="conversation_content_provider" translatable="false">Conversation Content Provider</string>
     <string name="account_cache_provider" translatable="false">Account Cache Provider</string>
     <string name="dummy_gmail_provider" translatable="false">Dummy Gmail Provider</string>
+    <string name="test_application" translatable="false">Test Application</string>
 
     <string name="app_name">Unified Email</string>
 
