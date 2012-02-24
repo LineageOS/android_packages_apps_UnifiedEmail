@@ -30,7 +30,7 @@ public class Account extends android.accounts.Account implements Parcelable {
     /**
      * The uri to directly access the information for this account.
      */
-    public final String accountUri;
+    public final String uri;
 
     /**
      * The possible capabilities that this account supports.
@@ -96,7 +96,7 @@ public class Account extends android.accounts.Account implements Parcelable {
     public Account(Parcel in) {
         super(in);
         providerVersion = in.readInt();
-        accountUri = in.readString();
+        uri = in.readString();
         capabilities = in.readInt();
         folderListUri = in.readString();
         searchUri = in.readString();
@@ -114,7 +114,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         accountFromAddressesUri = cursor.getString(UIProvider.ACCOUNT_FROM_ADDRESSES_URI_COLUMN);
         capabilities = cursor.getInt(UIProvider.ACCOUNT_CAPABILITIES_COLUMN);
         providerVersion = cursor.getInt(UIProvider.ACCOUNT_PROVIDER_VERISON_COLUMN);
-        accountUri = cursor.getString(UIProvider.ACCOUNT_URI_COLUMN);
+        uri = cursor.getString(UIProvider.ACCOUNT_URI_COLUMN);
         folderListUri = cursor.getString(UIProvider.ACCOUNT_FOLDER_LIST_URI_COLUMN);
         searchUri = cursor.getString(UIProvider.ACCOUNT_SEARCH_URI_COLUMN);
         saveDraftUri = cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN);
@@ -133,7 +133,7 @@ public class Account extends android.accounts.Account implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(providerVersion);
-        dest.writeString(accountUri);
+        dest.writeString(uri);
         dest.writeInt(capabilities);
         dest.writeString(folderListUri);
         dest.writeString(searchUri);

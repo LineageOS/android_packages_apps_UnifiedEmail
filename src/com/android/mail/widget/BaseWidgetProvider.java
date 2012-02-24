@@ -17,6 +17,7 @@
 package com.android.mail.widget;
 
 import com.android.mail.R;
+import com.android.mail.persistence.Persistence;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Folder;
@@ -33,6 +34,7 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
@@ -51,7 +53,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     private static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
 
     private static String createWidgetPreferenceValue(Account account, Folder folder) {
-        return account.name + ACCOUNT_FOLDER_PREFERENCE_SEPARATOR + folder.name;
+        return account.uri + ACCOUNT_FOLDER_PREFERENCE_SEPARATOR + folder.uri;
 
     }
 
@@ -60,13 +62,10 @@ public class BaseWidgetProvider extends AppWidgetProvider {
      */
     static void saveWidgetInformation(Context context, int appWidgetId, Account account,
             Folder folder) {
-        // TODO: (mindyp) save widget information.
-        /*
-         * Editor editor = Persistence.getPreferences(context).edit();
-         * editor.putString(WidgetProvider.WIDGET_ACCOUNT_PREFIX + appWidgetId,
-         * BaseWidgetProvider.createWidgetPreferenceValue(account, folder));
-         * editor.apply();
-         */
+        Editor editor = Persistence.getPreferences(context).edit();
+        editor.putString(WidgetProvider.WIDGET_ACCOUNT_PREFIX + appWidgetId,
+                BaseWidgetProvider.createWidgetPreferenceValue(account, folder));
+        editor.apply();
     }
 
     /**
@@ -75,14 +74,14 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
-
         // TODO: (mindyp) save widget information.
-        /*
-         * Editor editor = Persistence.getPreferences(context).edit(); for (int
-         * i = 0; i < appWidgetIds.length; ++i) { // Remove the account in the
-         * preference editor.remove(WIDGET_ACCOUNT_PREFIX + appWidgetIds[i]); }
-         * editor.apply();
-         */
+        Editor editor = Persistence.getPreferences(context).edit();
+        for (int i = 0; i < appWidgetIds.length; ++i) {
+            // Remove the account in the preference
+            editor.remove(WIDGET_ACCOUNT_PREFIX + appWidgetIds[i]);
+        }
+        editor.apply();
+
     }
 
     /**
@@ -113,17 +112,17 @@ public class BaseWidgetProvider extends AppWidgetProvider {
             for (int id : getCurrentWidgetIds(context)) {
                 // Retrieve the persisted information for this widget from
                 // preferences.
-                // TODO: (mindyp) get widget preferences.
-                /*
-                 * final String accountFolder =
-                 * Persistence.getPreferences(context)
-                 * .getString(WIDGET_ACCOUNT_PREFIX + id, null); // If the
-                 * account matched, update the widget. if (accountFolder !=
-                 * null) { final String[] parsedInfo = TextUtils.split(
-                 * accountFolder, ACCOUNT_FOLDER_PREFERENCE_SEPARATOR); if
-                 * (accountToBeUpdated.equals(parsedInfo[0])) {
-                 * widgetsToUpdate.add(id); } }
-                 */
+                final String accountFolder = Persistence.getPreferences(context).getString(
+                        WIDGET_ACCOUNT_PREFIX + id, null);
+                // If the account matched, update the widget.
+                if (accountFolder != null) {
+                    final String[] parsedInfo = TextUtils.split(accountFolder,
+                            ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
+                    if (accountToBeUpdated.equals(parsedInfo[0])) {
+                        widgetsToUpdate.add(id);
+                    }
+                }
+
             }
             if (widgetsToUpdate.size() > 0) {
                 final int[] widgets = Ints.toArray(widgetsToUpdate);
@@ -140,36 +139,51 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         // Update each of the widgets with a remote adapter
+        ContentResolver resolver = context.getContentResolver();
         for (int i = 0; i < appWidgetIds.length; ++i) {
             // Get the account for this widget from preference
-            // TODO: (mindyp) get widget preferences.
-            /*
-             * String accountFolder =
-             * Persistence.getPreferences(context).getString(
-             * WIDGET_ACCOUNT_PREFIX + appWidgetIds[i], null);
-             */
-            String accountFolder = null;
-            String account = null;
-            String folder = null;
+            String accountFolder = Persistence.getPreferences(context).getString(
+                    WIDGET_ACCOUNT_PREFIX + appWidgetIds[i], null);
+            String accountUri = null;
+            String folderUri = null;
             if (!TextUtils.isEmpty(accountFolder)) {
                 final String[] parsedInfo = TextUtils.split(accountFolder,
                         ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
                 if (parsedInfo.length == 2) {
-                    account = parsedInfo[0];
-                    folder = parsedInfo[1];
+                    accountUri = parsedInfo[0];
+                    folderUri = parsedInfo[1];
                 } else {
                     // TODO: (mindyp) how can we lookup the associated account?
                     // AccountCacheProvider?
-                    account = accountFolder;
-                    folder = "inbox"; // account.getAccountInbox(context,
+                    accountUri = accountFolder;
+                    folderUri = null; // account.getAccountInbox(context,
                                       // account);
                 }
             }
             // account will be null the first time a widget is created. This is
             // OK, as isAccountValid will return false, allowing the widget to
-            // be configured
-            updateWidget(context, appWidgetIds[i], new Account(Parcel.obtain()),
-                    new Folder(Parcel.obtain()));
+            // be configured.
+
+            // Lookup the account by URI.
+            Account account = null;
+            if (!TextUtils.isEmpty(accountUri)) {
+                Cursor accountCursor = resolver.query(Uri.parse(accountUri),
+                        UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+                if (accountCursor != null) {
+                    accountCursor.moveToFirst();
+                    account = new Account(accountCursor);
+                }
+            }
+            Folder folder = null;
+            if (!TextUtils.isEmpty(folderUri)) {
+                Cursor folderCursor = resolver.query(Uri.parse(folderUri),
+                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+                if (folderCursor != null) {
+                    folderCursor.moveToFirst();
+                    folder = new Folder(folderCursor);
+                }
+            }
+            updateWidget(context, appWidgetIds[i], account, folder);
         }
     }
 
@@ -179,10 +193,10 @@ public class BaseWidgetProvider extends AppWidgetProvider {
                     AccountCacheProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION, null,
                     null, null);
             if (accountCursor.moveToFirst()) {
-                Account newAccount = new Account(accountCursor);
                 do {
+                    String newAccount = accountCursor.getString(UIProvider.ACCOUNT_URI_COLUMN);
                     if (account != null && newAccount != null
-                            && TextUtils.equals(account.name, newAccount.name))
+                            && TextUtils.equals(account.uri, newAccount))
                         return true;
                 } while (accountCursor.moveToNext());
             }
@@ -191,20 +205,14 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     }
 
     /**
-     * Returns if a widget is configured with the given account.
+     * Returns true if this widget id has been configured and saved.
      */
     public static boolean isWidgetConfigured(Context context, int appWidgetId, Account account,
             Folder folder) {
         if (isAccountValid(context, account)) {
             // TODO: (mindyp) get widget preferences.
-            /*
-             * final String accountFolder =
-             * Persistence.getPreferences(context).getString(
-             * WIDGET_ACCOUNT_PREFIX + appWidgetId, null);
-             */
-            // Return true if this widget id has been configured and saved.
-            final String accountFolder = null;
-            return accountFolder != null;
+            return Persistence.getPreferences(context).getString(
+                    WIDGET_ACCOUNT_PREFIX + appWidgetId, null) != null;
         }
         return false;
     }
@@ -214,7 +222,6 @@ public class BaseWidgetProvider extends AppWidgetProvider {
      */
     public static void updateWidget(Context context, int appWidgetId, Account account, Folder folder) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
-        PendingIntent clickIntent;
         final boolean isAccountValid = isAccountValid(context, account);
 
         if (!isAccountValid) {
@@ -231,7 +238,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
             configureIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             configureIntent.setData(Uri.parse(configureIntent.toUri(Intent.URI_INTENT_SCHEME)));
             configureIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            clickIntent = PendingIntent.getActivity(context, 0, configureIntent,
+            PendingIntent clickIntent = PendingIntent.getActivity(context, 0, configureIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.widget_configuration, clickIntent);
         } else {
@@ -243,18 +250,8 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     }
 
     private static boolean isFolderSynchronized(Context context, Account account, Folder folder) {
-        // Determine if the folder has been configured to be synced
-        final ContentResolver resolver = context.getContentResolver();
-
-        // TODO: (mindyp) Get the current sync window for the specified account
-        final Cursor settings = account.getSettings();
-        final Set<String> synchronizedFoldersSet = Sets.newHashSet();
-
-        // TODO: Add all of the synchronized folders to the set
-        // synchronizedFoldersSet.addAll(settings.getFoldersIncluded());
-        // synchronizedFoldersSet.addAll(settings.getFoldersPartial());
-
-        return synchronizedFoldersSet.contains(folder);
+        // TODO: (mindyp) check the folder settings to see if it is syncing.
+        return true;
     }
 
     /**
@@ -291,11 +288,10 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         // Launch an intent to avoid ANRs
         final Intent intent = new Intent(context, WidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        intent.putExtra(EXTRA_ACCOUNT, account);
-        intent.putExtra(EXTRA_FOLDER, folder);
+        intent.putExtra(EXTRA_ACCOUNT, account.uri);
+        intent.putExtra(EXTRA_FOLDER, folder.uri);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         remoteViews.setRemoteAdapter(R.id.conversation_list, intent);
-
         // Open mail app when click on header
         final Intent mailIntent = Utils.createViewConversationIntent(context, account, folder,
                 UIProvider.INVALID_CONVERSATION_ID);
@@ -310,7 +306,6 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         clickIntent = PendingIntent.getActivity(context, 0, composeIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_compose, clickIntent);
-
         // On click intent for Conversation
         final Intent conversationIntent = new Intent();
         conversationIntent.setAction(Intent.ACTION_VIEW);
