@@ -36,6 +36,7 @@ import android.util.Log;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationOperations;
+import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
@@ -114,14 +115,35 @@ public final class ConversationCursor implements Cursor {
         sActivity = activity;
         mResolver = activity.getContentResolver();
         sConversationCursor = this;
+        // If we have an existing underlying cursor, make sure it's closed
+        if (sUnderlyingCursor != null) {
+            sUnderlyingCursor.close();
+        }
         sUnderlyingCursor = cursor;
         sListeners.clear();
+        sRefreshRequired = false;
+        sRefreshReady = false;
+        sRefreshInProgress = false;
         mCursorObserver = new CursorObserver();
         resetCursor(null);
         mColumnNames = cursor.getColumnNames();
         sUriColumnIndex = cursor.getColumnIndex(messageListColumn);
         if (sUriColumnIndex < 0) {
             throw new IllegalArgumentException("Cursor must include a message list column");
+        }
+    }
+
+    /**
+     * Determine if two strings (which might be null) are the same
+     * @param str1 a String or null
+     * @param str2 a String or null
+     * @return true if the strings are both null or equals
+     */
+    private static boolean nullOrEquals(String str1, String str2) {
+        if (str1 == null) {
+            return str2 == null;
+        } else {
+            return str1.equals(str2);
         }
     }
 
@@ -138,6 +160,32 @@ public final class ConversationCursor implements Cursor {
      */
     public static ConversationCursor create(Activity activity, String messageListColumn, Uri uri,
             String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        // First, let's see if we already have a cursor
+        if (sConversationCursor != null) {
+            // If it's the same, just clean up
+            if (qUri.equals(uri) && !sRefreshRequired && !sRefreshInProgress &&
+                    nullOrEquals(selection, qSelection) && nullOrEquals(sortOrder, qSortOrder)) {
+                if (sRefreshReady) {
+                    // If we already have a refresh ready, just sync() it
+                    LogUtils.d(TAG, "Create with refreshed cursor; sync");
+                    sConversationCursor.sync();
+
+                } else {
+                    // Position the cursor before the first item (as it would be if new), reset
+                    // the cache, and return as new
+                    LogUtils.d(TAG, "Create without refresh; reset cursor");
+                    sConversationCursor.moveToPosition(-1);
+                    sConversationCursor.mPosition = -1;
+                    synchronized (sCacheMapLock) {
+                        sCacheMap.clear();
+                    }
+                }
+                return sConversationCursor;
+            } else {
+                LogUtils.d(TAG, "Create with new query; closing existing ConversationCursor");
+                sConversationCursor.close();
+            }
+        }
         qUri = uri;
         qProjection = projection;
         qSelection = selection;
