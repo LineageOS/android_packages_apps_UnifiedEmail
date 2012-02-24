@@ -228,14 +228,18 @@ public final class ConversationCursor implements Cursor {
      * Add a listener for this cursor; we'll notify it when our data changes
      */
     public void addListener(ConversationListener listener) {
-        sListeners.add(listener);
+        synchronized (sListeners) {
+            sListeners.add(listener);
+        }
     }
 
     /**
      * Remove a listener for this cursor
      */
     public void removeListener(ConversationListener listener) {
-        sListeners.remove(listener);
+        synchronized(sListeners) {
+            sListeners.remove(listener);
+        }
     }
 
     /**
@@ -346,8 +350,10 @@ public final class ConversationCursor implements Cursor {
         if (DEBUG) {
             Log.d(TAG, "[Notify: onRefreshRequired()]");
         }
-        for (ConversationListener listener: sListeners) {
-            listener.onRefreshRequired();
+        synchronized(sListeners) {
+            for (ConversationListener listener: sListeners) {
+                listener.onRefreshRequired();
+            }
         }
         sRefreshRequired = true;
     }
@@ -487,8 +493,10 @@ public final class ConversationCursor implements Cursor {
                                 if (DEBUG) {
                                     Log.d(TAG, "[Notify: onRefreshReady()]");
                                 }
-                                for (ConversationListener listener: sListeners) {
-                                    listener.onRefreshReady();
+                                synchronized (sListeners) {
+                                    for (ConversationListener listener : sListeners) {
+                                        listener.onRefreshReady();
+                                    }
                                 }
                                 sRefreshReady = true;
                             }});
