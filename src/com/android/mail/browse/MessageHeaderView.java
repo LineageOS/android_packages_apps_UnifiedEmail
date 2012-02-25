@@ -16,6 +16,8 @@
 
 package com.android.mail.browse;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
@@ -28,18 +30,20 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.PopupMenu.OnMenuItemClickListener;
 
 import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
+import com.android.mail.R;
+import com.android.mail.SenderInfoLoader.ContactInfo;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
 import com.android.mail.providers.Account;
@@ -47,11 +51,8 @@ import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.R;
-import com.android.mail.SenderInfoLoader.ContactInfo;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.common.annotations.VisibleForTesting;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -1179,4 +1180,5 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             t.pause(MEASURE_TAG);
         }
     }
+
 }

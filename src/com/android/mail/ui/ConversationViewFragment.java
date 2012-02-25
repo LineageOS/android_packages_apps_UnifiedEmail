@@ -148,8 +148,6 @@ public final class ConversationViewFragment extends Fragment implements
                 .findViewById(R.id.conversation_container);
         mWebView = (ConversationWebView) rootView.findViewById(R.id.webview);
 
-        mWebView.addScrollListener(mConversationContainer);
-
         mWebView.addJavascriptInterface(mJsBridge, "mail");
 
         mWebView.setWebChromeClient(new WebChromeClient() {
