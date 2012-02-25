@@ -541,12 +541,14 @@ public final class ConversationCursor implements Cursor {
                                 if (DEBUG) {
                                     Log.d(TAG, "[Notify: onRefreshReady()]");
                                 }
-                                synchronized (sListeners) {
-                                    for (ConversationListener listener : sListeners) {
-                                        listener.onRefreshReady();
+                                if (sRequeryCursor != null && !sRequeryCursor.isClosed()) {
+                                    synchronized (sListeners) {
+                                        for (ConversationListener listener : sListeners) {
+                                            listener.onRefreshReady();
+                                        }
                                     }
+                                    sRefreshReady = true;
                                 }
-                                sRefreshReady = true;
                             }});
                     } else {
                         cancelRefresh();
