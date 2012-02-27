@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.webkit.WebView;
 
 import java.util.Set;
@@ -56,5 +57,16 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
         }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        boolean result = super.onTouchEvent(ev);
+
+        if (result) {
+            // Events handled by the WebView should not be monkeyed with by any overlay interceptor
+            requestDisallowInterceptTouchEvent(true);
+        }
+
+        return result;
+    }
 
 }

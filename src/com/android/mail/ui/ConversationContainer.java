@@ -19,10 +19,13 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Adapter;
+import android.widget.ScrollView;
 
 import com.android.mail.ui.ScrollNotifier.ScrollListener;
 import com.android.mail.utils.LogUtils;
@@ -33,13 +36,46 @@ import com.android.mail.utils.LogUtils;
  */
 public class ConversationContainer extends ViewGroup implements ScrollListener {
 
-    private Adapter mOverlayAdapter;
-    private int[] mOverlayTops;
-
     private static final String TAG = new LogUtils().getLogTag();
 
-    private int mOffsetY;
+    private Adapter mOverlayAdapter;
+    private int[] mOverlayTops;
+    private ConversationWebView mWebView;
+
+    /**
+     * Current document zoom scale per {@link WebView#getScale()}. It does not already account for
+     * display density, but by a happy coincidence, this makes the arithmetic for overlay placement
+     * easier.
+     */
     private float mScale;
+
+    /**
+     * System touch-slop distance per {@link ViewConfiguration#getScaledTouchSlop()}.
+     */
+    private final int mTouchSlop;
+    /**
+     * Current scroll position, as dictated by the background {@link WebView}.
+     */
+    private int mOffsetY;
+    /**
+     * Original pointer Y for slop calculation.
+     */
+    private float mLastMotionY;
+    /**
+     * Original pointer ID for slop calculation.
+     */
+    private int mActivePointerId;
+    /**
+     * Track pointer up/down state to know whether to send a make-up DOWN event to WebView.
+     * WebView internal logic requires that a stream of {@link MotionEvent#ACTION_MOVE} events be
+     * preceded by a {@link MotionEvent#ACTION_DOWN} event.
+     */
+    private boolean mTouchIsDown = false;
+    /**
+     * Remember if touch interception was triggered on a {@link MotionEvent#ACTION_POINTER_DOWN},
+     * so we can send a make-up event in {@link #onTouchEvent(MotionEvent)}.
+     */
+    private boolean mMissedPointerDown;
 
     public ConversationContainer(Context c) {
         this(c, null);
@@ -47,6 +83,22 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     public ConversationContainer(Context c, AttributeSet attrs) {
         super(c, attrs);
+
+        mTouchSlop = ViewConfiguration.get(c).getScaledTouchSlop();
+
+        // Disabling event splitting fixes pinch-zoom when the first pointer goes down on the
+        // WebView and the second pointer goes down on an overlay view.
+        // Intercepting ACTION_POINTER_DOWN events allows pinch-zoom to work when the first pointer
+        // goes down on an overlay view.
+        setMotionEventSplittingEnabled(false);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        mWebView = (ConversationWebView) getChildAt(0);
+        mWebView.addScrollListener(this);
     }
 
     public void setOverlayAdapter(Adapter a) {
@@ -61,14 +113,77 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         return getChildAt(i + 1);
     }
 
-    private WebView getBackgroundView() {
-        return (WebView) getChildAt(0);
+    private void forwardFakeMotionEvent(MotionEvent original, int newAction) {
+        MotionEvent newEvent = MotionEvent.obtain(original);
+        newEvent.setAction(newAction);
+        mWebView.onTouchEvent(newEvent);
+        LogUtils.v(TAG, "in Container.OnTouch. fake: action=%d x/y=%f/%f pointers=%d",
+                newEvent.getActionMasked(), newEvent.getX(), newEvent.getY(),
+                newEvent.getPointerCount());
+    }
+
+    /**
+     * Touch slop code was copied from {@link ScrollView#onInterceptTouchEvent(MotionEvent)}.
+     */
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        boolean intercept = false;
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_POINTER_DOWN:
+                intercept = true;
+                mMissedPointerDown = true;
+                break;
+
+            case MotionEvent.ACTION_DOWN:
+                mLastMotionY = ev.getY();
+                mActivePointerId = ev.getPointerId(0);
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                final float y = ev.getY(pointerIndex);
+                final int yDiff = (int) Math.abs(y - mLastMotionY);
+                if (yDiff > mTouchSlop) {
+                    mLastMotionY = y;
+                    intercept = true;
+                }
+                break;
+        }
+
+        LogUtils.v(TAG, "in Container.InterceptTouch. action=%d x/y=%f/%f pointers=%d result=%s",
+                ev.getActionMasked(), ev.getX(), ev.getY(), ev.getPointerCount(), intercept);
+        return intercept;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        final int action = ev.getActionMasked();
+
+        if (action == MotionEvent.ACTION_UP) {
+            mTouchIsDown = false;
+        } else if (!mTouchIsDown &&
+                (action == MotionEvent.ACTION_MOVE || action == MotionEvent.ACTION_POINTER_DOWN)) {
+
+            forwardFakeMotionEvent(ev, MotionEvent.ACTION_DOWN);
+            if (mMissedPointerDown) {
+                forwardFakeMotionEvent(ev, MotionEvent.ACTION_POINTER_DOWN);
+                mMissedPointerDown = false;
+            }
+
+            mTouchIsDown = true;
+        }
+
+        final boolean webViewResult = mWebView.onTouchEvent(ev);
+
+        LogUtils.v(TAG, "in Container.OnTouch. action=%d x/y=%f/%f pointers=%d",
+                ev.getActionMasked(), ev.getX(), ev.getY(), ev.getPointerCount());
+        return webViewResult;
     }
 
     @Override
     public void onNotifierScroll(int x, int y) {
         mOffsetY = y;
-        mScale = getBackgroundView().getScale();
+        mScale = mWebView.getScale();
         LogUtils.v(TAG, "*** IN on scroll, x/y=%d/%d zoom=%f", x, y, mScale);
         layoutOverlays();
 
@@ -77,8 +192,9 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        LogUtils.d(TAG, "*** IN header container onMeasure");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        LogUtils.d(TAG, "*** IN header container onMeasure spec for w/h=%d/%d", widthMeasureSpec,
+                heightMeasureSpec);
 
         measureChildren(widthMeasureSpec, heightMeasureSpec);
     }
@@ -86,9 +202,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         LogUtils.d(TAG, "*** IN header container onLayout");
-        final View backgroundView = getBackgroundView();
-        backgroundView.layout(0, 0, backgroundView.getMeasuredWidth(),
-                backgroundView.getMeasuredHeight());
+        mWebView.layout(0, 0, mWebView.getMeasuredWidth(),
+                mWebView.getMeasuredHeight());
 
         layoutOverlays();
     }
@@ -111,7 +226,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
     }
 
-    // TODO: add margin support for children that want it (e.g. tablet headers)
+    // TODO: add margin support for children that want it (e.g. tablet headers?)
 
     public void onGeometryChange(int[] messageTops) {
         LogUtils.d(TAG, "*** got message tops:");
@@ -132,7 +247,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             // to position bottom-anchored content like attachments
         }
 
-        mScale = getBackgroundView().getScale();
+        mScale = mWebView.getScale();
 
     }
 
