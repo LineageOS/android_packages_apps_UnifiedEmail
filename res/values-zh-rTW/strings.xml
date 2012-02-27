@@ -18,7 +18,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"統一的電子郵件"</string>
+    <string name="app_name" msgid="8197930422134712215">"Unified Email"</string>
     <string name="to" msgid="4392614766835725698">"收件者"</string>
     <string name="cc" msgid="7017720927911078193">"副本"</string>
     <string name="bcc" msgid="3098643138241111579">"密件副本"</string>
@@ -65,6 +65,7 @@
     <string name="resume_draft" msgid="6450150180834092146">"編輯"</string>
     <string name="forward" msgid="6822914459902983767">"轉寄"</string>
     <string name="menu_compose" msgid="6274193058224230645">"撰寫"</string>
+    <string name="menu_change_labels" msgid="9121087142079721959">"變更標籤"</string>
     <!-- no translation found for menu_change_folders (1542713666608888717) -->
     <skip />
     <string name="menu_manage_labels" msgid="8618788259638720538">"管理標籤"</string>
@@ -85,7 +86,7 @@
     <string name="add_bcc_label" msgid="7432027645493843336">"新增密件副本"</string>
     <string name="feedback" msgid="79365993169715049">"提供意見"</string>
     <string name="help_and_info" msgid="7873089811705257882">"說明"</string>
-    <string name="quoted_text" msgid="7250749398672037355">"包括引用文字"</string>
+    <string name="quoted_text" msgid="7250749398672037355">"包含引用文字"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"引用文字"</string>
     <string name="respond_inline" msgid="6797117334768201180">"逐行回覆"</string>
     <string name="bytes" msgid="8851050881674287386">"B"</string>
@@ -118,7 +119,7 @@
     <item quantity="one" msgid="3657821200245019288">"移動會話群組"</item>
     <item quantity="other" msgid="1685896770174368261">"移動 <xliff:g id="ID_1">%1$d</xliff:g> 個會話群組"</item>
   </plurals>
-    <string name="content_description" msgid="5986818539537753005">"主旨：<xliff:g id="SUBJECT">%1$s</xliff:g>，摘要：<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <string name="content_description" msgid="5986818539537753005">"主旨：<xliff:g id="SUBJECT">%1$s</xliff:g> / 摘要：<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -126,7 +127,7 @@
     <item quantity="other" msgid="6961049507579977505">"草稿"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"傳送中…"</string>
-    <string name="send_failed" msgid="750908595144529579">"無法傳送郵件。"</string>
+    <string name="send_failed" msgid="750908595144529579">"郵件未傳送。"</string>
     <string name="me" msgid="6480762904022198669">"我"</string>
     <string name="labels" msgid="1519770547536283663">"標籤"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"顯示所有資料夾"</string>
@@ -145,8 +146,8 @@
     <item quantity="other" msgid="44965256231544025">"正在為 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組加上星號。"</item>
   </plurals>
   <plurals name="conversation_unstarring">
-    <item quantity="one" msgid="9149763486272528029">"正在移除 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組的星號。"</item>
-    <item quantity="other" msgid="460057780793159215">"正在移除 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組的星號。"</item>
+    <item quantity="one" msgid="9149763486272528029">"正在移除 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組的星號標示。"</item>
+    <item quantity="other" msgid="460057780793159215">"正在移除 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組的星號標示。"</item>
   </plurals>
   <plurals name="conversation_unknown_operation">
     <item quantity="one" msgid="235911194119829184">"正在等待系統開始處理 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組。"</item>
@@ -188,8 +189,10 @@
     <item quantity="one" msgid="365581967734960166">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組標示為未讀取。"</item>
     <item quantity="other" msgid="858491333253953462">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組標示為未讀取。"</item>
   </plurals>
-    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
-    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
+  <plurals name="conversation_folder_changed">
+    <item quantity="one" msgid="4930161390461457462">"已變更資料夾。"</item>
+    <item quantity="other" msgid="8918589141287976985">"已變更資料夾。"</item>
+  </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"搜尋結果"</string>
     <string name="searchMode" msgid="3329807422114758583">"搜尋模式"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"搜尋會話群組模式"</string>
@@ -210,7 +213,7 @@
     <string name="replyto_heading" msgid="2081358811894701297">"回覆："</string>
     <string name="to_heading" msgid="3219994961726691756">"收件者："</string>
     <string name="cc_heading" msgid="8116221732072085180">"副本："</string>
-    <string name="bcc_heading" msgid="5528824453033598299">"密件複本："</string>
+    <string name="bcc_heading" msgid="5528824453033598299">"密件副本："</string>
     <string name="show_images" msgid="1875700481186331432">"顯示圖片"</string>
     <string name="always_show_images" msgid="5966408990164581801">"一律顯示這位寄件者所傳送的圖片"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"系統會自動顯示這位寄件者所傳送的圖片。"</string>
@@ -218,18 +221,24 @@
     <string name="message_saved" msgid="7073947895562277576">"已儲存郵件草稿。"</string>
     <string name="sending_message" msgid="1498583163419122128">"正在傳送郵件..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"地址 <xliff:g id="WRONGEMAIL">%s</xliff:g> 無效。"</string>
+    <!-- no translation found for show_elided (5255917904110437886) -->
+    <skip />
+    <!-- no translation found for hide_elided (8907305605854960737) -->
+    <skip />
     <string name="enumeration_comma" msgid="5191660524342286026">"、 "</string>
     <string name="ok" msgid="8339355733816891026">"確定"</string>
     <string name="done" msgid="3079981801778027540">"完成"</string>
     <string name="cancel" msgid="8762981157252199115">"取消"</string>
     <string name="close" msgid="419945428844076406">"關閉"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"這個帳戶尚未設定資料夾。"</string>
-    <!-- no translation found for sync_status:0 (2446076619901049026) -->
-    <!-- no translation found for sync_status:1 (5037283655022689372) -->
-    <!-- no translation found for sync_status:2 (4252875340758600974) -->
-    <!-- no translation found for sync_status:3 (7611299631880179587) -->
-    <!-- no translation found for sync_status:4 (665244114363057627) -->
-    <!-- no translation found for sync_status:5 (9190542479647789762) -->
+    <string name="folders_activity_instructions" msgid="5237801615196958918">"尚未設定這個帳戶的資料夾。"</string>
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"成功"</item>
+    <item msgid="5037283655022689372">"連線錯誤"</item>
+    <item msgid="4252875340758600974">"驗證錯誤"</item>
+    <item msgid="7611299631880179587">"安全性錯誤"</item>
+    <item msgid="665244114363057627">"儲存空間錯誤"</item>
+    <item msgid="9190542479647789762">"內部錯誤"</item>
+  </string-array>
     <!-- no translation found for tap_to_configure (1181356242354390930) -->
     <skip />
     <!-- no translation found for non_synced_folder_description (6059194125558004080) -->

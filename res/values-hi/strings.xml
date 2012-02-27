@@ -65,6 +65,7 @@
     <string name="resume_draft" msgid="6450150180834092146">"संपादित करें"</string>
     <string name="forward" msgid="6822914459902983767">"अग्रेषित करें"</string>
     <string name="menu_compose" msgid="6274193058224230645">"लिखें"</string>
+    <string name="menu_change_labels" msgid="9121087142079721959">"लेबल बदलें"</string>
     <!-- no translation found for menu_change_folders (1542713666608888717) -->
     <skip />
     <string name="menu_manage_labels" msgid="8618788259638720538">"लेबल प्रबंधित करें"</string>
@@ -188,8 +189,10 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को बिना पढ़ा गया चिह्नित किया गया."</item>
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को बिना पढ़ा गया चिह्नित किया गया."</item>
   </plurals>
-    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
-    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
+  <plurals name="conversation_folder_changed">
+    <item quantity="one" msgid="4930161390461457462">"फ़ोल्‍डर बदला गया."</item>
+    <item quantity="other" msgid="8918589141287976985">"फ़ोल्डर बदले गए."</item>
+  </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"परिणाम"</string>
     <string name="searchMode" msgid="3329807422114758583">"खोज मोड"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"बातचीत खोजें मोड"</string>
@@ -218,18 +221,24 @@
     <string name="message_saved" msgid="7073947895562277576">"संदेश ड्राफ़्ट के रूप में सहेजा गया."</string>
     <string name="sending_message" msgid="1498583163419122128">"संदेश भेज रहा है..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"<xliff:g id="WRONGEMAIL">%s</xliff:g> पता अमान्‍य है."</string>
+    <!-- no translation found for show_elided (5255917904110437886) -->
+    <skip />
+    <!-- no translation found for hide_elided (8907305605854960737) -->
+    <skip />
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"ठीक"</string>
     <string name="done" msgid="3079981801778027540">"पूर्ण"</string>
     <string name="cancel" msgid="8762981157252199115">"रद्द करें"</string>
     <string name="close" msgid="419945428844076406">"बंद करें"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"इस खाते के लिए कोई फ़ोल्‍डर सेट नहीं किया गया है."</string>
-    <!-- no translation found for sync_status:0 (2446076619901049026) -->
-    <!-- no translation found for sync_status:1 (5037283655022689372) -->
-    <!-- no translation found for sync_status:2 (4252875340758600974) -->
-    <!-- no translation found for sync_status:3 (7611299631880179587) -->
-    <!-- no translation found for sync_status:4 (665244114363057627) -->
-    <!-- no translation found for sync_status:5 (9190542479647789762) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"सफल"</item>
+    <item msgid="5037283655022689372">"कनेक्शन त्रुटि"</item>
+    <item msgid="4252875340758600974">"प्रमाणीकरण त्रुटि"</item>
+    <item msgid="7611299631880179587">"सुरक्षा त्रुटि"</item>
+    <item msgid="665244114363057627">"संग्रहण त्रुटि"</item>
+    <item msgid="9190542479647789762">"आंतरिक त्रुटि"</item>
+  </string-array>
     <!-- no translation found for tap_to_configure (1181356242354390930) -->
     <skip />
     <!-- no translation found for non_synced_folder_description (6059194125558004080) -->

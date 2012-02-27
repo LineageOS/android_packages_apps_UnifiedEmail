@@ -65,6 +65,7 @@
     <string name="resume_draft" msgid="6450150180834092146">"수정"</string>
     <string name="forward" msgid="6822914459902983767">"전달"</string>
     <string name="menu_compose" msgid="6274193058224230645">"편지쓰기"</string>
+    <string name="menu_change_labels" msgid="9121087142079721959">"라벨 변경"</string>
     <!-- no translation found for menu_change_folders (1542713666608888717) -->
     <skip />
     <string name="menu_manage_labels" msgid="8618788259638720538">"라벨 관리"</string>
@@ -188,8 +189,10 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 읽지않음으로 표시"</item>
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 읽지않음으로 표시"</item>
   </plurals>
-    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
-    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
+  <plurals name="conversation_folder_changed">
+    <item quantity="one" msgid="4930161390461457462">"폴더가 변경되었습니다."</item>
+    <item quantity="other" msgid="8918589141287976985">"폴더가 변경되었습니다."</item>
+  </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"검색결과"</string>
     <string name="searchMode" msgid="3329807422114758583">"검색 모드"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"대화 검색 모드"</string>
@@ -218,18 +221,24 @@
     <string name="message_saved" msgid="7073947895562277576">"메일이 임시보관함에 저장되었습니다."</string>
     <string name="sending_message" msgid="1498583163419122128">"메일 보내는 중..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"주소(<xliff:g id="WRONGEMAIL">%s</xliff:g>)가 잘못되었습니다."</string>
+    <!-- no translation found for show_elided (5255917904110437886) -->
+    <skip />
+    <!-- no translation found for hide_elided (8907305605854960737) -->
+    <skip />
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"확인"</string>
     <string name="done" msgid="3079981801778027540">"완료"</string>
     <string name="cancel" msgid="8762981157252199115">"취소"</string>
     <string name="close" msgid="419945428844076406">"닫기"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"이 계정에 대한 폴더를 설정하지 않았습니다."</string>
-    <!-- no translation found for sync_status:0 (2446076619901049026) -->
-    <!-- no translation found for sync_status:1 (5037283655022689372) -->
-    <!-- no translation found for sync_status:2 (4252875340758600974) -->
-    <!-- no translation found for sync_status:3 (7611299631880179587) -->
-    <!-- no translation found for sync_status:4 (665244114363057627) -->
-    <!-- no translation found for sync_status:5 (9190542479647789762) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"성공"</item>
+    <item msgid="5037283655022689372">"연결 오류"</item>
+    <item msgid="4252875340758600974">"인증 오류"</item>
+    <item msgid="7611299631880179587">"보안 오류"</item>
+    <item msgid="665244114363057627">"저장소 오류"</item>
+    <item msgid="9190542479647789762">"내부 오류"</item>
+  </string-array>
     <!-- no translation found for tap_to_configure (1181356242354390930) -->
     <skip />
     <!-- no translation found for non_synced_folder_description (6059194125558004080) -->
