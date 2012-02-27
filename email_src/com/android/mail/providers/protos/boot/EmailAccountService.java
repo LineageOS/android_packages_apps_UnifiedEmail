@@ -20,37 +20,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 
-import com.android.emailcommon.provider.Account;
-import com.android.emailcommon.provider.EmailContent;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.AccountColumns;
-import com.android.mail.providers.protos.mock.MockUiProvider;
-
-import java.util.Map;
+import com.android.mail.providers.AccountCacheProvider.CachedAccount;
+import com.android.mail.providers.UIProvider;
 
 /**
  * A service to handle various intents asynchronously.
  */
 public class EmailAccountService extends IntentService {
-    private static final long BASE_EAS_CAPABILITIES =
-        AccountCapabilities.SYNCABLE_FOLDERS |
-        AccountCapabilities.FOLDER_SERVER_SEARCH |
-        AccountCapabilities.SANITIZED_HTML |
-        AccountCapabilities.SMART_REPLY |
-        AccountCapabilities.SERVER_SEARCH |
-        AccountCapabilities.UNDO;
-
-    private static final Uri BASE_SETTINGS_URI =
-            Uri.parse("content://ui.email.android.com/settings");
-
-    private static String getUriString(String type, long accountId) {
-        return EmailContent.CONTENT_URI.toString() + "/" + type + "/" + accountId;
-    }
-
-    private static Uri getAccountSettingUri(String account) {
-        return BASE_SETTINGS_URI.buildUpon().appendQueryParameter("account", account).build();
-    }
 
     public EmailAccountService() {
         super("EmailAccountService");
@@ -67,38 +45,14 @@ public class EmailAccountService extends IntentService {
 
     private void getAndRegisterEmailAccounts() {
         // Use EmailProvider to get our accounts
-        Cursor c = getContentResolver().query(Account.CONTENT_URI, Account.CONTENT_PROJECTION, null,
-                null, null);
+        Uri uri = Uri.parse("content://com.android.email.provider/uiaccts");
+        Cursor c = getContentResolver().query(uri, UIProvider.ACCOUNTS_PROJECTION, null, null,
+                null);
         if (c == null) return;
         try {
-            int i = 0;
             while (c.moveToNext()) {
-                final Map<String, Object> mockAccountMap =
-                    MockUiProvider.createAccountDetailsMap(i % MockUiProvider.NUM_MOCK_ACCOUNTS,
-                            false);
-                // Send our account information to the cache provider
-                String accountName = c.getString(Account.CONTENT_EMAIL_ADDRESS_COLUMN);
-                long id = c.getLong(Account.CONTENT_ID_COLUMN);
-                final AccountCacheProvider.CachedAccount cachedAccount =
-                    new AccountCacheProvider.CachedAccount(
-                            id,
-                            accountName,
-                            getUriString("uiaccount", id),
-                            // TODO: Check actual account protocol and return proper values
-                            BASE_EAS_CAPABILITIES,
-                            getUriString("uifolders", id),
-                            (String)mockAccountMap.get(AccountColumns.SEARCH_URI),
-                            (String)mockAccountMap.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
-                            getUriString("uisavedraft", id),
-                            getUriString("uisendmail", id),
-                            (String)mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
-                            getUriString("uiundo", id),
-                            getAccountSettingUri(accountName).toString(),
-                            null /* currently no help content */,
-                            0);
-
-                AccountCacheProvider.addAccount(cachedAccount);
-                i++;
+                Account a = new Account(c);
+                AccountCacheProvider.addAccount(new CachedAccount(a));
             }
         } finally {
             c.close();

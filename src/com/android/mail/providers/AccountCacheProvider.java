@@ -54,7 +54,6 @@ public abstract class AccountCacheProvider extends ContentProvider {
      */
     protected abstract String getAuthority();
 
-
     public static Uri getAccountsUri() {
         return Uri.parse("content://" + sAuthority + "/");
     }
@@ -222,6 +221,23 @@ public abstract class AccountCacheProvider extends ContentProvider {
             mSettingsIntentUri = settingsIntentUri;
             mHelpIntentUri = helpIntentUri;
             mSyncStatus = syncStatus;
+        }
+
+        public CachedAccount(Account acct) {
+            mId = 0;
+            mName = acct.name;
+            mUri = acct.uri;
+            mCapabilities = acct.capabilities;
+            mFolderListUri = acct.folderListUri;
+            mSearchUri = acct.searchUri;
+            mAccountFromAddressesUri = acct.accountFromAddressesUri;
+            mSaveDraftUri = acct.saveDraftUri;
+            mSendMailUri = acct.sendMessageUri;
+            mExpungeMessageUri = acct.expungeMessageUri;
+            mUndoUri = acct.undoUri;
+            mSettingsIntentUri = acct.settingIntentUri;
+            mHelpIntentUri = acct.helpIntentUri;
+            mSyncStatus = acct.syncStatus;
         }
 
         @Override
