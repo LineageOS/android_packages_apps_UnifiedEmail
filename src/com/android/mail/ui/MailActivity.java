@@ -246,4 +246,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public StarHandler getStarHandler() {
         return mController;
     }
+
+    @Override
+    public FolderChangeListener getFolderChangeListener() {
+        return mController;
+    }
 }

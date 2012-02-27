@@ -59,16 +59,15 @@ public final class FolderListFragment extends ListFragment implements
     private FolderChangeListener mListener;
 
     private static final int FOLDER_LOADER_ID = 0;
-
     public static final int MODE_DEFAULT = 0;
     public static final int MODE_PICK = 1;
+    private static final String ARG_FOLDER_URI = "arg-folder-list-uri";
+
     /**
-     * Hidden constructor.
+     * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
-    private FolderListFragment(FolderChangeListener listener, Uri uri) {
+    public FolderListFragment() {
         super();
-        mListener = listener;
-        mFolderListUri = uri;
     }
 
     /**
@@ -76,22 +75,16 @@ public final class FolderListFragment extends ListFragment implements
      * to display conversation list context.
      */
     public static FolderListFragment newInstance(FolderChangeListener listener, Uri uri) {
-        return newInstance(listener, uri, MODE_DEFAULT);
-    }
-
-    /**
-     * Creates a new instance of {@link ConversationListFragment}, initialized
-     * to display conversation list context.
-     */
-    public static FolderListFragment newInstance(FolderChangeListener listener, Uri uri,
-            int mode) {
-        FolderListFragment fragment = new FolderListFragment(listener, uri);
+        FolderListFragment fragment = new FolderListFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_FOLDER_URI, uri.toString());
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onActivityCreated(Bundle savedState) {
+        super.onActivityCreated(savedState);
         // Strictly speaking, we get back an android.app.Activity from getActivity. However, the
         // only activity creating a ConversationListContext is a MailActivity which is of type
         // ControllableActivity, so this cast should be safe. If this cast fails, some other
@@ -109,20 +102,21 @@ public final class FolderListFragment extends ListFragment implements
             // Activity is finishing, just bail.
             return;
         }
+        mListener = mActivity.getFolderChangeListener();
+        final Bundle args = getArguments();
+        mFolderListUri = Uri.parse(args.getString(ARG_FOLDER_URI));
         mListView.setEmptyView(null);
         getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
     }
 
     @Override
     public void onCreate(Bundle savedState) {
-        LogUtils.v(LOG_TAG, "onCreate in FolderListFragment(this=%s)", this);
         super.onCreate(savedState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-        LogUtils.v(LOG_TAG, "onCreateView in FolderListFragment(this=%s)", this);
         View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);

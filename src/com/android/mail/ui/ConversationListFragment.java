@@ -127,6 +127,9 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
     private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
 
+    /**
+     * Constructor needs to be public to handle orientation changes and activity lifecycle events.
+     */
     public ConversationListFragment() {
         super();
         // Allow the fragment to observe changes to its own selection set. No other object is
@@ -227,11 +230,10 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onCreate(Bundle savedState) {
-        LogUtils.v(LOG_TAG, "onCreate in ConversationListFragment(this=%s)", this);
         super.onCreate(savedState);
 
         // Initialize fragment constants from resources
-        Resources res = getResources();
+        final Resources res = getResources();
         TIMESTAMP_UPDATE_INTERVAL = res.getInteger(R.integer.timestamp_update_interval);
         mUpdateTimestampsRunnable = new Runnable(){
             @Override
@@ -242,7 +244,7 @@ public final class ConversationListFragment extends ListFragment implements
         };
 
         // Get the context from the arguments
-        Bundle args = getArguments();
+        final Bundle args = getArguments();
         mViewContext = ConversationListContext.forBundle(args.getBundle(CONVERSATION_LIST_KEY));
         mAccount = mViewContext.mAccount;
 
@@ -275,11 +277,8 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-        LogUtils.v(LOG_TAG, "onCreateView in ConversationListFragment(this=%s)", this);
         View rootView = inflater.inflate(R.layout.conversation_list, null);
-
         mEmptyView = rootView.findViewById(R.id.empty_view);
-
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);

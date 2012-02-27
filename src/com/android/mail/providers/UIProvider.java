@@ -29,7 +29,6 @@ import com.android.common.contacts.DataUsageStatUpdater;
 import java.lang.String;
 import java.util.ArrayList;
 
-
 public class UIProvider {
     public static final String EMAIL_SEPARATOR = "\n";
     public static final long INVALID_CONVERSATION_ID = -1;

@@ -86,7 +86,11 @@ public final class ConversationViewFragment extends Fragment implements
     private static final String ARG_ACCOUNT = "account";
     private static final String ARG_CONVERSATION = "conversation";
 
+    /**
+     * Constructor needs to be public to handle orientation changes and activity lifecycle events.
+     */
     public ConversationViewFragment() {
+        super();
     }
 
     /**

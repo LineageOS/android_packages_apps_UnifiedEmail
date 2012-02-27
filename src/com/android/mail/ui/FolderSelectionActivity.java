@@ -93,8 +93,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         cancelButton.setOnClickListener(this);
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        Fragment fragment = FolderListFragment.newInstance(this, mAccount.folderListUri,
-                FolderListFragment.MODE_PICK);
+        Fragment fragment = FolderListFragment.newInstance(this, mAccount.folderListUri);
         fragmentTransaction.replace(R.id.folder_list_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -256,5 +255,10 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     @Override
     public void attachConversationView(ConversationViewFragment conversationViewFragment) {
+    }
+
+    @Override
+    public FolderChangeListener getFolderChangeListener() {
+        return this;
     }
 }

@@ -70,4 +70,10 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity {
     void attachFolderList(FolderListFragment folderListFragment);
 
     void attachConversationView(ConversationViewFragment conversationViewFragment);
+
+    /**
+     * Return the folder change listener for this activity
+     * @return
+     */
+    FolderChangeListener getFolderChangeListener();
 }

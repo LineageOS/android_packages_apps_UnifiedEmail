@@ -76,6 +76,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_CONVERSATION_POSITION = "saved-conv-pos";
     // Keys for serialization of various information in Bundles.
     private static final String SAVED_LIST_CONTEXT = "saved-list-context";
+    private static final String SAVED_ACCOUNT = "saved-account";
 
     /**
      * Are we on a tablet device or not.
@@ -467,6 +468,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        if (mAccount != null) {
+            LogUtils.d(LOG_TAG, "Saving the account now");
+            outState.putParcelable(SAVED_ACCOUNT, mAccount);
+        }
         if (mConvListContext != null) {
             outState.putBundle(SAVED_LIST_CONTEXT, mConvListContext.toBundle());
         }
@@ -542,7 +547,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param savedState
      */
     protected void restoreListContext(Bundle savedState) {
-        // TODO(viki): Auto-generated method stub
+        // TODO(viki): Restore the account, the folder, and the conversation, if any.
         Bundle listContextBundle = savedState.getBundle(SAVED_LIST_CONTEXT);
         if (listContextBundle != null) {
             mConvListContext = ConversationListContext.forBundle(listContextBundle);
@@ -559,10 +564,8 @@ public abstract class AbstractActivityController implements ActivityController {
     protected void restoreState(Bundle savedState) {
         if (savedState != null) {
             restoreListContext(savedState);
-            // Attach the menu handler here.
-
-            // Restore the view mode
             mViewMode.handleRestore(savedState);
+            mAccount = savedState.getParcelable(SAVED_ACCOUNT);
         } else {
             final Intent intent = mActivity.getIntent();
             if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
@@ -641,13 +644,14 @@ public abstract class AbstractActivityController implements ActivityController {
      * @return true if the account exists in the account cursor, false
      *         otherwise.
      */
-    private boolean existsInCursor(Cursor accountCursor, Account account) {
-        accountCursor.moveToFirst();
+    private boolean missingFromCursor(Cursor accountCursor, Account account) {
+        if (account == null || !accountCursor.moveToFirst())
+            return true;
         do {
             if (account.equals(new Account(accountCursor)))
-                return true;
+                return false;
         } while (accountCursor.moveToNext());
-        return false;
+        return true;
     }
 
     /**
@@ -655,16 +659,19 @@ public abstract class AbstractActivityController implements ActivityController {
      * in the list.
      *
      * @param loader
-     * @param data
+     * @param accounts cursor into the AccountCache
+     * @param currentAccountMissing whether the current account is missing from the set of accounts
      * @return true if the update was successful, false otherwise
      */
-    private boolean updateAccounts(Loader<Cursor> loader, Cursor accounts) {
-        // Load the first account in the absence of any other information.
+    private boolean updateAccounts(Loader<Cursor> loader, Cursor accounts,
+            boolean currentAccountMissing) {
         if (accounts == null || !accounts.moveToFirst()) {
             return false;
         }
-        Account newAccount = mAccount == null ? new Account(accounts) : mAccount;
+        Account newAccount = (mAccount == null || currentAccountMissing) ?
+                new Account(accounts) : mAccount;
         onAccountChanged(newAccount);
+        fetchAccountFolderInfo();
         final Account[] allAccounts = Account.getAllAccounts(accounts);
         mActionBarView.setAccounts(allAccounts);
         return (allAccounts.length > 0);
@@ -679,8 +686,9 @@ public abstract class AbstractActivityController implements ActivityController {
         // if the current account has vanished.
         final int id = loader.getId();
         if (id == ACCOUNT_CURSOR_LOADER) {
-            if (!isLoaderInitialized || !existsInCursor(data, mAccount)) {
-                isLoaderInitialized = updateAccounts(loader, data);
+            final boolean currentAccountMissing = missingFromCursor(data, mAccount);
+            if (!isLoaderInitialized || currentAccountMissing) {
+                isLoaderInitialized = updateAccounts(loader, data, currentAccountMissing);
             }
         } else if (id == FOLDER_CURSOR_LOADER) {
             // Check status of the cursor.
