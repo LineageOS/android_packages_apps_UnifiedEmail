@@ -60,6 +60,13 @@ public class UIProviderValidator {
         return getValidProjection(projection, UIProvider.MESSAGE_PROJECTION);
     }
 
+    /**
+     * Validates and returns the projection that can be used for a settings query.
+     */
+    public static String[] validateSettingsProjection(String[] projection) {
+        return getValidProjection(projection, UIProvider.SETTINGS_PROJECTION);
+    }
+
 
     private static String[] getValidProjection(String[] requestedProjection,
             String[] allColumnProjection) {

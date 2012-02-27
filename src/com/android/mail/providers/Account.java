@@ -95,6 +95,11 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final Uri settingIntentUri;
 
     /**
+     * The content provider uri that can be used to query user settings/preferences
+     */
+    public final Uri settingQueryUri;
+
+    /**
      * Uri for VIEW intent that will cause the help screens for this account type to be
      * shown.
      */
@@ -117,7 +122,7 @@ public class Account extends android.accounts.Account implements Parcelable {
      * includes the members described above and name and type from the
      * superclass.
      */
-    private static final int NUMBER_MEMBERS = 16;
+    private static final int NUMBER_MEMBERS = 17;
 
     /**
      * Examples of expected format for the joined account strings
@@ -150,6 +155,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         out.append(expungeMessageUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(undoUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(settingIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(settingQueryUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(helpIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(syncStatus).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(composeIntentUri);
@@ -180,9 +186,10 @@ public class Account extends android.accounts.Account implements Parcelable {
         expungeMessageUri = Uri.parse(accountMembers[10]);
         undoUri = Uri.parse(accountMembers[11]);
         settingIntentUri = Uri.parse(accountMembers[12]);
-        helpIntentUri = Uri.parse(accountMembers[13]);
-        syncStatus = Integer.valueOf(accountMembers[14]);
-        composeIntentUri = Uri.parse(accountMembers[15]);
+        settingQueryUri = Uri.parse(accountMembers[13]);
+        helpIntentUri = Uri.parse(accountMembers[14]);
+        syncStatus = Integer.valueOf(accountMembers[15]);
+        composeIntentUri = Uri.parse(accountMembers[16]);
     }
 
     public Account(Parcel in) {
@@ -198,6 +205,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         expungeMessageUri = in.readParcelable(null);
         undoUri = in.readParcelable(null);
         settingIntentUri = in.readParcelable(null);
+        settingQueryUri = in.readParcelable(null);
         helpIntentUri = in.readParcelable(null);
         syncStatus = in.readInt();
         composeIntentUri = in.readParcelable(null);
@@ -213,19 +221,21 @@ public class Account extends android.accounts.Account implements Parcelable {
         providerVersion = cursor.getInt(UIProvider.ACCOUNT_PROVIDER_VERISON_COLUMN);
         uri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_URI_COLUMN));
         folderListUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_FOLDER_LIST_URI_COLUMN));
-        String search = cursor.getString(UIProvider.ACCOUNT_SEARCH_URI_COLUMN);
+        final String search = cursor.getString(UIProvider.ACCOUNT_SEARCH_URI_COLUMN);
         searchUri = !TextUtils.isEmpty(search) ? Uri.parse(search) : null;
         saveDraftUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN));
         sendMessageUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN));
-        String expunge = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
+        final String expunge = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
         expungeMessageUri = !TextUtils.isEmpty(expunge) ? Uri.parse(expunge) : null;
         undoUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN));
-        String settings = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
+        final String settings = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
         settingIntentUri = !TextUtils.isEmpty(settings) ? Uri.parse(settings) : null;
-        String help = cursor.getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN);
+        final String settingsQuery = cursor.getString(UIProvider.ACCOUNT_SETTINGS_QUERY_URI_COLUMN);
+        settingQueryUri = !TextUtils.isEmpty(settingsQuery) ? Uri.parse(settingsQuery) : null;
+        final String help = cursor.getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN);
         helpIntentUri = !TextUtils.isEmpty(help) ? Uri.parse(help) : null;
         syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
-        String compose = cursor.getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN);
+        final String compose = cursor.getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN);
         composeIntentUri = !TextUtils.isEmpty(compose) ? Uri.parse(compose) : null;
     }
 
@@ -271,6 +281,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(expungeMessageUri, 0);
         dest.writeParcelable(undoUri, 0);
         dest.writeParcelable(settingIntentUri, 0);
+        dest.writeParcelable(settingQueryUri, 0);
         dest.writeParcelable(helpIntentUri, 0);
         dest.writeInt(syncStatus);
         dest.writeParcelable(composeIntentUri, 0);

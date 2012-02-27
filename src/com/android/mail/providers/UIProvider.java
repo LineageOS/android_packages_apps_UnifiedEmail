@@ -92,6 +92,7 @@ public class UIProvider {
             AccountColumns.EXPUNGE_MESSAGE_URI,
             AccountColumns.UNDO_URI,
             AccountColumns.SETTINGS_INTENT_URI,
+            AccountColumns.SETTINGS_QUERY_URI,
             AccountColumns.SYNC_STATUS,
             AccountColumns.HELP_INTENT_URI,
             AccountColumns.COMPOSE_URI
@@ -110,9 +111,10 @@ public class UIProvider {
     public static final int ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN = 10;
     public static final int ACCOUNT_UNDO_URI_COLUMN = 11;
     public static final int ACCOUNT_SETTINGS_INTENT_URI_COLUMN = 12;
-    public static final int ACCOUNT_SYNC_STATUS_COLUMN = 13;
-    public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 14;
-    public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 14;
+    public static final int ACCOUNT_SETTINGS_QUERY_URI_COLUMN = 13;
+    public static final int ACCOUNT_SYNC_STATUS_COLUMN = 14;
+    public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 15;
+    public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 16;
 
     public static final class AccountCapabilities {
         /**
@@ -269,6 +271,14 @@ public class UIProvider {
          * to be moved to a global content provider.
          */
         public static String SETTINGS_INTENT_URI = "accountSettingsIntentUri";
+
+        /**
+         * This string column contains the content provider uri that can be used to query user
+         * settings/preferences.
+         *
+         * The cursor returned by this query support columnms declared in {@link #SettingsColumns}
+         */
+        public static final String SETTINGS_QUERY_URI = "accountSettingsQueryUri";
 
         /**
          * Uri for VIEW intent that will cause the help screens for this account type to be
@@ -818,4 +828,102 @@ public class UIProvider {
 
     // Parameter used to indicate the sequence number for an undoable operation
     public static final String SEQUENCE_QUERY_PARAMETER = "seq";
+
+
+    public static final String[] SETTINGS_PROJECTION = {
+            SettingsColumns.SIGNATURE,
+            SettingsColumns.AUTO_ADVANCE,
+            SettingsColumns.MESSAGE_TEXT_SIZE,
+            SettingsColumns.SNAP_HEADERS,
+            SettingsColumns.REPLY_BEHAVIOR,
+            SettingsColumns.HIDE_CHECKBOXES,
+            SettingsColumns.CONFIRM_DELETE,
+            SettingsColumns.CONFIRM_ARCHIVE,
+            SettingsColumns.CONFIRM_SEND,
+    };
+
+    public static final class AutoAdvance {
+        public static final int UNSET = 0;
+        public static final int OLDER = 1;
+        public static final int NEWER = 2;
+        public static final int LIST = 3;
+    }
+
+    public static final class SnapHeaderValue {
+        public static final int ALWAYS = 0;
+        public static final int PORTRAIT_ONLY = 1;
+        public static final int NEVER = 2;
+    }
+
+    public static final class MessageTextSize {
+        public static final int TINY = -2;
+        public static final int SMALL = -1;
+        public static final int NORMAL = 0;
+        public static final int LARGE = 1;
+        public static final int HUGE = 2;
+    }
+
+    public static final class DefaultReplyBehavior {
+        public static final int REPLY = 0;
+        public static final int REPLY_ALL = 1;
+    }
+
+    public static final class SettingsColumns {
+        /**
+         * String column containing the contents of the signature for this account.  If no
+         * signature has been specified, the value will be null.
+         */
+        public static final String SIGNATURE = "signature";
+
+        /**
+         * Integer column containing the user's specified auto-advance policy.  This value will be
+         * one of the values in {@link UIProvider.AutoAdvance}
+         */
+        public static final String AUTO_ADVANCE = "auto_advance";
+
+        /**
+         * Integer column containing the user's specified message text size preference.  This value
+         * will be one of the values in {@link UIProvider.MessageTextSize}
+         */
+        public static final String MESSAGE_TEXT_SIZE = "message_text_size";
+
+        /**
+         * Integer column contaning the user's specified snap header preference.  This value
+         * will be one of the values in {@link UIProvider.SnapHeaderValue}
+         */
+        public static final String SNAP_HEADERS = "snap_headers";
+
+        /**
+         * Integer column containing the user's specified default reply behavior.  This value will
+         * be one of the values in {@link UIProvider.DefaultReplyBehavior}
+         */
+        public static final String REPLY_BEHAVIOR = "reply_behavior";
+
+        /**
+         * Integer column containing the user's specified checkbox preference.  The  value
+         * of 0 indicates that checkboxes are not hidden.
+         */
+        public static final String HIDE_CHECKBOXES = "hide_checkboxes";
+
+        /**
+         * Integer column containing the user's specified confirm delete preference value.
+         * A value of 1 indicates that the user has indicated that a confirmation should
+         * be shown when a delete action is performed.
+         */
+        public static final String CONFIRM_DELETE = "confirm_delete";
+
+        /**
+         * Integer column containing the user's specified confirm archive preference value.
+         * A value of 1 indicates that the user has indicated that a confirmation should
+         * be shown when an archive action is performed.
+         */
+        public static final String CONFIRM_ARCHIVE = "confirm_archive";
+
+        /**
+         * Integer column containing the user's specified confirm send preference value.
+         * A value of 1 indicates that the user has indicated that a confirmation should
+         * be shown when a send action is performed.
+         */
+        public static final String CONFIRM_SEND = "confirm_send";
+    }
 }
