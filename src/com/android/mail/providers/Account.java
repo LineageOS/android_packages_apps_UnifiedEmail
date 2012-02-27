@@ -150,8 +150,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         out.append(undoUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(settingIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(helpIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(syncStatus);
-        out.append(composeIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(syncStatus).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(composeIntentUri);
         return out.toString();
     }
 
