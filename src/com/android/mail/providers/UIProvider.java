@@ -93,7 +93,8 @@ public class UIProvider {
             AccountColumns.UNDO_URI,
             AccountColumns.SETTINGS_INTENT_URI,
             AccountColumns.SYNC_STATUS,
-            AccountColumns.HELP_INTENT_URI
+            AccountColumns.HELP_INTENT_URI,
+            AccountColumns.COMPOSE_URI
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -111,6 +112,7 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_INTENT_URI_COLUMN = 12;
     public static final int ACCOUNT_SYNC_STATUS_COLUMN = 13;
     public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 14;
+    public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 14;
 
     public static final class AccountCapabilities {
         /**
@@ -281,6 +283,11 @@ public class UIProvider {
          * sync status of folders in this account)
          */
         public static final String SYNC_STATUS = "syncStatus";
+        /**
+         * Uri for VIEW intent that will cause the compose screens for this type
+         * of account to be shown.
+         */
+        public static final String COMPOSE_URI = "composeUri";
     }
 
     // We define a "folder" as anything that contains a list of conversations.

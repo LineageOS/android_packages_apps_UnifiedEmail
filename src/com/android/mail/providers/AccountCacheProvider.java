@@ -120,6 +120,8 @@ public abstract class AccountCacheProvider extends ContentProvider {
                     builder.add(account.mHelpIntentUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SYNC_STATUS)) {
                     builder.add(Integer.valueOf((int)account.mSyncStatus));
+                } else if (TextUtils.equals(column, UIProvider.AccountColumns.COMPOSE_URI)) {
+                    builder.add(account.mComposeIntentUri);
                 } else {
                     throw new IllegalStateException("Column not found: " + column);
                 }
@@ -202,11 +204,13 @@ public abstract class AccountCacheProvider extends ContentProvider {
         private final String mSettingsIntentUri;
         private final String mHelpIntentUri;
         private final int mSyncStatus;
+        private final String mComposeIntentUri;
 
         public CachedAccount(long id, String name, String uri, long capabilities,
                 String folderListUri, String searchUri, String fromAddressesUri,
-                String saveDraftUri, String sendMailUri, String expungeMessageUri,
-                String undoUri, String settingsIntentUri, String helpIntentUri, int syncStatus) {
+                String saveDraftUri, String sendMailUri, String expungeMessageUri, String undoUri,
+                String settingsIntentUri, String helpIntentUri, int syncStatus,
+                String composeIntentUri) {
             mId = id;
             mName = name;
             mUri = uri;
@@ -221,6 +225,7 @@ public abstract class AccountCacheProvider extends ContentProvider {
             mSettingsIntentUri = settingsIntentUri;
             mHelpIntentUri = helpIntentUri;
             mSyncStatus = syncStatus;
+            mComposeIntentUri = composeIntentUri;
         }
 
         public CachedAccount(Account acct) {
@@ -238,6 +243,7 @@ public abstract class AccountCacheProvider extends ContentProvider {
             mSettingsIntentUri = acct.settingIntentUri;
             mHelpIntentUri = acct.helpIntentUri;
             mSyncStatus = acct.syncStatus;
+            mComposeIntentUri = acct.composeIntentUri;
         }
 
         @Override
@@ -262,14 +268,15 @@ public abstract class AccountCacheProvider extends ContentProvider {
                     TextUtils.equals(mUndoUri, other.mUndoUri) &&
                     TextUtils.equals(mSettingsIntentUri, other.mSettingsIntentUri) &&
                     TextUtils.equals(mHelpIntentUri, other.mHelpIntentUri) &&
-                    (mSyncStatus == other.mSyncStatus);
+                    (mSyncStatus == other.mSyncStatus) &&
+                    TextUtils.equals(mComposeIntentUri, other.mComposeIntentUri);
         }
 
         @Override
         public int hashCode() {
             return Objects.hashCode(mId, mName, mUri, mCapabilities, mFolderListUri, mSearchUri,
                     mAccountFromAddressesUri, mSaveDraftUri, mSendMailUri, mExpungeMessageUri,
-                    mUndoUri, mSettingsIntentUri, mHelpIntentUri, mSyncStatus);
+                    mUndoUri, mSettingsIntentUri, mHelpIntentUri, mSyncStatus, mComposeIntentUri);
         }
     }
 }

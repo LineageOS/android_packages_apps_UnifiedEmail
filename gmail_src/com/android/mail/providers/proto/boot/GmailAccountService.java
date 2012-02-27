@@ -74,6 +74,11 @@ public class GmailAccountService extends IntentService {
         return DEFAULT_HELP_URL;
     }
 
+    private static String getComposeUri() {
+        // TODO(pwestbro): please add correct uri.
+        return "";
+    }
+
     private static Uri getAccountSaveDraftUri(String account) {
         return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/saveNewMessage");
     }
@@ -158,7 +163,8 @@ public class GmailAccountService extends IntentService {
                             getAccountUndoUri(account.name).toString(),
                             getAccountSettingUri(account.name).toString(),
                             getHelpUri(),
-                            0);
+                            0,
+                            getComposeUri());
 
             AccountCacheProvider.addAccount(cachedAccount);
         }

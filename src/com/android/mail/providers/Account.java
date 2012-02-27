@@ -105,12 +105,18 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final int syncStatus;
 
     /**
+     * Uri for VIEW intent that will cause the compose screen for this account type to be
+     * shown.
+     */
+    public final String composeIntentUri;
+
+    /**
      * Total number of members that comprise an instance of an account. This is
      * the number of members that need to be serialized or parceled. This
      * includes the members described above and name and type from the
      * superclass.
      */
-    private static final int NUMBER_MEMBERS = 15;
+    private static final int NUMBER_MEMBERS = 16;
 
     /**
      * Examples of expected format for the joined account strings
@@ -145,6 +151,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         out.append(settingIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(helpIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(syncStatus);
+        out.append(composeIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         return out.toString();
     }
 
@@ -174,6 +181,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         settingIntentUri = accountMembers[12];
         helpIntentUri = accountMembers[13];
         syncStatus = Integer.valueOf(accountMembers[14]);
+        composeIntentUri = accountMembers[15];
     }
 
     public Account(Parcel in) {
@@ -191,6 +199,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         settingIntentUri = in.readString();
         helpIntentUri = in.readString();
         syncStatus = in.readInt();
+        composeIntentUri = in.readString();
     }
 
     public Account(Cursor cursor) {
@@ -208,6 +217,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         settingIntentUri = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
         helpIntentUri = cursor.getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN);
         syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
+        composeIntentUri = cursor.getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN);
     }
 
     /**
@@ -254,6 +264,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeString(settingIntentUri);
         dest.writeString(helpIntentUri);
         dest.writeInt(syncStatus);
+        dest.writeString(composeIntentUri);
     }
 
     /**
