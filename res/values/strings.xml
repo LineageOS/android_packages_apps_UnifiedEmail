@@ -24,7 +24,7 @@
     <string name="dummy_gmail_provider" translatable="false">Dummy Gmail Provider</string>
     <string name="test_application" translatable="false">Test Application</string>
 
-    <string name="app_name">Unified Email</string>
+    <string name="app_name" translatable="false">Unified Email</string>
 
     <!-- Compose -->
     <!-- Shown in Compose; the recipient(s) of the message [CHAR LIMIT=10] -->
@@ -115,7 +115,7 @@
     <string name="refresh">Refresh</string>
     <!-- Menu item: reply to this message -->
     <string name="reply">Reply</string>
-    <!-- Menu item: reply to all recipients in this message [CHAR LIMIT=12] -->
+    <!-- Menu item: reply to all recipients in this message [CHAR LIMIT=18] -->
     <string name="reply_all">Reply all</string>
     <!-- Menu item: resume a draft message [CHAR LIMIT=12] -->
     <string name="resume_draft">Edit</string>
@@ -256,7 +256,7 @@
     </plurals>
     <!-- Message displayed in a browse list item for one second when message is being sent [CHAR LIMIT=20]-->
     <string name="sending">Sending\u2026</string>
-    <!-- Message displayed in a browse list item for one second after a send failed [CHAR LIMIT=20]-->
+    <!-- Message displayed in a browse list item for one second after a send failed [CHAR LIMIT=26]-->
     <string name="send_failed">Message wasn\'t sent.</string>
     <!-- Strings used to show myself in a To/Cc list. [CHAR LIMIT=15] -->
     <string name="me">me</string>
@@ -408,7 +408,7 @@
     <string name="show_messages_read">Previously read messages</string>
     <!-- Shown to display the date of the message [CHAR LIMIT=10] -->
     <string name="date_heading">Date:</string>
-    <!-- Shown to display the reply to address of the message [CHAR LIMIT=10] -->
+    <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
     <string name="replyto_heading">Reply-to:</string>
     <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
     <string name="to_heading">To:</string>
@@ -463,7 +463,7 @@
           mode will bring user to the account selection screen [CHAR LIMIT=35] -->
     <string name="tap_to_configure">Touch to set up</string>
 
-    <!-- Displayed within a widget that was setup for a non-synced label [CHAR LIMIT=35] -->
+    <!-- Displayed within a widget that was setup for a non-synced label [CHAR LIMIT=60] -->
     <string name="non_synced_folder_description">To view conversations, sync this folder.</string>
 
     <!-- Displayed within a widget that was setup for a non-synced folder.  This is the text of the
