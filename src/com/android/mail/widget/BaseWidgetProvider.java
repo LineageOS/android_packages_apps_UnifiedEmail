@@ -315,8 +315,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         remoteViews.setRemoteAdapter(R.id.conversation_list, intent);
         // Open mail app when click on header
-        final Intent mailIntent = Utils.createViewConversationIntent(context, account, folder,
-                UIProvider.INVALID_CONVERSATION_ID);
+        final Intent mailIntent = Utils.createViewFolderIntent(folder);
         clickIntent = PendingIntent.getActivity(context, 0, mailIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_header, clickIntent);
@@ -324,8 +323,9 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         // On click intent for Compose
         final Intent composeIntent = new Intent();
         composeIntent.setAction(Intent.ACTION_SEND);
+        composeIntent.setData(account.composeIntentUri);
         if (account.composeIntentUri != null) {
-            composeIntent.setData(account.composeIntentUri);
+            composeIntent.putExtra(Utils.EXTRA_COMPOSE_URI, account.composeIntentUri);
         }
         clickIntent = PendingIntent.getActivity(context, 0, composeIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);

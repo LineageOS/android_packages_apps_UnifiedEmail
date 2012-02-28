@@ -227,7 +227,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sendMessageUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN));
         final String expunge = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
         expungeMessageUri = !TextUtils.isEmpty(expunge) ? Uri.parse(expunge) : null;
-        undoUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN));
+        final String undo = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
+        undoUri = !TextUtils.isEmpty(undo) ? Uri.parse(undo) : null;
         final String settings = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
         settingIntentUri = !TextUtils.isEmpty(settings) ? Uri.parse(settings) : null;
         final String settingsQuery = cursor.getString(UIProvider.ACCOUNT_SETTINGS_QUERY_URI_COLUMN);
