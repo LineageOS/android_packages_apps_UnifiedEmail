@@ -25,7 +25,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
-import com.android.mail.providers.AccountCacheProvider.CachedAccount;
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 

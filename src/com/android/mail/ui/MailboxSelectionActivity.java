@@ -171,9 +171,16 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                Cursor cursor = resolver.query(AccountCacheProvider.getAccountsUri(),
-                        UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-                completeSetupWithAccounts(cursor);
+                Cursor cursor = null;
+                try {
+                    cursor = resolver.query(AccountCacheProvider.getAccountsUri(),
+                            UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+                    completeSetupWithAccounts(cursor);
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }
                 return null;
             }
 
