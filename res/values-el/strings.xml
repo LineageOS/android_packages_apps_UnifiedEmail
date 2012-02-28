@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"Ενοποιημένη ηλεκτρονική αλληλογραφία"</string>
     <string name="to" msgid="4392614766835725698">"Προς"</string>
     <string name="cc" msgid="7017720927911078193">"Κοιν."</string>
     <string name="bcc" msgid="3098643138241111579">"Κρυφ. κοιν."</string>
@@ -189,16 +188,11 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; επισημάνθηκε ως μη αναγνωσμένη."</item>
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; επισημάνθηκαν ως μη αναγνωσμένες."</item>
   </plurals>
-    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
-    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
+  <plurals name="conversation_folder_changed">
+    <item quantity="one" msgid="4930161390461457462">"Αλλαγή φακέλου."</item>
+    <item quantity="other" msgid="8918589141287976985">"Αλλαγή φακέλων."</item>
+  </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Αποτελέσματα"</string>
-    <string name="searchMode" msgid="3329807422114758583">"Λειτουργία αναζήτησης"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Λειτουργία αναζήτησης συνομιλίας"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Ορισμός κουμπιού \"Πίσω\""</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Κατάργηση κουμπιού \"Πίσω\""</string>
-    <string name="normalMode" msgid="4250277414924926730">"Ορισμός κανονικής λειτουργίας"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Λειτουργία αποτελεσμάτων αναζήτησης"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Ορισμός λειτουργίας ετικέτας"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Αναζήτηση…"</string>
     <string name="recent_labels" msgid="5539494776429934547">"Πρόσφατες"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Ανάπτυξη στοιχείων παραλήπτη"</string>
@@ -229,12 +223,14 @@
     <string name="cancel" msgid="8762981157252199115">"Ακύρωση"</string>
     <string name="close" msgid="419945428844076406">"Κλείσιμο"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Δεν έχουν οριστεί φάκελοι σε αυτόν τον λογαριασμό."</string>
-    <!-- no translation found for sync_status:0 (2446076619901049026) -->
-    <!-- no translation found for sync_status:1 (5037283655022689372) -->
-    <!-- no translation found for sync_status:2 (4252875340758600974) -->
-    <!-- no translation found for sync_status:3 (7611299631880179587) -->
-    <!-- no translation found for sync_status:4 (665244114363057627) -->
-    <!-- no translation found for sync_status:5 (9190542479647789762) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Επιτυχία"</item>
+    <item msgid="5037283655022689372">"Σφάλμα σύνδεσης"</item>
+    <item msgid="4252875340758600974">"Σφάλμα ελέγχου ταυτότητας"</item>
+    <item msgid="7611299631880179587">"Σφάλμα ασφαλείας"</item>
+    <item msgid="665244114363057627">"Σφάλμα χώρου αποθήκευσης"</item>
+    <item msgid="9190542479647789762">"Εσωτερικό σφάλμα"</item>
+  </string-array>
     <!-- no translation found for tap_to_configure (1181356242354390930) -->
     <skip />
     <!-- no translation found for non_synced_folder_description (6059194125558004080) -->

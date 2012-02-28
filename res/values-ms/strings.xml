@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"E-mel Disatukan"</string>
     <string name="to" msgid="4392614766835725698">"Kepada"</string>
     <string name="cc" msgid="7017720927911078193">"Sk"</string>
     <string name="bcc" msgid="3098643138241111579">"Skt"</string>
@@ -194,13 +193,6 @@
     <item quantity="other" msgid="8918589141287976985">"Folder diubah."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Hasil"</string>
-    <string name="searchMode" msgid="3329807422114758583">"Cari dalam Mod"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Cari dalam Mod Perbualan"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Tetapkan Butang Kembali"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Alih keluar Butang Kembali"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Tetapkan Mod Biasa"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Cari dalam Mod Hasil"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Tetapkan Mod Label"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Mencari..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Terbaru"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Kembangkan butiran penerima"</string>

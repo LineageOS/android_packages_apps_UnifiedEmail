@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"Unified Email"</string>
     <string name="to" msgid="4392614766835725698">"Till"</string>
     <string name="cc" msgid="7017720927911078193">"Kopia"</string>
     <string name="bcc" msgid="3098643138241111579">"Hemlig kopia"</string>
@@ -194,13 +193,6 @@
     <item quantity="other" msgid="8918589141287976985">"Mapparna har ändrats."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Resultat"</string>
-    <string name="searchMode" msgid="3329807422114758583">"Sökläge"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Sök i konversationsläge"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Använd bakåtknappen"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Ta bort bakåtknappen"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Ange normalläge"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Sökresultatläge"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Ange etikettläge"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Söker …"</string>
     <string name="recent_labels" msgid="5539494776429934547">"Senaste"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Expandera mottagardetaljer"</string>

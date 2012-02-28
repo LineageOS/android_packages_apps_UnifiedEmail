@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"Correu electrònic unificat"</string>
     <string name="to" msgid="4392614766835725698">"Per a:"</string>
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
     <string name="bcc" msgid="3098643138241111579">"Cco"</string>
@@ -193,13 +192,6 @@
     <item quantity="other" msgid="8918589141287976985">"S\'han canviat les carpetes."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Resultats"</string>
-    <string name="searchMode" msgid="3329807422114758583">"Mode de cerca"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Cerca el mode de conversa"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Defineix el botó Enrere"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Elimina el botó Enrere"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Defineix el mode normal"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Mode de resultats de cerca"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Defineix el mode d\'etiquetes"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"S\'està cercant..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Recents"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Amplia els detalls del destinatari"</string>

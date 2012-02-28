@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"Ühendatud e-post"</string>
     <string name="to" msgid="4392614766835725698">"Saaja"</string>
     <string name="cc" msgid="7017720927911078193">"Koopia"</string>
     <string name="bcc" msgid="3098643138241111579">"Pimekoopia"</string>
@@ -66,8 +65,7 @@
     <string name="forward" msgid="6822914459902983767">"Edasta"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Koosta"</string>
     <string name="menu_change_labels" msgid="9121087142079721959">"Muuda silte"</string>
-    <!-- no translation found for menu_change_folders (1542713666608888717) -->
-    <skip />
+    <string name="menu_change_folders" msgid="1542713666608888717">"Muudetud kaustad"</string>
     <string name="menu_manage_labels" msgid="8618788259638720538">"Halda silte"</string>
     <string name="label_list_title" msgid="7948730824763052410">"Sildid"</string>
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Sünkroonimine ja teavitamine"</string>
@@ -194,13 +192,6 @@
     <item quantity="other" msgid="8918589141287976985">"Muudetud kaustad."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Tulemused"</string>
-    <string name="searchMode" msgid="3329807422114758583">"Otsimisrežiim"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Vestluse otsimisrežiim"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Määra nupp Tagasi"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Eemalda nupp Tagasi"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Määra tavarežiim"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Otsingutulemuste režiim"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Määra sildirežiim"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Otsimine ..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Hiljutised"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Saaja üksikasjade laiendamine"</string>
@@ -221,10 +212,8 @@
     <string name="message_saved" msgid="7073947895562277576">"Sõnum salvestati mustandina."</string>
     <string name="sending_message" msgid="1498583163419122128">"Sõnumi saatmine ..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Aadress <xliff:g id="WRONGEMAIL">%s</xliff:g> on kehtetu."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ Kuva osundatud tekst"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Peida osundatud tekst"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Valmis"</string>
@@ -239,33 +228,22 @@
     <item msgid="665244114363057627">"Viga salvestamisel"</item>
     <item msgid="9190542479647789762">"Sisemine viga"</item>
   </string-array>
-    <!-- no translation found for tap_to_configure (1181356242354390930) -->
-    <skip />
-    <!-- no translation found for non_synced_folder_description (6059194125558004080) -->
-    <skip />
-    <!-- no translation found for tap_to_configure_folder_sync (3846898229180591661) -->
-    <skip />
+    <string name="tap_to_configure" msgid="1181356242354390930">"Puudutage seadistamiseks"</string>
+    <string name="non_synced_folder_description" msgid="6059194125558004080">"Meilivestl. vaatamis. sünkr. kaust."</string>
+    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Kausta sünkroonimine"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <!-- no translation found for view_more_conversations (3151067626309674344) -->
-    <skip />
-    <!-- no translation found for loading_conversation (489160038366067983) -->
-    <skip />
-    <!-- no translation found for activity_mailbox_selection (6876105223659297603) -->
-    <skip />
-    <!-- no translation found for activity_folder_selection (5161845867397316052) -->
-    <skip />
-    <!-- no translation found for sync_all (1057043212338233359) -->
-    <skip />
-    <!-- no translation found for sync_recent:one (137489911893192702) -->
-    <!-- no translation found for sync_recent:other (6856940335775567991) -->
-    <!-- no translation found for sync_none (3581727068747471804) -->
-    <skip />
-    <!-- no translation found for folder_sync_for_widget_title (6889243150191948255) -->
-    <skip />
-    <!-- no translation found for folder_sync_for_widget_description (3287913520283417367) -->
-    <skip />
-    <!-- no translation found for folder_sync_for_widget_checkbox (5810741160405575956) -->
-    <skip />
-    <!-- no translation found for folder_selection_dialog_title (9194093596644845383) -->
-    <skip />
+    <string name="view_more_conversations" msgid="3151067626309674344">"Kuva rohkem meilivestlusi"</string>
+    <string name="loading_conversation" msgid="489160038366067983">"Laadimine …"</string>
+    <string name="activity_mailbox_selection" msgid="6876105223659297603">"Konto valimine"</string>
+    <string name="activity_folder_selection" msgid="5161845867397316052">"Kausta valimine"</string>
+    <string name="sync_all" msgid="1057043212338233359">"Sünkrooni: kõik"</string>
+  <plurals name="sync_recent">
+    <item quantity="one" msgid="137489911893192702">"Sünkrooni: viimane <xliff:g id="COUNT">%1$d</xliff:g> päev"</item>
+    <item quantity="other" msgid="6856940335775567991">"Sünkrooni: viimased <xliff:g id="COUNT">%1$d</xliff:g> päeva"</item>
+  </plurals>
+    <string name="sync_none" msgid="3581727068747471804">"Ära sünkrooni midagi"</string>
+    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Kausta sünkroonimine"</string>
+    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Vidinas meilivestluste vaatamiseks sünkroonige see kaust."</string>
+    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sünkrooni viimased <xliff:g id="NUMSYNCDAYS">%d</xliff:g> päeva"</string>
+    <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Muudetud kaustad"</string>
 </resources>
