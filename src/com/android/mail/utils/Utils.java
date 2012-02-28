@@ -565,12 +565,17 @@ public class Utils {
     /**
      * Create an intent to show a conversation.
      * @param conversation Conversation to open.
+     * @param folder
+     * @param account
      * @return
      */
-    public static Intent createViewConversationIntent(Conversation conversation) {
+    public static Intent createViewConversationIntent(Conversation conversation, Folder folder,
+            Account account) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.setDataAndType(conversation.uri, "application/mail-ls");
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account);
+        intent.putExtra(Utils.EXTRA_FOLDER, folder);
         intent.putExtra(Utils.EXTRA_CONVERSATION, conversation);
         return intent;
     }
@@ -578,12 +583,14 @@ public class Utils {
     /**
      * Create an intent to open a folder.
      * @param folder Folder to open.
+     * @param account
      * @return
      */
-    public static Intent createViewFolderIntent(Folder folder) {
+    public static Intent createViewFolderIntent(Folder folder, Account account) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.setDataAndType(folder.uri, "application/mail-ls");
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account);
         intent.putExtra(Utils.EXTRA_FOLDER, folder);
         return intent;
     }

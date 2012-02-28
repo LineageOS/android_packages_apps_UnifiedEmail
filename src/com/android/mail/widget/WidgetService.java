@@ -195,7 +195,7 @@ public class WidgetService extends RemoteViewsService {
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation,
-                        Utils.createViewConversationIntent(conversation));
+                        Utils.createViewConversationIntent(conversation, mFolder, mAccount));
 
                 return remoteViews;
             }
@@ -208,7 +208,8 @@ public class WidgetService extends RemoteViewsService {
             RemoteViews view = new RemoteViews(mContext.getPackageName(), R.layout.widget_loading);
             view.setTextViewText(
                     R.id.loading_text, mContext.getText(R.string.view_more_conversations));
-            view.setOnClickFillInIntent(R.id.widget_loading, Utils.createViewFolderIntent(mFolder));
+            view.setOnClickFillInIntent(R.id.widget_loading,
+                    Utils.createViewFolderIntent(mFolder, mAccount));
             return view;
         }
 

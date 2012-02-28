@@ -176,6 +176,17 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
     @Override
     public void setAccounts(Account[] accounts) {
         mSpinner.setAccounts(accounts);
+        int position = -1;
+        Account currentAccount = mCallback.getCurrentAccount();
+        for (position = 0; position < accounts.length; position++) {
+            if (accounts[position].equals(currentAccount)) {
+                break;
+            }
+        }
+        if (position >= accounts.length) {
+            position = 0;
+        }
+        mActionBar.setSelectedNavigationItem(position);
     }
 
     @Override

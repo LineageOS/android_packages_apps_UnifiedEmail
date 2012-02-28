@@ -238,7 +238,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
         for (int i = 0; i < headerBottoms.length; i++) {
             View overlayView = getOverlayAt(i);
-            if (overlayView == null) {
+            if (overlayView == null && mOverlayAdapter != null) {
                 // TODO: dig through recycler instead of creating new views each time
                 overlayView = mOverlayAdapter.getView(i, null, this);
                 addView(overlayView, i + 1);

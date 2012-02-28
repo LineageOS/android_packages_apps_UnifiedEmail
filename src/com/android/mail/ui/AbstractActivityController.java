@@ -56,17 +56,20 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 /**
- * This is an abstract implementation of the Activity Controller. This class knows how to
- * respond to menu items, state changes, layout changes, etc.  It weaves together the views and
- * listeners, dispatching actions to the respective underlying classes.
- *
- * <p>Even though this class is abstract, it should provide default implementations for most, if
- * not all the methods in the ActivityController interface. This makes the task of the subclasses
- * easier: OnePaneActivityController and TwoPaneActivityController can be concise when the common
- * functionality is in AbstractActivityController.
- *</p>
+ * This is an abstract implementation of the Activity Controller. This class
+ * knows how to respond to menu items, state changes, layout changes, etc. It
+ * weaves together the views and listeners, dispatching actions to the
+ * respective underlying classes.
  * <p>
- * In the Gmail codebase, this was called BaseActivityController</p>
+ * Even though this class is abstract, it should provide default implementations
+ * for most, if not all the methods in the ActivityController interface. This
+ * makes the task of the subclasses easier: OnePaneActivityController and
+ * TwoPaneActivityController can be concise when the common functionality is in
+ * AbstractActivityController.
+ * </p>
+ * <p>
+ * In the Gmail codebase, this was called BaseActivityController
+ * </p>
  */
 public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_CONVERSATION = "saved-conversation";
@@ -90,9 +93,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     protected ConversationListFragment mConversationListFragment;
     /**
-     * The current mode of the application. All changes in mode are initiated by the activity
-     * controller. View mode changes are propagated to classes that attach themselves as listeners
-     * of view mode changes.
+     * The current mode of the application. All changes in mode are initiated by
+     * the activity controller. View mode changes are propagated to classes that
+     * attach themselves as listeners of view mode changes.
      */
     protected final ViewMode mViewMode;
     protected ContentResolver mResolver;
@@ -205,8 +208,8 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Initialize the action bar. This is not visible to OnePaneController and TwoPaneController so
-     * they cannot override this behavior.
+     * Initialize the action bar. This is not visible to OnePaneController and
+     * TwoPaneController so they cannot override this behavior.
      */
     private void initCustomActionBarView() {
         ActionBar actionBar = mActivity.getActionBar();
@@ -214,7 +217,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 R.layout.actionbar_view, null);
 
         if (actionBar != null && mActionBarView != null) {
-            // Why have a different variable for the same thing? We should apply the same actions
+            // Why have a different variable for the same thing? We should apply
+            // the same actions
             // on mActionBarView instead.
             mActionBarView.initialize(mActivity, this, mViewMode, actionBar);
             actionBar.setCustomView((LinearLayout) mActionBarView, new ActionBar.LayoutParams(
@@ -225,8 +229,10 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Returns whether the conversation list fragment is visible or not. Different layouts will have
-     * their own notion on the visibility of fragments, so this method needs to be overriden.
+     * Returns whether the conversation list fragment is visible or not.
+     * Different layouts will have their own notion on the visibility of
+     * fragments, so this method needs to be overriden.
+     *
      * @return
      */
     protected abstract boolean isConversationListVisible();
@@ -235,7 +241,8 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onAccountChanged(Account account) {
         if (!account.equals(mAccount)) {
             mAccount = account;
-
+            // Account changed; existing folder is invalid.
+            mFolder = null;
             fetchAccountFolderInfo();
 
             updateHelpMenuItem();
@@ -254,14 +261,8 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onFolderChanged(Folder folder) {
         if (!folder.equals(mFolder)) {
             setFolder(folder);
-            final Intent intent = mActivity.getIntent();
-            intent.putExtra(ConversationListContext.EXTRA_FOLDER, mFolder);
-            //  TODO(viki): Show the list context from Intent
-            mConvListContext = ConversationListContext.forIntent(mContext, mAccount, intent);
-            // Instead of this, switch to the conversation list mode and have that do the right
-            // things automatically.
+            mConvListContext = ConversationListContext.forFolder(mContext, mAccount, mFolder);
             showConversationList(mConvListContext);
-            mViewMode.enterConversationListMode();
         }
     }
 
@@ -308,26 +309,14 @@ public abstract class AbstractActivityController implements ActivityController {
     public boolean onCreate(Bundle savedState) {
         // Initialize the action bar view.
         initCustomActionBarView();
-        final Intent intent = mActivity.getIntent();
-        if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
-            if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
-                // Open the folder.
-                LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
-                        intent.getParcelableExtra(Utils.EXTRA_FOLDER));
-            } else if (intent.hasExtra(Utils.EXTRA_CONVERSATION)) {
-                // Open the conversation.
-                LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
-                        intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
-            }
-        }
-        // Get a Loader to the Account
-        mActivity.getLoaderManager().initLoader(ACCOUNT_CURSOR_LOADER, null, this);
         // Allow shortcut keys to function for the ActionBar and menus.
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
         mResolver = mActivity.getContentResolver();
 
-        // All the individual UI components listen for ViewMode changes. This simplifies the
-        // amount of logic in the AbstractActivityController, but increases the possibility of
+        // All the individual UI components listen for ViewMode changes. This
+        // simplifies the
+        // amount of logic in the AbstractActivityController, but increases the
+        // possibility of
         // timing-related bugs.
         mViewMode.addListener(this);
         assert (mActionBarView != null);
@@ -463,8 +452,8 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private void updateHelpMenuItem() {
         if (mHelpItem != null) {
-            mHelpItem.setVisible(mAccount != null &&
-                    mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
+            mHelpItem.setVisible(mAccount != null
+                    && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
         }
     }
 
@@ -514,16 +503,15 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * Subclasses must override this to listen to mode changes from the ViewMode. Subclasses
-     * <b>must</b> call the parent's onViewModeChanged since the parent will handle common state
-     * changes.
+     * {@inheritDoc} Subclasses must override this to listen to mode changes
+     * from the ViewMode. Subclasses <b>must</b> call the parent's
+     * onViewModeChanged since the parent will handle common state changes.
      */
     @Override
     public void onViewModeChanged(int newMode) {
         // Perform any mode specific work here.
-        // reset the action bar icon based on the mode. Why don't the individual controllers do
+        // reset the action bar icon based on the mode. Why don't the individual
+        // controllers do
         // this themselves?
 
         // In conversation list mode, clean up the conversation.
@@ -531,7 +519,8 @@ public abstract class AbstractActivityController implements ActivityController {
             // Clean up the conversation here.
         }
 
-        // We don't want to invalidate the options menu when switching to conversation
+        // We don't want to invalidate the options menu when switching to
+        // conversation
         // mode, as it will happen when the conversation finishes loading.
         if (newMode != ViewMode.CONVERSATION) {
             mActivity.invalidateOptionsMenu();
@@ -560,8 +549,10 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Restore the state from the previous bundle. Subclasses should call this method from the
-     * parent class, since it performs important UI initialization.
+     * Restore the state from the previous bundle. Subclasses should call this
+     * method from the parent class, since it performs important UI
+     * initialization.
+     *
      * @param savedState
      */
     protected void restoreState(Bundle savedState) {
@@ -571,7 +562,33 @@ public abstract class AbstractActivityController implements ActivityController {
 
             // Restore the view mode
             mViewMode.handleRestore(savedState);
+        } else {
+            final Intent intent = mActivity.getIntent();
+            if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
+                if (intent.hasExtra(Utils.EXTRA_CONVERSATION)) {
+                    // Open the conversation.
+                    LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
+                            intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
+                    mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                    updateHelpMenuItem();
+                    mFolder = ((Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER));
+                    mConvListContext = ConversationListContext.forIntent(mContext, mAccount,
+                            mActivity.getIntent());
+                    showConversationList(mConvListContext);
+                    showConversation((Conversation) intent
+                            .getParcelableExtra(Utils.EXTRA_CONVERSATION));
+                } else if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
+                    // Open the folder.
+                    LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
+                            intent.getParcelableExtra(Utils.EXTRA_FOLDER));
+                    mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                    updateHelpMenuItem();
+                    onFolderChanged((Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER));
+                }
+            }
         }
+        // Create the accounts loader; this loads the acount switch spinner.
+        mActivity.getLoaderManager().initLoader(ACCOUNT_CURSOR_LOADER, null, this);
     }
 
     @Override
@@ -609,9 +626,8 @@ public abstract class AbstractActivityController implements ActivityController {
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Create a loader to listen in on account changes.
         if (id == ACCOUNT_CURSOR_LOADER) {
-            return new CursorLoader(mContext,
-                    AccountCacheProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION, null,
-                    null, null);
+            return new CursorLoader(mContext, AccountCacheProvider.getAccountsUri(),
+                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
         } else if (id == FOLDER_CURSOR_LOADER) {
             return new CursorLoader(mActivity.getActivityContext(), mFolder.uri,
                     UIProvider.FOLDERS_PROJECTION, null, null, null);
@@ -621,9 +637,11 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * Return whether the given account exists in the cursor.
+     *
      * @param accountCursor
      * @param account
-     * @return true if the account exists in the account cursor, false otherwise.
+     * @return true if the account exists in the account cursor, false
+     *         otherwise.
      */
     private boolean existsInCursor(Cursor accountCursor, Account account) {
         accountCursor.moveToFirst();
@@ -635,7 +653,9 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Update the accounts on the device. This currently loads the first account in the list.
+     * Update the accounts on the device. This currently loads the first account
+     * in the list.
+     *
      * @param loader
      * @param data
      * @return true if the update was successful, false otherwise
@@ -645,8 +665,8 @@ public abstract class AbstractActivityController implements ActivityController {
         if (accounts == null || !accounts.moveToFirst()) {
             return false;
         }
-        mAccount = new Account(accounts);
-        fetchAccountFolderInfo();
+        Account newAccount = mAccount == null ? new Account(accounts) : mAccount;
+        onAccountChanged(newAccount);
         final Account[] allAccounts = Account.getAllAccounts(accounts);
         mActionBarView.setAccounts(allAccounts);
         return (allAccounts.length > 0);
@@ -685,7 +705,8 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        // Do nothing for now, since we don't have any state. When a load is finished, the
+        // Do nothing for now, since we don't have any state. When a load is
+        // finished, the
         // onLoadFinished will be called and we will be fine.
     }
 
@@ -704,7 +725,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private class FetchAccountFolderTask extends AsyncTask<Void, Void, ConversationListContext> {
         @Override
         public ConversationListContext doInBackground(Void... params) {
-          return ConversationListContext.forIntent(mContext, mAccount, mActivity.getIntent());
+            return ConversationListContext.forFolder(mContext, mAccount, mFolder);
         }
 
         @Override
@@ -712,7 +733,6 @@ public abstract class AbstractActivityController implements ActivityController {
             mConvListContext = result;
             setFolder(mConvListContext.mFolder);
             showConversationList(mConvListContext);
-            mViewMode.enterConversationListMode();
             mFetchAccountFolderTask = null;
         }
     }

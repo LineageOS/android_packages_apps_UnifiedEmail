@@ -87,7 +87,23 @@ public class ConversationListContext {
      */
     public static ConversationListContext forFolder(
             Context context, Account account, Folder folder) {
-        // Mock stuff for now.
+        if (folder == null) {
+            // TODO (mindyp): when getAccountInbox is setup, use the setting to get it.
+            // folder = account.getAccountInbox();
+            Cursor cursor = null;
+            try {
+                cursor = context.getContentResolver().query(account.folderListUri,
+                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    folder = new Folder(cursor);
+                }
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        }
         return new ConversationListContext(account, null, folder);
     }
 
