@@ -114,7 +114,7 @@ public class ConversationListContext {
         if (folder == null) {
             Cursor cursor = null;
             try {
-                cursor = context.getContentResolver().query(Uri.parse(callerAccount.folderListUri),
+                cursor = context.getContentResolver().query(callerAccount.folderListUri,
                         UIProvider.FOLDERS_PROJECTION, null, null, null);
                 if (cursor != null) {
                     cursor.moveToFirst();

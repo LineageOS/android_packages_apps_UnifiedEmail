@@ -44,7 +44,7 @@ import java.util.Map.Entry;
 public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceClickListener {
     private AlertDialog mDialog;
     private CommitListener mCommitListener;
-    private HashMap<String, Boolean> mCheckedState;
+    private HashMap<Uri, Boolean> mCheckedState;
     private boolean mSingle = false;
     private FolderSelectorAdapter mAdapter;
 
@@ -56,7 +56,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
             final CommitListener commitListener, Collection<Conversation> selectedConversations) {
         mCommitListener = commitListener;
         // Mapping of a folder's uri to its checked state
-        mCheckedState = new HashMap<String, Boolean>();
+        mCheckedState = new HashMap<Uri, Boolean>();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.folder_selection_dialog_title);
         builder.setPositiveButton(R.string.ok, this);
@@ -64,7 +64,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         mSingle = !account
                 .supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
         // TODO: (mindyp) make async
-        Cursor foldersCursor = context.getContentResolver().query(Uri.parse(account.folderListUri),
+        Cursor foldersCursor = context.getContentResolver().query(account.folderListUri,
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
         HashSet<String> conversationLabels = new HashSet<String>();
         for (Conversation conversation: selectedConversations) {
@@ -80,7 +80,8 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         do {
             folderId = foldersCursor.getString(UIProvider.FOLDER_ID_COLUMN);
             if (conversationLabels.contains(folderId)) {
-                mCheckedState.put(foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN), true);
+                mCheckedState.put(Uri.parse(foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN)),
+                        true);
             }
         } while (foldersCursor.moveToNext());
         mDialog = builder.create();
@@ -127,16 +128,16 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
     public void onClick(DialogInterface dialog, int which) {
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
-                ArrayList<String> checkedItems = new ArrayList<String>();
-                Set<Entry<String, Boolean>> states = mCheckedState.entrySet();
-                for (Entry<String, Boolean> entry : states) {
+                ArrayList<Uri> checkedItems = new ArrayList<Uri>();
+                Set<Entry<Uri, Boolean>> states = mCheckedState.entrySet();
+                for (Entry<Uri, Boolean> entry : states) {
                     if (entry.getValue()) {
                         checkedItems.add(entry.getKey());
                     }
                 }
                 StringBuilder folderUris = new StringBuilder();
                 boolean first = true;
-                for (String folderUri : checkedItems) {
+                for (Uri folderUri : checkedItems) {
                     if (first) {
                         first = false;
                     } else {

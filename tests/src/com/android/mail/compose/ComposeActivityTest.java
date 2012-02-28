@@ -51,8 +51,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
     }
 
     private Message getRefMessage() {
-        Cursor foldersCursor = mActivity.getContentResolver().query(
-                Uri.parse(mAccount.folderListUri), UIProvider.FOLDERS_PROJECTION, null, null, null);
+        Cursor foldersCursor = mActivity.getContentResolver().query(mAccount.folderListUri,
+                UIProvider.FOLDERS_PROJECTION, null, null, null);
         Uri convUri = null;
         if (foldersCursor != null) {
             foldersCursor.moveToFirst();

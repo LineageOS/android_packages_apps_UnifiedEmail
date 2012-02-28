@@ -18,6 +18,7 @@
 package com.android.mail.providers;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -48,7 +49,7 @@ public class Folder implements Parcelable {
     /**
      * The content provider URI that returns this folder for this account.
      */
-    public String uri;
+    public Uri uri;
 
     /**
      * The human visible name for this folder.
@@ -75,12 +76,12 @@ public class Folder implements Parcelable {
      * The content provider URI to return the list of conversations in this
      * folder.
      */
-    public String conversationListUri;
+    public Uri conversationListUri;
 
     /**
      * The content provider URI to return the list of child folders of this folder.
      */
-    public String childFoldersListUri;
+    public Uri childFoldersListUri;
 
     /**
      * The number of messages that are unread in this folder.
@@ -95,7 +96,7 @@ public class Folder implements Parcelable {
     /**
      * The content provider URI to force a refresh of this folder.
      */
-    public String refreshUri;
+    public Uri refreshUri;
 
     /**
      * The current sync status of the folder
@@ -137,34 +138,37 @@ public class Folder implements Parcelable {
 
     public Folder(Parcel in) {
         id = in.readString();
-        uri = in.readString();
+        uri = in.readParcelable(null);
         name = in.readString();
         capabilities = in.readInt();
         // 1 for true, 0 for false.
         hasChildren = in.readInt() == 1;
         syncWindow = in.readInt();
-        conversationListUri = in.readString();
-        childFoldersListUri = in.readString();
+        conversationListUri = in.readParcelable(null);
+        childFoldersListUri = in.readParcelable(null);
         unreadCount = in.readInt();
         totalCount = in.readInt();
-        refreshUri = in.readString();
+        refreshUri = in.readParcelable(null);
         syncStatus = in.readInt();
         lastSyncResult = in.readInt();
      }
 
     public Folder(Cursor cursor) {
         id = cursor.getString(UIProvider.FOLDER_ID_COLUMN);
-        uri = cursor.getString(UIProvider.FOLDER_URI_COLUMN);
+        uri = Uri.parse(cursor.getString(UIProvider.FOLDER_URI_COLUMN));
         name = cursor.getString(UIProvider.FOLDER_NAME_COLUMN);
         capabilities = cursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
         // 1 for true, 0 for false.
         hasChildren = cursor.getInt(UIProvider.FOLDER_HAS_CHILDREN_COLUMN) == 1;
         syncWindow = cursor.getInt(UIProvider.FOLDER_SYNC_WINDOW_COLUMN);
-        conversationListUri = cursor.getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN);
-        childFoldersListUri = cursor.getString(UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN);
+        conversationListUri = Uri.parse(cursor
+                .getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN));
+        childFoldersListUri = hasChildren ? Uri.parse(cursor
+                .getString(UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN)) : null;
         unreadCount = cursor.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
         totalCount = cursor.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
-        refreshUri = cursor.getString(UIProvider.FOLDER_REFRESH_URI_COLUMN);
+        String refresh = cursor.getString(UIProvider.FOLDER_REFRESH_URI_COLUMN);
+        refreshUri = !TextUtils.isEmpty(refresh) ? Uri.parse(refresh) : null;
         syncStatus = cursor.getInt(UIProvider.FOLDER_SYNC_STATUS_COLUMN);
         lastSyncResult = cursor.getInt(UIProvider.FOLDER_LAST_SYNC_RESULT_COLUMN);
     }
@@ -172,17 +176,17 @@ public class Folder implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
-        dest.writeString(uri);
+        dest.writeParcelable(uri, 0);
         dest.writeString(name);
         dest.writeInt(capabilities);
         // 1 for true, 0 for false.
         dest.writeInt(hasChildren ? 1 : 0);
         dest.writeInt(syncWindow);
-        dest.writeString(conversationListUri);
-        dest.writeString(childFoldersListUri);
+        dest.writeParcelable(conversationListUri, 0);
+        dest.writeParcelable(childFoldersListUri, 0);
         dest.writeInt(unreadCount);
         dest.writeInt(totalCount);
-        dest.writeString(refreshUri);
+        dest.writeParcelable(refreshUri, 0);
         dest.writeInt(syncStatus);
         dest.writeInt(lastSyncResult);
     }
@@ -212,7 +216,7 @@ public class Folder implements Parcelable {
      * Construct a new Folder instance from a previously serialized string.
      * @param serializedFolder string obtained from {@link #serialize()} on a valid folder.
      */
-    public Folder(String serializedFolder){
+    public Folder(String serializedFolder) {
         String[] folderMembers = TextUtils.split(serializedFolder,
                 FOLDER_COMPONENT_SEPARATOR_PATTERN);
         if (folderMembers.length != NUMBER_MEMBERS) {
@@ -220,17 +224,17 @@ public class Folder implements Parcelable {
                     "Folder de-serializing failed. Wrong number of members detected.");
         }
         id = folderMembers[0];
-        uri = folderMembers[1];
+        uri = Uri.parse(folderMembers[1]);
         name = folderMembers[2];
         capabilities = Integer.valueOf(folderMembers[3]);
         // 1 for true, 0 for false
         hasChildren = folderMembers[4] == "1";
         syncWindow = Integer.valueOf(folderMembers[5]);
-        conversationListUri = folderMembers[6];
-        childFoldersListUri = folderMembers[7];
+        conversationListUri = Uri.parse(folderMembers[6]);
+        childFoldersListUri = hasChildren ? Uri.parse(folderMembers[7]) : null;
         unreadCount = Integer.valueOf(folderMembers[8]);
         totalCount = Integer.valueOf(folderMembers[9]);
-        refreshUri = folderMembers[10];
+        refreshUri = Uri.parse(folderMembers[10]);
         syncStatus = Integer.valueOf(folderMembers[11]);
         lastSyncResult = Integer.valueOf(folderMembers[12]);
     }

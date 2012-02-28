@@ -69,14 +69,14 @@ public class GmailAccountService extends IntentService {
         return BASE_SETTINGS_URI.buildUpon().appendQueryParameter("account", account).build();
     }
 
-    private static String getHelpUri() {
+    private static Uri getHelpUri() {
         // TODO(pwestbro): allow this url to be changed via Gservices
-        return DEFAULT_HELP_URL;
+        return Uri.parse(DEFAULT_HELP_URL);
     }
 
-    private static String getComposeUri() {
+    private static Uri getComposeUri() {
         // TODO(pwestbro): please add correct uri.
-        return "";
+        return Uri.parse(DEFAULT_HELP_URL);
     }
 
     private static Uri getAccountSaveDraftUri(String account) {
@@ -152,16 +152,16 @@ public class GmailAccountService extends IntentService {
             final AccountCacheProvider.CachedAccount cachedAccount =
                     new AccountCacheProvider.CachedAccount(gmailAccountId,
                             account.name,
-                            getAccountUri(account.name).toString(),
+                            getAccountUri(account.name),
                             capabilities,
-                            getAccountFoldersUri(account.name).toString(),
-                            (String)mockAccountMap.get(AccountColumns.SEARCH_URI),
-                            (String)mockAccountMap.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
-                            getAccountSaveDraftUri(account.name).toString(),
-                            getAccountSendMailUri(account.name).toString(),
-                            (String)mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
-                            getAccountUndoUri(account.name).toString(),
-                            getAccountSettingUri(account.name).toString(),
+                            getAccountFoldersUri(account.name),
+                            (Uri) mockAccountMap.get(AccountColumns.SEARCH_URI),
+                            (Uri) mockAccountMap.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
+                            getAccountSaveDraftUri(account.name),
+                            getAccountSendMailUri(account.name),
+                            (Uri) mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
+                            getAccountUndoUri(account.name),
+                            getAccountSettingUri(account.name),
                             getHelpUri(),
                             0,
                             getComposeUri());

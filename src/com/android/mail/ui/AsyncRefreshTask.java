@@ -20,7 +20,6 @@ package com.android.mail.ui;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 
 import com.android.mail.providers.Folder;
 
@@ -36,9 +35,9 @@ public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        String refreshUri = mFolder.refreshUri;
-        if (!TextUtils.isEmpty(refreshUri)) {
-            mContext.getContentResolver().query(Uri.parse(refreshUri), null, null, null, null);
+        Uri refreshUri = mFolder.refreshUri;
+        if (refreshUri != null) {
+            mContext.getContentResolver().query(refreshUri, null, null, null, null);
         }
         return null;
     }

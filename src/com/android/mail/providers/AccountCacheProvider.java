@@ -42,7 +42,7 @@ import java.util.Map;
  */
 public abstract class AccountCacheProvider extends ContentProvider {
 
-    private final static Map<String, CachedAccount> ACCOUNT_CACHE = Maps.newHashMap();
+    private final static Map<Uri, CachedAccount> ACCOUNT_CACHE = Maps.newHashMap();
 
     private ContentResolver mResolver;
     private static String sAuthority;
@@ -191,25 +191,25 @@ public abstract class AccountCacheProvider extends ContentProvider {
     public static class CachedAccount {
         private final long mId;
         private final String mName;
-        private final String mUri;
+        private final Uri mUri;
         private final long mCapabilities;
-        private final String mFolderListUri;
-        private final String mSearchUri;
-        private final String mAccountFromAddressesUri;
-        private final String mSaveDraftUri;
-        private final String mSendMailUri;
-        private final String mExpungeMessageUri;
-        private final String mUndoUri;
-        private final String mSettingsIntentUri;
-        private final String mHelpIntentUri;
+        private final Uri mFolderListUri;
+        private final Uri mSearchUri;
+        private final Uri mAccountFromAddressesUri;
+        private final Uri mSaveDraftUri;
+        private final Uri mSendMailUri;
+        private final Uri mExpungeMessageUri;
+        private final Uri mUndoUri;
+        private final Uri mSettingsIntentUri;
+        private final Uri mHelpIntentUri;
         private final int mSyncStatus;
-        private final String mComposeIntentUri;
+        private final Uri mComposeIntentUri;
 
-        public CachedAccount(long id, String name, String uri, long capabilities,
-                String folderListUri, String searchUri, String fromAddressesUri,
-                String saveDraftUri, String sendMailUri, String expungeMessageUri, String undoUri,
-                String settingsIntentUri, String helpIntentUri, int syncStatus,
-                String composeIntentUri) {
+        public CachedAccount(long id, String name, Uri uri, long capabilities,
+                Uri folderListUri, Uri searchUri, Uri fromAddressesUri,
+                Uri saveDraftUri, Uri sendMailUri, Uri expungeMessageUri, Uri undoUri,
+                Uri settingsIntentUri, Uri helpIntentUri, int syncStatus,
+                Uri composeIntentUri) {
             mId = id;
             mName = name;
             mUri = uri;
@@ -257,18 +257,18 @@ public abstract class AccountCacheProvider extends ContentProvider {
 
             CachedAccount other = (CachedAccount) o;
             return mId == other.mId && TextUtils.equals(mName, other.mName) &&
-                    TextUtils.equals(mUri, other.mUri) && mCapabilities == other.mCapabilities &&
-                    TextUtils.equals(mFolderListUri, other.mFolderListUri) &&
-                    TextUtils.equals(mSearchUri, other.mSearchUri) &&
-                    TextUtils.equals(mAccountFromAddressesUri, other.mAccountFromAddressesUri) &&
-                    TextUtils.equals(mSaveDraftUri, other.mSaveDraftUri) &&
-                    TextUtils.equals(mSendMailUri, other.mSendMailUri) &&
-                    TextUtils.equals(mExpungeMessageUri, other.mExpungeMessageUri) &&
-                    TextUtils.equals(mUndoUri, other.mUndoUri) &&
-                    TextUtils.equals(mSettingsIntentUri, other.mSettingsIntentUri) &&
-                    TextUtils.equals(mHelpIntentUri, other.mHelpIntentUri) &&
+                    mUri.equals(other.mUri) && mCapabilities == other.mCapabilities &&
+                    mFolderListUri.equals(other.mFolderListUri) &&
+                    mSearchUri.equals(other.mSearchUri) &&
+                    mAccountFromAddressesUri.equals(other.mAccountFromAddressesUri) &&
+                    mSaveDraftUri.equals(other.mSaveDraftUri) &&
+                    mSendMailUri.equals(other.mSendMailUri) &&
+                    mExpungeMessageUri.equals(other.mExpungeMessageUri) &&
+                    mUndoUri.equals(other.mUndoUri) &&
+                    mSettingsIntentUri.equals(other.mSettingsIntentUri) &&
+                    mHelpIntentUri.equals(other.mHelpIntentUri) &&
                     (mSyncStatus == other.mSyncStatus) &&
-                    TextUtils.equals(mComposeIntentUri, other.mComposeIntentUri);
+                    mComposeIntentUri.equals(other.mComposeIntentUri);
         }
 
         @Override

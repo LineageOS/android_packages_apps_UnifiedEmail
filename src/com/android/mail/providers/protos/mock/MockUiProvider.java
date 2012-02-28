@@ -68,15 +68,15 @@ public final class MockUiProvider extends ContentProvider {
         accountDetailsMap0 = createAccountDetailsMap(0, true);
 
         accountList.add(accountDetailsMap0);
-        String accountUri1 = (String)accountDetailsMap0.get(AccountColumns.URI);
-        builder.put(accountUri1, ImmutableList.of(accountDetailsMap0));
+        Uri accountUri1 = (Uri) accountDetailsMap0.get(AccountColumns.URI);
+        builder.put(accountUri1.toString(), ImmutableList.of(accountDetailsMap0));
 
         // Account 2
         Map<String, Object> accountDetailsMap1 = createAccountDetailsMap(1, true);
         accountList.add(accountDetailsMap1);
 
-        String accountUri2 = (String) accountDetailsMap1.get(AccountColumns.URI);
-        builder.put(accountUri2, ImmutableList.of(accountDetailsMap1));
+        Uri accountUri2 = (Uri) accountDetailsMap1.get(AccountColumns.URI);
+        builder.put(accountUri2.toString(), ImmutableList.of(accountDetailsMap1));
 
         // Add the account list to the builder
         builder.put(getAccountsUri().toString(), accountList);
@@ -245,7 +245,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(BaseColumns._ID, Long.valueOf(accountId));
         accountMap.put(AccountColumns.NAME, "account" + accountId + "@mockuiprovider.com");
         accountMap.put(AccountColumns.PROVIDER_VERSION, Long.valueOf(1));
-        accountMap.put(AccountColumns.URI, accountUri);
+        accountMap.put(AccountColumns.URI, Uri.parse(accountUri));
         accountMap.put(AccountColumns.CAPABILITIES,
                 Long.valueOf(
                         AccountCapabilities.SYNCABLE_FOLDERS |
@@ -261,17 +261,19 @@ public final class MockUiProvider extends ContentProvider {
                         AccountCapabilities.LOCAL_SEARCH |
                         AccountCapabilities.THREADED_CONVERSATIONS |
                         AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV));
-        accountMap.put(AccountColumns.FOLDER_LIST_URI, accountUri + "/folders");
-        accountMap.put(AccountColumns.SEARCH_URI, accountUri + "/search");
-        accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI, accountUri + "/fromAddresses");
-        accountMap.put(AccountColumns.SAVE_DRAFT_URI, accountUri + "/saveDraft");
-        accountMap.put(AccountColumns.SEND_MAIL_URI, accountUri + "/sendMail");
-        accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI, accountUri + "/expungeMessage");
-        accountMap.put(AccountColumns.UNDO_URI, accountUri + "/undo");
-        accountMap.put(AccountColumns.SETTINGS_INTENT_URI, "http://www.google.com");
-        accountMap.put(AccountColumns.HELP_INTENT_URI, "http://www.google.com");
+        accountMap.put(AccountColumns.FOLDER_LIST_URI, Uri.parse(accountUri + "/folders"));
+        accountMap.put(AccountColumns.SEARCH_URI, Uri.parse(accountUri + "/search"));
+        accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI,
+                Uri.parse(accountUri + "/fromAddresses"));
+        accountMap.put(AccountColumns.SAVE_DRAFT_URI, Uri.parse(accountUri + "/saveDraft"));
+        accountMap.put(AccountColumns.SEND_MAIL_URI, Uri.parse(accountUri + "/sendMail"));
+        accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI,
+                Uri.parse(accountUri + "/expungeMessage"));
+        accountMap.put(AccountColumns.UNDO_URI, Uri.parse(accountUri + "/undo"));
+        accountMap.put(AccountColumns.SETTINGS_INTENT_URI, Uri.parse("http://www.google.com"));
+        accountMap.put(AccountColumns.HELP_INTENT_URI, Uri.parse("http://www.google.com"));
         accountMap.put(AccountColumns.SYNC_STATUS, 0);
-        accountMap.put(AccountColumns.COMPOSE_URI, accountUri + "/compose");
+        accountMap.put(AccountColumns.COMPOSE_URI, Uri.parse(accountUri + "/compose"));
 
         if (cacheMap) {
             addAccountInfoToAccountCache(accountMap);
@@ -348,23 +350,22 @@ public final class MockUiProvider extends ContentProvider {
     }
 
     private static void addAccountInfoToAccountCache(Map<String, Object> accountInfo) {
-        final AccountCacheProvider.CachedAccount account =
-                new AccountCacheProvider.CachedAccount((Long)accountInfo.get(BaseColumns._ID),
-                        (String)accountInfo.get(AccountColumns.NAME),
-                        (String)accountInfo.get(AccountColumns.URI),
-                        (Long)accountInfo.get(AccountColumns.CAPABILITIES),
-                        (String)accountInfo.get(AccountColumns.FOLDER_LIST_URI),
-                        (String)accountInfo.get(AccountColumns.SEARCH_URI),
-                        (String)accountInfo.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
-                        (String)accountInfo.get(AccountColumns.SAVE_DRAFT_URI),
-                        (String)accountInfo.get(AccountColumns.SEND_MAIL_URI),
-                        (String)accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI),
-                        (String)accountInfo.get(AccountColumns.UNDO_URI),
-                        (String)accountInfo.get(AccountColumns.SETTINGS_INTENT_URI),
-                        (String)accountInfo.get(AccountColumns.HELP_INTENT_URI),
-                        (Integer)accountInfo.get(AccountColumns.SYNC_STATUS),
-                        (String)accountInfo.get(AccountColumns.COMPOSE_URI));
-
+        final AccountCacheProvider.CachedAccount account = new AccountCacheProvider.CachedAccount(
+                (Long) accountInfo.get(BaseColumns._ID),
+                (String) accountInfo.get(AccountColumns.NAME),
+                (Uri) accountInfo.get(AccountColumns.URI),
+                (Long) accountInfo.get(AccountColumns.CAPABILITIES),
+                (Uri) accountInfo.get(AccountColumns.FOLDER_LIST_URI),
+                (Uri) accountInfo.get(AccountColumns.SEARCH_URI),
+                (Uri) accountInfo.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
+                (Uri) accountInfo.get(AccountColumns.SAVE_DRAFT_URI),
+                (Uri) accountInfo.get(AccountColumns.SEND_MAIL_URI),
+                (Uri) accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI),
+                (Uri) accountInfo.get(AccountColumns.UNDO_URI),
+                (Uri) accountInfo.get(AccountColumns.SETTINGS_INTENT_URI),
+                (Uri) accountInfo.get(AccountColumns.HELP_INTENT_URI),
+                (Integer) accountInfo.get(AccountColumns.SYNC_STATUS),
+                (Uri) accountInfo.get(AccountColumns.COMPOSE_URI));
 
         AccountCacheProvider.addAccount(account);
     }

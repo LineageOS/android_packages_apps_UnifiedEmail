@@ -195,7 +195,7 @@ public final class ConversationViewFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(mContext, Uri.parse(mConversation.messageListUri),
+        return new CursorLoader(mContext, mConversation.messageListUri,
                 UIProvider.MESSAGE_PROJECTION, null, null, null);
     }
 

@@ -706,9 +706,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     ContentResolver resolver = mContext.getContentResolver();
                     ContentValues values = new ContentValues();
                     values.put(BaseColumns._ID, messageId);
-                    if (!TextUtils.isEmpty(selectedAccount.expungeMessageUri)) {
-                        resolver.update(Uri.parse(selectedAccount.expungeMessageUri), values, null,
+                    if (selectedAccount.expungeMessageUri != null) {
+                        resolver.update(selectedAccount.expungeMessageUri, values, null,
                                 null);
+                    } else {
+                        // TODO(mindyp) delete the conversation.
                     }
                     // reset messageId to 0, so a new message will be created
                     messageId = UIProvider.INVALID_MESSAGE_ID;
@@ -724,8 +726,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             } else {
                 ContentResolver resolver = mContext.getContentResolver();
                 Uri messageUri = resolver.insert(
-                        Uri.parse(sendOrSaveMessage.mSave ? selectedAccount.saveDraftUri
-                                : selectedAccount.sendMessageUri), sendOrSaveMessage.mValues);
+                        sendOrSaveMessage.mSave ? selectedAccount.saveDraftUri
+                                : selectedAccount.sendMessageUri, sendOrSaveMessage.mValues);
                 if (sendOrSaveMessage.mSave && messageUri != null) {
                     Cursor messageCursor = resolver.query(messageUri,
                             UIProvider.MESSAGE_PROJECTION, null, null, null);
@@ -1413,8 +1415,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (mDraftId != UIProvider.INVALID_MESSAGE_ID) {
                 ContentValues values = new ContentValues();
                 values.put(MessageColumns.SERVER_ID, mDraftId);
-                getContentResolver().update(Uri.parse(mAccount.expungeMessageUri),
-                        values, null, null);
+                if (mAccount.expungeMessageUri != null) {
+                    getContentResolver().update(mAccount.expungeMessageUri, values, null, null);
+                } else {
+                    // TODO(mindyp): call delete on this conversation instead.
+                }
                 // This is not strictly necessary (since we should not try to
                 // save the draft after calling this) but it ensures that if we
                 // do save again for some reason we make a new draft rather than

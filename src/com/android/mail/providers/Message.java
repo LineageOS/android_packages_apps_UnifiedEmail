@@ -17,14 +17,16 @@
 package com.android.mail.providers;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 
 public class Message implements Parcelable {
     public long id;
     public long serverId;
-    public String uri;
+    public Uri uri;
     public long conversationId;
     public String subject;
     public String snippet;
@@ -41,7 +43,7 @@ public class Message implements Parcelable {
     public int draftType;
     public boolean appendRefMessageContent;
     public boolean hasAttachments;
-    public String attachmentListUri;
+    public Uri attachmentListUri;
     public long messageFlags;
     public String joinedAttachmentInfos;
     public String saveUri;
@@ -56,7 +58,7 @@ public class Message implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeLong(serverId);
-        dest.writeString(uri);
+        dest.writeParcelable(uri, 0);
         dest.writeLong(conversationId);
         dest.writeString(subject);
         dest.writeString(snippet);
@@ -73,7 +75,7 @@ public class Message implements Parcelable {
         dest.writeInt(draftType);
         dest.writeInt(appendRefMessageContent ? 1 : 0);
         dest.writeInt(hasAttachments ? 1 : 0);
-        dest.writeString(attachmentListUri);
+        dest.writeParcelable(attachmentListUri, 0);
         dest.writeLong(messageFlags);
         dest.writeString(joinedAttachmentInfos);
         dest.writeString(saveUri);
@@ -86,7 +88,7 @@ public class Message implements Parcelable {
     private Message(Parcel in) {
         id = in.readLong();
         serverId = in.readLong();
-        uri = in.readString();
+        uri = in.readParcelable(null);
         conversationId = in.readLong();
         subject = in.readString();
         snippet = in.readString();
@@ -103,7 +105,7 @@ public class Message implements Parcelable {
         draftType = in.readInt();
         appendRefMessageContent = in.readInt() != 0;
         hasAttachments = in.readInt() != 0;
-        attachmentListUri = in.readString();
+        attachmentListUri = in.readParcelable(null);
         messageFlags = in.readLong();
         joinedAttachmentInfos = in.readString();
         saveUri = in.readString();
@@ -133,7 +135,8 @@ public class Message implements Parcelable {
         if (cursor != null) {
             id = cursor.getLong(UIProvider.MESSAGE_ID_COLUMN);
             serverId = cursor.getLong(UIProvider.MESSAGE_SERVER_ID_COLUMN);
-            uri = cursor.getString(UIProvider.MESSAGE_URI_COLUMN);
+            String message = cursor.getString(UIProvider.MESSAGE_URI_COLUMN);
+            uri = !TextUtils.isEmpty(message) ? Uri.parse(message) : null;
             conversationId = cursor.getLong(UIProvider.MESSAGE_CONVERSATION_ID_COLUMN);
             subject = cursor.getString(UIProvider.MESSAGE_SUBJECT_COLUMN);
             snippet = cursor.getString(UIProvider.MESSAGE_SNIPPET_COLUMN);
@@ -152,7 +155,8 @@ public class Message implements Parcelable {
             appendRefMessageContent = cursor
                     .getInt(UIProvider.MESSAGE_APPEND_REF_MESSAGE_CONTENT_COLUMN) != 0;
             hasAttachments = cursor.getInt(UIProvider.MESSAGE_HAS_ATTACHMENTS_COLUMN) != 0;
-            attachmentListUri = cursor.getString(UIProvider.MESSAGE_ATTACHMENT_LIST_URI_COLUMN);
+            attachmentListUri = hasAttachments ? Uri.parse(cursor
+                    .getString(UIProvider.MESSAGE_ATTACHMENT_LIST_URI_COLUMN)) : null;
             messageFlags = cursor.getLong(UIProvider.MESSAGE_FLAGS_COLUMN);
             joinedAttachmentInfos = cursor
                     .getString(UIProvider.MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN);

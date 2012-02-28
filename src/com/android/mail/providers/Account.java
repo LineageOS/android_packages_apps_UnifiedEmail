@@ -17,6 +17,7 @@
 package com.android.mail.providers;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -35,7 +36,7 @@ public class Account extends android.accounts.Account implements Parcelable {
     /**
      * The uri to directly access the information for this account.
      */
-    public final String uri;
+    public final Uri uri;
 
     /**
      * The possible capabilities that this account supports.
@@ -46,25 +47,25 @@ public class Account extends android.accounts.Account implements Parcelable {
      * The content provider uri to return the list of top level folders for this
      * account.
      */
-    public final String folderListUri;
+    public final Uri folderListUri;
 
     /**
      * The content provider uri that can be queried for search results.
      */
-    public final String searchUri;
+    public final Uri searchUri;
 
     /**
      * The content provider uri that can be queried to access the from addresses
      * for this account.
      */
-    public final String accountFromAddressesUri;
+    public final Uri accountFromAddressesUri;
 
     /**
      * The content provider uri that can be used to save (insert) new draft
      * messages for this account. NOTE: This might be better to be an update
      * operation on the messageUri.
      */
-    public final String saveDraftUri;
+    public final Uri saveDraftUri;
 
     /**
      * The content provider uri that can be used to send a message for this
@@ -72,32 +73,32 @@ public class Account extends android.accounts.Account implements Parcelable {
      * NOTE: This might be better to be an update operation on the
      * messageUri.
      */
-    public final String sendMessageUri;
+    public final Uri sendMessageUri;
 
     /**
      * The content provider uri that can be used to expunge message from this
      * account. NOTE: This might be better to be an update operation on the
      * messageUri.
      */
-    public final String expungeMessageUri;
+    public final Uri expungeMessageUri;
 
     /**
      * The content provider uri that can be used to undo the last operation
      * performed.
      */
-    public final String undoUri;
+    public final Uri undoUri;
 
     /**
      * Uri for EDIT intent that will cause the settings screens for this account type to be
      * shown.
      */
-    public final String settingIntentUri;
+    public final Uri settingIntentUri;
 
     /**
      * Uri for VIEW intent that will cause the help screens for this account type to be
      * shown.
      */
-    public final String helpIntentUri;
+    public final Uri helpIntentUri;
 
     /**
      * The sync status of the account
@@ -108,7 +109,7 @@ public class Account extends android.accounts.Account implements Parcelable {
      * Uri for VIEW intent that will cause the compose screen for this account type to be
      * shown.
      */
-    public final String composeIntentUri;
+    public final Uri composeIntentUri;
 
     /**
      * Total number of members that comprise an instance of an account. This is
@@ -169,55 +170,63 @@ public class Account extends android.accounts.Account implements Parcelable {
                     "Account de-serializing failed. Wrong number of members detected.");
         }
         providerVersion = Integer.valueOf(accountMembers[2]);
-        uri = accountMembers[3];
+        uri = Uri.parse(accountMembers[3]);
         capabilities = Integer.valueOf(accountMembers[4]);
-        folderListUri = accountMembers[5];
-        searchUri = accountMembers[6];
-        accountFromAddressesUri = accountMembers[7];
-        saveDraftUri = accountMembers[8];
-        sendMessageUri = accountMembers[9];
-        expungeMessageUri = accountMembers[10];
-        undoUri = accountMembers[11];
-        settingIntentUri = accountMembers[12];
-        helpIntentUri = accountMembers[13];
+        folderListUri = Uri.parse(accountMembers[5]);
+        searchUri = Uri.parse(accountMembers[6]);
+        accountFromAddressesUri = Uri.parse(accountMembers[7]);
+        saveDraftUri = Uri.parse(accountMembers[8]);
+        sendMessageUri = Uri.parse(accountMembers[9]);
+        expungeMessageUri = Uri.parse(accountMembers[10]);
+        undoUri = Uri.parse(accountMembers[11]);
+        settingIntentUri = Uri.parse(accountMembers[12]);
+        helpIntentUri = Uri.parse(accountMembers[13]);
         syncStatus = Integer.valueOf(accountMembers[14]);
-        composeIntentUri = accountMembers[15];
+        composeIntentUri = Uri.parse(accountMembers[15]);
     }
 
     public Account(Parcel in) {
         super(in);
         providerVersion = in.readInt();
-        uri = in.readString();
+        uri = in.readParcelable(null);
         capabilities = in.readInt();
-        folderListUri = in.readString();
-        searchUri = in.readString();
-        accountFromAddressesUri = in.readString();
-        saveDraftUri = in.readString();
-        sendMessageUri = in.readString();
-        expungeMessageUri = in.readString();
-        undoUri = in.readString();
-        settingIntentUri = in.readString();
-        helpIntentUri = in.readString();
+        folderListUri = in.readParcelable(null);
+        searchUri = in.readParcelable(null);
+        accountFromAddressesUri = in.readParcelable(null);
+        saveDraftUri = in.readParcelable(null);
+        sendMessageUri = in.readParcelable(null);
+        expungeMessageUri = in.readParcelable(null);
+        undoUri = in.readParcelable(null);
+        settingIntentUri = in.readParcelable(null);
+        helpIntentUri = in.readParcelable(null);
         syncStatus = in.readInt();
-        composeIntentUri = in.readString();
+        composeIntentUri = in.readParcelable(null);
     }
 
     public Account(Cursor cursor) {
         super(cursor.getString(UIProvider.ACCOUNT_NAME_COLUMN), "unknown");
-        accountFromAddressesUri = cursor.getString(UIProvider.ACCOUNT_FROM_ADDRESSES_URI_COLUMN);
+        String fromAddresses = cursor
+                .getString(UIProvider.ACCOUNT_FROM_ADDRESSES_URI_COLUMN);
+        accountFromAddressesUri = !TextUtils.isEmpty(fromAddresses) ? Uri.parse(fromAddresses)
+                : null;
         capabilities = cursor.getInt(UIProvider.ACCOUNT_CAPABILITIES_COLUMN);
         providerVersion = cursor.getInt(UIProvider.ACCOUNT_PROVIDER_VERISON_COLUMN);
-        uri = cursor.getString(UIProvider.ACCOUNT_URI_COLUMN);
-        folderListUri = cursor.getString(UIProvider.ACCOUNT_FOLDER_LIST_URI_COLUMN);
-        searchUri = cursor.getString(UIProvider.ACCOUNT_SEARCH_URI_COLUMN);
-        saveDraftUri = cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN);
-        sendMessageUri = cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN);
-        expungeMessageUri = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
-        undoUri = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
-        settingIntentUri = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
-        helpIntentUri = cursor.getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN);
+        uri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_URI_COLUMN));
+        folderListUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_FOLDER_LIST_URI_COLUMN));
+        String search = cursor.getString(UIProvider.ACCOUNT_SEARCH_URI_COLUMN);
+        searchUri = !TextUtils.isEmpty(search) ? Uri.parse(search) : null;
+        saveDraftUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN));
+        sendMessageUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN));
+        String expunge = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
+        expungeMessageUri = !TextUtils.isEmpty(expunge) ? Uri.parse(expunge) : null;
+        undoUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN));
+        String settings = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
+        settingIntentUri = !TextUtils.isEmpty(settings) ? Uri.parse(settings) : null;
+        String help = cursor.getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN);
+        helpIntentUri = !TextUtils.isEmpty(help) ? Uri.parse(help) : null;
         syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
-        composeIntentUri = cursor.getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN);
+        String compose = cursor.getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN);
+        composeIntentUri = !TextUtils.isEmpty(compose) ? Uri.parse(compose) : null;
     }
 
     /**
@@ -252,19 +261,19 @@ public class Account extends android.accounts.Account implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(providerVersion);
-        dest.writeString(uri);
+        dest.writeParcelable(uri, 0);
         dest.writeInt(capabilities);
-        dest.writeString(folderListUri);
-        dest.writeString(searchUri);
-        dest.writeString(accountFromAddressesUri);
-        dest.writeString(saveDraftUri);
-        dest.writeString(sendMessageUri);
-        dest.writeString(expungeMessageUri);
-        dest.writeString(undoUri);
-        dest.writeString(settingIntentUri);
-        dest.writeString(helpIntentUri);
+        dest.writeParcelable(folderListUri, 0);
+        dest.writeParcelable(searchUri, 0);
+        dest.writeParcelable(accountFromAddressesUri, 0);
+        dest.writeParcelable(saveDraftUri, 0);
+        dest.writeParcelable(sendMessageUri, 0);
+        dest.writeParcelable(expungeMessageUri, 0);
+        dest.writeParcelable(undoUri, 0);
+        dest.writeParcelable(settingIntentUri, 0);
+        dest.writeParcelable(helpIntentUri, 0);
         dest.writeInt(syncStatus);
-        dest.writeString(composeIntentUri);
+        dest.writeParcelable(composeIntentUri, 0);
     }
 
     /**

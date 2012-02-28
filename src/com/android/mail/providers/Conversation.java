@@ -16,7 +16,6 @@
 
 package com.android.mail.providers;
 
-import android.app.Activity;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
@@ -40,7 +39,7 @@ public class Conversation implements Parcelable {
     public long dateMs;
     public String snippet;
     public boolean hasAttachments;
-    public String messageListUri;
+    public Uri messageListUri;
     public String senders;
     public int numMessages;
     public int numDrafts;
@@ -69,7 +68,7 @@ public class Conversation implements Parcelable {
         dest.writeLong(dateMs);
         dest.writeString(snippet);
         dest.writeByte(hasAttachments ? (byte) 1 : 0);
-        dest.writeString(messageListUri);
+        dest.writeParcelable(messageListUri, 0);
         dest.writeString(senders);
         dest.writeInt(numMessages);
         dest.writeInt(numDrafts);
@@ -87,7 +86,7 @@ public class Conversation implements Parcelable {
         dateMs = in.readLong();
         snippet = in.readString();
         hasAttachments = (in.readByte() != 0);
-        messageListUri = in.readString();
+        messageListUri = in.readParcelable(null);
         senders = in.readString();
         numMessages = in.readInt();
         numDrafts = in.readInt();
@@ -131,7 +130,8 @@ public class Conversation implements Parcelable {
             }
             snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
             hasAttachments = cursor.getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) == 1;
-            messageListUri = cursor.getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN);
+            messageListUri = Uri.parse(cursor
+                    .getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN));
             senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
             numMessages = cursor.getInt(UIProvider.CONVERSATION_NUM_MESSAGES_COLUMN);
             numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
@@ -246,16 +246,17 @@ public class Conversation implements Parcelable {
         }
     }
 
-    public static void undo(final Context context, final String undoUri) {
+    public static void undo(final Context context, final Uri undoUri) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Cursor c = context.getContentResolver().query(Uri.parse(undoUri),
-                        UIProvider.UNDO_PROJECTION, null, null, null);
+                Cursor c = context.getContentResolver().query(undoUri, UIProvider.UNDO_PROJECTION,
+                        null, null, null);
                 if (c != null) {
                     c.close();
                 }
-            }}).start();
+            }
+        }).start();
     }
 
     public static int archive(Context context, Collection<Conversation> conversations) {

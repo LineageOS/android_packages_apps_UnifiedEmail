@@ -29,10 +29,10 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
     private String[] mProjection;
     private Activity mActivity;
 
-    public ConversationCursorLoader(Activity activity, String[] projection, String uri) {
+    public ConversationCursorLoader(Activity activity, String[] projection, Uri uri) {
         super(activity);
         mProjection = projection;
-        mUri = Uri.parse(uri);
+        mUri = uri;
         mActivity = activity;
     }
 

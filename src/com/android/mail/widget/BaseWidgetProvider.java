@@ -52,7 +52,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     private static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
 
     private static String createWidgetPreferenceValue(Account account, Folder folder) {
-        return account.uri + ACCOUNT_FOLDER_PREFERENCE_SEPARATOR + folder.uri;
+        return account.uri.toString() + ACCOUNT_FOLDER_PREFERENCE_SEPARATOR + folder.uri.toString();
 
     }
 
@@ -101,11 +101,11 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
         // Receive notification for a certain account.
         if (Utils.ACTION_NOTIFY_DATASET_CHANGED.equals(intent.getAction())) {
-            final String accountToBeUpdated = intent.getExtras().getString(Utils.EXTRA_ACCOUNT);
-            if (accountToBeUpdated == null) {
+            String account = intent.getExtras().getString(Utils.EXTRA_ACCOUNT);
+            if (account == null) {
                 return;
             }
-
+            final Account accountToBeUpdated = new Account(account);
             final Set<Integer> widgetsToUpdate = Sets.newHashSet();
 
             for (int id : getCurrentWidgetIds(context)) {
@@ -117,7 +117,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
                 if (accountFolder != null) {
                     final String[] parsedInfo = TextUtils.split(accountFolder,
                             ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
-                    if (accountToBeUpdated.equals(parsedInfo[0])) {
+                    if (TextUtils.equals(accountToBeUpdated.uri.toString(), parsedInfo[0])) {
                         widgetsToUpdate.add(id);
                     }
                 }
@@ -213,7 +213,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
                     do {
                         String newAccount = accountCursor.getString(UIProvider.ACCOUNT_URI_COLUMN);
                         if (account != null && newAccount != null
-                                && TextUtils.equals(account.uri, newAccount))
+                                && TextUtils.equals(account.uri.toString(), newAccount))
                             return true;
                     } while (accountCursor.moveToNext());
                 }
@@ -325,7 +325,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         final Intent composeIntent = new Intent();
         composeIntent.setAction(Intent.ACTION_SEND);
         if (account.composeIntentUri != null) {
-            composeIntent.setData(Uri.parse(account.composeIntentUri));
+            composeIntent.setData(account.composeIntentUri);
         }
         clickIntent = PendingIntent.getActivity(context, 0, composeIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);

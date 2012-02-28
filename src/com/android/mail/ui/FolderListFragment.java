@@ -54,7 +54,7 @@ public final class FolderListFragment extends ListFragment implements
     // The internal view objects.
     private ListView mListView;
 
-    private String mFolderListUri;
+    private Uri mFolderListUri;
 
     private FolderChangeListener mListener;
 
@@ -65,7 +65,7 @@ public final class FolderListFragment extends ListFragment implements
     /**
      * Hidden constructor.
      */
-    private FolderListFragment(FolderChangeListener listener, String uri) {
+    private FolderListFragment(FolderChangeListener listener, Uri uri) {
         super();
         mListener = listener;
         mFolderListUri = uri;
@@ -75,7 +75,7 @@ public final class FolderListFragment extends ListFragment implements
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
      */
-    public static FolderListFragment newInstance(FolderChangeListener listener, String uri) {
+    public static FolderListFragment newInstance(FolderChangeListener listener, Uri uri) {
         return newInstance(listener, uri, MODE_DEFAULT);
     }
 
@@ -83,7 +83,7 @@ public final class FolderListFragment extends ListFragment implements
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
      */
-    public static FolderListFragment newInstance(FolderChangeListener listener, String uri,
+    public static FolderListFragment newInstance(FolderChangeListener listener, Uri uri,
             int mode) {
         FolderListFragment fragment = new FolderListFragment(listener, uri);
         return fragment;
@@ -185,7 +185,7 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(mActivity.getActivityContext(), Uri.parse(mFolderListUri),
+        return new CursorLoader(mActivity.getActivityContext(), mFolderListUri,
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
     }
 

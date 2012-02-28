@@ -278,12 +278,11 @@ class AttachmentsView extends LinearLayout {
     public void addAttachments(Account account, Message refMessage) {
         boolean hasAttachments = refMessage.hasAttachments;
         if (hasAttachments) {
-            String attachmentQuery = refMessage.attachmentListUri;
+            Uri attachmentQuery = refMessage.attachmentListUri;
             Cursor attachmentCursor = null;
             try {
-                attachmentCursor = getContext().getContentResolver().query(
-                        Uri.parse(attachmentQuery), UIProvider.ATTACHMENT_PROJECTION, null, null,
-                        null);
+                attachmentCursor = getContext().getContentResolver().query(attachmentQuery,
+                        UIProvider.ATTACHMENT_PROJECTION, null, null, null);
                 String attachmentUri;
                 while (attachmentCursor.moveToNext()) {
                     attachmentUri = attachmentCursor.getString(UIProvider.ATTACHMENT_URI_COLUMN);

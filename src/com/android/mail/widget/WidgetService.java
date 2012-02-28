@@ -32,7 +32,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.Loader.OnLoadCompleteListener;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Looper;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -95,11 +94,11 @@ public class WidgetService extends RemoteViewsService {
                 BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolder);
             }
 
-            mConversationCursor = mResolver.query(Uri.parse(mFolder.conversationListUri),
+            mConversationCursor = mResolver.query(mFolder.conversationListUri,
                     UIProvider.CONVERSATION_PROJECTION, null, null, null);
 
-            mFolderLoader = new CursorLoader(mContext, Uri.parse(mFolder.uri),
-                    UIProvider.FOLDERS_PROJECTION, null, null, null);
+            mFolderLoader = new CursorLoader(mContext, mFolder.uri, UIProvider.FOLDERS_PROJECTION,
+                    null, null, null);
             mFolderLoader.registerListener(0, this);
             mFolderUpdateHandler = new FolderUpdateHandler(mContext.getResources().getInteger(
                     R.integer.widget_folder_refresh_delay_ms));

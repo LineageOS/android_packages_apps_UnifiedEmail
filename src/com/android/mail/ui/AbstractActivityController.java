@@ -21,7 +21,6 @@ import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -31,8 +30,6 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.net.Uri;
-import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -57,8 +54,6 @@ import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-
-import java.lang.Readable;
 
 /**
  * This is an abstract implementation of the Activity Controller. This class knows how to
@@ -481,8 +476,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void showPreferences() {
-        final Intent preferenceIntent = new Intent(Intent.ACTION_EDIT,
-                Uri.parse(mAccount.settingIntentUri));
+        final Intent preferenceIntent = new Intent(Intent.ACTION_EDIT, mAccount.settingIntentUri);
         mActivity.startActivity(preferenceIntent);
     }
 
@@ -611,8 +605,8 @@ public abstract class AbstractActivityController implements ActivityController {
                     AccountCacheProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION, null,
                     null, null);
         } else if (id == FOLDER_CURSOR_LOADER) {
-            return new CursorLoader(mActivity.getActivityContext(),
-                    Uri.parse(mFolder.uri), UIProvider.FOLDERS_PROJECTION, null, null, null);
+            return new CursorLoader(mActivity.getActivityContext(), mFolder.uri,
+                    UIProvider.FOLDERS_PROJECTION, null, null, null);
         }
         return null;
     }

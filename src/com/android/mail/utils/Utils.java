@@ -21,8 +21,6 @@ import com.google.common.collect.Maps;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -44,7 +42,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -582,7 +579,7 @@ public class Utils {
     public static Intent createViewFolderIntent(Folder folder) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.setDataAndType(Uri.parse(folder.uri), "application/mail-ls");
+        intent.setDataAndType(folder.uri, "application/mail-ls");
         return intent;
     }
 
@@ -617,8 +614,8 @@ public class Utils {
      * @param fromWhere Information about the activity the user was in
      * when they requested help.
      */
-    public static void showHelp(Context context, String accountHelpUrl, String fromWhere) {
-        final Uri uri = addParamsToUrl(context, accountHelpUrl);
+    public static void showHelp(Context context, Uri accountHelpUrl, String fromWhere) {
+        final Uri uri = addParamsToUrl(context, accountHelpUrl.toString());
         Uri.Builder builder = uri.buildUpon();
         // Add the activity specific information parameter.
         if (fromWhere != null) {
