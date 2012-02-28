@@ -271,6 +271,7 @@ public final class MockUiProvider extends ContentProvider {
                 Uri.parse(accountUri + "/expungeMessage"));
         accountMap.put(AccountColumns.UNDO_URI, Uri.parse(accountUri + "/undo"));
         accountMap.put(AccountColumns.SETTINGS_INTENT_URI, Uri.parse("http://www.google.com"));
+        accountMap.put(AccountColumns.SETTINGS_QUERY_URI, Uri.parse(accountUri + "/settings"));
         accountMap.put(AccountColumns.HELP_INTENT_URI, Uri.parse("http://www.google.com"));
         accountMap.put(AccountColumns.SYNC_STATUS, 0);
         accountMap.put(AccountColumns.COMPOSE_URI, Uri.parse(accountUri + "/compose"));
@@ -363,10 +364,10 @@ public final class MockUiProvider extends ContentProvider {
                 (Uri) accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI),
                 (Uri) accountInfo.get(AccountColumns.UNDO_URI),
                 (Uri) accountInfo.get(AccountColumns.SETTINGS_INTENT_URI),
+                (Uri)accountInfo.get(AccountColumns.SETTINGS_QUERY_URI),
                 (Uri) accountInfo.get(AccountColumns.HELP_INTENT_URI),
                 (Integer) accountInfo.get(AccountColumns.SYNC_STATUS),
                 (Uri) accountInfo.get(AccountColumns.COMPOSE_URI));
-
         AccountCacheProvider.addAccount(account);
     }
 }

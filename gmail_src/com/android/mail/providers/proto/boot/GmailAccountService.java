@@ -79,6 +79,10 @@ public class GmailAccountService extends IntentService {
         return Uri.parse(DEFAULT_HELP_URL);
     }
 
+    private static Uri getAccountSettingsQueryUri(String account) {
+        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/settings");
+    }
+
     private static Uri getAccountSaveDraftUri(String account) {
         return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/saveNewMessage");
     }
@@ -162,6 +166,7 @@ public class GmailAccountService extends IntentService {
                             (Uri) mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
                             getAccountUndoUri(account.name),
                             getAccountSettingUri(account.name),
+                            getAccountSettingsQueryUri(account.name),
                             getHelpUri(),
                             0,
                             getComposeUri());
