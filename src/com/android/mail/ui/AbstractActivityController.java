@@ -310,14 +310,14 @@ public abstract class AbstractActivityController implements ActivityController {
         initCustomActionBarView();
         final Intent intent = mActivity.getIntent();
         if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
-            if (intent.hasExtra(Utils.EXTRA_FOLDER_URI)) {
+            if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
                 // Open the folder.
                 LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
-                        intent.getStringExtra(Utils.EXTRA_FOLDER_URI));
-            } else if (intent.hasExtra(Utils.EXTRA_CONVERSATION_URI)) {
+                        intent.getParcelableExtra(Utils.EXTRA_FOLDER));
+            } else if (intent.hasExtra(Utils.EXTRA_CONVERSATION)) {
                 // Open the conversation.
                 LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
-                        intent.getStringExtra(Utils.EXTRA_CONVERSATION_URI));
+                        intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
             }
         }
         // Get a Loader to the Account

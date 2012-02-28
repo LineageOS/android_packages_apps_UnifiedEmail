@@ -69,8 +69,8 @@ public class Utils {
 
     public static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_COMPOSE_URI = "composeUri";
-    public static final String EXTRA_CONVERSATION_URI = "conversationUri";
-    public static final String EXTRA_FOLDER_URI = "folderUri";
+    public static final String EXTRA_CONVERSATION = "conversationUri";
+    public static final String EXTRA_FOLDER = "folder";
     /*
      * Notifies that changes happened. Certain UI components, e.g., widgets, can
      * register for this {@link Intent} and update accordingly. However, this
@@ -571,7 +571,7 @@ public class Utils {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.setDataAndType(conversation.uri, "application/mail-ls");
-        intent.putExtra(Utils.EXTRA_CONVERSATION_URI, conversation.uri);
+        intent.putExtra(Utils.EXTRA_CONVERSATION, conversation);
         return intent;
     }
 
@@ -584,7 +584,7 @@ public class Utils {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.setDataAndType(folder.uri, "application/mail-ls");
-        intent.putExtra(Utils.EXTRA_FOLDER_URI, folder.uri);
+        intent.putExtra(Utils.EXTRA_FOLDER, folder);
         return intent;
     }
 
