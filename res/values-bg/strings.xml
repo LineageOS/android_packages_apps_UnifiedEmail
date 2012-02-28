@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"Unified Email"</string>
     <string name="to" msgid="4392614766835725698">"До"</string>
     <string name="cc" msgid="7017720927911078193">"Як"</string>
     <string name="bcc" msgid="3098643138241111579">"Ск"</string>
@@ -194,13 +193,6 @@
     <item quantity="other" msgid="8918589141287976985">"Променихте папките."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Резултати"</string>
-    <string name="searchMode" msgid="3329807422114758583">"Режим на търсене"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Режим  на търсене в кореспонденциите"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Задаване на бутона за назад"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Премахване на бутона за назад"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Задаване на нормален режим"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Режим на търсене в резултатите"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Задаване на режим с етикети"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Търси се…"</string>
     <string name="recent_labels" msgid="5539494776429934547">"Скорошни"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Разгъване на подробностите за получателя"</string>

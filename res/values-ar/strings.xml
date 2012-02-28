@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"عنوان بريد إلكتروني موحَّد"</string>
     <string name="to" msgid="4392614766835725698">"إلى"</string>
     <string name="cc" msgid="7017720927911078193">"نسخة إلى"</string>
     <string name="bcc" msgid="3098643138241111579">"نسخة مخفية الوجهة"</string>
@@ -193,13 +192,6 @@
     <item quantity="other" msgid="8918589141287976985">"تم تغيير المجلدات."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"النتائج"</string>
-    <string name="searchMode" msgid="3329807422114758583">"وضع البحث"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"وضع البحث في المحادثات"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"تعيين زر الرجوع"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"إزالة زر الرجوع"</string>
-    <string name="normalMode" msgid="4250277414924926730">"تعيين الوضع العادي"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"وضع نتائج البحث"</string>
-    <string name="labelMode" msgid="1821987146443702635">"تعيين وضع التصنيف"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"جارٍ البحث…"</string>
     <string name="recent_labels" msgid="5539494776429934547">"الأحدث"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"توسيع تفاصيل المستلم"</string>

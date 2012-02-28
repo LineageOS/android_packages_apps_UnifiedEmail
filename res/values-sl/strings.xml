@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"Poenotena e-pošta"</string>
     <string name="to" msgid="4392614766835725698">"Za"</string>
     <string name="cc" msgid="7017720927911078193">"Kp"</string>
     <string name="bcc" msgid="3098643138241111579">"Skp"</string>
@@ -66,8 +65,7 @@
     <string name="forward" msgid="6822914459902983767">"Posreduj"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Novo"</string>
     <string name="menu_change_labels" msgid="9121087142079721959">"Spremeni oznake"</string>
-    <!-- no translation found for menu_change_folders (1542713666608888717) -->
-    <skip />
+    <string name="menu_change_folders" msgid="1542713666608888717">"Spremenite mape"</string>
     <string name="menu_manage_labels" msgid="8618788259638720538">"Upravljanje oznak"</string>
     <string name="label_list_title" msgid="7948730824763052410">"Oznake"</string>
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Sinhroniziraj in obvesti"</string>
@@ -194,13 +192,6 @@
     <item quantity="other" msgid="8918589141287976985">"Spremenjene mape."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Rezultati"</string>
-    <string name="searchMode" msgid="3329807422114758583">"Način iskanja"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Način iskanja pogovora"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Nastavi gumb za vrnitev"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Odstrani gumb za vrnitev"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Nastavitev običajnega načina"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Način rezultatov iskanja"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Nastavitev načina oznak"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Iskanje ..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Nedavni"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Razširi podrobnosti prejemnika"</string>
@@ -239,33 +230,22 @@
     <item msgid="665244114363057627">"Napaka shrambe"</item>
     <item msgid="9190542479647789762">"Notranja napaka"</item>
   </string-array>
-    <!-- no translation found for tap_to_configure (1181356242354390930) -->
-    <skip />
-    <!-- no translation found for non_synced_folder_description (6059194125558004080) -->
-    <skip />
-    <!-- no translation found for tap_to_configure_folder_sync (3846898229180591661) -->
-    <skip />
+    <string name="tap_to_configure" msgid="1181356242354390930">"Dotaknite se za nastavitev"</string>
+    <string name="non_synced_folder_description" msgid="6059194125558004080">"Če si želite ogledati pogovore, sinhronizirajte to mapo."</string>
+    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sinhroniziranje mape"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <!-- no translation found for view_more_conversations (3151067626309674344) -->
-    <skip />
-    <!-- no translation found for loading_conversation (489160038366067983) -->
-    <skip />
-    <!-- no translation found for activity_mailbox_selection (6876105223659297603) -->
-    <skip />
-    <!-- no translation found for activity_folder_selection (5161845867397316052) -->
-    <skip />
-    <!-- no translation found for sync_all (1057043212338233359) -->
-    <skip />
-    <!-- no translation found for sync_recent:one (137489911893192702) -->
-    <!-- no translation found for sync_recent:other (6856940335775567991) -->
-    <!-- no translation found for sync_none (3581727068747471804) -->
-    <skip />
-    <!-- no translation found for folder_sync_for_widget_title (6889243150191948255) -->
-    <skip />
-    <!-- no translation found for folder_sync_for_widget_description (3287913520283417367) -->
-    <skip />
-    <!-- no translation found for folder_sync_for_widget_checkbox (5810741160405575956) -->
-    <skip />
-    <!-- no translation found for folder_selection_dialog_title (9194093596644845383) -->
-    <skip />
+    <string name="view_more_conversations" msgid="3151067626309674344">"Oglejte si več pogovorov"</string>
+    <string name="loading_conversation" msgid="489160038366067983">"Nalaganje ..."</string>
+    <string name="activity_mailbox_selection" msgid="6876105223659297603">"Izberite račun"</string>
+    <string name="activity_folder_selection" msgid="5161845867397316052">"Izberite mapo"</string>
+    <string name="sync_all" msgid="1057043212338233359">"Sinhroniziraj: vse"</string>
+  <plurals name="sync_recent">
+    <item quantity="one" msgid="137489911893192702">"Sinhronizacija zadnjih toliko dni: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+    <item quantity="other" msgid="6856940335775567991">"Sinhronizacija zadnjih toliko dni: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
+  </plurals>
+    <string name="sync_none" msgid="3581727068747471804">"Sinhroniziraj: nič"</string>
+    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Sinhroniziranje mape"</string>
+    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Če si želite ogledati pogovore v pripomočku, sinhronizirajte to mapo."</string>
+    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sinhronizacija zadnjih toliko dni: <xliff:g id="NUMSYNCDAYS">%d</xliff:g>"</string>
+    <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Spreminjanje map"</string>
 </resources>

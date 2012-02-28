@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"E-mail Unificado"</string>
     <string name="to" msgid="4392614766835725698">"Para"</string>
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
     <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
@@ -194,13 +193,6 @@
     <item quantity="other" msgid="8918589141287976985">"Pastas alteradas."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Resultados"</string>
-    <string name="searchMode" msgid="3329807422114758583">"Modo de Pesquisa"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Modo de Pesquisa de Conversas"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Definir o Botão Anterior"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Remover o Botão Anterior"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Definir Modo Normal"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Modo de Resultado da Pesquisa"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Definir Modo de Etiquetas"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"A pesquisar..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Recente"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Expandir detalhes do destinatário"</string>
@@ -221,10 +213,8 @@
     <string name="message_saved" msgid="7073947895562277576">"Mensagem guardada como rascunho."</string>
     <string name="sending_message" msgid="1498583163419122128">"A enviar mensagem..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"O endereço <xliff:g id="WRONGEMAIL">%s</xliff:g> não é válido."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ Mostrar texto citado"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Ocultar texto citado"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Concluído"</string>

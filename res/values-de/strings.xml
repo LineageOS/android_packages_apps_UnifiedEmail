@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"Einheitliche E-Mail"</string>
     <string name="to" msgid="4392614766835725698">"An"</string>
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
     <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
@@ -193,13 +192,6 @@
     <item quantity="other" msgid="8918589141287976985">"Ordner geändert"</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Ergebnisse"</string>
-    <string name="searchMode" msgid="3329807422114758583">"Suchmodus"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"Modus \"In Konversationen suchen\""</string>
-    <string name="setBackButton" msgid="3004728881963818222">"Schaltfläche \"Zurück\" festlegen"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"Schaltfläche \"Zurück\" entfernen"</string>
-    <string name="normalMode" msgid="4250277414924926730">"Normalen Modus festlegen"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"Modus \"In Ergebnissen suchen\""</string>
-    <string name="labelMode" msgid="1821987146443702635">"Label-Modus festlegen"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Wird gesucht..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Letzte"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Empfängerdetails maximieren"</string>
@@ -220,10 +212,8 @@
     <string name="message_saved" msgid="7073947895562277576">"Nachricht wurde als Entwurf gespeichert."</string>
     <string name="sending_message" msgid="1498583163419122128">"Nachricht wird gesendet…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Die Adresse <xliff:g id="WRONGEMAIL">%s</xliff:g> ist ungültig."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ Zitierten Text anzeigen"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Zitierten Text ausblenden"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Fertig"</string>
@@ -242,7 +232,7 @@
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Ordner synchronisieren, um Konversationen einzublenden"</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Ordner synchronisieren"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
-    <string name="view_more_conversations" msgid="3151067626309674344">"Weitere Konversationen anzeigen"</string>
+    <string name="view_more_conversations" msgid="3151067626309674344">"Weitere Konversationen ansehen"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Wird geladen..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Konto auswählen"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Ordner auswählen"</string>

@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"통합 이메일"</string>
     <string name="to" msgid="4392614766835725698">"받는사람"</string>
     <string name="cc" msgid="7017720927911078193">"참조"</string>
     <string name="bcc" msgid="3098643138241111579">"숨은참조"</string>
@@ -194,13 +193,6 @@
     <item quantity="other" msgid="8918589141287976985">"폴더가 변경되었습니다."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"검색결과"</string>
-    <string name="searchMode" msgid="3329807422114758583">"검색 모드"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"대화 검색 모드"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"뒤로 버튼 설정"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"뒤로 버튼 제거"</string>
-    <string name="normalMode" msgid="4250277414924926730">"일반 모드 설정"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"결과 검색 모드"</string>
-    <string name="labelMode" msgid="1821987146443702635">"라벨 모드 설정"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"검색 중…"</string>
     <string name="recent_labels" msgid="5539494776429934547">"최근"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"수신자 세부정보 펼치기"</string>

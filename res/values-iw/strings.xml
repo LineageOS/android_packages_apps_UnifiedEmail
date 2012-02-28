@@ -18,7 +18,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="8197930422134712215">"דוא\"ל מאוחד"</string>
     <string name="to" msgid="4392614766835725698">"אל"</string>
     <string name="cc" msgid="7017720927911078193">"עותק"</string>
     <string name="bcc" msgid="3098643138241111579">"עותק מוסתר"</string>
@@ -189,17 +188,10 @@
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; סומנו כלא נקראו."</item>
   </plurals>
   <plurals name="conversation_folder_changed">
-    <item quantity="one" msgid="4930161390461457462">"תיקיה שונתה."</item>
-    <item quantity="other" msgid="8918589141287976985">"תיקיות שונו."</item>
+    <item quantity="one" msgid="4930161390461457462">"התיקיה שונתה."</item>
+    <item quantity="other" msgid="8918589141287976985">"התיקיות שונו."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"תוצאות"</string>
-    <string name="searchMode" msgid="3329807422114758583">"מצב חיפוש"</string>
-    <string name="searchConversationMode" msgid="8015441927706455618">"מצב חיפוש שיחה"</string>
-    <string name="setBackButton" msgid="3004728881963818222">"הגדר את הלחצן \'הקודם\'"</string>
-    <string name="removeBackButton" msgid="860383341267568260">"הסר את הלחצן \'הקודם\'"</string>
-    <string name="normalMode" msgid="4250277414924926730">"הגדר מצב רגיל"</string>
-    <string name="searchResultMode" msgid="3564180712046711968">"מצב תוצאת חיפוש"</string>
-    <string name="labelMode" msgid="1821987146443702635">"הגדר מצב תווית"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"מחפש…"</string>
     <string name="recent_labels" msgid="5539494776429934547">"אחרונות"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"הרחב פרטי נמען"</string>
@@ -220,10 +212,8 @@
     <string name="message_saved" msgid="7073947895562277576">"ההודעה נשמרה כטיוטה."</string>
     <string name="sending_message" msgid="1498583163419122128">"שולח הודעה…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"הכתובת <xliff:g id="WRONGEMAIL">%s</xliff:g> אינה חוקית."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ הצג טקסט מצוטט"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ הסתר טקסט מצוטט"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"אישור"</string>
     <string name="done" msgid="3079981801778027540">"בוצע"</string>
@@ -232,7 +222,7 @@
     <string name="folders_activity_instructions" msgid="5237801615196958918">"לא הוגדרו תיקיות לחשבון זה."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"בוצע בהצלחה"</item>
-    <item msgid="5037283655022689372">"שגיאת חיבור"</item>
+    <item msgid="5037283655022689372">"שגיאת התחברות"</item>
     <item msgid="4252875340758600974">"שגיאת אימות"</item>
     <item msgid="7611299631880179587">"שגיאת אבטחה"</item>
     <item msgid="665244114363057627">"שגיאת אחסון"</item>
