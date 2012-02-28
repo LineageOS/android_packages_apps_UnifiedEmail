@@ -88,19 +88,19 @@ function shrinkWideMessages() {
 }
 
 function measurePositions() {
-    var messageTops;
+    var headerBottoms;
     var i;
     var len;
 
-    var headers = document.querySelectorAll(".mail-message");
+    var headers = document.querySelectorAll(".spacer");
 
-    messageTops = new Array(headers.length);
+    headerBottoms = new Array(headers.length);
     for (i = 0, len = headers.length; i < len; i++) {
         // addJavascriptInterface handler only supports string arrays
-        messageTops[i] = "" + getTotalOffset(headers[i]).top;
+        headerBottoms[i] = "" + (getTotalOffset(headers[i]).top + headers[i].offsetHeight);
     }
 
-    window.mail.onWebContentGeometryChange(messageTops);
+    window.mail.onWebContentGeometryChange(headerBottoms);
 }
 
 collapseQuotedText();

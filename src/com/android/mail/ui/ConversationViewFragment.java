@@ -274,16 +274,16 @@ public final class ConversationViewFragment extends Fragment implements
     private class MailJsBridge {
 
         @SuppressWarnings("unused")
-        public void onWebContentGeometryChange(final String[] messageTopStrs) {
+        public void onWebContentGeometryChange(final String[] headerBottomStrs) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    final int len = messageTopStrs.length;
-                    int[] messageTops = new int[len];
+                    final int len = headerBottomStrs.length;
+                    final int[] headerBottoms = new int[len];
                     for (int i = 0; i < len; i++) {
-                        messageTops[i] = Integer.parseInt(messageTopStrs[i]);
+                        headerBottoms[i] = Integer.parseInt(headerBottomStrs[i]);
                     }
-                    mConversationContainer.onGeometryChange(messageTops);
+                    mConversationContainer.onGeometryChange(headerBottoms);
                 }
             });
         }

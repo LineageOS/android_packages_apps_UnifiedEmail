@@ -39,7 +39,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private static final String TAG = new LogUtils().getLogTag();
 
     private Adapter mOverlayAdapter;
-    private int[] mOverlayTops;
+    private int[] mOverlayBottoms;
     private ConversationWebView mWebView;
 
     /**
@@ -211,32 +211,32 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private void layoutOverlays() {
         final int count = getOverlayCount();
 
-        if (count > 0 && count != mOverlayTops.length) {
+        if (count > 0 && count != mOverlayBottoms.length) {
             LogUtils.e(TAG,
                     "Header/body count mismatch. headers=%d, message bodies=%d",
-                    count, mOverlayTops.length);
+                    count, mOverlayBottoms.length);
         }
 
         for (int i = 0; i < count; i++) {
             View child = getOverlayAt(i);
             // TODO: round or truncate?
-            final int top = (int) (mOverlayTops[i] * mScale) - mOffsetY;
-            final int bottom = top + child.getMeasuredHeight();
+            final int bottom = (int) (mOverlayBottoms[i] * mScale) - mOffsetY;
+            final int top = bottom - child.getMeasuredHeight();
             child.layout(0, top, child.getMeasuredWidth(), bottom);
         }
     }
 
     // TODO: add margin support for children that want it (e.g. tablet headers?)
 
-    public void onGeometryChange(int[] messageTops) {
-        LogUtils.d(TAG, "*** got message tops:");
-        for (int top : messageTops) {
-            LogUtils.d(TAG, "%d", top);
+    public void onGeometryChange(int[] headerBottoms) {
+        LogUtils.d(TAG, "*** got message header bottoms:");
+        for (int offsetY : headerBottoms) {
+            LogUtils.d(TAG, "%d", offsetY);
         }
 
-        mOverlayTops = messageTops;
+        mOverlayBottoms = headerBottoms;
 
-        for (int i = 0; i < messageTops.length; i++) {
+        for (int i = 0; i < headerBottoms.length; i++) {
             View overlayView = getOverlayAt(i);
             if (overlayView == null) {
                 // TODO: dig through recycler instead of creating new views each time
