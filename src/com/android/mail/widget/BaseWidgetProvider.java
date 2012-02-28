@@ -37,7 +37,6 @@ import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Parcel;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -167,20 +166,34 @@ public class BaseWidgetProvider extends AppWidgetProvider {
             // Lookup the account by URI.
             Account account = null;
             if (!TextUtils.isEmpty(accountUri)) {
-                Cursor accountCursor = resolver.query(Uri.parse(accountUri),
-                        UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-                if (accountCursor != null) {
-                    accountCursor.moveToFirst();
-                    account = new Account(accountCursor);
+                Cursor accountCursor = null;
+                try {
+                    accountCursor = resolver.query(Uri.parse(accountUri),
+                            UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+                    if (accountCursor != null) {
+                        accountCursor.moveToFirst();
+                        account = new Account(accountCursor);
+                    }
+                } finally {
+                    if (accountCursor != null) {
+                        accountCursor.close();
+                    }
                 }
             }
             Folder folder = null;
             if (!TextUtils.isEmpty(folderUri)) {
-                Cursor folderCursor = resolver.query(Uri.parse(folderUri),
-                        UIProvider.FOLDERS_PROJECTION, null, null, null);
-                if (folderCursor != null) {
-                    folderCursor.moveToFirst();
-                    folder = new Folder(folderCursor);
+                Cursor folderCursor = null;
+                try {
+                    folderCursor = resolver.query(Uri.parse(folderUri),
+                            UIProvider.FOLDERS_PROJECTION, null, null, null);
+                    if (folderCursor != null) {
+                        folderCursor.moveToFirst();
+                        folder = new Folder(folderCursor);
+                    }
+                } finally {
+                    if (folderCursor != null) {
+                        folderCursor.close();
+                    }
                 }
             }
             updateWidget(context, appWidgetIds[i], account, folder);
@@ -189,16 +202,25 @@ public class BaseWidgetProvider extends AppWidgetProvider {
 
     private static boolean isAccountValid(Context context, Account account) {
         if (account != null) {
-            Cursor accountCursor = context.getContentResolver().query(
-                    AccountCacheProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION, null,
-                    null, null);
-            if (accountCursor.moveToFirst()) {
-                do {
-                    String newAccount = accountCursor.getString(UIProvider.ACCOUNT_URI_COLUMN);
-                    if (account != null && newAccount != null
-                            && TextUtils.equals(account.uri, newAccount))
-                        return true;
-                } while (accountCursor.moveToNext());
+            // TODO(mindyp) accounts should be cached so that we can lookup
+            // cached versions and correct later.
+            Cursor accountCursor = null;
+            try {
+                accountCursor = context.getContentResolver().query(
+                        AccountCacheProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION,
+                        null, null, null);
+                if (accountCursor.moveToFirst()) {
+                    do {
+                        String newAccount = accountCursor.getString(UIProvider.ACCOUNT_URI_COLUMN);
+                        if (account != null && newAccount != null
+                                && TextUtils.equals(account.uri, newAccount))
+                            return true;
+                    } while (accountCursor.moveToNext());
+                }
+            } finally {
+                if (accountCursor != null) {
+                    accountCursor.close();
+                }
             }
         }
         return false;
@@ -302,7 +324,9 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         // On click intent for Compose
         final Intent composeIntent = new Intent();
         composeIntent.setAction(Intent.ACTION_SEND);
-        composeIntent.setData(Uri.parse("from://" + UIProvider.AUTHORITY + "/account/" + account));
+        if (account.composeIntentUri != null) {
+            composeIntent.setData(Uri.parse(account.composeIntentUri));
+        }
         clickIntent = PendingIntent.getActivity(context, 0, composeIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_compose, clickIntent);

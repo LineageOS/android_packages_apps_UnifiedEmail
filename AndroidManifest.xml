@@ -44,7 +44,14 @@
         <activity android:name=".compose.ComposeActivity" />
         <activity
            android:name=".ui.MailActivity"
-           android:uiOptions="splitActionBarWhenNarrow" />
+           android:uiOptions="splitActionBarWhenNarrow">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content"/>
+                <data android:mimeType="application/mail-ls" />
+            </intent-filter>
+        </activity>
         <activity android:name="LabelSynchronizationActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog" />
 

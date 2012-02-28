@@ -46,6 +46,7 @@ import android.webkit.WebView;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 
@@ -562,6 +563,30 @@ public class Utils {
     }
 
     /**
+     * Create an intent to show a conversation.
+     * @param conversation Conversation to open.
+     * @return
+     */
+    public static Intent createViewConversationIntent(Conversation conversation) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setDataAndType(conversation.uri, "application/mail-ls");
+        return intent;
+    }
+
+    /**
+     * Create an intent to open a folder.
+     * @param folder Folder to open.
+     * @return
+     */
+    public static Intent createViewFolderIntent(Folder folder) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setDataAndType(Uri.parse(folder.uri), "application/mail-ls");
+        return intent;
+    }
+
+    /**
      * @return an intent which, if launched, will display the corresponding conversation
      */
     public static Intent createViewConversationIntent(Context context,
@@ -665,7 +690,4 @@ public class Utils {
         }
         return sVersionCode;
     }
-
-
-
 }

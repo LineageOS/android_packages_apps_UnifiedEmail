@@ -314,6 +314,9 @@ public abstract class AbstractActivityController implements ActivityController {
         // Initialize the action bar view.
         initCustomActionBarView();
         final Intent intent = mActivity.getIntent();
+        if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
+            LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s", intent.getData());
+        }
         // Get a Loader to the Account
         mActivity.getLoaderManager().initLoader(ACCOUNT_CURSOR_LOADER, null, this);
         // Allow shortcut keys to function for the ActionBar and menus.
