@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
+import com.android.mail.utils.LogUtils;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -104,6 +105,9 @@ public final class TwoPaneController extends AbstractActivityController {
     public boolean onCreate(Bundle savedState) {
         mActivity.setContentView(R.layout.two_pane_activity);
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
+        if (mLayout == null) {
+            LogUtils.d(LOG_TAG, "mLayout is null!");
+        }
         mLayout.initializeLayout(mActivity.getApplicationContext());
 
         // The tablet layout needs to refer to mode changes.

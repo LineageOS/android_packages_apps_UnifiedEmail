@@ -115,7 +115,7 @@ public abstract class AbstractActivityController implements ActivityController {
             mActivity.invalidateOptionsMenu();
         }
     };
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    protected static final String LOG_TAG = new LogUtils().getLogTag();
     private static final int ACCOUNT_CURSOR_LOADER = 0;
     private static final int FOLDER_CURSOR_LOADER = 1;
 
