@@ -192,6 +192,13 @@
     <item quantity="other" msgid="8918589141287976985">"Složky změněny."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Výsledky"</string>
+    <string name="searchMode" msgid="3329807422114758583">"Režim vyhledávání"</string>
+    <string name="searchConversationMode" msgid="8015441927706455618">"Režim vyhledávání konverzací"</string>
+    <string name="setBackButton" msgid="3004728881963818222">"Nastavit tlačítko Zpět"</string>
+    <string name="removeBackButton" msgid="860383341267568260">"Odebrat tlačítko Zpět"</string>
+    <string name="normalMode" msgid="4250277414924926730">"Nastavit normální režim"</string>
+    <string name="searchResultMode" msgid="3564180712046711968">"Režim výsledků vyhledávání"</string>
+    <string name="labelMode" msgid="1821987146443702635">"Nastavit režim štítků"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Vyhledávání..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Nejnovější"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Rozbalit podrobnosti o příjemci"</string>
@@ -212,10 +219,8 @@
     <string name="message_saved" msgid="7073947895562277576">"Zpráva byla uložena jako koncept."</string>
     <string name="sending_message" msgid="1498583163419122128">"Odesílání zprávy…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Adresa <xliff:g id="WRONGEMAIL">%s</xliff:g> je neplatná."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ Zobrazit citovaný text"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Skrýt citovaný text"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Hotovo"</string>

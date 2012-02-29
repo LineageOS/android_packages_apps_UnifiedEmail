@@ -192,6 +192,13 @@
     <item quantity="other" msgid="8918589141287976985">"Mapes ir mainītas."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Rezultāti"</string>
+    <string name="searchMode" msgid="3329807422114758583">"Meklēšanas režīms"</string>
+    <string name="searchConversationMode" msgid="8015441927706455618">"Meklēt sarunu režīmu"</string>
+    <string name="setBackButton" msgid="3004728881963818222">"Iestatīt pogu Atpakaļ"</string>
+    <string name="removeBackButton" msgid="860383341267568260">"Noņemt pogu Atpakaļ"</string>
+    <string name="normalMode" msgid="4250277414924926730">"Iestatīt parasto režīmu"</string>
+    <string name="searchResultMode" msgid="3564180712046711968">"Meklēšanas rezultātu režīms"</string>
+    <string name="labelMode" msgid="1821987146443702635">"Iestatīt iezīmju režīmu"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Notiek meklēšana..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Jaunākās"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Izvērst informāciju par adresātu"</string>
@@ -212,10 +219,8 @@
     <string name="message_saved" msgid="7073947895562277576">"Ziņojums ir saglabāts kā melnraksts."</string>
     <string name="sending_message" msgid="1498583163419122128">"Notiek ziņojuma sūtīšana…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Adrese <xliff:g id="WRONGEMAIL">%s</xliff:g> nav derīga."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ Rādīt citēto tekstu"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Paslēpt citēto tekstu"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"Labi"</string>
     <string name="done" msgid="3079981801778027540">"Gatavs"</string>

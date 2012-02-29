@@ -192,6 +192,13 @@
     <item quantity="other" msgid="8918589141287976985">"Spremenjene mape."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Rezultati"</string>
+    <string name="searchMode" msgid="3329807422114758583">"Način iskanja"</string>
+    <string name="searchConversationMode" msgid="8015441927706455618">"Način iskanja pogovora"</string>
+    <string name="setBackButton" msgid="3004728881963818222">"Nastavi gumb za vrnitev"</string>
+    <string name="removeBackButton" msgid="860383341267568260">"Odstrani gumb za vrnitev"</string>
+    <string name="normalMode" msgid="4250277414924926730">"Nastavitev običajnega načina"</string>
+    <string name="searchResultMode" msgid="3564180712046711968">"Način rezultatov iskanja"</string>
+    <string name="labelMode" msgid="1821987146443702635">"Nastavitev načina oznak"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Iskanje ..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Nedavni"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Razširi podrobnosti prejemnika"</string>
@@ -212,10 +219,8 @@
     <string name="message_saved" msgid="7073947895562277576">"Sporočilo shranjeno kot osnutek."</string>
     <string name="sending_message" msgid="1498583163419122128">"Pošiljanje sporočila ..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Naslov <xliff:g id="WRONGEMAIL">%s</xliff:g> je neveljaven."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ Pokaži citirano besedilo"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Skrij citirano besedilo"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"V redu"</string>
     <string name="done" msgid="3079981801778027540">"Končano"</string>

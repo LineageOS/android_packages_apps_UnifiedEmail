@@ -192,6 +192,13 @@
     <item quantity="other" msgid="8918589141287976985">"Dossiers modifiés."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Résultats"</string>
+    <string name="searchMode" msgid="3329807422114758583">"Mode Recherche"</string>
+    <string name="searchConversationMode" msgid="8015441927706455618">"Mode Rechercher dans la conversation"</string>
+    <string name="setBackButton" msgid="3004728881963818222">"Utiliser le bouton \"Précédent\""</string>
+    <string name="removeBackButton" msgid="860383341267568260">"Retirer le bouton \"Précédent\""</string>
+    <string name="normalMode" msgid="4250277414924926730">"Utiliser le mode Normal"</string>
+    <string name="searchResultMode" msgid="3564180712046711968">"Mode Rechercher dans les résultats"</string>
+    <string name="labelMode" msgid="1821987146443702635">"Utiliser le mode Libellés"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Recherche en cours…"</string>
     <string name="recent_labels" msgid="5539494776429934547">"Récents"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Développer coordonnées du destinataire"</string>

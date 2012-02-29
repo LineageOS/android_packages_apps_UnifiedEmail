@@ -192,6 +192,13 @@
     <item quantity="other" msgid="8918589141287976985">"Mappen gewijzigd."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Resultaten"</string>
+    <string name="searchMode" msgid="3329807422114758583">"Zoekmodus"</string>
+    <string name="searchConversationMode" msgid="8015441927706455618">"Modus voor zoeken naar conversaties"</string>
+    <string name="setBackButton" msgid="3004728881963818222">"De knop \'Vorige\' instellen"</string>
+    <string name="removeBackButton" msgid="860383341267568260">"De knop \'Vorige\' verwijderen"</string>
+    <string name="normalMode" msgid="4250277414924926730">"Normale modus instellen"</string>
+    <string name="searchResultMode" msgid="3564180712046711968">"Modus voor zoekresultaten"</string>
+    <string name="labelMode" msgid="1821987146443702635">"Labelmodus instellen"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Zoeken…"</string>
     <string name="recent_labels" msgid="5539494776429934547">"Recent"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Ontvangersdetails uitvouwen"</string>
