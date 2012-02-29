@@ -63,16 +63,16 @@ public interface ActionBarView extends OnNavigationListener, ViewMode.ModeChange
     void handleSaveInstanceState(Bundle outState);
 
     /**
-     * @param mAccountNames
-     * @param currentAccount
-     */
-    void updateActionBar(String[] mAccountNames, String currentAccount);
-
-    /**
      * Update the folder that the user is currently viewing
      * @param folder
      */
     void setFolder(Folder folder);
+
+    /**
+     * Update the account that the user is currently viewing
+     * @param account
+     */
+    void setAccount(Account account);
 
     /**
      * Returns the menu ID for the menu in this actionbar.

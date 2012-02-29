@@ -175,9 +175,10 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
 
     @Override
     public void setAccounts(Account[] accounts) {
-        mSpinner.setAccounts(accounts);
-        int position = -1;
         Account currentAccount = mCallback.getCurrentAccount();
+        mSpinner.setAccounts(accounts);
+        mSpinner.setCurrentAccount(currentAccount);
+        int position = -1;
         for (position = 0; position < accounts.length; position++) {
             if (accounts[position].equals(currentAccount)) {
                 break;
@@ -195,7 +196,17 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
      */
     @Override
     public void setFolder(Folder folder) {
-        mSpinner.setFolder(folder);
+        mSpinner.setCurrentFolder(folder);
+        mSpinner.notifyDataSetChanged();
+    }
+
+    /**
+     * Called by the owner of the ActionBar to set the
+     * account that is currently being displayed.
+     */
+    @Override
+    public void setAccount(Account account) {
+        mSpinner.setCurrentAccount(account);
         mSpinner.notifyDataSetChanged();
     }
 
@@ -204,11 +215,10 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
         final int type = mSpinner.getItemViewType(position);
         switch (type) {
             case AccountSpinnerAdapter.TYPE_ACCOUNT:
-                mCallback.onAccountChanged((Account) mSpinner.getItem(position));
                 // Get the capabilities associated with this account.
                 final Object item = mSpinner.getItem(position);
                 assert (item instanceof Account);
-                mAccount = (Account) item;
+                mCallback.onAccountChanged((Account) mSpinner.getItem(position));
                 break;
             case AccountSpinnerAdapter.TYPE_FOLDER:
                 final Object folder = mSpinner.getItem(position);
@@ -314,9 +324,5 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
                 ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME,
                 ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
         mActivity.getActionBar().setHomeButtonEnabled(true);
-    }
-
-    @Override
-    public void updateActionBar(String[] accounts, String currentAccount) {
     }
 }

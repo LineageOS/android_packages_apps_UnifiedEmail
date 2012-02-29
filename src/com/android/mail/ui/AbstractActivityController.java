@@ -242,10 +242,10 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onAccountChanged(Account account) {
         if (!account.equals(mAccount)) {
             mAccount = account;
+            mActionBarView.setAccount(mAccount);
             // Account changed; existing folder is invalid.
             mFolder = null;
             fetchAccountFolderInfo();
-
             updateHelpMenuItem();
         }
     }

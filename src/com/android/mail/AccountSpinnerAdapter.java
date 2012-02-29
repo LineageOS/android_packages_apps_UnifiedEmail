@@ -130,17 +130,24 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void setAccounts(Account[] accounts) {
         mAccounts = accounts;
-        mCurrentAccount = mAccounts[0];
         mNumAccounts = accounts.length;
         notifyDataSetChanged();
     }
 
     /**
-     * Set the selected folder.
+     * Set the current folder.
      * @param folder
      */
-    public void setFolder(Folder folder) {
+    public void setCurrentFolder(Folder folder) {
         mCurrentFolder = folder;
+    }
+
+    /**
+     * Set the current account.
+     * @param account
+     */
+    public void setCurrentAccount(Account account) {
+        mCurrentAccount = account;
     }
 
     @Override
