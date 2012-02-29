@@ -246,7 +246,7 @@ public final class ConversationListFragment extends ListFragment implements
         // Get the context from the arguments
         final Bundle args = getArguments();
         mViewContext = ConversationListContext.forBundle(args.getBundle(CONVERSATION_LIST_KEY));
-        mAccount = mViewContext.mAccount;
+        mAccount = mViewContext.account;
 
         if (savedState != null) {
             mListSavedState = savedState.getParcelable(LIST_STATE_KEY);
@@ -399,7 +399,7 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private void showList() {
         mListView.setEmptyView(null);
-        mFolder = mViewContext.mFolder;
+        mFolder = mViewContext.folder;
         getLoaderManager().initLoader(CONVERSATION_LOADER_ID, Bundle.EMPTY, this);
     }
 

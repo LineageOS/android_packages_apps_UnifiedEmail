@@ -299,7 +299,7 @@ public class Account extends android.accounts.Account implements Parcelable {
     public Folder getAccountInbox() {
         // TODO: (mindyp) fill in with call to settings or reading of account settings
         // to get the default inbox for this account.
-        return null;
+        return Folder.getInbox();
     }
 
     @SuppressWarnings("hiding")

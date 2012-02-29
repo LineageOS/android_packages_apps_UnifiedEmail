@@ -51,15 +51,15 @@ public class ConversationListContext {
     /**
      * The account for whom we are showing a list
      */
-    public final Account mAccount;
+    public final Account account;
     /**
      * The folder whose conversations we are displaying, if any.
      */
-    public final Folder mFolder;
+    public final Folder folder;
     /**
      * The search query whose results we are displaying, if any.
      */
-    public final String mSearchQuery;
+    public final String searchQuery;
 
     // Tokenized search terms for search queries.
     private ArrayList<String> mSearchTerms;
@@ -154,10 +154,10 @@ public class ConversationListContext {
      * @param searchQuery
      * @param folder
      */
-    private ConversationListContext(Account account, String searchQuery, Folder folder) {
-        mAccount = account;
-        mSearchQuery = searchQuery;
-        mFolder = folder;
+    private ConversationListContext(Account a, String query, Folder f) {
+        account = a;
+        searchQuery = query;
+        folder = f;
     }
 
     /**
@@ -173,9 +173,9 @@ public class ConversationListContext {
      */
     public Bundle toBundle() {
         Bundle result = new Bundle();
-        result.putParcelable(EXTRA_ACCOUNT, mAccount);
-        result.putString(EXTRA_SEARCH_QUERY, mSearchQuery);
-        result.putParcelable(EXTRA_FOLDER, mFolder);
+        result.putParcelable(EXTRA_ACCOUNT, account);
+        result.putString(EXTRA_SEARCH_QUERY, searchQuery);
+        result.putParcelable(EXTRA_FOLDER, folder);
         return result;
     }
 }

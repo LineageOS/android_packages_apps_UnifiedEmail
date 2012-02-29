@@ -323,4 +323,13 @@ public class Folder implements Parcelable {
     public boolean supportsCapability(int capability) {
         return (capabilities & capability) != 0;
     }
+
+    /**
+     * Get a fake inbox folder.
+     */
+    public static Folder getInbox() {
+        Folder inbox = new Folder();
+        inbox.name = "inbox";
+        return inbox;
+    }
 }

@@ -183,6 +183,9 @@ public final class ConversationCursor implements Cursor {
     private static Cursor doQuery(Uri uri, String[] projection) {
         qUri = uri;
         qProjection = projection;
+        if (mResolver == null) {
+            mResolver = sActivity.getContentResolver();
+        }
         return mResolver.query(qUri, qProjection, null, null, null);
     }
 

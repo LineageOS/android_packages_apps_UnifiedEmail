@@ -18,12 +18,14 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -32,7 +34,15 @@ import com.android.mail.providers.Conversation;
 
 // Called OnePaneActivityController in Gmail.
 public final class OnePaneController extends AbstractActivityController {
+    private static final String FOLDER_LIST_TRANSACTION_KEY = "folder-list-transaction";
+    private static final String CONVERSATION_LIST_TRANSACTION_KEY = "conversation-list-transaction";
+    private static final String CONVERSATION_TRANSACTION_KEY = "conversation-transaction";
+    private static final int INVALID_ID = -1;
     private boolean mConversationListVisible = false;
+    private int mLastConversationListTransactionId = INVALID_ID;
+    private int mLastConversationTransactionId = INVALID_ID;
+    private int mLastFolderListTransactionId = INVALID_ID;
+    private Folder mInbox;
     /**
      * @param activity
      * @param viewMode
@@ -42,14 +52,42 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
+    protected void restoreState(Bundle inState) {
+        super.restoreState(inState);
+        // TODO(mindyp) handle saved state.
+        if (inState != null) {
+            mLastFolderListTransactionId = inState.getInt(FOLDER_LIST_TRANSACTION_KEY, INVALID_ID);
+            mLastConversationListTransactionId = inState.getInt(CONVERSATION_LIST_TRANSACTION_KEY,
+                    INVALID_ID);
+            mLastConversationTransactionId = inState.getInt(CONVERSATION_TRANSACTION_KEY,
+                    INVALID_ID);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // TODO(mindyp) handle saved state.
+        outState.putInt(FOLDER_LIST_TRANSACTION_KEY, mLastFolderListTransactionId);
+        outState.putInt(CONVERSATION_LIST_TRANSACTION_KEY, mLastConversationListTransactionId);
+        outState.putInt(CONVERSATION_TRANSACTION_KEY, mLastConversationTransactionId);
+    }
+
+    @Override
     public void resetActionBarIcon() {
         final int mode = mViewMode.getMode();
-        if ((mode == ViewMode.CONVERSATION_LIST && mConvListContext.isSearchResult())
+        if (!inInbox() || (mode == ViewMode.CONVERSATION_LIST && mConvListContext.isSearchResult())
                 || mode == ViewMode.CONVERSATION || mode == ViewMode.FOLDER_LIST) {
             mActionBarView.setBackButton();
         } else {
             mActionBarView.removeBackButton();
         }
+    }
+
+    private boolean inInbox() {
+        return mConvListContext != null && mConvListContext.folder != null ?
+                (!mConvListContext.isSearchResult() && mConvListContext.folder.name
+                .toLowerCase().equals(mAccount.getAccountInbox().name.toLowerCase())) : false;
     }
 
     @Override
@@ -72,7 +110,8 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void showConversationList(ConversationListContext listContext) {
-        // TODO(viki): Check if the account has been changed since the previous time.
+        // TODO(viki): Check if the account has been changed since the previous
+        // time.
         mViewMode.enterConversationListMode();
         final boolean accountChanged = false;
         // TODO(viki): This account transition looks strange in two pane mode.
@@ -83,14 +122,25 @@ public final class OnePaneController extends AbstractActivityController {
             listContext = getCurrentListContext();
         }
         Fragment conversationListFragment = ConversationListFragment.newInstance(listContext);
-        replaceFragment(conversationListFragment, transition);
+        if (!inInbox()) {
+            // Maintain fragment transaction history so we can get back to the
+            // fragment used to launch this list.
+            replaceFragment(conversationListFragment, transition);
+        } else {
+            // If going to the inbox, clear the folder list transaction history.
+            mInbox = listContext.folder;
+            mLastConversationListTransactionId = replaceFragment(conversationListFragment,
+                    transition);
+            mLastFolderListTransactionId = INVALID_ID;
+        }
         mConversationListVisible = true;
     }
 
     @Override
     public void showConversation(Conversation conversation) {
         mViewMode.enterConversationMode();
-        replaceFragment(ConversationViewFragment.newInstance(mAccount, conversation),
+        mLastConversationTransactionId = replaceFragment(
+                ConversationViewFragment.newInstance(mAccount, conversation),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         mConversationListVisible = false;
     }
@@ -98,36 +148,88 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void showFolderList() {
         mViewMode.enterFolderListMode();
-        replaceFragment(FolderListFragment.newInstance(this, mAccount.folderListUri),
+        mLastFolderListTransactionId = replaceFragment(
+                FolderListFragment.newInstance(this, mAccount.folderListUri),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         mConversationListVisible = false;
     }
 
-    private void replaceFragment(Fragment fragment, int transition) {
+    private int replaceFragment(Fragment fragment, int transition) {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.setTransition(transition);
         fragmentTransaction.replace(R.id.content_pane, fragment);
-        fragmentTransaction.commitAllowingStateLoss();
+        int transactionId = fragmentTransaction.commitAllowingStateLoss();
         resetActionBarIcon();
+        return transactionId;
     }
 
+    /**
+     * Back works as follows:
+     * 1) If the user is in the folder list view, go back
+     * to the account default inbox.
+     * 2) If the user is in a conversation list
+     * that is not the inbox AND:
+     *  a) they got there by going through the folder
+     *  list view, go back to the folder list view.
+     *  b) they got there by using some other means (account dropdown), go back to the inbox.
+     * 3) If the user is in a conversation, go back to the conversation list they were last in.
+     * 4) If the user is in the conversation list for the default account inbox,
+     * back exits the app.
+     */
     @Override
     public boolean onBackPressed() {
         int mode = mViewMode.getMode();
-        if (mode == ViewMode.CONVERSATION_LIST) {
-            mActivity.finish();
-            return true;
-        } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.FOLDER_LIST) {
+        if (mode == ViewMode.FOLDER_LIST) {
+            mLastFolderListTransactionId = INVALID_ID;
+            transitionToInbox();
+        } else if (mode == ViewMode.CONVERSATION_LIST && !inInbox()) {
+            if (isTransactionIdValid(mLastFolderListTransactionId)) {
+                // Go back to previous label list.
+                mViewMode.enterFolderListMode();
+                mActivity.getFragmentManager().popBackStack(mLastFolderListTransactionId, 0);
+            } else {
+                // Go back to Inbox.
+                transitionToInbox();
+            }
+        } else if (mode == ViewMode.CONVERSATION) {
             transitionBackToConversationListMode();
+        } else {
+            mActivity.finish();
         }
-        return false;
+        return true;
     }
 
+    private void transitionToInbox() {
+        ConversationListContext listContext = ConversationListContext.forFolder(mContext,
+                mAccount, mInbox);
+        // Set the correct context for what the conversation view will be now.
+        onFolderChanged(mInbox);
+        if (isTransactionIdValid(mLastConversationListTransactionId)) {
+           // showConversationList(listContext);
+            mActivity.getFragmentManager().popBackStack(mLastConversationListTransactionId, 0);
+            resetActionBarIcon();
+        } else {
+            showConversationList(listContext);
+        }
+    }
+
+    private boolean isTransactionIdValid(int id) {
+        return id >= 0;
+    }
+
+    /**
+     * Up works as follows:
+     * 1) If the user is in a conversation list that is not the default account inbox,
+     * a conversation, or the folder list, up follows the rules of back.
+     * 2) If the user is in search results, up exits search
+     * mode and returns the user to whatever view they were in when they began search.
+     * 3) If the user is in the inbox, there is no up.
+     */
     @Override
     public boolean onUpPressed() {
         int mode = mViewMode.getMode();
-        if (mode == ViewMode.CONVERSATION_LIST || mode == ViewMode.CONVERSATION
+        if ((!inInbox() && mode == ViewMode.CONVERSATION_LIST) || mode == ViewMode.CONVERSATION
                 || mode == ViewMode.FOLDER_LIST) {
             // Same as go back.
             mActivity.onBackPressed();
@@ -138,6 +240,8 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     private void transitionBackToConversationListMode() {
+        mActivity.getFragmentManager().popBackStack(mLastConversationTransactionId,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE);
         mViewMode.enterConversationListMode();
         resetActionBarIcon();
     }

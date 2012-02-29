@@ -737,7 +737,7 @@ public abstract class AbstractActivityController implements ActivityController {
         @Override
         public void onPostExecute(ConversationListContext result) {
             mConvListContext = result;
-            setFolder(mConvListContext.mFolder);
+            setFolder(mConvListContext.folder);
             showConversationList(mConvListContext);
             mFetchAccountFolderTask = null;
         }
