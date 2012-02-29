@@ -192,6 +192,13 @@
     <item quantity="other" msgid="8918589141287976985">"Carpetas cambiadas"</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Resultados"</string>
+    <string name="searchMode" msgid="3329807422114758583">"Modo de búsqueda"</string>
+    <string name="searchConversationMode" msgid="8015441927706455618">"Buscar modo de conversación"</string>
+    <string name="setBackButton" msgid="3004728881963818222">"Establecer botón para volver"</string>
+    <string name="removeBackButton" msgid="860383341267568260">"Eliminar botón para volver"</string>
+    <string name="normalMode" msgid="4250277414924926730">"Establecer modo normal"</string>
+    <string name="searchResultMode" msgid="3564180712046711968">"Buscar modo de resultados"</string>
+    <string name="labelMode" msgid="1821987146443702635">"Establecer modo de etiqueta"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Buscando..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Reciente"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Ampliar información del destinatario"</string>

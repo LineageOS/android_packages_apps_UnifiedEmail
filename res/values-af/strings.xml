@@ -192,6 +192,13 @@
     <item quantity="other" msgid="8918589141287976985">"Het vouers verander."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Resultate"</string>
+    <string name="searchMode" msgid="3329807422114758583">"Soekmodus"</string>
+    <string name="searchConversationMode" msgid="8015441927706455618">"Soek gesprekmodus"</string>
+    <string name="setBackButton" msgid="3004728881963818222">"Stel Terugknoppie"</string>
+    <string name="removeBackButton" msgid="860383341267568260">"Verwyder Terug-knoppie"</string>
+    <string name="normalMode" msgid="4250277414924926730">"Stel normaalmodus"</string>
+    <string name="searchResultMode" msgid="3564180712046711968">"Soekresultaat-modus"</string>
+    <string name="labelMode" msgid="1821987146443702635">"Stel etiketmodus"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Soek tans…"</string>
     <string name="recent_labels" msgid="5539494776429934547">"Onlangs"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Vou ontvanger se details uit"</string>
@@ -212,10 +219,8 @@
     <string name="message_saved" msgid="7073947895562277576">"Boodskap as konsep gestoor."</string>
     <string name="sending_message" msgid="1498583163419122128">"Stuur tans boodskap…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Die adres <xliff:g id="WRONGEMAIL">%s</xliff:g> is ongeldig."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ Wys aangehaalde teks"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Versteek aangehaalde teks"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Klaar"</string>

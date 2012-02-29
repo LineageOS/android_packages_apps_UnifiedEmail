@@ -192,6 +192,13 @@
     <item quantity="other" msgid="8918589141287976985">"Mga binagong folder."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Mga resulta"</string>
+    <string name="searchMode" msgid="3329807422114758583">"Mode ng Paghahanap"</string>
+    <string name="searchConversationMode" msgid="8015441927706455618">"Mode ng Paghahanap sa Pag-uusap"</string>
+    <string name="setBackButton" msgid="3004728881963818222">"Itakda ang Button na Bumalik"</string>
+    <string name="removeBackButton" msgid="860383341267568260">"Alisin ang Button na Bumalik"</string>
+    <string name="normalMode" msgid="4250277414924926730">"Itakda sa Normal na Mode"</string>
+    <string name="searchResultMode" msgid="3564180712046711968">"Mode ng Resulta ng Paghahanap"</string>
+    <string name="labelMode" msgid="1821987146443702635">"Itakda ang Mode ng Label"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Naghahanap..."</string>
     <string name="recent_labels" msgid="5539494776429934547">"Kamakailan"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Palawakin ang mga detalye ng recipient"</string>
@@ -212,10 +219,8 @@
     <string name="message_saved" msgid="7073947895562277576">"Na-save ang mensahe bilang draft."</string>
     <string name="sending_message" msgid="1498583163419122128">"Ipinapadala ang mensahe…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Ang address na <xliff:g id="WRONGEMAIL">%s</xliff:g> ay di-wasto."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ Ipakita ang kasamang teksto"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Itago ang kasamang teksto"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Tapos na"</string>
