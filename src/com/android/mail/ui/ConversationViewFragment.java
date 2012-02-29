@@ -199,13 +199,12 @@ public final class ConversationViewFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(mContext, mConversation.messageListUri,
-                UIProvider.MESSAGE_PROJECTION, null, null, null);
+        return new MessageLoader(mContext, mConversation.messageListUri);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        MessageCursor messageCursor = new MessageCursor(data);
+        MessageCursor messageCursor = (MessageCursor) data;
         mWebView.loadDataWithBaseURL(mBaseUri, renderMessageBodies(messageCursor), "text/html",
                 "utf-8", null);
         mConversationContainer.setOverlayAdapter(
@@ -229,6 +228,19 @@ public final class ConversationViewFragment extends Fragment implements
     public void onTouchEvent(MotionEvent event) {
         // TODO: (mindyp) when there is an undo bar, check for event !in undo bar
         // if its not in undo bar, dismiss the undo bar.
+    }
+
+    private static class MessageLoader extends CursorLoader {
+
+        public MessageLoader(Context c, Uri uri) {
+            super(c, uri, UIProvider.MESSAGE_PROJECTION, null, null, null);
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            return new MessageCursor(super.loadInBackground());
+
+        }
     }
 
     private static class MessageCursor extends CursorWrapper {
