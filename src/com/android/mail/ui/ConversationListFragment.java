@@ -35,8 +35,8 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.mail.R;
 import com.android.mail.ConversationListContext;
+import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationItemView;
@@ -304,6 +304,10 @@ public final class ConversationListFragment extends ListFragment implements
 
         if (!mActivity.isChangingConfigurations()) {
             mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
+        }
+
+        if (mConversationListCursor != null) {
+            mConversationListCursor.removeListener(this);
         }
 
         super.onDestroyView();

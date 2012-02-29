@@ -277,7 +277,11 @@ public final class ConversationCursor implements Cursor {
      */
     public void addListener(ConversationListener listener) {
         synchronized (sListeners) {
-            sListeners.add(listener);
+            if (!sListeners.contains(listener)) {
+                sListeners.add(listener);
+            } else {
+                Log.d(TAG, "Ignoring duplicate add of listener");
+            }
         }
     }
 
