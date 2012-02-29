@@ -201,6 +201,10 @@ public final class ConversationListFragment extends ListFragment implements
         }
         mActivity = (ControllableActivity) activity;
         mCallbacks = mActivity.getListHandler();
+
+        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
+                mConversationListCursor, mSelectedSet, mAccount);
+        mListView.setAdapter(mListAdapter);
         // Don't need to add ourselves to our own set observer.
         // mActivity.getBatchConversations().addObserver(this);
         mActivity.setViewModeListener(this);
@@ -283,7 +287,6 @@ public final class ConversationListFragment extends ListFragment implements
 
         // Note - we manually save/restore the listview state.
         mListView.setSaveEnabled(false);
-
         return rootView;
     }
 
@@ -494,13 +497,8 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
-        // TODO: (mindyp) use real selected position.
-        int position = 0;
         mConversationListCursor = data;
-        // TODO(viki): The AnimatedAdapter shouldn't pass the selected set around like this.
-        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), position,
-                mConversationListCursor, mSelectedSet, mAccount);
-        mListView.setAdapter(mListAdapter);
+        mListAdapter.swapCursor(mConversationListCursor);
         mConversationListCursor.addListener(this);
         configureSearchResultHeader();
     }
