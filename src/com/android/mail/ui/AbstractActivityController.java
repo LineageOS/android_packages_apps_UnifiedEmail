@@ -271,6 +271,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (!folder.equals(mFolder)) {
             mRefreshInProgress = false;
             mFolder = folder;
+            mActionBarView.setFolder(mFolder);
             mActivity.getLoaderManager().restartLoader(FOLDER_CURSOR_LOADER, null, this);
         }
     }
@@ -586,6 +587,8 @@ public abstract class AbstractActivityController implements ActivityController {
                     onFolderChanged((Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER));
                 }
             }
+            // Update the active folder in the action bar.
+            mActionBarView.setFolder(mFolder);
         }
         // Create the accounts loader; this loads the acount switch spinner.
         mActivity.getLoaderManager().initLoader(ACCOUNT_CURSOR_LOADER, null, this);

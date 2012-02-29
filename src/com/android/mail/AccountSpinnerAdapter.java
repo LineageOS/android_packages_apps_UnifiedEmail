@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 
 /**
@@ -62,6 +63,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     private final int[] mUnreadCounts = {
             0, 2, 42
     };
+    private Folder mCurrentFolder;
 
     /**
      * When the user selects the spinner, a dropdown list of objects is shown. Each item in the
@@ -133,6 +135,14 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    /**
+     * Set the selected folder.
+     * @param folder
+     */
+    public void setFolder(Folder folder) {
+        mCurrentFolder = folder;
+    }
+
     @Override
     public int getCount() {
         // All the accounts, plus one header, and optionally some folders
@@ -171,6 +181,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         }
     }
 
+    private String getFolderLabel() {
+        return mCurrentFolder != null ? mCurrentFolder.name : "";
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         String folderName = "";
@@ -179,14 +193,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         switch (getType(position)) {
             case TYPE_ACCOUNT:
                 // The default Inbox for the given account
-                accountName = getAccountFolder(position);
-                folderName = "Inbox";
+                accountName = getAccountLabel(position);
+                folderName = getFolderLabel();
                 break;
             case TYPE_HEADER:
-                // We can never select the header, and we want the default view to be the Inbox.
-                // TODO: This should handle an empty account array
-                accountName = getAccountFolder(0);
-                folderName = "Inbox";
+                accountName = getAccountLabel(0);
                 break;
             default:
                 // Change the name of the current folder
@@ -264,7 +275,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 header.account.setText(label);
                 return convertView;
             case TYPE_ACCOUNT:
-                textLabel = getAccountFolder(position);
+                textLabel = getAccountLabel(position);
                 break;
             case TYPE_FOLDER:
                 final int offset = position - mNumAccounts - 1;
@@ -301,7 +312,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @param position
      * @return the label of the account at the given position.
      */
-    private String getAccountFolder(int position) {
+    private String getAccountLabel(int position) {
         if (position >= mNumAccounts) {
             return "";
         }

@@ -189,6 +189,16 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
         mActionBar.setSelectedNavigationItem(position);
     }
 
+    /**
+     * Called by the owner of the ActionBar to set the
+     * folder that is currently being displayed.
+     */
+    @Override
+    public void setFolder(Folder folder) {
+        mSpinner.setFolder(folder);
+        mSpinner.notifyDataSetChanged();
+    }
+
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
         final int type = mSpinner.getItemViewType(position);
@@ -199,6 +209,11 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
                 final Object item = mSpinner.getItem(position);
                 assert (item instanceof Account);
                 mAccount = (Account) item;
+                break;
+            case AccountSpinnerAdapter.TYPE_FOLDER:
+                final Object folder = mSpinner.getItem(position);
+                assert (folder instanceof Folder);
+                mCallback.onFolderChanged((Folder) folder);
                 break;
         }
         return false;
@@ -299,11 +314,6 @@ public final class MailActionBar extends LinearLayout implements ActionBarView {
                 ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME,
                 ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
         mActivity.getActionBar().setHomeButtonEnabled(true);
-    }
-
-    @Override
-    public void setFolder(String folder) {
-        // TODO(viki): Add this functionality to change the label.
     }
 
     @Override

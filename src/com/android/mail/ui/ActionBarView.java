@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.view.Menu;
 
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Folder;
 
 /**
  * ActionBarView simplifies supporting both MailActionBar and MailActionBarDeprecated (used for
@@ -68,10 +69,10 @@ public interface ActionBarView extends OnNavigationListener, ViewMode.ModeChange
     void updateActionBar(String[] mAccountNames, String currentAccount);
 
     /**
-     * Update the folder that the user is currently viewing??
+     * Update the folder that the user is currently viewing
      * @param folder
      */
-    void setFolder(String folder);
+    void setFolder(Folder folder);
 
     /**
      * Returns the menu ID for the menu in this actionbar.
