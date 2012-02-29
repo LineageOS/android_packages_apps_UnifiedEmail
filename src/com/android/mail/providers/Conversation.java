@@ -145,7 +145,33 @@ public class Conversation implements Parcelable {
         }
     }
 
+    /**
+     * Get if this conversation is marked as high priority.
+     */
+    public boolean isImportant() {
+        return priority == UIProvider.ConversationPriority.HIGH;
+    }
+
     // Below are methods that update Conversation data (update/delete)
+
+    /**
+     * Update an integer column for a single conversation (see updateBoolean below)
+     */
+    public int updateInt(Context context, String columnName, int value) {
+        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
+        conversations.add(this);
+        return updateInt(context, conversations, columnName, value);
+    }
+
+    /**
+     * Update an integer column for a group of conversations (see updateValues below)
+     */
+    public static int updateInt(Context context, Collection<Conversation> conversations,
+            String columnName, int value) {
+        ContentValues cv = new ContentValues();
+        cv.put(columnName, value);
+        return updateValues(context, conversations, cv);
+    }
 
     /**
      * Update a boolean column for a single conversation (see updateBoolean below)

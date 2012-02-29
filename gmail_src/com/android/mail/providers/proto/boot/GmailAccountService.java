@@ -151,7 +151,8 @@ public class GmailAccountService extends IntentService {
                     AccountCapabilities.THREADED_CONVERSATIONS |
                     AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV |
                     AccountCapabilities.UNDO |
-                    AccountCapabilities.HELP_CONTENT);
+                    AccountCapabilities.HELP_CONTENT |
+                    AccountCapabilities.MARK_IMPORTANT);
             final AccountCacheProvider.CachedAccount cachedAccount =
                     new AccountCacheProvider.CachedAccount(gmailAccountId,
                             account.name,

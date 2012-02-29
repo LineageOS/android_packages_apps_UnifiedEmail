@@ -193,6 +193,10 @@ public class UIProvider {
          * Whether the account provides help content.
          */
         public static final int HELP_CONTENT = 0x4000;
+        /**
+         * Whether the account provides a mechanism for marking conversations as important.
+         */
+        public static final int MARK_IMPORTANT = 0x8000;
     }
 
     public static final class AccountColumns {

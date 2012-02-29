@@ -149,6 +149,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             case R.id.change_folder:
                 showChangeFoldersDialog();
                 break;
+            case R.id.mark_important:
+                markConversationsImportant(true);
+                break;
+            case R.id.mark_not_important:
+                markConversationsImportant(false);
+                break;
             default:
                 handled = false;
                 break;
@@ -160,6 +166,16 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         Collection<Conversation> conversations = mSelectionSet.values();
         // TODO: Interpret properly (rather than as "mark read")
         Conversation.updateBoolean(mContext, conversations, ConversationColumns.READ, read);
+        mSelectionSet.clear();
+        // Redraw with changes
+        mListAdapter.notifyDataSetChanged();
+    }
+
+    private void markConversationsImportant(boolean important) {
+        Collection<Conversation> conversations = mSelectionSet.values();
+        int priority = important ? UIProvider.ConversationPriority.HIGH
+                : UIProvider.ConversationPriority.LOW;
+        Conversation.updateInt(mContext, conversations, ConversationColumns.PRIORITY, priority);
         mSelectionSet.clear();
         // Redraw with changes
         mListAdapter.notifyDataSetChanged();
@@ -247,6 +263,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         Collection<Conversation> conversations = mSelectionSet.values();
         boolean showStar = false;
         boolean showMarkUnread = false;
+        boolean showMarkImportant = false;
+
         for (Conversation conversation : conversations) {
             if (!conversation.starred) {
                 showStar = true;
@@ -254,7 +272,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             if (conversation.read) {
                 showMarkUnread = true;
             }
-            if (showMarkUnread && showStar) {
+            if (!conversation.isImportant()) {
+                showMarkImportant = true;
+            }
+            if (showStar && showMarkUnread && showMarkImportant) {
                 break;
             }
         }
@@ -274,6 +295,13 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
         final MenuItem mute = menu.findItem(R.id.mute);
         mute.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.MUTE));
+        final MenuItem markImportant = menu.findItem(R.id.mark_important);
+        markImportant.setVisible(showMarkImportant
+                && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+        final MenuItem markNotImportant = menu.findItem(R.id.mark_not_important);
+        markNotImportant.setVisible(!showMarkImportant
+                && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+
         return true;
     }
 
