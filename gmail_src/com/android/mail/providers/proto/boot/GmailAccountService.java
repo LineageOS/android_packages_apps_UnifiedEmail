@@ -15,22 +15,25 @@
  */
 package com.android.mail.providers.protos.boot;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.ContentObserver;
+import android.os.Handler;
+import android.os.Looper;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.AccountCacheProvider.CachedAccount;
 import com.android.mail.providers.protos.mock.MockUiProvider;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
-
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerFuture;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
+import com.android.mail.utils.LogUtils;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 
-import java.io.IOException;
 import java.util.Map;
 
 
@@ -45,46 +48,15 @@ public class GmailAccountService extends IntentService {
 
     private static final Uri BASE_SETTINGS_URI = Uri.parse("setting://gmail/");
 
+    private static final Uri ACCOUNTS_URI =
+            Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/accounts");
+
     public static final String DEFAULT_HELP_URL =
             "http://www.google.com/support/mobile/?hl=%locale%";
 
+    private final static String LOG_TAG = new LogUtils().getLogTag();
 
-    private static Uri getAccountUri(String account) {
-        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/account/" + account);
-    }
-
-    private static Uri getAccountFoldersUri(String account) {
-        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/labels");
-    }
-
-    private static Uri getAccountSendMailUri(String account) {
-        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/sendNewMessage");
-    }
-
-    private static Uri getAccountUndoUri(String account) {
-        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/undo");
-    }
-
-    private static Uri getAccountSettingUri(String account) {
-        return BASE_SETTINGS_URI.buildUpon().appendQueryParameter("account", account).build();
-    }
-
-    private static Uri getHelpUri() {
-        // TODO(pwestbro): allow this url to be changed via Gservices
-        return Uri.parse(DEFAULT_HELP_URL);
-    }
-
-    private static Uri getComposeUri(String account) {
-        return Uri.parse("gmailfrom://gmail-ls/account/" + account);
-    }
-
-    private static Uri getAccountSettingsQueryUri(String account) {
-        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/settings");
-    }
-
-    private static Uri getAccountSaveDraftUri(String account) {
-        return Uri.parse(GMAIL_UI_PROVIDER_BASE_URI_STRING + "/" + account + "/saveNewMessage");
-    }
+    private static GmailAccountListObserver sGmailAccountListObserver = null;
 
     public GmailAccountService() {
         super("GmailAccountService");
@@ -102,76 +74,56 @@ public class GmailAccountService extends IntentService {
     private void getAndRegisterGmailAccounts() {
         // Get the list of Google accounts that have the mail feature, and register thiese with
         // the AccountCacheProvider
-        AccountManagerFuture<Account[]> future;
-        future = AccountManager.get(this).getAccountsByTypeAndFeatures(
-                "com.google",
-                // Ideally we would call GoogleLoginServiceConstants.featureForService("mail") here,
-                // but we can't depend on Google code from this project.  Just use the resulting
-                // value
-                new String[] { "service_mail" },
-                null, null);
-        try {
-            // Block this IntentService on the result because this thread may not be around later
-            // to handle anything if it's killed in the interim.  This is a blockable non-UI thread.
-            Account[] accounts = future.getResult();
 
-            registerGmailAccounts(accounts);
-        } catch (OperationCanceledException oce) {
-            // should not happen.
-        } catch (IOException ioe) {
-            // should not happen
-        } catch (AuthenticatorException ae) {
-            // should not happen
+        final ContentResolver resolver = getContentResolver();
+        // Get the accounts from Gmail
+        // NOTE: Once Gmail & Unified Email are merged, this service should be removed
+        final Uri uri = Uri.parse("content://com.android.gmail.ui/accounts");
+        final Cursor c = resolver.query(uri, UIProvider.ACCOUNTS_PROJECTION, null, null,
+                null);
+        if (c == null) {
+            LogUtils.d(LOG_TAG, "null account cursor returned");
+            return;
+        }
+        try {
+            // This is a work around to make sure that changes in the underlying provider changes
+            // that UnifiedEmail is updates with those change
+            // TODO(pwestbro): add AccountCacheProvider#addAccounts(Uri uri, Cursor c) that will
+            // both create the account objects and registers for notifications from the cursor
+            if (sGmailAccountListObserver == null) {
+
+                // The current thread may not be around after this IntentService stops, make
+                // sure to handle notifications on the main thread
+                final Handler notificationHandler = new Handler(Looper.getMainLooper());
+
+                sGmailAccountListObserver =
+                        new GmailAccountListObserver(this, notificationHandler);
+
+                resolver.registerContentObserver(ACCOUNTS_URI, true,
+                        sGmailAccountListObserver);
+            }
+            while (c.moveToNext()) {
+                Account a = new Account(c);
+                AccountCacheProvider.addAccount(new CachedAccount(a));
+            }
+        } finally {
+            c.close();
         }
     }
 
-    private void registerGmailAccounts(Account[] accounts) {
-        for (int i = 0; i < accounts.length; i++) {
-            final Account account = accounts[i];
+    static class GmailAccountListObserver extends ContentObserver {
+        final Context mContext;
+        GmailAccountListObserver(Context context, Handler handler) {
+            super(handler);
+            mContext = context;
+        }
 
-            final int gmailAccountId = account.hashCode();
-
-            // NOTE: This doesn't completely populate the provider.  A query for the account uri
-            // will not return a cursor.
-            final Map<String, Object> mockAccountMap =
-                    MockUiProvider.createAccountDetailsMap(i % MockUiProvider.NUM_MOCK_ACCOUNTS,
-                            false /* don't cache */);
-            // TODO: where should this really be stored?
-            long capabilities = Long.valueOf(
-                    AccountCapabilities.SYNCABLE_FOLDERS |
-                    AccountCapabilities.REPORT_SPAM |
-                    AccountCapabilities.ARCHIVE |
-                    AccountCapabilities.MUTE |
-                    AccountCapabilities.SERVER_SEARCH |
-                    AccountCapabilities.FOLDER_SERVER_SEARCH |
-                    AccountCapabilities.SANITIZED_HTML |
-                    AccountCapabilities.DRAFT_SYNCHRONIZATION |
-                    AccountCapabilities.MULTIPLE_FROM_ADDRESSES |
-                    AccountCapabilities.LOCAL_SEARCH |
-                    AccountCapabilities.THREADED_CONVERSATIONS |
-                    AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV |
-                    AccountCapabilities.UNDO |
-                    AccountCapabilities.HELP_CONTENT |
-                    AccountCapabilities.MARK_IMPORTANT);
-            final AccountCacheProvider.CachedAccount cachedAccount =
-                    new AccountCacheProvider.CachedAccount(gmailAccountId,
-                            account.name,
-                            getAccountUri(account.name),
-                            capabilities,
-                            getAccountFoldersUri(account.name),
-                            (Uri) mockAccountMap.get(AccountColumns.SEARCH_URI),
-                            (Uri) mockAccountMap.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
-                            getAccountSaveDraftUri(account.name),
-                            getAccountSendMailUri(account.name),
-                            (Uri) mockAccountMap.get(AccountColumns.EXPUNGE_MESSAGE_URI),
-                            getAccountUndoUri(account.name),
-                            getAccountSettingUri(account.name),
-                            getAccountSettingsQueryUri(account.name),
-                            getHelpUri(),
-                            0,
-                            getComposeUri(account.name));
-
-            AccountCacheProvider.addAccount(cachedAccount);
+        @Override
+        public void onChange(boolean selfChange) {
+            LogUtils.d(LOG_TAG, "GmailAccountListObserver#onChange called.");
+            // Send an intent to cause the account list to be requeried
+            final Intent intent = new Intent(AccountReceiver.ACTION_PROVIDER_CREATED);
+            mContext.sendBroadcast(intent);
         }
     }
 }

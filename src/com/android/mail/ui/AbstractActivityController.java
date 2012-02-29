@@ -27,6 +27,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,6 +55,11 @@ import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
 
 /**
  * This is an abstract implementation of the Activity Controller. This class
@@ -116,6 +122,7 @@ public abstract class AbstractActivityController implements ActivityController {
             mActivity.invalidateOptionsMenu();
         }
     };
+    private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     private static final int ACCOUNT_CURSOR_LOADER = 0;
     private static final int FOLDER_CURSOR_LOADER = 1;
@@ -636,22 +643,35 @@ public abstract class AbstractActivityController implements ActivityController {
         return null;
     }
 
-    /**
-     * Return whether the given account exists in the cursor.
-     *
-     * @param accountCursor
-     * @param account
-     * @return true if the account exists in the account cursor, false
-     *         otherwise.
-     */
-    private boolean missingFromCursor(Cursor accountCursor, Account account) {
-        if (account == null || !accountCursor.moveToFirst())
+    private boolean accountsUpdated(Cursor accountCursor) {
+        // Check to see if the current account hasn't been set, or the account cursor is empty
+        if (mAccount == null || !accountCursor.moveToFirst()) {
             return true;
+        }
+
+        // Check to see if the number of accounts are different, from the number we saw on the last
+        // updated
+        if (mCurrentAccountUris.size() != accountCursor.getCount()) {
+            return true;
+        }
+
+        // Check to see if the account list is different or if the current account is not found in
+        // the cursor.
+        boolean foundCurrentAccount = false;
         do {
-            if (account.equals(new Account(accountCursor)))
-                return false;
+            final Uri accountUri =
+                    Uri.parse(accountCursor.getString(UIProvider.ACCOUNT_URI_COLUMN));
+            if (!foundCurrentAccount && mAccount.uri.equals(accountUri)) {
+                foundCurrentAccount = true;
+            }
+
+            if (!mCurrentAccountUris.contains(accountUri)) {
+                return true;
+            }
         } while (accountCursor.moveToNext());
-        return true;
+
+        // As long as we found the current account, the list hasn't been updated
+        return !foundCurrentAccount;
     }
 
     /**
@@ -660,19 +680,37 @@ public abstract class AbstractActivityController implements ActivityController {
      *
      * @param loader
      * @param accounts cursor into the AccountCache
-     * @param currentAccountMissing whether the current account is missing from the set of accounts
      * @return true if the update was successful, false otherwise
      */
-    private boolean updateAccounts(Loader<Cursor> loader, Cursor accounts,
-            boolean currentAccountMissing) {
+    private boolean updateAccounts(Loader<Cursor> loader, Cursor accounts) {
         if (accounts == null || !accounts.moveToFirst()) {
             return false;
         }
-        Account newAccount = (mAccount == null || currentAccountMissing) ?
-                new Account(accounts) : mAccount;
-        onAccountChanged(newAccount);
-        fetchAccountFolderInfo();
+
         final Account[] allAccounts = Account.getAllAccounts(accounts);
+
+        // Save the uris for the accounts
+        mCurrentAccountUris.clear();
+        for (Account account : allAccounts) {
+            mCurrentAccountUris.add(account.uri);
+        }
+
+        final Account newAccount;
+        if (mAccount == null || !mCurrentAccountUris.contains(mAccount.uri)) {
+            accounts.moveToFirst();
+            newAccount = new Account(accounts);
+        } else {
+            newAccount = mAccount;
+        }
+        // only bother updating the account/folder if the new account is different than the
+        // existing one
+        final boolean refetchFolderInfo = !newAccount.equals(mAccount);
+        onAccountChanged(newAccount);
+
+        if(refetchFolderInfo) {
+            fetchAccountFolderInfo();
+        }
+
         mActionBarView.setAccounts(allAccounts);
         return (allAccounts.length > 0);
     }
@@ -686,9 +724,10 @@ public abstract class AbstractActivityController implements ActivityController {
         // if the current account has vanished.
         final int id = loader.getId();
         if (id == ACCOUNT_CURSOR_LOADER) {
-            final boolean currentAccountMissing = missingFromCursor(data, mAccount);
-            if (!isLoaderInitialized || currentAccountMissing) {
-                isLoaderInitialized = updateAccounts(loader, data, currentAccountMissing);
+
+            final boolean accountListUpdated = accountsUpdated(data);
+            if (!isLoaderInitialized || accountListUpdated) {
+                isLoaderInitialized = updateAccounts(loader, data);
             }
         } else if (id == FOLDER_CURSOR_LOADER) {
             // Check status of the cursor.
