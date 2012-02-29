@@ -30,7 +30,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
 
 /**
- * An adapter to return the list of accounts and labels for the Account Spinner.
+ * An adapter to return the list of accounts and folders for the Account Spinner.
  * This class keeps the account and folder information and returns appropriate views.
  */
 public class AccountSpinnerAdapter extends BaseAdapter {
@@ -53,7 +53,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     static final int NAME_COLUMN = 2;
     /**
-     * Fake labels for now
+     * Fake folders for now
      */
     private final String[] mFolders;
     /**
@@ -68,7 +68,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * dropdown list has two textviews.
      */
     private static class DropdownHolder {
-        TextView label;
+        TextView folder;
         TextView unread_count;
     }
 
@@ -80,10 +80,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     }
 
     /**
-     * The spinner shows the name of the label, the account name, and the unread count.
+     * The spinner shows the name of the folder, the account name, and the unread count.
      */
     private static class ViewHolder {
-        TextView label;
+        TextView folder;
         TextView account;
         TextView unread_count;
     }
@@ -135,7 +135,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // All the accounts, plus one header, and optionally some labels
+        // All the accounts, plus one header, and optionally some folders
         return mNumAccounts + 1 + mFolders.length;
     }
 
@@ -179,17 +179,17 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         switch (getType(position)) {
             case TYPE_ACCOUNT:
                 // The default Inbox for the given account
-                accountName = getAccountLabel(position);
+                accountName = getAccountFolder(position);
                 folderName = "Inbox";
                 break;
             case TYPE_HEADER:
                 // We can never select the header, and we want the default view to be the Inbox.
                 // TODO: This should handle an empty account array
-                accountName = getAccountLabel(0);
+                accountName = getAccountFolder(0);
                 folderName = "Inbox";
                 break;
             default:
-                // Change the name of the current label
+                // Change the name of the current folder
                 final int offset = position - mNumAccounts - 1;
                 accountName = (mCurrentAccount == null) ? "" : mCurrentAccount.name;
                 folderName = mFolders[offset];
@@ -197,24 +197,22 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 break;
         }
 
-        // Return a view with the label on the first line and the account name on the second.
+        // Return a view with the folder on the first line and the account name on the second.
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.account_switch_spinner_item, null);
             holder = new ViewHolder();
             holder.account =
                     (TextView) convertView.findViewById(R.id.account_spinner_account_name);
-            holder.label =
-                    (TextView) convertView.findViewById(R.id.account_spinner_label);
+            holder.folder =
+                    (TextView) convertView.findViewById(R.id.account_spinner_folder);
             holder.unread_count =
                     (TextView) convertView.findViewById(R.id.unread);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        // TODO(viki): Fill with a real label here.
-        // TODO(viki): Also rename label to folder.
-        holder.label.setText(folderName);
+        holder.folder.setText(folderName);
         holder.account.setText(accountName);
         // Fake unread counts for now.
         holder.unread_count.setText(String.valueOf(unreadCount));
@@ -266,7 +264,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 header.account.setText(label);
                 return convertView;
             case TYPE_ACCOUNT:
-                textLabel = getAccountLabel(position);
+                textLabel = getAccountFolder(position);
                 break;
             case TYPE_FOLDER:
                 final int offset = position - mNumAccounts - 1;
@@ -279,7 +277,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         if (convertView == null || !(convertView.getTag() instanceof DropdownHolder)) {
             convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
             dropdown = new DropdownHolder();
-            dropdown.label = (TextView) convertView.findViewById(R.id.account_spinner_accountname);
+            dropdown.folder = (TextView) convertView.findViewById(R.id.account_spinner_accountname);
             dropdown.unread_count =
                     (TextView) convertView.findViewById(R.id.account_spinner_unread_count);
             convertView.setTag(dropdown);
@@ -287,7 +285,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             dropdown = (DropdownHolder) convertView.getTag();
         }
 
-        dropdown.label.setText(textLabel);
+        dropdown.folder.setText(textLabel);
         dropdown.unread_count.setText(String.valueOf(unreadCount));
         if (unreadCount == 0) {
             dropdown.unread_count.setVisibility(View.GONE);
@@ -299,11 +297,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     }
 
     /**
-     * Returns the name of the label at the given position in the spinner.
+     * Returns the name of the folder at the given position in the spinner.
      * @param position
      * @return the label of the account at the given position.
      */
-    private String getAccountLabel(int position) {
+    private String getAccountFolder(int position) {
         if (position >= mNumAccounts) {
             return "";
         }

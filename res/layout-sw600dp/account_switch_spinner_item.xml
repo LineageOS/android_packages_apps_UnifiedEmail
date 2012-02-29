@@ -40,7 +40,7 @@
             android:orientation="vertical"
             android:gravity="center_vertical">
             <TextView
-                android:id="@+id/account_spinner_label"
+                android:id="@+id/account_spinner_folder"
                 style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title.Inverse"
                 android:singleLine="true"
                 android:ellipsize="end"
