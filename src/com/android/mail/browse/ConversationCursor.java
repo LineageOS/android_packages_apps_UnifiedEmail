@@ -36,7 +36,6 @@ import android.util.Log;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationOperations;
-import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
@@ -107,13 +106,8 @@ public final class ConversationCursor implements Cursor {
     // Parameters passed to the underlying query
     private static Uri qUri;
     private static String[] qProjection;
-    private static String qSelection;
-    private static String[] qSelectionArgs;
-    private static String qSortOrder;
 
     private ConversationCursor(Cursor cursor, Activity activity, String messageListColumn) {
-        sActivity = activity;
-        mResolver = activity.getContentResolver();
         sConversationCursor = this;
         // If we have an existing underlying cursor, make sure it's closed
         if (sUnderlyingCursor != null) {
@@ -134,20 +128,6 @@ public final class ConversationCursor implements Cursor {
     }
 
     /**
-     * Determine if two strings (which might be null) are the same
-     * @param str1 a String or null
-     * @param str2 a String or null
-     * @return true if the strings are both null or equals
-     */
-    private static boolean nullOrEquals(String str1, String str2) {
-        if (str1 == null) {
-            return str2 == null;
-        } else {
-            return str1.equals(str2);
-        }
-    }
-
-    /**
      * Create a ConversationCursor; this should be called by the ListActivity using that cursor
      * @param activity the activity creating the cursor
      * @param messageListColumn the column used for individual cursor items
@@ -160,40 +140,49 @@ public final class ConversationCursor implements Cursor {
      */
     public static ConversationCursor create(Activity activity, String messageListColumn, Uri uri,
             String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        // First, let's see if we already have a cursor
-        if (sConversationCursor != null) {
-            // If it's the same, just clean up
-            if (qUri.equals(uri) && !sRefreshRequired && !sRefreshInProgress &&
-                    nullOrEquals(selection, qSelection) && nullOrEquals(sortOrder, qSortOrder)) {
-                if (sRefreshReady) {
-                    // If we already have a refresh ready, just sync() it
-                    LogUtils.d(TAG, "Create with refreshed cursor; sync");
-                    sConversationCursor.sync();
-
-                } else {
-                    // Position the cursor before the first item (as it would be if new), reset
-                    // the cache, and return as new
-                    LogUtils.d(TAG, "Create without refresh; reset cursor");
-                    sConversationCursor.moveToPosition(-1);
-                    sConversationCursor.mPosition = -1;
-                    synchronized (sCacheMapLock) {
-                        sCacheMap.clear();
+        sActivity = activity;
+        mResolver = activity.getContentResolver();
+        if (selection != null || sortOrder != null) {
+            throw new IllegalArgumentException(
+                    "Selection and sort order aren't allowed in ConversationCursors");
+        }
+        synchronized (sCacheMapLock) {
+            // First, let's see if we already have a cursor
+            if (sConversationCursor != null) {
+                // If it's the same, just clean up
+                if (qUri.equals(uri) && !sRefreshRequired && !sRefreshInProgress) {
+                    if (sRefreshReady) {
+                        // If we already have a refresh ready, just sync() it
+                        Log.d(TAG, "Create: refreshed cursor ready, sync");
+                        sConversationCursor.sync();
+                    } else {
+                        // Position the cursor before the first item (as it would be if new), reset
+                        // the cache, and return as new
+                        Log.d(TAG, "Create: cursor good, reset position and clear map");
+                        sConversationCursor.moveToPosition(-1);
+                        sConversationCursor.mPosition = -1;
+                        synchronized (sCacheMapLock) {
+                            sCacheMap.clear();
+                        }
                     }
+                } else {
+                    // Set qUri/qProjection these in case they changed
+                    Log.d(TAG, "Create: new query or refresh needed, query/sync");
+                    sRequeryCursor = doQuery(uri, projection);
+                    sConversationCursor.sync();
                 }
                 return sConversationCursor;
-            } else {
-                LogUtils.d(TAG, "Create with new query; closing existing ConversationCursor");
-                sConversationCursor.close();
             }
+            // Create new ConversationCursor
+            Log.d(TAG, "Create: initial creation");
+            return new ConversationCursor(doQuery(uri, projection), activity, messageListColumn);
         }
+    }
+
+    private static Cursor doQuery(Uri uri, String[] projection) {
         qUri = uri;
         qProjection = projection;
-        qSelection = selection;
-        qSelectionArgs = selectionArgs;
-        qSortOrder = sortOrder;
-        Cursor cursor = activity.getContentResolver().query(uri, projection, selection,
-                selectionArgs, sortOrder);
-        return new ConversationCursor(cursor, activity, messageListColumn);
+        return mResolver.query(qUri, qProjection, null, null, null);
     }
 
     /**
@@ -416,16 +405,20 @@ public final class ConversationCursor implements Cursor {
     // NOTE: We don't like the name (it implies syncing with the server); suggestions gladly
     // taken - reset? syncToUnderlying? completeRefresh? align?
     public void sync() {
-        if (DEBUG) {
-            Log.d(TAG, "[sync() called]");
+        synchronized (sCacheMapLock) {
+            if (DEBUG) {
+                Log.d(TAG, "[sync() called]");
+            }
+            if (sRequeryCursor == null) {
+                // This can happen during an animated deletion, if the UI isn't keeping track
+                // If we have no new data, this is a noop
+                Log.w(TAG, "UI calling sync() out of sequence");
+            }
+            resetCursor(sRequeryCursor);
+            sRequeryCursor = null;
+            sRefreshInProgress = false;
+            sRefreshReady = false;
         }
-        if (sRequeryCursor == null) {
-            throw new IllegalStateException("Can't swap cursors; no requery done");
-        }
-        resetCursor(sRequeryCursor);
-        sRequeryCursor = null;
-        sRefreshInProgress = false;
-        sRefreshReady = false;
     }
 
     public boolean isRefreshRequired() {
@@ -446,6 +439,7 @@ public final class ConversationCursor implements Cursor {
         synchronized(sCacheMapLock) {
             // Mark the requery closed
             sRefreshInProgress = false;
+            sRefreshReady = false;
             // If we have the cursor, close it; otherwise, it will get closed when the query
             // finishes (it checks sRequeryInProgress)
             if (sRequeryCursor != null) {
@@ -533,12 +527,12 @@ public final class ConversationCursor implements Cursor {
             @Override
             public void run() {
                 // Get new data
-                sRequeryCursor =
-                        mResolver.query(qUri, qProjection, qSelection, qSelectionArgs, qSortOrder);
+                sRequeryCursor = doQuery(qUri, qProjection);
                 // Make sure window is full
                 synchronized(sCacheMapLock) {
                     if (sRefreshInProgress) {
                         sRequeryCursor.getCount();
+                        sRefreshReady = true;
                         sActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -551,7 +545,6 @@ public final class ConversationCursor implements Cursor {
                                             listener.onRefreshReady();
                                         }
                                     }
-                                    sRefreshReady = true;
                                 }
                             }});
                     } else {
