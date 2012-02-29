@@ -48,6 +48,7 @@ public class Message implements Parcelable {
     public String joinedAttachmentInfos;
     public String saveUri;
     public String sendUri;
+    public boolean alwaysShowImages;
 
     @Override
     public int describeContents() {
@@ -80,9 +81,7 @@ public class Message implements Parcelable {
         dest.writeString(joinedAttachmentInfos);
         dest.writeString(saveUri);
         dest.writeString(sendUri);
-    }
-
-    public Message() {
+        dest.writeInt(alwaysShowImages ? 1 : 0);
     }
 
     private Message(Parcel in) {
@@ -110,6 +109,11 @@ public class Message implements Parcelable {
         joinedAttachmentInfos = in.readString();
         saveUri = in.readString();
         sendUri = in.readString();
+        alwaysShowImages = in.readInt() != 0;
+    }
+
+    public Message() {
+
     }
 
     @Override
@@ -164,6 +168,7 @@ public class Message implements Parcelable {
                     .getString(UIProvider.MESSAGE_SAVE_URI_COLUMN);
             sendUri = cursor
                     .getString(UIProvider.MESSAGE_SEND_URI_COLUMN);
+            alwaysShowImages = cursor.getInt(UIProvider.ALWAYS_SHOW_IMAGES_COLUMN) != 0;
         }
     }
 }

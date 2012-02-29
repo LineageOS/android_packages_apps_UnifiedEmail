@@ -623,7 +623,8 @@ public class UIProvider {
         MessageColumns.MESSAGE_FLAGS,
         MessageColumns.JOINED_ATTACHMENT_INFOS,
         MessageColumns.SAVE_MESSAGE_URI,
-        MessageColumns.SEND_MESSAGE_URI
+        MessageColumns.SEND_MESSAGE_URI,
+        MessageColumns.ALWAYS_SHOW_IMAGES
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -657,6 +658,7 @@ public class UIProvider {
     public static final int MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN = 21;
     public static final int MESSAGE_SAVE_URI_COLUMN = 22;
     public static final int MESSAGE_SEND_URI_COLUMN = 23;
+    public static final int ALWAYS_SHOW_IMAGES_COLUMN = 24;
 
     public static final class MessageFlags {
         public static final int STARRED =       1 << 0;
@@ -764,6 +766,14 @@ public class UIProvider {
          * message.
          */
         public static final String SEND_MESSAGE_URI = "sendMessageUri";
+
+        /**
+         * This integer column represents whether the user has specified that images should always
+         * be shown.  The value of "1" indicates that the user has specified that images should be
+         * shown, while the value of "0" indicates that the user should be prompted before loading
+         * any external images.
+         */
+        public static final String ALWAYS_SHOW_IMAGES = "alwaysShowImages";
 
         private MessageColumns() {}
     }
