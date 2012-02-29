@@ -566,29 +566,24 @@ public abstract class AbstractActivityController implements ActivityController {
         } else {
             final Intent intent = mActivity.getIntent();
             if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
+                if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
+                    mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                    updateHelpMenuItem();
+                }
+                if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
+                    // Open the folder.
+                    LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
+                            intent.getParcelableExtra(Utils.EXTRA_FOLDER));
+                    onFolderChanged((Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER));
+                }
                 if (intent.hasExtra(Utils.EXTRA_CONVERSATION)) {
                     // Open the conversation.
                     LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
                             intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                    mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                    updateHelpMenuItem();
-                    mFolder = ((Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER));
-                    mConvListContext = ConversationListContext.forIntent(mContext, mAccount,
-                            mActivity.getIntent());
-                    showConversationList(mConvListContext);
                     showConversation((Conversation) intent
                             .getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                } else if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
-                    // Open the folder.
-                    LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
-                            intent.getParcelableExtra(Utils.EXTRA_FOLDER));
-                    mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                    updateHelpMenuItem();
-                    onFolderChanged((Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER));
                 }
             }
-            // Update the active folder in the action bar.
-            mActionBarView.setFolder(mFolder);
         }
         // Create the accounts loader; this loads the acount switch spinner.
         mActivity.getLoaderManager().initLoader(ACCOUNT_CURSOR_LOADER, null, this);
