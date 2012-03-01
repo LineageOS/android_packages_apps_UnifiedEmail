@@ -74,7 +74,6 @@ import com.android.mail.R;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.android.ex.chips.RecipientEditTextView;
-import com.google.android.gm.persistence.Persistence;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
