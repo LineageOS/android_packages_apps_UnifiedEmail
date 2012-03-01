@@ -29,6 +29,8 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.RecentFolderList;
+import com.android.mail.utils.LogUtils;
 
 /**
  * An adapter to return the list of accounts and folders for the Account Spinner.
@@ -54,15 +56,15 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     static final int NAME_COLUMN = 2;
     /**
-     * Fake folders for now
+     * An object that provides a collection of recent folders, per account.
      */
-    private final String[] mFolders;
+    private RecentFolderList mRecentFolders;
     /**
-     *  Fake unread counts
+     * The actual collection of sorted recent folders obtained from {@link #mRecentFolders}
      */
-    private final int[] mUnreadCounts = {
-            0, 2, 42
-    };
+    private Folder[] mRecentFolderList = new Folder[0];
+
+    /** The folder currently being viewed */
     private Folder mCurrentFolder;
 
     /**
@@ -117,11 +119,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     public AccountSpinnerAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
-        // Fake folder information
-        mFolders = new String[3];
-        mFolders[0] = "Drafts -fake";
-        mFolders[1] = "Sent -fake";
-        mFolders[1] = "Starred -fake";
     }
 
     /**
@@ -140,6 +137,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void setCurrentFolder(Folder folder) {
         mCurrentFolder = folder;
+        mRecentFolderList = mRecentFolders.changeCurrentFolder(folder);
     }
 
     /**
@@ -148,12 +146,15 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void setCurrentAccount(Account account) {
         mCurrentAccount = account;
+        mRecentFolders = new RecentFolderList(mCurrentAccount);
+        mRecentFolderList = mRecentFolders.getSortedArray(mCurrentFolder);
+        notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        // All the accounts, plus one header, and optionally some folders
-        return mNumAccounts + 1 + mFolders.length;
+        // All the accounts, plus one header, plus recent folders
+        return mNumAccounts + 1 + mRecentFolderList.length;
     }
 
     @Override
@@ -164,7 +165,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             case TYPE_HEADER:
                 return "account spinner header";
             default:
-                return mFolders[position - mNumAccounts - 1];
+                // The first few positions have accounts, and then the header.
+                final int offset = position - mNumAccounts - 1;
+                // Return the name of the folder at this location.
+                return mRecentFolderList[offset].name;
         }
     }
 
@@ -210,8 +214,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 // Change the name of the current folder
                 final int offset = position - mNumAccounts - 1;
                 accountName = (mCurrentAccount == null) ? "" : mCurrentAccount.name;
-                folderName = mFolders[offset];
-                unreadCount = mUnreadCounts[offset];
+                final Folder folder = mRecentFolderList[offset];
+                folderName = folder.name;
+                unreadCount = folder.unreadCount;
                 break;
         }
 
@@ -286,8 +291,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 break;
             case TYPE_FOLDER:
                 final int offset = position - mNumAccounts - 1;
-                textLabel = mFolders[offset];
-                unreadCount = mUnreadCounts[offset];
+                final Folder folder = mRecentFolderList[offset];
+                textLabel = folder.name;
+                unreadCount = folder.unreadCount;
                 break;
         }
 
