@@ -853,6 +853,7 @@ public class UIProvider {
             SettingsColumns.CONFIRM_DELETE,
             SettingsColumns.CONFIRM_ARCHIVE,
             SettingsColumns.CONFIRM_SEND,
+            SettingsColumns.DEFAULT_INBOX
     };
 
     public static final class AutoAdvance {
@@ -938,5 +939,9 @@ public class UIProvider {
          * be shown when a send action is performed.
          */
         public static final String CONFIRM_SEND = "confirm_send";
+        /**
+         * String folder containing the serialized default inbox folder for an account.
+         */
+        public static final String DEFAULT_INBOX = "default_inbox";
     }
 }
