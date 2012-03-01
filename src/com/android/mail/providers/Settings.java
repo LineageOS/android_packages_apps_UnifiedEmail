@@ -17,8 +17,10 @@
 package com.android.mail.providers;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * Model to hold Settings for an account.
@@ -33,7 +35,7 @@ public class Settings implements Parcelable {
     public boolean confirmDelete;
     public boolean confirmArchive;
     public boolean confirmSend;
-    public Folder defaultInbox;
+    public Uri defaultInbox;
 
     public Settings(Parcel inParcel) {
         signature = inParcel.readString();
@@ -45,7 +47,8 @@ public class Settings implements Parcelable {
         confirmDelete = inParcel.readInt() != 0;
         confirmArchive = inParcel.readInt() != 0;
         confirmSend = inParcel.readInt() != 0;
-        defaultInbox = new Folder(inParcel.readString());
+        final String inbox = inParcel.readString();
+        defaultInbox = !TextUtils.isEmpty(inbox) ? Uri.parse(inbox) : null;
     }
 
     public Settings(Cursor cursor) {
@@ -58,7 +61,8 @@ public class Settings implements Parcelable {
         confirmDelete = cursor.getInt(UIProvider.SETTINGS_CONFIRM_DELETE_COLUMN) != 0;
         confirmArchive = cursor.getInt(UIProvider.SETTINGS_CONFIRM_ARCHIVE_COLUMN) != 0;
         confirmSend = cursor.getInt(UIProvider.SETTINGS_CONFIRM_SEND_COLUMN) != 0;
-        defaultInbox = new Folder(cursor.getString(UIProvider.SETTINGS_DEFAULT_INBOX_COLUMN));
+        final String inbox = cursor.getString(UIProvider.SETTINGS_DEFAULT_INBOX_COLUMN);
+        defaultInbox = !TextUtils.isEmpty(inbox) ? Uri.parse(inbox) : null;
     }
 
     @Override
@@ -77,7 +81,7 @@ public class Settings implements Parcelable {
         dest.writeInt(confirmDelete ? 1 : 0);
         dest.writeInt(confirmArchive? 1 : 0);
         dest.writeInt(confirmSend? 1 : 0);
-        dest.writeString(defaultInbox.serialize());
+        dest.writeString(defaultInbox.toString());
     }
 
     @SuppressWarnings("hiding")

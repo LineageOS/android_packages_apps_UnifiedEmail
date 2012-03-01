@@ -92,12 +92,12 @@ public class Account extends android.accounts.Account implements Parcelable {
      * Uri for EDIT intent that will cause the settings screens for this account type to be
      * shown.
      */
-    public final Uri settingIntentUri;
+    public final Uri settingsIntentUri;
 
     /**
      * The content provider uri that can be used to query user settings/preferences
      */
-    public final Uri settingQueryUri;
+    public final Uri settingsQueryUri;
 
     /**
      * Uri for VIEW intent that will cause the help screens for this account type to be
@@ -154,8 +154,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         out.append(sendMessageUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(expungeMessageUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(undoUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(settingIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(settingQueryUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(settingsIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(settingsQueryUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(helpIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(syncStatus).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(composeIntentUri);
@@ -185,8 +185,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sendMessageUri = Uri.parse(accountMembers[9]);
         expungeMessageUri = Uri.parse(accountMembers[10]);
         undoUri = Uri.parse(accountMembers[11]);
-        settingIntentUri = Uri.parse(accountMembers[12]);
-        settingQueryUri = Uri.parse(accountMembers[13]);
+        settingsIntentUri = Uri.parse(accountMembers[12]);
+        settingsQueryUri = Uri.parse(accountMembers[13]);
         helpIntentUri = Uri.parse(accountMembers[14]);
         syncStatus = Integer.valueOf(accountMembers[15]);
         composeIntentUri = Uri.parse(accountMembers[16]);
@@ -204,8 +204,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sendMessageUri = in.readParcelable(null);
         expungeMessageUri = in.readParcelable(null);
         undoUri = in.readParcelable(null);
-        settingIntentUri = in.readParcelable(null);
-        settingQueryUri = in.readParcelable(null);
+        settingsIntentUri = in.readParcelable(null);
+        settingsQueryUri = in.readParcelable(null);
         helpIntentUri = in.readParcelable(null);
         syncStatus = in.readInt();
         composeIntentUri = in.readParcelable(null);
@@ -230,9 +230,9 @@ public class Account extends android.accounts.Account implements Parcelable {
         final String undo = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
         undoUri = !TextUtils.isEmpty(undo) ? Uri.parse(undo) : null;
         final String settings = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
-        settingIntentUri = !TextUtils.isEmpty(settings) ? Uri.parse(settings) : null;
+        settingsIntentUri = !TextUtils.isEmpty(settings) ? Uri.parse(settings) : null;
         final String settingsQuery = cursor.getString(UIProvider.ACCOUNT_SETTINGS_QUERY_URI_COLUMN);
-        settingQueryUri = !TextUtils.isEmpty(settingsQuery) ? Uri.parse(settingsQuery) : null;
+        settingsQueryUri = !TextUtils.isEmpty(settingsQuery) ? Uri.parse(settingsQuery) : null;
         final String help = cursor.getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN);
         helpIntentUri = !TextUtils.isEmpty(help) ? Uri.parse(help) : null;
         syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
@@ -281,8 +281,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(sendMessageUri, 0);
         dest.writeParcelable(expungeMessageUri, 0);
         dest.writeParcelable(undoUri, 0);
-        dest.writeParcelable(settingIntentUri, 0);
-        dest.writeParcelable(settingQueryUri, 0);
+        dest.writeParcelable(settingsIntentUri, 0);
+        dest.writeParcelable(settingsQueryUri, 0);
         dest.writeParcelable(helpIntentUri, 0);
         dest.writeInt(syncStatus);
         dest.writeParcelable(composeIntentUri, 0);

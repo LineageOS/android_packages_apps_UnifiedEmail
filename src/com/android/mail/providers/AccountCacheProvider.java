@@ -276,8 +276,8 @@ public abstract class AccountCacheProvider extends ContentProvider {
             mSendMailUri = acct.sendMessageUri;
             mExpungeMessageUri = acct.expungeMessageUri;
             mUndoUri = acct.undoUri;
-            mSettingsIntentUri = acct.settingIntentUri;
-            mSettingsQueryUri = acct.settingQueryUri;
+            mSettingsIntentUri = acct.settingsIntentUri;
+            mSettingsQueryUri = acct.settingsQueryUri;
             mHelpIntentUri = acct.helpIntentUri;
             mSyncStatus = acct.syncStatus;
             mComposeIntentUri = acct.composeIntentUri;

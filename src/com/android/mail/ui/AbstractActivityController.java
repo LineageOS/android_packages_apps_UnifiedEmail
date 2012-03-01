@@ -49,6 +49,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
@@ -123,9 +124,12 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     };
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
+    private Settings mCachedSettings;
+
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     private static final int ACCOUNT_CURSOR_LOADER = 0;
-    private static final int FOLDER_CURSOR_LOADER = 1;
+    private static final int ACCOUNT_SETTINGS_LOADER = 1;
+    private static final int FOLDER_CURSOR_LOADER = 2;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -249,12 +253,25 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onAccountChanged(Account account) {
         if (!account.equals(mAccount)) {
             mAccount = account;
+            onSettingsChanged(null);
+            restartSettingsLoader();
             mActionBarView.setAccount(mAccount);
             // Account changed; existing folder is invalid.
             mFolder = null;
             fetchAccountFolderInfo();
             updateHelpMenuItem();
         }
+    }
+
+
+    private void restartSettingsLoader() {
+        if (mAccount.settingsQueryUri != null) {
+            mActivity.getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
+        }
+    }
+
+    public void onSettingsChanged(Settings settings) {
+        mCachedSettings = settings;
     }
 
     private void fetchAccountFolderInfo() {
@@ -486,7 +503,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void showPreferences() {
-        final Intent preferenceIntent = new Intent(Intent.ACTION_EDIT, mAccount.settingIntentUri);
+        final Intent preferenceIntent = new Intent(Intent.ACTION_EDIT, mAccount.settingsIntentUri);
         mActivity.startActivity(preferenceIntent);
     }
 
@@ -558,6 +575,7 @@ public abstract class AbstractActivityController implements ActivityController {
         Bundle listContextBundle = savedState.getBundle(SAVED_LIST_CONTEXT);
         if (listContextBundle != null) {
             mConvListContext = ConversationListContext.forBundle(listContextBundle);
+            mFolder = mConvListContext.folder;
         }
     }
 
@@ -571,13 +589,14 @@ public abstract class AbstractActivityController implements ActivityController {
     protected void restoreState(Bundle savedState) {
         if (savedState != null) {
             restoreListContext(savedState);
-            mViewMode.handleRestore(savedState);
             mAccount = savedState.getParcelable(SAVED_ACCOUNT);
+            restartSettingsLoader();
         } else {
             final Intent intent = mActivity.getIntent();
             if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                     mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                    mActivity.getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
                     updateHelpMenuItem();
                 }
                 if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
@@ -639,6 +658,11 @@ public abstract class AbstractActivityController implements ActivityController {
         } else if (id == FOLDER_CURSOR_LOADER) {
             return new CursorLoader(mActivity.getActivityContext(), mFolder.uri,
                     UIProvider.FOLDERS_PROJECTION, null, null, null);
+        } else if (id == ACCOUNT_SETTINGS_LOADER) {
+            if (mAccount.settingsQueryUri != null) {
+                return new CursorLoader(mActivity.getActivityContext(), mAccount.settingsQueryUri,
+                        UIProvider.SETTINGS_PROJECTION, null, null, null);
+            }
         }
         return null;
     }
@@ -741,6 +765,11 @@ public abstract class AbstractActivityController implements ActivityController {
                     onRefreshStopped(folder.lastSyncResult);
                 }
                 LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
+            }
+        } else if (id == ACCOUNT_SETTINGS_LOADER) {
+            if (data != null) {
+                data.moveToFirst();
+                onSettingsChanged(new Settings(data));
             }
         }
     }
