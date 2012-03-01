@@ -30,6 +30,9 @@ import com.android.mail.providers.UIProvider;
  */
 public class EmailAccountService extends IntentService {
 
+    private static final Uri ACCOUNTS_URI =
+            Uri.parse("content://com.android.email.provider/uiaccts");
+
     public EmailAccountService() {
         super("EmailAccountService");
     }
@@ -45,17 +48,6 @@ public class EmailAccountService extends IntentService {
 
     private void getAndRegisterEmailAccounts() {
         // Use EmailProvider to get our accounts
-        Uri uri = Uri.parse("content://com.android.email.provider/uiaccts");
-        Cursor c = getContentResolver().query(uri, UIProvider.ACCOUNTS_PROJECTION, null, null,
-                null);
-        if (c == null) return;
-        try {
-            while (c.moveToNext()) {
-                Account a = new Account(c);
-                AccountCacheProvider.addAccount(new CachedAccount(a));
-            }
-        } finally {
-            c.close();
-        }
+        AccountCacheProvider.addAccountsForUri(getContentResolver(), ACCOUNTS_URI);
     }
 }

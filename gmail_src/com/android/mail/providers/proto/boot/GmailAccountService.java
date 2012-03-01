@@ -78,36 +78,22 @@ public class GmailAccountService extends IntentService {
         final ContentResolver resolver = getContentResolver();
         // Get the accounts from Gmail
         // NOTE: Once Gmail & Unified Email are merged, this service should be removed
-        final Uri uri = Uri.parse("content://com.android.gmail.ui/accounts");
-        final Cursor c = resolver.query(uri, UIProvider.ACCOUNTS_PROJECTION, null, null,
-                null);
-        if (c == null) {
-            LogUtils.d(LOG_TAG, "null account cursor returned");
-            return;
-        }
-        try {
-            // This is a work around to make sure that changes in the underlying provider changes
-            // that UnifiedEmail is updates with those change
-            // TODO(pwestbro): add AccountCacheProvider#addAccounts(Uri uri, Cursor c) that will
-            // both create the account objects and registers for notifications from the cursor
-            if (sGmailAccountListObserver == null) {
+        AccountCacheProvider.addAccountsForUri(getContentResolver(), ACCOUNTS_URI);
+        // This is a work around to make sure that changes in the underlying provider changes
+        // that UnifiedEmail is updates with those change
+        // TODO(pwestbro): remove this once AccountCacheProvider.addAccountsForUri registers for
+        // changes
+        if (sGmailAccountListObserver == null) {
 
-                // The current thread may not be around after this IntentService stops, make
-                // sure to handle notifications on the main thread
-                final Handler notificationHandler = new Handler(Looper.getMainLooper());
+            // The current thread may not be around after this IntentService stops, make
+            // sure to handle notifications on the main thread
+            final Handler notificationHandler = new Handler(Looper.getMainLooper());
 
-                sGmailAccountListObserver =
-                        new GmailAccountListObserver(this, notificationHandler);
+            sGmailAccountListObserver =
+                    new GmailAccountListObserver(this, notificationHandler);
 
-                resolver.registerContentObserver(ACCOUNTS_URI, true,
-                        sGmailAccountListObserver);
-            }
-            while (c.moveToNext()) {
-                Account a = new Account(c);
-                AccountCacheProvider.addAccount(new CachedAccount(a));
-            }
-        } finally {
-            c.close();
+            resolver.registerContentObserver(ACCOUNTS_URI, true,
+                    sGmailAccountListObserver);
         }
     }
 

@@ -16,6 +16,8 @@
 
 package com.android.mail.providers;
 
+import com.android.mail.utils.LogUtils;
+
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -41,6 +43,8 @@ import java.util.Map;
  * applications have their content appear within the application
  */
 public abstract class AccountCacheProvider extends ContentProvider {
+
+    private final static String LOG_TAG = new LogUtils().getLogTag();
 
     private final static Map<Uri, CachedAccount> ACCOUNT_CACHE = Maps.newHashMap();
 
@@ -157,6 +161,34 @@ public abstract class AccountCacheProvider extends ContentProvider {
         return null;
     }
 
+    /**
+     * Adds all of the accounts that are specified by the result set returned by
+     * {@link ContentProvider#query()} for the specified uri.  The content provider handling the
+     * query needs to handle the {@link UIProvider.ACCOUNTS_PROJECTION}
+     * @param resolver
+     * @param accountsQueryUri
+     */
+    public static void addAccountsForUri(ContentResolver resolver, Uri accountsQueryUri) {
+        final Cursor c = resolver.query(accountsQueryUri, UIProvider.ACCOUNTS_PROJECTION,
+                null, null, null);
+        if (c == null) {
+            LogUtils.d(LOG_TAG, "null account cursor returned");
+            return;
+        }
+
+        // TODO(pwestbro):
+        // 1) Keep a map of queryUri -> Accounts to make it easy to remove deleted accounts
+        // 2) Keep a cache of Cursors which would allow changes to be observered.
+
+        try {
+            while (c.moveToNext()) {
+                final Account account = new Account(c);
+                addAccount(new CachedAccount(account));
+            }
+        } finally {
+            c.close();
+        }
+    }
 
     public static void addAccount(CachedAccount account) {
         synchronized (ACCOUNT_CACHE) {
