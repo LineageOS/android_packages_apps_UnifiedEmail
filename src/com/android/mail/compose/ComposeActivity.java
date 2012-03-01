@@ -22,11 +22,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
@@ -34,7 +37,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.BaseColumns;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -65,12 +67,14 @@ import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.MessageModification;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.R;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.android.ex.chips.RecipientEditTextView;
+import com.google.android.gm.persistence.Persistence;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -86,7 +90,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
-        AttachmentDeletedListener, OnAccountChangedListener {
+        AttachmentDeletedListener, OnAccountChangedListener, LoaderCallbacks<Cursor> {
     // Identifiers for which type of composition this is
     static final int COMPOSE = -1;  // also used for editing a draft
     static final int REPLY = 0;
@@ -126,6 +130,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // Request numbers for activities we start
     private static final int RESULT_PICK_ATTACHMENT = 1;
     private static final int RESULT_CREATE_ACCOUNT = 2;
+    private static final int ACCOUNT_SETTINGS_LOADER = 0;
 
     /**
      * A single thread for running tasks in the background.
@@ -138,6 +143,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private CcBccView mCcBccView;
     private AttachmentsView mAttachmentsView;
     private Account mAccount;
+    private Settings mCachedSettings;
     private Rfc822Validator mValidator;
     private TextView mSubject;
 
@@ -276,6 +282,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @VisibleForTesting
     void setAccount(Account account) {
         mAccount = account;
+        getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
     }
 
     private void initFromSpinner() {
@@ -905,142 +912,139 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     /**
-    *
-    * @param body
-    * @param save
-    * @param showToast
-    * @return Whether the send or save succeeded.
-    */
-   protected boolean sendOrSaveWithSanityChecks(final boolean save,
-               final boolean showToast, final boolean orientationChanged) {
-       String[] to, cc, bcc;
-       Editable body = mBodyView.getEditableText();
+     * @param body
+     * @param save
+     * @param showToast
+     * @return Whether the send or save succeeded.
+     */
+    protected boolean sendOrSaveWithSanityChecks(final boolean save, final boolean showToast,
+            final boolean orientationChanged) {
+        String[] to, cc, bcc;
+        Editable body = mBodyView.getEditableText();
 
-       if (orientationChanged) {
-           to = cc = bcc = new String[0];
-       } else {
-           to = getToAddresses();
-           cc = getCcAddresses();
-           bcc = getBccAddresses();
-       }
+        if (orientationChanged) {
+            to = cc = bcc = new String[0];
+        } else {
+            to = getToAddresses();
+            cc = getCcAddresses();
+            bcc = getBccAddresses();
+        }
 
-       // Don't let the user send to nobody (but it's okay to save a message with no recipients)
-       if (!save && (to.length == 0 && cc.length == 0 && bcc.length == 0)) {
-           showRecipientErrorDialog(getString(R.string.recipient_needed));
-           return false;
-       }
+        // Don't let the user send to nobody (but it's okay to save a message
+        // with no recipients)
+        if (!save && (to.length == 0 && cc.length == 0 && bcc.length == 0)) {
+            showRecipientErrorDialog(getString(R.string.recipient_needed));
+            return false;
+        }
 
-       List<String> wrongEmails = new ArrayList<String>();
-       if (!save) {
-           checkInvalidEmails(to, wrongEmails);
-           checkInvalidEmails(cc, wrongEmails);
-           checkInvalidEmails(bcc, wrongEmails);
-       }
+        List<String> wrongEmails = new ArrayList<String>();
+        if (!save) {
+            checkInvalidEmails(to, wrongEmails);
+            checkInvalidEmails(cc, wrongEmails);
+            checkInvalidEmails(bcc, wrongEmails);
+        }
 
-       // Don't let the user send an email with invalid recipients
-       if (wrongEmails.size() > 0) {
-           String errorText =
-               String.format(getString(R.string.invalid_recipient), wrongEmails.get(0));
-           showRecipientErrorDialog(errorText);
-           return false;
-       }
+        // Don't let the user send an email with invalid recipients
+        if (wrongEmails.size() > 0) {
+            String errorText = String.format(getString(R.string.invalid_recipient),
+                    wrongEmails.get(0));
+            showRecipientErrorDialog(errorText);
+            return false;
+        }
 
-       DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-           public void onClick(DialogInterface dialog, int which) {
-               sendOrSave(mBodyView.getEditableText(), save, showToast, orientationChanged);
-           }
-       };
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                sendOrSave(mBodyView.getEditableText(), save, showToast, orientationChanged);
+            }
+        };
 
-       // Show a warning before sending only if there are no attachments.
-       if (!save) {
-           if (mAttachmentsView.getAttachments().isEmpty() && showEmptyTextWarnings()) {
-               boolean warnAboutEmptySubject = isSubjectEmpty();
-               boolean emptyBody = TextUtils.getTrimmedLength(body) == 0;
+        // Show a warning before sending only if there are no attachments.
+        if (!save) {
+            if (mAttachmentsView.getAttachments().isEmpty() && showEmptyTextWarnings()) {
+                boolean warnAboutEmptySubject = isSubjectEmpty();
+                boolean emptyBody = TextUtils.getTrimmedLength(body) == 0;
 
-               // A warning about an empty body may not be warranted when
-               // forwarding mails, since a common use case is to forward
-               // quoted text and not append any more text.
-               boolean warnAboutEmptyBody = emptyBody && (!mForward || isBodyEmpty());
+                // A warning about an empty body may not be warranted when
+                // forwarding mails, since a common use case is to forward
+                // quoted text and not append any more text.
+                boolean warnAboutEmptyBody = emptyBody && (!mForward || isBodyEmpty());
 
-               // When we bring up a dialog warning the user about a send,
-               // assume that they accept sending the message. If they do not, the dialog
-               // listener is required to enable sending again.
-               if (warnAboutEmptySubject) {
-                   showSendConfirmDialog(R.string.confirm_send_message_with_no_subject, listener);
-                   return true;
-               }
+                // When we bring up a dialog warning the user about a send,
+                // assume that they accept sending the message. If they do not,
+                // the dialog listener is required to enable sending again.
+                if (warnAboutEmptySubject) {
+                    showSendConfirmDialog(R.string.confirm_send_message_with_no_subject, listener);
+                    return true;
+                }
 
-               if (warnAboutEmptyBody) {
-                   showSendConfirmDialog(R.string.confirm_send_message_with_no_body, listener);
-                   return true;
-               }
-           }
-           // Ask for confirmation to send (if always required)
-           if (showSendConfirmation()) {
-               showSendConfirmDialog(R.string.confirm_send_message, listener);
-               return true;
-           }
-       }
+                if (warnAboutEmptyBody) {
+                    showSendConfirmDialog(R.string.confirm_send_message_with_no_body, listener);
+                    return true;
+                }
+            }
+            // Ask for confirmation to send (if always required)
+            if (showSendConfirmation()) {
+                showSendConfirmDialog(R.string.confirm_send_message, listener);
+                return true;
+            }
+        }
 
-       sendOrSave(body, save, showToast, false);
-       return true;
-   }
+        sendOrSave(body, save, showToast, false);
+        return true;
+    }
 
-   /**
-    * Returns a boolean indicating whether warnings should be shown for empty
-    * subject and body fields
-    *
-    * @return True if a warning should be shown for empty text fields
-    */
-   protected boolean showEmptyTextWarnings() {
-       return mAttachmentsView.getAttachments().size() == 0;
-   }
+    /**
+     * Returns a boolean indicating whether warnings should be shown for empty
+     * subject and body fields
+     * 
+     * @return True if a warning should be shown for empty text fields
+     */
+    protected boolean showEmptyTextWarnings() {
+        return mAttachmentsView.getAttachments().size() == 0;
+    }
 
-   /**
-    * Returns a boolean indicating whether the user should confirm each send
-    *
-    * @return True if a warning should be on each send
-    */
-   protected boolean showSendConfirmation() {
-       // TODO: read user preference for whether or not to show confirm send dialog.
-       return true;
-   }
+    /**
+     * Returns a boolean indicating whether the user should confirm each send
+     *
+     * @return True if a warning should be on each send
+     */
+    protected boolean showSendConfirmation() {
+        return mCachedSettings != null ? mCachedSettings.confirmSend : false;
+    }
 
-   private void showSendConfirmDialog(int messageId, DialogInterface.OnClickListener listener) {
-       if (mSendConfirmDialog != null) {
-           mSendConfirmDialog.dismiss();
-           mSendConfirmDialog = null;
-       }
-       mSendConfirmDialog = new AlertDialog.Builder(this)
-               .setMessage(messageId)
-               .setTitle(R.string.confirm_send_title)
-               .setIconAttribute(android.R.attr.alertDialogIcon)
-               .setPositiveButton(R.string.send, listener)
-               .setNegativeButton(R.string.cancel, this)
-               .setCancelable(false)
-               .show();
-   }
+    private void showSendConfirmDialog(int messageId, DialogInterface.OnClickListener listener) {
+        if (mSendConfirmDialog != null) {
+            mSendConfirmDialog.dismiss();
+            mSendConfirmDialog = null;
+        }
+        mSendConfirmDialog = new AlertDialog.Builder(this).setMessage(messageId)
+                .setTitle(R.string.confirm_send_title)
+                .setIconAttribute(android.R.attr.alertDialogIcon)
+                .setPositiveButton(R.string.send, listener)
+                .setNegativeButton(R.string.cancel, this).setCancelable(false).show();
+    }
 
-   /**
-    * Returns whether the ComposeArea believes there is any text in the body of
-    * the composition. TODO: When ComposeArea controls the Body as well, add
-    * that here.
-    */
-   public boolean isBodyEmpty() {
-       return !mQuotedTextView.isTextIncluded();
-   }
+    /**
+     * Returns whether the ComposeArea believes there is any text in the body of
+     * the composition. TODO: When ComposeArea controls the Body as well, add
+     * that here.
+     */
+    public boolean isBodyEmpty() {
+        return !mQuotedTextView.isTextIncluded();
+    }
 
-   /**
-    * Test to see if the subject is empty.
-    * @return boolean.
-    */
-   // TODO: this will likely go away when composeArea.focus() is implemented
-   // after all the widget control is moved over.
-   public boolean isSubjectEmpty() {
-       return TextUtils.getTrimmedLength(mSubject.getText()) == 0;
-   }
+    /**
+     * Test to see if the subject is empty.
+     *
+     * @return boolean.
+     */
+    // TODO: this will likely go away when composeArea.focus() is implemented
+    // after all the widget control is moved over.
+    public boolean isSubjectEmpty() {
+        return TextUtils.getTrimmedLength(mSubject.getText()) == 0;
+    }
 
-   /* package */
+    /* package */
     static int sendOrSaveInternal(Context context, final Account account,
             final Account selectedAccount, String fromAddress, final Spanned body,
             final String[] to, final String[] cc, final String[] bcc, final String subject,
@@ -1083,70 +1087,70 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         MessageModification.putBodyHtml(values, fullBody.toString());
         MessageModification.putAttachments(values, attachments);
 
-       SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(account, selectedAccount,
-               values, refMessageId, save);
-       SendOrSaveTask sendOrSaveTask = new SendOrSaveTask(context, sendOrSaveMessage, callback);
+        SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(account, selectedAccount,
+                values, refMessageId, save);
+        SendOrSaveTask sendOrSaveTask = new SendOrSaveTask(context, sendOrSaveMessage, callback);
 
-       callback.initializeSendOrSave(sendOrSaveTask);
+        callback.initializeSendOrSave(sendOrSaveTask);
 
-       // Do the send/save action on the specified handler to avoid possible ANRs
-       handler.post(sendOrSaveTask);
+        // Do the send/save action on the specified handler to avoid possible
+        // ANRs
+        handler.post(sendOrSaveTask);
 
-       return sendOrSaveMessage.requestId();
-   }
+        return sendOrSaveMessage.requestId();
+    }
 
-   private void sendOrSave(Spanned body, boolean save, boolean showToast,
-           boolean orientationChanged) {
-       // Check if user is a monkey. Monkeys can compose and hit send
-       // button but are not allowed to send anything off the device.
-       if (!save && ActivityManager.isUserAMonkey()) {
-           return;
-       }
+    private void sendOrSave(Spanned body, boolean save, boolean showToast,
+            boolean orientationChanged) {
+        // Check if user is a monkey. Monkeys can compose and hit send
+        // button but are not allowed to send anything off the device.
+        if (!save && ActivityManager.isUserAMonkey()) {
+            return;
+        }
 
-       String[] to, cc, bcc;
-       if (orientationChanged) {
-           to = cc = bcc = new String[0];
-       } else {
-           to = getToAddresses();
-           cc = getCcAddresses();
-           bcc = getBccAddresses();
-       }
+        String[] to, cc, bcc;
+        if (orientationChanged) {
+            to = cc = bcc = new String[0];
+        } else {
+            to = getToAddresses();
+            cc = getCcAddresses();
+            bcc = getBccAddresses();
+        }
 
-
-       SendOrSaveCallback callback = new SendOrSaveCallback() {
+        SendOrSaveCallback callback = new SendOrSaveCallback() {
             private int mRestoredRequestId;
 
             public void initializeSendOrSave(SendOrSaveTask sendOrSaveTask) {
-                   synchronized(mActiveTasks) {
-                       int numTasks = mActiveTasks.size();
-                       if (numTasks == 0) {
-                           // Start service so we won't be killed if this app is put in the
-                           // background.
-                           startService(new Intent(ComposeActivity.this, EmptyService.class));
-                       }
+                synchronized (mActiveTasks) {
+                    int numTasks = mActiveTasks.size();
+                    if (numTasks == 0) {
+                        // Start service so we won't be killed if this app is
+                        // put in the background.
+                        startService(new Intent(ComposeActivity.this, EmptyService.class));
+                    }
 
-                       mActiveTasks.add(sendOrSaveTask);
-                   }
-                   if (sTestSendOrSaveCallback != null) {
-                       sTestSendOrSaveCallback.initializeSendOrSave(sendOrSaveTask);
-                   }
-               }
+                    mActiveTasks.add(sendOrSaveTask);
+                }
+                if (sTestSendOrSaveCallback != null) {
+                    sTestSendOrSaveCallback.initializeSendOrSave(sendOrSaveTask);
+                }
+            }
 
             public void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage,
                     Message message) {
-                   synchronized(mDraftLock) {
-                       mDraftId = message.id;
-                       mDraft = message;
+                synchronized (mDraftLock) {
+                    mDraftId = message.id;
+                    mDraft = message;
                     if (sRequestMessageIdMap != null) {
                         sRequestMessageIdMap.put(sendOrSaveMessage.requestId(), mDraftId);
                     }
-                       // Cache request message map, in case the process is killed
-                       saveRequestMap();
-                   }
-                   if (sTestSendOrSaveCallback != null) {
+                    // Cache request message map, in case the process is killed
+                    saveRequestMap();
+                }
+                if (sTestSendOrSaveCallback != null) {
                     sTestSendOrSaveCallback.notifyMessageIdAllocated(sendOrSaveMessage, message);
-                   }
-               }
+                }
+            }
 
             public Message getMessage() {
                 synchronized (mDraftLock) {
@@ -1181,76 +1185,75 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     sTestSendOrSaveCallback.sendOrSaveFinished(task, success);
                 }
             }
-         };
+        };
 
-       // Get the selected account if the from spinner has been setup.
-       Account selectedAccount = mAccount;
-       String fromAddress = selectedAccount.name;
-       if (selectedAccount == null || fromAddress == null) {
-           // We don't have either the selected account or from address,
-           // use mAccount.
-           selectedAccount = mAccount;
-           fromAddress = mAccount.name;
-       }
+        // Get the selected account if the from spinner has been setup.
+        Account selectedAccount = mAccount;
+        String fromAddress = selectedAccount.name;
+        if (selectedAccount == null || fromAddress == null) {
+            // We don't have either the selected account or from address,
+            // use mAccount.
+            selectedAccount = mAccount;
+            fromAddress = mAccount.name;
+        }
 
-       if (mSendSaveTaskHandler == null) {
-           HandlerThread handlerThread = new HandlerThread("Send Message Task Thread");
-           handlerThread.start();
+        if (mSendSaveTaskHandler == null) {
+            HandlerThread handlerThread = new HandlerThread("Send Message Task Thread");
+            handlerThread.start();
 
-           mSendSaveTaskHandler = new Handler(handlerThread.getLooper());
-       }
+            mSendSaveTaskHandler = new Handler(handlerThread.getLooper());
+        }
 
-       mRequestId = sendOrSaveInternal(this, mAccount, selectedAccount, fromAddress, body,
-               to, cc, bcc, mSubject.getText().toString(), mQuotedTextView.getQuotedText(),
-               mAttachmentsView.getAttachments(), mRefMessageId, callback, mSendSaveTaskHandler,
-               save, mForward);
+        mRequestId = sendOrSaveInternal(this, mAccount, selectedAccount, fromAddress, body, to, cc,
+                bcc, mSubject.getText().toString(), mQuotedTextView.getQuotedText(),
+                mAttachmentsView.getAttachments(), mRefMessageId, callback, mSendSaveTaskHandler,
+                save, mForward);
 
-       if (mRecipient != null && mRecipient.equals(mAccount.name)) {
-           mRecipient = selectedAccount.name;
-       }
-       mAccount = selectedAccount;
+        if (mRecipient != null && mRecipient.equals(mAccount.name)) {
+            mRecipient = selectedAccount.name;
+        }
+        mAccount = selectedAccount;
 
-       // Don't display the toast if the user is just changing the orientation, but we still
-       // need to save the draft to the cursor because this is how we restore the attachments
-       // when the configuration change completes.
-       if (showToast && (getChangingConfigurations() & ActivityInfo.CONFIG_ORIENTATION) == 0) {
-           Toast.makeText(this, save ? R.string.message_saved : R.string.sending_message,
-                   Toast.LENGTH_LONG).show();
-       }
+        // Don't display the toast if the user is just changing the orientation,
+        // but we still need to save the draft to the cursor because this is how we restore
+        // the attachments when the configuration change completes.
+        if (showToast && (getChangingConfigurations() & ActivityInfo.CONFIG_ORIENTATION) == 0) {
+            Toast.makeText(this, save ? R.string.message_saved : R.string.sending_message,
+                    Toast.LENGTH_LONG).show();
+        }
 
-       // Need to update variables here
-       // because the send or save completes asynchronously even though the
-       // toast shows right away.
-       discardChanges();
-       updateSaveUi();
+        // Need to update variables here because the send or save completes
+        // asynchronously even though the toast shows right away.
+        discardChanges();
+        updateSaveUi();
 
-       // If we are sending, finish the activity
-       if (!save) {
-           finish();
-       }
-   }
+        // If we are sending, finish the activity
+        if (!save) {
+            finish();
+        }
+    }
 
-   /**
-    * Save the state of the request messageid map.  This allows for the Gmail process
-    * to be killed, but and still allow for ComposeActivity instances to be recreated
-    * correctly.
-    */
-   private void saveRequestMap() {
-       // TODO: store the request map in user preferences.
-   }
+    /**
+     * Save the state of the request messageid map. This allows for the Gmail
+     * process to be killed, but and still allow for ComposeActivity instances
+     * to be recreated correctly.
+     */
+    private void saveRequestMap() {
+        // TODO: store the request map in user preferences.
+    }
 
     public void doAttach() {
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
-        if (Settings.System.getInt(
-                getContentResolver(), UIProvider.getAttachmentTypeSetting(), 0) != 0) {
+        if (android.provider.Settings.System.getInt(getContentResolver(),
+                UIProvider.getAttachmentTypeSetting(), 0) != 0) {
             i.setType("*/*");
         } else {
             i.setType("image/*");
         }
         mAddingAttachment = true;
-        startActivityForResult(Intent.createChooser(i,
-                getText(R.string.select_attachment_type)), RESULT_PICK_ATTACHMENT);
+        startActivityForResult(Intent.createChooser(i, getText(R.string.select_attachment_type)),
+                RESULT_PICK_ATTACHMENT);
     }
 
     private void showCcBccViews() {
@@ -1359,16 +1362,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void onAccountChanged() {
         Account selectedAccountInfo = mFromSpinner.getCurrentAccount();
-        mAccount = selectedAccountInfo;
-
-        // TODO: handle discarding attachments when switching accounts.
-        // Only enable save for this draft if there is any other content
-        // in the message.
-        if (!isBlank()) {
-            enableSave(true);
+        if (!mAccount.equals(selectedAccountInfo)) {
+            mAccount = selectedAccountInfo;
+            mCachedSettings = null;
+            getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
+            // TODO: handle discarding attachments when switching accounts.
+            // Only enable save for this draft if there is any other content
+            // in the message.
+            if (!isBlank()) {
+                enableSave(true);
+            }
+            mReplyFromChanged = true;
+            initRecipients();
         }
-        mReplyFromChanged = true;
-        initRecipients();
     }
 
     public void enableSave(boolean enabled) {
@@ -1577,5 +1583,31 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             // Do nothing.
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        if (id == ACCOUNT_SETTINGS_LOADER) {
+            if (mAccount.settingsQueryUri != null) {
+                return new CursorLoader(this, mAccount.settingsQueryUri,
+                        UIProvider.SETTINGS_PROJECTION, null, null, null);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (loader.getId() == ACCOUNT_SETTINGS_LOADER) {
+            if (data != null) {
+                data.moveToFirst();
+                mCachedSettings = new Settings(data);
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // Do nothing.
     }
 }
