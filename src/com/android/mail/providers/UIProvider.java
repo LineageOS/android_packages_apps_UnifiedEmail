@@ -856,6 +856,17 @@ public class UIProvider {
             SettingsColumns.DEFAULT_INBOX
     };
 
+    public static final int SETTINGS_SIGNATURE_COLUMN = 0;
+    public static final int SETTINGS_AUTO_ADVANCE_COLUMN = 1;
+    public static final int SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 2;
+    public static final int SETTINGS_SNAP_HEADERS_COLUMN = 3;
+    public static final int SETTINGS_REPLY_BEHAVIOR_COLUMN = 4;
+    public static final int SETTINGS_HIDE_CHECKBOXES_COLUMN = 5;
+    public static final int SETTINGS_CONFIRM_DELETE_COLUMN = 6;
+    public static final int SETTINGS_CONFIRM_ARCHIVE_COLUMN = 7;
+    public static final int SETTINGS_CONFIRM_SEND_COLUMN = 8;
+    public static final int SETTINGS_DEFAULT_INBOX_COLUMN = 9;
+
     public static final class AutoAdvance {
         public static final int UNSET = 0;
         public static final int OLDER = 1;
@@ -914,28 +925,28 @@ public class UIProvider {
         public static final String REPLY_BEHAVIOR = "reply_behavior";
 
         /**
-         * Integer column containing the user's specified checkbox preference.  The  value
-         * of 0 indicates that checkboxes are not hidden.
+         * Integer column containing the user's specified checkbox preference. A
+         * non zero value means to hide checkboxes.
          */
         public static final String HIDE_CHECKBOXES = "hide_checkboxes";
 
         /**
          * Integer column containing the user's specified confirm delete preference value.
-         * A value of 1 indicates that the user has indicated that a confirmation should
+         * A non zero value indicates that the user has indicated that a confirmation should
          * be shown when a delete action is performed.
          */
         public static final String CONFIRM_DELETE = "confirm_delete";
 
         /**
          * Integer column containing the user's specified confirm archive preference value.
-         * A value of 1 indicates that the user has indicated that a confirmation should
+         * A non zero value indicates that the user has indicated that a confirmation should
          * be shown when an archive action is performed.
          */
         public static final String CONFIRM_ARCHIVE = "confirm_archive";
 
         /**
          * Integer column containing the user's specified confirm send preference value.
-         * A value of 1 indicates that the user has indicated that a confirmation should
+         * A non zero value indicates that the user has indicated that a confirmation should
          * be shown when a send action is performed.
          */
         public static final String CONFIRM_SEND = "confirm_send";
