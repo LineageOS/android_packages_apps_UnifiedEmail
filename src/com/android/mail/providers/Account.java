@@ -296,12 +296,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         return null;
     }
 
-    public Folder getAccountInbox() {
-        // TODO: (mindyp) fill in with call to settings or reading of account settings
-        // to get the default inbox for this account.
-        return Folder.getInbox();
-    }
-
     @SuppressWarnings("hiding")
     public static final Creator<Account> CREATOR = new Creator<Account>() {
         @Override

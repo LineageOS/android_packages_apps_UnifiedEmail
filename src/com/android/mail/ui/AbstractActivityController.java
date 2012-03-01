@@ -124,7 +124,7 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     };
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
-    private Settings mCachedSettings;
+    protected Settings mCachedSettings;
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     private static final int ACCOUNT_CURSOR_LOADER = 0;
@@ -272,6 +272,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     public void onSettingsChanged(Settings settings) {
         mCachedSettings = settings;
+        resetActionBarIcon();
     }
 
     private void fetchAccountFolderInfo() {

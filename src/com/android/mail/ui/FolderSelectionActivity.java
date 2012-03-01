@@ -165,8 +165,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                  * account, calculate the human readable name of the label and
                  * use it as the shortcut name, etc...
                  */
-                final Intent clickIntent = Utils.createViewConversationIntent(this, mAccount,
-                        mSelectedFolder, UIProvider.INVALID_CONVERSATION_ID);
+                final Intent clickIntent = Utils.createViewFolderIntent(mSelectedFolder, mAccount);
                 resultIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, clickIntent);
                 resultIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                         Intent.ShortcutIconResource.fromContext(this,

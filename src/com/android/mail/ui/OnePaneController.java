@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.android.mail.ConversationListContext;
@@ -76,7 +77,10 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void resetActionBarIcon() {
         final int mode = mViewMode.getMode();
-        if (!inInbox() || (mode == ViewMode.CONVERSATION_LIST && mConvListContext.isSearchResult())
+        // If the settings aren't loaded yet, we may not know what the default
+        // inbox is, so err toward this being the account inbox.
+        if ((mCachedSettings != null && mConvListContext != null && !inInbox())
+                || (mode == ViewMode.CONVERSATION_LIST && mConvListContext.isSearchResult())
                 || mode == ViewMode.CONVERSATION || mode == ViewMode.FOLDER_LIST) {
             mActionBarView.setBackButton();
         } else {
@@ -85,9 +89,9 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     private boolean inInbox() {
-        return mConvListContext != null && mConvListContext.folder != null ?
-                (!mConvListContext.isSearchResult() && mConvListContext.folder.name
-                .toLowerCase().equals(mAccount.getAccountInbox().name.toLowerCase())) : false;
+        Uri inboxUri = mCachedSettings != null ? mCachedSettings.defaultInbox : null;
+        return mConvListContext != null && mConvListContext.folder != null ? (!mConvListContext
+                .isSearchResult() && mConvListContext.folder.uri.equals(inboxUri)) : false;
     }
 
     @Override

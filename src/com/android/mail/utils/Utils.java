@@ -596,30 +596,6 @@ public class Utils {
     }
 
     /**
-     * @return an intent which, if launched, will display the corresponding conversation
-     */
-    public static Intent createViewConversationIntent(Context context,
-            Account account, Folder folder, long conversationId) {
-        final Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        Uri.Builder builder = new Uri.Builder();
-        builder.scheme("content");
-        builder.authority(UIProvider.AUTHORITY);
-        builder.appendEncodedPath("account/" + account);
-        final String intentLabel = folder.name != null ? folder.name
-                : account.getAccountInbox().name;
-        builder.appendPath("label");
-        builder.appendPath(intentLabel);
-
-        if (conversationId != UIProvider.INVALID_CONVERSATION_ID) {
-            builder.appendEncodedPath("conversationId/" + conversationId);
-        }
-        intent.setDataAndType(builder.build(), "application/" + UIProvider.AUTHORITY);
-
-        return intent;
-    }
-
-    /**
      * Helper method to show context-aware Gmail help.
      *
      * @param context Context to be used to open the help.
