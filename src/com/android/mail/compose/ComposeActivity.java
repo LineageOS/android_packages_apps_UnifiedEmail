@@ -766,6 +766,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /* package for testing */
     ArrayList<SendOrSaveTask> mActiveTasks = Lists.newArrayList();
     private int mRequestId;
+    private String mSignature;
 
     /*package*/ static class SendOrSaveMessage {
         final Account mAccount;
@@ -891,16 +892,41 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     /**
-     * Check if the ComposeArea believes all fields are blank.
+     * Check if all fields are blank.
      * @return boolean
      */
     public boolean isBlank() {
         return mSubject.getText().length() == 0
-               && mBodyView.getText().length() == 0
-               && mTo.length() == 0
-               && mCc.length() == 0
-               && mBcc.length() == 0
-               && mAttachmentsView.getAttachments().size() == 0;
+                && (mBodyView.getText().length() == 0 || getSignatureStartPosition(mSignature,
+                        mBodyView.getText().toString()) == 0)
+                && mTo.length() == 0
+                && mCc.length() == 0 && mBcc.length() == 0
+                && mAttachmentsView.getAttachments().size() == 0;
+    }
+
+    @VisibleForTesting
+    protected int getSignatureStartPosition(String signature, String bodyText) {
+        int startPos = -1;
+
+        if (TextUtils.isEmpty(signature) || TextUtils.isEmpty(bodyText)) {
+            return startPos;
+        }
+
+        int bodyLength = bodyText.length();
+        int signatureLength = signature.length();
+        String printableVersion = convertToPrintableSignature(signature);
+        int printableLength = printableVersion.length();
+
+        if (bodyLength >= printableLength
+                && bodyText.substring(bodyLength - printableLength)
+                .equals(printableVersion)) {
+            startPos = bodyLength - printableLength;
+        } else if (bodyLength >= signatureLength
+                && bodyText.substring(bodyLength - signatureLength)
+                .equals(signature)) {
+            startPos = bodyLength - signatureLength;
+        }
+        return startPos;
     }
 
     /**
@@ -1354,11 +1380,33 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     /**
      * Set the body of the message.
+     *
      * @param text
      * @param withSignature True to append a signature.
      */
     public void setBody(CharSequence text, boolean withSignature) {
         mBodyView.setText(text);
+        if (withSignature) {
+            appendSignature();
+        }
+    }
+
+    private void appendSignature() {
+        mSignature = mCachedSettings != null ? mCachedSettings.signature : null;
+        if (!TextUtils.isEmpty(mSignature)) {
+            // Appending a signature does not count as changing text.
+            mBodyView.removeTextChangedListener(this);
+            mBodyView.append(convertToPrintableSignature(mSignature));
+            mBodyView.addTextChangedListener(this);
+        }
+    }
+
+    private String convertToPrintableSignature(String signature) {
+        String signatureResource = getResources().getString(R.string.signature);
+        if (signature == null) {
+            signature = "";
+        }
+        return String.format(signatureResource, signature);
     }
 
     @Override
@@ -1610,6 +1658,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (data != null) {
                 data.moveToFirst();
                 mCachedSettings = new Settings(data);
+                appendSignature();
             }
         }
     }

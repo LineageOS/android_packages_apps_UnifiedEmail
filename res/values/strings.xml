@@ -88,6 +88,8 @@
     <string name="confirm_send_message">Send this message?</string>
     <!-- Displayed for one second after discarding draft message [CHAR LIMIT=50]-->
     <string name="message_discarded">Message discarded.</string>
+    <!-- Formatting string for the user's signaure. [CHAR LIMIT=10] -->
+    <string name="signature">\n\n<xliff:g id="signature">%s</xliff:g></string>
 
     <!-- Menu item: send this message -->
     <string name="send">Send</string>
