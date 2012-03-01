@@ -32,6 +32,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.Window;
 
+import com.android.mail.providers.Settings;
+
 /**
  * {@link RestrictedActivity} gives access to a subset of {@link Activity} methods. These methods
  * match the signatures from {@link Activity}.
@@ -181,4 +183,10 @@ public interface RestrictedActivity {
      * @return the context associated with this activity.
      */
     Context getActivityContext();
+
+    /**
+     * Return the settings currently being used by this activity.
+     * @return
+     */
+    Settings getSettings();
 }

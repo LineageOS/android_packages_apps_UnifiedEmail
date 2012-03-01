@@ -21,6 +21,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.ConversationColumns;
@@ -34,6 +35,7 @@ import com.android.mail.ui.FoldersSelectionDialog.CommitListener;
 import com.android.mail.ui.UndoBarView.UndoListener;
 import com.android.mail.ui.UndoOperation;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
@@ -41,7 +43,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -123,10 +127,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         Collection<Conversation> conversations = mSelectionSet.values();
         switch (item.getItemId()) {
             case R.id.delete:
-                mListAdapter.delete(conversations, mDeleteListener);
+                performDestructiveAction(R.id.delete, mDeleteListener);
                 break;
             case R.id.archive:
-                mListAdapter.delete(conversations, mArchiveListener);
+                performDestructiveAction(R.id.archive, mArchiveListener);
                 break;
             case R.id.mute:
                 mListAdapter.delete(conversations, mMuteListener);
@@ -162,9 +166,32 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         return handled;
     }
 
+    private void performDestructiveAction(int id, final ActionCompleteListener listener) {
+        Settings settings = mActivity.getSettings();
+        final Collection<Conversation> conversations = mSelectionSet.values();
+        boolean showDialog = false;
+        if (settings != null) {
+            showDialog = (id == R.id.delete) ? settings.confirmDelete : settings.confirmArchive;
+        }
+        if (showDialog) {
+            int resId = id == R.id.delete ? R.plurals.confirm_delete_conversation
+                    : R.plurals.confirm_archive_conversation;
+            CharSequence message = Utils.formatPlural(mContext, resId, conversations.size());
+            new AlertDialog.Builder(mContext).setMessage(message)
+                    .setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mListAdapter.delete(conversations, listener);
+                        }
+
+                    }).setNegativeButton(R.string.cancel, null).create().show();
+        } else {
+            mListAdapter.delete(conversations, listener);
+        }
+    }
+
     private void markConversationsRead(boolean read) {
         Collection<Conversation> conversations = mSelectionSet.values();
-        // TODO: Interpret properly (rather than as "mark read")
         Conversation.updateBoolean(mContext, conversations, ConversationColumns.READ, read);
         mSelectionSet.clear();
         // Redraw with changes

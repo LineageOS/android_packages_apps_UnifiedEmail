@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import com.android.mail.browse.ConversationItemView.StarHandler;
+import com.android.mail.providers.Settings;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.Utils;
 
@@ -250,5 +251,10 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public FolderChangeListener getFolderChangeListener() {
         return mController;
+    }
+
+    @Override
+    public Settings getSettings() {
+        return mController.getSettings();
     }
 }

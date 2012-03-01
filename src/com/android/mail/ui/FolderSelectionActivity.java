@@ -35,6 +35,7 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
@@ -259,5 +260,10 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     @Override
     public FolderChangeListener getFolderChangeListener() {
         return this;
+    }
+
+    @Override
+    public Settings getSettings() {
+        return null;
     }
 }

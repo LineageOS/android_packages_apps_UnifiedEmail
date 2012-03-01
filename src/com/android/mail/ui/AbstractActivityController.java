@@ -275,6 +275,11 @@ public abstract class AbstractActivityController implements ActivityController {
         resetActionBarIcon();
     }
 
+    @Override
+    public Settings getSettings() {
+        return mCachedSettings;
+    }
+
     private void fetchAccountFolderInfo() {
         if (mFetchAccountFolderTask != null) {
             mFetchAccountFolderTask.cancel(true);

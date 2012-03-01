@@ -658,6 +658,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             case R.id.send:
                 doSend();
                 break;
+            case R.id.discard:
+                doDiscard();
+                break;
             default:
                 handled = false;
                 break;
@@ -1408,6 +1411,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     }
 
+    private void doDiscard() {
+        new AlertDialog.Builder(this).setMessage(R.string.confirm_discard_text)
+                .setPositiveButton(R.string.ok, this)
+                .setNegativeButton(R.string.cancel, null)
+                .create().show();
+    }
     /**
      * Effectively discard the current message.
      *

@@ -264,6 +264,22 @@
     <!-- List item to open fodlers view in account dropdown [CHAR LIMIT=50] -->
     <string name="show_all_folders">Show all folders</string>
 
+    <plurals name="confirm_delete_conversation">
+        <!-- Dialog message to confirm deletion of one conversation -->
+        <item quantity="one">Delete this conversation?</item>
+        <!-- Dialog message to confirm deletion of several conversations -->
+        <item quantity="other">Delete these <xliff:g id="count">%1$d</xliff:g> conversations?</item>
+    </plurals>
+    <plurals name="confirm_archive_conversation">
+        <!-- Dialog message to confirm archival of one conversation -->
+        <item quantity="one">Archive this conversation?</item>
+        <!-- Dialog message to confirm archival of several conversations -->
+        <item quantity="other">Archive these <xliff:g id="count">%1$d</xliff:g> conversations?</item>
+    </plurals>
+
+    <!-- Dialog text: confirm discard -->
+    <string name="confirm_discard_text">Discard this message?</string>
+
     <!-- Undo bar strings -->
     <!-- Displayed in the middle of the screen when the inbox is empty [CHAR LIMIT 100]-->
     <string name="no_conversations">No conversations.</string>

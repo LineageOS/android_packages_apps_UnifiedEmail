@@ -31,6 +31,7 @@ import android.view.MotionEvent;
 import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Settings;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
@@ -250,4 +251,10 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * Handle a touch event.
      */
     void onTouchEvent(MotionEvent event);
+
+    /**
+     * Return the settings currently being used by this activity.
+     * @return
+     */
+    Settings getSettings();
 }
