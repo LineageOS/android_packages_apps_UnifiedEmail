@@ -29,8 +29,10 @@ import android.text.TextUtils;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -47,6 +49,9 @@ public abstract class AccountCacheProvider extends ContentProvider {
     private final static String LOG_TAG = new LogUtils().getLogTag();
 
     private final static Map<Uri, CachedAccount> ACCOUNT_CACHE = Maps.newHashMap();
+
+    // Map from content provider query uri to the set of account uri that resulted from that query
+    private final static Map<Uri, Set<Uri>> QUERY_URI_ACCOUNT_URIS_MAP = Maps.newHashMap();
 
     private ContentResolver mResolver;
     private static String sAuthority;
@@ -168,7 +173,8 @@ public abstract class AccountCacheProvider extends ContentProvider {
      * @param resolver
      * @param accountsQueryUri
      */
-    public static void addAccountsForUri(ContentResolver resolver, Uri accountsQueryUri) {
+    public static synchronized void addAccountsForUri(
+            ContentResolver resolver, Uri accountsQueryUri) {
         final Cursor c = resolver.query(accountsQueryUri, UIProvider.ACCOUNTS_PROJECTION,
                 null, null, null);
         if (c == null) {
@@ -177,16 +183,37 @@ public abstract class AccountCacheProvider extends ContentProvider {
         }
 
         // TODO(pwestbro):
-        // 1) Keep a map of queryUri -> Accounts to make it easy to remove deleted accounts
-        // 2) Keep a cache of Cursors which would allow changes to be observered.
+        // 1) Keep a cache of Cursors which would allow changes to be observered.
+        final Set<Uri> previousQueryUriMap = QUERY_URI_ACCOUNT_URIS_MAP.get(accountsQueryUri);
 
+        final Set<Uri> newQueryUriMap = Sets.newHashSet();
         try {
             while (c.moveToNext()) {
                 final Account account = new Account(c);
+                final Uri accountUri = account.uri;
+                newQueryUriMap.add(accountUri);
                 addAccount(new CachedAccount(account));
             }
         } finally {
             c.close();
+        }
+
+        // Save the new set, or remove the previous entry if it is empty
+        if (newQueryUriMap.size() > 0) {
+            QUERY_URI_ACCOUNT_URIS_MAP.put(accountsQueryUri, newQueryUriMap);
+        } else {
+            QUERY_URI_ACCOUNT_URIS_MAP.remove(accountsQueryUri);
+        }
+
+        if (previousQueryUriMap != null) {
+            // Remove all of the accounts that are in the new result set
+            previousQueryUriMap.removeAll(newQueryUriMap);
+
+            // For all of the entries that had been in the previous result set, and are not
+            // in the new result set, remove them from the cache
+            if (previousQueryUriMap.size() > 0) {
+                removeAccounts(previousQueryUriMap);
+            }
         }
     }
 
@@ -201,12 +228,20 @@ public abstract class AccountCacheProvider extends ContentProvider {
         broadcastAccountChange();
     }
 
-    public static void removeAccount(String accountUri) {
+    public static void removeAccount(Uri accountUri) {
         synchronized (ACCOUNT_CACHE) {
-            final CachedAccount account = ACCOUNT_CACHE.get(accountUri);
+            ACCOUNT_CACHE.remove(accountUri);
+        }
 
-            if (account != null) {
-                ACCOUNT_CACHE.remove(account);
+        // Explicitly calling this out of the synchronized block in case any of the observers get
+        // called synchronously.
+        broadcastAccountChange();
+    }
+
+    private static void removeAccounts(Set<Uri> uris) {
+        synchronized (ACCOUNT_CACHE) {
+            for (Uri accountUri : uris) {
+                ACCOUNT_CACHE.remove(accountUri);
             }
         }
 
