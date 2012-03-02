@@ -16,15 +16,18 @@
 
 package com.android.mail.providers;
 
+import com.android.mail.utils.LogUtils;
+
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import java.util.regex.Pattern;
+import com.google.common.base.Objects;
 
-import com.android.mail.utils.LogUtils;
+import java.lang.StringBuilder;
+import java.util.regex.Pattern;
 
 public class Account extends android.accounts.Account implements Parcelable {
     /**
@@ -294,6 +297,82 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public Cursor getSettings() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+
+        sb.append("name=");
+        sb.append(name);
+        sb.append(",type=");
+        sb.append(type);
+        sb.append(",accountFromAddressUri=");
+        sb.append(accountFromAddressesUri);
+        sb.append(",capabilities=");
+        sb.append(capabilities);
+        sb.append(",providerVersion=");
+        sb.append(providerVersion);
+        sb.append(",folderListUri=");
+        sb.append(folderListUri);
+        sb.append(",searchUri=");
+        sb.append(searchUri);
+        sb.append(",saveDraftUri=");
+        sb.append(saveDraftUri);
+        sb.append(",sendMessageUri=");
+        sb.append(sendMessageUri);
+        sb.append(",expungeMessageUri=");
+        sb.append(expungeMessageUri);
+        sb.append(",undoUri=");
+        sb.append(undoUri);
+        sb.append(",settingsIntentUri=");
+        sb.append(settingsIntentUri);
+        sb.append(",settingsQueryUri=");
+        sb.append(settingsQueryUri);
+        sb.append(",helpIntentUri=");
+        sb.append(helpIntentUri);
+        sb.append(",syncStatus=");
+        sb.append(syncStatus);
+        sb.append(",composeIntentUri=");
+        sb.append(composeIntentUri);
+
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if ((o == null) || (o.getClass() != this.getClass())) {
+            return false;
+        }
+
+        final Account other = (Account) o;
+        return TextUtils.equals(name, other.name) && TextUtils.equals(type, other.type) &&
+                capabilities == other.capabilities && providerVersion == other.providerVersion &&
+                Objects.equal(uri, other.uri) &&
+                Objects.equal(folderListUri, other.folderListUri) &&
+                Objects.equal(searchUri, other.searchUri) &&
+                Objects.equal(accountFromAddressesUri, other.accountFromAddressesUri) &&
+                Objects.equal(saveDraftUri, other.saveDraftUri) &&
+                Objects.equal(sendMessageUri, other.sendMessageUri) &&
+                Objects.equal(expungeMessageUri, other.expungeMessageUri) &&
+                Objects.equal(undoUri, other.undoUri) &&
+                Objects.equal(settingsIntentUri, other.settingsIntentUri) &&
+                Objects.equal(settingsQueryUri, other.settingsQueryUri) &&
+                Objects.equal(helpIntentUri, other.helpIntentUri) &&
+                (syncStatus == other.syncStatus) &&
+                Objects.equal(composeIntentUri, other.composeIntentUri);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() ^ Objects.hashCode(name, type, capabilities, providerVersion,
+                uri, folderListUri, searchUri, accountFromAddressesUri, saveDraftUri,
+                sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri, settingsQueryUri,
+                helpIntentUri, syncStatus, composeIntentUri);
     }
 
     @SuppressWarnings("hiding")
