@@ -675,4 +675,12 @@ public class Utils {
         }
         return sVersionCode;
     }
+
+    /**
+     * Show the settings screen for the supplied account.
+     */
+    public static void showSettings(Context context, Account account) {
+        final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
+        context.startActivity(settingsIntent);
+    }
 }

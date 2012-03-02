@@ -243,11 +243,6 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
     void showFolderList();
 
     /**
-     * Shows the preferences screen
-     */
-    void showPreferences();
-
-    /**
      * Handle a touch event.
      */
     void onTouchEvent(MotionEvent event);

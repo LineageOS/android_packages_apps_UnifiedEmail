@@ -54,6 +54,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.BaseInputConnection;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -168,6 +169,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private long mDraftId = UIProvider.INVALID_MESSAGE_ID;
     private Message mDraft;
     private Object mDraftLock = new Object();
+    private ImageView mAttachmentsButton;
 
     /**
      * Can be called from a non-UI thread.
@@ -304,6 +306,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
+        mAttachmentsButton = (ImageView) findViewById(R.id.add_attachment);
+        if (mAttachmentsButton != null) {
+            mAttachmentsButton.setOnClickListener(this);
+        }
         mTo = (RecipientEditTextView) findViewById(R.id.to);
         mCc = (RecipientEditTextView) findViewById(R.id.cc);
         mBcc = (RecipientEditTextView) findViewById(R.id.bcc);
@@ -607,6 +613,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // Animate in cc/bcc.
                 showCcBccViews();
                 break;
+            case R.id.add_attachment:
+                doAttach();
+                break;
         }
     }
 
@@ -660,6 +669,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 break;
             case R.id.discard:
                 doDiscard();
+                break;
+            case R.id.settings:
+                Utils.showSettings(this, mAccount);
                 break;
             default:
                 handled = false;

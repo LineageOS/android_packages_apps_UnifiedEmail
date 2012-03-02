@@ -59,16 +59,16 @@
             </LinearLayout>
 
             <!--  Attachments -->
-            <!--<com.google.android.gm.AttachmentsView android:id="@+id/attachments"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_marginTop="8dip"
-            android:paddingTop="2dip"
-            android:layout_marginRight="100dip"
-            android:paddingBottom="0dip"
-            android:paddingLeft="0dip"
-            android:visibility="gone" />-->
+            <com.android.mail.compose.AttachmentsView android:id="@+id/attachments"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="8dip"
+                android:paddingTop="2dip"
+                android:layout_marginRight="100dip"
+                android:paddingBottom="0dip"
+                android:paddingLeft="0dip"
+                android:visibility="gone" />
 
             <!-- Compose Area -->
             <FrameLayout android:layout_width="match_parent"
@@ -80,10 +80,10 @@
             </FrameLayout>
 
             <!-- Quoted text -->
-            <!--<com.google.android.gm.QuotedTextView android:id="@+id/quoted_text_view"
+            <com.android.mail.compose.QuotedTextView android:id="@+id/quoted_text_view"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginRight="100dip"/>-->
+                android:visibility="gone" />
 
             <FrameLayout
                 android:id="@+id/composearea_tap_trap_bottom"
