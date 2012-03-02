@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2011 Google Inc.
      Licensed to The Android Open Source Project.
@@ -16,10 +15,13 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Boolean value indicating whether the table UI should be used. -->
-    <integer name="use_tablet_ui">1</integer>
-    <integer name="conversation_header_mode">1</integer>
+    <!-- Boolean value indicating whether conversation can be collapsed. -->
+    <integer name="conversation_list_collapsible">0</integer>
+    <integer name="conversation_list_header_mode">0</integer>
+    <!-- Boolean value indicating whether, from within the conversation view, the mark unread
+         action can be shown with the archive action. -->
+    <integer name="can_show_conversation_mark_unread_with_archive_action">0</integer>
     <integer name="folder_list_weight">1</integer>
     <integer name="conversation_list_weight">3</integer>
-    <integer name="conversation_view_weight">3</integer>
+    <integer name="conversation_view_weight">6</integer>
 </resources>
