@@ -575,7 +575,7 @@ final class TwoPaneLayout extends LinearLayout
         // size changes for any reason (e.g. orientation change).
         mConversationListContainer.getLayoutParams().width =
                 ViewGroup.LayoutParams.MATCH_PARENT;
-
+        requestLayout();
         dispatchConversationListVisibilityChange();
         dispatchConversationVisibilityChanged(false);
     }
