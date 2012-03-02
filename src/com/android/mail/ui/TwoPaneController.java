@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.utils.LogUtils;
 
@@ -73,13 +74,16 @@ public final class TwoPaneController extends AbstractActivityController {
      * Render the folder list in the correct pane.
      */
     private void renderFolderList() {
-        Fragment folderListFragment = FolderListFragment.newInstance(this, mAccount.folderListUri);
+        FolderListFragment folderListFragment = FolderListFragment.newInstance(this,
+                mAccount.folderListUri);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.replace(R.id.folders_pane, folderListFragment);
         fragmentTransaction.commitAllowingStateLoss();
-        // Since we are showing the folder list, we are at the start of the view stack.
+        // Since we are showing the folder list, we are at the start of the view
+        // stack.
         resetActionBarIcon();
+        attachFolderList(folderListFragment);
     }
 
     @Override
@@ -91,7 +95,6 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public void showConversationList(ConversationListContext context) {
         initializeConversationListFragment(true);
-        renderFolderList();
     }
 
     @Override
@@ -114,9 +117,14 @@ public final class TwoPaneController extends AbstractActivityController {
         mViewMode.addListener(mLayout);
         // The activity controller needs to listen to layout changes.
         mLayout.setListener(this);
-
         final boolean isParentInitialized = super.onCreate(savedState);
         return isParentInitialized;
+    }
+
+    @Override
+    public void onAccountChanged(Account account) {
+        super.onAccountChanged(account);
+        renderFolderList();
     }
 
     @Override
