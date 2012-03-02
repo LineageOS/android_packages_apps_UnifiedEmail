@@ -74,14 +74,21 @@ public class AccountUtils {
     public static Account[] getSyncingAccounts(Context context,
             AccountManagerCallback<Account[]> callback, String type, String[] features) {
         ContentResolver resolver = context.getContentResolver();
-        Cursor accountsCursor = resolver.query(AccountCacheProvider.getAccountsUri(),
-                UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+        Cursor accountsCursor = null;
         ArrayList<Account> accounts = new ArrayList<Account>();
         Account account;
-        if (accountsCursor != null) {
-            while (accountsCursor.moveToNext()) {
-                account = new Account(accountsCursor);
-                accounts.add(account);
+        try {
+            accountsCursor = resolver.query(AccountCacheProvider.getAccountsUri(),
+                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+            if (accountsCursor != null) {
+                while (accountsCursor.moveToNext()) {
+                    account = new Account(accountsCursor);
+                    accounts.add(account);
+                }
+            }
+        } finally {
+            if (accountsCursor != null) {
+                accountsCursor.close();
             }
         }
         return accounts.toArray(new Account[accounts.size()]);
