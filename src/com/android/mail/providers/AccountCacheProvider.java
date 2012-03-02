@@ -16,6 +16,7 @@
 
 package com.android.mail.providers;
 
+import com.android.mail.providers.Account;
 import com.android.mail.providers.protos.boot.AccountReceiver;
 
 import android.content.Intent;
@@ -23,8 +24,10 @@ import android.content.Loader;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader.OnLoadCompleteListener;
+import android.content.SharedPreferences;
 import com.android.mail.utils.LogUtils;
 
 import android.database.Cursor;
@@ -38,7 +41,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import java.lang.IllegalStateException;
 import java.lang.Override;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,9 +60,12 @@ import java.util.Set;
 public abstract class AccountCacheProvider extends ContentProvider
         implements OnLoadCompleteListener<Cursor>{
 
+    private static final String SHARED_PREFERENCES_NAME = "AccountCacheProvider";
+    private static final String ACCOUNT_LIST_KEY = "accountList";
+
     private final static String LOG_TAG = new LogUtils().getLogTag();
 
-    private final static Map<Uri, CachedAccount> ACCOUNT_CACHE = Maps.newHashMap();
+    private final Map<Uri, Account> mAccountCache = Maps.newHashMap();
 
     // Map from content provider query uri to the set of account uri that resulted from that query
     private final static Map<Uri, Set<Uri>> QUERY_URI_ACCOUNT_URIS_MAP = Maps.newHashMap();
@@ -68,6 +76,8 @@ public abstract class AccountCacheProvider extends ContentProvider
     private static String sAuthority;
     private static AccountCacheProvider sInstance;
 
+    private SharedPreferences mSharedPrefs;
+
     /**
      * Allows the implmenting provider to specify the authority that should be used.
      */
@@ -75,6 +85,10 @@ public abstract class AccountCacheProvider extends ContentProvider
 
     public static Uri getAccountsUri() {
         return Uri.parse("content://" + sAuthority + "/");
+    }
+
+    public static AccountCacheProvider getInstance() {
+        return sInstance;
     }
 
     @Override
@@ -85,6 +99,9 @@ public abstract class AccountCacheProvider extends ContentProvider
 
         final Intent intent = new Intent(AccountReceiver.ACTION_PROVIDER_CREATED);
         getContext().sendBroadcast(intent);
+
+        // Load the previously saved account list
+        loadCachedAccountList();
 
         return true;
     }
@@ -111,55 +128,56 @@ public abstract class AccountCacheProvider extends ContentProvider
 
         // Make a copy of the account cache
 
-        final Set<CachedAccount> accountList;
-        synchronized (ACCOUNT_CACHE) {
-            accountList = ImmutableSet.copyOf(ACCOUNT_CACHE.values());
+        final Set<Account> accountList;
+        synchronized (mAccountCache) {
+            accountList = ImmutableSet.copyOf(mAccountCache.values());
         }
 
-        for (CachedAccount account : accountList) {
+        for (Account account : accountList) {
             final MatrixCursor.RowBuilder builder = cursor.newRow();
 
             for (String column : resultProjection) {
                 if (TextUtils.equals(column, BaseColumns._ID)) {
-                    builder.add(Integer.valueOf((int)account.mId));
+                    // TODO(pwestbro): remove this as it isn't used.
+                    builder.add(Integer.valueOf(0));
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.NAME)) {
-                    builder.add(account.mName);
+                    builder.add(account.name);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.PROVIDER_VERSION)) {
                     // TODO fix this
-                    builder.add(Integer.valueOf(0));
+                    builder.add(Integer.valueOf(account.providerVersion));
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.URI)) {
-                    builder.add(account.mUri);
+                    builder.add(account.uri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.CAPABILITIES)) {
-                    builder.add(Integer.valueOf((int)account.mCapabilities));
+                    builder.add(Integer.valueOf((int)account.capabilities));
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.FOLDER_LIST_URI)) {
-                    builder.add(account.mFolderListUri);
+                    builder.add(account.folderListUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SEARCH_URI)) {
-                    builder.add(account.mSearchUri);
+                    builder.add(account.searchUri);
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES_URI)) {
-                    builder.add(account.mAccountFromAddressesUri);
+                    builder.add(account.accountFromAddressesUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SAVE_DRAFT_URI)) {
-                    builder.add(account.mSaveDraftUri);
+                    builder.add(account.saveDraftUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SEND_MAIL_URI)) {
-                    builder.add(account.mSendMailUri);
+                    builder.add(account.sendMessageUri);
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI)) {
-                    builder.add(account.mExpungeMessageUri);
+                    builder.add(account.expungeMessageUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.UNDO_URI)) {
-                    builder.add(account.mUndoUri);
+                    builder.add(account.undoUri);
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.SETTINGS_INTENT_URI)) {
-                    builder.add(account.mSettingsIntentUri);
+                    builder.add(account.settingsIntentUri);
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.SETTINGS_QUERY_URI)) {
-                    builder.add(account.mSettingsQueryUri);
+                    builder.add(account.settingsQueryUri);
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.HELP_INTENT_URI)) {
-                    builder.add(account.mHelpIntentUri);
+                    builder.add(account.helpIntentUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SYNC_STATUS)) {
-                    builder.add(Integer.valueOf((int)account.mSyncStatus));
+                    builder.add(Integer.valueOf((int)account.syncStatus));
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.COMPOSE_URI)) {
-                    builder.add(account.mComposeIntentUri);
+                    builder.add(account.composeIntentUri);
                 } else {
                     throw new IllegalStateException("Column not found: " + column);
                 }
@@ -202,13 +220,10 @@ public abstract class AccountCacheProvider extends ContentProvider
      * @param accountsQueryUri
      */
     public static void addAccountsForUriAsync(Uri accountsQueryUri) {
-        final AccountCacheProvider provider = sInstance;
-
-        sInstance.startAccountsLoader(accountsQueryUri);
+        getInstance().startAccountsLoader(accountsQueryUri);
     }
 
     private synchronized void startAccountsLoader(Uri accountsQueryUri) {
-
         final CursorLoader accountsCursorLoader = new CursorLoader(getContext(), accountsQueryUri,
                 UIProvider.ACCOUNTS_PROJECTION, null, null, null);
 
@@ -224,37 +239,50 @@ public abstract class AccountCacheProvider extends ContentProvider
         mCursorLoaderMap.put(accountsQueryUri, accountsCursorLoader);
     }
 
-    public static void addAccount(CachedAccount account) {
-        synchronized (ACCOUNT_CACHE) {
+    public static void addAccount(Account account) {
+        final AccountCacheProvider provider = getInstance();
+        if (provider == null) {
+            throw new IllegalStateException("AccountCacheProvider not intialized");
+        }
+        provider.addAccountImpl(account);
+    }
+
+    private void addAccountImpl(Account account) {
+        synchronized (mAccountCache) {
             if (account != null) {
-                ACCOUNT_CACHE.put(account.mUri, account);
+                LogUtils.v(LOG_TAG, "adding account %s", account);
+                mAccountCache.put(account.uri, account);
             }
         }
         // Explicitly calling this out of the synchronized block in case any of the observers get
         // called synchronously.
         broadcastAccountChange();
+
+        // Cache the updated account list
+        cacheAccountList();
     }
 
     public static void removeAccount(Uri accountUri) {
-        synchronized (ACCOUNT_CACHE) {
-            ACCOUNT_CACHE.remove(accountUri);
+        final AccountCacheProvider provider = getInstance();
+        if (provider == null) {
+            throw new IllegalStateException("AccountCacheProvider not intialized");
         }
-
-        // Explicitly calling this out of the synchronized block in case any of the observers get
-        // called synchronously.
-        broadcastAccountChange();
+        provider.removeAccounts(Collections.singleton(accountUri));
     }
 
-    private static void removeAccounts(Set<Uri> uris) {
-        synchronized (ACCOUNT_CACHE) {
+    private void removeAccounts(Set<Uri> uris) {
+        synchronized (mAccountCache) {
             for (Uri accountUri : uris) {
-                ACCOUNT_CACHE.remove(accountUri);
+                mAccountCache.remove(accountUri);
             }
         }
 
         // Explicitly calling this out of the synchronized block in case any of the observers get
         // called synchronously.
         broadcastAccountChange();
+
+        // Cache the updated account list
+        cacheAccountList();
     }
 
     private static void broadcastAccountChange() {
@@ -264,6 +292,47 @@ public abstract class AccountCacheProvider extends ContentProvider
             provider.mResolver.notifyChange(getAccountsUri(), null);
         }
     }
+
+    private void loadCachedAccountList() {
+        final SharedPreferences preference = getPreferences();
+
+        final Set<String> accountsStringSet = preference.getStringSet(ACCOUNT_LIST_KEY, null);
+
+        if (accountsStringSet != null) {
+            for (String serializedAccount : accountsStringSet) {
+                final Account account = new Account(serializedAccount);
+                addAccount(account);
+            }
+        }
+    }
+
+    private void cacheAccountList() {
+        final SharedPreferences preference = getPreferences();
+
+        final Set<Account> accountList;
+        synchronized (mAccountCache) {
+            accountList = ImmutableSet.copyOf(mAccountCache.values());
+        }
+
+        final Set<String> serializedAccounts = Sets.newHashSet();
+        for (Account account : accountList) {
+            serializedAccounts.add(account.serialize());
+        }
+
+        final SharedPreferences.Editor editor = getPreferences().edit();
+        editor.putStringSet(ACCOUNT_LIST_KEY, serializedAccounts);
+        editor.apply();
+    }
+
+    private SharedPreferences getPreferences() {
+        if (mSharedPrefs == null) {
+            mSharedPrefs = getContext().getSharedPreferences(
+                    SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        }
+        return mSharedPrefs;
+    }
+
+
 
     @Override
     public void onLoadComplete(Loader<Cursor> loader, Cursor data) {
@@ -283,7 +352,7 @@ public abstract class AccountCacheProvider extends ContentProvider
             final Account account = new Account(data);
             final Uri accountUri = account.uri;
             newQueryUriMap.add(accountUri);
-            addAccount(new CachedAccount(account));
+            addAccount(account);
         }
 
         // Save the new set, or remove the previous entry if it is empty
@@ -302,102 +371,6 @@ public abstract class AccountCacheProvider extends ContentProvider
             if (previousQueryUriMap.size() > 0) {
                 removeAccounts(previousQueryUriMap);
             }
-        }
-    }
-
-    public static class CachedAccount {
-        private final long mId;
-        private final String mName;
-        private final Uri mUri;
-        private final long mCapabilities;
-        private final Uri mFolderListUri;
-        private final Uri mSearchUri;
-        private final Uri mAccountFromAddressesUri;
-        private final Uri mSaveDraftUri;
-        private final Uri mSendMailUri;
-        private final Uri mExpungeMessageUri;
-        private final Uri mUndoUri;
-        private final Uri mSettingsIntentUri;
-        private final Uri mSettingsQueryUri;
-        private final Uri mHelpIntentUri;
-        private final int mSyncStatus;
-        private final Uri mComposeIntentUri;
-
-        public CachedAccount(long id, String name, Uri uri, long capabilities,
-                Uri folderListUri, Uri searchUri, Uri fromAddressesUri,
-                Uri saveDraftUri, Uri sendMailUri, Uri expungeMessageUri, Uri undoUri,
-                Uri settingsIntentUri, Uri settingsQueryUri, Uri helpIntentUri, int syncStatus,
-                Uri composeIntentUri) {
-            mId = id;
-            mName = name;
-            mUri = uri;
-            mCapabilities = capabilities;
-            mFolderListUri = folderListUri;
-            mSearchUri = searchUri;
-            mAccountFromAddressesUri = fromAddressesUri;
-            mSaveDraftUri = saveDraftUri;
-            mSendMailUri = sendMailUri;
-            mExpungeMessageUri = expungeMessageUri;
-            mUndoUri = undoUri;
-            mSettingsIntentUri = settingsIntentUri;
-            mSettingsQueryUri = settingsQueryUri;
-            mHelpIntentUri = helpIntentUri;
-            mSyncStatus = syncStatus;
-            mComposeIntentUri = composeIntentUri;
-        }
-
-        public CachedAccount(Account acct) {
-            mId = 0;
-            mName = acct.name;
-            mUri = acct.uri;
-            mCapabilities = acct.capabilities;
-            mFolderListUri = acct.folderListUri;
-            mSearchUri = acct.searchUri;
-            mAccountFromAddressesUri = acct.accountFromAddressesUri;
-            mSaveDraftUri = acct.saveDraftUri;
-            mSendMailUri = acct.sendMessageUri;
-            mExpungeMessageUri = acct.expungeMessageUri;
-            mUndoUri = acct.undoUri;
-            mSettingsIntentUri = acct.settingsIntentUri;
-            mSettingsQueryUri = acct.settingsQueryUri;
-            mHelpIntentUri = acct.helpIntentUri;
-            mSyncStatus = acct.syncStatus;
-            mComposeIntentUri = acct.composeIntentUri;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == this) {
-                return true;
-            }
-
-            if ((o == null) || (o.getClass() != this.getClass())) {
-                return false;
-            }
-
-            CachedAccount other = (CachedAccount) o;
-            return mId == other.mId && TextUtils.equals(mName, other.mName) &&
-                    mUri.equals(other.mUri) && mCapabilities == other.mCapabilities &&
-                    mFolderListUri.equals(other.mFolderListUri) &&
-                    mSearchUri.equals(other.mSearchUri) &&
-                    mAccountFromAddressesUri.equals(other.mAccountFromAddressesUri) &&
-                    mSaveDraftUri.equals(other.mSaveDraftUri) &&
-                    mSendMailUri.equals(other.mSendMailUri) &&
-                    mExpungeMessageUri.equals(other.mExpungeMessageUri) &&
-                    mUndoUri.equals(other.mUndoUri) &&
-                    mSettingsIntentUri.equals(other.mSettingsIntentUri) &&
-                    mSettingsQueryUri.equals(other.mSettingsQueryUri) &&
-                    mHelpIntentUri.equals(other.mHelpIntentUri) &&
-                    (mSyncStatus == other.mSyncStatus) &&
-                    mComposeIntentUri.equals(other.mComposeIntentUri);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(mId, mName, mUri, mCapabilities, mFolderListUri, mSearchUri,
-                    mAccountFromAddressesUri, mSaveDraftUri, mSendMailUri, mExpungeMessageUri,
-                    mUndoUri, mSettingsIntentUri, mSettingsQueryUri, mHelpIntentUri, mSyncStatus,
-                    mComposeIntentUri);
         }
     }
 }

@@ -21,10 +21,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.os.Parcel;
 import android.provider.BaseColumns;
 import android.text.Html;
 
 import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
@@ -32,6 +34,7 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderColumns;
 import com.android.mail.providers.UIProvider.MessageColumns;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -247,7 +250,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.PROVIDER_VERSION, Long.valueOf(1));
         accountMap.put(AccountColumns.URI, Uri.parse(accountUri));
         accountMap.put(AccountColumns.CAPABILITIES,
-                Long.valueOf(
+                Integer.valueOf(
                         AccountCapabilities.SYNCABLE_FOLDERS |
                         AccountCapabilities.REPORT_SPAM |
                         AccountCapabilities.ARCHIVE |
@@ -351,23 +354,27 @@ public final class MockUiProvider extends ContentProvider {
     }
 
     private static void addAccountInfoToAccountCache(Map<String, Object> accountInfo) {
-        final AccountCacheProvider.CachedAccount account = new AccountCacheProvider.CachedAccount(
-                (Long) accountInfo.get(BaseColumns._ID),
-                (String) accountInfo.get(AccountColumns.NAME),
-                (Uri) accountInfo.get(AccountColumns.URI),
-                (Long) accountInfo.get(AccountColumns.CAPABILITIES),
-                (Uri) accountInfo.get(AccountColumns.FOLDER_LIST_URI),
-                (Uri) accountInfo.get(AccountColumns.SEARCH_URI),
-                (Uri) accountInfo.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI),
-                (Uri) accountInfo.get(AccountColumns.SAVE_DRAFT_URI),
-                (Uri) accountInfo.get(AccountColumns.SEND_MAIL_URI),
-                (Uri) accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI),
-                (Uri) accountInfo.get(AccountColumns.UNDO_URI),
-                (Uri) accountInfo.get(AccountColumns.SETTINGS_INTENT_URI),
-                (Uri)accountInfo.get(AccountColumns.SETTINGS_QUERY_URI),
-                (Uri) accountInfo.get(AccountColumns.HELP_INTENT_URI),
-                (Integer) accountInfo.get(AccountColumns.SYNC_STATUS),
-                (Uri) accountInfo.get(AccountColumns.COMPOSE_URI));
+        final Parcel dest = Parcel.obtain();
+
+        dest.writeString((String) accountInfo.get(AccountColumns.NAME));
+        dest.writeString("mock");
+        dest.writeInt(0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.URI), 0);
+        dest.writeInt((Integer) accountInfo.get(AccountColumns.CAPABILITIES));
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.FOLDER_LIST_URI), 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SEARCH_URI), 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI), 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SAVE_DRAFT_URI), 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SEND_MAIL_URI), 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI), 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.UNDO_URI), 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SETTINGS_INTENT_URI), 0);
+        dest.writeParcelable((Uri)accountInfo.get(AccountColumns.SETTINGS_QUERY_URI), 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.HELP_INTENT_URI), 0);
+        dest.writeInt((Integer) accountInfo.get(AccountColumns.SYNC_STATUS));
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.COMPOSE_URI), 0);
+        dest.setDataPosition(0);
+        final Account account = new Account(dest);
         AccountCacheProvider.addAccount(account);
     }
 }
