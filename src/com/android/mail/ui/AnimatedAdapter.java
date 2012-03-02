@@ -21,7 +21,6 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.Cursor;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -111,15 +110,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         for (Conversation c : conversations) {
             positions.add(c.position);
         }
-        mActionCompleteListener = listener;
-        delete(positions);
+        delete(positions, listener);
     }
 
-    public void delete(ArrayList<Integer> deletedRows) {
+    public void delete(ArrayList<Integer> deletedRows, ActionCompleteListener listener) {
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
         mLastDeletingItems.addAll(deletedRows);
         mDeletingItems.addAll(deletedRows);
+        mActionCompleteListener = listener;
         // TODO(viki): Rather than notifying for a full data set change, perhaps we can mark
         // only the affected conversations?
         notifyDataSetChanged();
