@@ -436,7 +436,9 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onActionComplete() {
-        // Nothing to do here.
+        if (mConversationListCursor.isRefreshReady()) {
+            finishRefresh();
+        }
     }
 
     @Override
@@ -472,7 +474,7 @@ public final class ConversationListFragment extends ListFragment implements
         ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
         // If we have any deletions from the server, animate them away
         if (!deletedRows.isEmpty()) {
-            mListAdapter.delete(deletedRows);
+            mListAdapter.delete(deletedRows, this);
         } else {
             finishRefresh();
         }
