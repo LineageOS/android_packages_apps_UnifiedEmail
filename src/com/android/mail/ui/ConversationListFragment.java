@@ -286,6 +286,11 @@ public final class ConversationListFragment extends ListFragment implements
 
         // Note - we manually save/restore the listview state.
         mListView.setSaveEnabled(false);
+
+        // Belt and suspenders here; make sure we do any necessary sync of the ConversationCursor
+        if (mConversationListCursor != null && mConversationListCursor.isRefreshReady()) {
+            mConversationListCursor.sync();
+        }
         return rootView;
     }
 
