@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"E-posten har ingen tekst."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Vil du sende denne e-posten?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"E-posten er forkastet."</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Send"</string>
     <string name="mark_read" msgid="8438349154394313195">"Merk som lest"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Merk som ulest"</string>
@@ -129,6 +131,15 @@
     <string name="me" msgid="6480762904022198669">"meg"</string>
     <string name="labels" msgid="1519770547536283663">"Etiketter"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Vis alle mapper"</string>
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"Vil du slette denne samtalen?"</item>
+    <item quantity="other" msgid="930334208937121234">"Vil du slette disse <xliff:g id="COUNT">%1$d</xliff:g> samtalene?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"Vil du arkivere denne samtalen?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Vil du arkivere disse <xliff:g id="COUNT">%1$d</xliff:g> samtalene?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Vil du forkaste denne meldingen?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Ingen samtaler."</string>
     <string name="undo" msgid="6070869718469782251">"Angre"</string>
   <plurals name="conversation_marking_read">
@@ -252,5 +263,5 @@
     <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Synkroniser mappen"</string>
     <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Synkroniser denne mappen for å se samtaler i modulen."</string>
     <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Synkroniser de siste <xliff:g id="NUMSYNCDAYS">%d</xliff:g> dagene"</string>
-    <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Endre mapper"</string>
+    <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Bytt mappe"</string>
 </resources>

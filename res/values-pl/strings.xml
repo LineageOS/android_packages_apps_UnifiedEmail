@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Brak tekstu w treści wiadomości."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Wysłać tę wiadomość?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Wiadomość została odrzucona."</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Wyślij"</string>
     <string name="mark_read" msgid="8438349154394313195">"Oznacz jako przeczytane"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Oznacz jako nieprzeczytane"</string>
@@ -129,6 +131,12 @@
     <string name="me" msgid="6480762904022198669">"ja"</string>
     <string name="labels" msgid="1519770547536283663">"Etykiety"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Pokaż wszystkie foldery"</string>
+    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
+    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
+    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
+    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
+    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
+    <skip />
     <string name="no_conversations" msgid="35400008890372241">"Brak wątków."</string>
     <string name="undo" msgid="6070869718469782251">"Cofnij"</string>
   <plurals name="conversation_marking_read">

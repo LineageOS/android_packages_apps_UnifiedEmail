@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Det finns ingen text i meddelandet."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Vill du skicka det här meddelandet?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Meddelandet har slängts."</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Skicka"</string>
     <string name="mark_read" msgid="8438349154394313195">"Markera som läst"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Markera som oläst"</string>
@@ -129,6 +131,12 @@
     <string name="me" msgid="6480762904022198669">"jag"</string>
     <string name="labels" msgid="1519770547536283663">"Etiketter"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Visa alla mappar"</string>
+    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
+    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
+    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
+    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
+    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
+    <skip />
     <string name="no_conversations" msgid="35400008890372241">"Inga konversationer."</string>
     <string name="undo" msgid="6070869718469782251">"Ångra"</string>
   <plurals name="conversation_marking_read">
@@ -219,10 +227,8 @@
     <string name="message_saved" msgid="7073947895562277576">"Meddelande sparat som utkast."</string>
     <string name="sending_message" msgid="1498583163419122128">"Skickar meddelande …"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Adressen <xliff:g id="WRONGEMAIL">%s</xliff:g> är ogiltig."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ Visa citerad text"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Dölj citerad text"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Klar"</string>

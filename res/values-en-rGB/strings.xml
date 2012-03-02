@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"There\'s no text in the message body."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Send this message?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Message discarded."</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Send"</string>
     <string name="mark_read" msgid="8438349154394313195">"Mark read"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Mark unread"</string>
@@ -129,6 +131,15 @@
     <string name="me" msgid="6480762904022198669">"me"</string>
     <string name="labels" msgid="1519770547536283663">"Labels"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Show all folders"</string>
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"Delete this conversation?"</item>
+    <item quantity="other" msgid="930334208937121234">"Delete these <xliff:g id="COUNT">%1$d</xliff:g> conversations?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"Archive this conversation?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Archive these <xliff:g id="COUNT">%1$d</xliff:g> conversations?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Discard this message?"</string>
     <string name="no_conversations" msgid="35400008890372241">"No conversations."</string>
     <string name="undo" msgid="6070869718469782251">"Undo"</string>
   <plurals name="conversation_marking_read">

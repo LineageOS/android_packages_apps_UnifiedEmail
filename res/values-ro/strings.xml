@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Nu există text în corpul mesajului."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Trimiteţi acest mesaj?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Mesaj refuzat."</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Trimiteţi"</string>
     <string name="mark_read" msgid="8438349154394313195">"Marcaţi drept citită"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Marcaţi drept necitită"</string>
@@ -129,6 +131,12 @@
     <string name="me" msgid="6480762904022198669">"eu"</string>
     <string name="labels" msgid="1519770547536283663">"Etichete"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Afişaţi toate dosarele"</string>
+    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
+    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
+    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
+    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
+    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
+    <skip />
     <string name="no_conversations" msgid="35400008890372241">"Nicio conversaţie."</string>
     <string name="undo" msgid="6070869718469782251">"Anulaţi"</string>
   <plurals name="conversation_marking_read">
@@ -219,10 +227,8 @@
     <string name="message_saved" msgid="7073947895562277576">"Mesaj salvat ca mesaj nefinalizat."</string>
     <string name="sending_message" msgid="1498583163419122128">"Se trimite mesajul..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Adresa <xliff:g id="WRONGEMAIL">%s</xliff:g> este nevalidă."</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ Afişaţi textul citat"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ Ascundeţi textul citat"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Terminat"</string>
@@ -247,12 +253,12 @@
     <string name="activity_folder_selection" msgid="5161845867397316052">"Alegeţi un dosar"</string>
     <string name="sync_all" msgid="1057043212338233359">"Sincronizare: toate"</string>
   <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Sincronizare: ultima <xliff:g id="COUNT">%1$d</xliff:g> zi"</item>
+    <item quantity="one" msgid="137489911893192702">"Sincronizare: ultima zi (<xliff:g id="COUNT">%1$d</xliff:g>)"</item>
     <item quantity="other" msgid="6856940335775567991">"Sincronizare: ultimele <xliff:g id="COUNT">%1$d</xliff:g> (de) zile"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Sincronizare: niciunul"</string>
     <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Sincronizaţi dosarul"</string>
     <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Pentru a afişa conversaţiile din widget, sincronizaţi acest dosar."</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sincron. ultimele <xliff:g id="NUMSYNCDAYS">%d</xliff:g> (de) zile"</string>
+    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sincronizați ultimele <xliff:g id="NUMSYNCDAYS">%d</xliff:g> zile"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Modificaţi dosarele"</string>
 </resources>

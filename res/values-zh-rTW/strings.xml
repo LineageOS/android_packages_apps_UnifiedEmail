@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"這封郵件沒有內文。"</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"傳送這封郵件？"</string>
     <string name="message_discarded" msgid="5079975378884765445">"已捨棄郵件。"</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"傳送"</string>
     <string name="mark_read" msgid="8438349154394313195">"標示為已讀取"</string>
     <string name="mark_unread" msgid="6231373939351125713">"標示為未讀取"</string>
@@ -129,6 +131,12 @@
     <string name="me" msgid="6480762904022198669">"我"</string>
     <string name="labels" msgid="1519770547536283663">"標籤"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"顯示所有資料夾"</string>
+    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
+    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
+    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
+    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
+    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
+    <skip />
     <string name="no_conversations" msgid="35400008890372241">"無會話群組。"</string>
     <string name="undo" msgid="6070869718469782251">"復原"</string>
   <plurals name="conversation_marking_read">
@@ -219,10 +227,8 @@
     <string name="message_saved" msgid="7073947895562277576">"已儲存郵件草稿。"</string>
     <string name="sending_message" msgid="1498583163419122128">"正在傳送郵件..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"地址 <xliff:g id="WRONGEMAIL">%s</xliff:g> 無效。"</string>
-    <!-- no translation found for show_elided (5255917904110437886) -->
-    <skip />
-    <!-- no translation found for hide_elided (8907305605854960737) -->
-    <skip />
+    <string name="show_elided" msgid="5255917904110437886">"▶ 顯示引用文字"</string>
+    <string name="hide_elided" msgid="8907305605854960737">"▼ 隱藏引用文字"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">"、 "</string>
     <string name="ok" msgid="8339355733816891026">"確定"</string>
     <string name="done" msgid="3079981801778027540">"完成"</string>

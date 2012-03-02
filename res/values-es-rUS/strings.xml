@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"El cuerpo del mensaje está vacío."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"¿Deseas enviar este mensaje?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Mensaje descartado"</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Enviar"</string>
     <string name="mark_read" msgid="8438349154394313195">"Marcar como leída"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Marcar como no leída"</string>
@@ -129,6 +131,15 @@
     <string name="me" msgid="6480762904022198669">"yo"</string>
     <string name="labels" msgid="1519770547536283663">"Etiquetas"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Mostrar todas las carpetas"</string>
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"¿Deseas eliminar esta conversación?"</item>
+    <item quantity="other" msgid="930334208937121234">"¿Deseas eliminar estas <xliff:g id="COUNT">%1$d</xliff:g> conversaciones?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"¿Deseas archivar esta conversación?"</item>
+    <item quantity="other" msgid="4713469868399246772">"¿Deseas archivar estas <xliff:g id="COUNT">%1$d</xliff:g> conversaciones?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"¿Quieres descartar este mensaje?"</string>
     <string name="no_conversations" msgid="35400008890372241">"No hay conversaciones."</string>
     <string name="undo" msgid="6070869718469782251">"Deshacer"</string>
   <plurals name="conversation_marking_read">
@@ -240,17 +251,17 @@
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sincronizar carpeta"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Ver más conversaciones"</string>
-    <string name="loading_conversation" msgid="489160038366067983">"Cargando..."</string>
+    <string name="loading_conversation" msgid="489160038366067983">"Cargando…"</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"Seleccionar cuenta"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Seleccionar carpeta"</string>
     <string name="sync_all" msgid="1057043212338233359">"Sincronizar: todas"</string>
   <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Sincronizar: las conversaciones de los últimos <xliff:g id="COUNT">%1$d</xliff:g> días"</item>
+    <item quantity="one" msgid="137489911893192702">"Sincronizar: las conversaciones del último día (<xliff:g id="COUNT">%1$d</xliff:g>)"</item>
     <item quantity="other" msgid="6856940335775567991">"Sincronizar: las conversaciones de los últimos <xliff:g id="COUNT">%1$d</xliff:g> días"</item>
   </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"Sincronización: ninguna"</string>
+    <string name="sync_none" msgid="3581727068747471804">"Sincronizar: ninguna"</string>
     <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Sincronizar carpeta"</string>
     <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Para ver conversaciones en el widget, sincroniza esta carpeta."</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sincronización: <xliff:g id="NUMSYNCDAYS">%d</xliff:g> días"</string>
+    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sincronizar últimos <xliff:g id="NUMSYNCDAYS">%d</xliff:g> días"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Cambiar carpetas"</string>
 </resources>

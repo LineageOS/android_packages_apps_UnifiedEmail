@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Sõnumi sisus pole teksti."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Kas soovite selle sõnumi saata?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Sõnumist loobuti."</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Saada"</string>
     <string name="mark_read" msgid="8438349154394313195">"Märgi loetuks"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Märgi mitteloetuks"</string>
@@ -65,7 +67,7 @@
     <string name="forward" msgid="6822914459902983767">"Edasta"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Koosta"</string>
     <string name="menu_change_labels" msgid="9121087142079721959">"Muuda silte"</string>
-    <string name="menu_change_folders" msgid="1542713666608888717">"Muudetud kaustad"</string>
+    <string name="menu_change_folders" msgid="1542713666608888717">"Muuda kaustu"</string>
     <string name="menu_manage_labels" msgid="8618788259638720538">"Halda silte"</string>
     <string name="label_list_title" msgid="7948730824763052410">"Sildid"</string>
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Sünkroonimine ja teavitamine"</string>
@@ -129,6 +131,12 @@
     <string name="me" msgid="6480762904022198669">"mina"</string>
     <string name="labels" msgid="1519770547536283663">"Sildid"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Kuva kõik kaustad"</string>
+    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
+    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
+    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
+    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
+    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
+    <skip />
     <string name="no_conversations" msgid="35400008890372241">"Meilivestlusi pole."</string>
     <string name="undo" msgid="6070869718469782251">"Võta tagasi"</string>
   <plurals name="conversation_marking_read">
@@ -237,7 +245,7 @@
   </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Puudutage seadistamiseks"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Meilivestl. vaatamis. sünkr. kaust."</string>
-    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Kausta sünkroonimine"</string>
+    <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sünkrooni kaust"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Kuva rohkem meilivestlusi"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Laadimine …"</string>
@@ -252,5 +260,5 @@
     <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Kausta sünkroonimine"</string>
     <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Vidinas meilivestluste vaatamiseks sünkroonige see kaust."</string>
     <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sünkrooni viimased <xliff:g id="NUMSYNCDAYS">%d</xliff:g> päeva"</string>
-    <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Muudetud kaustad"</string>
+    <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Kaustade muutmine"</string>
 </resources>

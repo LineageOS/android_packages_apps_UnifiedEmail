@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Pranešimo turinyje nėra teksto."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Siųsti šį pranešimą?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Pranešimas atmestas."</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Siųsti"</string>
     <string name="mark_read" msgid="8438349154394313195">"Pažymėti kaip skaitytą"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Pažymėti kaip neskaitytą"</string>
@@ -129,6 +131,15 @@
     <string name="me" msgid="6480762904022198669">"man"</string>
     <string name="labels" msgid="1519770547536283663">"Etiketės"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Rodyti visus aplankus"</string>
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"Ištrinti šį pokalbį?"</item>
+    <item quantity="other" msgid="930334208937121234">"Ištrinti šiuos <xliff:g id="COUNT">%1$d</xliff:g> pokalb.?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"Archyvuoti šį pokalbį?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Archyvuoti šiuos <xliff:g id="COUNT">%1$d</xliff:g> pokalb.?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Atmesti šį pranešimą?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Nėra pokalbių."</string>
     <string name="undo" msgid="6070869718469782251">"Anuliuoti"</string>
   <plurals name="conversation_marking_read">

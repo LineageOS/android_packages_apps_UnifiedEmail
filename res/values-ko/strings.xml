@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"메일 본문에 텍스트가 없습니다."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"메시지를 보내시겠습니까?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"메일을 삭제했습니다."</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"보내기"</string>
     <string name="mark_read" msgid="8438349154394313195">"읽음으로 표시"</string>
     <string name="mark_unread" msgid="6231373939351125713">"읽지않음으로 표시"</string>
@@ -129,6 +131,12 @@
     <string name="me" msgid="6480762904022198669">"나"</string>
     <string name="labels" msgid="1519770547536283663">"라벨"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"모든 폴더 표시"</string>
+    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
+    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
+    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
+    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
+    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
+    <skip />
     <string name="no_conversations" msgid="35400008890372241">"대화가 없습니다."</string>
     <string name="undo" msgid="6070869718469782251">"실행취소"</string>
   <plurals name="conversation_marking_read">
@@ -236,7 +244,7 @@
     <item msgid="9190542479647789762">"내부 오류"</item>
   </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"설정하려면 터치하세요."</string>
-    <string name="non_synced_folder_description" msgid="6059194125558004080">"대화를 보려면 이 폴더를 동기화하세요."</string>
+    <string name="non_synced_folder_description" msgid="6059194125558004080">"대화를 보려면 폴더를 동기화하세요."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"폴더 동기화"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"대화 더보기"</string>

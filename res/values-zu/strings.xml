@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Awukho umbhalo emzimbeni walomlayezo."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Thumela lo mlayezo?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Umlayezo ulahliwe."</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Thumela"</string>
     <string name="mark_read" msgid="8438349154394313195">"Maka njengokufundiwe"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Maka njengokungafundiwe"</string>
@@ -129,6 +131,15 @@
     <string name="me" msgid="6480762904022198669">"mina"</string>
     <string name="labels" msgid="1519770547536283663">"Amalebuli"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Bonisa onke amafolda"</string>
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"Sula le ngxoxo?"</item>
+    <item quantity="other" msgid="930334208937121234">"Sula lezi zingxoxo ezingu-<xliff:g id="COUNT">%1$d</xliff:g>?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"Ufuna ukulondoloza lenkulumo?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Faka lezi zingxoxo ezingu-<xliff:g id="COUNT">%1$d</xliff:g> kungobo yomlando?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Lahla umlayezo?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Azikho izingxoxo."</string>
     <string name="undo" msgid="6070869718469782251">"Hlehlisa"</string>
   <plurals name="conversation_marking_read">
@@ -232,25 +243,25 @@
     <item msgid="5037283655022689372">"Iphutha loxhuma"</item>
     <item msgid="4252875340758600974">"Iphutha lokufakazela ubuqiniso"</item>
     <item msgid="7611299631880179587">"Iphutha lokuphepha"</item>
-    <item msgid="665244114363057627">"Iphutha lesitoreji"</item>
+    <item msgid="665244114363057627">"Iphutha lendawo yokulondoloza"</item>
     <item msgid="9190542479647789762">"Iphutha langaphakathi"</item>
   </string-array>
-    <string name="tap_to_configure" msgid="1181356242354390930">"Cindezela ukuze ulungisele ukusebenza."</string>
+    <string name="tap_to_configure" msgid="1181356242354390930">"Thinta ukuze ulungisele ukusebenza"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Ukuze ubuke izingxoxo, vumelanisa le folda."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Vumelanisa ifolda"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"Buka izingxoxo ezengeziwe"</string>
     <string name="loading_conversation" msgid="489160038366067983">"Iyalayisha…"</string>
-    <string name="activity_mailbox_selection" msgid="6876105223659297603">"Khetha i-Akhawunti"</string>
+    <string name="activity_mailbox_selection" msgid="6876105223659297603">"Khetha i-akhawunti"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"Khetha ifolda"</string>
     <string name="sync_all" msgid="1057043212338233359">"Vumelanisa: Konke"</string>
   <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Vumelanisa: Usuku <xliff:g id="COUNT">%1$d</xliff:g> lokugcina"</item>
-    <item quantity="other" msgid="6856940335775567991">"Vumelanisa: Izinsuku <xliff:g id="COUNT">%1$d</xliff:g> zokugcina"</item>
+    <item quantity="one" msgid="137489911893192702">"Vumelanisa: Usuku olu-<xliff:g id="COUNT">%1$d</xliff:g> lokugcina"</item>
+    <item quantity="other" msgid="6856940335775567991">"Vumelanisa: Izinsuku ezingu-<xliff:g id="COUNT">%1$d</xliff:g> zokugcina"</item>
   </plurals>
-    <string name="sync_none" msgid="3581727068747471804">"Akukho ukuvumelanisa"</string>
+    <string name="sync_none" msgid="3581727068747471804">"Ukuvumelanisa: Akukho"</string>
     <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Vumelanisa ifolda"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Ukuze ubuke izingxoxo kusinqunjwana, vumelanisa le lebula."</string>
+    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Ukuze ubuke izingxoxo kusinqunjwana, vumelanisa le folda."</string>
     <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Vumelanisa izinsuku ezingu-<xliff:g id="NUMSYNCDAYS">%d</xliff:g> zokugcina"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Shintsha amafolda"</string>
 </resources>

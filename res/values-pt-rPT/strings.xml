@@ -47,6 +47,8 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Não existe texto no corpo da mensagem."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Enviar esta mensagem?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Mensagem rejeitada."</string>
+    <!-- no translation found for signature (8672076404752035004) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Enviar"</string>
     <string name="mark_read" msgid="8438349154394313195">"Marcar como lida"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Marcar como não lida"</string>
@@ -129,6 +131,12 @@
     <string name="me" msgid="6480762904022198669">"utilizador"</string>
     <string name="labels" msgid="1519770547536283663">"Etiquetas"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Mostrar todas as pastas"</string>
+    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
+    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
+    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
+    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
+    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
+    <skip />
     <string name="no_conversations" msgid="35400008890372241">"Sem conversas."</string>
     <string name="undo" msgid="6070869718469782251">"Anular"</string>
   <plurals name="conversation_marking_read">
@@ -245,7 +253,7 @@
     <string name="activity_folder_selection" msgid="5161845867397316052">"Escolher pasta"</string>
     <string name="sync_all" msgid="1057043212338233359">"Sincronizar: Tudo"</string>
   <plurals name="sync_recent">
-    <item quantity="one" msgid="137489911893192702">"Sincronizar: último <xliff:g id="COUNT">%1$d</xliff:g> dia"</item>
+    <item quantity="one" msgid="137489911893192702">"Sincronizar: últimas 24 horas (<xliff:g id="COUNT">%1$d</xliff:g> dia)"</item>
     <item quantity="other" msgid="6856940335775567991">"Sincronizar: últimos <xliff:g id="COUNT">%1$d</xliff:g> dias"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Sincronizar: Nenhuma"</string>
