@@ -402,8 +402,8 @@ public abstract class AbstractActivityController implements ActivityController {
             case R.id.refresh:
                 requestFolderRefresh();
                 break;
-            case R.id.preferences:
-                showPreferences();
+            case R.id.settings:
+                Utils.showSettings(mActivity.getActivityContext(), mAccount);
                 break;
             case R.id.help_info_menu_item:
                 // TODO: enable context sensitive help
@@ -505,12 +505,6 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mConvListContext != null) {
             outState.putBundle(SAVED_LIST_CONTEXT, mConvListContext.toBundle());
         }
-    }
-
-    @Override
-    public void showPreferences() {
-        final Intent preferenceIntent = new Intent(Intent.ACTION_EDIT, mAccount.settingsIntentUri);
-        mActivity.startActivity(preferenceIntent);
     }
 
     @Override

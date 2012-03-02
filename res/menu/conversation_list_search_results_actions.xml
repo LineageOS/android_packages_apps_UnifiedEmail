@@ -41,10 +41,9 @@
         android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
 
-    <item android:id="@+id/preferences"
-        android:title="@string/menu_preferences"
-        android:showAsAction="never"
-        android:icon="@android:drawable/ic_menu_preferences" />
+    <item android:id="@+id/settings"
+        android:title="@string/menu_settings"
+        android:showAsAction="never" />
 
     <item
         android:id="@+id/help_info_menu_item"

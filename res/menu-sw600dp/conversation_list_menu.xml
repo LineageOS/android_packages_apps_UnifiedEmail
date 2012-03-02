@@ -39,9 +39,8 @@
         android:title="@string/menu_manage_labels"
         android:icon="@drawable/ic_menu_labels_holo_light" />
 
-    <item android:id="@+id/preferences"
-        android:title="@string/menu_preferences"
-        android:icon="@android:drawable/ic_menu_preferences" />
+    <item android:id="@+id/settings"
+        android:title="@string/menu_settings" />
 
     <item
         android:id="@+id/help_info_menu_item"

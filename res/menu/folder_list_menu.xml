@@ -23,10 +23,9 @@
         android:showAsAction="ifRoom" />
 
     <!-- Always available -->
-    <item android:id="@+id/preferences"
-        android:title="@string/menu_preferences"
-        android:showAsAction="never"
-        android:icon="@android:drawable/ic_menu_preferences" />
+    <item android:id="@+id/settings"
+        android:title="@string/menu_settings"
+        android:showAsAction="never" />
 
     <!-- Always available -->
     <item

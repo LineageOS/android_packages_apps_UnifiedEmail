@@ -140,9 +140,9 @@
     <!-- Menu item: done editing label options. [CHAR LIMIT = 30] -->
     <string name="menu_done">Done</string>
     <!-- Menu item: launch the Global Account Settings activity -->
-    <string name="menu_account_preferences">Account settings</string>
+    <string name="menu_account_settings">Account settings</string>
     <!-- Menu item: launch the Settings activity -->
-    <string name="menu_preferences">Settings</string>
+    <string name="menu_settings">Settings</string>
     <!-- Menu item: search through the Gmail inbox -->
     <string name="menu_search">Search</string>
     <!-- Menu item: show more menu options in a popup. Portrait mode string. [CHAR LIMIT=15] -->

@@ -70,9 +70,8 @@
         android:icon="@drawable/ic_spam_normal_holo_light" />
 
     <!-- Always available -->
-    <item android:id="@+id/preferences"
-        android:title="@string/menu_preferences"
-        android:icon="@android:drawable/ic_menu_preferences" />
+    <item android:id="@+id/settings"
+        android:title="@string/menu_settings" />
 
     <!-- Always available -->
     <item
