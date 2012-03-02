@@ -208,7 +208,7 @@ public final class ConversationViewFragment extends Fragment implements
         mWebView.loadDataWithBaseURL(mBaseUri, renderMessageBodies(messageCursor), "text/html",
                 "utf-8", null);
         mConversationContainer.setOverlayAdapter(
-                new MessageListAdapter(mContext, messageCursor, mAccount));
+                new MessageListAdapter(mActivity.getActivityContext(), messageCursor, mAccount));
     }
 
     @Override
