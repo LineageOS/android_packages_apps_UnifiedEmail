@@ -46,13 +46,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private ActionCompleteListener mActionCompleteListener;
     private boolean mUndo = false;
     private ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
+    private ViewMode mViewMode;
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
-            ConversationSelectionSet batch, Account account) {
+            ConversationSelectionSet batch, Account account, ViewMode viewMode) {
         super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
         mSelectedAccount = account;
+        mViewMode = viewMode;
     }
 
     public void setUndo(boolean state) {
@@ -78,7 +80,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public void bindView(View view, Context context, Cursor cursor) {
         if (!isPositionAnimating(view)) {
             ((ConversationItemView) view).bind(cursor, null, mSelectedAccount.name, null,
-                    new ViewMode(mContext), mBatchConversations);
+                    mViewMode, mBatchConversations);
         }
     }
 

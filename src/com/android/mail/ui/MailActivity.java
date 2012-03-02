@@ -86,8 +86,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
      * Default implementation returns a null view mode.
      */
     @Override
-    public int getViewMode() {
-        return mViewMode.getMode();
+    public ViewMode getViewMode() {
+        return mViewMode;
     }
 
     @Override

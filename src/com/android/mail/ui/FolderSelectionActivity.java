@@ -227,8 +227,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public int getViewMode() {
-        return 0;
+    public ViewMode getViewMode() {
+        return null;
     }
 
     @Override

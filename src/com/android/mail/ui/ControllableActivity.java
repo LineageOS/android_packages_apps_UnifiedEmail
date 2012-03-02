@@ -36,11 +36,11 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity {
     void attachConversationList(ConversationListFragment conversationList);
 
     /**
-     * Returns the mode that the activity is currently in.
+     * Returns the ViewMode the activity is updating.
      * @see com.android.mail.ui.ViewMode
-     * @return the mode the activity is currently in.
+     * @return ViewMode.
      */
-    int getViewMode();
+    ViewMode getViewMode();
 
     /**
      * Sets the listener for receiving ViewMode changes.

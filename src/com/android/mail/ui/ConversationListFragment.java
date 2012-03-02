@@ -206,7 +206,7 @@ public final class ConversationListFragment extends ListFragment implements
         mCallbacks = mActivity.getListHandler();
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
-                mConversationListCursor, mSelectedSet, mAccount);
+                mConversationListCursor, mSelectedSet, mAccount, mActivity.getViewMode());
         mListView.setAdapter(mListAdapter);
         // Don't need to add ourselves to our own set observer.
         // mActivity.getBatchConversations().addObserver(this);
@@ -217,7 +217,7 @@ public final class ConversationListFragment extends ListFragment implements
 
         // The onViewModeChanged callback doesn't get called when the mode object is created, so
         // force setting the mode manually this time around.
-        onViewModeChanged(mActivity.getViewMode());
+        onViewModeChanged(mActivity.getViewMode().getMode());
 
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
