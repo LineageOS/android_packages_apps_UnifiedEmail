@@ -135,6 +135,7 @@ public final class TwoPaneController extends AbstractActivityController {
             // before a load completes.
             mJumpToFirstConversation = false;
         }
+        resetActionBarIcon();
     }
 
     @Override
@@ -171,16 +172,55 @@ public final class TwoPaneController extends AbstractActivityController {
         return false;
     }
 
+    /**
+     * Up works as follows:
+     * 1) If the user is in a conversation and:
+     *  a) the conversation list is hidden (portrait mode), shows the conv list and
+     *  stays in conversation view mode.
+     *  b) the conversation list is shown, goes back to conversation list mode.
+     * 2) If the user is in search results, up exits search.
+     * mode and returns the user to whatever view they were in when they began search.
+     * 3) If the user is in conversation list mode, there is no up.
+     */
     @Override
     public boolean onUpPressed() {
-        return unhideConversationList();
+        int mode = mViewMode.getMode();
+        if (mode == ViewMode.CONVERSATION) {
+            if (!mLayout.isConversationListVisible()) {
+                unhideConversationList();
+            } else {
+                mActivity.onBackPressed();
+            }
+        } else if (mode == ViewMode.SEARCH_RESULTS) {
+            mActivity.finish();
+        }
+        return true;
     }
 
     @Override
     public boolean onBackPressed() {
-        if (mViewMode.getMode() == ViewMode.CONVERSATION) {
-            return mViewMode.enterConversationListMode();
+        popView(false);
+        return true;
+    }
+
+    /**
+     * Pops the "view stack" to the last screen the user was viewing.
+     *
+     * @param preventClose Whether to prevent closing the app if the stack is empty.
+     */
+    protected void popView(boolean preventClose) {
+        // If the user is in search query entry mode, or the user is viewing search results, exit
+        // the mode.
+        if (mConvListContext.isSearchResult()) {
+            mActivity.finish();
+        } else if (mViewMode.getMode() == ViewMode.CONVERSATION) {
+            // Go to conversation list.
+            mViewMode.enterConversationListMode();
+        } else {
+            // There is nothing else to pop off the stack.
+            if (!preventClose) {
+                mActivity.finish();
+            }
         }
-        return false;
     }
 }
