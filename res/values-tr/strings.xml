@@ -47,8 +47,7 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"İleti gövdesinde metin yok."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Bu ileti gönderilsin mi?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"İleti silindi."</string>
-    <!-- no translation found for signature (8672076404752035004) -->
-    <skip />
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="send" msgid="8242003661397555986">"Gönder"</string>
     <string name="mark_read" msgid="8438349154394313195">"Okundu olarak işaretle"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Okunmadı olarak işaretle"</string>
@@ -73,8 +72,10 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Senkronize et ve bildir"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"Etiket ayarları"</string>
     <string name="menu_done" msgid="5791134842152855128">"Bitti"</string>
-    <string name="menu_account_settings" msgid="825820027931270435">"Hesap ayarları"</string>
-    <string name="menu_settings" msgid="8957431987536606063">"Ayarlar"</string>
+    <!-- no translation found for menu_account_settings (8230989362863431918) -->
+    <skip />
+    <!-- no translation found for menu_settings (6007027046949837282) -->
+    <skip />
     <string name="menu_search" msgid="5297197523031943248">"Ara"</string>
     <string name="more" msgid="1238344647379009858">"Diğer"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> / <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
@@ -131,12 +132,15 @@
     <string name="me" msgid="6480762904022198669">"ben"</string>
     <string name="labels" msgid="1519770547536283663">"Etiketler"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Tüm klasörleri göster"</string>
-    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
-    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
-    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
-    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
-    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
-    <skip />
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"Bu ileti dizisi silinsin mi?"</item>
+    <item quantity="other" msgid="930334208937121234">"Bu <xliff:g id="COUNT">%1$d</xliff:g> ileti dizisi silinsin mi?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"Bu ileti dizisi arşivlensin mi?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Bu <xliff:g id="COUNT">%1$d</xliff:g> ileti dizisi arşivlensin mi?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Bu ileti silinsin mi?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Hiçbir ileti dizisi yok."</string>
     <string name="undo" msgid="6070869718469782251">"Geri Al"</string>
   <plurals name="conversation_marking_read">
@@ -195,8 +199,10 @@
     <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ileti dizisi okunmadı olarak işaretlendi."</item>
     <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; ileti dizisi okunmadı olarak işaretlendi."</item>
   </plurals>
-    <!-- no translation found for conversation_folder_changed:one (4930161390461457462) -->
-    <!-- no translation found for conversation_folder_changed:other (8918589141287976985) -->
+  <plurals name="conversation_folder_changed">
+    <item quantity="one" msgid="4930161390461457462">"Klasör değişti."</item>
+    <item quantity="other" msgid="8918589141287976985">"Klasörler değişti."</item>
+  </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Sonuçlar"</string>
     <string name="searchMode" msgid="3329807422114758583">"Arama Modu"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"İleti Dizisi Arama Modu"</string>
@@ -233,12 +239,14 @@
     <string name="cancel" msgid="8762981157252199115">"İptal"</string>
     <string name="close" msgid="419945428844076406">"Kapat"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Bu hesap için hiçbir klasör ayarlanmamış."</string>
-    <!-- no translation found for sync_status:0 (2446076619901049026) -->
-    <!-- no translation found for sync_status:1 (5037283655022689372) -->
-    <!-- no translation found for sync_status:2 (4252875340758600974) -->
-    <!-- no translation found for sync_status:3 (7611299631880179587) -->
-    <!-- no translation found for sync_status:4 (665244114363057627) -->
-    <!-- no translation found for sync_status:5 (9190542479647789762) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Başarılı"</item>
+    <item msgid="5037283655022689372">"Bağlantı hatası"</item>
+    <item msgid="4252875340758600974">"Kimlik doğrulama hatası"</item>
+    <item msgid="7611299631880179587">"Güvenlik hatası"</item>
+    <item msgid="665244114363057627">"Depolama hatası"</item>
+    <item msgid="9190542479647789762">"Dahili hata"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Kurulum için dokunun"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"İleti dizilerini görüntülemek için bu klasörü senk edin."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Klasörü Senkronize Et"</string>

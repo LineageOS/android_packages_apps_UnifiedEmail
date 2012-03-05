@@ -47,8 +47,7 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Die E-Mail ist leer."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Nachricht senden?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Nachricht verworfen"</string>
-    <!-- no translation found for signature (8672076404752035004) -->
-    <skip />
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="send" msgid="8242003661397555986">"Senden"</string>
     <string name="mark_read" msgid="8438349154394313195">"Als gelesen markieren"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Als ungelesen markieren"</string>
@@ -73,8 +72,10 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Synchr. &amp; benachrichtigen"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"Label-Einstellungen"</string>
     <string name="menu_done" msgid="5791134842152855128">"Fertig"</string>
-    <string name="menu_account_settings" msgid="825820027931270435">"Kontoeinstellungen"</string>
-    <string name="menu_settings" msgid="8957431987536606063">"Einstellungen"</string>
+    <!-- no translation found for menu_account_settings (8230989362863431918) -->
+    <skip />
+    <!-- no translation found for menu_settings (6007027046949837282) -->
+    <skip />
     <string name="menu_search" msgid="5297197523031943248">"Suche"</string>
     <string name="more" msgid="1238344647379009858">"Mehr"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> von <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
@@ -131,12 +132,15 @@
     <string name="me" msgid="6480762904022198669">"Ich"</string>
     <string name="labels" msgid="1519770547536283663">"Labels"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Alle Ordner anzeigen"</string>
-    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
-    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
-    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
-    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
-    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
-    <skip />
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"Diese Konversation löschen?"</item>
+    <item quantity="other" msgid="930334208937121234">"Diese <xliff:g id="COUNT">%1$d</xliff:g> Konversationen löschen?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"Diese Konversation archivieren?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Diese <xliff:g id="COUNT">%1$d</xliff:g> Konversationen archivieren?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Nachricht verwerfen?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Keine Konversationen"</string>
     <string name="undo" msgid="6070869718469782251">"Rückgängig"</string>
   <plurals name="conversation_marking_read">

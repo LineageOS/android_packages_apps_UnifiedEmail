@@ -47,8 +47,7 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Awukho umbhalo emzimbeni walomlayezo."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Thumela lo mlayezo?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Umlayezo ulahliwe."</string>
-    <!-- no translation found for signature (8672076404752035004) -->
-    <skip />
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="send" msgid="8242003661397555986">"Thumela"</string>
     <string name="mark_read" msgid="8438349154394313195">"Maka njengokufundiwe"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Maka njengokungafundiwe"</string>
@@ -73,8 +72,10 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Ukuvumelanisa &amp; ukuqaphelisa"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"Izilungiselelo zelebuli"</string>
     <string name="menu_done" msgid="5791134842152855128">"Kwenziwe"</string>
-    <string name="menu_account_settings" msgid="825820027931270435">"Izilungiselelo ze-akhawunti"</string>
-    <string name="menu_settings" msgid="8957431987536606063">"Izilungiselelo"</string>
+    <!-- no translation found for menu_account_settings (8230989362863431918) -->
+    <skip />
+    <!-- no translation found for menu_settings (6007027046949837282) -->
+    <skip />
     <string name="menu_search" msgid="5297197523031943248">"Sesha"</string>
     <string name="more" msgid="1238344647379009858">"Okuningi"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> koku-<xliff:g id="TOTAL">%2$s</xliff:g>"</string>
@@ -132,14 +133,14 @@
     <string name="labels" msgid="1519770547536283663">"Amalebuli"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Bonisa onke amafolda"</string>
   <plurals name="confirm_delete_conversation">
-    <item quantity="one" msgid="3731948757247905508">"Sula le ngxoxo?"</item>
-    <item quantity="other" msgid="930334208937121234">"Sula lezi zingxoxo ezingu-<xliff:g id="COUNT">%1$d</xliff:g>?"</item>
+    <item quantity="one" msgid="3731948757247905508">"Susa le ngxoxo?"</item>
+    <item quantity="other" msgid="930334208937121234">"Susa lezi zingxoxo ezingu-<xliff:g id="COUNT">%1$d</xliff:g>?"</item>
   </plurals>
   <plurals name="confirm_archive_conversation">
-    <item quantity="one" msgid="2990537295519552069">"Ufuna ukulondoloza lenkulumo?"</item>
+    <item quantity="one" msgid="2990537295519552069">"Ufuna ukufaka lengxoxo kungobo yomlando?"</item>
     <item quantity="other" msgid="4713469868399246772">"Faka lezi zingxoxo ezingu-<xliff:g id="COUNT">%1$d</xliff:g> kungobo yomlando?"</item>
   </plurals>
-    <string name="confirm_discard_text" msgid="1149834186404614612">"Lahla umlayezo?"</string>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Lahla lo mlayezo?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Azikho izingxoxo."</string>
     <string name="undo" msgid="6070869718469782251">"Hlehlisa"</string>
   <plurals name="conversation_marking_read">

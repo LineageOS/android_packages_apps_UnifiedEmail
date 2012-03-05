@@ -47,8 +47,7 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"메일 본문에 텍스트가 없습니다."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"메시지를 보내시겠습니까?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"메일을 삭제했습니다."</string>
-    <!-- no translation found for signature (8672076404752035004) -->
-    <skip />
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="send" msgid="8242003661397555986">"보내기"</string>
     <string name="mark_read" msgid="8438349154394313195">"읽음으로 표시"</string>
     <string name="mark_unread" msgid="6231373939351125713">"읽지않음으로 표시"</string>
@@ -73,8 +72,10 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"동기화 및 알림"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"라벨 설정"</string>
     <string name="menu_done" msgid="5791134842152855128">"완료"</string>
-    <string name="menu_account_settings" msgid="825820027931270435">"계정 설정"</string>
-    <string name="menu_settings" msgid="8957431987536606063">"설정"</string>
+    <!-- no translation found for menu_account_settings (8230989362863431918) -->
+    <skip />
+    <!-- no translation found for menu_settings (6007027046949837282) -->
+    <skip />
     <string name="menu_search" msgid="5297197523031943248">"검색"</string>
     <string name="more" msgid="1238344647379009858">"더보기"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="TOTAL">%2$s</xliff:g>개 중 <xliff:g id="COUNT">%1$s</xliff:g>개"</string>
@@ -131,12 +132,15 @@
     <string name="me" msgid="6480762904022198669">"나"</string>
     <string name="labels" msgid="1519770547536283663">"라벨"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"모든 폴더 표시"</string>
-    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
-    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
-    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
-    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
-    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
-    <skip />
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"대화를 삭제하시겠습니까?"</item>
+    <item quantity="other" msgid="930334208937121234">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 삭제하시겠습니까?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"대화를 보관하시겠습니까?"</item>
+    <item quantity="other" msgid="4713469868399246772">"대화 <xliff:g id="COUNT">%1$d</xliff:g>개를 보관하시겠습니까?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"메시지를 삭제하시겠습니까?"</string>
     <string name="no_conversations" msgid="35400008890372241">"대화가 없습니다."</string>
     <string name="undo" msgid="6070869718469782251">"실행취소"</string>
   <plurals name="conversation_marking_read">

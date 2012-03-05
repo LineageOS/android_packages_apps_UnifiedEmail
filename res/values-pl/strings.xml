@@ -47,7 +47,7 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Brak tekstu w treści wiadomości."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Wysłać tę wiadomość?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Wiadomość została odrzucona."</string>
-    <!-- no translation found for signature (8672076404752035004) -->
+    <!-- no translation found for signature (7882698047321710252) -->
     <skip />
     <string name="send" msgid="8242003661397555986">"Wyślij"</string>
     <string name="mark_read" msgid="8438349154394313195">"Oznacz jako przeczytane"</string>
@@ -73,8 +73,10 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Synchronizuj i powiadamiaj"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"Ustawienia etykiety"</string>
     <string name="menu_done" msgid="5791134842152855128">"Gotowe"</string>
-    <string name="menu_account_settings" msgid="825820027931270435">"Ustawienia konta"</string>
-    <string name="menu_settings" msgid="8957431987536606063">"Ustawienia"</string>
+    <!-- no translation found for menu_account_settings (8230989362863431918) -->
+    <skip />
+    <!-- no translation found for menu_settings (6007027046949837282) -->
+    <skip />
     <string name="menu_search" msgid="5297197523031943248">"Szukaj"</string>
     <string name="more" msgid="1238344647379009858">"Więcej"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> z <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
@@ -131,12 +133,15 @@
     <string name="me" msgid="6480762904022198669">"ja"</string>
     <string name="labels" msgid="1519770547536283663">"Etykiety"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Pokaż wszystkie foldery"</string>
-    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
-    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
-    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
-    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
-    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
-    <skip />
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"Usunąć wątek?"</item>
+    <item quantity="other" msgid="930334208937121234">"Usunąć wątki (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"Zarchiwizować wątek?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Zarchiwizować wątki (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Odrzucić tę wiadomość?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Brak wątków."</string>
     <string name="undo" msgid="6070869718469782251">"Cofnij"</string>
   <plurals name="conversation_marking_read">

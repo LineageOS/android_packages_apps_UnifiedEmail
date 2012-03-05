@@ -47,7 +47,7 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Nu există text în corpul mesajului."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Trimiteţi acest mesaj?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Mesaj refuzat."</string>
-    <!-- no translation found for signature (8672076404752035004) -->
+    <!-- no translation found for signature (7882698047321710252) -->
     <skip />
     <string name="send" msgid="8242003661397555986">"Trimiteţi"</string>
     <string name="mark_read" msgid="8438349154394313195">"Marcaţi drept citită"</string>
@@ -73,8 +73,10 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Sincronizare şi notificare"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"Setări pentru etichete"</string>
     <string name="menu_done" msgid="5791134842152855128">"Terminat"</string>
-    <string name="menu_account_settings" msgid="825820027931270435">"Setările contului"</string>
-    <string name="menu_settings" msgid="8957431987536606063">"Setări"</string>
+    <!-- no translation found for menu_account_settings (8230989362863431918) -->
+    <skip />
+    <!-- no translation found for menu_settings (6007027046949837282) -->
+    <skip />
     <string name="menu_search" msgid="5297197523031943248">"Căutaţi"</string>
     <string name="more" msgid="1238344647379009858">"Mai multe"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> din <xliff:g id="TOTAL">%2$s</xliff:g>"</string>

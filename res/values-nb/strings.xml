@@ -47,8 +47,7 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"E-posten har ingen tekst."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Vil du sende denne e-posten?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"E-posten er forkastet."</string>
-    <!-- no translation found for signature (8672076404752035004) -->
-    <skip />
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="send" msgid="8242003661397555986">"Send"</string>
     <string name="mark_read" msgid="8438349154394313195">"Merk som lest"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Merk som ulest"</string>
@@ -73,8 +72,10 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Synkronisering og varsling"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"Innstillinger for etikett"</string>
     <string name="menu_done" msgid="5791134842152855128">"Ferdig"</string>
-    <string name="menu_account_settings" msgid="825820027931270435">"Kontoinnstillinger"</string>
-    <string name="menu_settings" msgid="8957431987536606063">"Innstillinger"</string>
+    <!-- no translation found for menu_account_settings (8230989362863431918) -->
+    <skip />
+    <!-- no translation found for menu_settings (6007027046949837282) -->
+    <skip />
     <string name="menu_search" msgid="5297197523031943248">"Søk"</string>
     <string name="more" msgid="1238344647379009858">"Mer"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> av <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
