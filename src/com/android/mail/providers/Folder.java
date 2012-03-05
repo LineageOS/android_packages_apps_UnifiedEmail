@@ -109,6 +109,16 @@ public class Folder implements Parcelable {
     public int lastSyncResult;
 
     /**
+     * Folder type. 0 is default.
+     */
+    public int type;
+
+    /**
+     * Icon for this folder; 0 implies no icon.
+     */
+    public long iconResId;
+
+    /**
      * Total number of members that comprise an instance of a folder. This is
      * the number of members that need to be serialized or parceled.
      */
@@ -151,6 +161,8 @@ public class Folder implements Parcelable {
         refreshUri = in.readParcelable(null);
         syncStatus = in.readInt();
         lastSyncResult = in.readInt();
+        type = in.readInt();
+        iconResId = in.readLong();
      }
 
     public Folder(Cursor cursor) {
@@ -171,6 +183,8 @@ public class Folder implements Parcelable {
         refreshUri = !TextUtils.isEmpty(refresh) ? Uri.parse(refresh) : null;
         syncStatus = cursor.getInt(UIProvider.FOLDER_SYNC_STATUS_COLUMN);
         lastSyncResult = cursor.getInt(UIProvider.FOLDER_LAST_SYNC_RESULT_COLUMN);
+        type = cursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
+        iconResId = cursor.getLong(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
     }
 
     @Override
@@ -189,6 +203,8 @@ public class Folder implements Parcelable {
         dest.writeParcelable(refreshUri, 0);
         dest.writeInt(syncStatus);
         dest.writeInt(lastSyncResult);
+        dest.writeInt(type);
+        dest.writeLong(iconResId);
     }
 
     /**
@@ -208,7 +224,9 @@ public class Folder implements Parcelable {
         out.append(totalCount).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(refreshUri).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(syncStatus).append(FOLDER_COMPONENT_SEPARATOR);
-        out.append(lastSyncResult);
+        out.append(lastSyncResult).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(type).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(iconResId);
         return out.toString();
     }
 
@@ -237,6 +255,8 @@ public class Folder implements Parcelable {
         refreshUri = Uri.parse(folderMembers[10]);
         syncStatus = Integer.valueOf(folderMembers[11]);
         lastSyncResult = Integer.valueOf(folderMembers[12]);
+        type = Integer.valueOf(folderMembers[13]);
+        iconResId = Long.valueOf(folderMembers[14]);
     }
 
     /**

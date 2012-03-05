@@ -322,7 +322,9 @@ public class UIProvider {
         FolderColumns.TOTAL_COUNT,
         FolderColumns.REFRESH_URI,
         FolderColumns.SYNC_STATUS,
-        FolderColumns.LAST_SYNC_RESULT
+        FolderColumns.LAST_SYNC_RESULT,
+        FolderColumns.TYPE,
+        FolderColumns.ICON_RES_ID
     };
 
     public static final int FOLDER_ID_COLUMN = 0;
@@ -338,6 +340,18 @@ public class UIProvider {
     public static final int FOLDER_REFRESH_URI_COLUMN = 10;
     public static final int FOLDER_SYNC_STATUS_COLUMN = 11;
     public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 12;
+    public static final int FOLDER_TYPE_COLUMN = 13;
+    public static final int FOLDER_ICON_RES_ID_COLUMN = 14;
+
+    public static final class FolderType {
+        public static final int DEFAULT = 0;
+        public static final int INBOX = 1;
+        public static final int DRAFT = 2;
+        public static final int OUTBOX = 3;
+        public static final int SENT = 4;
+        public static final int TRASH = 5;
+        public static final int SPAM = 6;
+    }
 
     public static final class FolderCapabilities {
         public static final int SYNCABLE = 0x0001;
@@ -412,7 +426,14 @@ public class UIProvider {
          * LastSyncStatus values defined above
          */
         public static final String LAST_SYNC_RESULT  = "lastSyncResult";
-
+        /**
+         * This long column contains the icon res id for this folder, or 0 if there is none.
+         */
+        public static final String ICON_RES_ID = "iconResId";
+        /**
+         * This int column contains the type of the folder. Zero is default.
+         */
+        public static final String TYPE = "type";
         public FolderColumns() {}
     }
 
