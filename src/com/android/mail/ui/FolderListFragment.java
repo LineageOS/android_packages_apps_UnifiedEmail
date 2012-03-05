@@ -216,7 +216,7 @@ public final class FolderListFragment extends ListFragment implements
             getCursor().moveToPosition(position);
             Folder folder = new Folder(getCursor());
             folderItemView.bind(folder, null);
-            if (TextUtils.equals(folder.id, mSelectedFolder.id)) {
+            if (mSelectedFolder != null && TextUtils.equals(folder.id, mSelectedFolder.id)) {
                 getListView().setItemChecked(position, true);
             }
             return folderItemView;
