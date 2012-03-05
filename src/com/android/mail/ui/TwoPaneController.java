@@ -211,7 +211,7 @@ public final class TwoPaneController extends AbstractActivityController {
     protected void popView(boolean preventClose) {
         // If the user is in search query entry mode, or the user is viewing search results, exit
         // the mode.
-        if (mConvListContext.isSearchResult()) {
+        if (mConvListContext != null && mConvListContext.isSearchResult()) {
             mActivity.finish();
         } else if (mViewMode.getMode() == ViewMode.CONVERSATION) {
             // Go to conversation list.
