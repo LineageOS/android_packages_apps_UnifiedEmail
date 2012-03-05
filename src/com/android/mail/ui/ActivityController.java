@@ -85,18 +85,6 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
     void handleConversationLoadError();
 
     /**
-     * @see android.app.Activity#onActionModeFinished(ActionMode)
-     * @param mode
-     */
-    void onActionModeFinished(ActionMode mode);
-
-    /**
-     * @see android.app.Activity#onActionModeStarted(ActionMode)
-     * @param mode
-     */
-    void onActionModeStarted(ActionMode mode);
-
-    /**
      * @see android.app.Activity#onActivityResult
      * @param requestCode
      * @param resultCode

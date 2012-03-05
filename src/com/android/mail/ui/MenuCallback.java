@@ -32,16 +32,6 @@ public interface MenuCallback extends HelpCallback {
     void handleSearchRequested();
 
     /**
-     * Invoked when a bulk Operation is starting.
-     */
-    void onStartBulkOperation();
-
-    /**
-     * Invoked when a bulk Operation has finished.
-     */
-    void onEndBulkOperation();
-
-    /**
      * Invoked when user starts drag and drop mode.
      */
     void onStartDragMode();

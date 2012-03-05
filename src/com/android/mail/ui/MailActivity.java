@@ -93,13 +93,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public void onActionModeFinished(ActionMode mode) {
         super.onActionModeFinished(mode);
-        mController.onActionModeFinished(mode);
     }
 
     @Override
     public void onActionModeStarted(ActionMode mode) {
         super.onActionModeStarted(mode);
-        mController.onActionModeStarted(mode);
     }
 
     @Override

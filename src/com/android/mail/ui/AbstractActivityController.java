@@ -308,16 +308,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onActionModeFinished(ActionMode mode) {
-        // TODO(viki): Auto-generated method stub
-    }
-
-    @Override
-    public void onActionModeStarted(ActionMode mode) {
-        // TODO(viki): Auto-generated method stub
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO(viki): Auto-generated method stub
     }
@@ -371,12 +361,6 @@ public abstract class AbstractActivityController implements ActivityController {
         mRefreshItem = menu.findItem(R.id.refresh);
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
         return true;
-    }
-
-    @Override
-    public void onEndBulkOperation() {
-        // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
@@ -509,11 +493,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onSearchRequested() {
-        // TODO(viki): Auto-generated method stub
-    }
-
-    @Override
-    public void onStartBulkOperation() {
         // TODO(viki): Auto-generated method stub
     }
 
