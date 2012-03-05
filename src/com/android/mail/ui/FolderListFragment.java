@@ -28,6 +28,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,8 @@ public final class FolderListFragment extends ListFragment implements
     private Uri mFolderListUri;
 
     private FolderChangeListener mListener;
+
+    private Folder mSelectedFolder;
 
     private static final int FOLDER_LOADER_ID = 0;
     public static final int MODE_DEFAULT = 0;
@@ -145,8 +148,8 @@ public final class FolderListFragment extends ListFragment implements
 
     private void viewFolder(int position) {
         mFolderListCursor.moveToPosition(position);
-        Folder selectedFolder = new Folder(mFolderListCursor);
-        if (selectedFolder.hasChildren) {
+        mSelectedFolder = new Folder(mFolderListCursor);
+        if (mSelectedFolder.hasChildren) {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children.
             FragmentTransaction fragmentTransaction = mActivity.getFragmentManager()
@@ -161,14 +164,14 @@ public final class FolderListFragment extends ListFragment implements
             fragmentTransaction.setTransition(transition);
 
             Fragment folderListFragment = FolderListFragment
-                    .newInstance(mListener, selectedFolder.childFoldersListUri);
+                    .newInstance(mListener, mSelectedFolder.childFoldersListUri);
             fragmentTransaction.replace(R.id.content_pane, folderListFragment);
 
             fragmentTransaction.commitAllowingStateLoss();
 
         } else {
             // Go to the conversation list for this folder.
-            mListener.onFolderChanged(selectedFolder);
+            mListener.onFolderChanged(mSelectedFolder);
         }
     }
 
@@ -211,7 +214,11 @@ public final class FolderListFragment extends ListFragment implements
                         mActivity.getActivityContext()).inflate(R.layout.folder_item, null);
             }
             getCursor().moveToPosition(position);
-            folderItemView.bind(new Folder(getCursor()), null);
+            Folder folder = new Folder(getCursor());
+            folderItemView.bind(folder, null);
+            if (TextUtils.equals(folder.id, mSelectedFolder.id)) {
+                getListView().setItemChecked(position, true);
+            }
             return folderItemView;
         }
     }
@@ -219,5 +226,9 @@ public final class FolderListFragment extends ListFragment implements
     @Override
     public void onViewModeChanged(int newMode) {
         // Listen on mode changes, when we move to Label list mode, change accordingly.
+    }
+
+    public void selectFolder(Folder folder) {
+        mSelectedFolder = folder;
     }
 }
