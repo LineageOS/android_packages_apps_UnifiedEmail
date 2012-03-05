@@ -676,7 +676,7 @@ final class TwoPaneLayout extends LinearLayout
      * Not to be used externally.
      * @hide
      */
-    private void setConversationLeft(int left) {
+    public void setConversationLeft(int left) {
         mConversationLeft = left;
         invalidate();
     }
@@ -718,14 +718,12 @@ final class TwoPaneLayout extends LinearLayout
         requestLayout();
     }
 
-    // TODO(viki): I think most of the next methods aren't being used. Rather than removing them,
-    // I'm marking them private to remove once the application is complete.
     /**
      * Sets the left position of the folders fragment. Used by animators. Not to
      * be used externally.
      * @hide
      */
-    private void setFoldersLeft(int left) {
+    public void setFoldersLeft(int left) {
         mFoldersLeft = left;
         invalidate();
     }
@@ -734,7 +732,7 @@ final class TwoPaneLayout extends LinearLayout
      * Sets the alpha of the conversation list. Used by animators. Not to be used externally.
      * @hide
      */
-    private void setListAlpha(int alpha) {
+    public void setListAlpha(int alpha) {
         mListAlpha = alpha;
         invalidate();
     }
@@ -743,7 +741,7 @@ final class TwoPaneLayout extends LinearLayout
      * Sets the alpha of the conversation list bitmap. Used by animators. Not to be used externally.
      * @hide
      */
-    private void setListBitmapAlpha(int alpha) {
+    public void setListBitmapAlpha(int alpha) {
         mListPaint.setAlpha(alpha);
         invalidate();
     }
@@ -753,7 +751,7 @@ final class TwoPaneLayout extends LinearLayout
      * externally.
      * @hide
      */
-    private void setListBitmapLeft(int left) {
+    public void setListBitmapLeft(int left) {
         mListBitmapLeft = left;
         invalidate();
     }
@@ -770,7 +768,7 @@ final class TwoPaneLayout extends LinearLayout
      * externally.
      * @hide
      */
-    private void setListLeft(int left) {
+    public void setListLeft(int left) {
         mListLeft = left;
         invalidate();
     }
