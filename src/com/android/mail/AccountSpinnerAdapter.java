@@ -67,6 +67,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     /** The folder currently being viewed */
     private Folder mCurrentFolder;
 
+    /** Application context */
+    private final Context mContext;
+
     /**
      * When the user selects the spinner, a dropdown list of objects is shown. Each item in the
      * dropdown list has two textviews.
@@ -119,6 +122,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     public AccountSpinnerAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
+        mContext = context;
     }
 
     /**
@@ -138,7 +142,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public void setCurrentFolder(Folder folder) {
         mCurrentFolder = folder;
         if (mRecentFolders == null) {
-            mRecentFolders = new RecentFolderList(mCurrentAccount);
+            mRecentFolders = new RecentFolderList(mCurrentAccount, mContext);
         }
         mRecentFolderList = mRecentFolders.changeCurrentFolder(folder);
     }
@@ -150,7 +154,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public void setCurrentAccount(Account account) {
         mCurrentAccount = account;
         if (mRecentFolders == null) {
-            mRecentFolders = new RecentFolderList(mCurrentAccount);
+            mRecentFolders = new RecentFolderList(mCurrentAccount, mContext);
+        } else {
+            mRecentFolders.changeCurrentAccount(account);
         }
         mRecentFolderList = mRecentFolders.getSortedArray(mCurrentFolder);
         notifyDataSetChanged();

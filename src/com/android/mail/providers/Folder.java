@@ -150,6 +150,7 @@ public class Folder implements Parcelable {
     public static final Uri SEARCH_RESULTS_URI = Uri.parse("content://fakeSearchResults/");
 
     public Folder(Parcel in) {
+        assert (in.dataSize() == NUMBER_MEMBERS);
         id = in.readString();
         uri = in.readParcelable(null);
         name = in.readString();
@@ -169,6 +170,7 @@ public class Folder implements Parcelable {
      }
 
     public Folder(Cursor cursor) {
+        assert (cursor.getColumnCount() == NUMBER_MEMBERS);
         id = cursor.getString(UIProvider.FOLDER_ID_COLUMN);
         uri = Uri.parse(cursor.getString(UIProvider.FOLDER_URI_COLUMN));
         name = cursor.getString(UIProvider.FOLDER_NAME_COLUMN);

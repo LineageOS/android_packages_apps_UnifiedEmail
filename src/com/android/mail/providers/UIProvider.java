@@ -96,7 +96,8 @@ public class UIProvider {
             AccountColumns.SYNC_STATUS,
             AccountColumns.HELP_INTENT_URI,
             AccountColumns.COMPOSE_URI,
-            AccountColumns.MIME_TYPE
+            AccountColumns.MIME_TYPE,
+            AccountColumns.RECENT_FOLDER_LIST_URI
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -117,6 +118,7 @@ public class UIProvider {
     public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 15;
     public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 16;
     public static final int ACCOUNT_MIME_TYPE_COLUMN = 17;
+    public static final int ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN = 18;
 
     public static final class AccountCapabilities {
         /**
@@ -284,7 +286,7 @@ public class UIProvider {
          * This string column contains the content provider uri that can be used to query user
          * settings/preferences.
          *
-         * The cursor returned by this query support columnms declared in {@link #SettingsColumns}
+         * The cursor returned by this query support columns declared in {@link #SettingsColumns}
          */
         public static final String SETTINGS_QUERY_URI = "accountSettingsQueryUri";
 
@@ -310,6 +312,10 @@ public class UIProvider {
          * Mime-type defining this account.
          */
         public static final String MIME_TYPE = "mimeType";
+        /**
+         * URI for location of recent folders viewed on this account.
+         */
+        public static final String RECENT_FOLDER_LIST_URI = "recentFolderListUri";
     }
 
     public static final class SearchQueryParameters {

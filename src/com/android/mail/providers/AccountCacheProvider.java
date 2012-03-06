@@ -36,7 +36,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -132,7 +131,6 @@ public abstract class AccountCacheProvider extends ContentProvider
         synchronized (mAccountCache) {
             accountList = ImmutableSet.copyOf(mAccountCache.values());
         }
-
         for (Account account : accountList) {
             final MatrixCursor.RowBuilder builder = cursor.newRow();
 
@@ -148,7 +146,7 @@ public abstract class AccountCacheProvider extends ContentProvider
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.URI)) {
                     builder.add(account.uri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.CAPABILITIES)) {
-                    builder.add(Integer.valueOf((int)account.capabilities));
+                    builder.add(Integer.valueOf(account.capabilities));
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.FOLDER_LIST_URI)) {
                     builder.add(account.folderListUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SEARCH_URI)) {
@@ -175,20 +173,21 @@ public abstract class AccountCacheProvider extends ContentProvider
                         UIProvider.AccountColumns.HELP_INTENT_URI)) {
                     builder.add(account.helpIntentUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SYNC_STATUS)) {
-                    builder.add(Integer.valueOf((int)account.syncStatus));
+                    builder.add(Integer.valueOf(account.syncStatus));
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.COMPOSE_URI)) {
                     builder.add(account.composeIntentUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.MIME_TYPE)) {
                     builder.add(account.mimeType);
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI)) {
+                    builder.add(account.recentFolderListUri);
                 } else {
                     throw new IllegalStateException("Column not found: " + column);
                 }
             }
-
         }
 
         cursor.setNotificationUri(mResolver, getAccountsUri());
-
         return cursor;
     }
 

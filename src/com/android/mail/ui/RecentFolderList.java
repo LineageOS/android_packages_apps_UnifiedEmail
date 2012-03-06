@@ -16,10 +16,15 @@
 
 package com.android.mail.ui;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.LruCache;
 
@@ -39,6 +44,10 @@ import java.util.Comparator;
  */
 public final class RecentFolderList {
     private static final String LOG_TAG = new LogUtils().getLogTag();
+    /** The application context */
+    private final Context mContext;
+    /** The current account */
+    private Account mAccount;
     /**
      * Compare based on alphanumeric name of the folder, ignoring case.
      */
@@ -49,17 +58,55 @@ public final class RecentFolderList {
         }
     };
     private final LruCache<String, Folder> mFolderCache;
+    /**
+     *  We want to show five recent folders, and one space for the current folder (not displayed
+     *  to the user).
+     */
+    private final static int NUM_FOLDERS = 5 + 1;
 
     /**
      * Create a Recent Folder List from the given account. This will query the UIProvider to
      * retrieve the RecentFolderList from persistent storage (if any).
      * @param account
      */
-    public RecentFolderList(Account account) {
-        // We want to show five recent folders, and one space for the current folder (not displayed
-        // to user).
-        final int NUM_ACCOUNTS = 5 + 1;
-        mFolderCache = new LruCache<String, Folder>(NUM_ACCOUNTS);
+    public RecentFolderList(Account account, Context context) {
+        mContext = context;
+        mAccount = account;
+        mFolderCache = new LruCache<String, Folder>(NUM_FOLDERS);
+        loadFromUiProvider();
+    }
+
+    public void changeCurrentAccount(Account account) {
+        saveToUiProvider();
+        mAccount = account;
+        loadFromUiProvider();
+    }
+
+    /**
+     * Load the account information from the UI provider.
+     */
+    private void loadFromUiProvider() {
+        if (mAccount == null || mAccount.recentFolderListUri == null)
+            return;
+        mFolderCache.clear();
+        final ContentResolver mResolver = mContext.getContentResolver();
+        // TODO(viki): Bad idea. Use a loader.
+        Cursor data = mResolver.query(mAccount.recentFolderListUri, UIProvider.FOLDERS_PROJECTION,
+                null, null, null);
+        if (data == null || data.getCount() <= 0) {
+            // No pre-stored recent folder list. Let's return an empty folder list.
+            return;
+        }
+        // Populate the recent folder cache from the UiProvider.
+        int i = 0;
+        while (data.moveToNext()) {
+            assert (data.getColumnCount() == UIProvider.FOLDERS_PROJECTION.length);
+            Folder folder = new Folder(data);
+            mFolderCache.putElement(folder.id, folder);
+            i++;
+            if (i >= NUM_FOLDERS)
+                break;
+        }
     }
 
     /**
@@ -69,14 +116,26 @@ public final class RecentFolderList {
      */
     public Folder[] changeCurrentFolder(Folder folder) {
         mFolderCache.putElement(folder.id, folder);
+        // Update the UiProvider with the current recent folder list.
+        saveToUiProvider();
         return getSortedArray(folder);
     }
 
     /**
      * Requests the UIProvider to save this RecentFolderList to persistent storage.
      */
-    public void save() {
-        // TODO: Implement
+    public void saveToUiProvider() {
+        if (mAccount == null || mFolderCache.isEmpty() || mAccount.recentFolderListUri == null)
+            return;
+        // Write the current recent folder list into the account.
+        // Store the ID of the folder and the last touched timestamp.
+        ContentValues values = new ContentValues();
+        final long now = System.currentTimeMillis();
+        for (String id : mFolderCache.keySet()) {
+            values.put(id, now);
+        }
+        final ContentResolver mResolver = mContext.getContentResolver();
+        mResolver.update(mAccount.recentFolderListUri, values, null, null);
     }
 
     /**
@@ -93,7 +152,7 @@ public final class RecentFolderList {
         final List<Folder> recent = new ArrayList<Folder>(mFolderCache.values());
         Collections.sort(recent, ALPHABET_IGNORECASE);
         for (Folder f : recent) {
-            if (!TextUtils.equals(f.id, currentFolder.id)) {
+            if (currentFolder == null || !TextUtils.equals(f.id, currentFolder.id)) {
                 folders[i++] = f;
             }
         }

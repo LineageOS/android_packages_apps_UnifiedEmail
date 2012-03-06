@@ -121,12 +121,17 @@ public class Account extends android.accounts.Account implements Parcelable {
 
     public final String mimeType;
     /**
+     * URI for recent labels for this account.
+     */
+    public final Uri recentFolderListUri;
+
+    /**
      * Total number of members that comprise an instance of an account. This is
      * the number of members that need to be serialized or parceled. This
      * includes the members described above and name and type from the
      * superclass.
      */
-    private static final int NUMBER_MEMBERS = 18;
+    private static final int NUMBER_MEMBERS = 19;
 
     /**
      * Examples of expected format for the joined account strings
@@ -163,7 +168,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         out.append(helpIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(syncStatus).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(composeIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(mimeType);
+        out.append(mimeType).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(recentFolderListUri);
         return out.toString();
     }
 
@@ -196,6 +202,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         syncStatus = Integer.valueOf(accountMembers[15]);
         composeIntentUri = Uri.parse(accountMembers[16]);
         mimeType = accountMembers[17];
+        recentFolderListUri = Uri.parse(accountMembers[18]);
     }
 
     public Account(Parcel in) {
@@ -216,6 +223,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         syncStatus = in.readInt();
         composeIntentUri = in.readParcelable(null);
         mimeType = in.readString();
+        recentFolderListUri = in.readParcelable(null);
     }
 
     public Account(Cursor cursor) {
@@ -246,6 +254,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         final String compose = cursor.getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN);
         composeIntentUri = !TextUtils.isEmpty(compose) ? Uri.parse(compose) : null;
         mimeType = cursor.getString(UIProvider.ACCOUNT_MIME_TYPE_COLUMN);
+        final String recent = cursor.getString(UIProvider.ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN);
+        recentFolderListUri = !TextUtils.isEmpty(recent) ? Uri.parse(recent) : null;
     }
 
     /**
@@ -295,6 +305,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeInt(syncStatus);
         dest.writeParcelable(composeIntentUri, 0);
         dest.writeString(mimeType);
+        dest.writeParcelable(recentFolderListUri, 0);
     }
 
     /**
@@ -343,6 +354,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(composeIntentUri);
         sb.append(",mimeType=");
         sb.append(mimeType);
+        sb.append(",recentFoldersUri=");
+        sb.append(recentFolderListUri);
 
         return sb.toString();
     }
@@ -373,7 +386,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(helpIntentUri, other.helpIntentUri) &&
                 (syncStatus == other.syncStatus) &&
                 Objects.equal(composeIntentUri, other.composeIntentUri) &&
-                TextUtils.equals(mimeType, other.mimeType);
+                TextUtils.equals(mimeType, other.mimeType) &&
+                Objects.equal(recentFolderListUri, other.recentFolderListUri);
     }
 
     @Override
@@ -381,7 +395,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         return super.hashCode() ^ Objects.hashCode(name, type, capabilities, providerVersion,
                 uri, folderListUri, searchUri, accountFromAddressesUri, saveDraftUri,
                 sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri, settingsQueryUri,
-                helpIntentUri, syncStatus, composeIntentUri, mimeType);
+                helpIntentUri, syncStatus, composeIntentUri, mimeType, recentFolderListUri);
     }
 
     @SuppressWarnings("hiding")

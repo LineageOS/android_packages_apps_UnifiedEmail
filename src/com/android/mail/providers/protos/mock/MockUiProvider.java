@@ -293,7 +293,8 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.HELP_INTENT_URI, Uri.parse("http://www.google.com"));
         accountMap.put(AccountColumns.SYNC_STATUS, 0);
         accountMap.put(AccountColumns.COMPOSE_URI, Uri.parse(accountUri + "/compose"));
-
+        accountMap.put(AccountColumns.RECENT_FOLDER_LIST_URI,
+                Uri.parse(accountUri + "/recentFolderListUri"));
         if (cacheMap) {
             addAccountInfoToAccountCache(accountMap);
         }
@@ -388,6 +389,8 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.HELP_INTENT_URI), 0);
         dest.writeInt((Integer) accountInfo.get(AccountColumns.SYNC_STATUS));
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.COMPOSE_URI), 0);
+        dest.writeString((String) accountInfo.get(AccountColumns.MIME_TYPE));
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.RECENT_FOLDER_LIST_URI), 0);
         dest.setDataPosition(0);
         final Account account = new Account(dest);
         AccountCacheProvider.addAccount(account);
