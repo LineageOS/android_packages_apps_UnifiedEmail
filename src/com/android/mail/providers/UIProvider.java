@@ -233,6 +233,8 @@ public class UIProvider {
         /**
          * This string column contains the content provider uri that can be queried for search
          * results.
+         * The supported query parameters are limited to those listed
+         * in {@link #SearchQueryParameters}
          */
         public static final String SEARCH_URI = "searchUri";
 
@@ -307,6 +309,20 @@ public class UIProvider {
          * Mime-type defining this account.
          */
         public static final String MIME_TYPE = "mimeType";
+    }
+
+    public static final class SearchQueryParameters {
+        /**
+         * Parameter used to specify the search query.
+         */
+        public static final String QUERY = "query";
+
+        /**
+         * If specified, the query results will be limited to this folder.
+         */
+        public static final String FOLDER = "folder";
+
+        private SearchQueryParameters() {}
     }
 
     // We define a "folder" as anything that contains a list of conversations.
