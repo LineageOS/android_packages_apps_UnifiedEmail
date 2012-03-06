@@ -73,7 +73,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     private static class DropdownHolder {
         TextView folder;
-        TextView unread_count;
+        TextView unreadCount;
     }
 
     /**
@@ -201,6 +201,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         return mCurrentFolder != null ? mCurrentFolder.name : "";
     }
 
+    private int getFolderUnreadCount() {
+        return mCurrentFolder != null ? mCurrentFolder.unreadCount : 0;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         String folderName = "";
@@ -211,6 +215,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 // The default Inbox for the given account
                 accountName = getAccountLabel(position);
                 folderName = getFolderLabel();
+                unreadCount = getFolderUnreadCount();
                 break;
             case TYPE_HEADER:
                 accountName = getAccountLabel(0);
@@ -307,7 +312,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
             dropdown = new DropdownHolder();
             dropdown.folder = (TextView) convertView.findViewById(R.id.account_spinner_accountname);
-            dropdown.unread_count =
+            dropdown.unreadCount =
                     (TextView) convertView.findViewById(R.id.account_spinner_unread_count);
             convertView.setTag(dropdown);
         } else {
@@ -315,11 +320,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         }
 
         dropdown.folder.setText(textLabel);
-        dropdown.unread_count.setText(String.valueOf(unreadCount));
+        dropdown.unreadCount.setText(String.valueOf(unreadCount));
         if (unreadCount == 0) {
-            dropdown.unread_count.setVisibility(View.GONE);
+            dropdown.unreadCount.setVisibility(View.GONE);
         } else {
-            dropdown.unread_count.setVisibility(View.VISIBLE);
+            dropdown.unreadCount.setVisibility(View.VISIBLE);
         }
         return convertView;
 
