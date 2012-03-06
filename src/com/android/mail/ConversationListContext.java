@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 
 import java.util.ArrayList;
@@ -83,24 +84,34 @@ public class ConversationListContext {
 
     /**
      * Builds a context for a view to a Gmail folder. Note that folder may be null, in which case
-     * the context defaults to a view of the inbox.
+     * the context defaults to a view of the user's default inbox. 
+     * Should only be called from an async task when the folder is null.
      */
-    public static ConversationListContext forFolder(
-            Context context, Account account, Folder folder) {
+    public static ConversationListContext forFolder(Context context, Account account, Folder folder) {
         if (folder == null) {
-            // TODO (mindyp): when getAccountInbox is setup, use the setting to get it.
-            // folder = account.getAccountInbox();
             Cursor cursor = null;
+            Cursor folderCursor = null;
             try {
-                cursor = context.getContentResolver().query(account.folderListUri,
-                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+                cursor = context.getContentResolver().query(account.settingsQueryUri,
+                        UIProvider.SETTINGS_PROJECTION, null, null, null);
                 if (cursor != null) {
                     cursor.moveToFirst();
-                    folder = new Folder(cursor);
+                    Settings settings = new Settings(cursor);
+                    if (settings != null) {
+                        folderCursor = context.getContentResolver().query(settings.defaultInbox,
+                                UIProvider.FOLDERS_PROJECTION, null, null, null);
+                        if (folderCursor != null) {
+                            folderCursor.moveToFirst();
+                            folder = new Folder(folderCursor);
+                        }
+                    }
                 }
             } finally {
                 if (cursor != null) {
                     cursor.close();
+                }
+                if (folderCursor != null) {
+                    folderCursor.close();
                 }
             }
         }
