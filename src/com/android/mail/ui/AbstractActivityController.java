@@ -299,11 +299,13 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private void setFolder(Folder folder) {
         // Start watching folder for sync status.
-        if (!folder.equals(mFolder)) {
+        if (folder != null && !folder.equals(mFolder)) {
             mRefreshInProgress = false;
             mFolder = folder;
             mActionBarView.setFolder(mFolder);
             mActivity.getLoaderManager().restartLoader(FOLDER_CURSOR_LOADER, null, this);
+        } else if (folder == null) {
+            LogUtils.wtf(LOG_TAG, "Folder in setFolder is null");
         }
     }
 
