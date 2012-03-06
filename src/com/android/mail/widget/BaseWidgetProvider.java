@@ -323,6 +323,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         // On click intent for Compose
         final Intent composeIntent = new Intent();
         composeIntent.setAction(Intent.ACTION_SEND);
+        composeIntent.putExtra(Utils.EXTRA_ACCOUNT, account);
         composeIntent.setData(account.composeIntentUri);
         if (account.composeIntentUri != null) {
             composeIntent.putExtra(Utils.EXTRA_COMPOSE_URI, account.composeIntentUri);
