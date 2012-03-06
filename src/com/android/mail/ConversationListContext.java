@@ -83,9 +83,9 @@ public class ConversationListContext {
     }
 
     /**
-     * Builds a context for a view to a Gmail folder. Note that folder may be null, in which case
-     * the context defaults to a view of the user's default inbox. 
-     * Should only be called from an async task when the folder is null.
+     * Builds a context for a view to a Gmail folder. Note that folder may be
+     * null, in which case the context defaults to a view of the user's default
+     * inbox. Should only be called from an async task when the folder is null.
      */
     public static ConversationListContext forFolder(Context context, Account account, Folder folder) {
         if (folder == null) {
