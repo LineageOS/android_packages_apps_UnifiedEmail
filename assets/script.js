@@ -88,19 +88,24 @@ function shrinkWideMessages() {
 }
 
 function measurePositions() {
+    var headerHeights;
     var headerBottoms;
+    var h;
     var i;
     var len;
 
     var headers = document.querySelectorAll(".spacer");
 
+    headerHeights = new Array(headers.length);
     headerBottoms = new Array(headers.length);
     for (i = 0, len = headers.length; i < len; i++) {
+        h = headers[i].offsetHeight;
         // addJavascriptInterface handler only supports string arrays
-        headerBottoms[i] = "" + (getTotalOffset(headers[i]).top + headers[i].offsetHeight);
+        headerHeights[i] = "" + h;
+        headerBottoms[i] = "" + (getTotalOffset(headers[i]).top + h);
     }
 
-    window.mail.onWebContentGeometryChange(headerBottoms);
+    window.mail.onWebContentGeometryChange(headerBottoms, headerHeights);
 }
 
 collapseQuotedText();

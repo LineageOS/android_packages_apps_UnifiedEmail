@@ -287,6 +287,15 @@ public final class ConversationViewFragment extends Fragment implements
         }
     }
 
+    private static int[] parseInts(final String[] stringArray) {
+        final int len = stringArray.length;
+        final int[] ints = new int[len];
+        for (int i = 0; i < len; i++) {
+            ints[i] = Integer.parseInt(stringArray[i]);
+        }
+        return ints;
+    }
+
     /**
      * NOTE: all public methods must be listed in the proguard flags so that they can be accessed
      * via reflection and not stripped.
@@ -295,16 +304,13 @@ public final class ConversationViewFragment extends Fragment implements
     private class MailJsBridge {
 
         @SuppressWarnings("unused")
-        public void onWebContentGeometryChange(final String[] headerBottomStrs) {
+        public void onWebContentGeometryChange(final String[] headerBottomStrs,
+                final String[] headerHeightStrs) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    final int len = headerBottomStrs.length;
-                    final int[] headerBottoms = new int[len];
-                    for (int i = 0; i < len; i++) {
-                        headerBottoms[i] = Integer.parseInt(headerBottomStrs[i]);
-                    }
-                    mConversationContainer.onGeometryChange(headerBottoms);
+                    mConversationContainer.onGeometryChange(parseInts(headerBottomStrs),
+                            parseInts(headerHeightStrs));
                 }
             });
         }

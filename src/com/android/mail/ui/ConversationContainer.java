@@ -17,6 +17,9 @@
 
 package com.android.mail.ui;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -25,13 +28,35 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Adapter;
+import android.widget.ListView;
 import android.widget.ScrollView;
 
+import com.android.mail.R;
 import com.android.mail.ui.ScrollNotifier.ScrollListener;
 import com.android.mail.utils.LogUtils;
 
+import java.util.Deque;
+import java.util.Set;
+
 /**
- * TODO
+ * A specialized ViewGroup container for conversation view. It is designed to contain a single
+ * {@link WebView} and a number of overlay views that draw on top of the WebView. In the Mail app,
+ * the WebView contains all HTML message bodies in a conversation, and the overlay views are the
+ * subject view, message headers, and attachment views. The WebView does all scroll handling, and
+ * this container manages scrolling of the overlay views so that they move in tandem.
+ *
+ * <h5>INPUT HANDLING</h5>
+ * Placing the WebView in the same container as the overlay views means we don't have to do a lot of
+ * manual manipulation of touch events. We do have a
+ * {@link #forwardFakeMotionEvent(MotionEvent, int)} method that deals with one WebView
+ * idiosyncrasy: it doesn't react well when touch MOVE events stream in without a preceding DOWN.
+ *
+ * <h5>VIEW RECYCLING</h5>
+ * Normally, it would make sense to put all overlay views into a {@link ListView}. But this view
+ * sandwich has unique characteristics: the list items are scrolled based on an external controller,
+ * and we happen to know all of the overlay positions up front. So it didn't make sense to shoehorn
+ * a ListView in and instead, we rolled our own view recycler by borrowing key details from
+ * ListView and AbsListView.
  *
  */
 public class ConversationContainer extends ViewGroup implements ScrollListener {
@@ -40,6 +65,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private Adapter mOverlayAdapter;
     private int[] mOverlayBottoms;
+    private int[] mOverlayHeights;
     private ConversationWebView mWebView;
 
     /**
@@ -77,12 +103,37 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      */
     private boolean mMissedPointerDown;
 
+    private final Deque<View> mScrapViews;
+
+    /**
+     * The set of children queued for later removal by a Runnable posted to the UI thread (no
+     * synchronization required). Scroll changes cause children to be added to this set, and the
+     * Runnable later removes the children when it safely detaches them outside of a
+     * draw/getDisplayList operation.
+     * <p>
+     * WebView sometimes notifies of scroll changes during a draw (or display list generation), when
+     * it's not safe to detach view children because ViewGroup is in the middle of iterating over
+     * its child array.
+     */
+    private final Set<View> mChildrenToRemove;
+
+    private final float mDensity;
+
+    private int mWidthMeasureSpec;
+
+    private static final int VIEW_TAG_CONVERSATION_INDEX = R.id.view_tag_conversation_index;
+
     public ConversationContainer(Context c) {
         this(c, null);
     }
 
     public ConversationContainer(Context c, AttributeSet attrs) {
         super(c, attrs);
+
+        mScrapViews = Lists.newLinkedList();
+        mChildrenToRemove = Sets.newHashSet();
+
+        mDensity = c.getResources().getDisplayMetrics().density;
 
         mTouchSlop = ViewConfiguration.get(c).getScaledTouchSlop();
 
@@ -181,13 +232,107 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     @Override
-    public void onNotifierScroll(int x, int y) {
+    public void onNotifierScroll(final int x, final int y) {
+        handleScroll(x, y);
+    }
+
+    private void handleScroll(int x, int y) {
         mOffsetY = y;
         mScale = mWebView.getScale();
-        LogUtils.v(TAG, "*** IN on scroll, x/y=%d/%d zoom=%f", x, y, mScale);
-        layoutOverlays();
 
-        // TODO: recycle scrolled-off views and add newly visible views
+        // recycle scrolled-off views and add newly visible views
+        final int containerHeight = getHeight();
+        for (int convIndex = 0; convIndex < mOverlayBottoms.length; convIndex++) {
+            final int overlayTopY = getOverlayTop(convIndex);
+            final int overlayBottomY = getOverlayBottom(convIndex);
+            View overlayView = getOverlayWithTag(convIndex);
+            if (overlayBottomY > mOffsetY && overlayTopY < mOffsetY + containerHeight) {
+
+                if (overlayView == null) {
+                    final View convertView = mScrapViews.poll();
+                    overlayView = mOverlayAdapter.getView(convIndex, convertView, this);
+                    overlayView.setTag(VIEW_TAG_CONVERSATION_INDEX, convIndex);
+                    if (convertView != null) {
+                        LogUtils.v(TAG, "want to REUSE scrolled-in view: index=%d obj=%s",
+                                convIndex, overlayView);
+                        attachViewToParent(overlayView, -1, overlayView.getLayoutParams());
+                    } else {
+                        LogUtils.v(TAG, "want to CREATE scrolled-in view: index=%d obj=%s",
+                                convIndex, overlayView);
+                        addViewInLayout(overlayView, -1, overlayView.getLayoutParams(),
+                                true /* preventRequestLayout */);
+                    }
+                    // do a manual measure pass of the new or reused child
+                    // a new child needs a measure to size itself, and a reused child's dimensions
+                    // may not match those of the new item
+                    measureItem(overlayView);
+                }
+                layoutOverlay(overlayView, convIndex);
+
+            } else {
+
+                if (overlayView != null) {
+                    onOverlayScrolledOff(overlayView, convIndex);
+                }
+            }
+        }
+    }
+
+    /**
+     * Copied/stolen from {@link ListView}.
+     */
+    private void measureItem(View child) {
+        ViewGroup.LayoutParams p = child.getLayoutParams();
+        if (p == null) {
+            p = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        int childWidthSpec = ViewGroup.getChildMeasureSpec(mWidthMeasureSpec,
+                getPaddingLeft() + getPaddingRight(), p.width);
+        int lpHeight = p.height;
+        int childHeightSpec;
+        if (lpHeight > 0) {
+            childHeightSpec = MeasureSpec.makeMeasureSpec(lpHeight, MeasureSpec.EXACTLY);
+        } else {
+            childHeightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        }
+        child.measure(childWidthSpec, childHeightSpec);
+    }
+
+    private void onOverlayScrolledOff(final View overlayView, final int convIndex) {
+        // do it asynchronously, as scroll notification can happen during a draw, when it's not
+        // safe to remove children
+
+        // ensure that repeated scroll events that want to remove the same header only do it
+        // once
+        if (mChildrenToRemove.contains(overlayView)) {
+            LogUtils.v(TAG, "ignoring duplicate request to detach header at convIndex=%d",
+                    convIndex);
+            return;
+        }
+
+        LogUtils.v(TAG, "queueing request to detach header at convIndex=%d", convIndex);
+        mChildrenToRemove.add(overlayView);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                detachOverlay(overlayView, convIndex);
+            }
+        });
+
+        // push it out of view immediately
+        // otherwise this scrolled-off header will continue to draw until the runnable runs
+        layoutOverlay(overlayView, convIndex);
+    }
+
+    private void detachOverlay(View overlayView, int convIndex) {
+        LogUtils.v(TAG, "want to remove now-hidden view: index=%d obj=%s children=%d",
+                convIndex, overlayView, getChildCount());
+        detachViewFromParent(overlayView);
+        mScrapViews.add(overlayView);
+        mChildrenToRemove.remove(overlayView);
     }
 
     @Override
@@ -197,6 +342,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
                 heightMeasureSpec);
 
         measureChildren(widthMeasureSpec, heightMeasureSpec);
+        mWidthMeasureSpec = widthMeasureSpec;
     }
 
     @Override
@@ -208,47 +354,72 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         layoutOverlays();
     }
 
+    private int getOverlayTop(int convIndex) {
+        return (int) (mOverlayBottoms[convIndex] * mScale)
+                - (int) (mOverlayHeights[convIndex] * mDensity);
+    }
+
+    private int getOverlayBottom(int convIndex) {
+        return (int) (mOverlayBottoms[convIndex] * mScale);
+    }
+
+    private void layoutOverlay(View child, int convIndex) {
+        // TODO: round or truncate?
+        final int top = getOverlayTop(convIndex) - mOffsetY;
+        final int bottom = top + child.getMeasuredHeight();
+        child.layout(0, top, child.getMeasuredWidth(), bottom);
+    }
+
     private void layoutOverlays() {
         final int count = getOverlayCount();
 
-        if (count > 0 && count != mOverlayBottoms.length) {
-            LogUtils.e(TAG,
-                    "Header/body count mismatch. headers=%d, message bodies=%d",
-                    count, mOverlayBottoms.length);
-        }
-
         for (int i = 0; i < count; i++) {
             View child = getOverlayAt(i);
-            // TODO: round or truncate?
-            final int bottom = (int) (mOverlayBottoms[i] * mScale) - mOffsetY;
-            final int top = bottom - child.getMeasuredHeight();
-            child.layout(0, top, child.getMeasuredWidth(), bottom);
+            Integer convIndex = (Integer) child.getTag(VIEW_TAG_CONVERSATION_INDEX);
+            layoutOverlay(child, convIndex);
         }
     }
 
-    // TODO: add margin support for children that want it (e.g. tablet headers?)
+    private View getOverlayWithTag(int index) {
+        for (int i = 0, count = getOverlayCount(); i < count; i++) {
+            final View overlay = getOverlayAt(i);
+            final Integer convIndex = (Integer) overlay.getTag(VIEW_TAG_CONVERSATION_INDEX);
+            if (convIndex != null && convIndex == index) {
+                return overlay;
+            }
+        }
+        return null;
+    }
 
-    public void onGeometryChange(int[] headerBottoms) {
+    // TODO: add margin support for children that want it (e.g. tablet headers?)
+    // TODO: support calling this method more than once per webpage instance (clear out existing
+    // headers and re-create at current offset?)
+    public void onGeometryChange(int[] headerBottoms, int[] headerHeights) {
         LogUtils.d(TAG, "*** got message header bottoms:");
         for (int offsetY : headerBottoms) {
             LogUtils.d(TAG, "%d", offsetY);
         }
 
-        mOverlayBottoms = headerBottoms;
-
-        for (int i = 0; i < headerBottoms.length; i++) {
-            View overlayView = getOverlayAt(i);
-            if (overlayView == null && mOverlayAdapter != null) {
-                // TODO: dig through recycler instead of creating new views each time
-                overlayView = mOverlayAdapter.getView(i, null, this);
-                addView(overlayView, i + 1);
-            }
-            // TODO: inform header of its bottom (== top of the next header) so it can know where
-            // to position bottom-anchored content like attachments
-        }
-
         mScale = mWebView.getScale();
 
+        mOverlayBottoms = headerBottoms;
+        mOverlayHeights = headerHeights;
+
+        if (mOverlayBottoms.length != mOverlayHeights.length) {
+            LogUtils.wtf(TAG, "message header count mismatch: # bottoms=%d, # heights=%d",
+                    mOverlayBottoms.length, mOverlayHeights.length);
+        }
+
+        // TODO: don't remove visible views. not an issue yet since this is only called once.
+        while (getOverlayCount() > 0) {
+            removeView(getOverlayAt(0));
+        }
+
+        // hack to bootstrap initial display of headers
+        handleScroll(0, mOffsetY);
+
+        // TODO: inform each header of its bottom (== top of the next header) so it can know where
+        // to position bottom-anchored content like attachments
     }
 
 }
