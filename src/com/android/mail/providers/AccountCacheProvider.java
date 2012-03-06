@@ -178,6 +178,8 @@ public abstract class AccountCacheProvider extends ContentProvider
                     builder.add(Integer.valueOf((int)account.syncStatus));
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.COMPOSE_URI)) {
                     builder.add(account.composeIntentUri);
+                } else if (TextUtils.equals(column, UIProvider.AccountColumns.MIME_TYPE)) {
+                    builder.add(account.mimeType);
                 } else {
                     throw new IllegalStateException("Column not found: " + column);
                 }

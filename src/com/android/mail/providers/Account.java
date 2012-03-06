@@ -119,13 +119,14 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public final Uri composeIntentUri;
 
+    public final String mimeType;
     /**
      * Total number of members that comprise an instance of an account. This is
      * the number of members that need to be serialized or parceled. This
      * includes the members described above and name and type from the
      * superclass.
      */
-    private static final int NUMBER_MEMBERS = 17;
+    private static final int NUMBER_MEMBERS = 18;
 
     /**
      * Examples of expected format for the joined account strings
@@ -161,7 +162,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         out.append(settingsQueryUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(helpIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
         out.append(syncStatus).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(composeIntentUri);
+        out.append(composeIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
+        out.append(mimeType);
         return out.toString();
     }
 
@@ -193,6 +195,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         helpIntentUri = Uri.parse(accountMembers[14]);
         syncStatus = Integer.valueOf(accountMembers[15]);
         composeIntentUri = Uri.parse(accountMembers[16]);
+        mimeType = accountMembers[17];
     }
 
     public Account(Parcel in) {
@@ -212,6 +215,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         helpIntentUri = in.readParcelable(null);
         syncStatus = in.readInt();
         composeIntentUri = in.readParcelable(null);
+        mimeType = in.readString();
     }
 
     public Account(Cursor cursor) {
@@ -241,6 +245,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
         final String compose = cursor.getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN);
         composeIntentUri = !TextUtils.isEmpty(compose) ? Uri.parse(compose) : null;
+        mimeType = cursor.getString(UIProvider.ACCOUNT_MIME_TYPE_COLUMN);
     }
 
     /**
@@ -289,6 +294,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(helpIntentUri, 0);
         dest.writeInt(syncStatus);
         dest.writeParcelable(composeIntentUri, 0);
+        dest.writeString(mimeType);
     }
 
     /**
@@ -335,6 +341,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(syncStatus);
         sb.append(",composeIntentUri=");
         sb.append(composeIntentUri);
+        sb.append(",mimeType=");
+        sb.append(mimeType);
 
         return sb.toString();
     }
@@ -364,7 +372,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(settingsQueryUri, other.settingsQueryUri) &&
                 Objects.equal(helpIntentUri, other.helpIntentUri) &&
                 (syncStatus == other.syncStatus) &&
-                Objects.equal(composeIntentUri, other.composeIntentUri);
+                Objects.equal(composeIntentUri, other.composeIntentUri) &&
+                TextUtils.equals(mimeType, other.mimeType);
     }
 
     @Override
@@ -372,7 +381,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         return super.hashCode() ^ Objects.hashCode(name, type, capabilities, providerVersion,
                 uri, folderListUri, searchUri, accountFromAddressesUri, saveDraftUri,
                 sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri, settingsQueryUri,
-                helpIntentUri, syncStatus, composeIntentUri);
+                helpIntentUri, syncStatus, composeIntentUri, mimeType);
     }
 
     @SuppressWarnings("hiding")

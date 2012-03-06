@@ -94,7 +94,8 @@ public class UIProvider {
             AccountColumns.SETTINGS_QUERY_URI,
             AccountColumns.SYNC_STATUS,
             AccountColumns.HELP_INTENT_URI,
-            AccountColumns.COMPOSE_URI
+            AccountColumns.COMPOSE_URI,
+            AccountColumns.MIME_TYPE
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -114,6 +115,7 @@ public class UIProvider {
     public static final int ACCOUNT_SYNC_STATUS_COLUMN = 14;
     public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 15;
     public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 16;
+    public static final int ACCOUNT_MIME_TYPE_COLUMN = 17;
 
     public static final class AccountCapabilities {
         /**
@@ -301,6 +303,10 @@ public class UIProvider {
          * of account to be shown.
          */
         public static final String COMPOSE_URI = "composeUri";
+        /**
+         * Mime-type defining this account.
+         */
+        public static final String MIME_TYPE = "mimeType";
     }
 
     // We define a "folder" as anything that contains a list of conversations.
