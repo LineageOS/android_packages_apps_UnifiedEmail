@@ -726,6 +726,9 @@ public abstract class AbstractActivityController implements ActivityController {
         // We want to reinitialize only if we haven't ever been initialized, or
         // if the current account has vanished.
         final int id = loader.getId();
+        if (data == null) {
+            LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", id);
+        }
         if (id == ACCOUNT_CURSOR_LOADER) {
 
             final boolean accountListUpdated = accountsUpdated(data);

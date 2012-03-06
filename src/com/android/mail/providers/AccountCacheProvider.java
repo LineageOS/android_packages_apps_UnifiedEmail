@@ -341,6 +341,7 @@ public abstract class AccountCacheProvider extends ContentProvider
             return;
         }
 
+        LogUtils.d(LOG_TAG, "Cursor with %d accounts returned", data.getCount());
         final CursorLoader cursorLoader = (CursorLoader)loader;
         final Uri accountsQueryUri = cursorLoader.getUri();
         // TODO(pwestbro):
