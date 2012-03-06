@@ -137,6 +137,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void setCurrentFolder(Folder folder) {
         mCurrentFolder = folder;
+        if (mRecentFolders == null) {
+            mRecentFolders = new RecentFolderList(mCurrentAccount);
+        }
         mRecentFolderList = mRecentFolders.changeCurrentFolder(folder);
     }
 
@@ -146,7 +149,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void setCurrentAccount(Account account) {
         mCurrentAccount = account;
-        mRecentFolders = new RecentFolderList(mCurrentAccount);
+        if (mRecentFolders == null) {
+            mRecentFolders = new RecentFolderList(mCurrentAccount);
+        }
         mRecentFolderList = mRecentFolders.getSortedArray(mCurrentFolder);
         notifyDataSetChanged();
     }
