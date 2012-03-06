@@ -132,12 +132,15 @@
     <string name="me" msgid="6480762904022198669">"من"</string>
     <string name="labels" msgid="1519770547536283663">"برچسب‌ها"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"نمایش همه پوشه‌ها"</string>
-    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
-    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
-    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
-    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
-    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
-    <skip />
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"این مکالمه حذف شود؟"</item>
+    <item quantity="other" msgid="930334208937121234">"این <xliff:g id="COUNT">%1$d</xliff:g> مکالمه حذف شوند؟"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"این مکالمه بایگانی شود؟"</item>
+    <item quantity="other" msgid="4713469868399246772">"این <xliff:g id="COUNT">%1$d</xliff:g> مکالمه بایگانی شود؟"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"از این پیام صرفنظر شود؟"</string>
     <string name="no_conversations" msgid="35400008890372241">"مکالمه‌ای موجود نیست."</string>
     <string name="undo" msgid="6070869718469782251">"لغو"</string>
   <plurals name="conversation_marking_read">

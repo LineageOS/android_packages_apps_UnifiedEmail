@@ -47,8 +47,7 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Съобщението е празно. Не сте въвели нищо."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Да се изпрати ли това съобщение?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Съобщението е отхвърлено."</string>
-    <!-- no translation found for signature (7882698047321710252) -->
-    <skip />
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="send" msgid="8242003661397555986">"Изпращане"</string>
     <string name="mark_read" msgid="8438349154394313195">"Означаване като прочетено"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Означаване като непрочетено"</string>
@@ -133,12 +132,15 @@
     <string name="me" msgid="6480762904022198669">"аз"</string>
     <string name="labels" msgid="1519770547536283663">"Етикети"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Показване на всички папки"</string>
-    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
-    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
-    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
-    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
-    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
-    <skip />
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"Да се изтрие ли тази кореспонденция?"</item>
+    <item quantity="other" msgid="930334208937121234">"Да се изтрият ли тези <xliff:g id="COUNT">%1$d</xliff:g> кореспонденции?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"Да се архивира ли тази кореспонденция?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Да се архивират ли тези <xliff:g id="COUNT">%1$d</xliff:g> кореспонденции?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Да се отхвърли ли това съобщение?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Няма кореспонденции."</string>
     <string name="undo" msgid="6070869718469782251">"Отмяна"</string>
   <plurals name="conversation_marking_read">

@@ -132,12 +132,15 @@
     <string name="me" msgid="6480762904022198669">"saya"</string>
     <string name="labels" msgid="1519770547536283663">"Label"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Tampilkan semua map"</string>
-    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
-    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
-    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
-    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
-    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
-    <skip />
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"Hapus percakapan ini?"</item>
+    <item quantity="other" msgid="930334208937121234">"Hapus <xliff:g id="COUNT">%1$d</xliff:g> percakapan ini?"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"Arsipkan percakapan ini?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Arsipkan <xliff:g id="COUNT">%1$d</xliff:g> percakapan ini?"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Buang pesan ini?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Tidak ada percakapan."</string>
     <string name="undo" msgid="6070869718469782251">"Urungkan"</string>
   <plurals name="conversation_marking_read">

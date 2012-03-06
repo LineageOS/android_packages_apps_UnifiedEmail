@@ -47,8 +47,7 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"邮件正文中没有文字。"</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"要发送此邮件吗？"</string>
     <string name="message_discarded" msgid="5079975378884765445">"邮件已舍弃。"</string>
-    <!-- no translation found for signature (7882698047321710252) -->
-    <skip />
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="send" msgid="8242003661397555986">"发送"</string>
     <string name="mark_read" msgid="8438349154394313195">"标记为已读"</string>
     <string name="mark_unread" msgid="6231373939351125713">"标记为未读"</string>
@@ -133,12 +132,15 @@
     <string name="me" msgid="6480762904022198669">"我"</string>
     <string name="labels" msgid="1519770547536283663">"标签"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"显示所有文件夹"</string>
-    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
-    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
-    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
-    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
-    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
-    <skip />
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"要删除此会话吗？"</item>
+    <item quantity="other" msgid="930334208937121234">"要删除这 <xliff:g id="COUNT">%1$d</xliff:g> 个会话吗？"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"要将此会话归档吗？"</item>
+    <item quantity="other" msgid="4713469868399246772">"要将这 <xliff:g id="COUNT">%1$d</xliff:g> 个会话归档吗？"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"要舍弃此邮件吗？"</string>
     <string name="no_conversations" msgid="35400008890372241">"无会话。"</string>
     <string name="undo" msgid="6070869718469782251">"撤消"</string>
   <plurals name="conversation_marking_read">

@@ -47,8 +47,7 @@
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"メールの本文が入力されていません。"</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"このメールを送信しますか？"</string>
     <string name="message_discarded" msgid="5079975378884765445">"メッセージを破棄しました。"</string>
-    <!-- no translation found for signature (7882698047321710252) -->
-    <skip />
+    <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="send" msgid="8242003661397555986">"送信"</string>
     <string name="mark_read" msgid="8438349154394313195">"既読にする"</string>
     <string name="mark_unread" msgid="6231373939351125713">"未読にする"</string>
@@ -133,12 +132,15 @@
     <string name="me" msgid="6480762904022198669">"自分"</string>
     <string name="labels" msgid="1519770547536283663">"ラベル"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"すべてのフォルダを表示"</string>
-    <!-- no translation found for confirm_delete_conversation:one (3731948757247905508) -->
-    <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
-    <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
-    <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
-    <!-- no translation found for confirm_discard_text (1149834186404614612) -->
-    <skip />
+  <plurals name="confirm_delete_conversation">
+    <item quantity="one" msgid="3731948757247905508">"このスレッドを削除しますか？"</item>
+    <item quantity="other" msgid="930334208937121234">"<xliff:g id="COUNT">%1$d</xliff:g>件のスレッドを削除しますか？"</item>
+  </plurals>
+  <plurals name="confirm_archive_conversation">
+    <item quantity="one" msgid="2990537295519552069">"このスレッドをアーカイブしますか？"</item>
+    <item quantity="other" msgid="4713469868399246772">"<xliff:g id="COUNT">%1$d</xliff:g>件のスレッドをアーカイブしますか？"</item>
+  </plurals>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"このメールを破棄しますか？"</string>
     <string name="no_conversations" msgid="35400008890372241">"スレッドがありません。"</string>
     <string name="undo" msgid="6070869718469782251">"元に戻す"</string>
   <plurals name="conversation_marking_read">
