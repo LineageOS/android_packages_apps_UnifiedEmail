@@ -70,6 +70,8 @@ public final class ConversationCursor implements Cursor {
     private static final String REQUERY_COLUMN = "__requery__";
     // A sentinel value for the "index" of the deleted column; it's an int that is otherwise invalid
     private static final int DELETED_COLUMN_INDEX = -1;
+    // Empty deletion list
+    private static final ArrayList<Integer> EMPTY_DELETION_LIST = new ArrayList<Integer>();
     // The current conversation cursor
     private static ConversationCursor sConversationCursor;
     // The index of the Uri whose data is reflected in the cached row
@@ -462,11 +464,15 @@ public final class ConversationCursor implements Cursor {
         if (DEBUG) {
             LogUtils.d(TAG, "[getRefreshDeletions() called]");
         }
+        // It's possible that the requery cursor is null in the case that loadInBackground() causes
+        // ConversationCursor.create to do a sync() between the time that refreshReady() is called
+        // and the subsequent call to getRefreshDeletions().  This is harmless, and an empty
+        // result list is correct.
+        if (sRequeryCursor == null) {
+            return EMPTY_DELETION_LIST;
+        }
         Cursor deviceCursor = sConversationCursor;
         Cursor serverCursor = sRequeryCursor;
-        // TODO: (mindyp) saw some instability here. Adding an assert to try to
-        // catch it.
-        assert(sRequeryCursor != null);
         ArrayList<Integer> deleteList = new ArrayList<Integer>();
         int serverCount = serverCursor.getCount();
         int deviceCount = deviceCursor.getCount();
