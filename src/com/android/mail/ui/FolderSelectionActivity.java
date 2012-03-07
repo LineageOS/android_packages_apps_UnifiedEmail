@@ -89,9 +89,11 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         }
 
         mAccount = intent.getParcelableExtra(EXTRA_ACCOUNT_SHORTCUT);
-        Button cancelButton = (Button) findViewById(R.id.cancel);
-        cancelButton.setVisibility(View.VISIBLE);
-        cancelButton.setOnClickListener(this);
+        Button firstButton = (Button) findViewById(R.id.first_button);
+        firstButton.setVisibility(View.VISIBLE);
+        // TODO(mindyp) disable the manage labels buttons until we have a mange labels screen.
+        firstButton.setEnabled(false);
+        firstButton.setOnClickListener(this);
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment fragment = FolderListFragment.newInstance(this, mAccount.folderListUri);

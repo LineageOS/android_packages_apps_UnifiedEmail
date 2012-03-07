@@ -34,7 +34,7 @@
         android:measureWithLargestChild="true"
         android:background="@null">
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/first_button"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_weight="1"
             android:layout_width="0dip"

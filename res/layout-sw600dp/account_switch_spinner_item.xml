@@ -32,13 +32,13 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true">
 
-            <!-- style="?android:attr/actionDropDownStyle" -->
         <LinearLayout
             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:background="@drawable/spinner_ab_holo_light">
             <TextView
                 android:id="@+id/account_spinner_folder"
                 style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title.Inverse"
