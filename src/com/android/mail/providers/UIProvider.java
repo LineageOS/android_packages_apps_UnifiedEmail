@@ -20,6 +20,7 @@ package com.android.mail.providers;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.net.Uri;
@@ -219,7 +220,7 @@ public class UIProvider {
         public static final String URI = "accountUri";
 
         /**
-         * This integer column contains a bit field of the possible cabibilities that this account
+         * This integer column contains a bit field of the possible capabilities that this account
          * supports.
          */
         public static final String CAPABILITIES = "capabilities";
@@ -824,7 +825,6 @@ public class UIProvider {
         private MessageColumns() {}
     }
 
-    // We define a "folder" as anything that contains a list of conversations.
     public static final String ATTACHMENT_LIST_TYPE =
             "vnd.android.cursor.dir/vnd.com.android.mail.attachment";
     public static final String ATTACHMENT_TYPE =
@@ -835,9 +835,13 @@ public class UIProvider {
         AttachmentColumns.NAME,
         AttachmentColumns.SIZE,
         AttachmentColumns.URI,
-        AttachmentColumns.ORIGIN_EXTRAS,
         AttachmentColumns.CONTENT_TYPE,
-        AttachmentColumns.SYNCED
+        AttachmentColumns.STATE,
+        AttachmentColumns.DESTINATION,
+        AttachmentColumns.DOWNLOADED_SIZE,
+        AttachmentColumns.CONTENT_URI,
+        AttachmentColumns.THUMBNAIL_URI,
+        AttachmentColumns.PREVIEW_INTENT
     };
     private static final String EMAIL_SEPARATOR_PATTERN = "\n";
     public static final int ATTACHMENT_ID_COLUMN = 0;
@@ -848,13 +852,137 @@ public class UIProvider {
     public static final int ATTACHMENT_CONTENT_TYPE_COLUMN = 5;
     public static final int ATTACHMENT_SYNCED_COLUMN = 6;
 
+    /**
+     * Valid states for the {@link AttachmentColumns#STATE} column.
+     *
+     */
+    public static final class AttachmentState {
+        /**
+         * The full attachment is not present on device. When used as a command,
+         * setting this state will tell the provider to cancel a download in
+         * progress.
+         * <p>
+         * Valid next states: {@link #DOWNLOADING}
+         */
+        public static final int NOT_SAVED = 0;
+        /**
+         * The most recent attachment download attempt failed. The current UI
+         * design does not require providers to persist this state, but
+         * providers must return this state at least once after a download
+         * failure occurs. This state may not be used as a command.
+         * <p>
+         * Valid next states: {@link #DOWNLOADING}
+         */
+        public static final int FAILED = 1;
+        /**
+         * The attachment is currently being downloaded by the provider.
+         * {@link AttachmentColumns#DOWNLOADED_SIZE} should reflect the current
+         * download progress while in this state. When used as a command,
+         * setting this state will tell the provider to initiate a download to
+         * the accompanying destination in {@link AttachmentColumns#DESTINATION}
+         * .
+         * <p>
+         * Valid next states: {@link #NOT_SAVED}, {@link #FAILED},
+         * {@link #SAVED}
+         */
+        public static final int DOWNLOADING = 2;
+        /**
+         * The attachment was successfully downloaded to the destination in
+         * {@link AttachmentColumns#DESTINATION}. If a provider later detects
+         * that a download is missing, it should reset the state to
+         * {@link #NOT_SAVED}. This state may not be used as a command on its
+         * own. To move a file from cache to external, update
+         * {@link AttachmentColumns#DESTINATION}.
+         * <p>
+         * Valid next states: {@link #NOT_SAVED}
+         */
+        public static final int SAVED = 3;
+
+        private AttachmentState() {}
+    }
+
+    public static final class AttachmentDestination {
+
+        /**
+         * The attachment will be or is already saved to the app-private cache partition.
+         */
+        public static final int CACHE = 0;
+        /**
+         * The attachment will be or is already saved to external shared device storage.
+         */
+        public static final int EXTERNAL = 1;
+
+        private AttachmentDestination() {}
+    }
+
     public static final class AttachmentColumns {
+        /**
+         * This string column is the attachment's file name, intended for display in UI. It is not
+         * the full path of the file.
+         */
         public static final String NAME = "name";
+        /**
+         * This integer column is the file size of the attachment, in bytes.
+         */
         public static final String SIZE = "size";
+        /**
+         * This column is a {@link Uri} that can be queried to monitor download state and progress
+         * for this individual attachment (resulting cursor has one single row for this attachment).
+         */
         public static final String URI = "uri";
-        public static final String ORIGIN_EXTRAS = "originExtras";
+        /**
+         * This string column is the MIME type of the attachment.
+         */
         public static final String CONTENT_TYPE = "contentType";
-        public static final String SYNCED = "synced";
+        /**
+         * This integer column is the current downloading state of the
+         * attachment as defined in {@link AttachmentState}.
+         * <p>
+         * Providers must accept updates to {@link URI} with new values of
+         * this column to initiate or cancel downloads.
+         */
+        public static final String STATE = "state";
+        /**
+         * This integer column is the file destination for the current download
+         * in progress (when {@link #STATE} is
+         * {@link AttachmentState#DOWNLOADING}) or the resulting downloaded file
+         * ( when {@link #STATE} is {@link AttachmentState#SAVED}), as defined
+         * in {@link AttachmentDestination}. This value is undefined in any
+         * other state.
+         * <p>
+         * Providers must accept updates to {@link URI} with new values of
+         * this column to move an existing downloaded file.
+         */
+        public static final String DESTINATION = "destination";
+        /**
+         * This integer column is the current number of bytes downloaded when
+         * {@link #STATE} is {@link AttachmentState#DOWNLOADING}. This value is
+         * undefined in any other state.
+         */
+        public static final String DOWNLOADED_SIZE = "downloadedSize";
+        /**
+         * This column is a {@link Uri} that points to the downloaded local file
+         * when {@link #STATE} is {@link AttachmentState#SAVED}. This value is
+         * undefined in any other state.
+         */
+        public static final String CONTENT_URI = "contentUri";
+        /**
+         * This column is a {@link Uri} that points to a local thumbnail file
+         * for the attachment. Providers that do not support downloading
+         * attachment thumbnails may leave this null.
+         */
+        public static final String THUMBNAIL_URI = "thumbnailUri";
+        /**
+         * This column is an {@link Intent} to launch a preview activity that
+         * allows the user to efficiently view an attachment without having to
+         * first download the entire file. Providers that do not support
+         * previewing attachments may leave this null. The intent is represented
+         * as a byte-array blob generated by writing an Intent to a parcel and
+         * then marshaling that parcel.
+         */
+        public static final String PREVIEW_INTENT = "previewIntent";
+
+        private AttachmentColumns() {}
     }
 
     public static int getMailMaxAttachmentSize(String account) {
