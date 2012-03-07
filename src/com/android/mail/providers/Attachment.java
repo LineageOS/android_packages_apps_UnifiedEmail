@@ -53,10 +53,6 @@ public class Attachment implements Parcelable {
      */
     public String partId;
     /**
-     * isSynced is true if the attachment is available locally on the device.
-     */
-    public boolean isSynced;
-    /**
      * Attachment size in kb.
      */
     public long size;
@@ -67,7 +63,6 @@ public class Attachment implements Parcelable {
         mimeType = in.readString();
         contentUri = in.readString();
         partId = in.readString();
-        isSynced = in.readInt() == 1;
         size = in.readLong();
         origin = in.readInt();
     }
@@ -105,7 +100,6 @@ public class Attachment implements Parcelable {
         dest.writeString(mimeType);
         dest.writeString(contentUri);
         dest.writeString(partId);
-        dest.writeInt(isSynced? 1 : 0);
         dest.writeLong(size);
         dest.writeInt(origin);
     }

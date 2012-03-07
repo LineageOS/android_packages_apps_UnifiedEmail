@@ -123,18 +123,6 @@ class AttachmentsView extends LinearLayout {
     }
 
     /**
-     * See if all the attachments in this view are synced.
-     */
-    public boolean areAttachmentsSynced() {
-        for (Attachment a : mAttachments) {
-            if (a.isSynced) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Get the total size of all attachments currently in this view.
      */
     public long getTotalAttachmentsSize() {
