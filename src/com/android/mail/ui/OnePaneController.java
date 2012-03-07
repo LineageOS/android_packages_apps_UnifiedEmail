@@ -205,6 +205,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     private void transitionToInbox() {
+        mViewMode.enterConversationListMode();
         ConversationListContext listContext = ConversationListContext.forFolder(mContext,
                 mAccount, mInbox);
         // Set the correct context for what the conversation view will be now.
@@ -244,9 +245,9 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     private void transitionBackToConversationListMode() {
+        mViewMode.enterConversationListMode();
         mActivity.getFragmentManager().popBackStack(mLastConversationTransactionId,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        mViewMode.enterConversationListMode();
         resetActionBarIcon();
     }
 }
