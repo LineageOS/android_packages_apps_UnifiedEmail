@@ -72,10 +72,8 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Senkronize et ve bildir"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"Etiket ayarları"</string>
     <string name="menu_done" msgid="5791134842152855128">"Bitti"</string>
-    <!-- no translation found for menu_account_settings (8230989362863431918) -->
-    <skip />
-    <!-- no translation found for menu_settings (6007027046949837282) -->
-    <skip />
+    <string name="menu_account_settings" msgid="8230989362863431918">"Hesap ayarları"</string>
+    <string name="menu_settings" msgid="6007027046949837282">"Ayarlar"</string>
     <string name="menu_search" msgid="5297197523031943248">"Ara"</string>
     <string name="more" msgid="1238344647379009858">"Diğer"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> / <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
