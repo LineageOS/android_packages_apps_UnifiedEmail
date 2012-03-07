@@ -159,8 +159,10 @@ public class Message implements Parcelable {
             appendRefMessageContent = cursor
                     .getInt(UIProvider.MESSAGE_APPEND_REF_MESSAGE_CONTENT_COLUMN) != 0;
             hasAttachments = cursor.getInt(UIProvider.MESSAGE_HAS_ATTACHMENTS_COLUMN) != 0;
-            attachmentListUri = hasAttachments ? Uri.parse(cursor
-                    .getString(UIProvider.MESSAGE_ATTACHMENT_LIST_URI_COLUMN)) : null;
+            final String attachmentsUri = cursor
+                    .getString(UIProvider.MESSAGE_ATTACHMENT_LIST_URI_COLUMN);
+            attachmentListUri = hasAttachments && !TextUtils.isEmpty(attachmentsUri) ? Uri
+                    .parse(attachmentsUri) : null;
             messageFlags = cursor.getLong(UIProvider.MESSAGE_FLAGS_COLUMN);
             joinedAttachmentInfos = cursor
                     .getString(UIProvider.MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN);
