@@ -72,10 +72,8 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Sinkroniziraj i obavijesti"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"Postavke oznake"</string>
     <string name="menu_done" msgid="5791134842152855128">"Gotovo"</string>
-    <!-- no translation found for menu_account_settings (8230989362863431918) -->
-    <skip />
-    <!-- no translation found for menu_settings (6007027046949837282) -->
-    <skip />
+    <string name="menu_account_settings" msgid="8230989362863431918">"Postavke računa"</string>
+    <string name="menu_settings" msgid="6007027046949837282">"Postavke"</string>
     <string name="menu_search" msgid="5297197523031943248">"Pretraživanje"</string>
     <string name="more" msgid="1238344647379009858">"Više"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> od <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
@@ -134,11 +132,11 @@
     <string name="show_all_folders" msgid="3281420732307737553">"Prikaži sve mape"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Izbrisati ovaj razgovor?"</item>
-    <item quantity="other" msgid="930334208937121234">"Izbrisati ovoliko razgovora: <xliff:g id="COUNT">%1$d</xliff:g>?"</item>
+    <item quantity="other" msgid="930334208937121234">"Izbrisati ove razgovore (ukupno <xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
   </plurals>
   <plurals name="confirm_archive_conversation">
     <item quantity="one" msgid="2990537295519552069">"Arhivirati ovaj razgovor?"</item>
-    <item quantity="other" msgid="4713469868399246772">"Arhivirati ovoliko razgovora: <xliff:g id="COUNT">%1$d</xliff:g>?"</item>
+    <item quantity="other" msgid="4713469868399246772">"Arhivirati ove razgovore (ukupno <xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Odbaciti ovu poruku?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Nema razgovora."</string>

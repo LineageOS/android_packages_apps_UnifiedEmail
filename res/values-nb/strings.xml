@@ -138,7 +138,7 @@
     <item quantity="one" msgid="2990537295519552069">"Vil du arkivere denne samtalen?"</item>
     <item quantity="other" msgid="4713469868399246772">"Vil du arkivere disse <xliff:g id="COUNT">%1$d</xliff:g> samtalene?"</item>
   </plurals>
-    <string name="confirm_discard_text" msgid="1149834186404614612">"Vil du forkaste denne meldingen?"</string>
+    <string name="confirm_discard_text" msgid="1149834186404614612">"Vil du forkaste denne e-posten?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Ingen samtaler."</string>
     <string name="undo" msgid="6070869718469782251">"Angre"</string>
   <plurals name="conversation_marking_read">

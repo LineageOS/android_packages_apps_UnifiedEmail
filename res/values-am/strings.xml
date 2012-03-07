@@ -131,12 +131,12 @@
     <string name="labels" msgid="1519770547536283663">"መለያዎች"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"ሁሉንም አቃፊዎች አሳይ"</string>
   <plurals name="confirm_delete_conversation">
-    <item quantity="one" msgid="3731948757247905508">"ይሄ ውይይት ሰርዝ?"</item>
+    <item quantity="one" msgid="3731948757247905508">"ይሄ ውይይት ይሰረዝ?"</item>
     <item quantity="other" msgid="930334208937121234">"እነዚህ <xliff:g id="COUNT">%1$d</xliff:g> ውይይቶች ይሰረዙ?"</item>
   </plurals>
   <plurals name="confirm_archive_conversation">
     <item quantity="one" msgid="2990537295519552069">"ይሄ ውይይት ይመዝግብ?"</item>
-    <item quantity="other" msgid="4713469868399246772">"እነዚህ <xliff:g id="COUNT">%1$d</xliff:g> ውይይቶች ይታቆሩ?"</item>
+    <item quantity="other" msgid="4713469868399246772">"እነዚህ <xliff:g id="COUNT">%1$d</xliff:g> ውይይቶች ይመዝገቡ?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"ይሄ መልዕክት ይወገድ?"</string>
     <string name="no_conversations" msgid="35400008890372241">"ምንም ውይይቶች የሉም።"</string>
