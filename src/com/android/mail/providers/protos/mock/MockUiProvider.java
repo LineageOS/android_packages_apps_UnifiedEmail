@@ -34,6 +34,7 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderColumns;
 import com.android.mail.providers.UIProvider.MessageColumns;
+import com.android.mail.providers.UIProvider.SettingsColumns;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -126,6 +127,10 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(folderDetailsMap1));
         builder.put(accountDetailsMap0.get(AccountColumns.FOLDER_LIST_URI).toString(),
                 ImmutableList.of(folderDetailsMap0, folderDetailsMap1));
+        Map<String, Object> settings0 = createSettingsDetailsMap(folderDetailsMap0.get(
+                FolderColumns.URI).toString());
+        builder.put(accountDetailsMap0.get(AccountColumns.SETTINGS_QUERY_URI).toString(),
+                ImmutableList.of(settings0));
 
         Map<String, Object> folderDetailsMap2 = createFolderDetailsMap(2, "two", 2, 2);
         builder.put(folderDetailsMap2.get(FolderColumns.URI).toString(),
@@ -135,6 +140,10 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(folderDetailsMap3));
         builder.put(accountDetailsMap1.get(AccountColumns.FOLDER_LIST_URI).toString(),
                 ImmutableList.of(folderDetailsMap2, folderDetailsMap3));
+        Map<String, Object> settings1 = createSettingsDetailsMap(folderDetailsMap2.get(
+                FolderColumns.URI).toString());
+        builder.put(accountDetailsMap1.get(AccountColumns.SETTINGS_QUERY_URI).toString(),
+                ImmutableList.of(settings1));
 
         Map<String, Object> conv2 = createConversationDetailsMap("zeroConv2".hashCode(),
                 "zeroConv2", 0);
@@ -159,6 +168,12 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(message3));
 
         MOCK_QUERY_RESULTS = builder.build();
+    }
+
+    private static Map<String, Object> createSettingsDetailsMap(String uri) {
+        Map<String, Object> settingsMap = Maps.newHashMap();
+        settingsMap.put(SettingsColumns.DEFAULT_INBOX, uri);
+        return settingsMap;
     }
 
     private static Map<String, Object> createConversationDetailsMap(int conversationId,
