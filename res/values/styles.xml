@@ -339,4 +339,12 @@
     <style name="InvisibleShortcutWidgetTheme" parent="@style/ShortcutWidgetTheme">
         <item name="android:windowNoDisplay">true</item>
     </style>
+
+    <style name="PlainSpinnerDropdown" parent="@android:style/Widget.Holo.Light.Spinner">
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
+    </style>
 </resources>
