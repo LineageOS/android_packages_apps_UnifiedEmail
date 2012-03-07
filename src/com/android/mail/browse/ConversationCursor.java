@@ -156,12 +156,12 @@ public final class ConversationCursor implements Cursor {
                 if (qUri.equals(uri) && !sRefreshRequired && !sRefreshInProgress) {
                     if (sRefreshReady) {
                         // If we already have a refresh ready, just sync() it
-                        LogUtils.d(TAG, "Create: refreshed cursor ready, sync");
+                        LogUtils.i(TAG, "Create: refreshed cursor ready, sync");
                         sConversationCursor.sync();
                     } else {
                         // Position the cursor before the first item (as it would be if new), reset
                         // the cache, and return as new
-                        LogUtils.d(TAG, "Create: cursor good, reset position and clear map");
+                        LogUtils.i(TAG, "Create: cursor good, reset position and clear map");
                         sConversationCursor.moveToPosition(-1);
                         sConversationCursor.mPosition = -1;
                         synchronized (sCacheMapLock) {
@@ -170,14 +170,14 @@ public final class ConversationCursor implements Cursor {
                     }
                 } else {
                     // Set qUri/qProjection these in case they changed
-                    LogUtils.d(TAG, "Create: new query or refresh needed, query/sync");
+                    LogUtils.i(TAG, "Create: new query or refresh needed, query/sync");
                     sRequeryCursor = doQuery(uri, projection);
                     sConversationCursor.sync();
                 }
                 return sConversationCursor;
             }
             // Create new ConversationCursor
-            LogUtils.d(TAG, "Create: initial creation");
+            LogUtils.i(TAG, "Create: initial creation");
             return new ConversationCursor(doQuery(uri, projection), activity, messageListColumn);
         }
     }
@@ -217,7 +217,7 @@ public final class ConversationCursor implements Cursor {
         // Temporary, log time for reset
         long startTime = System.currentTimeMillis();
         if (DEBUG) {
-            LogUtils.d(TAG, "[--resetCursor--]");
+            LogUtils.i(TAG, "[--resetCursor--]");
         }
         synchronized (sCacheMapLock) {
             // Walk through the cache.  Here are the cases:
@@ -264,7 +264,7 @@ public final class ConversationCursor implements Cursor {
             }
             sRefreshRequired = false;
         }
-        LogUtils.d(TAG, "resetCache time: " + ((System.currentTimeMillis() - startTime)) + "ms");
+        LogUtils.i(TAG, "resetCache time: " + ((System.currentTimeMillis() - startTime)) + "ms");
     }
 
     /**
@@ -275,7 +275,7 @@ public final class ConversationCursor implements Cursor {
             if (!sListeners.contains(listener)) {
                 sListeners.add(listener);
             } else {
-                LogUtils.d(TAG, "Ignoring duplicate add of listener");
+                LogUtils.i(TAG, "Ignoring duplicate add of listener");
             }
         }
     }
@@ -337,7 +337,7 @@ public final class ConversationCursor implements Cursor {
             if ((columnName == DELETED_COLUMN) && (map.get(columnName) == null)) {
                 sDeletedCount++;
                 if (DEBUG) {
-                    LogUtils.d(TAG, "Deleted " + uriString);
+                    LogUtils.i(TAG, "Deleted " + uriString);
                 }
             }
             // ContentValues has no generic "put", so we must test.  For now, the only classes of
@@ -357,7 +357,7 @@ public final class ConversationCursor implements Cursor {
                 map.put(REQUERY_COLUMN, 1);
             }
             if (DEBUG && (columnName != DELETED_COLUMN)) {
-                LogUtils.d(TAG, "Caching value for " + uriString + ": " + columnName);
+                LogUtils.i(TAG, "Caching value for " + uriString + ": " + columnName);
             }
         }
     }
@@ -395,7 +395,7 @@ public final class ConversationCursor implements Cursor {
             mCursorObserverRegistered = false;
         }
         if (DEBUG) {
-            LogUtils.d(TAG, "[Notify: onRefreshRequired()]");
+            LogUtils.i(TAG, "[Notify: onRefreshRequired()]");
         }
         synchronized(sListeners) {
             for (ConversationListener listener: sListeners) {
@@ -413,7 +413,7 @@ public final class ConversationCursor implements Cursor {
     public void sync() {
         synchronized (sCacheMapLock) {
             if (DEBUG) {
-                LogUtils.d(TAG, "[sync() called]");
+                LogUtils.i(TAG, "[sync() called]");
             }
             if (sRequeryCursor == null) {
                 // This can happen during an animated deletion, if the UI isn't keeping track
@@ -440,7 +440,7 @@ public final class ConversationCursor implements Cursor {
      */
     public void cancelRefresh() {
         if (DEBUG) {
-            LogUtils.d(TAG, "[cancelRefresh() called]");
+            LogUtils.i(TAG, "[cancelRefresh() called]");
         }
         synchronized(sCacheMapLock) {
             // Mark the requery closed
@@ -462,7 +462,7 @@ public final class ConversationCursor implements Cursor {
      */
     public ArrayList<Integer> getRefreshDeletions () {
         if (DEBUG) {
-            LogUtils.d(TAG, "[getRefreshDeletions() called]");
+            LogUtils.i(TAG, "[getRefreshDeletions() called]");
         }
         // It's possible that the requery cursor is null in the case that loadInBackground() causes
         // ConversationCursor.create to do a sync() between the time that refreshReady() is called
@@ -515,7 +515,7 @@ public final class ConversationCursor implements Cursor {
                 deviceCursor.moveToPrevious();
             }
         }
-        LogUtils.d(TAG, "Deletions: " + deleteList);
+        LogUtils.i(TAG, "Deletions: " + deleteList);
         return deleteList;
     }
 
@@ -526,7 +526,7 @@ public final class ConversationCursor implements Cursor {
      */
     public boolean refresh() {
         if (DEBUG) {
-            LogUtils.d(TAG, "[refresh() called]");
+            LogUtils.i(TAG, "[refresh() called]");
         }
         if (sRefreshInProgress) {
             return false;
@@ -547,7 +547,7 @@ public final class ConversationCursor implements Cursor {
                             @Override
                             public void run() {
                                 if (DEBUG) {
-                                    LogUtils.d(TAG, "[Notify: onRefreshReady()]");
+                                    LogUtils.i(TAG, "[Notify: onRefreshReady()]");
                                 }
                                 if (sRequeryCursor != null && !sRequeryCursor.isClosed()) {
                                     synchronized (sListeners) {
@@ -735,7 +735,7 @@ public final class ConversationCursor implements Cursor {
             // If we're here, then something outside of the UI has changed the data, and we
             // must query the underlying provider for that data
             if (DEBUG) {
-                LogUtils.d(TAG, "Underlying conversation cursor changed; requerying");
+                LogUtils.i(TAG, "Underlying conversation cursor changed; requerying");
             }
             // It's not at all obvious to me why we must unregister/re-register after the requery
             // However, if we don't we'll only get one notification and no more...
