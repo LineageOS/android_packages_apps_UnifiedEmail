@@ -39,7 +39,7 @@
         style="@style/RecipientComposeFieldLayout"
         android:layout_height="match_parent">
 
-        <TextView android:id="@+id/account_name"
+        <TextView android:id="@+id/from_account_name"
             android:layout_width="match_parent"
             android:paddingLeft="8dip"
             android:singleLine="true"
