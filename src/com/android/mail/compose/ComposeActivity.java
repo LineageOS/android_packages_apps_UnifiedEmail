@@ -154,6 +154,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private QuotedTextView mQuotedTextView;
     private TextView mBodyView;
     private View mFromStatic;
+    private TextView mFromStaticText;
     private View mFromSpinnerWrapper;
     private FromAddressSpinner mFromSpinner;
     private boolean mAddingAttachment;
@@ -295,6 +296,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // mail from / save drafts to.
         mFromStatic.setVisibility(
                 showSpinner ? View.GONE : View.VISIBLE);
+        mFromStaticText.setText(mAccount.name);
         mFromSpinnerWrapper.setVisibility(
                 showSpinner ? View.VISIBLE : View.GONE);
     }
@@ -320,6 +322,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mQuotedTextView.setRespondInlineListener(this);
         mBodyView = (TextView) findViewById(R.id.body);
         mFromStatic = findViewById(R.id.static_from_content);
+        mFromStaticText = (TextView) findViewById(R.id.from_account_name);
         mFromSpinnerWrapper = findViewById(R.id.spinner_from_content);
         mFromSpinner = (FromAddressSpinner) findViewById(R.id.from_picker);
     }
