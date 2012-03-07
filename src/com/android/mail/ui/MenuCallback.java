@@ -27,11 +27,6 @@ package com.android.mail.ui;
 // Called MenuHandler.ActivityCallback in the previous code.
 public interface MenuCallback extends HelpCallback {
     /**
-     * Invoked when the user requests search mode
-     */
-    void handleSearchRequested();
-
-    /**
      * Invoked when user starts drag and drop mode.
      */
     void onStartDragMode();

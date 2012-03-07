@@ -18,6 +18,7 @@ package com.android.mail.utils;
 
 import com.google.common.collect.Maps;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -683,4 +684,13 @@ public class Utils {
         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
         context.startActivity(settingsIntent);
     }
+
+    /**
+     * Retrieves the mailbox search query associated with an intent (or null if not available),
+     * doing proper sanitizing (e.g. trims whitespace).
+     */
+    public static String mailSearchQueryForIntent(Intent intent) {
+        String query = intent.getStringExtra(SearchManager.QUERY);
+        return TextUtils.isEmpty(query) ? null : query.trim();
+   }
 }

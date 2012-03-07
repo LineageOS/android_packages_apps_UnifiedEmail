@@ -22,7 +22,6 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +39,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * or respond to user action.
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
-        ModeChangeListener, MailActionBar.Callback, StarHandler, ConversationListCallbacks,
+        ModeChangeListener, ActionBarView.Callback, StarHandler, ConversationListCallbacks,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
@@ -189,7 +188,7 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
     /**
      * @see android.app.Activity#onSearchRequested()
      */
-    void onSearchRequested();
+    void onSearchRequested(String query);
 
     /**
      * Called by the Mail activity on Activity stop.

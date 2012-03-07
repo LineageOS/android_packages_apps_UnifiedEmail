@@ -19,6 +19,7 @@ package com.android.mail.providers;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.net.Uri.Builder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -146,6 +147,8 @@ public class Folder implements Parcelable {
 
     private static final String FOLDER_SEPARATOR = "^**^";
 
+    public static final Uri SEARCH_RESULTS_URI = Uri.parse("content://fakeSearchResults/");
+
     public Folder(Parcel in) {
         id = in.readString();
         uri = in.readParcelable(null);
@@ -228,6 +231,17 @@ public class Folder implements Parcelable {
         out.append(type).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(iconResId);
         return out.toString();
+    }
+
+    public static Folder forSearchResults(Account account, String query) {
+        Folder searchFolder = new Folder();
+        Builder searchBuilder = account.searchUri.buildUpon();
+        searchBuilder.appendQueryParameter(UIProvider.SearchQueryParameters.QUERY, query);
+        Uri searchUri = searchBuilder.build();
+        searchFolder.uri = SEARCH_RESULTS_URI;
+        searchFolder.conversationListUri = searchUri;
+        searchFolder.refreshUri = searchUri;
+        return searchFolder;
     }
 
     /**

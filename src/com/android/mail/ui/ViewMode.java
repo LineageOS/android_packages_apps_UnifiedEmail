@@ -56,7 +56,11 @@ public class ViewMode {
     /**
      * Mode when showing results from user search.
      */
-    public static final int SEARCH_RESULTS = 4;
+    public static final int SEARCH_RESULTS_LIST = 4;
+    /**
+     * Mode when showing results from user search.
+     */
+    public static final int SEARCH_RESULTS_CONVERSATION = 5;
     /**
      * Uncertain mode. The mode has not been initialized.
      */
@@ -118,6 +122,26 @@ public class ViewMode {
      */
     public boolean enterFolderListMode() {
         return setModeInternal(FOLDER_LIST);
+    }
+
+    /**
+     * Requests a transition of the mode to show a list of search results as the
+     * prominent view.
+     *
+     * @return Whether or not a change occurred.
+     */
+    public boolean enterSearchResultsListMode() {
+        return setModeInternal(SEARCH_RESULTS_LIST);
+    }
+
+    /**
+     * Requests a transition of the mode to show a conversation that was part of
+     * search results.
+     *
+     * @return Whether or not a change occurred.
+     */
+    public boolean enterSearchResultsConversationMode() {
+        return setModeInternal(SEARCH_RESULTS_CONVERSATION);
     }
 
     /**
