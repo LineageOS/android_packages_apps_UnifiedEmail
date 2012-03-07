@@ -48,6 +48,7 @@ import com.android.mail.R;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.ListParams;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
@@ -263,6 +264,7 @@ public final class ConversationViewFragment extends Fragment implements
     }
 
     private static class MessageLoader extends CursorLoader {
+        private boolean mDeliveredFirstResults = false;
 
         public MessageLoader(Context c, Uri uri) {
             super(c, uri, UIProvider.MESSAGE_PROJECTION, null, null, null);
@@ -272,6 +274,27 @@ public final class ConversationViewFragment extends Fragment implements
         public Cursor loadInBackground() {
             return new MessageCursor(super.loadInBackground());
 
+        }
+
+        @Override
+        public void deliverResult(Cursor result) {
+            // We want to deliver these results, and then we want to make sure that any subsequent
+            // queries do not hit the network
+            super.deliverResult(result);
+
+            if (!mDeliveredFirstResults) {
+                mDeliveredFirstResults = true;
+                Uri uri = getUri();
+
+                // Create a ListParams that tells the provider to not hit the network
+                final ListParams listParams =
+                        new ListParams(ListParams.NO_LIMIT, false /* useNetwork */);
+
+                // Build the new uri with this additional parameter
+                uri = uri.buildUpon().appendQueryParameter(
+                        UIProvider.LIST_PARAMS_QUERY_PARAMETER, listParams.serialize()).build();
+                setUri(uri);
+            }
         }
     }
 

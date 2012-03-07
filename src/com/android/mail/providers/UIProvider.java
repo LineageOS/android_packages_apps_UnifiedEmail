@@ -77,6 +77,13 @@ public class UIProvider {
     public static final String ACCOUNT_TYPE =
             "vnd.android.cursor.item/vnd.com.android.mail.account";
 
+    /**
+     * Query parameter key that can be used to control the behavior of list queries.  The value
+     * must be a serialized {@link ListParams} object.  UIProvider implementations are not
+     * required to respect this query parameter
+     */
+    public static final String LIST_PARAMS_QUERY_PARAMETER = "listParams";
+
     public static final String[] ACCOUNTS_PROJECTION = {
             BaseColumns._ID,
             AccountColumns.NAME,
