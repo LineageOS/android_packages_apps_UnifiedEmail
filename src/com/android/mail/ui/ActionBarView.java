@@ -139,7 +139,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             mSearchWidget = (SearchView) mSearch.getActionView();
             SearchManager searchManager = (SearchManager) mActivity.getActivityContext()
                     .getSystemService(Context.SEARCH_SERVICE);
-            if (searchManager != null) {
+            if (searchManager != null && mSearchWidget != null) {
                 SearchableInfo info = searchManager.getSearchableInfo(mActivity.getComponentName());
                 mSearchWidget.setSearchableInfo(info);
                 mSearchWidget.setOnQueryTextListener(this);
