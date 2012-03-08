@@ -58,7 +58,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     /**
      * An object that provides a collection of recent folders, per account.
      */
-    private RecentFolderList mRecentFolders;
+    private final RecentFolderList mRecentFolders;
     /**
      * The actual collection of sorted recent folders obtained from {@link #mRecentFolders}
      */
@@ -123,6 +123,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public AccountSpinnerAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         mContext = context;
+        mRecentFolders = new RecentFolderList(null, context);
     }
 
     /**
@@ -141,9 +142,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void setCurrentFolder(Folder folder) {
         mCurrentFolder = folder;
-        if (mRecentFolders == null) {
-            mRecentFolders = new RecentFolderList(mCurrentAccount, mContext);
-        }
         mRecentFolderList = mRecentFolders.changeCurrentFolder(folder);
     }
 
@@ -153,11 +151,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void setCurrentAccount(Account account) {
         mCurrentAccount = account;
-        if (mRecentFolders == null) {
-            mRecentFolders = new RecentFolderList(mCurrentAccount, mContext);
-        } else {
-            mRecentFolders.changeCurrentAccount(account);
-        }
+        mRecentFolders.changeCurrentAccount(account);
         mRecentFolderList = mRecentFolders.getSortedArray(mCurrentFolder);
         notifyDataSetChanged();
     }
