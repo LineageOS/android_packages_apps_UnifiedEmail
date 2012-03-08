@@ -290,7 +290,9 @@ final class TwoPaneLayout extends LinearLayout
     private int computeConversationListWidth(int totalWidth) {
         switch (currentMode) {
             case ViewMode.CONVERSATION_LIST:
+            case ViewMode.SEARCH_RESULTS_LIST:
                 return totalWidth - computeFolderListWidth();
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
                 return (int) (totalWidth * sScaledConversationListWeight);
         }
@@ -609,10 +611,12 @@ final class TwoPaneLayout extends LinearLayout
         }
 
         switch (currentMode) {
+            case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.CONVERSATION_LIST:
                 setFolderListWidth(computeFolderListWidth());
                 break;
 
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
                 final int conversationListWidth = computeConversationListWidth(w);
                 setConversationListWidth(conversationListWidth);
@@ -657,17 +661,15 @@ final class TwoPaneLayout extends LinearLayout
             mOutstandingAnimator.cancel();
         }
         switch (currentMode) {
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
                 enterConversationMode();
                 break;
+            case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.CONVERSATION_LIST:
                 enterConversationListMode();
                 break;
             case ViewMode.FOLDER_LIST:
-                break;
-            case ViewMode.SEARCH_RESULTS_LIST:
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-                // Show search results here
                 break;
         }
     }

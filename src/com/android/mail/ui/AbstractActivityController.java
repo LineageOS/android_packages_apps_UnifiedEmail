@@ -306,10 +306,8 @@ public abstract class AbstractActivityController implements ActivityController {
         mResolver = mActivity.getContentResolver();
 
         // All the individual UI components listen for ViewMode changes. This
-        // simplifies the
-        // amount of logic in the AbstractActivityController, but increases the
-        // possibility of
-        // timing-related bugs.
+        // simplifies the amount of logic in the AbstractActivityController, but increases the
+        // possibility of timing-related bugs.
         mViewMode.addListener(this);
         assert (mActionBarView != null);
         mViewMode.addListener(mActionBarView);
@@ -387,7 +385,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        mActionBarView.prepareOptionsMenu(menu);
+        mActionBarView.onPrepareOptionsMenu(menu);
         return true;
     }
 
@@ -498,11 +496,13 @@ public abstract class AbstractActivityController implements ActivityController {
         if (savedState != null) {
             restoreListContext(savedState);
             mAccount = savedState.getParcelable(SAVED_ACCOUNT);
+            mActionBarView.setAccount(mAccount);
             restartSettingsLoader();
         } else if (intent != null) {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                     mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                    mActionBarView.setAccount(mAccount);
                     mActivity.getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
                     mActivity.invalidateOptionsMenu();
                 }
@@ -522,6 +522,7 @@ public abstract class AbstractActivityController implements ActivityController {
             } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
                 mViewMode.enterSearchResultsListMode();
                 mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                mActionBarView.setAccount(mAccount);
                 Folder searchFolder = Folder.forSearchResults(mAccount, intent
                         .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
                 mConvListContext = ConversationListContext.forSearchQuery(mAccount, searchFolder,

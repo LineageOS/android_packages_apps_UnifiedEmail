@@ -76,4 +76,10 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity {
      * @return
      */
     FolderChangeListener getFolderChangeListener();
+
+    /**
+     * Returns whether the first conversation in the conversation list should be
+     * automatically selected and shown.
+     */
+    boolean shouldShowFirstConversation();
 }

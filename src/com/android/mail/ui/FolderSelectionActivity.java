@@ -273,4 +273,9 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public boolean onSearchRequested(String query) {
         return false;
     }
+
+    @Override
+    public boolean shouldShowFirstConversation() {
+        return false;
+    }
 }

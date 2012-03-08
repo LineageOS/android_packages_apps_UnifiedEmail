@@ -524,6 +524,13 @@ public final class ConversationListFragment extends ListFragment implements
         mListAdapter.swapCursor(mConversationListCursor);
         mConversationListCursor.addListener(this);
         updateSearchResultHeader(data != null ? data.getCount() : 0);
+        if (mActivity.shouldShowFirstConversation()) {
+            if (mConversationListCursor.getCount() > 0) {
+                mConversationListCursor.moveToPosition(0);
+                getListView().setItemChecked(0, true);
+                mCallbacks.onConversationSelected(new Conversation(mConversationListCursor));
+            }
+        }
     }
 
     @Override

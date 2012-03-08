@@ -235,12 +235,14 @@ public class Folder implements Parcelable {
 
     public static Folder forSearchResults(Account account, String query) {
         Folder searchFolder = new Folder();
-        Builder searchBuilder = account.searchUri.buildUpon();
-        searchBuilder.appendQueryParameter(UIProvider.SearchQueryParameters.QUERY, query);
-        Uri searchUri = searchBuilder.build();
-        searchFolder.uri = SEARCH_RESULTS_URI;
-        searchFolder.conversationListUri = searchUri;
-        searchFolder.refreshUri = searchUri;
+        if (account.searchUri != null) {
+            Builder searchBuilder = account.searchUri.buildUpon();
+            searchBuilder.appendQueryParameter(UIProvider.SearchQueryParameters.QUERY, query);
+            Uri searchUri = searchBuilder.build();
+            searchFolder.uri = SEARCH_RESULTS_URI;
+            searchFolder.conversationListUri = searchUri;
+            searchFolder.refreshUri = searchUri;
+        }
         return searchFolder;
     }
 
