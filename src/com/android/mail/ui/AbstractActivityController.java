@@ -108,6 +108,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected Settings mCachedSettings;
+    private FetchSearchFolderTask mFetchSearchFolderTask;
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     private static final int ACCOUNT_CURSOR_LOADER = 0;
@@ -231,7 +232,6 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
-
     private void restartSettingsLoader() {
         if (mAccount.settingsQueryUri != null) {
             mActivity.getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
@@ -254,6 +254,15 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         mFetchAccountFolderTask = new FetchAccountFolderTask();
         mFetchAccountFolderTask.execute();
+    }
+
+    private void fetchSearchFolder(Intent intent) {
+        if (mFetchSearchFolderTask != null) {
+            mFetchSearchFolderTask.cancel(true);
+        }
+        mFetchSearchFolderTask = new FetchSearchFolderTask(intent
+                .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
+        mFetchSearchFolderTask.execute();
     }
 
     @Override
@@ -523,13 +532,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 mViewMode.enterSearchResultsListMode();
                 mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                 mActionBarView.setAccount(mAccount);
-                Folder searchFolder = Folder.forSearchResults(mAccount, intent
-                        .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
-                mConvListContext = ConversationListContext.forSearchQuery(mAccount, searchFolder,
-                        Utils.mailSearchQueryForIntent(intent));
-                setFolder(searchFolder);
-                showConversationList(mConvListContext);
-                mActivity.invalidateOptionsMenu();
+                fetchSearchFolder(intent);
             }
         }
         // Create the accounts loader; this loads the account switch spinner.
@@ -578,11 +581,8 @@ public abstract class AbstractActivityController implements ActivityController {
             return new CursorLoader(mContext, AccountCacheProvider.getAccountsUri(),
                     UIProvider.ACCOUNTS_PROJECTION, null, null, null);
         } else if (id == FOLDER_CURSOR_LOADER) {
-            // Don't bother running a cursor loader for the search results folder.
-            if (!mFolder.uri.equals(Folder.SEARCH_RESULTS_URI)) {
-                return new CursorLoader(mActivity.getActivityContext(), mFolder.uri,
-                        UIProvider.FOLDERS_PROJECTION, null, null, null);
-            }
+            return new CursorLoader(mActivity.getActivityContext(), mFolder.uri,
+                    UIProvider.FOLDERS_PROJECTION, null, null, null);
         } else if (id == ACCOUNT_SETTINGS_LOADER) {
             if (mAccount.settingsQueryUri != null) {
                 return new CursorLoader(mActivity.getActivityContext(), mAccount.settingsQueryUri,
@@ -739,6 +739,24 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             showConversationList(mConvListContext);
             mFetchAccountFolderTask = null;
+        }
+    }
+
+    private class FetchSearchFolderTask extends AsyncTask<Void, Void, Folder> {
+        String mQuery;
+        public FetchSearchFolderTask(String query) {
+            mQuery = query;
+        }
+        public Folder doInBackground(Void... params) {
+            Folder searchFolder = Folder.forSearchResults(mAccount, mQuery,
+                    mActivity.getActivityContext());
+            return searchFolder;
+        }
+        public void onPostExecute(Folder folder) {
+            setFolder(folder);
+            mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder, mQuery);
+            showConversationList(mConvListContext);
+            mActivity.invalidateOptionsMenu();
         }
     }
 }

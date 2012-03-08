@@ -17,6 +17,7 @@
 
 package com.android.mail.providers;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.net.Uri.Builder;
@@ -147,8 +148,6 @@ public class Folder implements Parcelable {
 
     private static final String FOLDER_SEPARATOR = "^**^";
 
-    public static final Uri SEARCH_RESULTS_URI = Uri.parse("content://fakeSearchResults/");
-
     public Folder(Parcel in) {
         assert (in.dataSize() == NUMBER_MEMBERS);
         id = in.readString();
@@ -235,15 +234,22 @@ public class Folder implements Parcelable {
         return out.toString();
     }
 
-    public static Folder forSearchResults(Account account, String query) {
-        Folder searchFolder = new Folder();
+    /**
+     * Construct a folder that queries for search results. Do not call on the UI
+     * thread.
+     */
+    public static Folder forSearchResults(Account account, String query, Context context) {
+        Folder searchFolder = null;
         if (account.searchUri != null) {
             Builder searchBuilder = account.searchUri.buildUpon();
             searchBuilder.appendQueryParameter(UIProvider.SearchQueryParameters.QUERY, query);
             Uri searchUri = searchBuilder.build();
-            searchFolder.uri = SEARCH_RESULTS_URI;
-            searchFolder.conversationListUri = searchUri;
-            searchFolder.refreshUri = searchUri;
+            Cursor folderCursor = context.getContentResolver().query(searchUri,
+                    UIProvider.FOLDERS_PROJECTION, null, null, null);
+            if (folderCursor != null) {
+                folderCursor.moveToFirst();
+                searchFolder = new Folder(folderCursor);
+            }
         }
         return searchFolder;
     }

@@ -135,7 +135,10 @@ public final class RecentFolderList {
             values.put(id, now);
         }
         final ContentResolver mResolver = mContext.getContentResolver();
-        mResolver.update(mAccount.recentFolderListUri, values, null, null);
+        if (mAccount.recentFolderListUri != null
+                && !TextUtils.equals("null", mAccount.recentFolderListUri.toString())) {
+            mResolver.update(mAccount.recentFolderListUri, values, null, null);
+        }
     }
 
     /**
