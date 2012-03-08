@@ -157,7 +157,6 @@ public final class ConversationCursor implements Cursor {
                     if (sRefreshReady) {
                         // If we already have a refresh ready, just sync() it
                         LogUtils.i(TAG, "Create: refreshed cursor ready, sync");
-                        sConversationCursor.sync();
                     } else {
                         // Position the cursor before the first item (as it would be if new), reset
                         // the cache, and return as new
@@ -172,7 +171,7 @@ public final class ConversationCursor implements Cursor {
                     // Set qUri/qProjection these in case they changed
                     LogUtils.i(TAG, "Create: new query or refresh needed, query/sync");
                     sRequeryCursor = doQuery(uri, projection);
-                    sConversationCursor.sync();
+                    sRefreshReady = true;
                 }
                 return sConversationCursor;
             }
