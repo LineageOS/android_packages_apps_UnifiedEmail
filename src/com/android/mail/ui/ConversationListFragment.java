@@ -521,6 +521,9 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
         mConversationListCursor = data;
+        if (mConversationListCursor.isRefreshReady()) {
+            mConversationListCursor.sync();
+        }
         mListAdapter.swapCursor(mConversationListCursor);
         mConversationListCursor.addListener(this);
         updateSearchResultHeader(data != null ? data.getCount() : 0);
