@@ -831,7 +831,6 @@ public class UIProvider {
             "vnd.android.cursor.item/vnd.com.android.mail.attachment";
 
     public static final String[] ATTACHMENT_PROJECTION = {
-        BaseColumns._ID,
         AttachmentColumns.NAME,
         AttachmentColumns.SIZE,
         AttachmentColumns.URI,
@@ -844,13 +843,16 @@ public class UIProvider {
         AttachmentColumns.PREVIEW_INTENT
     };
     private static final String EMAIL_SEPARATOR_PATTERN = "\n";
-    public static final int ATTACHMENT_ID_COLUMN = 0;
-    public static final int ATTACHMENT_NAME_COLUMN = 1;
-    public static final int ATTACHMENT_SIZE_COLUMN = 2;
-    public static final int ATTACHMENT_URI_COLUMN = 3;
-    public static final int ATTACHMENT_ORIGIN_EXTRAS_COLUMN = 4;
-    public static final int ATTACHMENT_CONTENT_TYPE_COLUMN = 5;
-    public static final int ATTACHMENT_SYNCED_COLUMN = 6;
+    public static final int ATTACHMENT_NAME_COLUMN = 0;
+    public static final int ATTACHMENT_SIZE_COLUMN = 1;
+    public static final int ATTACHMENT_URI_COLUMN = 2;
+    public static final int ATTACHMENT_CONTENT_TYPE_COLUMN = 3;
+    public static final int ATTACHMENT_STATE_COLUMN = 4;
+    public static final int ATTACHMENT_DESTINATION_COLUMN = 5;
+    public static final int ATTACHMENT_DOWNLOADED_SIZE_COLUMN = 6;
+    public static final int ATTACHMENT_CONTENT_URI_COLUMN = 7;
+    public static final int ATTACHMENT_THUMBNAIL_URI_COLUMN = 8;
+    public static final int ATTACHMENT_PREVIEW_INTENT_COLUMN = 9;
 
     /**
      * Valid states for the {@link AttachmentColumns#STATE} column.
