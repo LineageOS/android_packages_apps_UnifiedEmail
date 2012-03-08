@@ -38,7 +38,6 @@ public class UIProviderValidator {
         return getValidProjection(projection, UIProvider.ACCOUNTS_PROJECTION);
     }
 
-
     /**
      * Validates and returns the projection that can be used for a folder query.
      */
@@ -65,6 +64,13 @@ public class UIProviderValidator {
      */
     public static String[] validateSettingsProjection(String[] projection) {
         return getValidProjection(projection, UIProvider.SETTINGS_PROJECTION);
+    }
+
+    /**
+     * Validates and returns the projection that can be used for a attachment query.
+     */
+    public static String[] validateAttachmentProjection(String[] projection) {
+        return getValidProjection(projection, UIProvider.ATTACHMENT_PROJECTION);
     }
 
 
