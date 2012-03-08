@@ -237,6 +237,8 @@ public class UIProvider {
          * results.
          * The supported query parameters are limited to those listed
          * in {@link #SearchQueryParameters}
+         * The cursor returned from this query is expected have one row, where the columnm are a
+         * subset of the columns specified in {@link #FolderColumns}
          */
         public static final String SEARCH_URI = "searchUri";
 
