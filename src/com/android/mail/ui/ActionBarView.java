@@ -23,6 +23,7 @@ import android.app.SearchableInfo;
 import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +31,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +39,9 @@ import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.Utils;
 
 /**
  * View to manage the various states of the Mail Action Bar
@@ -83,7 +85,6 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         void stopActionBarStatusCursorLoader(String account);
     }
 
-    private String[] mAccountNames;
     private ActionBar mActionBar;
     private RestrictedActivity mActivity;
     private ActivityController mCallback;
@@ -104,6 +105,17 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private TextView mSubjectView;
     private SearchView mSearchWidget;
     private MenuItem mHelpItem;
+    private MenuItem mRefreshItem;
+    private View mRefreshActionView;
+    private boolean mRefreshInProgress;
+
+    private final Handler mHandler = new Handler();
+    private final Runnable mInvalidateMenu = new Runnable() {
+        @Override
+        public void run() {
+            mActivity.invalidateOptionsMenu();
+        }
+    };
 
     public ActionBarView(Context context) {
         this(context, null);
@@ -122,9 +134,9 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         if (mMode == ViewMode.UNKNOWN) {
             return false;
         }
-        MenuItem search = menu.findItem(R.id.search);
-        if (search != null) {
-            mSearchWidget = (SearchView) search.getActionView();
+        mSearch = menu.findItem(R.id.search);
+        if (mSearch != null) {
+            mSearchWidget = (SearchView) mSearch.getActionView();
             SearchManager searchManager = (SearchManager) mActivity.getActivityContext()
                     .getSystemService(Context.SEARCH_SERVICE);
             if (searchManager != null) {
@@ -134,6 +146,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             }
         }
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
+        mRefreshItem = menu.findItem(R.id.refresh);
         return true;
     }
 
@@ -204,6 +217,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      * account that is currently being displayed.
      */
     public void setAccount(Account account) {
+        mAccount = account;
         mSpinner.setCurrentAccount(account);
         mSpinner.notifyDataSetChanged();
     }
@@ -245,16 +259,10 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         mActivity.invalidateOptionsMenu();
     }
 
-    /**
-     * If shouldSetView is true, then the view is made visible, otherwise its visiblity is View.GONE
-     * @param view the view whose visibility is modified
-     * @param shouldSetView if true, the view is made visible, GONE otherwise
-     */
-    private void setVisibility(int resourceId, boolean shouldSetView) {
-        final View view = findViewById(resourceId);
-        assert (view != null);
-        final int visibility = shouldSetView ? View.VISIBLE : View.GONE;
-        view.setVisibility(visibility);
+    private void setVisibility(Menu menu, int itemId, boolean shouldShow) {
+        final MenuItem item = menu.findItem(itemId);
+        assert (item != null);
+        item.setVisible(shouldShow);
     }
 
     public boolean prepareOptionsMenu(Menu menu) {
@@ -266,37 +274,53 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         if (mFolderView != null){
             mFolderView.setVisibility(GONE);
         }
-        if (mAccount == null) {
-            return false;
-        }
 
+        if (mRefreshInProgress) {
+            if (mRefreshItem != null) {
+                if (mRefreshActionView == null) {
+                    mRefreshItem.setActionView(R.layout.action_bar_indeterminate_progress);
+                    mRefreshActionView = mRefreshItem.getActionView();
+                } else {
+                    mRefreshItem.setActionView(mRefreshActionView);
+                }
+            }
+        } else {
+            if (mRefreshItem != null) {
+                mRefreshItem.setActionView(null);
+            }
+        }
         if (mHelpItem != null) {
             mHelpItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
         }
-        switch (mMode){
+        switch (mMode) {
             case ViewMode.UNKNOWN:
-                if (mSearch != null){
+                if (mSearch != null) {
                     mSearch.collapseActionView();
                 }
                 break;
             case ViewMode.CONVERSATION_LIST:
                 // Show compose, search, labels, and sync based on the account
                 // The only option that needs to be disabled is search
-                setVisibility(R.id.search, mAccount.supportsCapability(
-                        AccountCapabilities.FOLDER_SERVER_SEARCH));
+                setVisibility(menu, R.id.search,
+                        mAccount.supportsCapability(AccountCapabilities.FOLDER_SERVER_SEARCH));
                 break;
             case ViewMode.CONVERSATION:
-                setVisibility(R.id.y_button, mAccount.supportsCapability(
-                        AccountCapabilities.ARCHIVE));
-                setVisibility(R.id.report_spam, mAccount.supportsCapability(
-                        AccountCapabilities.REPORT_SPAM));
-                setVisibility(R.id.mute, mAccount.supportsCapability(AccountCapabilities.MUTE));
+                setVisibility(menu, R.id.y_button,
+                        mAccount.supportsCapability(AccountCapabilities.ARCHIVE));
+                setVisibility(menu, R.id.report_spam,
+                        mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM));
+                setVisibility(menu, R.id.mute,
+                        mAccount.supportsCapability(AccountCapabilities.MUTE));
                 break;
             case ViewMode.SEARCH_RESULTS_LIST:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 if (mSearch != null) {
                     mSearch.expandActionView();
+                    ConversationListContext context = mCallback.getCurrentListContext();
+                    if (context != null) {
+                        mSearchWidget.setQuery(context.searchQuery, false);
+                    }
                 }
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
@@ -338,5 +362,34 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     public boolean onQueryTextChange(String newText) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    public boolean setRefreshInProgress(boolean inProgress) {
+        if (inProgress != mRefreshInProgress) {
+            mRefreshInProgress = inProgress;
+            if (mSearch == null || !mSearch.isActionViewExpanded()) {
+                mHandler.post(mInvalidateMenu);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public void onRefreshStarted() {
+        setRefreshInProgress(true);
+    }
+
+    public void onRefreshStopped(int status) {
+        if (setRefreshInProgress(false)) {
+            switch (status) {
+                case LastSyncResult.SUCCESS:
+                    break;
+                default:
+                    Context context = mActivity.getActivityContext();
+                    Toast.makeText(context, Utils.getSyncStatusText(context, status),
+                            Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
     }
 }

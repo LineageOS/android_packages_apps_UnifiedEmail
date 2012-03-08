@@ -21,8 +21,6 @@ import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -32,18 +30,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.android.mail.R;
 import com.android.mail.ConversationListContext;
@@ -54,8 +47,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -115,16 +106,6 @@ public abstract class AbstractActivityController implements ActivityController {
     protected boolean isLoaderInitialized = false;
     private AsyncRefreshTask mAsyncRefreshTask;
 
-    private MenuItem mRefreshItem;
-    private View mRefreshActionView;
-    private boolean mRefreshInProgress;
-    private final Handler mHandler = new Handler();
-    private final Runnable mInvalidateMenu = new Runnable() {
-        @Override
-        public void run() {
-            mActivity.invalidateOptionsMenu();
-        }
-    };
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected Settings mCachedSettings;
 
@@ -287,7 +268,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private void setFolder(Folder folder) {
         // Start watching folder for sync status.
         if (folder != null && !folder.equals(mFolder)) {
-            mRefreshInProgress = false;
+            mActionBarView.setRefreshInProgress(false);
             mFolder = folder;
             mActionBarView.setFolder(mFolder);
             mActivity.getLoaderManager().restartLoader(FOLDER_CURSOR_LOADER, null, this);
@@ -348,7 +329,6 @@ public abstract class AbstractActivityController implements ActivityController {
         MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(mActionBarView.getOptionsMenuId(), menu);
         mActionBarView.onCreateOptionsMenu(menu);
-        mRefreshItem = menu.findItem(R.id.refresh);
         return true;
     }
 
@@ -399,29 +379,6 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
-    public void onRefreshStarted() {
-        if (!mRefreshInProgress) {
-            mRefreshInProgress = true;
-            mHandler.post(mInvalidateMenu);
-        }
-    }
-
-    public void onRefreshStopped(int status) {
-        if (mRefreshInProgress) {
-            mRefreshInProgress = false;
-            switch (status) {
-                case LastSyncResult.SUCCESS:
-                    break;
-                default:
-                    Context context = mActivity.getActivityContext();
-                    Toast.makeText(context, Utils.getSyncStatusText(context, status),
-                            Toast.LENGTH_LONG).show();
-                    break;
-            }
-            mHandler.post(mInvalidateMenu);
-        }
-    }
-
     @Override
     public void onPrepareDialog(int id, Dialog dialog, Bundle bundle) {
         // TODO(viki): Auto-generated method stub
@@ -430,20 +387,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (mRefreshInProgress) {
-            if (mRefreshItem != null) {
-                if (mRefreshActionView == null) {
-                    mRefreshItem.setActionView(R.layout.action_bar_indeterminate_progress);
-                    mRefreshActionView = mRefreshItem.getActionView();
-                } else {
-                    mRefreshItem.setActionView(mRefreshActionView);
-                }
-            }
-        } else {
-            if (mRefreshItem != null) {
-                mRefreshItem.setActionView(null);
-            }
-        }
         mActionBarView.prepareOptionsMenu(menu);
         return true;
     }
@@ -581,10 +524,11 @@ public abstract class AbstractActivityController implements ActivityController {
                 mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                 Folder searchFolder = Folder.forSearchResults(mAccount, intent
                         .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
-                setFolder(searchFolder);
                 mConvListContext = ConversationListContext.forSearchQuery(mAccount, searchFolder,
                         Utils.mailSearchQueryForIntent(intent));
+                setFolder(searchFolder);
                 showConversationList(mConvListContext);
+                mActivity.invalidateOptionsMenu();
             }
         }
         // Create the accounts loader; this loads the account switch spinner.
@@ -742,10 +686,10 @@ public abstract class AbstractActivityController implements ActivityController {
                 data.moveToFirst();
                 Folder folder = new Folder(data);
                 if (folder.isSyncInProgress()) {
-                    onRefreshStarted();
+                    mActionBarView.onRefreshStarted();
                 } else {
                     // Stop the spinner here.
-                    onRefreshStopped(folder.lastSyncResult);
+                    mActionBarView.onRefreshStopped(folder.lastSyncResult);
                 }
                 LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
             }
