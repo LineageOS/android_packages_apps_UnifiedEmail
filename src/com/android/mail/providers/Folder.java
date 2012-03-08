@@ -120,6 +120,9 @@ public class Folder implements Parcelable {
      */
     public long iconResId;
 
+    public String bgColor;
+    public String fgColor;
+
     /**
      * Total number of members that comprise an instance of a folder. This is
      * the number of members that need to be serialized or parceled.
@@ -166,6 +169,8 @@ public class Folder implements Parcelable {
         lastSyncResult = in.readInt();
         type = in.readInt();
         iconResId = in.readLong();
+        bgColor = in.readString();
+        fgColor = in.readString();
      }
 
     public Folder(Cursor cursor) {
@@ -189,6 +194,8 @@ public class Folder implements Parcelable {
         lastSyncResult = cursor.getInt(UIProvider.FOLDER_LAST_SYNC_RESULT_COLUMN);
         type = cursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
         iconResId = cursor.getLong(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
+        bgColor = cursor.getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
+        fgColor = cursor.getString(UIProvider.FOLDER_FG_COLOR_COLUMN);
     }
 
     @Override
@@ -209,6 +216,8 @@ public class Folder implements Parcelable {
         dest.writeInt(lastSyncResult);
         dest.writeInt(type);
         dest.writeLong(iconResId);
+        dest.writeString(bgColor);
+        dest.writeString(fgColor);
     }
 
     /**
@@ -230,7 +239,9 @@ public class Folder implements Parcelable {
         out.append(syncStatus).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(lastSyncResult).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(type).append(FOLDER_COMPONENT_SEPARATOR);
-        out.append(iconResId);
+        out.append(iconResId).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(bgColor).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(fgColor);
         return out.toString();
     }
 
@@ -281,6 +292,8 @@ public class Folder implements Parcelable {
         lastSyncResult = Integer.valueOf(folderMembers[12]);
         type = Integer.valueOf(folderMembers[13]);
         iconResId = Long.valueOf(folderMembers[14]);
+        bgColor = folderMembers[15];
+        fgColor = folderMembers[16];
     }
 
     /**

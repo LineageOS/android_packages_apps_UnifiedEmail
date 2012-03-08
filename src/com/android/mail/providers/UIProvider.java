@@ -353,7 +353,9 @@ public class UIProvider {
         FolderColumns.SYNC_STATUS,
         FolderColumns.LAST_SYNC_RESULT,
         FolderColumns.TYPE,
-        FolderColumns.ICON_RES_ID
+        FolderColumns.ICON_RES_ID,
+        FolderColumns.BG_COLOR,
+        FolderColumns.FG_COLOR
     };
 
     public static final int FOLDER_ID_COLUMN = 0;
@@ -371,6 +373,8 @@ public class UIProvider {
     public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 12;
     public static final int FOLDER_TYPE_COLUMN = 13;
     public static final int FOLDER_ICON_RES_ID_COLUMN = 14;
+    public static final int FOLDER_BG_COLOR_COLUMN = 15;
+    public static final int FOLDER_FG_COLOR_COLUMN = 16;
 
     public static final class FolderType {
         public static final int DEFAULT = 0;
@@ -463,6 +467,16 @@ public class UIProvider {
          * This int column contains the type of the folder. Zero is default.
          */
         public static final String TYPE = "type";
+        /**
+         * String representing the integer background color associated with this
+         * folder, or null.
+         */
+        public static final String BG_COLOR = "bgColor";
+        /**
+         * String representing the integer of the foreground color associated
+         * with this folder, or null.
+         */
+        public static final String FG_COLOR = "fgColor";
         public FolderColumns() {}
     }
 
