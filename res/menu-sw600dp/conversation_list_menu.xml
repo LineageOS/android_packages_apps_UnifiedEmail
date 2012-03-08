@@ -24,10 +24,12 @@
         android:icon="@drawable/ic_menu_compose_normal_holo_light"
         android:alphabeticShortcut="@string/trigger_compose_char" />
 
-    <item android:id="@+id/search"
-        android:title="@string/menu_search"
-        android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_menu_search_holo_light"/>
+    <!-- Available only for accounts with SERVER_SEARCH and in a folder
+      that supports FOLDER_SERVER_SEARCH -->
+    <item android:id="@+id/search" android:title="@string/menu_search"
+        android:showAsAction="always|collapseActionView"
+        android:icon="@drawable/ic_menu_search_holo_light"
+        android:actionLayout="@layout/mail_actionbar_searchview" />
 
     <item android:id="@+id/refresh"
         android:title="@string/refresh"

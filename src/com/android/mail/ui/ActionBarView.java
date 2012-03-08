@@ -164,7 +164,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 // 4: SEARCH_RESULTS_LIST
                 R.menu.conversation_list_search_results_actions,
                 // 5: SEARCH_RESULTS_CONVERSATION
-                R.menu.conversation_actions
+                R.menu.conversation_search_results_actions
         };
         return modeMenu[mMode];
     }
@@ -265,7 +265,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         item.setVisible(shouldShow);
     }
 
-    public boolean prepareOptionsMenu(Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         // We start out with every option enabled. Based on the current view, we disable actions
         // that are possible.
         if (mSubjectView != null){
@@ -315,21 +315,28 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 break;
             case ViewMode.SEARCH_RESULTS_LIST:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
-                if (mSearch != null) {
-                    mSearch.expandActionView();
-                    ConversationListContext context = mCallback.getCurrentListContext();
-                    if (context != null) {
-                        mSearchWidget.setQuery(context.searchQuery, false);
-                    }
-                }
+                setPopulatedSearchView();
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
+                if (Utils.useTabletUI(mActivity.getActivityContext())) {
+                    setPopulatedSearchView();
+                }
                 break;
             case ViewMode.FOLDER_LIST:
                 break;
         }
         return false;
+    }
+
+    private void setPopulatedSearchView() {
+        if (mSearch != null) {
+            mSearch.expandActionView();
+            ConversationListContext context = mCallback.getCurrentListContext();
+            if (context != null) {
+                mSearchWidget.setQuery(context.searchQuery, false);
+            }
+        }
     }
 
     public void removeBackButton() {

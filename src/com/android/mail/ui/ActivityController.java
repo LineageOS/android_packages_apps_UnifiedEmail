@@ -239,4 +239,10 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * @return
      */
     Settings getSettings();
+
+    /**
+     * Returns whether the first conversation in the conversation list should be
+     * automatically selected and shown.
+     */
+    boolean shouldShowFirstConversation();
 }

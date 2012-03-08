@@ -52,7 +52,11 @@ public final class TwoPaneController extends AbstractActivityController {
      */
     private void initializeConversationListFragment(boolean show) {
         if (show) {
-            mViewMode.enterConversationListMode();
+            if (mConvListContext != null && mConvListContext.isSearchResult()) {
+                mViewMode.enterSearchResultsListMode();
+            } else {
+                mViewMode.enterConversationListMode();
+            }
         }
         renderConversationList();
     }
@@ -149,7 +153,13 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void showConversation(Conversation conversation) {
-        mViewMode.enterConversationMode();
+        int mode = mViewMode.getMode();
+        if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+            mViewMode.enterSearchResultsConversationMode();
+            unhideConversationList();
+        } else {
+            mViewMode.enterConversationMode();
+        }
         Fragment convFragment = ConversationViewFragment.newInstance(mAccount, conversation);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -161,11 +171,12 @@ public final class TwoPaneController extends AbstractActivityController {
      * Show the conversation list if it can be shown in the current orientation.
      * @return true if the conversation list was shown
      */
-    private boolean unhideConversationList(){
+    private boolean unhideConversationList() {
         // Find if the conversation list can be shown
-        final boolean isConversationListShowable =
-                (mViewMode.getMode() == ViewMode.CONVERSATION &&
-                mLayout.isConversationListCollapsible());
+        int mode = mViewMode.getMode();
+        final boolean isConversationListShowable = (mode == ViewMode.CONVERSATION
+                && mLayout.isConversationListCollapsible()
+                || (mode == ViewMode.SEARCH_RESULTS_CONVERSATION));
         if (isConversationListShowable) {
             return mLayout.uncollapseList();
         }
@@ -191,6 +202,12 @@ public final class TwoPaneController extends AbstractActivityController {
             } else {
                 mActivity.onBackPressed();
             }
+        } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+            if (!mLayout.isConversationListVisible()) {
+                unhideConversationList();
+            } else {
+                mActivity.finish();
+            }
         } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         }
@@ -211,16 +228,24 @@ public final class TwoPaneController extends AbstractActivityController {
     protected void popView(boolean preventClose) {
         // If the user is in search query entry mode, or the user is viewing search results, exit
         // the mode.
-        if (mConvListContext != null && mConvListContext.isSearchResult()) {
+        int mode = mViewMode.getMode();
+        if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         } else if (mViewMode.getMode() == ViewMode.CONVERSATION) {
             // Go to conversation list.
             mViewMode.enterConversationListMode();
+        } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+            mViewMode.enterSearchResultsListMode();
         } else {
             // There is nothing else to pop off the stack.
             if (!preventClose) {
                 mActivity.finish();
             }
         }
+    }
+
+    @Override
+    public boolean shouldShowFirstConversation() {
+        return mConvListContext != null && mConvListContext.isSearchResult();
     }
 }

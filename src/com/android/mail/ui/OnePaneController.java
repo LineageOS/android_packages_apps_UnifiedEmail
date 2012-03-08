@@ -266,4 +266,9 @@ public final class OnePaneController extends AbstractActivityController {
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
         resetActionBarIcon();
     }
+
+    @Override
+    public boolean shouldShowFirstConversation() {
+        return false;
+    }
 }
