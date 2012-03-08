@@ -72,10 +72,8 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"同步處理並通知"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"標籤設定"</string>
     <string name="menu_done" msgid="5791134842152855128">"完成"</string>
-    <!-- no translation found for menu_account_settings (8230989362863431918) -->
-    <skip />
-    <!-- no translation found for menu_settings (6007027046949837282) -->
-    <skip />
+    <string name="menu_account_settings" msgid="8230989362863431918">"帳戶設定"</string>
+    <string name="menu_settings" msgid="6007027046949837282">"設定"</string>
     <string name="menu_search" msgid="5297197523031943248">"搜尋"</string>
     <string name="more" msgid="1238344647379009858">"更多"</string>
     <string name="message_count" msgid="1032500151281269302">"第 <xliff:g id="COUNT">%1$s</xliff:g> 封，共 <xliff:g id="TOTAL">%2$s</xliff:g> 封"</string>
@@ -102,7 +100,6 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"試算表"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> 檔案"</string>
-    <string name="search_hint" msgid="3625734263059221350">"搜尋郵件"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"分享方式"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"在瀏覽器中開啟"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"複製"</string>
@@ -134,11 +131,11 @@
     <string name="show_all_folders" msgid="3281420732307737553">"顯示所有資料夾"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"刪除這個會話群組？"</item>
-    <item quantity="other" msgid="930334208937121234">"刪除 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組？"</item>
+    <item quantity="other" msgid="930334208937121234">"刪除這 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組？"</item>
   </plurals>
   <plurals name="confirm_archive_conversation">
     <item quantity="one" msgid="2990537295519552069">"封存這個會話群組？"</item>
-    <item quantity="other" msgid="4713469868399246772">"封存 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組？"</item>
+    <item quantity="other" msgid="4713469868399246772">"封存這 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組？"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"要捨棄這封郵件嗎？"</string>
     <string name="no_conversations" msgid="35400008890372241">"無會話群組。"</string>
@@ -265,4 +262,7 @@
     <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"如要在小工具中查看會話群組，請同步處理這個資料夾。"</string>
     <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"同步處理最近 <xliff:g id="NUMSYNCDAYS">%d</xliff:g> 天"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"變更資料夾"</string>
+    <string name="search_hint" msgid="3625734263059221350">"搜尋郵件"</string>
+    <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <skip />
 </resources>

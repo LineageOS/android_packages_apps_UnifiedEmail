@@ -72,10 +72,8 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"Синхронизиране и известяване"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"Настройки за етикети"</string>
     <string name="menu_done" msgid="5791134842152855128">"Готово"</string>
-    <!-- no translation found for menu_account_settings (8230989362863431918) -->
-    <skip />
-    <!-- no translation found for menu_settings (6007027046949837282) -->
-    <skip />
+    <string name="menu_account_settings" msgid="8230989362863431918">"Настройки на профила"</string>
+    <string name="menu_settings" msgid="6007027046949837282">"Настройки"</string>
     <string name="menu_search" msgid="5297197523031943248">"Търсене"</string>
     <string name="more" msgid="1238344647379009858">"Още"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> от <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
@@ -102,7 +100,6 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Електронна таблица"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> файл"</string>
-    <string name="search_hint" msgid="3625734263059221350">"Търсене в пощата"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Споделяне чрез"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Отваряне в браузъра"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Копиране"</string>
@@ -265,4 +262,7 @@
     <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"За да видите кореспонденциите в приспособлението, синхронизирайте тази папка."</string>
     <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Да се синхр. последните <xliff:g id="NUMSYNCDAYS">%d</xliff:g> дни"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Промяна на папките"</string>
+    <string name="search_hint" msgid="3625734263059221350">"Търсене в пощата"</string>
+    <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <skip />
 </resources>

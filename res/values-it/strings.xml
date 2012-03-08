@@ -100,7 +100,6 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Foglio di calcolo"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"File <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
-    <string name="search_hint" msgid="3625734263059221350">"Cerca nella posta"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Condividi tramite"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Apri nel browser"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Copia"</string>
@@ -263,4 +262,7 @@
     <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Per visualizzare le conversazioni nel widget, sincronizza questa cartella."</string>
     <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sincronizza ultimi <xliff:g id="NUMSYNCDAYS">%d</xliff:g> giorni"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Cambia cartelle"</string>
+    <string name="search_hint" msgid="3625734263059221350">"Cerca nella posta"</string>
+    <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <skip />
 </resources>
