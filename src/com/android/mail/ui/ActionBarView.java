@@ -361,6 +361,10 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        if (mSearch != null) {
+            mSearch.collapseActionView();
+            mSearchWidget.setQuery("", false);
+        }
         mActivity.onSearchRequested(query);
         return true;
     }
