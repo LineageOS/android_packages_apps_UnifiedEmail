@@ -145,6 +145,7 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void showConversation(Conversation conversation) {
+        super.showConversation(conversation);
         if (mConvListContext != null && mConvListContext.isSearchResult()) {
             mViewMode.enterSearchResultsConversationMode();
         } else {

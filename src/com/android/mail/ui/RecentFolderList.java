@@ -47,7 +47,7 @@ public final class RecentFolderList {
     /** The application context */
     private final Context mContext;
     /** The current account */
-    private Account mAccount;
+    private Account mAccount = null;
     /**
      * Compare based on alphanumeric name of the folder, ignoring case.
      */
@@ -69,13 +69,16 @@ public final class RecentFolderList {
      * retrieve the RecentFolderList from persistent storage (if any).
      * @param account
      */
-    public RecentFolderList(Account account, Context context) {
+    public RecentFolderList(Context context) {
         mContext = context;
-        mAccount = account;
         mFolderCache = new LruCache<String, Folder>(NUM_FOLDERS);
-        loadFromUiProvider();
     }
 
+    /**
+     * Change the current account. This causes the recent label list to be written out to the
+     * provider, and a new list to be read for the new account.
+     * @param account
+     */
     public void changeCurrentAccount(Account account) {
         saveToUiProvider();
         mAccount = account;
@@ -110,21 +113,21 @@ public final class RecentFolderList {
     }
 
     /**
-     * Changes the current folder and returns the updated list of recent folders, <b>not</b>
-     * including the current folder.
+     * Marks the given folder as 'accessed' by the user interface, and its entry is updated in the
+     * recent folder list.
      * @param folder the folder we have changed to.
      */
-    public Folder[] changeCurrentFolder(Folder folder) {
+    public void touchFolder(Folder folder) {
         mFolderCache.putElement(folder.id, folder);
         // Update the UiProvider with the current recent folder list.
+        // TODO(viki): Perhaps not do this on every touch. This is excessive.
         saveToUiProvider();
-        return getSortedArray(folder);
     }
 
     /**
      * Requests the UIProvider to save this RecentFolderList to persistent storage.
      */
-    public void saveToUiProvider() {
+    private void saveToUiProvider() {
         if (mAccount == null || mFolderCache.isEmpty() || mAccount.recentFolderListUri == null)
             return;
         // Write the current recent folder list into the account.
@@ -142,12 +145,12 @@ public final class RecentFolderList {
     }
 
     /**
-     * Generate a sorted array of recent folders, <b>not</b> including the current folder.
-     * @param currentFolder the current folder being displayed.
+     * Generate a sorted array of recent folders, excluding the specified folders.
+     * @param exclude the folders to be excluded.
      */
-    public Folder[] getSortedArray(Folder currentFolder) {
+    public Folder[] getSortedArray(Folder exclude) {
         final int spaceForCurrentFolder =
-                (currentFolder != null && mFolderCache.getElement(currentFolder.id) != null)
+                (exclude != null && mFolderCache.getElement(exclude.id) != null)
                         ? 1 : 0;
         final int numRecents = mFolderCache.size() - spaceForCurrentFolder;
         final Folder[] folders = new Folder[numRecents];
@@ -155,7 +158,7 @@ public final class RecentFolderList {
         final List<Folder> recent = new ArrayList<Folder>(mFolderCache.values());
         Collections.sort(recent, ALPHABET_IGNORECASE);
         for (Folder f : recent) {
-            if (currentFolder == null || !TextUtils.equals(f.id, currentFolder.id)) {
+            if (exclude == null || !TextUtils.equals(f.id, exclude.id)) {
                 folders[i++] = f;
             }
         }

@@ -116,9 +116,14 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         return TYPE_FOLDER;
     }
 
-    public AccountSpinnerAdapter(Context context) {
+    /**
+     * Create a spinner adapter with the context and the list of recent folders.
+     * @param context
+     * @param recentFolders
+     */
+    public AccountSpinnerAdapter(Context context, RecentFolderList recentFolders) {
         mInflater = LayoutInflater.from(context);
-        mRecentFolders = new RecentFolderList(null, context);
+        mRecentFolders = recentFolders;
     }
 
     /**
@@ -137,7 +142,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void setCurrentFolder(Folder folder) {
         mCurrentFolder = folder;
-        mRecentFolderList = mRecentFolders.changeCurrentFolder(folder);
+        mRecentFolderList = mRecentFolders.getSortedArray(folder);
     }
 
     /**
@@ -146,7 +151,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void setCurrentAccount(Account account) {
         mCurrentAccount = account;
-        mRecentFolders.changeCurrentAccount(account);
         mRecentFolderList = mRecentFolders.getSortedArray(mCurrentFolder);
         notifyDataSetChanged();
     }

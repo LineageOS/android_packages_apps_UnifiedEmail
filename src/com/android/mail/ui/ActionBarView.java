@@ -141,12 +141,12 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     }
 
     public void initialize(RestrictedActivity activity, ActivityController callback,
-            ViewMode viewMode, ActionBar actionBar) {
+            ViewMode viewMode, ActionBar actionBar, RecentFolderList recentFolders) {
         mActionBar = actionBar;
         mController = callback;
         mActivity = activity;
 
-        mSpinner = new AccountSpinnerAdapter(getContext());
+        mSpinner = new AccountSpinnerAdapter(getContext(), recentFolders);
         // Set the mode to Navigation mode and listen on navigation changes.
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         mActionBar.setListNavigationCallbacks(mSpinner, this);

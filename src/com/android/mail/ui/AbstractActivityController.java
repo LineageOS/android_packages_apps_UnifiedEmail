@@ -89,6 +89,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected ActionBarView mActionBarView;
     protected final RestrictedActivity mActivity;
     protected final Context mContext;
+    protected final RecentFolderList mRecentFolderList;
     protected ConversationListContext mConvListContext;
     private FetchAccountFolderTask mFetchAccountFolderTask;
     protected Conversation mCurrentConversation;
@@ -109,6 +110,8 @@ public abstract class AbstractActivityController implements ActivityController {
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected Settings mCachedSettings;
     private FetchSearchFolderTask mFetchSearchFolderTask;
+    /** Whether we have recorded this folder as a recent folder yet? */
+    private boolean mFolderTouched = false;
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     private static final int ACCOUNT_CURSOR_LOADER = 0;
@@ -120,6 +123,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
         IS_TABLET_DEVICE = Utils.useTabletUI(mContext);
+        mRecentFolderList = new RecentFolderList(mContext);
     }
 
     @Override
@@ -196,13 +200,12 @@ public abstract class AbstractActivityController implements ActivityController {
         ActionBar actionBar = mActivity.getActionBar();
         mActionBarView = (ActionBarView) LayoutInflater.from(mContext).inflate(
                 R.layout.actionbar_view, null);
-
         if (actionBar != null && mActionBarView != null) {
             // Why have a different variable for the same thing? We should apply
             // the same actions
             // on mActionBarView instead.
-            mActionBarView.initialize(mActivity, this, mViewMode, actionBar);
-            actionBar.setCustomView((LinearLayout) mActionBarView, new ActionBar.LayoutParams(
+            mActionBarView.initialize(mActivity, this, mViewMode, actionBar, mRecentFolderList);
+            actionBar.setCustomView(mActionBarView, new ActionBar.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
                     ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_TITLE);
@@ -222,6 +225,7 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onAccountChanged(Account account) {
         if (!account.equals(mAccount)) {
             mAccount = account;
+            mRecentFolderList.changeCurrentAccount(account);
             onSettingsChanged(null);
             restartSettingsLoader();
             mActionBarView.setAccount(mAccount);
@@ -274,11 +278,13 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
+    /** Set the current folder */
     private void setFolder(Folder folder) {
         // Start watching folder for sync status.
         if (folder != null && !folder.equals(mFolder)) {
             mActionBarView.setRefreshInProgress(false);
             mFolder = folder;
+            mFolderTouched = false;
             mActionBarView.setFolder(mFolder);
             mActivity.getLoaderManager().restartLoader(FOLDER_CURSOR_LOADER, null, this);
         } else if (folder == null) {
@@ -538,6 +544,20 @@ public abstract class AbstractActivityController implements ActivityController {
     public void setSubject(String subject) {
         // Do something useful with the subject. This requires changing the
         // conversation view's subject text.
+    }
+
+    /**
+     * Children can override this method, but they must call super.showConversation().
+     * {@inheritDoc}
+     */
+    @Override
+    public void showConversation(Conversation conversation) {
+        // Add the folder that we were viewing to the recent folders list.
+        // We don't want to do this on every conversation access, the first is enough.
+        if (!mFolderTouched) {
+            mRecentFolderList.touchFolder(mFolder);
+            mFolderTouched = true;
+        }
     }
 
     @Override

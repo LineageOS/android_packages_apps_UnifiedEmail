@@ -153,6 +153,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void showConversation(Conversation conversation) {
+        super.showConversation(conversation);
         int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             mViewMode.enterSearchResultsConversationMode();
