@@ -37,6 +37,7 @@ import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.widget.Adapter;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
@@ -207,8 +208,9 @@ public final class ConversationViewFragment extends Fragment implements
         MessageCursor messageCursor = (MessageCursor) data;
         mWebView.loadDataWithBaseURL(mBaseUri, renderMessageBodies(messageCursor), "text/html",
                 "utf-8", null);
-        mConversationContainer.setOverlayAdapter(
-                new MessageListAdapter(mActivity.getActivityContext(), messageCursor, mAccount));
+        final Adapter messageListAdapter = new MessageListAdapter(
+                mActivity.getActivityContext(), messageCursor, mAccount, getLoaderManager());
+        mConversationContainer.setOverlayAdapter(messageListAdapter);
     }
 
     @Override
@@ -266,18 +268,21 @@ public final class ConversationViewFragment extends Fragment implements
 
         private final FormattedDateBuilder mDateBuilder;
         private final Account mAccount;
+        private final LoaderManager mLoaderManager;
 
-        public MessageListAdapter(Context context, Cursor cursor, Account account) {
-            super(context, R.layout.conversation_message_header, cursor, 0);
+        public MessageListAdapter(Context context, Cursor messageCursor, Account account,
+                LoaderManager loaderManager) {
+            super(context, R.layout.conversation_message_header, messageCursor, 0);
             mDateBuilder = new FormattedDateBuilder(context);
             mAccount = account;
+            mLoaderManager = loaderManager;
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             Message m = ((MessageCursor) cursor).get();
             MessageHeaderView header = (MessageHeaderView) view;
-            header.initialize(mDateBuilder, mAccount, true, false, false);
+            header.initialize(mDateBuilder, mAccount, mLoaderManager, true, false, false);
             header.bind(m);
         }
     }

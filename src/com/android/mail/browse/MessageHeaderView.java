@@ -18,9 +18,13 @@ package com.android.mail.browse;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Loader;
+import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -44,6 +48,7 @@ import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.SenderInfoLoader.ContactInfo;
+import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
 import com.android.mail.providers.Account;
@@ -56,11 +61,9 @@ import com.android.mail.utils.Utils;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
 
-// TODO: this will probably becomes the message header view?
 public class MessageHeaderView extends LinearLayout implements OnClickListener,
-        OnMenuItemClickListener, HeaderBlock {
+        OnMenuItemClickListener, HeaderBlock, LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * Cap very long recipient lists during summary construction for efficiency.
@@ -86,7 +89,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private MessageHeaderViewCallbacks mCallbacks;
     private long mLocalMessageId = UIProvider.INVALID_CONVERSATION_ID;
     private long mServerMessageId;
-    private long mConversationId;
     private boolean mSizeChanged;
 
     private TextView mSenderNameView;
@@ -97,6 +99,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private ViewGroup mCollapsedDetailsView;
     private ViewGroup mExpandedDetailsView;
     private ViewGroup mImagePromptView;
+    private ViewGroup mAttachmentsView;
     private View mBottomBorderView;
     private ImageView mPresenceView;
 
@@ -140,9 +143,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private int mDrawTranslateY;
 
     /**
-     * List of attachments for this message. Will not be null.
+     * List of attachments for this message, loaded asynchronously.
      */
-    private List<Attachment> mAttachments;
+    private AttachmentCursor mAttachments;
 
     private CharSequence mTimestampShort;
 
@@ -168,6 +171,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private boolean mCollapsedDetailsValid;
     private boolean mExpandedDetailsValid;
 
+    private LoaderManager mLoaderManager;
+
+    private final LayoutInflater mInflater;
+
     public MessageHeaderView(Context context) {
         this(context, null);
     }
@@ -178,6 +185,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     public MessageHeaderView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -315,10 +324,12 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         updateChildVisibility();
     }
 
-    public void initialize(FormattedDateBuilder dateBuilder, Account account, boolean expanded,
-            boolean showImagePrompt, boolean defaultReplyAll) {
+    public void initialize(FormattedDateBuilder dateBuilder, Account account,
+            LoaderManager loaderManager, boolean expanded, boolean showImagePrompt,
+            boolean defaultReplyAll) {
         mDateBuilder = dateBuilder;
         mAccount = account;
+        mLoaderManager = loaderManager;
         setExpanded(expanded);
         mShowImagePrompt = showImagePrompt;
         mDefaultReplyAll = defaultReplyAll;
@@ -334,7 +345,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mMessage = message;
         mLocalMessageId = mMessage.id;
         mServerMessageId = mMessage.serverId;
-        mConversationId = mMessage.conversationId;
         if (mCallbacks != null) {
             mCallbacks.onHeaderCreated(mLocalMessageId);
         }
@@ -350,6 +360,12 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mCc = Utils.splitCommaSeparatedString(mMessage.cc);
         mBcc = getBccAddresses(mMessage);
         mReplyTo = Utils.splitCommaSeparatedString(mMessage.replyTo);
+
+        // kick off load of Attachment objects in background thread
+        if (mMessage.hasAttachments) {
+            mLoaderManager.initLoader(mMessage.hashCode(), Bundle.EMPTY, this);
+            // TODO: clean up loader when the view is detached
+        }
 
         /**
          * Turns draft mode on or off. Draft mode hides message operations other
@@ -407,6 +423,33 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         int h = forceMeasuredHeight();
         t.pause(PREMEASURE_TAG);
         return h;
+    }
+
+    // Attachment list loader methods
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new AttachmentLoader(getContext(), mMessage.attachmentListUri);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAttachments = (AttachmentCursor) data;
+
+        if (mAttachmentsView != null) {
+            mAttachmentsView.removeAllViews();
+        }
+
+        if (mAttachments == null || mAttachments.isClosed()) {
+            return;
+        }
+
+        renderAttachments(mAttachmentsView);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // Do nothing.
     }
 
     private boolean isInOutbox() {
@@ -518,7 +561,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             setChildVisibility(GONE, R.id.edit_draft, R.id.reply, R.id.reply_all, R.id.forward);
             setChildVisibility(GONE, R.id.overflow);
 
-            setChildVisibility(mAttachments == null || mAttachments.isEmpty() ? GONE : VISIBLE,
+            setChildVisibility(mMessage.hasAttachments ? VISIBLE : GONE,
                     R.id.attachment);
 
             setChildVisibility(mCollapsedStarVis, R.id.star);
@@ -698,7 +741,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * Get BCC addresses attached to a recipient ONLY if this is a msg the
      * current user sent.
      *
-     * @param messageCursor Cursor to query for folder objects with
      */
     private static String[] getBccAddresses(Message m) {
         return Utils.splitCommaSeparatedString(m.bcc);
@@ -874,7 +916,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             if (mShowImagePrompt) {
                 showImagePrompt();
             }
-            if (mAttachments != null && !mAttachments.isEmpty()) {
+            if (mMessage.hasAttachments) {
                 showAttachments();
             }
         }
@@ -884,11 +926,34 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     private void showAttachments() {
-        // Do nothing. Attachments not supported yet.
+        if (mAttachmentsView == null) {
+            ViewGroup container = (ViewGroup) mInflater.inflate(
+                    R.layout.conversation_message_attachments, this, false);
+
+            renderAttachments(container);
+            addView(container);
+            mAttachmentsView = container;
+        }
+        mAttachmentsView.setVisibility(VISIBLE);
+    }
+
+    private void renderAttachments(ViewGroup container) {
+        if (container != null && mAttachments != null && !mAttachments.isClosed()) {
+            int i = -1;
+            while (mAttachments.moveToPosition(++i)) {
+                final Attachment attachment = mAttachments.get();
+                MessageHeaderAttachment attachView =
+                        MessageHeaderAttachment.inflate(mInflater, container, mLoaderManager);
+                attachView.render(attachment);
+                container.addView(attachView);
+            }
+        }
     }
 
     private void hideAttachments() {
-        // Do nothing. Attachments not supported yet.
+        if (mAttachmentsView != null) {
+            mAttachmentsView.setVisibility(GONE);
+        }
     }
 
     public void hideMessageDetails() {

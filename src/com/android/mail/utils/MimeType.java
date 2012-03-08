@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Utilities for working with different content types within Gmail.
+ * Utilities for working with different content types within Mail.
  */
 public class MimeType {
     public static final String ANDROID_ARCHIVE = "application/vnd.android.package-archive";
@@ -71,7 +71,7 @@ public class MimeType {
     /**
      * Returns whether or not an attachment of the specified type is viewable.
      */
-    public static boolean isViewable(Context context, Uri contentUri, String contentType) {
+    public static boolean isViewable(Context context, String contentType) {
         // The provider returns a contentType of "null" instead of null, when the
         // content type is not known.  Changing the provider to return null,
         // breaks other areas that will need to be fixed in a later CL.
@@ -87,7 +87,7 @@ public class MimeType {
 
         Intent mimetypeIntent = new Intent(Intent.ACTION_VIEW);
 
-        mimetypeIntent.setDataAndType(contentUri, contentType);
+        Utils.setIntentTypeAndNormalize(mimetypeIntent, contentType);
         PackageManager manager;
         // We need to catch the exception to make CanvasConversationHeaderView
         // test pass.  Bug: http://b/issue?id=3470653.

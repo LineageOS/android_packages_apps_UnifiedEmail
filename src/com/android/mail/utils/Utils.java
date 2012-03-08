@@ -46,7 +46,6 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider;
 
 import java.util.Locale;
 import java.util.Map;
@@ -693,4 +692,98 @@ public class Utils {
         String query = intent.getStringExtra(SearchManager.QUERY);
         return TextUtils.isEmpty(query) ? null : query.trim();
    }
+
+    /**
+     * Split out a filename's extension and return it.
+     * @param filename a file name
+     * @return the file extension (max of 5 chars including period, like ".docx"), or null
+     */
+   public static String getFileExtension(String filename) {
+        String extension = null;
+        int index = filename.lastIndexOf('.');
+        // Limit the suffix to dot + four characters
+        if (index >= 0 && filename.length() - index <= FILE_EXTENSION_MAX_CHARS + 1) {
+            extension = filename.substring(index);
+        }
+        return extension;
+    }
+
+   /**
+    * (copied from {@link Intent#normalizeMimeType(String)} for pre-J)
+    *
+    * Normalize a MIME data type.
+    *
+    * <p>A normalized MIME type has white-space trimmed,
+    * content-type parameters removed, and is lower-case.
+    * This aligns the type with Android best practices for
+    * intent filtering.
+    *
+    * <p>For example, "text/plain; charset=utf-8" becomes "text/plain".
+    * "text/x-vCard" becomes "text/x-vcard".
+    *
+    * <p>All MIME types received from outside Android (such as user input,
+    * or external sources like Bluetooth, NFC, or the Internet) should
+    * be normalized before they are used to create an Intent.
+    *
+    * @param type MIME data type to normalize
+    * @return normalized MIME data type, or null if the input was null
+    * @see {@link #setType}
+    * @see {@link #setTypeAndNormalize}
+    */
+   public static String normalizeMimeType(String type) {
+       if (type == null) {
+           return null;
+       }
+
+       type = type.trim().toLowerCase(Locale.US);
+
+       final int semicolonIndex = type.indexOf(';');
+       if (semicolonIndex != -1) {
+           type = type.substring(0, semicolonIndex);
+       }
+       return type;
+   }
+
+   /**
+    * (copied from {@link Uri#normalize()} for pre-J)
+    *
+    * Return a normalized representation of this Uri.
+    *
+    * <p>A normalized Uri has a lowercase scheme component.
+    * This aligns the Uri with Android best practices for
+    * intent filtering.
+    *
+    * <p>For example, "HTTP://www.android.com" becomes
+    * "http://www.android.com"
+    *
+    * <p>All URIs received from outside Android (such as user input,
+    * or external sources like Bluetooth, NFC, or the Internet) should
+    * be normalized before they are used to create an Intent.
+    *
+    * <p class="note">This method does <em>not</em> validate bad URI's,
+    * or 'fix' poorly formatted URI's - so do not use it for input validation.
+    * A Uri will always be returned, even if the Uri is badly formatted to
+    * begin with and a scheme component cannot be found.
+    *
+    * @return normalized Uri (never null)
+    * @see {@link android.content.Intent#setData}
+    * @see {@link #setNormalizedData}
+    */
+   public static Uri normalizeUri(Uri uri) {
+       String scheme = uri.getScheme();
+       if (scheme == null) return uri;  // give up
+       String lowerScheme = scheme.toLowerCase(Locale.US);
+       if (scheme.equals(lowerScheme)) return uri;  // no change
+
+       return uri.buildUpon().scheme(lowerScheme).build();
+   }
+
+   public static Intent setIntentTypeAndNormalize(Intent intent, String type) {
+       return intent.setType(normalizeMimeType(type));
+   }
+
+   public static Intent setIntentDataAndTypeAndNormalize(Intent intent, Uri data, String type) {
+       return intent.setDataAndType(normalizeUri(data), normalizeMimeType(type));
+   }
+
 }

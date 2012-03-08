@@ -198,6 +198,34 @@
     <string name="attachment_application_pdf">PDF</string>
     <!-- Attachment description for unknown files [CHAR LIMIT=30]-->
     <string name="attachment_unknown"><xliff:g id="attachmentExtension">%s</xliff:g> File</string>
+    <!-- Read email screen, button name. Preview an attachment by Gview. [CHAR LIMIT=10] -->
+    <string name="preview_attachment">Preview</string>
+    <!-- Read email screen, button name. View an attachment by an application on device. [CHAR LIMIT=10] -->
+    <string name="view_attachment">View</string>
+    <!-- Read email screen, button name. Save an attachment to sd card. [CHAR LIMIT=10] -->
+    <string name="save_attachment">Save</string>
+    <!-- Read email screen, button name. Open a dialog to explain that no application found to view the attachment. [CHAR LIMIT=10] -->
+    <string name="info_attachment">Info</string>
+    <!-- Read email screen, button name. Play a video or audio attachment. [CHAR LIMIT=10] -->
+    <string name="play_attachment">Play</string>
+    <!-- Read email screen, button name. Install an apk attachment. [CHAR LIMIT=10] -->
+    <string name="install_attachment">Install</string>
+    <!-- Read email screen, button name. Cancel a downloading attachment. [CHAR LIMIT=10] -->
+    <string name="cancel_attachment">Cancel</string>
+    <!-- Dialog box title [CHAR LIMIT=30] -->
+    <string name="more_info_attachment">Info</string>
+    <!-- Dialog box message, displayed when we block downloading an attachment due to security concerns. [CHAR LIMIT=200]-->
+    <string name="attachment_type_blocked">Can\'t save or open this type of attachment because it could contain malicious software.</string>
+    <!-- Dialog box message, displayed when we could not view an attachment. [CHAR LIMIT=200]-->
+    <string name="no_application_found">No app can open this attachment for viewing.</string>
+    <!-- Dialog box title. [CHAR LIMIT=30] -->
+    <string name="fetching_attachment">Fetching attachment</string>
+    <!-- Dialog box message. [CHAR LIMIT=80] -->
+    <string name="please_wait">Please wait\u2026</string>
+    <!-- Displayed in the conversation view. Status of a saved attachment. [CHAR LIMIT=20]-->
+    <string name="saved">Saved,&#160;</string>
+    <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=20]-->
+    <string name="download_failed">Couldn\'t download.</string>
 
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
