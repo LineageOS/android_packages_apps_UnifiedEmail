@@ -100,7 +100,6 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Skaičiuoklė"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> failas"</string>
-    <string name="search_hint" msgid="3625734263059221350">"Ieškoti el. pašte"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Bendrinti per"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Atidaryti naršyklėje"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopijuoti"</string>
@@ -263,4 +262,7 @@
     <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Jei norite peržiūrėti pokalbius valdiklyje, sinchronizuokite šį aplanką."</string>
     <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sinchronizuoti paskutin. <xliff:g id="NUMSYNCDAYS">%d</xliff:g> d."</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Keisti aplankus"</string>
+    <string name="search_hint" msgid="3625734263059221350">"Ieškoti el. pašte"</string>
+    <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <skip />
 </resources>

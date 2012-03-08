@@ -72,10 +72,8 @@
     <string name="manage_labels_subtitle" msgid="8802709983773098505">"同步与通知"</string>
     <string name="menu_label_options" msgid="1811414840489117457">"标签设置"</string>
     <string name="menu_done" msgid="5791134842152855128">"完成"</string>
-    <!-- no translation found for menu_account_settings (8230989362863431918) -->
-    <skip />
-    <!-- no translation found for menu_settings (6007027046949837282) -->
-    <skip />
+    <string name="menu_account_settings" msgid="8230989362863431918">"帐户设置"</string>
+    <string name="menu_settings" msgid="6007027046949837282">"设置"</string>
     <string name="menu_search" msgid="5297197523031943248">"搜索"</string>
     <string name="more" msgid="1238344647379009858">"更多"</string>
     <string name="message_count" msgid="1032500151281269302">"第 <xliff:g id="COUNT">%1$s</xliff:g> 封，共 <xliff:g id="TOTAL">%2$s</xliff:g> 封"</string>
@@ -102,7 +100,6 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"电子表格"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> 文件"</string>
-    <string name="search_hint" msgid="3625734263059221350">"搜索邮件"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"分享方式："</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"在浏览器中打开"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"复制"</string>
@@ -265,4 +262,7 @@
     <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"要在窗口小部件中查看会话，请同步此文件夹。"</string>
     <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"同步过去 <xliff:g id="NUMSYNCDAYS">%d</xliff:g> 天的会话"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"更改文件夹"</string>
+    <string name="search_hint" msgid="3625734263059221350">"搜索邮件"</string>
+    <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <skip />
 </resources>
