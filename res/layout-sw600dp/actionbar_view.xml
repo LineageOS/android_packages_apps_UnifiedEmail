@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 
-<com.android.mail.ui.MailActionBar
+<com.android.mail.ui.ActionBarView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:email="http://schemas.android.com/apk/res/com.android.mail"
     android:orientation="horizontal"
@@ -30,4 +30,4 @@
 
     <include layout="@layout/actionbar_subject" />
 
-</com.android.mail.ui.MailActionBar>
+</com.android.mail.ui.ActionBarView>

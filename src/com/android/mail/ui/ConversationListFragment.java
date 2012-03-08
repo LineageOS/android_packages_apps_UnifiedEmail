@@ -172,6 +172,20 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
+     * Show the header if the current conversation list is showing search results.
+     */
+    private void updateSearchResultHeader(int count) {
+        // Only show the header if the context is for a search result
+        final Resources res = getResources();
+        final boolean showHeader = isSearchResult();
+        if (showHeader) {
+            mSearchStatusTextView.setText(res.getString(R.string.search_results_header));
+            mSearchResultCountTextView
+                    .setText(res.getString(R.string.search_results_loaded, count));
+        }
+    }
+
+    /**
      * Initializes all internal state for a rendering.
      */
     private void initializeUiForFirstDisplay() {
@@ -499,8 +513,9 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
+        configureSearchResultHeader();
         return new ConversationCursorLoader((Activity) mActivity,
-                UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
+                    UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
     }
 
     @Override
@@ -508,7 +523,7 @@ public final class ConversationListFragment extends ListFragment implements
         mConversationListCursor = data;
         mListAdapter.swapCursor(mConversationListCursor);
         mConversationListCursor.addListener(this);
-        configureSearchResultHeader();
+        updateSearchResultHeader(data != null ? data.getCount() : 0);
     }
 
     @Override

@@ -122,7 +122,7 @@ public interface RestrictedActivity {
     /**
      * @see android.app.Activity#onSearchRequested()
      */
-    public boolean onSearchRequested();
+    public boolean onSearchRequested(String query);
 
     /**
      * @see android.app.Activity#setContentView(int)

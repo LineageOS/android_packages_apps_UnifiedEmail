@@ -201,9 +201,6 @@
     <!-- Attachment description for unknown files [CHAR LIMIT=30]-->
     <string name="attachment_unknown"><xliff:g id="attachmentExtension">%s</xliff:g> File</string>
 
-    <!-- Shown in light gray in the Search box when no text has been entered [CHAR LIMIT=30] -->
-    <string name="search_hint">Search mail</string>
-
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
     <string name="choosertitle_sharevia">Share via</string>
@@ -513,7 +510,6 @@
     </plurals>
     <!-- Manage folders mode, sync option: don't synchronize any conversation with this folder [CHAR LIMIT=100] -->
     <string name="sync_none">Sync: None</string>
-
     <!-- Title for dialog encouraging users enable sync for a currently non-synced folder [CHAR LIMIT=30] -->
     <string name="folder_sync_for_widget_title">Sync folder</string>
 
@@ -526,4 +522,12 @@
     <!-- Folder selection dialog -->
     <!-- Title for change folders dialog [CHAR LIMIT=30] -->
     <string name="folder_selection_dialog_title">Change folders</string>
+
+    <!-- Search -->
+    <!-- Title of the search dialog -->
+    <string name="search_title" translatable="false">Unified Email</string>
+    <!-- Shown in light gray in the Search box when no text has been entered [CHAR LIMIT=20]-->
+    <string name="search_hint">Search mail</string>
+    <!-- Search Results: Text for status of the search when the results are completely loaded [CHAR LIMIT=10] -->
+    <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
 </resources>

@@ -191,7 +191,7 @@ public final class TwoPaneController extends AbstractActivityController {
             } else {
                 mActivity.onBackPressed();
             }
-        } else if (mode == ViewMode.SEARCH_RESULTS) {
+        } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         }
         return true;

@@ -268,4 +268,9 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public Settings getSettings() {
         return null;
     }
+
+    @Override
+    public boolean onSearchRequested(String query) {
+        return false;
+    }
 }

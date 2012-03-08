@@ -21,6 +21,8 @@ import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -40,6 +42,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.android.mail.R;
@@ -113,7 +116,6 @@ public abstract class AbstractActivityController implements ActivityController {
     private AsyncRefreshTask mAsyncRefreshTask;
 
     private MenuItem mRefreshItem;
-    private MenuItem mHelpItem;
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
     private final Handler mHandler = new Handler();
@@ -174,16 +176,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void enterSearchMode() {
-        // TODO(viki): Auto-generated method stub
-    }
-
-    @Override
-    public void exitSearchMode() {
-        // TODO(viki): Auto-generated method stub
-    }
-
-    @Override
     public Account getCurrentAccount() {
         return mAccount;
     }
@@ -214,18 +206,13 @@ public abstract class AbstractActivityController implements ActivityController {
         // TODO(viki): Auto-generated method stub
     }
 
-    @Override
-    public void handleSearchRequested() {
-        // TODO(viki): Auto-generated method stub
-    }
-
     /**
      * Initialize the action bar. This is not visible to OnePaneController and
      * TwoPaneController so they cannot override this behavior.
      */
     private void initCustomActionBarView() {
         ActionBar actionBar = mActivity.getActionBar();
-        mActionBarView = (MailActionBar) LayoutInflater.from(mContext).inflate(
+        mActionBarView = (ActionBarView) LayoutInflater.from(mContext).inflate(
                 R.layout.actionbar_view, null);
 
         if (actionBar != null && mActionBarView != null) {
@@ -256,10 +243,10 @@ public abstract class AbstractActivityController implements ActivityController {
             onSettingsChanged(null);
             restartSettingsLoader();
             mActionBarView.setAccount(mAccount);
+            mActivity.invalidateOptionsMenu();
             // Account changed; existing folder is invalid.
             mFolder = null;
             fetchAccountFolderInfo();
-            updateHelpMenuItem();
         }
     }
 
@@ -360,8 +347,8 @@ public abstract class AbstractActivityController implements ActivityController {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(mActionBarView.getOptionsMenuId(), menu);
+        mActionBarView.onCreateOptionsMenu(menu);
         mRefreshItem = menu.findItem(R.id.refresh);
-        mHelpItem = menu.findItem(R.id.help_info_menu_item);
         return true;
     }
 
@@ -436,11 +423,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onPause() {
-        isLoaderInitialized = false;
-    }
-
-    @Override
     public void onPrepareDialog(int id, Dialog dialog, Bundle bundle) {
         // TODO(viki): Auto-generated method stub
 
@@ -462,17 +444,13 @@ public abstract class AbstractActivityController implements ActivityController {
                 mRefreshItem.setActionView(null);
             }
         }
-
-        // Show/hide the help menu item
-        updateHelpMenuItem();
+        mActionBarView.prepareOptionsMenu(menu);
         return true;
     }
 
-    private void updateHelpMenuItem() {
-        if (mHelpItem != null) {
-            mHelpItem.setVisible(mAccount != null
-                    && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
-        }
+    @Override
+    public void onPause() {
+        isLoaderInitialized = false;
     }
 
     @Override
@@ -494,8 +472,13 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onSearchRequested() {
-        // TODO(viki): Auto-generated method stub
+    public void onSearchRequested(String query) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEARCH);
+        intent.putExtra(ConversationListContext.EXTRA_SEARCH_QUERY, query);
+        intent.putExtra(Utils.EXTRA_ACCOUNT, mAccount);
+        intent.setComponent(mActivity.getComponentName());
+        mActivity.startActivity(intent);
     }
 
     @Override
@@ -568,17 +551,17 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param savedState
      */
     protected void restoreState(Bundle savedState) {
+        final Intent intent = mActivity.getIntent();
         if (savedState != null) {
             restoreListContext(savedState);
             mAccount = savedState.getParcelable(SAVED_ACCOUNT);
             restartSettingsLoader();
-        } else {
-            final Intent intent = mActivity.getIntent();
-            if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
+        } else if (intent != null) {
+            if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                     mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                     mActivity.getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
-                    updateHelpMenuItem();
+                    mActivity.invalidateOptionsMenu();
                 }
                 if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
                     // Open the folder.
@@ -593,9 +576,18 @@ public abstract class AbstractActivityController implements ActivityController {
                     showConversation((Conversation) intent
                             .getParcelableExtra(Utils.EXTRA_CONVERSATION));
                 }
+            } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+                mViewMode.enterSearchResultsListMode();
+                mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                Folder searchFolder = Folder.forSearchResults(mAccount, intent
+                        .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
+                setFolder(searchFolder);
+                mConvListContext = ConversationListContext.forSearchQuery(mAccount, searchFolder,
+                        Utils.mailSearchQueryForIntent(intent));
+                showConversationList(mConvListContext);
             }
         }
-        // Create the accounts loader; this loads the acount switch spinner.
+        // Create the accounts loader; this loads the account switch spinner.
         mActivity.getLoaderManager().initLoader(ACCOUNT_CURSOR_LOADER, null, this);
     }
 
@@ -624,7 +616,11 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onConversationSelected(Conversation conversation) {
         mCurrentConversation = conversation;
         showConversation(mCurrentConversation);
-        mViewMode.enterConversationMode();
+        if (mConvListContext != null && mConvListContext.isSearchResult()) {
+            mViewMode.enterSearchResultsConversationMode();
+        } else {
+            mViewMode.enterConversationMode();
+        }
     }
 
     /**
@@ -637,8 +633,11 @@ public abstract class AbstractActivityController implements ActivityController {
             return new CursorLoader(mContext, AccountCacheProvider.getAccountsUri(),
                     UIProvider.ACCOUNTS_PROJECTION, null, null, null);
         } else if (id == FOLDER_CURSOR_LOADER) {
-            return new CursorLoader(mActivity.getActivityContext(), mFolder.uri,
-                    UIProvider.FOLDERS_PROJECTION, null, null, null);
+            // Don't bother running a cursor loader for the search results folder.
+            if (!mFolder.uri.equals(Folder.SEARCH_RESULTS_URI)) {
+                return new CursorLoader(mActivity.getActivityContext(), mFolder.uri,
+                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+            }
         } else if (id == ACCOUNT_SETTINGS_LOADER) {
             if (mAccount.settingsQueryUri != null) {
                 return new CursorLoader(mActivity.getActivityContext(), mAccount.settingsQueryUri,

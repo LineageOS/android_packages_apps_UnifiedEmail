@@ -80,8 +80,10 @@ public final class OnePaneController extends AbstractActivityController {
         // If the settings aren't loaded yet, we may not know what the default
         // inbox is, so err toward this being the account inbox.
         if ((mCachedSettings != null && mConvListContext != null && !inInbox())
-                || (mode == ViewMode.CONVERSATION_LIST && mConvListContext.isSearchResult())
-                || mode == ViewMode.CONVERSATION || mode == ViewMode.FOLDER_LIST) {
+                || mode == ViewMode.SEARCH_RESULTS_LIST
+                || mode == ViewMode.SEARCH_RESULTS_CONVERSATION
+                || mode == ViewMode.CONVERSATION
+                || mode == ViewMode.FOLDER_LIST) {
             mActionBarView.setBackButton();
         } else {
             mActionBarView.removeBackButton();
@@ -116,15 +118,16 @@ public final class OnePaneController extends AbstractActivityController {
     public void showConversationList(ConversationListContext listContext) {
         // TODO(viki): Check if the account has been changed since the previous
         // time.
-        mViewMode.enterConversationListMode();
+        if (listContext != null && listContext.isSearchResult()) {
+            mViewMode.enterSearchResultsListMode();
+        } else {
+            mViewMode.enterConversationListMode();
+        }
         final boolean accountChanged = false;
         // TODO(viki): This account transition looks strange in two pane mode.
         // Revisit as the app is coming together and improve the look and feel.
         final int transition = accountChanged ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
                 : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
-        if (listContext == null) {
-            listContext = getCurrentListContext();
-        }
         Fragment conversationListFragment = ConversationListFragment.newInstance(listContext);
         if (!inInbox()) {
             // Maintain fragment transaction history so we can get back to the
@@ -142,7 +145,11 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void showConversation(Conversation conversation) {
-        mViewMode.enterConversationMode();
+        if (mConvListContext != null && mConvListContext.isSearchResult()) {
+            mViewMode.enterSearchResultsConversationMode();
+        } else {
+            mViewMode.enterConversationMode();
+        }
         mLastConversationTransactionId = replaceFragment(
                 ConversationViewFragment.newInstance(mAccount, conversation),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -187,6 +194,8 @@ public final class OnePaneController extends AbstractActivityController {
         if (mode == ViewMode.FOLDER_LIST) {
             mLastFolderListTransactionId = INVALID_ID;
             transitionToInbox();
+        } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
+            mActivity.finish();
         } else if (mode == ViewMode.CONVERSATION_LIST && !inInbox()) {
             if (isTransactionIdValid(mLastFolderListTransactionId)) {
                 // Go back to previous label list.
@@ -196,7 +205,7 @@ public final class OnePaneController extends AbstractActivityController {
                 // Go back to Inbox.
                 transitionToInbox();
             }
-        } else if (mode == ViewMode.CONVERSATION) {
+        } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             transitionBackToConversationListMode();
         } else {
             mActivity.finish();
@@ -234,18 +243,25 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public boolean onUpPressed() {
         int mode = mViewMode.getMode();
-        if ((!inInbox() && mode == ViewMode.CONVERSATION_LIST) || mode == ViewMode.CONVERSATION
-                || mode == ViewMode.FOLDER_LIST) {
+        if (mode == ViewMode.SEARCH_RESULTS_LIST) {
+            mActivity.finish();
+        } else if ((!inInbox() && mode == ViewMode.CONVERSATION_LIST)
+                || mode == ViewMode.CONVERSATION
+                || mode == ViewMode.FOLDER_LIST
+                || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             // Same as go back.
             mActivity.onBackPressed();
-        } else if (mode == ViewMode.SEARCH_RESULTS) {
-            mActivity.finish();
         }
         return true;
     }
 
     private void transitionBackToConversationListMode() {
-        mViewMode.enterConversationListMode();
+        int mode = mViewMode.getMode();
+        if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
+            mViewMode.enterSearchResultsListMode();
+        } else {
+            mViewMode.enterConversationListMode();
+        }
         mActivity.getFragmentManager().popBackStack(mLastConversationTransactionId,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
         resetActionBarIcon();

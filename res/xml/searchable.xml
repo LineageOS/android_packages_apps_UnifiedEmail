@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +15,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<!--
-     The custom action bar view Gmail uses (containing drop down account spinner,
-    label, and subject).
--->
-<com.android.mail.ui.ActionBarView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:email="http://schemas.android.com/apk/res/com.android.mail"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal" >
-
-    <include layout="@layout/actionbar_label" />
-
-    <include layout="@layout/actionbar_subject" />
-
-</com.android.mail.ui.ActionBarView>
+<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+    android:label="@string/search_title"
+    android:hint="@string/search_hint"
+    android:icon="@drawable/ic_menu_search_holo_light"
+    android:searchSuggestIntentAction="android.intent.action.SEARCH"
+    android:imeOptions="actionSearch"
+    android:searchSuggestSelection="query LIKE ?" />

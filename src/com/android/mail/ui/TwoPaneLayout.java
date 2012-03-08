@@ -312,7 +312,7 @@ final class TwoPaneLayout extends LinearLayout
         switch (currentMode) {
             case ViewMode.CONVERSATION:
                 // Fallthrough
-            case ViewMode.SEARCH_RESULTS:
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 if (isConversationListCollapsible()) {
                     return totalWidth;
                 }
@@ -665,7 +665,8 @@ final class TwoPaneLayout extends LinearLayout
                 break;
             case ViewMode.FOLDER_LIST:
                 break;
-            case ViewMode.SEARCH_RESULTS:
+            case ViewMode.SEARCH_RESULTS_LIST:
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 // Show search results here
                 break;
         }

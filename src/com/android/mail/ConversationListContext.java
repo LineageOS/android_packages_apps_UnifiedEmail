@@ -23,10 +23,14 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.Utils;
+import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 
@@ -43,7 +47,7 @@ import java.util.ArrayList;
 public class ConversationListContext {
     private static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_FOLDER = "folder";
-    private static final String EXTRA_SEARCH_QUERY = "query";
+    public static final String EXTRA_SEARCH_QUERY = "query";
 
     /**
      * A matcher for data URI's that specify conversation list info.
@@ -125,36 +129,11 @@ public class ConversationListContext {
     }
 
     /**
-     * Resolves an intent and builds an appropriate context for it.
+     * Builds a context object for viewing a conversation list for a search query.
      */
-    public static ConversationListContext forIntent(Context context, Account callerAccount,
-            Intent intent) {
-        Account account = callerAccount;
-        String action = intent.getAction();
-        // TODO(viki): Implement the other intents: Intent.SEARCH,
-        // Intent.PROVIDER_CHANGED.
-        if (Intent.ACTION_VIEW.equals(action) && intent.getData() != null) {
-            // TODO(viki): Look through the URI to find the account and the
-            // folder.
-        }
-        Folder folder = (Folder) intent.getParcelableExtra(EXTRA_FOLDER);
-        if (folder == null) {
-            Cursor cursor = null;
-            try {
-                cursor = context.getContentResolver().query(callerAccount.folderListUri,
-                        UIProvider.FOLDERS_PROJECTION, null, null, null);
-                if (cursor != null) {
-                    cursor.moveToFirst();
-                    folder = new Folder(cursor);
-                }
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }
-
-        }
-        return forFolder(context, account, folder);
+    public static ConversationListContext forSearchQuery(Account account, Folder folder,
+            String query) {
+        return new ConversationListContext(account, Preconditions.checkNotNull(query), folder);
     }
 
     /**
@@ -176,7 +155,7 @@ public class ConversationListContext {
      * @return true if list is showing search results. False otherwise
      */
     public boolean isSearchResult() {
-        return false;
+        return !TextUtils.isEmpty(searchQuery);
     }
 
     /**
