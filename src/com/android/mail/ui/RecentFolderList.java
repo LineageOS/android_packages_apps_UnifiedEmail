@@ -28,10 +28,10 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.LruCache;
 
-import java.util.Collections;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * A self-updating list of folder canonical names for the N most recently touched folders, ordered
@@ -135,8 +135,8 @@ public final class RecentFolderList {
             values.put(id, now);
         }
         final ContentResolver mResolver = mContext.getContentResolver();
-        if (mAccount.recentFolderListUri != null
-                && !TextUtils.equals("null", mAccount.recentFolderListUri.toString())) {
+        // TODO: Remove this test
+        if (!TextUtils.equals("null", mAccount.recentFolderListUri.toString())) {
             mResolver.update(mAccount.recentFolderListUri, values, null, null);
         }
     }
