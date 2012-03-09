@@ -32,6 +32,12 @@
         android:visibility="gone"
         android:src="@drawable/folder_parent_icon" />
 
+    <ImageView
+        android:id="@+id/folder_box"
+        style="@style/FolderItemIcon"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
     <TextView
         android:id="@+id/unread"
         style="@style/UnreadCount"

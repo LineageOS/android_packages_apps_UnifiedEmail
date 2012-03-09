@@ -20,22 +20,17 @@ package com.android.mail.ui;
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.PaintDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -136,9 +131,11 @@ public class FolderSelectorAdapter extends BaseAdapter {
         }
 
         FolderRow row = getItem(position);
-        checkBox.setText(row.getFolder().name);
+        Folder folder = row.getFolder();
+        checkBox.setText(folder.name);
         checkBox.setChecked(row.isPresent());
 
+        Folder.setFolderBlockColor(folder, colorBlock);
         return view;
     }
 

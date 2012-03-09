@@ -19,11 +19,14 @@ package com.android.mail.providers;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.net.Uri.Builder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Maps;
@@ -379,5 +382,20 @@ public class Folder implements Parcelable {
 
     public boolean supportsCapability(int capability) {
         return (capabilities & capability) != 0;
+    }
+
+    // Show black text on a transparent swatch for system labels, effectively hiding the
+    // swatch (see bug 2431925).
+    public static void setFolderBlockColor(Folder folder, View colorBlock) {
+        boolean showBg = folder.bgColor != null;
+        final int backgroundColor = showBg ? Color.parseColor(folder.bgColor) : 0;
+
+        if (!showBg) {
+            colorBlock.setBackgroundDrawable(null);
+        } else {
+            PaintDrawable paintDrawable = new PaintDrawable();
+            paintDrawable.getPaint().setColor(backgroundColor);
+            colorBlock.setBackgroundDrawable(paintDrawable);
+        }
     }
 }
