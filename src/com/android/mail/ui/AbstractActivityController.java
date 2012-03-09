@@ -114,9 +114,11 @@ public abstract class AbstractActivityController implements ActivityController {
     private boolean mFolderTouched = false;
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
-    private static final int ACCOUNT_CURSOR_LOADER = 0;
-    private static final int ACCOUNT_SETTINGS_LOADER = 1;
-    private static final int FOLDER_CURSOR_LOADER = 2;
+    /** Constants used to differentiate between the types of loaders. */
+    private static final int LOADER_ACCOUNT_CURSOR = 0;
+    private static final int LOADER_ACCOUNT_SETTINGS = 1;
+    private static final int LOADER_FOLDER_CURSOR = 2;
+    private static final int LOADER_RECENT_FOLDERS = 3;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -225,7 +227,8 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onAccountChanged(Account account) {
         if (!account.equals(mAccount)) {
             mAccount = account;
-            mRecentFolderList.changeCurrentAccount(account);
+            mRecentFolderList.setCurrentAccount(account);
+            mActivity.getLoaderManager().restartLoader(LOADER_RECENT_FOLDERS, null, this);
             onSettingsChanged(null);
             restartSettingsLoader();
             mActionBarView.setAccount(mAccount);
@@ -238,7 +241,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private void restartSettingsLoader() {
         if (mAccount.settingsQueryUri != null) {
-            mActivity.getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
+            mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_SETTINGS, null, this);
         }
     }
 
@@ -286,7 +289,7 @@ public abstract class AbstractActivityController implements ActivityController {
             mFolder = folder;
             mFolderTouched = false;
             mActionBarView.setFolder(mFolder);
-            mActivity.getLoaderManager().restartLoader(FOLDER_CURSOR_LOADER, null, this);
+            mActivity.getLoaderManager().restartLoader(LOADER_FOLDER_CURSOR, null, this);
         } else if (folder == null) {
             LogUtils.wtf(LOG_TAG, "Folder in setFolder is null");
         }
@@ -512,7 +515,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                     mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                     mActionBarView.setAccount(mAccount);
-                    mActivity.getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
+                    mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_SETTINGS, null, this);
                     mActivity.invalidateOptionsMenu();
                 }
                 if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
@@ -536,7 +539,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
         }
         // Create the accounts loader; this loads the account switch spinner.
-        mActivity.getLoaderManager().initLoader(ACCOUNT_CURSOR_LOADER, null, this);
+        mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
     }
 
     @Override
@@ -576,17 +579,23 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Create a loader to listen in on account changes.
-        if (id == ACCOUNT_CURSOR_LOADER) {
-            return new CursorLoader(mContext, AccountCacheProvider.getAccountsUri(),
-                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-        } else if (id == FOLDER_CURSOR_LOADER) {
-            return new CursorLoader(mActivity.getActivityContext(), mFolder.uri,
-                    UIProvider.FOLDERS_PROJECTION, null, null, null);
-        } else if (id == ACCOUNT_SETTINGS_LOADER) {
-            if (mAccount.settingsQueryUri != null) {
-                return new CursorLoader(mActivity.getActivityContext(), mAccount.settingsQueryUri,
-                        UIProvider.SETTINGS_PROJECTION, null, null, null);
-            }
+        switch (id) {
+            case LOADER_ACCOUNT_CURSOR:
+                return new CursorLoader(mContext, AccountCacheProvider.getAccountsUri(),
+                        UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+            case LOADER_FOLDER_CURSOR:
+                return new CursorLoader(mContext, mFolder.uri,
+                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+            case LOADER_ACCOUNT_SETTINGS:
+                if (mAccount.settingsQueryUri != null) {
+                    return new CursorLoader(mContext, mAccount.settingsQueryUri,
+                            UIProvider.SETTINGS_PROJECTION, null, null, null);
+                }
+            case LOADER_RECENT_FOLDERS:
+                return new CursorLoader(mContext, mAccount.recentFolderListUri,
+                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+            default:
+                LogUtils.wtf(LOG_TAG, "Loader returned unexpected id: " + id);
         }
         return null;
     }
@@ -670,19 +679,20 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // We want to reinitialize only if we haven't ever been initialized, or
         // if the current account has vanished.
-        final int id = loader.getId();
         if (data == null) {
-            LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", id);
+            LogUtils.e(LOG_TAG, "Received null cursor from loader id: %d", loader.getId());
         }
-        if (id == ACCOUNT_CURSOR_LOADER) {
-
-            final boolean accountListUpdated = accountsUpdated(data);
-            if (!isLoaderInitialized || accountListUpdated) {
-                isLoaderInitialized = updateAccounts(loader, data);
-            }
-        } else if (id == FOLDER_CURSOR_LOADER) {
-            // Check status of the cursor.
-            if (data != null) {
+        switch (loader.getId()) {
+            case LOADER_ACCOUNT_CURSOR:
+                final boolean accountListUpdated = accountsUpdated(data);
+                if (!isLoaderInitialized || accountListUpdated) {
+                    isLoaderInitialized = updateAccounts(loader, data);
+                }
+                break;
+            case LOADER_FOLDER_CURSOR:
+                if (data == null)
+                    return;
+                // Check status of the cursor.
                 data.moveToFirst();
                 Folder folder = new Folder(data);
                 if (folder.isSyncInProgress()) {
@@ -695,12 +705,18 @@ public abstract class AbstractActivityController implements ActivityController {
                     mConversationListFragment.onFolderUpdated(folder);
                 }
                 LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
-            }
-        } else if (id == ACCOUNT_SETTINGS_LOADER) {
-            if (data != null) {
+                break;
+            case LOADER_ACCOUNT_SETTINGS:
+                if (data == null)
+                    return;
                 data.moveToFirst();
                 onSettingsChanged(new Settings(data));
-            }
+                break;
+            case LOADER_RECENT_FOLDERS:
+                if (data == null)
+                    return;
+                mRecentFolderList.loadFromUiProvider(data);
+                break;
         }
     }
 

@@ -21,6 +21,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
+import android.os.AsyncTask;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
@@ -63,6 +64,22 @@ public final class RecentFolderList {
      *  to the user).
      */
     private final static int NUM_FOLDERS = 5 + 1;
+    /**
+     * Class to store the recent folder list asynchronously.
+     */
+    private class StoreRecent extends AsyncTask<ContentValues, Void, Void> {
+        final ContentResolver mResolver;
+
+        public StoreRecent(Context context) {
+            mResolver = context.getContentResolver();
+        }
+
+        @Override
+        protected Void doInBackground(ContentValues... valuesArray) {
+            mResolver.update(mAccount.recentFolderListUri, valuesArray[0], null, null);
+            return null;
+        }
+    }
 
     /**
      * Create a Recent Folder List from the given account. This will query the UIProvider to
@@ -70,37 +87,33 @@ public final class RecentFolderList {
      * @param account
      */
     public RecentFolderList(Context context) {
-        mContext = context;
         mFolderCache = new LruCache<String, Folder>(NUM_FOLDERS);
+        mContext = context;
     }
 
     /**
      * Change the current account. This causes the recent label list to be written out to the
-     * provider, and a new list to be read for the new account.
+     * provider. When a cursor over the recent folders for this account is available, the client
+     * <b>must</b> call {@link #loadFromUiProvider(Cursor)} with the updated cursor. Till then,
+     * the recent account list will be empty.
      * @param account
      */
-    public void changeCurrentAccount(Account account) {
+    public void setCurrentAccount(Account account) {
         saveToUiProvider();
         mAccount = account;
-        loadFromUiProvider();
+        // At some point in the future, the load method will return and populate our cache with
+        // useful entries. But for now, the cache is invalid.
+        mFolderCache.clear();
     }
 
     /**
-     * Load the account information from the UI provider.
+     * Load the account information from the UI provider given the cursor over the recent folders.
+     * @param data a cursor over the recent folders.
      */
-    private void loadFromUiProvider() {
-        if (mAccount == null || mAccount.recentFolderListUri == null)
+    public void loadFromUiProvider(Cursor data) {
+        if (mAccount == null || mAccount.recentFolderListUri == null || data == null
+                || data.getCount() <= 0)
             return;
-        mFolderCache.clear();
-        final ContentResolver mResolver = mContext.getContentResolver();
-        // TODO(viki): Bad idea. Use a loader.
-        Cursor data = mResolver.query(mAccount.recentFolderListUri, UIProvider.FOLDERS_PROJECTION,
-                null, null, null);
-        if (data == null || data.getCount() <= 0) {
-            // No pre-stored recent folder list. Let's return an empty folder list.
-            return;
-        }
-        // Populate the recent folder cache from the UiProvider.
         int i = 0;
         while (data.moveToNext()) {
             assert (data.getColumnCount() == UIProvider.FOLDERS_PROJECTION.length);
@@ -130,18 +143,20 @@ public final class RecentFolderList {
     private void saveToUiProvider() {
         if (mAccount == null || mFolderCache.isEmpty() || mAccount.recentFolderListUri == null)
             return;
+        // TODO: Remove this test
+        if (TextUtils.equals("null", mAccount.recentFolderListUri.toString()))
+            return;
+
         // Write the current recent folder list into the account.
         // Store the ID of the folder and the last touched timestamp.
         ContentValues values = new ContentValues();
+        // TODO(viki): Fix the timestamps here, and put real timestamps rather than garbage.
         final long now = System.currentTimeMillis();
         for (String id : mFolderCache.keySet()) {
             values.put(id, now);
         }
-        final ContentResolver mResolver = mContext.getContentResolver();
-        // TODO: Remove this test
-        if (!TextUtils.equals("null", mAccount.recentFolderListUri.toString())) {
-            mResolver.update(mAccount.recentFolderListUri, values, null, null);
-        }
+        // Store the values in the background.
+        new StoreRecent(mContext).execute(values);
     }
 
     /**
