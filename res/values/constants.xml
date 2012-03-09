@@ -43,4 +43,5 @@
     <integer name="maxUnreadCount">999</integer>
    <!-- <integer name="widget_refresh_delay_ms">4000</integer>-->
     <integer name="widget_folder_refresh_delay_ms">500</integer>
+    <item type="id" name="folder"/>
 </resources>

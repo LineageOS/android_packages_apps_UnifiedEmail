@@ -37,8 +37,8 @@
     <item
         android:id="@+id/change_folder"
         android:showAsAction="ifRoom"
-        android:title="@string/menu_change_labels"
-        android:icon="@drawable/ic_menu_labels_holo_light" />
+        android:title="@string/menu_change_folders"
+        android:icon="@drawable/ic_menu_folders_holo_light" />
 
     <item
         android:id="@+id/read"

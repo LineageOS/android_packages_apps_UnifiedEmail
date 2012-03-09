@@ -190,7 +190,7 @@ public final class ConversationViewFragment extends Fragment implements
 
     /**
      * Handles a request to show a new conversation list, either from a search query or for viewing
-     * a label. This will initiate a data load, and hence must be called on the UI thread.
+     * a folder. This will initiate a data load, and hence must be called on the UI thread.
      */
     private void showConversation() {
         mSubject.setText(mConversation.subject);

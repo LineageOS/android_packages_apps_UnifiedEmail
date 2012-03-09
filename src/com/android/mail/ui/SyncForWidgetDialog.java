@@ -22,7 +22,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * A dialog for users attempting to create a widget for a non-synced label.
+ * A dialog for users attempting to create a widget for a non-synced folder.
  */
 public class SyncForWidgetDialog extends AlertDialog
         implements DialogInterface.OnClickListener {
@@ -71,7 +71,7 @@ public class SyncForWidgetDialog extends AlertDialog
 
             if (confirmView.isChecked()) {
 
-                AsyncTask<Context, Void, Void> enableLabelSyncTask =
+                AsyncTask<Context, Void, Void> enableFolderSyncTask =
                         new AsyncTask<Context, Void, Void>() {
 
                     @Override
@@ -84,7 +84,7 @@ public class SyncForWidgetDialog extends AlertDialog
                     }
 
                 };
-                enableLabelSyncTask.execute(getContext());
+                enableFolderSyncTask.execute(getContext());
             }
         }
 

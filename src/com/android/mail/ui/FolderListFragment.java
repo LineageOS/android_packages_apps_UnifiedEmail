@@ -226,7 +226,7 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public void onViewModeChanged(int newMode) {
-        // Listen on mode changes, when we move to Label list mode, change accordingly.
+        // Listen on mode changes, when we move to Folder list mode, change accordingly.
     }
 
     public void selectFolder(Folder folder) {

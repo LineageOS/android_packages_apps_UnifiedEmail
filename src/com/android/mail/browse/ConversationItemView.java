@@ -65,7 +65,7 @@ public class ConversationItemView extends View {
     private static final String PERF_TAG_LAYOUT = "CCHV.layout";
     private static final String PERF_TAG_CALCULATE_TEXTS_BITMAPS = "CCHV.txtsbmps";
     private static final String PERF_TAG_CALCULATE_SENDER_SUBJECT = "CCHV.sendersubj";
-    private static final String PERF_TAG_CALCULATE_LABELS = "CCHV.labels";
+    private static final String PERF_TAG_CALCULATE_FOLDERS = "CCHV.folders";
     private static final String PERF_TAG_CALCULATE_COORDINATES = "CCHV.coordinates";
 
     // Static bitmaps.
@@ -103,7 +103,7 @@ public class ConversationItemView extends View {
 
     // Static paints.
     private static TextPaint sPaint = new TextPaint();
-    private static TextPaint sLabelsPaint = new TextPaint();
+    private static TextPaint sFoldersPaint = new TextPaint();
 
     // Backgrounds for different states.
     private final SparseArray<Drawable> mBackgrounds = new SparseArray<Drawable>();
@@ -113,7 +113,7 @@ public class ConversationItemView extends View {
     private int mMode = -1;
     private int mDateX;
     private int mPaperclipX;
-    private int mLabelsXEnd;
+    private int mFoldersXEnd;
     private int mSendersWidth;
 
     /** Whether we're running under test mode. */
@@ -137,7 +137,7 @@ public class ConversationItemView extends View {
 
     static {
         sPaint.setAntiAlias(true);
-        sLabelsPaint.setAntiAlias(true);
+        sFoldersPaint.setAntiAlias(true);
     }
 
     /**
@@ -204,7 +204,7 @@ public class ConversationItemView extends View {
     }
 
     public void bind(Cursor cursor, StarHandler starHandler, String account,
-            CharSequence displayedLabel, ViewMode viewMode, ConversationSelectionSet set) {
+            CharSequence displayedFolder, ViewMode viewMode, ConversationSelectionSet set) {
         mAccount = account;
         mViewMode = viewMode;
         mHeader = ConversationItemViewModel.forCursor(account, cursor);
@@ -319,9 +319,9 @@ public class ConversationItemView extends View {
             return;
         }
 
-        // Initialize label displayer.
-        startTimer(PERF_TAG_CALCULATE_LABELS);
-        pauseTimer(PERF_TAG_CALCULATE_LABELS);
+        // Initialize folder displayer.
+        startTimer(PERF_TAG_CALCULATE_FOLDERS);
+        pauseTimer(PERF_TAG_CALCULATE_FOLDERS);
 
         // Star.
         mHeader.starBitmap = mHeader.starred ? STAR_ON : STAR_OFF;
@@ -433,18 +433,19 @@ public class ConversationItemView extends View {
 
         mPaperclipX = mDateX - ATTACHMENT.getWidth();
 
-        int cellWidth = mContext.getResources().getDimensionPixelSize(R.dimen.label_cell_width);
+        int cellWidth = mContext.getResources().getDimensionPixelSize(R.dimen.folder_cell_width);
 
-        if (ConversationItemViewCoordinates.displayLabelsAboveDate(mMode)) {
-            mLabelsXEnd = mCoordinates.dateXEnd;
+        if (ConversationItemViewCoordinates
+                .displayFoldersAboveDate(mCoordinates.showFolders, mMode)) {
+            mFoldersXEnd = mCoordinates.dateXEnd;
             mSendersWidth = mCoordinates.sendersWidth;
         } else {
             if (mHeader.paperclip != null) {
-                mLabelsXEnd = mPaperclipX;
+                mFoldersXEnd = mPaperclipX;
             } else {
-                mLabelsXEnd = mDateX - cellWidth / 2;
+                mFoldersXEnd = mDateX - cellWidth / 2;
             }
-            mSendersWidth = mLabelsXEnd - mCoordinates.sendersX - 2 * cellWidth;
+            mSendersWidth = mFoldersXEnd - mCoordinates.sendersX - 2 * cellWidth;
         }
 
         if (mHeader.isLayoutValid(mContext)) {
@@ -668,14 +669,14 @@ public class ConversationItemView extends View {
         canvas.restore();
 
         // Date background: shown when there is an attachment or a visible
-        // label.
+        // folder.
         if (!isActivated()
                 && mHeader.conversation.hasAttachments
                 && ConversationItemViewCoordinates.showAttachmentBackground(mMode)) {
             mHeader.dateBackground = DATE_BACKGROUND;
             int leftOffset = (mHeader.conversation.hasAttachments ? mPaperclipX : mDateX)
                     - DATE_BACKGROUND_PADDING_LEFT;
-            int top = mCoordinates.labelsY;
+            int top = mCoordinates.foldersY;
             Rect src = new Rect(0, 0, mHeader.dateBackground.getWidth(), mHeader.dateBackground
                     .getHeight());
             Rect dst = new Rect(leftOffset, top, mViewWidth, top + sDateBackgroundHeight);

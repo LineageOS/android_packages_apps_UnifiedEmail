@@ -33,18 +33,18 @@ import android.widget.TextView;
 import com.android.mail.R;
 
 /**
- * This activity prompts the user for a name for the shortcut to their label
+ * This activity prompts the user for a name for the shortcut to their folder
  * This activity could, in the future, be used to allow the user to specify an
  * icon for the shortcut
  */
 public class ShortcutNameActivity extends Activity implements OnClickListener,
         TextView.OnEditorActionListener {
-    /*package*/static final String EXTRA_LABEL_CLICK_INTENT = "extra_label_click_intent";
+    /*package*/static final String EXTRA_FOLDER_CLICK_INTENT = "extra_folder_click_intent";
 
     /*package*/static final String EXTRA_SHORTCUT_NAME = "extra_shortcut_name";
 
-    private EditText mLabelText;
-    private String mLabelName;
+    private EditText mFolderText;
+    private String mFolderName;
 
     private Intent mShortcutClickIntent;
 
@@ -53,16 +53,16 @@ public class ShortcutNameActivity extends Activity implements OnClickListener,
         super.onCreate(icicle);
         setContentView(R.layout.shortcut_name_activity);
 
-        mShortcutClickIntent = (Intent)getIntent().getParcelableExtra(EXTRA_LABEL_CLICK_INTENT);
-        mLabelName = getIntent().getStringExtra(EXTRA_SHORTCUT_NAME);
+        mShortcutClickIntent = (Intent)getIntent().getParcelableExtra(EXTRA_FOLDER_CLICK_INTENT);
+        mFolderName = getIntent().getStringExtra(EXTRA_SHORTCUT_NAME);
 
-        mLabelText = (EditText) findViewById(R.id.folder_text);
-        mLabelText.setText(mLabelName);
-        mLabelText.setOnEditorActionListener(this);
+        mFolderText = (EditText) findViewById(R.id.folder_text);
+        mFolderText.setText(mFolderName);
+        mFolderText.setOnEditorActionListener(this);
 
         // Set focus to end of input line
-        mLabelText.requestFocus();
-        Editable editableText = mLabelText.getText();
+        mFolderText.requestFocus();
+        Editable editableText = mFolderText.getText();
         Selection.setSelection(editableText, editableText.length());
 
         findViewById(R.id.done).setOnClickListener(this);
@@ -92,13 +92,13 @@ public class ShortcutNameActivity extends Activity implements OnClickListener,
 
     private void doCreateShortcut() {
         // Get the name that the user entered
-        CharSequence userShortcutName = mLabelText.getText();
+        CharSequence userShortcutName = mFolderText.getText();
 
         Intent resultIntent = new Intent();
-        resultIntent.putExtra(EXTRA_LABEL_CLICK_INTENT, mShortcutClickIntent);
-        // Initially set the name of the shortcut to the name of the label.
+        resultIntent.putExtra(EXTRA_FOLDER_CLICK_INTENT, mShortcutClickIntent);
+        // Initially set the name of the shortcut to the name of the folder.
         // If the user sets a valid name, the user specified one will be used.
-        resultIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, mLabelName);
+        resultIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, mFolderName);
 
         final String shortcutName = userShortcutName.toString();
         if (TextUtils.getTrimmedLength(shortcutName) > 0) {

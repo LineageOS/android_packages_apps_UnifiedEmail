@@ -35,7 +35,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 /**
- * The view for each label in the label list.
+ * The view for each folder in the folder list.
  */
 public class FolderItemView extends RelativeLayout {
     // Static colors
@@ -137,7 +137,7 @@ public class FolderItemView extends RelativeLayout {
     public boolean onDragEvent(DragEvent event) {
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
-                // If this label is not a drop target, dim the text.
+                // If this folder is not a drop target, dim the text.
                 if (!isDroppableTarget(event)) {
                     // Make sure we update this at the time we drop on the target.
                     mInitialFolderTextColor = mFolderTextView.getTextColors();
@@ -150,7 +150,7 @@ public class FolderItemView extends RelativeLayout {
                 return true;
 
             case DragEvent.ACTION_DRAG_ENTERED:
-                // Change background color to indicate this label is the drop target.
+                // Change background color to indicate this folder is the drop target.
                 if (isDroppableTarget(event)) {
                     setBackgroundDrawable(DROPPABLE_HOVER_BACKGROUND);
                     return true;

@@ -27,9 +27,9 @@ public interface FolderSettingsObservable {
     void registerObserver(FolderSettingsObserver observer);
     void unregisterObserver(FolderSettingsObserver observer);
     void notifyChanged();
-    ArrayList<String> getIncludedLabels();
-    ArrayList<String> getPartialLabels();
+    ArrayList<String> getIncludedFolders();
+    ArrayList<String> getPartialFolders();
     int getNumberOfSyncDays();
-    void setIncludedLabels(ArrayList<String> labels);
-    void setPartialLabels(ArrayList<String> labels);
+    void setIncludedFolders(ArrayList<String> folders);
+    void setPartialFolders(ArrayList<String> folders);
 }

@@ -26,7 +26,7 @@
     <color name="senders_text_color_read">#555555</color>
     <color name="date_text_color_unread">@color/senders_text_color_unread</color>
     <color name="date_text_color_read">@color/senders_text_color_read</color>
-    <color name="label_list_heading_text_color">#777777</color>
+    <color name="folder_list_heading_text_color">#777777</color>
     <color name="actionbar_secondary">#777777</color>
     <color name="subject_text_color">#333333</color>
     <color name="faded_conversation_header">#7f99d6eb</color>

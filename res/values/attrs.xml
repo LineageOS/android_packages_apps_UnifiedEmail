@@ -17,12 +17,6 @@
 -->
 
 <resources>
-
-<!--     TODO(viki): Figure out how to use attributes. -->
-<!--     <declare-styleable name="AccountRecentLabelSpinner"> -->
-<!--         <attr format="reference" name="dropDownWidth" /> -->
-<!--     </declare-styleable> -->
-
     <add-resource name="RecipientEditTextViewStyle" type="style" />
     <add-resource name="ComposeEditTextView" type="style" />
     <add-resource name="LargeComposeAreaBody" type="style" />

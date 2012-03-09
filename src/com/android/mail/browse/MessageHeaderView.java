@@ -698,7 +698,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * Get BCC addresses attached to a recipient ONLY if this is a msg the
      * current user sent.
      *
-     * @param messageCursor Cursor to query for label objects with
+     * @param messageCursor Cursor to query for folder objects with
      */
     private static String[] getBccAddresses(Message m) {
         return Utils.splitCommaSeparatedString(m.bcc);

@@ -943,7 +943,7 @@ public final class ConversationCursor implements Cursor {
         private final Uri mUri;
         private final ContentValues mValues;
         // True if an updated item should be removed locally (from ConversationCursor)
-        // This would be the case for a folder/label change in which the conversation is no longer
+        // This would be the case for a folder change in which the conversation is no longer
         // in the folder represented by the ConversationCursor
         private final boolean mLocalDeleteOnUpdate;
 

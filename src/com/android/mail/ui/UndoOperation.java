@@ -20,7 +20,7 @@ import com.android.mail.R;
 import android.content.Context;
 
 /**
- * A simple holder class that stores the information to undo the application of a label.
+ * A simple holder class that stores the information to undo the application of a folder.
  */
 public class UndoOperation {
     public int mAction;

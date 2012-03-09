@@ -18,7 +18,6 @@
 
 <resources>
     <dimen name="folder_list_pane_width">320dip</dimen>
-    <dimen name="folder_list_label_color_width">36dip</dimen>
     <dimen name="new_message_notification_width">896dip</dimen>
     <dimen name="empty_view_top_padding">38dip</dimen>
 </resources>

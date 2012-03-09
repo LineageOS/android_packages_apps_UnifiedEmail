@@ -38,9 +38,9 @@
     <!-- Shown in Compose; the subject of the message [CHAR LIMIT=100] -->
     <string name="body_hint">Compose email</string>
     <!-- Compose screen, button: add Cc/Bcc fields [CHAR LIMIT=1]-->
-    <string name="plus_cc_label">+</string>
+    <string name="plus_cc_folder">+</string>
     <!-- Compose screen, button: add bcc fields [CHAR LIMIT=1]-->
-    <string name="plus_bcc_label">+</string>
+    <string name="plus_bcc_folder">+</string>
     <!--  Compose screen button. Add an attachment to this message [CHAR LIMIT=20] -->
     <string name="add_file_attachment">Attach file</string>
     <!-- Button name: save this message as draft [CHAR LIMIT=25]-->
@@ -125,19 +125,17 @@
     <string name="forward">Forward</string>
     <!-- Menu item: compose a new email -->
     <string name="menu_compose">Compose</string>
-    <!-- Menu item: change the labels for this conversion. -->
-    <string name="menu_change_labels">Change labels</string>
-    <!-- Menu item: change the labels for this conversation. -->
+    <!-- Menu item: change the folders for this conversation. -->
     <string name="menu_change_folders">Change folders</string>
-    <!-- Menu item: manages the labels for this account. [CHAR LIMIT = 30] -->
-    <string name="menu_manage_labels">Manage labels</string>
-    <!-- Title for the Label list screen. [CHAR LIMIT = 30] -->
-    <string name="label_list_title">Labels</string>
-    <!-- action bar sub title for manage label mode. [CHAR LIMIT = 30] -->
-    <string name="manage_labels_subtitle">Sync &amp; notify</string>
-    <!-- Menu item: options for this label. When source text cannot be translated within the char limit, please translate the shorter "Label options" instead. [CHAR LIMIT = 30] -->
-    <string name="menu_label_options">Label settings</string>
-    <!-- Menu item: done editing label options. [CHAR LIMIT = 30] -->
+    <!-- Menu item: manages the folders for this account. [CHAR LIMIT = 30] -->
+    <string name="menu_manage_folders">Manage folders</string>
+    <!-- Title for the Folder list screen. [CHAR LIMIT = 30] -->
+    <string name="folder_list_title">Folders</string>
+    <!-- action bar sub title for manage folder mode. [CHAR LIMIT = 30] -->
+    <string name="manage_folders_subtitle">Sync &amp; notify</string>
+    <!-- Menu item: options for this folder. When source text cannot be translated within the char limit, please translate the shorter "Folder options" instead. [CHAR LIMIT = 30] -->
+    <string name="menu_folder_options">Folder settings</string>
+    <!-- Menu item: done editing folder options. [CHAR LIMIT = 30] -->
     <string name="menu_done">Done</string>
     <!-- Menu item: launch the Global Account Settings activity -->
     <string name="menu_account_settings">Account settings</string>
@@ -170,7 +168,7 @@
     <string name="help_and_info">Help</string>
     <!-- Compose screen, Prefix to quoted text in forwarded/replied message [CHAR LIMIT=50]-->
     <string name="quoted_text">Include quoted text</string>
-    <!-- Compose screen, Prefix to quoted text in forwarded/replied message; label for the quoted text area. [CHAR LIMIT=25] -->
+    <!-- Compose screen, Prefix to quoted text in forwarded/replied message; folder for the quoted text area. [CHAR LIMIT=25] -->
     <string name="quoted_text_label">Quote text</string>
     <!--  Button for including inline responses. [CHAR LIMIT=25] -->
     <string name="respond_inline">Respond inline</string>
@@ -259,7 +257,7 @@
     <string name="send_failed">Message wasn\'t sent.</string>
     <!-- Strings used to show myself in a To/Cc list. [CHAR LIMIT=15] -->
     <string name="me">me</string>
-    <string name="labels">Labels</string>
+    <string name="folders">Folders</string>
     <!-- List item to open fodlers view in account dropdown [CHAR LIMIT=50] -->
     <string name="show_all_folders">Show all folders</string>
 
@@ -400,12 +398,12 @@
     <string name="removeBackButton" translate="false">Remove Back Button</string>
     <string name="normalMode" translate="false">Set Normal Mode</string>
     <string name="searchResultMode" translate="false">Search Result Mode</string>
-    <string name="labelMode" translate="false">Set Label Mode</string>
+    <string name="folderMode" translate="false">Set Folder Mode</string>
     <!-- Search Results: Text for header that is shown above search results, while waiting for search results from the server [CHAR LIMIT=30] -->
     <string name="search_results_searching_header">Searching\u2026</string>
 
-    <!-- List header for recent labels for current account in account dropdown [CHAR LIMIT=100] -->
-    <string name="recent_labels">Recent</string>
+    <!-- List header for recent folders for current account in account dropdown [CHAR LIMIT=100] -->
+    <string name="recent_folders">Recent</string>
 
     <!-- Conversation message header strings -->
     <!--  Icon name for expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
@@ -478,7 +476,7 @@
           mode will bring user to the account selection screen [CHAR LIMIT=35] -->
     <string name="tap_to_configure">Touch to set up</string>
 
-    <!-- Displayed within a widget that was setup for a non-synced label [CHAR LIMIT=60] -->
+    <!-- Displayed within a widget that was setup for a non-synced folder [CHAR LIMIT=60] -->
     <string name="non_synced_folder_description">To view conversations, sync this folder.</string>
 
     <!-- Displayed within a widget that was setup for a non-synced folder.  This is the text of the

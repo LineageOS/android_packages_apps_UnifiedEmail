@@ -91,7 +91,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         mAccount = intent.getParcelableExtra(EXTRA_ACCOUNT_SHORTCUT);
         Button firstButton = (Button) findViewById(R.id.first_button);
         firstButton.setVisibility(View.VISIBLE);
-        // TODO(mindyp) disable the manage labels buttons until we have a mange labels screen.
+        // TODO(mindyp) disable the manage folders buttons until we have a mange folders screen.
         firstButton.setEnabled(false);
         firstButton.setOnClickListener(this);
 
@@ -135,7 +135,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     /**
-     * Create a widget for the specified account and label
+     * Create a widget for the specified account and folder
      */
     private void createWidget() {
         WidgetProvider.updateWidget(this, mAppWidgetId, mAccount, mSelectedFolder);
@@ -165,7 +165,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                 /*
                  * Create the shortcut Intent based on it with the additional
                  * information that we have in this activity: name of the
-                 * account, calculate the human readable name of the label and
+                 * account, calculate the human readable name of the folder and
                  * use it as the shortcut name, etc...
                  */
                 final Intent clickIntent = Utils.createViewFolderIntent(mSelectedFolder, mAccount);
@@ -174,37 +174,37 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                         Intent.ShortcutIconResource.fromContext(this,
                                 R.mipmap.ic_launcher_shortcut_folder));
 
-                CharSequence humanLabelName = mSelectedFolder.name;
+                CharSequence humanFolderName = mSelectedFolder.name;
 
-                resultIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, humanLabelName);
+                resultIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, humanFolderName);
 
                 // Now ask the user what name they want for this shortcut. Pass
                 // the
                 // shortcut intent that we just created, the user can modify the
-                // label in
+                // folder in
                 // ShortcutNameActivity.
                 final Intent shortcutNameIntent = new Intent(this, ShortcutNameActivity.class);
                 shortcutNameIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
                         | Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                shortcutNameIntent.putExtra(ShortcutNameActivity.EXTRA_LABEL_CLICK_INTENT,
+                shortcutNameIntent.putExtra(ShortcutNameActivity.EXTRA_FOLDER_CLICK_INTENT,
                         resultIntent);
                 shortcutNameIntent.putExtra(ShortcutNameActivity.EXTRA_SHORTCUT_NAME,
-                        humanLabelName);
+                        humanFolderName);
 
                 startActivity(shortcutNameIntent);
                 finish();
             } else if (mConfigureWidget) {
                 // Check to see if the widget is set to be synchronized
                 final Cursor settings = mAccount.getSettings();
-                final Set<String> synchronizedLabelsSet = Sets.newHashSet();
+                final Set<String> synchronizedFoldersSet = Sets.newHashSet();
 
-                // Add all of the synchronized labels to the set
-                // TODO: (mindyp) deal with labels.
-                // synchronizedLabelsSet.addAll(settings.getLabelsIncluded());
-                // synchronizedLabelsSet.addAll(settings.getLabelsPartial());
+                // Add all of the synchronized folders to the set
+                // TODO: (mindyp) deal with folders.
+                // synchronizedFoldersSet.addAll(settings.getFoldersIncluded());
+                // synchronizedFoldersSet.addAll(settings.getFoldersPartial());
 
-                if (!synchronizedLabelsSet.contains(mSelectedFolder.name)) {
-                    // Display a dialog offering to enable sync for this label
+                if (!synchronizedFoldersSet.contains(mSelectedFolder.name)) {
+                    // Display a dialog offering to enable sync for this folder
                     showDialog(R.layout.folder_sync_for_widget_dialog);
                 } else {
                     createWidget();

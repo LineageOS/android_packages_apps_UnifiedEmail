@@ -300,7 +300,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 }
                 break;
             case ViewMode.CONVERSATION_LIST:
-                // Show compose, search, labels, and sync based on the account
+                // Show compose, search, folders, and sync based on the account
                 // The only option that needs to be disabled is search
                 setVisibility(menu, R.id.search,
                         mAccount.supportsCapability(AccountCapabilities.FOLDER_SERVER_SEARCH));

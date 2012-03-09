@@ -198,7 +198,7 @@ public final class OnePaneController extends AbstractActivityController {
             mActivity.finish();
         } else if (mode == ViewMode.CONVERSATION_LIST && !inInbox()) {
             if (isTransactionIdValid(mLastFolderListTransactionId)) {
-                // Go back to previous label list.
+                // Go back to previous folder list.
                 mViewMode.enterFolderListMode();
                 mActivity.getFragmentManager().popBackStack(mLastFolderListTransactionId, 0);
             } else {

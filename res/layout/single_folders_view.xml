@@ -17,10 +17,10 @@
  */
 -->
 
-<!-- Describes an individual toggleable label entry to be displayed in a list of labels in
-     a label selection UI. -->
+<!-- Describes an individual toggleable folder entry to be displayed in a list of folders in
+     a folder selection UI. -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/labels"
+    android:id="@+id/folders"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight">
 

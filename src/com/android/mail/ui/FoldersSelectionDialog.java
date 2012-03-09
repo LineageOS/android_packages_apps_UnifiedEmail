@@ -66,20 +66,20 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         // TODO: (mindyp) make async
         Cursor foldersCursor = context.getContentResolver().query(account.folderListUri,
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
-        HashSet<String> conversationLabels = new HashSet<String>();
+        HashSet<String> conversationFolders = new HashSet<String>();
         for (Conversation conversation: selectedConversations) {
             if (!TextUtils.isEmpty(conversation.folderList)) {
-                conversationLabels.addAll(Arrays.asList(conversation.folderList.split(",")));
+                conversationFolders.addAll(Arrays.asList(conversation.folderList.split(",")));
             }
         }
-        mAdapter = new FolderSelectorAdapter(context, foldersCursor, conversationLabels, mSingle);
+        mAdapter = new FolderSelectorAdapter(context, foldersCursor, conversationFolders, mSingle);
         builder.setAdapter(mAdapter, this);
         String folderId;
         // Pre-load existing conversation folders.
         foldersCursor.moveToFirst();
         do {
             folderId = foldersCursor.getString(UIProvider.FOLDER_ID_COLUMN);
-            if (conversationLabels.contains(folderId)) {
+            if (conversationFolders.contains(folderId)) {
                 mCheckedState.put(Uri.parse(foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN)),
                         true);
             }
@@ -98,7 +98,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
     }
 
     /**
-     * Call this to update the state of labels as a result of them being
+     * Call this to update the state of folders as a result of them being
      * selected / de-selected.
      *
      * @param row The item being updated.

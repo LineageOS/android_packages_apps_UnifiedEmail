@@ -27,10 +27,10 @@
     <dimen name="actionbar_subject_padding_right">8dp</dimen>
     <dimen name="compose_scrollview_width">700dp</dimen>
     <dimen name="total_conversationbar_width">150dip</dimen>
-    <dimen name="max_total_label_width">64dip</dimen>
-    <dimen name="max_total_label_width_wide">64dip</dimen>
+    <dimen name="max_total_folder_width">64dip</dimen>
+    <dimen name="max_total_folder_width_wide">64dip</dimen>
     <dimen name="subject_width">0dip</dimen>
-    <dimen name="labels_font_size">12sp</dimen>
+    <dimen name="folders_font_size">12sp</dimen>
     <dimen name="wide_senders_margin_top">0sp</dimen>
     <dimen name="wide_attachment_margin_top">2sp</dimen>
     <dimen name="wide_subject_margin_right">0dip</dimen>
@@ -39,9 +39,8 @@
     <dimen name="date_background_padding_left">4dip</dimen>
     <dimen name="touch_slop">16dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
-    <dimen name="label_cell_width">8dip</dimen>
+    <dimen name="folder_cell_width">8dip</dimen>
     <dimen name="triangle_width">15dip</dimen>
-    <dimen name="label_list_heading_padding_side">8dp</dimen>
     <dimen name="message_details_header_collapsed_height">48sp</dimen>
     <dimen name="message_details_header_bottom_border_height">1dip</dimen>
     <dimen name="message_details_header_date_margin_right">4dip</dimen>

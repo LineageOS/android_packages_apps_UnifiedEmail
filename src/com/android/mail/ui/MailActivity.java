@@ -34,7 +34,7 @@ import com.android.mail.utils.Utils;
 
 /**
  * This is the root activity container that holds the left navigation fragment
- * (usually a list of labels), and the main content fragment (either a
+ * (usually a list of folders), and the main content fragment (either a
  * conversation list or a conversation view).
  */
 public class MailActivity extends AbstractMailActivity implements ControllableActivity {

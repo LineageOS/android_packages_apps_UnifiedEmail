@@ -31,7 +31,7 @@ import java.util.Set;
  * Object that contains a list of folder operations (application/removals of folders)
  *
  */
-// This was earlier called LabelOperations
+// This was earlier called FolderOperations
 public class FolderOperations {
     /**
      * Map of the Folders that that either need to be applied or removed

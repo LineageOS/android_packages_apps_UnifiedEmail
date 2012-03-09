@@ -121,7 +121,7 @@ public class Account extends android.accounts.Account implements Parcelable {
 
     public final String mimeType;
     /**
-     * URI for recent labels for this account.
+     * URI for recent folders for this account.
      */
     public final Uri recentFolderListUri;
 

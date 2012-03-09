@@ -34,10 +34,10 @@
 
     <!-- Always available -->
     <item
-        android:id="@+id/change_labels"
-        android:title="@string/menu_change_labels"
+        android:id="@+id/change_folders"
+        android:title="@string/menu_change_folders"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_menu_labels_holo_light" />
+        android:icon="@drawable/ic_menu_folders_holo_light" />
 
     <!-- Always available -->
     <item

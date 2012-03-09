@@ -16,25 +16,25 @@
      limitations under the License.
 -->
 
-<!-- This layout shows the header in the dropdown list of labels. This header is non-clickable. -->
+<!-- This layout shows the header in the dropdown list of folders. This header is non-clickable. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="32dip"
     android:layout_gravity="center_vertical"
     style="?android:attr/listSeparatorTextViewStyle"
     android:background="@+drawable/list_section_divider_holo_light"
-    android:paddingLeft="@dimen/label_list_heading_padding_side"
-    android:paddingRight="@dimen/label_list_heading_padding_side">
+    android:paddingLeft="@dimen/folder_list_heading_padding_side"
+    android:paddingRight="@dimen/folder_list_heading_padding_side">
 
     <TextView
         android:textAllCaps="true"
         android:textSize="14sp"
-        android:textColor="@color/label_list_heading_text_color"
+        android:textColor="@color/folder_list_heading_text_color"
         android:textStyle="bold"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="@string/recent_labels"/>
+        android:text="@string/recent_folders"/>
 
     <!-- This is the name of the account. -->
     <TextView
@@ -42,7 +42,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:textSize="14sp"
-        android:textColor="@color/label_list_heading_text_color"
+        android:textColor="@color/folder_list_heading_text_color"
         android:layout_height="wrap_content"
         android:layout_width="0dip"
         android:layout_weight="1"

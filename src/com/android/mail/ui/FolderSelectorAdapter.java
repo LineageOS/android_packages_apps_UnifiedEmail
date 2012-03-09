@@ -35,7 +35,7 @@ import java.util.Set;
 
 /**
  * An adapter for translating a {@link FolderList} to a set of selectable views to be used for
- * applying labels to one or more conversations.
+ * applying folders to one or more conversations.
  */
 public class FolderSelectorAdapter extends BaseAdapter {
 

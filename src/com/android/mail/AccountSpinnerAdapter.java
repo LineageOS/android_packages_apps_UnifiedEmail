@@ -30,7 +30,6 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.RecentFolderList;
-import com.android.mail.utils.LogUtils;
 
 /**
  * An adapter to return the list of accounts and folders for the Account Spinner.
@@ -66,9 +65,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     /** The folder currently being viewed */
     private Folder mCurrentFolder;
-
-    /** Application context */
-    private final Context mContext;
 
     /**
      * When the user selects the spinner, a dropdown list of objects is shown. Each item in the
@@ -122,7 +118,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     public AccountSpinnerAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
-        mContext = context;
         mRecentFolders = new RecentFolderList(null, context);
     }
 
@@ -213,12 +208,12 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         switch (getType(position)) {
             case TYPE_ACCOUNT:
                 // The default Inbox for the given account
-                accountName = getAccountLabel(position);
+                accountName = getAccountFolder(position);
                 folderName = getFolderLabel();
                 unreadCount = getFolderUnreadCount();
                 break;
             case TYPE_HEADER:
-                accountName = getAccountLabel(0);
+                accountName = getAccountFolder(0);
                 break;
             default:
                 // Change the name of the current folder
@@ -297,7 +292,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 header.account.setText(label);
                 return convertView;
             case TYPE_ACCOUNT:
-                textLabel = getAccountLabel(position);
+                textLabel = getAccountFolder(position);
                 break;
             case TYPE_FOLDER:
                 final int offset = position - mNumAccounts - 1;
@@ -333,9 +328,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     /**
      * Returns the name of the folder at the given position in the spinner.
      * @param position
-     * @return the label of the account at the given position.
+     * @return the folder of the account at the given position.
      */
-    private String getAccountLabel(int position) {
+    private String getAccountFolder(int position) {
         if (position >= mNumAccounts) {
             return "";
         }

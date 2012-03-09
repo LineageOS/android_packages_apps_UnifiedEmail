@@ -252,7 +252,7 @@ public class WidgetService extends RemoteViewsService {
             if (!mFolderInformationShown && !TextUtils.isEmpty(folderName)) {
                 // We want to do a full update to the widget at least once, as the widget
                 // manager doesn't cache the state of the remote views when doing a partial
-                // widget update. This causes the label name to be shown as blank if the state
+                // widget update. This causes the folder name to be shown as blank if the state
                 // of the widget is restored.
                 BaseWidgetProvider.configureValidAccountWidget(
                         mContext, remoteViews, mAppWidgetId, mAccount, mFolder, folderName);
@@ -287,7 +287,7 @@ public class WidgetService extends RemoteViewsService {
         }
 
         /**
-         * A {@link DelayedTaskHandler} to throttle label update to a reasonable rate.
+         * A {@link DelayedTaskHandler} to throttle folder update to a reasonable rate.
          */
         private class FolderUpdateHandler extends DelayedTaskHandler {
             public FolderUpdateHandler(int refreshDelay) {

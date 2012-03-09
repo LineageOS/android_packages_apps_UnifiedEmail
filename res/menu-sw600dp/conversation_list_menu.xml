@@ -37,9 +37,9 @@
         android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
 
-    <item android:id="@+id/label_options"
-        android:title="@string/menu_manage_labels"
-        android:icon="@drawable/ic_menu_labels_holo_light" />
+    <item android:id="@+id/folder_options"
+        android:title="@string/menu_manage_folders"
+        android:icon="@drawable/ic_menu_folders_holo_light" />
 
     <item android:id="@+id/settings"
         android:title="@string/menu_settings" />

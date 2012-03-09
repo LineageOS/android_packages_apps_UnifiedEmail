@@ -31,7 +31,7 @@ import com.android.mail.ui.ViewMode;
 
 /**
  * Represents the coordinates of elements inside a CanvasConversationHeaderView
- * (eg, checkmark, star, subject, sender, labels, etc.) It will inflate a view,
+ * (eg, checkmark, star, subject, sender, folders, etc.) It will inflate a view,
  * and record the coordinates of each element after layout. This will allows us
  * to easily improve performance by creating custom view while still defining
  * layout in XML files.
@@ -44,9 +44,9 @@ public class ConversationItemViewCoordinates {
     private static final int NORMAL_MODE = 1;
 
     // Static threshold.
-    private static int TOTAL_LABEL_WIDTH = -1;
-    private static int TOTAL_LABEL_WIDTH_WIDE = -1;
-    private static int LABEL_CELL_WIDTH = -1;
+    private static int TOTAL_FOLDER_WIDTH = -1;
+    private static int TOTAL_FOLDER_WIDTH_WIDE = -1;
+    private static int FOLDER_CELL_WIDTH = -1;
     private static int sConversationHeights[];
 
     // Checkmark.
@@ -78,13 +78,14 @@ public class ConversationItemViewCoordinates {
     int subjectFontSize;
     int subjectAscent;
 
-    // Labels.
-    int labelsXEnd;
-    int labelsY;
-    int labelsHeight;
-    int labelsTopPadding;
-    int labelsFontSize;
-    int labelsAscent;
+    // Folders.
+    int foldersXEnd;
+    int foldersY;
+    int foldersHeight;
+    int foldersTopPadding;
+    int foldersFontSize;
+    int foldersAscent;
+    boolean showFolders;
 
     // Date.
     int dateXEnd;
@@ -94,6 +95,7 @@ public class ConversationItemViewCoordinates {
 
     // Paperclip.
     int paperclipY;
+
 
     // Cache to save Coordinates based on view width.
     private static SparseArray<ConversationItemViewCoordinates> mCache =
@@ -207,15 +209,15 @@ public class ConversationItemViewCoordinates {
     /**
      * Returns the length (maximum of characters) of subject in this mode.
      */
-    public static int getSubjectLength(Context context, int mode, boolean hasVisibleLabels,
+    public static int getSubjectLength(Context context, int mode, boolean hasVisibleFolders,
             boolean hasAttachments) {
-        if (hasVisibleLabels) {
+        if (hasVisibleFolders) {
             if (hasAttachments) {
                 return context.getResources().getIntArray(
-                        R.array.senders_with_labels_and_attachment_lengths)[mode];
+                        R.array.senders_with_folders_and_attachment_lengths)[mode];
             } else {
                 return context.getResources().getIntArray(
-                        R.array.senders_with_labels_lengths)[mode];
+                        R.array.senders_with_folders_lengths)[mode];
             }
         } else {
             if (hasAttachments) {
@@ -228,36 +230,36 @@ public class ConversationItemViewCoordinates {
     }
 
     /**
-     * Returns the width available to draw labels in this mode.
+     * Returns the width available to draw folders in this mode.
      */
-    public static int getLabelsWidth(Context context, int mode) {
+    public static int getFoldersWidth(Context context, int mode) {
         Resources res = context.getResources();
-        if (TOTAL_LABEL_WIDTH <= 0) {
-            TOTAL_LABEL_WIDTH = res.getDimensionPixelSize(R.dimen.max_total_label_width);
-            TOTAL_LABEL_WIDTH_WIDE = res.getDimensionPixelSize(R.dimen.max_total_label_width_wide);
+        if (TOTAL_FOLDER_WIDTH <= 0) {
+            TOTAL_FOLDER_WIDTH = res.getDimensionPixelSize(R.dimen.max_total_folder_width);
+            TOTAL_FOLDER_WIDTH_WIDE = res.getDimensionPixelSize(R.dimen.max_total_folder_width_wide);
         }
         switch (mode) {
             case WIDE_MODE:
-                return TOTAL_LABEL_WIDTH_WIDE;
+                return TOTAL_FOLDER_WIDTH_WIDE;
             case NORMAL_MODE:
-                return TOTAL_LABEL_WIDTH;
+                return TOTAL_FOLDER_WIDTH;
             default:
                 throw new IllegalArgumentException("Unknown conversation header view mode " + mode);
         }
     }
 
     /**
-     * Returns the width of a cell to draw labels.
+     * Returns the width of a cell to draw folders.
      */
-    public static int getLabelCellWidth(Context context, int mode, int labelsCount) {
+    public static int getLabelCellWidth(Context context, int mode, int foldersCount) {
         Resources res = context.getResources();
-        if (LABEL_CELL_WIDTH <= 0) {
-            LABEL_CELL_WIDTH = res.getDimensionPixelSize(R.dimen.label_cell_width);
+        if (FOLDER_CELL_WIDTH <= 0) {
+            FOLDER_CELL_WIDTH = res.getDimensionPixelSize(R.dimen.folder_cell_width);
         }
         switch (mode) {
             case WIDE_MODE:
             case NORMAL_MODE:
-                return LABEL_CELL_WIDTH;
+                return FOLDER_CELL_WIDTH;
             default:
                 throw new IllegalArgumentException("Unknown conversation header view mode " + mode);
         }
@@ -325,15 +327,20 @@ public class ConversationItemViewCoordinates {
             sPaint.setTextSize(coordinates.subjectFontSize);
             coordinates.subjectAscent = (int) sPaint.ascent();
 
-            View labels = view.findViewById(R.id.labels);
-            coordinates.labelsXEnd = getX(labels) + labels.getWidth();
-            coordinates.labelsY = getY(labels);
-            coordinates.labelsHeight = labels.getHeight();
-            coordinates.labelsTopPadding = labels.getPaddingTop();
-            if (labels instanceof TextView) {
-                coordinates.labelsFontSize = (int) ((TextView) labels).getTextSize();
-                sPaint.setTextSize(coordinates.labelsFontSize);
-                coordinates.labelsAscent = (int) sPaint.ascent();
+            View folders = view.findViewById(R.id.folders);
+            if (folders != null) {
+                coordinates.showFolders = true;
+                coordinates.foldersXEnd = getX(folders) + folders.getWidth();
+                coordinates.foldersY = getY(folders);
+                coordinates.foldersHeight = folders.getHeight();
+                coordinates.foldersTopPadding = folders.getPaddingTop();
+                if (folders instanceof TextView) {
+                    coordinates.foldersFontSize = (int) ((TextView) folders).getTextSize();
+                    sPaint.setTextSize(coordinates.foldersFontSize);
+                    coordinates.foldersAscent = (int) sPaint.ascent();
+                }
+            } else {
+                coordinates.showFolders = false;
             }
 
             TextView date = (TextView) view.findViewById(R.id.date);
@@ -349,7 +356,7 @@ public class ConversationItemViewCoordinates {
         return coordinates;
     }
 
-    public static boolean displayLabelsAboveDate(int mode) {
-        return mode == WIDE_MODE;
+    public static boolean displayFoldersAboveDate(boolean showFolders, int mode) {
+        return showFolders && mode == WIDE_MODE;
     }
 }

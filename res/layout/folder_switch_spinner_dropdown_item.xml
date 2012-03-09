@@ -17,7 +17,7 @@
 -->
 
 
-<!--  Each item in the label switch spinner. -->
+<!--  Each item in the folder switch spinner. -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="?android:attr/spinnerDropDownItemStyle"

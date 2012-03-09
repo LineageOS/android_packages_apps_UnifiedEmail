@@ -20,11 +20,11 @@
         <item>64</item>
         <item>70</item>
     </integer-array>
-    <integer-array name="senders_with_labels_and_attachment_lengths">
+    <integer-array name="senders_with_folders_and_attachment_lengths">
         <item>20</item>
         <item>20</item>
     </integer-array>
-    <integer-array name="senders_with_labels_lengths">
+    <integer-array name="senders_with_folders_lengths">
         <item>22</item>
         <item>22</item>
     </integer-array>
@@ -36,8 +36,8 @@
         <item>27</item>
         <item>27</item>
     </integer-array>
-    <!-- When no recent labels exist, pre-populate with these as defaults. Do not translate. -->
-    <string-array translatable="false" name="default_recent_labels">
+    <!-- When no recent folders exist, pre-populate with these as defaults. Do not translate. -->
+    <string-array translatable="false" name="default_recent_folders">
         <!-- Starred -->
         <item>^t</item>
         <!-- Sent -->

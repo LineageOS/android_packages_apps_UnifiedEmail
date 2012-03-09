@@ -186,8 +186,7 @@ public class UIProvider {
         public static final int THREADED_CONVERSATIONS = 0x0800;
         /**
          * Whether the server supports allowing a conversation to be in multiple folders. (Or allows
-         * multiple labels on a single conversation, since labels and folders are interchangeable
-         * in this application.)
+         * multiple folders on a single conversation)
          */
         public static final int MULTIPLE_FOLDERS_PER_CONV = 0x1000;
         /**
