@@ -130,6 +130,11 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
     public void render(Attachment attachment) {
         mAttachment = attachment;
 
+        LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
+                " contentUri=%s MIME=%s", mAttachment.name, mAttachment.state,
+                mAttachment.destination, mAttachment.downloadedSize, mAttachment.contentUri,
+                mAttachment.mimeType);
+
         mTitle.setText(attachment.name);
 
         mAttachmentSizeText = AttachmentUtils.convertToHumanReadableSize(getContext(),
@@ -160,9 +165,10 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
 
     private void updateStatus(Attachment newAttachment) {
 
-        LogUtils.d(LOG_TAG, "got attachment update: uri=%s dled=%d state=%d contentUri=%s MIME=%s",
-                newAttachment.uri, newAttachment.downloadedSize, newAttachment.state,
-                newAttachment.contentUri, newAttachment.mimeType);
+        LogUtils.d(LOG_TAG, "got attachment update: name=%s state/dest=%d/%d dled=%d" +
+                " contentUri=%s MIME=%s", newAttachment.name, newAttachment.state,
+                newAttachment.destination, newAttachment.downloadedSize, newAttachment.contentUri,
+                newAttachment.mimeType);
 
         mAttachment = newAttachment;
 
@@ -171,7 +177,7 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
 
         if (mViewProgressDialog != null && mViewProgressDialog.isShowing()) {
             mViewProgressDialog.setProgress(newAttachment.downloadedSize);
-            mViewProgressDialog.setIndeterminate(showProgress);
+            mViewProgressDialog.setIndeterminate(!showProgress);
 
             if (!newAttachment.isDownloading()) {
                 mViewProgressDialog.dismiss();
@@ -185,6 +191,7 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
             if (newAttachment.isDownloading()) {
                 mProgress.setProgress(newAttachment.downloadedSize);
                 setProgressVisible(true);
+                mProgress.setIndeterminate(!showProgress);
             } else {
                 setProgressVisible(false);
             }
