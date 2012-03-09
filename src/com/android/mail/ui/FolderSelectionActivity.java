@@ -32,7 +32,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
@@ -243,11 +242,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     @Override
     public ConversationListCallbacks getListHandler() {
-        return null;
-    }
-
-    @Override
-    public StarHandler getStarHandler() {
         return null;
     }
 

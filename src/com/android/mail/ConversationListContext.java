@@ -70,8 +70,6 @@ public class ConversationListContext {
     private ArrayList<String> mSearchTerms;
 
     static {
-        // Get the real authority here.
-        // TODO(viki): Get the real authority, and the real URI matcher!!!
         sUrlMatcher.addURI(UIProvider.AUTHORITY, "account/*/folder/*", 0);
     }
 

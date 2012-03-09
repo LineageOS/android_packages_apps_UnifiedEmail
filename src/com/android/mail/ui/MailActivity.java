@@ -27,7 +27,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.providers.Settings;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.Utils;
@@ -238,11 +237,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     @Override
     public ConversationListCallbacks getListHandler() {
-        return mController;
-    }
-
-    @Override
-    public StarHandler getStarHandler() {
         return mController;
     }
 

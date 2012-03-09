@@ -17,7 +17,6 @@
 
 package com.android.mail.ui;
 
-import com.android.mail.browse.ConversationItemView.StarHandler;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 
@@ -62,13 +61,15 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity {
     ConversationListCallbacks getListHandler();
 
     /**
-     * Returns the object that handles Star events associated with this activity.
-     * @return
+     * Attaches a folder list fragment to the activity controller.
+     * @param folderListFragment cannot be null.
      */
-    StarHandler getStarHandler();
-
     void attachFolderList(FolderListFragment folderListFragment);
 
+    /**
+     * Attaches a conversation view fragment to the activity controller.
+     * @param conversationViewFragment cannot be null.
+     */
     void attachConversationView(ConversationViewFragment conversationViewFragment);
 
     /**

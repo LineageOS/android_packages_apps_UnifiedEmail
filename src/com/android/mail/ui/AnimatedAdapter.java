@@ -79,7 +79,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         if (!isPositionAnimating(view)) {
-            ((ConversationItemView) view).bind(cursor, null, mSelectedAccount.name, null,
+            ((ConversationItemView) view).bind(cursor, mSelectedAccount.name, null,
                     mViewMode, mBatchConversations);
         }
     }

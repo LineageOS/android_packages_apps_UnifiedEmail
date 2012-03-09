@@ -541,11 +541,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void toggleStar(boolean toggleOn, long conversationId, long maxMessageId) {
-        // TODO(viki): Auto-generated method stub
-    }
-
-    @Override
     public void onConversationSelected(Conversation conversation) {
         mCurrentConversation = conversation;
         showConversation(mCurrentConversation);
@@ -732,11 +727,15 @@ public abstract class AbstractActivityController implements ActivityController {
         public FetchSearchFolderTask(String query) {
             mQuery = query;
         }
+
+        @Override
         public Folder doInBackground(Void... params) {
             Folder searchFolder = Folder.forSearchResults(mAccount, mQuery,
                     mActivity.getActivityContext());
             return searchFolder;
         }
+
+        @Override
         public void onPostExecute(Folder folder) {
             setFolder(folder);
             mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder, mQuery);

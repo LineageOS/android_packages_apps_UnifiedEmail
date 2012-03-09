@@ -140,15 +140,6 @@ public class ConversationItemView extends View {
         sFoldersPaint.setAntiAlias(true);
     }
 
-    /**
-     * This handler will be called when user toggle a star in a conversation
-     * header view. It can be used to update the state of other views to ensure
-     * UI consistency.
-     */
-    public static interface StarHandler {
-        public void toggleStar(boolean toggleOn, long conversationId, long maxMessageId);
-    }
-
     public ConversationItemView(Context context, String account) {
         super(context);
         mContext = context.getApplicationContext();
@@ -203,8 +194,8 @@ public class ConversationItemView extends View {
         }
     }
 
-    public void bind(Cursor cursor, StarHandler starHandler, String account,
-            CharSequence displayedFolder, ViewMode viewMode, ConversationSelectionSet set) {
+    public void bind(Cursor cursor, String account, CharSequence displayedFolder,
+            ViewMode viewMode, ConversationSelectionSet set) {
         mAccount = account;
         mViewMode = viewMode;
         mHeader = ConversationItemViewModel.forCursor(account, cursor);
