@@ -676,7 +676,7 @@ public class ConversationItemView extends View {
             mHeader.dateBackground = DATE_BACKGROUND;
             int leftOffset = (mHeader.conversation.hasAttachments ? mPaperclipX : mDateX)
                     - DATE_BACKGROUND_PADDING_LEFT;
-            int top = mCoordinates.foldersY;
+            int top = mCoordinates.showFolders ? mCoordinates.foldersY : mCoordinates.dateY;
             Rect src = new Rect(0, 0, mHeader.dateBackground.getWidth(), mHeader.dateBackground
                     .getHeight());
             Rect dst = new Rect(leftOffset, top, mViewWidth, top + sDateBackgroundHeight);
