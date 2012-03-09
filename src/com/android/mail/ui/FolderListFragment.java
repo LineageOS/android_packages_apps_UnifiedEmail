@@ -219,6 +219,7 @@ public final class FolderListFragment extends ListFragment implements
             if (mSelectedFolder != null && TextUtils.equals(folder.id, mSelectedFolder.id)) {
                 getListView().setItemChecked(position, true);
             }
+            Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.folder_box));
             return folderItemView;
         }
     }
