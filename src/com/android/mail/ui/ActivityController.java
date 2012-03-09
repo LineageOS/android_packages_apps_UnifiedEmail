@@ -29,6 +29,7 @@ import android.view.MotionEvent;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationItemView.StarHandler;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Settings;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -39,7 +40,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * or respond to user action.
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
-        ModeChangeListener, ActionBarView.Callback, StarHandler, ConversationListCallbacks,
+        ModeChangeListener, StarHandler, ConversationListCallbacks,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
@@ -70,6 +71,16 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * @param conversationViewFragment
      */
     void attachConversationView(ConversationViewFragment conversationViewFragment);
+
+    /**
+     * Returns the current account.
+     */
+    Account getCurrentAccount();
+
+    /**
+     * Returns the current conversation list context.
+     */
+    ConversationListContext getCurrentListContext();
 
     /**
      * Return the current mode the activity is in. Values need to be matched against constants in
@@ -226,7 +237,6 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
     /**
      * Show the folder list associated with the currently selected account.
      */
-    @Override
     void showFolderList();
 
     /**

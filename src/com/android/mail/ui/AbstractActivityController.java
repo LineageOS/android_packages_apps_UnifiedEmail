@@ -476,11 +476,6 @@ public abstract class AbstractActivityController implements ActivityController {
         // TODO(viki): Auto-generated method stub
     }
 
-    @Override
-    public void reloadSearch(String string) {
-        // TODO(viki): Auto-generated method stub
-    }
-
     /**
      * @param savedState
      */
@@ -543,16 +538,6 @@ public abstract class AbstractActivityController implements ActivityController {
     public void setSubject(String subject) {
         // Do something useful with the subject. This requires changing the
         // conversation view's subject text.
-    }
-
-    @Override
-    public void startActionBarStatusCursorLoader(String account) {
-        // TODO(viki): Auto-generated method stub
-    }
-
-    @Override
-    public void stopActionBarStatusCursorLoader(String account) {
-        // TODO(viki): Auto-generated method stub
     }
 
     @Override

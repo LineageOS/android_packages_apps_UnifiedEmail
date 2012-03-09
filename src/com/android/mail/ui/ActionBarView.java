@@ -50,44 +50,9 @@ import com.android.mail.utils.Utils;
  */
 public final class ActionBarView extends LinearLayout implements OnNavigationListener,
         ViewMode.ModeChangeListener, OnQueryTextListener {
-    /**
-     * This interface is used to send notifications back to the calling
-     * activity. MenuHandler takes care of updating the provider, so this
-     * interface should be used for notification purposes only (such as updating
-     * the UI).
-     */
-    // TODO(viki): This callback is currently unused and may be entirely unnecessary in the new
-    // code, where the Actionbar is switched into navigation mode, relying on the framework for most
-    // heavy lifting. Also, we can switch ViewMode to the appropriate mode and rely on all UI
-    // components updating through ViewMode change listeners.
-    public interface Callback {
-        /**
-         * Returns the current account.
-         */
-        Account getCurrentAccount();
-
-        /**
-         * Called when the TwoPaneActionBar wants to get the current conversation list context.
-         */
-        ConversationListContext getCurrentListContext();
-
-        /**
-         * Invoked when the user is already viewing search results
-         * and enters a new query.
-         * @param string Query
-         */
-        void reloadSearch(String string);
-
-        void showFolderList();
-
-        void startActionBarStatusCursorLoader(String account);
-
-        void stopActionBarStatusCursorLoader(String account);
-    }
-
     private ActionBar mActionBar;
     private RestrictedActivity mActivity;
-    private ActivityController mCallback;
+    private ActivityController mController;
     private View mFolderView;
     /**
      * The current mode of the ActionBar. This references constants in {@link ViewMode}
@@ -178,7 +143,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     public void initialize(RestrictedActivity activity, ActivityController callback,
             ViewMode viewMode, ActionBar actionBar) {
         mActionBar = actionBar;
-        mCallback = callback;
+        mController = callback;
         mActivity = activity;
 
         mSpinner = new AccountSpinnerAdapter(getContext());
@@ -188,7 +153,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     }
 
     public void setAccounts(Account[] accounts) {
-        Account currentAccount = mCallback.getCurrentAccount();
+        Account currentAccount = mController.getCurrentAccount();
         mSpinner.setAccounts(accounts);
         mSpinner.setCurrentAccount(currentAccount);
         int position = -1;
@@ -230,12 +195,12 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 // Get the capabilities associated with this account.
                 final Object item = mSpinner.getItem(position);
                 assert (item instanceof Account);
-                mCallback.onAccountChanged((Account) mSpinner.getItem(position));
+                mController.onAccountChanged((Account) mSpinner.getItem(position));
                 break;
             case AccountSpinnerAdapter.TYPE_FOLDER:
                 final Object folder = mSpinner.getItem(position);
                 assert (folder instanceof Folder);
-                mCallback.onFolderChanged((Folder) folder);
+                mController.onFolderChanged((Folder) folder);
                 break;
         }
         return false;
@@ -247,11 +212,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     public void onResume() {
     }
 
-    public void onStatusResult(String account, int status) {
-        // Update the inbox folder if required
-        mCallback.stopActionBarStatusCursorLoader(account);
-    }
-
+    @Override
     public void onViewModeChanged(int newMode) {
         mMode = newMode;
         // Always update the options menu and redraw. This will read the new mode and redraw
@@ -332,7 +293,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private void setPopulatedSearchView() {
         if (mSearch != null) {
             mSearch.expandActionView();
-            ConversationListContext context = mCallback.getCurrentListContext();
+            ConversationListContext context = mController.getCurrentListContext();
             if (context != null) {
                 mSearchWidget.setQuery(context.searchQuery, false);
             }
