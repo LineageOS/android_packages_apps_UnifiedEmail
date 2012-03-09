@@ -38,7 +38,7 @@
     <!-- Shown in Compose; the subject of the message [CHAR LIMIT=100] -->
     <string name="body_hint">Compose email</string>
     <!-- Compose screen, button: add Cc/Bcc fields [CHAR LIMIT=1]-->
-    <string name="plus_cc_folder">+</string>
+    <string name="plus_cc_label">+</string>
     <!-- Compose screen, button: add bcc fields [CHAR LIMIT=1]-->
     <string name="plus_bcc_folder">+</string>
     <!--  Compose screen button. Add an attachment to this message [CHAR LIMIT=20] -->
@@ -528,4 +528,7 @@
     <string name="search_hint">Search mail</string>
     <!-- Search Results: Text for status of the search when the results are completely loaded [CHAR LIMIT=10] -->
     <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
+
+    <!-- Show in the actionbar -->
+    <string name="labels">Labels</string>
 </resources>
