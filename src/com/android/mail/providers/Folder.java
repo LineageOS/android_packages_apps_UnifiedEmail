@@ -387,7 +387,7 @@ public class Folder implements Parcelable {
     // Show black text on a transparent swatch for system labels, effectively hiding the
     // swatch (see bug 2431925).
     public static void setFolderBlockColor(Folder folder, View colorBlock) {
-        boolean showBg = folder.bgColor != null;
+        boolean showBg = !TextUtils.isEmpty(folder.bgColor);
         final int backgroundColor = showBg ? Color.parseColor(folder.bgColor) : 0;
 
         if (!showBg) {

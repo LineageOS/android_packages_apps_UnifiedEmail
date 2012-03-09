@@ -19,35 +19,18 @@
 
 <!-- Describes an individual toggleable label entry to be displayed in a list of labels in
      a label selection UI. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/labels"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:height="?android:attr/listPreferredItemHeight"
-    android:gravity="center_vertical"
-    android:padding="3dip">
+    android:layout_height="?android:attr/listPreferredItemHeight">
 
     <!-- Note: the checkbox is not focusable because the parent list item itself handles
          the toggling -->
     <CheckBox android:id="@+id/checkbox"
-        android:layout_height="wrap_content"
-        android:layout_width="0dip"
-        android:layout_weight="1"
-        android:layout_margin="4dip"
-        android:singleLine="false"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:drawablePadding="20dip"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        style="@style/FolderSelectionItemStyle"/>
 
     <View
         android:id="@+id/color_block"
-        android:layout_height="36dip"
-        android:layout_width="36dip"
-        android:layout_gravity="right|top"
-        android:layout_margin="4dip" />
+        style="@style/FolderColorBoxStyle"/>
 
-</LinearLayout>
+</RelativeLayout>

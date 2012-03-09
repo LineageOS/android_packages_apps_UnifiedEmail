@@ -314,6 +314,25 @@
         <item name="android:layout_width">@dimen/folder_list_folder_color_width</item>
     </style>
 
+    <style name="FolderColorBoxStyle" parent="@style/FolderItemIcon">
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="FolderSelectionItemStyle">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_margin">4dip</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:drawablePadding">20dip</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
     <!-- Widget styles -->
     <style name="WidgetTitle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">#333333</item>
