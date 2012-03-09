@@ -23,8 +23,10 @@
     <string name="bcc" msgid="3098643138241111579">"Cco"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Assumpte"</string>
     <string name="body_hint" msgid="4279864165439577668">"Redacta un correu electrònic"</string>
-    <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
-    <string name="plus_bcc_label" msgid="3466026399539734378">"+"</string>
+    <!-- no translation found for plus_cc_folder (1214307160559508302) -->
+    <skip />
+    <!-- no translation found for plus_bcc_folder (4756816436930806526) -->
+    <skip />
     <string name="add_file_attachment" msgid="2203398371671979481">"Adjunta un fitxer"</string>
     <string name="save_draft" msgid="5555744208032445632">"Desa l\'esborrany"</string>
     <string name="discard" msgid="1714960202994370243">"Descarta"</string>
@@ -65,12 +67,15 @@
     <string name="resume_draft" msgid="6450150180834092146">"Edita"</string>
     <string name="forward" msgid="6822914459902983767">"Reenvia"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Redacta"</string>
-    <string name="menu_change_labels" msgid="9121087142079721959">"Canvia les etiquetes"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Canvia les carpetes"</string>
-    <string name="menu_manage_labels" msgid="8618788259638720538">"Gestiona les etiquetes"</string>
-    <string name="label_list_title" msgid="7948730824763052410">"Etiquetes"</string>
-    <string name="manage_labels_subtitle" msgid="8802709983773098505">"Sincronitza i notifica"</string>
-    <string name="menu_label_options" msgid="1811414840489117457">"Configuració de l\'etiqueta"</string>
+    <!-- no translation found for menu_manage_folders (7499103037978814445) -->
+    <skip />
+    <!-- no translation found for folder_list_title (4276644062440415214) -->
+    <skip />
+    <!-- no translation found for manage_folders_subtitle (7702199674083260433) -->
+    <skip />
+    <!-- no translation found for menu_folder_options (8897520487430647932) -->
+    <skip />
     <string name="menu_done" msgid="5791134842152855128">"Fet"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Configuració del compte"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Configuració"</string>
@@ -127,7 +132,8 @@
     <string name="sending" msgid="8214361929125649771">"S\'està enviant…"</string>
     <string name="send_failed" msgid="750908595144529579">"No s\'ha enviat el missatge."</string>
     <string name="me" msgid="6480762904022198669">"jo"</string>
-    <string name="labels" msgid="1519770547536283663">"Etiquetes"</string>
+    <!-- no translation found for folders (3359679829905256429) -->
+    <skip />
     <string name="show_all_folders" msgid="3281420732307737553">"Mostra totes les carpetes"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Vols suprimir aquesta conversa?"</item>
@@ -207,9 +213,11 @@
     <string name="removeBackButton" msgid="860383341267568260">"Elimina el botó Enrere"</string>
     <string name="normalMode" msgid="4250277414924926730">"Defineix el mode normal"</string>
     <string name="searchResultMode" msgid="3564180712046711968">"Mode de resultats de cerca"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Defineix el mode d\'etiquetes"</string>
+    <!-- no translation found for folderMode (553052020619895714) -->
+    <skip />
     <string name="search_results_searching_header" msgid="3821361153909466819">"S\'està cercant..."</string>
-    <string name="recent_labels" msgid="5539494776429934547">"Recents"</string>
+    <!-- no translation found for recent_folders (8240081561436891330) -->
+    <skip />
     <string name="expand_recipient_details" msgid="2266544827446346880">"Amplia els detalls del destinatari"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Redueix les dades del destinatari"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Mostra la informació de contacte de <xliff:g id="NAME">%1$s</xliff:g>"</string>

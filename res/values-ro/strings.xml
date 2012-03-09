@@ -23,8 +23,10 @@
     <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Subiect"</string>
     <string name="body_hint" msgid="4279864165439577668">"Scrieţi un e-mail"</string>
-    <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
-    <string name="plus_bcc_label" msgid="3466026399539734378">"+"</string>
+    <!-- no translation found for plus_cc_folder (1214307160559508302) -->
+    <skip />
+    <!-- no translation found for plus_bcc_folder (4756816436930806526) -->
+    <skip />
     <string name="add_file_attachment" msgid="2203398371671979481">"Ataşaţi un fişier"</string>
     <string name="save_draft" msgid="5555744208032445632">"Salvaţi mesajul nefinal."</string>
     <string name="discard" msgid="1714960202994370243">"Renunţaţi"</string>
@@ -65,12 +67,15 @@
     <string name="resume_draft" msgid="6450150180834092146">"Editaţi"</string>
     <string name="forward" msgid="6822914459902983767">"Redirecţionaţi"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Scrieţi"</string>
-    <string name="menu_change_labels" msgid="9121087142079721959">"Modificaţi etichetele"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Modificaţi dosarele"</string>
-    <string name="menu_manage_labels" msgid="8618788259638720538">"Gestionaţi etichetele"</string>
-    <string name="label_list_title" msgid="7948730824763052410">"Etichete"</string>
-    <string name="manage_labels_subtitle" msgid="8802709983773098505">"Sincronizare şi notificare"</string>
-    <string name="menu_label_options" msgid="1811414840489117457">"Setări pentru etichete"</string>
+    <!-- no translation found for menu_manage_folders (7499103037978814445) -->
+    <skip />
+    <!-- no translation found for folder_list_title (4276644062440415214) -->
+    <skip />
+    <!-- no translation found for manage_folders_subtitle (7702199674083260433) -->
+    <skip />
+    <!-- no translation found for menu_folder_options (8897520487430647932) -->
+    <skip />
     <string name="menu_done" msgid="5791134842152855128">"Terminat"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Setările contului"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Setări"</string>
@@ -127,7 +132,8 @@
     <string name="sending" msgid="8214361929125649771">"Se trimite..."</string>
     <string name="send_failed" msgid="750908595144529579">"Mesaj netrimis."</string>
     <string name="me" msgid="6480762904022198669">"eu"</string>
-    <string name="labels" msgid="1519770547536283663">"Etichete"</string>
+    <!-- no translation found for folders (3359679829905256429) -->
+    <skip />
     <string name="show_all_folders" msgid="3281420732307737553">"Afişaţi toate dosarele"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Ştergeţi această conversaţie?"</item>
@@ -207,9 +213,11 @@
     <string name="removeBackButton" msgid="860383341267568260">"Eliminaţi butonul Înapoi"</string>
     <string name="normalMode" msgid="4250277414924926730">"Setaţi modul Normal"</string>
     <string name="searchResultMode" msgid="3564180712046711968">"Căutaţi în modul Rezultate"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Setaţi modul Etichetă"</string>
+    <!-- no translation found for folderMode (553052020619895714) -->
+    <skip />
     <string name="search_results_searching_header" msgid="3821361153909466819">"Se caută..."</string>
-    <string name="recent_labels" msgid="5539494776429934547">"Recente"</string>
+    <!-- no translation found for recent_folders (8240081561436891330) -->
+    <skip />
     <string name="expand_recipient_details" msgid="2266544827446346880">"Extindeţi detaliile destinatarului"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Restrângeţi detaliile destinatarului"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Afişaţi informaţiile de contact pentru <xliff:g id="NAME">%1$s</xliff:g>"</string>
