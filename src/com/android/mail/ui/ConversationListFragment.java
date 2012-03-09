@@ -40,6 +40,7 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationItemView;
+import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
@@ -126,6 +127,7 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
     private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
+    private ConversationListFooterView mFooterView;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -221,6 +223,10 @@ public final class ConversationListFragment extends ListFragment implements
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
                 mConversationListCursor, mSelectedSet, mAccount, mActivity.getViewMode());
+        mFooterView = (ConversationListFooterView) LayoutInflater.from(
+                mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
+                null);
+        mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         // Don't need to add ourselves to our own set observer.
         // mActivity.getBatchConversations().addObserver(this);
@@ -514,6 +520,7 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
         configureSearchResultHeader();
+        mListAdapter.hideFooter();
         return new ConversationCursorLoader((Activity) mActivity,
                     UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
     }
@@ -542,10 +549,17 @@ public final class ConversationListFragment extends ListFragment implements
 
     public void onSearchFolderUpdated(Folder folder) {
         mFolder = folder;
-        // Check the status of the folder to see if we are done loading.
-        if (!mFolder.isSyncInProgress()
+        mFooterView.updateStatus(mFolder);
+        if (mFolder.isSyncInProgress()) {
+            mListAdapter.showFooter();
+        } else if (!mFolder.isSyncInProgress()
                 && mFolder.lastSyncResult == UIProvider.LastSyncResult.SUCCESS) {
+            // Check the status of the folder to see if we are done loading.
             updateSearchResultHeader(mFolder != null ? mFolder.totalCount : 0);
+            if (mFolder.totalCount == 0) {
+                mListView.setEmptyView(mEmptyView);
+            }
+            mListAdapter.hideFooter();
         }
     }
 }
