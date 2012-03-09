@@ -18,7 +18,6 @@
 package com.android.mail.browse;
 
 import android.app.AlertDialog;
-import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.AsyncQueryHandler;
@@ -26,10 +25,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -44,7 +41,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.mail.R;
-import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
@@ -61,9 +57,8 @@ import com.android.mail.utils.Utils;
  */
 public class MessageHeaderAttachment extends LinearLayout implements OnClickListener,
         OnMenuItemClickListener, DialogInterface.OnCancelListener,
-        DialogInterface.OnDismissListener, LoaderManager.LoaderCallbacks<Cursor> {
+        DialogInterface.OnDismissListener {
 
-    private LoaderManager mLoaderManager;
     private Attachment mAttachment;
     private ImageView mIcon;
     private TextView mTitle;
@@ -90,14 +85,11 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
         }
 
         /**
-         * Asynchronously begin an update() on a ContentProvider and initialize a loader to watch
-         * for resulting changes on this attachment.
+         * Asynchronously begin an update() on a ContentProvider.
          *
          */
         public void sendCommand(ContentValues params) {
             startUpdate(0, null, mAttachment.uri, params, null, null);
-            mLoaderManager.initLoader(mAttachment.uri.hashCode(), Bundle.EMPTY,
-                    MessageHeaderAttachment.this);
         }
 
     }
@@ -112,40 +104,45 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
         mCommandHandler = new AttachmentCommandHandler();
     }
 
-    public static MessageHeaderAttachment inflate(LayoutInflater inflater, ViewGroup parent,
-            LoaderManager loaderManager) {
+    public static MessageHeaderAttachment inflate(LayoutInflater inflater, ViewGroup parent) {
         MessageHeaderAttachment view = (MessageHeaderAttachment) inflater.inflate(
                 R.layout.conversation_message_attachment, parent, false);
-
-        view.mLoaderManager = loaderManager;
-
         return view;
     }
 
     /**
-     * Render most of the UI using given immutable attachment properties. This happens immediately
-     * upon instantiation.
+     * Render or update an attachment's view. This happens immediately upon instantiation, and
+     * repeatedly as status updates stream in, so only properties with new or changed values will
+     * cause sub-views to update.
      *
      */
     public void render(Attachment attachment) {
+        final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
 
         LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
-                " contentUri=%s MIME=%s", mAttachment.name, mAttachment.state,
-                mAttachment.destination, mAttachment.downloadedSize, mAttachment.contentUri,
-                mAttachment.mimeType);
+                " contentUri=%s MIME=%s", attachment.name, attachment.state,
+                attachment.destination, attachment.downloadedSize, attachment.contentUri,
+                attachment.mimeType);
 
-        mTitle.setText(attachment.name);
+        if (prevAttachment == null || TextUtils.equals(attachment.name, prevAttachment.name)) {
+            mTitle.setText(attachment.name);
+        }
 
-        mAttachmentSizeText = AttachmentUtils.convertToHumanReadableSize(getContext(),
-                attachment.size);
-        mDisplayType = AttachmentUtils.getDisplayType(getContext(), attachment);
-        updateSubtitleText(null);
+        if (prevAttachment == null || attachment.size != prevAttachment.size) {
+            mAttachmentSizeText = AttachmentUtils.convertToHumanReadableSize(getContext(),
+                    attachment.size);
+            mDisplayType = AttachmentUtils.getDisplayType(getContext(), attachment);
+            updateSubtitleText(null);
+        }
 
-        if (mAttachment.isImage() && mAttachment.thumbnailUri != null) {
-            // FIXME: this decodes on the UI thread. Also, it doesn't handle large images, so
-            // using the full image is out of the question.
-            mIcon.setImageURI(mAttachment.thumbnailUri);
+        if (attachment.isImage() && attachment.thumbnailUri != null) {
+            if (prevAttachment == null || prevAttachment.thumbnailUri == null ||
+                    !attachment.thumbnailUri.equals(prevAttachment.thumbnailUri)) {
+                // FIXME: this decodes on the UI thread. Also, it doesn't handle large images, so
+                // using the full image is out of the question.
+                mIcon.setImageURI(attachment.thumbnailUri);
+            }
         }
         if (mIcon.getDrawable() == null) {
             // not an image, or image load failed. fall back to default.
@@ -156,40 +153,32 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
         mProgress.setMax(attachment.size);
 
         updateActions();
-
-        if (mAttachment.isDownloading()) {
-            mLoaderManager.initLoader(mAttachment.uri.hashCode(), Bundle.EMPTY, this);
-            // TODO: clean up loader when the view is detached
-        }
+        updateStatus();
     }
 
-    private void updateStatus(Attachment newAttachment) {
-
-        LogUtils.d(LOG_TAG, "got attachment update: name=%s state/dest=%d/%d dled=%d" +
-                " contentUri=%s MIME=%s", newAttachment.name, newAttachment.state,
-                newAttachment.destination, newAttachment.downloadedSize, newAttachment.contentUri,
-                newAttachment.mimeType);
-
-        mAttachment = newAttachment;
-
-        final boolean showProgress = newAttachment.size > 0 && newAttachment.downloadedSize > 0
-                && newAttachment.downloadedSize < newAttachment.size;
+    /**
+     * Update progress-related views. Will also trigger a view intent if a progress dialog was
+     * previously brought up (by tapping 'View') and the download has now finished.
+     */
+    private void updateStatus() {
+        final boolean showProgress = mAttachment.size > 0 && mAttachment.downloadedSize > 0
+                && mAttachment.downloadedSize < mAttachment.size;
 
         if (mViewProgressDialog != null && mViewProgressDialog.isShowing()) {
-            mViewProgressDialog.setProgress(newAttachment.downloadedSize);
+            mViewProgressDialog.setProgress(mAttachment.downloadedSize);
             mViewProgressDialog.setIndeterminate(!showProgress);
 
-            if (!newAttachment.isDownloading()) {
+            if (!mAttachment.isDownloading()) {
                 mViewProgressDialog.dismiss();
             }
 
-            if (newAttachment.state == AttachmentState.SAVED) {
+            if (mAttachment.state == AttachmentState.SAVED) {
                 sendViewIntent();
             }
         } else {
 
-            if (newAttachment.isDownloading()) {
-                mProgress.setProgress(newAttachment.downloadedSize);
+            if (mAttachment.isDownloading()) {
+                mProgress.setProgress(mAttachment.downloadedSize);
                 setProgressVisible(true);
                 mProgress.setIndeterminate(!showProgress);
             } else {
@@ -198,14 +187,12 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
 
         }
 
-        if (newAttachment.state == AttachmentState.FAILED) {
+        if (mAttachment.state == AttachmentState.FAILED) {
             mSubTitle.setText(getResources().getString(R.string.download_failed));
         } else {
-            updateSubtitleText(newAttachment.isSavedToExternal() ?
+            updateSubtitleText(mAttachment.isSavedToExternal() ?
                     getResources().getString(R.string.saved) : null);
         }
-
-        updateActions();
     }
 
     private void setProgressVisible(boolean visible) {
@@ -309,26 +296,6 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
             showDownloadingDialog();
             startDownloadingAttachment(destination);
         }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new AttachmentLoader(getContext(), mAttachment.uri);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        AttachmentCursor cursor = (AttachmentCursor) data;
-        if (cursor == null || cursor.isClosed() || cursor.getCount() == 0) {
-            return;
-        }
-        cursor.moveToFirst();
-        updateStatus(cursor.get());
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        // Do nothing.
     }
 
     private void startDownloadingAttachment(int destination) {

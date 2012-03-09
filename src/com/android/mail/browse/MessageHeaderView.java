@@ -361,6 +361,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mBcc = getBccAddresses(mMessage);
         mReplyTo = Utils.splitCommaSeparatedString(mMessage.replyTo);
 
+        if (mAttachmentsView != null) {
+            mAttachmentsView.removeAllViews();
+        }
+
         // kick off load of Attachment objects in background thread
         if (mMessage.hasAttachments) {
             mLoaderManager.initLoader(mMessage.hashCode(), Bundle.EMPTY, this);
@@ -435,10 +439,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAttachments = (AttachmentCursor) data;
-
-        if (mAttachmentsView != null) {
-            mAttachmentsView.removeAllViews();
-        }
 
         if (mAttachments == null || mAttachments.isClosed()) {
             return;
@@ -938,15 +938,24 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     private void renderAttachments(ViewGroup container) {
-        if (container != null && mAttachments != null && !mAttachments.isClosed()) {
-            int i = -1;
-            while (mAttachments.moveToPosition(++i)) {
-                final Attachment attachment = mAttachments.get();
-                MessageHeaderAttachment attachView =
-                        MessageHeaderAttachment.inflate(mInflater, container, mLoaderManager);
-                attachView.render(attachment);
+        if (container == null || mAttachments == null || mAttachments.isClosed()) {
+            return;
+        }
+
+        int i = -1;
+        while (mAttachments.moveToPosition(++i)) {
+            final Attachment attachment = mAttachments.get();
+
+            MessageHeaderAttachment attachView = (MessageHeaderAttachment)
+                    container.findViewWithTag(attachment.uri);
+
+            if (attachView == null) {
+                attachView = MessageHeaderAttachment.inflate(mInflater, container);
+                attachView.setTag(attachment.uri);
                 container.addView(attachView);
             }
+
+            attachView.render(attachment);
         }
     }
 
