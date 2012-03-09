@@ -54,6 +54,9 @@ public final class MockUiProvider extends ContentProvider {
 
     static final String BASE_URI_STRING = "content://" + AUTHORITY;
 
+    private static final Uri MOCK_ACCOUNTS_URI = Uri.parse("content://" + AUTHORITY + "/accounts");
+
+
     public static final int NUM_MOCK_ACCOUNTS = 2;
 
     // A map of query result for uris
@@ -393,7 +396,7 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.RECENT_FOLDER_LIST_URI), 0);
         dest.setDataPosition(0);
         final Account account = new Account(dest);
-        AccountCacheProvider.addAccount(account);
+        AccountCacheProvider.addAccount(account, MOCK_ACCOUNTS_URI);
     }
 }
 

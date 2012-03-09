@@ -41,10 +41,12 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.lang.IllegalStateException;
-import java.lang.Override;
+import java.lang.StringBuilder;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
+
 
 
 /**
@@ -64,10 +66,7 @@ public abstract class AccountCacheProvider extends ContentProvider
 
     private final static String LOG_TAG = new LogUtils().getLogTag();
 
-    private final Map<Uri, Account> mAccountCache = Maps.newHashMap();
-
-    // Map from content provider query uri to the set of account uri that resulted from that query
-    private final static Map<Uri, Set<Uri>> QUERY_URI_ACCOUNT_URIS_MAP = Maps.newHashMap();
+    private final Map<Uri, AccountCacheEntry> mAccountCache = Maps.newHashMap();
 
     private final Map<Uri, CursorLoader> mCursorLoaderMap = Maps.newHashMap();
 
@@ -127,11 +126,12 @@ public abstract class AccountCacheProvider extends ContentProvider
 
         // Make a copy of the account cache
 
-        final Set<Account> accountList;
+        final Set<AccountCacheEntry> accountList;
         synchronized (mAccountCache) {
             accountList = ImmutableSet.copyOf(mAccountCache.values());
         }
-        for (Account account : accountList) {
+        for (AccountCacheEntry accountEntry : accountList) {
+            final Account account = accountEntry.mAccount;
             final MatrixCursor.RowBuilder builder = cursor.newRow();
 
             for (String column : resultProjection) {
@@ -240,19 +240,19 @@ public abstract class AccountCacheProvider extends ContentProvider
         mCursorLoaderMap.put(accountsQueryUri, accountsCursorLoader);
     }
 
-    public static void addAccount(Account account) {
+    public static void addAccount(Account account, Uri accountsQueryUri) {
         final AccountCacheProvider provider = getInstance();
         if (provider == null) {
             throw new IllegalStateException("AccountCacheProvider not intialized");
         }
-        provider.addAccountImpl(account);
+        provider.addAccountImpl(account, accountsQueryUri);
     }
 
-    private void addAccountImpl(Account account) {
+    private void addAccountImpl(Account account, Uri accountsQueryUri) {
         synchronized (mAccountCache) {
             if (account != null) {
                 LogUtils.v(LOG_TAG, "adding account %s", account);
-                mAccountCache.put(account.uri, account);
+                mAccountCache.put(account.uri, new AccountCacheEntry(account, accountsQueryUri));
             }
         }
         // Explicitly calling this out of the synchronized block in case any of the observers get
@@ -302,11 +302,11 @@ public abstract class AccountCacheProvider extends ContentProvider
         if (accountsStringSet != null) {
             for (String serializedAccount : accountsStringSet) {
                 try {
-                    final Account account = new Account(serializedAccount);
-                    addAccount(account);
+                    final AccountCacheEntry accountEntry = new AccountCacheEntry(serializedAccount);
+                    addAccount(accountEntry.mAccount, accountEntry.mAccountsQueryUri);
                 } catch (IllegalArgumentException e) {
                     // Unable to create account object, skip to next
-                    LogUtils.e(LOG_TAG,
+                    LogUtils.e(LOG_TAG, e,
                             "Unable to create account object from serialized string'%s'",
                             serializedAccount);
                 }
@@ -317,14 +317,14 @@ public abstract class AccountCacheProvider extends ContentProvider
     private void cacheAccountList() {
         final SharedPreferences preference = getPreferences();
 
-        final Set<Account> accountList;
+        final Set<AccountCacheEntry> accountList;
         synchronized (mAccountCache) {
             accountList = ImmutableSet.copyOf(mAccountCache.values());
         }
 
         final Set<String> serializedAccounts = Sets.newHashSet();
-        for (Account account : accountList) {
-            serializedAccounts.add(account.serialize());
+        for (AccountCacheEntry accountEntry : accountList) {
+            serializedAccounts.add(accountEntry.serialize());
         }
 
         final SharedPreferences.Editor editor = getPreferences().edit();
@@ -340,8 +340,6 @@ public abstract class AccountCacheProvider extends ContentProvider
         return mSharedPrefs;
     }
 
-
-
     @Override
     public void onLoadComplete(Loader<Cursor> loader, Cursor data) {
         if (data == null) {
@@ -352,23 +350,26 @@ public abstract class AccountCacheProvider extends ContentProvider
         LogUtils.d(LOG_TAG, "Cursor with %d accounts returned", data.getCount());
         final CursorLoader cursorLoader = (CursorLoader)loader;
         final Uri accountsQueryUri = cursorLoader.getUri();
-        // TODO(pwestbro):
-        // 1) Keep a cache of Cursors which would allow changes to be observered.
-        final Set<Uri> previousQueryUriMap = QUERY_URI_ACCOUNT_URIS_MAP.get(accountsQueryUri);
+
+        final Set<AccountCacheEntry> accountList;
+        synchronized (mAccountCache) {
+            accountList = ImmutableSet.copyOf(mAccountCache.values());
+        }
+
+        // Build a set of the account uris that had been associated with that query
+        final Set<Uri> previousQueryUriMap = Sets.newHashSet();
+        for (AccountCacheEntry entry : accountList) {
+            if (accountsQueryUri.equals(entry.mAccountsQueryUri)) {
+                previousQueryUriMap.add(entry.mAccount.uri);
+            }
+        }
 
         final Set<Uri> newQueryUriMap = Sets.newHashSet();
         while (data.moveToNext()) {
             final Account account = new Account(data);
             final Uri accountUri = account.uri;
             newQueryUriMap.add(accountUri);
-            addAccount(account);
-        }
-
-        // Save the new set, or remove the previous entry if it is empty
-        if (newQueryUriMap.size() > 0) {
-            QUERY_URI_ACCOUNT_URIS_MAP.put(accountsQueryUri, newQueryUriMap);
-        } else {
-            QUERY_URI_ACCOUNT_URIS_MAP.remove(accountsQueryUri);
+            addAccount(account, accountsQueryUri);
         }
 
         if (previousQueryUriMap != null) {
@@ -381,5 +382,51 @@ public abstract class AccountCacheProvider extends ContentProvider
                 removeAccounts(previousQueryUriMap);
             }
         }
+    }
+
+    /**
+     * Object that allows the Account Cache provider to associate the account with the content
+     * provider uri that originated that account.
+     */
+    private static class AccountCacheEntry {
+        final Account mAccount;
+        final Uri mAccountsQueryUri;
+
+        private static final String ACCOUNT_ENTRY_COMPONENT_SEPARATOR = "^**^";
+        private static final Pattern ACCOUNT_ENTRY_COMPONENT_SEPARATOR_PATTERN =
+                Pattern.compile("\\^\\*\\*\\^");
+
+        private static final int NUMBER_MEMBERS = 2;
+
+        public AccountCacheEntry(Account account, Uri accountQueryUri) {
+            mAccount = account;
+            mAccountsQueryUri = accountQueryUri;
+        }
+
+        /**
+         * Return a serialized String for this AccountCacheEntry.
+         */
+        public synchronized String serialize() {
+            StringBuilder out = new StringBuilder();
+            out.append(mAccount.serialize()).append(ACCOUNT_ENTRY_COMPONENT_SEPARATOR);
+            final String accountQueryUri =
+                    mAccountsQueryUri != null ? mAccountsQueryUri.toString() : "";
+            out.append(accountQueryUri);
+            return out.toString();
+        }
+
+        public AccountCacheEntry(String serializedString) {
+            String[] cacheEntryMembers = TextUtils.split(serializedString,
+                    ACCOUNT_ENTRY_COMPONENT_SEPARATOR_PATTERN);
+            if (cacheEntryMembers.length != NUMBER_MEMBERS) {
+                throw new IllegalArgumentException("AccountCacheEntry de-serializing failed. "
+                        + "Wrong number of members detected. "
+                        + cacheEntryMembers.length + " detected");
+            }
+            mAccount = new Account(cacheEntryMembers[0]);
+            mAccountsQueryUri = !TextUtils.isEmpty(cacheEntryMembers[1]) ?
+                    Uri.parse(cacheEntryMembers[1]) : null;
+        }
+
     }
 }
