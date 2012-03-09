@@ -23,8 +23,10 @@
     <string name="bcc" msgid="3098643138241111579">"Skr. kopija"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Predmet"</string>
     <string name="body_hint" msgid="4279864165439577668">"Stvori novu poruku e-pošte"</string>
-    <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
-    <string name="plus_bcc_label" msgid="3466026399539734378">"+"</string>
+    <!-- no translation found for plus_cc_folder (1214307160559508302) -->
+    <skip />
+    <!-- no translation found for plus_bcc_folder (4756816436930806526) -->
+    <skip />
     <string name="add_file_attachment" msgid="2203398371671979481">"Priloži datoteku"</string>
     <string name="save_draft" msgid="5555744208032445632">"Spremi skicu"</string>
     <string name="discard" msgid="1714960202994370243">"Odbaci"</string>
@@ -65,12 +67,15 @@
     <string name="resume_draft" msgid="6450150180834092146">"Uredi"</string>
     <string name="forward" msgid="6822914459902983767">"Dalje"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Nova poruka"</string>
-    <string name="menu_change_labels" msgid="9121087142079721959">"Promijeni oznake"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Promjena mapa"</string>
-    <string name="menu_manage_labels" msgid="8618788259638720538">"Upravljanje oznakama"</string>
-    <string name="label_list_title" msgid="7948730824763052410">"Oznake"</string>
-    <string name="manage_labels_subtitle" msgid="8802709983773098505">"Sinkroniziraj i obavijesti"</string>
-    <string name="menu_label_options" msgid="1811414840489117457">"Postavke oznake"</string>
+    <!-- no translation found for menu_manage_folders (7499103037978814445) -->
+    <skip />
+    <!-- no translation found for folder_list_title (4276644062440415214) -->
+    <skip />
+    <!-- no translation found for manage_folders_subtitle (7702199674083260433) -->
+    <skip />
+    <!-- no translation found for menu_folder_options (8897520487430647932) -->
+    <skip />
     <string name="menu_done" msgid="5791134842152855128">"Gotovo"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Postavke računa"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Postavke"</string>
@@ -127,7 +132,8 @@
     <string name="sending" msgid="8214361929125649771">"Slanje…"</string>
     <string name="send_failed" msgid="750908595144529579">"Poruka nije poslana."</string>
     <string name="me" msgid="6480762904022198669">"ja"</string>
-    <string name="labels" msgid="1519770547536283663">"Oznake"</string>
+    <!-- no translation found for folders (3359679829905256429) -->
+    <skip />
     <string name="show_all_folders" msgid="3281420732307737553">"Prikaži sve mape"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Izbrisati ovaj razgovor?"</item>
@@ -207,9 +213,11 @@
     <string name="removeBackButton" msgid="860383341267568260">"Uklonite gumb Natrag"</string>
     <string name="normalMode" msgid="4250277414924926730">"Postavi uobičajeni način"</string>
     <string name="searchResultMode" msgid="3564180712046711968">"Rezultat pretraživanja rezultata"</string>
-    <string name="labelMode" msgid="1821987146443702635">"Postavi način oznake"</string>
+    <!-- no translation found for folderMode (553052020619895714) -->
+    <skip />
     <string name="search_results_searching_header" msgid="3821361153909466819">"Traženje..."</string>
-    <string name="recent_labels" msgid="5539494776429934547">"Nedavno"</string>
+    <!-- no translation found for recent_folders (8240081561436891330) -->
+    <skip />
     <string name="expand_recipient_details" msgid="2266544827446346880">"Proširi podatke o primatelju"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Sažmi podatke o primatelju"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Prikaži podatke o kontaktu za <xliff:g id="NAME">%1$s</xliff:g>"</string>
