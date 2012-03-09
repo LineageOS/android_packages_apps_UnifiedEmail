@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.provider.Browser;
@@ -786,4 +787,12 @@ public class Utils {
        return intent.setDataAndType(normalizeUri(data), normalizeMimeType(type));
    }
 
+   public static int getDefaultFolderBackgroundColor(Context context) {
+       return Integer.parseInt(context.getResources().getString(
+               R.string.default_folder_background_color));
+   }
+
+   public static int getTransparentColor(int color) {
+       return 0x00ffffff & color;
+   }
 }

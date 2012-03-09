@@ -359,4 +359,18 @@ public class ConversationItemViewCoordinates {
     public static boolean displayFoldersAboveDate(boolean showFolders, int mode) {
         return showFolders && mode == WIDE_MODE;
     }
+
+    public static int getFolderCellWidth(Context context, int mode, int foldersCount) {
+        Resources res = context.getResources();
+        if (FOLDER_CELL_WIDTH <= 0) {
+            FOLDER_CELL_WIDTH = res.getDimensionPixelSize(R.dimen.folder_cell_width);
+        }
+        switch (mode) {
+            case WIDE_MODE:
+            case NORMAL_MODE:
+                return FOLDER_CELL_WIDTH;
+            default:
+                throw new IllegalArgumentException("Unknown conversation header view mode " + mode);
+        }
+    }
 }

@@ -32,8 +32,6 @@ import android.util.Pair;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.ConversationFlags;
 
 import java.util.ArrayList;
 
@@ -99,6 +97,10 @@ public class ConversationItemViewModel {
 
     public Conversation conversation;
 
+    public ConversationItemView.ConversationItemFolderDisplayer folderDisplayer;
+
+    public String rawFolders;
+
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
@@ -126,6 +128,7 @@ public class ConversationItemViewModel {
             header.conversation = conv;
             header.starred = conv.starred;
             header.unread = !conv.read;
+            header.rawFolders = conv.rawFolders;
         }
         return header;
     }
