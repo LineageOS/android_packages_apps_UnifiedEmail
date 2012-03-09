@@ -526,7 +526,6 @@ public final class ConversationListFragment extends ListFragment implements
         }
         mListAdapter.swapCursor(mConversationListCursor);
         mConversationListCursor.addListener(this);
-        updateSearchResultHeader(data != null ? data.getCount() : 0);
         if (mActivity.shouldShowFirstConversation()) {
             if (mConversationListCursor.getCount() > 0) {
                 mConversationListCursor.moveToPosition(0);
@@ -539,5 +538,14 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onLoaderReset(Loader<ConversationCursor> loader) {
         // Do nothing.
+    }
+
+    public void onSearchFolderUpdated(Folder folder) {
+        mFolder = folder;
+        // Check the status of the folder to see if we are done loading.
+        if (!mFolder.isSyncInProgress()
+                && mFolder.lastSyncResult == UIProvider.LastSyncResult.SUCCESS) {
+            updateSearchResultHeader(mFolder != null ? mFolder.totalCount : 0);
+        }
     }
 }

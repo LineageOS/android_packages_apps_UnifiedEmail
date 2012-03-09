@@ -686,11 +686,17 @@ public abstract class AbstractActivityController implements ActivityController {
             if (data != null) {
                 data.moveToFirst();
                 Folder folder = new Folder(data);
-                if (folder.isSyncInProgress()) {
-                    mActionBarView.onRefreshStarted();
+                if (mConvListContext.isSearchResult()) {
+                    if (mConversationListFragment != null) {
+                        mConversationListFragment.onSearchFolderUpdated(folder);
+                    }
                 } else {
-                    // Stop the spinner here.
-                    mActionBarView.onRefreshStopped(folder.lastSyncResult);
+                    if (folder.isSyncInProgress()) {
+                        mActionBarView.onRefreshStarted();
+                    } else {
+                        // Stop the spinner here.
+                        mActionBarView.onRefreshStopped(folder.lastSyncResult);
+                    }
                 }
                 LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
             }
