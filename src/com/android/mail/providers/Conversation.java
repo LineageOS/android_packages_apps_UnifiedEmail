@@ -27,6 +27,7 @@ import android.text.TextUtils;
 
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.ConversationCursor.ConversationProvider;
+import com.android.mail.providers.UIProvider.ConversationColumns;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -246,6 +247,16 @@ public class Conversation implements Parcelable {
         ArrayList<Conversation> conversations = new ArrayList<Conversation>();
         conversations.add(this);
         return delete(context, conversations);
+    }
+
+    /**
+     * Mark a single conversation read/unread.
+     * @param context the caller's context
+     * @param read true for read, false for unread
+     * @return the sequence number of the operation (for undo)
+     */
+    public int markRead(Context context, boolean read) {
+        return updateBoolean(context, ConversationColumns.READ, read);
     }
 
     /**

@@ -37,6 +37,8 @@ import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Adapter;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
@@ -83,6 +85,8 @@ public final class ConversationViewFragment extends Fragment implements
     private final Handler mHandler = new Handler();
 
     private final MailJsBridge mJsBridge = new MailJsBridge();
+
+    private final WebViewClient mWebViewClient = new ConversationWebViewClient();
 
     private static final String ARG_ACCOUNT = "account";
     private static final String ARG_CONVERSATION = "conversation";
@@ -154,7 +158,7 @@ public final class ConversationViewFragment extends Fragment implements
         mWebView = (ConversationWebView) rootView.findViewById(R.id.webview);
 
         mWebView.addJavascriptInterface(mJsBridge, "mail");
-
+        mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
@@ -294,6 +298,21 @@ public final class ConversationViewFragment extends Fragment implements
             ints[i] = Integer.parseInt(stringArray[i]);
         }
         return ints;
+    }
+
+    private class ConversationWebViewClient extends WebViewClient {
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+
+            // TODO: save off individual message unread state (here, or in onLoadFinished?) so
+            // 'mark unread' restores the original unread state for each individual message
+
+            // mark as read upon open
+            mConversation.markRead(mContext, true /* read */);
+        }
+
     }
 
     /**
