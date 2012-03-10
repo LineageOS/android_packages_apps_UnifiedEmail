@@ -25,6 +25,7 @@ import android.os.Bundle;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 
@@ -44,6 +45,9 @@ public final class OnePaneController extends AbstractActivityController {
     private int mLastConversationTransactionId = INVALID_ID;
     private int mLastFolderListTransactionId = INVALID_ID;
     private Folder mInbox;
+    /** Whether a conversation list for this account has ever been shown.*/
+    private boolean mConversationListNeverShown = true;
+
     /**
      * @param activity
      * @param viewMode
@@ -97,6 +101,12 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
+    public void onAccountChanged(Account account) {
+        super.onAccountChanged(account);
+        mConversationListNeverShown = true;
+    }
+
+    @Override
     public boolean onCreate(Bundle savedInstanceState) {
         // Set 1-pane content view.
         mActivity.setContentView(R.layout.one_pane_activity);
@@ -123,10 +133,10 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mViewMode.enterConversationListMode();
         }
-        final boolean accountChanged = false;
         // TODO(viki): This account transition looks strange in two pane mode.
         // Revisit as the app is coming together and improve the look and feel.
-        final int transition = accountChanged ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
+        final int transition = mConversationListNeverShown
+                ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
                 : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
         Fragment conversationListFragment = ConversationListFragment.newInstance(listContext);
         if (!inInbox()) {
@@ -141,6 +151,7 @@ public final class OnePaneController extends AbstractActivityController {
             mLastFolderListTransactionId = INVALID_ID;
         }
         mConversationListVisible = true;
+        mConversationListNeverShown = false;
     }
 
     @Override

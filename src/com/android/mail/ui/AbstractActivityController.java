@@ -486,7 +486,6 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param savedState
      */
     protected void restoreListContext(Bundle savedState) {
-        // TODO(viki): Restore the account, the folder, and the conversation, if any.
         Bundle listContextBundle = savedState.getBundle(SAVED_LIST_CONTEXT);
         if (listContextBundle != null) {
             mConvListContext = ConversationListContext.forBundle(listContextBundle);
