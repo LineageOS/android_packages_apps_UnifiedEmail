@@ -25,7 +25,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -123,7 +122,7 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
         LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
                 " contentUri=%s MIME=%s", attachment.name, attachment.state,
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
-                attachment.mimeType);
+                attachment.contentType);
 
         if (prevAttachment == null || TextUtils.equals(attachment.name, prevAttachment.name)) {
             mTitle.setText(attachment.name);
@@ -271,7 +270,7 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
                 break;
             case R.id.info_attachment:
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                int dialogMessage = MimeType.isBlocked(mAttachment.mimeType)
+                int dialogMessage = MimeType.isBlocked(mAttachment.contentType)
                         ? R.string.attachment_type_blocked : R.string.no_application_found;
                 builder.setTitle(R.string.more_info_attachment).setMessage(dialogMessage).show();
                 break;
@@ -328,14 +327,14 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
 
         setButtonVisible(mCancelButton, isDownloading);
 
-        final boolean canInstall = MimeType.isInstallable(mAttachment.mimeType);
+        final boolean canInstall = MimeType.isInstallable(mAttachment.contentType);
         setButtonVisible(mInstallButton, canInstall && !isDownloading);
 
         if (!canInstall) {
 
             final boolean canPreview = (mAttachment.previewIntent != null);
-            final boolean canView = MimeType.isViewable(getContext(), mAttachment.mimeType);
-            final boolean canPlay = MimeType.isPlayable(mAttachment.mimeType);
+            final boolean canView = MimeType.isViewable(getContext(), mAttachment.contentType);
+            final boolean canPlay = MimeType.isPlayable(mAttachment.contentType);
 
             setButtonVisible(mPreviewButton, canPreview);
             setButtonVisible(mPlayButton, canView && canPlay && !isDownloading);
@@ -361,8 +360,8 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        Utils.setIntentDataAndTypeAndNormalize(intent, Uri.parse(mAttachment.contentUri),
-                mAttachment.mimeType);
+        Utils.setIntentDataAndTypeAndNormalize(intent, mAttachment.contentUri,
+                mAttachment.contentType);
         try {
             getContext().startActivity(intent);
         } catch (ActivityNotFoundException e) {

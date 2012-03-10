@@ -61,11 +61,11 @@ public class AttachmentUtils {
         // try to get a friendly name for the exact mime type
         // then try to show a friendly name for the mime family
         // finally, give up and just show the file extension
-        String displayType = getMimeTypeDisplayName(context, attachment.mimeType);
-        int index = attachment.mimeType.indexOf('/');
+        String displayType = getMimeTypeDisplayName(context, attachment.contentType);
+        int index = attachment.contentType.indexOf('/');
         if (displayType == null && index > 0) {
             displayType = getMimeTypeDisplayName(context,
-                    attachment.mimeType.substring(0, index));
+                    attachment.contentType.substring(0, index));
         }
         if (displayType == null) {
             String extension = Utils.getFileExtension(attachment.name);

@@ -180,9 +180,9 @@ class AttachmentsView extends LinearLayout {
         Attachment attachment = new Attachment();
         // partId will be assigned by the engine.
         attachment.name = null;
-        attachment.mimeType = contentType;
+        attachment.contentType = contentType;
         attachment.size = 0;
-        attachment.contentUri = uri.toString();
+        attachment.contentUri = uri;
         attachment.origin = isLocal ? Attachment.LOCAL_FILE : Attachment.SERVER_ATTACHMENT;
         attachment.originExtras = uri.toString();
 

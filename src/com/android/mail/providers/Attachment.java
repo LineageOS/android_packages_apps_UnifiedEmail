@@ -53,9 +53,7 @@ public class Attachment implements Parcelable {
     /**
      * MIME type of the file. See {@link AttachmentColumns#CONTENT_TYPE}.
      */
-    // TODO: rename to be consistent with UIProvider name: "contentType"
-    @Deprecated
-    public String mimeType;
+    public String contentType;
 
     /**
      * See {@link AttachmentColumns#STATE}.
@@ -75,9 +73,7 @@ public class Attachment implements Parcelable {
     /**
      * See {@link AttachmentColumns#CONTENT_URI}.
      */
-    // TODO: change this to be a Uri for consistency with other URIs in data model objects.
-    @Deprecated
-    public String contentUri;
+    public Uri contentUri;
 
     /**
      * See {@link AttachmentColumns#THUMBNAIL_URI}. Might be null.
@@ -106,11 +102,11 @@ public class Attachment implements Parcelable {
         name = in.readString();
         size = in.readInt();
         uri = in.readParcelable(null);
-        mimeType = in.readString();
+        contentType = in.readString();
         state = in.readInt();
         destination = in.readInt();
         downloadedSize = in.readInt();
-        contentUri = in.readString();
+        contentUri = in.readParcelable(null);
         thumbnailUri = in.readParcelable(null);
         previewIntent = in.readParcelable(null);
         partId = in.readString();
@@ -129,12 +125,11 @@ public class Attachment implements Parcelable {
         name = cursor.getString(UIProvider.ATTACHMENT_NAME_COLUMN);
         size = cursor.getInt(UIProvider.ATTACHMENT_SIZE_COLUMN);
         uri = Uri.parse(cursor.getString(UIProvider.ATTACHMENT_URI_COLUMN));
-        mimeType = cursor.getString(UIProvider.ATTACHMENT_CONTENT_TYPE_COLUMN);
+        contentType = cursor.getString(UIProvider.ATTACHMENT_CONTENT_TYPE_COLUMN);
         state = cursor.getInt(UIProvider.ATTACHMENT_STATE_COLUMN);
         destination = cursor.getInt(UIProvider.ATTACHMENT_DESTINATION_COLUMN);
         downloadedSize = cursor.getInt(UIProvider.ATTACHMENT_DOWNLOADED_SIZE_COLUMN);
-        // TODO: change to use parseUri()
-        contentUri = cursor.getString(UIProvider.ATTACHMENT_CONTENT_URI_COLUMN);
+        contentUri = parseOptionalUri(cursor.getString(UIProvider.ATTACHMENT_CONTENT_URI_COLUMN));
         thumbnailUri = parseOptionalUri(
                 cursor.getString(UIProvider.ATTACHMENT_THUMBNAIL_URI_COLUMN));
         previewIntent = getOptionalIntentFromBlob(
@@ -149,23 +144,23 @@ public class Attachment implements Parcelable {
         if (attachmentValues != null) {
             partId = attachmentValues[0];
             name = attachmentValues[1];
-            mimeType = attachmentValues[2];
+            contentType = attachmentValues[2];
             try {
                 size = Integer.parseInt(attachmentValues[3]);
             } catch (NumberFormatException e) {
                 size = 0;
             }
-            mimeType = attachmentValues[4];
+            contentType = attachmentValues[4];
             origin = Integer.parseInt(attachmentValues[5]);
-            contentUri = attachmentValues[6];
+            contentUri = parseOptionalUri(attachmentValues[6]);
             originExtras = attachmentValues[7];
         }
     }
 
     public String toJoinedString() {
-        // FIXME: mimeType is read/written twice
+        // FIXME: contentType is read/written twice
         return TextUtils.join("|", Lists.newArrayList(partId == null ? "" : partId,
-                name == null ? "" : name.replaceAll("[|\n]", ""), mimeType, size, mimeType,
+                name == null ? "" : name.replaceAll("[|\n]", ""), contentType, size, contentType,
                 origin + "", contentUri, TextUtils.isEmpty(originExtras) ? contentUri
                         : originExtras, ""));
     }
@@ -195,11 +190,11 @@ public class Attachment implements Parcelable {
         dest.writeString(name);
         dest.writeInt(size);
         dest.writeParcelable(uri, flags);
-        dest.writeString(mimeType);
+        dest.writeString(contentType);
         dest.writeInt(state);
         dest.writeInt(destination);
         dest.writeInt(downloadedSize);
-        dest.writeString(contentUri);
+        dest.writeParcelable(contentUri, flags);
         dest.writeParcelable(thumbnailUri, flags);
         dest.writeParcelable(previewIntent, flags);
         dest.writeString(partId);
@@ -220,7 +215,7 @@ public class Attachment implements Parcelable {
     };
 
     public boolean isImage() {
-        return mimeType.startsWith("image");
+        return contentType.startsWith("image/");
     }
 
     public boolean isDownloading() {

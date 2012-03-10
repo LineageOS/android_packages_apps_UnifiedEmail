@@ -15,6 +15,7 @@
  */
 package com.android.mail.providers;
 
+import android.net.Uri;
 import android.test.AndroidTestCase;
 
 import com.android.mail.providers.Attachment;
@@ -30,8 +31,8 @@ public class AttachmentTests extends AndroidTestCase {
         for (int i = 0; i < 5; i++) {
             attachment = new Attachment();
             attachment.name = "name" + i;
-            attachment.contentUri = "content://" + i;
-            attachment.mimeType = "mimeType" + i;
+            attachment.contentUri = Uri.parse("content://" + i);
+            attachment.contentType = "mimeType" + i;
             attachment.size = i;
             attachment.partId = i + "";
             attachment.originExtras = "extras" + i;
@@ -43,8 +44,8 @@ public class AttachmentTests extends AndroidTestCase {
         assertEquals(reformed.size(), 5);
         for (int i = 0; i < 5; i++) {
             assertEquals(reformed.get(i).name, "name" + i);
-            assertEquals(reformed.get(i).contentUri, "content://" + i);
-            assertEquals(reformed.get(i).mimeType, "mimeType" + i);
+            assertEquals(reformed.get(i).contentUri, Uri.parse("content://" + i));
+            assertEquals(reformed.get(i).contentType, "mimeType" + i);
             assertEquals(reformed.get(i).size, i);
             assertEquals(reformed.get(i).partId, i + "");
             assertEquals(reformed.get(i).originExtras, "extras" + i);

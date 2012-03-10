@@ -42,7 +42,7 @@ class AttachmentComposeView extends LinearLayout {
         mSize = attachment.size;
 
         LogUtils.d(LOG_TAG, ">>>>> Attachment uri: %s", attachment.originExtras);
-        LogUtils.d(LOG_TAG, ">>>>>           type: %s", attachment.mimeType);
+        LogUtils.d(LOG_TAG, ">>>>>           type: %s", attachment.contentType);
         LogUtils.d(LOG_TAG, ">>>>>           name: %s", mFilename);
         LogUtils.d(LOG_TAG, ">>>>>           size: %d", mSize);
 
