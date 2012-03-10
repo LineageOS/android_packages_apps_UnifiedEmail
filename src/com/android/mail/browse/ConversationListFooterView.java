@@ -86,7 +86,7 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
     /**
      * Update the view to reflect the new folder status.
      */
-    public void updateStatus(final Folder folder, int count) {
+    public void updateStatus(final Folder folder) {
         mRetry.setTag(folder);
         mLoadMore.setTag(folder);
         if (folder.isSyncInProgress()) {
@@ -106,7 +106,7 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
             mRetry.setVisibility(
                     folder.lastSyncResult == UIProvider.LastSyncResult.CONNECTION_ERROR ?
                     View.VISIBLE : View.GONE);
-        } else if (folder.loadMoreUri != null && folder.totalCount > count) {
+        } else if (folder.loadMoreUri != null) {
             mLoading.setVisibility(View.GONE);
             mNetworkError.setVisibility(View.GONE);
             mLoadMore.setVisibility(View.VISIBLE);

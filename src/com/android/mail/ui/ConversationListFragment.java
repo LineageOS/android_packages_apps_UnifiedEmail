@@ -549,7 +549,7 @@ public final class ConversationListFragment extends ListFragment implements
 
     public void onFolderUpdated(Folder folder) {
         mFolder = folder;
-        mFooterView.updateStatus(mFolder, mListAdapter != null ? mListAdapter.getCount() : 0);
+        mFooterView.updateStatus(mFolder);
         if (mFolder.isSyncInProgress()) {
             mListAdapter.showFooter();
         } else if (!mFolder.isSyncInProgress()
@@ -558,9 +558,16 @@ public final class ConversationListFragment extends ListFragment implements
             updateSearchResultHeader(mFolder != null ? mFolder.totalCount : 0);
             if (mFolder.totalCount == 0) {
                 mListView.setEmptyView(mEmptyView);
-            }
-            if (folder.loadMoreUri == null) {
-                mListAdapter.hideFooter();
+            } else {
+                if (folder.loadMoreUri == null) {
+                    mListAdapter.hideFooter();
+                } else {
+                    if (folder.totalCount >= mListAdapter.getCount()) {
+                        mListAdapter.hideFooter();
+                    } else {
+                        mListAdapter.showFooter();
+                    }
+                }
             }
         }
     }
