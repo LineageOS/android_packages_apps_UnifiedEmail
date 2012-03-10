@@ -21,13 +21,12 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
-import android.net.Uri;
 
 import com.android.common.contacts.DataUsageStatUpdater;
 
-import java.lang.String;
 import java.util.ArrayList;
 
 public class UIProvider {
@@ -356,7 +355,8 @@ public class UIProvider {
         FolderColumns.TYPE,
         FolderColumns.ICON_RES_ID,
         FolderColumns.BG_COLOR,
-        FolderColumns.FG_COLOR
+        FolderColumns.FG_COLOR,
+        FolderColumns.LOAD_MORE_URI
     };
 
     public static final int FOLDER_ID_COLUMN = 0;
@@ -376,6 +376,7 @@ public class UIProvider {
     public static final int FOLDER_ICON_RES_ID_COLUMN = 14;
     public static final int FOLDER_BG_COLOR_COLUMN = 15;
     public static final int FOLDER_FG_COLOR_COLUMN = 16;
+    public static final int FOLDER_LOAD_MORE_URI_COLUMN = 17;
 
     public static final class FolderType {
         public static final int DEFAULT = 0;
@@ -478,6 +479,10 @@ public class UIProvider {
          * with this folder, or null.
          */
         public static final String FG_COLOR = "fgColor";
+        /**
+         * String with the content provider Uri used to request more items in the folder, or null.
+         */
+        public static final String LOAD_MORE_URI = "loadMoreUri";
         public FolderColumns() {}
     }
 

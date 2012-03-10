@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.net.Uri.Builder;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -127,6 +128,11 @@ public class Folder implements Parcelable {
     public String fgColor;
 
     /**
+     * The content provider URI to request additional conversations
+     */
+    public Uri loadMoreUri;
+
+    /**
      * Total number of members that comprise an instance of a folder. This is
      * the number of members that need to be serialized or parceled.
      */
@@ -174,6 +180,7 @@ public class Folder implements Parcelable {
         iconResId = in.readLong();
         bgColor = in.readString();
         fgColor = in.readString();
+        loadMoreUri = in.readParcelable(null);
      }
 
     public Folder(Cursor cursor) {
@@ -185,10 +192,11 @@ public class Folder implements Parcelable {
         // 1 for true, 0 for false.
         hasChildren = cursor.getInt(UIProvider.FOLDER_HAS_CHILDREN_COLUMN) == 1;
         syncWindow = cursor.getInt(UIProvider.FOLDER_SYNC_WINDOW_COLUMN);
-        conversationListUri = Uri.parse(cursor
-                .getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN));
-        childFoldersListUri = hasChildren ? Uri.parse(cursor
-                .getString(UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN)) : null;
+        String convList = cursor.getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN);
+        conversationListUri = !TextUtils.isEmpty(convList) ? Uri.parse(convList) : null;
+        String childList = cursor.getString(UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN);
+        childFoldersListUri = (hasChildren && !TextUtils.isEmpty(childList)) ? Uri.parse(childList)
+                : null;
         unreadCount = cursor.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
         totalCount = cursor.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
         String refresh = cursor.getString(UIProvider.FOLDER_REFRESH_URI_COLUMN);
@@ -199,6 +207,8 @@ public class Folder implements Parcelable {
         iconResId = cursor.getLong(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
         bgColor = cursor.getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
         fgColor = cursor.getString(UIProvider.FOLDER_FG_COLOR_COLUMN);
+        String loadMore = cursor.getString(UIProvider.FOLDER_LOAD_MORE_URI_COLUMN);
+        loadMoreUri = !TextUtils.isEmpty(loadMore) ? Uri.parse(loadMore) : null;
     }
 
     @Override
@@ -221,6 +231,7 @@ public class Folder implements Parcelable {
         dest.writeLong(iconResId);
         dest.writeString(bgColor);
         dest.writeString(fgColor);
+        dest.writeParcelable(loadMoreUri, 0);
     }
 
     /**
@@ -244,7 +255,8 @@ public class Folder implements Parcelable {
         out.append(type).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(iconResId).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(bgColor).append(FOLDER_COMPONENT_SEPARATOR);
-        out.append(fgColor);
+        out.append(fgColor).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(loadMoreUri);
         return out.toString();
     }
 
@@ -286,17 +298,23 @@ public class Folder implements Parcelable {
         // 1 for true, 0 for false
         hasChildren = folderMembers[4] == "1";
         syncWindow = Integer.valueOf(folderMembers[5]);
-        conversationListUri = Uri.parse(folderMembers[6]);
-        childFoldersListUri = hasChildren ? Uri.parse(folderMembers[7]) : null;
+        String convList = folderMembers[6];
+        conversationListUri = !TextUtils.isEmpty(convList) ? Uri.parse(convList) : null;
+        String childList = folderMembers[7];
+        childFoldersListUri = (hasChildren && !TextUtils.isEmpty(childList)) ? Uri.parse(childList)
+                : null;
         unreadCount = Integer.valueOf(folderMembers[8]);
         totalCount = Integer.valueOf(folderMembers[9]);
-        refreshUri = Uri.parse(folderMembers[10]);
+        String refresh = folderMembers[10];
+        refreshUri = !TextUtils.isEmpty(refresh) ? Uri.parse(refresh) : null;
         syncStatus = Integer.valueOf(folderMembers[11]);
         lastSyncResult = Integer.valueOf(folderMembers[12]);
         type = Integer.valueOf(folderMembers[13]);
         iconResId = Long.valueOf(folderMembers[14]);
         bgColor = folderMembers[15];
         fgColor = folderMembers[16];
+        String loadMore = folderMembers[17];
+        loadMoreUri = !TextUtils.isEmpty(loadMore) ? Uri.parse(loadMore) : null;
     }
 
     /**
