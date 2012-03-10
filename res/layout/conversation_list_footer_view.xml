@@ -80,5 +80,22 @@
             android:text="@string/loading"/>
 
     </LinearLayout>
+    <LinearLayout android:id="@+id/load_more"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:gravity="center"
+        android:visibility="gone"
+        android:clickable="true"
+        android:background="?android:attr/selectableItemBackground">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLargeInverse"
+            android:layout_marginBottom="1dip"
+            android:paddingLeft="5dip"
+            android:textColor="@android:color/black"
+            android:text="@string/load_more"/>
+
+    </LinearLayout>
 </com.android.mail.browse.ConversationListFooterView>

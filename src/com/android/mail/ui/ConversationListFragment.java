@@ -426,7 +426,7 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private void showList() {
         mListView.setEmptyView(null);
-        mFolder = mViewContext.folder;
+        onFolderUpdated(mViewContext.folder);
         getLoaderManager().initLoader(CONVERSATION_LOADER_ID, Bundle.EMPTY, this);
     }
 
@@ -547,9 +547,9 @@ public final class ConversationListFragment extends ListFragment implements
         // Do nothing.
     }
 
-    public void onSearchFolderUpdated(Folder folder) {
+    public void onFolderUpdated(Folder folder) {
         mFolder = folder;
-        mFooterView.updateStatus(mFolder);
+        mFooterView.updateStatus(mFolder, mListAdapter != null ? mListAdapter.getCount() : 0);
         if (mFolder.isSyncInProgress()) {
             mListAdapter.showFooter();
         } else if (!mFolder.isSyncInProgress()
@@ -559,7 +559,9 @@ public final class ConversationListFragment extends ListFragment implements
             if (mFolder.totalCount == 0) {
                 mListView.setEmptyView(mEmptyView);
             }
-            mListAdapter.hideFooter();
+            if (folder.loadMoreUri == null) {
+                mListAdapter.hideFooter();
+            }
         }
     }
 }
