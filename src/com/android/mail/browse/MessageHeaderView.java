@@ -56,6 +56,7 @@ import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.ConversationContainer;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -63,7 +64,8 @@ import java.io.IOException;
 import java.io.StringReader;
 
 public class MessageHeaderView extends LinearLayout implements OnClickListener,
-        OnMenuItemClickListener, HeaderBlock, LoaderManager.LoaderCallbacks<Cursor> {
+        OnMenuItemClickListener, HeaderBlock, LoaderManager.LoaderCallbacks<Cursor>,
+        ConversationContainer.DetachListener {
 
     /**
      * Cap very long recipient lists during summary construction for efficiency.
@@ -335,6 +337,14 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mDefaultReplyAll = defaultReplyAll;
     }
 
+    private Integer getLoaderId() {
+        Integer id = null;
+        if (mMessage != null && mMessage.uri != null) {
+            id = mMessage.uri.hashCode();
+        }
+        return id;
+    }
+
     public int bind(Message message) {
         Timer t = new Timer();
         t.start(HEADER_RENDER_TAG);
@@ -348,8 +358,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (mCallbacks != null) {
             mCallbacks.onHeaderCreated(mLocalMessageId);
         }
-
-        setTag(mLocalMessageId);
 
         mTimestampMs = mMessage.dateReceivedMs;
         if (mDateBuilder != null) {
@@ -367,7 +375,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         // kick off load of Attachment objects in background thread
         if (mMessage.hasAttachments) {
-            mLoaderManager.initLoader(mMessage.hashCode(), Bundle.EMPTY, this);
+            LogUtils.d(LOG_TAG, "calling initLoader for message %d", getLoaderId());
+            mLoaderManager.initLoader(getLoaderId(), Bundle.EMPTY, this);
             // TODO: clean up loader when the view is detached
         }
 
@@ -449,7 +458,27 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        // Do nothing.
+        mAttachments = null;
+    }
+
+    private void destroyLoader() {
+        final Integer loaderId = getLoaderId();
+        if (mLoaderManager != null && loaderId != null) {
+            LogUtils.d(LOG_TAG, "detaching header view, calling destroyLoader for message %d",
+                    loaderId);
+            mLoaderManager.destroyLoader(loaderId);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        destroyLoader();
+    }
+
+    @Override
+    public void onDetachedFromParent() {
+        destroyLoader();
     }
 
     private boolean isInOutbox() {

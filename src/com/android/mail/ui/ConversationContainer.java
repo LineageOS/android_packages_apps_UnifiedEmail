@@ -123,6 +123,19 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private static final int VIEW_TAG_CONVERSATION_INDEX = R.id.view_tag_conversation_index;
 
+    /**
+     * Child views of this container should implement this interface to be notified when they are
+     * being detached.
+     *
+     */
+    public interface DetachListener {
+        /**
+         * Called on a child view when it is removed from its parent as part of
+         * {@link ConversationContainer} view recycling.
+         */
+        void onDetachedFromParent();
+    }
+
     public ConversationContainer(Context c) {
         this(c, null);
     }
@@ -333,6 +346,19 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         detachViewFromParent(overlayView);
         mScrapViews.add(overlayView);
         mChildrenToRemove.remove(overlayView);
+        if (overlayView instanceof DetachListener) {
+            ((DetachListener) overlayView).onDetachedFromParent();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        for (View scrap : mScrapViews) {
+            removeDetachedView(scrap, false /* animate */);
+        }
+        mScrapViews.clear();
     }
 
     @Override
