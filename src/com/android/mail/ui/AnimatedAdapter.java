@@ -28,6 +28,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
+import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
@@ -39,6 +40,7 @@ import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
         android.animation.Animator.AnimatorListener, OnUndoCancelListener {
+    private static int ITEM_VIEW_TYPE_FOOTER = 1;
     private HashSet<Integer> mDeletingItems = new HashSet<Integer>();
     private Account mSelectedAccount;
     private Context mContext;
@@ -47,6 +49,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private boolean mUndo = false;
     private ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
     private ViewMode mViewMode;
+    private View mFooter;
+    private boolean mShowFooter;
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account, ViewMode viewMode) {
@@ -55,6 +59,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mBatchConversations = batch;
         mSelectedAccount = account;
         mViewMode = viewMode;
+        mShowFooter = false;
+    }
+
+    @Override
+    public int getCount() {
+        int count = super.getCount();
+        return mShowFooter? count + 1 : count;
     }
 
     public void setUndo(boolean state) {
@@ -78,7 +89,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        if (!isPositionAnimating(view)) {
+        if (!isPositionAnimating(view) && !isPositionFooter(view)) {
             ((ConversationItemView) view).bind(cursor, mSelectedAccount.name, null,
                     mViewMode, mBatchConversations);
         }
@@ -92,7 +103,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public int getViewTypeCount() {
         // Our normal view and the animating (not recycled) view
-        return 2;
+        return 3;
     }
 
     @Override
@@ -100,6 +111,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         // Don't recycle animating views
         if (isPositionAnimating(position)) {
             return AdapterView.ITEM_VIEW_TYPE_IGNORE;
+        } else if (mShowFooter && position == super.getCount()) {
+            return ITEM_VIEW_TYPE_FOOTER ;
         }
         return 0;
     }
@@ -128,6 +141,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        if (mShowFooter && position == super.getCount()) {
+            return mFooter;
+        }
         if (isPositionAnimating(position)) {
             return getAnimatingView(position, convertView, parent);
         }
@@ -158,6 +174,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     private boolean isPositionAnimating(View view) {
         return (view instanceof AnimatingItemView);
+    }
+
+    private boolean isPositionFooter(View view) {
+        return (view instanceof ConversationListFooterView);
     }
 
     @Override
@@ -199,5 +219,23 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public void onUndoCancel() {
         mLastDeletingItems.clear();
+    }
+
+    public void showFooter() {
+        if (!mShowFooter) {
+            mShowFooter = true;
+            notifyDataSetChanged();
+        }
+    }
+
+    public void hideFooter() {
+        if (mShowFooter) {
+            mShowFooter = false;
+            notifyDataSetChanged();
+        }
+    }
+
+    public void addFooter(View footerView) {
+        mFooter = footerView;
     }
 }
