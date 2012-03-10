@@ -189,20 +189,32 @@ public class Account extends android.accounts.Account implements Parcelable {
         providerVersion = Integer.valueOf(accountMembers[2]);
         uri = Uri.parse(accountMembers[3]);
         capabilities = Integer.valueOf(accountMembers[4]);
-        folderListUri = Uri.parse(accountMembers[5]);
-        searchUri = Uri.parse(accountMembers[6]);
-        accountFromAddressesUri = Uri.parse(accountMembers[7]);
-        saveDraftUri = Uri.parse(accountMembers[8]);
-        sendMessageUri = Uri.parse(accountMembers[9]);
-        expungeMessageUri = Uri.parse(accountMembers[10]);
-        undoUri = Uri.parse(accountMembers[11]);
-        settingsIntentUri = Uri.parse(accountMembers[12]);
-        settingsQueryUri = Uri.parse(accountMembers[13]);
-        helpIntentUri = Uri.parse(accountMembers[14]);
+        folderListUri = !TextUtils.isEmpty(accountMembers[5]) ?
+                Uri.parse(accountMembers[5]) : null;
+        searchUri =!TextUtils.isEmpty(accountMembers[6]) ?
+                Uri.parse(accountMembers[6]) : null;
+        accountFromAddressesUri = !TextUtils.isEmpty(accountMembers[7]) ?
+                Uri.parse(accountMembers[7]) : null;
+        saveDraftUri = !TextUtils.isEmpty(accountMembers[8]) ?
+                Uri.parse(accountMembers[8]) : null;
+        sendMessageUri = !TextUtils.isEmpty(accountMembers[9]) ?
+                Uri.parse(accountMembers[9]) : null;
+        expungeMessageUri = !TextUtils.isEmpty(accountMembers[10]) ?
+                Uri.parse(accountMembers[10]) : null;
+        undoUri = !TextUtils.isEmpty(accountMembers[11]) ?
+                Uri.parse(accountMembers[11]) : null;
+        settingsIntentUri = !TextUtils.isEmpty(accountMembers[12]) ?
+                Uri.parse(accountMembers[12]) : null;
+        settingsQueryUri = !TextUtils.isEmpty(accountMembers[13]) ?
+                Uri.parse(accountMembers[13]) : null;
+        helpIntentUri = !TextUtils.isEmpty(accountMembers[14]) ?
+                Uri.parse(accountMembers[14]) : null;
         syncStatus = Integer.valueOf(accountMembers[15]);
-        composeIntentUri = Uri.parse(accountMembers[16]);
+        composeIntentUri = !TextUtils.isEmpty(accountMembers[16]) ?
+                Uri.parse(accountMembers[16]) : null;
         mimeType = accountMembers[17];
-        recentFolderListUri = Uri.parse(accountMembers[18]);
+        recentFolderListUri = !TextUtils.isEmpty(accountMembers[18]) ?
+                Uri.parse(accountMembers[18]) : null;
     }
 
     public Account(Parcel in) {
@@ -238,8 +250,10 @@ public class Account extends android.accounts.Account implements Parcelable {
         folderListUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_FOLDER_LIST_URI_COLUMN));
         final String search = cursor.getString(UIProvider.ACCOUNT_SEARCH_URI_COLUMN);
         searchUri = !TextUtils.isEmpty(search) ? Uri.parse(search) : null;
-        saveDraftUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN));
-        sendMessageUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN));
+        final String saveDraft = cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN);
+        saveDraftUri = !TextUtils.isEmpty(saveDraft) ? Uri.parse(saveDraft) : null;
+        final String send = cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN);
+        sendMessageUri = !TextUtils.isEmpty(send) ? Uri.parse(send) : null;
         final String expunge = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
         expungeMessageUri = !TextUtils.isEmpty(expunge) ? Uri.parse(expunge) : null;
         final String undo = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);

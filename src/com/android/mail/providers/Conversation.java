@@ -23,6 +23,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.ConversationCursor.ConversationProvider;
@@ -130,8 +131,9 @@ public class Conversation implements Parcelable {
             }
             snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
             hasAttachments = cursor.getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) == 1;
-            messageListUri = Uri.parse(cursor
-                    .getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN));
+            String messageList = cursor
+                    .getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN);
+            messageListUri = !TextUtils.isEmpty(messageList) ? Uri.parse(messageList) : null;
             senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
             numMessages = cursor.getInt(UIProvider.CONVERSATION_NUM_MESSAGES_COLUMN);
             numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
