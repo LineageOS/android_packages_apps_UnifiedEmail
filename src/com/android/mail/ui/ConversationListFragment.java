@@ -532,6 +532,7 @@ public final class ConversationListFragment extends ListFragment implements
             mConversationListCursor.sync();
         }
         mListAdapter.swapCursor(mConversationListCursor);
+        onFolderUpdated(mFolder);
         mConversationListCursor.addListener(this);
         if (mActivity.shouldShowFirstConversation()) {
             if (mConversationListCursor.getCount() > 0) {
@@ -562,10 +563,11 @@ public final class ConversationListFragment extends ListFragment implements
                 if (folder.loadMoreUri == null) {
                     mListAdapter.hideFooter();
                 } else {
-                    if (folder.totalCount >= mListAdapter.getCount()) {
-                        mListAdapter.hideFooter();
-                    } else {
+                    if ((mListAdapter.getCursor() != null) &&
+                            (folder.totalCount > mListAdapter.getCount())) {
                         mListAdapter.showFooter();
+                    } else {
+                        mListAdapter.hideFooter();
                     }
                 }
             }
