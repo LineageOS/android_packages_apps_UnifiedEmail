@@ -629,7 +629,7 @@ public class UIProvider {
          * folders should be only those that the provider wants to have
          * displayed.
          */
-        public static final String RAW_FOLDERS = null;
+        public static final String RAW_FOLDERS = "rawFolders";
         private ConversationColumns() {
         }
     }
