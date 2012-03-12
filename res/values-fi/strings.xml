@@ -23,10 +23,8 @@
     <string name="bcc" msgid="3098643138241111579">"Piilokopio"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Aihe"</string>
     <string name="body_hint" msgid="4279864165439577668">"Kirjoita sähköposti"</string>
-    <!-- no translation found for plus_cc_folder (1214307160559508302) -->
-    <skip />
-    <!-- no translation found for plus_bcc_folder (4756816436930806526) -->
-    <skip />
+    <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
+    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Liitä tiedosto"</string>
     <string name="save_draft" msgid="5555744208032445632">"Tallenna luonnos"</string>
     <string name="discard" msgid="1714960202994370243">"Hylkää"</string>
@@ -68,14 +66,10 @@
     <string name="forward" msgid="6822914459902983767">"Lähetä edelleen"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Viestin kirjoitus"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Vaihda kansiota"</string>
-    <!-- no translation found for menu_manage_folders (7499103037978814445) -->
-    <skip />
-    <!-- no translation found for folder_list_title (4276644062440415214) -->
-    <skip />
-    <!-- no translation found for manage_folders_subtitle (7702199674083260433) -->
-    <skip />
-    <!-- no translation found for menu_folder_options (8897520487430647932) -->
-    <skip />
+    <string name="menu_manage_folders" msgid="7499103037978814445">"Kansioiden hallinta"</string>
+    <string name="folder_list_title" msgid="4276644062440415214">"Kansiot"</string>
+    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Synkronoi ja ilmoita"</string>
+    <string name="menu_folder_options" msgid="8897520487430647932">"Kansion asetukset..."</string>
     <string name="menu_done" msgid="5791134842152855128">"Valmis"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Tilin asetukset"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Asetukset"</string>
@@ -105,6 +99,34 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Laskentataulukko"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF-tiedosto"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>-tiedosto"</string>
+    <!-- no translation found for preview_attachment (6934911143603455393) -->
+    <skip />
+    <!-- no translation found for view_attachment (8744325060392671944) -->
+    <skip />
+    <!-- no translation found for save_attachment (5360128849867863132) -->
+    <skip />
+    <!-- no translation found for info_attachment (607849900865956536) -->
+    <skip />
+    <!-- no translation found for play_attachment (41143041901432280) -->
+    <skip />
+    <!-- no translation found for install_attachment (2803531650273683382) -->
+    <skip />
+    <!-- no translation found for cancel_attachment (4651201258272223650) -->
+    <skip />
+    <!-- no translation found for more_info_attachment (717244337981816703) -->
+    <skip />
+    <!-- no translation found for attachment_type_blocked (2574422813386113664) -->
+    <skip />
+    <!-- no translation found for no_application_found (1945184804521392093) -->
+    <skip />
+    <!-- no translation found for fetching_attachment (2599763030649526179) -->
+    <skip />
+    <!-- no translation found for please_wait (8797634225088247121) -->
+    <skip />
+    <!-- no translation found for saved (6977782468220926548) -->
+    <skip />
+    <!-- no translation found for download_failed (7860650496473302012) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Jaa sovelluksessa"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Avaa selaimessa"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopioi"</string>
@@ -132,8 +154,7 @@
     <string name="sending" msgid="8214361929125649771">"Lähetetään…"</string>
     <string name="send_failed" msgid="750908595144529579">"Viestiä ei lähetetty."</string>
     <string name="me" msgid="6480762904022198669">"minä"</string>
-    <!-- no translation found for folders (3359679829905256429) -->
-    <skip />
+    <string name="folders" msgid="3359679829905256429">"Kansiot"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Näytä kaikki kansiot"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Poistetaanko tämä keskustelu?"</item>
@@ -213,11 +234,9 @@
     <string name="removeBackButton" msgid="860383341267568260">"Poista Takaisin-painike"</string>
     <string name="normalMode" msgid="4250277414924926730">"Aseta normaalitila"</string>
     <string name="searchResultMode" msgid="3564180712046711968">"Hakutulostila"</string>
-    <!-- no translation found for folderMode (553052020619895714) -->
-    <skip />
+    <string name="folderMode" msgid="553052020619895714">"Aseta kansion tila"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Haetaan.."</string>
-    <!-- no translation found for recent_folders (8240081561436891330) -->
-    <skip />
+    <string name="recent_folders" msgid="8240081561436891330">"Uusimmat"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Laajenna vastaanottajan tiedot"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Tiivistä vastaanottajan tiedot"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Näytä henkilön <xliff:g id="NAME">%1$s</xliff:g> yhteystiedot"</string>
@@ -272,5 +291,14 @@
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Vaihda kansiota"</string>
     <string name="search_hint" msgid="3625734263059221350">"Haku viesteistä"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <skip />
+    <string name="labels" msgid="1519770547536283663">"Tunnisteet"</string>
+    <!-- no translation found for network_error (2125579009654728299) -->
+    <skip />
+    <!-- no translation found for loading (2600808404156989255) -->
+    <skip />
+    <!-- no translation found for retry (4515885444824418022) -->
+    <skip />
+    <!-- no translation found for load_more (420892447103014683) -->
     <skip />
 </resources>

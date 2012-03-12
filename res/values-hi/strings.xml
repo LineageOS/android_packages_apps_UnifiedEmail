@@ -23,8 +23,7 @@
     <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
     <string name="subject_hint" msgid="7253964583324677128">"विषय"</string>
     <string name="body_hint" msgid="4279864165439577668">"ईमेल लिखें"</string>
-    <!-- no translation found for plus_cc_folder (1214307160559508302) -->
-    <skip />
+    <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <!-- no translation found for plus_bcc_folder (4756816436930806526) -->
     <skip />
     <string name="add_file_attachment" msgid="2203398371671979481">"फ़ाइल अनुलग्‍न करें"</string>
@@ -105,6 +104,34 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"स्प्रैडशीट"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g> फ़ाइल"</string>
+    <!-- no translation found for preview_attachment (6934911143603455393) -->
+    <skip />
+    <!-- no translation found for view_attachment (8744325060392671944) -->
+    <skip />
+    <!-- no translation found for save_attachment (5360128849867863132) -->
+    <skip />
+    <!-- no translation found for info_attachment (607849900865956536) -->
+    <skip />
+    <!-- no translation found for play_attachment (41143041901432280) -->
+    <skip />
+    <!-- no translation found for install_attachment (2803531650273683382) -->
+    <skip />
+    <!-- no translation found for cancel_attachment (4651201258272223650) -->
+    <skip />
+    <!-- no translation found for more_info_attachment (717244337981816703) -->
+    <skip />
+    <!-- no translation found for attachment_type_blocked (2574422813386113664) -->
+    <skip />
+    <!-- no translation found for no_application_found (1945184804521392093) -->
+    <skip />
+    <!-- no translation found for fetching_attachment (2599763030649526179) -->
+    <skip />
+    <!-- no translation found for please_wait (8797634225088247121) -->
+    <skip />
+    <!-- no translation found for saved (6977782468220926548) -->
+    <skip />
+    <!-- no translation found for download_failed (7860650496473302012) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"इसके द्वारा साझा करें:"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"ब्राउज़र में खोलें"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"प्रतिलिपि बनाएं"</string>
@@ -272,5 +299,14 @@
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"फ़ोल्डर परिवर्तित करें"</string>
     <string name="search_hint" msgid="3625734263059221350">"मेल खोजें"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
+    <skip />
+    <string name="labels" msgid="1519770547536283663">"लेबल"</string>
+    <!-- no translation found for network_error (2125579009654728299) -->
+    <skip />
+    <!-- no translation found for loading (2600808404156989255) -->
+    <skip />
+    <!-- no translation found for retry (4515885444824418022) -->
+    <skip />
+    <!-- no translation found for load_more (420892447103014683) -->
     <skip />
 </resources>
