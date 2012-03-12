@@ -591,9 +591,13 @@ public abstract class AbstractActivityController implements ActivityController {
                     return new CursorLoader(mContext, mAccount.settingsQueryUri,
                             UIProvider.SETTINGS_PROJECTION, null, null, null);
                 }
+                break;
             case LOADER_RECENT_FOLDERS:
-                return new CursorLoader(mContext, mAccount.recentFolderListUri,
-                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+                if (mAccount.recentFolderListUri != null) {
+                    return new CursorLoader(mContext, mAccount.recentFolderListUri,
+                            UIProvider.FOLDERS_PROJECTION, null, null, null);
+                }
+                break;
             default:
                 LogUtils.wtf(LOG_TAG, "Loader returned unexpected id: " + id);
         }
