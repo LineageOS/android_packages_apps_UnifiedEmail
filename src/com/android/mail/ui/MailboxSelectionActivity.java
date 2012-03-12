@@ -94,7 +94,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                 actionBar.setIcon(R.mipmap.ic_launcher_shortcut_folder);
             }
         }
-        ((Button) findViewById(R.id.cancel)).setOnClickListener(this);
+        ((Button) findViewById(R.id.first_button)).setOnClickListener(this);
 
         // Initially, assume that the main view is invisible.  It will be made visible,
         // if we display the account list
