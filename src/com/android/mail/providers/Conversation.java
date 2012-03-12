@@ -49,6 +49,7 @@ public class Conversation implements Parcelable {
     public boolean read;
     public boolean starred;
     public String folderList;
+    public String rawFolders;
     // Used within the UI to indicate the adapter position of this conversation
     public transient int position;
     // Used within the UI to indicate that a Conversation should be removed from the
@@ -78,6 +79,7 @@ public class Conversation implements Parcelable {
         dest.writeByte(read ? (byte) 1 : 0);
         dest.writeByte(starred ? (byte) 1 : 0);
         dest.writeString(folderList);
+        dest.writeString(rawFolders);
     }
 
     private Conversation(Parcel in) {
@@ -96,6 +98,7 @@ public class Conversation implements Parcelable {
         read = (in.readByte() != 0);
         starred = (in.readByte() != 0);
         folderList = in.readString();
+        rawFolders = in.readString();
         position = NO_POSITION;
         localDeleteOnUpdate = false;
     }
@@ -142,6 +145,7 @@ public class Conversation implements Parcelable {
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) == 1;
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) == 1;
             folderList = cursor.getString(UIProvider.CONVERSATION_FOLDER_LIST_COLUMN);
+            rawFolders = cursor.getString(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN);
             position = NO_POSITION;
             localDeleteOnUpdate = false;
         }

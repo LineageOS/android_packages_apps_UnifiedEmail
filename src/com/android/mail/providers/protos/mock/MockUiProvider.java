@@ -27,6 +27,7 @@ import android.text.Html;
 
 import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
@@ -197,6 +198,34 @@ public final class MockUiProvider extends ContentProvider {
         conversationMap.put(ConversationColumns.SENDING_STATE, 1);
         conversationMap.put(ConversationColumns.READ, 0);
         conversationMap.put(ConversationColumns.STARRED, 0);
+        Folder[] folders = new Folder[3];
+        StringBuilder foldersString = new StringBuilder();
+        for (int i = 0; i < folders.length; i++) {
+            folders[i] = new Folder();
+            folders[i].name = "folder" + i;
+            switch (i) {
+                case 0:
+                    folders[i].bgColor = "#fff000";
+                    break;
+                case 1:
+                    folders[i].bgColor = "#0000FF";
+                    break;
+                case 2:
+                    folders[i].bgColor = "#FFFF00";
+                    break;
+                default:
+                    folders[i].bgColor = null;
+                    break;
+            }
+
+        }
+        for (int i = 0; i < folders.length; i++) {
+            foldersString.append(folders[i].serialize());
+            if (i < folders.length - 1) {
+                foldersString.append(",");
+            }
+        }
+        conversationMap.put(ConversationColumns.RAW_FOLDERS, foldersString.toString());
         return conversationMap;
     }
 
