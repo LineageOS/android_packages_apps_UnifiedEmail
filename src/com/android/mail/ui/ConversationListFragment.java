@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import com.google.common.collect.ImmutableList;
+
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -93,14 +95,14 @@ public final class ConversationListFragment extends ListFragment implements
 
     // The internal view objects.
     private ListView mListView;
-    private int mPosition = ListView.INVALID_POSITION;
 
     private TextView mSearchResultCountTextView;
     private TextView mSearchStatusTextView;
 
     private View mSearchStatusView;
 
-    private int mSelectedCursorPosition = mPosition;
+    /** The currently selected conversation */
+    private int mCurrentPosition = -1;
 
     /**
      * Current Account being viewed
@@ -316,11 +318,6 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onDestroyView() {
-        // Clear the selected position and save list state manually so we can restore it after data
-        // has finished loading.
-        if (mPosition != ListView.INVALID_POSITION) {
-            mListView.setItemChecked(mPosition, false);
-        }
         mListSavedState = mListView.onSaveInstanceState();
 
         // Clear the adapter.
@@ -365,8 +362,9 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    public void onListItemClick(ListView l, View view, int position, long id) {
         viewConversation(position);
+        mCurrentPosition = position;
     }
 
     @Override
@@ -428,16 +426,6 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setEmptyView(null);
         onFolderUpdated(mViewContext.folder);
         getLoaderManager().initLoader(CONVERSATION_LOADER_ID, Bundle.EMPTY, this);
-    }
-
-    public void updateSelectedPosition() {
-        if (mPosition != mSelectedCursorPosition) {
-            // Clear temporary selection position. This would occur
-            // if the position was after items that were being destroyed.
-            mListView.setItemChecked(mPosition, false);
-            mPosition = mSelectedCursorPosition;
-            mListView.setItemChecked(mPosition, true);
-        }
     }
 
     /**
@@ -505,6 +493,17 @@ public final class ConversationListFragment extends ListFragment implements
         } else {
             finishRefresh();
         }
+    }
+
+    /**
+     * Request a refresh of the list. No sync is carried out and none is promised.
+     */
+    public void requestListRefresh() {
+        mListAdapter.notifyDataSetChanged();
+    }
+
+    public void requestDelete(final ActionCompleteListener listener) {
+        mListAdapter.delete(new ArrayList<Integer>(ImmutableList.of(mCurrentPosition)), listener);
     }
 
     /**

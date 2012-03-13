@@ -187,6 +187,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     }).setNegativeButton(R.string.cancel, null).create().show();
         } else {
             mListAdapter.delete(conversations, listener);
+            mSelectionSet.clear();
         }
     }
 
@@ -450,8 +451,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
 
-    private class DestructiveActionListener implements  ActionCompleteListener {
-        private int mAction;
+    private class DestructiveActionListener implements ActionCompleteListener {
+        private final int mAction;
         public DestructiveActionListener(int action) {
             mAction = action;
         }
@@ -485,5 +486,5 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             mListAdapter.notifyDataSetChanged();
             mSelectionSet.clear();
         }
-    };
+    }
 }

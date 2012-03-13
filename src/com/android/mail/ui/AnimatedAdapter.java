@@ -34,7 +34,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -119,6 +118,16 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return 0;
     }
 
+    /**
+     * Deletes the selected conversations from the conversation list view. These conversations
+     * <b>must</b> have their {@link Conversation#position} set to the position of these
+     * conversations among the list. . This will only remove the
+     * element from the list. The job of deleting the actual element is left to the the listener.
+     * This listener will be called when the animations are complete and is required to
+     * delete the conversation.
+     * @param conversations
+     * @param listener
+     */
     public void delete(Collection<Conversation> conversations,
             ActionCompleteListener listener) {
         // Animate out the positions.
@@ -130,6 +139,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         delete(positions, listener);
     }
 
+    /**
+     * Deletes a conversations with the list positions given here. This will only remove the
+     * element from the list. The job of deleting the actual elements is left to the the listener.
+     * This listener will be called when the animations are complete and is required to
+     * delete the conversations.
+     * @param deletedRows the position in the list view to be deleted.
+     * @param listener called when the animation is complete. At this point, it is safe to remove
+     * the conversations from the database.
+     */
     public void delete(ArrayList<Integer> deletedRows, ActionCompleteListener listener) {
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();

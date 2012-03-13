@@ -17,16 +17,19 @@
 
 package com.android.mail.ui;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -49,10 +52,15 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AutoAdvance;
+import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.Set;
+import java.util.ArrayList;
 
 
 /**
@@ -119,6 +127,15 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final int LOADER_ACCOUNT_SETTINGS = 1;
     private static final int LOADER_FOLDER_CURSOR = 2;
     private static final int LOADER_RECENT_FOLDERS = 3;
+
+    private final ActionCompleteListener mDeleteListener = new DestructiveActionListener(
+            R.id.delete);
+    private final ActionCompleteListener mArchiveListener = new DestructiveActionListener(
+            R.id.archive);
+    private final ActionCompleteListener mMuteListener = new DestructiveActionListener(
+            R.id.mute);
+    private final ActionCompleteListener mSpamListener = new DestructiveActionListener(
+            R.id.report_spam);
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -359,7 +376,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        final int id = item.getItemId();
+        LogUtils.d(LOG_TAG, "onOptionsItemSelected with id: " + id + ", And as hex " +
+                Integer.toHexString(id));
         boolean handled = true;
         switch (id) {
             case android.R.id.home:
@@ -381,11 +400,134 @@ public abstract class AbstractActivityController implements ActivityController {
                 // TODO: enable context sensitive help
                 Utils.showHelp(mActivity.getActivityContext(), mAccount.helpIntentUri, null);
                 break;
+            case R.id.y_button: {
+                LogUtils.d(LOG_TAG, "Archiving the conversation " + mCurrentConversation);
+                final Settings settings = mActivity.getSettings();
+                final boolean showDialog = (settings != null && settings.confirmArchive);
+                final int autoAdvance = settings != null
+                    ? settings.autoAdvance : AutoAdvance.LIST;
+                destructiveListAction(showDialog, R.plurals.confirm_archive_conversation,
+                        mArchiveListener);
+                break;
+            }
+            case R.id.delete: {
+                LogUtils.d(LOG_TAG, "Deleting the conversation " + mCurrentConversation);
+                final Settings settings = mActivity.getSettings();
+                final boolean showDialog = (settings != null && settings.confirmDelete);
+                destructiveListAction(showDialog, R.plurals.confirm_delete_conversation,
+                    mDeleteListener);
+                break;
+            }
+            case R.id.change_folders:
+                // Change Folders??
+            case R.id.inside_conversation_unread:
+                // No selection set, rather we mark a conversation as read
+                LogUtils.d(LOG_TAG, "Marking conversation " + mCurrentConversation.toString()
+                        + " as unread.");
+                updateCurrentConversation(ConversationColumns.READ, false);
+                break;
+            case R.id.mark_important:
+                LogUtils.d(LOG_TAG, "Marking conversation " + mCurrentConversation.toString()
+                        + " as important.");
+                updateCurrentConversation(ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.HIGH);
+                break;
+            case R.id.mark_not_important:
+                LogUtils.d(LOG_TAG, "Marking conversation " + mCurrentConversation.toString()
+                        + " as important.");
+                updateCurrentConversation(ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.LOW);
+                break;
+            case R.id.mute:
+            case R.id.report_spam:
+            case R.id.feedback_menu_item:
             default:
                 handled = false;
                 break;
         }
         return handled;
+    }
+
+    private void destructiveListAction(boolean showDialog, int confirmResource,
+            final ActionCompleteListener listener) {
+        final ArrayList<Conversation> single = new ArrayList<Conversation>();
+        final Settings settings = mActivity.getSettings();
+        final int autoAdvance = settings != null ? settings.autoAdvance : AutoAdvance.LIST;
+        single.add(mCurrentConversation);
+        if (showDialog) {
+            final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mConversationListFragment.requestDelete(listener);
+                }
+            };
+            final CharSequence message = Utils.formatPlural(mContext, confirmResource, 1);
+            new AlertDialog.Builder(mActivity.getActivityContext()).setMessage(message)
+                    .setPositiveButton(R.string.ok, onClick)
+                    .setNegativeButton(R.string.cancel, null)
+                    .create().show();
+        } else {
+            mConversationListFragment.requestDelete(listener);
+        }
+    }
+
+    private class DestructiveActionListener implements ActionCompleteListener {
+        private final int mAction;
+
+        public DestructiveActionListener(int action) {
+            mAction = action;
+        }
+
+        @Override
+        public void onActionComplete() {
+            LogUtils.d(LOG_TAG, "in onActionComplete with conversation " + mCurrentConversation);
+            final ArrayList<Conversation> single = new ArrayList<Conversation>();
+            single.add(mCurrentConversation);
+            mConversationListFragment.onActionComplete();
+            mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
+            switch (mAction) {
+                case R.id.y_button:
+                    LogUtils.d(LOG_TAG, "Archiving conversation " + mCurrentConversation);
+                    Conversation.archive(mContext, single);
+                    break;
+                case R.id.delete:
+                    LogUtils.d(LOG_TAG, "Deleting conversation " + mCurrentConversation);
+                    Conversation.delete(mContext, single);
+                    break;
+                case R.id.mute:
+                    LogUtils.d(LOG_TAG, "Muting conversation " + mCurrentConversation);
+                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE))
+                        mCurrentConversation.localDeleteOnUpdate = true;
+                    Conversation.mute(mContext, single);
+                    break;
+                case R.id.report_spam:
+                    LogUtils.d(LOG_TAG, "reporting spam conversation " + mCurrentConversation);
+                    Conversation.reportSpam(mContext, single);
+                    break;
+            }
+            mConversationListFragment.requestListRefresh();
+        }
+    }
+
+    /**
+     * Update the specified column name in conversation for a boolean value.
+     * @param columnName
+     * @param value
+     */
+    private void updateCurrentConversation(String columnName, boolean value) {
+        Conversation.updateBoolean(mContext, ImmutableList.of(mCurrentConversation), columnName,
+                value);
+        mConversationListFragment.requestListRefresh();
+    }
+
+    /**
+     * Update the specified column name in conversation for an integer value.
+     * @param columnName
+     * @param value
+     */
+    private void updateCurrentConversation(String columnName, int value) {
+        Conversation.updateInt(mContext, ImmutableList.of(mCurrentConversation), columnName, value);
+        mConversationListFragment.requestListRefresh();
     }
 
     private void requestFolderRefresh() {
@@ -685,7 +827,7 @@ public abstract class AbstractActivityController implements ActivityController {
         } else {
             newAccount = mAccount;
         }
-        // only bother updating the account/folder if the new account is different than the
+        // Only bother updating the account/folder if the new account is different than the
         // existing one
         final boolean refetchFolderInfo = !newAccount.equals(mAccount);
         onAccountChanged(newAccount);
