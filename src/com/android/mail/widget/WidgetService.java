@@ -77,7 +77,7 @@ public class WidgetService extends RemoteViewsService {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            mAccount = new Account(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
+            mAccount = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
             mFolder = new Folder(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
             mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(mContext, mAccount);
             mResolver = context.getContentResolver();

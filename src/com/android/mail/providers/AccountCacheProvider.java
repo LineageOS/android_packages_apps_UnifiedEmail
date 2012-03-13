@@ -415,7 +415,14 @@ public abstract class AccountCacheProvider extends ContentProvider
             return out.toString();
         }
 
-        public AccountCacheEntry(String serializedString) {
+        /**
+         * Create an account cache object from a serialized string previously stored away.
+         * If the serializedString does not parse as a valid account, we throw an
+         * {@link IllegalArgumentException}. The caller is responsible for checking this and
+         * ignoring the newly created object if the exception is thrown.
+         * @param serializedString
+         */
+        public AccountCacheEntry(String serializedString) throws IllegalArgumentException {
             String[] cacheEntryMembers = TextUtils.split(serializedString,
                     ACCOUNT_ENTRY_COMPONENT_SEPARATOR_PATTERN);
             if (cacheEntryMembers.length != NUMBER_MEMBERS) {
@@ -423,10 +430,14 @@ public abstract class AccountCacheProvider extends ContentProvider
                         + "Wrong number of members detected. "
                         + cacheEntryMembers.length + " detected");
             }
-            mAccount = new Account(cacheEntryMembers[0]);
+            mAccount = Account.newinstance(cacheEntryMembers[0]);
+            if (mAccount == null) {
+                throw new IllegalArgumentException("AccountCacheEntry de-serializing failed. "
+                        + "Account object couldn not be created by the serialized string"
+                        + serializedString);
+            }
             mAccountsQueryUri = !TextUtils.isEmpty(cacheEntryMembers[1]) ?
                     Uri.parse(cacheEntryMembers[1]) : null;
         }
-
     }
 }

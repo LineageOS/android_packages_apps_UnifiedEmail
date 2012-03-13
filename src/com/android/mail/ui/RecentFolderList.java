@@ -146,9 +146,10 @@ public final class RecentFolderList {
         if (mAccount == null || mFolderCache.isEmpty() || mAccount.recentFolderListUri == null)
             return;
         // TODO: Remove this test
-        if (TextUtils.equals("null", mAccount.recentFolderListUri.toString()))
+        if (TextUtils.equals("null", mAccount.recentFolderListUri.toString())) {
+            LogUtils.d(LOG_TAG, "recent folder list uri was null for account " + mAccount.name);
             return;
-
+        }
         // Write the current recent folder list into the account.
         // Store the ID of the folder and the last touched timestamp.
         ContentValues values = new ContentValues();

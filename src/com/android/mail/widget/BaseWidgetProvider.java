@@ -105,7 +105,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
             if (account == null) {
                 return;
             }
-            final Account accountToBeUpdated = new Account(account);
+            final Account accountToBeUpdated = Account.newinstance(account);
             final Set<Integer> widgetsToUpdate = Sets.newHashSet();
 
             for (int id : getCurrentWidgetIds(context)) {

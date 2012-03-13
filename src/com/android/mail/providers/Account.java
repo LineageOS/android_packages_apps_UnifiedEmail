@@ -26,8 +26,10 @@ import android.text.TextUtils;
 
 import com.google.common.base.Objects;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.StringBuilder;
-import java.util.regex.Pattern;
 
 public class Account extends android.accounts.Account implements Parcelable {
     /**
@@ -125,96 +127,115 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public final Uri recentFolderListUri;
 
-    /**
-     * Total number of members that comprise an instance of an account. This is
-     * the number of members that need to be serialized or parceled. This
-     * includes the members described above and name and type from the
-     * superclass.
-     */
-    private static final int NUMBER_MEMBERS = 19;
-
-    /**
-     * Examples of expected format for the joined account strings
-     *
-     * Example of a joined account string:
-     *       630107622^*^^i^*^^i^*^0
-     *       <id>^*^<canonical name>^*^<name>^*^<color index>
-     *
-     */
-    private static final String ACCOUNT_COMPONENT_SEPARATOR = "^*^";
-    private static final Pattern ACCOUNT_COMPONENT_SEPARATOR_PATTERN =
-            Pattern.compile("\\^\\*\\^");
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     /**
      * Return a serialized String for this folder.
      */
     public synchronized String serialize() {
-        StringBuilder out = new StringBuilder();
-        out.append(name).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(type).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(providerVersion).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(uri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(capabilities).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(folderListUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(searchUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(accountFromAddressesUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(saveDraftUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(sendMessageUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(expungeMessageUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(undoUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(settingsIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(settingsQueryUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(helpIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(syncStatus).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(composeIntentUri).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(mimeType).append(ACCOUNT_COMPONENT_SEPARATOR);
-        out.append(recentFolderListUri);
-        return out.toString();
+        JSONObject json = new JSONObject();
+        try {
+            json.put(UIProvider.AccountColumns.NAME, name);
+            json.put(UIProvider.AccountColumns.TYPE, type);
+            json.put(UIProvider.AccountColumns.PROVIDER_VERSION, providerVersion);
+            json.put(UIProvider.AccountColumns.URI, uri);
+            json.put(UIProvider.AccountColumns.CAPABILITIES, capabilities);
+            json.put(UIProvider.AccountColumns.FOLDER_LIST_URI, folderListUri);
+            json.put(UIProvider.AccountColumns.SEARCH_URI, searchUri);
+            json.put(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES_URI,
+                    accountFromAddressesUri);
+            json.put(UIProvider.AccountColumns.SAVE_DRAFT_URI, saveDraftUri);
+            json.put(UIProvider.AccountColumns.SEND_MAIL_URI, sendMessageUri);
+            json.put(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
+            json.put(UIProvider.AccountColumns.UNDO_URI, undoUri);
+            json.put(UIProvider.AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
+            json.put(UIProvider.AccountColumns.SETTINGS_QUERY_URI, settingsQueryUri);
+            json.put(UIProvider.AccountColumns.HELP_INTENT_URI, helpIntentUri);
+            json.put(UIProvider.AccountColumns.SYNC_STATUS, syncStatus);
+            json.put(UIProvider.AccountColumns.COMPOSE_URI, composeIntentUri);
+            json.put(UIProvider.AccountColumns.MIME_TYPE, mimeType);
+            json.put(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI, recentFolderListUri);
+        } catch (JSONException e) {
+            LogUtils.wtf(LOG_TAG, e, "Could not serialize account with name " + name);
+        }
+        return json.toString();
     }
 
     /**
-     * Construct a new Account instance from a previously serialized string.
-     * @param serializedAccount string obtained from {@link #serialize()} on a valid account.
+     * Create a new instance of an Account object using a serialized instance created previously
+     * using {@link #serialize()}. This returns null if the serialized instance was invalid or does
+     * not represent a valid account object.
+     *
+     * @param serializedAccount
+     * @return
      */
-    public Account(String serializedAccount) {
-        super(TextUtils.split(serializedAccount, ACCOUNT_COMPONENT_SEPARATOR_PATTERN)[0], TextUtils
-                .split(serializedAccount, ACCOUNT_COMPONENT_SEPARATOR_PATTERN)[1]);
-        String[] accountMembers = TextUtils.split(serializedAccount,
-                ACCOUNT_COMPONENT_SEPARATOR_PATTERN);
-        if (accountMembers.length != NUMBER_MEMBERS) {
-            throw new IllegalArgumentException(
-                    "Account de-serializing failed. Wrong number of members detected.");
+    public static Account newinstance(String serializedAccount) {
+        // The heavy lifting is done by Account(name, type, serializedAccount). This method
+        // is a wrapper to check for errors and exceptions and return back a null in cases
+        // something breaks.
+        JSONObject json = null;
+        try {
+            json = new JSONObject(serializedAccount);
+            final String name = (String) json.get(UIProvider.AccountColumns.NAME);
+            final String type = (String) json.get(UIProvider.AccountColumns.TYPE);
+            return new Account(name, type, serializedAccount);
+        } catch (JSONException e) {
+            LogUtils.wtf(LOG_TAG, e, "Could not create an account from this input: \""
+                    + serializedAccount);
+            return null;
         }
-        providerVersion = Integer.valueOf(accountMembers[2]);
-        uri = Uri.parse(accountMembers[3]);
-        capabilities = Integer.valueOf(accountMembers[4]);
-        folderListUri = !TextUtils.isEmpty(accountMembers[5]) ?
-                Uri.parse(accountMembers[5]) : null;
-        searchUri =!TextUtils.isEmpty(accountMembers[6]) ?
-                Uri.parse(accountMembers[6]) : null;
-        accountFromAddressesUri = !TextUtils.isEmpty(accountMembers[7]) ?
-                Uri.parse(accountMembers[7]) : null;
-        saveDraftUri = !TextUtils.isEmpty(accountMembers[8]) ?
-                Uri.parse(accountMembers[8]) : null;
-        sendMessageUri = !TextUtils.isEmpty(accountMembers[9]) ?
-                Uri.parse(accountMembers[9]) : null;
-        expungeMessageUri = !TextUtils.isEmpty(accountMembers[10]) ?
-                Uri.parse(accountMembers[10]) : null;
-        undoUri = !TextUtils.isEmpty(accountMembers[11]) ?
-                Uri.parse(accountMembers[11]) : null;
-        settingsIntentUri = !TextUtils.isEmpty(accountMembers[12]) ?
-                Uri.parse(accountMembers[12]) : null;
-        settingsQueryUri = !TextUtils.isEmpty(accountMembers[13]) ?
-                Uri.parse(accountMembers[13]) : null;
-        helpIntentUri = !TextUtils.isEmpty(accountMembers[14]) ?
-                Uri.parse(accountMembers[14]) : null;
-        syncStatus = Integer.valueOf(accountMembers[15]);
-        composeIntentUri = !TextUtils.isEmpty(accountMembers[16]) ?
-                Uri.parse(accountMembers[16]) : null;
-        mimeType = accountMembers[17];
-        recentFolderListUri = !TextUtils.isEmpty(accountMembers[18]) ?
-                Uri.parse(accountMembers[18]) : null;
+    }
+
+    /**
+     * Parse a string (possibly null or empty) into a URI. If the string is null or empty, null
+     * is returned back. Otherwise an empty URI is returned.
+     * @param uri
+     * @return a valid URI, possibly {@link android.net.Uri#EMPTY}
+     */
+    private static Uri getValidUri(String uri) {
+        if (uri == JSONObject.NULL)
+            return Uri.EMPTY;
+        return Uri.parse(uri);
+    }
+
+    /**
+     * Construct a new Account instance from a previously serialized string. This calls
+     * {@link android.accounts.Account#Account(String, String)} with name and type given as the
+     * first two arguments.
+     *
+     * <p>
+     * This is private. Public uses should go through the safe {@link #newinstance(String)} method.
+     * </p>
+     * @param name name of account in {@link android.accounts.Account}
+     * @param type type of account in {@link android.accounts.Account}
+     * @param jsonAccount string obtained from {@link #serialize()} on a valid account.
+     * @throws JSONException
+     */
+    private Account(String name, String type, String jsonAccount) throws JSONException {
+        super(name, type);
+        final JSONObject json = new JSONObject(jsonAccount);
+        providerVersion = Integer.valueOf(json.getInt(UIProvider.AccountColumns.PROVIDER_VERSION));
+        uri = Uri.parse(json.optString(UIProvider.AccountColumns.URI));
+        capabilities = Integer.valueOf(json.getInt(UIProvider.AccountColumns.CAPABILITIES));
+        folderListUri = getValidUri(json.optString(UIProvider.AccountColumns.FOLDER_LIST_URI));
+        searchUri = getValidUri(json.optString(UIProvider.AccountColumns.SEARCH_URI));
+        accountFromAddressesUri = getValidUri(json
+                .optString(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES_URI));
+        saveDraftUri = getValidUri(json.optString(UIProvider.AccountColumns.SAVE_DRAFT_URI));
+        sendMessageUri = getValidUri(json.optString(UIProvider.AccountColumns.SEND_MAIL_URI));
+        expungeMessageUri = getValidUri(json
+                .optString(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI));
+        undoUri = getValidUri(json.optString(UIProvider.AccountColumns.UNDO_URI));
+        settingsIntentUri = getValidUri(json
+                .optString(UIProvider.AccountColumns.SETTINGS_INTENT_URI));
+        settingsQueryUri = getValidUri(json.optString(
+                UIProvider.AccountColumns.SETTINGS_QUERY_URI));
+        helpIntentUri = getValidUri(json.optString(UIProvider.AccountColumns.HELP_INTENT_URI));
+        syncStatus = Integer.valueOf(json.optInt(UIProvider.AccountColumns.SYNC_STATUS));
+        composeIntentUri = getValidUri(json.optString(UIProvider.AccountColumns.COMPOSE_URI));
+        mimeType = json.optString(UIProvider.AccountColumns.MIME_TYPE);
+        recentFolderListUri = getValidUri(
+                json.optString(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI));
     }
 
     public Account(Parcel in) {
