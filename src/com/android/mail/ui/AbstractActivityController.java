@@ -228,7 +228,11 @@ public abstract class AbstractActivityController implements ActivityController {
         if (!account.equals(mAccount)) {
             mAccount = account;
             mRecentFolderList.setCurrentAccount(account);
-            mActivity.getLoaderManager().restartLoader(LOADER_RECENT_FOLDERS, null, this);
+            if (mActivity.getLoaderManager().getLoader(LOADER_RECENT_FOLDERS) != null) {
+                mActivity.getLoaderManager().restartLoader(LOADER_RECENT_FOLDERS, null, this);
+            } else {
+                mActivity.getLoaderManager().initLoader(LOADER_RECENT_FOLDERS, null, this);
+            }
             onSettingsChanged(null);
             restartSettingsLoader();
             mActionBarView.setAccount(mAccount);
