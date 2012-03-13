@@ -69,9 +69,11 @@ public final class RecentFolderList {
      */
     private class StoreRecent extends AsyncTask<ContentValues, Void, Void> {
         final ContentResolver mResolver;
+        final Account mAccount;
 
-        public StoreRecent(Context context) {
+        public StoreRecent(Context context, Account account) {
             mResolver = context.getContentResolver();
+            mAccount = account;
         }
 
         @Override
@@ -156,7 +158,7 @@ public final class RecentFolderList {
             values.put(id, now);
         }
         // Store the values in the background.
-        new StoreRecent(mContext).execute(values);
+        new StoreRecent(mContext, mAccount).execute(values);
     }
 
     /**
