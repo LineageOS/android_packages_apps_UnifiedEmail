@@ -54,6 +54,8 @@ public class FolderDisplayer {
 
         public int textColor;
 
+        public boolean showBgColor;
+
         public FolderValues(String id, String color, String n, String bgColor, String fgColor,
                 Context context) {
             folderId = id;
@@ -66,7 +68,12 @@ public class FolderDisplayer {
                 backgroundColor = Utils.getDefaultFolderBackgroundColor(context);
             }
             // TODO(mindyp): add default fg text color and text color from preference.
-            textColor = Color.BLACK;
+            final boolean showTextColor = !TextUtils.isEmpty(fgColor);
+            if (showTextColor) {
+                textColor = Integer.parseInt(fgColor);
+            } else {
+                textColor = Utils.getDefaultFolderTextColor(context);
+            }
         }
 
         @Override
@@ -101,7 +108,12 @@ public class FolderDisplayer {
         }
         for (Folder folder : folders) {
             String folderId = folder.id;
+            String canonicalName = folder.name;
             String colorId = folder.bgColor;
+
+            // We will sometimes see folders that the folder map does not yet know about or that
+            // do not have names yet.
+            if (TextUtils.isEmpty(canonicalName)) continue;
             String stringToDisplay = null;
 
             if (!Folder.isProviderFolder(folder)) {

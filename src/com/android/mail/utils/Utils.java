@@ -792,6 +792,11 @@ public class Utils {
                R.string.default_folder_background_color));
    }
 
+   public static int getDefaultFolderTextColor(Context context) {
+       return Integer.parseInt(context.getResources().getString(
+               R.string.default_folder_text_color));
+   }
+
    public static int getTransparentColor(int color) {
        return 0x00ffffff & color;
    }
