@@ -74,12 +74,12 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         }
         mAdapter = new FolderSelectorAdapter(context, foldersCursor, conversationFolders, mSingle);
         builder.setAdapter(mAdapter, this);
-        String folderId;
+        String folderUri;
         // Pre-load existing conversation folders.
         foldersCursor.moveToFirst();
         do {
-            folderId = foldersCursor.getString(UIProvider.FOLDER_ID_COLUMN);
-            if (conversationFolders.contains(folderId)) {
+            folderUri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
+            if (conversationFolders.contains(folderUri)) {
                 mCheckedState.put(Uri.parse(foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN)),
                         true);
             }

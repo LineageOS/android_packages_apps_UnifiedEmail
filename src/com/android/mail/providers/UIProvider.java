@@ -346,7 +346,6 @@ public class UIProvider {
 
     public static final String[] FOLDERS_PROJECTION = {
         BaseColumns._ID,
-        FolderColumns.ID,
         FolderColumns.URI,
         FolderColumns.NAME,
         FolderColumns.HAS_CHILDREN,
@@ -366,25 +365,24 @@ public class UIProvider {
         FolderColumns.LOAD_MORE_URI
     };
 
-    public static final int FOLDER_BASECOLUMNS_ID_COLUMN = 0;
-    public static final int FOLDER_ID_COLUMN = 1;
-    public static final int FOLDER_URI_COLUMN = 2;
-    public static final int FOLDER_NAME_COLUMN = 3;
-    public static final int FOLDER_HAS_CHILDREN_COLUMN = 4;
-    public static final int FOLDER_CAPABILITIES_COLUMN = 5;
-    public static final int FOLDER_SYNC_WINDOW_COLUMN = 6;
-    public static final int FOLDER_CONVERSATION_LIST_URI_COLUMN = 7;
-    public static final int FOLDER_CHILD_FOLDERS_LIST_COLUMN = 8;
-    public static final int FOLDER_UNREAD_COUNT_COLUMN = 9;
-    public static final int FOLDER_TOTAL_COUNT_COLUMN = 10;
-    public static final int FOLDER_REFRESH_URI_COLUMN = 11;
-    public static final int FOLDER_SYNC_STATUS_COLUMN = 12;
-    public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 13;
-    public static final int FOLDER_TYPE_COLUMN = 14;
-    public static final int FOLDER_ICON_RES_ID_COLUMN = 15;
-    public static final int FOLDER_BG_COLOR_COLUMN = 16;
-    public static final int FOLDER_FG_COLOR_COLUMN = 17;
-    public static final int FOLDER_LOAD_MORE_URI_COLUMN = 18;
+    public static final int FOLDER_ID_COLUMN = 0;
+    public static final int FOLDER_URI_COLUMN = 1;
+    public static final int FOLDER_NAME_COLUMN = 2;
+    public static final int FOLDER_HAS_CHILDREN_COLUMN = 3;
+    public static final int FOLDER_CAPABILITIES_COLUMN = 4;
+    public static final int FOLDER_SYNC_WINDOW_COLUMN = 5;
+    public static final int FOLDER_CONVERSATION_LIST_URI_COLUMN = 6;
+    public static final int FOLDER_CHILD_FOLDERS_LIST_COLUMN = 7;
+    public static final int FOLDER_UNREAD_COUNT_COLUMN = 8;
+    public static final int FOLDER_TOTAL_COUNT_COLUMN = 9;
+    public static final int FOLDER_REFRESH_URI_COLUMN = 10;
+    public static final int FOLDER_SYNC_STATUS_COLUMN = 11;
+    public static final int FOLDER_LAST_SYNC_RESULT_COLUMN = 12;
+    public static final int FOLDER_TYPE_COLUMN = 13;
+    public static final int FOLDER_ICON_RES_ID_COLUMN = 14;
+    public static final int FOLDER_BG_COLOR_COLUMN = 15;
+    public static final int FOLDER_FG_COLOR_COLUMN = 16;
+    public static final int FOLDER_LOAD_MORE_URI_COLUMN = 17;
 
     public static final class FolderType {
         public static final int DEFAULT = 0;
@@ -421,11 +419,6 @@ public class UIProvider {
     }
 
     public static final class FolderColumns {
-        /**
-         * This string column contains the id of the folder.
-         */
-        public static final String ID = "folderId";
-
         /**
          * This string column contains the uri of the folder.
          */

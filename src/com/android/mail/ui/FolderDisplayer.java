@@ -24,6 +24,7 @@ import com.google.common.collect.Sets;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -48,7 +49,9 @@ public class FolderDisplayer {
 
         public final String name;
 
-        public final String folderId;
+        public final int folderId;
+
+        public final Uri folderUri;
 
         public int backgroundColor;
 
@@ -56,11 +59,12 @@ public class FolderDisplayer {
 
         public boolean showBgColor;
 
-        public FolderValues(String id, String color, String n, String bgColor, String fgColor,
+        public FolderValues(int id, Uri uri, String color, String n, String bgColor, String fgColor,
                 Context context) {
             folderId = id;
             colorId = color;
             name = n;
+            folderUri = uri;
             final boolean showBgColor = !TextUtils.isEmpty(bgColor);
             if (showBgColor) {
                 backgroundColor = Integer.parseInt(bgColor);
@@ -111,7 +115,8 @@ public class FolderDisplayer {
             }
         }
         for (Folder folder : folders) {
-            String folderId = folder.id;
+            int folderId = folder.id;
+            Uri uri = folder.uri;
             String canonicalName = folder.name;
             String colorId = folder.bgColor;
 
@@ -127,7 +132,7 @@ public class FolderDisplayer {
 
             if (stringToDisplay != null) {
                 folderValuesSet.add(
-                        new FolderValues(folderId, colorId, stringToDisplay,
+                        new FolderValues(folderId, uri, colorId, stringToDisplay,
                                 folder.bgColor, folder.fgColor, mContext));
             }
         }

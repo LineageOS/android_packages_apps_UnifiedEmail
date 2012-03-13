@@ -26,6 +26,7 @@ import android.net.Uri.Builder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -50,7 +51,7 @@ public class Folder implements Parcelable {
     /**
      * Unique id of this folder.
      */
-    public String id;
+    public int id;
 
     /**
      * The content provider URI that returns this folder for this account.
@@ -134,10 +135,9 @@ public class Folder implements Parcelable {
 
     /**
      * Total number of members that comprise an instance of a folder. This is
-     * the number of members that need to be serialized or parceled. We don't serialize
-     * the _id field, so subtract 1.
+     * the number of members that need to be serialized or parceled.
      */
-    private static final int NUMBER_MEMBERS = UIProvider.FOLDERS_PROJECTION.length - 1;
+    private static final int NUMBER_MEMBERS = UIProvider.FOLDERS_PROJECTION.length;
 
     /**
      * Used only for debugging.
@@ -165,7 +165,7 @@ public class Folder implements Parcelable {
 
     public Folder(Parcel in) {
         assert (in.dataSize() == NUMBER_MEMBERS);
-        id = in.readString();
+        id = in.readInt();
         uri = in.readParcelable(null);
         name = in.readString();
         capabilities = in.readInt();
@@ -188,7 +188,7 @@ public class Folder implements Parcelable {
 
     public Folder(Cursor cursor) {
         assert (cursor.getColumnCount() == NUMBER_MEMBERS);
-        id = cursor.getString(UIProvider.FOLDER_ID_COLUMN);
+        id = cursor.getInt(UIProvider.FOLDER_ID_COLUMN);
         uri = Uri.parse(cursor.getString(UIProvider.FOLDER_URI_COLUMN));
         name = cursor.getString(UIProvider.FOLDER_NAME_COLUMN);
         capabilities = cursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
@@ -216,7 +216,7 @@ public class Folder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(id);
         dest.writeParcelable(uri, 0);
         dest.writeString(name);
         dest.writeInt(capabilities);
@@ -295,7 +295,7 @@ public class Folder implements Parcelable {
                     "Folder de-serializing failed. Wrong number of members detected."
                             + folderMembers.length);
         }
-        id = folderMembers[0];
+        id = Integer.valueOf(folderMembers[0]);
         uri = Uri.parse(folderMembers[1]);
         name = folderMembers[2];
         capabilities = Integer.valueOf(folderMembers[3]);

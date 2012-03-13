@@ -88,7 +88,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
     private void processLists(Cursor folders, Set<String> initiallySelected) {
         while (folders.moveToNext()) {
             Folder folder = new Folder(folders);
-            FolderRow row = new FolderRow(folder, initiallySelected.contains(folder.id));
+            FolderRow row = new FolderRow(folder, initiallySelected.contains(folder.uri.toString()));
             mFolderRows.add(row);
         }
         Collections.sort(mFolderRows);

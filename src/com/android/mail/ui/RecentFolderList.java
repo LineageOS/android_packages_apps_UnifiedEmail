@@ -120,7 +120,7 @@ public final class RecentFolderList {
         while (data.moveToNext()) {
             assert (data.getColumnCount() == UIProvider.FOLDERS_PROJECTION.length);
             Folder folder = new Folder(data);
-            mFolderCache.putElement(folder.id, folder);
+            mFolderCache.putElement(folder.uri.toString(), folder);
             i++;
             if (i >= NUM_FOLDERS)
                 break;
@@ -133,7 +133,7 @@ public final class RecentFolderList {
      * @param folder the folder we have changed to.
      */
     public void touchFolder(Folder folder) {
-        mFolderCache.putElement(folder.id, folder);
+        mFolderCache.putElement(folder.uri.toString(), folder);
         // Update the UiProvider with the current recent folder list.
         // TODO(viki): Perhaps not do this on every touch. This is excessive.
         saveToUiProvider();
@@ -168,7 +168,7 @@ public final class RecentFolderList {
      */
     public Folder[] getSortedArray(Folder exclude) {
         final int spaceForCurrentFolder =
-                (exclude != null && mFolderCache.getElement(exclude.id) != null)
+                (exclude != null && mFolderCache.getElement(exclude.uri.toString()) != null)
                         ? 1 : 0;
         final int numRecents = mFolderCache.size() - spaceForCurrentFolder;
         final Folder[] folders = new Folder[numRecents];
@@ -176,7 +176,7 @@ public final class RecentFolderList {
         final List<Folder> recent = new ArrayList<Folder>(mFolderCache.values());
         Collections.sort(recent, ALPHABET_IGNORECASE);
         for (Folder f : recent) {
-            if (exclude == null || !TextUtils.equals(f.id, exclude.id)) {
+            if (exclude == null || !f.uri.equals(exclude.uri)) {
                 folders[i++] = f;
             }
         }
