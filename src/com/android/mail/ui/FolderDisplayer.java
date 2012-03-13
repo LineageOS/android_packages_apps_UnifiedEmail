@@ -110,7 +110,7 @@ public class FolderDisplayer {
         Folder f;
         for (String folder : folderArray) {
             f = new Folder(folder);
-            if (ignoreFolder == null || !TextUtils.equals(f.id, ignoreFolder.id)) {
+            if (ignoreFolder == null || !ignoreFolder.uri.equals(f.uri)) {
                 folders.add(f);
             }
         }
