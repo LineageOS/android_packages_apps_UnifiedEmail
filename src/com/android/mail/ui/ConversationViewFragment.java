@@ -88,6 +88,10 @@ public final class ConversationViewFragment extends Fragment implements
 
     private final WebViewClient mWebViewClient = new ConversationWebViewClient();
 
+    private MessageListAdapter mAdapter;
+
+    private boolean mViewsCreated;
+
     private static final String ARG_ACCOUNT = "account";
     private static final String ARG_CONVERSATION = "conversation";
 
@@ -133,6 +137,11 @@ public final class ConversationViewFragment extends Fragment implements
         }
         mActivity.attachConversationView(this);
         mTemplates = new HtmlConversationTemplates(mContext);
+
+        mAdapter = new MessageListAdapter(mActivity.getActivityContext(),
+                null /* cursor */, mAccount, getLoaderManager());
+        mConversationContainer.setOverlayAdapter(mAdapter);
+
         // Show conversation and start loading messages.
         showConversation();
     }
@@ -181,16 +190,16 @@ public final class ConversationViewFragment extends Fragment implements
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
+        mViewsCreated = true;
+
         return rootView;
     }
 
     @Override
     public void onDestroyView() {
-        // Clear the adapter.
-        mConversationContainer.setOverlayAdapter(null);
-        mActivity.attachConversationView(null);
-
         super.onDestroyView();
+        mViewsCreated = false;
+        mActivity.attachConversationView(null);
     }
 
     /**
@@ -210,16 +219,33 @@ public final class ConversationViewFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         MessageCursor messageCursor = (MessageCursor) data;
-        mWebView.loadDataWithBaseURL(mBaseUri, renderMessageBodies(messageCursor), "text/html",
-                "utf-8", null);
-        final Adapter messageListAdapter = new MessageListAdapter(
-                mActivity.getActivityContext(), messageCursor, mAccount, getLoaderManager());
-        mConversationContainer.setOverlayAdapter(messageListAdapter);
+
+        if (mAdapter.getCursor() == null) {
+            renderConversation(messageCursor);
+        } else {
+            updateConversation(messageCursor);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        // Do nothing.
+        mAdapter.swapCursor(null);
+    }
+
+    private void renderConversation(MessageCursor messageCursor) {
+        mWebView.loadDataWithBaseURL(mBaseUri, renderMessageBodies(messageCursor), "text/html",
+                "utf-8", null);
+        mAdapter.swapCursor(messageCursor);
+    }
+
+    private void updateConversation(MessageCursor messageCursor) {
+        // TODO: handle server-side conversation updates
+        // for simple things like header data changes, just re-render the affected headers
+        // if a new message is present, save off the pending cursor and show a notification to
+        // re-render
+
+        final MessageCursor oldCursor = (MessageCursor) mAdapter.getCursor();
+        mAdapter.swapCursor(messageCursor);
     }
 
     private String renderMessageBodies(MessageCursor messageCursor) {
@@ -310,7 +336,9 @@ public final class ConversationViewFragment extends Fragment implements
             // 'mark unread' restores the original unread state for each individual message
 
             // mark as read upon open
-            mConversation.markRead(mContext, true /* read */);
+            if (!mConversation.read) {
+                mConversation.markRead(mContext, true /* read */);
+            }
         }
 
     }
@@ -328,6 +356,12 @@ public final class ConversationViewFragment extends Fragment implements
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    if (!mViewsCreated) {
+                        LogUtils.d(LOG_TAG, "ignoring webContentGeometryChange because views" +
+                                " are gone, %s", ConversationViewFragment.this);
+                        return;
+                    }
+
                     mConversationContainer.onGeometryChange(parseInts(headerBottomStrs),
                             parseInts(headerHeightStrs));
                 }
