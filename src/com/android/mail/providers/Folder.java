@@ -240,7 +240,7 @@ public class Folder implements Parcelable {
     /**
      * Return a serialized String for this folder.
      */
-    public synchronized String serialize(){
+    public synchronized String serialize() {
         StringBuilder out = new StringBuilder();
         out.append(id).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(uri).append(FOLDER_COMPONENT_SEPARATOR);

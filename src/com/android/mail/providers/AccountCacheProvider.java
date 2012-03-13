@@ -302,12 +302,13 @@ public abstract class AccountCacheProvider extends ContentProvider
         if (accountsStringSet != null) {
             for (String serializedAccount : accountsStringSet) {
                 try {
-                    final AccountCacheEntry accountEntry = new AccountCacheEntry(serializedAccount);
+                    final AccountCacheEntry accountEntry =
+                            new AccountCacheEntry(serializedAccount);
                     addAccount(accountEntry.mAccount, accountEntry.mAccountsQueryUri);
-                } catch (IllegalArgumentException e) {
+                } catch (Exception e) {
                     // Unable to create account object, skip to next
                     LogUtils.e(LOG_TAG, e,
-                            "Unable to create account object from serialized string'%s'",
+                            "Unable to create account object from serialized string '%s'",
                             serializedAccount);
                 }
             }

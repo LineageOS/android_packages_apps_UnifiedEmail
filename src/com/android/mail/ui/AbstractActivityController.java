@@ -17,10 +17,13 @@
 
 package com.android.mail.ui;
 
+import com.google.common.collect.Sets;
+
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -36,10 +39,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.widget.LinearLayout;
 
-import com.android.mail.R;
 import com.android.mail.ConversationListContext;
+import com.android.mail.R;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
@@ -47,11 +49,8 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-
-import com.google.common.collect.Sets;
 
 import java.util.Set;
 
@@ -228,24 +227,13 @@ public abstract class AbstractActivityController implements ActivityController {
         if (!account.equals(mAccount)) {
             mAccount = account;
             mRecentFolderList.setCurrentAccount(account);
-            if (mActivity.getLoaderManager().getLoader(LOADER_RECENT_FOLDERS) != null) {
-                mActivity.getLoaderManager().restartLoader(LOADER_RECENT_FOLDERS, null, this);
-            } else {
-                mActivity.getLoaderManager().initLoader(LOADER_RECENT_FOLDERS, null, this);
-            }
-            onSettingsChanged(null);
-            restartSettingsLoader();
+            restartOptionalLoader(LOADER_RECENT_FOLDERS, null /* args */);
+            restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
             mActionBarView.setAccount(mAccount);
             mActivity.invalidateOptionsMenu();
             // Account changed; existing folder is invalid.
             mFolder = null;
             fetchAccountFolderInfo();
-        }
-    }
-
-    private void restartSettingsLoader() {
-        if (mAccount.settingsQueryUri != null) {
-            mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_SETTINGS, null, this);
         }
     }
 
@@ -513,13 +501,13 @@ public abstract class AbstractActivityController implements ActivityController {
             restoreListContext(savedState);
             mAccount = savedState.getParcelable(SAVED_ACCOUNT);
             mActionBarView.setAccount(mAccount);
-            restartSettingsLoader();
+            restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
         } else if (intent != null) {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                     mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                     mActionBarView.setAccount(mAccount);
-                    mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_SETTINGS, null, this);
+                    restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
                     mActivity.invalidateOptionsMenu();
                 }
                 if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
@@ -606,6 +594,25 @@ public abstract class AbstractActivityController implements ActivityController {
                 LogUtils.wtf(LOG_TAG, "Loader returned unexpected id: " + id);
         }
         return null;
+    }
+
+    /**
+     * {@link LoaderManager} currently has a bug in
+     * {@link LoaderManager#restartLoader(int, Bundle, android.app.LoaderManager.LoaderCallbacks)}
+     * where, if a previous onCreateLoader returned a null loader, this method will NPE. Work around
+     * this bug by destroying any loaders that may have been created as null (essentially because
+     * they are optional loads, and may not apply to a particular account).
+     * <p>
+     * A simple null check before restarting a loader will not work, because that would not
+     * give the controller a chance to invalidate UI corresponding the prior loader result.
+     *
+     * @param id loader ID to safely restart
+     * @param args arguments to pass to the restarted loader
+     */
+    private void restartOptionalLoader(int id, Bundle args) {
+        final LoaderManager lm = mActivity.getLoaderManager();
+        lm.destroyLoader(id);
+        lm.restartLoader(id, args, this);
     }
 
     private boolean accountsUpdated(Cursor accountCursor) {
@@ -698,8 +705,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
                 break;
             case LOADER_FOLDER_CURSOR:
-                if (data == null)
-                    return;
                 // Check status of the cursor.
                 data.moveToFirst();
                 Folder folder = new Folder(data);
@@ -715,14 +720,10 @@ public abstract class AbstractActivityController implements ActivityController {
                 LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
                 break;
             case LOADER_ACCOUNT_SETTINGS:
-                if (data == null)
-                    return;
                 data.moveToFirst();
                 onSettingsChanged(new Settings(data));
                 break;
             case LOADER_RECENT_FOLDERS:
-                if (data == null)
-                    return;
                 mRecentFolderList.loadFromUiProvider(data);
                 break;
         }
@@ -733,9 +734,11 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        // Do nothing for now, since we don't have any state. When a load is
-        // finished, the
-        // onLoadFinished will be called and we will be fine.
+        switch (loader.getId()) {
+            case LOADER_ACCOUNT_SETTINGS:
+                onSettingsChanged(null);
+                break;
+        }
     }
 
     @Override
