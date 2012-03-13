@@ -337,10 +337,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mDefaultReplyAll = defaultReplyAll;
     }
 
-    private Integer getLoaderId() {
+    private Integer getAttachmentLoaderId() {
         Integer id = null;
-        if (mMessage != null && mMessage.uri != null) {
-            id = mMessage.uri.hashCode();
+        if (mMessage != null && mMessage.attachmentListUri != null) {
+            id = mMessage.attachmentListUri.hashCode();
         }
         return id;
     }
@@ -374,10 +374,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
 
         // kick off load of Attachment objects in background thread
-        if (mMessage.hasAttachments) {
-            LogUtils.d(LOG_TAG, "calling initLoader for message %d", getLoaderId());
-            mLoaderManager.initLoader(getLoaderId(), Bundle.EMPTY, this);
-            // TODO: clean up loader when the view is detached
+        final Integer attachmentLoaderId = getAttachmentLoaderId();
+        if (mMessage.hasAttachments && attachmentLoaderId != null) {
+            mLoaderManager.initLoader(getAttachmentLoaderId(), Bundle.EMPTY, this);
         }
 
         /**
@@ -462,7 +461,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     private void destroyLoader() {
-        final Integer loaderId = getLoaderId();
+        final Integer loaderId = getAttachmentLoaderId();
         if (mLoaderManager != null && loaderId != null) {
             LogUtils.d(LOG_TAG, "detaching header view, calling destroyLoader for message %d",
                     loaderId);

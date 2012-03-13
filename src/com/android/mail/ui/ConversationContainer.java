@@ -167,6 +167,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     public void setOverlayAdapter(Adapter a) {
         mOverlayAdapter = a;
+        // TODO: register/unregister for dataset notifications on the new/old adapter
+    }
+
+    public Adapter getOverlayAdapter() {
+        return mOverlayAdapter;
     }
 
     private int getOverlayCount() {
@@ -252,6 +257,10 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private void handleScroll(int x, int y) {
         mOffsetY = y;
         mScale = mWebView.getScale();
+
+        if (mOverlayBottoms == null) {
+            return;
+        }
 
         // recycle scrolled-off views and add newly visible views
         final int containerHeight = getHeight();
