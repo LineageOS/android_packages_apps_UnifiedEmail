@@ -24,8 +24,7 @@
     <string name="subject_hint" msgid="7253964583324677128">"Onderwerp"</string>
     <string name="body_hint" msgid="4279864165439577668">"Skryf e-pos"</string>
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
-    <!-- no translation found for plus_bcc_folder (4756816436930806526) -->
-    <skip />
+    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Heg lêer aan"</string>
     <string name="save_draft" msgid="5555744208032445632">"Stoor konsep"</string>
     <string name="discard" msgid="1714960202994370243">"Gooi weg"</string>
@@ -67,14 +66,10 @@
     <string name="forward" msgid="6822914459902983767">"Stuur aan"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Skryf"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Verander vouers"</string>
-    <!-- no translation found for menu_manage_folders (7499103037978814445) -->
-    <skip />
-    <!-- no translation found for folder_list_title (4276644062440415214) -->
-    <skip />
-    <!-- no translation found for manage_folders_subtitle (7702199674083260433) -->
-    <skip />
-    <!-- no translation found for menu_folder_options (8897520487430647932) -->
-    <skip />
+    <string name="menu_manage_folders" msgid="7499103037978814445">"Bestuur vouers"</string>
+    <string name="folder_list_title" msgid="4276644062440415214">"Vouers"</string>
+    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sinkroniseer &amp; stel in kennis"</string>
+    <string name="menu_folder_options" msgid="8897520487430647932">"Vouerinstellings"</string>
     <string name="menu_done" msgid="5791134842152855128">"Klaar"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Rekeninginstellings"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Instellings"</string>
@@ -104,34 +99,20 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Sigblad"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"<xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>-lêer"</string>
-    <!-- no translation found for preview_attachment (6934911143603455393) -->
-    <skip />
-    <!-- no translation found for view_attachment (8744325060392671944) -->
-    <skip />
-    <!-- no translation found for save_attachment (5360128849867863132) -->
-    <skip />
-    <!-- no translation found for info_attachment (607849900865956536) -->
-    <skip />
-    <!-- no translation found for play_attachment (41143041901432280) -->
-    <skip />
-    <!-- no translation found for install_attachment (2803531650273683382) -->
-    <skip />
-    <!-- no translation found for cancel_attachment (4651201258272223650) -->
-    <skip />
-    <!-- no translation found for more_info_attachment (717244337981816703) -->
-    <skip />
-    <!-- no translation found for attachment_type_blocked (2574422813386113664) -->
-    <skip />
-    <!-- no translation found for no_application_found (1945184804521392093) -->
-    <skip />
-    <!-- no translation found for fetching_attachment (2599763030649526179) -->
-    <skip />
-    <!-- no translation found for please_wait (8797634225088247121) -->
-    <skip />
-    <!-- no translation found for saved (6977782468220926548) -->
-    <skip />
-    <!-- no translation found for download_failed (7860650496473302012) -->
-    <skip />
+    <string name="preview_attachment" msgid="6934911143603455393">"Voorskou"</string>
+    <string name="view_attachment" msgid="8744325060392671944">"Bekyk"</string>
+    <string name="save_attachment" msgid="5360128849867863132">"Stoor"</string>
+    <string name="info_attachment" msgid="607849900865956536">"Inligting"</string>
+    <string name="play_attachment" msgid="41143041901432280">"Speel"</string>
+    <string name="install_attachment" msgid="2803531650273683382">"Installeer"</string>
+    <string name="cancel_attachment" msgid="4651201258272223650">"Kanselleer"</string>
+    <string name="more_info_attachment" msgid="717244337981816703">"Inligting"</string>
+    <string name="attachment_type_blocked" msgid="2574422813386113664">"Kan nie hierdie soort aanhegsel stoor of oopmaak nie omdat dit kwaadwillige sagteware kan bevat."</string>
+    <string name="no_application_found" msgid="1945184804521392093">"Geen program kan hierdie aanhegsel vir bekyking oopmaak nie."</string>
+    <string name="fetching_attachment" msgid="2599763030649526179">"Haal tans aanhegsel"</string>
+    <string name="please_wait" msgid="8797634225088247121">"Wag asseblief…"</string>
+    <string name="saved" msgid="6977782468220926548">"Gestoor,"</string>
+    <string name="download_failed" msgid="7860650496473302012">"Kon nie aflaai nie."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Deel met"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Maak oop in blaaier"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopieer"</string>
@@ -159,8 +140,7 @@
     <string name="sending" msgid="8214361929125649771">"Stuur tans..."</string>
     <string name="send_failed" msgid="750908595144529579">"Boodskap is nie gestuur nie."</string>
     <string name="me" msgid="6480762904022198669">"ek"</string>
-    <!-- no translation found for folders (3359679829905256429) -->
-    <skip />
+    <string name="folders" msgid="3359679829905256429">"Vouers"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Wys alle vouers"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Vee hierdie gesprek uit?"</item>
@@ -240,11 +220,9 @@
     <string name="removeBackButton" msgid="860383341267568260">"Verwyder Terug-knoppie"</string>
     <string name="normalMode" msgid="4250277414924926730">"Stel normaalmodus"</string>
     <string name="searchResultMode" msgid="3564180712046711968">"Soekresultaat-modus"</string>
-    <!-- no translation found for folderMode (553052020619895714) -->
-    <skip />
+    <string name="folderMode" msgid="553052020619895714">"Stel vouermodus"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Soek tans…"</string>
-    <!-- no translation found for recent_folders (8240081561436891330) -->
-    <skip />
+    <string name="recent_folders" msgid="8240081561436891330">"Onlangs"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Vou ontvanger se details uit"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Vou ontvanger se details in"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Wys kontakinligting vir <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -301,12 +279,12 @@
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
     <string name="labels" msgid="1519770547536283663">"Etikette"</string>
-    <!-- no translation found for network_error (2125579009654728299) -->
+    <string name="network_error" msgid="2125579009654728299">"Geen verbinding nie"</string>
+    <string name="loading" msgid="2600808404156989255">"Laai tans gesprekke…"</string>
+    <string name="retry" msgid="4515885444824418022">"Herprobeer"</string>
+    <string name="load_more" msgid="420892447103014683">"Laai meer"</string>
+    <!-- no translation found for default_folder_background_color (5450317987868030816) -->
     <skip />
-    <!-- no translation found for loading (2600808404156989255) -->
-    <skip />
-    <!-- no translation found for retry (4515885444824418022) -->
-    <skip />
-    <!-- no translation found for load_more (420892447103014683) -->
+    <!-- no translation found for default_folder_text_color (7373400676322746622) -->
     <skip />
 </resources>

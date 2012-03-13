@@ -24,8 +24,7 @@
     <string name="subject_hint" msgid="7253964583324677128">"Tema"</string>
     <string name="body_hint" msgid="4279864165439577668">"Kurti el. laišką"</string>
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
-    <!-- no translation found for plus_bcc_folder (4756816436930806526) -->
-    <skip />
+    <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Pridėti failą"</string>
     <string name="save_draft" msgid="5555744208032445632">"Išsaugoti juodraštį"</string>
     <string name="discard" msgid="1714960202994370243">"Atmesti"</string>
@@ -67,14 +66,10 @@
     <string name="forward" msgid="6822914459902983767">"Persiųsti"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Sukurti"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Keisti aplankus"</string>
-    <!-- no translation found for menu_manage_folders (7499103037978814445) -->
-    <skip />
-    <!-- no translation found for folder_list_title (4276644062440415214) -->
-    <skip />
-    <!-- no translation found for manage_folders_subtitle (7702199674083260433) -->
-    <skip />
-    <!-- no translation found for menu_folder_options (8897520487430647932) -->
-    <skip />
+    <string name="menu_manage_folders" msgid="7499103037978814445">"Tvarkyti aplankus"</string>
+    <string name="folder_list_title" msgid="4276644062440415214">"Aplankai"</string>
+    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sinchronizuoti ir pranešti"</string>
+    <string name="menu_folder_options" msgid="8897520487430647932">"Aplankų nustatymai"</string>
     <string name="menu_done" msgid="5791134842152855128">"Atlikta"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Paskyros nustatymai"</string>
     <string name="menu_settings" msgid="6007027046949837282">"Nustatymai"</string>
@@ -159,8 +154,7 @@
     <string name="sending" msgid="8214361929125649771">"Siunčiama…"</string>
     <string name="send_failed" msgid="750908595144529579">"Pranešimas neišsiųstas."</string>
     <string name="me" msgid="6480762904022198669">"man"</string>
-    <!-- no translation found for folders (3359679829905256429) -->
-    <skip />
+    <string name="folders" msgid="3359679829905256429">"Aplankai"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Rodyti visus aplankus"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Ištrinti šį pokalbį?"</item>
@@ -240,11 +234,9 @@
     <string name="removeBackButton" msgid="860383341267568260">"Pašalinti mygtuką „Atgal“"</string>
     <string name="normalMode" msgid="4250277414924926730">"Nustatyti įprastą režimą"</string>
     <string name="searchResultMode" msgid="3564180712046711968">"Paieškos rezultatų režimas"</string>
-    <!-- no translation found for folderMode (553052020619895714) -->
-    <skip />
+    <string name="folderMode" msgid="553052020619895714">"Nustatyti aplanko režimą"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Ieškoma…"</string>
-    <!-- no translation found for recent_folders (8240081561436891330) -->
-    <skip />
+    <string name="recent_folders" msgid="8240081561436891330">"Naujausias"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Išskleisti išsamią gavėjo informaciją"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Sutraukti išsamią gavėjo informaciją"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Rodyti <xliff:g id="NAME">%1$s</xliff:g> kontaktinę informaciją"</string>
@@ -308,5 +300,9 @@
     <!-- no translation found for retry (4515885444824418022) -->
     <skip />
     <!-- no translation found for load_more (420892447103014683) -->
+    <skip />
+    <!-- no translation found for default_folder_background_color (5450317987868030816) -->
+    <skip />
+    <!-- no translation found for default_folder_text_color (7373400676322746622) -->
     <skip />
 </resources>
