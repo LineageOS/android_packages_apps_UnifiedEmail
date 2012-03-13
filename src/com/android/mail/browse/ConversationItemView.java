@@ -141,6 +141,7 @@ public class ConversationItemView extends View {
     private static int sFadedColor = -1;
     private static int sFadedActivatedColor = -1;
     private ConversationSelectionSet mSelectedConversationSet;
+    private Folder mDisplayedFolder;
     private static Bitmap MORE_FOLDERS;
 
     static {
@@ -160,8 +161,8 @@ public class ConversationItemView extends View {
         private boolean mHasMoreFolders;
 
         @Override
-        public void loadConversationFolders(String rawFolders) {
-            super.loadConversationFolders(rawFolders);
+        public void loadConversationFolders(Folder folder, String rawFolders) {
+            super.loadConversationFolders(folder, rawFolders);
 
             mFoldersCount = mFolderValuesSortedSet.size();
             mHasMoreFolders = mFoldersCount > MAX_DISPLAYED_FOLDERS_COUNT;
@@ -328,11 +329,12 @@ public class ConversationItemView extends View {
     }
 
     public void bind(Cursor cursor, String account, ViewMode viewMode,
-            ConversationSelectionSet set) {
+            ConversationSelectionSet set, Folder folder) {
         mAccount = account;
         mViewMode = viewMode;
         mHeader = ConversationItemViewModel.forCursor(account, cursor);
         mSelectedConversationSet = set;
+        mDisplayedFolder = folder;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
     }
@@ -449,7 +451,7 @@ public class ConversationItemView extends View {
         if (mCoordinates.showFolders) {
             mHeader.folderDisplayer = new ConversationItemFolderDisplayer();
             mHeader.folderDisplayer.initialize(mContext, mAccount);
-            mHeader.folderDisplayer.loadConversationFolders(mHeader.rawFolders);
+            mHeader.folderDisplayer.loadConversationFolders(mDisplayedFolder, mHeader.rawFolders);
         }
 
         pauseTimer(PERF_TAG_CALCULATE_FOLDERS);

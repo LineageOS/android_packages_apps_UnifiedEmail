@@ -31,6 +31,7 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
 
@@ -51,6 +52,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private ViewMode mViewMode;
     private View mFooter;
     private boolean mShowFooter;
+    private Folder mFolder;
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account, ViewMode viewMode) {
@@ -91,7 +93,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public void bindView(View view, Context context, Cursor cursor) {
         if (!isPositionAnimating(view) && !isPositionFooter(view)) {
             ((ConversationItemView) view).bind(cursor, mSelectedAccount.name, mViewMode,
-                    mBatchConversations);
+                    mBatchConversations, mFolder);
         }
     }
 
@@ -237,5 +239,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     public void addFooter(View footerView) {
         mFooter = footerView;
+    }
+
+    public void setFolder(Folder folder) {
+        mFolder = folder;
     }
 }

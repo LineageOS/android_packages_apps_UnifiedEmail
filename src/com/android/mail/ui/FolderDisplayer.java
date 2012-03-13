@@ -98,13 +98,17 @@ public class FolderDisplayer {
      *
      * @param folder string containing serialized folders to display.
      */
-    public void loadConversationFolders(String folderString) {
+    public void loadConversationFolders(Folder ignoreFolder, String folderString) {
         SortedSet<FolderValues> folderValuesSet = Sets.newTreeSet();
         ArrayList<String> folderArray = new ArrayList<String>(Arrays.asList(TextUtils.split(
                 folderString, Folder.FOLDER_SEPARATOR_PATTERN)));
         ArrayList<Folder> folders = new ArrayList<Folder>(folderArray.size());
+        Folder f;
         for (String folder : folderArray) {
-            folders.add(new Folder(folder));
+            f = new Folder(folder);
+            if (ignoreFolder == null || !TextUtils.equals(f.id, ignoreFolder.id)) {
+                folders.add(f);
+            }
         }
         for (Folder folder : folders) {
             String folderId = folder.id;
