@@ -568,4 +568,6 @@
     <string name="retry">Retry</string>
     <!-- Button at bottom of conversation list screen if the folder for which contents are being shown supports loading more on demand [CHAR LIMIT=20]-->
     <string name="load_more">Load more</string>
+    <!-- Default background color for a folder shown in a conversation item if none is set.-->
+    <string name="default_folder_background_color">#f1f5ec</string>
 </resources>

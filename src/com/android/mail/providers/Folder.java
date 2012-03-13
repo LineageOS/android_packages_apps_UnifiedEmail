@@ -158,7 +158,9 @@ public class Folder implements Parcelable {
     private static final Pattern FOLDER_COMPONENT_SEPARATOR_PATTERN =
             Pattern.compile("\\^\\*\\^");
 
-    private static final String FOLDER_SEPARATOR = "^**^";
+    public static final String FOLDER_SEPARATOR = "^**^";
+    public static final Pattern FOLDER_SEPARATOR_PATTERN =
+            Pattern.compile("\\^\\*\\*\\^");
 
     public Folder(Parcel in) {
         assert (in.dataSize() == NUMBER_MEMBERS);
@@ -289,7 +291,8 @@ public class Folder implements Parcelable {
                 FOLDER_COMPONENT_SEPARATOR_PATTERN);
         if (folderMembers.length != NUMBER_MEMBERS) {
             throw new IllegalArgumentException(
-                    "Folder de-serializing failed. Wrong number of members detected.");
+                    "Folder de-serializing failed. Wrong number of members detected."
+                            + folderMembers.length);
         }
         id = folderMembers[0];
         uri = Uri.parse(folderMembers[1]);
@@ -415,5 +418,19 @@ public class Folder implements Parcelable {
             paintDrawable.getPaint().setColor(backgroundColor);
             colorBlock.setBackgroundDrawable(paintDrawable);
         }
+    }
+
+    /**
+     * Return if the type of the folder matches a provider defined folder.
+     */
+    public static boolean isProviderFolder(Folder folder) {
+        int type = folder.type;
+        return type == UIProvider.FolderType.DEFAULT ||
+               type == UIProvider.FolderType.INBOX ||
+               type == UIProvider.FolderType.DRAFT ||
+               type == UIProvider.FolderType.OUTBOX ||
+               type == UIProvider.FolderType.SENT ||
+               type == UIProvider.FolderType.TRASH ||
+               type == UIProvider.FolderType.SPAM;
     }
 }

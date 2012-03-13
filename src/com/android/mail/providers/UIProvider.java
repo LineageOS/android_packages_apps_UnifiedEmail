@@ -625,9 +625,9 @@ public class UIProvider {
 
         /**
          * This string column contains a serialized list of all folders
-         * separated by a "," that are associated with this conversation. The
-         * folders should be only those that the provider wants to have
-         * displayed.
+         * separated by a Folder.FOLDER_SEPARATOR that are associated with this
+         * conversation. The folders should be only those that the provider
+         * wants to have displayed.
          */
         public static final String RAW_FOLDERS = "rawFolders";
         private ConversationColumns() {

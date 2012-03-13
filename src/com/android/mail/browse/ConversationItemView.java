@@ -26,7 +26,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Layout.Alignment;
@@ -52,10 +55,14 @@ import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.ConversationSelectionSet;
+import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
+
+import java.util.Map;
 
 public class ConversationItemView extends View {
     // Timer.
@@ -134,10 +141,135 @@ public class ConversationItemView extends View {
     private static int sFadedColor = -1;
     private static int sFadedActivatedColor = -1;
     private ConversationSelectionSet mSelectedConversationSet;
+    private static Bitmap MORE_FOLDERS;
 
     static {
         sPaint.setAntiAlias(true);
         sFoldersPaint.setAntiAlias(true);
+    }
+
+
+    /**
+     * Handles displaying folders in a conversation header view.
+     */
+    static class ConversationItemFolderDisplayer extends FolderDisplayer {
+        // Maximum number of folders to be displayed.
+        private static final int MAX_DISPLAYED_FOLDERS_COUNT = 4;
+
+        private int mFoldersCount;
+        private boolean mHasMoreFolders;
+
+        @Override
+        public void loadConversationFolders(String rawFolders) {
+            super.loadConversationFolders(rawFolders);
+
+            mFoldersCount = mFolderValuesSortedSet.size();
+            mHasMoreFolders = mFoldersCount > MAX_DISPLAYED_FOLDERS_COUNT;
+            mFoldersCount = Math.min(mFoldersCount, MAX_DISPLAYED_FOLDERS_COUNT);
+        }
+
+        public boolean hasVisibleFolders() {
+            return mFoldersCount > 0;
+        }
+
+        private int measureFolders(int mode) {
+            int availableSpace = ConversationItemViewCoordinates.getFoldersWidth(mContext, mode);
+            int cellSize = ConversationItemViewCoordinates.getFolderCellWidth(mContext, mode,
+                    mFoldersCount);
+
+            int totalWidth = 0;
+            for (FolderValues labelValues : mFolderValuesSortedSet) {
+                String labelString = labelValues.name;
+                int width = (int) sFoldersPaint.measureText(labelString) + cellSize;
+                if (width % cellSize != 0) {
+                    width += cellSize - (width % cellSize);
+                }
+                totalWidth += width;
+                if (totalWidth > availableSpace) {
+                    break;
+                }
+            }
+
+            return totalWidth;
+        }
+
+        public void drawFolders(Canvas canvas, ConversationItemViewCoordinates coordinates,
+                int foldersXEnd, int mode) {
+            if (mFoldersCount == 0) {
+                return;
+            }
+
+            int xEnd = foldersXEnd;
+            int y = coordinates.foldersY - coordinates.foldersAscent;
+            int height = coordinates.foldersHeight;
+            int topPadding = coordinates.foldersTopPadding;
+            int ascent = coordinates.foldersAscent;
+            sFoldersPaint.setTextSize(coordinates.foldersFontSize);
+
+            // Initialize space and cell size based on the current mode.
+            int availableSpace = ConversationItemViewCoordinates.getFoldersWidth(mContext, mode);
+            int averageWidth = availableSpace / mFoldersCount;
+            int cellSize = ConversationItemViewCoordinates.getFolderCellWidth(mContext, mode,
+                    mFoldersCount);
+
+            // First pass to calculate the starting point.
+            int totalWidth = measureFolders(mode);
+            int xStart = xEnd - Math.min(availableSpace, totalWidth);
+
+            // Second pass to draw folders.
+            for (FolderValues labelValues : mFolderValuesSortedSet) {
+                String folderstring = labelValues.name;
+                int width = cellSize;
+                boolean labelTooLong = false;
+                width = (int) sFoldersPaint.measureText(folderstring) + cellSize;
+                if (width % cellSize != 0) {
+                    width += cellSize - (width % cellSize);
+                }
+                if (totalWidth > availableSpace && width > averageWidth) {
+                    width = averageWidth;
+                    labelTooLong = true;
+                }
+
+                // TODO (mindyp): how to we get this?
+                final boolean isMuted = false;
+                     //   labelValues.folderId == sGmail.getFolderMap(mAccount).getFolderIdIgnored();
+
+                // Draw the box.
+                sFoldersPaint.setColor(labelValues.backgroundColor);
+                sFoldersPaint.setStyle(isMuted ? Paint.Style.STROKE : Paint.Style.FILL_AND_STROKE);
+                canvas.drawRect(xStart, y + ascent, xStart + width, y + ascent + height,
+                        sFoldersPaint);
+
+                // Draw the text.
+                sFoldersPaint.setColor(labelValues.textColor);
+                int padding = getPadding(width, (int) sFoldersPaint.measureText(folderstring));
+                if (labelTooLong) {
+                    padding = cellSize / 2;
+                    int rightBorder = xStart + width - padding;
+                    Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder, y,
+                            labelValues.textColor,
+                            Utils.getTransparentColor(labelValues.textColor),
+                            Shader.TileMode.CLAMP);
+                    sFoldersPaint.setShader(shader);
+                }
+                canvas.drawText(folderstring, xStart + padding, y + topPadding, sFoldersPaint);
+                sFoldersPaint.setShader(null);
+
+                availableSpace -= width;
+                xStart += width;
+                if (availableSpace <= 0 && mHasMoreFolders) {
+                    canvas.drawBitmap(MORE_FOLDERS, xEnd, y + ascent, sFoldersPaint);
+                    return;
+                }
+            }
+        }
+
+        /**
+         * Helpers function to align an element in the center of a space.
+         */
+        private static int getPadding(int space, int length) {
+            return (space - length) / 2;
+        }
     }
 
     public ConversationItemView(Context context, String account) {
@@ -167,6 +299,7 @@ public class ConversationItemView extends View {
             IMPORTANT_TO_OTHERS = BitmapFactory.decodeResource(res,
                     R.drawable.ic_email_caret_none_important_unread);
             ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
+            MORE_FOLDERS = BitmapFactory.decodeResource(res, R.drawable.ic_folders_more);
             DATE_BACKGROUND = BitmapFactory.decodeResource(res, R.drawable.folder_bg_holo_light);
 
             // Initialize colors.
@@ -194,8 +327,8 @@ public class ConversationItemView extends View {
         }
     }
 
-    public void bind(Cursor cursor, String account, CharSequence displayedFolder,
-            ViewMode viewMode, ConversationSelectionSet set) {
+    public void bind(Cursor cursor, String account, ViewMode viewMode,
+            ConversationSelectionSet set) {
         mAccount = account;
         mViewMode = viewMode;
         mHeader = ConversationItemViewModel.forCursor(account, cursor);
@@ -310,8 +443,15 @@ public class ConversationItemView extends View {
             return;
         }
 
-        // Initialize folder displayer.
         startTimer(PERF_TAG_CALCULATE_FOLDERS);
+
+        // Initialize folder displayer.
+        if (mCoordinates.showFolders) {
+            mHeader.folderDisplayer = new ConversationItemFolderDisplayer();
+            mHeader.folderDisplayer.initialize(mContext, mAccount);
+            mHeader.folderDisplayer.loadConversationFolders(mHeader.rawFolders);
+        }
+
         pauseTimer(PERF_TAG_CALCULATE_FOLDERS);
 
         // Star.
@@ -426,17 +566,32 @@ public class ConversationItemView extends View {
 
         int cellWidth = mContext.getResources().getDimensionPixelSize(R.dimen.folder_cell_width);
 
-        if (ConversationItemViewCoordinates
-                .displayFoldersAboveDate(mCoordinates.showFolders, mMode)) {
-            mFoldersXEnd = mCoordinates.dateXEnd;
-            mSendersWidth = mCoordinates.sendersWidth;
-        } else {
-            if (mHeader.paperclip != null) {
-                mFoldersXEnd = mPaperclipX;
+        if (mCoordinates.showFolders) {
+            if (ConversationItemViewCoordinates.displayFoldersAboveDate(mCoordinates.showFolders,
+                    mMode)) {
+                mFoldersXEnd = mCoordinates.dateXEnd;
+                mSendersWidth = mCoordinates.sendersWidth;
             } else {
-                mFoldersXEnd = mDateX - cellWidth / 2;
+                if (mHeader.paperclip != null) {
+                    mFoldersXEnd = mPaperclipX;
+                } else {
+                    mFoldersXEnd = mDateX - cellWidth / 2;
+                }
+                mSendersWidth = mFoldersXEnd - mCoordinates.sendersX - 2 * cellWidth;
+                if (mHeader.folderDisplayer.hasVisibleFolders()) {
+                    mSendersWidth -= ConversationItemViewCoordinates.getFoldersWidth(mContext,
+                            mMode);
+                }
             }
-            mSendersWidth = mFoldersXEnd - mCoordinates.sendersX - 2 * cellWidth;
+        } else {
+            int dateAttachmentStart = 0;
+            // Have this end near the paperclip or date, not the folders.
+            if (mHeader.paperclip != null) {
+                dateAttachmentStart = mPaperclipX;
+            } else {
+                dateAttachmentStart = mDateX;
+            }
+            mSendersWidth = dateAttachmentStart - mCoordinates.sendersX - cellWidth;
         }
 
         if (mHeader.isLayoutValid(mContext)) {
@@ -658,6 +813,11 @@ public class ConversationItemView extends View {
                 mCoordinates.subjectY + mHeader.subjectLayout.getTopPadding());
         mHeader.subjectLayout.draw(canvas);
         canvas.restore();
+
+        // Folders.
+        if (mCoordinates.showFolders) {
+            mHeader.folderDisplayer.drawFolders(canvas, mCoordinates, mFoldersXEnd, mMode);
+        }
 
         // Date background: shown when there is an attachment or a visible
         // folder.
