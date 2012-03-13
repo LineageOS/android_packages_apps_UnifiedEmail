@@ -134,9 +134,10 @@ public class Folder implements Parcelable {
 
     /**
      * Total number of members that comprise an instance of a folder. This is
-     * the number of members that need to be serialized or parceled.
+     * the number of members that need to be serialized or parceled. We don't serialize
+     * the _id field, so subtract 1.
      */
-    private static final int NUMBER_MEMBERS = UIProvider.FOLDERS_PROJECTION.length;
+    private static final int NUMBER_MEMBERS = UIProvider.FOLDERS_PROJECTION.length - 1;
 
     /**
      * Used only for debugging.
