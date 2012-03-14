@@ -177,7 +177,7 @@
     </style>
 
     <style name="SendersStyle">
-        <item name="android:layout_marginLeft">8dip</item>
+        <item name="android:layout_marginLeft">32dip</item>
         <item name="android:layout_marginTop">8sp</item>
     </style>
 

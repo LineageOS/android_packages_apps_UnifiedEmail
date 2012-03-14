@@ -60,6 +60,7 @@ public class ConversationItemViewCoordinates {
     // Personal level.
     int personalLevelX;
     int personalLevelY;
+    boolean showPersonalLevel;
 
     // Senders.
     int sendersX;
@@ -305,8 +306,13 @@ public class ConversationItemViewCoordinates {
             coordinates.starY = getY(star);
 
             View personalLevel = view.findViewById(R.id.personal_level);
-            coordinates.personalLevelX = getX(personalLevel);
-            coordinates.personalLevelY = getY(personalLevel);
+            if (personalLevel != null) {
+                coordinates.showPersonalLevel = true;
+                coordinates.personalLevelX = getX(personalLevel);
+                coordinates.personalLevelY = getY(personalLevel);
+            } else {
+                coordinates.showPersonalLevel = false;
+            }
 
             TextView senders = (TextView) view.findViewById(R.id.senders);
             coordinates.sendersX = getX(senders);

@@ -56,13 +56,12 @@ import com.android.mail.perf.Timer;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
-
-import java.util.Map;
 
 public class ConversationItemView extends View {
     // Timer.
@@ -142,6 +141,7 @@ public class ConversationItemView extends View {
     private static int sFadedActivatedColor = -1;
     private ConversationSelectionSet mSelectedConversationSet;
     private Folder mDisplayedFolder;
+    private boolean mPriorityMarkersEnabled;
     private static Bitmap MORE_FOLDERS;
 
     static {
@@ -468,9 +468,27 @@ public class ConversationItemView extends View {
         if (mHeader.conversation.hasAttachments) {
             mHeader.paperclip = ATTACHMENT;
         }
-
         // Personal level.
         mHeader.personalLevelBitmap = null;
+        if (mCoordinates.showPersonalLevel) {
+            int personalLevel = mHeader.personalLevel;
+            final boolean isImportant =
+                    mHeader.priority == UIProvider.ConversationPriority.IMPORTANT;
+            // TODO(mindyp): get whether importance indicators are enabled
+            // mPriorityMarkersEnabled =
+            // persistence.getPriorityInboxArrowsEnabled(mContext, mAccount);
+            boolean useImportantMarkers = isImportant && mPriorityMarkersEnabled;
+
+            if (personalLevel == UIProvider.ConversationPersonalLevel.ONLY_TO_ME) {
+                mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_ONLY_TO_ME
+                        : ONLY_TO_ME;
+            } else if (personalLevel == UIProvider.ConversationPersonalLevel.TO_ME_AND_OTHERS) {
+                mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_TO_ME_AND_OTHERS
+                        : TO_ME_AND_OTHERS;
+            } else if (useImportantMarkers) {
+                mHeader.personalLevelBitmap = IMPORTANT_TO_OTHERS;
+            }
+        }
 
         startTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
 
@@ -781,7 +799,7 @@ public class ConversationItemView extends View {
         }
 
         // Personal Level.
-        if (mHeader.personalLevelBitmap != null) {
+        if (mCoordinates.showPersonalLevel && mHeader.personalLevelBitmap != null) {
             canvas.drawBitmap(mHeader.personalLevelBitmap, mCoordinates.personalLevelX,
                     mCoordinates.personalLevelY, sPaint);
         }

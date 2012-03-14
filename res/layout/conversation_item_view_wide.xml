@@ -44,14 +44,6 @@
         android:layout_gravity="center_vertical"
         android:maxLines="2"
         android:layout_marginTop="@dimen/wide_senders_margin_top"  />
-    <ImageView
-        android:id="@+id/personal_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dip"
-        android:layout_marginRight="16dip"
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_email_caret_single" />
     <TextView
         android:id="@+id/subject"
         android:layout_width="0dip"
