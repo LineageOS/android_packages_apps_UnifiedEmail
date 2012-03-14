@@ -33,6 +33,8 @@
     <color name="faded_activated_conversation_header">#7faccbf9</color>
     <color name="drafts">#ff990000</color>
     <color name="light_text_color">#ff666666</color>
+    <color name="default_folder_background_color">#f1f5ec</color>
+    <color name="default_folder_foreground_color">#888888</color>
 
     <!-- Compose colors -->
     <color name="compose_label_text">#aaaaaa</color>
@@ -41,6 +43,9 @@
     <!-- Must match the quoted_text_background_color_string -->
     <color name="compose_background_color">#ebebeb</color>
     <string name="quoted_text_font_color_string" translatable="false">#777777</string>
+
+    <color name="conv_header_add_label_text">@android:color/black</color>
+    <color name="conv_header_add_label_background">#eeeeee</color>
 
     <!-- Conversation message header colors -->
     <color name="conv_subject_border">#c0c0c0</color>

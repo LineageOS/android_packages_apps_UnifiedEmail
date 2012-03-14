@@ -41,6 +41,9 @@
     <dimen name="standard_scaled_dimen">100sp</dimen>
     <dimen name="folder_cell_width">8dip</dimen>
     <dimen name="triangle_width">15dip</dimen>
+    <dimen name="conversation_folder_padding">1dip</dimen>
+    <dimen name="conversation_folder_padding_extra_width">3dip</dimen>
+    <dimen name="conversation_folder_padding_before">1dip</dimen>
     <dimen name="message_details_header_collapsed_height">48sp</dimen>
     <dimen name="message_details_header_bottom_border_height">1dip</dimen>
     <dimen name="message_details_header_date_margin_right">4dip</dimen>

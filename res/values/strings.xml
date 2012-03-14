@@ -433,6 +433,11 @@
     <!-- List header for recent folders for current account in account dropdown [CHAR LIMIT=100] -->
     <string name="recent_folders">Recent</string>
 
+    <!-- Conversation view -->
+    <!--  Text anchor for control to add / change labels on a conversation when
+          viewing it. [CHAR LIMIT=40] -->
+    <string name="add_label">Add label</string>
+
     <!-- Conversation message header strings -->
     <!--  Icon name for expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
     <string name="expand_recipient_details">Expand recipient details</string>
@@ -568,8 +573,4 @@
     <string name="retry">Retry</string>
     <!-- Button at bottom of conversation list screen if the folder for which contents are being shown supports loading more on demand [CHAR LIMIT=20]-->
     <string name="load_more">Load more</string>
-    <!-- Default background color for a folder shown in a conversation item if none is set.-->
-    <string name="default_folder_background_color" translateable="false">#f1f5ec</string>
-    <!-- Default text color for a folder shown in a conversation item if none is set.-->
-    <string name="default_folder_text_color" translateable="false">#888888</string>
 </resources>

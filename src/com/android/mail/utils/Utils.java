@@ -787,16 +787,6 @@ public class Utils {
        return intent.setDataAndType(normalizeUri(data), normalizeMimeType(type));
    }
 
-   public static int getDefaultFolderBackgroundColor(Context context) {
-        return Color.parseColor(context.getResources().getString(
-               R.string.default_folder_background_color));
-   }
-
-   public static int getDefaultFolderTextColor(Context context) {
-        return Color.parseColor(context.getResources().getString(
-               R.string.default_folder_text_color));
-   }
-
    public static int getTransparentColor(int color) {
        return 0x00ffffff & color;
    }
