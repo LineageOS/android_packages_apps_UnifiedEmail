@@ -43,18 +43,18 @@ public class AttachmentLoader extends CursorLoader {
 
     public static class AttachmentCursor extends CursorWrapper {
 
-        private Map<Long, Attachment> mCache = Maps.newHashMap();
+        private Map<String, Attachment> mCache = Maps.newHashMap();
 
         private AttachmentCursor(Cursor inner) {
             super(inner);
         }
 
         public Attachment get() {
-            long id = getWrappedCursor().getLong(0);
-            Attachment m = mCache.get(id);
+            final String uri = getWrappedCursor().getString(UIProvider.ATTACHMENT_URI_COLUMN);
+            Attachment m = mCache.get(uri);
             if (m == null) {
                 m = new Attachment(this);
-                mCache.put(id, m);
+                mCache.put(uri, m);
             }
             return m;
         }
