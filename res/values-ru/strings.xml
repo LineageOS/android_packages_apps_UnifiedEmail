@@ -99,34 +99,20 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Таблица"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"Файл <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
-    <!-- no translation found for preview_attachment (6934911143603455393) -->
-    <skip />
-    <!-- no translation found for view_attachment (8744325060392671944) -->
-    <skip />
-    <!-- no translation found for save_attachment (5360128849867863132) -->
-    <skip />
-    <!-- no translation found for info_attachment (607849900865956536) -->
-    <skip />
-    <!-- no translation found for play_attachment (41143041901432280) -->
-    <skip />
-    <!-- no translation found for install_attachment (2803531650273683382) -->
-    <skip />
-    <!-- no translation found for cancel_attachment (4651201258272223650) -->
-    <skip />
-    <!-- no translation found for more_info_attachment (717244337981816703) -->
-    <skip />
-    <!-- no translation found for attachment_type_blocked (2574422813386113664) -->
-    <skip />
-    <!-- no translation found for no_application_found (1945184804521392093) -->
-    <skip />
-    <!-- no translation found for fetching_attachment (2599763030649526179) -->
-    <skip />
-    <!-- no translation found for please_wait (8797634225088247121) -->
-    <skip />
-    <!-- no translation found for saved (6977782468220926548) -->
-    <skip />
-    <!-- no translation found for download_failed (7860650496473302012) -->
-    <skip />
+    <string name="preview_attachment" msgid="6934911143603455393">"Просмотр"</string>
+    <string name="view_attachment" msgid="8744325060392671944">"Просмотр"</string>
+    <string name="save_attachment" msgid="5360128849867863132">"Сохранить"</string>
+    <string name="info_attachment" msgid="607849900865956536">"Справка"</string>
+    <string name="play_attachment" msgid="41143041901432280">"Воспроизвести"</string>
+    <string name="install_attachment" msgid="2803531650273683382">"Установить"</string>
+    <string name="cancel_attachment" msgid="4651201258272223650">"Отмена"</string>
+    <string name="more_info_attachment" msgid="717244337981816703">"Справка"</string>
+    <string name="attachment_type_blocked" msgid="2574422813386113664">"Через файлы такого типа часто распространяется вредоносное ПО, поэтому их не разрешается открывать и сохранять."</string>
+    <string name="no_application_found" msgid="1945184804521392093">"Файл не поддерживается вашими приложениями."</string>
+    <string name="fetching_attachment" msgid="2599763030649526179">"Загрузка файла"</string>
+    <string name="please_wait" msgid="8797634225088247121">"Подождите…"</string>
+    <string name="saved" msgid="6977782468220926548">"Сохранено"</string>
+    <string name="download_failed" msgid="7860650496473302012">"Файл не загружен."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Способ отправки"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Открыть в браузере"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Копировать"</string>
@@ -293,14 +279,10 @@
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
     <string name="labels" msgid="1519770547536283663">"Ярлыки"</string>
-    <!-- no translation found for network_error (2125579009654728299) -->
-    <skip />
-    <!-- no translation found for loading (2600808404156989255) -->
-    <skip />
-    <!-- no translation found for retry (4515885444824418022) -->
-    <skip />
-    <!-- no translation found for load_more (420892447103014683) -->
-    <skip />
+    <string name="network_error" msgid="2125579009654728299">"Нет подключения"</string>
+    <string name="loading" msgid="2600808404156989255">"Загрузка цепочек…"</string>
+    <string name="retry" msgid="4515885444824418022">"Повторить"</string>
+    <string name="load_more" msgid="420892447103014683">"Загрузить еще"</string>
     <!-- no translation found for default_folder_background_color (5450317987868030816) -->
     <skip />
     <!-- no translation found for default_folder_text_color (7373400676322746622) -->

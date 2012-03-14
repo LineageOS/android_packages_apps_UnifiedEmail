@@ -99,7 +99,7 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"I-Spreadsheet"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"I-PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"Ifayela <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
-    <string name="preview_attachment" msgid="6934911143603455393">"Hlola kuqala"</string>
+    <string name="preview_attachment" msgid="6934911143603455393">"Buka kuqala"</string>
     <string name="view_attachment" msgid="8744325060392671944">"Buka"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Londoloza"</string>
     <string name="info_attachment" msgid="607849900865956536">"Imininingwane"</string>
@@ -107,12 +107,12 @@
     <string name="install_attachment" msgid="2803531650273683382">"Faka"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Khansela"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Imininingwane"</string>
-    <string name="attachment_type_blocked" msgid="2574422813386113664">"Ayikwazi ukonga lolu hlobo lokunamathelisa ngoba kungenzeka iphathe ubungozi."</string>
-    <string name="no_application_found" msgid="1945184804521392093">"Alukho uhlelo lokusebenza olungavula lokhu okunamathiselwe ukuthi kubukwe."</string>
-    <string name="fetching_attachment" msgid="2599763030649526179">"Ilanda okunamathiselwa kwi-imeyili"</string>
+    <string name="attachment_type_blocked" msgid="2574422813386113664">"Ayikwazi ukulondoloza lolu hlobo lokunamathelisa ngoba kungenzeka iphathe isoftiwe enobungozi."</string>
+    <string name="no_application_found" msgid="1945184804521392093">"Alukho uhlelo lokusebenza olungavula lokhu okunamathiselwe ukuze kubukwe."</string>
+    <string name="fetching_attachment" msgid="2599763030649526179">"Ilanda okunamathiselwe"</string>
     <string name="please_wait" msgid="8797634225088247121">"Sicela ulinde..."</string>
     <string name="saved" msgid="6977782468220926548">"Kulondoloziwe,"</string>
-    <string name="download_failed" msgid="7860650496473302012">"Ayikwazanga ukulayisha."</string>
+    <string name="download_failed" msgid="7860650496473302012">"Ayikwazanga ukulanda."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Abelana nge"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Vula kwisiphequluli"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopisha"</string>
@@ -282,9 +282,7 @@
     <string name="network_error" msgid="2125579009654728299">"Akukho ukuxhumana"</string>
     <string name="loading" msgid="2600808404156989255">"Ilayisha izingxoxo..."</string>
     <string name="retry" msgid="4515885444824418022">"Zama kabusha"</string>
-    <string name="load_more" msgid="420892447103014683">"Hlohla okuningi"</string>
-    <!-- no translation found for default_folder_background_color (5450317987868030816) -->
-    <skip />
-    <!-- no translation found for default_folder_text_color (7373400676322746622) -->
-    <skip />
+    <string name="load_more" msgid="420892447103014683">"Layisha okuningi"</string>
+    <string name="default_folder_background_color" msgid="5450317987868030816">"#f1f5ec"</string>
+    <string name="default_folder_text_color" msgid="7373400676322746622">"#888888"</string>
 </resources>
