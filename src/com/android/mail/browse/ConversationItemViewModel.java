@@ -32,6 +32,7 @@ import android.util.Pair;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationPersonalLevel;
 
 import java.util.ArrayList;
@@ -106,6 +107,9 @@ public class ConversationItemViewModel {
 
     public int priority;
 
+    public boolean hasBeenForwarded;
+
+    public boolean hasBeenRepliedTo;
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
@@ -136,6 +140,10 @@ public class ConversationItemViewModel {
             header.rawFolders = conv.rawFolders;
             header.personalLevel = conv.personalLevel;
             header.priority = conv.priority;
+            header.hasBeenForwarded =
+                    (conv.convFlags & UIProvider.ConversationFlags.FORWARDED) == 1;
+            header.hasBeenRepliedTo =
+                    (conv.convFlags & UIProvider.ConversationFlags.REPLIED) == 1;
         }
         return header;
     }

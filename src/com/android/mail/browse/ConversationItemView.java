@@ -86,6 +86,9 @@ public class ConversationItemView extends View {
     private static Bitmap IMPORTANT_TO_ME_AND_OTHERS;
     private static Bitmap IMPORTANT_TO_OTHERS;
     private static Bitmap DATE_BACKGROUND;
+    private static Bitmap STATE_REPLIED;
+    private static Bitmap STATE_FORWARDED;
+    private static Bitmap STATE_REPLIED_AND_FORWARDED;
 
     // Static colors.
     private static int DEFAULT_TEXT_COLOR;
@@ -302,6 +305,12 @@ public class ConversationItemView extends View {
             ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
             MORE_FOLDERS = BitmapFactory.decodeResource(res, R.drawable.ic_folders_more);
             DATE_BACKGROUND = BitmapFactory.decodeResource(res, R.drawable.folder_bg_holo_light);
+            STATE_REPLIED =
+                    BitmapFactory.decodeResource(res, R.drawable.ic_badge_reply_holo_light);
+            STATE_FORWARDED =
+                    BitmapFactory.decodeResource(res, R.drawable.ic_badge_forward_holo_light);
+            STATE_REPLIED_AND_FORWARDED =
+                    BitmapFactory.decodeResource(res, R.drawable.ic_badge_reply_forward_holo_light);
 
             // Initialize colors.
             DEFAULT_TEXT_COLOR = res.getColor(R.color.default_text_color);
@@ -855,6 +864,20 @@ public class ConversationItemView extends View {
             canvas.drawBitmap(mHeader.dateBackground, src, dst, sPaint);
         } else {
             mHeader.dateBackground = null;
+        }
+
+        // Draw the reply state. Draw nothing if neither replied nor forwarded.
+        if (mCoordinates.showReplyState) {
+            if (mHeader.hasBeenRepliedTo && mHeader.hasBeenForwarded) {
+                canvas.drawBitmap(STATE_REPLIED_AND_FORWARDED, mCoordinates.replyStateX,
+                        mCoordinates.replyStateY, null);
+            } else if (mHeader.hasBeenRepliedTo) {
+                canvas.drawBitmap(STATE_REPLIED, mCoordinates.replyStateX,
+                        mCoordinates.replyStateY, null);
+            } else if (mHeader.hasBeenForwarded) {
+                canvas.drawBitmap(STATE_FORWARDED, mCoordinates.replyStateX,
+                        mCoordinates.replyStateY, null);
+            }
         }
 
         // Date.

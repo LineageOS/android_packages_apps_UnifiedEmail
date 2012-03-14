@@ -97,6 +97,11 @@ public class ConversationItemViewCoordinates {
     // Paperclip.
     int paperclipY;
 
+    // Reply state of a conversation.
+    boolean showReplyState;
+    int replyStateX;
+    int replyStateY;
+
 
     // Cache to save Coordinates based on view width.
     private static SparseArray<ConversationItemViewCoordinates> mCache =
@@ -347,6 +352,15 @@ public class ConversationItemViewCoordinates {
                 }
             } else {
                 coordinates.showFolders = false;
+            }
+
+            View replyState = view.findViewById(R.id.reply_state);
+            if (replyState != null) {
+                coordinates.showReplyState = true;
+                coordinates.replyStateX = getX(replyState);
+                coordinates.replyStateY = getY(replyState);
+            } else {
+                coordinates.showReplyState = false;
             }
 
             TextView date = (TextView) view.findViewById(R.id.date);
