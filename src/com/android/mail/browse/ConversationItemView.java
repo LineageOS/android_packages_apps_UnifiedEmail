@@ -477,6 +477,7 @@ public class ConversationItemView extends View {
             // TODO(mindyp): get whether importance indicators are enabled
             // mPriorityMarkersEnabled =
             // persistence.getPriorityInboxArrowsEnabled(mContext, mAccount);
+            mPriorityMarkersEnabled = true;
             boolean useImportantMarkers = isImportant && mPriorityMarkersEnabled;
 
             if (personalLevel == UIProvider.ConversationPersonalLevel.ONLY_TO_ME) {
