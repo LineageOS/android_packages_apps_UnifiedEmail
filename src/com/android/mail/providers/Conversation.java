@@ -51,6 +51,9 @@ public class Conversation implements Parcelable {
     public boolean starred;
     public String folderList;
     public String rawFolders;
+    public int convFlags;
+    public int personalLevel;
+
     // Used within the UI to indicate the adapter position of this conversation
     public transient int position;
     // Used within the UI to indicate that a Conversation should be removed from the
@@ -81,6 +84,8 @@ public class Conversation implements Parcelable {
         dest.writeByte(starred ? (byte) 1 : 0);
         dest.writeString(folderList);
         dest.writeString(rawFolders);
+        dest.writeInt(convFlags);
+        dest.writeInt(personalLevel);
     }
 
     private Conversation(Parcel in) {
@@ -100,6 +105,8 @@ public class Conversation implements Parcelable {
         starred = (in.readByte() != 0);
         folderList = in.readString();
         rawFolders = in.readString();
+        convFlags = in.readInt();
+        personalLevel = in.readInt();
         position = NO_POSITION;
         localDeleteOnUpdate = false;
     }
@@ -147,6 +154,8 @@ public class Conversation implements Parcelable {
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) == 1;
             folderList = cursor.getString(UIProvider.CONVERSATION_FOLDER_LIST_COLUMN);
             rawFolders = cursor.getString(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN);
+            convFlags = cursor.getInt(UIProvider.CONVERSATION_FLAGS_COLUMN);
+            personalLevel = cursor.getInt(UIProvider.CONVERSATION_PERSONAL_LEVEL_COLUMN);
             position = NO_POSITION;
             localDeleteOnUpdate = false;
         }
@@ -156,7 +165,7 @@ public class Conversation implements Parcelable {
      * Get if this conversation is marked as high priority.
      */
     public boolean isImportant() {
-        return priority == UIProvider.ConversationPriority.HIGH;
+        return priority == UIProvider.ConversationPriority.IMPORTANT;
     }
 
     // Below are methods that update Conversation data (update/delete)

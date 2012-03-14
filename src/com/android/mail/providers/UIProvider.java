@@ -518,7 +518,9 @@ public class UIProvider {
         ConversationColumns.READ,
         ConversationColumns.STARRED,
         ConversationColumns.FOLDER_LIST,
-        ConversationColumns.RAW_FOLDERS
+        ConversationColumns.RAW_FOLDERS,
+        ConversationColumns.FLAGS,
+        ConversationColumns.PERSONAL_LEVEL
     };
 
     // These column indexes only work when the caller uses the
@@ -539,6 +541,8 @@ public class UIProvider {
     public static final int CONVERSATION_STARRED_COLUMN = 13;
     public static final int CONVERSATION_FOLDER_LIST_COLUMN = 14;
     public static final int CONVERSATION_RAW_FOLDERS_COLUMN = 15;
+    public static final int CONVERSATION_FLAGS_COLUMN = 16;
+    public static final int CONVERSATION_PERSONAL_LEVEL_COLUMN = 17;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -548,8 +552,16 @@ public class UIProvider {
     }
 
     public static final class ConversationPriority {
+        public static final int DEFAULT = 0;
+        public static final int IMPORTANT = 1;
         public static final int LOW = 0;
         public static final int HIGH = 1;
+    }
+
+    public static final class ConversationPersonalLevel {
+        public static final int NOT_TO_ME = 0;
+        public static final int TO_ME_AND_OTHERS = 1;
+        public static final int ONLY_TO_ME = 2;
     }
 
     public static final class ConversationFlags {
@@ -640,6 +652,8 @@ public class UIProvider {
          * wants to have displayed.
          */
         public static final String RAW_FOLDERS = "rawFolders";
+        public static final String FLAGS = "conversationFlags";
+        public static final String PERSONAL_LEVEL = "personalLevel";
         private ConversationColumns() {
         }
     }
