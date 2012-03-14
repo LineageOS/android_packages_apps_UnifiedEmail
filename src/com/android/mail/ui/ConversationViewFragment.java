@@ -284,7 +284,7 @@ public final class ConversationViewFragment extends Fragment implements
         }
 
         public Message get() {
-            long id = getWrappedCursor().getLong(0);
+            final long id = getWrappedCursor().getLong(UIProvider.MESSAGE_ID_COLUMN);
             Message m = mCache.get(id);
             if (m == null) {
                 m = new Message(this);
