@@ -32,6 +32,7 @@ import android.util.Pair;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.UIProvider.ConversationPersonalLevel;
 
 import java.util.ArrayList;
 
@@ -101,6 +102,10 @@ public class ConversationItemViewModel {
 
     public String rawFolders;
 
+    public int personalLevel;
+
+    public int priority;
+
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
@@ -129,6 +134,8 @@ public class ConversationItemViewModel {
             header.starred = conv.starred;
             header.unread = !conv.read;
             header.rawFolders = conv.rawFolders;
+            header.personalLevel = conv.personalLevel;
+            header.priority = conv.priority;
         }
         return header;
     }
