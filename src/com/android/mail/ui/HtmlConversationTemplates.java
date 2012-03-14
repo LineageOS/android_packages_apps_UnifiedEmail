@@ -21,6 +21,9 @@ import com.google.common.annotations.VisibleForTesting;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
+import android.text.Html;
+import android.text.SpannedString;
+import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.Message;
@@ -129,7 +132,12 @@ public class HtmlConversationTemplates {
         final String bodyDisplay = isExpanded ? "block" : "none";
         final String showImagesClass = safeForImages ? "gm-show-images" : "";
 
-        String body = message.bodyHtml;
+        String body = "";
+        if (!TextUtils.isEmpty(message.bodyHtml)) {
+            body = message.bodyHtml;
+        } else if (!TextUtils.isEmpty(message.bodyText)) {
+            body = Html.toHtml(new SpannedString(message.bodyText));
+        }
 
         /* Work around a WebView bug (5522414) in setBlockNetworkImage that causes img onload event
          * handlers to fire before an image is loaded.
