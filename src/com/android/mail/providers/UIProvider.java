@@ -557,6 +557,7 @@ public class UIProvider {
         public static final int STARRED = 1<<1;
         public static final int REPLIED = 1<<2;
         public static final int FORWARDED = 1<<3;
+        public static final int CALENDAR_INVITE = 1<<4;
     }
 
     public static final class ConversationColumns {
