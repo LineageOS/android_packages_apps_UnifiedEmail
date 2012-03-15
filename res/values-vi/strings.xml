@@ -283,8 +283,6 @@
     <string name="loading" msgid="2600808404156989255">"Đang tải cuộc hội thoại..."</string>
     <string name="retry" msgid="4515885444824418022">"Thử lại"</string>
     <string name="load_more" msgid="420892447103014683">"Tải thêm"</string>
-    <!-- no translation found for default_folder_background_color (5450317987868030816) -->
-    <skip />
-    <!-- no translation found for default_folder_text_color (7373400676322746622) -->
-    <skip />
+    <string name="default_folder_background_color" msgid="5450317987868030816">"#f1f5ec"</string>
+    <string name="default_folder_text_color" msgid="7373400676322746622">"#888888"</string>
 </resources>

@@ -99,34 +99,20 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Spreadsheet"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"File <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
-    <!-- no translation found for preview_attachment (6934911143603455393) -->
-    <skip />
-    <!-- no translation found for view_attachment (8744325060392671944) -->
-    <skip />
-    <!-- no translation found for save_attachment (5360128849867863132) -->
-    <skip />
-    <!-- no translation found for info_attachment (607849900865956536) -->
-    <skip />
-    <!-- no translation found for play_attachment (41143041901432280) -->
-    <skip />
-    <!-- no translation found for install_attachment (2803531650273683382) -->
-    <skip />
-    <!-- no translation found for cancel_attachment (4651201258272223650) -->
-    <skip />
-    <!-- no translation found for more_info_attachment (717244337981816703) -->
-    <skip />
-    <!-- no translation found for attachment_type_blocked (2574422813386113664) -->
-    <skip />
-    <!-- no translation found for no_application_found (1945184804521392093) -->
-    <skip />
-    <!-- no translation found for fetching_attachment (2599763030649526179) -->
-    <skip />
-    <!-- no translation found for please_wait (8797634225088247121) -->
-    <skip />
-    <!-- no translation found for saved (6977782468220926548) -->
-    <skip />
-    <!-- no translation found for download_failed (7860650496473302012) -->
-    <skip />
+    <string name="preview_attachment" msgid="6934911143603455393">"Pratinjau"</string>
+    <string name="view_attachment" msgid="8744325060392671944">"Lihat"</string>
+    <string name="save_attachment" msgid="5360128849867863132">"Simpan"</string>
+    <string name="info_attachment" msgid="607849900865956536">"Info"</string>
+    <string name="play_attachment" msgid="41143041901432280">"Mainkan"</string>
+    <string name="install_attachment" msgid="2803531650273683382">"Pasang"</string>
+    <string name="cancel_attachment" msgid="4651201258272223650">"Batal"</string>
+    <string name="more_info_attachment" msgid="717244337981816703">"Info"</string>
+    <string name="attachment_type_blocked" msgid="2574422813386113664">"Tidak dapat menyimpan atau membuka jenis lampiran ini karena mungkin berisi perangkat lunak berbahaya."</string>
+    <string name="no_application_found" msgid="1945184804521392093">"Tidak ada apl yang dapat membuka lampiran ini untuk ditampilkan."</string>
+    <string name="fetching_attachment" msgid="2599763030649526179">"Mengambil lampiran"</string>
+    <string name="please_wait" msgid="8797634225088247121">"Harap tunggu..."</string>
+    <string name="saved" msgid="6977782468220926548">"Telah disimpan,"</string>
+    <string name="download_failed" msgid="7860650496473302012">"Tidak dapat mengunduh."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Berbagi melalui"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Buka di Browser"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Salin"</string>
@@ -286,21 +272,17 @@
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Sinkronkan: Tidak Satu Pun"</string>
     <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Sinkronkan folder"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Untuk melihat percakapan di gawit, sinkronkan folder ini."</string>
+    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Untuk melihat percakapan di widget, sinkronkan folder ini."</string>
     <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sinkronkan <xliff:g id="NUMSYNCDAYS">%d</xliff:g> hari terakhir"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Ganti folder"</string>
     <string name="search_hint" msgid="3625734263059221350">"Telusuri email"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
     <string name="labels" msgid="1519770547536283663">"Label"</string>
-    <!-- no translation found for network_error (2125579009654728299) -->
-    <skip />
-    <!-- no translation found for loading (2600808404156989255) -->
-    <skip />
-    <!-- no translation found for retry (4515885444824418022) -->
-    <skip />
-    <!-- no translation found for load_more (420892447103014683) -->
-    <skip />
+    <string name="network_error" msgid="2125579009654728299">"Tidak ada sambungan"</string>
+    <string name="loading" msgid="2600808404156989255">"Memuat percakapan..."</string>
+    <string name="retry" msgid="4515885444824418022">"Coba lagi"</string>
+    <string name="load_more" msgid="420892447103014683">"Muat lainnya"</string>
     <!-- no translation found for default_folder_background_color (5450317987868030816) -->
     <skip />
     <!-- no translation found for default_folder_text_color (7373400676322746622) -->
