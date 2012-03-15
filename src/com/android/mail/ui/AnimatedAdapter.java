@@ -55,7 +55,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account, ViewMode viewMode) {
-        super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
+        // Use FLAG_REGISTER_CONTENT_OBSERVER to ensure special ConversationCursor notifications
+        // (triggered by UI actions) cause any connected ListView to redraw.
+        super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null,
+                FLAG_REGISTER_CONTENT_OBSERVER);
         mContext = context;
         mBatchConversations = batch;
         mSelectedAccount = account;

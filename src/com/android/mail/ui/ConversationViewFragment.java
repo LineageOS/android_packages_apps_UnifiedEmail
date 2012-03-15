@@ -361,6 +361,7 @@ public final class ConversationViewFragment extends Fragment implements
             // mark as read upon open
             if (!mConversation.read) {
                 mConversation.markRead(mContext, true /* read */);
+                mConversation.read = true;
             }
         }
 

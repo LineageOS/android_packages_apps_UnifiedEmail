@@ -330,10 +330,6 @@ public final class ConversationListFragment extends ListFragment implements
             mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
         }
 
-        if (mConversationListCursor != null) {
-            mConversationListCursor.removeListener(this);
-        }
-
         super.onDestroyView();
     }
 
@@ -544,7 +540,12 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onLoaderReset(Loader<ConversationCursor> loader) {
-        // Do nothing.
+        mListAdapter.swapCursor(null);
+
+        if (mConversationListCursor != null) {
+            mConversationListCursor.removeListener(this);
+            mConversationListCursor = null;
+        }
     }
 
     public void onFolderUpdated(Folder folder) {

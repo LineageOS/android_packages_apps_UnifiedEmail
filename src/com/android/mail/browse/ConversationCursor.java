@@ -26,6 +26,7 @@ import android.content.OperationApplicationException;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
@@ -103,6 +104,17 @@ public final class ConversationCursor implements Cursor {
 
     // The current position of the cursor
     private int mPosition = -1;
+
+    /**
+     * Allow UI elements to subscribe to changes that other UI elements might make to this data.
+     * This short circuits the usual DB round-trip needed for data to propagate across disparate
+     * UI elements.
+     * <p>
+     * A UI element that receives a notification on this channel should just update its existing
+     * view, and should not trigger a full refresh.
+     */
+    private final DataSetObservable mDataSetObservable = new DataSetObservable();
+
     // The number of cached deletions from this cursor (used to quickly generate an accurate count)
     private static int sDeletedCount = 0;
 
@@ -949,15 +961,27 @@ public final class ConversationCursor implements Cursor {
         // in the folder represented by the ConversationCursor
         private final boolean mLocalDeleteOnUpdate;
 
+        /**
+         * Set to true to immediately notify any {@link DataSetObserver}s watching the global
+         * {@link ConversationCursor} upon applying the change to the data cache. You would not
+         * want to do this if a change you make is being handled specially, like an animated delete.
+         *
+         * TODO: move this to the application Controller, or whoever has a canonical reference
+         * to a {@link ConversationCursor} to notify on.
+         */
+        private final boolean mAutoNotify;
+
         public ConversationOperation(int type, Conversation conv) {
-            this(type, conv, null);
+            this(type, conv, null, false /* autoNotify */);
         }
 
-        public ConversationOperation(int type, Conversation conv, ContentValues values) {
+        public ConversationOperation(int type, Conversation conv, ContentValues values,
+                boolean autoNotify) {
             mType = type;
             mUri = conv.uri;
             mValues = values;
             mLocalDeleteOnUpdate = conv.localDeleteOnUpdate;
+            mAutoNotify = autoNotify;
         }
 
         private ContentProviderOperation execute(Uri underlyingUri) {
@@ -965,50 +989,72 @@ public final class ConversationCursor implements Cursor {
                     .appendQueryParameter(UIProvider.SEQUENCE_QUERY_PARAMETER,
                             Integer.toString(sSequence))
                     .build();
+            ContentProviderOperation op;
             switch(mType) {
                 case DELETE:
                     sProvider.deleteLocal(mUri);
-                    return ContentProviderOperation.newDelete(uri).build();
+                    op = ContentProviderOperation.newDelete(uri).build();
+                    break;
                 case UPDATE:
                     if (mLocalDeleteOnUpdate) {
                         sProvider.deleteLocal(mUri);
                     } else {
                         sProvider.updateLocal(mUri, mValues);
                     }
-                    return ContentProviderOperation.newUpdate(uri)
+                    op = ContentProviderOperation.newUpdate(uri)
                             .withValues(mValues)
                             .build();
+                    break;
                 case INSERT:
                     sProvider.insertLocal(mUri, mValues);
-                    return ContentProviderOperation.newInsert(uri)
+                    op = ContentProviderOperation.newInsert(uri)
                             .withValues(mValues).build();
+                    break;
                 case ARCHIVE:
                     sProvider.deleteLocal(mUri);
 
                     // Create an update operation that represents archive
-                    return ContentProviderOperation.newUpdate(uri).withValue(
+                    op = ContentProviderOperation.newUpdate(uri).withValue(
                             ConversationOperations.OPERATION_KEY, ConversationOperations.ARCHIVE)
                             .build();
+                    break;
                 case MUTE:
                     if (mLocalDeleteOnUpdate) {
                         sProvider.deleteLocal(mUri);
                     }
 
                     // Create an update operation that represents mute
-                    return ContentProviderOperation.newUpdate(uri).withValue(
+                    op = ContentProviderOperation.newUpdate(uri).withValue(
                             ConversationOperations.OPERATION_KEY, ConversationOperations.MUTE)
                             .build();
+                    break;
                 case REPORT_SPAM:
                     sProvider.deleteLocal(mUri);
 
                     // Create an update operation that represents report spam
-                    return ContentProviderOperation.newUpdate(uri).withValue(
+                    op = ContentProviderOperation.newUpdate(uri).withValue(
                             ConversationOperations.OPERATION_KEY,
                             ConversationOperations.REPORT_SPAM).build();
+                    break;
                 default:
                     throw new UnsupportedOperationException(
                             "No such ConversationOperation type: " + mType);
             }
+
+            // FIXME: this is a hack to notify conversation list of changes from conversation view.
+            // The proper way to do this is to have the Controller handle the 'mark read' action.
+            // It has a reference to this ConversationCursor so it can notify without using global
+            // magic.
+            if (mAutoNotify) {
+                if (sConversationCursor != null) {
+                    sConversationCursor.notifyDataSetChanged();
+                } else {
+                    LogUtils.i(TAG, "Unable to auto-notify because there is no existing" +
+                            " conversation cursor");
+                }
+            }
+
+            return op;
         }
     }
 
@@ -1095,22 +1141,27 @@ public final class ConversationCursor implements Cursor {
 
     @Override
     public void registerContentObserver(ContentObserver observer) {
-        sUnderlyingCursor.registerContentObserver(observer);
+        // Nope. We never notify of underlying changes on this channel, since the cursor watches
+        // internally and offers onRefreshRequired/onRefreshReady to accomplish the same thing.
     }
 
     @Override
     public void unregisterContentObserver(ContentObserver observer) {
-        sUnderlyingCursor.unregisterContentObserver(observer);
+        // See above.
     }
 
     @Override
     public void registerDataSetObserver(DataSetObserver observer) {
-        sUnderlyingCursor.registerDataSetObserver(observer);
+        mDataSetObservable.registerObserver(observer);
     }
 
     @Override
     public void unregisterDataSetObserver(DataSetObserver observer) {
-        sUnderlyingCursor.unregisterDataSetObserver(observer);
+        mDataSetObservable.unregisterObserver(observer);
+    }
+
+    public void notifyDataSetChanged() {
+        mDataSetObservable.notifyChanged();
     }
 
     @Override

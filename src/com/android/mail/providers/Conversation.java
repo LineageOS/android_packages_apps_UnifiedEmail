@@ -16,6 +16,8 @@
 
 package com.android.mail.providers;
 
+import com.google.common.collect.Lists;
+
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
@@ -30,6 +32,7 @@ import com.android.mail.browse.ConversationCursor.ConversationProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class Conversation implements Parcelable {
@@ -174,9 +177,7 @@ public class Conversation implements Parcelable {
      * Update an integer column for a single conversation (see updateBoolean below)
      */
     public int updateInt(Context context, String columnName, int value) {
-        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
-        conversations.add(this);
-        return updateInt(context, conversations, columnName, value);
+        return updateInt(context, Arrays.asList(this), columnName, value);
     }
 
     /**
@@ -193,9 +194,7 @@ public class Conversation implements Parcelable {
      * Update a boolean column for a single conversation (see updateBoolean below)
      */
     public int updateBoolean(Context context, String columnName, boolean value) {
-        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
-        conversations.add(this);
-        return updateBoolean(context, conversations, columnName, value);
+        return updateBoolean(context, Arrays.asList(this), columnName, value);
     }
 
     /**
@@ -212,9 +211,7 @@ public class Conversation implements Parcelable {
      * Update a string column for a single conversation (see updateString below)
      */
     public int updateString(Context context, String columnName, String value) {
-        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
-        conversations.add(this);
-        return updateString(context, conversations, columnName, value);
+        return updateString(context, Arrays.asList(this), columnName, value);
     }
 
     /**
@@ -238,13 +235,24 @@ public class Conversation implements Parcelable {
      */
     private static int updateValues(Context context, Collection<Conversation> conversations,
             ContentValues values) {
-        ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+        return apply(context,
+                getOperationsForConversations(conversations, ConversationOperation.UPDATE, values));
+    }
+
+    private static ArrayList<ConversationOperation> getOperationsForConversations(
+            Collection<Conversation> conversations, int op, ContentValues values) {
+        return getOperationsForConversations(conversations, op, values, false /* autoNotify */);
+    }
+
+    private static ArrayList<ConversationOperation> getOperationsForConversations(
+            Collection<Conversation> conversations, int type, ContentValues values,
+            boolean autoNotify) {
+        final ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
-            ConversationOperation op =
-                    new ConversationOperation(ConversationOperation.UPDATE, conv, values);
+            ConversationOperation op = new ConversationOperation(type, conv, values, autoNotify);
             ops.add(op);
         }
-        return apply(context, ops);
+        return ops;
     }
 
     /**
@@ -265,7 +273,13 @@ public class Conversation implements Parcelable {
      * @return the sequence number of the operation (for undo)
      */
     public int markRead(Context context, boolean read) {
-        return updateBoolean(context, ConversationColumns.READ, read);
+        ContentValues values = new ContentValues();
+        values.put(ConversationColumns.READ, read);
+
+        return apply(
+                context,
+                getOperationsForConversations(Arrays.asList(this), ConversationOperation.UPDATE,
+                        values, true /* autoNotify */));
     }
 
     /**
@@ -276,7 +290,7 @@ public class Conversation implements Parcelable {
      * @return the sequence number of the operation (for undo)
      */
     public static int delete(Context context, Collection<Conversation> conversations) {
-        ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+        ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
             ConversationOperation op =
                     new ConversationOperation(ConversationOperation.DELETE, conv);
@@ -312,7 +326,7 @@ public class Conversation implements Parcelable {
     }
 
     public static int archive(Context context, Collection<Conversation> conversations) {
-        ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+        ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
             ConversationOperation op =
                     new ConversationOperation(ConversationOperation.ARCHIVE, conv);
@@ -322,7 +336,7 @@ public class Conversation implements Parcelable {
     }
 
     public static int mute(Context context, Collection<Conversation> conversations) {
-        ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+        ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
             ConversationOperation op =
                     new ConversationOperation(ConversationOperation.MUTE, conv);
@@ -332,7 +346,7 @@ public class Conversation implements Parcelable {
     }
 
     public static int reportSpam(Context context, Collection<Conversation> conversations) {
-        ArrayList<ConversationOperation> ops = new ArrayList<ConversationOperation>();
+        ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
             ConversationOperation op =
                     new ConversationOperation(ConversationOperation.REPORT_SPAM, conv);
