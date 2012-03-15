@@ -21,6 +21,7 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogUtils;
 
 import android.app.Fragment;
@@ -88,6 +89,9 @@ public final class TwoPaneController extends AbstractActivityController {
         // stack.
         resetActionBarIcon();
         attachFolderList(folderListFragment);
+        if (getCurrentListContext() != null) {
+            folderListFragment.selectFolder(getCurrentListContext().folder);
+        }
     }
 
     @Override
@@ -129,6 +133,14 @@ public final class TwoPaneController extends AbstractActivityController {
     public void onAccountChanged(Account account) {
         super.onAccountChanged(account);
         renderFolderList();
+    }
+
+    @Override
+    public void onFolderChanged(Folder folder) {
+        super.onFolderChanged(folder);
+        if (mFolderListFragment != null) {
+            mFolderListFragment.selectFolder(folder);
+        }
     }
 
     @Override
