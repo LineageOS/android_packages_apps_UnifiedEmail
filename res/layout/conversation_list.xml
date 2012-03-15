@@ -37,7 +37,7 @@
 
    <include layout="@layout/search_results_view"/>
 
-   <ListView android:id="@android:id/list"
+   <com.android.mail.ui.SwipeableListView android:id="@android:id/list"
        style="@style/ConversationListFade"
        android:layout_width="match_parent"
        android:layout_height="match_parent"

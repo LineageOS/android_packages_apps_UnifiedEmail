@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -48,11 +49,13 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * The conversation list UI component.
@@ -60,7 +63,8 @@ import java.util.ArrayList;
 public final class ConversationListFragment extends ListFragment implements
         OnItemLongClickListener, ModeChangeListener, UndoBarView.OnUndoCancelListener,
         ConversationSetObserver, ActionCompleteListener, ConversationListener,
-        LoaderManager.LoaderCallbacks<ConversationCursor>, UndoBarView.UndoListener {
+        LoaderManager.LoaderCallbacks<ConversationCursor>, UndoBarView.UndoListener,
+        SwipeCompleteListener {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     // Batch conversations stored in the Bundle using this key.
@@ -94,7 +98,7 @@ public final class ConversationListFragment extends ListFragment implements
     private Parcelable mListSavedState;
 
     // The internal view objects.
-    private ListView mListView;
+    private SwipeableListView mListView;
 
     private TextView mSearchResultCountTextView;
     private TextView mSearchStatusTextView;
@@ -130,6 +134,7 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
     private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
     private ConversationListFooterView mFooterView;
+    private int mSwipeAction;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -230,6 +235,7 @@ public final class ConversationListFragment extends ListFragment implements
                 null);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
+        mListView.setSwipeCompleteListener(this);
         // Don't need to add ourselves to our own set observer.
         // mActivity.getBatchConversations().addObserver(this);
         mActivity.setViewModeListener(this);
@@ -269,7 +275,9 @@ public final class ConversationListFragment extends ListFragment implements
         final Bundle args = getArguments();
         mViewContext = ConversationListContext.forBundle(args.getBundle(CONVERSATION_LIST_KEY));
         mAccount = mViewContext.account;
-
+        // TODO(mindyp): do we want this as a setting?
+        mSwipeAction = mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE) ?
+                R.id.archive : R.id.delete;
         if (savedState != null) {
             mListSavedState = savedState.getParcelable(LIST_STATE_KEY);
         }
@@ -301,7 +309,7 @@ public final class ConversationListFragment extends ListFragment implements
             ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
         mEmptyView = rootView.findViewById(R.id.empty_view);
-        mListView = (ListView) rootView.findViewById(android.R.id.list);
+        mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setOnItemLongClickListener(this);
@@ -573,5 +581,19 @@ public final class ConversationListFragment extends ListFragment implements
                 }
             }
         }
+    }
+
+    @Override
+    public void onSwipeComplete(Collection<Conversation> conversations) {
+        Context context = getActivity().getApplicationContext();
+        switch (mSwipeAction) {
+            case R.id.archive:
+                Conversation.archive(context, conversations);
+                break;
+            case R.id.delete:
+                Conversation.delete(context, conversations);
+                break;
+        }
+        onUndoAvailable(new UndoOperation(conversations.size(), mSwipeAction));
     }
 }
