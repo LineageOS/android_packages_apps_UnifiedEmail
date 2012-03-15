@@ -18,6 +18,7 @@ package com.android.mail.utils;
 import com.google.common.collect.ImmutableMap;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.Attachment;
@@ -62,7 +63,8 @@ public class AttachmentUtils {
         // then try to show a friendly name for the mime family
         // finally, give up and just show the file extension
         String displayType = getMimeTypeDisplayName(context, attachment.contentType);
-        int index = attachment.contentType.indexOf('/');
+        int index = !TextUtils.isEmpty(attachment.contentType) ? attachment.contentType
+                .indexOf('/') : -1;
         if (displayType == null && index > 0) {
             displayType = getMimeTypeDisplayName(context,
                     attachment.contentType.substring(0, index));
@@ -76,7 +78,7 @@ public class AttachmentUtils {
             }
         }
         if (displayType == null) {
-         // no extension to display, but the map doesn't accept null entries
+            // no extension to display, but the map doesn't accept null entries
             displayType = "";
         }
         return displayType;
