@@ -376,8 +376,8 @@ public class ConversationItemViewCoordinates {
         return coordinates;
     }
 
-    public static boolean displayFoldersAboveDate(boolean showFolders, int mode) {
-        return showFolders && mode == WIDE_MODE;
+    public static boolean displayFoldersAboveDate(int mode) {
+        return mode == WIDE_MODE;
     }
 
     public static int getFolderCellWidth(Context context, int mode, int foldersCount) {
@@ -392,5 +392,9 @@ public class ConversationItemViewCoordinates {
             default:
                 throw new IllegalArgumentException("Unknown conversation header view mode " + mode);
         }
+    }
+
+    public static boolean isWideMode(int mode) {
+        return mode == WIDE_MODE;
     }
 }

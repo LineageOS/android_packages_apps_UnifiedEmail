@@ -599,12 +599,16 @@ public class ConversationItemView extends View {
 
         int cellWidth = mContext.getResources().getDimensionPixelSize(R.dimen.folder_cell_width);
 
-        if (mCoordinates.showFolders) {
-            if (ConversationItemViewCoordinates.displayFoldersAboveDate(mCoordinates.showFolders,
-                    mMode)) {
-                mFoldersXEnd = mCoordinates.dateXEnd;
-                mSendersWidth = mCoordinates.sendersWidth;
-            } else {
+        if (ConversationItemViewCoordinates.isWideMode(mMode)) {
+            // Folders are displayed above the date.
+            mFoldersXEnd = mCoordinates.dateXEnd;
+            // In wide mode, the end of the senders should align with
+            // the start of the subject and is based on a max width.
+            mSendersWidth = mCoordinates.sendersWidth;
+        } else {
+            // In normal mode, the width is based on where the folders or date
+            // (or attachment icon) start.
+            if (mCoordinates.showFolders) {
                 if (mHeader.paperclip != null) {
                     mFoldersXEnd = mPaperclipX;
                 } else {
@@ -615,16 +619,16 @@ public class ConversationItemView extends View {
                     mSendersWidth -= ConversationItemViewCoordinates.getFoldersWidth(mContext,
                             mMode);
                 }
-            }
-        } else {
-            int dateAttachmentStart = 0;
-            // Have this end near the paperclip or date, not the folders.
-            if (mHeader.paperclip != null) {
-                dateAttachmentStart = mPaperclipX;
             } else {
-                dateAttachmentStart = mDateX;
+                int dateAttachmentStart = 0;
+                // Have this end near the paperclip or date, not the folders.
+                if (mHeader.paperclip != null) {
+                    dateAttachmentStart = mPaperclipX;
+                } else {
+                    dateAttachmentStart = mDateX;
+                }
+                mSendersWidth = dateAttachmentStart - mCoordinates.sendersX - cellWidth;
             }
-            mSendersWidth = dateAttachmentStart - mCoordinates.sendersX - cellWidth;
         }
 
         if (mHeader.isLayoutValid(mContext)) {
