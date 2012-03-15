@@ -68,7 +68,7 @@
     <string name="menu_change_folders" msgid="1542713666608888717">"Verander vouers"</string>
     <string name="menu_manage_folders" msgid="7499103037978814445">"Bestuur vouers"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Vouers"</string>
-    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sinkroniseer &amp; stel in kennis"</string>
+    <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sinkroniseer en stel in kennis"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Vouerinstellings"</string>
     <string name="menu_done" msgid="5791134842152855128">"Klaar"</string>
     <string name="menu_account_settings" msgid="8230989362863431918">"Rekeninginstellings"</string>
@@ -282,9 +282,7 @@
     <string name="network_error" msgid="2125579009654728299">"Geen verbinding nie"</string>
     <string name="loading" msgid="2600808404156989255">"Laai tans gesprekke…"</string>
     <string name="retry" msgid="4515885444824418022">"Herprobeer"</string>
-    <string name="load_more" msgid="420892447103014683">"Laai meer"</string>
-    <!-- no translation found for default_folder_background_color (5450317987868030816) -->
-    <skip />
-    <!-- no translation found for default_folder_text_color (7373400676322746622) -->
-    <skip />
+    <string name="load_more" msgid="420892447103014683">"Laai nóg"</string>
+    <string name="default_folder_background_color" msgid="5450317987868030816">"#f1f5ec"</string>
+    <string name="default_folder_text_color" msgid="7373400676322746622">"#888888"</string>
 </resources>
