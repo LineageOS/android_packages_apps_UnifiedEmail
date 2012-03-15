@@ -32,7 +32,6 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Debug;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -167,7 +166,6 @@ public class ConversationItemView extends View {
 
         @Override
         public void loadConversationFolders(Folder folder, String rawFolders) {
-            Debug.waitForDebugger();
             super.loadConversationFolders(folder, rawFolders);
 
             mFoldersCount = mFolderValuesSortedSet.size();
