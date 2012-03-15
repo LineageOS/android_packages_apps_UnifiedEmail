@@ -181,7 +181,7 @@ public class Account extends android.accounts.Account implements Parcelable {
             return new Account(name, type, serializedAccount);
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not create an account from this input: \""
-                    + serializedAccount);
+                    + serializedAccount + "\"");
             return null;
         }
     }
@@ -294,8 +294,8 @@ public class Account extends android.accounts.Account implements Parcelable {
     }
 
     /**
-     * Returns an array of all Accounts located at this cursor.
-     * This method does not close the cursor.
+     * Returns an array of all Accounts located at this cursor. This method returns a zero length
+     * array if no account was found.  This method does not close the cursor.
      * @param cursor cursor pointing to the list of accounts
      * @return the array of all accounts stored at this cursor.
      */
@@ -307,13 +307,12 @@ public class Account extends android.accounts.Account implements Parcelable {
         }
 
         Account[] allAccounts = new Account[initialLength];
-        for (int i = 0; i < initialLength; i++) {
-            allAccounts[i] = new Account(cursor);
-            if (!cursor.moveToNext()) {
-                LogUtils.d(LOG_TAG, "Expecting " + initialLength + " accounts. Got: " + i);
-                break;
-            }
-        }
+        int i = 0;
+        do {
+            allAccounts[i++] = new Account(cursor);
+        } while (cursor.moveToNext());
+        // Ensure that the length of the array is accurate
+        assert (i == initialLength);
         return allAccounts;
     }
 
