@@ -885,7 +885,7 @@ public class ConversationItemView extends View {
                 canvas.drawBitmap(STATE_FORWARDED, mCoordinates.replyStateX,
                         mCoordinates.replyStateY, null);
             } else if (mHeader.isInvite) {
-                canvas.drawBitmap(STATE_REPLIED_AND_FORWARDED, mCoordinates.replyStateX,
+                canvas.drawBitmap(STATE_CALENDAR_INVITE, mCoordinates.replyStateX,
                         mCoordinates.replyStateY, null);
             }
         }
