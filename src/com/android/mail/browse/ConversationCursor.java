@@ -163,9 +163,6 @@ public final class ConversationCursor implements Cursor {
                         LogUtils.i(TAG, "Create: cursor good, reset position and clear map");
                         sConversationCursor.moveToPosition(-1);
                         sConversationCursor.mPosition = -1;
-                        synchronized (sCacheMapLock) {
-                            sCacheMap.clear();
-                        }
                     }
                 } else {
                     // Set qUri/qProjection these in case they changed
