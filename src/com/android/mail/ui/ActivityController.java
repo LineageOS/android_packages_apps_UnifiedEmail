@@ -32,6 +32,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Settings;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
+import com.android.mail.ui.FoldersSelectionDialog.CommitListener;
 
 /**
  * An Activity controller knows how to combine views and listeners into a functioning activity.
@@ -39,7 +40,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * or respond to user action.
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
-        ModeChangeListener, ConversationListCallbacks,
+        ModeChangeListener, ConversationListCallbacks, CommitListener,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name

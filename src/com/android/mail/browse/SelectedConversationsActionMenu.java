@@ -258,13 +258,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         public void onActionComplete() {
             mActionCompleteListener.onActionComplete();
             Collection<Conversation> deletionSet = mDeletionSet;
-            // Only show undo if this was a destructive folder change.
-            UndoOperation undoOp = null;
             if (deletionSet != null && deletionSet.size() > 0) {
-                undoOp = new UndoOperation(deletionSet.size(), R.id.change_folder);
+                // Only show undo if this was a destructive folder change.
+                UndoOperation undoOp = new UndoOperation(deletionSet.size(), R.id.change_folder);
+                mUndoListener.onUndoAvailable(undoOp);
                 mDeletionSet = null;
             }
-            mUndoListener.onUndoAvailable(undoOp);
             Conversation.updateString(mContext, mSelectionSet.values(),
                     ConversationColumns.FOLDER_LIST, mFolderChangeList);
             mSelectionSet.clear();

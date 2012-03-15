@@ -36,6 +36,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,6 +60,9 @@ import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
 
@@ -80,15 +84,11 @@ import java.util.ArrayList;
  * </p>
  */
 public abstract class AbstractActivityController implements ActivityController {
-    private static final String SAVED_CONVERSATION = "saved-conversation";
-    private static final String SAVED_CONVERSATION_POSITION = "saved-conv-pos";
     // Keys for serialization of various information in Bundles.
     private static final String SAVED_LIST_CONTEXT = "saved-list-context";
     private static final String SAVED_ACCOUNT = "saved-account";
 
-    /**
-     * Are we on a tablet device or not.
-     */
+    /** Are we on a tablet device or not. */
     public final boolean IS_TABLET_DEVICE;
 
     protected Account mAccount;
@@ -401,45 +401,42 @@ public abstract class AbstractActivityController implements ActivityController {
                 Utils.showHelp(mActivity.getActivityContext(), mAccount.helpIntentUri, null);
                 break;
             case R.id.y_button: {
-                LogUtils.d(LOG_TAG, "Archiving the conversation " + mCurrentConversation);
                 final Settings settings = mActivity.getSettings();
                 final boolean showDialog = (settings != null && settings.confirmArchive);
                 final int autoAdvance = settings != null
                     ? settings.autoAdvance : AutoAdvance.LIST;
-                destructiveListAction(showDialog, R.plurals.confirm_archive_conversation,
+                confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
                         mArchiveListener);
                 break;
             }
             case R.id.delete: {
-                LogUtils.d(LOG_TAG, "Deleting the conversation " + mCurrentConversation);
                 final Settings settings = mActivity.getSettings();
                 final boolean showDialog = (settings != null && settings.confirmDelete);
-                destructiveListAction(showDialog, R.plurals.confirm_delete_conversation,
+                confirmAndDelete(showDialog, R.plurals.confirm_delete_conversation,
                     mDeleteListener);
                 break;
             }
             case R.id.change_folders:
-                // Change Folders??
+                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
+                        Collections.singletonList(mCurrentConversation)).show();
+                break;
             case R.id.inside_conversation_unread:
-                // No selection set, rather we mark a conversation as read
-                LogUtils.d(LOG_TAG, "Marking conversation " + mCurrentConversation.toString()
-                        + " as unread.");
                 updateCurrentConversation(ConversationColumns.READ, false);
                 break;
             case R.id.mark_important:
-                LogUtils.d(LOG_TAG, "Marking conversation " + mCurrentConversation.toString()
-                        + " as important.");
                 updateCurrentConversation(ConversationColumns.PRIORITY,
                         UIProvider.ConversationPriority.HIGH);
                 break;
             case R.id.mark_not_important:
-                LogUtils.d(LOG_TAG, "Marking conversation " + mCurrentConversation.toString()
-                        + " as important.");
                 updateCurrentConversation(ConversationColumns.PRIORITY,
                         UIProvider.ConversationPriority.LOW);
                 break;
             case R.id.mute:
+                mConversationListFragment.requestDelete(mMuteListener);
+                break;
             case R.id.report_spam:
+                mConversationListFragment.requestDelete(mSpamListener);
+                break;
             case R.id.feedback_menu_item:
             default:
                 handled = false;
@@ -448,7 +445,14 @@ public abstract class AbstractActivityController implements ActivityController {
         return handled;
     }
 
-    private void destructiveListAction(boolean showDialog, int confirmResource,
+    /**
+     * Confirm (based on user's settings) and delete a conversation from the conversation list and
+     * from the database.
+     * @param showDialog
+     * @param confirmResource
+     * @param listener
+     */
+    private void confirmAndDelete(boolean showDialog, int confirmResource,
             final ActionCompleteListener listener) {
         final ArrayList<Conversation> single = new ArrayList<Conversation>();
         final Settings settings = mActivity.getSettings();
@@ -471,9 +475,20 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
+    /**
+     * An object that performs an action on the conversation database. This is an
+     * ActionCompleteListener since this is called <b>after</a> the conversation list has animated
+     * the conversation away. Once the animation is completed, the {@link #onActionComplete()}
+     * method is called which performs the correct data operation.
+     */
     private class DestructiveActionListener implements ActionCompleteListener {
         private final int mAction;
 
+        /**
+         * Create a listener object. action is one of four constants: R.id.y_button (archive),
+         * R.id.delete , R.id.mute, and R.id.report_spam.
+         * @param action
+         */
         public DestructiveActionListener(int action) {
             mAction = action;
         }
@@ -510,6 +525,34 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
+     * Implements folder changes. This class is a listener because folder changes need to be
+     * performed <b>after</b> the ConversationListFragment has finished animating away the
+     * removal of the conversation.
+     *
+     */
+    private class FolderChangeListener implements ActionCompleteListener {
+        private final String mFolderChangeList;
+        private final boolean mDestructiveChange;
+
+        public FolderChangeListener(String changeList, boolean destructive) {
+            mFolderChangeList = changeList;
+            mDestructiveChange = destructive;
+        }
+
+        @Override
+        public void onActionComplete() {
+            // Only show undo if this was a destructive folder change.
+            if (mDestructiveChange) {
+                mConversationListFragment.onUndoAvailable(new UndoOperation(1, R.id.change_folder));
+            }
+            // Update the folders for this conversation
+            Conversation.updateString(mContext, Collections.singletonList(mCurrentConversation),
+                    ConversationColumns.FOLDER_LIST, mFolderChangeList);
+            mConversationListFragment.requestListRefresh();
+        }
+    }
+
+    /**
      * Update the specified column name in conversation for a boolean value.
      * @param columnName
      * @param value
@@ -537,6 +580,25 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             mAsyncRefreshTask = new AsyncRefreshTask(mContext, mFolder);
             mAsyncRefreshTask.execute();
+        }
+    }
+
+    @Override
+    public void onCommit(String uris) {
+        // Get currently active folder info and compare it to the list
+        // these conversations have been given; if they no longer contain
+        // the selected folder, delete them from the list.
+        HashSet<String> folderUris = new HashSet<String>();
+        if (!TextUtils.isEmpty(uris)) {
+            folderUris.addAll(Arrays.asList(uris.split(",")));
+        }
+        final boolean destructiveChange = !folderUris.contains(mFolder.uri);
+        FolderChangeListener listener = new FolderChangeListener(uris, destructiveChange);
+        if (destructiveChange) {
+            mCurrentConversation.localDeleteOnUpdate = true;
+            mConversationListFragment.requestDelete(listener);
+        } else {
+            listener.onActionComplete();
         }
     }
 

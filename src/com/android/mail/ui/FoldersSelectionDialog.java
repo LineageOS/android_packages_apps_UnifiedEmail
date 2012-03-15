@@ -49,6 +49,10 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
     private FolderSelectorAdapter mAdapter;
 
     public interface CommitListener {
+        /**
+         * Commit the folder selection change to the underlying provider.
+         * @param uris
+         */
         public void onCommit(String uris);
     }
 
