@@ -111,6 +111,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private FetchSearchFolderTask mFetchSearchFolderTask;
     /** Whether we have recorded this folder as a recent folder yet? */
     private boolean mFolderTouched = false;
+    private FetchInboxTask mFetchInboxTask;
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     /** Constants used to differentiate between the types of loaders. */
@@ -271,6 +272,16 @@ public abstract class AbstractActivityController implements ActivityController {
             mConvListContext = ConversationListContext.forFolder(mContext, mAccount, mFolder);
             showConversationList(mConvListContext);
         }
+    }
+
+    // TODO(mindyp): set this up to store a copy of the folder locally
+    // as soon as we realize we haven't gotten the inbox folder yet.
+    public void loadInbox() {
+        if (mFetchInboxTask != null) {
+            mFetchInboxTask.cancel(true);
+        }
+        mFetchInboxTask = new FetchInboxTask();
+        mFetchInboxTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /** Set the current folder */
@@ -750,6 +761,25 @@ public abstract class AbstractActivityController implements ActivityController {
             } else if (mode == ViewMode.CONVERSATION) {
                 mConversationViewFragment.onTouchEvent(event);
             }
+        }
+    }
+
+    private class FetchInboxTask extends AsyncTask<Void, Void, ConversationListContext> {
+        @Override
+        public ConversationListContext doInBackground(Void... params) {
+            // Gets the default inbox since there is no context.
+            return ConversationListContext.forFolder(mActivity.getActivityContext(), mAccount,
+                    (Folder) null);
+        }
+
+        @Override
+        public void onPostExecute(ConversationListContext result) {
+            mConvListContext = result;
+            setFolder(mConvListContext.folder);
+            if (mFolderListFragment != null) {
+                mFolderListFragment.selectFolder(mConvListContext.folder);
+            }
+            showConversationList(mConvListContext);
         }
     }
 

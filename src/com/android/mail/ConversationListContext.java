@@ -66,9 +66,6 @@ public class ConversationListContext {
      */
     public final String searchQuery;
 
-    // Tokenized search terms for search queries.
-    private ArrayList<String> mSearchTerms;
-
     static {
         sUrlMatcher.addURI(UIProvider.AUTHORITY, "account/*/folder/*", 0);
     }
@@ -102,8 +99,7 @@ public class ConversationListContext {
                     if (settings != null) {
                         folderCursor = context.getContentResolver().query(settings.defaultInbox,
                                 UIProvider.FOLDERS_PROJECTION, null, null, null);
-                        if (folderCursor != null) {
-                            folderCursor.moveToFirst();
+                        if (folderCursor != null && folderCursor.moveToFirst()) {
                             folder = new Folder(folderCursor);
                         }
                     }

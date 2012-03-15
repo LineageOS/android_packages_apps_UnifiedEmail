@@ -87,6 +87,9 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
      * Update the view to reflect the new folder status.
      */
     public void updateStatus(final Folder folder) {
+        if (folder == null) {
+            return;
+        }
         mRetry.setTag(folder);
         mLoadMore.setTag(folder);
         if (folder.isSyncInProgress()) {

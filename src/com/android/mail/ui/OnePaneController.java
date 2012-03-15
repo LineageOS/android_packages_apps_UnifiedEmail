@@ -227,16 +227,20 @@ public final class OnePaneController extends AbstractActivityController {
 
     private void transitionToInbox() {
         mViewMode.enterConversationListMode();
-        ConversationListContext listContext = ConversationListContext.forFolder(mContext,
-                mAccount, mInbox);
-        // Set the correct context for what the conversation view will be now.
-        onFolderChanged(mInbox);
-        if (isTransactionIdValid(mLastConversationListTransactionId)) {
-           // showConversationList(listContext);
-            mActivity.getFragmentManager().popBackStack(mLastConversationListTransactionId, 0);
-            resetActionBarIcon();
+        if (mInbox == null) {
+            loadInbox();
         } else {
-            showConversationList(listContext);
+            ConversationListContext listContext = ConversationListContext.forFolder(mContext,
+                    mAccount, mInbox);
+            // Set the correct context for what the conversation view will be now.
+            onFolderChanged(mInbox);
+            if (isTransactionIdValid(mLastConversationListTransactionId)) {
+               // showConversationList(listContext);
+                mActivity.getFragmentManager().popBackStack(mLastConversationListTransactionId, 0);
+                resetActionBarIcon();
+            } else {
+                showConversationList(listContext);
+            }
         }
     }
 
