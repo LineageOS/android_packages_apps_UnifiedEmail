@@ -788,12 +788,12 @@ public class Utils {
    }
 
    public static int getDefaultFolderBackgroundColor(Context context) {
-       return Integer.parseInt(context.getResources().getString(
+        return Color.parseColor(context.getResources().getString(
                R.string.default_folder_background_color));
    }
 
    public static int getDefaultFolderTextColor(Context context) {
-       return Integer.parseInt(context.getResources().getString(
+        return Color.parseColor(context.getResources().getString(
                R.string.default_folder_text_color));
    }
 
