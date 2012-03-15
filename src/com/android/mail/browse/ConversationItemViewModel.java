@@ -111,6 +111,8 @@ public class ConversationItemViewModel {
 
     public boolean hasBeenRepliedTo;
 
+    public boolean isInvite;
+
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
      * null is returned. Note: this should only be called from the UI thread.
@@ -141,9 +143,14 @@ public class ConversationItemViewModel {
             header.personalLevel = conv.personalLevel;
             header.priority = conv.priority;
             header.hasBeenForwarded =
-                    (conv.convFlags & UIProvider.ConversationFlags.FORWARDED) == 1;
+                    (conv.convFlags & UIProvider.ConversationFlags.FORWARDED)
+                    == UIProvider.ConversationFlags.FORWARDED;
             header.hasBeenRepliedTo =
-                    (conv.convFlags & UIProvider.ConversationFlags.REPLIED) == 1;
+                    (conv.convFlags & UIProvider.ConversationFlags.REPLIED)
+                    == UIProvider.ConversationFlags.REPLIED;
+            header.isInvite =
+                    (conv.convFlags & UIProvider.ConversationFlags.CALENDAR_INVITE)
+                    == UIProvider.ConversationFlags.CALENDAR_INVITE;
         }
         return header;
     }

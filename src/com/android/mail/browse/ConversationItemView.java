@@ -89,6 +89,7 @@ public class ConversationItemView extends View {
     private static Bitmap STATE_REPLIED;
     private static Bitmap STATE_FORWARDED;
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
+    private static Bitmap STATE_CALENDAR_INVITE;
 
     // Static colors.
     private static int DEFAULT_TEXT_COLOR;
@@ -311,6 +312,8 @@ public class ConversationItemView extends View {
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_forward_holo_light);
             STATE_REPLIED_AND_FORWARDED =
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_reply_forward_holo_light);
+            STATE_CALENDAR_INVITE =
+                    BitmapFactory.decodeResource(res, R.drawable.ic_badge_invite_holo_light);
 
             // Initialize colors.
             DEFAULT_TEXT_COLOR = res.getColor(R.color.default_text_color);
@@ -876,6 +879,9 @@ public class ConversationItemView extends View {
                         mCoordinates.replyStateY, null);
             } else if (mHeader.hasBeenForwarded) {
                 canvas.drawBitmap(STATE_FORWARDED, mCoordinates.replyStateX,
+                        mCoordinates.replyStateY, null);
+            } else if (mHeader.isInvite) {
+                canvas.drawBitmap(STATE_REPLIED_AND_FORWARDED, mCoordinates.replyStateX,
                         mCoordinates.replyStateY, null);
             }
         }
