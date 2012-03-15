@@ -187,7 +187,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     }).setNegativeButton(R.string.cancel, null).create().show();
         } else {
             mListAdapter.delete(conversations, listener);
-            mSelectionSet.clear();
         }
     }
 
