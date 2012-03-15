@@ -313,6 +313,11 @@ public final class ConversationCursor implements Cursor {
      * @return the original Uri
      */
     private static Uri uriFromCachingUri(Uri uri) {
+        String authority = uri.getAuthority();
+        // Don't modify uri's that aren't ours
+        if (!authority.equals(ConversationProvider.AUTHORITY)) {
+            return uri;
+        }
         List<String> path = uri.getPathSegments();
         Uri.Builder builder = new Uri.Builder().scheme(uri.getScheme()).authority(path.get(0));
         for (int i = 1; i < path.size(); i++) {
