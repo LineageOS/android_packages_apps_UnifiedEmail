@@ -28,7 +28,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +99,6 @@ public final class FolderListFragment extends ListFragment implements
         }
         mActivity = (ControllableActivity) activity;
         mActivity.attachFolderList(this);
-
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
             return;
