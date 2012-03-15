@@ -699,9 +699,9 @@ public class Utils {
      * @param filename a file name
      * @return the file extension (max of 5 chars including period, like ".docx"), or null
      */
-   public static String getFileExtension(String filename) {
+    public static String getFileExtension(String filename) {
         String extension = null;
-        int index = filename.lastIndexOf('.');
+        int index = !TextUtils.isEmpty(filename) ? filename.lastIndexOf('.') : -1;
         // Limit the suffix to dot + four characters
         if (index >= 0 && filename.length() - index <= FILE_EXTENSION_MAX_CHARS + 1) {
             extension = filename.substring(index);
