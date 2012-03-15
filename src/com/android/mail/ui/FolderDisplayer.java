@@ -25,6 +25,7 @@ import com.google.common.collect.Sets;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Debug;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -104,15 +105,19 @@ public class FolderDisplayer {
      */
     public void loadConversationFolders(Folder ignoreFolder, String folderString) {
         SortedSet<FolderValues> folderValuesSet = Sets.newTreeSet();
-        ArrayList<String> folderArray = new ArrayList<String>(Arrays.asList(TextUtils.split(
+        ArrayList<Folder> folders = new ArrayList<Folder>();
+        if (!TextUtils.isEmpty(folderString)) {
+            ArrayList<String> folderArray = new ArrayList<String>(Arrays.asList(TextUtils.split(
                 folderString, Folder.FOLDER_SEPARATOR_PATTERN)));
-        ArrayList<Folder> folders = new ArrayList<Folder>(folderArray.size());
-        Folder f;
-        for (String folder : folderArray) {
-            f = new Folder(folder);
-            if (ignoreFolder == null || !ignoreFolder.uri.equals(f.uri)) {
-                folders.add(f);
+            Folder f;
+            for (String folder : folderArray) {
+                f = new Folder(folder);
+                if (ignoreFolder == null || !ignoreFolder.uri.equals(f.uri)) {
+                    folders.add(f);
+                }
             }
+        } else if (ignoreFolder != null) {
+            folders.add(ignoreFolder);
         }
         for (Folder folder : folders) {
             int folderId = folder.id;
