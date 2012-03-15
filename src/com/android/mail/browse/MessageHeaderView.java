@@ -416,7 +416,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             upperDateView.setText(mTimestampShort);
         }
 
-        mStarView.setSelected((mMessage.messageFlags & UIProvider.MessageFlags.STARRED) == 1);
+        mStarView.setSelected(mMessage.isStarred());
         mStarView.setContentDescription(getResources().getString(
                 mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
 

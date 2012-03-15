@@ -173,4 +173,9 @@ public class Message implements Parcelable {
             alwaysShowImages = cursor.getInt(UIProvider.ALWAYS_SHOW_IMAGES_COLUMN) != 0;
         }
     }
+
+    public boolean isStarred() {
+        return (messageFlags & UIProvider.MessageFlags.STARRED) == UIProvider.MessageFlags.STARRED;
+    }
+
 }
