@@ -215,7 +215,7 @@ public class Attachment implements Parcelable {
     };
 
     public boolean isImage() {
-        return contentType.startsWith("image/");
+        return !TextUtils.isEmpty(contentType) ? contentType.startsWith("image/") : false;
     }
 
     public boolean isDownloading() {

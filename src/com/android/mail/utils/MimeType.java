@@ -65,7 +65,9 @@ public class MimeType {
      * Returns whether or not an attachment of the specified type is playable (e.g. a video).
      */
     public static boolean isPlayable(String type) {
-        return type.startsWith("video/") || type.startsWith("audio/");
+        return !TextUtils.isEmpty(type) ?
+                (type.startsWith("video/") || type.startsWith("audio/"))
+                : false;
     }
 
     /**
