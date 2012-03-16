@@ -164,11 +164,15 @@ public class ConversationItemView extends View {
         private int mFoldersCount;
         private boolean mHasMoreFolders;
 
-        @Override
-        public void loadConversationFolders(Folder folder, String rawFolders) {
-            super.loadConversationFolders(folder, rawFolders);
+        public ConversationItemFolderDisplayer(Context context) {
+            super(context);
+        }
 
-            mFoldersCount = mFolderValuesSortedSet.size();
+        @Override
+        public void loadConversationFolders(String rawFolders, Folder ignoreFolder) {
+            super.loadConversationFolders(rawFolders, ignoreFolder);
+
+            mFoldersCount = mFoldersSortedSet.size();
             mHasMoreFolders = mFoldersCount > MAX_DISPLAYED_FOLDERS_COUNT;
             mFoldersCount = Math.min(mFoldersCount, MAX_DISPLAYED_FOLDERS_COUNT);
         }
@@ -183,9 +187,9 @@ public class ConversationItemView extends View {
                     mFoldersCount);
 
             int totalWidth = 0;
-            for (FolderValues labelValues : mFolderValuesSortedSet) {
-                String labelString = labelValues.name;
-                int width = (int) sFoldersPaint.measureText(labelString) + cellSize;
+            for (Folder f : mFoldersSortedSet) {
+                final String folderString = f.name;
+                int width = (int) sFoldersPaint.measureText(folderString) + cellSize;
                 if (width % cellSize != 0) {
                     width += cellSize - (width % cellSize);
                 }
@@ -222,11 +226,13 @@ public class ConversationItemView extends View {
             int xStart = xEnd - Math.min(availableSpace, totalWidth);
 
             // Second pass to draw folders.
-            for (FolderValues labelValues : mFolderValuesSortedSet) {
-                String folderstring = labelValues.name;
+            for (Folder f : mFoldersSortedSet) {
+                final String folderString = f.name;
+                final int fgColor = f.getForegroundColor(mDefaultFgColor);
+                final int bgColor = f.getBackgroundColor(mDefaultBgColor);
                 int width = cellSize;
                 boolean labelTooLong = false;
-                width = (int) sFoldersPaint.measureText(folderstring) + cellSize;
+                width = (int) sFoldersPaint.measureText(folderString) + cellSize;
                 if (width % cellSize != 0) {
                     width += cellSize - (width % cellSize);
                 }
@@ -240,24 +246,24 @@ public class ConversationItemView extends View {
                      //   labelValues.folderId == sGmail.getFolderMap(mAccount).getFolderIdIgnored();
 
                 // Draw the box.
-                sFoldersPaint.setColor(labelValues.backgroundColor);
+                sFoldersPaint.setColor(bgColor);
                 sFoldersPaint.setStyle(isMuted ? Paint.Style.STROKE : Paint.Style.FILL_AND_STROKE);
                 canvas.drawRect(xStart, y + ascent, xStart + width, y + ascent + height,
                         sFoldersPaint);
 
                 // Draw the text.
-                sFoldersPaint.setColor(labelValues.textColor);
-                int padding = getPadding(width, (int) sFoldersPaint.measureText(folderstring));
+                sFoldersPaint.setColor(fgColor);
+                int padding = getPadding(width, (int) sFoldersPaint.measureText(folderString));
                 if (labelTooLong) {
                     padding = cellSize / 2;
                     int rightBorder = xStart + width - padding;
                     Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder, y,
-                            labelValues.textColor,
-                            Utils.getTransparentColor(labelValues.textColor),
+                            fgColor,
+                            Utils.getTransparentColor(fgColor),
                             Shader.TileMode.CLAMP);
                     sFoldersPaint.setShader(shader);
                 }
-                canvas.drawText(folderstring, xStart + padding, y + topPadding, sFoldersPaint);
+                canvas.drawText(folderString, xStart + padding, y + topPadding, sFoldersPaint);
                 sFoldersPaint.setShader(null);
 
                 availableSpace -= width;
@@ -461,9 +467,8 @@ public class ConversationItemView extends View {
 
         // Initialize folder displayer.
         if (mCoordinates.showFolders) {
-            mHeader.folderDisplayer = new ConversationItemFolderDisplayer();
-            mHeader.folderDisplayer.initialize(mContext, mAccount);
-            mHeader.folderDisplayer.loadConversationFolders(mDisplayedFolder, mHeader.rawFolders);
+            mHeader.folderDisplayer = new ConversationItemFolderDisplayer(mContext);
+            mHeader.folderDisplayer.loadConversationFolders(mHeader.rawFolders, mDisplayedFolder);
         }
 
         pauseTimer(PERF_TAG_CALCULATE_FOLDERS);

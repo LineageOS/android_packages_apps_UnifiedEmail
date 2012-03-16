@@ -17,6 +17,9 @@
 
 package com.android.mail.providers;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -25,22 +28,20 @@ import android.net.Uri;
 import android.net.Uri.Builder;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.android.mail.utils.LogUtils;
-import com.google.common.collect.Maps;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
  * A folder is a collection of conversations, and perhaps other folders.
  */
-public class Folder implements Parcelable {
+public class Folder implements Parcelable, Comparable<Folder> {
     /**
      *
      */
@@ -283,6 +284,14 @@ public class Folder implements Parcelable {
         return searchFolder;
     }
 
+    public static List<Folder> forFoldersString(String foldersString) {
+        final List<Folder> folders = Lists.newArrayList();
+        for (String folderStr : TextUtils.split(foldersString, FOLDER_SEPARATOR_PATTERN)) {
+            folders.add(new Folder(folderStr));
+        }
+        return folders;
+    }
+
     /**
      * Construct a new Folder instance from a previously serialized string.
      * @param serializedFolder string obtained from {@link #serialize()} on a valid folder.
@@ -346,6 +355,28 @@ public class Folder implements Parcelable {
     public int describeContents() {
         // Return a sort of version number for this parcelable folder. Starting with zero.
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof Folder)) {
+            return false;
+        }
+        final Uri otherUri = ((Folder) o).uri;
+        if (uri == null) {
+            return (otherUri == null);
+        }
+        return uri.equals(otherUri);
+    }
+
+    @Override
+    public int hashCode() {
+        return uri == null ? 0 : uri.hashCode();
+    }
+
+    @Override
+    public int compareTo(Folder other) {
+        return name.compareToIgnoreCase(other.name);
     }
 
     /**
@@ -434,4 +465,13 @@ public class Folder implements Parcelable {
                type == UIProvider.FolderType.TRASH ||
                type == UIProvider.FolderType.SPAM;
     }
+
+    public int getBackgroundColor(int defaultColor) {
+        return TextUtils.isEmpty(bgColor) ? defaultColor : Integer.parseInt(bgColor);
+    }
+
+    public int getForegroundColor(int defaultColor) {
+        return TextUtils.isEmpty(fgColor) ? defaultColor : Integer.parseInt(fgColor);
+    }
+
 }

@@ -17,131 +17,57 @@
 
 package com.android.mail.ui;
 
-import com.android.mail.providers.Folder;
-import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 import com.google.common.collect.Sets;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Debug;
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.android.mail.R;
+import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
+import com.android.mail.utils.LogUtils;
+
 import java.util.SortedSet;
 
 /**
  * Used to generate folder display information given a raw folders string.
- * (The raw folders string can be obtained from {@link ConversationCursor#getRawFolders()}.)
+ * (The raw folders string can be obtained from {@link Conversation#rawFolders}.)
  *
  */
 public class FolderDisplayer {
     public static final String LOG_TAG = new LogUtils().getLogTag();
     protected Context mContext;
-    protected String mAccount;
-    protected SortedSet<FolderValues> mFolderValuesSortedSet;
+    protected final SortedSet<Folder> mFoldersSortedSet = Sets.newTreeSet();
 
-    // Reference to the map of folder canonical name to folder id for the folders needed for
-    // the folder displayer.  This is set in loadConversationFolders
-    protected static class FolderValues implements Comparable<FolderValues> {
-        public final String colorId;
+    protected final int mDefaultBgColor;
+    protected final int mDefaultFgColor;
 
-        public final String name;
-
-        public final int folderId;
-
-        public final Uri folderUri;
-
-        public int backgroundColor;
-
-        public int textColor;
-
-        public boolean showBgColor;
-
-        public FolderValues(int id, Uri uri, String color, String n, String bgColor, String fgColor,
-                Context context) {
-            folderId = id;
-            colorId = color;
-            name = n;
-            folderUri = uri;
-            final boolean showBgColor = !TextUtils.isEmpty(bgColor);
-            if (showBgColor) {
-                backgroundColor = Integer.parseInt(bgColor);
-            } else {
-                backgroundColor = Utils.getDefaultFolderBackgroundColor(context);
-            }
-            // TODO(mindyp): add default fg text color and text color from preference.
-            final boolean showTextColor = !TextUtils.isEmpty(fgColor);
-            if (showTextColor) {
-                textColor = Integer.parseInt(fgColor);
-            } else {
-                textColor = Utils.getDefaultFolderTextColor(context);
-            }
-        }
-
-        @Override
-        public int compareTo(FolderValues another) {
-            return name.compareToIgnoreCase(another.name);
-        }
-    }
-
-    /**
-     * Initialize the FolderDisplayer for the specified account.
-     *
-     * @param context Context to use for loading string resources
-     * @param account
-     */
-    public void initialize(Context context, String account) {
+    public FolderDisplayer(Context context) {
         mContext = context;
-        mAccount = account;
+
+        mDefaultFgColor = context.getResources().getColor(R.color.default_folder_foreground_color);
+        mDefaultBgColor = context.getResources().getColor(R.color.default_folder_background_color);
     }
 
     /**
      * Configure the FolderDisplayer object by parsing the rawFolders string.
      *
-     * @param folder string containing serialized folders to display.
+     * @param foldersString string containing serialized folders to display.
+     * @param ignoreFolder (optional) folder to omit from the displayed set
      */
-    public void loadConversationFolders(Folder ignoreFolder, String folderString) {
-        SortedSet<FolderValues> folderValuesSet = Sets.newTreeSet();
-        ArrayList<Folder> folders = new ArrayList<Folder>();
-        if (!TextUtils.isEmpty(folderString)) {
-            ArrayList<String> folderArray = new ArrayList<String>(Arrays.asList(TextUtils.split(
-                folderString, Folder.FOLDER_SEPARATOR_PATTERN)));
-            Folder f;
-            for (String folder : folderArray) {
-                f = new Folder(folder);
-                if (ignoreFolder == null || !ignoreFolder.uri.equals(f.uri)) {
-                    folders.add(f);
-                }
+    public void loadConversationFolders(String foldersString, Folder ignoreFolder) {
+        mFoldersSortedSet.clear();
+
+        for (Folder f : Folder.forFoldersString(foldersString)) {
+            // We will sometimes see folders that do not have names yet.
+            if (TextUtils.isEmpty(f.name) || (ignoreFolder != null && ignoreFolder.equals(f))) {
+                continue;
             }
-        } else if (ignoreFolder != null) {
-            folders.add(ignoreFolder);
+
+            // TODO: maybe do additional processing for system folder names here
+
+            mFoldersSortedSet.add(f);
         }
-        for (Folder folder : folders) {
-            int folderId = folder.id;
-            Uri uri = folder.uri;
-            String canonicalName = folder.name;
-            String colorId = folder.bgColor;
-
-            // We will sometimes see folders that the folder map does not yet know about or that
-            // do not have names yet.
-            if (TextUtils.isEmpty(canonicalName)) continue;
-            String stringToDisplay = null;
-
-            if (!Folder.isProviderFolder(folder)) {
-                stringToDisplay = folder.name;
-            }
-            stringToDisplay = folder.name;
-
-            if (stringToDisplay != null) {
-                folderValuesSet.add(
-                        new FolderValues(folderId, uri, colorId, stringToDisplay,
-                                folder.bgColor, folder.fgColor, mContext));
-            }
-        }
-
-        mFolderValuesSortedSet = folderValuesSet;
     }
+
 }
