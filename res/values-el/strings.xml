@@ -110,7 +110,7 @@
     <string name="attachment_type_blocked" msgid="2574422813386113664">"Δεν είναι δυνατή η αποθήκευση ή το άνοιγμα συνημμένων αυτού του τύπου επειδή ενδέχεται να περιέχουν κακόβουλο λογισμικό."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Δεν υπάρχει εφαρμογή για το άνοιγμα αυτού του συνημμένου για προβολή."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Ανάκτηση συνημμένου"</string>
-    <string name="please_wait" msgid="8797634225088247121">"Παρακαλώ περιμένετε..."</string>
+    <string name="please_wait" msgid="8797634225088247121">"Παρακαλώ περιμένετε…"</string>
     <string name="saved" msgid="6977782468220926548">"Αποθηκευμένα,"</string>
     <string name="download_failed" msgid="7860650496473302012">"Δεν έγινε λήψη."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Κοινή χρήση μέσω"</string>
@@ -280,7 +280,7 @@
     <skip />
     <string name="labels" msgid="1519770547536283663">"Ετικέτες"</string>
     <string name="network_error" msgid="2125579009654728299">"Δεν υπάρχει σύνδεση"</string>
-    <string name="loading" msgid="2600808404156989255">"Φόρτ. συνομιλιών..."</string>
+    <string name="loading" msgid="2600808404156989255">"Φόρτ. συνομιλιών…"</string>
     <string name="retry" msgid="4515885444824418022">"Επανάληψη"</string>
     <string name="load_more" msgid="420892447103014683">"Φόρτωση περισσότερων"</string>
     <string name="default_folder_background_color" msgid="5450317987868030816">"#f1f5ec"</string>

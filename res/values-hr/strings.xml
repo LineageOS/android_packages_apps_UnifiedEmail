@@ -103,11 +103,11 @@
     <string name="view_attachment" msgid="8744325060392671944">"Prikaz"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Spremi"</string>
     <string name="info_attachment" msgid="607849900865956536">"Info"</string>
-    <string name="play_attachment" msgid="41143041901432280">"Reproduk"</string>
+    <string name="play_attachment" msgid="41143041901432280">"Reproduk."</string>
     <string name="install_attachment" msgid="2803531650273683382">"Instaliraj"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Odustani"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informacije"</string>
-    <string name="attachment_type_blocked" msgid="2574422813386113664">"Ovaj se privitak ne može spremiti niti otvoriti jer može sadržavati zlonamjerni softver."</string>
+    <string name="attachment_type_blocked" msgid="2574422813386113664">"Ovaj se privitak ne može spremiti ni otvoriti jer može sadržavati zlonamjerni softver."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Nijedna aplikacija ne može otvoriti i prikazati ovaj privitak."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Dohvaćanje privitka"</string>
     <string name="please_wait" msgid="8797634225088247121">"Pričekajte…"</string>

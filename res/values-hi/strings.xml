@@ -108,7 +108,7 @@
     <string name="cancel_attachment" msgid="4651201258272223650">"रद्द करें"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"जानकारी"</string>
     <string name="attachment_type_blocked" msgid="2574422813386113664">"इस प्रकार का अनुलग्‍नक सहेजा या खोला नहीं जा सकता क्योंकि इसमें दुर्भावनापूर्ण सॉफ़्टवेयर हो सकता है."</string>
-    <string name="no_application_found" msgid="1945184804521392093">"कोई एप्लिकेशन इस अनुलग्नक को देखने के लिए नहीं खोल सकता."</string>
+    <string name="no_application_found" msgid="1945184804521392093">"कोई भी एप्लिकेशन इस अनुलग्नक को देखने के लिए नहीं खोल सकता."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"अनुलग्‍नक फ़ेच कर रहा है"</string>
     <string name="please_wait" msgid="8797634225088247121">"कृपया प्रतीक्षा करें…"</string>
     <string name="saved" msgid="6977782468220926548">"सहेजा गया,"</string>
@@ -280,7 +280,7 @@
     <skip />
     <string name="labels" msgid="1519770547536283663">"लेबल"</string>
     <string name="network_error" msgid="2125579009654728299">"कोई कनेक्शन नहीं"</string>
-    <string name="loading" msgid="2600808404156989255">"बातचीत लोड हो रही है…"</string>
+    <string name="loading" msgid="2600808404156989255">"बातचीत लोड हो रही हैं…"</string>
     <string name="retry" msgid="4515885444824418022">"पुन: प्रयास करें"</string>
     <string name="load_more" msgid="420892447103014683">"अधिक लोड करें"</string>
     <string name="default_folder_background_color" msgid="5450317987868030816">"#f1f5ec"</string>
