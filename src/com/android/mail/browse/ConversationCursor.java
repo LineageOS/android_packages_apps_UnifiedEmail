@@ -143,6 +143,15 @@ public final class ConversationCursor implements Cursor {
     }
 
     /**
+     * Method to initiaze the ConversationCursor state before an instance is created
+     * This is needed to workaround the crash reported in bug 6185304
+     */
+    public static void initialize(Activity activity) {
+        sActivity = activity;
+        mResolver = activity.getContentResolver();
+    }
+
+    /**
      * Create a ConversationCursor; this should be called by the ListActivity using that cursor
      * @param activity the activity creating the cursor
      * @param messageListColumn the column used for individual cursor items

@@ -34,6 +34,9 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
         mProjection = projection;
         mUri = uri;
         mActivity = activity;
+
+        // Initialize the state of the conversation cursor
+        ConversationCursor.initialize(mActivity);
     }
 
     @Override

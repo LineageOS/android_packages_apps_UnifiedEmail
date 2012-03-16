@@ -164,6 +164,37 @@ public class Conversation implements Parcelable {
         }
     }
 
+    private Conversation() {
+    }
+
+    public static Conversation create(long id, Uri uri, String subject, long dateMs, String snippet,
+            boolean hasAttachment, Uri messageListUri, String senders, int numMessages,
+            int numDrafts, int sendingState, int priority, boolean read, boolean starred,
+            String folderList, String rawFolders, int convFlags, int personalLevel) {
+
+        final Conversation conversation = new Conversation();
+
+        conversation.id = id;
+        conversation.uri = uri;
+        conversation.subject = subject;
+        conversation.dateMs = dateMs;
+        conversation.snippet = snippet;
+        conversation.hasAttachments = hasAttachment;
+        conversation.messageListUri = messageListUri;
+        conversation.senders = senders;
+        conversation.numMessages = numMessages;
+        conversation.numDrafts = numDrafts;
+        conversation.sendingState = sendingState;
+        conversation.priority = priority;
+        conversation.read = read;
+        conversation.starred = starred;
+        conversation.folderList = folderList;
+        conversation.rawFolders = rawFolders;
+        conversation.convFlags = convFlags;
+        conversation.personalLevel = personalLevel;
+        return conversation;
+    }
+
     /**
      * Get if this conversation is marked as high priority.
      */
