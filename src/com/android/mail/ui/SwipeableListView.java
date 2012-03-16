@@ -35,7 +35,6 @@ import java.util.Collection;
 public class SwipeableListView extends ListView implements Callback {
     private SwipeHelper mSwipeHelper;
     private SwipeCompleteListener mSwipeCompleteListener;
-    private int mAction;
 
     public SwipeableListView(Context context) {
         this(context, null);
@@ -53,10 +52,6 @@ public class SwipeableListView extends ListView implements Callback {
 
     public void setSwipeCompleteListener(SwipeCompleteListener listener) {
         mSwipeCompleteListener = listener;
-    }
-
-    public void setAction(int action) {
-        mAction = action;
     }
 
     @Override
@@ -97,7 +92,7 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public boolean canChildBeDismissed(View v) {
-        return true;
+        return v instanceof ConversationItemView;
     }
 
     @Override

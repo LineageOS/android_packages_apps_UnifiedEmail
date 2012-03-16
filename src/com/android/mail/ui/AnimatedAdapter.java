@@ -168,9 +168,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             return mFooter;
         }
         if (isPositionAnimating(position)) {
-            return getAnimatingView(position, convertView, parent);
+            return getAnimatingView(position, null, parent);
         }
-        return super.getView(position, convertView, parent);
+        return super.getView(position, null, parent);
     }
 
     /**
