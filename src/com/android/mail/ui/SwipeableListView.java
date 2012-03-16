@@ -110,7 +110,6 @@ public class SwipeableListView extends ListView implements Callback {
             adapter.delete(conversations, new ActionCompleteListener() {
                 @Override
                 public void onActionComplete() {
-                    ((AnimatedAdapter)getAdapter()).notifyDataSetChanged();
                     mSwipeCompleteListener.onSwipeComplete(conversations);
                 }
             });

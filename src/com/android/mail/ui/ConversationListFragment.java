@@ -594,6 +594,7 @@ public final class ConversationListFragment extends ListFragment implements
                 Conversation.delete(context, conversations);
                 break;
         }
+        mListAdapter.notifyDataSetChanged();
         onUndoAvailable(new UndoOperation(conversations.size(), mSwipeAction));
     }
 }
