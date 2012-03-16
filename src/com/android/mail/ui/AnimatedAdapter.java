@@ -168,9 +168,20 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             return mFooter;
         }
         if (isPositionAnimating(position)) {
-            return getAnimatingView(position, null, parent);
+            return getAnimatingView(position, convertView, parent);
         }
-        return super.getView(position, null, parent);
+        // TODO: do this in the swipe helper?
+        // If this view gets recycled, we need to reset things set by the
+        // animation.
+        if (convertView != null) {
+            if (convertView.getAlpha() < 1) {
+                convertView.setAlpha(1);
+            }
+            if (convertView.getTranslationX() != 0) {
+                convertView.setTranslationX(0);
+            }
+        }
+        return super.getView(position, convertView, parent);
     }
 
     /**
