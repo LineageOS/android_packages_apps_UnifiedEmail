@@ -99,18 +99,18 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"Hoja de cálculo"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"Archivo <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
-    <string name="preview_attachment" msgid="6934911143603455393">"Vista pre."</string>
+    <string name="preview_attachment" msgid="6934911143603455393">"Vista prev"</string>
     <string name="view_attachment" msgid="8744325060392671944">"Ver"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Guardar"</string>
-    <string name="info_attachment" msgid="607849900865956536">"Info."</string>
+    <string name="info_attachment" msgid="607849900865956536">"Info"</string>
     <string name="play_attachment" msgid="41143041901432280">"Reproducir"</string>
     <string name="install_attachment" msgid="2803531650273683382">"Instalar"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Cancelar"</string>
-    <string name="more_info_attachment" msgid="717244337981816703">"Info."</string>
+    <string name="more_info_attachment" msgid="717244337981816703">"Info"</string>
     <string name="attachment_type_blocked" msgid="2574422813386113664">"No se puede guardar o abrir este tipo de archivo adjunto porque puede contener software malicioso."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Ninguna aplicación puede abrir este archivo adjunto para su visualización."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Obteniendo el archivo adjunto"</string>
-    <string name="please_wait" msgid="8797634225088247121">"Aguarda..."</string>
+    <string name="please_wait" msgid="8797634225088247121">"Aguarda…"</string>
     <string name="saved" msgid="6977782468220926548">"Guardado"</string>
     <string name="download_failed" msgid="7860650496473302012">"Error al descargar"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Compartir mediante"</string>
@@ -280,11 +280,9 @@
     <skip />
     <string name="labels" msgid="1519770547536283663">"Etiquetas"</string>
     <string name="network_error" msgid="2125579009654728299">"Sin conexión"</string>
-    <string name="loading" msgid="2600808404156989255">"Cargando convs..."</string>
-    <string name="retry" msgid="4515885444824418022">"Volver a intentarlo"</string>
+    <string name="loading" msgid="2600808404156989255">"Cargando…"</string>
+    <string name="retry" msgid="4515885444824418022">"Volver a intentar"</string>
     <string name="load_more" msgid="420892447103014683">"Realizar más cargas"</string>
-    <!-- no translation found for default_folder_background_color (5450317987868030816) -->
-    <skip />
-    <!-- no translation found for default_folder_text_color (7373400676322746622) -->
-    <skip />
+    <string name="default_folder_background_color" msgid="5450317987868030816">"#f1f5ec"</string>
+    <string name="default_folder_text_color" msgid="7373400676322746622">"#888888"</string>
 </resources>
