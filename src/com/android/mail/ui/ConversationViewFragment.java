@@ -52,6 +52,7 @@ import com.android.mail.providers.ListParams;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 import java.util.Map;
 
@@ -252,8 +253,12 @@ public final class ConversationViewFragment extends Fragment implements
     private String renderMessageBodies(MessageCursor messageCursor) {
         int pos = -1;
         mTemplates.startConversation(0);
+        // FIXME: measure the header (and the attachments) and insert spacers of appropriate size
+        // N.B. the units of this height are actually dp and not px because WebView assumes
+        // a pixel is an mdpi pixel, unless you set device-dpi.
+        final int spacerH = (Utils.useTabletUI(mContext)) ? 112 : 96;
         while (messageCursor.moveToPosition(++pos)) {
-            mTemplates.appendMessageHtml(messageCursor.get(), true, false, 1.0f, 96);
+            mTemplates.appendMessageHtml(messageCursor.get(), true, false, 1.0f, spacerH);
         }
         return mTemplates.endConversation(mBaseUri, 320);
     }
