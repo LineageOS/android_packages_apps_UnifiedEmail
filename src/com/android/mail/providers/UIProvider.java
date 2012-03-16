@@ -582,6 +582,9 @@ public class UIProvider {
         /**
          * This string column contains the content provider uri to return the
          * list of messages for this conversation.
+         * The cursor returned by this query can return a {@link android.os.Bundle}
+         * from a call to {@link android.database.Cursor#getExtras()}.  This Bundle may have
+         * values with keys listed in {@link CursorExtraKeys}
          */
         public static final String MESSAGE_LIST_URI = "messageListUri";
         /**
@@ -770,6 +773,38 @@ public class UIProvider {
     public static final int MESSAGE_SAVE_URI_COLUMN = 22;
     public static final int MESSAGE_SEND_URI_COLUMN = 23;
     public static final int ALWAYS_SHOW_IMAGES_COLUMN = 24;
+
+
+    public static final class CursorStatus {
+        // The cursor is actively loading more data
+        public static final int LOADING =      1 << 0;
+
+        // The cursor is currently not loading more data, but more data may be available
+        public static final int LOADED =       1 << 1;
+
+        // An error occured while loading data
+        public static final int ERROR =        1 << 2;
+
+        // The cursor is loaded, and there will be no more data
+        public static final int COMPLETE =     1 << 3;
+    }
+
+
+    public static final class CursorExtraKeys {
+        /**
+         * This integer column contains the staus of the message cursor.  The value will be
+         * one defined in {@link CursorStatus}.
+         */
+        public static final String EXTRA_STATUS = "status";
+
+        /**
+         * Used for finding the cause of an error.
+         * TODO: define these values
+         */
+        public static final String EXTRA_ERROR = "error";
+
+    }
+
 
     public static final class MessageFlags {
         public static final int STARRED =       1 << 0;
