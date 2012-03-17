@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.mail.ui;
+package com.android.mail.browse;
 
 import android.content.Context;
 import android.util.AttributeSet;

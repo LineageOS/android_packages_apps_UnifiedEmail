@@ -15,24 +15,55 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout
+<com.android.mail.browse.ConversationContainer
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/conversation_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <TextView android:id="@+id/subject"
+    android:layout_height="match_parent">
+
+    <com.android.mail.browse.ConversationWebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.android.mail.browse.ConversationViewHeader
+        android:id="@+id/conversation_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"/>
-    <com.android.mail.ui.ConversationContainer
-        android:id="@+id/conversation_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:paddingTop="@dimen/conversation_header_vertical_padding"
+        android:paddingBottom="@dimen/conversation_header_vertical_padding">
 
-        <com.android.mail.ui.ConversationWebView
-            android:id="@+id/webview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingTop="@dimen/conversation_header_vertical_item_padding"
+            android:paddingBottom="@dimen/conversation_header_vertical_item_padding"
+            android:paddingLeft="@dimen/conversation_header_side_padding"
+            android:paddingRight="10dp"
+            android:includeFontPadding="false"
+            style="@style/ConversationSubjectStyle" />
 
-    </com.android.mail.ui.ConversationContainer>
-</LinearLayout>
+        <com.android.mail.browse.FolderSpanTextView
+            android:id="@+id/folders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@id/subject"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingTop="@dimen/conversation_header_vertical_item_padding"
+            android:paddingBottom="@dimen/conversation_header_vertical_item_padding"
+            android:paddingLeft="@dimen/conversation_header_side_padding"
+            android:paddingRight="@dimen/conversation_header_side_padding"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/conversation_folder_font_size"
+            android:gravity="right" />
+
+    </com.android.mail.browse.ConversationViewHeader>
+
+    <!-- message overlays go here -->
+
+    <!-- TODO: scroll indicators view goes on top of all other layers (or the parent draws it) -->
+
+</com.android.mail.browse.ConversationContainer>

@@ -56,7 +56,6 @@ import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.ConversationContainer;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 

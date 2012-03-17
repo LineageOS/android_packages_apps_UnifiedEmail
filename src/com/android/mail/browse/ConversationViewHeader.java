@@ -105,10 +105,10 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         // reposition the folders if they don't fit horizontally next to the
         // subject
         // (taking into account child margins and parent padding)
-        int totalWidth = getTotalMeasuredChildWidth(mSubjectView)
+        final int childWidthSum = getTotalMeasuredChildWidth(mSubjectView)
                 + getTotalMeasuredChildWidth(mFoldersView) + getPaddingLeft() + getPaddingRight();
 
-        if (totalWidth > getMeasuredWidth()) {
+        if (childWidthSum > getMeasuredWidth()) {
             LayoutParams params = (LayoutParams) mFoldersView.getLayoutParams();
             params.addRule(RelativeLayout.BELOW, R.id.subject);
             params.addRule(RelativeLayout.ALIGN_BASELINE, 0);

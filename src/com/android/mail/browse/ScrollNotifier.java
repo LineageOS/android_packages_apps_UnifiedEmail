@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.mail.ui;
+package com.android.mail.browse;
 
 public interface ScrollNotifier {
     public interface ScrollListener {

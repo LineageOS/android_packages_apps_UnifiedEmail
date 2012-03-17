@@ -286,6 +286,9 @@ public class Folder implements Parcelable, Comparable<Folder> {
 
     public static List<Folder> forFoldersString(String foldersString) {
         final List<Folder> folders = Lists.newArrayList();
+        if (foldersString == null) {
+            return folders;
+        }
         for (String folderStr : TextUtils.split(foldersString, FOLDER_SEPARATOR_PATTERN)) {
             folders.add(new Folder(folderStr));
         }

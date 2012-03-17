@@ -31,6 +31,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,12 +42,13 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Adapter;
 import android.widget.ResourceCursorAdapter;
-import android.widget.TextView;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
+import com.android.mail.browse.ConversationContainer;
+import com.android.mail.browse.ConversationViewHeader;
+import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
@@ -60,7 +64,8 @@ import java.util.Map;
  * The conversation view UI component.
  */
 public final class ConversationViewFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>,
+        ConversationViewHeader.ConversationViewHeaderCallbacks {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -72,7 +77,7 @@ public final class ConversationViewFragment extends Fragment implements
 
     private Conversation mConversation;
 
-    private TextView mSubject;
+    private ConversationViewHeader mConversationHeader;
 
     private ConversationContainer mConversationContainer;
 
@@ -93,6 +98,10 @@ public final class ConversationViewFragment extends Fragment implements
     private MessageListAdapter mAdapter;
 
     private boolean mViewsCreated;
+
+    private MenuItem mChangeFoldersMenuItem;
+
+    private float mDensity;
 
     private static final String ARG_ACCOUNT = "account";
     private static final String ARG_CONVERSATION = "conversation";
@@ -127,7 +136,7 @@ public final class ConversationViewFragment extends Fragment implements
         // activity is creating ConversationListFragments. This activity must be of type
         // ControllableActivity.
         final Activity activity = getActivity();
-        if (! (activity instanceof ControllableActivity)){
+        if (! (activity instanceof ControllableActivity)) {
             LogUtils.wtf(LOG_TAG, "ConversationViewFragment expects only a ControllableActivity to"
                     + "create it. Cannot proceed.");
         }
@@ -144,6 +153,8 @@ public final class ConversationViewFragment extends Fragment implements
                 null /* cursor */, mAccount, getLoaderManager());
         mConversationContainer.setOverlayAdapter(mAdapter);
 
+        mDensity = getResources().getDisplayMetrics().density;
+
         // Show conversation and start loading messages.
         showConversation();
     }
@@ -157,16 +168,21 @@ public final class ConversationViewFragment extends Fragment implements
         mAccount = args.getParcelable(ARG_ACCOUNT);
         mConversation = args.getParcelable(ARG_CONVERSATION);
         mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
+
+        // not really, we just want to get a crack to store a reference to the change_folders item
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.conversation_view, null);
-        mSubject = (TextView) rootView.findViewById(R.id.subject);
         mConversationContainer = (ConversationContainer) rootView
                 .findViewById(R.id.conversation_container);
-        mWebView = (ConversationWebView) rootView.findViewById(R.id.webview);
+        mWebView = (ConversationWebView) mConversationContainer.findViewById(R.id.webview);
+        mConversationHeader = (ConversationViewHeader) mConversationContainer.findViewById(
+                R.id.conversation_header);
+        mConversationHeader.setCallbacks(this);
 
         mWebView.addJavascriptInterface(mJsBridge, "mail");
         mWebView.setWebViewClient(mWebViewClient);
@@ -204,12 +220,26 @@ public final class ConversationViewFragment extends Fragment implements
         mActivity.attachConversationView(null);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        mChangeFoldersMenuItem = menu.findItem(R.id.change_folders);
+    }
+
     /**
      * Handles a request to show a new conversation list, either from a search query or for viewing
      * a folder. This will initiate a data load, and hence must be called on the UI thread.
      */
     private void showConversation() {
-        mSubject.setText(mConversation.subject);
+        // initialize conversation header, measure its height manually, and inform template render
+        // TODO: inform template render of initial header height
+        mConversationHeader.setSubject(mConversation.subject, false /* notify */);
+        if (mAccount.supportsCapability(
+                UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
+            mConversationHeader.setFolders(mConversation, false /* notify */);
+        }
+
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, Bundle.EMPTY, this);
     }
 
@@ -252,10 +282,15 @@ public final class ConversationViewFragment extends Fragment implements
 
     private String renderMessageBodies(MessageCursor messageCursor) {
         int pos = -1;
-        mTemplates.startConversation(0);
-        // FIXME: measure the header (and the attachments) and insert spacers of appropriate size
-        // N.B. the units of this height are actually dp and not px because WebView assumes
+
+        // N.B. the units of height for spacers are actually dp and not px because WebView assumes
         // a pixel is an mdpi pixel, unless you set device-dpi.
+
+        final int headerHeightPx = Utils.measureViewHeight(mConversationHeader,
+                mConversationContainer);
+        mTemplates.startConversation((int) (headerHeightPx / mDensity));
+
+        // FIXME: measure the header (and the attachments) and insert spacers of appropriate size
         final int spacerH = (Utils.useTabletUI(mContext)) ? 112 : 96;
         while (messageCursor.moveToPosition(++pos)) {
             mTemplates.appendMessageHtml(messageCursor.get(), true, false, 1.0f, spacerH);
@@ -266,6 +301,27 @@ public final class ConversationViewFragment extends Fragment implements
     public void onTouchEvent(MotionEvent event) {
         // TODO: (mindyp) when there is an undo bar, check for event !in undo bar
         // if its not in undo bar, dismiss the undo bar.
+    }
+
+    @Override
+    public void onFoldersClicked() {
+        if (mChangeFoldersMenuItem == null) {
+            LogUtils.e(LOG_TAG, "unable to open 'change folders' dialog for a conversation");
+            return;
+        }
+        mActivity.onOptionsItemSelected(mChangeFoldersMenuItem);
+    }
+
+    @Override
+    public void onConversationViewHeaderHeightChange(int newHeight) {
+        // TODO: propagate the new height to the header's HTML spacer. This can happen when labels
+        // are added/removed
+    }
+
+    @Override
+    public String getSubjectRemainder(String subject) {
+        // TODO: hook this up to action bar
+        return subject;
     }
 
     private static class MessageLoader extends CursorLoader {

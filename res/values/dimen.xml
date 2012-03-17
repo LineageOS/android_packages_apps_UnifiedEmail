@@ -41,6 +41,10 @@
     <dimen name="standard_scaled_dimen">100sp</dimen>
     <dimen name="folder_cell_width">8dip</dimen>
     <dimen name="triangle_width">15dip</dimen>
+    <dimen name="conversation_header_vertical_item_padding">8dip</dimen>
+    <dimen name="conversation_header_vertical_padding">0dip</dimen>
+    <dimen name="conversation_header_side_padding">8dip</dimen>
+    <dimen name="conversation_folder_font_size">12sp</dimen>
     <dimen name="conversation_folder_padding">1dip</dimen>
     <dimen name="conversation_folder_padding_extra_width">3dip</dimen>
     <dimen name="conversation_folder_padding_before">1dip</dimen>

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.mail.ui;
+package com.android.mail.browse;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -32,7 +32,7 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 
 import com.android.mail.R;
-import com.android.mail.ui.ScrollNotifier.ScrollListener;
+import com.android.mail.browse.ScrollNotifier.ScrollListener;
 import com.android.mail.utils.LogUtils;
 
 import java.util.Deque;
@@ -121,6 +121,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private int mWidthMeasureSpec;
 
+    private View mHeaderView;
+
     private static final int VIEW_TAG_CONVERSATION_INDEX = R.id.view_tag_conversation_index;
 
     /**
@@ -161,8 +163,9 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mWebView = (ConversationWebView) getChildAt(0);
+        mWebView = (ConversationWebView) findViewById(R.id.webview);
         mWebView.addScrollListener(this);
+        mHeaderView = findViewById(R.id.conversation_header);
     }
 
     public void setOverlayAdapter(Adapter a) {
@@ -175,11 +178,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     private int getOverlayCount() {
-        return Math.max(0, getChildCount() - 1);
+        return Math.max(0, getChildCount() - 2);
     }
 
     private View getOverlayAt(int i) {
-        return getChildAt(i + 1);
+        return getChildAt(i + 2);
     }
 
     private void forwardFakeMotionEvent(MotionEvent original, int newAction) {
@@ -261,6 +264,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         if (mOverlayBottoms == null) {
             return;
         }
+
+        layoutConversationHeader();
 
         // recycle scrolled-off views and add newly visible views
         final int containerHeight = getHeight();
@@ -383,10 +388,23 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         LogUtils.d(TAG, "*** IN header container onLayout");
-        mWebView.layout(0, 0, mWebView.getMeasuredWidth(),
-                mWebView.getMeasuredHeight());
 
+        mWebView.layout(0, 0, mWebView.getMeasuredWidth(), mWebView.getMeasuredHeight());
+        layoutConversationHeader();
         layoutOverlays();
+    }
+
+    private void layoutConversationHeader() {
+        // layout conversation header just above the first message header, or at the very top
+        // TODO: treat this overlay+spacer like the rest
+        final int headerHeight = mHeaderView.getMeasuredHeight();
+        final int headerTop;
+        if (getOverlayCount() > 0) {
+            headerTop = getOverlayTop(0) - headerHeight - mOffsetY;
+        } else {
+            headerTop = -mOffsetY;
+        }
+        mHeaderView.layout(0, headerTop, mHeaderView.getMeasuredWidth(), headerTop + headerHeight);
     }
 
     private int getOverlayTop(int convIndex) {
@@ -430,7 +448,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     // TODO: support calling this method more than once per webpage instance (clear out existing
     // headers and re-create at current offset?)
     public void onGeometryChange(int[] headerBottoms, int[] headerHeights) {
-        LogUtils.d(TAG, "*** got message header bottoms:");
+        LogUtils.d(TAG, "*** got overlay spacer bottoms:");
         for (int offsetY : headerBottoms) {
             LogUtils.d(TAG, "%d", offsetY);
         }
@@ -441,7 +459,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         mOverlayHeights = headerHeights;
 
         if (mOverlayBottoms.length != mOverlayHeights.length) {
-            LogUtils.wtf(TAG, "message header count mismatch: # bottoms=%d, # heights=%d",
+            LogUtils.wtf(TAG, "overlay spacer count mismatch: # bottoms=%d, # heights=%d",
                     mOverlayBottoms.length, mOverlayHeights.length);
         }
 

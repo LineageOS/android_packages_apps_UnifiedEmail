@@ -221,7 +221,7 @@ public final class ConversationListFragment extends ListFragment implements
         // activity is creating ConversationListFragments. This activity must be of type
         // ControllableActivity.
         final Activity activity = getActivity();
-        if (! (activity instanceof ControllableActivity)){
+        if (! (activity instanceof ControllableActivity)) {
             LogUtils.e(LOG_TAG, "ConversationListFragment expects only a ControllableActivity to" +
                     "create it. Cannot proceed.");
         }

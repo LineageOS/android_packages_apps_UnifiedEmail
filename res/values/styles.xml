@@ -233,6 +233,11 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="ConversationSubjectStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!-- Conversation view message header styles -->
     <style name="MessageHeaderPresenceStyle">
         <item name="android:layout_width">wrap_content</item>
@@ -306,7 +311,7 @@
         <item name="android:src">@drawable/ic_menu_expander_maximized_holo_light</item>
         <item name="android:contentDescription">@string/collapse_recipient_details</item>
     </style>
-    <style name="message_attachment_button_base" parent="@android:style/Widget.Holo.Button.Borderless">
+    <style name="MessageAttachmentButtonBaseStyle" parent="@android:style/Widget.Holo.Button.Borderless">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:minHeight">0dip</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
@@ -315,7 +320,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:textAllCaps">true</item>
     </style>
-    <style name="message_attachment_button" parent="message_attachment_button_base">
+    <style name="MessageAttachmentButtonStyle" parent="MessageAttachmentButtonBaseStyle">
         <item name="android:padding">8dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
