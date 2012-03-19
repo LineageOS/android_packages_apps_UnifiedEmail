@@ -332,7 +332,10 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setAdapter(null);
 
         mActivity.unsetViewModeListener(this);
-        mActivity.attachConversationList(null);
+
+        // Since we want to keep the conversation list around to request deletes on later,
+        // don't null out the conversation list fragment.
+        // mActivity.attachConversationList(null);
 
         if (!mActivity.isChangingConfigurations()) {
             mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
