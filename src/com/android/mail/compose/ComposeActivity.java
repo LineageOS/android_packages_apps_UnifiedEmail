@@ -755,11 +755,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 if (sendOrSaveMessage.mSave && messageUri != null) {
                     Cursor messageCursor = resolver.query(messageUri,
                             UIProvider.MESSAGE_PROJECTION, null, null, null);
-                    if (messageCursor != null && messageCursor.moveToFirst()) {
-                        // Broadcast notification that a new message has
-                        // been allocated
-                        mSendOrSaveCallback.notifyMessageIdAllocated(sendOrSaveMessage,
-                                new Message(messageCursor));
+                    if (messageCursor != null) {
+                        try {
+                            if (messageCursor.moveToFirst()) {
+                                // Broadcast notification that a new message has
+                                // been allocated
+                                mSendOrSaveCallback.notifyMessageIdAllocated(sendOrSaveMessage,
+                                        new Message(messageCursor));
+                            }
+                        } finally {
+                            messageCursor.close();
+                        }
                     }
                 }
             }
