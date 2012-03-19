@@ -117,8 +117,6 @@ public abstract class AbstractActivityController implements ActivityController {
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected Settings mCachedSettings;
     private FetchSearchFolderTask mFetchSearchFolderTask;
-    /** Whether we have recorded this folder as a recent folder yet? */
-    private boolean mFolderTouched = false;
     private FetchInboxTask mFetchInboxTask;
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
@@ -288,6 +286,12 @@ public abstract class AbstractActivityController implements ActivityController {
             setFolder(folder);
             mConvListContext = ConversationListContext.forFolder(mContext, mAccount, mFolder);
             showConversationList(mConvListContext);
+
+            // Add the folder that we were viewing to the recent folders list.
+            // TODO: this may need to be fine tuned.  If this is the signal that is indicating that
+            // the list is shown to the user, this could fire in one pane if the user goes directly
+            // to a conversation
+            mRecentFolderList.touchFolder(mFolder);
         }
     }
 
@@ -307,7 +311,6 @@ public abstract class AbstractActivityController implements ActivityController {
         if (folder != null && !folder.equals(mFolder)) {
             mActionBarView.setRefreshInProgress(false);
             mFolder = folder;
-            mFolderTouched = false;
             mActionBarView.setFolder(mFolder);
             mActivity.getLoaderManager().restartLoader(LOADER_FOLDER_CURSOR, null, this);
         } else if (folder == null) {
@@ -762,12 +765,6 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void showConversation(Conversation conversation) {
-        // Add the folder that we were viewing to the recent folders list.
-        // We don't want to do this on every conversation access, the first is enough.
-        if (!mFolderTouched) {
-            mRecentFolderList.touchFolder(mFolder);
-            mFolderTouched = true;
-        }
     }
 
     @Override
