@@ -521,6 +521,7 @@ public abstract class AbstractActivityController implements ActivityController {
                     break;
             }
             mConversationListFragment.requestListRefresh();
+            onBackPressed();
         }
     }
 

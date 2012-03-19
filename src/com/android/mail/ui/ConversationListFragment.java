@@ -510,7 +510,12 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     public void requestDelete(final ActionCompleteListener listener) {
-        mListAdapter.delete(new ArrayList<Integer>(ImmutableList.of(mCurrentPosition)), listener);
+        if (isVisible()) {
+            mListAdapter.delete(new ArrayList<Integer>(ImmutableList.of(mCurrentPosition)),
+                    listener);
+        } else {
+            listener.onActionComplete();
+        }
     }
 
     /**

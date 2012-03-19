@@ -157,7 +157,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mLastDeletingItems.addAll(deletedRows);
         mDeletingItems.addAll(deletedRows);
         mActionCompleteListener = listener;
-        // TODO(viki): Rather than notifying for a full data set change, perhaps we can mark
+        // TODO(viki): Rather than notifying for a full data set change,
+        // perhaps we can mark
         // only the affected conversations?
         notifyDataSetChanged();
     }
