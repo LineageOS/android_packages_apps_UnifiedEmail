@@ -1037,11 +1037,22 @@ public class ConversationItemView extends View {
                     if (touchCheckmark(x, y)) {
                         // Touch on the check mark
                         toggleCheckMark();
+                        handled = true;
                     } else if (touchStar(x, y)) {
                         // Touch on the star
                         toggleStar();
+                        handled = true;
+                    } else {
+                        // Must return true from this functon whenever an item
+                        // is touched so that we properly handle swipe.
+                        // Handle tap ourselves.
+                        setSelected(true);
+                        ListView listView = (ListView)getParent();
+                        int pos = listView.getPositionForView(this);
+                        mHeader.conversation.position = pos;
+                        listView.performItemClick(this, pos, mHeader.conversation.id);
+                        handled = true;
                     }
-                    handled = true;
                 }
                 break;
         }
@@ -1050,6 +1061,6 @@ public class ConversationItemView extends View {
             handled = super.onTouchEvent(event);
         }
 
-        return handled;
+        return true;
     }
 }
