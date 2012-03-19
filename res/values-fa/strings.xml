@@ -223,6 +223,8 @@
     <string name="folderMode" msgid="553052020619895714">"تنظیم حالت پوشه"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"درحال جستجو..."</string>
     <string name="recent_folders" msgid="8240081561436891330">"اخیر"</string>
+    <!-- no translation found for add_label (1638508840481944248) -->
+    <skip />
     <string name="expand_recipient_details" msgid="2266544827446346880">"گسترش جزئیات گیرنده"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"کوچک کردن جزئیات گیرنده"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"نمایش اطلاعات تماس برای <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -283,6 +285,4 @@
     <string name="loading" msgid="2600808404156989255">"در حال بارگیری مکالمات…"</string>
     <string name="retry" msgid="4515885444824418022">"سعی مجدد"</string>
     <string name="load_more" msgid="420892447103014683">"بارگیری بیشتر"</string>
-    <string name="default_folder_background_color" msgid="5450317987868030816">"#f1f5ec"</string>
-    <string name="default_folder_text_color" msgid="7373400676322746622">"#888888"</string>
 </resources>
