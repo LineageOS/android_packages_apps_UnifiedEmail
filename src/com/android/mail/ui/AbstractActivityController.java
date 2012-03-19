@@ -101,6 +101,9 @@ public abstract class AbstractActivityController implements ActivityController {
     private FetchAccountFolderTask mFetchAccountFolderTask;
     protected Conversation mCurrentConversation;
 
+    /** A {@link android.content.BroadcastReceiver} that suppresses new e-mail notifications. */
+    private SuppressNotificationReceiver mNewEmailReceiver = null;
+
     protected ConversationListFragment mConversationListFragment;
     /**
      * The current mode of the application. All changes in mode are initiated by
@@ -247,6 +250,9 @@ public abstract class AbstractActivityController implements ActivityController {
             restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
             mActionBarView.setAccount(mAccount);
             mActivity.invalidateOptionsMenu();
+
+            disableNotificationsOnAccountChange(mAccount);
+
             // Account changed; existing folder is invalid.
             mFolder = null;
             fetchAccountFolderInfo();
@@ -345,6 +351,8 @@ public abstract class AbstractActivityController implements ActivityController {
         // Allow shortcut keys to function for the ActionBar and menus.
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
         mResolver = mActivity.getContentResolver();
+
+        mNewEmailReceiver = new SuppressNotificationReceiver();
 
         // All the individual UI components listen for ViewMode changes. This
         // simplifies the amount of logic in the AbstractActivityController, but increases the
@@ -621,13 +629,22 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onPause() {
         isLoaderInitialized = false;
+
+        enableNotifications();
     }
 
     @Override
     public void onResume() {
+        // Register the receiver that will prevent the status receiver from
+        // displaying its notification icon as long as we're running.
+        // The SupressNotificationReceiver will block the broadcast if we're looking at the folder
+        // that the notification was received for.
+        disableNotifications();
+
         if (mActionBarView != null) {
             mActionBarView.onResume();
         }
+
     }
 
     @Override
@@ -898,6 +915,25 @@ public abstract class AbstractActivityController implements ActivityController {
 
         mActionBarView.setAccounts(allAccounts);
         return (allAccounts.length > 0);
+    }
+
+    private void disableNotifications() {
+        mNewEmailReceiver.activate(mContext, this);
+    }
+
+    private void enableNotifications() {
+        mNewEmailReceiver.deactivate();
+    }
+
+    private void disableNotificationsOnAccountChange(Account account) {
+        // If the new mail suppression receiver is activated for a different account, we want to
+        // activate it for the new account.
+        if (mNewEmailReceiver.activated() &&
+                !mNewEmailReceiver.notificationsDisabledForAccount(account)) {
+            // Deactivate the current receiver, otherwise multiple receivers may be registered.
+            mNewEmailReceiver.deactivate();
+            mNewEmailReceiver.activate(mContext, this);
+        }
     }
 
     /**

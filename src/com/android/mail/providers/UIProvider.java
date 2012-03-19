@@ -1237,16 +1237,22 @@ public class UIProvider {
     public static final String ACTION_UPDATE_NOTIFICATION =
             "com.android.mail.action.update_notification";
 
-
     public static final class UpdateNotificationExtras {
         /**
-         * String extra containing a {@link Folder} Uri string
+         * Parcelable extra containing a {@link Uri} to a {@link Folder}
          */
         public static final String EXTRA_FOLDER = "notification_extra_folder";
 
         /**
-         * String extra containing a {@link Account} Uri string
+         * Parcelable extra containing a {@link Uri} to an {@link Account}
          */
         public static final String EXTRA_ACCOUNT = "notification_extra_account";
+
+        /**
+         * Integer extra containing the update unread count for the account/folder.
+         * If this value is 0, the UI will not block the intent to allow code to clear notifications
+         * to run.
+         */
+        public static final String EXTRA_UPDATED_UNREAD_COUNT = "notification_updated_unread_count";
     }
 }
