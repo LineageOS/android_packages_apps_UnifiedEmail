@@ -1227,4 +1227,24 @@ public class UIProvider {
          */
         public static final String DEFAULT_INBOX = "default_inbox";
     }
+
+    /**
+     * Action for an intent used to update/create new notifications.  The mimetype of this
+     * intent should be set to the mimeType of the account that is generating this notification.
+     * An intent of this action is required to have the following extras:
+     * {@link EXTRA_FOLDER} {@link EXTRA_ACCOUNT}
+     */
+    public static final String ACTION_UPDATE_NOTIFICATION =
+            "com.android.mail.action.update_notification";
+
+
+    /**
+     * String extra containing a serialized {@link Folder}
+     */
+    public static final String EXTRA_FOLDER = "notification_extra_folder";
+
+    /**
+     * String extra containing a serialized {@link Account}
+     */
+    public static final String EXTRA_ACCOUNT = "notification_extra_account";
 }
