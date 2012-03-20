@@ -32,7 +32,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
@@ -60,7 +59,7 @@ public final class ConversationCursor implements Cursor {
     @VisibleForTesting
     static Cursor sUnderlyingCursor;
     // The new cursor obtained via a requery
-    private static Cursor sRequeryCursor;
+    private static volatile Cursor sRequeryCursor;
     // A mapping from Uri to updated ContentValues
     private static HashMap<String, ContentValues> sCacheMap = new HashMap<String, ContentValues>();
     // Cache map lock (will be used only very briefly - few ms at most)
@@ -186,7 +185,9 @@ public final class ConversationCursor implements Cursor {
                         sConversationCursor.mPosition = -1;
                     }
                 } else {
-                    // Set qUri/qProjection these in case they changed
+                    // We need a new query here; cancel any existing one, ensuring that a sync
+                    // from another thread won't be stalled on the query
+                    cancelRefresh();
                     LogUtils.i(TAG, "Create: new query or refresh needed, query/sync");
                     sRequeryCursor = doQuery(uri, projection);
                     sRefreshReady = true;
@@ -434,17 +435,18 @@ public final class ConversationCursor implements Cursor {
     /**
      * Put the refreshed cursor in place (called by the UI)
      */
-    // NOTE: We don't like the name (it implies syncing with the server); suggestions gladly
-    // taken - reset? syncToUnderlying? completeRefresh? align?
     public void sync() {
-        synchronized (sCacheMapLock) {
+        if (sRequeryCursor == null) {
+            // This can happen during an animated deletion, if the UI isn't keeping track, or
+            // if a new query intervened (i.e. user changed folders)
             if (DEBUG) {
-                LogUtils.i(TAG, "[sync() called]");
+                LogUtils.i(TAG, "[sync() called; no requery cursor]");
             }
-            if (sRequeryCursor == null) {
-                // This can happen during an animated deletion, if the UI isn't keeping track
-                // If we have no new data, this is a noop
-                Log.w(TAG, "UI calling sync() out of sequence");
+            return;
+        }
+        synchronized(sCacheMapLock) {
+            if (DEBUG) {
+                LogUtils.i(TAG, "[sync()]");
             }
             resetCursor(sRequeryCursor);
             sRequeryCursor = null;
@@ -464,7 +466,7 @@ public final class ConversationCursor implements Cursor {
     /**
      * Cancel a refresh in progress
      */
-    public void cancelRefresh() {
+    public static void cancelRefresh() {
         if (DEBUG) {
             LogUtils.i(TAG, "[cancelRefresh() called]");
         }
@@ -473,7 +475,7 @@ public final class ConversationCursor implements Cursor {
             sRefreshInProgress = false;
             sRefreshReady = false;
             // If we have the cursor, close it; otherwise, it will get closed when the query
-            // finishes (it checks sRequeryInProgress)
+            // finishes (it checks sRefreshInProgress)
             if (sRequeryCursor != null) {
                 sRequeryCursor.close();
                 sRequeryCursor = null;
