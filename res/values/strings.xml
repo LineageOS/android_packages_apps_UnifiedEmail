@@ -198,7 +198,7 @@
     <string name="attachment_application_pdf">PDF</string>
     <!-- Attachment description for unknown files [CHAR LIMIT=30]-->
     <string name="attachment_unknown"><xliff:g id="attachmentExtension">%s</xliff:g> File</string>
-    <!-- Read email screen, button name. Preview an attachment by Gview. [CHAR LIMIT=10] -->
+    <!-- Read email screen, button name. Preview an attachment by Gview. [CHAR LIMIT=18] -->
     <string name="preview_attachment">Preview</string>
     <!-- Read email screen, button name. View an attachment by an application on device. [CHAR LIMIT=10] -->
     <string name="view_attachment">View</string>
@@ -206,9 +206,9 @@
     <string name="save_attachment">Save</string>
     <!-- Read email screen, button name. Open a dialog to explain that no application found to view the attachment. [CHAR LIMIT=10] -->
     <string name="info_attachment">Info</string>
-    <!-- Read email screen, button name. Play a video or audio attachment. [CHAR LIMIT=10] -->
+    <!-- Read email screen, button name. Play a video or audio attachment. [CHAR LIMIT=15] -->
     <string name="play_attachment">Play</string>
-    <!-- Read email screen, button name. Install an apk attachment. [CHAR LIMIT=10] -->
+    <!-- Read email screen, button name. Install an apk attachment. [CHAR LIMIT=12] -->
     <string name="install_attachment">Install</string>
     <!-- Read email screen, button name. Cancel a downloading attachment. [CHAR LIMIT=10] -->
     <string name="cancel_attachment">Cancel</string>
@@ -222,9 +222,9 @@
     <string name="fetching_attachment">Fetching attachment</string>
     <!-- Dialog box message. [CHAR LIMIT=80] -->
     <string name="please_wait">Please wait\u2026</string>
-    <!-- Displayed in the conversation view. Status of a saved attachment. [CHAR LIMIT=20]-->
+    <!-- Displayed in the conversation view, next to a file's size and type. Status of a saved attachment. [CHAR LIMIT=20]-->
     <string name="saved">Saved,&#160;</string>
-    <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=20]-->
+    <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=25]-->
     <string name="download_failed">Couldn\'t download.</string>
 
     <!-- Webview Context Menu Strings -->
@@ -567,7 +567,7 @@
 
     <!-- Shown in conversation list footer when application cannot make a connection [CHAR LIMIT=20]-->
     <string name="network_error">No connection</string>
-        <!-- Message at the bottom of the conversation list screen if all conversations haven't been loaded yet [CHAR LIMIT=20]-->
+        <!-- Message at the bottom of the conversation list screen if all conversations haven't been loaded yet [CHAR LIMIT=30]-->
     <string name="loading">Loading conversations\u2026</string>
     <!-- Button at bottom of conversation list screen if last attempt to load conversations failed [CHAR LIMIT=20]-->
     <string name="retry">Retry</string>
