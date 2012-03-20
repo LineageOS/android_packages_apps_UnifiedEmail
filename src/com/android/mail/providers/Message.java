@@ -16,6 +16,8 @@
 
 package com.android.mail.providers;
 
+import com.android.mail.utils.Utils;
+
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
@@ -51,6 +53,11 @@ public class Message implements Parcelable {
     public boolean alwaysShowImages;
     public boolean includeQuotedText;
     public int quotedTextOffset;
+
+    private String[] mToAddresses = null;
+    private String[] mCcAddresses = null;
+    private String[] mBccAddresses = null;
+    private String[] mReplyToAddresses = null;
 
     @Override
     public int describeContents() {
@@ -186,4 +193,31 @@ public class Message implements Parcelable {
         return (messageFlags & UIProvider.MessageFlags.STARRED) == UIProvider.MessageFlags.STARRED;
     }
 
+    public synchronized String[] getToAddresses() {
+        if (mToAddresses == null) {
+            mToAddresses = Utils.splitCommaSeparatedString(to);
+        }
+        return mToAddresses;
+    }
+
+    public synchronized String[] getCcAddresses() {
+        if (mCcAddresses == null) {
+            mCcAddresses = Utils.splitCommaSeparatedString(cc);
+        }
+        return mCcAddresses;
+    }
+
+    public synchronized String[] getBccAddresses() {
+        if (mBccAddresses == null) {
+            mBccAddresses = Utils.splitCommaSeparatedString(bcc);
+        }
+        return mBccAddresses;
+    }
+
+    public synchronized String[] getReplyToAddresses() {
+        if (mReplyToAddresses == null) {
+            mReplyToAddresses = Utils.splitCommaSeparatedString(replyTo);
+        }
+        return mReplyToAddresses;
+    }
 }

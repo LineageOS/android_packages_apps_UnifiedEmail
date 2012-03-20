@@ -363,10 +363,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             mTimestampShort = mDateBuilder.formatShortDate(mTimestampMs);
         }
 
-        mTo = Utils.splitCommaSeparatedString(mMessage.to);
-        mCc = Utils.splitCommaSeparatedString(mMessage.cc);
-        mBcc = getBccAddresses(mMessage);
-        mReplyTo = Utils.splitCommaSeparatedString(mMessage.replyTo);
+        mTo = mMessage.getToAddresses();
+        mCc = mMessage.getCcAddresses();
+        mBcc = mMessage.getBccAddresses();
+        mReplyTo = mMessage.getReplyToAddresses();
 
         if (mAttachmentsView != null) {
             mAttachmentsView.removeAllViews();
@@ -762,15 +762,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         builder.append(bcc, R.string.bcc_heading);
 
         return builder.build();
-    }
-
-    /**
-     * Get BCC addresses attached to a recipient ONLY if this is a msg the
-     * current user sent.
-     *
-     */
-    private static String[] getBccAddresses(Message m) {
-        return Utils.splitCommaSeparatedString(m.bcc);
     }
 
     @Override
