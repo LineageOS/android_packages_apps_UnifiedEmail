@@ -231,8 +231,8 @@ public class Attachment implements Parcelable {
     }
 
     public boolean canSave() {
-        return origin == SERVER_ATTACHMENT && state != AttachmentState.DOWNLOADING
-                && state != AttachmentState.SAVED;
+        return origin != LOCAL_FILE && state != AttachmentState.DOWNLOADING &&
+                !isSavedToExternal();
     }
 
     /**
