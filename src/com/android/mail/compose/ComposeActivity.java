@@ -72,6 +72,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.R;
+import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.android.ex.chips.RecipientEditTextView;
@@ -221,7 +222,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         setContentView(R.layout.compose);
         findViews();
         Intent intent = getIntent();
-        setAccount((Account)intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+
+        Account account = (Account)intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
+        if (account == null) {
+            final Account[] syncingAccounts = AccountUtils.getSyncingAccounts(this);
+            if (syncingAccounts.length > 0) {
+                account = syncingAccounts[0];
+            }
+        }
+
+        setAccount(account);
         if (mAccount == null) {
             return;
         }

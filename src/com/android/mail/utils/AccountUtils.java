@@ -24,6 +24,7 @@ import android.accounts.AccountManagerCallback;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,16 +67,12 @@ public class AccountUtils {
 
     /**
      * @param context
-     * @param callback
-     * @param type
-     * @param features
      * @return
      */
-    public static Account[] getSyncingAccounts(Context context,
-            AccountManagerCallback<Account[]> callback, String type, String[] features) {
-        ContentResolver resolver = context.getContentResolver();
+    public static Account[] getSyncingAccounts(Context context) {
+        final ContentResolver resolver = context.getContentResolver();
         Cursor accountsCursor = null;
-        ArrayList<Account> accounts = new ArrayList<Account>();
+        final List<Account> accounts = Lists.newArrayList();
         Account account;
         try {
             accountsCursor = resolver.query(AccountCacheProvider.getAccountsUri(),
@@ -83,6 +80,8 @@ public class AccountUtils {
             if (accountsCursor != null) {
                 while (accountsCursor.moveToNext()) {
                     account = new Account(accountsCursor);
+                    // TODO: this may need to look at the state of the account if the caller
+                    // is only interested in accounts that are syncing.
                     accounts.add(account);
                 }
             }
