@@ -188,7 +188,7 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="ConversationListFade" parent="@android:attr/listViewWhiteStyle">
+    <style name="ConversationListFade" parent="@android:style/Widget.Holo.Light.ListView">
         <item name="android:cacheColorHint">@android:color/transparent</item>
     </style>
 
@@ -382,7 +382,11 @@
         <item name="android:background">@null</item>
     </style>
 
+    <style name="ListViewWhiteCustom" parent="@android:style/Widget.Holo.Light.ListView">
+    </style>
+
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
+        <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
     </style>
 </resources>
