@@ -24,7 +24,6 @@ import java.util.Date;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -34,6 +33,10 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+
+import com.google.android.common.html.parser.HtmlDocument;
+import com.google.android.common.html.parser.HtmlParser;
+import com.google.android.common.html.parser.HtmlTreeBuilder;
 
 /*
  * View for displaying the quoted text in the compose screen for a reply
@@ -203,11 +206,12 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     private void respondInline() {
         // Copy the text in the quoted message to the body of the
         // message after stripping the html.
-        String quotedText = getQuotedText().toString();
-        String html = TextUtils.isEmpty(quotedText) ?
-                "" : Html.fromHtml(quotedText).toString();
+        HtmlParser parser = new HtmlParser();
+        HtmlDocument doc = parser.parse(getQuotedText().toString());
+        HtmlTreeBuilder builder = new HtmlTreeBuilder();
+        doc.accept(builder);
         if (mRespondInlineListener != null) {
-            mRespondInlineListener.onRespondInline("\n" + html);
+            mRespondInlineListener.onRespondInline("\n" + builder.getTree().getPlainText());
         }
         // Set quoted text to unchecked and not visible.
         updateCheckedState(false);
