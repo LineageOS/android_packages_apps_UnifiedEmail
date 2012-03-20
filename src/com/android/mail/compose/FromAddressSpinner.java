@@ -49,7 +49,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
     }
 
     public void asyncInitFromSpinner() {
-        Account[] result = AccountUtils.getSyncingAccounts(getContext(), null, null, null);
+        Account[] result = AccountUtils.getSyncingAccounts(getContext());
         mAccounts = AccountUtils
                 .mergeAccountLists(mAccounts, result, true /* prioritizeAccountList */);
         initFromSpinner();
