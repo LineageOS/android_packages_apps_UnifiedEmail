@@ -297,7 +297,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     void setAccount(Account account) {
-        mAccount = account;
+        assert(account != null);
+        if (!account.equals(mAccount)) {
+            mAccount = account;
+        }
         getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
     }
 
@@ -1752,7 +1755,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == ACCOUNT_SETTINGS_LOADER) {
-            if (mAccount.settingsQueryUri != null) {
+            if (mAccount != null && mAccount.settingsQueryUri != null) {
                 return new CursorLoader(this, mAccount.settingsQueryUri,
                         UIProvider.SETTINGS_PROJECTION, null, null, null);
             }
