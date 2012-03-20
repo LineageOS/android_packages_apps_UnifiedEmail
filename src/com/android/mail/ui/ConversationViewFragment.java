@@ -22,14 +22,17 @@ import com.google.common.collect.Maps;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Browser;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -424,6 +427,28 @@ public final class ConversationViewFragment extends Fragment implements
                 mConversation.markRead(mContext, true /* read */);
                 mConversation.read = true;
             }
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            boolean result = false;
+            final Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.putExtra(Browser.EXTRA_APPLICATION_ID, getActivity().getPackageName());
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
+            // FIXME: give provider a chance to customize url intents?
+            // Utils.addGoogleUriAccountIntentExtras(mContext, uri, mAccount, intent);
+
+            try {
+                mActivity.getActivityContext().startActivity(intent);
+                result = true;
+            } catch (ActivityNotFoundException ex) {
+                // If no application can handle the URL, assume that the
+                // caller can handle it.
+            }
+
+            return result;
         }
 
     }
