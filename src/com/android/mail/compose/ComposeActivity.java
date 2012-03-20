@@ -36,6 +36,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.text.Editable;
 import android.text.Html;
@@ -123,6 +124,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @see #onAppUpPressed
      */
     private static final String EXTRA_FROM_EMAIL_TASK = "fromemail";
+
+    static final String EXTRA_ATTACHMENTS = "attachments";
 
     //  If this is a reply/forward then this extra will hold the original message
     private static final String EXTRA_IN_REFERENCE_TO_MESSAGE = "in-reference-to-message";
@@ -243,6 +246,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mQuotedTextView.setVisibility(View.GONE);
         }
         initRecipients();
+        initAttachmentsFromIntent(intent);
         initActionBar(action);
         initFromSpinner();
         initChangeListeners();
@@ -397,6 +401,66 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void initAttachments(Message refMessage) {
         mAttachmentsView.addAttachments(mAccount, refMessage);
     }
+
+    private void initAttachmentsFromIntent(Intent intent) {
+        final Bundle extras = intent.getExtras();
+        final String action = intent.getAction();
+        if (!mAttachmentsChanged) {
+            long totalSize = 0;
+            if (extras.containsKey(EXTRA_ATTACHMENTS)) {
+                String[] uris = (String[]) extras.getSerializable(EXTRA_ATTACHMENTS);
+                for (String uriString : uris) {
+                    final Uri uri = Uri.parse(uriString);
+                    long size = 0;
+                    try {
+                        size =  mAttachmentsView.addAttachment(mAccount, uri, false /* doSave */,
+                                true /* local file */);
+                    } catch (AttachmentFailureException e) {
+                        // A toast has already been shown to the user,
+                        // just break out of the loop.
+                        LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                    }
+                    totalSize += size;
+                }
+            }
+            if (Intent.ACTION_SEND.equals(action) && extras.containsKey(Intent.EXTRA_STREAM)) {
+                final Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
+                long size = 0;
+                try {
+                    size =  mAttachmentsView.addAttachment(mAccount, uri, false /* doSave */,
+                            true /* local file */);
+                } catch (AttachmentFailureException e) {
+                    // A toast has already been shown to the user, so just
+                    // exit.
+                    LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                }
+                totalSize += size;
+            }
+
+            if (Intent.ACTION_SEND_MULTIPLE.equals(action)
+                    && extras.containsKey(Intent.EXTRA_STREAM)) {
+                ArrayList<Parcelable> uris = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
+                for (Parcelable uri : uris) {
+                    long size = 0;
+                    try {
+                        size = mAttachmentsView.addAttachment(mAccount, (Uri)uri,
+                                false /* doSave */, true /* local file */);
+                    } catch (AttachmentFailureException e) {
+                        // A toast has already been shown to the user,
+                        // just break out of the loop.
+                        LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                    }
+                    totalSize += size;
+                }
+            }
+
+            if (totalSize > 0) {
+                mAttachmentsChanged = true;
+                updateSaveUi();
+            }
+        }
+    }
+
 
     private void initBodyFromRefMessage(Message refMessage, int action) {
         if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
