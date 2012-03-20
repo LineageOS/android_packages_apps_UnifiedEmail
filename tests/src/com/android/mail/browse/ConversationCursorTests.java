@@ -136,8 +136,7 @@ public class ConversationCursorTests extends ProviderTestCase2<TestProvider> {
 
         // Now, get our CC
         ConversationCursor cc =
-                ConversationCursor.create(mActivity, URI_COLUMN,
-                        uri, CONVO_PROJECTION, null, null, null);
+                ConversationCursor.create(mActivity, URI_COLUMN, uri, CONVO_PROJECTION);
         ConversationProvider cp = ConversationCursor.sProvider;
         Cursor uc = ConversationCursor.sUnderlyingCursor;
         // First things first; cc & uc should both have 9 rows
