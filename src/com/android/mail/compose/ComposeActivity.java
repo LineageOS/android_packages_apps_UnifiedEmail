@@ -379,6 +379,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     break;
             }
         }
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME,
+                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setHomeButtonEnabled(true);
     }
 
     private void initFromRefMessage(int action, String recipientAddress) {
@@ -749,6 +752,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 break;
             case R.id.settings:
                 Utils.showSettings(this, mAccount);
+                break;
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.help_info_menu_item:
+                // TODO: enable context sensitive help
+                Utils.showHelp(this, mAccount.helpIntentUri, null);
+                break;
+            case R.id.feedback_menu_item:
+                Utils.sendFeedback(this, mAccount);
                 break;
             default:
                 handled = false;

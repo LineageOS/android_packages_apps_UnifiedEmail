@@ -686,6 +686,13 @@ public class Utils {
     }
 
     /**
+     * Show the feedback screen for the supplied account.
+     */
+    public static void sendFeedback(Context context, Account account) {
+        //TODO(mindyp): feedback is not implemented; this is a placeholder function.
+    }
+
+    /**
      * Retrieves the mailbox search query associated with an intent (or null if not available),
      * doing proper sanitizing (e.g. trims whitespace).
      */

@@ -18,16 +18,25 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AutoAdvance;
+import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.utils.LogUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -47,6 +56,16 @@ public final class OnePaneController extends AbstractActivityController {
     private Folder mInbox;
     /** Whether a conversation list for this account has ever been shown.*/
     private boolean mConversationListNeverShown = true;
+
+
+    private final ActionCompleteListener mDeleteListener = new OnePaneDestructiveActionListener(
+            R.id.delete);
+    private final ActionCompleteListener mArchiveListener = new OnePaneDestructiveActionListener(
+            R.id.archive);
+    private final ActionCompleteListener mMuteListener = new OnePaneDestructiveActionListener(
+            R.id.mute);
+    private final ActionCompleteListener mSpamListener = new OnePaneDestructiveActionListener(
+            R.id.report_spam);
 
     /**
      * @param activity
@@ -295,4 +314,109 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean shouldShowFirstConversation() {
         return false;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean handled = true;
+        final int id = item.getItemId();
+        switch (id) {
+            case R.id.y_button: {
+                final Settings settings = mActivity.getSettings();
+                final boolean showDialog = (settings != null && settings.confirmArchive);
+                confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
+                        mArchiveListener);
+                break;
+            }
+            case R.id.delete: {
+                final Settings settings = mActivity.getSettings();
+                final boolean showDialog = (settings != null && settings.confirmDelete);
+                confirmAndDelete(showDialog,
+                        R.plurals.confirm_delete_conversation, mDeleteListener);
+                break;
+            }
+            case R.id.change_folders:
+                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
+                        Collections.singletonList(mCurrentConversation)).show();
+                break;
+            case R.id.inside_conversation_unread:
+                updateCurrentConversation(ConversationColumns.READ, false);
+                break;
+            case R.id.mark_important:
+                updateCurrentConversation(ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.HIGH);
+                break;
+            case R.id.mark_not_important:
+                updateCurrentConversation(ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.LOW);
+                break;
+            case R.id.mute:
+                mConversationListFragment.requestDelete(mMuteListener);
+                break;
+            case R.id.report_spam:
+                mConversationListFragment.requestDelete(mSpamListener);
+                break;
+            default:
+                handled = false;
+                break;
+        }
+        return handled || super.onOptionsItemSelected(item);
+    }
+
+    private class OnePaneDestructiveActionListener extends DestructiveActionListener {
+        public OnePaneDestructiveActionListener(int action) {
+            super(action);
+        }
+
+        @Override
+        public void onActionComplete() {
+            Conversation next = null;
+            final ArrayList<Conversation> single = new ArrayList<Conversation>();
+            single.add(mCurrentConversation);
+            int mode = mViewMode.getMode();
+            if (mode == ViewMode.CONVERSATION) {
+                next = getNextConversation();
+            } else {
+                mConversationListFragment.onActionComplete();
+                mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
+            }
+            performConversationAction(single);
+            mConversationListFragment.requestListRefresh();
+            if (mode == ViewMode.CONVERSATION && next != null) {
+                showConversation(next);
+            } else {
+                onBackPressed();
+            }
+        }
+    }
+
+    protected void requestDelete(final ActionCompleteListener listener) {
+        int pref = getAutoAdvanceSetting(mActivity);
+        boolean canMove = false;
+        int position = mCurrentConversation.position;
+            switch (pref) {
+                case AutoAdvance.NEWER:
+                    canMove = position - 1 >= 0;
+                    break;
+                case AutoAdvance.OLDER:
+                    Cursor c = mConversationListFragment.getConversationListCursor();
+                    if (c != null) {
+                        canMove = position + 1 < c.getCount();
+                    }
+                    break;
+            }
+        if (pref == AutoAdvance.LIST || !canMove) {
+            onBackPressed();
+            mHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    mConversationListFragment.requestDelete(listener);
+                }
+
+            });
+        } else {
+            mConversationListFragment.requestDelete(listener);
+        }
+    }
+
 }

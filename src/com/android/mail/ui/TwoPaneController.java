@@ -22,12 +22,20 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AutoAdvance;
+import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.view.Window;
+import android.view.MenuItem;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -38,6 +46,14 @@ import android.view.Window;
 public final class TwoPaneController extends AbstractActivityController {
     private boolean mJumpToFirstConversation;
     private TwoPaneLayout mLayout;
+    private final ActionCompleteListener mDeleteListener = new TwoPaneDestructiveActionListener(
+            R.id.delete);
+    private final ActionCompleteListener mArchiveListener = new TwoPaneDestructiveActionListener(
+            R.id.archive);
+    private final ActionCompleteListener mMuteListener = new TwoPaneDestructiveActionListener(
+            R.id.mute);
+    private final ActionCompleteListener mSpamListener = new TwoPaneDestructiveActionListener(
+            R.id.report_spam);
 
     /**
      * @param activity
@@ -260,5 +276,113 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean shouldShowFirstConversation() {
         return mConvListContext != null && mConvListContext.isSearchResult();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean handled = true;
+        final int id = item.getItemId();
+        switch (id) {
+            case R.id.y_button: {
+                final Settings settings = mActivity.getSettings();
+                final boolean showDialog = (settings != null && settings.confirmArchive);
+                confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
+                        mArchiveListener);
+                break;
+            }
+            case R.id.delete: {
+                final Settings settings = mActivity.getSettings();
+                final boolean showDialog = (settings != null && settings.confirmDelete);
+                confirmAndDelete(showDialog, R.plurals.confirm_delete_conversation,
+                        mDeleteListener);
+                break;
+            }
+            case R.id.change_folders:
+                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
+                        Collections.singletonList(mCurrentConversation)).show();
+                break;
+            case R.id.inside_conversation_unread:
+                updateCurrentConversation(ConversationColumns.READ, false);
+                break;
+            case R.id.mark_important:
+                updateCurrentConversation(ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.HIGH);
+                break;
+            case R.id.mark_not_important:
+                updateCurrentConversation(ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.LOW);
+                break;
+            case R.id.mute:
+                mConversationListFragment.requestDelete(mMuteListener);
+                break;
+            case R.id.report_spam:
+                mConversationListFragment.requestDelete(mSpamListener);
+                break;
+            default:
+                handled = false;
+                break;
+        }
+        return handled || super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * An object that performs an action on the conversation database. This is an
+     * ActionCompleteListener since this is called <b>after</a> the conversation list has animated
+     * the conversation away. Once the animation is completed, the {@link #onActionComplete()}
+     * method is called which performs the correct data operation.
+     */
+    private class TwoPaneDestructiveActionListener extends DestructiveActionListener {
+        public TwoPaneDestructiveActionListener(int action) {
+            super(action);
+        }
+
+        @Override
+        public void onActionComplete() {
+            final ArrayList<Conversation> single = new ArrayList<Conversation>();
+            single.add(mCurrentConversation);
+            int next = -1;
+            int pref = getAutoAdvanceSetting(mActivity);
+            Cursor c = mConversationListFragment.getConversationListCursor();
+            int updatedPosition = -1;
+            int position = mCurrentConversation.position;
+            if (c != null) {
+                switch (pref) {
+                    case AutoAdvance.NEWER:
+                        if (position - 1 >= 0) {
+                            // This conversation was deleted, so to get to the previous
+                            // conversation, show what is now in its position - 1.
+                            next = position - 1;
+                            // The position is correct, since no items before this have
+                            // been deleted.
+                            updatedPosition = position - 1;
+                        }
+                        break;
+                    case AutoAdvance.OLDER:
+                        if (position + 1 < c.getCount()) {
+                            // This conversation was deleted, so to get to the next
+                            // conversation, show what is now in position + 1.
+                            next = position + 1;
+                            // Since this conversation was deleted, update the conversation
+                            // we are showing to have the position this conversation was in.
+                            updatedPosition = position;
+                        }
+                        break;
+                }
+            }
+            mConversationListFragment.onActionComplete();
+            mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
+            if (next != -1) {
+                mConversationListFragment.viewConversation(next);
+                mCurrentConversation.position = updatedPosition;
+            } else {
+                onBackPressed();
+            }
+            performConversationAction(single);
+            mConversationListFragment.requestListRefresh();
+        }
+    }
+
+    protected void requestDelete(final ActionCompleteListener listener) {
+        mConversationListFragment.requestDelete(listener);
     }
 }

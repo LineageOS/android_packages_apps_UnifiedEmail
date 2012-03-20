@@ -439,11 +439,12 @@ public final class ConversationListFragment extends ListFragment implements
      * View the message at the given position.
      * @param position
      */
-    private void viewConversation(int position) {
+    protected void viewConversation(int position) {
         mConversationListCursor.moveToPosition(position);
         Conversation conv = new Conversation(mConversationListCursor);
         conv.position = position;
         mCallbacks.onConversationSelected(conv);
+        getListView().setItemChecked(position, true);
     }
 
     @Override

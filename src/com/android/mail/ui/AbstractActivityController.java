@@ -62,6 +62,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -105,7 +106,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /** A {@link android.content.BroadcastReceiver} that suppresses new e-mail notifications. */
     private SuppressNotificationReceiver mNewEmailReceiver = null;
 
-    private Handler mHandler = new Handler();
+    protected Handler mHandler = new Handler();
     protected ConversationListFragment mConversationListFragment;
     /**
      * The current mode of the application. All changes in mode are initiated by
@@ -130,15 +131,6 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final int LOADER_ACCOUNT_SETTINGS = 1;
     private static final int LOADER_FOLDER_CURSOR = 2;
     private static final int LOADER_RECENT_FOLDERS = 3;
-
-    private final ActionCompleteListener mDeleteListener = new DestructiveActionListener(
-            R.id.delete);
-    private final ActionCompleteListener mArchiveListener = new DestructiveActionListener(
-            R.id.archive);
-    private final ActionCompleteListener mMuteListener = new DestructiveActionListener(
-            R.id.mute);
-    private final ActionCompleteListener mSpamListener = new DestructiveActionListener(
-            R.id.report_spam);
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -390,8 +382,6 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
-        LogUtils.d(LOG_TAG, "onOptionsItemSelected with id: " + id + ", And as hex " +
-                Integer.toHexString(id));
         boolean handled = true;
         switch (id) {
             case android.R.id.home:
@@ -413,111 +403,14 @@ public abstract class AbstractActivityController implements ActivityController {
                 // TODO: enable context sensitive help
                 Utils.showHelp(mActivity.getActivityContext(), mAccount.helpIntentUri, null);
                 break;
-            case R.id.y_button: {
-                final Settings settings = mActivity.getSettings();
-                final boolean showDialog = (settings != null && settings.confirmArchive);
-                final int autoAdvance = settings != null
-                    ? settings.autoAdvance : AutoAdvance.LIST;
-                confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
-                        mArchiveListener);
-                break;
-            }
-            case R.id.delete: {
-                final Settings settings = mActivity.getSettings();
-                final boolean showDialog = (settings != null && settings.confirmDelete);
-                confirmAndDelete(showDialog, R.plurals.confirm_delete_conversation,
-                    mDeleteListener);
-                break;
-            }
-            case R.id.change_folders:
-                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                        Collections.singletonList(mCurrentConversation)).show();
-                break;
-            case R.id.inside_conversation_unread:
-                updateCurrentConversation(ConversationColumns.READ, false);
-                break;
-            case R.id.mark_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.HIGH);
-                break;
-            case R.id.mark_not_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.LOW);
-                break;
-            case R.id.mute:
-                mConversationListFragment.requestDelete(mMuteListener);
-                break;
-            case R.id.report_spam:
-                mConversationListFragment.requestDelete(mSpamListener);
-                break;
             case R.id.feedback_menu_item:
+                Utils.sendFeedback(mActivity.getActivityContext(), mAccount);
+                break;
             default:
                 handled = false;
                 break;
         }
         return handled;
-    }
-
-    /**
-     * Confirm (based on user's settings) and delete a conversation from the conversation list and
-     * from the database.
-     * @param showDialog
-     * @param confirmResource
-     * @param listener
-     */
-    private void confirmAndDelete(boolean showDialog, int confirmResource,
-            final ActionCompleteListener listener) {
-        final ArrayList<Conversation> single = new ArrayList<Conversation>();
-        final Settings settings = mActivity.getSettings();
-        final int autoAdvance = settings != null ? settings.autoAdvance : AutoAdvance.LIST;
-        single.add(mCurrentConversation);
-        if (showDialog) {
-            final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    requestDelete(listener);
-               //     mConversationListFragment.requestDelete(listener);
-                }
-            };
-            final CharSequence message = Utils.formatPlural(mContext, confirmResource, 1);
-            new AlertDialog.Builder(mActivity.getActivityContext()).setMessage(message)
-                    .setPositiveButton(R.string.ok, onClick)
-                    .setNegativeButton(R.string.cancel, null)
-                    .create().show();
-        } else {
-            requestDelete(listener);
-        }
-    }
-
-    private void requestDelete(final ActionCompleteListener listener) {
-        // TODO: don't do this in tablet.
-        int pref = getAutoAdvanceSetting(mActivity);
-        boolean canMove = false;
-        int position = mCurrentConversation.position;
-            switch (pref) {
-                case AutoAdvance.NEWER:
-                    canMove = position - 1 >= 0;
-                    break;
-                case AutoAdvance.OLDER:
-                    Cursor c = mConversationListFragment.getConversationListCursor();
-                    if (c != null) {
-                        canMove = position + 1 < c.getCount();
-                    }
-                    break;
-            }
-        if (pref == AutoAdvance.LIST || !canMove) {
-            onBackPressed();
-            mHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    mConversationListFragment.requestDelete(listener);
-                }
-
-            });
-        } else {
-            mConversationListFragment.requestDelete(listener);
-        }
     }
 
     /**
@@ -534,81 +427,6 @@ public abstract class AbstractActivityController implements ActivityController {
                         AutoAdvance.LIST : settings.autoAdvance)
                 : AutoAdvance.LIST;
         return autoAdvance;
-    }
-
-    /**
-     * An object that performs an action on the conversation database. This is an
-     * ActionCompleteListener since this is called <b>after</a> the conversation list has animated
-     * the conversation away. Once the animation is completed, the {@link #onActionComplete()}
-     * method is called which performs the correct data operation.
-     */
-    private class DestructiveActionListener implements ActionCompleteListener {
-        private final int mAction;
-
-        /**
-         * Create a listener object. action is one of four constants: R.id.y_button (archive),
-         * R.id.delete , R.id.mute, and R.id.report_spam.
-         * @param action
-         */
-        public DestructiveActionListener(int action) {
-            mAction = action;
-        }
-
-        @Override
-        public void onActionComplete() {
-            LogUtils.d(LOG_TAG, "in onActionComplete with conversation " + mCurrentConversation);
-            Conversation next = null;
-            final ArrayList<Conversation> single = new ArrayList<Conversation>();
-            single.add(mCurrentConversation);
-            if (!mConversationListFragment.isVisible()) {
-                int pref = getAutoAdvanceSetting(mActivity);
-                Cursor c = mConversationListFragment.getConversationListCursor();
-                if (c != null) {
-                    c.moveToPosition(mCurrentConversation.position);
-                }
-                switch (pref) {
-                    case AutoAdvance.NEWER:
-                        if (c.moveToPrevious()) {
-                            next = new Conversation(c);
-                        }
-                        break;
-                    case AutoAdvance.OLDER:
-                        if (c.moveToNext()) {
-                            next = new Conversation(c);
-                        }
-                        break;
-                }
-            } else {
-                mConversationListFragment.onActionComplete();
-                mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
-            }
-            switch (mAction) {
-                case R.id.y_button:
-                    LogUtils.d(LOG_TAG, "Archiving conversation " + mCurrentConversation);
-                    Conversation.archive(mContext, single);
-                    break;
-                case R.id.delete:
-                    LogUtils.d(LOG_TAG, "Deleting conversation " + mCurrentConversation);
-                    Conversation.delete(mContext, single);
-                    break;
-                case R.id.mute:
-                    LogUtils.d(LOG_TAG, "Muting conversation " + mCurrentConversation);
-                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE))
-                        mCurrentConversation.localDeleteOnUpdate = true;
-                    Conversation.mute(mContext, single);
-                    break;
-                case R.id.report_spam:
-                    LogUtils.d(LOG_TAG, "reporting spam conversation " + mCurrentConversation);
-                    Conversation.reportSpam(mContext, single);
-                    break;
-            }
-            mConversationListFragment.requestListRefresh();
-            if (next != null) {
-                showConversation(next);
-            } else {
-                onBackPressed();
-            }
-        }
     }
 
     /**
@@ -644,7 +462,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param columnName
      * @param value
      */
-    private void updateCurrentConversation(String columnName, boolean value) {
+    protected void updateCurrentConversation(String columnName, boolean value) {
         Conversation.updateBoolean(mContext, ImmutableList.of(mCurrentConversation), columnName,
                 value);
         mConversationListFragment.requestListRefresh();
@@ -655,7 +473,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param columnName
      * @param value
      */
-    private void updateCurrentConversation(String columnName, int value) {
+    protected void updateCurrentConversation(String columnName, int value) {
         Conversation.updateInt(mContext, ImmutableList.of(mCurrentConversation), columnName, value);
         mConversationListFragment.requestListRefresh();
     }
@@ -669,6 +487,37 @@ public abstract class AbstractActivityController implements ActivityController {
             mAsyncRefreshTask.execute();
         }
     }
+
+    /**
+     * Confirm (based on user's settings) and delete a conversation from the conversation list and
+     * from the database.
+     * @param showDialog
+     * @param confirmResource
+     * @param listener
+     */
+    protected void confirmAndDelete(boolean showDialog, int confirmResource,
+            final ActionCompleteListener listener) {
+        final ArrayList<Conversation> single = new ArrayList<Conversation>();
+        single.add(mCurrentConversation);
+        if (showDialog) {
+            final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    requestDelete(listener);
+                }
+            };
+            final CharSequence message = Utils.formatPlural(mContext, confirmResource, 1);
+            new AlertDialog.Builder(mActivity.getActivityContext()).setMessage(message)
+                    .setPositiveButton(R.string.ok, onClick)
+                    .setNegativeButton(R.string.cancel, null)
+                    .create().show();
+        } else {
+            requestDelete(listener);
+        }
+    }
+
+
+    protected abstract void requestDelete(ActionCompleteListener listener);
 
     @Override
     public void onCommit(String uris) {
@@ -1139,5 +988,66 @@ public abstract class AbstractActivityController implements ActivityController {
             showConversationList(mConvListContext);
             mActivity.invalidateOptionsMenu();
         }
+    }
+
+    protected abstract class DestructiveActionListener implements ActionCompleteListener {
+        protected final int mAction;
+
+        /**
+         * Create a listener object. action is one of four constants: R.id.y_button (archive),
+         * R.id.delete , R.id.mute, and R.id.report_spam.
+         * @param action
+         */
+        public DestructiveActionListener(int action) {
+            mAction = action;
+        }
+
+        public void performConversationAction(Collection<Conversation> single) {
+            switch (mAction) {
+                case R.id.y_button:
+                    LogUtils.d(LOG_TAG, "Archiving conversation " + mCurrentConversation);
+                    Conversation.archive(mContext, single);
+                    break;
+                case R.id.delete:
+                    LogUtils.d(LOG_TAG, "Deleting conversation " + mCurrentConversation);
+                    Conversation.delete(mContext, single);
+                    break;
+                case R.id.mute:
+                    LogUtils.d(LOG_TAG, "Muting conversation " + mCurrentConversation);
+                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE))
+                        mCurrentConversation.localDeleteOnUpdate = true;
+                    Conversation.mute(mContext, single);
+                    break;
+                case R.id.report_spam:
+                    LogUtils.d(LOG_TAG, "reporting spam conversation " + mCurrentConversation);
+                    Conversation.reportSpam(mContext, single);
+                    break;
+            }
+        }
+
+        public Conversation getNextConversation() {
+            Conversation next = null;
+            int pref = getAutoAdvanceSetting(mActivity);
+            Cursor c = mConversationListFragment.getConversationListCursor();
+            if (c != null) {
+                c.moveToPosition(mCurrentConversation.position);
+            }
+            switch (pref) {
+                case AutoAdvance.NEWER:
+                    if (c.moveToPrevious()) {
+                        next = new Conversation(c);
+                    }
+                    break;
+                case AutoAdvance.OLDER:
+                    if (c.moveToNext()) {
+                        next = new Conversation(c);
+                    }
+                    break;
+            }
+            return next;
+        }
+
+        @Override
+        public abstract void onActionComplete();
     }
 }
