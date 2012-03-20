@@ -82,24 +82,22 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
         AttachmentDeletedListener, OnAccountChangedListener, LoaderCallbacks<Cursor> {
     // Identifiers for which type of composition this is
-    static final int COMPOSE = -1;
+    static final int COMPOSE = -1;  // also used for editing a draft
     static final int REPLY = 0;
     static final int REPLY_ALL = 1;
     static final int FORWARD = 2;
-    static final int EDIT_DRAFT = 3;
 
     // Integer extra holding one of the above compose action
     private static final String EXTRA_ACTION = "action";
@@ -131,9 +129,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     //  If this is a reply/forward then this extra will hold the original message
     private static final String EXTRA_IN_REFERENCE_TO_MESSAGE = "in-reference-to-message";
-    // If this is an action to edit an existing draft messagge, this extra will hold the
-    // draft message
-    private static final String ORIGINAL_DRAFT_MESSAGE = "original-draft-message";
     private static final String END_TOKEN = ", ";
     private static final String LOG_TAG = new LogUtils().getLogTag();
     // Request numbers for activities we start
@@ -185,7 +180,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Can be called from a non-UI thread.
      */
     public static void editDraft(Context launcher, Account account, Message message) {
-        launch(launcher, account, message, EDIT_DRAFT);
     }
 
     /**
@@ -221,11 +215,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         intent.putExtra(EXTRA_FROM_EMAIL_TASK, true);
         intent.putExtra(EXTRA_ACTION, action);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
-        if (action == EDIT_DRAFT) {
-            intent.putExtra(ORIGINAL_DRAFT_MESSAGE, message);
-        } else {
-            intent.putExtra(EXTRA_IN_REFERENCE_TO_MESSAGE, message);
-        }
+        intent.putExtra(EXTRA_IN_REFERENCE_TO_MESSAGE, message);
         launcher.startActivity(intent);
     }
 
@@ -252,31 +242,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
         if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
             initFromRefMessage(action, mAccount.name);
-        } else if (action == EDIT_DRAFT) {
-            // Initialize the message from the message in the intent
-            final Message message = (Message) intent.getParcelableExtra(ORIGINAL_DRAFT_MESSAGE);
-
-            initFromMessage(message);
-
-            // Update the action to the draft type of the previous draft
-            switch (message.draftType) {
-                case UIProvider.DraftType.REPLY:
-                    action = REPLY;
-                    break;
-                case UIProvider.DraftType.REPLY_ALL:
-                    action = REPLY_ALL;
-                    break;
-                case UIProvider.DraftType.FORWARD:
-                    action = FORWARD;
-                    break;
-                case UIProvider.DraftType.COMPOSE:
-                default:
-                    action = COMPOSE;
-                    break;
-            }
-        }
-
-        if (action == COMPOSE) {
+        } else {
             mQuotedTextView.setVisibility(View.GONE);
         }
         initRecipients();
@@ -438,30 +404,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private void initFromMessage(Message message) {
-        LogUtils.d(LOG_TAG, "Intializing draft from previous draft message");
-
-        mDraft = message;
-        mDraftId = message.id;
-        mSubject.setText(message.subject);
-        mForward = message.draftType == UIProvider.DraftType.FORWARD;
-        final List<String> toAddresses = Arrays.asList(message.getToAddresses());
-        addToAddresses(toAddresses);
-        addCcAddresses(Arrays.asList(message.getCcAddresses()), toAddresses);
-        addBccAddresses(Arrays.asList(message.getBccAddresses()));
-
-        // Set the body
-        if (!TextUtils.isEmpty(message.bodyHtml)) {
-            mBodyView.setText(Html.fromHtml(message.bodyHtml));
-        } else {
-            mBodyView.setText(message.bodyText);
-        }
-
-        // TODO: load attachments from the previous message
-        // TODO: set the from address spinner to the right from account
-        // TODO: initialize quoted text value
-    }
-
     private void initAttachments(Message refMessage) {
         mAttachmentsView.addAttachments(mAccount, refMessage);
     }
@@ -507,7 +449,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 for (Parcelable uri : uris) {
                     long size = 0;
                     try {
-                        size = mAttachmentsView.addAttachment(mAccount, (Uri) uri,
+                        size = mAttachmentsView.addAttachment(mAccount, (Uri)uri,
                                 false /* doSave */, true /* local file */);
                     } catch (AttachmentFailureException e) {
                         // A toast has already been shown to the user,
@@ -616,10 +558,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void addCcAddresses(Collection<String> addresses, Collection<String> toAddresses) {
         addCcAddressesToList(tokenizeAddressList(addresses), tokenizeAddressList(toAddresses),
                 mCc);
-    }
-
-    private void addBccAddresses(Collection<String> addresses) {
-        addAddressesToList(addresses, mBcc);
     }
 
     @VisibleForTesting
