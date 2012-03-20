@@ -79,7 +79,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 
     public void setAccount(String accountName) {
         // Get a mock account.
-        Account[] results = AccountUtils.getSyncingAccounts(mActivity, null, null, null);
+        Account[] results = AccountUtils.getSyncingAccounts(mActivity);
         for (Account account : results) {
             if (account.name.equals(accountName)) {
                 mAccount = account;
