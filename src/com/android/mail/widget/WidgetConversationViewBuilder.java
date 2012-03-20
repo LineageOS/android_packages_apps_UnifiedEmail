@@ -98,10 +98,9 @@ public class WidgetConversationViewBuilder {
      */
     public RemoteViews getStyledView(
             CharSequence senders, CharSequence status, CharSequence date, CharSequence subject,
-            CharSequence snippet, String folders, boolean hasAttachments) {
+            CharSequence snippet, String folders, boolean hasAttachments, boolean read) {
 
-        // TODO: (mindyp) determine unread state.
-        final boolean isUnread = true;
+        final boolean isUnread = !read;
 
         // Add style to senders
         CharSequence styledSenders = addStyle(senders, SENDERS_FONT_SIZE,

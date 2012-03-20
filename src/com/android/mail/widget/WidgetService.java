@@ -191,7 +191,8 @@ public class WidgetService extends RemoteViewsService {
                 // Load up our remote view.
                 RemoteViews remoteViews = mWidgetConversationViewBuilder.getStyledView(
                         senderBuilder, statusBuilder, date, filterTag(conversation.subject),
-                        conversation.snippet, conversation.folderList, conversation.hasAttachments);
+                        conversation.snippet, conversation.folderList, conversation.hasAttachments,
+                        conversation.read);
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation,
