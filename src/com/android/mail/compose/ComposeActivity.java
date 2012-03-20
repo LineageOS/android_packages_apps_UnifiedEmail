@@ -1571,7 +1571,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         synchronized (mDraftLock) {
             if (mDraftId != UIProvider.INVALID_MESSAGE_ID) {
                 ContentValues values = new ContentValues();
-                values.put(MessageColumns.SERVER_ID, mDraftId);
+                values.put(BaseColumns._ID, mDraftId);
                 if (mAccount.expungeMessageUri != null) {
                     getContentResolver().update(mAccount.expungeMessageUri, values, null, null);
                 } else {

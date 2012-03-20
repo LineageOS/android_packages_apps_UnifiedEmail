@@ -278,6 +278,9 @@ public class UIProvider {
          * This string column contains the content provider uri that can be used
          * to expunge a message from this account. NOTE: This might be better to
          * be an update operation on the messageUri.
+         * When {@link android.content.ContentResolver#update()} is called with this uri, the
+         * {@link ContentValues} object is expected to have {@link BaseColumns._ID} specified with
+         * the local message id of the message.
          */
         public static final String EXPUNGE_MESSAGE_URI = "expungeMessageUri";
 
