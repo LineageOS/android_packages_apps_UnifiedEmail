@@ -441,7 +441,9 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private void viewConversation(int position) {
         mConversationListCursor.moveToPosition(position);
-        mCallbacks.onConversationSelected(new Conversation(mConversationListCursor));
+        Conversation conv = new Conversation(mConversationListCursor);
+        conv.position = position;
+        mCallbacks.onConversationSelected(conv);
     }
 
     @Override
@@ -549,7 +551,9 @@ public final class ConversationListFragment extends ListFragment implements
             if (mConversationListCursor.getCount() > 0) {
                 mConversationListCursor.moveToPosition(0);
                 getListView().setItemChecked(0, true);
-                mCallbacks.onConversationSelected(new Conversation(mConversationListCursor));
+                Conversation conv = new Conversation(mConversationListCursor);
+                conv.position = 0;
+                mCallbacks.onConversationSelected(conv);
             }
         }
     }
@@ -604,5 +608,9 @@ public final class ConversationListFragment extends ListFragment implements
         }
         mListAdapter.notifyDataSetChanged();
         onUndoAvailable(new UndoOperation(conversations.size(), mSwipeAction));
+    }
+
+    public ConversationCursor getConversationListCursor() {
+        return mConversationListCursor;
     }
 }

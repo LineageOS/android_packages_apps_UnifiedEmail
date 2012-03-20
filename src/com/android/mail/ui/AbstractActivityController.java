@@ -36,6 +36,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -104,6 +105,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /** A {@link android.content.BroadcastReceiver} that suppresses new e-mail notifications. */
     private SuppressNotificationReceiver mNewEmailReceiver = null;
 
+    private Handler mHandler = new Handler();
     protected ConversationListFragment mConversationListFragment;
     /**
      * The current mode of the application. All changes in mode are initiated by
@@ -473,7 +475,8 @@ public abstract class AbstractActivityController implements ActivityController {
             final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    mConversationListFragment.requestDelete(listener);
+                    requestDelete(listener);
+               //     mConversationListFragment.requestDelete(listener);
                 }
             };
             final CharSequence message = Utils.formatPlural(mContext, confirmResource, 1);
@@ -482,8 +485,55 @@ public abstract class AbstractActivityController implements ActivityController {
                     .setNegativeButton(R.string.cancel, null)
                     .create().show();
         } else {
+            requestDelete(listener);
+        }
+    }
+
+    private void requestDelete(final ActionCompleteListener listener) {
+        // TODO: don't do this in tablet.
+        int pref = getAutoAdvanceSetting(mActivity);
+        boolean canMove = false;
+        int position = mCurrentConversation.position;
+            switch (pref) {
+                case AutoAdvance.NEWER:
+                    canMove = position - 1 >= 0;
+                    break;
+                case AutoAdvance.OLDER:
+                    Cursor c = mConversationListFragment.getConversationListCursor();
+                    if (c != null) {
+                        canMove = position + 1 < c.getCount();
+                    }
+                    break;
+            }
+        if (pref == AutoAdvance.LIST || !canMove) {
+            onBackPressed();
+            mHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    mConversationListFragment.requestDelete(listener);
+                }
+
+            });
+        } else {
             mConversationListFragment.requestDelete(listener);
         }
+    }
+
+    /**
+     * Return the auto advance setting for the current account.
+     * @param activity
+     * @return the autoadvance setting, a constant from {@link AutoAdvance}
+     */
+    static int getAutoAdvanceSetting(RestrictedActivity activity) {
+        final Settings settings = activity.getSettings();
+        // TODO(mindyp): if this isn't set, then show the dialog telling the user to set it.
+        // Remove defaulting to AutoAdvance.LIST.
+        final int autoAdvance = (settings != null) ?
+                (settings.autoAdvance == AutoAdvance.UNSET ?
+                        AutoAdvance.LIST : settings.autoAdvance)
+                : AutoAdvance.LIST;
+        return autoAdvance;
     }
 
     /**
@@ -507,10 +557,31 @@ public abstract class AbstractActivityController implements ActivityController {
         @Override
         public void onActionComplete() {
             LogUtils.d(LOG_TAG, "in onActionComplete with conversation " + mCurrentConversation);
+            Conversation next = null;
             final ArrayList<Conversation> single = new ArrayList<Conversation>();
             single.add(mCurrentConversation);
-            mConversationListFragment.onActionComplete();
-            mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
+            if (!mConversationListFragment.isVisible()) {
+                int pref = getAutoAdvanceSetting(mActivity);
+                Cursor c = mConversationListFragment.getConversationListCursor();
+                if (c != null) {
+                    c.moveToPosition(mCurrentConversation.position);
+                }
+                switch (pref) {
+                    case AutoAdvance.NEWER:
+                        if (c.moveToPrevious()) {
+                            next = new Conversation(c);
+                        }
+                        break;
+                    case AutoAdvance.OLDER:
+                        if (c.moveToNext()) {
+                            next = new Conversation(c);
+                        }
+                        break;
+                }
+            } else {
+                mConversationListFragment.onActionComplete();
+                mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
+            }
             switch (mAction) {
                 case R.id.y_button:
                     LogUtils.d(LOG_TAG, "Archiving conversation " + mCurrentConversation);
@@ -532,7 +603,11 @@ public abstract class AbstractActivityController implements ActivityController {
                     break;
             }
             mConversationListFragment.requestListRefresh();
-            onBackPressed();
+            if (next != null) {
+                showConversation(next);
+            } else {
+                onBackPressed();
+            }
         }
     }
 

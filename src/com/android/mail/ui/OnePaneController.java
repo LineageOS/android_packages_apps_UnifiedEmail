@@ -278,8 +278,16 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mViewMode.enterConversationListMode();
         }
-        mActivity.getFragmentManager().popBackStack(mLastConversationTransactionId,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (isTransactionIdValid(mLastConversationListTransactionId)) {
+            mActivity.getFragmentManager().popBackStack(mLastConversationListTransactionId, 0);
+            resetActionBarIcon();
+        } else {
+            ConversationListContext listContext = ConversationListContext.forFolder(mContext,
+                    mAccount, mInbox);
+            // Set the correct context for what the conversation view will be now.
+            onFolderChanged(mInbox);
+            showConversationList(listContext);
+        }
         resetActionBarIcon();
     }
 
