@@ -30,6 +30,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.RecentFolderList;
+import com.android.mail.utils.Utils;
 
 /**
  * An adapter to return the list of accounts and folders for the Account Spinner.
@@ -65,6 +66,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     /** The folder currently being viewed */
     private Folder mCurrentFolder;
+    private Context mContext;
 
     /**
      * When the user selects the spinner, a dropdown list of objects is shown. Each item in the
@@ -122,6 +124,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @param recentFolders
      */
     public AccountSpinnerAdapter(Context context, RecentFolderList recentFolders) {
+        mContext = context;
         mInflater = LayoutInflater.from(context);
         mRecentFolders = recentFolders;
     }
@@ -247,7 +250,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         holder.folder.setText(folderName);
         holder.account.setText(accountName);
         // Fake unread counts for now.
-        holder.unread_count.setText(String.valueOf(unreadCount));
+        holder.unread_count.setText(Utils.getUnreadCountString(mContext, unreadCount));
         // Keep the unread count logic here for the future.
         if (unreadCount == 0) {
             holder.unread_count.setVisibility(View.GONE);
