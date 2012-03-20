@@ -35,6 +35,8 @@ import java.util.Collection;
 public class SwipeableListView extends ListView implements Callback {
     private SwipeHelper mSwipeHelper;
     private SwipeCompleteListener mSwipeCompleteListener;
+    // TODO(mindyp) disable for original droidfood build.
+    private boolean ENABLE_SWIPE = false;
 
     public SwipeableListView(Context context) {
         this(context, null);
@@ -56,14 +58,21 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mSwipeHelper.onInterceptTouchEvent(ev) ||
-            super.onInterceptTouchEvent(ev);
+        if (ENABLE_SWIPE) {
+            return mSwipeHelper.onInterceptTouchEvent(ev)
+                    || super.onInterceptTouchEvent(ev);
+        } else {
+            return super.onInterceptTouchEvent(ev);
+        }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return mSwipeHelper.onTouchEvent(ev) ||
-            super.onTouchEvent(ev);
+        if (ENABLE_SWIPE) {
+            return mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev);
+        } else {
+            return super.onTouchEvent(ev);
+        }
     }
 
     @Override
