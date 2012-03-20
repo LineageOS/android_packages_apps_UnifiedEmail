@@ -741,7 +741,9 @@ public class UIProvider {
         MessageColumns.JOINED_ATTACHMENT_INFOS,
         MessageColumns.SAVE_MESSAGE_URI,
         MessageColumns.SEND_MESSAGE_URI,
-        MessageColumns.ALWAYS_SHOW_IMAGES
+        MessageColumns.ALWAYS_SHOW_IMAGES,
+        MessageColumns.INCLUDE_QUOTED_TEXT,
+        MessageColumns.QUOTE_START_POS
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -923,6 +925,18 @@ public class UIProvider {
          * any external images.
          */
         public static final String ALWAYS_SHOW_IMAGES = "alwaysShowImages";
+
+        /**
+         * This integer column represents whether the message should include quoted text.
+         */
+        public static final String INCLUDE_QUOTED_TEXT = "includeQuotedText";
+
+        /**
+         * This integer column represents the offset in the message of quoted
+         * text. If include_quoted_text is zero, the value contained in this
+         * column is invalid.
+         */
+        public static final String QUOTE_START_POS = "quotedTextStartPos";
 
         private MessageColumns() {}
     }

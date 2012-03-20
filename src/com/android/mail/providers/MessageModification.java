@@ -116,6 +116,28 @@ public class MessageModification {
         values.put(MessageColumns.BODY_HTML, body);
     }
 
+    /**
+     * Saves an include quoted text flag. Only valid for drafts not yet sent to /
+     * retrieved from server.
+     *
+     * @param values the ContentValues that will be used to create or update the message
+     * @param includeQuotedText the include quoted text flag
+     */
+    public static void putIncludeQuotedText(ContentValues values, boolean includeQuotedText) {
+        values.put(MessageColumns.INCLUDE_QUOTED_TEXT, includeQuotedText ? 1 : 0);
+    }
+
+    /**
+     * Saves a quoted text starting position. Only valid for drafts not yet sent to /
+     * retrieved from server.
+     *
+     * @param values the ContentValues that will be used to create or update the message
+     * @param quoteStartPos the starting position for quoted text
+     */
+    public static void putQuoteStartPos(ContentValues values, long quoteStartPos) {
+        values.put(MessageColumns.QUOTE_START_POS, quoteStartPos);
+    }
+
     public static void putAttachments(ContentValues values, List<Attachment> attachments) {
         values.put(
                 MessageColumns.JOINED_ATTACHMENT_INFOS, joinedAttachmentsString(attachments));

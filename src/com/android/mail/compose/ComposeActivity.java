@@ -1201,25 +1201,20 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         boolean includeQuotedText = !TextUtils.isEmpty(quotedText);
         StringBuilder fullBody = new StringBuilder(htmlBody);
         if (includeQuotedText) {
-            if (forward) {
-                // forwarded messages get full text in HTML from client
-                fullBody.append(quotedText);
+            // HTML gets converted to text for now
+            final String text = quotedText.toString();
+            if (QuotedTextView.containsQuotedText(text)) {
+                int pos = QuotedTextView.getQuotedTextOffset(text);
+                fullBody.append(text.substring(0, pos));
+                MessageModification.putIncludeQuotedText(values, true);
+                MessageModification.putQuoteStartPos(values, pos);
                 MessageModification.putForward(values, forward);
+                MessageModification.putAppendRefMessageContent(values, includeQuotedText);
             } else {
-                // replies get full quoted text from server - HTMl gets
-                // converted to text for now
-                final String text = quotedText.toString();
-                if (QuotedTextView.containsQuotedText(text)) {
-                    int pos = QuotedTextView.getQuotedTextOffset(text);
-                    fullBody.append(text.substring(0, pos));
-                    MessageModification.putForward(values, forward);
-                    MessageModification.putAppendRefMessageContent(values, includeQuotedText);
-                } else {
-                    LogUtils.w(LOG_TAG, "Couldn't find quoted text");
-                    // This shouldn't happen, but just use what we have,
-                    // and don't do server-side expansion
-                    fullBody.append(text);
-                }
+                LogUtils.w(LOG_TAG, "Couldn't find quoted text");
+                // This shouldn't happen, but just use what we have,
+                // and don't do server-side expansion
+                fullBody.append(text);
             }
         }
         MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
