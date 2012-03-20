@@ -831,8 +831,9 @@ public abstract class AbstractActivityController implements ActivityController {
                     // Open the conversation.
                     LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
                             intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                    showConversation((Conversation) intent
+                    setCurrentConversation((Conversation) intent
                             .getParcelableExtra(Utils.EXTRA_CONVERSATION));
+                    showConversation(this.mCurrentConversation);
                 }
             } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
                 mViewMode.enterSearchResultsListMode();
@@ -861,13 +862,17 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        mCurrentConversation = conversation;
+        setCurrentConversation(conversation);
         showConversation(mCurrentConversation);
         if (mConvListContext != null && mConvListContext.isSearchResult()) {
             mViewMode.enterSearchResultsConversationMode();
         } else {
             mViewMode.enterConversationMode();
         }
+    }
+
+    public void setCurrentConversation(Conversation conversation) {
+        mCurrentConversation = conversation;
     }
 
     /**
