@@ -49,6 +49,8 @@ public class Message implements Parcelable {
     public String saveUri;
     public String sendUri;
     public boolean alwaysShowImages;
+    public boolean includeQuotedText;
+    public int quotedTextOffset;
 
     @Override
     public int describeContents() {
@@ -82,6 +84,8 @@ public class Message implements Parcelable {
         dest.writeString(saveUri);
         dest.writeString(sendUri);
         dest.writeInt(alwaysShowImages ? 1 : 0);
+        dest.writeInt(includeQuotedText ? 1 : 0);
+        dest.writeInt(quotedTextOffset);
     }
 
     private Message(Parcel in) {
@@ -110,6 +114,8 @@ public class Message implements Parcelable {
         saveUri = in.readString();
         sendUri = in.readString();
         alwaysShowImages = in.readInt() != 0;
+        includeQuotedText = in.readInt() != 0;
+        quotedTextOffset = in.readInt();
     }
 
     public Message() {
@@ -171,6 +177,8 @@ public class Message implements Parcelable {
             sendUri = cursor
                     .getString(UIProvider.MESSAGE_SEND_URI_COLUMN);
             alwaysShowImages = cursor.getInt(UIProvider.ALWAYS_SHOW_IMAGES_COLUMN) != 0;
+            includeQuotedText = cursor.getInt(UIProvider.INCLUDE_QUOTED_TEXT_COLUMN) != 0;
+            quotedTextOffset = cursor.getInt(UIProvider.QUOTED_TEXT_OFFSET_COLUMN);
         }
     }
 

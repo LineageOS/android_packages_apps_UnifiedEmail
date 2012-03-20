@@ -778,6 +778,8 @@ public class UIProvider {
     public static final int MESSAGE_SAVE_URI_COLUMN = 22;
     public static final int MESSAGE_SEND_URI_COLUMN = 23;
     public static final int ALWAYS_SHOW_IMAGES_COLUMN = 24;
+    public static final int INCLUDE_QUOTED_TEXT_COLUMN = 25;
+    public static final int QUOTED_TEXT_OFFSET_COLUMN = 26;
 
 
     public static final class CursorStatus {
