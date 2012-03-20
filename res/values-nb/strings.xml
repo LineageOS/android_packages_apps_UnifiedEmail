@@ -103,12 +103,12 @@
     <string name="view_attachment" msgid="8744325060392671944">"Se"</string>
     <string name="save_attachment" msgid="5360128849867863132">"Lagre"</string>
     <string name="info_attachment" msgid="607849900865956536">"Informasjon"</string>
-    <string name="play_attachment" msgid="41143041901432280">"Spill"</string>
+    <string name="play_attachment" msgid="41143041901432280">"Spill av"</string>
     <string name="install_attachment" msgid="2803531650273683382">"Installer"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Avbryt"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informasjon"</string>
-    <string name="attachment_type_blocked" msgid="2574422813386113664">"Du kan ikke lagre eller åpne denne typen vedlegg fordi den kan inneholde skadelig programvare."</string>
-    <string name="no_application_found" msgid="1945184804521392093">"Ingen apper kan åpne dette vedlegget slik at man kan se det."</string>
+    <string name="attachment_type_blocked" msgid="2574422813386113664">"Kan ikke lagre eller åpne denne typen vedlegg fordi det kan inneholde skadelig programvare."</string>
+    <string name="no_application_found" msgid="1945184804521392093">"Ingen apper kan åpne dette vedlegget slik at du kan se det."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Henter vedlegg"</string>
     <string name="please_wait" msgid="8797634225088247121">"Vent litt …"</string>
     <string name="saved" msgid="6977782468220926548">"Lagret"</string>

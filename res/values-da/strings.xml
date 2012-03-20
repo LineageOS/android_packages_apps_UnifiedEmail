@@ -223,8 +223,7 @@
     <string name="folderMode" msgid="553052020619895714">"Angiv mappetilstand"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Søger..."</string>
     <string name="recent_folders" msgid="8240081561436891330">"Seneste"</string>
-    <!-- no translation found for add_label (1638508840481944248) -->
-    <skip />
+    <string name="add_label" msgid="1638508840481944248">"Tilføj etiket"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Udvid modtageroplysninger"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Skjul modtageroplysninger"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Vis kontaktoplysninger for <xliff:g id="NAME">%1$s</xliff:g>"</string>
