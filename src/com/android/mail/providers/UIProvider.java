@@ -207,6 +207,10 @@ public class UIProvider {
          * Whether the account provides a mechanism for marking conversations as important.
          */
         public static final int MARK_IMPORTANT = 0x8000;
+        /**
+         * Whether initial conversation queries should use a limit parameter
+         */
+        public static final int INITIAL_CONVERSATION_LIMIT = 0x10000;
     }
 
     public static final class AccountColumns {
@@ -346,6 +350,16 @@ public class UIProvider {
         public static final String FOLDER = "folder";
 
         private SearchQueryParameters() {}
+    }
+
+    public static final class ConversationListQueryParameters {
+        public static final String DEFAULT_LIMIT = "50";
+        /**
+         * Parameter used to limit the number of rows returned by a conversation list query
+         */
+        public static final String LIMIT = "limit";
+
+        private ConversationListQueryParameters() {}
     }
 
     // We define a "folder" as anything that contains a list of conversations.

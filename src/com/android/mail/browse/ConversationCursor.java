@@ -35,6 +35,7 @@ import android.os.RemoteException;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
@@ -91,6 +92,8 @@ public final class ConversationCursor implements Cursor {
     private static boolean sRefreshRequired = false;
     // Our sequence count (for changes sent to underlying provider)
     private static int sSequence = 0;
+    // Whether our first query on this cursor should include a limit
+    private static boolean sInitialConversationLimit = false;
 
     // Column names for this cursor
     private final String[] mColumnNames;
@@ -144,9 +147,11 @@ public final class ConversationCursor implements Cursor {
     /**
      * Method to initiaze the ConversationCursor state before an instance is created
      * This is needed to workaround the crash reported in bug 6185304
+     * Also, we set the flag indicating whether to use a limit on the first conversation query
      */
-    public static void initialize(Activity activity) {
+    public static void initialize(Activity activity, boolean initialConversationLimit) {
         sActivity = activity;
+        sInitialConversationLimit = initialConversationLimit;
         mResolver = activity.getContentResolver();
     }
 
@@ -162,51 +167,67 @@ public final class ConversationCursor implements Cursor {
      * @return a ConversationCursor
      */
     public static ConversationCursor create(Activity activity, String messageListColumn, Uri uri,
-            String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+            String[] projection) {
         sActivity = activity;
         mResolver = activity.getContentResolver();
-        if (selection != null || sortOrder != null) {
-            throw new IllegalArgumentException(
-                    "Selection and sort order aren't allowed in ConversationCursors");
-        }
         synchronized (sCacheMapLock) {
-            // First, let's see if we already have a cursor
-            if (sConversationCursor != null) {
-                // If it's the same, just clean up
-                if (qUri.equals(uri) && !sRefreshRequired && !sRefreshInProgress) {
-                    if (sRefreshReady) {
-                        // If we already have a refresh ready, just sync() it
-                        LogUtils.i(TAG, "Create: refreshed cursor ready, sync");
+            try {
+                // First, let's see if we already have a cursor
+                if (sConversationCursor != null) {
+                    // If it's the same, just clean up
+                    if (qUri.equals(uri) && !sRefreshRequired && !sRefreshInProgress) {
+                        if (sRefreshReady) {
+                            // If we already have a refresh ready, return
+                            LogUtils.i(TAG, "Create: refreshed cursor ready, sync");
+                        } else {
+                            // Position the cursor before the first item and we're done
+                            LogUtils.i(TAG, "Create: cursor good, reset position and clear map");
+                            sConversationCursor.moveToPosition(-1);
+                            sConversationCursor.mPosition = -1;
+                        }
                     } else {
-                        // Position the cursor before the first item (as it would be if new), reset
-                        // the cache, and return as new
-                        LogUtils.i(TAG, "Create: cursor good, reset position and clear map");
-                        sConversationCursor.moveToPosition(-1);
-                        sConversationCursor.mPosition = -1;
+                        // We need a new query here; cancel any existing one, ensuring that a sync
+                        // from another thread won't be stalled on the query
+                        cancelRefresh();
+                        // Requery and say we're ready
+                        LogUtils.i(TAG, "Create: new query or refresh needed, query/sync");
+                        sRequeryCursor = doQuery(uri, projection, false);
+                        sRefreshReady = true;
                     }
-                } else {
-                    // We need a new query here; cancel any existing one, ensuring that a sync
-                    // from another thread won't be stalled on the query
-                    cancelRefresh();
-                    LogUtils.i(TAG, "Create: new query or refresh needed, query/sync");
-                    sRequeryCursor = doQuery(uri, projection);
-                    sRefreshReady = true;
+                    return sConversationCursor;
                 }
-                return sConversationCursor;
+                // Create new ConversationCursor
+                LogUtils.i(TAG, "Create: initial creation");
+                Cursor c = doQuery(uri, projection, sInitialConversationLimit);
+                return new ConversationCursor(c, activity, messageListColumn);
+            } finally {
+                // If we used a limit, queue up a query without limit
+                if (sInitialConversationLimit) {
+                    sInitialConversationLimit = false;
+                    sConversationCursor.refresh();
+                }
             }
-            // Create new ConversationCursor
-            LogUtils.i(TAG, "Create: initial creation");
-            return new ConversationCursor(doQuery(uri, projection), activity, messageListColumn);
         }
     }
 
-    private static Cursor doQuery(Uri uri, String[] projection) {
-        qUri = uri;
+    private static Cursor doQuery(Uri uri, String[] projection, boolean withLimit) {
         qProjection = projection;
+        qUri = uri;
         if (mResolver == null) {
             mResolver = sActivity.getContentResolver();
         }
-        return mResolver.query(qUri, qProjection, null, null, null);
+        if (withLimit) {
+            uri = uri.buildUpon().appendQueryParameter(ConversationListQueryParameters.LIMIT,
+                    ConversationListQueryParameters.DEFAULT_LIMIT).build();
+        }
+        long time = System.currentTimeMillis();
+        Cursor result = mResolver.query(uri, qProjection, null, null, null);
+        if (DEBUG) {
+            time = System.currentTimeMillis() - time;
+            LogUtils.i(TAG, "ConversationCursor query: " + uri + ", " + time + "ms, " +
+                    result.getCount() + " results");
+        }
+        return result;
     }
 
     /**
@@ -565,7 +586,7 @@ public final class ConversationCursor implements Cursor {
             @Override
             public void run() {
                 // Get new data
-                sRequeryCursor = doQuery(qUri, qProjection);
+                sRequeryCursor = doQuery(qUri, qProjection, false);
                 // Make sure window is full
                 synchronized(sCacheMapLock) {
                     if (sRefreshInProgress) {

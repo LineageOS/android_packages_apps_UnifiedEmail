@@ -17,8 +17,6 @@
 
 package com.android.mail.ui;
 
-import com.google.common.collect.ImmutableList;
-
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -53,6 +51,7 @@ import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -535,7 +534,7 @@ public final class ConversationListFragment extends ListFragment implements
     public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
         configureSearchResultHeader();
         mListAdapter.hideFooter();
-        return new ConversationCursorLoader((Activity) mActivity,
+        return new ConversationCursorLoader((Activity) mActivity, mAccount,
                     UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
     }
 

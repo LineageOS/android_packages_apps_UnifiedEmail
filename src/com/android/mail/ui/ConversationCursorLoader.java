@@ -22,27 +22,32 @@ import android.content.AsyncTaskLoader;
 import android.net.Uri;
 
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 
 public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor> {
-    private Uri mUri;
-    private String[] mProjection;
-    private Activity mActivity;
+    private final Uri mUri;
+    private final String[] mProjection;
+    private final Activity mActivity;
+    private final boolean mInitialConversationLimit;
 
-    public ConversationCursorLoader(Activity activity, String[] projection, Uri uri) {
+    public ConversationCursorLoader(Activity activity, Account account, String[] projection,
+            Uri uri) {
         super(activity);
         mProjection = projection;
         mUri = uri;
         mActivity = activity;
-
+        mInitialConversationLimit =
+                account.supportsCapability(AccountCapabilities.INITIAL_CONVERSATION_LIMIT);
         // Initialize the state of the conversation cursor
-        ConversationCursor.initialize(mActivity);
+        ConversationCursor.initialize(mActivity, mInitialConversationLimit);
     }
 
     @Override
     public ConversationCursor loadInBackground() {
         return ConversationCursor.create(mActivity, UIProvider.ConversationColumns.URI, mUri,
-                mProjection, null, null, null);
+                mProjection);
     }
 
     @Override
