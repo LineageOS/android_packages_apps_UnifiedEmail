@@ -45,6 +45,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -71,7 +72,6 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.MessageModification;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.R;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogUtils;
@@ -81,6 +81,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -103,6 +105,24 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     // Integer extra holding one of the above compose action
     private static final String EXTRA_ACTION = "action";
+
+    private static final String UTF8_ENCODING_NAME = "UTF-8";
+
+    private static final String MAIL_TO = "mailto";
+
+    private static final String GMAIL_FROM = "gmailfrom";
+
+    private static final String EXTRA_SUBJECT = "subject";
+
+    private static final String EXTRA_BODY = "body";
+
+    // Extra that we can get passed from other activities
+    private static final String EXTRA_TO = "to";
+    private static final String EXTRA_CC = "cc";
+    private static final String EXTRA_BCC = "bcc";
+
+    // List of all the fields
+    static final String[] ALL_EXTRAS = { EXTRA_SUBJECT, EXTRA_BODY, EXTRA_TO, EXTRA_CC, EXTRA_BCC };
 
     private static SendOrSaveCallback sTestSendOrSaveCallback = null;
     // Map containing information about requests to create new messages, and the id of the
@@ -140,6 +160,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final int RESULT_PICK_ATTACHMENT = 1;
     private static final int RESULT_CREATE_ACCOUNT = 2;
     private static final int ACCOUNT_SETTINGS_LOADER = 0;
+    // TODO(mindyp) set mime-type for auto send?
+    private static final String AUTO_SEND_ACTION = "com.android.mail.action.AUTO_SEND";
+
+    // Max size for attachments (5 megs). Will be overridden by account settings if found.
+    // TODO(mindyp): read this from account settings?
+    private static final int DEFAULT_MAX_ATTACHMENT_SIZE = 25 * 1024 * 1024;
 
     /**
      * A single thread for running tasks in the background.
@@ -251,7 +277,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
         mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
         if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
-            initFromRefMessage(action, mAccount.name);
+            if (mRefMessage != null) {
+                initFromRefMessage(action, mAccount.name);
+            }
         } else if (action == EDIT_DRAFT) {
             // Initialize the message from the message in the intent
             final Message message = (Message) intent.getParcelableExtra(ORIGINAL_DRAFT_MESSAGE);
@@ -274,6 +302,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     action = COMPOSE;
                     break;
             }
+        } else {
+            initFromExtras(intent);
         }
 
         if (action == COMPOSE) {
@@ -422,20 +452,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initFromRefMessage(int action, String recipientAddress) {
-        if (mRefMessage != null) {
-            mRefMessageId = mRefMessage.refMessageId;
-            setSubject(mRefMessage, action);
-            // Setup recipients
-            if (action == FORWARD) {
-                mForward = true;
-            }
-            initRecipientsFromRefMessage(recipientAddress, mRefMessage, action);
-            initBodyFromRefMessage(mRefMessage, action);
-            if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
-                initAttachments(mRefMessage);
-            }
-            updateHideOrShowCcBcc();
+        mRefMessageId = mRefMessage.refMessageId;
+        setSubject(mRefMessage, action);
+        // Setup recipients
+        if (action == FORWARD) {
+            mForward = true;
         }
+        initRecipientsFromRefMessage(recipientAddress, mRefMessage, action);
+        initBodyFromRefMessage(mRefMessage, action);
+        if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
+            initAttachments(mRefMessage);
+        }
+        updateHideOrShowCcBcc();
     }
 
     private void initFromMessage(Message message) {
@@ -460,6 +488,213 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // TODO: load attachments from the previous message
         // TODO: set the from address spinner to the right from account
         // TODO: initialize quoted text value
+    }
+
+    /**
+     * Fill all the widgets with the content found in the Intent Extra, if any.
+     * Also apply the same style to all widgets. Note: if initFromExtras is
+     * called as a result of switching between reply, reply all, and forward per
+     * the latest revision of Gmail, and the user has already made changes to
+     * attachments on a previous incarnation of the message (as a reply, reply
+     * all, or forward), the original attachments from the message will not be
+     * re-instantiated. The user's changes will be respected. This follows the
+     * web gmail interaction.
+     */
+    public void initFromExtras(Intent intent) {
+
+        // If we were invoked with a SENDTO intent, the value
+        // should take precedence
+        final Uri dataUri = intent.getData();
+        if (dataUri != null) {
+            if (MAIL_TO.equals(dataUri.getScheme())) {
+                initFromMailTo(dataUri.toString());
+            } else {
+                if (!GMAIL_FROM.equals(dataUri.getScheme())) {
+                    String toText = dataUri.getSchemeSpecificPart();
+                    if (toText != null) {
+                        mTo.setText("");
+                        addToAddresses(Arrays.asList(toText.split(",")));
+                    }
+                }
+            }
+        }
+
+        String[] extraStrings = intent.getStringArrayExtra(Intent.EXTRA_EMAIL);
+        if (extraStrings != null) {
+            addToAddresses(Arrays.asList(extraStrings));
+        }
+        extraStrings = intent.getStringArrayExtra(Intent.EXTRA_CC);
+        if (extraStrings != null) {
+            addCcAddresses(Arrays.asList(extraStrings), null);
+        }
+        extraStrings = intent.getStringArrayExtra(Intent.EXTRA_BCC);
+        if (extraStrings != null) {
+            addBccAddresses(Arrays.asList(extraStrings));
+        }
+
+        String extraString = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+        if (extraString != null) {
+            mSubject.setText(extraString);
+        }
+
+        for (String extra : ALL_EXTRAS) {
+            if (intent.hasExtra(extra)) {
+                String value = intent.getStringExtra(extra);
+                if (EXTRA_TO.equals(extra)) {
+                    addToAddresses(Arrays.asList(value.split(",")));
+                } else if (EXTRA_CC.equals(extra)) {
+                    addCcAddresses(Arrays.asList(value.split(",")), null);
+                } else if (EXTRA_BCC.equals(extra)) {
+                    addBccAddresses(Arrays.asList(value.split(",")));
+                } else if (EXTRA_SUBJECT.equals(extra)) {
+                    mSubject.setText(value);
+                } else if (EXTRA_BODY.equals(extra)) {
+                    setBody(value, true /* with signature */);
+                }
+            }
+        }
+
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            final String action = intent.getAction();
+            CharSequence text = extras.getCharSequence(Intent.EXTRA_TEXT);
+            if (text != null) {
+                setBody(text, true /* with signature */);
+            }
+
+            // TODO(mindyp): read this from account settings.
+            int maxSize = DEFAULT_MAX_ATTACHMENT_SIZE;
+            int totalSize = 0;
+
+            // Take care of attachments passed in by the extras.
+            if (!mAttachmentsChanged) {
+                if (extras.containsKey(EXTRA_ATTACHMENTS)) {
+                    String[] uris = (String[]) extras.getSerializable(EXTRA_ATTACHMENTS);
+                    for (String uriString : uris) {
+                        final Uri uri = Uri.parse(uriString);
+                        long size;
+                        try {
+                            size = mAttachmentsView.addAttachment(mAccount, uri,
+                                    false /* doSave */, true /* local file */);
+                        } catch (AttachmentFailureException e) {
+                            // A toast has already been shown to the user,
+                            // just break out of the loop.
+                            LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                            finish();
+                            return;
+                        }
+                    }
+                    mAttachmentsChanged = true;
+                }
+                if ((Intent.ACTION_SEND.equals(action)
+                        || AUTO_SEND_ACTION.equals(action))
+                        && extras.containsKey(Intent.EXTRA_STREAM)) {
+                    Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
+                    try {
+                        mAttachmentsView.addAttachment(mAccount, uri, true /* doSave */,
+                                true /* local file */);
+                    } catch (AttachmentFailureException e) {
+                        // A toast has already been shown to the user, so just
+                        // exit.
+                        LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                        finish();
+                        return;
+                    }
+                }
+
+                if (Intent.ACTION_SEND_MULTIPLE.equals(action)
+                        && extras.containsKey(Intent.EXTRA_STREAM)) {
+                    ArrayList<Parcelable> uris = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
+                    for (Parcelable uri : uris) {
+                        try {
+                            mAttachmentsView.addAttachment(mAccount,
+                                    (Uri) uri, false /* doSave */, true /* local file */);
+                        } catch (AttachmentFailureException e) {
+                            // A toast has already been shown to the user,
+                            // just break out of the loop.
+                            LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                            finish();
+                            return;
+                        }
+                    }
+                    mAttachmentsChanged = true;
+                }
+            }
+        }
+
+        updateHideOrShowCcBcc();
+    }
+
+    @VisibleForTesting
+    protected String decodeEmailInUri(String s) throws UnsupportedEncodingException {
+        // TODO: handle the case where there are spaces in the display name as well as the email
+        // such as "Guy with spaces <guy+with+spaces@gmail.com>" as they it could be encoded
+        // ambiguously.
+
+        // Since URLDecode.decode changes + into ' ', and + is a valid
+        // email character, we need to find/ replace these ourselves before
+        // decoding.
+        String replacePlus = s.replace("+", "%2B");
+        return URLDecoder.decode(replacePlus, UTF8_ENCODING_NAME);
+    }
+
+    /**
+     * Initialize the compose view from a String representing a mailTo uri.
+     * @param mailToString The uri as a string.
+     */
+    public void initFromMailTo(String mailToString) {
+        // We need to disguise this string as a URI in order to parse it
+        // TODO:  Remove this hack when http://b/issue?id=1445295 gets fixed
+        Uri uri = Uri.parse("foo://" + mailToString);
+        int index = mailToString.indexOf("?");
+        int length = "mailto".length() + 1;
+        String to;
+        try {
+            // Extract the recipient after mailto:
+            if (index == -1) {
+                to = decodeEmailInUri(mailToString.substring(length));
+            } else {
+                to = decodeEmailInUri(mailToString.substring(length, index));
+            }
+            addToAddresses(Arrays.asList(to.split(" ,")));
+        } catch (UnsupportedEncodingException e) {
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
+                LogUtils.e(LOG_TAG, "%s while decoding '%s'", e.getMessage(), mailToString);
+            } else {
+                LogUtils.e(LOG_TAG, e, "Exception  while decoding mailto address");
+            }
+        }
+
+        List<String> cc = uri.getQueryParameters("cc");
+        addCcAddresses(Arrays.asList(cc.toArray(new String[cc.size()])), null);
+
+        List<String> otherTo = uri.getQueryParameters("to");
+        addToAddresses(Arrays.asList(otherTo.toArray(new String[otherTo.size()])));
+
+        List<String> bcc = uri.getQueryParameters("bcc");
+        addBccAddresses(Arrays.asList(bcc.toArray(new String[bcc.size()])));
+
+        List<String> subject = uri.getQueryParameters("subject");
+        if (subject.size() > 0) {
+            try {
+                mSubject.setText(URLDecoder.decode(subject.get(0), UTF8_ENCODING_NAME));
+            } catch (UnsupportedEncodingException e) {
+                LogUtils.e(LOG_TAG, "%s while decoding subject '%s'",
+                        e.getMessage(), subject);
+            }
+        }
+
+        List<String> body = uri.getQueryParameters("body");
+        if (body.size() > 0) {
+            try {
+                setBody(URLDecoder.decode(body.get(0), UTF8_ENCODING_NAME),
+                        true /* with signature */);
+            } catch (UnsupportedEncodingException e) {
+                LogUtils.e(LOG_TAG, "%s while decoding body '%s'", e.getMessage(), body);
+            }
+        }
+
+        updateHideOrShowCcBcc();
     }
 
     private void initAttachments(Message refMessage) {
@@ -614,8 +849,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void addCcAddresses(Collection<String> addresses, Collection<String> toAddresses) {
-        addCcAddressesToList(tokenizeAddressList(addresses), tokenizeAddressList(toAddresses),
-                mCc);
+        addCcAddressesToList(tokenizeAddressList(addresses),
+                toAddresses != null ? tokenizeAddressList(toAddresses) : null, mCc);
     }
 
     private void addBccAddresses(Collection<String> addresses) {
@@ -627,14 +862,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             List<Rfc822Token[]> compareToList, RecipientEditTextView list) {
         String address;
 
-        HashSet<String> compareTo = convertToHashSet(compareToList);
-        for (Rfc822Token[] tokens : addresses) {
-            for (int i = 0; i < tokens.length; i++) {
-                address = tokens[i].toString();
-                // Check if this is a duplicate:
-                if (!compareTo.contains(tokens[i].getAddress())) {
-                    // Get the address here
+        if (compareToList == null) {
+            for (Rfc822Token[] tokens : addresses) {
+                for (int i = 0; i < tokens.length; i++) {
+                    address = tokens[i].toString();
                     list.append(address + END_TOKEN);
+                }
+            }
+        } else {
+            HashSet<String> compareTo = convertToHashSet(compareToList);
+            for (Rfc822Token[] tokens : addresses) {
+                for (int i = 0; i < tokens.length; i++) {
+                    address = tokens[i].toString();
+                    // Check if this is a duplicate:
+                    if (!compareTo.contains(tokens[i].getAddress())) {
+                        // Get the address here
+                        list.append(address + END_TOKEN);
+                    }
                 }
             }
         }
@@ -1471,7 +1715,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         if (initialComposeMode != mComposeMode) {
             resetMessageForModeChange();
-            initFromRefMessage(mComposeMode, mAccount.name);
+            if (mRefMessage != null) {
+                initFromRefMessage(mComposeMode, mAccount.name);
+            }
         }
         return true;
     }

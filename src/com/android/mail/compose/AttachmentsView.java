@@ -172,7 +172,7 @@ class AttachmentsView extends LinearLayout {
         String contentType = contentResolver.getType(uri);
         if (uri == null || TextUtils.isEmpty(uri.getPath())) {
             showAttachmentTooBigToast();
-            return -1;
+            throw new AttachmentFailureException("Attachment too large to attach");
         }
 
         if (contentType == null) contentType = "";
