@@ -238,7 +238,7 @@ public class ConversationItemView extends View {
                 }
                 if (totalWidth > availableSpace && width > averageWidth) {
                     width = averageWidth;
-                    labelTooLong = true;
+                    labelTooLong = false; //true;
                 }
 
                 // TODO (mindyp): how to we get this?
