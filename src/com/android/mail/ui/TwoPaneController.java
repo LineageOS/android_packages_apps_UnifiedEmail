@@ -54,6 +54,8 @@ public final class TwoPaneController extends AbstractActivityController {
             R.id.mute);
     private final ActionCompleteListener mSpamListener = new TwoPaneDestructiveActionListener(
             R.id.report_spam);
+    private final TwoPaneDestructiveActionListener mFolderChangeListener =
+            new TwoPaneDestructiveActionListener(R.id.change_folder);
 
     /**
      * @param activity
@@ -384,5 +386,10 @@ public final class TwoPaneController extends AbstractActivityController {
 
     protected void requestDelete(final ActionCompleteListener listener) {
         mConversationListFragment.requestDelete(listener);
+    }
+
+    @Override
+    protected DestructiveActionListener getFolderDestructiveActionListener() {
+        return mFolderChangeListener;
     }
 }

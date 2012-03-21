@@ -438,26 +438,16 @@ public abstract class AbstractActivityController implements ActivityController {
      * removal of the conversation.
      *
      */
-    private class FolderChangeListener implements ActionCompleteListener {
-        private final String mFolderChangeList;
-        private final boolean mDestructiveChange;
+    protected abstract class FolderChangeListener implements ActionCompleteListener {
+        protected final String mFolderChangeList;
+        protected final boolean mDestructiveChange;
 
         public FolderChangeListener(String changeList, boolean destructive) {
             mFolderChangeList = changeList;
             mDestructiveChange = destructive;
         }
 
-        @Override
-        public void onActionComplete() {
-            // Only show undo if this was a destructive folder change.
-            if (mDestructiveChange) {
-                mConversationListFragment.onUndoAvailable(new UndoOperation(1, R.id.change_folder));
-            }
-            // Update the folders for this conversation
-            Conversation.updateString(mContext, Collections.singletonList(mCurrentConversation),
-                    ConversationColumns.FOLDER_LIST, mFolderChangeList);
-            mConversationListFragment.requestListRefresh();
-        }
+        public abstract void onActionComplete();
     }
 
     /**
@@ -522,24 +512,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     protected abstract void requestDelete(ActionCompleteListener listener);
 
-    @Override
-    public void onCommit(String uris) {
-        // Get currently active folder info and compare it to the list
-        // these conversations have been given; if they no longer contain
-        // the selected folder, delete them from the list.
-        HashSet<String> folderUris = new HashSet<String>();
-        if (!TextUtils.isEmpty(uris)) {
-            folderUris.addAll(Arrays.asList(uris.split(",")));
-        }
-        final boolean destructiveChange = !folderUris.contains(mFolder.uri);
-        FolderChangeListener listener = new FolderChangeListener(uris, destructiveChange);
-        if (destructiveChange) {
-            mCurrentConversation.localDeleteOnUpdate = true;
-            mConversationListFragment.requestDelete(listener);
-        } else {
-            listener.onActionComplete();
-        }
-    }
 
     @Override
     public void onPrepareDialog(int id, Dialog dialog, Bundle bundle) {
@@ -1059,4 +1031,32 @@ public abstract class AbstractActivityController implements ActivityController {
         @Override
         public abstract void onActionComplete();
     }
+
+    // Called from the FolderSelectionDialog after a user is done changing
+    // folders.
+    @Override
+    public void onCommit(String uris) {
+        // Get currently active folder info and compare it to the list
+        // these conversations have been given; if they no longer contain
+        // the selected folder, delete them from the list.
+        HashSet<String> folderUris = new HashSet<String>();
+        if (!TextUtils.isEmpty(uris)) {
+            folderUris.addAll(Arrays.asList(uris.split(",")));
+        }
+        final boolean destructiveChange = !folderUris.contains(mFolder.uri);
+        DestructiveActionListener listener = getFolderDestructiveActionListener();
+        if (destructiveChange) {
+            mCurrentConversation.localDeleteOnUpdate = true;
+            mConversationListFragment.requestDelete(listener);
+        } else {
+            final ArrayList<Conversation> single = new ArrayList<Conversation>();
+            single.add(mCurrentConversation);
+            listener.performConversationAction(single);
+            if (mConversationListFragment != null) {
+                mConversationListFragment.requestListRefresh();
+            }
+        }
+    }
+
+    protected abstract DestructiveActionListener getFolderDestructiveActionListener();
 }

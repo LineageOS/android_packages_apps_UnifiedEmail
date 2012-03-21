@@ -33,7 +33,6 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,6 +65,8 @@ public final class OnePaneController extends AbstractActivityController {
             R.id.mute);
     private final ActionCompleteListener mSpamListener = new OnePaneDestructiveActionListener(
             R.id.report_spam);
+    private final OnePaneDestructiveActionListener mFolderChangeListener =
+            new OnePaneDestructiveActionListener(R.id.change_folder);
 
     /**
      * @param activity
@@ -427,4 +428,8 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
+    @Override
+    protected DestructiveActionListener getFolderDestructiveActionListener() {
+        return mFolderChangeListener;
+    }
 }
