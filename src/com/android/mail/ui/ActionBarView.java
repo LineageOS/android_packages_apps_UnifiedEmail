@@ -189,13 +189,13 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
 
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
-        final int type = mSpinner.getItemViewType(position);
+        final int type = mSpinner.getType(position);
         switch (type) {
             case AccountSpinnerAdapter.TYPE_ACCOUNT:
                 // Get the capabilities associated with this account.
-                final Object item = mSpinner.getItem(position);
-                assert (item instanceof Account);
-                mController.onAccountChanged((Account) mSpinner.getItem(position));
+                final Object account = mSpinner.getItem(position);
+                assert (account instanceof Account);
+                mController.onAccountChanged((Account) account);
                 break;
             case AccountSpinnerAdapter.TYPE_FOLDER:
                 final Object folder = mSpinner.getItem(position);
