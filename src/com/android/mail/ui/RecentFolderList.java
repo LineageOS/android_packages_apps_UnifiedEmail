@@ -16,16 +16,14 @@
 
 package com.android.mail.ui;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.text.TextUtils;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.LruCache;
 
@@ -44,11 +42,19 @@ import java.util.List;
  *
  */
 public final class RecentFolderList {
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String TAG = "RecentFolderList";
     /** The application context */
     private final Context mContext;
     /** The current account */
     private Account mAccount = null;
+
+    private final LruCache<String, Folder> mFolderCache;
+    /**
+     *  We want to show five recent folders, and one space for the current folder (not displayed
+     *  to the user).
+     */
+    private final static int NUM_FOLDERS = 5 + 1;
+
     /**
      * Compare based on alphanumeric name of the folder, ignoring case.
      */
@@ -58,27 +64,28 @@ public final class RecentFolderList {
             return lhs.name.compareToIgnoreCase(rhs.name);
         }
     };
-    private final LruCache<String, Folder> mFolderCache;
-    /**
-     *  We want to show five recent folders, and one space for the current folder (not displayed
-     *  to the user).
-     */
-    private final static int NUM_FOLDERS = 5 + 1;
     /**
      * Class to store the recent folder list asynchronously.
      */
-    private class StoreRecent extends AsyncTask<ContentValues, Void, Void> {
-        final ContentResolver mResolver;
+    private class StoreRecent extends AsyncTask<Void, Void, Void> {
         final Account mAccount;
+        final Folder mFolder;
 
-        public StoreRecent(Context context, Account account) {
-            mResolver = context.getContentResolver();
+        public StoreRecent(Account account, Folder folder) {
             mAccount = account;
+            mFolder = folder;
         }
 
         @Override
-        protected Void doInBackground(ContentValues... valuesArray) {
-            mResolver.update(mAccount.recentFolderListUri, valuesArray[0], null, null);
+        protected Void doInBackground(Void... v) {
+            Uri uri = mAccount.recentFolderListUri;
+            if (uri != null) {
+                ContentValues values = new ContentValues();
+                values.put(mFolder.uri.toString(), System.currentTimeMillis());
+                // TODO: Remove when well tested
+                LogUtils.i(TAG, "Save: " + mFolder.name);
+                mContext.getContentResolver().update(uri, values, null, null);
+            }
             return null;
         }
     }
@@ -101,7 +108,6 @@ public final class RecentFolderList {
      * @param account
      */
     public void setCurrentAccount(Account account) {
-        saveToUiProvider();
         mAccount = account;
         // At some point in the future, the load method will return and populate our cache with
         // useful entries. But for now, the cache is invalid.
@@ -113,14 +119,16 @@ public final class RecentFolderList {
      * @param data a cursor over the recent folders.
      */
     public void loadFromUiProvider(Cursor data) {
-        if (mAccount == null || mAccount.recentFolderListUri == null || data == null
-                || data.getCount() <= 0)
+        if (mAccount == null || data == null) {
             return;
+        }
         int i = 0;
         while (data.moveToNext()) {
-            assert (data.getColumnCount() == UIProvider.FOLDERS_PROJECTION.length);
             Folder folder = new Folder(data);
-            mFolderCache.putElement(folder.uri.toString(), folder);
+            String folderUriString = folder.uri.toString();
+            mFolderCache.putElement(folderUriString, folder);
+            // TODO: Remove when well tested
+            LogUtils.i(TAG, "Account " + mAccount.name + ", Recent: " + folder.name);
             i++;
             if (i >= NUM_FOLDERS)
                 break;
@@ -128,45 +136,21 @@ public final class RecentFolderList {
     }
 
     /**
-     * Marks the given folder as 'accessed' by the user interface, and its entry is updated in the
-     * recent folder list.
+     * Marks the given folder as 'accessed' by the user interface, its entry is updated in the
+     * recent folder list, and the current time is written to the provider
      * @param folder the folder we have changed to.
      */
     public void touchFolder(Folder folder) {
         mFolderCache.putElement(folder.uri.toString(), folder);
-        // Update the UiProvider with the current recent folder list.
-        // TODO(viki): Perhaps not do this on every touch. This is excessive.
-        saveToUiProvider();
-    }
-
-    /**
-     * Requests the UIProvider to save this RecentFolderList to persistent storage.
-     */
-    private void saveToUiProvider() {
-        if (mAccount == null || mFolderCache.isEmpty() || mAccount.recentFolderListUri == null)
-            return;
-        // TODO: Remove this test
-        if (TextUtils.equals("null", mAccount.recentFolderListUri.toString())) {
-            LogUtils.d(LOG_TAG, "recent folder list uri was null for account " + mAccount.name);
-            return;
-        }
-        // Write the current recent folder list into the account.
-        // Store the ID of the folder and the last touched timestamp.
-        ContentValues values = new ContentValues();
-        // TODO(viki): Fix the timestamps here, and put real timestamps rather than garbage.
-        final long now = System.currentTimeMillis();
-        for (String id : mFolderCache.keySet()) {
-            values.put(id, now);
-        }
-        // Store the values in the background.
-        new StoreRecent(mContext, mAccount).execute(values);
+        new StoreRecent(mAccount, folder).execute();
     }
 
     /**
      * Generate a sorted array of recent folders, excluding the specified folders.
-     * @param exclude the folders to be excluded.
+     * @param exclude the folder to be excluded.
      */
     public Folder[] getSortedArray(Folder exclude) {
+        // TODO: Need to exclude default inbox folder as well!
         final int spaceForCurrentFolder =
                 (exclude != null && mFolderCache.getElement(exclude.uri.toString()) != null)
                         ? 1 : 0;
