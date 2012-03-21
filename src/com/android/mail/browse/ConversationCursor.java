@@ -528,66 +528,79 @@ public final class ConversationCursor implements Cursor {
         // ConversationCursor.create to do a sync() between the time that refreshReady() is called
         // and the subsequent call to getRefreshDeletions().  This is harmless, and an empty
         // result list is correct.
-        if (sRequeryCursor == null) {
-            if (DEBUG) {
-                LogUtils.i(TAG, "[getRefreshDeletions() called; no cursor]");
-            }
-            return EMPTY_DELETION_LIST;
-        } else if (!sRequeryCursor.getUri().equals(sUnderlyingCursor.getUri())) {
-            if (DEBUG) {
-                LogUtils.i(TAG, "[getRefreshDeletions(); cursors differ]");
-            }
-            return EMPTY_DELETION_LIST;
-        }
-        if (DEBUG) {
-            LogUtils.i(TAG, "[getRefreshDeletions() called]");
-        }
-        Cursor deviceCursor = sConversationCursor;
-        Cursor serverCursor = sRequeryCursor;
-        ArrayList<Integer> deleteList = new ArrayList<Integer>();
-        int serverCount = serverCursor.getCount();
-        int deviceCount = deviceCursor.getCount();
-        deviceCursor.moveToFirst();
-        serverCursor.moveToFirst();
-        while (serverCount > 0 || deviceCount > 0) {
-            if (serverCount == 0) {
-                for (; deviceCount > 0; deviceCount--)
-                    deleteList.add(deviceCursor.getPosition());
-                break;
-            } else if (deviceCount == 0) {
-                break;
-            }
-            long deviceMs = deviceCursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
-            long serverMs = serverCursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
-            String deviceUri = deviceCursor.getString(UIProvider.CONVERSATION_URI_COLUMN);
-            String serverUri = serverCursor.getString(UIProvider.CONVERSATION_URI_COLUMN);
-            deviceCursor.moveToNext();
-            serverCursor.moveToNext();
-            serverCount--;
-            deviceCount--;
-            if (serverMs == deviceMs) {
-                // Check for duplicates here; if our identical dates refer to different messages,
-                // we'll just quit here for now (at worst, this will cause a non-animating delete)
-                // My guess is that this happens VERY rarely, if at all
-                if (!deviceUri.equals(serverUri)) {
-                    // To do this right, we'd find all of the rows with the same ms (date), etc...
-                    //return deleteList;
-                }
-                continue;
-            } else if (deviceMs > serverMs) {
-                deleteList.add(deviceCursor.getPosition() - 1);
-                // Move back because we've already advanced cursor (that's why we subtract 1 above)
-                serverCount++;
-                serverCursor.moveToPrevious();
-            } else if (serverMs > deviceMs) {
-                // If we wanted to track insertions, we'd so so here
-                // Move back because we've already advanced cursor
-                deviceCount++;
-                deviceCursor.moveToPrevious();
-            }
-        }
-        LogUtils.i(TAG, "Deletions: " + deleteList);
-        return deleteList;
+        return EMPTY_DELETION_LIST;
+//        if (sRequeryCursor == null) {
+//            if (DEBUG) {
+//                LogUtils.i(TAG, "[getRefreshDeletions() called; no cursor]");
+//            }
+//            return EMPTY_DELETION_LIST;
+//        } else if (!sRequeryCursor.getUri().equals(sUnderlyingCursor.getUri())) {
+//            if (DEBUG) {
+//                LogUtils.i(TAG, "[getRefreshDeletions(); cursors differ]");
+//            }
+//            return EMPTY_DELETION_LIST;
+//        }
+//        Cursor deviceCursor = sConversationCursor;
+//        Cursor serverCursor = sRequeryCursor;
+//        ArrayList<Integer> deleteList = new ArrayList<Integer>();
+//        int serverCount = serverCursor.getCount();
+//        int deviceCount = deviceCursor.getCount();
+//        deviceCursor.moveToFirst();
+//        serverCursor.moveToFirst();
+//        while (serverCount > 0 || deviceCount > 0) {
+//            if (serverCount == 0) {
+//                for (; deviceCount > 0; deviceCount--, deviceCursor.moveToPrevious()) {
+//                    deleteList.add(deviceCursor.getPosition());
+//                    if (deleteList.size() > 6) {
+//                        if (DEBUG) {
+//                            LogUtils.i(TAG, "[getRefreshDeletions(); mega changes]");
+//                        }
+//                        return EMPTY_DELETION_LIST;
+//                    }
+//                }
+//                break;
+//            } else if (deviceCount == 0) {
+//                break;
+//            }
+//            long deviceMs = deviceCursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
+//            long serverMs = serverCursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
+//            String deviceUri = deviceCursor.getString(UIProvider.CONVERSATION_URI_COLUMN);
+//            String serverUri = serverCursor.getString(UIProvider.CONVERSATION_URI_COLUMN);
+//            deviceCursor.moveToNext();
+//            serverCursor.moveToNext();
+//            serverCount--;
+//            deviceCount--;
+//            if (serverMs == deviceMs) {
+//                // Check for duplicates here; if our identical dates refer to different messages,
+//                // we'll just quit here for now (at worst, this will cause a non-animating delete)
+//                // My guess is that this happens VERY rarely, if at all
+//                if (!deviceUri.equals(serverUri)) {
+//                    // To do this right, we'd find all of the rows with the same ms (date), etc...
+//                    //return deleteList;
+//                }
+//                continue;
+//            } else if (deviceMs > serverMs) {
+//                deleteList.add(deviceCursor.getPosition() - 1);
+//                if (deleteList.size() > 6) {
+//                    if (DEBUG) {
+//                        LogUtils.i(TAG, "[getRefreshDeletions(); mega changes]");
+//                    }
+//                    return EMPTY_DELETION_LIST;
+//                }
+//                // Move back because we've already advanced cursor (that's why we subtract 1 above)
+//                serverCount++;
+//                serverCursor.moveToPrevious();
+//            } else if (serverMs > deviceMs) {
+//                // If we wanted to track insertions, we'd so so here
+//                // Move back because we've already advanced cursor
+//                deviceCount++;
+//                deviceCursor.moveToPrevious();
+//            }
+//        }
+//        if (DEBUG) {
+//            LogUtils.i(TAG, "getRefreshDeletions(): " + deleteList);
+//        }
+//        return deleteList;
     }
 
     /**
