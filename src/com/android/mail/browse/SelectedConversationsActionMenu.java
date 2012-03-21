@@ -236,7 +236,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         if (!TextUtils.isEmpty(folderChangeList)) {
             folderUris.addAll(Arrays.asList(folderChangeList.split(",")));
         }
-        if (!folderUris.contains(mFolder.uri)) {
+        if (!folderUris.contains(mFolder.uri.toString())) {
             final Collection<Conversation> conversations = mSelectionSet.values();
             // Indicate delete on update (i.e. no longer in this folder)
             mDeletionSet = new ArrayList<Conversation>();
