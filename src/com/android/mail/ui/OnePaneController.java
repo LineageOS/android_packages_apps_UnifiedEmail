@@ -161,11 +161,12 @@ public final class OnePaneController extends AbstractActivityController {
         if (!inInbox()) {
             // Maintain fragment transaction history so we can get back to the
             // fragment used to launch this list.
-            replaceFragment(conversationListFragment, transition);
+            mLastConversationListTransactionId = replaceFragment(conversationListFragment,
+                    transition);
         } else {
             // If going to the inbox, clear the folder list transaction history.
             mInbox = listContext.folder;
-            mLastConversationListTransactionId = replaceFragment(conversationListFragment,
+            replaceFragment(conversationListFragment,
                     transition);
             mLastFolderListTransactionId = INVALID_ID;
         }
@@ -251,15 +252,10 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             ConversationListContext listContext = ConversationListContext.forFolder(mContext,
                     mAccount, mInbox);
-            // Set the correct context for what the conversation view will be now.
+            // Set the correct context for what the conversation view will be
+            // now.
             onFolderChanged(mInbox);
-            if (isTransactionIdValid(mLastConversationListTransactionId)) {
-               // showConversationList(listContext);
-                mActivity.getFragmentManager().popBackStack(mLastConversationListTransactionId, 0);
-                resetActionBarIcon();
-            } else {
-                showConversationList(listContext);
-            }
+            showConversationList(listContext);
         }
     }
 

@@ -263,10 +263,13 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             case ViewMode.CONVERSATION_LIST:
                 // Show compose, search, folders, and sync based on the account
                 // The only option that needs to be disabled is search
+                showNavList();
                 setVisibility(menu, R.id.search,
                         mAccount.supportsCapability(AccountCapabilities.FOLDER_SERVER_SEARCH));
                 break;
             case ViewMode.CONVERSATION:
+                mActionBar.setDisplayHomeAsUpEnabled(true);
+                showNavList();
                 setVisibility(menu, R.id.y_button,
                         mAccount.supportsCapability(AccountCapabilities.ARCHIVE));
                 setVisibility(menu, R.id.report_spam,
@@ -275,19 +278,31 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                         mAccount.supportsCapability(AccountCapabilities.MUTE));
                 break;
             case ViewMode.SEARCH_RESULTS_LIST:
-                mActionBar.setDisplayHomeAsUpEnabled(true);
+                showNavList();
                 setPopulatedSearchView();
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
+                showNavList();
                 if (Utils.useTabletUI(mActivity.getActivityContext())) {
                     setPopulatedSearchView();
                 }
                 break;
             case ViewMode.FOLDER_LIST:
+                mActionBar.setDisplayHomeAsUpEnabled(true);
+                mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE,
+                        ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+                mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                mActionBar.setTitle(R.string.folder_list_title);
                 break;
         }
         return false;
+    }
+
+    private void showNavList() {
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+                ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
     private void setPopulatedSearchView() {
