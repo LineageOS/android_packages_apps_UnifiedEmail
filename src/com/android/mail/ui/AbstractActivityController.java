@@ -289,9 +289,13 @@ public abstract class AbstractActivityController implements ActivityController {
             // TODO: this may need to be fine tuned.  If this is the signal that is indicating that
             // the list is shown to the user, this could fire in one pane if the user goes directly
             // to a conversation
-            mRecentFolderList.setCurrentAccount(mAccount);
-            mRecentFolderList.touchFolder(mFolder);
+            updateRecentFolderList();
         }
+    }
+
+    private void updateRecentFolderList() {
+        mRecentFolderList.setCurrentAccount(mAccount);
+        mRecentFolderList.touchFolder(mFolder);
     }
 
     // TODO(mindyp): set this up to store a copy of the folder locally
@@ -946,6 +950,9 @@ public abstract class AbstractActivityController implements ActivityController {
                 mFolderListFragment.selectFolder(mConvListContext.folder);
             }
             showConversationList(mConvListContext);
+
+            // Add the folder that we were viewing to the recent folders list.
+            updateRecentFolderList();
         }
     }
 
@@ -964,6 +971,9 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             showConversationList(mConvListContext);
             mFetchAccountFolderTask = null;
+
+            // Add the folder that we were viewing to the recent folders list.
+            updateRecentFolderList();
         }
     }
 
