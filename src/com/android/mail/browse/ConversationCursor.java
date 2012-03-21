@@ -189,10 +189,9 @@ public final class ConversationCursor implements Cursor {
                         // We need a new query here; cancel any existing one, ensuring that a sync
                         // from another thread won't be stalled on the query
                         cancelRefresh();
-                        // Requery and say we're ready
-                        LogUtils.i(TAG, "Create: new query or refresh needed, query/sync");
-                        sRequeryCursor = doQuery(uri, projection, false);
-                        sRefreshReady = true;
+                        // Requery and return whatever cursor we've got for now
+                        LogUtils.i(TAG, "Create: new query or refresh needed, refresh");
+                        sConversationCursor.refresh();
                     }
                     return sConversationCursor;
                 }
@@ -257,8 +256,6 @@ public final class ConversationCursor implements Cursor {
      * be empty or have a few entries)
      */
     private void resetCursor(Cursor newCursor) {
-        // Temporary, log time for reset
-        long startTime = System.currentTimeMillis();
         if (DEBUG) {
             LogUtils.i(TAG, "[--resetCursor--]");
         }
@@ -307,7 +304,6 @@ public final class ConversationCursor implements Cursor {
             }
             sRefreshRequired = false;
         }
-        LogUtils.i(TAG, "resetCache time: " + ((System.currentTimeMillis() - startTime)) + "ms");
     }
 
     /**
@@ -783,11 +779,6 @@ public final class ConversationCursor implements Cursor {
         public void onChange(boolean selfChange) {
             // If we're here, then something outside of the UI has changed the data, and we
             // must query the underlying provider for that data
-            if (DEBUG) {
-                LogUtils.i(TAG, "Underlying conversation cursor changed; requerying");
-            }
-            // It's not at all obvious to me why we must unregister/re-register after the requery
-            // However, if we don't we'll only get one notification and no more...
             ConversationCursor.this.underlyingChanged();
         }
     }
