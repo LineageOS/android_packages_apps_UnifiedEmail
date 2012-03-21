@@ -26,6 +26,7 @@ import android.content.OperationApplicationException;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
@@ -58,9 +59,9 @@ public final class ConversationCursor implements Cursor {
     private static Activity sActivity;
     // The cursor underlying the caching cursor
     @VisibleForTesting
-    static Cursor sUnderlyingCursor;
+    static Wrapper sUnderlyingCursor;
     // The new cursor obtained via a requery
-    private static volatile Cursor sRequeryCursor;
+    private static volatile Wrapper sRequeryCursor;
     // A mapping from Uri to updated ContentValues
     private static HashMap<String, ContentValues> sCacheMap = new HashMap<String, ContentValues>();
     // Cache map lock (will be used only very briefly - few ms at most)
@@ -124,7 +125,7 @@ public final class ConversationCursor implements Cursor {
     private static Uri qUri;
     private static String[] qProjection;
 
-    private ConversationCursor(Cursor cursor, Activity activity, String messageListColumn) {
+    private ConversationCursor(Wrapper cursor, Activity activity, String messageListColumn) {
         sConversationCursor = this;
         // If we have an existing underlying cursor, make sure it's closed
         if (sUnderlyingCursor != null) {
@@ -189,16 +190,16 @@ public final class ConversationCursor implements Cursor {
                         // We need a new query here; cancel any existing one, ensuring that a sync
                         // from another thread won't be stalled on the query
                         cancelRefresh();
-                        // Requery and say we're ready
-                        LogUtils.i(TAG, "Create: new query or refresh needed, query/sync");
-                        sRequeryCursor = doQuery(uri, projection, false);
-                        sRefreshReady = true;
+                        LogUtils.i(TAG, "Create: performing refresh()");
+                        qUri = uri;
+                        qProjection = projection;
+                        sConversationCursor.refresh();
                     }
                     return sConversationCursor;
                 }
                 // Create new ConversationCursor
                 LogUtils.i(TAG, "Create: initial creation");
-                Cursor c = doQuery(uri, projection, sInitialConversationLimit);
+                Wrapper c = doQuery(uri, projection, sInitialConversationLimit);
                 return new ConversationCursor(c, activity, messageListColumn);
             } finally {
                 // If we used a limit, queue up a query without limit
@@ -210,7 +211,23 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
-    private static Cursor doQuery(Uri uri, String[] projection, boolean withLimit) {
+    /**
+     * Wrapper that includes the Uri used to create the cursor
+     */
+    private static class Wrapper extends CursorWrapper {
+        private final Uri mUri;
+
+        Wrapper(Cursor cursor, Uri uri) {
+            super(cursor);
+            mUri = uri;
+        }
+
+        Uri getUri() {
+            return mUri;
+        }
+    }
+
+    private static Wrapper doQuery(Uri uri, String[] projection, boolean withLimit) {
         qProjection = projection;
         qUri = uri;
         if (mResolver == null) {
@@ -221,7 +238,7 @@ public final class ConversationCursor implements Cursor {
                     ConversationListQueryParameters.DEFAULT_LIMIT).build();
         }
         long time = System.currentTimeMillis();
-        Cursor result = mResolver.query(uri, qProjection, null, null, null);
+        Wrapper result = new Wrapper(mResolver.query(uri, qProjection, null, null, null), uri);
         if (DEBUG) {
             time = System.currentTimeMillis() - time;
             LogUtils.i(TAG, "ConversationCursor query: " + uri + ", " + time + "ms, " +
@@ -256,9 +273,7 @@ public final class ConversationCursor implements Cursor {
      * (estimated at a few ms, but we can profile this; remember that the cache will usually
      * be empty or have a few entries)
      */
-    private void resetCursor(Cursor newCursor) {
-        // Temporary, log time for reset
-        long startTime = System.currentTimeMillis();
+    private void resetCursor(Wrapper newCursor) {
         if (DEBUG) {
             LogUtils.i(TAG, "[--resetCursor--]");
         }
@@ -307,7 +322,6 @@ public final class ConversationCursor implements Cursor {
             }
             sRefreshRequired = false;
         }
-        LogUtils.i(TAG, "resetCache time: " + ((System.currentTimeMillis() - startTime)) + "ms");
     }
 
     /**
@@ -510,15 +524,23 @@ public final class ConversationCursor implements Cursor {
      * @return a list of positions deleted in ConversationCursor
      */
     public ArrayList<Integer> getRefreshDeletions () {
-        if (DEBUG) {
-            LogUtils.i(TAG, "[getRefreshDeletions() called]");
-        }
         // It's possible that the requery cursor is null in the case that loadInBackground() causes
         // ConversationCursor.create to do a sync() between the time that refreshReady() is called
         // and the subsequent call to getRefreshDeletions().  This is harmless, and an empty
         // result list is correct.
         if (sRequeryCursor == null) {
+            if (DEBUG) {
+                LogUtils.i(TAG, "[getRefreshDeletions() called; no cursor]");
+            }
             return EMPTY_DELETION_LIST;
+        } else if (!sRequeryCursor.getUri().equals(sUnderlyingCursor.getUri())) {
+            if (DEBUG) {
+                LogUtils.i(TAG, "[getRefreshDeletions(); cursors differ]");
+            }
+            return EMPTY_DELETION_LIST;
+        }
+        if (DEBUG) {
+            LogUtils.i(TAG, "[getRefreshDeletions() called]");
         }
         Cursor deviceCursor = sConversationCursor;
         Cursor serverCursor = sRequeryCursor;
@@ -783,11 +805,6 @@ public final class ConversationCursor implements Cursor {
         public void onChange(boolean selfChange) {
             // If we're here, then something outside of the UI has changed the data, and we
             // must query the underlying provider for that data
-            if (DEBUG) {
-                LogUtils.i(TAG, "Underlying conversation cursor changed; requerying");
-            }
-            // It's not at all obvious to me why we must unregister/re-register after the requery
-            // However, if we don't we'll only get one notification and no more...
             ConversationCursor.this.underlyingChanged();
         }
     }
