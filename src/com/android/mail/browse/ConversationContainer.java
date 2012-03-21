@@ -391,6 +391,9 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
                 measureItem(overlayView);
             }
         }
+        if (mHeaderView.getVisibility() != GONE) {
+            measureChild(mHeaderView, widthMeasureSpec, heightMeasureSpec);
+        }
     }
 
     @Override
