@@ -259,6 +259,18 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
+    @Override
+    public void onFolderChanged(Folder folder) {
+        if (mViewMode.getMode() == ViewMode.FOLDER_LIST
+                && folder != null && folder.equals(mFolder)) {
+            // if we are in folder list when we select a new folder,
+            // and it is the same as the existing folder, clear the previous
+            // folder setting so that the folder will be re-loaded/ shown.
+            mFolder = null;
+        }
+        super.onFolderChanged(folder);
+    }
+
     private boolean isTransactionIdValid(int id) {
         return id >= 0;
     }
