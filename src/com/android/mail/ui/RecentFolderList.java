@@ -24,6 +24,7 @@ import android.os.AsyncTask;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.LruCache;
 
@@ -45,15 +46,21 @@ public final class RecentFolderList {
     private static final String TAG = "RecentFolderList";
     /** The application context */
     private final Context mContext;
+    /** The AbstractActivityController that created us*/
+    private final AbstractActivityController mController;
     /** The current account */
     private Account mAccount = null;
 
     private final LruCache<String, Folder> mFolderCache;
     /**
-     *  We want to show five recent folders, and one space for the current folder (not displayed
-     *  to the user).
+     *  We want to show at most five recent folders
      */
-    private final static int NUM_FOLDERS = 5 + 1;
+    private final static int MAX_RECENT_FOLDERS = 5;
+    /**
+     *  We exclude the default inbox for the account and the current folder; these might be the
+     *  same, but we'll allow for both
+     */
+    private final static int MAX_EXCLUDED_FOLDERS = 2;
 
     /**
      * Compare based on alphanumeric name of the folder, ignoring case.
@@ -95,42 +102,38 @@ public final class RecentFolderList {
      * retrieve the RecentFolderList from persistent storage (if any).
      * @param account
      */
-    public RecentFolderList(Context context) {
-        mFolderCache = new LruCache<String, Folder>(NUM_FOLDERS);
+    public RecentFolderList(Context context, AbstractActivityController controller) {
+        mFolderCache = new LruCache<String, Folder>(MAX_RECENT_FOLDERS);
         mContext = context;
+        mController = controller;
     }
 
     /**
-     * Change the current account. This causes the recent label list to be written out to the
-     * provider. When a cursor over the recent folders for this account is available, the client
-     * <b>must</b> call {@link #loadFromUiProvider(Cursor)} with the updated cursor. Till then,
-     * the recent account list will be empty.
-     * @param account
+     * Change the current account. When a cursor over the recent folders for this account is
+     * available, the client <b>must</b> call {@link #loadFromUiProvider(Cursor)} with the updated
+     * cursor. Till then, the recent account list will be empty.
+     * @param account the new current account
      */
     public void setCurrentAccount(Account account) {
         mAccount = account;
-        // At some point in the future, the load method will return and populate our cache with
-        // useful entries. But for now, the cache is invalid.
         mFolderCache.clear();
     }
 
     /**
      * Load the account information from the UI provider given the cursor over the recent folders.
-     * @param data a cursor over the recent folders.
+     * @param c a cursor over the recent folders.
      */
-    public void loadFromUiProvider(Cursor data) {
-        if (mAccount == null || data == null) {
+    public void loadFromUiProvider(Cursor c) {
+        if (mAccount == null || c == null) {
             return;
         }
         int i = 0;
-        while (data.moveToNext()) {
-            Folder folder = new Folder(data);
-            String folderUriString = folder.uri.toString();
-            mFolderCache.putElement(folderUriString, folder);
+        while (c.moveToNext()) {
+            Folder folder = new Folder(c);
+            mFolderCache.putElement(folder.uri.toString(), folder);
             // TODO: Remove when well tested
             LogUtils.i(TAG, "Account " + mAccount.name + ", Recent: " + folder.name);
-            i++;
-            if (i >= NUM_FOLDERS)
+            if (++i == (MAX_RECENT_FOLDERS + MAX_EXCLUDED_FOLDERS))
                 break;
         }
     }
@@ -138,7 +141,7 @@ public final class RecentFolderList {
     /**
      * Marks the given folder as 'accessed' by the user interface, its entry is updated in the
      * recent folder list, and the current time is written to the provider
-     * @param folder the folder we have changed to.
+     * @param folder the folder we touched
      */
     public void touchFolder(Folder folder) {
         mFolderCache.putElement(folder.uri.toString(), folder);
@@ -146,24 +149,29 @@ public final class RecentFolderList {
     }
 
     /**
-     * Generate a sorted array of recent folders, excluding the specified folders.
-     * @param exclude the folder to be excluded.
+     * Generate a sorted list of recent folders, excluding the passed in folder (if any) and
+     * the current account's default inbox
+     * @param excludedFolder the folder to be excluded (typically the current folder)
      */
-    public Folder[] getSortedArray(Folder exclude) {
-        // TODO: Need to exclude default inbox folder as well!
-        final int spaceForCurrentFolder =
-                (exclude != null && mFolderCache.getElement(exclude.uri.toString()) != null)
-                        ? 1 : 0;
-        final int numRecents = mFolderCache.size() - spaceForCurrentFolder;
-        final Folder[] folders = new Folder[numRecents];
-        int i = 0;
+    public ArrayList<Folder> getRecentFolderList(Folder excludedFolder) {
+        ArrayList<Uri> excludedUris = new ArrayList<Uri>();
+        if (excludedFolder != null) {
+            excludedUris.add(excludedFolder.uri);
+        }
+        Settings settings = mController.getSettings();
+        if (settings != null) {
+            // This could already be in the list, but that's ok
+            excludedUris.add(settings.defaultInbox);
+        }
         final List<Folder> recent = new ArrayList<Folder>(mFolderCache.values());
         Collections.sort(recent, ALPHABET_IGNORECASE);
+        ArrayList<Folder> recentFolders = new ArrayList<Folder>();
         for (Folder f : recent) {
-            if (exclude == null || !f.uri.equals(exclude.uri)) {
-                folders[i++] = f;
+            if (!excludedUris.contains(f.uri)) {
+                recentFolders.add(f);
             }
+            if (recentFolders.size() == MAX_RECENT_FOLDERS) break;
         }
-        return folders;
+        return recentFolders;
     }
 }

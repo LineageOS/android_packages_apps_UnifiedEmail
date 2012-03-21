@@ -17,9 +17,6 @@
 
 package com.android.mail.ui;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
-
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
@@ -57,16 +54,17 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.ArrayList;
 
 
 /**
@@ -137,7 +135,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
         IS_TABLET_DEVICE = Utils.useTabletUI(mContext);
-        mRecentFolderList = new RecentFolderList(mContext);
+        mRecentFolderList = new RecentFolderList(mContext, this);
     }
 
     @Override

@@ -21,16 +21,16 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.RecentFolderList;
 import com.android.mail.utils.Utils;
+
+import java.util.ArrayList;
 
 /**
  * An adapter to return the list of accounts and folders for the Account Spinner.
@@ -62,7 +62,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     /**
      * The actual collection of sorted recent folders obtained from {@link #mRecentFolders}
      */
-    private Folder[] mRecentFolderList = new Folder[0];
+    private ArrayList<Folder> mRecentFolderList = new ArrayList<Folder>();
 
     /** The folder currently being viewed */
     private Folder mCurrentFolder;
@@ -122,7 +122,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public boolean setCurrentFolder(Folder folder) {
         if (folder != null && folder != mCurrentFolder) {
             mCurrentFolder = folder;
-            mRecentFolderList = mRecentFolders.getSortedArray(folder);
+            mRecentFolderList = mRecentFolders.getRecentFolderList(folder);
             notifyDataSetChanged();
             return true;
         }
@@ -137,7 +137,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public boolean setCurrentAccount(Account account) {
         if (account != null && !account.equals(mCurrentAccount)) {
             mCurrentAccount = account;
-            mRecentFolderList = mRecentFolders.getSortedArray(mCurrentFolder);
+            mRecentFolderList = mRecentFolders.getRecentFolderList(mCurrentFolder);
             notifyDataSetChanged();
             return true;
         }
@@ -147,7 +147,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         // All the accounts, plus one header, plus recent folders
-        return mNumAccounts + 1 + mRecentFolderList.length;
+        return mNumAccounts + 1 + mRecentFolderList.size();
     }
 
     @Override
@@ -161,7 +161,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 // The first few positions have accounts, and then the header.
                 final int offset = position - mNumAccounts - 1;
                 // Return the folder at this location.
-                return mRecentFolderList[offset];
+                return mRecentFolderList.get(offset);
         }
     }
 
@@ -236,7 +236,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 break;
             case TYPE_FOLDER:
                 final int offset = position - mNumAccounts - 1;
-                final Folder folder = mRecentFolderList[offset];
+                final Folder folder = mRecentFolderList.get(offset);
                 textLabel = folder.name;
                 unreadCount = folder.unreadCount;
                 break;
