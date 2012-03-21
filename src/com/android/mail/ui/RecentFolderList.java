@@ -85,6 +85,10 @@ public final class RecentFolderList {
 
         @Override
         protected Void doInBackground(Void... v) {
+            if (mAccount == null) {
+                LogUtils.w(TAG, "No account set for setting recent folders?");
+                return null;
+            }
             Uri uri = mAccount.recentFolderListUri;
             if (uri != null) {
                 ContentValues values = new ContentValues();

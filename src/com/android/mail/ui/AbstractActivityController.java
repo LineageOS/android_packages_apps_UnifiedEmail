@@ -289,6 +289,7 @@ public abstract class AbstractActivityController implements ActivityController {
             // TODO: this may need to be fine tuned.  If this is the signal that is indicating that
             // the list is shown to the user, this could fire in one pane if the user goes directly
             // to a conversation
+            mRecentFolderList.setCurrentAccount(mAccount);
             mRecentFolderList.touchFolder(mFolder);
         }
     }
