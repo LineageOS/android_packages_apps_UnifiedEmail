@@ -72,6 +72,7 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.MessageModification;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.DraftType;
 import com.android.mail.R;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogUtils;
@@ -198,7 +199,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private boolean mReplyFromChanged;
     private MenuItem mSave;
     private MenuItem mSend;
-    private String mRefMessageId;
     private AlertDialog mRecipientErrorDialog;
     private AlertDialog mSendConfirmDialog;
     private Message mRefMessage;
@@ -452,7 +452,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initFromRefMessage(int action, String recipientAddress) {
-        mRefMessageId = mRefMessage.refMessageId;
         setSubject(mRefMessage, action);
         // Setup recipients
         if (action == FORWARD) {
@@ -1495,7 +1494,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             final String[] to, final String[] cc, final String[] bcc, final String subject,
             final CharSequence quotedText, final List<Attachment> attachments,
             final String refMessageId, SendOrSaveCallback callback, Handler handler, boolean save,
-            boolean forward) {
+            int composeMode) {
         ContentValues values = new ContentValues();
 
         MessageModification.putToAddresses(values, to);
@@ -1512,9 +1511,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (QuotedTextView.containsQuotedText(text)) {
                 int pos = QuotedTextView.getQuotedTextOffset(text);
                 fullBody.append(text.substring(0, pos));
-                MessageModification.putIncludeQuotedText(values, true);
                 MessageModification.putQuoteStartPos(values, pos);
-                MessageModification.putForward(values, forward);
+                MessageModification.putForward(values, composeMode == ComposeActivity.FORWARD);
                 MessageModification.putAppendRefMessageContent(values, includeQuotedText);
             } else {
                 LogUtils.w(LOG_TAG, "Couldn't find quoted text");
@@ -1523,9 +1521,28 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 fullBody.append(text);
             }
         }
+        int draftType = -1;
+        switch (composeMode) {
+            case ComposeActivity.COMPOSE:
+                draftType = DraftType.COMPOSE;
+                break;
+            case ComposeActivity.REPLY:
+                draftType = DraftType.REPLY;
+                break;
+            case ComposeActivity.REPLY_ALL:
+                draftType = DraftType.REPLY_ALL;
+                break;
+            case ComposeActivity.FORWARD:
+                draftType = DraftType.FORWARD;
+                break;
+        }
+        MessageModification.putDraftType(values, draftType);
         MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
         MessageModification.putBodyHtml(values, fullBody.toString());
         MessageModification.putAttachments(values, attachments);
+        if (!TextUtils.isEmpty(refMessageId)) {
+            MessageModification.putRefMessageId(values, refMessageId);
+        }
 
         SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(account, selectedAccount,
                 values, refMessageId, save);
@@ -1644,10 +1661,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mSendSaveTaskHandler = new Handler(handlerThread.getLooper());
         }
 
+        String refMessageString = mRefMessage != null ? mRefMessage.uri.toString() : "";
         mRequestId = sendOrSaveInternal(this, mAccount, selectedAccount, fromAddress, body, to, cc,
                 bcc, mSubject.getText().toString(), mQuotedTextView.getQuotedText(),
-                mAttachmentsView.getAttachments(), mRefMessageId, callback, mSendSaveTaskHandler,
-                save, mForward);
+                mAttachmentsView.getAttachments(), refMessageString, callback,
+                mSendSaveTaskHandler, save, mComposeMode);
 
         if (mRecipient != null && mRecipient.equals(mAccount.name)) {
             mRecipient = selectedAccount.name;

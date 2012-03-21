@@ -128,6 +128,26 @@ public class MessageModification {
     }
 
     /**
+     * Saves the type of the conversation.
+     *
+     * @param values the ContentValues that will be used to create or update the message
+     * @param draftType
+     */
+    public static void putDraftType(ContentValues values, int draftType) {
+        values.put(MessageColumns.DRAFT_TYPE, draftType);
+    }
+
+    /**
+     * Saves the ref message id for the conversation. It will be a uri.
+     *
+     * @param values the ContentValues that will be used to create or update the message
+     * @param uri of the reference message
+     */
+    public static void putRefMessageId(ContentValues values, String uri) {
+        values.put(MessageColumns.REF_MESSAGE_ID, uri);
+    }
+
+    /**
      * Saves a quoted text starting position. Only valid for drafts not yet sent to /
      * retrieved from server.
      *
