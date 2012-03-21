@@ -523,6 +523,15 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
+
+    public void requestDelete(int position, ActionCompleteListener listener) {
+        mCurrentPosition = position;
+        if (mConversationListCursor != null) {
+            mConversationListCursor.moveToPosition(position);
+        }
+        requestDelete(listener);
+    }
+
     /**
      * Complete the cursor refresh process by syncing to the underlying cursor and redrawing
      */

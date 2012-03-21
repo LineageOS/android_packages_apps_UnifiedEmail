@@ -400,30 +400,30 @@ public final class OnePaneController extends AbstractActivityController {
     protected void requestDelete(final ActionCompleteListener listener) {
         int pref = getAutoAdvanceSetting(mActivity);
         boolean canMove = false;
-        int position = mCurrentConversation.position;
-            switch (pref) {
-                case AutoAdvance.NEWER:
-                    canMove = position - 1 >= 0;
-                    break;
-                case AutoAdvance.OLDER:
-                    Cursor c = mConversationListFragment.getConversationListCursor();
-                    if (c != null) {
-                        canMove = position + 1 < c.getCount();
-                    }
-                    break;
-            }
+        final int position = mCurrentConversation.position;
+        switch (pref) {
+            case AutoAdvance.NEWER:
+                canMove = position - 1 >= 0;
+                break;
+            case AutoAdvance.OLDER:
+                Cursor c = mConversationListFragment.getConversationListCursor();
+                if (c != null) {
+                    canMove = position + 1 < c.getCount();
+                }
+                break;
+        }
         if (pref == AutoAdvance.LIST || !canMove) {
             onBackPressed();
             mHandler.post(new Runnable() {
 
                 @Override
                 public void run() {
-                    mConversationListFragment.requestDelete(listener);
+                    mConversationListFragment.requestDelete(position, listener);
                 }
 
             });
         } else {
-            mConversationListFragment.requestDelete(listener);
+            mConversationListFragment.requestDelete(position, listener);
         }
     }
 
