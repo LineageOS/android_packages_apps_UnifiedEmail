@@ -68,31 +68,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     private Folder mCurrentFolder;
     private Context mContext;
 
-    /**
-     * When the user selects the spinner, a dropdown list of objects is shown. Each item in the
-     * dropdown list has two textviews.
-     */
-    private static class DropdownHolder {
-        TextView folder;
-        TextView unreadCount;
-    }
-
-    /**
-     * After the accounts, the dropdown item is a header.
-     */
-    private static class HeaderHolder {
-        TextView account;
-    }
-
-    /**
-     * The spinner shows the name of the folder, the account name, and the unread count.
-     */
-    private static class ViewHolder {
-        TextView folder;
-        TextView account;
-        TextView unread_count;
-    }
-
     public static final int TYPE_ACCOUNT = 0;
     public static final int TYPE_HEADER = 1;
     public static final int TYPE_FOLDER = 2;
@@ -142,20 +117,31 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     /**
      * Set the current folder.
      * @param folder
+     * @return if changed.
      */
-    public void setCurrentFolder(Folder folder) {
-        mCurrentFolder = folder;
-        mRecentFolderList = mRecentFolders.getSortedArray(folder);
+    public boolean setCurrentFolder(Folder folder) {
+        if (folder != null && folder != mCurrentFolder) {
+            mCurrentFolder = folder;
+            mRecentFolderList = mRecentFolders.getSortedArray(folder);
+            notifyDataSetChanged();
+            return true;
+        }
+        return false;
     }
 
     /**
      * Set the current account.
      * @param account
+     * @return if changed.
      */
-    public void setCurrentAccount(Account account) {
-        mCurrentAccount = account;
-        mRecentFolderList = mRecentFolders.getSortedArray(mCurrentFolder);
-        notifyDataSetChanged();
+    public boolean setCurrentAccount(Account account) {
+        if (account != null && !account.equals(mCurrentAccount)) {
+            mCurrentAccount = account;
+            mRecentFolderList = mRecentFolders.getSortedArray(mCurrentFolder);
+            notifyDataSetChanged();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -185,20 +171,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         return position;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        // We have three different types of views: accounts, header and folders. The constants for
-        // account and folder are arbitrary, and we choose numbers 0 and 1.
-        switch (getType(position)) {
-            case TYPE_ACCOUNT:
-                return 0;
-            case TYPE_HEADER:
-                return AdapterView.ITEM_VIEW_TYPE_HEADER_OR_FOOTER;
-            default:
-                return 1;
-        }
-    }
-
     private String getFolderLabel() {
         return mCurrentFolder != null ? mCurrentFolder.name : "";
     }
@@ -207,56 +179,22 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         return mCurrentFolder != null ? mCurrentFolder.unreadCount : 0;
     }
 
+    private String getCurrentAccountName() {
+        return mCurrentAccount != null ? mCurrentAccount.name : "";
+    }
+
+    // This call renders the view that will be shown in the header.
+    // Since we are tracking the current folder/ account, just
+    // always return what we believe that view is.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String folderName = "";
-        String accountName = "";
-        int unreadCount = 0;
-        switch (getType(position)) {
-            case TYPE_ACCOUNT:
-                // The default Inbox for the given account
-                accountName = getAccountFolder(position);
-                folderName = getFolderLabel();
-                unreadCount = getFolderUnreadCount();
-                break;
-            case TYPE_HEADER:
-                accountName = getAccountFolder(0);
-                break;
-            default:
-                // Change the name of the current folder
-                final int offset = position - mNumAccounts - 1;
-                accountName = (mCurrentAccount == null) ? "" : mCurrentAccount.name;
-                final Folder folder = mRecentFolderList[offset];
-                folderName = folder.name;
-                unreadCount = folder.unreadCount;
-                break;
-        }
-
-        // Return a view with the folder on the first line and the account name on the second.
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.account_switch_spinner_item, null);
-            holder = new ViewHolder();
-            holder.account =
-                    (TextView) convertView.findViewById(R.id.account_spinner_account_name);
-            holder.folder =
-                    (TextView) convertView.findViewById(R.id.account_spinner_folder);
-            holder.unread_count =
-                    (TextView) convertView.findViewById(R.id.unread);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        holder.folder.setText(folderName);
-        holder.account.setText(accountName);
-        // Fake unread counts for now.
-        holder.unread_count.setText(Utils.getUnreadCountString(mContext, unreadCount));
-        // Keep the unread count logic here for the future.
-        if (unreadCount == 0) {
-            holder.unread_count.setVisibility(View.GONE);
-        } else {
-            holder.unread_count.setVisibility(View.VISIBLE);
-        }
+        convertView = mInflater.inflate(R.layout.account_switch_spinner_item, null);
+        ((TextView) convertView.findViewById(R.id.account_spinner_account_name))
+                .setText(getCurrentAccountName());
+        ((TextView) convertView.findViewById(R.id.account_spinner_folder))
+                .setText(getFolderLabel());
+        populateUnreadCountView((TextView) convertView.findViewById(R.id.unread),
+                getFolderUnreadCount());
         return convertView;
     }
 
@@ -284,19 +222,14 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         int unreadCount = 0;
         switch (getType(position)) {
             case TYPE_HEADER:
-                HeaderHolder header;
-                if (convertView == null || !(convertView.getTag() instanceof HeaderHolder)) {
-                    convertView = mInflater.inflate(
-                            R.layout.account_switch_spinner_dropdown_header, null);
-                    header = new HeaderHolder();
-                    header.account = (TextView) convertView.findViewById(
-                            R.id.account_spinner_header_account);
-                    convertView.setTag(header);
-                } else {
-                    header = (HeaderHolder) convertView.getTag();
+                convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_header,
+                        null);
+                final String label = getCurrentAccountName();
+                TextView accountLabel = ((TextView) convertView.findViewById(
+                        R.id.account_spinner_header_account));
+                if (accountLabel != null) {
+                    accountLabel.setText(label);
                 }
-                final String label = (mCurrentAccount == null) ? "" : mCurrentAccount.name;
-                header.account.setText(label);
                 return convertView;
             case TYPE_ACCOUNT:
                 textLabel = getAccountFolder(position);
@@ -308,28 +241,19 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 unreadCount = folder.unreadCount;
                 break;
         }
-
-        DropdownHolder dropdown;
-        if (convertView == null || !(convertView.getTag() instanceof DropdownHolder)) {
-            convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
-            dropdown = new DropdownHolder();
-            dropdown.folder = (TextView) convertView.findViewById(R.id.account_spinner_accountname);
-            dropdown.unreadCount =
-                    (TextView) convertView.findViewById(R.id.account_spinner_unread_count);
-            convertView.setTag(dropdown);
-        } else {
-            dropdown = (DropdownHolder) convertView.getTag();
-        }
-
-        dropdown.folder.setText(textLabel);
-        dropdown.unreadCount.setText(String.valueOf(unreadCount));
-        if (unreadCount == 0) {
-            dropdown.unreadCount.setVisibility(View.GONE);
-        } else {
-            dropdown.unreadCount.setVisibility(View.VISIBLE);
-        }
+        convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
+        ((TextView) convertView.findViewById(R.id.account_spinner_accountname)).setText(textLabel);
+        populateUnreadCountView(
+                (TextView) convertView.findViewById(R.id.account_spinner_unread_count),
+                unreadCount);
         return convertView;
 
+    }
+
+
+    private void populateUnreadCountView(TextView unreadCountView, int unreadCount) {
+        unreadCountView.setText(Utils.getUnreadCountString(mContext, unreadCount));
+        unreadCountView.setVisibility(unreadCount == 0 ? View.GONE : View.VISIBLE);
     }
 
     /**
