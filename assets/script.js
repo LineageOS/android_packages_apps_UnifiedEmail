@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+var BLOCKED_SRC_ATTR = "blocked-src";
 
 /**
  * Returns the page offset of an element.
@@ -87,6 +88,46 @@ function shrinkWideMessages() {
     }
 }
 
+function hideUnsafeImages() {
+    var i, bodyCount;
+    var j, imgCount;
+    var body, image;
+    var images;
+    var showImages;
+    var bodies = document.getElementsByClassName("mail-message-content");
+    for (i = 0, bodyCount = bodies.length; i < bodyCount; i++) {
+        body = bodies[i];
+        showImages = body.classList.contains("mail-show-images");
+
+        images = body.getElementsByTagName("img");
+        for (j = 0, imgCount = images.length; j < imgCount; j++) {
+            image = images[j];
+            attachImageLoadListener(image);
+            // TODO: handle inline image attachments for all supported protocols
+            if (!showImages) {
+                blockImage(image);
+            }
+        }
+    }
+}
+
+function attachImageLoadListener(imageElement) {
+    // Reset the src attribute to the empty string because onload will only fire if the src
+    // attribute is set after the onload listener.
+    var originalSrc = imageElement.src;
+    imageElement.src = '';
+    imageElement.onload = measurePositions;
+    imageElement.src = originalSrc;
+}
+
+function blockImage(imageElement) {
+    var src = imageElement.src;
+    if (src.indexOf("http://") == 0 || src.indexOf("https://") == 0) {
+        imageElement.setAttribute(BLOCKED_SRC_ATTR, src);
+        imageElement.src = "data:";
+    }
+}
+
 function measurePositions() {
     var headerHeights;
     var headerBottoms;
@@ -108,7 +149,28 @@ function measurePositions() {
     window.mail.onWebContentGeometryChange(headerBottoms, headerHeights);
 }
 
+// BEGIN Java->JavaScript handlers
+function unblockImages(messageDomId) {
+    var i, images, imgCount, image, blockedSrc;
+    var msg = document.getElementById(messageDomId);
+    if (!msg) {
+        console.log("can't unblock, no matching message for id: " + messageDomId);
+        return;
+    }
+    images = msg.getElementsByTagName("img");
+    for (i = 0, imgCount = images.length; i < imgCount; i++) {
+        image = images[i];
+        blockedSrc = image.getAttribute(BLOCKED_SRC_ATTR);
+        if (blockedSrc) {
+            image.src = blockedSrc;
+            image.removeAttribute(BLOCKED_SRC_ATTR);
+        }
+    }
+}
+// END Java->JavaScript handlers
+
 collapseQuotedText();
+hideUnsafeImages();
 shrinkWideMessages();
 measurePositions();
 

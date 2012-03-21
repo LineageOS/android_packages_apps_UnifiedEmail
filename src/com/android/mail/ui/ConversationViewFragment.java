@@ -53,6 +53,8 @@ import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MessageHeaderView;
+import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
+import com.android.mail.perf.Timer;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ListParams;
@@ -68,7 +70,8 @@ import java.util.Map;
  */
 public final class ConversationViewFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        ConversationViewHeader.ConversationViewHeaderCallbacks {
+        ConversationViewHeader.ConversationViewHeaderCallbacks,
+        MessageHeaderViewCallbacks {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -153,7 +156,7 @@ public final class ConversationViewFragment extends Fragment implements
         mTemplates = new HtmlConversationTemplates(mContext);
 
         mAdapter = new MessageListAdapter(mActivity.getActivityContext(),
-                null /* cursor */, mAccount, getLoaderManager());
+                null /* cursor */, mAccount, getLoaderManager(), this);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         mDensity = getResources().getDisplayMetrics().density;
@@ -198,9 +201,7 @@ public final class ConversationViewFragment extends Fragment implements
             }
         });
 
-        WebSettings settings = mWebView.getSettings();
-
-        settings.setBlockNetworkImage(true);
+        final WebSettings settings = mWebView.getSettings();
 
         settings.setJavaScriptEnabled(true);
         settings.setUseWideViewPort(true);
@@ -295,9 +296,19 @@ public final class ConversationViewFragment extends Fragment implements
 
         // FIXME: measure the header (and the attachments) and insert spacers of appropriate size
         final int spacerH = (Utils.useTabletUI(mContext)) ? 112 : 96;
+
+        boolean allowNetworkImages = false;
+
         while (messageCursor.moveToPosition(++pos)) {
-            mTemplates.appendMessageHtml(messageCursor.get(), true, false, 1.0f, spacerH);
+            final Message msg = messageCursor.get();
+            // TODO: save/restore 'show pics' state
+            final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
+            allowNetworkImages |= safeForImages;
+            mTemplates.appendMessageHtml(msg, true /* expanded */, safeForImages, 1.0f, spacerH);
         }
+
+        mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
+
         return mTemplates.endConversation(mBaseUri, 320);
     }
 
@@ -306,6 +317,7 @@ public final class ConversationViewFragment extends Fragment implements
         // if its not in undo bar, dismiss the undo bar.
     }
 
+    // BEGIN conversation header callbacks
     @Override
     public void onFoldersClicked() {
         if (mChangeFoldersMenuItem == null) {
@@ -326,6 +338,26 @@ public final class ConversationViewFragment extends Fragment implements
         // TODO: hook this up to action bar
         return subject;
     }
+    // END conversation header callbacks
+
+    // START message header callbacks
+    @Override
+    public void setMessageSpacerHeight(Message msg, int height) {
+        // TODO: update message HTML spacer height
+        // TODO: expand this concept to handle bottom-aligned attachments
+    }
+
+    @Override
+    public void setMessageExpanded(Message msg, boolean expanded, int spacerHeight) {
+        // TODO: show/hide the HTML message body and update the spacer height
+    }
+
+    @Override
+    public void showExternalResources(Message msg) {
+        mWebView.getSettings().setBlockNetworkImage(false);
+        mWebView.loadUrl("javascript:unblockImages('" + mTemplates.getMessageDomId(msg) + "');");
+    }
+    // END message header callbacks
 
     private static class MessageLoader extends CursorLoader {
         private boolean mDeliveredFirstResults = false;
@@ -386,21 +418,25 @@ public final class ConversationViewFragment extends Fragment implements
         private final FormattedDateBuilder mDateBuilder;
         private final Account mAccount;
         private final LoaderManager mLoaderManager;
+        private final MessageHeaderViewCallbacks mCallbacks;
 
         public MessageListAdapter(Context context, Cursor messageCursor, Account account,
-                LoaderManager loaderManager) {
+                LoaderManager loaderManager, MessageHeaderViewCallbacks cb) {
             super(context, R.layout.conversation_message_header, messageCursor, 0);
             mDateBuilder = new FormattedDateBuilder(context);
             mAccount = account;
             mLoaderManager = loaderManager;
+            mCallbacks = cb;
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            Message m = ((MessageCursor) cursor).get();
+            final Message msg = ((MessageCursor) cursor).get();
             MessageHeaderView header = (MessageHeaderView) view;
-            header.initialize(mDateBuilder, mAccount, mLoaderManager, true, false, false);
-            header.bind(m);
+            header.setCallbacks(mCallbacks);
+            header.initialize(mDateBuilder, mAccount, mLoaderManager, true /* expanded */,
+                    msg.shouldShowImagePrompt(), false /* defaultReplyAll */);
+            header.bind(msg);
         }
     }
 
