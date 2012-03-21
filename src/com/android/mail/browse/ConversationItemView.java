@@ -238,7 +238,7 @@ public class ConversationItemView extends View {
                 }
                 if (totalWidth > availableSpace && width > averageWidth) {
                     width = averageWidth;
-                    labelTooLong = false; //true;
+                    labelTooLong = true;
                 }
 
                 // TODO (mindyp): how to we get this?
@@ -252,19 +252,21 @@ public class ConversationItemView extends View {
                         sFoldersPaint);
 
                 // Draw the text.
-                sFoldersPaint.setColor(fgColor);
                 int padding = getPadding(width, (int) sFoldersPaint.measureText(folderString));
                 if (labelTooLong) {
+                    TextPaint shortPaint = new TextPaint();
+                    shortPaint.setColor(fgColor);
+                    shortPaint.setTextSize(coordinates.foldersFontSize);
                     padding = cellSize / 2;
                     int rightBorder = xStart + width - padding;
                     Shader shader = new LinearGradient(rightBorder - padding, y, rightBorder, y,
-                            fgColor,
-                            Utils.getTransparentColor(fgColor),
-                            Shader.TileMode.CLAMP);
-                    sFoldersPaint.setShader(shader);
+                            fgColor, Utils.getTransparentColor(fgColor), Shader.TileMode.CLAMP);
+                    shortPaint.setShader(shader);
+                    canvas.drawText(folderString, xStart + padding, y + topPadding, shortPaint);
+                } else {
+                    sFoldersPaint.setColor(fgColor);
+                    canvas.drawText(folderString, xStart + padding, y + topPadding, sFoldersPaint);
                 }
-                canvas.drawText(folderString, xStart + padding, y + topPadding, sFoldersPaint);
-                sFoldersPaint.setShader(null);
 
                 availableSpace -= width;
                 xStart += width;
