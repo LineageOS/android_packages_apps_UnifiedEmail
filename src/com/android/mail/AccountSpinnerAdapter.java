@@ -105,7 +105,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return the type of account: one of {@link #TYPE_ACCOUNT}, {@link #TYPE_HEADER}, or
      * {@link #TYPE_FOLDER}.
      */
-    private int getType(int position) {
+    public int getType(int position) {
         // First the accounts
         if (position < mNumAccounts) {
             return TYPE_ACCOUNT;
@@ -174,8 +174,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             default:
                 // The first few positions have accounts, and then the header.
                 final int offset = position - mNumAccounts - 1;
-                // Return the name of the folder at this location.
-                return mRecentFolderList[offset].name;
+                // Return the folder at this location.
+                return mRecentFolderList[offset];
         }
     }
 
