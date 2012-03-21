@@ -359,6 +359,11 @@ public class UIProvider {
          */
         public static final String LIMIT = "limit";
 
+        /**
+         * Parameter used to control whether the this query a remote server.
+         */
+        public static final String USE_NETWORK = "use_network";
+
         private ConversationListQueryParameters() {}
     }
 

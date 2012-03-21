@@ -20,6 +20,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.utils.DelayedTaskHandler;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -32,6 +33,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.Loader.OnLoadCompleteListener;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Looper;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -94,7 +96,16 @@ public class WidgetService extends RemoteViewsService {
                 BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolder);
             }
 
-            mConversationCursor = mResolver.query(mFolder.conversationListUri,
+            // We want to limit the query result to 25 and don't want these queries to cause network
+            // traffic
+            final Uri.Builder builder = mFolder.conversationListUri.buildUpon();
+            final String maxConversations = Integer.toString(MAX_CONVERSATIONS_COUNT);
+            final Uri widgetConversationQueryUri = builder
+                    .appendQueryParameter(ConversationListQueryParameters.LIMIT, maxConversations)
+                    .appendQueryParameter(ConversationListQueryParameters.USE_NETWORK,
+                            Boolean.FALSE.toString()).build();
+
+            mConversationCursor = mResolver.query(widgetConversationQueryUri,
                     UIProvider.CONVERSATION_PROJECTION, null, null, null);
 
             mFolderLoader = new CursorLoader(mContext, mFolder.uri, UIProvider.FOLDERS_PROJECTION,
