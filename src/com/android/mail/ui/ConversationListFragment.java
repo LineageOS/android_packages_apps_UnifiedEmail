@@ -344,6 +344,12 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     @Override
+    public void onDetach() {
+        mActivity.attachConversationList(null);
+        super.onDetach();
+    }
+
+    @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         // Long click is for adding conversations to a selection. Add conversation here.
 
