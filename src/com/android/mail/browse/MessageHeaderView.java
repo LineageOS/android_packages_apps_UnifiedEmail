@@ -19,6 +19,7 @@ package com.android.mail.browse;
 import com.google.common.annotations.VisibleForTesting;
 
 import android.app.LoaderManager;
+import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
@@ -88,8 +89,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     private MessageHeaderViewCallbacks mCallbacks;
-    private long mLocalMessageId = UIProvider.INVALID_CONVERSATION_ID;
-    private long mServerMessageId;
     private boolean mSizeChanged;
 
     private TextView mSenderNameView;
@@ -176,6 +175,17 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private final LayoutInflater mInflater;
 
+    private AsyncQueryHandler mQueryHandler;
+
+    public interface MessageHeaderViewCallbacks {
+        void setMessageSpacerHeight(Message msg, int height);
+
+        void setMessageExpanded(Message msg, boolean expanded,
+                int spacerHeight);
+
+        void showExternalResources(Message msg);
+    }
+
     public MessageHeaderView(Context context) {
         this(context, null);
     }
@@ -219,23 +229,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     }
 
-    public interface MessageHeaderViewCallbacks {
-        void setMessageSpacerHeight(long localMessageId, int height);
-
-        void setMessageExpanded(long localMessageId, long serverMessageId, boolean expanded,
-                int spacerHeight);
-
-        Timer getLoadTimer();
-
-        void onHeaderCreated(long headerId);
-
-        void onHeaderDrawn(long headerId);
-
-        void showExternalResources(long localMessageId);
-
-        void setDisplayImagesFromSender(String fromAddress);
-    }
-
     /**
      * Associate the header with a contact info source for later contact
      * presence/photo lookup.
@@ -257,10 +250,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      */
     public static MessageHeaderView find(ViewGroup parent, long localMessageId) {
         return (MessageHeaderView) parent.findViewWithTag(localMessageId);
-    }
-
-    public long getLocalMessageId() {
-        return mLocalMessageId;
     }
 
     public boolean isExpanded() {
@@ -294,7 +283,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * @return true if the headers are displaying data for the same message
      */
     public boolean matches(MessageHeaderView other) {
-        return other != null && mLocalMessageId == other.mLocalMessageId;
+        return other != null && mMessage != null && mMessage.equals(other.mMessage);
     }
 
     /**
@@ -304,12 +293,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * renderUpperHeaderFrom().
      */
     public void unbind() {
-        mLocalMessageId = UIProvider.INVALID_MESSAGE_ID;
+        mMessage = null;
     }
 
     public void renderUpperHeaderFrom(MessageHeaderView other) {
-        mLocalMessageId = other.mLocalMessageId;
-        mServerMessageId = other.mServerMessageId;
+        mMessage = other.mMessage;
         mSender = other.mSender;
         mDefaultReplyAll = other.mDefaultReplyAll;
 
@@ -352,11 +340,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mExpandedDetailsValid = false;
 
         mMessage = message;
-        mLocalMessageId = mMessage.id;
-        mServerMessageId = mMessage.serverId;
-        if (mCallbacks != null) {
-            mCallbacks.onHeaderCreated(mLocalMessageId);
-        }
 
         mTimestampMs = mMessage.dateReceivedMs;
         if (mDateBuilder != null) {
@@ -903,7 +886,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         // mSizeChanged.
         int h = forceMeasuredHeight();
         if (mCallbacks != null) {
-            mCallbacks.setMessageExpanded(mLocalMessageId, mServerMessageId, mIsExpanded, h);
+            mCallbacks.setMessageExpanded(mMessage, mIsExpanded, h);
         }
     }
 
@@ -933,9 +916,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             setMessageDetailsExpanded(mDetailsExpanded);
             if (mShowImagePrompt) {
                 showImagePrompt();
+            } else {
+                hideShowImagePrompt();
             }
             if (mMessage.hasAttachments) {
                 showAttachments();
+            } else {
+                hideAttachments();
             }
         }
         if (mBottomBorderView != null) {
@@ -1014,8 +1001,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private void showImagePrompt() {
         if (mImagePromptView == null) {
-            ViewGroup v = (ViewGroup) LayoutInflater.from(getContext()).inflate(
-                    R.layout.conversation_message_show_pics, this, false);
+            ViewGroup v = (ViewGroup) mInflater.inflate(R.layout.conversation_message_show_pics,
+                    this, false);
             addView(v);
             v.setOnClickListener(this);
             v.setTag(SHOW_IMAGE_PROMPT_ONCE);
@@ -1033,7 +1020,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         switch (state) {
             case SHOW_IMAGE_PROMPT_ONCE:
                 if (mCallbacks != null) {
-                    mCallbacks.showExternalResources(mLocalMessageId);
+                    mCallbacks.showExternalResources(mMessage);
                 }
                 ImageView descriptionViewIcon = (ImageView) v.findViewById(R.id.show_pictures_icon);
                 descriptionViewIcon.setContentDescription(getResources().getString(
@@ -1047,9 +1034,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 mSizeChanged = true;
                 break;
             case SHOW_IMAGE_PROMPT_ALWAYS:
-                if (mCallbacks != null) {
-                    mCallbacks.setDisplayImagesFromSender(mSender.getAddress());
-                }
+                mMessage.markAlwaysShowImages(getQueryHandler(), 0 /* token */, null /* cookie */);
+
                 mShowImagePrompt = false;
                 v.setTag(null);
                 v.setVisibility(GONE);
@@ -1058,6 +1044,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                         .show();
                 break;
         }
+    }
+
+    private AsyncQueryHandler getQueryHandler() {
+        if (mQueryHandler == null) {
+            mQueryHandler = new AsyncQueryHandler(getContext().getContentResolver()) {};
+        }
+        return mQueryHandler;
     }
 
     /**
@@ -1075,8 +1068,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             // separate layout and inflated alongside either collapsed or
             // expanded, whichever is
             // first.
-            LayoutInflater.from(getContext()).inflate(R.layout.conversation_message_details_header,
-                    this);
+            mInflater.inflate(R.layout.conversation_message_details_header, this);
 
             mBottomBorderView = findViewById(R.id.details_bottom_border);
             mCollapsedDetailsView = (ViewGroup) findViewById(R.id.details_collapsed_content);
@@ -1102,8 +1094,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private void showExpandedDetails() {
         // lazily create expanded details view
         if (mExpandedDetailsView == null) {
-            View v = LayoutInflater.from(getContext()).inflate(
-                    R.layout.conversation_message_details_header_expanded, this, false);
+            View v = mInflater.inflate(R.layout.conversation_message_details_header_expanded,
+                    this, false);
 
             // Insert expanded details into the parent linear layout immediately
             // after the
@@ -1138,7 +1130,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             // propagate new size to webview header spacer
             // only do this for known size changes
             if (mCallbacks != null) {
-                mCallbacks.setMessageSpacerHeight(mLocalMessageId, h);
+                mCallbacks.setMessageSpacerHeight(mMessage, h);
             }
 
             mSizeChanged = false;
@@ -1247,9 +1239,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (transform) {
             canvas.restoreToCount(saved);
         }
-        if (mCallbacks != null) {
-            mCallbacks.onHeaderDrawn(mLocalMessageId);
-        }
     }
 
     @Override
@@ -1264,7 +1253,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         Timer t = new Timer();
         if (Timer.ENABLE_TIMER && !mPreMeasuring) {
-            t.count("header measure id=" + mLocalMessageId);
+            t.count("header measure id=" + mMessage.id);
             t.start(MEASURE_TAG);
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

@@ -16,8 +16,11 @@
 
 package com.android.mail.providers;
 
+import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.utils.Utils;
 
+import android.content.AsyncQueryHandler;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
@@ -62,6 +65,23 @@ public class Message implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof Message)) {
+            return false;
+        }
+        final Uri otherUri = ((Message) o).uri;
+        if (uri == null) {
+            return (otherUri == null);
+        }
+        return uri.equals(otherUri);
+    }
+
+    @Override
+    public int hashCode() {
+        return uri == null ? 0 : uri.hashCode();
     }
 
     @Override
@@ -220,4 +240,32 @@ public class Message implements Parcelable {
         }
         return mReplyToAddresses;
     }
+
+    /**
+     * Returns whether a "Show Pictures" button should initially appear for this message. If the
+     * button is shown, the message must also block all non-local images in the body. Inversely, if
+     * the button is not shown, the message must show all images within (or else the user would be
+     * stuck with no images and no way to reveal them).
+     *
+     * @return true if a "Show Pictures" button should appear.
+     */
+    public boolean shouldShowImagePrompt() {
+        return embedsExternalResources && !alwaysShowImages;
+    }
+
+    /**
+     * Helper method to command a provider to mark all messages from this sender with the
+     * {@link MessageColumns#ALWAYS_SHOW_IMAGES} flag set.
+     *
+     * @param handler a caller-provided handler to run the query on
+     * @param token (optional) token to identify the command to the handler
+     * @param cookie (optional) cookie to pass to the handler
+     */
+    public void markAlwaysShowImages(AsyncQueryHandler handler, int token, Object cookie) {
+        final ContentValues values = new ContentValues(1);
+        values.put(UIProvider.MessageColumns.ALWAYS_SHOW_IMAGES, 1);
+
+        handler.startUpdate(token, cookie, uri, values, null, null);
+    }
+
 }

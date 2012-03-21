@@ -86,7 +86,7 @@ public class HtmlConversationTemplates {
      * The text replacement for {@link #sAbsoluteImgUrlPattern}. The "src" attribute is set to
      * something inert and not left unset to minimize interactions with existing JS.
      */
-    private static final String IMG_URL_REPLACEMENT = "$1src='data:' gm-src$2";
+    private static final String IMG_URL_REPLACEMENT = "$1src='data:' blocked-src$2";
 
     private static boolean sLoadedTemplates;
     private static String sSuperCollapsed;
@@ -130,7 +130,7 @@ public class HtmlConversationTemplates {
             boolean safeForImages, float zoomValue, int headerHeight) {
 
         final String bodyDisplay = isExpanded ? "block" : "none";
-        final String showImagesClass = safeForImages ? "gm-show-images" : "";
+        final String showImagesClass = safeForImages ? "mail-show-images" : "";
 
         String body = "";
         if (!TextUtils.isEmpty(message.bodyHtml)) {
@@ -158,7 +158,7 @@ public class HtmlConversationTemplates {
         }
 
         append(sMessage,
-                MESSAGE_PREFIX + message.id,
+                getMessageDomId(message),
                 MESSAGE_PREFIX + message.serverId,
                 headerHeight,
                 showImagesClass,
@@ -166,6 +166,10 @@ public class HtmlConversationTemplates {
                 zoomValue,
                 body
         );
+    }
+
+    public String getMessageDomId(Message msg) {
+        return MESSAGE_PREFIX + msg.id;
     }
 
     public void startConversation(int conversationHeaderHeight) {

@@ -381,8 +381,16 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         LogUtils.d(TAG, "*** IN header container onMeasure spec for w/h=%d/%d", widthMeasureSpec,
                 heightMeasureSpec);
 
-        measureChildren(widthMeasureSpec, heightMeasureSpec);
+        if (mWebView.getVisibility() != GONE) {
+            measureChild(mWebView, widthMeasureSpec, heightMeasureSpec);
+        }
         mWidthMeasureSpec = widthMeasureSpec;
+        for (int i = 0, overlayCount = getOverlayCount(); i < overlayCount; i++) {
+            final View overlayView = getOverlayAt(i);
+            if (overlayView.getVisibility() != GONE) {
+                measureItem(overlayView);
+            }
+        }
     }
 
     @Override
@@ -461,11 +469,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         if (mOverlayBottoms.length != mOverlayHeights.length) {
             LogUtils.wtf(TAG, "overlay spacer count mismatch: # bottoms=%d, # heights=%d",
                     mOverlayBottoms.length, mOverlayHeights.length);
-        }
-
-        // TODO: don't remove visible views. not an issue yet since this is only called once.
-        while (getOverlayCount() > 0) {
-            removeView(getOverlayAt(0));
         }
 
         // hack to bootstrap initial display of headers
