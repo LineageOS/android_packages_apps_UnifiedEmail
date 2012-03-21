@@ -223,8 +223,7 @@
     <string name="folderMode" msgid="553052020619895714">"設定資料夾模式"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"搜尋中..."</string>
     <string name="recent_folders" msgid="8240081561436891330">"最近使用過的資料夾"</string>
-    <!-- no translation found for add_label (1638508840481944248) -->
-    <skip />
+    <string name="add_label" msgid="1638508840481944248">"新增標籤"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"展開收件者詳細資料"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"收合收件者詳細資料"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"顯示 <xliff:g id="NAME">%1$s</xliff:g> 的聯絡人資訊"</string>

@@ -223,8 +223,7 @@
     <string name="folderMode" msgid="553052020619895714">"Klasör Modunu Ayarla"</string>
     <string name="search_results_searching_header" msgid="3821361153909466819">"Aranıyor…"</string>
     <string name="recent_folders" msgid="8240081561436891330">"Son"</string>
-    <!-- no translation found for add_label (1638508840481944248) -->
-    <skip />
+    <string name="add_label" msgid="1638508840481944248">"Etiket ekle"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Alıcı ayrıntılarını genişlet"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Alıcı ayrıntılarını daralt"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g> iletişim bilgilerini göster"</string>
