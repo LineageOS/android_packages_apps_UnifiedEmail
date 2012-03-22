@@ -101,7 +101,6 @@ public abstract class AbstractActivityController implements ActivityController, 
     protected final Context mContext;
     protected final RecentFolderList mRecentFolderList;
     protected ConversationListContext mConvListContext;
-    private FetchAccountFolderTask mFetchAccountFolderTask;
     protected Conversation mCurrentConversation;
 
     /** A {@link android.content.BroadcastReceiver} that suppresses new e-mail notifications. */
@@ -124,14 +123,13 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected Settings mCachedSettings;
-    private FetchSearchFolderTask mFetchSearchFolderTask;
-    private FetchInboxTask mFetchInboxTask;
     protected ConversationCursor mConversationListCursor;
     protected boolean mConversationListenerAdded = false;
     /**
      * Selected conversations, if any.
      */
     private ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
+
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     /** Constants used to differentiate between the types of loaders. */
@@ -140,6 +138,8 @@ public abstract class AbstractActivityController implements ActivityController, 
     private static final int LOADER_FOLDER_CURSOR = 2;
     private static final int LOADER_RECENT_FOLDERS = 3;
     private static final int LOADER_CONVERSATION_LIST = 4;
+    private static final int LOADER_ACCOUNT_INBOX = 5;
+    private static final int LOADER_SEARCH = 6;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -319,17 +319,22 @@ public abstract class AbstractActivityController implements ActivityController, 
 
             disableNotificationsOnAccountChange(mAccount);
 
-            // Account changed; existing folder is invalid.
-            mFolder = null;
-            fetchAccountFolderInfo();
-
             MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
+            loadAccountInbox();
         }
     }
 
     public void onSettingsChanged(Settings settings) {
-        mCachedSettings = settings;
-        resetActionBarIcon();
+        if (settings != null) {
+            mCachedSettings = settings;
+            resetActionBarIcon();
+            // Only restart the loader if the defaultInboxUri is not the same as
+            // the folder we are already loading.
+            if (settings.defaultInbox != null && mFolder != null
+                    && !settings.defaultInbox.equals(mFolder.uri)) {
+                mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_INBOX, null, this);
+            }
+        }
     }
 
     @Override
@@ -337,21 +342,11 @@ public abstract class AbstractActivityController implements ActivityController, 
         return mCachedSettings;
     }
 
-    private void fetchAccountFolderInfo() {
-        if (mFetchAccountFolderTask != null) {
-            mFetchAccountFolderTask.cancel(true);
-        }
-        mFetchAccountFolderTask = new FetchAccountFolderTask();
-        mFetchAccountFolderTask.execute();
-    }
-
     private void fetchSearchFolder(Intent intent) {
-        if (mFetchSearchFolderTask != null) {
-            mFetchSearchFolderTask.cancel(true);
-        }
-        mFetchSearchFolderTask = new FetchSearchFolderTask(intent
+        Bundle args = new Bundle();
+        args.putString(ConversationListContext.EXTRA_SEARCH_QUERY, intent
                 .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
-        mFetchSearchFolderTask.execute();
+        mActivity.getLoaderManager().restartLoader(LOADER_SEARCH, args, this);
     }
 
     @Override
@@ -370,18 +365,16 @@ public abstract class AbstractActivityController implements ActivityController, 
     }
 
     private void updateRecentFolderList() {
-        mRecentFolderList.setCurrentAccount(mAccount);
-        mRecentFolderList.touchFolder(mFolder);
+        if (mFolder != null) {
+            mRecentFolderList.setCurrentAccount(mAccount);
+            mRecentFolderList.touchFolder(mFolder);
+        }
     }
 
-    // TODO(mindyp): set this up to store a copy of the folder locally
-    // as soon as we realize we haven't gotten the inbox folder yet.
-    public void loadInbox() {
-        if (mFetchInboxTask != null) {
-            mFetchInboxTask.cancel(true);
-        }
-        mFetchInboxTask = new FetchInboxTask();
-        mFetchInboxTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    // TODO(mindyp): set this up to store a copy of the folder as a transient
+    // field in the account.
+    public void loadAccountInbox() {
+        mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_INBOX, null, this);
     }
 
     /** Set the current folder */
@@ -811,8 +804,8 @@ public abstract class AbstractActivityController implements ActivityController, 
                 return new CursorLoader(mContext, MailAppProvider.getAccountsUri(),
                         UIProvider.ACCOUNTS_PROJECTION, null, null, null);
             case LOADER_FOLDER_CURSOR:
-                return new CursorLoader(mContext, mFolder.uri,
-                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+                return new CursorLoader(mContext, mFolder.uri, UIProvider.FOLDERS_PROJECTION, null,
+                        null, null);
             case LOADER_ACCOUNT_SETTINGS:
                 if (mAccount.settingsQueryUri != null) {
                     return new CursorLoader(mContext, mAccount.settingsQueryUri,
@@ -825,6 +818,20 @@ public abstract class AbstractActivityController implements ActivityController, 
                             UIProvider.FOLDERS_PROJECTION, null, null, null);
                 }
                 break;
+            case LOADER_ACCOUNT_INBOX:
+                Settings settings = getSettings();
+                Uri inboxUri;
+                if (settings != null) {
+                    inboxUri = settings.defaultInbox;
+                } else {
+                    inboxUri = mAccount.folderListUri;
+                }
+                return new CursorLoader(mContext, inboxUri, UIProvider.FOLDERS_PROJECTION, null,
+                        null, null);
+            case LOADER_SEARCH:
+                return Folder.forSearchResults(mAccount,
+                        args.getString(ConversationListContext.EXTRA_SEARCH_QUERY),
+                        mActivity.getActivityContext());
             default:
                 LogUtils.wtf(LOG_TAG, "Loader returned unexpected id: " + id);
         }
@@ -932,8 +939,6 @@ public abstract class AbstractActivityController implements ActivityController, 
             }
         }
 
-        // Only bother updating the account/folder if the new account is different than the
-        // existing one
         onAccountChanged(newAccount);
 
         mActionBarView.setAccounts(allAccounts);
@@ -998,6 +1003,20 @@ public abstract class AbstractActivityController implements ActivityController, 
             case LOADER_RECENT_FOLDERS:
                 mRecentFolderList.loadFromUiProvider(data);
                 break;
+            case LOADER_ACCOUNT_INBOX:
+                data.moveToFirst();
+                Folder inbox = new Folder(data);
+                onFolderChanged(inbox);
+                break;
+            case LOADER_SEARCH:
+                data.moveToFirst();
+                Folder search = new Folder(data);
+                setFolder(search);
+                mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder,
+                        search.uri.getQueryParameter(UIProvider.SearchQueryParameters.QUERY));
+                showConversationList(mConvListContext);
+                mActivity.invalidateOptionsMenu();
+                break;
         }
     }
 
@@ -1022,71 +1041,6 @@ public abstract class AbstractActivityController implements ActivityController, 
             } else if (mode == ViewMode.CONVERSATION) {
                 mConversationViewFragment.onTouchEvent(event);
             }
-        }
-    }
-
-    private class FetchInboxTask extends AsyncTask<Void, Void, ConversationListContext> {
-        @Override
-        public ConversationListContext doInBackground(Void... params) {
-            // Gets the default inbox since there is no context.
-            return ConversationListContext.forFolder(mActivity.getActivityContext(), mAccount,
-                    (Folder) null);
-        }
-
-        @Override
-        public void onPostExecute(ConversationListContext result) {
-            mConvListContext = result;
-            setFolder(mConvListContext.folder);
-            if (mFolderListFragment != null) {
-                mFolderListFragment.selectFolder(mConvListContext.folder);
-            }
-            showConversationList(mConvListContext);
-
-            // Add the folder that we were viewing to the recent folders list.
-            updateRecentFolderList();
-        }
-    }
-
-    private class FetchAccountFolderTask extends AsyncTask<Void, Void, ConversationListContext> {
-        @Override
-        public ConversationListContext doInBackground(Void... params) {
-            return ConversationListContext.forFolder(mContext, mAccount, mFolder);
-        }
-
-        @Override
-        public void onPostExecute(ConversationListContext result) {
-            mConvListContext = result;
-            setFolder(mConvListContext.folder);
-            if (mFolderListFragment != null) {
-                mFolderListFragment.selectFolder(mConvListContext.folder);
-            }
-            showConversationList(mConvListContext);
-            mFetchAccountFolderTask = null;
-
-            // Add the folder that we were viewing to the recent folders list.
-            updateRecentFolderList();
-        }
-    }
-
-    private class FetchSearchFolderTask extends AsyncTask<Void, Void, Folder> {
-        String mQuery;
-        public FetchSearchFolderTask(String query) {
-            mQuery = query;
-        }
-
-        @Override
-        public Folder doInBackground(Void... params) {
-            Folder searchFolder = Folder.forSearchResults(mAccount, mQuery,
-                    mActivity.getActivityContext());
-            return searchFolder;
-        }
-
-        @Override
-        public void onPostExecute(Folder folder) {
-            setFolder(folder);
-            mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder, mQuery);
-            showConversationList(mConvListContext);
-            mActivity.invalidateOptionsMenu();
         }
     }
 

@@ -250,7 +250,7 @@ public final class OnePaneController extends AbstractActivityController {
     private void transitionToInbox() {
         mViewMode.enterConversationListMode();
         if (mInbox == null) {
-            loadInbox();
+            loadAccountInbox();
         } else {
             ConversationListContext listContext = ConversationListContext.forFolder(mContext,
                     mAccount, mInbox);

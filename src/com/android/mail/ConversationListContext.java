@@ -79,71 +79,17 @@ public class ConversationListContext {
     }
 
     /**
-     * Builds a context for a view to a Gmail folder. Note that folder may be
-     * null, in which case the context defaults to a view of the user's default
-     * inbox. Should only be called from an async task when the folder is null.
+     * Builds a context for a view to a Gmail folder.
      * @param context
      * @param account
      * @param folder
      * @return
      */
-    // TODO(viki): This is two different methods: (a) when folder is null when we search
-    // for a valid folder to show, and (b) when the folder is non-null, and we find a valid
-    // folder to show. (a) requires to run off the UI thread, while (b) can be run on the UI
-    // thread since it doesn't do a lot.
-    // Split into two different methods.
     public static ConversationListContext forFolder(Context context, Account account,
             Folder folder) {
-        if (folder == null) {
-            // Folder is null, let's read the name of the default inbox from settings.
-            Cursor cursor = null;
-            Cursor folderCursor = null;
-            try {
-                cursor = context.getContentResolver().query(account.settingsQueryUri,
-                        UIProvider.SETTINGS_PROJECTION, null, null, null);
-                if (cursor != null) {
-                    cursor.moveToFirst();
-                    Settings settings = new Settings(cursor);
-                    if (settings != null) {
-                        folderCursor = context.getContentResolver().query(settings.defaultInbox,
-                                UIProvider.FOLDERS_PROJECTION, null, null, null);
-                        if (folderCursor != null && folderCursor.moveToFirst()) {
-                            folder = new Folder(folderCursor);
-                        } else {
-                            folder = getDefaultFolder(context, account);
-                        }
-                    }
-                } else {
-                    folder = getDefaultFolder(context, account);
-                }
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-                if (folderCursor != null) {
-                    folderCursor.close();
-                }
-            }
-        }
         return new ConversationListContext(account, null, folder);
     }
 
-    /**
-     * Return the first folder from the account list. We assume that the account list has some
-     * decent sorting, and expect the 0th folder to be an important folder.
-     * @param context
-     * @param account
-     * @return the first folder in the list of folders for this account.
-     */
-    private static Folder getDefaultFolder(Context context, Account account) {
-        Cursor folderCursor = context.getContentResolver().query(account.folderListUri,
-                UIProvider.FOLDERS_PROJECTION, null, null, null);
-        // We expect at least one folder.
-        assert (folderCursor.getCount() > 0);
-        folderCursor.moveToFirst();
-        final Folder folder = new Folder(folderCursor);
-        return folder;
-    }
 
     public static ConversationListContext forFolder(Context context, Account account,
             String inboxFolder) {

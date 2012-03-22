@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import android.content.Context;
+import android.content.CursorLoader;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
@@ -268,20 +269,15 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Construct a folder that queries for search results. Do not call on the UI
      * thread.
      */
-    public static Folder forSearchResults(Account account, String query, Context context) {
-        Folder searchFolder = null;
+    public static CursorLoader forSearchResults(Account account, String query, Context context) {
         if (account.searchUri != null) {
             Builder searchBuilder = account.searchUri.buildUpon();
             searchBuilder.appendQueryParameter(UIProvider.SearchQueryParameters.QUERY, query);
             Uri searchUri = searchBuilder.build();
-            Cursor folderCursor = context.getContentResolver().query(searchUri,
-                    UIProvider.FOLDERS_PROJECTION, null, null, null);
-            if (folderCursor != null) {
-                folderCursor.moveToFirst();
-                searchFolder = new Folder(folderCursor);
-            }
+            return new CursorLoader(context, searchUri, UIProvider.FOLDERS_PROJECTION, null, null,
+                    null);
         }
-        return searchFolder;
+        return null;
     }
 
     public static List<Folder> forFoldersString(String foldersString) {
