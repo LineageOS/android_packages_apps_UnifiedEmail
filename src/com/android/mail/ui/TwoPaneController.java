@@ -84,6 +84,9 @@ public final class TwoPaneController extends AbstractActivityController {
      * Render the conversation list in the correct pane.
      */
     private void renderConversationList() {
+        if (mActivity == null) {
+            return;
+        }
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         // Use cross fading animation.
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -97,6 +100,9 @@ public final class TwoPaneController extends AbstractActivityController {
      * Render the folder list in the correct pane.
      */
     private void renderFolderList() {
+        if (mActivity == null) {
+            return;
+        }
         FolderListFragment folderListFragment = FolderListFragment.newInstance(this,
                 mAccount.folderListUri);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
@@ -183,6 +189,9 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void showConversation(Conversation conversation) {
+        if (mActivity == null) {
+            return;
+        }
         super.showConversation(conversation);
         int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
