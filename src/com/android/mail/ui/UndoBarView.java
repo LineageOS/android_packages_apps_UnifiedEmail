@@ -15,11 +15,6 @@
  */
 package com.android.mail.ui;
 
-import com.android.mail.R;
-import com.android.mail.providers.Account;
-import com.android.mail.providers.Conversation;
-import com.google.common.collect.ImmutableSet;
-
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.content.Context;
@@ -31,6 +26,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.android.mail.R;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * A custom {@link View} that exposes an {@link UndoOperation} to the user.

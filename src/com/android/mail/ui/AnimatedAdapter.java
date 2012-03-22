@@ -34,6 +34,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -77,6 +78,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (mUndo) {
             mDeletingItems.clear();
             mDeletingItems.addAll(mLastDeletingItems);
+            // Start animation
+            notifyDataSetChanged();
             mActionCompleteListener = new ActionCompleteListener() {
                 @Override
                 public void onActionComplete() {
