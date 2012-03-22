@@ -394,10 +394,21 @@ public final class ConversationCursor implements Cursor {
                 sCacheMap.put(uriString, map);
             }
             // If we're caching a deletion, add to our count
-            if ((columnName == DELETED_COLUMN) && (map.get(columnName) == null)) {
-                sDeletedCount++;
-                if (DEBUG) {
-                    LogUtils.i(TAG, "Deleted " + uriString);
+            if (columnName == DELETED_COLUMN) {
+                boolean state = (Boolean)value;
+                boolean hasValue = map.get(columnName) != null;
+                if (state && !hasValue) {
+                    sDeletedCount++;
+                    if (DEBUG) {
+                        LogUtils.i(TAG, "Deleted " + uriString);
+                    }
+                } else if (!state && hasValue) {
+                    sDeletedCount--;
+                    map.remove(columnName);
+                    if (DEBUG) {
+                        LogUtils.i(TAG, "Undeleted " + uriString);
+                    }
+                    return;
                 }
             }
             // ContentValues has no generic "put", so we must test.  For now, the only classes of
@@ -941,12 +952,37 @@ public final class ConversationCursor implements Cursor {
             // Placeholder for now; there's no local insert
         }
 
+        private int mUndoSequence = 0;
+        private ArrayList<Uri> mUndoDeleteUris = new ArrayList<Uri>();
+
         @VisibleForTesting
         void deleteLocal(Uri uri) {
             Uri underlyingUri = uriFromCachingUri(uri);
             // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
             String uriString =  Uri.decode(underlyingUri.toString());
             cacheValue(uriString, DELETED_COLUMN, true);
+            if (sSequence != mUndoSequence) {
+                mUndoSequence = sSequence;
+                mUndoDeleteUris.clear();
+            }
+            mUndoDeleteUris.add(uri);
+        }
+
+        @VisibleForTesting
+        void undeleteLocal(Uri uri) {
+            Uri underlyingUri = uriFromCachingUri(uri);
+            // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
+            String uriString =  Uri.decode(underlyingUri.toString());
+            cacheValue(uriString, DELETED_COLUMN, false);
+        }
+
+        public void undo() {
+            if (sSequence == mUndoSequence) {
+                for (Uri uri: mUndoDeleteUris) {
+                    undeleteLocal(uri);
+                }
+                mUndoSequence = 0;
+            }
         }
 
         @VisibleForTesting

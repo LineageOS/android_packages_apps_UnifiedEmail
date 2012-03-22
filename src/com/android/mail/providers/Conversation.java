@@ -16,8 +16,6 @@
 
 package com.android.mail.providers;
 
-import com.google.common.collect.Lists;
-
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
@@ -30,6 +28,7 @@ import android.text.TextUtils;
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.ConversationCursor.ConversationProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -343,6 +342,18 @@ public class Conversation implements Parcelable {
         }
     }
 
+    private static void undoLocal(Context context) {
+        ContentProviderClient client =
+                context.getContentResolver().acquireContentProviderClient(
+                        ConversationProvider.AUTHORITY);
+        try {
+            ConversationProvider cp = (ConversationProvider)client.getLocalContentProvider();
+            cp.undo();
+        } finally {
+            client.release();
+        }
+    }
+
     public static void undo(final Context context, final Uri undoUri) {
         new Thread(new Runnable() {
             @Override
@@ -354,6 +365,7 @@ public class Conversation implements Parcelable {
                 }
             }
         }).start();
+        undoLocal(context);
     }
 
     public static int archive(Context context, Collection<Conversation> conversations) {
