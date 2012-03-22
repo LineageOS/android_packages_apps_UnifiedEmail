@@ -25,9 +25,9 @@ import android.os.Parcel;
 import android.provider.BaseColumns;
 import android.text.Html;
 
-import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
@@ -425,7 +425,7 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.RECENT_FOLDER_LIST_URI), 0);
         dest.setDataPosition(0);
         final Account account = new Account(dest);
-        AccountCacheProvider.addAccount(account, MOCK_ACCOUNTS_URI);
+        MailAppProvider.addAccount(account, MOCK_ACCOUNTS_URI);
     }
 }
 

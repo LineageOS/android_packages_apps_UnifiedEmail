@@ -58,10 +58,10 @@ import java.util.regex.Pattern;
  * In the future, once other processes can add new accounts, this could allow other "mail"
  * applications have their content appear within the application
  */
-public abstract class AccountCacheProvider extends ContentProvider
+public abstract class MailAppProvider extends ContentProvider
         implements OnLoadCompleteListener<Cursor>{
 
-    private static final String SHARED_PREFERENCES_NAME = "AccountCacheProvider";
+    private static final String SHARED_PREFERENCES_NAME = "MailAppProvider";
     private static final String ACCOUNT_LIST_KEY = "accountList";
     private static final String LAST_VIEWED_ACCOUNT_KEY = "lastViewedAccount";
 
@@ -73,7 +73,7 @@ public abstract class AccountCacheProvider extends ContentProvider
 
     private ContentResolver mResolver;
     private static String sAuthority;
-    private static AccountCacheProvider sInstance;
+    private static MailAppProvider sInstance;
 
     private SharedPreferences mSharedPrefs;
 
@@ -86,7 +86,7 @@ public abstract class AccountCacheProvider extends ContentProvider
         return Uri.parse("content://" + sAuthority + "/");
     }
 
-    public static AccountCacheProvider getInstance() {
+    public static MailAppProvider getInstance() {
         return sInstance;
     }
 
@@ -245,9 +245,9 @@ public abstract class AccountCacheProvider extends ContentProvider
     }
 
     public static void addAccount(Account account, Uri accountsQueryUri) {
-        final AccountCacheProvider provider = getInstance();
+        final MailAppProvider provider = getInstance();
         if (provider == null) {
-            throw new IllegalStateException("AccountCacheProvider not intialized");
+            throw new IllegalStateException("MailAppProvider not intialized");
         }
         provider.addAccountImpl(account, accountsQueryUri);
     }
@@ -268,9 +268,9 @@ public abstract class AccountCacheProvider extends ContentProvider
     }
 
     public static void removeAccount(Uri accountUri) {
-        final AccountCacheProvider provider = getInstance();
+        final MailAppProvider provider = getInstance();
         if (provider == null) {
-            throw new IllegalStateException("AccountCacheProvider not intialized");
+            throw new IllegalStateException("MailAppProvider not intialized");
         }
         provider.removeAccounts(Collections.singleton(accountUri));
     }
@@ -291,7 +291,7 @@ public abstract class AccountCacheProvider extends ContentProvider
     }
 
     private static void broadcastAccountChange() {
-        final AccountCacheProvider provider = sInstance;
+        final MailAppProvider provider = sInstance;
 
         if (provider != null) {
             provider.mResolver.notifyChange(getAccountsUri(), null);

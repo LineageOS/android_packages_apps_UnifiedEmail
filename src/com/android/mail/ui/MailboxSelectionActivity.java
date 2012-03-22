@@ -17,7 +17,7 @@ package com.android.mail.ui;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 
@@ -117,12 +117,6 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
     @Override
     public void onStart() {
         super.onStart();
-
-        // Initially set up the state, with cached data, unless we are configuring
-        // a widget, where we want to wait for the real data
-        if (!mConfigureWidget) {
-            setupWithCachedAccounts();
-        }
     }
 
     @Override
@@ -173,7 +167,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
             protected Void doInBackground(Void... params) {
                 Cursor cursor = null;
                 try {
-                    cursor = resolver.query(AccountCacheProvider.getAccountsUri(),
+                    cursor = resolver.query(MailAppProvider.getAccountsUri(),
                             UIProvider.ACCOUNTS_PROJECTION, null, null, null);
                     completeSetupWithAccounts(cursor);
                 } finally {
@@ -187,14 +181,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
         }.execute();
     }
 
-    private void setupWithCachedAccounts() {
-        // TODO: (mindyp) have the AccountCacheProvider cache accounts.
-    }
-
     private void completeSetupWithAccounts(final Cursor accounts) {
-        // TODO: Cache the latest set of accounts
-        // AccountCacheProvider.cacheAccountList(this, false /* synced */,
-        // accounts);
         mHandler.post(new Runnable() {
             @Override
             public void run() {

@@ -19,8 +19,8 @@ package com.android.mail.widget;
 import com.android.mail.R;
 import com.android.mail.persistence.Persistence;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.MailboxSelectionActivity;
 import com.android.mail.utils.Utils;
@@ -207,7 +207,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
             Cursor accountCursor = null;
             try {
                 accountCursor = context.getContentResolver().query(
-                        AccountCacheProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION,
+                        MailAppProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION,
                         null, null, null);
                 if (accountCursor.moveToFirst()) {
                     do {

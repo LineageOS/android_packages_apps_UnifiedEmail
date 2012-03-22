@@ -16,7 +16,7 @@
 package com.android.mail.utils;
 
 import com.android.mail.providers.Account;
-import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider;
 
 import android.accounts.AccountManagerCallback;
@@ -75,7 +75,7 @@ public class AccountUtils {
         final List<Account> accounts = Lists.newArrayList();
         Account account;
         try {
-            accountsCursor = resolver.query(AccountCacheProvider.getAccountsUri(),
+            accountsCursor = resolver.query(MailAppProvider.getAccountsUri(),
                     UIProvider.ACCOUNTS_PROJECTION, null, null, null);
             if (accountsCursor != null) {
                 while (accountsCursor.moveToNext()) {

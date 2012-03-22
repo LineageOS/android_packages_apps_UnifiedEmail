@@ -49,9 +49,9 @@ import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.AccountCacheProvider;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
@@ -323,7 +323,7 @@ public abstract class AbstractActivityController implements ActivityController, 
             mFolder = null;
             fetchAccountFolderInfo();
 
-            AccountCacheProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
+            MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
         }
     }
 
@@ -808,7 +808,7 @@ public abstract class AbstractActivityController implements ActivityController, 
         // Create a loader to listen in on account changes.
         switch (id) {
             case LOADER_ACCOUNT_CURSOR:
-                return new CursorLoader(mContext, AccountCacheProvider.getAccountsUri(),
+                return new CursorLoader(mContext, MailAppProvider.getAccountsUri(),
                         UIProvider.ACCOUNTS_PROJECTION, null, null, null);
             case LOADER_FOLDER_CURSOR:
                 return new CursorLoader(mContext, mFolder.uri,
@@ -916,7 +916,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 newAccount = mAccount;
             }
         } else {
-            final String lastAccountUri = AccountCacheProvider.getInstance()
+            final String lastAccountUri = MailAppProvider.getInstance()
                     .getLastViewedAccount();
             if (lastAccountUri != null) {
                 for (int i = 0; i < allAccounts.length; i++) {

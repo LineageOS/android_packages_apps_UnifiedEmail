@@ -18,9 +18,7 @@
 package com.android.mail.providers;
 
 
-import java.lang.Override;
-
-public class UnifiedAccountCacheProvider extends AccountCacheProvider {
+public class UnifiedAccountCacheProvider extends MailAppProvider {
     // The authority of our conversation provider (a forwarding provider)
     // This string must match the declaration in AndroidManifest.xml
     private static final String sAuthority = "com.android.mail.accountcache";

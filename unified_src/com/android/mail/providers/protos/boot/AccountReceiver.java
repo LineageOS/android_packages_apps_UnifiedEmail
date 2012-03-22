@@ -15,7 +15,7 @@
  */
 package com.android.mail.providers.protos.boot;
 
-import com.android.mail.providers.AccountCacheProvider;
+import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.protos.mock.MockUiProvider;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -40,7 +40,7 @@ public class AccountReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         MockUiProvider.initializeMockProvider();
 
-        AccountCacheProvider.addAccountsForUriAsync(GMAIL_ACCOUNTS_URI);
-        AccountCacheProvider.addAccountsForUriAsync(EMAIL_ACCOUNTS_URI);
+        MailAppProvider.addAccountsForUriAsync(GMAIL_ACCOUNTS_URI);
+        MailAppProvider.addAccountsForUriAsync(EMAIL_ACCOUNTS_URI);
     }
 }
