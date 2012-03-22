@@ -40,8 +40,9 @@ import com.android.mail.ui.FoldersSelectionDialog.CommitListener;
  * or respond to user action.
  */
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
-        ModeChangeListener, ConversationListCallbacks, CommitListener,
-        FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
+        ModeChangeListener, ConversationListCallbacks, CommitListener, FolderChangeListener,
+        AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>, ActionCompleteListener,
+        ConversationSetObserver {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
@@ -255,4 +256,6 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * automatically selected and shown.
      */
     boolean shouldShowFirstConversation();
+
+    public ConversationSelectionSet getSelectedSet();
 }

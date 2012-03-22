@@ -19,9 +19,7 @@ package com.android.mail.ui;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.Loader;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,13 +59,9 @@ import java.util.Collection;
  */
 public final class ConversationListFragment extends ListFragment implements
         OnItemLongClickListener, ModeChangeListener, UndoBarView.OnUndoCancelListener,
-        ConversationSetObserver, ActionCompleteListener, ConversationListener,
-        LoaderManager.LoaderCallbacks<ConversationCursor>, UndoBarView.UndoListener,
-        SwipeCompleteListener {
+        UndoBarView.UndoListener, SwipeCompleteListener {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
-    // Batch conversations stored in the Bundle using this key.
-    private static final String SAVED_CONVERSATIONS = "saved-conversations";
     // Key used to keep track of the scroll state of the list.
     private static final String LIST_STATE_KEY = "list-state";
     private static final String LOG_TAG = new LogUtils().getLogTag();
@@ -81,13 +75,10 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private static int TIMESTAMP_UPDATE_INTERVAL = 0;
 
-    private static final int CONVERSATION_LOADER_ID = 0;
-
     private ControllableActivity mActivity;
 
     // Control state.
     private ConversationListCallbacks mCallbacks;
-    private ConversationCursor mConversationListCursor;
     private View mEmptyView;
 
     private final Handler mHandler = new Handler();
@@ -127,11 +118,6 @@ public final class ConversationListFragment extends ListFragment implements
 
     private AnimatedAdapter mListAdapter;
 
-    /**
-     * Selected conversations, if any.
-     */
-    private ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
-    private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
     private ConversationListFooterView mFooterView;
     private int mSwipeAction;
 
@@ -140,9 +126,6 @@ public final class ConversationListFragment extends ListFragment implements
      */
     public ConversationListFragment() {
         super();
-        // Allow the fragment to observe changes to its own selection set. No other object is
-        // aware of the selected set.
-        mSelectedSet.addObserver(this);
     }
 
     /**
@@ -160,7 +143,7 @@ public final class ConversationListFragment extends ListFragment implements
     /**
      * Show the header if the current conversation list is showing search results.
      */
-    private void configureSearchResultHeader() {
+    void configureSearchResultHeader() {
         if (mActivity == null) {
             return;
         }
@@ -231,7 +214,8 @@ public final class ConversationListFragment extends ListFragment implements
         mCallbacks = mActivity.getListHandler();
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
-                mConversationListCursor, mSelectedSet, mAccount, mActivity.getViewMode());
+                getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
+                mActivity.getViewMode());
         mFooterView = (ConversationListFooterView) LayoutInflater.from(
                 mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
                 null);
@@ -256,6 +240,10 @@ public final class ConversationListFragment extends ListFragment implements
 
         // Show list and start loading list.
         showList();
+    }
+
+    public AnimatedAdapter getAnimatedAdapter() {
+        return mListAdapter;
     }
 
     @Override
@@ -286,26 +274,6 @@ public final class ConversationListFragment extends ListFragment implements
         setRetainInstance(true);
     }
 
-    /**
-     * Restore the state of selected conversations. This needs to be done after the correct mode
-     * is set and the action bar is fully initialized. If not, several key pieces of state
-     * information will be missing, and the split views may not be initialized correctly.
-     * @param savedState
-     */
-    private void restoreSelectedConversations(Bundle savedState) {
-        if (savedState == null) {
-            onSetEmpty();
-            return;
-        }
-        mSelectedSet = savedState.getParcelable(SAVED_CONVERSATIONS);
-        if (mSelectedSet.isEmpty()) {
-            onSetEmpty();
-            return;
-        }
-        // We have some selected conversations. Perform all the actions needed.
-        onSetPopulated(mSelectedSet);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -319,9 +287,10 @@ public final class ConversationListFragment extends ListFragment implements
         // Note - we manually save/restore the listview state.
         mListView.setSaveEnabled(false);
 
+        ConversationCursor conversationListCursor = getConversationListCursor();
         // Belt and suspenders here; make sure we do any necessary sync of the ConversationCursor
-        if (mConversationListCursor != null && mConversationListCursor.isRefreshReady()) {
-            mConversationListCursor.sync();
+        if (conversationListCursor != null && conversationListCursor.isRefreshReady()) {
+            conversationListCursor.sync();
         }
         return rootView;
     }
@@ -337,7 +306,7 @@ public final class ConversationListFragment extends ListFragment implements
 
         // Since we want to keep the conversation list around to request deletes on later,
         // don't null out the conversation list fragment.
-        // mActivity.attachConversationList(null);
+        mActivity.attachConversationList(null);
 
         if (!mActivity.isChangingConfigurations()) {
             mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
@@ -359,6 +328,7 @@ public final class ConversationListFragment extends ListFragment implements
         }
         assert (view instanceof ConversationItemView);
         ConversationItemView item = (ConversationItemView) view;
+        // TODO(mindyp) handle drag mode, long press.
         // Handle drag mode if allowed, otherwise toggle selection.
         //        if (!mViewMode.getMode() == ViewMode.CONVERSATION_LIST || !mTabletDevice) {
         // Add this conversation to the selected set.
@@ -434,7 +404,7 @@ public final class ConversationListFragment extends ListFragment implements
     private void showList() {
         mListView.setEmptyView(null);
         onFolderUpdated(mViewContext.folder);
-        getLoaderManager().initLoader(CONVERSATION_LOADER_ID, Bundle.EMPTY, this);
+        mCallbacks.initConversationListCursor();
     }
 
     /**
@@ -442,30 +412,12 @@ public final class ConversationListFragment extends ListFragment implements
      * @param position
      */
     protected void viewConversation(int position) {
-        mConversationListCursor.moveToPosition(position);
-        Conversation conv = new Conversation(mConversationListCursor);
+        ConversationCursor conversationListCursor = getConversationListCursor();
+        conversationListCursor.moveToPosition(position);
+        Conversation conv = new Conversation(conversationListCursor);
         conv.position = position;
         mCallbacks.onConversationSelected(conv);
         getListView().setItemChecked(position, true);
-    }
-
-    @Override
-    public void onSetEmpty() {
-        mSelectedConversationsActionMenu = null;
-    }
-
-    @Override
-    public void onSetPopulated(ConversationSelectionSet set) {
-        mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(mActivity,
-                mSelectedSet, mListAdapter, this, this, mAccount, mFolder);
-        mSelectedConversationsActionMenu.activate();
-    }
-
-    @Override
-    public void onActionComplete() {
-        if (mConversationListCursor.isRefreshReady()) {
-            finishRefresh();
-        }
     }
 
     @Override
@@ -479,32 +431,8 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
-    @Override
-    public void onSetChanged(ConversationSelectionSet set) {
-        // Do nothing. We don't care about changes to the set.
-    }
-
-    /**
-     * Called when there is new data at the underlying provider
-     * refresh() here causes the new data to be retrieved asynchronously
-     * NOTE: The UI needn't take any action immediately (i.e. it might wait until a more
-     * convenient time to get the update from the provider)
-     */
-    @Override
-    public void onRefreshRequired() {
-        // Refresh the query in the background
-        mConversationListCursor.refresh();
-    }
-
-    @Override
-    public void onRefreshReady() {
-        ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
-        // If we have any deletions from the server, animate them away
-        if (!deletedRows.isEmpty()) {
-            mListAdapter.delete(deletedRows, this);
-        } else {
-            finishRefresh();
-        }
+    private ConversationCursor getConversationListCursor() {
+        return mCallbacks != null ? mCallbacks.getConversationListCursor() : null;
     }
 
     /**
@@ -526,59 +454,13 @@ public final class ConversationListFragment extends ListFragment implements
 
     public void requestDelete(int position, ActionCompleteListener listener) {
         mCurrentPosition = position;
-        if (mConversationListCursor != null) {
-            mConversationListCursor.moveToPosition(position);
+        ConversationCursor conversationListCursor = getConversationListCursor();
+        if (conversationListCursor != null) {
+            conversationListCursor.moveToPosition(position);
         }
         requestDelete(listener);
     }
 
-    /**
-     * Complete the cursor refresh process by syncing to the underlying cursor and redrawing
-     */
-    private void finishRefresh() {
-        // Swap cursors
-        mConversationListCursor.sync();
-        // Redraw with new data
-        mListAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
-        configureSearchResultHeader();
-        mListAdapter.hideFooter();
-        return new ConversationCursorLoader((Activity) mActivity, mAccount,
-                    UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
-        mConversationListCursor = data;
-        if (mConversationListCursor.isRefreshReady()) {
-            mConversationListCursor.sync();
-        }
-        mListAdapter.swapCursor(mConversationListCursor);
-        onFolderUpdated(mFolder);
-        mConversationListCursor.addListener(this);
-        if (mActivity.shouldShowFirstConversation()) {
-            if (mConversationListCursor.getCount() > 0) {
-                mConversationListCursor.moveToPosition(0);
-                getListView().setItemChecked(0, true);
-                Conversation conv = new Conversation(mConversationListCursor);
-                conv.position = 0;
-                mCallbacks.onConversationSelected(conv);
-            }
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<ConversationCursor> loader) {
-        mListAdapter.swapCursor(null);
-
-        if (mConversationListCursor != null) {
-            mConversationListCursor.removeListener(this);
-            mConversationListCursor = null;
-        }
-    }
 
     public void onFolderUpdated(Folder folder) {
         mFolder = folder;
@@ -622,7 +504,10 @@ public final class ConversationListFragment extends ListFragment implements
         onUndoAvailable(new UndoOperation(conversations.size(), mSwipeAction));
     }
 
-    public ConversationCursor getConversationListCursor() {
-        return mConversationListCursor;
+    public void onCursorUpdated() {
+        if (mListAdapter != null) {
+            mListAdapter.swapCursor(mCallbacks.getConversationListCursor());
+        }
+        onFolderUpdated(mFolder);
     }
 }

@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Conversation;
 
 /**
@@ -29,4 +30,8 @@ public interface ConversationListCallbacks {
      * @param position The position in the list clicked.
      */
     void onConversationSelected(Conversation conversation);
+
+    ConversationCursor getConversationListCursor();
+
+    void initConversationListCursor();
 }

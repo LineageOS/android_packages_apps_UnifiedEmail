@@ -26,6 +26,7 @@ import android.view.MenuItem;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -384,22 +385,38 @@ public final class OnePaneController extends AbstractActivityController {
             int mode = mViewMode.getMode();
             if (mode == ViewMode.CONVERSATION) {
                 next = getNextConversation();
-            } else {
-                mConversationListFragment.onActionComplete();
+            } else if (mode == ViewMode.CONVERSATION_LIST) {
+                OnePaneController.this.onActionComplete();
                 mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
             }
             performConversationAction(single);
-            mConversationListFragment.requestListRefresh();
-            if (mode == ViewMode.CONVERSATION && next != null) {
-                showConversation(next);
+            if (next != null) {
+                if (mode == ViewMode.CONVERSATION) {
+                    showConversation(next);
+                }
             } else {
-                onBackPressed();
+                if (mode == ViewMode.CONVERSATION_LIST) {
+                    mConversationListFragment.requestListRefresh();
+                } else if (mode == ViewMode.CONVERSATION) {
+                    final int position = mCurrentConversation.position;
+                    final OnePaneDestructiveActionListener listener = this;
+                    onBackPressed();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mConversationListFragment != null) {
+                                mConversationListFragment.requestDelete(position, listener);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
 
     protected void requestDelete(final ActionCompleteListener listener) {
         int pref = getAutoAdvanceSetting(mActivity);
+        ConversationCursor conversationListCursor = mConversationListCursor;
         boolean canMove = false;
         final int position = mCurrentConversation.position;
         switch (pref) {
@@ -407,7 +424,7 @@ public final class OnePaneController extends AbstractActivityController {
                 canMove = position - 1 >= 0;
                 break;
             case AutoAdvance.OLDER:
-                Cursor c = mConversationListFragment.getConversationListCursor();
+                Cursor c = conversationListCursor;
                 if (c != null) {
                     canMove = position + 1 < c.getCount();
                 }
@@ -419,12 +436,17 @@ public final class OnePaneController extends AbstractActivityController {
 
                 @Override
                 public void run() {
-                    mConversationListFragment.requestDelete(position, listener);
+                    if (mConversationListFragment != null) {
+                        mConversationListFragment.requestDelete(position, listener);
+                    }
                 }
 
             });
         } else {
-            mConversationListFragment.requestDelete(position, listener);
+            if (mConversationListCursor != null) {
+                mConversationListCursor.moveToPosition(position);
+            }
+            listener.onActionComplete();
         }
     }
 
