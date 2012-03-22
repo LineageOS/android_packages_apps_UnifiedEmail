@@ -360,10 +360,10 @@ public final class OnePaneController extends AbstractActivityController {
                         UIProvider.ConversationPriority.LOW);
                 break;
             case R.id.mute:
-                mConversationListFragment.requestDelete(mMuteListener);
+                requestDelete(mMuteListener);
                 break;
             case R.id.report_spam:
-                mConversationListFragment.requestDelete(mSpamListener);
+                requestDelete(mSpamListener);
                 break;
             default:
                 handled = false;

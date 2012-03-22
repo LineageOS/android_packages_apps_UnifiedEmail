@@ -39,6 +39,7 @@ import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogUtils;
@@ -55,6 +56,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private RestrictedActivity mActivity;
     private ActivityController mController;
     private View mFolderView;
+    private Folder mFolder;
     /**
      * The current mode of the ActionBar. This references constants in {@link ViewMode}
      */
@@ -179,6 +181,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      * folder that is currently being displayed.
      */
     public void setFolder(Folder folder) {
+        mFolder = folder;
         mSpinner.setCurrentFolder(folder);
         mSpinner.notifyDataSetChanged();
     }
@@ -281,11 +284,17 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 showNavList();
                 setVisibility(menu, R.id.y_button,
-                        mAccount.supportsCapability(AccountCapabilities.ARCHIVE));
-                setVisibility(menu, R.id.report_spam,
-                        mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM));
+                        mAccount.supportsCapability(AccountCapabilities.ARCHIVE) && mFolder != null
+                                && mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
+                setVisibility(
+                        menu,
+                        R.id.report_spam,
+                        mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM)
+                                && mFolder != null
+                                && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM));
                 setVisibility(menu, R.id.mute,
-                        mAccount.supportsCapability(AccountCapabilities.MUTE));
+                        mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
+                                && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE));
                 break;
             case ViewMode.SEARCH_RESULTS_LIST:
                 showNavList();

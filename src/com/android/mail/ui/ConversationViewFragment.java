@@ -54,7 +54,6 @@ import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
-import com.android.mail.perf.Timer;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ListParams;
@@ -231,6 +230,20 @@ public final class ConversationViewFragment extends Fragment implements
         mChangeFoldersMenuItem = menu.findItem(R.id.change_folders);
     }
 
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        boolean showMarkImportant = !mConversation.isImportant();
+
+        final MenuItem markImportant = menu.findItem(R.id.mark_important);
+        if (markImportant != null) {
+            markImportant.setVisible(showMarkImportant
+                    && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+            final MenuItem markNotImportant = menu.findItem(R.id.mark_not_important);
+            markNotImportant.setVisible(!showMarkImportant
+                    && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+        }
+        // TODO(mindyp) show/ hide spam and mute based on conversation properties to be added.
+    }
     /**
      * Handles a request to show a new conversation list, either from a search query or for viewing
      * a folder. This will initiate a data load, and hence must be called on the UI thread.
