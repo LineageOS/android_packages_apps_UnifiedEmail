@@ -54,6 +54,8 @@ public class Message implements Parcelable {
     public String saveUri;
     public String sendUri;
     public boolean alwaysShowImages;
+    public boolean read;
+    public boolean starred;
     public boolean includeQuotedText;
     public int quotedTextOffset;
 
@@ -203,14 +205,12 @@ public class Message implements Parcelable {
                     .getString(UIProvider.MESSAGE_SAVE_URI_COLUMN);
             sendUri = cursor
                     .getString(UIProvider.MESSAGE_SEND_URI_COLUMN);
-            alwaysShowImages = cursor.getInt(UIProvider.ALWAYS_SHOW_IMAGES_COLUMN) != 0;
+            alwaysShowImages = cursor.getInt(UIProvider.MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN) != 0;
+            read = cursor.getInt(UIProvider.MESSAGE_READ_COLUMN) != 0;
+            starred = cursor.getInt(UIProvider.MESSAGE_STARRED_COLUMN) != 0;
             includeQuotedText = cursor.getInt(UIProvider.INCLUDE_QUOTED_TEXT_COLUMN) != 0;
             quotedTextOffset = cursor.getInt(UIProvider.QUOTED_TEXT_OFFSET_COLUMN);
         }
-    }
-
-    public boolean isStarred() {
-        return (messageFlags & UIProvider.MessageFlags.STARRED) == UIProvider.MessageFlags.STARRED;
     }
 
     public synchronized String[] getToAddresses() {
@@ -264,6 +264,21 @@ public class Message implements Parcelable {
     public void markAlwaysShowImages(AsyncQueryHandler handler, int token, Object cookie) {
         final ContentValues values = new ContentValues(1);
         values.put(UIProvider.MessageColumns.ALWAYS_SHOW_IMAGES, 1);
+
+        handler.startUpdate(token, cookie, uri, values, null, null);
+    }
+
+    /**
+     * Helper method to command a provider to star/unstar this message.
+     *
+     * @param starred whether to star or unstar the message
+     * @param handler a caller-provided handler to run the query on
+     * @param token (optional) token to identify the command to the handler
+     * @param cookie (optional) cookie to pass to the handler
+     */
+    public void star(boolean starred, AsyncQueryHandler handler, int token, Object cookie) {
+        final ContentValues values = new ContentValues(1);
+        values.put(UIProvider.MessageColumns.STARRED, starred ? 1 : 0);
 
         handler.startUpdate(token, cookie, uri, values, null, null);
     }

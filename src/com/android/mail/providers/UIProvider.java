@@ -252,9 +252,9 @@ public class UIProvider {
          * This string column contains the content provider uri that can be queried for search
          * results.
          * The supported query parameters are limited to those listed
-         * in {@link #SearchQueryParameters}
+         * in {@link SearchQueryParameters}
          * The cursor returned from this query is expected have one row, where the columnm are a
-         * subset of the columns specified in {@link #FolderColumns}
+         * subset of the columns specified in {@link FolderColumns}
          */
         public static final String SEARCH_URI = "searchUri";
 
@@ -306,7 +306,7 @@ public class UIProvider {
          * This string column contains the content provider uri that can be used to query user
          * settings/preferences.
          *
-         * The cursor returned by this query support columns declared in {@link #SettingsColumns}
+         * The cursor returned by this query support columns declared in {@link SettingsColumns}
          */
         public static final String SETTINGS_QUERY_URI = "accountSettingsQueryUri";
 
@@ -665,7 +665,7 @@ public class UIProvider {
         public static String READ = "read";
 
         /**
-         * This boolean column indicates whether the conversation has been read
+         * This boolean column indicates whether the conversation has been starred
          */
         public static String STARRED = "starred";
 
@@ -761,6 +761,8 @@ public class UIProvider {
         MessageColumns.SAVE_MESSAGE_URI,
         MessageColumns.SEND_MESSAGE_URI,
         MessageColumns.ALWAYS_SHOW_IMAGES,
+        MessageColumns.READ,
+        MessageColumns.STARRED,
         MessageColumns.INCLUDE_QUOTED_TEXT,
         MessageColumns.QUOTE_START_POS
     };
@@ -796,9 +798,11 @@ public class UIProvider {
     public static final int MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN = 21;
     public static final int MESSAGE_SAVE_URI_COLUMN = 22;
     public static final int MESSAGE_SEND_URI_COLUMN = 23;
-    public static final int ALWAYS_SHOW_IMAGES_COLUMN = 24;
-    public static final int INCLUDE_QUOTED_TEXT_COLUMN = 25;
-    public static final int QUOTED_TEXT_OFFSET_COLUMN = 26;
+    public static final int MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN = 24;
+    public static final int MESSAGE_READ_COLUMN = 25;
+    public static final int MESSAGE_STARRED_COLUMN = 26;
+    public static final int INCLUDE_QUOTED_TEXT_COLUMN = 27;
+    public static final int QUOTED_TEXT_OFFSET_COLUMN = 28;
 
 
     public static final class CursorStatus {
@@ -833,8 +837,6 @@ public class UIProvider {
 
 
     public static final class MessageFlags {
-        public static final int STARRED =       1 << 0;
-        public static final int UNREAD =        1 << 1;
         public static final int REPLIED =       1 << 2;
         public static final int FORWARDED =     1 << 3;
     }
@@ -946,6 +948,16 @@ public class UIProvider {
          * any external images.
          */
         public static final String ALWAYS_SHOW_IMAGES = "alwaysShowImages";
+
+        /**
+         * This boolean column indicates whether the message has been read
+         */
+        public static String READ = "read";
+
+        /**
+         * This boolean column indicates whether the message has been starred
+         */
+        public static String STARRED = "starred";
 
         /**
          * This integer column represents whether the message should include quoted text.
@@ -1077,7 +1089,7 @@ public class UIProvider {
          * This integer column is the current downloading state of the
          * attachment as defined in {@link AttachmentState}.
          * <p>
-         * Providers must accept updates to {@link URI} with new values of
+         * Providers must accept updates to {@link #URI} with new values of
          * this column to initiate or cancel downloads.
          */
         public static final String STATE = "state";
@@ -1089,7 +1101,7 @@ public class UIProvider {
          * in {@link AttachmentDestination}. This value is undefined in any
          * other state.
          * <p>
-         * Providers must accept updates to {@link URI} with new values of
+         * Providers must accept updates to {@link #URI} with new values of
          * this column to move an existing downloaded file.
          */
         public static final String DESTINATION = "destination";
@@ -1270,7 +1282,7 @@ public class UIProvider {
      * Action for an intent used to update/create new notifications.  The mime type of this
      * intent should be set to the mimeType of the account that is generating this notification.
      * An intent of this action is required to have the following extras:
-     * {@link EXTRA_FOLDER} {@link EXTRA_ACCOUNT}
+     * {@link UpdateNotificationExtras#EXTRA_FOLDER} {@link UpdateNotificationExtras#EXTRA_ACCOUNT}
      */
     public static final String ACTION_UPDATE_NOTIFICATION =
             "com.android.mail.action.update_notification";

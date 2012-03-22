@@ -398,7 +398,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             upperDateView.setText(mTimestampShort);
         }
 
-        mStarView.setSelected(mMessage.isStarred());
+        mStarView.setSelected(mMessage.starred);
         mStarView.setContentDescription(getResources().getString(
                 mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
 
@@ -819,8 +819,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 ComposeActivity.forward(getContext(), mAccount, mMessage);
                 break;
             case R.id.star: {
-                boolean newValue = !v.isSelected();
+                final boolean newValue = !v.isSelected();
                 v.setSelected(newValue);
+                mMessage.star(newValue, getQueryHandler(), 0 /* token */, null /* cookie */);
+                // TODO: propagate the change to the entry in conversation list
                 break;
             }
             case R.id.edit_draft:
