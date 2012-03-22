@@ -41,6 +41,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.providers.Folder;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 /**
@@ -73,6 +74,8 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private MenuItem mRefreshItem;
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
+
+    public static final String LOG_TAG = new LogUtils().getLogTag();
 
     private final Handler mHandler = new Handler();
     private final Runnable mInvalidateMenu = new Runnable() {
@@ -155,19 +158,18 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     public void setAccounts(Account[] accounts) {
         Account currentAccount = mController.getCurrentAccount();
         mSpinner.setAccounts(accounts);
-        boolean changed = mSpinner.setCurrentAccount(currentAccount);
-        if (changed) {
-            int position = -1;
-            for (position = 0; position < accounts.length; position++) {
-                if (accounts[position].equals(currentAccount)) {
-                    break;
-                }
+
+        int position;
+        for (position = 0; position < accounts.length; position++) {
+            if (accounts[position].equals(currentAccount)) {
+                break;
             }
-            if (position >= accounts.length) {
-                position = 0;
-            }
-            mActionBar.setSelectedNavigationItem(position);
         }
+        if (position >= accounts.length) {
+            position = 0;
+            LogUtils.w(LOG_TAG, "IN actionbarview setAccounts, account not found, using first.");
+        }
+        mActionBar.setSelectedNavigationItem(position);
     }
 
     /**

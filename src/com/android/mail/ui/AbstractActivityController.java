@@ -248,6 +248,8 @@ public abstract class AbstractActivityController implements ActivityController {
             // Account changed; existing folder is invalid.
             mFolder = null;
             fetchAccountFolderInfo();
+
+            AccountCacheProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
         }
     }
 
@@ -801,13 +803,36 @@ public abstract class AbstractActivityController implements ActivityController {
             mCurrentAccountUris.add(account.uri);
         }
 
-        final Account newAccount;
-        if (mAccount == null || !mCurrentAccountUris.contains(mAccount.uri)) {
-            accounts.moveToFirst();
-            newAccount = new Account(accounts);
+        // 1. current account is already set and is in allAccounts -> no-op
+        // 2. current account is set and is not in allAccounts -> pick first (acct was deleted?)
+        // 3. saved pref has an account -> pick that one
+        // 4. otherwise just pick first
+
+        Account newAccount = null;
+
+        if (mAccount != null) {
+            if (!mCurrentAccountUris.contains(mAccount.uri)) {
+                newAccount = allAccounts[0];
+            } else {
+                newAccount = mAccount;
+            }
         } else {
-            newAccount = mAccount;
+            final String lastAccountUri = AccountCacheProvider.getInstance()
+                    .getLastViewedAccount();
+            if (lastAccountUri != null) {
+                for (int i = 0; i < allAccounts.length; i++) {
+                    final Account acct = allAccounts[i];
+                    if (lastAccountUri.equals(acct.uri.toString())) {
+                        newAccount = acct;
+                        break;
+                    }
+                }
+            }
+            if (newAccount == null) {
+                newAccount = allAccounts[0];
+            }
         }
+
         // Only bother updating the account/folder if the new account is different than the
         // existing one
         final boolean refetchFolderInfo = !newAccount.equals(mAccount);

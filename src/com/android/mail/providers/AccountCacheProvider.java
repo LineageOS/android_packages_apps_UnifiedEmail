@@ -63,6 +63,7 @@ public abstract class AccountCacheProvider extends ContentProvider
 
     private static final String SHARED_PREFERENCES_NAME = "AccountCacheProvider";
     private static final String ACCOUNT_LIST_KEY = "accountList";
+    private static final String LAST_VIEWED_ACCOUNT_KEY = "lastViewedAccount";
 
     private final static String LOG_TAG = new LogUtils().getLogTag();
 
@@ -292,6 +293,22 @@ public abstract class AccountCacheProvider extends ContentProvider
         if (provider != null) {
             provider.mResolver.notifyChange(getAccountsUri(), null);
         }
+    }
+
+    /**
+     * Returns the {@link Account#uri} (in String form) of the last viewed account.
+     */
+    public String getLastViewedAccount() {
+        return getPreferences().getString(LAST_VIEWED_ACCOUNT_KEY, null);
+    }
+
+    /**
+     * Persists the {@link Account#uri} (in String form) of the last viewed account.
+     */
+    public void setLastViewedAccount(String accountUriStr) {
+        final SharedPreferences.Editor editor = getPreferences().edit();
+        editor.putString(LAST_VIEWED_ACCOUNT_KEY, accountUriStr);
+        editor.apply();
     }
 
     private void loadCachedAccountList() {
