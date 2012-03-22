@@ -117,17 +117,6 @@ public class MessageModification {
     }
 
     /**
-     * Saves an include quoted text flag. Only valid for drafts not yet sent to /
-     * retrieved from server.
-     *
-     * @param values the ContentValues that will be used to create or update the message
-     * @param includeQuotedText the include quoted text flag
-     */
-    public static void putIncludeQuotedText(ContentValues values, boolean includeQuotedText) {
-        values.put(MessageColumns.INCLUDE_QUOTED_TEXT, includeQuotedText ? 1 : 0);
-    }
-
-    /**
      * Saves the type of the conversation.
      *
      * @param values the ContentValues that will be used to create or update the message
