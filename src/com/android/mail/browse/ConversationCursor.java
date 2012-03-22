@@ -179,12 +179,10 @@ public final class ConversationCursor implements Cursor {
                     if (qUri.equals(uri) && !sRefreshRequired && !sRefreshInProgress) {
                         if (sRefreshReady) {
                             // If we already have a refresh ready, return
-                            LogUtils.i(TAG, "Create: refreshed cursor ready, sync");
+                            LogUtils.i(TAG, "Create: refreshed cursor ready, needs sync");
                         } else {
-                            // Position the cursor before the first item and we're done
-                            LogUtils.i(TAG, "Create: cursor good, reset position and clear map");
-                            sConversationCursor.moveToPosition(-1);
-                            sConversationCursor.mPosition = -1;
+                            // We're done
+                            LogUtils.i(TAG, "Create: cursor good");
                         }
                     } else {
                         // We need a new query here; cancel any existing one, ensuring that a sync
@@ -716,6 +714,10 @@ public final class ConversationCursor implements Cursor {
 
     @Override
     public boolean moveToPosition(int pos) {
+        // STOPSHIP: Remove this check
+        if (offUiThread()) {
+            LogUtils.w(TAG, new Throwable(), "********** moveToPosition OFF UI THREAD: %d", pos);
+        }
         if (pos < -1 || pos >= getCount()) return false;
         if (pos == mPosition) return true;
         if (pos > mPosition) {
