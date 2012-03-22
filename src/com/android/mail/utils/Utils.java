@@ -689,7 +689,7 @@ public class Utils {
      * Show the feedback screen for the supplied account.
      */
     public static void sendFeedback(Context context, Account account) {
-        //TODO(mindyp): feedback is not implemented; this is a placeholder function.
+        openUrl(context, account.sendFeedbackIntentUri);
     }
 
     /**

@@ -173,6 +173,9 @@ public abstract class AccountCacheProvider extends ContentProvider
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.HELP_INTENT_URI)) {
                     builder.add(account.helpIntentUri);
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI)) {
+                    builder.add(account.sendFeedbackIntentUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SYNC_STATUS)) {
                     builder.add(Integer.valueOf(account.syncStatus));
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.COMPOSE_URI)) {

@@ -71,6 +71,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private TextView mSubjectView;
     private SearchView mSearchWidget;
     private MenuItem mHelpItem;
+    private MenuItem mSendFeedbackItem;
     private MenuItem mRefreshItem;
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
@@ -114,6 +115,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             }
         }
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
+        mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
         mRefreshItem = menu.findItem(R.id.refresh);
         return true;
     }
@@ -257,6 +259,10 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         if (mHelpItem != null) {
             mHelpItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
+        }
+        if (mSendFeedbackItem != null) {
+            mSendFeedbackItem.setVisible(mAccount != null
+                    && mAccount.supportsCapability(AccountCapabilities.SEND_FEEDBACK));
         }
         switch (mMode) {
             case ViewMode.UNKNOWN:

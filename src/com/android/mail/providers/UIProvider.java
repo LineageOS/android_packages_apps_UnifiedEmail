@@ -101,6 +101,7 @@ public class UIProvider {
             AccountColumns.SETTINGS_QUERY_URI,
             AccountColumns.SYNC_STATUS,
             AccountColumns.HELP_INTENT_URI,
+            AccountColumns.SEND_FEEDBACK_INTENT_URI,
             AccountColumns.COMPOSE_URI,
             AccountColumns.MIME_TYPE,
             AccountColumns.RECENT_FOLDER_LIST_URI
@@ -122,9 +123,10 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_QUERY_URI_COLUMN = 13;
     public static final int ACCOUNT_SYNC_STATUS_COLUMN = 14;
     public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 15;
-    public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 16;
-    public static final int ACCOUNT_MIME_TYPE_COLUMN = 17;
-    public static final int ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN = 18;
+    public static final int ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN = 16;
+    public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 17;
+    public static final int ACCOUNT_MIME_TYPE_COLUMN = 18;
+    public static final int ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN = 19;
 
     public static final class AccountCapabilities {
         /**
@@ -204,13 +206,17 @@ public class UIProvider {
          */
         public static final int HELP_CONTENT = 0x4000;
         /**
+         * Whether the account provides a way to send feedback content.
+         */
+        public static final int SEND_FEEDBACK = 0x8000;
+        /**
          * Whether the account provides a mechanism for marking conversations as important.
          */
-        public static final int MARK_IMPORTANT = 0x8000;
+        public static final int MARK_IMPORTANT = 0x10000;
         /**
          * Whether initial conversation queries should use a limit parameter
          */
-        public static final int INITIAL_CONVERSATION_LIMIT = 0x10000;
+        public static final int INITIAL_CONVERSATION_LIMIT = 0x20000;
     }
 
     public static final class AccountColumns {
@@ -317,6 +323,14 @@ public class UIProvider {
          * to be moved to a global content provider.
          */
         public static String HELP_INTENT_URI = "helpIntentUri";
+
+        /**
+         * Uri for VIEW intent that will cause the send feedback for this account type to be
+         * shown.
+         * TODO: When we want to support a heterogeneous set of account types, this value may need
+         * to be moved to a global content provider.
+         */
+        public static String SEND_FEEDBACK_INTENT_URI = "sendFeedbackIntentUri";
 
         /**
          * This int column contains the current sync status of the account (the logical AND of the
