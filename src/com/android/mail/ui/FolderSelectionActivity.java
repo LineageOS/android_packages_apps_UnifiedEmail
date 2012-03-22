@@ -272,4 +272,9 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public boolean shouldShowFirstConversation() {
         return false;
     }
+
+    @Override
+    public ConversationSelectionSet getSelectedSet() {
+        return null;
+    }
 }

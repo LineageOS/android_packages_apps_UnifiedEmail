@@ -353,7 +353,7 @@ public final class TwoPaneController extends AbstractActivityController {
             single.add(mCurrentConversation);
             int next = -1;
             int pref = getAutoAdvanceSetting(mActivity);
-            Cursor c = mConversationListFragment.getConversationListCursor();
+            Cursor c = mConversationListCursor;
             int updatedPosition = -1;
             int position = mCurrentConversation.position;
             if (c != null) {
@@ -380,7 +380,7 @@ public final class TwoPaneController extends AbstractActivityController {
                         break;
                 }
             }
-            mConversationListFragment.onActionComplete();
+            TwoPaneController.this.onActionComplete();
             mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
             if (next != -1) {
                 mConversationListFragment.viewConversation(next);

@@ -83,4 +83,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity {
      * automatically selected and shown.
      */
     boolean shouldShowFirstConversation();
+
+    ConversationSelectionSet getSelectedSet();
 }

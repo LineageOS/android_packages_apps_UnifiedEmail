@@ -44,6 +44,9 @@ import android.view.MotionEvent;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.SelectedConversationsActionMenu;
+import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountCacheProvider;
@@ -52,7 +55,6 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
-import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -62,7 +64,6 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -83,10 +84,12 @@ import java.util.Set;
  * In the Gmail codebase, this was called BaseActivityController
  * </p>
  */
-public abstract class AbstractActivityController implements ActivityController {
+public abstract class AbstractActivityController implements ActivityController, ConversationListener {
     // Keys for serialization of various information in Bundles.
     private static final String SAVED_LIST_CONTEXT = "saved-list-context";
     private static final String SAVED_ACCOUNT = "saved-account";
+    // Batch conversations stored in the Bundle using this key.
+    private static final String SAVED_CONVERSATIONS = "saved-conversations";
 
     /** Are we on a tablet device or not. */
     public final boolean IS_TABLET_DEVICE;
@@ -106,6 +109,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     protected Handler mHandler = new Handler();
     protected ConversationListFragment mConversationListFragment;
+    private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
     /**
      * The current mode of the application. All changes in mode are initiated by
      * the activity controller. View mode changes are propagated to classes that
@@ -122,6 +126,12 @@ public abstract class AbstractActivityController implements ActivityController {
     protected Settings mCachedSettings;
     private FetchSearchFolderTask mFetchSearchFolderTask;
     private FetchInboxTask mFetchInboxTask;
+    protected ConversationCursor mConversationListCursor;
+    protected boolean mConversationListenerAdded = false;
+    /**
+     * Selected conversations, if any.
+     */
+    private ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     /** Constants used to differentiate between the types of loaders. */
@@ -129,6 +139,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final int LOADER_ACCOUNT_SETTINGS = 1;
     private static final int LOADER_FOLDER_CURSOR = 2;
     private static final int LOADER_RECENT_FOLDERS = 3;
+    private static final int LOADER_CONVERSATION_LIST = 4;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -136,6 +147,9 @@ public abstract class AbstractActivityController implements ActivityController {
         mContext = activity.getApplicationContext();
         IS_TABLET_DEVICE = Utils.useTabletUI(mContext);
         mRecentFolderList = new RecentFolderList(mContext, this);
+        // Allow the fragment to observe changes to its own selection set. No other object is
+        // aware of the selected set.
+        mSelectedSet.addObserver(this);
     }
 
     @Override
@@ -202,6 +216,66 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void handleConversationLoadError() {
         // TODO(viki): Auto-generated method stub
+    }
+
+    @Override
+    public ConversationCursor getConversationListCursor() {
+        return mConversationListCursor;
+    }
+
+    public void initConversationListCursor() {
+        mActivity.getLoaderManager().restartLoader(LOADER_CONVERSATION_LIST, Bundle.EMPTY,
+                new LoaderManager.LoaderCallbacks<ConversationCursor>() {
+
+                    @Override
+                    public void onLoadFinished(Loader<ConversationCursor> loader,
+                            ConversationCursor data) {
+                        mConversationListCursor = data;
+                        if (mConversationListCursor.isRefreshReady()) {
+                            mConversationListCursor.sync();
+                        }
+                        if (mConversationListFragment != null) {
+                            mConversationListFragment.onCursorUpdated();
+                            if (!mConversationListenerAdded) {
+                                // TODO(mindyp): when we move to the cursor loader, we need
+                                // to add/remove the listener when we create/ destroy loaders.
+                                mConversationListCursor
+                                        .addListener(AbstractActivityController.this);
+                                mConversationListenerAdded = true;
+                            }
+                        }
+                        if (shouldShowFirstConversation()) {
+                            if (mConversationListCursor.getCount() > 0) {
+                                mConversationListCursor.moveToPosition(0);
+                                mConversationListFragment.getListView().setItemChecked(0, true);
+                                Conversation conv = new Conversation(mConversationListCursor);
+                                conv.position = 0;
+                                onConversationSelected(conv);
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onLoaderReset(Loader<ConversationCursor> loader) {
+                        if (mConversationListFragment == null) {
+                            return;
+                        }
+                        mConversationListFragment.onCursorUpdated();
+                    }
+
+                    @Override
+                    public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
+                        mConversationListFragment.configureSearchResultHeader();
+                        AnimatedAdapter adapter = mConversationListFragment.getAnimatedAdapter();
+                        if (adapter != null) {
+                            adapter.hideFooter();
+                        }
+                        return new ConversationCursorLoader((Activity) mActivity, mAccount,
+                                UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
+                    }
+
+                });
     }
 
     /**
@@ -668,8 +742,33 @@ public abstract class AbstractActivityController implements ActivityController {
                 fetchSearchFolder(intent);
             }
         }
+
+        /**
+         * Restore the state of selected conversations. This needs to be done after the correct mode
+         * is set and the action bar is fully initialized. If not, several key pieces of state
+         * information will be missing, and the split views may not be initialized correctly.
+         * @param savedState
+         */
+        restoreSelectedConversations(intent.getExtras());
         // Create the accounts loader; this loads the account switch spinner.
         mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
+    }
+
+    private void restoreSelectedConversations(Bundle savedState) {
+        if (savedState == null) {
+            onSetEmpty();
+            return;
+        }
+        mSelectedSet = savedState.getParcelable(SAVED_CONVERSATIONS);
+        if (mSelectedSet == null) {
+            mSelectedSet = new ConversationSelectionSet();
+        }
+        if (mSelectedSet.isEmpty()) {
+            onSetEmpty();
+            return;
+        }
+        // We have some selected conversations. Perform all the actions needed.
+        onSetPopulated(mSelectedSet);
     }
 
     @Override
@@ -835,12 +934,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         // Only bother updating the account/folder if the new account is different than the
         // existing one
-        final boolean refetchFolderInfo = !newAccount.equals(mAccount);
         onAccountChanged(newAccount);
-
-        if(refetchFolderInfo) {
-            fetchAccountFolderInfo();
-        }
 
         mActionBarView.setAccounts(allAccounts);
         return (allAccounts.length > 0);
@@ -1034,7 +1128,7 @@ public abstract class AbstractActivityController implements ActivityController {
         public Conversation getNextConversation() {
             Conversation next = null;
             int pref = getAutoAdvanceSetting(mActivity);
-            Cursor c = mConversationListFragment.getConversationListCursor();
+            Cursor c = mConversationListCursor;
             if (c != null) {
                 c.moveToPosition(mCurrentConversation.position);
             }
@@ -1084,4 +1178,67 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     protected abstract DestructiveActionListener getFolderDestructiveActionListener();
+
+    @Override
+    public void onRefreshRequired() {
+        // Refresh the query in the background
+        getConversationListCursor().refresh();
+    }
+
+    @Override
+    public void onRefreshReady() {
+        ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
+        // If we have any deletions from the server, animate them away
+        if (!deletedRows.isEmpty() && mConversationListFragment != null) {
+            AnimatedAdapter adapter = mConversationListFragment.getAnimatedAdapter();
+            if (adapter != null) {
+                mConversationListFragment.getAnimatedAdapter().delete(deletedRows,
+                       this);
+            }
+        } else {
+            // Swap cursors
+            getConversationListCursor().sync();
+            finishRefresh();
+        }
+    }
+
+    private void finishRefresh() {
+        if (mConversationListFragment != null) {
+            AnimatedAdapter adapter = mConversationListFragment.getAnimatedAdapter();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    @Override
+    public void onSetEmpty() {
+        mSelectedConversationsActionMenu = null;
+    }
+
+    @Override
+    public void onSetPopulated(ConversationSelectionSet set) {
+        mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(mActivity,
+                mSelectedSet, mConversationListFragment.getAnimatedAdapter(), this,
+                mConversationListFragment, mAccount, mFolder);
+        mSelectedConversationsActionMenu.activate();
+    }
+
+
+    @Override
+    public void onSetChanged(ConversationSelectionSet set) {
+        // Do nothing. We don't care about changes to the set.
+    }
+
+    @Override
+    public ConversationSelectionSet getSelectedSet() {
+        return mSelectedSet;
+    }
+
+    @Override
+    public void onActionComplete() {
+        if (getConversationListCursor().isRefreshReady()) {
+            finishRefresh();
+        }
+    }
 }
