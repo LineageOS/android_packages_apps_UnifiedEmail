@@ -93,7 +93,7 @@ public class MessageModification {
      * @param includeQuotedText the include quoted text flag
      */
     public static void putAppendRefMessageContent(ContentValues values, boolean includeQuotedText) {
-        values.put(MessageColumns.APPEND_REF_MESSAGE_CONTENT, includeQuotedText);
+        values.put(MessageColumns.APPEND_REF_MESSAGE_CONTENT, includeQuotedText ? 1 : 0);
     }
 
     /**
