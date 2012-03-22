@@ -763,7 +763,6 @@ public class UIProvider {
         MessageColumns.ALWAYS_SHOW_IMAGES,
         MessageColumns.READ,
         MessageColumns.STARRED,
-        MessageColumns.INCLUDE_QUOTED_TEXT,
         MessageColumns.QUOTE_START_POS
     };
 
@@ -801,8 +800,7 @@ public class UIProvider {
     public static final int MESSAGE_ALWAYS_SHOW_IMAGES_COLUMN = 24;
     public static final int MESSAGE_READ_COLUMN = 25;
     public static final int MESSAGE_STARRED_COLUMN = 26;
-    public static final int INCLUDE_QUOTED_TEXT_COLUMN = 27;
-    public static final int QUOTED_TEXT_OFFSET_COLUMN = 28;
+    public static final int QUOTED_TEXT_OFFSET_COLUMN = 27;
 
 
     public static final class CursorStatus {
@@ -958,11 +956,6 @@ public class UIProvider {
          * This boolean column indicates whether the message has been starred
          */
         public static String STARRED = "starred";
-
-        /**
-         * This integer column represents whether the message should include quoted text.
-         */
-        public static final String INCLUDE_QUOTED_TEXT = "includeQuotedText";
 
         /**
          * This integer column represents the offset in the message of quoted
