@@ -101,7 +101,7 @@ public class SuppressNotificationReceiver extends BroadcastReceiver {
      * Returns a boolean indicating whether notifications are suppressed for the specified account.
      */
     public boolean notificationsDisabledForAccount(Account account) {
-        return mContext != null && account.mimeType.equals(mMimeType);
+        return mContext != null && TextUtils.equals(account.mimeType, mMimeType);
     }
 
     @Override
