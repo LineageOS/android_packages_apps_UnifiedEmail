@@ -26,6 +26,7 @@ import android.content.OperationApplicationException;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.CursorWrapper;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
@@ -33,6 +34,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
@@ -697,8 +699,12 @@ public final class ConversationCursor implements Cursor {
         while (true) {
             boolean ret = sUnderlyingCursor.moveToPrevious();
             if (!ret) return false;
-            if (getCachedValue(-1) instanceof Integer) continue;
+            if (getCachedValue(DELETED_COLUMN_INDEX) instanceof Integer) continue;
             mPosition--;
+            // STOPSHIP: Remove this if statement
+            if (mPosition < 0) {
+                mStackTrace = new Throwable().getStackTrace();
+            }
             return true;
         }
     }
@@ -723,13 +729,24 @@ public final class ConversationCursor implements Cursor {
         return moveToNext();
     }
 
+    // STOPSHIP: Remove this
+    private StackTraceElement[] mStackTrace = null;
+
     @Override
     public boolean moveToPosition(int pos) {
+        // STOPSHIP: Remove this if statement
+        if (pos == -1) {
+            mStackTrace = new Throwable().getStackTrace();
+        }
         // STOPSHIP: Remove this check
         if (offUiThread()) {
             LogUtils.w(TAG, new Throwable(), "********** moveToPosition OFF UI THREAD: %d", pos);
         }
-        if (pos < -1 || pos >= getCount()) return false;
+        if (pos < -1 || pos >= getCount()) {
+            // STOPSHIP: Remove this logging
+            LogUtils.w(TAG, new Throwable(), "********** moveToPosition OUT OF RANGE: %d", pos);
+            return false;
+        }
         if (pos == mPosition) return true;
         if (pos > mPosition) {
             while (pos > mPosition) {
@@ -787,9 +804,20 @@ public final class ConversationCursor implements Cursor {
 
     @Override
     public long getLong(int columnIndex) {
-        Object obj = getCachedValue(columnIndex);
-        if (obj != null) return (Long)obj;
-        return sUnderlyingCursor.getLong(columnIndex);
+        // STOPSHIP: Remove try/catch
+        try {
+            Object obj = getCachedValue(columnIndex);
+            if (obj != null) return (Long)obj;
+            return sUnderlyingCursor.getLong(columnIndex);
+        } catch (CursorIndexOutOfBoundsException e) {
+            if (mStackTrace != null) {
+                Log.e(TAG, "Stack trace at last moveToPosition(-1)");
+                Throwable t = new Throwable();
+                t.setStackTrace(mStackTrace);
+                t.printStackTrace();
+            }
+            throw e;
+        }
     }
 
     @Override
