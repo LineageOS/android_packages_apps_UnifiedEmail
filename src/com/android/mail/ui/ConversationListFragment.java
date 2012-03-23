@@ -317,6 +317,10 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        // Ignore anything that is not a conversation item. Could be a footer.
+        if (!(view instanceof ConversationItemView)) {
+            return true;
+        }
         // Long click is for adding conversations to a selection. Add conversation here.
 
         // TODO(viki): True for now. We need to look at settings and perform a different action if
@@ -342,6 +346,10 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onListItemClick(ListView l, View view, int position, long id) {
+        // Ignore anything that is not a conversation item. Could be a footer.
+        if (!(view instanceof ConversationItemView)) {
+            return;
+        }
         viewConversation(position);
         mCurrentPosition = position;
     }
