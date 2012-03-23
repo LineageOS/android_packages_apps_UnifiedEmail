@@ -16,9 +16,6 @@
 
 package com.android.mail.providers;
 
-import com.android.mail.providers.UIProvider.MessageColumns;
-import com.android.mail.utils.Utils;
-
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -27,12 +24,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.android.mail.providers.UIProvider.MessageColumns;
+import com.android.mail.utils.Utils;
+
 
 public class Message implements Parcelable {
     public long id;
     public long serverId;
     public Uri uri;
-    public long conversationId;
+    public String conversationUri;
     public String subject;
     public String snippet;
     public String from;
@@ -90,7 +90,7 @@ public class Message implements Parcelable {
         dest.writeLong(id);
         dest.writeLong(serverId);
         dest.writeParcelable(uri, 0);
-        dest.writeLong(conversationId);
+        dest.writeString(conversationUri);
         dest.writeString(subject);
         dest.writeString(snippet);
         dest.writeString(from);
@@ -119,7 +119,7 @@ public class Message implements Parcelable {
         id = in.readLong();
         serverId = in.readLong();
         uri = in.readParcelable(null);
-        conversationId = in.readLong();
+        conversationUri = in.readString();
         subject = in.readString();
         snippet = in.readString();
         from = in.readString();
@@ -173,7 +173,7 @@ public class Message implements Parcelable {
             serverId = cursor.getLong(UIProvider.MESSAGE_SERVER_ID_COLUMN);
             String message = cursor.getString(UIProvider.MESSAGE_URI_COLUMN);
             uri = !TextUtils.isEmpty(message) ? Uri.parse(message) : null;
-            conversationId = cursor.getLong(UIProvider.MESSAGE_CONVERSATION_ID_COLUMN);
+            conversationUri = cursor.getString(UIProvider.MESSAGE_CONVERSATION_URI_COLUMN);
             subject = cursor.getString(UIProvider.MESSAGE_SUBJECT_COLUMN);
             snippet = cursor.getString(UIProvider.MESSAGE_SNIPPET_COLUMN);
             from = cursor.getString(UIProvider.MESSAGE_FROM_COLUMN);
