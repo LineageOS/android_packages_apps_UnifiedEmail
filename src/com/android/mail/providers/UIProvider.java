@@ -790,7 +790,7 @@ public class UIProvider {
     public static final int MESSAGE_ID_COLUMN = 0;
     public static final int MESSAGE_SERVER_ID_COLUMN = 1;
     public static final int MESSAGE_URI_COLUMN = 2;
-    public static final int MESSAGE_CONVERSATION_ID_COLUMN = 3;
+    public static final int MESSAGE_CONVERSATION_URI_COLUMN = 3;
     public static final int MESSAGE_SUBJECT_COLUMN = 4;
     public static final int MESSAGE_SNIPPET_COLUMN = 5;
     public static final int MESSAGE_FROM_COLUMN = 6;
