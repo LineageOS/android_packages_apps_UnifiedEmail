@@ -24,7 +24,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.android.mail.browse.ConversationCursor;
+import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.MessageColumns;
+import com.android.mail.ui.ConversationViewFragment.MessageCursor;
 import com.android.mail.utils.Utils;
 
 
@@ -62,6 +65,9 @@ public class Message implements Parcelable {
     private String[] mCcAddresses = null;
     private String[] mBccAddresses = null;
     private String[] mReplyToAddresses = null;
+
+    // While viewing a list of messages, points to the MessageCursor that contains it
+    private transient MessageCursor mMessageCursor = null;
 
     @Override
     public int describeContents() {
@@ -166,6 +172,12 @@ public class Message implements Parcelable {
         }
 
     };
+
+    public Message(MessageCursor cursor) {
+        this((Cursor)cursor);
+        // Only set message cursor if appropriate
+        mMessageCursor = cursor;
+    }
 
     public Message(Cursor cursor) {
         if (cursor != null) {
@@ -273,6 +285,15 @@ public class Message implements Parcelable {
      * @param cookie (optional) cookie to pass to the handler
      */
     public void star(boolean starred, AsyncQueryHandler handler, int token, Object cookie) {
+        this.starred = starred;
+        boolean conversationStarred = starred;
+        // If we're unstarring, we need to find out if the conversation is still starred
+        if (mMessageCursor != null && !starred) {
+            conversationStarred = mMessageCursor.isConversationStarred();
+        }
+        // Update the conversation cursor so that changes are reflected simultaneously
+        ConversationCursor.setConversationColumn(conversationUri, ConversationColumns.STARRED,
+                conversationStarred);
         final ContentValues values = new ContentValues(1);
         values.put(UIProvider.MessageColumns.STARRED, starred ? 1 : 0);
 

@@ -1161,11 +1161,16 @@ public abstract class AbstractActivityController implements ActivityController, 
         } else {
             // Swap cursors
             getConversationListCursor().sync();
-            finishRefresh();
+            refreshAdapter();
         }
     }
 
-    private void finishRefresh() {
+    @Override
+    public void onDataSetChanged() {
+        refreshAdapter();
+    }
+
+    private void refreshAdapter() {
         if (mConversationListFragment != null) {
             AnimatedAdapter adapter = mConversationListFragment.getAnimatedAdapter();
             if (adapter != null) {
@@ -1201,7 +1206,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     @Override
     public void onActionComplete() {
         if (getConversationListCursor().isRefreshReady()) {
-            finishRefresh();
+            refreshAdapter();
         }
     }
 }

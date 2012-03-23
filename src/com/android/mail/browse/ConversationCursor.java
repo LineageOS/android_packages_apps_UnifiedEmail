@@ -380,6 +380,19 @@ public final class ConversationCursor implements Cursor {
         return builder.build();
     }
 
+    public static void setConversationColumn(String uriString, String columnName, Object value) {
+        synchronized (sCacheMapLock) {
+            if (sConversationCursor != null) {
+                cacheValue(uriString, columnName, value);
+                synchronized(sListeners) {
+                    for (ConversationListener listener: sListeners) {
+                        listener.onDataSetChanged();
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Cache a column name/value pair for a given Uri
      * @param uriString the Uri for which the column name/value pair applies
@@ -1191,10 +1204,18 @@ public final class ConversationCursor implements Cursor {
      * notify on deletions
      */
     public interface ConversationListener {
-        // Data in the underlying provider has changed; a refresh is required to sync up
+        /**
+         * Data in the underlying provider has changed; a refresh is required to sync up
+         */
         public void onRefreshRequired();
-        // We've completed a requested refresh of the underlying cursor
+        /**
+         * We've completed a requested refresh of the underlying cursor
+         */
         public void onRefreshReady();
+        /**
+         * The data underlying the cursor has changed; the UI should redraw the list
+         */
+        public void onDataSetChanged();
     }
 
     @Override

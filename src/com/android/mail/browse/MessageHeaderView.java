@@ -16,8 +16,6 @@
 
 package com.android.mail.browse;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import android.app.LoaderManager;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
@@ -59,6 +57,7 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.annotations.VisibleForTesting;
 
 import java.io.IOException;
 import java.io.StringReader;

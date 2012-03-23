@@ -17,8 +17,6 @@
 
 package com.android.mail.ui;
 
-import com.google.common.collect.Maps;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -32,7 +30,6 @@ import android.database.CursorWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.provider.Browser;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -65,6 +62,7 @@ import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.Maps;
 
 import java.util.Map;
 
@@ -339,7 +337,7 @@ public final class ConversationViewFragment extends Fragment implements
         boolean allowNetworkImages = false;
 
         while (messageCursor.moveToPosition(++pos)) {
-            final Message msg = messageCursor.get();
+            final Message msg = messageCursor.getMessage();
             // TODO: save/restore 'show pics' state
             final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
             allowNetworkImages |= safeForImages;
@@ -433,7 +431,11 @@ public final class ConversationViewFragment extends Fragment implements
         }
     }
 
-    private static class MessageCursor extends CursorWrapper {
+    /**
+     * MessageCursor contains the messages within a conversation; the public methods within should
+     * only be called by the UI thread, as cursor position isn't guaranteed to be maintained
+     */
+    public static class MessageCursor extends CursorWrapper {
 
         private Map<Long, Message> mCache = Maps.newHashMap();
 
@@ -441,7 +443,7 @@ public final class ConversationViewFragment extends Fragment implements
             super(inner);
         }
 
-        public Message get() {
+        public Message getMessage() {
             final long id = getWrappedCursor().getLong(UIProvider.MESSAGE_ID_COLUMN);
             Message m = mCache.get(id);
             if (m == null) {
@@ -449,6 +451,18 @@ public final class ConversationViewFragment extends Fragment implements
                 mCache.put(id, m);
             }
             return m;
+        }
+
+        // Is the conversation starred?
+        public boolean isConversationStarred() {
+            int pos = -1;
+            while (moveToPosition(++pos)) {
+                Message m = getMessage();
+                if (m.starred) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
@@ -470,7 +484,7 @@ public final class ConversationViewFragment extends Fragment implements
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            final Message msg = ((MessageCursor) cursor).get();
+            final Message msg = ((MessageCursor) cursor).getMessage();
             MessageHeaderView header = (MessageHeaderView) view;
             header.setCallbacks(mCallbacks);
             header.initialize(mDateBuilder, mAccount, mLoaderManager, true /* expanded */,
