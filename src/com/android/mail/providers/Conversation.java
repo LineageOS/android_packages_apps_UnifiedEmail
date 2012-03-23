@@ -174,18 +174,6 @@ public class Conversation implements Parcelable {
     private Conversation() {
     }
 
-    // TODO: (mindyp) remove once gmail is updated and checked in.
-    @Deprecated
-    public static Conversation create(long id, Uri uri, String subject, long dateMs,
-            String snippet, boolean hasAttachment, Uri messageListUri, String senders,
-            int numMessages, int numDrafts, int sendingState, int priority, boolean read,
-            boolean starred, String folderList, String rawFolders, int convFlags,
-            int personalLevel) {
-        return Conversation.create(id, uri, subject, dateMs, snippet, hasAttachment,
-                messageListUri, senders, numMessages, numDrafts, sendingState, priority, read,
-                starred, folderList, rawFolders, convFlags, personalLevel, false, false);
-    }
-
     public static Conversation create(long id, Uri uri, String subject, long dateMs,
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,

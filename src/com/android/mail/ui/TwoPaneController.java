@@ -200,7 +200,8 @@ public final class TwoPaneController extends AbstractActivityController {
         } else {
             mViewMode.enterConversationMode();
         }
-        Fragment convFragment = ConversationViewFragment.newInstance(mAccount, conversation, mFolder);
+        Fragment convFragment = ConversationViewFragment.newInstance(mAccount, conversation,
+                mFolder);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.replace(R.id.conversation_pane, convFragment);
