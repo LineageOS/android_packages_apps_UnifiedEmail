@@ -55,6 +55,7 @@ import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
+import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -527,7 +528,9 @@ public abstract class AbstractActivityController implements ActivityController, 
     protected void updateCurrentConversation(String columnName, boolean value) {
         Conversation.updateBoolean(mContext, ImmutableList.of(mCurrentConversation), columnName,
                 value);
-        mConversationListFragment.requestListRefresh();
+        if (mConversationListFragment != null) {
+            mConversationListFragment.requestListRefresh();
+        }
     }
 
     /**
@@ -537,7 +540,17 @@ public abstract class AbstractActivityController implements ActivityController, 
      */
     protected void updateCurrentConversation(String columnName, int value) {
         Conversation.updateInt(mContext, ImmutableList.of(mCurrentConversation), columnName, value);
-        mConversationListFragment.requestListRefresh();
+        if (mConversationListFragment != null) {
+            mConversationListFragment.requestListRefresh();
+        }
+    }
+
+    protected void updateCurrentConversation(String columnName, String value) {
+        Conversation.updateString(mContext, ImmutableList.of(mCurrentConversation), columnName,
+                value);
+        if (mConversationListFragment != null) {
+            mConversationListFragment.requestListRefresh();
+        }
     }
 
     private void requestFolderRefresh() {
@@ -1108,26 +1121,22 @@ public abstract class AbstractActivityController implements ActivityController, 
     // Called from the FolderSelectionDialog after a user is done changing
     // folders.
     @Override
-    public void onCommit(String uris) {
+    public void onFolderChangesCommit(String folderChangeList) {
         // Get currently active folder info and compare it to the list
         // these conversations have been given; if they no longer contain
         // the selected folder, delete them from the list.
         HashSet<String> folderUris = new HashSet<String>();
-        if (!TextUtils.isEmpty(uris)) {
-            folderUris.addAll(Arrays.asList(uris.split(",")));
+        if (!TextUtils.isEmpty(folderChangeList)) {
+            folderUris.addAll(Arrays.asList(folderChangeList.split(",")));
         }
-        final boolean destructiveChange = !folderUris.contains(mFolder.uri);
+        final boolean destructiveChange = !folderUris.contains(mFolder.uri.toString());
         DestructiveActionListener listener = getFolderDestructiveActionListener();
+        updateCurrentConversation(ConversationColumns.FOLDER_LIST, folderChangeList);
         if (destructiveChange) {
             mCurrentConversation.localDeleteOnUpdate = true;
-            mConversationListFragment.requestDelete(listener);
-        } else {
-            final ArrayList<Conversation> single = new ArrayList<Conversation>();
-            single.add(mCurrentConversation);
-            listener.performConversationAction(single);
-            if (mConversationListFragment != null) {
-                mConversationListFragment.requestListRefresh();
-            }
+            requestDelete(listener);
+        } else if (mConversationListFragment != null) {
+            mConversationListFragment.requestListRefresh();
         }
     }
 

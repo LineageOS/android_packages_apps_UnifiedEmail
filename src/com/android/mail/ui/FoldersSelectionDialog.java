@@ -43,21 +43,22 @@ import java.util.Map.Entry;
 
 public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceClickListener {
     private AlertDialog mDialog;
-    private CommitListener mCommitListener;
+    private FolderChangeCommitListener mCommitListener;
     private HashMap<Uri, Boolean> mCheckedState;
     private boolean mSingle = false;
     private FolderSelectorAdapter mAdapter;
 
-    public interface CommitListener {
+    public interface FolderChangeCommitListener {
         /**
          * Commit the folder selection change to the underlying provider.
          * @param uris
          */
-        public void onCommit(String uris);
+        public void onFolderChangesCommit(String uris);
     }
 
     public FoldersSelectionDialog(final Context context, Account account,
-            final CommitListener commitListener, Collection<Conversation> selectedConversations) {
+            final FolderChangeCommitListener commitListener,
+            Collection<Conversation> selectedConversations) {
         mCommitListener = commitListener;
         // Mapping of a folder's uri to its checked state
         mCheckedState = new HashMap<Uri, Boolean>();
@@ -150,7 +151,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
                     folderUris.append(folderUri);
                 }
                 if (mCommitListener != null) {
-                    mCommitListener.onCommit(folderUris.toString());
+                    mCommitListener.onFolderChangesCommit(folderUris.toString());
                 }
                 break;
             case DialogInterface.BUTTON_NEGATIVE:

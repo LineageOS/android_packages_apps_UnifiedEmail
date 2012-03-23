@@ -31,7 +31,7 @@ import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.FoldersSelectionDialog;
 import com.android.mail.ui.RestrictedActivity;
-import com.android.mail.ui.FoldersSelectionDialog.CommitListener;
+import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 import com.android.mail.ui.UndoBarView.UndoListener;
 import com.android.mail.ui.UndoOperation;
 import com.android.mail.utils.LogUtils;
@@ -51,14 +51,13 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 /**
  * A component that displays a custom view for an {@code ActionBar}'s {@code
  * ContextMode} specific to operating on a set of conversations.
  */
 public class SelectedConversationsActionMenu implements ActionMode.Callback,
-        ConversationSetObserver, CommitListener {
+        ConversationSetObserver, FolderChangeCommitListener {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -224,10 +223,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     @Override
-    public void onCommit(String folderChangeList) {
+    public void onFolderChangesCommit(String folderChangeList) {
         mFolderChangeList = folderChangeList;
-        // TODO: Make user-friendly toast
-        Toast.makeText(mContext, folderChangeList, Toast.LENGTH_LONG).show();
         // Do the change here...
         // Get currently active folder info and compare it to the list
         // these conversations have been given; if they no longer contain
