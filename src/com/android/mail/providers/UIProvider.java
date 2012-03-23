@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.provider.OpenableColumns;
 import android.text.TextUtils;
 
 import com.android.common.contacts.DataUsageStatUpdater;
@@ -1093,11 +1094,11 @@ public class UIProvider {
          * This string column is the attachment's file name, intended for display in UI. It is not
          * the full path of the file.
          */
-        public static final String NAME = "name";
+        public static final String NAME = OpenableColumns.DISPLAY_NAME;
         /**
          * This integer column is the file size of the attachment, in bytes.
          */
-        public static final String SIZE = "size";
+        public static final String SIZE = OpenableColumns.SIZE;
         /**
          * This column is a {@link Uri} that can be queried to monitor download state and progress
          * for this individual attachment (resulting cursor has one single row for this attachment).
