@@ -37,6 +37,8 @@ import android.text.TextUtils.SimpleStringSplitter;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
@@ -797,4 +799,12 @@ public class Utils {
    public static int getTransparentColor(int color) {
        return 0x00ffffff & color;
    }
+
+    public static void setMenuItemVisibility(Menu menu, int itemId, boolean shouldShow) {
+        final MenuItem item = menu.findItem(itemId);
+        if (item == null) {
+            return;
+        }
+        item.setVisible(shouldShow);
+    }
 }

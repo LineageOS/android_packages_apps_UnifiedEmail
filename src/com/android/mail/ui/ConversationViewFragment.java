@@ -32,6 +32,7 @@ import android.database.CursorWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.provider.Browser;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,9 +57,12 @@ import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -108,8 +112,11 @@ public final class ConversationViewFragment extends Fragment implements
 
     private float mDensity;
 
+    private Folder mFolder;
+
     private static final String ARG_ACCOUNT = "account";
     private static final String ARG_CONVERSATION = "conversation";
+    private static final String ARG_FOLDER = "folder";
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -123,11 +130,12 @@ public final class ConversationViewFragment extends Fragment implements
      * to display conversation.
      */
     public static ConversationViewFragment newInstance(Account account,
-            Conversation conversation) {
+            Conversation conversation, Folder folder) {
        ConversationViewFragment f = new ConversationViewFragment();
        Bundle args = new Bundle();
        args.putParcelable(ARG_ACCOUNT, account);
        args.putParcelable(ARG_CONVERSATION, conversation);
+       args.putParcelable(ARG_FOLDER, folder);
        f.setArguments(args);
        return f;
     }
@@ -141,7 +149,7 @@ public final class ConversationViewFragment extends Fragment implements
         // activity is creating ConversationListFragments. This activity must be of type
         // ControllableActivity.
         final Activity activity = getActivity();
-        if (! (activity instanceof ControllableActivity)) {
+        if (!(activity instanceof ControllableActivity)) {
             LogUtils.wtf(LOG_TAG, "ConversationViewFragment expects only a ControllableActivity to"
                     + "create it. Cannot proceed.");
         }
@@ -172,6 +180,7 @@ public final class ConversationViewFragment extends Fragment implements
         Bundle args = getArguments();
         mAccount = args.getParcelable(ARG_ACCOUNT);
         mConversation = args.getParcelable(ARG_CONVERSATION);
+        mFolder = args.getParcelable(ARG_FOLDER);
         mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
 
         // not really, we just want to get a crack to store a reference to the change_folders item
@@ -233,16 +242,33 @@ public final class ConversationViewFragment extends Fragment implements
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         boolean showMarkImportant = !mConversation.isImportant();
-
-        final MenuItem markImportant = menu.findItem(R.id.mark_important);
-        if (markImportant != null) {
-            markImportant.setVisible(showMarkImportant
-                    && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-            final MenuItem markNotImportant = menu.findItem(R.id.mark_not_important);
-            markNotImportant.setVisible(!showMarkImportant
-                    && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        }
-        // TODO(mindyp) show/ hide spam and mute based on conversation properties to be added.
+        Utils.setMenuItemVisibility(
+                menu,
+                R.id.mark_important,
+                showMarkImportant
+                        && mAccount
+                                .supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+        Utils.setMenuItemVisibility(
+                menu,
+                R.id.mark_not_important,
+                !showMarkImportant
+                        && mAccount
+                                .supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+        // TODO(mindyp) show/ hide spam and mute based on conversation
+        // properties to be added.
+        Utils.setMenuItemVisibility(menu, R.id.y_button,
+                mAccount.supportsCapability(AccountCapabilities.ARCHIVE) && mFolder != null
+                        && mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
+        Utils.setMenuItemVisibility(menu, R.id.report_spam,
+                mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
+                        && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM)
+                        && !mConversation.spam);
+        Utils.setMenuItemVisibility(
+                menu,
+                R.id.mute,
+                mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
+                        && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)
+                        && !mConversation.muted);
     }
     /**
      * Handles a request to show a new conversation list, either from a search query or for viewing

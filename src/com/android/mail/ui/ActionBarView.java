@@ -229,12 +229,6 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         mActivity.invalidateOptionsMenu();
     }
 
-    private void setVisibility(Menu menu, int itemId, boolean shouldShow) {
-        final MenuItem item = menu.findItem(itemId);
-        assert (item != null);
-        item.setVisible(shouldShow);
-    }
-
     public boolean onPrepareOptionsMenu(Menu menu) {
         // We start out with every option enabled. Based on the current view, we disable actions
         // that are possible.
@@ -277,24 +271,12 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 // Show compose, search, folders, and sync based on the account
                 // The only option that needs to be disabled is search
                 showNavList();
-                setVisibility(menu, R.id.search,
+                Utils.setMenuItemVisibility(menu, R.id.search,
                         mAccount.supportsCapability(AccountCapabilities.FOLDER_SERVER_SEARCH));
                 break;
             case ViewMode.CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 showNavList();
-                setVisibility(menu, R.id.y_button,
-                        mAccount.supportsCapability(AccountCapabilities.ARCHIVE) && mFolder != null
-                                && mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
-                setVisibility(
-                        menu,
-                        R.id.report_spam,
-                        mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM)
-                                && mFolder != null
-                                && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM));
-                setVisibility(menu, R.id.mute,
-                        mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
-                                && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE));
                 break;
             case ViewMode.SEARCH_RESULTS_LIST:
                 showNavList();

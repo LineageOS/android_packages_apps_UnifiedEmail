@@ -55,6 +55,8 @@ public class Conversation implements Parcelable {
     public String rawFolders;
     public int convFlags;
     public int personalLevel;
+    public boolean spam;
+    public boolean muted;
 
     // Used within the UI to indicate the adapter position of this conversation
     public transient int position;
@@ -88,6 +90,8 @@ public class Conversation implements Parcelable {
         dest.writeString(rawFolders);
         dest.writeInt(convFlags);
         dest.writeInt(personalLevel);
+        dest.writeInt(spam ? 1 : 0);
+        dest.writeInt(muted ? 1 : 0);
     }
 
     private Conversation(Parcel in) {
@@ -109,6 +113,8 @@ public class Conversation implements Parcelable {
         rawFolders = in.readString();
         convFlags = in.readInt();
         personalLevel = in.readInt();
+        spam = in.readInt() != 0;
+        muted = in.readInt() != 0;
         position = NO_POSITION;
         localDeleteOnUpdate = false;
     }
@@ -158,6 +164,8 @@ public class Conversation implements Parcelable {
             rawFolders = cursor.getString(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN);
             convFlags = cursor.getInt(UIProvider.CONVERSATION_FLAGS_COLUMN);
             personalLevel = cursor.getInt(UIProvider.CONVERSATION_PERSONAL_LEVEL_COLUMN);
+            spam = cursor.getInt(UIProvider.CONVERSATION_IS_SPAM_COLUMN) != 0;
+            muted = cursor.getInt(UIProvider.CONVERSATION_MUTED_COLUMN) != 0;
             position = NO_POSITION;
             localDeleteOnUpdate = false;
         }
@@ -166,10 +174,23 @@ public class Conversation implements Parcelable {
     private Conversation() {
     }
 
-    public static Conversation create(long id, Uri uri, String subject, long dateMs, String snippet,
-            boolean hasAttachment, Uri messageListUri, String senders, int numMessages,
-            int numDrafts, int sendingState, int priority, boolean read, boolean starred,
-            String folderList, String rawFolders, int convFlags, int personalLevel) {
+    // TODO: (mindyp) remove once gmail is updated and checked in.
+    @Deprecated
+    public static Conversation create(long id, Uri uri, String subject, long dateMs,
+            String snippet, boolean hasAttachment, Uri messageListUri, String senders,
+            int numMessages, int numDrafts, int sendingState, int priority, boolean read,
+            boolean starred, String folderList, String rawFolders, int convFlags,
+            int personalLevel) {
+        return Conversation.create(id, uri, subject, dateMs, snippet, hasAttachment,
+                messageListUri, senders, numMessages, numDrafts, sendingState, priority, read,
+                starred, folderList, rawFolders, convFlags, personalLevel, false, false);
+    }
+
+    public static Conversation create(long id, Uri uri, String subject, long dateMs,
+            String snippet, boolean hasAttachment, Uri messageListUri, String senders,
+            int numMessages, int numDrafts, int sendingState, int priority, boolean read,
+            boolean starred, String folderList, String rawFolders, int convFlags,
+            int personalLevel, boolean spam, boolean muted) {
 
         final Conversation conversation = new Conversation();
 
@@ -191,6 +212,8 @@ public class Conversation implements Parcelable {
         conversation.rawFolders = rawFolders;
         conversation.convFlags = convFlags;
         conversation.personalLevel = personalLevel;
+        conversation.spam = spam;
+        conversation.muted = muted;
         return conversation;
     }
 

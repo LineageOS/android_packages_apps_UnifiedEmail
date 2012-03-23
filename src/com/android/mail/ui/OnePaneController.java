@@ -185,7 +185,7 @@ public final class OnePaneController extends AbstractActivityController {
             mViewMode.enterConversationMode();
         }
         mLastConversationTransactionId = replaceFragment(
-                ConversationViewFragment.newInstance(mAccount, conversation),
+                ConversationViewFragment.newInstance(mAccount, conversation, mFolder),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         mConversationListVisible = false;
     }
