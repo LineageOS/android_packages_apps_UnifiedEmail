@@ -332,12 +332,15 @@ public abstract class AbstractActivityController implements ActivityController, 
     }
 
     public void onSettingsChanged(Settings settings) {
+        String oldUri = mCachedSettings != null ? mCachedSettings.defaultInbox.toString() : null;
+        String newUri = settings != null ? settings.defaultInbox.toString() : null;
         mCachedSettings = settings;
         resetActionBarIcon();
         // Only restart the loader if the defaultInboxUri is not the same as
         // the folder we are already loading.
+        boolean changed = !TextUtils.equals(oldUri, newUri);
         if (settings != null && settings.defaultInbox != null && mFolder != null
-                && !settings.defaultInbox.equals(mFolder.uri)) {
+                && changed) {
             mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_INBOX, null, this);
         }
     }
@@ -1015,16 +1018,25 @@ public abstract class AbstractActivityController implements ActivityController, 
                 LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
                 break;
             case LOADER_ACCOUNT_SETTINGS:
-                data.moveToFirst();
-                onSettingsChanged(new Settings(data));
+                // An account may actually have no settings if it is one of the
+                // special combined accounts.
+                Settings settings = null;
+                if (data.moveToFirst()) {
+                    settings = new Settings(data);
+                }
+                onSettingsChanged(settings);
                 break;
             case LOADER_RECENT_FOLDERS:
                 mRecentFolderList.loadFromUiProvider(data);
                 break;
             case LOADER_ACCOUNT_INBOX:
-                data.moveToFirst();
-                Folder inbox = new Folder(data);
-                onFolderChanged(inbox);
+                if (data.moveToFirst()) {
+                    // Just want to get the inbox, don't care about updates to it
+                    // as this will be tracked by the folder change listener.
+                    mActivity.getLoaderManager().destroyLoader(LOADER_ACCOUNT_INBOX);
+                    Folder inbox = new Folder(data);
+                    onFolderChanged(inbox);
+                }
                 break;
             case LOADER_SEARCH:
                 data.moveToFirst();
