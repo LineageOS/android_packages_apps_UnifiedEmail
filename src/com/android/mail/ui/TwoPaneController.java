@@ -107,7 +107,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 mAccount.folderListUri);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.replace(R.id.folders_pane, folderListFragment);
+        fragmentTransaction.replace(R.id.content_pane, folderListFragment);
         fragmentTransaction.commitAllowingStateLoss();
         // Since we are showing the folder list, we are at the start of the view
         // stack.

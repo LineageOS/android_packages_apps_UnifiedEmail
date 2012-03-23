@@ -511,7 +511,7 @@ final class TwoPaneLayout extends LinearLayout
         mContext = context;
 
         Resources res = getResources();
-        mFoldersView = findViewById(R.id.folders_pane);
+        mFoldersView = findViewById(R.id.content_pane);
         mConversationListContainer = findViewById(R.id.conversation_column_container);
         mListView = findViewById(R.id.conversation_list);
         mConversationView = findViewById(R.id.conversation_pane_container);

@@ -25,7 +25,7 @@
   android:layout_height="match_parent" >
 
   <FrameLayout
-    android:id="@+id/folders_pane"
+    android:id="@+id/content_pane"
     android:layout_width="@dimen/folder_list_pane_width"
     android:layout_height="match_parent"
     android:background="@drawable/folder_bg_holo_light"/>
