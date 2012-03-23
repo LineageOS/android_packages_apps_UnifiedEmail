@@ -563,7 +563,9 @@ public class UIProvider {
         ConversationColumns.FOLDER_LIST,
         ConversationColumns.RAW_FOLDERS,
         ConversationColumns.FLAGS,
-        ConversationColumns.PERSONAL_LEVEL
+        ConversationColumns.PERSONAL_LEVEL,
+        ConversationColumns.SPAM,
+        ConversationColumns.MUTED
     };
 
     // These column indexes only work when the caller uses the
@@ -586,6 +588,8 @@ public class UIProvider {
     public static final int CONVERSATION_RAW_FOLDERS_COLUMN = 15;
     public static final int CONVERSATION_FLAGS_COLUMN = 16;
     public static final int CONVERSATION_PERSONAL_LEVEL_COLUMN = 17;
+    public static final int CONVERSATION_IS_SPAM_COLUMN = 18;
+    public static final int CONVERSATION_MUTED_COLUMN = 19;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -674,12 +678,12 @@ public class UIProvider {
         public static String PRIORITY = "priority";
 
         /**
-         * This boolean column indicates whether the conversation has been read
+         * This int column indicates whether the conversation has been read
          */
         public static String READ = "read";
 
         /**
-         * This boolean column indicates whether the conversation has been starred
+         * This int column indicates whether the conversation has been starred
          */
         public static String STARRED = "starred";
 
@@ -698,6 +702,17 @@ public class UIProvider {
         public static final String RAW_FOLDERS = "rawFolders";
         public static final String FLAGS = "conversationFlags";
         public static final String PERSONAL_LEVEL = "personalLevel";
+
+        /**
+         * This int column indicates whether the conversation is marked spam.
+         */
+        public static final String SPAM = "spam";
+
+        /**
+         * This int column indicates whether the conversation was muted.
+         */
+        public static final String MUTED = "muted";
+
         private ConversationColumns() {
         }
     }

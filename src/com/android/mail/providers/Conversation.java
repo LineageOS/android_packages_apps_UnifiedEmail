@@ -143,7 +143,7 @@ public class Conversation implements Parcelable {
                 subject = "";
             }
             snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
-            hasAttachments = cursor.getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) == 1;
+            hasAttachments = cursor.getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) != 0;
             String messageList = cursor
                     .getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN);
             messageListUri = !TextUtils.isEmpty(messageList) ? Uri.parse(messageList) : null;
@@ -152,8 +152,8 @@ public class Conversation implements Parcelable {
             numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
             sendingState = cursor.getInt(UIProvider.CONVERSATION_SENDING_STATE_COLUMN);
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
-            read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) == 1;
-            starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) == 1;
+            read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) != 0;
+            starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) != 0;
             folderList = cursor.getString(UIProvider.CONVERSATION_FOLDER_LIST_COLUMN);
             rawFolders = cursor.getString(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN);
             convFlags = cursor.getInt(UIProvider.CONVERSATION_FLAGS_COLUMN);
