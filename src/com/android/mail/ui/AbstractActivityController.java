@@ -267,10 +267,13 @@ public abstract class AbstractActivityController implements ActivityController, 
 
                     @Override
                     public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
-                        mConversationListFragment.configureSearchResultHeader();
-                        AnimatedAdapter adapter = mConversationListFragment.getAnimatedAdapter();
-                        if (adapter != null) {
-                            adapter.hideFooter();
+                        if (mConversationListFragment != null) {
+                            mConversationListFragment.configureSearchResultHeader();
+                            AnimatedAdapter adapter = mConversationListFragment
+                                    .getAnimatedAdapter();
+                            if (adapter != null) {
+                                adapter.hideFooter();
+                            }
                         }
                         return new ConversationCursorLoader((Activity) mActivity, mAccount,
                                 UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
@@ -312,6 +315,9 @@ public abstract class AbstractActivityController implements ActivityController, 
     public void onAccountChanged(Account account) {
         if (!account.equals(mAccount)) {
             mAccount = account;
+            mFolder = null;
+            // Reset settings; they are no longer valid.
+            onSettingsChanged(null);
             mRecentFolderList.setCurrentAccount(account);
             restartOptionalLoader(LOADER_RECENT_FOLDERS, null /* args */);
             restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
@@ -326,15 +332,13 @@ public abstract class AbstractActivityController implements ActivityController, 
     }
 
     public void onSettingsChanged(Settings settings) {
-        if (settings != null) {
-            mCachedSettings = settings;
-            resetActionBarIcon();
-            // Only restart the loader if the defaultInboxUri is not the same as
-            // the folder we are already loading.
-            if (settings.defaultInbox != null && mFolder != null
-                    && !settings.defaultInbox.equals(mFolder.uri)) {
-                mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_INBOX, null, this);
-            }
+        mCachedSettings = settings;
+        resetActionBarIcon();
+        // Only restart the loader if the defaultInboxUri is not the same as
+        // the folder we are already loading.
+        if (settings != null && settings.defaultInbox != null && mFolder != null
+                && !settings.defaultInbox.equals(mFolder.uri)) {
+            mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_INBOX, null, this);
         }
     }
 
@@ -386,6 +390,7 @@ public abstract class AbstractActivityController implements ActivityController, 
             mFolder = folder;
             mActionBarView.setFolder(mFolder);
             mActivity.getLoaderManager().restartLoader(LOADER_FOLDER_CURSOR, null, this);
+            initConversationListCursor();
         } else if (folder == null) {
             LogUtils.wtf(LOG_TAG, "Folder in setFolder is null");
         }
