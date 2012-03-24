@@ -793,7 +793,8 @@ public class UIProvider {
         MessageColumns.ALWAYS_SHOW_IMAGES,
         MessageColumns.READ,
         MessageColumns.STARRED,
-        MessageColumns.QUOTE_START_POS
+        MessageColumns.QUOTE_START_POS,
+        MessageColumns.ATTACHMENTS
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -831,6 +832,7 @@ public class UIProvider {
     public static final int MESSAGE_READ_COLUMN = 25;
     public static final int MESSAGE_STARRED_COLUMN = 26;
     public static final int QUOTED_TEXT_OFFSET_COLUMN = 27;
+    public static final int MESSAGE_ATTACHMENTS_COLUMN = 28;
 
 
     public static final class CursorStatus {
@@ -956,6 +958,8 @@ public class UIProvider {
         /**
          * This string column contains a specially formatted string representing all
          * attachments that we added to a message that is being sent or saved.
+         *
+         * TODO: remove this and use ATTACHMENTS JSON instead
          */
         public static final String JOINED_ATTACHMENT_INFOS = "joinedAttachmentInfos";
         /**
@@ -993,6 +997,11 @@ public class UIProvider {
          * column is invalid.
          */
         public static final String QUOTE_START_POS = "quotedTextStartPos";
+
+        /**
+         * This string columns contains a JSON array of serialized {@link Attachment} objects.
+         */
+        public static final String ATTACHMENTS = "attachments";
 
         private MessageColumns() {}
     }
