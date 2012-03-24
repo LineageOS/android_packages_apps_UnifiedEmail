@@ -17,21 +17,22 @@
 
 package com.android.mail.providers;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.net.Uri.Builder;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.android.mail.utils.LogUtils;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -439,9 +440,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
     // swatch (see bug 2431925).
     public static void setFolderBlockColor(Folder folder, View colorBlock) {
         final boolean showBg = !TextUtils.isEmpty(folder.bgColor);
-        final int backgroundColor = showBg ? Integer.parseInt(folder.bgColor) : 0;
-
-        if (!showBg) {
+        final int backgroundColor = showBg ? Color.parseColor(folder.bgColor) : 0;
+        if (folder.iconResId >= 0) {
+            colorBlock.setBackgroundResource((int)folder.iconResId);
+        } else if (!showBg) {
             colorBlock.setBackgroundDrawable(null);
         } else {
             PaintDrawable paintDrawable = new PaintDrawable();
