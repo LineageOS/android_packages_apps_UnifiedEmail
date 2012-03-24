@@ -1088,7 +1088,7 @@ public abstract class AbstractActivityController implements ActivityController, 
 
         public void performConversationAction(Collection<Conversation> single) {
             switch (mAction) {
-                case R.id.y_button:
+                case R.id.archive:
                     LogUtils.d(LOG_TAG, "Archiving conversation " + mCurrentConversation);
                     Conversation.archive(mContext, single);
                     break;
