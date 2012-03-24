@@ -66,6 +66,8 @@ public final class OnePaneController extends AbstractActivityController {
             R.id.mute);
     private final ActionCompleteListener mSpamListener = new OnePaneDestructiveActionListener(
             R.id.report_spam);
+    private final ActionCompleteListener mUnreadListener = new OnePaneDestructiveActionListener(
+            R.id.inside_conversation_unread);
     private final OnePaneDestructiveActionListener mFolderChangeListener =
             new OnePaneDestructiveActionListener(R.id.change_folder);
 
@@ -349,7 +351,8 @@ public final class OnePaneController extends AbstractActivityController {
                         Collections.singletonList(mCurrentConversation)).show();
                 break;
             case R.id.inside_conversation_unread:
-                updateCurrentConversation(ConversationColumns.READ, false);
+                // Mark as unread and advance.
+                performInsideConversationUnread();
                 break;
             case R.id.mark_important:
                 updateCurrentConversation(ConversationColumns.PRIORITY,
@@ -372,6 +375,18 @@ public final class OnePaneController extends AbstractActivityController {
         return handled || super.onOptionsItemSelected(item);
     }
 
+    // TODO: If when the conversation was opened, some of the messages were unread,
+    // this is supposed to restore that state. Otherwise, this should mark all
+    // messages as unread
+    private void performInsideConversationUnread() {
+        updateCurrentConversation(ConversationColumns.READ, false);
+        if (returnToList()) {
+            onBackPressed();
+        } else {
+            mUnreadListener.onActionComplete();
+        }
+    }
+
     private class OnePaneDestructiveActionListener extends DestructiveActionListener {
         public OnePaneDestructiveActionListener(int action) {
             super(action);
@@ -385,7 +400,8 @@ public final class OnePaneController extends AbstractActivityController {
             int mode = mViewMode.getMode();
             if (mode == ViewMode.CONVERSATION) {
                 next = getNextConversation();
-            } else if (mode == ViewMode.CONVERSATION_LIST) {
+            } else if (mode == ViewMode.CONVERSATION_LIST
+                    && mAction != R.id.inside_conversation_unread) {
                 OnePaneController.this.onActionComplete();
                 mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
             }
@@ -414,11 +430,11 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
-    protected void requestDelete(final ActionCompleteListener listener) {
-        int pref = getAutoAdvanceSetting(mActivity);
+    private boolean returnToList() {
         ConversationCursor conversationListCursor = mConversationListCursor;
-        boolean canMove = false;
+        int pref = getAutoAdvanceSetting(mActivity);
         final int position = mCurrentConversation.position;
+        boolean canMove = false;
         switch (pref) {
             case AutoAdvance.NEWER:
                 canMove = position - 1 >= 0;
@@ -430,7 +446,12 @@ public final class OnePaneController extends AbstractActivityController {
                 }
                 break;
         }
-        if (pref == AutoAdvance.LIST || !canMove) {
+        return pref == AutoAdvance.LIST || !canMove;
+    }
+
+    protected void requestDelete(final ActionCompleteListener listener) {
+        final int position = mCurrentConversation.position;
+        if (returnToList()) {
             onBackPressed();
             mHandler.post(new Runnable() {
 

@@ -1138,17 +1138,33 @@ public abstract class AbstractActivityController implements ActivityController, 
     // Called from the FolderSelectionDialog after a user is done changing
     // folders.
     @Override
-    public void onFolderChangesCommit(String folderChangeList) {
+    public void onFolderChangesCommit(ArrayList<Folder> folderChangeList) {
         // Get currently active folder info and compare it to the list
         // these conversations have been given; if they no longer contain
         // the selected folder, delete them from the list.
         HashSet<String> folderUris = new HashSet<String>();
-        if (!TextUtils.isEmpty(folderChangeList)) {
-            folderUris.addAll(Arrays.asList(folderChangeList.split(",")));
+        if (folderChangeList != null && !folderChangeList.isEmpty()) {
+            for (Folder f : folderChangeList) {
+                folderUris.add(f.uri.toString());
+            }
         }
         final boolean destructiveChange = !folderUris.contains(mFolder.uri.toString());
         DestructiveActionListener listener = getFolderDestructiveActionListener();
-        updateCurrentConversation(ConversationColumns.FOLDER_LIST, folderChangeList);
+        StringBuilder foldersUrisString = new StringBuilder();
+        boolean first = true;
+        for (Folder f : folderChangeList) {
+            if (first) {
+                first = false;
+            } else {
+                foldersUrisString.append(',');
+            }
+            foldersUrisString.append(f.uri.toString());
+        }
+        updateCurrentConversation(ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
+        updateCurrentConversation(ConversationColumns.RAW_FOLDERS,
+                Folder.getSerializedFolderString(folderChangeList));
+        // TODO: (mindyp): set ConversationColumns.RAW_FOLDERS like in
+        // SelectedConversationsActionMenu
         if (destructiveChange) {
             mCurrentConversation.localDeleteOnUpdate = true;
             requestDelete(listener);

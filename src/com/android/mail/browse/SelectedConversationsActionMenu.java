@@ -39,14 +39,12 @@ import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -72,7 +70,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     /**
      * The new folder list (after selection)
      */
-    protected String mFolderChangeList;
+    protected ArrayList<Folder> mFolderChangeList;
 
     private final RestrictedActivity mActivity;
 
@@ -223,15 +221,17 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     @Override
-    public void onFolderChangesCommit(String folderChangeList) {
+    public void onFolderChangesCommit(ArrayList<Folder> folderChangeList) {
         mFolderChangeList = folderChangeList;
         // Do the change here...
         // Get currently active folder info and compare it to the list
         // these conversations have been given; if they no longer contain
         // the selected folder, delete them from the list.
         HashSet<String> folderUris = new HashSet<String>();
-        if (!TextUtils.isEmpty(folderChangeList)) {
-            folderUris.addAll(Arrays.asList(folderChangeList.split(",")));
+        if (folderChangeList != null && !folderChangeList.isEmpty()) {
+            for (Folder f : folderChangeList) {
+                folderUris.add(f.uri.toString());
+            }
         }
         if (!folderUris.contains(mFolder.uri.toString())) {
             final Collection<Conversation> conversations = mSelectionSet.values();
@@ -261,8 +261,21 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 mUndoListener.onUndoAvailable(undoOp);
                 mDeletionSet = null;
             }
+            StringBuilder foldersUrisString = new StringBuilder();
+            boolean first = true;
+            for (Folder f : mFolderChangeList) {
+                if (first) {
+                    first = false;
+                } else {
+                    foldersUrisString.append(',');
+                }
+                foldersUrisString.append(f.uri.toString());
+            }
             Conversation.updateString(mContext, mSelectionSet.values(),
-                    ConversationColumns.FOLDER_LIST, mFolderChangeList);
+                    ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
+            Conversation.updateString(mContext, mSelectionSet.values(),
+                    ConversationColumns.RAW_FOLDERS,
+                    Folder.getSerializedFolderString(mFolderChangeList));
             mSelectionSet.clear();
             mListAdapter.notifyDataSetChanged();
         }

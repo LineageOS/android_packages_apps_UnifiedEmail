@@ -34,6 +34,7 @@ import android.view.View;
 
 import com.android.mail.utils.LogUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -259,8 +260,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
         out.append(lastSyncResult).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(type).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(iconResId).append(FOLDER_COMPONENT_SEPARATOR);
-        out.append(bgColor).append(FOLDER_COMPONENT_SEPARATOR);
-        out.append(fgColor).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(bgColor == null ? "" : bgColor).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(fgColor == null? "" : fgColor).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(loadMoreUri);
         return out.toString();
     }
@@ -456,13 +457,17 @@ public class Folder implements Parcelable, Comparable<Folder> {
      */
     public static boolean isProviderFolder(Folder folder) {
         int type = folder.type;
-        return type == UIProvider.FolderType.DEFAULT ||
-               type == UIProvider.FolderType.INBOX ||
+        return type == UIProvider.FolderType.INBOX ||
                type == UIProvider.FolderType.DRAFT ||
                type == UIProvider.FolderType.OUTBOX ||
                type == UIProvider.FolderType.SENT ||
                type == UIProvider.FolderType.TRASH ||
                type == UIProvider.FolderType.SPAM;
+    }
+
+    public static boolean isHiddenFolder(Folder folder) {
+        return isProviderFolder(folder) ||
+                folder.type == UIProvider.FolderType.HIDDEN;
     }
 
     public int getBackgroundColor(int defaultColor) {
@@ -473,4 +478,18 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return TextUtils.isEmpty(fgColor) ? defaultColor : Integer.parseInt(fgColor);
     }
 
+    public static String getSerializedFolderString(ArrayList<Folder> folders) {
+        StringBuilder foldersStringBuilder = new StringBuilder();
+        int i = 0;
+        for (Folder folderEntry : folders) {
+            if (!Folder.isHiddenFolder(folderEntry)) {
+                foldersStringBuilder.append(folderEntry.serialize());
+                if (i < folders.size() - 1) {
+                    foldersStringBuilder.append(Folder.FOLDER_SEPARATOR);
+                }
+            }
+            i++;
+        }
+        return foldersStringBuilder.toString();
+    }
 }
