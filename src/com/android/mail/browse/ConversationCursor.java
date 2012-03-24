@@ -238,11 +238,12 @@ public final class ConversationCursor implements Cursor {
                     ConversationListQueryParameters.DEFAULT_LIMIT).build();
         }
         long time = System.currentTimeMillis();
+
         Wrapper result = new Wrapper(mResolver.query(uri, qProjection, null, null, null), uri);
         if (DEBUG) {
             time = System.currentTimeMillis() - time;
-            LogUtils.i(TAG, "ConversationCursor query: " + uri + ", " + time + "ms, " +
-                    result.getCount() + " results");
+            LogUtils.i(TAG, "ConversationCursor query: %s, %dms, %d results",
+                    uri, time, result.getCount());
         }
         return result;
     }
