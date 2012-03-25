@@ -465,11 +465,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
                type == UIProvider.FolderType.SPAM;
     }
 
-    public static boolean isHiddenFolder(Folder folder) {
-        return isProviderFolder(folder) ||
-                folder.type == UIProvider.FolderType.HIDDEN;
-    }
-
     public int getBackgroundColor(int defaultColor) {
         return TextUtils.isEmpty(bgColor) ? defaultColor : Integer.parseInt(bgColor);
     }
@@ -478,15 +473,19 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return TextUtils.isEmpty(fgColor) ? defaultColor : Integer.parseInt(fgColor);
     }
 
-    public static String getSerializedFolderString(ArrayList<Folder> folders) {
+    public static String getSerializedFolderString(Folder currentFolder, ArrayList<Folder> folders) {
         StringBuilder foldersStringBuilder = new StringBuilder();
         int i = 0;
         for (Folder folderEntry : folders) {
-            if (!Folder.isHiddenFolder(folderEntry)) {
-                foldersStringBuilder.append(folderEntry.serialize());
-                if (i < folders.size() - 1) {
+            // If the current folder is a system folder, and the folder entry has the same type
+            // as that system defined folder, don't show it.
+            if (!folderEntry.uri.equals(currentFolder.uri)
+                    && Folder.isProviderFolder(currentFolder)
+                    && folderEntry.type != currentFolder.type) {
+                if (i != 0) {
                     foldersStringBuilder.append(Folder.FOLDER_SEPARATOR);
                 }
+                foldersStringBuilder.append(folderEntry.serialize());
             }
             i++;
         }

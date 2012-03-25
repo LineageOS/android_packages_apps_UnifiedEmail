@@ -275,7 +275,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
             Conversation.updateString(mContext, mSelectionSet.values(),
                     ConversationColumns.RAW_FOLDERS,
-                    Folder.getSerializedFolderString(mFolderChangeList));
+                    Folder.getSerializedFolderString(mFolder, mFolderChangeList));
             mSelectionSet.clear();
             mListAdapter.notifyDataSetChanged();
         }

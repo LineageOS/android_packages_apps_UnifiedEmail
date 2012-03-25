@@ -1162,7 +1162,7 @@ public abstract class AbstractActivityController implements ActivityController, 
         }
         updateCurrentConversation(ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
         updateCurrentConversation(ConversationColumns.RAW_FOLDERS,
-                Folder.getSerializedFolderString(folderChangeList));
+                Folder.getSerializedFolderString(mFolder, folderChangeList));
         // TODO: (mindyp): set ConversationColumns.RAW_FOLDERS like in
         // SelectedConversationsActionMenu
         if (destructiveChange) {

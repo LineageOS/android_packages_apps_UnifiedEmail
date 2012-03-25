@@ -436,7 +436,6 @@ public class UIProvider {
         public static final int SENT = 4;
         public static final int TRASH = 5;
         public static final int SPAM = 6;
-        public static final int HIDDEN = 7;
     }
 
     public static final class FolderCapabilities {
