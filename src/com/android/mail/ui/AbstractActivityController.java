@@ -332,15 +332,18 @@ public abstract class AbstractActivityController implements ActivityController, 
     }
 
     public void onSettingsChanged(Settings settings) {
-        String oldUri = mCachedSettings != null ? mCachedSettings.defaultInbox.toString() : null;
-        String newUri = settings != null ? settings.defaultInbox.toString() : null;
+        String oldUri = mCachedSettings != null ? mCachedSettings.defaultInbox != null ?
+                mCachedSettings.defaultInbox.toString() : null
+                : null;
+        String newUri = settings != null ? settings.defaultInbox != null ?
+                settings.defaultInbox.toString() : null
+                :null;
         mCachedSettings = settings;
         resetActionBarIcon();
         // Only restart the loader if the defaultInboxUri is not the same as
         // the folder we are already loading.
         boolean changed = !TextUtils.equals(oldUri, newUri);
-        if (settings != null && settings.defaultInbox != null && mFolder != null
-                && changed) {
+        if (settings != null && settings.defaultInbox != null && mFolder != null && changed) {
             mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_INBOX, null, this);
         }
     }
@@ -1030,12 +1033,12 @@ public abstract class AbstractActivityController implements ActivityController, 
                 mRecentFolderList.loadFromUiProvider(data);
                 break;
             case LOADER_ACCOUNT_INBOX:
-                if (data.moveToFirst()) {
+                if (data.moveToFirst() && !data.isClosed()) {
+                    Folder inbox = new Folder(data);
+                    onFolderChanged(inbox);
                     // Just want to get the inbox, don't care about updates to it
                     // as this will be tracked by the folder change listener.
                     mActivity.getLoaderManager().destroyLoader(LOADER_ACCOUNT_INBOX);
-                    Folder inbox = new Folder(data);
-                    onFolderChanged(inbox);
                 }
                 break;
             case LOADER_SEARCH:
