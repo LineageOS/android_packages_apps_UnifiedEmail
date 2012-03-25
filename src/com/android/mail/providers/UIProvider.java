@@ -865,6 +865,15 @@ public class UIProvider {
 
     }
 
+    public static final class AccountCursorExtraKeys {
+        /**
+         * This integer column contains the staus of the account cursor.  The value will be
+         * 1 if all accounts have been fully loaded or 0 if the account list hasn't been fully
+         * initialized
+         */
+        public static final String ACCOUNTS_LOADED = "accounts_loaded";
+    }
+
 
     public static final class MessageFlags {
         public static final int REPLIED =       1 << 2;

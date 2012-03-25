@@ -17,6 +17,8 @@
 
 package com.android.mail.providers;
 
+import android.content.Context;
+import android.content.Intent;
 
 public class UnifiedAccountCacheProvider extends MailAppProvider {
     // The authority of our conversation provider (a forwarding provider)
@@ -26,5 +28,10 @@ public class UnifiedAccountCacheProvider extends MailAppProvider {
     @Override
     protected String getAuthority() {
         return sAuthority;
+    }
+
+    @Override
+    protected Intent getNoAccountsIntent(Context context) {
+        return null;
     }
 }

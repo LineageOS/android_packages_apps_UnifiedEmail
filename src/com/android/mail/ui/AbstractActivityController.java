@@ -53,6 +53,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
@@ -140,6 +141,9 @@ public abstract class AbstractActivityController implements ActivityController, 
     private static final int LOADER_CONVERSATION_LIST = 4;
     private static final int LOADER_ACCOUNT_INBOX = 5;
     private static final int LOADER_SEARCH = 6;
+
+
+    private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -427,7 +431,17 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO(viki): Auto-generated method stub
+        if (requestCode == ADD_ACCOUNT_REQUEST_CODE) {
+            // We were waiting for the user to create an account
+            if (resultCode == Activity.RESULT_OK) {
+                // restart the loader to get the updated list of accounts
+                mActivity.getLoaderManager().initLoader(
+                        LOADER_ACCOUNT_CURSOR, null, this);
+            } else {
+                // The user failed to create an account, just exit the app
+                mActivity.finish();
+            }
+        }
     }
 
     @Override
@@ -1033,9 +1047,31 @@ public abstract class AbstractActivityController implements ActivityController, 
         }
         switch (loader.getId()) {
             case LOADER_ACCOUNT_CURSOR:
-                final boolean accountListUpdated = accountsUpdated(data);
-                if (!isLoaderInitialized || accountListUpdated) {
-                    isLoaderInitialized = updateAccounts(loader, data);
+                // If the account list is not not null, and the account list cursor is empty,
+                // we need to start the specified activity.
+                if (data != null && data.getCount() == 0) {
+                    // If an empty cursor is returned, the MailAppProvider is indicating that
+                    // no accounts have been specified.  We want to navigate to the "add account"
+                    // activity that will handle the intent returned by the MailAppProvider
+
+                    // If the MailAppProvider believes that all accounts have been loaded, and the
+                    // account list is still empty, we want to prompt the user to add an account
+                    final Bundle extras = data.getExtras();
+                    final boolean accountsLoaded =
+                            extras.getInt(AccountCursorExtraKeys.ACCOUNTS_LOADED) != 0;
+
+                    if (accountsLoaded) {
+                        final Intent noAccountIntent = MailAppProvider.getNoAccountIntent(mContext);
+                        if (noAccountIntent != null) {
+                            mActivity.startActivityForResult(noAccountIntent,
+                                    ADD_ACCOUNT_REQUEST_CODE);
+                        }
+                    }
+                } else {
+                    final boolean accountListUpdated = accountsUpdated(data);
+                    if (!isLoaderInitialized || accountListUpdated) {
+                        isLoaderInitialized = updateAccounts(loader, data);
+                    }
                 }
                 break;
             case LOADER_FOLDER_CURSOR:

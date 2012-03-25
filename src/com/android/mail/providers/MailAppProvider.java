@@ -17,7 +17,9 @@
 package com.android.mail.providers;
 
 import com.android.mail.providers.Account;
+import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.protos.boot.AccountReceiver;
+import com.android.mail.utils.MatrixCursorWithExtra;
 
 import android.content.Intent;
 import android.content.Loader;
@@ -33,6 +35,7 @@ import com.android.mail.utils.LogUtils;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
@@ -65,6 +68,13 @@ public abstract class MailAppProvider extends ContentProvider
     private static final String ACCOUNT_LIST_KEY = "accountList";
     private static final String LAST_VIEWED_ACCOUNT_KEY = "lastViewedAccount";
 
+    /**
+     * Extra used in the result from the activity launched by the intent specified
+     * by {@link #getNoAccountsIntent} to return the list of accounts.  The data
+     * specified by this extra key should be a ParcelableArray.
+     */
+    public static final String ADD_ACCOUNT_RESULT_ACCOUNTS_EXTRA = "addAccountResultAccounts";
+
     private final static String LOG_TAG = new LogUtils().getLogTag();
 
     private final Map<Uri, AccountCacheEntry> mAccountCache = Maps.newHashMap();
@@ -75,6 +85,8 @@ public abstract class MailAppProvider extends ContentProvider
     private static String sAuthority;
     private static MailAppProvider sInstance;
 
+    private volatile boolean mAccountsFullyLoaded = false;
+
     private SharedPreferences mSharedPrefs;
 
     /**
@@ -82,6 +94,27 @@ public abstract class MailAppProvider extends ContentProvider
      */
     protected abstract String getAuthority();
 
+    /**
+     * Allows the implemnting provider to specify an intent that should be used in a call to
+     * {@link Context#startActivityForResult(android.content.Intent)} when the account provider
+     * doesn't return any accounts.
+     *
+     * The result from the {@link Activity} activity should include the list of accounts in
+     * the returned intent, in the
+
+     * @return Intent or null, if the provider doesn't specify a behavior when no acccounts are
+     * specified.
+     */
+    protected abstract Intent getNoAccountsIntent(Context context);
+
+    /**
+     * The cursor returned from a call to {@link android.content.ContentResolver#query() with this
+     * uri will return a cursor that with columns that are a subset of the columns specified
+     * in {@link UIProvider.ConversationColumns}
+     * The cursor returned by this query can return a {@link android.os.Bundle}
+     * from a call to {@link android.database.Cursor#getExtras()}.  This Bundle may have
+     * values with keys listed in {@link AccountCursorExtraKeys}
+     */
     public static Uri getAccountsUri() {
         return Uri.parse("content://" + sAuthority + "/");
     }
@@ -123,7 +156,8 @@ public abstract class MailAppProvider extends ContentProvider
 
         // Validates and returns the projection that should be used.
         final String[] resultProjection = UIProviderValidator.validateAccountProjection(projection);
-        final MatrixCursor cursor = new MatrixCursor(resultProjection);
+        final Bundle extras = new Bundle();
+        extras.putInt(AccountCursorExtraKeys.ACCOUNTS_LOADED, mAccountsFullyLoaded ? 1 : 0);
 
         // Make a copy of the account cache
 
@@ -131,6 +165,10 @@ public abstract class MailAppProvider extends ContentProvider
         synchronized (mAccountCache) {
             accountList = ImmutableSet.copyOf(mAccountCache.values());
         }
+
+        final MatrixCursor cursor =
+                new MatrixCursorWithExtra(resultProjection, accountList.size(), extras);
+
         for (AccountCacheEntry accountEntry : accountList) {
             final Account account = accountEntry.mAccount;
             final MatrixCursor.RowBuilder builder = cursor.newRow();
@@ -226,6 +264,17 @@ public abstract class MailAppProvider extends ContentProvider
      */
     public static void addAccountsForUriAsync(Uri accountsQueryUri) {
         getInstance().startAccountsLoader(accountsQueryUri);
+    }
+
+    /**
+     * Returns the intent that should be used in a call to
+     * {@link Context#startActivity(android.content.Intent)} when the account provider doesn't
+     * return any accounts
+     * @return Intent or null, if the provider doesn't specify a behavior when no acccounts are
+     * specified.
+     */
+    public static Intent getNoAccountIntent(Context context) {
+        return getInstance().getNoAccountsIntent(context);
     }
 
     private synchronized void startAccountsLoader(Uri accountsQueryUri) {
@@ -393,13 +442,19 @@ public abstract class MailAppProvider extends ContentProvider
             addAccount(account, accountsQueryUri);
         }
 
+        // Update the internal state of this provider if the returned result set
+        // represents all accounts
+        // TODO: determine what should happen with a heterogeneous set of accounts
+        final Bundle extra = data.getExtras();
+        mAccountsFullyLoaded = extra.getInt(AccountCursorExtraKeys.ACCOUNTS_LOADED) != 0;
+
         if (previousQueryUriMap != null) {
             // Remove all of the accounts that are in the new result set
             previousQueryUriMap.removeAll(newQueryUriMap);
 
             // For all of the entries that had been in the previous result set, and are not
             // in the new result set, remove them from the cache
-            if (previousQueryUriMap.size() > 0) {
+            if (previousQueryUriMap.size() > 0 && mAccountsFullyLoaded) {
                 removeAccounts(previousQueryUriMap);
             }
         }
