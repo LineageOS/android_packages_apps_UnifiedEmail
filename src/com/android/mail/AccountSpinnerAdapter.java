@@ -94,6 +94,14 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     }
 
     /**
+     * Returns the position of the dead, unselectable element in the spinner.
+     * @return
+     */
+    public int getSpacerPosition() {
+        return mNumAccounts;
+    }
+
+    /**
      * Create a spinner adapter with the context and the list of recent folders.
      * @param context
      * @param recentFolders

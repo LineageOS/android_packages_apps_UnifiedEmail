@@ -39,7 +39,6 @@ import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogUtils;
@@ -181,6 +180,10 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      * folder that is currently being displayed.
      */
     public void setFolder(Folder folder) {
+        // Change the currently selected item to an element which is a spacer: valid but not useful
+        // This allows us to receive a tap on the account name when the user taps on it, and we can
+        // take the user to the default inbox.
+        mActionBar.setSelectedNavigationItem(mSpinner.getSpacerPosition());
         mFolder = folder;
         mSpinner.setCurrentFolder(folder);
         mSpinner.notifyDataSetChanged();

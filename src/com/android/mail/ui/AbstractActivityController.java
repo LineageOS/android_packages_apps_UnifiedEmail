@@ -313,6 +313,8 @@ public abstract class AbstractActivityController implements ActivityController, 
     @Override
     public void onAccountChanged(Account account) {
         if (!account.equals(mAccount)) {
+            // Current account is different from the new account, restart loaders and show
+            // the account Inbox.
             mAccount = account;
             mFolder = null;
             // Reset settings; they are no longer valid.
@@ -328,24 +330,40 @@ public abstract class AbstractActivityController implements ActivityController, 
             disableNotificationsOnAccountChange(mAccount);
 
             MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
+        } else {
+            // Current account is the same as the new account. Load the default inbox if the
+            // current inbox is not the same as the default inbox.
+            final Uri oldUri = mFolder != null ? mFolder.uri : Uri.EMPTY;
+            final Uri newUri = getDefaultInboxUri(mCachedSettings);
+            if (!oldUri.equals(newUri)) {
+                loadAccountInbox();
+            }
         }
     }
 
+    /**
+     * Returns the URI of the current account's default inbox if available, otherwise
+     * returns the empty URI {@link Uri#EMPTY}
+     * @return
+     */
+    private Uri getDefaultInboxUri(Settings settings) {
+        if (settings != null && settings.defaultInbox != null) {
+            return settings.defaultInbox;
+        }
+        return Uri.EMPTY;
+    }
+
     public void onSettingsChanged(Settings settings) {
-        String oldUri = mCachedSettings != null ? mCachedSettings.defaultInbox != null ?
-                mCachedSettings.defaultInbox.toString() : null
-                : null;
-        String newUri = settings != null ? settings.defaultInbox != null ?
-                settings.defaultInbox.toString() : null
-                :null;
+        final Uri oldUri = getDefaultInboxUri(mCachedSettings);
+        final Uri newUri = getDefaultInboxUri(settings);
         mCachedSettings = settings;
         resetActionBarIcon();
         // Only restart the loader if the defaultInboxUri is not the same as
         // the folder we are already loading.
-        boolean changed = !TextUtils.equals(oldUri, newUri);
+        final boolean changed = !oldUri.equals(newUri);
         if (settings != null && settings.defaultInbox != null
                 && (mFolder == null || mFolder.type == UIProvider.FolderType.INBOX) && changed) {
-            mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_INBOX, null, this);
+            loadAccountInbox();
         }
     }
 
@@ -446,7 +464,6 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     @Override
     public Dialog onCreateDialog(int id, Bundle bundle) {
-        // TODO(viki): Auto-generated method stub
         return null;
     }
 
