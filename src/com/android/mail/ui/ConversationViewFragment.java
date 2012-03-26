@@ -237,6 +237,7 @@ public final class ConversationViewFragment extends Fragment implements
         mChangeFoldersMenuItem = menu.findItem(R.id.change_folders);
     }
 
+    @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         boolean showMarkImportant = !mConversation.isImportant();

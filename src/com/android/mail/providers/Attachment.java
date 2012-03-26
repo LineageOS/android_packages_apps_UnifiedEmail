@@ -27,13 +27,22 @@ import android.text.TextUtils;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
+import com.android.mail.utils.LogUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class Attachment implements Parcelable {
     public static final int SERVER_ATTACHMENT = 0;
     /** Extras are "<path>". */
     public static final int  LOCAL_FILE = 1;
+
+    public static final String LOG_TAG = new LogUtils().getLogTag();
 
     /**
      * Attachment file name. See {@link AttachmentColumns#NAME}.
@@ -264,4 +273,66 @@ public class Attachment implements Parcelable {
         }
         return infoList;
     }
+
+    // Methods to support JSON [de-]serialization of Attachment data
+    // TODO: add support for origin/originExtras (and possibly partId?) or fold those fields into
+    // other fields so Compose View can use JSON objects
+
+    public JSONObject toJSON() throws JSONException {
+        return toJSON(name, size, uri, contentType);
+    }
+
+    public static JSONObject toJSON(String name, int size, Uri uri, String contentType)
+            throws JSONException {
+        final JSONObject result = new JSONObject();
+
+        result.putOpt(AttachmentColumns.NAME, name);
+        result.putOpt(AttachmentColumns.SIZE, size);
+        if (uri != null) {
+            result.putOpt(AttachmentColumns.URI, uri.toString());
+        }
+        result.putOpt(AttachmentColumns.CONTENT_TYPE, contentType);
+
+        return result;
+    }
+
+    public Attachment(JSONObject srcJson) {
+        name = srcJson.optString(AttachmentColumns.NAME, null);
+        size = srcJson.optInt(AttachmentColumns.SIZE);
+        uri = parseOptionalUri(srcJson, AttachmentColumns.URI);
+        contentType = srcJson.optString(AttachmentColumns.CONTENT_TYPE, null);
+    }
+
+    private static Uri parseOptionalUri(JSONObject srcJson, String key) {
+        final String uriStr = srcJson.optString(key, null);
+        return uriStr == null ? null : Uri.parse(uriStr);
+    }
+
+    public static String toJSONArray(Collection<Attachment> attachments) {
+        final JSONArray result = new JSONArray();
+        try {
+            for (Attachment attachment : attachments) {
+                result.put(attachment.toJSON());
+            }
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return result.toString();
+    }
+
+    public static List<Attachment> fromJSONArray(String jsonArrayStr) {
+        final List<Attachment> results = Lists.newArrayList();
+        try {
+            final JSONArray arr = new JSONArray(jsonArrayStr);
+
+            for (int i = 0; i < arr.length(); i++) {
+                results.add(new Attachment(arr.getJSONObject(i)));
+            }
+
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return results;
+    }
+
 }

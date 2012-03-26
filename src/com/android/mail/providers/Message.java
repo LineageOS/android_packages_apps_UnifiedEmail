@@ -30,6 +30,8 @@ import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.ui.ConversationViewFragment.MessageCursor;
 import com.android.mail.utils.Utils;
 
+import java.util.List;
+
 
 public class Message implements Parcelable {
     public long id;
@@ -60,11 +62,14 @@ public class Message implements Parcelable {
     public boolean read;
     public boolean starred;
     public int quotedTextOffset;
+    public String attachmentsJson;
 
-    private String[] mToAddresses = null;
-    private String[] mCcAddresses = null;
-    private String[] mBccAddresses = null;
-    private String[] mReplyToAddresses = null;
+    private transient String[] mToAddresses = null;
+    private transient String[] mCcAddresses = null;
+    private transient String[] mBccAddresses = null;
+    private transient String[] mReplyToAddresses = null;
+
+    private transient List<Attachment> mAttachments = null;
 
     // While viewing a list of messages, points to the MessageCursor that contains it
     private transient MessageCursor mMessageCursor = null;
@@ -218,6 +223,7 @@ public class Message implements Parcelable {
             read = cursor.getInt(UIProvider.MESSAGE_READ_COLUMN) != 0;
             starred = cursor.getInt(UIProvider.MESSAGE_STARRED_COLUMN) != 0;
             quotedTextOffset = cursor.getInt(UIProvider.QUOTED_TEXT_OFFSET_COLUMN);
+            attachmentsJson = cursor.getString(UIProvider.MESSAGE_ATTACHMENTS_COLUMN);
         }
     }
 
@@ -247,6 +253,13 @@ public class Message implements Parcelable {
             mReplyToAddresses = Utils.splitCommaSeparatedString(replyTo);
         }
         return mReplyToAddresses;
+    }
+
+    public synchronized List<Attachment> getAttachments() {
+        if (mAttachments == null && attachmentsJson != null) {
+            mAttachments = Attachment.fromJSONArray(attachmentsJson);
+        }
+        return mAttachments;
     }
 
     /**
