@@ -318,16 +318,17 @@ public abstract class AbstractActivityController implements ActivityController, 
             mFolder = null;
             // Reset settings; they are no longer valid.
             onSettingsChanged(null);
+            mActionBarView.setAccount(mAccount);
+            restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
+            loadAccountInbox();
+
             mRecentFolderList.setCurrentAccount(account);
             restartOptionalLoader(LOADER_RECENT_FOLDERS, null /* args */);
-            restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
-            mActionBarView.setAccount(mAccount);
             mActivity.invalidateOptionsMenu();
 
             disableNotificationsOnAccountChange(mAccount);
 
             MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
-            loadAccountInbox();
         }
     }
 
@@ -385,7 +386,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     // TODO(mindyp): set this up to store a copy of the folder as a transient
     // field in the account.
     public void loadAccountInbox() {
-        mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_INBOX, null, this);
+        restartOptionalLoader(LOADER_ACCOUNT_INBOX, null);
     }
 
     /** Set the current folder */
@@ -725,12 +726,7 @@ public abstract class AbstractActivityController implements ActivityController, 
      */
     protected void restoreState(Bundle savedState) {
         final Intent intent = mActivity.getIntent();
-        if (savedState != null) {
-            restoreListContext(savedState);
-            mAccount = savedState.getParcelable(SAVED_ACCOUNT);
-            mActionBarView.setAccount(mAccount);
-            restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
-        } else if (intent != null) {
+        if (intent != null) {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                     mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
@@ -1039,6 +1035,9 @@ public abstract class AbstractActivityController implements ActivityController, 
                     // Just want to get the inbox, don't care about updates to it
                     // as this will be tracked by the folder change listener.
                     mActivity.getLoaderManager().destroyLoader(LOADER_ACCOUNT_INBOX);
+                } else {
+                    LogUtils.d(LOG_TAG, "Unable to get the account inbox for account %s",
+                            mAccount != null ? mAccount.name : "");
                 }
                 break;
             case LOADER_SEARCH:
