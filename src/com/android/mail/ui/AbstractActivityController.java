@@ -1046,7 +1046,8 @@ public abstract class AbstractActivityController implements ActivityController, 
                 Folder search = new Folder(data);
                 setFolder(search);
                 mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder,
-                        search.uri.getQueryParameter(UIProvider.SearchQueryParameters.QUERY));
+                        mActivity.getIntent()
+                                .getStringExtra(UIProvider.SearchQueryParameters.QUERY));
                 showConversationList(mConvListContext);
                 mActivity.invalidateOptionsMenu();
                 break;
