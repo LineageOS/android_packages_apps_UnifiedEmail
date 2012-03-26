@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,8 +46,8 @@ public class ConversationSelectionSet implements Parcelable {
             Parcelable[] conversations = source.readParcelableArray(
                             Conversation.class.getClassLoader());
             for (Parcelable parceled : conversations) {
-                        Conversation conversation = (Conversation) parceled;
-                        result.put(conversation.id, conversation);
+                Conversation conversation = (Conversation) parceled;
+                result.put(conversation.id, conversation);
             }
             return result;
         }
@@ -59,6 +60,9 @@ public class ConversationSelectionSet implements Parcelable {
 
     private final HashMap<Long, Conversation> mInternalMap =
             new HashMap<Long, Conversation>();
+
+    private final HashMap<Long, ConversationItemView> mInternalViewMap =
+            new HashMap<Long, ConversationItemView>();
 
     @VisibleForTesting
     final ArrayList<ConversationSetObserver> mObservers = new ArrayList<ConversationSetObserver>();
@@ -77,6 +81,7 @@ public class ConversationSelectionSet implements Parcelable {
      */
     public synchronized void clear() {
         boolean initiallyNotEmpty = !mInternalMap.isEmpty();
+        mInternalViewMap.clear();
         mInternalMap.clear();
 
         if (mInternalMap.isEmpty() && initiallyNotEmpty) {
@@ -139,10 +144,25 @@ public class ConversationSelectionSet implements Parcelable {
         return mInternalMap.isEmpty();
     }
 
-    /** @see java.util.HashMap#put */
     private synchronized void put(Long id, Conversation info) {
         final boolean initiallyEmpty = mInternalMap.isEmpty();
         mInternalMap.put(id, info);
+        // Fill out the view map with null. The sizes will match, but
+        // we won't have any views available yet to store.
+        mInternalViewMap.put(id, null);
+
+        ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
+        dispatchOnChange(observersCopy);
+        if (initiallyEmpty) {
+            dispatchOnBecomeUnempty(observersCopy);
+        }
+    }
+
+    /** @see java.util.HashMap#put */
+    private synchronized void put(Long id, ConversationItemView info) {
+        boolean initiallyEmpty = mInternalMap.isEmpty();
+        mInternalViewMap.put(id, info);
+        mInternalMap.put(id, info.mHeader.conversation);
 
         ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
         dispatchOnChange(observersCopy);
@@ -154,6 +174,8 @@ public class ConversationSelectionSet implements Parcelable {
     /** @see java.util.HashMap#remove */
     private synchronized void remove(Long id) {
         final boolean initiallyNotEmpty = !mInternalMap.isEmpty();
+
+        mInternalViewMap.remove(id);
         mInternalMap.remove(id);
 
         ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
@@ -186,12 +208,12 @@ public class ConversationSelectionSet implements Parcelable {
      * selected.
      * @param conversation
      */
-    public void toggle(Conversation conversation) {
+    public void toggle(ConversationItemView view, Conversation conversation) {
         long conversationId = conversation.id;
         if (containsKey(conversationId)) {
             remove(conversationId);
         } else {
-            put(conversationId, conversation);
+            put(conversationId, view);
         }
     }
 
@@ -220,5 +242,9 @@ public class ConversationSelectionSet implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         Conversation[] values = values().toArray(new Conversation[size()]);
         dest.writeParcelableArray(values, flags);
+    }
+
+    public Collection<ConversationItemView> views() {
+        return mInternalViewMap.values();
     }
 }

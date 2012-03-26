@@ -44,3 +44,8 @@
   *** setListAlpha(...);
   *** setConversationLeft(...);
 }
+
+-keepclasseswithmembers class com.android.mail.browse.ConversationItemView {
+  *** setAnimatedHeight(...);
+  *** setItemAlpha(...);
+}

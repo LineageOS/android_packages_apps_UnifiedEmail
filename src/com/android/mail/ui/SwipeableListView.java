@@ -28,18 +28,17 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.ui.SwipeHelper.Callback;
-import com.android.mail.ui.UndoBarView.UndoListener;
 import com.android.mail.utils.LogUtils;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class SwipeableListView extends ListView implements Callback {
     private SwipeHelper mSwipeHelper;
     private SwipeCompleteListener mSwipeCompleteListener;
-    // TODO(mindyp) disable for original droidfood build.
-    private boolean ENABLE_SWIPE = false;
+    private boolean ENABLE_SWIPE = true;
     private ListAdapter mDebugAdapter;
     private int mDebugLastCount;
 
@@ -47,6 +46,8 @@ public class SwipeableListView extends ListView implements Callback {
     private static final boolean DEBUG_LOGGING_CONVERSATION_CURSOR = true;
 
     public static final String LOG_TAG = new LogUtils().getLogTag();
+
+    private ConversationSelectionSet mConvSelectionSet;
 
     public SwipeableListView(Context context) {
         this(context, null);
@@ -59,11 +60,22 @@ public class SwipeableListView extends ListView implements Callback {
     public SwipeableListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         float densityScale = getResources().getDisplayMetrics().density;
-        mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, densityScale, densityScale);
+        float scrollSlop = context.getResources().getInteger(R.integer.swipeScrollSlop);
+        mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, densityScale, densityScale,
+                scrollSlop);
     }
 
     public void setSwipeCompleteListener(SwipeCompleteListener listener) {
         mSwipeCompleteListener = listener;
+    }
+
+    public void setSelectionSet(ConversationSelectionSet set) {
+        mConvSelectionSet = set;
+    }
+
+    @Override
+    public ConversationSelectionSet getSelectionSet() {
+        return mConvSelectionSet;
     }
 
     @Override
@@ -119,7 +131,6 @@ public class SwipeableListView extends ListView implements Callback {
     public View getChildAtPosition(MotionEvent ev) {
         // find the view under the pointer, accounting for GONE views
         final int count = getChildCount();
-        int y = 0;
         int touchY = (int) ev.getY();
         int childIdx = 0;
         View slidingChild;
@@ -128,8 +139,9 @@ public class SwipeableListView extends ListView implements Callback {
             if (slidingChild.getVisibility() == GONE) {
                 continue;
             }
-            y += slidingChild.getMeasuredHeight();
-            if (touchY < y) return slidingChild;
+            if (touchY >= slidingChild.getTop() && touchY <= slidingChild.getBottom()) {
+                return slidingChild;
+            }
         }
         return null;
     }
@@ -146,18 +158,32 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public void onChildDismissed(View v) {
-        if (v instanceof ConversationItemView) {
-            Conversation c = ((ConversationItemView) v).getConversation();
-            c.position = getPositionForView(v);
-            AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
-            final ImmutableList<Conversation> conversations = ImmutableList.of(c);
-            adapter.delete(conversations, new ActionCompleteListener() {
-                @Override
-                public void onActionComplete() {
-                    mSwipeCompleteListener.onSwipeComplete(conversations);
-                }
-            });
+        dismissChildren(ImmutableList.of(getConversation(v)));
+    }
+
+    @Override
+    public void onChildrenDismissed(Collection<ConversationItemView> views) {
+        final ArrayList<Conversation> conversations = new ArrayList<Conversation>();
+        for (ConversationItemView view : views) {
+            conversations.add(getConversation(view));
         }
+        dismissChildren(conversations);
+    }
+
+    private Conversation getConversation(View view) {
+        Conversation c = ((ConversationItemView) view).getConversation();
+        c.position = getPositionForView(view);
+        return c;
+    }
+
+    private void dismissChildren(final Collection<Conversation> conversations) {
+        AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
+        adapter.delete(conversations, new ActionCompleteListener() {
+            @Override
+            public void onActionComplete() {
+                mSwipeCompleteListener.onSwipeComplete(conversations);
+            }
+        });
     }
 
     @Override
@@ -165,12 +191,17 @@ public class SwipeableListView extends ListView implements Callback {
         // We do this so the underlying ScrollView knows that it won't get
         // the chance to intercept events anymore
         requestDisallowInterceptTouchEvent(true);
-        v.setActivated(true);
+        // If there are selected conversations, we are dismissing an entire
+        // associated set.
+        // Otherwise, the SwipeHelper will just get rid of the single item it
+        // received touch events for.
+        mSwipeHelper.setAssociatedViews(mConvSelectionSet != null ? mConvSelectionSet.views()
+                : null);
     }
 
     @Override
     public void onDragCancelled(View v) {
-        v.setActivated(false);
+        mSwipeHelper.setAssociatedViews(null);
     }
 
     public interface SwipeCompleteListener {

@@ -24,4 +24,5 @@
     <integer name="fade_duration">250</integer>
     <integer name="dialog_animationDefaultDur">220</integer>
     <integer name="dialog_animationShortDur">150</integer>
+    <integer name="undo_animation_duration">300</integer>
 </resources>

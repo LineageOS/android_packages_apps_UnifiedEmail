@@ -219,6 +219,7 @@ public final class ConversationListFragment extends ListFragment implements
                 null);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
+        mListView.setSelectionSet(mActivity.getSelectedSet());
         mListAdapter.hideFooter();
         mListView.setSwipeCompleteListener(this);
         // Don't need to add ourselves to our own set observer.
@@ -511,6 +512,9 @@ public final class ConversationListFragment extends ListFragment implements
                 break;
         }
         mListAdapter.notifyDataSetChanged();
+        if (!mActivity.getSelectedSet().isEmpty()) {
+            mActivity.getSelectedSet().clear();
+        }
         onUndoAvailable(new UndoOperation(conversations.size(), mSwipeAction));
     }
 
