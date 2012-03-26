@@ -147,7 +147,7 @@ public final class FolderListFragment extends ListFragment implements
     private void viewFolder(int position) {
         mFolderListCursor.moveToPosition(position);
         mSelectedFolder = new Folder(mFolderListCursor);
-        if (mSelectedFolder.hasChildren) {
+        if (mSelectedFolder.hasChildren && getActivity().findViewById(R.id.content_pane) != null) {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children.
             FragmentTransaction fragmentTransaction = mActivity.getFragmentManager()
