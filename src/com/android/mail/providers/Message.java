@@ -25,9 +25,9 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.MessageCursor;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.MessageColumns;
-import com.android.mail.ui.ConversationViewFragment.MessageCursor;
 import com.android.mail.utils.Utils;
 
 import java.util.Collections;

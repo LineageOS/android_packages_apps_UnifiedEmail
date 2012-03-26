@@ -127,9 +127,10 @@ public class HtmlConversationTemplates {
     }
 
     public void appendMessageHtml(Message message, boolean isExpanded,
-            boolean safeForImages, float zoomValue, int headerHeight) {
+            boolean safeForImages, float zoomValue, int headerHeight, int footerHeight) {
 
         final String bodyDisplay = isExpanded ? "block" : "none";
+        final String expandedClass = isExpanded ? "expanded" : "";
         final String showImagesClass = safeForImages ? "mail-show-images" : "";
 
         String body = "";
@@ -160,11 +161,13 @@ public class HtmlConversationTemplates {
         append(sMessage,
                 getMessageDomId(message),
                 MESSAGE_PREFIX + message.serverId,
+                expandedClass,
                 headerHeight,
                 showImagesClass,
                 bodyDisplay,
                 zoomValue,
-                body
+                body,
+                footerHeight
         );
     }
 

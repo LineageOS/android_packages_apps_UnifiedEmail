@@ -316,13 +316,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     public void initialize(FormattedDateBuilder dateBuilder, Account account,
-            LoaderManager loaderManager, boolean expanded, boolean showImagePrompt,
-            boolean defaultReplyAll) {
+            LoaderManager loaderManager, boolean defaultReplyAll) {
         mDateBuilder = dateBuilder;
         mAccount = account;
         mLoaderManager = loaderManager;
-        setExpanded(expanded);
-        mShowImagePrompt = showImagePrompt;
         mDefaultReplyAll = defaultReplyAll;
     }
 
@@ -334,7 +331,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return id;
     }
 
-    public int bind(Message message) {
+    public void bind(Message message, boolean expanded, boolean showImagePrompt) {
         Timer t = new Timer();
         t.start(HEADER_RENDER_TAG);
 
@@ -342,6 +339,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mExpandedDetailsValid = false;
 
         mMessage = message;
+        setExpanded(expanded);
+        mShowImagePrompt = showImagePrompt;
 
         mTimestampMs = mMessage.dateReceivedMs;
         if (mDateBuilder != null) {
@@ -407,18 +406,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         updateContactInfo();
 
         t.pause(HEADER_RENDER_TAG);
-        t.start(PREMEASURE_TAG);
-
-        // TODO: optimize here. pre-measuring every header when many of them are
-        // similar is silly.
-        // also, doing a full measurement pass is more work than is strictly
-        // needed. all we really need in most cases is the combined pixel height
-        // of various fixed-height views. Only if the details header is expanded
-        // (almost never the case during a render) is the header height
-        // variable.
-        int h = forceMeasuredHeight();
-        t.pause(PREMEASURE_TAG);
-        return h;
     }
 
     // Attachment list loader methods
@@ -469,8 +456,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return false;
     }
 
-    private int forceMeasuredHeight() {
-        ViewGroup parent = (ViewGroup) getParent();
+    public int measureHeight(ViewGroup parent) {
         if (parent == null) {
             return getHeight();
         }
@@ -888,7 +874,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         // reveal the message
         // div in one pass. Force-measuring makes it unnecessary to set
         // mSizeChanged.
-        int h = forceMeasuredHeight();
+        int h = measureHeight((ViewGroup) getParent());
         if (mCallbacks != null) {
             mCallbacks.setMessageExpanded(mMessage, mIsExpanded, h);
         }

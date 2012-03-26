@@ -129,24 +129,23 @@ function blockImage(imageElement) {
 }
 
 function measurePositions() {
-    var headerHeights;
-    var headerBottoms;
+    var overlayBottoms;
     var h;
     var i;
     var len;
 
-    var headers = document.querySelectorAll(".spacer");
+    var expandedSpacerDivs = document.querySelectorAll(".expanded > .spacer");
 
-    headerHeights = new Array(headers.length);
-    headerBottoms = new Array(headers.length);
-    for (i = 0, len = headers.length; i < len; i++) {
-        h = headers[i].offsetHeight;
+    overlayBottoms = new Array(expandedSpacerDivs.length + 1);
+    for (i = 0, len = expandedSpacerDivs.length; i < len; i++) {
+        h = expandedSpacerDivs[i].offsetHeight;
         // addJavascriptInterface handler only supports string arrays
-        headerHeights[i] = "" + h;
-        headerBottoms[i] = "" + (getTotalOffset(headers[i]).top + h);
+        overlayBottoms[i] = "" + (getTotalOffset(expandedSpacerDivs[i]).top + h);
     }
+    // add an extra one to mark the bottom of the last message
+    overlayBottoms[i] = "" + document.body.offsetHeight;
 
-    window.mail.onWebContentGeometryChange(headerBottoms, headerHeights);
+    window.mail.onWebContentGeometryChange(overlayBottoms);
 }
 
 // BEGIN Java->JavaScript handlers

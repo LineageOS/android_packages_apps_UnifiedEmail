@@ -17,7 +17,6 @@
 
 package com.android.mail.browse;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import android.content.Context;
@@ -32,10 +31,11 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationViewAdapter.ConversationItem;
 import com.android.mail.browse.ScrollNotifier.ScrollListener;
+import com.android.mail.utils.DequeMap;
 import com.android.mail.utils.LogUtils;
 
-import java.util.Deque;
 import java.util.Set;
 
 /**
@@ -63,9 +63,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private static final String TAG = new LogUtils().getLogTag();
 
-    private Adapter mOverlayAdapter;
+    private ConversationViewAdapter mOverlayAdapter;
     private int[] mOverlayBottoms;
-    private int[] mOverlayHeights;
     private ConversationWebView mWebView;
 
     /**
@@ -108,7 +107,10 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      */
     private boolean mMissedPointerDown;
 
-    private final Deque<View> mScrapViews;
+    /**
+     * A recycler for scrap views, organized by integer item view type.
+     */
+    private final DequeMap<Integer, View> mScrapViews = new DequeMap<Integer, View>();
 
     /**
      * The set of children queued for later removal by a Runnable posted to the UI thread (no
@@ -125,8 +127,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private final float mDensity;
 
     private int mWidthMeasureSpec;
-
-    private View mHeaderView;
 
     private static final int VIEW_TAG_CONVERSATION_INDEX = R.id.view_tag_conversation_index;
 
@@ -150,7 +150,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     public ConversationContainer(Context c, AttributeSet attrs) {
         super(c, attrs);
 
-        mScrapViews = Lists.newLinkedList();
         mChildrenToRemove = Sets.newHashSet();
 
         mDensity = c.getResources().getDisplayMetrics().density;
@@ -171,10 +170,9 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
         mWebView = (ConversationWebView) findViewById(R.id.webview);
         mWebView.addScrollListener(this);
-        mHeaderView = findViewById(R.id.conversation_header);
     }
 
-    public void setOverlayAdapter(Adapter a) {
+    public void setOverlayAdapter(ConversationViewAdapter a) {
         mOverlayAdapter = a;
         // TODO: register/unregister for dataset notifications on the new/old adapter
     }
@@ -184,11 +182,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     private int getOverlayCount() {
-        return Math.max(0, getChildCount() - 2);
+        return Math.max(0, getChildCount() - 1);
     }
 
     private View getOverlayAt(int i) {
-        return getChildAt(i + 2);
+        return getChildAt(i + 1);
     }
 
     private void forwardFakeMotionEvent(MotionEvent original, int newAction) {
@@ -265,10 +263,10 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     @Override
     public void onNotifierScroll(final int x, final int y) {
-        handleScroll(x, y);
+        positionOverlays(x, y);
     }
 
-    private void handleScroll(int x, int y) {
+    private void positionOverlays(int x, int y) {
         mOffsetY = y;
 
         /*
@@ -281,49 +279,45 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         if (mTouchInitialized) {
             mScale = mWebView.getScale();
         }
-        LogUtils.v(TAG, "in handleScroll, raw scale=%f, effective scale=%f",
+        LogUtils.v(TAG, "in positionOverlays, raw scale=%f, effective scale=%f",
                 mWebView.getScale(), mScale);
 
         if (mOverlayBottoms == null) {
             return;
         }
 
-        layoutConversationHeader();
-
         // recycle scrolled-off views and add newly visible views
-        final int containerHeight = getHeight();
-        for (int convIndex = 0; convIndex < mOverlayBottoms.length; convIndex++) {
-            final int overlayTopY = getOverlayTop(convIndex);
-            final int overlayBottomY = getOverlayBottom(convIndex);
-            View overlayView = getOverlayWithTag(convIndex);
-            if (overlayBottomY > mOffsetY && overlayTopY < mOffsetY + containerHeight) {
 
-                if (overlayView == null) {
-                    final View convertView = mScrapViews.poll();
-                    overlayView = mOverlayAdapter.getView(convIndex, convertView, this);
-                    overlayView.setTag(VIEW_TAG_CONVERSATION_INDEX, convIndex);
-                    if (convertView != null) {
-                        LogUtils.v(TAG, "want to REUSE scrolled-in view: index=%d obj=%s",
-                                convIndex, overlayView);
-                        attachViewToParent(overlayView, -1, overlayView.getLayoutParams());
-                    } else {
-                        LogUtils.v(TAG, "want to CREATE scrolled-in view: index=%d obj=%s",
-                                convIndex, overlayView);
-                        addViewInLayout(overlayView, -1, overlayView.getLayoutParams(),
-                                true /* preventRequestLayout */);
-                    }
-                    // do a manual measure pass of the new or reused child
-                    // a new child needs a measure to size itself, and a reused child's dimensions
-                    // may not match those of the new item
-                    measureItem(overlayView);
+        // we want consecutive spacers/overlays to stack towards the bottom
+        // so iterate from the bottom of the conversation up
+        // starting with the last spacer bottom and the last adapter item, position adapter views
+        // in a single stack until you encounter a non-contiguous expanded message header,
+        // then decrement to the next spacer.
+
+        int adapterIndex = mOverlayAdapter.getCount() - 1;
+        for (int spacerIndex = mOverlayBottoms.length - 1; spacerIndex >= 0; spacerIndex--) {
+            final int spacerBottomY = getOverlayBottom(spacerIndex);
+
+            // always place at least one overlay per spacer
+            ConversationItem adapterItem = mOverlayAdapter.getItem(adapterIndex);
+
+            int overlayBottomY = spacerBottomY;
+            int overlayTopY = overlayBottomY - adapterItem.getHeight();
+
+            positionOverlay(adapterIndex, overlayTopY, overlayBottomY);
+
+            // and keep stacking overlays as long as they are contiguous
+            while (--adapterIndex >= 0) {
+                adapterItem = mOverlayAdapter.getItem(adapterIndex);
+                if (!adapterItem.isContiguous()) {
+                    // advance to the next spacer, but stay on this adapter item
+                    break;
                 }
-                layoutOverlay(overlayView, convIndex);
 
-            } else {
+                overlayBottomY = overlayTopY; // stack on top of previous overlay
+                overlayTopY = overlayBottomY - adapterItem.getHeight();
 
-                if (overlayView != null) {
-                    onOverlayScrolledOff(overlayView, convIndex);
-                }
+                positionOverlay(adapterIndex, overlayTopY, overlayBottomY);
             }
         }
     }
@@ -351,37 +345,41 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         child.measure(childWidthSpec, childHeightSpec);
     }
 
-    private void onOverlayScrolledOff(final View overlayView, final int convIndex) {
+    private void onOverlayScrolledOff(final View overlayView, final int itemType,
+            int overlayTop) {
         // do it asynchronously, as scroll notification can happen during a draw, when it's not
         // safe to remove children
 
         // ensure that repeated scroll events that want to remove the same header only do it
         // once
         if (mChildrenToRemove.contains(overlayView)) {
-            LogUtils.v(TAG, "ignoring duplicate request to detach header at convIndex=%d",
-                    convIndex);
             return;
         }
 
-        LogUtils.v(TAG, "queueing request to detach header at convIndex=%d", convIndex);
         mChildrenToRemove.add(overlayView);
         post(new Runnable() {
             @Override
             public void run() {
-                detachOverlay(overlayView, convIndex);
+                detachOverlay(overlayView, itemType);
             }
         });
 
         // push it out of view immediately
         // otherwise this scrolled-off header will continue to draw until the runnable runs
-        layoutOverlay(overlayView, convIndex);
+        layoutOverlay(overlayView, overlayTop);
     }
 
-    private void detachOverlay(View overlayView, int convIndex) {
-        LogUtils.v(TAG, "want to remove now-hidden view: index=%d obj=%s children=%d",
-                convIndex, overlayView, getChildCount());
+    public View getScrapView(int type) {
+        return mScrapViews.poll(type);
+    }
+
+    public void addScrapView(int type, View v) {
+        mScrapViews.add(type, v);
+    }
+
+    private void detachOverlay(View overlayView, int itemType) {
         detachViewFromParent(overlayView);
-        mScrapViews.add(overlayView);
+        mScrapViews.add(itemType, overlayView);
         mChildrenToRemove.remove(overlayView);
         if (overlayView instanceof DetachListener) {
             ((DetachListener) overlayView).onDetachedFromParent();
@@ -392,9 +390,12 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        for (View scrap : mScrapViews) {
-            removeDetachedView(scrap, false /* animate */);
-        }
+        mScrapViews.visitAll(new DequeMap.Visitor<View>() {
+            @Override
+            public void visit(View item) {
+                removeDetachedView(item, false /* animate */);
+            }
+        });
         mScrapViews.clear();
     }
 
@@ -408,14 +409,14 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             measureChild(mWebView, widthMeasureSpec, heightMeasureSpec);
         }
         mWidthMeasureSpec = widthMeasureSpec;
+
+        // Need to measure children in case this layout pass was triggered by a child layout change.
+        // TODO: restrict child measurement to just that case.
         for (int i = 0, overlayCount = getOverlayCount(); i < overlayCount; i++) {
             final View overlayView = getOverlayAt(i);
             if (overlayView.getVisibility() != GONE) {
                 measureItem(overlayView);
             }
-        }
-        if (mHeaderView.getVisibility() != GONE) {
-            measureChild(mHeaderView, widthMeasureSpec, heightMeasureSpec);
         }
     }
 
@@ -424,54 +425,70 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         LogUtils.d(TAG, "*** IN header container onLayout");
 
         mWebView.layout(0, 0, mWebView.getMeasuredWidth(), mWebView.getMeasuredHeight());
-        layoutConversationHeader();
-        layoutOverlays();
+        positionOverlays(0, mOffsetY);
     }
 
-    private void layoutConversationHeader() {
-        // layout conversation header just above the first message header, or at the very top
-        // TODO: treat this overlay+spacer like the rest
-        final int headerHeight = mHeaderView.getMeasuredHeight();
-        final int headerTop;
-        if (getOverlayCount() > 0) {
-            headerTop = getOverlayTop(0) - headerHeight - mOffsetY;
-        } else {
-            headerTop = -mOffsetY;
-        }
-        mHeaderView.layout(0, headerTop, mHeaderView.getMeasuredWidth(), headerTop + headerHeight);
-    }
-
-    private int getOverlayTop(int convIndex) {
-        return (int) (mOverlayBottoms[convIndex] * mScale)
-                - (int) (mOverlayHeights[convIndex] * mDensity);
-    }
-
-    private int getOverlayBottom(int convIndex) {
-        return (int) (mOverlayBottoms[convIndex] * mScale);
-    }
-
-    private void layoutOverlay(View child, int convIndex) {
+    private int getOverlayBottom(int spacerIndex) {
         // TODO: round or truncate?
-        final int top = getOverlayTop(convIndex) - mOffsetY;
+        return (int) (mOverlayBottoms[spacerIndex] * mScale);
+    }
+
+    private void positionOverlay(int adapterIndex, int overlayTopY, int overlayBottomY) {
+        View overlayView = findExistingOverlayView(adapterIndex);
+        final int itemType = mOverlayAdapter.getItemViewType(adapterIndex);
+        // is the overlay visible?
+        if (overlayBottomY > mOffsetY && overlayTopY < mOffsetY + getHeight()) {
+            // show and/or move overlay
+            if (overlayView == null) {
+                overlayView = addOverlayView(adapterIndex);
+                measureItem(overlayView);
+            }
+            layoutOverlay(overlayView, overlayTopY);
+        } else {
+            // hide overlay
+            if (overlayView != null) {
+                onOverlayScrolledOff(overlayView, itemType, overlayTopY);
+            }
+        }
+    }
+
+    // layout an existing view
+    // need its top offset into the conversation, its height, and the scroll offset
+    private void layoutOverlay(View child, int childTop) {
+        final int top = childTop - mOffsetY;
         final int bottom = top + child.getMeasuredHeight();
         child.layout(0, top, child.getMeasuredWidth(), bottom);
     }
 
-    private void layoutOverlays() {
-        final int count = getOverlayCount();
+    private View addOverlayView(int adapterIndex) {
+        final int itemType = mOverlayAdapter.getItemViewType(adapterIndex);
+        final View convertView = mScrapViews.poll(itemType);
 
-        for (int i = 0; i < count; i++) {
-            View child = getOverlayAt(i);
-            Integer convIndex = (Integer) child.getTag(VIEW_TAG_CONVERSATION_INDEX);
-            layoutOverlay(child, convIndex);
+        View view = mOverlayAdapter.getView(adapterIndex, convertView, this);
+        view.setTag(VIEW_TAG_CONVERSATION_INDEX, adapterIndex);
+
+        // Only re-attach if the view had previously been added to a view hierarchy.
+        // Since external components can contribute to the scrap heap (addScrapView), we can't
+        // assume scrap views had already been attached.
+        if (view.getRootView() != view) {
+            LogUtils.d(TAG, "want to REUSE scrolled-in view: index=%d obj=%s",
+                    adapterIndex, view);
+            attachViewToParent(view, -1, view.getLayoutParams());
+        } else {
+            LogUtils.d(TAG, "want to CREATE scrolled-in view: index=%d obj=%s",
+                    adapterIndex, view);
+            addViewInLayout(view, -1, view.getLayoutParams(),
+                    true /* preventRequestLayout */);
         }
+
+        return view;
     }
 
-    private View getOverlayWithTag(int index) {
+    private View findExistingOverlayView(int adapterIndex) {
         for (int i = 0, count = getOverlayCount(); i < count; i++) {
             final View overlay = getOverlayAt(i);
-            final Integer convIndex = (Integer) overlay.getTag(VIEW_TAG_CONVERSATION_INDEX);
-            if (convIndex != null && convIndex == index) {
+            final Integer tag = (Integer) overlay.getTag(VIEW_TAG_CONVERSATION_INDEX);
+            if (tag != null && tag == adapterIndex) {
                 return overlay;
             }
         }
@@ -479,27 +496,14 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     // TODO: add margin support for children that want it (e.g. tablet headers?)
-    // TODO: support calling this method more than once per webpage instance (clear out existing
-    // headers and re-create at current offset?)
-    public void onGeometryChange(int[] headerBottoms, int[] headerHeights) {
+    public void onGeometryChange(int[] overlayBottoms) {
         LogUtils.d(TAG, "*** got overlay spacer bottoms:");
-        for (int offsetY : headerBottoms) {
+        for (int offsetY : overlayBottoms) {
             LogUtils.d(TAG, "%d", offsetY);
         }
 
-        mOverlayBottoms = headerBottoms;
-        mOverlayHeights = headerHeights;
-
-        if (mOverlayBottoms.length != mOverlayHeights.length) {
-            LogUtils.wtf(TAG, "overlay spacer count mismatch: # bottoms=%d, # heights=%d",
-                    mOverlayBottoms.length, mOverlayHeights.length);
-        }
-
-        // hack to bootstrap initial display of headers
-        handleScroll(0, mOffsetY);
-
-        // TODO: inform each header of its bottom (== top of the next header) so it can know where
-        // to position bottom-anchored content like attachments
+        mOverlayBottoms = overlayBottoms;
+        positionOverlays(0, mOffsetY);
     }
 
 }

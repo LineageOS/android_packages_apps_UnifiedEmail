@@ -26,7 +26,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.CursorWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,14 +42,15 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ResourceCursorAdapter;
 
-import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationContainer;
+import com.android.mail.browse.ConversationViewAdapter;
+import com.android.mail.browse.ConversationViewAdapter.ConversationItem;
+import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
-import com.android.mail.browse.MessageHeaderView;
+import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
@@ -62,9 +62,7 @@ import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.common.collect.Maps;
 
-import java.util.Map;
 
 /**
  * The conversation view UI component.
@@ -84,8 +82,6 @@ public final class ConversationViewFragment extends Fragment implements
 
     private Conversation mConversation;
 
-    private ConversationViewHeader mConversationHeader;
-
     private ConversationContainer mConversationContainer;
 
     private Account mAccount;
@@ -102,7 +98,8 @@ public final class ConversationViewFragment extends Fragment implements
 
     private final WebViewClient mWebViewClient = new ConversationWebViewClient();
 
-    private MessageListAdapter mAdapter;
+    private ConversationViewAdapter mAdapter;
+    private MessageCursor mCursor;
 
     private boolean mViewsCreated;
 
@@ -160,8 +157,8 @@ public final class ConversationViewFragment extends Fragment implements
         mActivity.attachConversationView(this);
         mTemplates = new HtmlConversationTemplates(mContext);
 
-        mAdapter = new MessageListAdapter(mActivity.getActivityContext(),
-                null /* cursor */, mAccount, getLoaderManager(), this);
+        mAdapter = new ConversationViewAdapter(mActivity.getActivityContext(), mAccount,
+                getLoaderManager(), this, this);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         mDensity = getResources().getDisplayMetrics().density;
@@ -192,9 +189,6 @@ public final class ConversationViewFragment extends Fragment implements
         mConversationContainer = (ConversationContainer) rootView
                 .findViewById(R.id.conversation_container);
         mWebView = (ConversationWebView) mConversationContainer.findViewById(R.id.webview);
-        mConversationHeader = (ConversationViewHeader) mConversationContainer.findViewById(
-                R.id.conversation_header);
-        mConversationHeader.setCallbacks(this);
 
         mWebView.addJavascriptInterface(mJsBridge, "mail");
         mWebView.setWebViewClient(mWebViewClient);
@@ -274,14 +268,6 @@ public final class ConversationViewFragment extends Fragment implements
      * a folder. This will initiate a data load, and hence must be called on the UI thread.
      */
     private void showConversation() {
-        // initialize conversation header, measure its height manually, and inform template render
-        // TODO: inform template render of initial header height
-        mConversationHeader.setSubject(mConversation.subject, false /* notify */);
-        if (mAccount.supportsCapability(
-                UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
-            mConversationHeader.setFolders(mConversation, false /* notify */);
-        }
-
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, Bundle.EMPTY, this);
     }
 
@@ -296,7 +282,7 @@ public final class ConversationViewFragment extends Fragment implements
 
         // TODO: handle Gmail loading states (like LOADING and ERROR)
         if (messageCursor.getCount() == 0) {
-            if (mAdapter.getCursor() != null) {
+            if (mCursor != null) {
                 // TODO: need to exit this view- conversation may have been deleted, or for
                 // whatever reason is now invalid
             } else {
@@ -310,13 +296,14 @@ public final class ConversationViewFragment extends Fragment implements
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
+        mCursor = null;
+        // TODO: null out all Message.mMessageCursor references
     }
 
     private void renderConversation(MessageCursor messageCursor) {
         mWebView.loadDataWithBaseURL(mBaseUri, renderMessageBodies(messageCursor), "text/html",
                 "utf-8", null);
-        mAdapter.swapCursor(messageCursor);
+        mCursor = messageCursor;
     }
 
     private void updateConversation(MessageCursor messageCursor) {
@@ -325,26 +312,35 @@ public final class ConversationViewFragment extends Fragment implements
         // if a new message is present, save off the pending cursor and show a notification to
         // re-render
 
-        final MessageCursor oldCursor = (MessageCursor) mAdapter.getCursor();
-        mAdapter.swapCursor(messageCursor);
+        mCursor = messageCursor;
     }
 
+    /**
+     * Populate the adapter with overlay views (message headers, super-collapsed blocks, a
+     * conversation header), and return an HTML document with spacer divs inserted for all overlays.
+     *
+     */
     private String renderMessageBodies(MessageCursor messageCursor) {
         int pos = -1;
+
+        boolean allowNetworkImages = false;
+
+        // Walk through the cursor and build up an overlay adapter as you go.
+        // Each overlay has an entry in the adapter for easy scroll handling in the container.
+        // Items are not necessarily 1:1 in cursor and adapter because of super-collapsed blocks.
+        // When adding adapter items, also add their heights to help the container later determine
+        // overlay dimensions.
+
+        mAdapter.clear();
 
         // N.B. the units of height for spacers are actually dp and not px because WebView assumes
         // a pixel is an mdpi pixel, unless you set device-dpi.
 
-        final int headerHeightPx = Utils.measureViewHeight(mConversationHeader,
-                mConversationContainer);
-        mTemplates.startConversation((int) (headerHeightPx / mDensity));
+        // add a single conversation header item
+        final int convHeaderPos = mAdapter.addConversationHeader(mConversation);
+        final int convHeaderDp = measureOverlayHeight(convHeaderPos);
 
-        // just for measuring.
-        MessageHeaderView tmpHostView = (MessageHeaderView) LayoutInflater.from(mContext).inflate(
-                R.layout.conversation_message_header, mConversationContainer, false);
-        FormattedDateBuilder dateBuilder = new FormattedDateBuilder(mContext);
-
-        boolean allowNetworkImages = false;
+        mTemplates.startConversation(convHeaderDp);
 
         while (messageCursor.moveToPosition(++pos)) {
             final Message msg = messageCursor.getMessage();
@@ -352,20 +348,52 @@ public final class ConversationViewFragment extends Fragment implements
             final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
             allowNetworkImages |= safeForImages;
 
-            // render each message into a fake host view and measure the necessary spacer height
-            tmpHostView.initialize(dateBuilder, mAccount, getLoaderManager(), true /* expanded */,
-                    msg.shouldShowImagePrompt(), false /* defaultReplyAll */);
-            tmpHostView.bind(msg);
-            final int spacerPx = Utils.measureViewHeight(tmpHostView, mConversationContainer);
-            final int spacerHeightDp = (int) (spacerPx / mDensity);
+            final int headerPos = mAdapter.addMessageHeader(msg, true /* expanded */);
+            final MessageHeaderItem headerItem = (MessageHeaderItem) mAdapter.getItem(headerPos);
 
-            mTemplates.appendMessageHtml(msg, true /* expanded */, safeForImages, 1.0f,
-                    spacerHeightDp);
+            final int footerPos = mAdapter.addMessageFooter(headerItem);
+
+            // Measure item header and footer heights to allocate spacers in HTML
+            // But since the views themselves don't exist yet, render each item temporarily into
+            // a host view for measurement.
+            final int headerDp = measureOverlayHeight(headerPos);
+            final int footerDp = measureOverlayHeight(footerPos);
+
+            mTemplates.appendMessageHtml(msg, true /* expanded */, safeForImages, 1.0f, headerDp,
+                    footerDp);
         }
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
         return mTemplates.endConversation(mBaseUri, 320);
+    }
+
+    /**
+     * Measure the height of an adapter view by rendering the data in the adapter into a temporary
+     * host view, and asking the adapter item to immediately measure itself. This method will reuse
+     * a previous adapter view from {@link ConversationContainer}'s scrap views if one was generated
+     * earlier.
+     * <p>
+     * After measuring the height, this method also saves the height in the {@link ConversationItem}
+     * for later use in overlay positioning.
+     *
+     * @param position index into the adapter
+     * @return height in dp of the rendered view
+     */
+    private int measureOverlayHeight(int position) {
+        final ConversationItem convItem = mAdapter.getItem(position);
+        final int type = convItem.getType();
+
+        final View convertView = mConversationContainer.getScrapView(type);
+        final View hostView = mAdapter.getView(position, convertView, mConversationContainer);
+        if (convertView == null) {
+            mConversationContainer.addScrapView(type, hostView);
+        }
+
+        final int heightPx = convItem.measureHeight(hostView, mConversationContainer);
+        convItem.setHeight(heightPx);
+
+        return (int) (heightPx / mDensity);
     }
 
     public void onTouchEvent(MotionEvent event) {
@@ -450,68 +478,6 @@ public final class ConversationViewFragment extends Fragment implements
         }
     }
 
-    /**
-     * MessageCursor contains the messages within a conversation; the public methods within should
-     * only be called by the UI thread, as cursor position isn't guaranteed to be maintained
-     */
-    public static class MessageCursor extends CursorWrapper {
-
-        private Map<Long, Message> mCache = Maps.newHashMap();
-
-        public MessageCursor(Cursor inner) {
-            super(inner);
-        }
-
-        public Message getMessage() {
-            final long id = getWrappedCursor().getLong(UIProvider.MESSAGE_ID_COLUMN);
-            Message m = mCache.get(id);
-            if (m == null) {
-                m = new Message(this);
-                mCache.put(id, m);
-            }
-            return m;
-        }
-
-        // Is the conversation starred?
-        public boolean isConversationStarred() {
-            int pos = -1;
-            while (moveToPosition(++pos)) {
-                Message m = getMessage();
-                if (m.starred) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    private static class MessageListAdapter extends ResourceCursorAdapter {
-
-        private final FormattedDateBuilder mDateBuilder;
-        private final Account mAccount;
-        private final LoaderManager mLoaderManager;
-        private final MessageHeaderViewCallbacks mCallbacks;
-
-        public MessageListAdapter(Context context, Cursor messageCursor, Account account,
-                LoaderManager loaderManager, MessageHeaderViewCallbacks cb) {
-            super(context, R.layout.conversation_message_header, messageCursor, 0);
-            mDateBuilder = new FormattedDateBuilder(context);
-            mAccount = account;
-            mLoaderManager = loaderManager;
-            mCallbacks = cb;
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            final Message msg = ((MessageCursor) cursor).getMessage();
-            MessageHeaderView header = (MessageHeaderView) view;
-            header.setCallbacks(mCallbacks);
-            header.initialize(mDateBuilder, mAccount, mLoaderManager, true /* expanded */,
-                    msg.shouldShowImagePrompt(), false /* defaultReplyAll */);
-            header.bind(msg);
-        }
-    }
-
     private static int[] parseInts(final String[] stringArray) {
         final int len = stringArray.length;
         final int[] ints = new int[len];
@@ -569,8 +535,7 @@ public final class ConversationViewFragment extends Fragment implements
     private class MailJsBridge {
 
         @SuppressWarnings("unused")
-        public void onWebContentGeometryChange(final String[] headerBottomStrs,
-                final String[] headerHeightStrs) {
+        public void onWebContentGeometryChange(final String[] overlayBottomStrs) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -580,8 +545,7 @@ public final class ConversationViewFragment extends Fragment implements
                         return;
                     }
 
-                    mConversationContainer.onGeometryChange(parseInts(headerBottomStrs),
-                            parseInts(headerHeightStrs));
+                    mConversationContainer.onGeometryChange(parseInts(overlayBottomStrs));
                 }
             });
         }
