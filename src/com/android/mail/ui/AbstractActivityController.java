@@ -223,6 +223,7 @@ public abstract class AbstractActivityController implements ActivityController, 
         return mConversationListCursor;
     }
 
+    @Override
     public void initConversationListCursor() {
         mActivity.getLoaderManager().restartLoader(LOADER_CONVERSATION_LIST, Bundle.EMPTY,
                 new LoaderManager.LoaderCallbacks<ConversationCursor>() {
@@ -546,6 +547,7 @@ public abstract class AbstractActivityController implements ActivityController, 
             mDestructiveChange = destructive;
         }
 
+        @Override
         public abstract void onActionComplete();
     }
 

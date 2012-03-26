@@ -55,7 +55,6 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private RestrictedActivity mActivity;
     private ActivityController mController;
     private View mFolderView;
-    private Folder mFolder;
     /**
      * The current mode of the ActionBar. This references constants in {@link ViewMode}
      */
@@ -184,7 +183,6 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         // This allows us to receive a tap on the account name when the user taps on it, and we can
         // take the user to the default inbox.
         mActionBar.setSelectedNavigationItem(mSpinner.getSpacerPosition());
-        mFolder = folder;
         mSpinner.setCurrentFolder(folder);
         mSpinner.notifyDataSetChanged();
     }
