@@ -31,7 +31,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -63,7 +62,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -87,8 +85,8 @@ import java.util.Set;
  */
 public abstract class AbstractActivityController implements ActivityController, ConversationListener {
     // Keys for serialization of various information in Bundles.
-    private static final String SAVED_LIST_CONTEXT = "saved-list-context";
     private static final String SAVED_ACCOUNT = "saved-account";
+    private static final String SAVED_FOLDER = "saved-folder";
     // Batch conversations stored in the Bundle using this key.
     private static final String SAVED_CONVERSATIONS = "saved-conversations";
 
@@ -344,7 +342,8 @@ public abstract class AbstractActivityController implements ActivityController, 
         // Only restart the loader if the defaultInboxUri is not the same as
         // the folder we are already loading.
         boolean changed = !TextUtils.equals(oldUri, newUri);
-        if (settings != null && settings.defaultInbox != null && mFolder != null && changed) {
+        if (settings != null && settings.defaultInbox != null
+                && (mFolder == null || mFolder.type == UIProvider.FolderType.INBOX) && changed) {
             mActivity.getLoaderManager().restartLoader(LOADER_ACCOUNT_INBOX, null, this);
         }
     }
@@ -646,8 +645,8 @@ public abstract class AbstractActivityController implements ActivityController, 
             LogUtils.d(LOG_TAG, "Saving the account now");
             outState.putParcelable(SAVED_ACCOUNT, mAccount);
         }
-        if (mConvListContext != null) {
-            outState.putBundle(SAVED_LIST_CONTEXT, mConvListContext.toBundle());
+        if (mFolder != null) {
+            outState.putParcelable(SAVED_FOLDER, mFolder);
         }
     }
 
@@ -707,17 +706,6 @@ public abstract class AbstractActivityController implements ActivityController, 
     }
 
     /**
-     * @param savedState
-     */
-    protected void restoreListContext(Bundle savedState) {
-        Bundle listContextBundle = savedState.getBundle(SAVED_LIST_CONTEXT);
-        if (listContextBundle != null) {
-            mConvListContext = ConversationListContext.forBundle(listContextBundle);
-            mFolder = mConvListContext.folder;
-        }
-    }
-
-    /**
      * Restore the state from the previous bundle. Subclasses should call this
      * method from the parent class, since it performs important UI
      * initialization.
@@ -726,7 +714,23 @@ public abstract class AbstractActivityController implements ActivityController, 
      */
     protected void restoreState(Bundle savedState) {
         final Intent intent = mActivity.getIntent();
-        if (intent != null) {
+        if (savedState != null) {
+            if (savedState.containsKey(SAVED_ACCOUNT)) {
+                mAccount = ((Account) savedState.getParcelable(SAVED_ACCOUNT));
+                mActionBarView.setAccount(mAccount);
+                mActivity.invalidateOptionsMenu();
+            }
+            if (savedState.containsKey(SAVED_FOLDER)) {
+                // Open the folder.
+                LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
+                        intent.getParcelableExtra(Utils.EXTRA_FOLDER));
+                onFolderChanged((Folder) savedState.getParcelable(SAVED_FOLDER));
+            } else {
+                loadAccountInbox();
+            }
+            restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
+        }
+        else if (intent != null) {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                     mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
