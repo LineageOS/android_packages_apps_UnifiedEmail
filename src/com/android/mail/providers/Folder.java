@@ -23,7 +23,6 @@ import com.google.common.collect.Maps;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.net.Uri.Builder;
@@ -167,7 +166,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
             Pattern.compile("\\^\\*\\*\\^");
 
     public Folder(Parcel in) {
-        assert (in.dataSize() == NUMBER_MEMBERS);
         id = in.readInt();
         uri = in.readParcelable(null);
         name = in.readString();
