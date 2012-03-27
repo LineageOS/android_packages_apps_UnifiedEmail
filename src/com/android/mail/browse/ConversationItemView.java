@@ -829,15 +829,14 @@ public class ConversationItemView extends View {
         }
 
         // Senders.
-        sPaint.setTextSize(mCoordinates.sendersFontSize);
-        sPaint.setTypeface(Typeface.DEFAULT);
         boolean isUnread = mHeader.unread;
+        sPaint.setTextSize(mCoordinates.sendersFontSize);
+        sPaint.setTypeface(isUnread ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
         int sendersColor = getFontColor(isUnread ? SENDERS_TEXT_COLOR_UNREAD
                 : SENDERS_TEXT_COLOR_READ);
         sPaint.setColor(sendersColor);
         for (SenderFragment fragment : mHeader.senderFragments) {
             if (fragment.shouldDisplay) {
-                sPaint.setTypeface(Typeface.DEFAULT);
                 fragment.style.updateDrawState(sPaint);
                 if (fragment.ellipsizedText != null) {
                     canvas.drawText(fragment.ellipsizedText, fragment.x, fragment.y, sPaint);
