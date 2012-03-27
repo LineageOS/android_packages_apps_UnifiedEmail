@@ -78,17 +78,20 @@ public final class RecentFolderList {
         final Account mAccount;
         final Folder mFolder;
 
+        /**
+         * Create a new asynchronous task to store the recent folder list. Both the account
+         * and the folder should be non-null.
+         * @param account
+         * @param folder
+         */
         public StoreRecent(Account account, Folder folder) {
+            assert (account != null && folder != null);
             mAccount = account;
             mFolder = folder;
         }
 
         @Override
         protected Void doInBackground(Void... v) {
-            if (mAccount == null) {
-                LogUtils.w(TAG, "No account set for setting recent folders?");
-                return null;
-            }
             Uri uri = mAccount.recentFolderListUri;
             if (uri != null) {
                 ContentValues values = new ContentValues();
@@ -144,10 +147,17 @@ public final class RecentFolderList {
 
     /**
      * Marks the given folder as 'accessed' by the user interface, its entry is updated in the
-     * recent folder list, and the current time is written to the provider
+     * recent folder list, and the current time is written to the provider. This should never
+     * be called with a null folder.
      * @param folder the folder we touched
      */
     public void touchFolder(Folder folder) {
+        // We haven't got a valid account yet, cannot proceed.
+        if (mAccount == null) {
+            LogUtils.w(TAG, "No account set for setting recent folders?");
+            return;
+        }
+        assert (folder != null);
         mFolderCache.putElement(folder.uri.toString(), folder);
         new StoreRecent(mAccount, folder).execute();
     }

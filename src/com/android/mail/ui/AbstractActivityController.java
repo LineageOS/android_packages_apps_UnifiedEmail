@@ -33,7 +33,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -395,16 +394,18 @@ public abstract class AbstractActivityController implements ActivityController, 
         }
     }
 
+    /**
+     * Update the recent folders. This only needs to be done once when accessing a new folder.
+     */
     private void updateRecentFolderList() {
         if (mFolder != null) {
-            mRecentFolderList.setCurrentAccount(mAccount);
             mRecentFolderList.touchFolder(mFolder);
         }
     }
 
     // TODO(mindyp): set this up to store a copy of the folder as a transient
     // field in the account.
-    public void loadAccountInbox() {
+    protected void loadAccountInbox() {
         restartOptionalLoader(LOADER_ACCOUNT_INBOX, null);
     }
 
