@@ -34,6 +34,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
+import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +54,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private View mFooter;
     private boolean mShowFooter;
     private Folder mFolder;
+    /**
+     * Used only for debugging.
+     */
+    private static final String LOG_TAG = new LogUtils().getLogTag();
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account, ViewMode viewMode) {
@@ -197,7 +202,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * @return the view to show when animating an operation.
      */
     private View getAnimatingView(int position, View convertView, ViewGroup parent) {
-        assert (convertView instanceof AnimatingItemView);
+        // We are getting the wrong view, and we need to gracefully carry on.
+        if (!(convertView instanceof AnimatingItemView)) {
+            LogUtils.d(LOG_TAG, "AnimatedAdapter.getAnimatingView received the wrong view!");
+            convertView = null;
+        }
         Conversation conversation = new Conversation((ConversationCursor) getItem(position));
         conversation.position = position;
         final AnimatingItemView view = (convertView == null) ? new AnimatingItemView(mContext)
