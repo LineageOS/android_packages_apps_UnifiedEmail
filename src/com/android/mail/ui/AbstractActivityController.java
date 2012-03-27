@@ -1297,7 +1297,7 @@ public abstract class AbstractActivityController implements ActivityController, 
             mActivity.startActivity(intent);
         } else {
             Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
-                    .getString(R.string.search_unsupported), Toast.LENGTH_SHORT);
+                    .getString(R.string.search_unsupported), Toast.LENGTH_SHORT).show();
         }
     }
 }
