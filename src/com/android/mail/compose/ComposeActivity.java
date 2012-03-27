@@ -1452,7 +1452,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (QuotedTextView.containsQuotedText(text)) {
                 int pos = QuotedTextView.getQuotedTextOffset(text);
                 fullBody.append(text.substring(0, pos));
-                MessageModification.putQuoteStartPos(values, pos);
+                MessageModification.putQuoteStartPos(values, fullBody.length());
                 MessageModification.putForward(values, composeMode == ComposeActivity.FORWARD);
                 MessageModification.putAppendRefMessageContent(values, includeQuotedText);
             } else {
@@ -1604,7 +1604,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         String refMessageString = mRefMessage != null ? mRefMessage.uri.toString() : "";
         mRequestId = sendOrSaveInternal(this, mAccount, selectedAccount, fromAddress, body, to, cc,
-                bcc, mSubject.getText().toString(), mQuotedTextView.getQuotedText(),
+                bcc, mSubject.getText().toString(), mQuotedTextView.getQuotedTextIfIncluded(),
                 mAttachmentsView.getAttachments(), refMessageString, callback,
                 mSendSaveTaskHandler, save, mComposeMode);
 
