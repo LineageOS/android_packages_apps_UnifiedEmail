@@ -171,6 +171,18 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             position = 0;
             LogUtils.w(LOG_TAG, "IN actionbarview setAccounts, account not found, using first.");
         }
+
+        setSelectedPosition(position);
+    }
+
+    /**
+     * Sets the selected navigation position in the spinner to the position given here.
+     * @param position
+     */
+    private void setSelectedPosition(int position) {
+        // Only change the position if we are in the correct mode.
+        if (mActionBar.getNavigationMode() != ActionBar.NAVIGATION_MODE_LIST)
+            return;
         mActionBar.setSelectedNavigationItem(position);
     }
 
@@ -182,7 +194,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         // Change the currently selected item to an element which is a spacer: valid but not useful
         // This allows us to receive a tap on the account name when the user taps on it, and we can
         // take the user to the default inbox.
-        mActionBar.setSelectedNavigationItem(mSpinner.getSpacerPosition());
+        setSelectedPosition(mSpinner.getSpacerPosition());
         mSpinner.setCurrentFolder(folder);
         mSpinner.notifyDataSetChanged();
     }
