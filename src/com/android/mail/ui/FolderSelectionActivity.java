@@ -96,7 +96,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment fragment = FolderListFragment.newInstance(this, mAccount.folderListUri);
-        fragmentTransaction.replace(R.id.folder_list_pane, fragment);
+        fragmentTransaction.replace(R.id.content_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
