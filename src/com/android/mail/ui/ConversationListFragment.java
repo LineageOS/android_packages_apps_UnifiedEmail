@@ -470,6 +470,9 @@ public final class ConversationListFragment extends ListFragment implements
 
 
     public void onFolderUpdated(Folder folder) {
+        if (mFolder == null) {
+            return;
+        }
         mFolder = folder;
         mListAdapter.setFolder(mFolder);
         mFooterView.updateStatus(mFolder);
