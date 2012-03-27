@@ -87,6 +87,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     // Keys for serialization of various information in Bundles.
     private static final String SAVED_ACCOUNT = "saved-account";
     private static final String SAVED_FOLDER = "saved-folder";
+    private static final String SAVED_CONVERSATION = "saved-conversation";
     // Batch conversations stored in the Bundle using this key.
     private static final String SAVED_CONVERSATIONS = "saved-conversations";
 
@@ -648,6 +649,9 @@ public abstract class AbstractActivityController implements ActivityController, 
         if (mFolder != null) {
             outState.putParcelable(SAVED_FOLDER, mFolder);
         }
+        if (mCurrentConversation != null && mViewMode.getMode() == ViewMode.CONVERSATION) {
+            outState.putParcelable(SAVED_CONVERSATION, mCurrentConversation);
+        }
     }
 
     @Override
@@ -715,6 +719,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     protected void restoreState(Bundle savedState) {
         final Intent intent = mActivity.getIntent();
         if (savedState != null) {
+            boolean handled = false;
             if (savedState.containsKey(SAVED_ACCOUNT)) {
                 mAccount = ((Account) savedState.getParcelable(SAVED_ACCOUNT));
                 mActionBarView.setAccount(mAccount);
@@ -725,7 +730,16 @@ public abstract class AbstractActivityController implements ActivityController, 
                 LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
                         intent.getParcelableExtra(Utils.EXTRA_FOLDER));
                 onFolderChanged((Folder) savedState.getParcelable(SAVED_FOLDER));
-            } else {
+                handled = true;
+            }
+            if (savedState.containsKey(SAVED_CONVERSATION)) {
+                // Open the conversation.
+                setCurrentConversation((Conversation) savedState.getParcelable(SAVED_CONVERSATION));
+                showConversation(mCurrentConversation);
+                handled = true;
+            }
+            if (!handled) {
+                // Nothing was saved; just load the account inbox.
                 loadAccountInbox();
             }
             restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
@@ -750,7 +764,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                             intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
                     setCurrentConversation((Conversation) intent
                             .getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                    showConversation(this.mCurrentConversation);
+                    showConversation(mCurrentConversation);
                 }
             } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
                 mViewMode.enterSearchResultsListMode();
