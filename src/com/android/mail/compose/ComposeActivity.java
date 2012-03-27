@@ -476,6 +476,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         addToAddresses(toAddresses);
         addCcAddresses(Arrays.asList(message.getCcAddresses()), toAddresses);
         addBccAddresses(Arrays.asList(message.getBccAddresses()));
+        if (message.hasAttachments) {
+            List<Attachment> attachments = message.getAttachments();
+            for (Attachment a : attachments) {
+                addAttachmentAndUpdateView(a.uri);
+            }
+        }
 
         // Set the body
         if (!TextUtils.isEmpty(message.bodyHtml)) {
@@ -730,9 +736,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @param data
      */
     public void addAttachmentAndUpdateView(Intent data) {
-        Uri uri = data != null ? data.getData() : null;
+        addAttachmentAndUpdateView(data != null ? data.getData() : (Uri) null);
+    }
+
+    public void addAttachmentAndUpdateView(Uri uri) {
+        if (uri == null) {
+            return;
+        }
         try {
-            long size =  mAttachmentsView.addAttachment(mAccount, uri, false /* doSave */,
+            long size =  mAttachmentsView.addAttachment(mAccount, uri,
+                    false /* doSave */,
                     true /* local file */);
             if (size > 0) {
                 mAttachmentsChanged = true;

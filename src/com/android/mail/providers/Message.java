@@ -124,6 +124,7 @@ public class Message implements Parcelable {
         dest.writeString(sendUri);
         dest.writeInt(alwaysShowImages ? 1 : 0);
         dest.writeInt(quotedTextOffset);
+        dest.writeString(attachmentsJson);
     }
 
     private Message(Parcel in) {
@@ -153,6 +154,7 @@ public class Message implements Parcelable {
         sendUri = in.readString();
         alwaysShowImages = in.readInt() != 0;
         quotedTextOffset = in.readInt();
+        attachmentsJson = in.readString();
     }
 
     public Message() {
