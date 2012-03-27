@@ -336,7 +336,8 @@ public abstract class AbstractActivityController implements ActivityController, 
             // current inbox is not the same as the default inbox.
             final Uri oldUri = mFolder != null ? mFolder.uri : Uri.EMPTY;
             final Uri newUri = getDefaultInboxUri(mCachedSettings);
-            if (!oldUri.equals(newUri)) {
+            if ((mFolder == null || mFolder.type == UIProvider.FolderType.INBOX)
+                    && !oldUri.equals(newUri)) {
                 loadAccountInbox();
             }
         }
@@ -748,8 +749,6 @@ public abstract class AbstractActivityController implements ActivityController, 
             }
             if (savedState.containsKey(SAVED_FOLDER)) {
                 // Open the folder.
-                LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
-                        intent.getParcelableExtra(Utils.EXTRA_FOLDER));
                 onFolderChanged((Folder) savedState.getParcelable(SAVED_FOLDER));
                 handled = true;
             }
@@ -764,8 +763,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 loadAccountInbox();
             }
             restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
-        }
-        else if (intent != null) {
+        } else if (intent != null) {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                     mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
