@@ -19,17 +19,13 @@ package com.android.mail;
 
 import android.content.Context;
 import android.content.UriMatcher;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.google.common.base.Preconditions;
-
-import java.util.ArrayList;
 
 /**
  * This class is supposed to have the same thing that the Gmail ConversationListContext
@@ -88,12 +84,6 @@ public class ConversationListContext {
     public static ConversationListContext forFolder(Context context, Account account,
             Folder folder) {
         return new ConversationListContext(account, null, folder);
-    }
-
-
-    public static ConversationListContext forFolder(Context context, Account account,
-            String inboxFolder) {
-        return new ConversationListContext(account, null, new Folder());
     }
 
     /**
