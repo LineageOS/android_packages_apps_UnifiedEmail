@@ -560,65 +560,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (text != null) {
                 setBody(text, true /* with signature */);
             }
-
-            // TODO(mindyp): read this from account settings.
-            int maxSize = DEFAULT_MAX_ATTACHMENT_SIZE;
-            int totalSize = 0;
-
-            // Take care of attachments passed in by the extras.
-            if (!mAttachmentsChanged) {
-                if (extras.containsKey(EXTRA_ATTACHMENTS)) {
-                    String[] uris = (String[]) extras.getSerializable(EXTRA_ATTACHMENTS);
-                    for (String uriString : uris) {
-                        final Uri uri = Uri.parse(uriString);
-                        long size;
-                        try {
-                            size = mAttachmentsView.addAttachment(mAccount, uri,
-                                    false /* doSave */, true /* local file */);
-                        } catch (AttachmentFailureException e) {
-                            // A toast has already been shown to the user,
-                            // just break out of the loop.
-                            LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                            finish();
-                            return;
-                        }
-                    }
-                    mAttachmentsChanged = true;
-                }
-                if ((Intent.ACTION_SEND.equals(action)
-                        || AUTO_SEND_ACTION.equals(action))
-                        && extras.containsKey(Intent.EXTRA_STREAM)) {
-                    Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
-                    try {
-                        mAttachmentsView.addAttachment(mAccount, uri, true /* doSave */,
-                                true /* local file */);
-                    } catch (AttachmentFailureException e) {
-                        // A toast has already been shown to the user, so just
-                        // exit.
-                        LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                        finish();
-                        return;
-                    }
-                }
-
-                if (Intent.ACTION_SEND_MULTIPLE.equals(action)
-                        && extras.containsKey(Intent.EXTRA_STREAM)) {
-                    ArrayList<Parcelable> uris = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
-                    for (Parcelable uri : uris) {
-                        try {
-                            mAttachmentsView.addAttachment(mAccount,
-                                    (Uri) uri, false /* doSave */, true /* local file */);
-                        } catch (AttachmentFailureException e) {
-                            // A toast has already been shown to the user,
-                            // just break out of the loop.
-                            LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                            finish();
-                            return;
-                        }
-                    }
-                    mAttachmentsChanged = true;
-                }
-            }
         }
 
         updateHideOrShowCcBcc();
