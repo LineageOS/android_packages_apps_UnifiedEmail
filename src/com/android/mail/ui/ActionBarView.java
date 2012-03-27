@@ -393,4 +393,12 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             }
         }
     }
+
+    /**
+     * Get the query text the user entered in the search widget, or empty string
+     * if there is none.
+     */
+    public String getQuery() {
+        return mSearchWidget != null ? mSearchWidget.getQuery().toString() : "";
+    }
 }

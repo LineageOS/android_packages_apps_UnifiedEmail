@@ -419,6 +419,8 @@
 
     <!-- Search Results: Text for header that is shown above search results [CHAR LIMIT=30] -->
     <string name="search_results_header">Results</string>
+    <!-- Toast shown when the user taps the search hard key when viewing an account that does not support search [CHAR LIMIT=100] -->
+    <string name="search_unsupported">Search is not supported on this account.</string>
 
     <string name="searchMode" translate="false">Search Mode</string>
     <string name="searchConversationMode" translate="false">Search Conversation Mode</string>

@@ -214,6 +214,12 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
+    public boolean onSearchRequested() {
+        mController.startSearch();
+        return true;
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         mController.onStop();

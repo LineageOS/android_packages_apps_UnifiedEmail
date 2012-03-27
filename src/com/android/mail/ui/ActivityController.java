@@ -258,4 +258,9 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
     boolean shouldShowFirstConversation();
 
     public ConversationSelectionSet getSelectedSet();
+
+    /**
+     * Start search mode if the account being view supports the search capability.
+     */
+    void startSearch();
 }

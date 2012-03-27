@@ -39,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -1281,6 +1282,22 @@ public abstract class AbstractActivityController implements ActivityController, 
     public void onActionComplete() {
         if (getConversationListCursor().isRefreshReady()) {
             refreshAdapter();
+        }
+    }
+
+    @Override
+    public void startSearch() {
+        if (mAccount.supportsCapability(UIProvider.AccountCapabilities.LOCAL_SEARCH)
+                | mAccount.supportsCapability(UIProvider.AccountCapabilities.SERVER_SEARCH)) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEARCH);
+            intent.putExtra(ConversationListContext.EXTRA_SEARCH_QUERY, mActionBarView.getQuery());
+            intent.putExtra(Utils.EXTRA_ACCOUNT, mAccount);
+            intent.setComponent(mActivity.getComponentName());
+            mActivity.startActivity(intent);
+        } else {
+            Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
+                    .getString(R.string.search_unsupported), Toast.LENGTH_SHORT);
         }
     }
 }
