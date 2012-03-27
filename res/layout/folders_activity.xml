@@ -23,7 +23,7 @@
     android:orientation="vertical" >
 
     <FrameLayout
-        android:id="@+id/folder_list_pane"
+        android:id="@+id/content_pane"
         android:name="com.android.mail.ui.FolderListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
