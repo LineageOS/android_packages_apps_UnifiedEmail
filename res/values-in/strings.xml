@@ -26,7 +26,7 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Lampirkan file"</string>
-    <string name="save_draft" msgid="5555744208032445632">"Simpan konsep"</string>
+    <string name="save_draft" msgid="5555744208032445632">"Simpan draf"</string>
     <string name="discard" msgid="1714960202994370243">"Buang"</string>
     <string name="compose" msgid="1473559896062432878">"Tulis"</string>
   <string-array name="compose_modes">
@@ -41,7 +41,7 @@
     <string name="too_large_to_attach" msgid="6355534239324333583">"File terlalu besar untuk dilampirkan."</string>
     <string name="generic_attachment_problem" msgid="8775959340559458709">"Tidak dapat melampirkan file."</string>
     <string name="recipient_needed" msgid="999037027358925655">"Tambahkan setidaknya satu penerima."</string>
-    <string name="recipient_error_dialog_title" msgid="6051694305498669180">"Galat penerima"</string>
+    <string name="recipient_error_dialog_title" msgid="6051694305498669180">"Kesalahan penerima"</string>
     <string name="confirm_send_title" msgid="5663602035452564062">"Kirim pesan?"</string>
     <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"Tidak ada teks dalam subjek pesan."</string>
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"Tidak ada teks dalam badan pesan."</string>
@@ -134,8 +134,8 @@
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
-    <item quantity="one" msgid="333591132893648383">"Konsep"</item>
-    <item quantity="other" msgid="6961049507579977505">"Konsep"</item>
+    <item quantity="one" msgid="333591132893648383">"Draf"</item>
+    <item quantity="other" msgid="6961049507579977505">"Draf"</item>
   </plurals>
     <string name="sending" msgid="8214361929125649771">"Mengirim…"</string>
     <string name="send_failed" msgid="750908595144529579">"Pesan tidak dikirim."</string>
@@ -239,7 +239,7 @@
     <string name="always_show_images" msgid="5966408990164581801">"Selalu tampilkan gambar dr pengirim ini"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Gambar dari pengirim ini akan ditampilkan secara otomatis."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <string name="message_saved" msgid="7073947895562277576">"Pesan disimpan sebagai konsep."</string>
+    <string name="message_saved" msgid="7073947895562277576">"Pesan disimpan sebagai draf."</string>
     <string name="sending_message" msgid="1498583163419122128">"Mengirim pesan…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Alamat <xliff:g id="WRONGEMAIL">%s</xliff:g> tidak valid."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Tampilkan kutipan teks"</string>
@@ -252,11 +252,11 @@
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Tidak ada folder yang disetel untuk akun ini."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Berhasil"</item>
-    <item msgid="5037283655022689372">"Galat sambungan"</item>
-    <item msgid="4252875340758600974">"Galat autentikasi"</item>
-    <item msgid="7611299631880179587">"Galat keamanan"</item>
-    <item msgid="665244114363057627">"Galat penyimpanan"</item>
-    <item msgid="9190542479647789762">"Galat internal"</item>
+    <item msgid="5037283655022689372">"Kesalahan sambungan"</item>
+    <item msgid="4252875340758600974">"Kesalahan autentikasi"</item>
+    <item msgid="7611299631880179587">"Kesalahan keamanan"</item>
+    <item msgid="665244114363057627">"Kesalahan penyimpanan"</item>
+    <item msgid="9190542479647789762">"Kesalahan internal"</item>
   </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Sentuh untuk menyiapkan"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Untuk melihat percakapan, sinkronkan folder ini."</string>
