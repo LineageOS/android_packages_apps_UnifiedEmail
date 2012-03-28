@@ -111,8 +111,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private static final String MAIL_TO = "mailto";
 
-    private static final String GMAIL_FROM = "gmailfrom";
-
     private static final String EXTRA_SUBJECT = "subject";
 
     private static final String EXTRA_BODY = "body";
@@ -514,7 +512,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (MAIL_TO.equals(dataUri.getScheme())) {
                 initFromMailTo(dataUri.toString());
             } else {
-                if (!GMAIL_FROM.equals(dataUri.getScheme())) {
+                if (!mAccount.composeIntentUri.equals(dataUri)) {
                     String toText = dataUri.getSchemeSpecificPart();
                     if (toText != null) {
                         mTo.setText("");
