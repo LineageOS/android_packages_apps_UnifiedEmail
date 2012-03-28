@@ -294,11 +294,18 @@ public final class ConversationViewFragment extends Fragment implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         MessageCursor messageCursor = (MessageCursor) data;
 
-        if (mAdapter.getCursor() == null) {
-            renderConversation(messageCursor);
-        } else {
-            updateConversation(messageCursor);
+        // TODO: handle Gmail loading states (like LOADING and ERROR)
+        if (messageCursor.getCount() == 0) {
+            if (mAdapter.getCursor() != null) {
+                // TODO: need to exit this view- conversation may have been deleted, or for
+                // whatever reason is now invalid
+            } else {
+                // ignore zero-sized cursors during initial load
+            }
+            return;
         }
+
+        renderConversation(messageCursor);
     }
 
     @Override
