@@ -332,8 +332,10 @@ public final class ConversationViewFragment extends Fragment implements
                 mConversationContainer);
         mTemplates.startConversation((int) (headerHeightPx / mDensity));
 
-        // FIXME: measure the header (and the attachments) and insert spacers of appropriate size
-        final int spacerH = (Utils.useTabletUI(mContext)) ? 112 : 96;
+        // just for measuring.
+        MessageHeaderView tmpHostView = (MessageHeaderView) LayoutInflater.from(mContext).inflate(
+                R.layout.conversation_message_header, mConversationContainer, false);
+        FormattedDateBuilder dateBuilder = new FormattedDateBuilder(mContext);
 
         boolean allowNetworkImages = false;
 
@@ -342,7 +344,16 @@ public final class ConversationViewFragment extends Fragment implements
             // TODO: save/restore 'show pics' state
             final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
             allowNetworkImages |= safeForImages;
-            mTemplates.appendMessageHtml(msg, true /* expanded */, safeForImages, 1.0f, spacerH);
+
+            // render each message into a fake host view and measure the necessary spacer height
+            tmpHostView.initialize(dateBuilder, mAccount, getLoaderManager(), true /* expanded */,
+                    msg.shouldShowImagePrompt(), false /* defaultReplyAll */);
+            tmpHostView.bind(msg);
+            final int spacerPx = Utils.measureViewHeight(tmpHostView, mConversationContainer);
+            final int spacerHeightDp = (int) (spacerPx / mDensity);
+
+            mTemplates.appendMessageHtml(msg, true /* expanded */, safeForImages, 1.0f,
+                    spacerHeightDp);
         }
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);

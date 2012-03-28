@@ -57,10 +57,13 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
 
 public class MessageHeaderView extends LinearLayout implements OnClickListener,
         OnMenuItemClickListener, HeaderBlock, LoaderManager.LoaderCallbacks<Cursor>,
@@ -936,22 +939,35 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             ViewGroup container = (ViewGroup) mInflater.inflate(
                     R.layout.conversation_message_attachments, this, false);
 
-            renderAttachments(container);
             addView(container);
             mAttachmentsView = container;
         }
+        renderAttachments(mAttachmentsView);
         mAttachmentsView.setVisibility(VISIBLE);
     }
 
     private void renderAttachments(ViewGroup container) {
-        if (container == null || mAttachments == null || mAttachments.isClosed()) {
+        if (container == null) {
             return;
         }
 
-        int i = -1;
-        while (mAttachments.moveToPosition(++i)) {
-            final Attachment attachment = mAttachments.get();
+        List<Attachment> attachments;
+        if (mAttachments != null && !mAttachments.isClosed()) {
+            int i = -1;
+            attachments = Lists.newArrayList();
+            while (mAttachments.moveToPosition(++i)) {
+                attachments.add(mAttachments.get());
+            }
+        } else {
+            // before the attachment loader results are in, we can still render immediately using
+            // the basic info in the message's attachmentsJSON
+            attachments = mMessage.getAttachments();
+        }
+        renderAttachments(attachments, container);
+    }
 
+    private void renderAttachments(List<Attachment> attachments, ViewGroup container) {
+        for (Attachment attachment : attachments) {
             MessageHeaderAttachment attachView = (MessageHeaderAttachment)
                     container.findViewWithTag(attachment.uri);
 
