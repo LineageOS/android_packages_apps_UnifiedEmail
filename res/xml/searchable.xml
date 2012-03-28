@@ -15,10 +15,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+
+<!-- Override the searchSuggestAuthority in the inheriting applications to point to the
+  correct package name.-->
 <searchable xmlns:android="http://schemas.android.com/apk/res/android"
     android:label="@string/search_title"
     android:hint="@string/search_hint"
     android:icon="@drawable/ic_menu_search_holo_light"
     android:searchSuggestIntentAction="android.intent.action.SEARCH"
-    android:imeOptions="actionSearch"
-    android:searchSuggestSelection="query LIKE ?" />
+    android:searchSuggestAuthority="com.android.mail.providers.SearchSuggestionsProvider"
+    android:imeOptions="actionSearch" />

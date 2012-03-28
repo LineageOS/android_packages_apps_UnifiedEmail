@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.LoaderManager;
+import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -33,6 +34,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.SearchRecentSuggestions;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,6 +54,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
+import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.AutoAdvance;
@@ -803,6 +806,14 @@ public abstract class AbstractActivityController implements ActivityController, 
                     showConversation(mCurrentConversation);
                 }
             } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+                // Save this search query for future suggestions.
+                final String query = intent.getStringExtra(SearchManager.QUERY);
+                final String AUTHORITY = mContext.getPackageName()
+                        + SuggestionsProvider.AUTHORITY_TRAILING;
+                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
+                        mContext, AUTHORITY, SuggestionsProvider.MODE);
+                suggestions.saveRecentQuery(query, null);
+
                 mViewMode.enterSearchResultsListMode();
                 mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                 mActionBarView.setAccount(mAccount);
