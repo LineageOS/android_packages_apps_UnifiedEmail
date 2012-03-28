@@ -34,8 +34,9 @@ import com.android.mail.utils.LogUtils;
 import java.util.ArrayList;
 
 /**
- * Simple extension / instantiation of SearchRecentSuggestionsProvider, for use
- * with Gmail. Offers suggestions for "search from" a recipient.
+ * Simple extension / instantiation of SearchRecentSuggestionsProvider, independent
+ * of mail account or account capabilities.  Offers suggestions from historical searches
+ * and contact email addresses on the device.
  */
 public class SuggestionsProvider extends SearchSuggestionsProvider {
     private static final String LOG_TAG = new LogUtils().getLogTag();

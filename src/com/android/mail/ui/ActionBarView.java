@@ -22,6 +22,7 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -31,6 +32,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
+import android.widget.SearchView.OnSuggestionListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +52,7 @@ import com.android.mail.utils.Utils;
  * TODO(viki): Include ConversationSubjectDisplayer here as well.
  */
 public final class ActionBarView extends LinearLayout implements OnNavigationListener,
-        ViewMode.ModeChangeListener, OnQueryTextListener {
+        ViewMode.ModeChangeListener, OnQueryTextListener, OnSuggestionListener {
     private ActionBar mActionBar;
     private RestrictedActivity mActivity;
     private ActivityController mController;
@@ -112,6 +114,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 SearchableInfo info = searchManager.getSearchableInfo(mActivity.getComponentName());
                 mSearchWidget.setSearchableInfo(info);
                 mSearchWidget.setOnQueryTextListener(this);
+                mSearchWidget.setOnSuggestionListener(this);
             }
         }
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
@@ -400,5 +403,26 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      */
     public String getQuery() {
         return mSearchWidget != null ? mSearchWidget.getQuery().toString() : "";
+    }
+
+    // Next two methods are called when search suggestions are clicked.
+    @Override
+    public boolean onSuggestionSelect(int position) {
+        return onSuggestionClick(position);
+    }
+
+    @Override
+    public boolean onSuggestionClick(int position) {
+        final Cursor c = mSearchWidget.getSuggestionsAdapter().getCursor();
+        final boolean haveValidQuery = (c != null) && c.moveToPosition(position);
+        if (!haveValidQuery) {
+            LogUtils.d(LOG_TAG, "onSuggestionClick: Couldn't get a search query");
+            // We haven't handled this query, but the default behavior will leave EXTRA_ACCOUNT
+            // un-populated, leading to a crash. So claim that we have handled the event.
+            return true;
+        }
+        final String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY));
+        mController.onSearchRequested(query);
+        return true;
     }
 }
