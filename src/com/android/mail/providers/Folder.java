@@ -471,22 +471,18 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return TextUtils.isEmpty(fgColor) ? defaultColor : Integer.parseInt(fgColor);
     }
 
-    public static String getSerializedFolderString(Folder currentFolder, ArrayList<Folder> folders) {
-        StringBuilder foldersStringBuilder = new StringBuilder();
-        int i = 0;
+    public static String getSerializedFolderString(Folder currentFolder,
+            ArrayList<Folder> folders) {
+        ArrayList<String> folderList = new ArrayList<String>();
         for (Folder folderEntry : folders) {
             // If the current folder is a system folder, and the folder entry has the same type
             // as that system defined folder, don't show it.
             if (!folderEntry.uri.equals(currentFolder.uri)
                     && Folder.isProviderFolder(currentFolder)
                     && folderEntry.type != currentFolder.type) {
-                if (i != 0) {
-                    foldersStringBuilder.append(Folder.FOLDER_SEPARATOR);
-                }
-                foldersStringBuilder.append(folderEntry.serialize());
+                folderList.add(folderEntry.serialize());
             }
-            i++;
         }
-        return foldersStringBuilder.toString();
+        return TextUtils.join(Folder.FOLDER_SEPARATOR, folderList);
     }
 }
