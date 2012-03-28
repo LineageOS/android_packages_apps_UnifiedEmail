@@ -19,6 +19,8 @@ package com.android.mail.ui;
 
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.google.common.collect.Lists;
 
 import android.content.Context;
@@ -62,6 +64,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
         @Override
         public int compareTo(FolderRow another) {
+            // TODO: this should sort the system folders in the appropriate order
             if (equals(another)) {
                 return 0;
             } else if (mIsPresent != another.mIsPresent) {
@@ -87,9 +90,14 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     private void processLists(Cursor folders, Set<String> initiallySelected) {
         while (folders.moveToNext()) {
-            Folder folder = new Folder(folders);
-            FolderRow row = new FolderRow(folder, initiallySelected.contains(folder.uri.toString()));
-            mFolderRows.add(row);
+            final Folder folder = new Folder(folders);
+            // We only want to show the non-Trash folders that can accept moved messages
+            if (folder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES) &&
+                    folder.type != FolderType.TRASH) {
+                final FolderRow row =
+                        new FolderRow(folder, initiallySelected.contains(folder.uri.toString()));
+                mFolderRows.add(row);
+            }
         }
         Collections.sort(mFolderRows);
     }
