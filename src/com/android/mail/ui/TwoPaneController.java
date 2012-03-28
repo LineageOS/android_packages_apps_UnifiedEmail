@@ -26,6 +26,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import java.util.Collections;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -43,7 +45,8 @@ import android.view.MenuItem;
  */
 
 // Called OnePaneActivityController in Gmail.
-public final class TwoPaneController extends AbstractActivityController {
+public final class TwoPaneController extends AbstractActivityController implements
+        FolderListSelectionListener {
     private boolean mJumpToFirstConversation;
     private TwoPaneLayout mLayout;
     private final ActionCompleteListener mDeleteListener = new TwoPaneDestructiveActionListener(
@@ -103,8 +106,12 @@ public final class TwoPaneController extends AbstractActivityController {
         if (mActivity == null) {
             return;
         }
-        FolderListFragment folderListFragment = FolderListFragment.newInstance(this,
-                mAccount.folderListUri);
+        createFolderListFragment(null, mAccount.folderListUri);
+    }
+
+    private void createFolderListFragment(Folder parent, Uri uri) {
+        FolderListFragment folderListFragment = FolderListFragment.newInstance(this, parent,
+                uri);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.replace(R.id.content_pane, folderListFragment);
@@ -160,11 +167,20 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onFolderChanged(Folder folder) {
-        super.onFolderChanged(folder);
+    public void onFolderSelected(Folder folder, boolean childView) {
+        if (!childView && folder.hasChildren) {
+            // Replace this fragment with a new FolderListFragment
+            // showing this folder's children if we are not already looking
+            // at the child view for this folder.
+            createFolderListFragment(folder, folder.childFoldersListUri);
+            // Show the up affordance when digging into child folders.
+            mActionBarView.setBackButton();
+            return;
+        }
         if (mFolderListFragment != null) {
             mFolderListFragment.selectFolder(folder);
         }
+        super.onFolderChanged(folder);
     }
 
     @Override
@@ -251,6 +267,10 @@ public final class TwoPaneController extends AbstractActivityController {
             }
         } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
+        } else if (mode == ViewMode.CONVERSATION_LIST) {
+            // This case can only happen if the user is looking at child folders.
+            createFolderListFragment(null, mAccount.folderListUri);
+            loadAccountInbox();
         }
         return true;
     }

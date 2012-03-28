@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +37,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -48,7 +50,8 @@ import java.util.Set;
  * This activity displays the list of available folders for the current account.
  */
 public class FolderSelectionActivity extends Activity implements OnClickListener,
-        DialogInterface.OnClickListener, FolderChangeListener, ControllableActivity {
+        DialogInterface.OnClickListener, FolderChangeListener, ControllableActivity,
+        FolderListSelectionListener {
     public static final String EXTRA_ACCOUNT_SHORTCUT = "account-shortcut";
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
@@ -94,8 +97,12 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         firstButton.setEnabled(false);
         firstButton.setOnClickListener(this);
 
+        createFolderListFragment(null, mAccount.folderListUri);
+    }
+
+    private void createFolderListFragment(Folder parent, Uri uri) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        Fragment fragment = FolderListFragment.newInstance(this, mAccount.folderListUri);
+        Fragment fragment = FolderListFragment.newInstance(this, parent, uri);
         fragmentTransaction.replace(R.id.content_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -276,5 +283,17 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     @Override
     public ConversationSelectionSet getSelectedSet() {
         return null;
+    }
+
+    @Override
+    public void onFolderSelected(Folder folder, boolean viewingChildren) {
+        if (!viewingChildren && folder.hasChildren) {
+            // Replace this fragment with a new FolderListFragment
+            // showing this folder's children if we are not already looking
+            // at the child view for this folder.
+            createFolderListFragment(folder, folder.childFoldersListUri);
+            return;
+        }
+        onFolderChanged(folder);
     }
 }
