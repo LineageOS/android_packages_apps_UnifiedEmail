@@ -214,6 +214,7 @@
     <item quantity="other" msgid="8918589141287976985">"Changed folders."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Results"</string>
+    <string name="search_unsupported" msgid="4654227193354052607">"Search is not supported on this account."</string>
     <string name="searchMode" msgid="3329807422114758583">"Search Mode"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Search Conversation Mode"</string>
     <string name="setBackButton" msgid="3004728881963818222">"Set Back Button"</string>
