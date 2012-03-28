@@ -74,6 +74,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      * easier.
      */
     private float mScale;
+    private boolean mScaleInitialized;
 
     /**
      * System touch-slop distance per {@link ViewConfiguration#getScaledTouchSlop()}.
@@ -259,7 +260,21 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private void handleScroll(int x, int y) {
         mOffsetY = y;
-        mScale = mWebView.getScale();
+
+        /*
+         * The scale value that WebView reports is inaccurate when measured during the very first
+         * WebView scroll event. This bug is present in ICS, so to work around it, we ignore the
+         * first reported value and use the density (expected value) instead.
+         *
+         * All subsequent reading of the scale value is done in response to user scrolling or
+         * zooming, and by that time the scale is correct.
+         */
+        if (mScaleInitialized) {
+            mScale = mWebView.getScale();
+        } else {
+            mScale = mDensity;
+            mScaleInitialized = true;
+        }
 
         if (mOverlayBottoms == null) {
             return;
@@ -463,8 +478,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         for (int offsetY : headerBottoms) {
             LogUtils.d(TAG, "%d", offsetY);
         }
-
-        mScale = mWebView.getScale();
 
         mOverlayBottoms = headerBottoms;
         mOverlayHeights = headerHeights;
