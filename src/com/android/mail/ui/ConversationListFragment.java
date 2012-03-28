@@ -458,7 +458,6 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
-
     public void requestDelete(int position, ActionCompleteListener listener) {
         mCurrentPosition = position;
         ConversationCursor conversationListCursor = getConversationListCursor();

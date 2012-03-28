@@ -163,6 +163,15 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         return handled;
     }
 
+    /**
+     * Clear the selection and perform related UI changes to keep the state consistent.
+     */
+    private void clearSelection() {
+        mSelectionSet.clear();
+        // Redraw with changes
+        mListAdapter.notifyDataSetChanged();
+    }
+
     private void performDestructiveAction(int id, final ActionCompleteListener listener) {
         Settings settings = mActivity.getSettings();
         final Collection<Conversation> conversations = mSelectionSet.values();
@@ -190,9 +199,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private void markConversationsRead(boolean read) {
         Collection<Conversation> conversations = mSelectionSet.values();
         Conversation.updateBoolean(mContext, conversations, ConversationColumns.READ, read);
-        mSelectionSet.clear();
-        // Redraw with changes
-        mListAdapter.notifyDataSetChanged();
+        clearSelection();
     }
 
     private void markConversationsImportant(boolean important) {
@@ -200,9 +207,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         int priority = important ? UIProvider.ConversationPriority.HIGH
                 : UIProvider.ConversationPriority.LOW;
         Conversation.updateInt(mContext, conversations, ConversationColumns.PRIORITY, priority);
-        mSelectionSet.clear();
-        // Redraw with changes
-        mListAdapter.notifyDataSetChanged();
+        clearSelection();
     }
 
     private void starConversations(boolean star) {
@@ -211,9 +216,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             Conversation.updateBoolean(mContext, conversations,
                     ConversationColumns.STARRED, star);
         }
-        mSelectionSet.clear();
-        // Redraw with changes
-        mListAdapter.notifyDataSetChanged();
+        clearSelection();
     }
 
     private void showChangeFoldersDialog() {
@@ -276,8 +279,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             Conversation.updateString(mContext, mSelectionSet.values(),
                     ConversationColumns.RAW_FOLDERS,
                     Folder.getSerializedFolderString(mFolder, mFolderChangeList));
-            mSelectionSet.clear();
-            mListAdapter.notifyDataSetChanged();
+            clearSelection();
         }
     };
 
@@ -355,15 +357,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // active, that implies the user hit "Done" in the top right, and resources need cleaning.
         if (mActivated) {
             destroy();
-
-            if (mSelectionSet.size() > 0) {
-                // If we are destroying the menu, when there is a selection, clear the
-                // set of conversations
-                LogUtils.e(LOG_TAG,
-                        "Destroying action menu, with non-empty conversation set. Count: %d",
-                        mSelectionSet.size());
-                mSelectionSet.clear();
-            }
         }
         mMenu = null;
     }
@@ -375,6 +368,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     @Override
     public void onSetEmpty() {
+        LogUtils.d(LOG_TAG, "onSetEmpty called.");
         destroy();
     }
 
@@ -427,10 +421,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     /**
      * Destroys and cleans up the resources associated with this menu.
      */
-    public void destroy() {
+    private void destroy() {
         deactivate();
         mSelectionSet.removeObserver(this);
-        mSelectionSet.clear();
+        clearSelection();
     }
 
     /**
@@ -457,7 +451,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             }
         }
     }
-
 
     private class DestructiveActionListener implements ActionCompleteListener {
         private final int mAction;
@@ -491,8 +484,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     Conversation.reportSpam(mContext, conversations);
                     break;
             }
-            mListAdapter.notifyDataSetChanged();
-            mSelectionSet.clear();
+            clearSelection();
         }
     }
 }
