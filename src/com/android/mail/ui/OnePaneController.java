@@ -34,6 +34,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +45,8 @@ import java.util.Collections;
  */
 
 // Called OnePaneActivityController in Gmail.
-public final class OnePaneController extends AbstractActivityController {
+public final class OnePaneController extends AbstractActivityController implements
+        FolderListSelectionListener {
     private static final String FOLDER_LIST_TRANSACTION_KEY = "folder-list-transaction";
     private static final String CONVERSATION_LIST_TRANSACTION_KEY = "conversation-list-transaction";
     private static final String CONVERSATION_TRANSACTION_KEY = "conversation-transaction";
@@ -196,7 +198,7 @@ public final class OnePaneController extends AbstractActivityController {
     public void showFolderList() {
         mViewMode.enterFolderListMode();
         mLastFolderListTransactionId = replaceFragment(
-                FolderListFragment.newInstance(this, mAccount.folderListUri),
+                FolderListFragment.newInstance(this, null, mAccount.folderListUri),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         mConversationListVisible = false;
     }
@@ -264,9 +266,18 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onFolderChanged(Folder folder) {
-        if (mViewMode.getMode() == ViewMode.FOLDER_LIST
-                && folder != null && folder.equals(mFolder)) {
+    public void onFolderSelected(Folder folder, boolean childView) {
+        if (!childView && folder.hasChildren) {
+            // Replace this fragment with a new FolderListFragment
+            // showing this folder's children if we are not already looking
+            // at the child view for this folder.
+            mLastFolderListTransactionId = replaceFragment(
+                    FolderListFragment.newInstance(this, folder, folder.childFoldersListUri),
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            return;
+        }
+        if (mViewMode.getMode() == ViewMode.FOLDER_LIST && folder != null
+                && folder.equals(mFolder)) {
             // if we are in folder list when we select a new folder,
             // and it is the same as the existing folder, clear the previous
             // folder setting so that the folder will be re-loaded/ shown.
