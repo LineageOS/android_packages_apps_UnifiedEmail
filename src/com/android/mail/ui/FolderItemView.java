@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.Utils;
 
 import android.content.Context;
@@ -117,11 +118,19 @@ public class FolderItemView extends RelativeLayout {
         if (mFolder.hasChildren) {
             mFolderParentIcon.setVisibility(View.VISIBLE);
         }
-        if (mFolder.unreadCount > 0) {
+        final int count = getFolderItemCount();
+        if (count > 0) {
             mUnreadCountTextView.setVisibility(View.VISIBLE);
-            mUnreadCountTextView.setText(Utils.getUnreadCountString(getContext(),
-                    mFolder.unreadCount));
+            mUnreadCountTextView.setText(Utils.getUnreadCountString(getContext(), count));
         }
+    }
+
+    /**
+     * Returns the appropriate count for this folder item
+     */
+    private int getFolderItemCount() {
+        // Always show the total count for Draft folders, otherwise use the unread count.
+        return mFolder.type == FolderType.DRAFT ? mFolder.totalCount : mFolder.unreadCount;
     }
 
     private boolean isDroppableTarget(DragEvent event) {
