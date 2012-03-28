@@ -30,6 +30,7 @@ import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.ui.ConversationViewFragment.MessageCursor;
 import com.android.mail.utils.Utils;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -258,8 +259,12 @@ public class Message implements Parcelable {
     }
 
     public synchronized List<Attachment> getAttachments() {
-        if (mAttachments == null && attachmentsJson != null) {
-            mAttachments = Attachment.fromJSONArray(attachmentsJson);
+        if (mAttachments == null) {
+            if (attachmentsJson != null) {
+                mAttachments = Attachment.fromJSONArray(attachmentsJson);
+            } else {
+                mAttachments = Collections.emptyList();
+            }
         }
         return mAttachments;
     }
