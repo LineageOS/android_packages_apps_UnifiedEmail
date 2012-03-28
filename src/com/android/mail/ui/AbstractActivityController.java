@@ -519,6 +519,9 @@ public abstract class AbstractActivityController implements ActivityController, 
             case R.id.settings:
                 Utils.showSettings(mActivity.getActivityContext(), mAccount);
                 break;
+            case R.id.folder_options:
+                Utils.showFolderSettings(mActivity.getActivityContext(), mAccount, mFolder);
+                break;
             case R.id.help_info_menu_item:
                 // TODO: enable context sensitive help
                 Utils.showHelp(mActivity.getActivityContext(), mAccount.helpIntentUri, null);

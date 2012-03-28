@@ -49,6 +49,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider.EditSettingsExtras;
 
 import java.util.Locale;
 import java.util.Map;
@@ -684,6 +685,18 @@ public class Utils {
      */
     public static void showSettings(Context context, Account account) {
         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
+        context.startActivity(settingsIntent);
+    }
+
+    /**
+     * Show the settings screen for the supplied account.
+     */
+     public static void showFolderSettings(Context context, Account account, Folder folder) {
+        final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
+
+        settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
+        settingsIntent.putExtra(EditSettingsExtras.EXTRA_FOLDER, folder);
+
         context.startActivity(settingsIntent);
     }
 

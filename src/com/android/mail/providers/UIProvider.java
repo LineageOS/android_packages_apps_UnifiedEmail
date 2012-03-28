@@ -304,6 +304,8 @@ public class UIProvider {
         /**
          * Uri for EDIT intent that will cause the settings screens for this account type to be
          * shown.
+         * Optionally, extra values from {@link EditSettingsExtras} can be used to indicate
+         * which settings the user wants to edit.
          * TODO: When we want to support a heterogeneous set of account types, this value may need
          * to be moved to a global content provider.
          */
@@ -1345,5 +1347,19 @@ public class UIProvider {
          * to run.
          */
         public static final String EXTRA_UPDATED_UNREAD_COUNT = "notification_updated_unread_count";
+    }
+
+    public static final class EditSettingsExtras {
+        /**
+         * Parcelable extra containing account for which the user wants to
+         * modify settings
+         */
+        public static final String EXTRA_ACCOUNT = "extra_account";
+
+        /**
+         * Parcelable extra containing folder for which the user wants to
+         * modify settings
+         */
+        public static final String EXTRA_FOLDER = "extra_folder";
     }
 }
