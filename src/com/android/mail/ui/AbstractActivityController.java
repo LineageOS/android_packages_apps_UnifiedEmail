@@ -1147,9 +1147,13 @@ public abstract class AbstractActivityController implements ActivityController, 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             int mode = mViewMode.getMode();
             if (mode == ViewMode.CONVERSATION_LIST) {
-                mConversationListFragment.onTouchEvent(event);
+                if (mConversationListFragment != null) {
+                    mConversationListFragment.onTouchEvent(event);
+                }
             } else if (mode == ViewMode.CONVERSATION) {
-                mConversationViewFragment.onTouchEvent(event);
+                if (mConversationViewFragment != null) {
+                    mConversationViewFragment.onTouchEvent(event);
+                }
             }
         }
     }
