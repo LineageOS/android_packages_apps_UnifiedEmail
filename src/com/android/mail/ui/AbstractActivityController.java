@@ -1125,6 +1125,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                                 .getStringExtra(UIProvider.SearchQueryParameters.QUERY));
                 showConversationList(mConvListContext);
                 mActivity.invalidateOptionsMenu();
+                mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
                 break;
         }
     }
