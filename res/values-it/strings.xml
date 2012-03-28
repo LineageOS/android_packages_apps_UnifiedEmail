@@ -214,6 +214,7 @@
     <item quantity="other" msgid="8918589141287976985">"Cartelle cambiate."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Risultati"</string>
+    <string name="search_unsupported" msgid="4654227193354052607">"La ricerca non è supportata per l\'account in uso."</string>
     <string name="searchMode" msgid="3329807422114758583">"Modalità di ricerca"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Modalità Ricerca conversazione"</string>
     <string name="setBackButton" msgid="3004728881963818222">"Imposta pulsante Indietro"</string>

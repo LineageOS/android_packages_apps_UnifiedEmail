@@ -214,6 +214,8 @@
     <item quantity="other" msgid="8918589141287976985">"S\'han canviat les carpetes."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Resultats"</string>
+    <!-- no translation found for search_unsupported (4654227193354052607) -->
+    <skip />
     <string name="searchMode" msgid="3329807422114758583">"Mode de cerca"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Cerca el mode de conversa"</string>
     <string name="setBackButton" msgid="3004728881963818222">"Defineix el botó Enrere"</string>
