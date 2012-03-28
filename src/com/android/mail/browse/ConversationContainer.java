@@ -74,7 +74,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      * easier.
      */
     private float mScale;
-    private boolean mScaleInitialized;
+    /**
+     * Set to true upon receiving the first touch event. Used to help reject invalid WebView scale
+     * values.
+     */
+    private boolean mTouchInitialized;
 
     /**
      * System touch-slop distance per {@link ViewConfiguration#getScaledTouchSlop()}.
@@ -150,6 +154,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         mChildrenToRemove = Sets.newHashSet();
 
         mDensity = c.getResources().getDisplayMetrics().density;
+        mScale = mDensity;
 
         mTouchSlop = ViewConfiguration.get(c).getScaledTouchSlop();
 
@@ -200,6 +205,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+
+        if (!mTouchInitialized) {
+            mTouchInitialized = true;
+        }
+
         boolean intercept = false;
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -262,19 +272,17 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         mOffsetY = y;
 
         /*
-         * The scale value that WebView reports is inaccurate when measured during the very first
-         * WebView scroll event. This bug is present in ICS, so to work around it, we ignore the
-         * first reported value and use the density (expected value) instead.
-         *
-         * All subsequent reading of the scale value is done in response to user scrolling or
-         * zooming, and by that time the scale is correct.
+         * The scale value that WebView reports is inaccurate when measured during WebView
+         * initialization. This bug is present in ICS, so to work around it, we ignore all
+         * reported values and use the density (expected value) instead. Only when the user
+         * actually begins to touch the view (to, say, begin a zoom) do we begin to pay attention
+         * to WebView-reported scale values.
          */
-        if (mScaleInitialized) {
+        if (mTouchInitialized) {
             mScale = mWebView.getScale();
-        } else {
-            mScale = mDensity;
-            mScaleInitialized = true;
         }
+        LogUtils.v(TAG, "in handleScroll, raw scale=%f, effective scale=%f",
+                mWebView.getScale(), mScale);
 
         if (mOverlayBottoms == null) {
             return;
