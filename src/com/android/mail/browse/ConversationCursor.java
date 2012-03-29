@@ -303,6 +303,8 @@ public final class ConversationCursor implements Cursor {
                     // Keep the deleted count up-to-date; remove the cache entry
                     if (values.containsKey(DELETED_COLUMN)) {
                         sDeletedCount--;
+                        LogUtils.i(TAG, new Error(),
+                                "IN resetCursor, sDeletedCount decremented to: %d", sDeletedCount);
                     }
                     // Remove the entry
                     iter.remove();
@@ -396,6 +398,12 @@ public final class ConversationCursor implements Cursor {
      * @param value the value to be cached
      */
     private static void cacheValue(String uriString, String columnName, Object value) {
+        // Calling this method off the UI thread will mess with ListView's reading of the cursor's
+        // count
+        if (offUiThread()) {
+            LogUtils.e(TAG, new Error(), "cacheValue incorrectly being called from non-UI thread");
+        }
+
         synchronized (sCacheMapLock) {
             try {
                 // Get the map for our uri
@@ -412,13 +420,15 @@ public final class ConversationCursor implements Cursor {
                     if (state && !hasValue) {
                         sDeletedCount++;
                         if (DEBUG) {
-                            LogUtils.i(TAG, "Deleted " + uriString);
+                            LogUtils.i(TAG, "Deleted %s, incremented deleted count=%d", uriString,
+                                    sDeletedCount);
                         }
                     } else if (!state && hasValue) {
                         sDeletedCount--;
                         map.remove(columnName);
                         if (DEBUG) {
-                            LogUtils.i(TAG, "Undeleted " + uriString);
+                            LogUtils.i(TAG, "Undeleted %s, decremented deleted count=%d", uriString,
+                                    sDeletedCount);
                         }
                         return;
                     }
