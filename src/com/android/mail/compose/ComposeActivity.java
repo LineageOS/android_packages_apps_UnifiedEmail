@@ -1776,12 +1776,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void appendSignature() {
-        mSignature = mCachedSettings != null ? mCachedSettings.signature : null;
-        if (!TextUtils.isEmpty(mSignature)) {
-            // Appending a signature does not count as changing text.
-            mBodyView.removeTextChangedListener(this);
-            mBodyView.append(convertToPrintableSignature(mSignature));
-            mBodyView.addTextChangedListener(this);
+        String newSignature = mCachedSettings != null ? mCachedSettings.signature : null;
+        if (!TextUtils.equals(newSignature, mSignature)) {
+            mSignature = newSignature;
+            if (!TextUtils.isEmpty(mSignature)
+                    && getSignatureStartPosition(mSignature,
+                            mBodyView.getText().toString()) < 0) {
+                // Appending a signature does not count as changing text.
+                mBodyView.removeTextChangedListener(this);
+                mBodyView.append(convertToPrintableSignature(mSignature));
+                mBodyView.addTextChangedListener(this);
+            }
         }
     }
 
