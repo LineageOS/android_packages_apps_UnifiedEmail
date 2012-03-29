@@ -192,7 +192,7 @@ public class WidgetService extends RemoteViewsService {
                 // Split the senders and status from the instructions.
                 SpannableStringBuilder senderBuilder = new SpannableStringBuilder();
                 SpannableStringBuilder statusBuilder = new SpannableStringBuilder();
-                senderBuilder.append(conversation.senders);
+                senderBuilder.append(conversation.senders != null ? conversation.senders : "");
                 // TODO: (mindyp) create stylized sender text.
 
                 // Get styled date.
