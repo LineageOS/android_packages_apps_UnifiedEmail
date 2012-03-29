@@ -274,14 +274,6 @@ public abstract class AbstractActivityController implements ActivityController, 
 
                     @Override
                     public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
-                        if (mConversationListFragment != null) {
-                            mConversationListFragment.configureSearchResultHeader();
-                            AnimatedAdapter adapter = mConversationListFragment
-                                    .getAnimatedAdapter();
-                            if (adapter != null) {
-                                adapter.hideFooter();
-                            }
-                        }
                         return new ConversationCursorLoader((Activity) mActivity, mAccount,
                                 UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
                     }

@@ -221,6 +221,7 @@ public final class ConversationListFragment extends ListFragment implements
                 null);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
+        mListAdapter.hideFooter();
         mListView.setSwipeCompleteListener(this);
         // Don't need to add ourselves to our own set observer.
         // mActivity.getBatchConversations().addObserver(this);
@@ -228,7 +229,7 @@ public final class ConversationListFragment extends ListFragment implements
         mActivity.attachConversationList(this);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         initializeUiForFirstDisplay();
-
+        configureSearchResultHeader();
         // The onViewModeChanged callback doesn't get called when the mode object is created, so
         // force setting the mode manually this time around.
         onViewModeChanged(mActivity.getViewMode().getMode());
@@ -469,10 +470,10 @@ public final class ConversationListFragment extends ListFragment implements
 
 
     public void onFolderUpdated(Folder folder) {
+        mFolder = folder;
         if (mFolder == null) {
             return;
         }
-        mFolder = folder;
         mListAdapter.setFolder(mFolder);
         mFooterView.updateStatus(mFolder);
         if (mFolder.isSyncInProgress()) {
