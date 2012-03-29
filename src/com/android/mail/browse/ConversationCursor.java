@@ -385,11 +385,6 @@ public final class ConversationCursor implements Cursor {
         synchronized (sCacheMapLock) {
             if (sConversationCursor != null) {
                 cacheValue(uriString, columnName, value);
-                synchronized(sListeners) {
-                    for (ConversationListener listener: sListeners) {
-                        listener.onDataSetChanged();
-                    }
-                }
             }
         }
     }
@@ -402,49 +397,58 @@ public final class ConversationCursor implements Cursor {
      */
     private static void cacheValue(String uriString, String columnName, Object value) {
         synchronized (sCacheMapLock) {
-            // Get the map for our uri
-            ContentValues map = sCacheMap.get(uriString);
-            // Create one if necessary
-            if (map == null) {
-                map = new ContentValues();
-                sCacheMap.put(uriString, map);
-            }
-            // If we're caching a deletion, add to our count
-            if (columnName == DELETED_COLUMN) {
-                boolean state = (Boolean)value;
-                boolean hasValue = map.get(columnName) != null;
-                if (state && !hasValue) {
-                    sDeletedCount++;
-                    if (DEBUG) {
-                        LogUtils.i(TAG, "Deleted " + uriString);
-                    }
-                } else if (!state && hasValue) {
-                    sDeletedCount--;
-                    map.remove(columnName);
-                    if (DEBUG) {
-                        LogUtils.i(TAG, "Undeleted " + uriString);
-                    }
-                    return;
+            try {
+                // Get the map for our uri
+                ContentValues map = sCacheMap.get(uriString);
+                // Create one if necessary
+                if (map == null) {
+                    map = new ContentValues();
+                    sCacheMap.put(uriString, map);
                 }
-            }
-            // ContentValues has no generic "put", so we must test.  For now, the only classes of
-            // values implemented are Boolean/Integer/String, though others are trivially added
-            if (value instanceof Boolean) {
-                map.put(columnName, ((Boolean) value).booleanValue() ? 1 : 0);
-            } else if (value instanceof Integer) {
-                map.put(columnName, (Integer) value);
-            } else if (value instanceof String) {
-                map.put(columnName, (String) value);
-            } else {
-                String cname = value.getClass().getName();
-                throw new IllegalArgumentException("Value class not compatible with cache: "
-                        + cname);
-            }
-            if (sRefreshInProgress) {
-                map.put(REQUERY_COLUMN, 1);
-            }
-            if (DEBUG && (columnName != DELETED_COLUMN)) {
-                LogUtils.i(TAG, "Caching value for " + uriString + ": " + columnName);
+                // If we're caching a deletion, add to our count
+                if (columnName == DELETED_COLUMN) {
+                    final boolean state = (Boolean)value;
+                    final boolean hasValue = map.get(columnName) != null;
+                    if (state && !hasValue) {
+                        sDeletedCount++;
+                        if (DEBUG) {
+                            LogUtils.i(TAG, "Deleted " + uriString);
+                        }
+                    } else if (!state && hasValue) {
+                        sDeletedCount--;
+                        map.remove(columnName);
+                        if (DEBUG) {
+                            LogUtils.i(TAG, "Undeleted " + uriString);
+                        }
+                        return;
+                    }
+                }
+                // ContentValues has no generic "put", so we must test.  For now, the only classes
+                // of values implemented are Boolean/Integer/String, though others are trivially
+                // added
+                if (value instanceof Boolean) {
+                    map.put(columnName, ((Boolean) value).booleanValue() ? 1 : 0);
+                } else if (value instanceof Integer) {
+                    map.put(columnName, (Integer) value);
+                } else if (value instanceof String) {
+                    map.put(columnName, (String) value);
+                } else {
+                    final String cname = value.getClass().getName();
+                    throw new IllegalArgumentException("Value class not compatible with cache: "
+                            + cname);
+                }
+                if (sRefreshInProgress) {
+                    map.put(REQUERY_COLUMN, 1);
+                }
+                if (DEBUG && (columnName != DELETED_COLUMN)) {
+                    LogUtils.i(TAG, "Caching value for " + uriString + ": " + columnName);
+                }
+            } finally {
+                synchronized(sListeners) {
+                    for (ConversationListener listener: sListeners) {
+                        listener.onDataSetChanged();
+                    }
+                }
             }
         }
     }
