@@ -298,10 +298,10 @@ public abstract class MailAppProvider extends ContentProvider
         if (provider == null) {
             throw new IllegalStateException("MailAppProvider not intialized");
         }
-        provider.addAccountImpl(account, accountsQueryUri);
+        provider.addAccountImpl(account, accountsQueryUri, true /* notify */);
     }
 
-    private void addAccountImpl(Account account, Uri accountsQueryUri) {
+    private void addAccountImpl(Account account, Uri accountsQueryUri, boolean notify) {
         synchronized (mAccountCache) {
             if (account != null) {
                 LogUtils.v(LOG_TAG, "adding account %s", account);
@@ -310,7 +310,9 @@ public abstract class MailAppProvider extends ContentProvider
         }
         // Explicitly calling this out of the synchronized block in case any of the observers get
         // called synchronously.
-        broadcastAccountChange();
+        if (notify) {
+            broadcastAccountChange();
+        }
 
         // Cache the updated account list
         cacheAccountList();
@@ -321,10 +323,10 @@ public abstract class MailAppProvider extends ContentProvider
         if (provider == null) {
             throw new IllegalStateException("MailAppProvider not intialized");
         }
-        provider.removeAccounts(Collections.singleton(accountUri));
+        provider.removeAccounts(Collections.singleton(accountUri), true /* notify */);
     }
 
-    private void removeAccounts(Set<Uri> uris) {
+    private void removeAccounts(Set<Uri> uris, boolean notify) {
         synchronized (mAccountCache) {
             for (Uri accountUri : uris) {
                 mAccountCache.remove(accountUri);
@@ -333,7 +335,9 @@ public abstract class MailAppProvider extends ContentProvider
 
         // Explicitly calling this out of the synchronized block in case any of the observers get
         // called synchronously.
-        broadcastAccountChange();
+        if (notify) {
+            broadcastAccountChange();
+        }
 
         // Cache the updated account list
         cacheAccountList();
@@ -373,7 +377,8 @@ public abstract class MailAppProvider extends ContentProvider
                 try {
                     final AccountCacheEntry accountEntry =
                             new AccountCacheEntry(serializedAccount);
-                    addAccount(accountEntry.mAccount, accountEntry.mAccountsQueryUri);
+                    addAccountImpl(accountEntry.mAccount, accountEntry.mAccountsQueryUri,
+                            false /* don't notify */);
                 } catch (Exception e) {
                     // Unable to create account object, skip to next
                     LogUtils.e(LOG_TAG, e,
@@ -381,6 +386,7 @@ public abstract class MailAppProvider extends ContentProvider
                             serializedAccount);
                 }
             }
+            broadcastAccountChange();
         }
     }
 
@@ -434,19 +440,19 @@ public abstract class MailAppProvider extends ContentProvider
             }
         }
 
-        final Set<Uri> newQueryUriMap = Sets.newHashSet();
-        while (data.moveToNext()) {
-            final Account account = new Account(data);
-            final Uri accountUri = account.uri;
-            newQueryUriMap.add(accountUri);
-            addAccount(account, accountsQueryUri);
-        }
-
         // Update the internal state of this provider if the returned result set
         // represents all accounts
         // TODO: determine what should happen with a heterogeneous set of accounts
         final Bundle extra = data.getExtras();
         mAccountsFullyLoaded = extra.getInt(AccountCursorExtraKeys.ACCOUNTS_LOADED) != 0;
+
+        final Set<Uri> newQueryUriMap = Sets.newHashSet();
+        while (data.moveToNext()) {
+            final Account account = new Account(data);
+            final Uri accountUri = account.uri;
+            newQueryUriMap.add(accountUri);
+            addAccountImpl(account, accountsQueryUri, false /* don't notify */);
+        }
 
         if (previousQueryUriMap != null) {
             // Remove all of the accounts that are in the new result set
@@ -455,9 +461,10 @@ public abstract class MailAppProvider extends ContentProvider
             // For all of the entries that had been in the previous result set, and are not
             // in the new result set, remove them from the cache
             if (previousQueryUriMap.size() > 0 && mAccountsFullyLoaded) {
-                removeAccounts(previousQueryUriMap);
+              removeAccounts(previousQueryUriMap, false /* don't notify */);
             }
         }
+        broadcastAccountChange();
     }
 
     /**
