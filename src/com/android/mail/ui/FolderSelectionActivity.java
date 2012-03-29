@@ -36,7 +36,6 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
-import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
@@ -102,7 +101,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     private void createFolderListFragment(Folder parent, Uri uri) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        Fragment fragment = FolderListFragment.newInstance(this, parent, uri);
+        Fragment fragment = FolderListFragment.newInstance(parent, uri);
         fragmentTransaction.replace(R.id.content_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -295,5 +294,10 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             return;
         }
         onFolderChanged(folder);
+    }
+
+    @Override
+    public FolderListSelectionListener getFolderListSelectionListener() {
+        return this;
     }
 }

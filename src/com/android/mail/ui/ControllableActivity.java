@@ -18,7 +18,7 @@
 package com.android.mail.ui;
 
 import com.android.mail.ui.ViewMode.ModeChangeListener;
-
+import com.android.mail.ui.FolderListFragment;
 
 /**
  * A controllable activity is an Activity that has a Controller attached. This activity must be
@@ -85,4 +85,11 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity {
     boolean shouldShowFirstConversation();
 
     ConversationSelectionSet getSelectedSet();
+
+    /**
+     * Returns the listener for folder list selection changes in the folder list
+     * fragment so that activity controllers can track the last folder list
+     * pushed for hierarchical folders.
+     */
+    FolderListFragment.FolderListSelectionListener getFolderListSelectionListener();
 }
