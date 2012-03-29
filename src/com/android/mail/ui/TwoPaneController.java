@@ -26,7 +26,6 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -45,8 +44,7 @@ import android.view.MenuItem;
  */
 
 // Called OnePaneActivityController in Gmail.
-public final class TwoPaneController extends AbstractActivityController implements
-        FolderListSelectionListener {
+public final class TwoPaneController extends AbstractActivityController {
     private boolean mJumpToFirstConversation;
     private TwoPaneLayout mLayout;
     private final ActionCompleteListener mDeleteListener = new TwoPaneDestructiveActionListener(
@@ -110,8 +108,7 @@ public final class TwoPaneController extends AbstractActivityController implemen
     }
 
     private void createFolderListFragment(Folder parent, Uri uri) {
-        FolderListFragment folderListFragment = FolderListFragment.newInstance(this, parent,
-                uri);
+        FolderListFragment folderListFragment = FolderListFragment.newInstance(parent, uri);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.replace(R.id.content_pane, folderListFragment);

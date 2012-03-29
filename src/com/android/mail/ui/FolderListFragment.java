@@ -74,18 +74,16 @@ public final class FolderListFragment extends ListFragment implements
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      * @param listener
      */
-    public FolderListFragment(FolderListSelectionListener listener) {
+    public FolderListFragment() {
         super();
-        mListener = listener;
     }
 
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
      */
-    public static FolderListFragment newInstance(FolderListSelectionListener listener,
-            Folder parentFolder, Uri folderUri) {
-        FolderListFragment fragment = new FolderListFragment(listener);
+    public static FolderListFragment newInstance(Folder parentFolder, Uri folderUri) {
+        FolderListFragment fragment = new FolderListFragment();
         Bundle args = new Bundle();
         if (parentFolder != null) {
             args.putParcelable(ARG_PARENT_FOLDER, parentFolder);
@@ -110,6 +108,7 @@ public final class FolderListFragment extends ListFragment implements
         }
         mActivity = (ControllableActivity) activity;
         mActivity.attachFolderList(this);
+        mListener = mActivity.getFolderListSelectionListener();
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
             return;
@@ -233,7 +232,7 @@ public final class FolderListFragment extends ListFragment implements
         }
     }
 
-    interface FolderListSelectionListener {
+    public interface FolderListSelectionListener {
         public void onFolderSelected(Folder folder, boolean viewingChildren);
     }
 }

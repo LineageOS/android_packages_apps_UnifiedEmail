@@ -45,8 +45,7 @@ import java.util.Collections;
  */
 
 // Called OnePaneActivityController in Gmail.
-public final class OnePaneController extends AbstractActivityController implements
-        FolderListSelectionListener {
+public final class OnePaneController extends AbstractActivityController {
     private static final String FOLDER_LIST_TRANSACTION_KEY = "folder-list-transaction";
     private static final String CONVERSATION_LIST_TRANSACTION_KEY = "conversation-list-transaction";
     private static final String CONVERSATION_TRANSACTION_KEY = "conversation-transaction";
@@ -198,7 +197,7 @@ public final class OnePaneController extends AbstractActivityController implemen
     public void showFolderList() {
         mViewMode.enterFolderListMode();
         mLastFolderListTransactionId = replaceFragment(
-                FolderListFragment.newInstance(this, null, mAccount.folderListUri),
+                FolderListFragment.newInstance(null, mAccount.folderListUri),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         mConversationListVisible = false;
     }
@@ -272,7 +271,7 @@ public final class OnePaneController extends AbstractActivityController implemen
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(
-                    FolderListFragment.newInstance(this, folder, folder.childFoldersListUri),
+                    FolderListFragment.newInstance(folder, folder.childFoldersListUri),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             return;
         }

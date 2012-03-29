@@ -42,7 +42,8 @@ import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
         ModeChangeListener, ConversationListCallbacks, FolderChangeCommitListener,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
-        ActionCompleteListener, ConversationSetObserver {
+        ActionCompleteListener, ConversationSetObserver,
+        FolderListFragment.FolderListSelectionListener {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
