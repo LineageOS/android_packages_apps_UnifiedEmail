@@ -214,8 +214,7 @@
     <item quantity="other" msgid="8918589141287976985">"폴더가 변경되었습니다."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"검색결과"</string>
-    <!-- no translation found for search_unsupported (4654227193354052607) -->
-    <skip />
+    <string name="search_unsupported" msgid="4654227193354052607">"이 계정에서는 검색이 지원되지 않습니다."</string>
     <string name="searchMode" msgid="3329807422114758583">"검색 모드"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"대화 검색 모드"</string>
     <string name="setBackButton" msgid="3004728881963818222">"뒤로 버튼 설정"</string>

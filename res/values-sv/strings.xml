@@ -214,8 +214,7 @@
     <item quantity="other" msgid="8918589141287976985">"Mapparna har ändrats."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Resultat"</string>
-    <!-- no translation found for search_unsupported (4654227193354052607) -->
-    <skip />
+    <string name="search_unsupported" msgid="4654227193354052607">"Det går inte att söka i det här kontot."</string>
     <string name="searchMode" msgid="3329807422114758583">"Sökläge"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Sök i konversationsläge"</string>
     <string name="setBackButton" msgid="3004728881963818222">"Använd bakåtknappen"</string>

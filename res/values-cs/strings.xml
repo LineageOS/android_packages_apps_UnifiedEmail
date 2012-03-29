@@ -214,8 +214,7 @@
     <item quantity="other" msgid="8918589141287976985">"Složky změněny."</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Výsledky"</string>
-    <!-- no translation found for search_unsupported (4654227193354052607) -->
-    <skip />
+    <string name="search_unsupported" msgid="4654227193354052607">"Vyhledávání není v tomto účtu podporováno."</string>
     <string name="searchMode" msgid="3329807422114758583">"Režim vyhledávání"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Režim vyhledávání konverzací"</string>
     <string name="setBackButton" msgid="3004728881963818222">"Nastavit tlačítko Zpět"</string>
