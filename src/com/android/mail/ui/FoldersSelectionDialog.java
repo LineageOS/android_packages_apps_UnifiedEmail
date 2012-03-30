@@ -71,23 +71,28 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         // TODO: (mindyp) make async
         Cursor foldersCursor = context.getContentResolver().query(account.folderListUri,
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
-        HashSet<String> conversationFolders = new HashSet<String>();
-        for (Conversation conversation: selectedConversations) {
-            if (conversation != null && !TextUtils.isEmpty(conversation.folderList)) {
-                conversationFolders.addAll(Arrays.asList(conversation.folderList.split(",")));
+        try {
+            HashSet<String> conversationFolders = new HashSet<String>();
+            for (Conversation conversation: selectedConversations) {
+                if (conversation != null && !TextUtils.isEmpty(conversation.folderList)) {
+                    conversationFolders.addAll(Arrays.asList(conversation.folderList.split(",")));
+                }
             }
+            mAdapter = new FolderSelectorAdapter(context, foldersCursor,
+                    conversationFolders, mSingle);
+            builder.setAdapter(mAdapter, this);
+            String folderUri;
+            // Pre-load existing conversation folders.
+            foldersCursor.moveToFirst();
+            do {
+                folderUri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
+                if (conversationFolders.contains(folderUri)) {
+                    mCheckedState.put(new Folder(foldersCursor), true);
+                }
+            } while (foldersCursor.moveToNext());
+        } finally {
+            foldersCursor.close();
         }
-        mAdapter = new FolderSelectorAdapter(context, foldersCursor, conversationFolders, mSingle);
-        builder.setAdapter(mAdapter, this);
-        String folderUri;
-        // Pre-load existing conversation folders.
-        foldersCursor.moveToFirst();
-        do {
-            folderUri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
-            if (conversationFolders.contains(folderUri)) {
-                mCheckedState.put(new Folder(foldersCursor), true);
-            }
-        } while (foldersCursor.moveToNext());
         mDialog = builder.create();
     }
 
