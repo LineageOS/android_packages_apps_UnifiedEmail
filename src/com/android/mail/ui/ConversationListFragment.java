@@ -451,7 +451,7 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     public void requestDelete(final ActionCompleteListener listener) {
-        if (isVisible()) {
+        if (isVisible() && mCurrentPosition > -1) {
             mListAdapter.delete(new ArrayList<Integer>(ImmutableList.of(mCurrentPosition)),
                     listener);
         } else {
@@ -460,10 +460,12 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     public void requestDelete(int position, ActionCompleteListener listener) {
-        mCurrentPosition = position;
-        ConversationCursor conversationListCursor = getConversationListCursor();
-        if (conversationListCursor != null) {
-            conversationListCursor.moveToPosition(position);
+        if (position > -1) {
+            mCurrentPosition = position;
+            ConversationCursor conversationListCursor = getConversationListCursor();
+            if (conversationListCursor != null) {
+                conversationListCursor.moveToPosition(position);
+            }
         }
         requestDelete(listener);
     }
