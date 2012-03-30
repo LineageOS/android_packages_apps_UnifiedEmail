@@ -310,7 +310,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         initRecipients();
         initAttachmentsFromIntent(intent);
         initActionBar(action);
-        initFromSpinner();
+        initFromSpinner(action);
         initChangeListeners();
     }
 
@@ -366,18 +366,26 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
     }
 
-    private void initFromSpinner() {
-        mFromSpinner.setCurrentAccount(mAccount);
-        mFromSpinner.asyncInitFromSpinner();
-        boolean showSpinner = mFromSpinner.getCount() > 1;
-        // If there is only 1 account, just show that account.
-        // Otherwise, give the user the ability to choose which account to send
-        // mail from / save drafts to.
-        mFromStatic.setVisibility(
-                showSpinner ? View.GONE : View.VISIBLE);
-        mFromStaticText.setText(mAccount.name);
-        mFromSpinnerWrapper.setVisibility(
-                showSpinner ? View.VISIBLE : View.GONE);
+    private void initFromSpinner(int action) {
+        if (action == COMPOSE ||
+            (action == EDIT_DRAFT
+                && mDraft.draftType == UIProvider.DraftType.COMPOSE)) {
+            mFromSpinner.setCurrentAccount(mAccount);
+            mFromSpinner.asyncInitFromSpinner();
+            boolean showSpinner = mFromSpinner.getCount() > 1;
+            // If there is only 1 account, just show that account.
+            // Otherwise, give the user the ability to choose which account to
+            // send
+            // mail from / save drafts to.
+            mFromStatic.setVisibility(showSpinner ? View.GONE : View.VISIBLE);
+            mFromStaticText.setText(mAccount.name);
+            mFromSpinnerWrapper.setVisibility(showSpinner ? View.VISIBLE : View.GONE);
+        } else {
+            mFromStatic.setVisibility(View.VISIBLE);
+            mFromStaticText.setText(mAccount.name);
+            mFromSpinnerWrapper.setVisibility(View.GONE);
+            mFromSpinner.setCurrentAccount(mAccount);
+        }
     }
 
     private void findViews() {
