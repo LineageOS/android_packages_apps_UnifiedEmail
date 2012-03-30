@@ -68,6 +68,15 @@ public class LogUtils {
      */
     private static final int MAX_ENABLED_LOG_LEVEL = VERBOSE;
 
+    /**
+     * The minimum log level that is enabled by default.  The documentation for
+     * {@link Log#isLoggable(String, int)} states that INFO logs are enabled by default
+     * CL https://android-git.corp.google.com/g/159532, changed the behavior of this.
+     * This bug has been written up in b/6265031.  Untile that is fixed, assume that INFO
+     * logs are enabled by default.
+     */
+    private static final int MIN_DEFAULT_ENABLED_LOG_LEVEL = INFO;
+
 
     private static Boolean sDebugLoggingEnabledForTests = null;
 
@@ -169,6 +178,8 @@ public class LogUtils {
     public static boolean isLoggable(String tag, int level) {
         if (MAX_ENABLED_LOG_LEVEL > level) {
             return false;
+        } else if (MIN_DEFAULT_ENABLED_LOG_LEVEL <= level) {
+            return true;
         }
         return Log.isLoggable(tag, level);
     }
