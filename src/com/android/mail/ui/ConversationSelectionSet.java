@@ -141,7 +141,7 @@ public class ConversationSelectionSet implements Parcelable {
 
     /** @see java.util.HashMap#put */
     private synchronized void put(Long id, Conversation info) {
-        boolean initiallyEmpty = mInternalMap.isEmpty();
+        final boolean initiallyEmpty = mInternalMap.isEmpty();
         mInternalMap.put(id, info);
 
         ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
@@ -153,7 +153,7 @@ public class ConversationSelectionSet implements Parcelable {
 
     /** @see java.util.HashMap#remove */
     private synchronized void remove(Long id) {
-        boolean initiallyNotEmpty = !mInternalMap.isEmpty();
+        final boolean initiallyNotEmpty = !mInternalMap.isEmpty();
         mInternalMap.remove(id);
 
         ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
@@ -198,6 +198,22 @@ public class ConversationSelectionSet implements Parcelable {
     /** @see java.util.HashMap#values */
     public synchronized Collection<Conversation> values() {
         return mInternalMap.values();
+    }
+
+    /** @see java.util.HashMap#putAll(java.util.Map) */
+    public void putAll(ConversationSelectionSet other) {
+        if (other == null) {
+            return;
+        }
+
+        final boolean initiallyEmpty = mInternalMap.isEmpty();
+        mInternalMap.putAll(other.mInternalMap);
+
+        ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
+        dispatchOnChange(observersCopy);
+        if (initiallyEmpty) {
+            dispatchOnBecomeUnempty(observersCopy);
+        }
     }
 
     @Override

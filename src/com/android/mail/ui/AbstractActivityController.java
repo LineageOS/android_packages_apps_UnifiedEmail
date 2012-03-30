@@ -112,7 +112,6 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     protected Handler mHandler = new Handler();
     protected ConversationListFragment mConversationListFragment;
-    private SelectedConversationsActionMenu mSelectedConversationsActionMenu;
     /**
      * The current mode of the application. All changes in mode are initiated by
      * the activity controller. View mode changes are propagated to classes that
@@ -132,7 +131,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     /**
      * Selected conversations, if any.
      */
-    private ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
+    private final ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
 
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
@@ -686,6 +685,9 @@ public abstract class AbstractActivityController implements ActivityController, 
         if (mCurrentConversation != null && mViewMode.getMode() == ViewMode.CONVERSATION) {
             outState.putParcelable(SAVED_CONVERSATION, mCurrentConversation);
         }
+        if (!mSelectedSet.isEmpty()) {
+            outState.putParcelable(SAVED_CONVERSATIONS, mSelectedSet);
+        }
     }
 
     @Override
@@ -819,26 +821,31 @@ public abstract class AbstractActivityController implements ActivityController, 
          * information will be missing, and the split views may not be initialized correctly.
          * @param savedState
          */
-        restoreSelectedConversations(intent.getExtras());
+        restoreSelectedConversations(savedState);
         // Create the accounts loader; this loads the account switch spinner.
         mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
     }
 
+    /**
+     * Copy any selected conversations stored in the saved bundle into our selection set,
+     * triggering {@link ConversationSetObserver} callbacks as our selection set changes.
+     *
+     */
     private void restoreSelectedConversations(Bundle savedState) {
         if (savedState == null) {
-            onSetEmpty();
+            mSelectedSet.clear();
             return;
         }
-        mSelectedSet = savedState.getParcelable(SAVED_CONVERSATIONS);
-        if (mSelectedSet == null) {
-            mSelectedSet = new ConversationSelectionSet();
-        }
-        if (mSelectedSet.isEmpty()) {
-            onSetEmpty();
+        final ConversationSelectionSet selectedSet = savedState.getParcelable(SAVED_CONVERSATIONS);
+        if (selectedSet == null || selectedSet.isEmpty()) {
+            mSelectedSet.clear();
             return;
         }
-        // We have some selected conversations. Perform all the actions needed.
-        onSetPopulated(mSelectedSet);
+
+        // putAll will take care of calling our registered onSetPopulated method
+        // FIXME: disabled until we correctly handle selection set bringup when list fragment
+        // does not yet exist (b/6268401)
+        //mSelectedSet.putAll(selectedSet);
     }
 
     @Override
@@ -1301,15 +1308,14 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     @Override
     public void onSetEmpty() {
-        mSelectedConversationsActionMenu = null;
     }
 
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
-        mSelectedConversationsActionMenu = new SelectedConversationsActionMenu(mActivity,
-                mSelectedSet, mConversationListFragment.getAnimatedAdapter(), this,
+        SelectedConversationsActionMenu menu = new SelectedConversationsActionMenu(mActivity,
+                set, mConversationListFragment.getAnimatedAdapter(), this,
                 mConversationListFragment, mAccount, mFolder);
-        mSelectedConversationsActionMenu.activate();
+        menu.activate();
     }
 
 
