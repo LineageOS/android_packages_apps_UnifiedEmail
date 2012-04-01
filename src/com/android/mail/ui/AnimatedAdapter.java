@@ -24,6 +24,7 @@ import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.android.mail.browse.ConversationCursor;
@@ -54,13 +55,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private View mFooter;
     private boolean mShowFooter;
     private Folder mFolder;
+    private final ListView mListView;
     /**
      * Used only for debugging.
      */
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
-            ConversationSelectionSet batch, Account account, ViewMode viewMode) {
+            ConversationSelectionSet batch, Account account, ViewMode viewMode, ListView listView) {
         // Use FLAG_REGISTER_CONTENT_OBSERVER to ensure special ConversationCursor notifications
         // (triggered by UI actions) cause any connected ListView to redraw.
         super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null,
@@ -70,12 +72,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mSelectedAccount = account;
         mViewMode = viewMode;
         mShowFooter = false;
+        mListView = listView;
     }
 
     @Override
     public int getCount() {
         int count = super.getCount();
-        return mShowFooter? count + 1 : count;
+        return mShowFooter ? count + 1 : count;
     }
 
     public void setUndo(boolean state) {
@@ -89,7 +92,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 @Override
                 public void onActionComplete() {
                     notifyDataSetChanged();
-                }};
+                }
+            };
         }
     }
 
@@ -124,7 +128,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (isPositionAnimating(position)) {
             return AdapterView.ITEM_VIEW_TYPE_IGNORE;
         } else if (mShowFooter && position == super.getCount()) {
-            return ITEM_VIEW_TYPE_FOOTER ;
+            return ITEM_VIEW_TYPE_FOOTER;
         }
         return 0;
     }
@@ -151,7 +155,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     /**
-     * Deletes a conversations with the list positions given here. This will only remove the
+     * Deletes a conversation with the list positions given here. This will only remove the
      * element from the list. The job of deleting the actual elements is left to the the listener.
      * This listener will be called when the animations are complete and is required to
      * delete the conversations.
@@ -162,9 +166,25 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public void delete(ArrayList<Integer> deletedRows, ActionCompleteListener listener) {
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
-        mLastDeletingItems.addAll(deletedRows);
-        mDeletingItems.addAll(deletedRows);
-        mActionCompleteListener = listener;
+
+        int startPosition = mListView.getFirstVisiblePosition();
+        int endPosition = mListView.getLastVisiblePosition();
+
+        // Only animate visible items
+        for (int deletedRow: deletedRows) {
+            if (deletedRow >= startPosition && deletedRow <= endPosition) {
+                mLastDeletingItems.add(deletedRow);
+                mDeletingItems.add(deletedRow);
+            }
+        }
+
+        if (mDeletingItems.isEmpty()) {
+            // If we have no deleted items on screen, skip the animation
+            listener.onActionComplete();
+        } else {
+            mActionCompleteListener = listener;
+        }
+
         // TODO(viki): Rather than notifying for a full data set change,
         // perhaps we can mark
         // only the affected conversations?

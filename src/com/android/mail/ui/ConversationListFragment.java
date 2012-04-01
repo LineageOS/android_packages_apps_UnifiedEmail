@@ -37,10 +37,8 @@ import android.widget.TextView;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
-import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationListFooterView;
-import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -215,7 +213,7 @@ public final class ConversationListFragment extends ListFragment implements
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
                 getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
-                mActivity.getViewMode());
+                mActivity.getViewMode(), mListView);
         mFooterView = (ConversationListFooterView) LayoutInflater.from(
                 mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
                 null);
