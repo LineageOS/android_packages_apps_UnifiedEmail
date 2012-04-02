@@ -1367,9 +1367,9 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
-        mCabActionMenu = new SelectedConversationsActionMenu(mActivity,
-                set, mConversationListFragment.getAnimatedAdapter(), this,
-                mConversationListFragment, mAccount, mFolder);
+        mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set,
+                mConversationListFragment.getAnimatedAdapter(), this, mConversationListFragment,
+                mAccount, mFolder, (SwipeableListView) mConversationListFragment.getListView());
         enableCabMode();
     }
 

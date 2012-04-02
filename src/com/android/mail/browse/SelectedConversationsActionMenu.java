@@ -32,6 +32,7 @@ import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.FoldersSelectionDialog;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
+import com.android.mail.ui.SwipeableListView;
 import com.android.mail.ui.UndoBarView.UndoListener;
 import com.android.mail.ui.UndoOperation;
 import com.android.mail.utils.LogUtils;
@@ -107,10 +108,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private final ActionCompleteListener mSpamListener =
             new DestructiveActionListener(R.id.report_spam);
 
+    private SwipeableListView mListView;
+
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
             ActionCompleteListener listener, UndoListener undoListener, Account account,
-            Folder folder) {
+            Folder folder, SwipeableListView list) {
         mSelectionSet = selectionSet;
         mActivity = activity;
         mContext = mActivity.getActivityContext();
@@ -119,6 +122,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mUndoListener = undoListener;
         mAccount = account;
         mFolder = folder;
+        mListView = list;
     }
 
     @Override
@@ -175,7 +179,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mListAdapter.notifyDataSetChanged();
     }
 
-    private void performDestructiveAction(int id, final ActionCompleteListener listener) {
+    private void performDestructiveAction(final int id, final ActionCompleteListener listener) {
         Settings settings = mActivity.getSettings();
         final Collection<Conversation> conversations = mSelectionSet.values();
         boolean showDialog = false;
@@ -190,10 +194,23 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     .setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mListAdapter.delete(conversations, listener);
+                            destroy(id, conversations, listener);
                         }
-
                     }).setNegativeButton(R.string.cancel, null).create().show();
+        } else {
+            destroy(id, conversations, listener);
+        }
+    }
+
+
+    private void destroy(int id, Collection<Conversation> conversations,
+            ActionCompleteListener listener) {
+        if (id == R.id.archive) {
+            ArrayList<ConversationItemView> views = new ArrayList<ConversationItemView>();
+            for (ConversationItemView view : mSelectionSet.views()) {
+                views.add(view);
+            }
+            mListView.archiveItems(views, listener);
         } else {
             mListAdapter.delete(conversations, listener);
         }
