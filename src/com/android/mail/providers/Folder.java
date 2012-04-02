@@ -441,7 +441,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public static void setFolderBlockColor(Folder folder, View colorBlock) {
         final boolean showBg = !TextUtils.isEmpty(folder.bgColor);
         final int backgroundColor = showBg ? Integer.parseInt(folder.bgColor) : 0;
-        if (folder.iconResId >= 0) {
+        if (folder.iconResId > 0) {
             colorBlock.setBackgroundResource((int)folder.iconResId);
         } else if (!showBg) {
             colorBlock.setBackgroundDrawable(null);
