@@ -31,6 +31,7 @@ import android.database.CursorWrapper;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.RemoteException;
@@ -87,8 +88,8 @@ public final class ConversationCursor implements Cursor {
     // The ConversationProvider instance
     @VisibleForTesting
     static ConversationProvider sProvider;
-    // Set when we're in the middle of a refresh of the underlying cursor
-    private static boolean sRefreshInProgress = false;
+    // The runnable executing a refresh (query of underlying provider)
+    private static RefreshTask sRefreshTask;
     // Set when we've sent refreshReady() to listeners
     private static boolean sRefreshReady = false;
     // Set when we've sent refreshRequired() to listeners
@@ -137,7 +138,7 @@ public final class ConversationCursor implements Cursor {
         sListeners.clear();
         sRefreshRequired = false;
         sRefreshReady = false;
-        sRefreshInProgress = false;
+        sRefreshTask = null;
         mCursorObserver = new CursorObserver();
         resetCursor(null);
         mColumnNames = cursor.getColumnNames();
@@ -178,7 +179,7 @@ public final class ConversationCursor implements Cursor {
                 // First, let's see if we already have a cursor
                 if (sConversationCursor != null) {
                     // If it's the same, just clean up
-                    if (qUri.equals(uri) && !sRefreshRequired && !sRefreshInProgress) {
+                    if (qUri.equals(uri) && !sRefreshRequired && sRefreshTask == null) {
                         if (sRefreshReady) {
                             // If we already have a refresh ready, return
                             LogUtils.i(TAG, "Create: refreshed cursor ready, needs sync");
@@ -207,6 +208,58 @@ public final class ConversationCursor implements Cursor {
                     sInitialConversationLimit = false;
                     sConversationCursor.refresh();
                 }
+            }
+        }
+    }
+
+    /**
+     * Runnable that performs the query on the underlying provider
+     */
+    private static class RefreshTask extends AsyncTask<Void, Void, Void> {
+        private Wrapper mCursor = null;
+        private final Uri mUri;
+        private final String[] mProjection;
+
+        private RefreshTask(Uri uri, String[] projection) {
+            mUri = uri;
+            mProjection = projection;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            if (DEBUG) {
+                LogUtils.i(TAG, "[Start refresh " + hashCode() + "]");
+            }
+            // Get new data
+            mCursor = doQuery(mUri, mProjection, false);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param) {
+            synchronized(sCacheMapLock) {
+                sRequeryCursor = mCursor;
+                // Make sure window is full
+                sRequeryCursor.getCount();
+                sRefreshReady = true;
+                if (DEBUG) {
+                    LogUtils.i(TAG, "[Notify: onRefreshReady " + hashCode() + "]");
+                }
+                synchronized (sListeners) {
+                    for (ConversationListener listener : sListeners) {
+                        listener.onRefreshReady();
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (DEBUG) {
+                LogUtils.i(TAG, "[Ignoring refresh result " + hashCode() + "]");
+            }
+            if (mCursor != null) {
+                mCursor.close();
             }
         }
     }
@@ -275,9 +328,6 @@ public final class ConversationCursor implements Cursor {
      * be empty or have a few entries)
      */
     private void resetCursor(Wrapper newCursor) {
-        if (DEBUG) {
-            LogUtils.i(TAG, "[--resetCursor--]");
-        }
         synchronized (sCacheMapLock) {
             // Walk through the cache.  Here are the cases:
             // 1) The entry isn't marked with REQUERY - remove it from the cache. If DELETED is
@@ -447,7 +497,7 @@ public final class ConversationCursor implements Cursor {
                     throw new IllegalArgumentException("Value class not compatible with cache: "
                             + cname);
                 }
-                if (sRefreshInProgress) {
+                if (sRefreshTask != null) {
                     map.put(REQUERY_COLUMN, 1);
                 }
                 if (DEBUG && (columnName != DELETED_COLUMN)) {
@@ -524,7 +574,7 @@ public final class ConversationCursor implements Cursor {
             }
             resetCursor(sRequeryCursor);
             sRequeryCursor = null;
-            sRefreshInProgress = false;
+            sRefreshTask = null;
             sRefreshReady = false;
         }
     }
@@ -545,8 +595,10 @@ public final class ConversationCursor implements Cursor {
             LogUtils.i(TAG, "[cancelRefresh() called]");
         }
         synchronized(sCacheMapLock) {
-            // Mark the requery closed
-            sRefreshInProgress = false;
+            if (sRefreshTask != null) {
+                sRefreshTask.cancel(true);
+                sRefreshTask = null;
+            }
             sRefreshReady = false;
             // If we have the cursor, close it; otherwise, it will get closed when the query
             // finishes (it checks sRefreshInProgress)
@@ -651,41 +703,17 @@ public final class ConversationCursor implements Cursor {
         if (DEBUG) {
             LogUtils.i(TAG, "[refresh() called]");
         }
-        if (sRefreshInProgress) {
-            return false;
-        }
-        // Say we're starting a requery
-        sRefreshInProgress = true;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Get new data
-                sRequeryCursor = doQuery(qUri, qProjection, false);
-                // Make sure window is full
-                synchronized(sCacheMapLock) {
-                    if (sRefreshInProgress) {
-                        sRequeryCursor.getCount();
-                        sRefreshReady = true;
-                        sActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (DEBUG) {
-                                    LogUtils.i(TAG, "[Notify: onRefreshReady()]");
-                                }
-                                if (sRequeryCursor != null && !sRequeryCursor.isClosed()) {
-                                    synchronized (sListeners) {
-                                        for (ConversationListener listener : sListeners) {
-                                            listener.onRefreshReady();
-                                        }
-                                    }
-                                }
-                            }});
-                    } else {
-                        cancelRefresh();
-                    }
+        synchronized(sCacheMapLock) {
+            if (sRefreshTask != null) {
+                if (DEBUG) {
+                    LogUtils.i(TAG, "[refresh() returning; already running " +
+                            sRefreshTask.hashCode() + "]");
                 }
+                return false;
             }
-        }).start();
+            sRefreshTask = new RefreshTask(qUri, qProjection);
+            sRefreshTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
         return true;
     }
 
