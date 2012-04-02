@@ -46,8 +46,8 @@ import android.widget.Toast;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
-import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
+import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
@@ -240,6 +240,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                         mConversationListCursor = data;
                         if (mConversationListCursor.isRefreshReady()) {
                             mConversationListCursor.sync();
+                            refreshAdapter();
                         }
                         if (mConversationListFragment != null) {
                             mConversationListFragment.onCursorUpdated();
