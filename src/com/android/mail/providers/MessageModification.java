@@ -31,9 +31,6 @@ import java.util.List;
  * provide an empty ContentValues.
  */
 public class MessageModification {
-
-    private static final CharSequence EMAIL_SEPARATOR = ",";
-
     /**
      * Sets the message's subject. Only valid for drafts.
      * @param values the ContentValues that will be used to create or update the
@@ -51,7 +48,7 @@ public class MessageModification {
      * @param toAddresses the new to addresses
      */
     public static void putToAddresses(ContentValues values, String[] toAddresses) {
-        values.put(MessageColumns.TO, TextUtils.join(EMAIL_SEPARATOR, toAddresses));
+        values.put(MessageColumns.TO, TextUtils.join(UIProvider.EMAIL_SEPARATOR, toAddresses));
     }
 
     /**
@@ -61,7 +58,7 @@ public class MessageModification {
      * @param ccAddresses the new cc addresses
      */
     public static void putCcAddresses(ContentValues values, String[] ccAddresses) {
-        values.put(MessageColumns.CC, TextUtils.join(EMAIL_SEPARATOR, ccAddresses));
+        values.put(MessageColumns.CC, TextUtils.join(UIProvider.EMAIL_SEPARATOR, ccAddresses));
     }
 
     /**
@@ -71,7 +68,7 @@ public class MessageModification {
      * @param bccAddresses the new bcc addresses
      */
     public static void putBccAddresses(ContentValues values, String[] bccAddresses) {
-        values.put(MessageColumns.BCC, TextUtils.join(EMAIL_SEPARATOR, bccAddresses));
+        values.put(MessageColumns.BCC, TextUtils.join(UIProvider.EMAIL_SEPARATOR, bccAddresses));
     }
 
     /**

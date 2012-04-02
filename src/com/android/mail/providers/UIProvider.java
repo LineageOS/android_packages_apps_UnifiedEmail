@@ -31,7 +31,7 @@ import com.android.common.contacts.DataUsageStatUpdater;
 import java.util.ArrayList;
 
 public class UIProvider {
-    public static final String EMAIL_SEPARATOR = "\n";
+    public static final String EMAIL_SEPARATOR = ",";
     public static final long INVALID_CONVERSATION_ID = -1;
     public static final long INVALID_MESSAGE_ID = -1;
 
