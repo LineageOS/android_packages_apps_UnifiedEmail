@@ -92,14 +92,14 @@ public class LogUtils {
      * Returns true if the build configuration prevents debug logging.
      */
     @VisibleForTesting
-    static boolean buildPreventsDebugLogging() {
+    public static boolean buildPreventsDebugLogging() {
         return MAX_ENABLED_LOG_LEVEL > VERBOSE;
     }
 
     /**
      * Returns a boolean indicating whether debug logging is enabled.
      */
-    private static boolean isDebugLoggingEnabled() {
+    protected static boolean isDebugLoggingEnabled() {
         if (buildPreventsDebugLogging()) {
             return false;
         }
