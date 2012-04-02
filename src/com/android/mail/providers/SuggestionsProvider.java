@@ -36,20 +36,14 @@ import java.util.ArrayList;
 /**
  * Simple extension / instantiation of SearchRecentSuggestionsProvider, independent
  * of mail account or account capabilities.  Offers suggestions from historical searches
- * and contact email addresses on the device.
+ * and contact email addresses on the device. The authority fro for this provider is obtained
+ * through the MailAppProvider as follows:
+ * final String AUTHORITY = MailAppProvider.getInstance().getSuggestionAuthority()
+ * It needs to be done after the MailAppProvider is constructed.
  */
 public class SuggestionsProvider extends SearchSuggestionsProvider {
     private static final String LOG_TAG = new LogUtils().getLogTag();
-    /**
-     * The trailing part of the authority. The leading part of the authority is the package name
-     * of this activity, obtained by getContext().getPackageName(). To create an authority, do
-     * the following:
-     * <code>
-     * public final String AUTHORITY = getContext().getPackageName()
-     *   + SuggestionsProvider.AUTHORITY_TRAILING;
-     * </code>
-     */
-    public final static String AUTHORITY_TRAILING = ".SuggestionsProvider";
+
     /**
      * Mode used in the constructor of SuggestionsProvider.
      */
@@ -80,8 +74,7 @@ public class SuggestionsProvider extends SearchSuggestionsProvider {
 
     @Override
     public boolean onCreate() {
-        final String authority = getContext().getPackageName() + AUTHORITY_TRAILING;
-        LogUtils.d(LOG_TAG, "Search authority is: %s", authority);
+        final String authority = MailAppProvider.getInstance().getSuggestionAuthority();
         setupSuggestions(authority, MODE);
         super.onCreate();
         return true;

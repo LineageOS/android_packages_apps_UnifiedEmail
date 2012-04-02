@@ -814,10 +814,9 @@ public abstract class AbstractActivityController implements ActivityController, 
             } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
                 // Save this search query for future suggestions.
                 final String query = intent.getStringExtra(SearchManager.QUERY);
-                final String AUTHORITY = mContext.getPackageName()
-                        + SuggestionsProvider.AUTHORITY_TRAILING;
-                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(mContext,
-                        AUTHORITY, SuggestionsProvider.MODE);
+                final String AUTHORITY = MailAppProvider.getInstance().getSuggestionAuthority();
+                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
+                        mContext, AUTHORITY, SuggestionsProvider.MODE);
                 suggestions.saveRecentQuery(query, null);
 
                 mViewMode.enterSearchResultsListMode();

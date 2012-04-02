@@ -90,12 +90,20 @@ public abstract class MailAppProvider extends ContentProvider
     private SharedPreferences mSharedPrefs;
 
     /**
-     * Allows the implmenting provider to specify the authority that should be used.
+     * Allows the implementing provider to specify the authority for this provider. Email and Gmail
+     * must specify different authorities.
      */
     protected abstract String getAuthority();
 
     /**
-     * Allows the implemnting provider to specify an intent that should be used in a call to
+     * Authority for the suggestions provider. Email and Gmail must specify different authorities,
+     * much like the implementation of {@link #getAuthority()}.
+     * @return the suggestion authority associated with this provider.
+     */
+    public abstract String getSuggestionAuthority();
+
+    /**
+     * Allows the implementing provider to specify an intent that should be used in a call to
      * {@link Context#startActivityForResult(android.content.Intent)} when the account provider
      * doesn't return any accounts.
      *
@@ -123,9 +131,13 @@ public abstract class MailAppProvider extends ContentProvider
         return sInstance;
     }
 
+    /** Default constructor */
+    public MailAppProvider() {
+        sInstance = this;
+    }
+
     @Override
     public boolean onCreate() {
-        sInstance = this;
         sAuthority = getAuthority();
         mResolver = getContext().getContentResolver();
 

@@ -928,7 +928,7 @@ public final class ConversationCursor implements Cursor {
         public static String AUTHORITY;
 
         /**
-         * Allows the implmenting provider to specify the authority that should be used.
+         * Allows the implementing provider to specify the authority that should be used.
          */
         protected abstract String getAuthority();
 
