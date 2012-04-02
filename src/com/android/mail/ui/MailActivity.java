@@ -120,7 +120,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
                     .detectDiskWrites()
                     .detectNetwork()   // or .detectAll() for all detectable problems
                     .penaltyLog()
-                    .penaltyFlashScreen()
                     .build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
                     .detectLeakedSqlLiteObjects()
