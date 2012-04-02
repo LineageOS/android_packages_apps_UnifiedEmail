@@ -575,4 +575,8 @@
     <string name="retry">Retry</string>
     <!-- Button at bottom of conversation list screen if the folder for which contents are being shown supports loading more on demand [CHAR LIMIT=20]-->
     <string name="load_more">Load more</string>
+
+    <!-- Shortcut strings -->
+    <!-- Title for shortcut naming dialog [CHAR LIMIT=100]-->
+    <string name="shortcut_name_title">Name folder shortcut</string>
 </resources>

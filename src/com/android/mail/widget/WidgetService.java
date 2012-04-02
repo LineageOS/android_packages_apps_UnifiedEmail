@@ -221,7 +221,7 @@ public class WidgetService extends RemoteViewsService {
             view.setTextViewText(
                     R.id.loading_text, mContext.getText(R.string.view_more_conversations));
             view.setOnClickFillInIntent(R.id.widget_loading,
-                    Utils.createViewFolderIntent(mFolder, mAccount));
+                    Utils.createViewFolderIntent(mFolder, mAccount, false));
             return view;
         }
 

@@ -785,13 +785,24 @@ public abstract class AbstractActivityController implements ActivityController, 
                     mActionBarView.setAccount(mAccount);
                     restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
                     mActivity.invalidateOptionsMenu();
+                } else if (intent.hasExtra(Utils.EXTRA_ACCOUNT_STRING)) {
+                    mAccount = Account.newinstance(intent
+                            .getStringExtra(Utils.EXTRA_ACCOUNT_STRING));
+                    mActionBarView.setAccount(mAccount);
+                    restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
+                    mActivity.invalidateOptionsMenu();
                 }
+
                 if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
                     // Open the folder.
                     LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
                             intent.getParcelableExtra(Utils.EXTRA_FOLDER));
                     onFolderChanged((Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER));
+                } else if (intent.hasExtra(Utils.EXTRA_FOLDER_STRING)) {
+                    // Open the folder.
+                    onFolderChanged(new Folder(intent.getStringExtra(Utils.EXTRA_FOLDER_STRING)));
                 }
+
                 if (intent.hasExtra(Utils.EXTRA_CONVERSATION)) {
                     // Open the conversation.
                     LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
@@ -805,8 +816,8 @@ public abstract class AbstractActivityController implements ActivityController, 
                 final String query = intent.getStringExtra(SearchManager.QUERY);
                 final String AUTHORITY = mContext.getPackageName()
                         + SuggestionsProvider.AUTHORITY_TRAILING;
-                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
-                        mContext, AUTHORITY, SuggestionsProvider.MODE);
+                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(mContext,
+                        AUTHORITY, SuggestionsProvider.MODE);
                 suggestions.saveRecentQuery(query, null);
 
                 mViewMode.enterSearchResultsListMode();
