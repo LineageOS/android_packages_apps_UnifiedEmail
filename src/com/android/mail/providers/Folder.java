@@ -440,7 +440,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     // swatch (see bug 2431925).
     public static void setFolderBlockColor(Folder folder, View colorBlock) {
         final boolean showBg = !TextUtils.isEmpty(folder.bgColor);
-        final int backgroundColor = showBg ? Color.parseColor(folder.bgColor) : 0;
+        final int backgroundColor = showBg ? Integer.parseInt(folder.bgColor) : 0;
         if (folder.iconResId >= 0) {
             colorBlock.setBackgroundResource((int)folder.iconResId);
         } else if (!showBg) {
