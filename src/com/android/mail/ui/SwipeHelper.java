@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -29,9 +30,13 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 
+import com.android.mail.browse.ConversationItemView;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class SwipeHelper {
     static final String TAG = "com.android.systemui.SwipeHelper";
-    private static final boolean DEBUG = false;
     private static final boolean DEBUG_INVALIDATE = false;
     private static final boolean SLOW_ANIMATIONS = false; // DEBUG;
     private static final boolean CONSTRAIN_SWIPE = true;
@@ -62,18 +67,22 @@ public class SwipeHelper {
 
     private float mInitialTouchPos;
     private boolean mDragging;
-    private View mCurrView;
+    private ConversationItemView mCurrView;
     private View mCurrAnimView;
     private boolean mCanCurrViewBeDimissed;
     private float mDensityScale;
+    private float mLastY;
+    private Collection<ConversationItemView> mAssociatedViews;
+    private final float mScrollSlop;
 
     public SwipeHelper(int swipeDirection, Callback callback, float densityScale,
-            float pagingTouchSlop) {
+            float pagingTouchSlop, float scrollSlop) {
         mCallback = callback;
         mSwipeDirection = swipeDirection;
         mVelocityTracker = VelocityTracker.obtain();
         mDensityScale = densityScale;
         mPagingTouchSlop = pagingTouchSlop;
+        mScrollSlop = scrollSlop;
     }
 
     public void setDensityScale(float densityScale) {
@@ -100,6 +109,13 @@ public class SwipeHelper {
     private ObjectAnimator createTranslationAnimation(View v, float newPos) {
         ObjectAnimator anim = ObjectAnimator.ofFloat(v,
                 mSwipeDirection == X ? "translationX" : "translationY", newPos);
+        return anim;
+    }
+
+    private ObjectAnimator createDismissAnimation(View v, float newPos, int duration) {
+        ObjectAnimator anim = createTranslationAnimation(v, newPos);
+        anim.setInterpolator(sLinearInterpolator);
+        anim.setDuration(duration);
         return anim;
     }
 
@@ -169,11 +185,11 @@ public class SwipeHelper {
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
-
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                mLastY = ev.getY();
                 mDragging = false;
-                mCurrView = mCallback.getChildAtPosition(ev);
+                mCurrView = (ConversationItemView)mCallback.getChildAtPosition(ev);
                 mVelocityTracker.clear();
                 if (mCurrView != null) {
                     mCurrAnimView = mCallback.getChildContentView(mCurrView);
@@ -184,60 +200,65 @@ public class SwipeHelper {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mCurrView != null) {
+                    // Check the movement direction.
+                    if (mLastY >= 0) {
+                        float currY = ev.getY();
+                        if (Math.abs(currY - mLastY) > mScrollSlop) {
+                            mLastY = ev.getY();
+                            return false;
+                        }
+                    }
                     mVelocityTracker.addMovement(ev);
                     float pos = getPos(ev);
                     float delta = pos - mInitialTouchPos;
                     if (Math.abs(delta) > mPagingTouchSlop) {
-                        mCallback.onBeginDrag(mCurrView);
-                        mDragging = true;
-                        mInitialTouchPos = getPos(ev) - getTranslation(mCurrAnimView);
+                        if (mCallback.getSelectionSet().isEmpty()
+                                || (!mCallback.getSelectionSet().isEmpty()
+                                        && mCurrView.isChecked())) {
+                            mCallback.onBeginDrag(mCurrView);
+                            mDragging = true;
+                            mInitialTouchPos = getPos(ev) - getTranslation(mCurrAnimView);
+                        }
                     }
                 }
+                mLastY = ev.getY();
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mDragging = false;
                 mCurrView = null;
                 mCurrAnimView = null;
+                mLastY = -1;
                 break;
         }
         return mDragging;
     }
 
+    public void setAssociatedViews(Collection<ConversationItemView> associated) {
+        mAssociatedViews = associated;
+    }
+
+    public void clearAssociatedViews() {
+        mAssociatedViews = null;
+    }
+
     /**
      * @param view The view to be dismissed
-     * @param velocity The desired pixels/second speed at which the view should move
+     * @param velocity The desired pixels/second speed at which the view should
+     *            move
      */
-    public void dismissChild(final View view, float velocity) {
-        final View animView = mCallback.getChildContentView(view);
-        final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(view);
-        float newPos;
-
-        if (velocity < 0
-                || (velocity == 0 && getTranslation(animView) < 0)
-                // if we use the Menu to dismiss an item in landscape, animate up
-                || (velocity == 0 && getTranslation(animView) == 0 && mSwipeDirection == Y)) {
-            newPos = -getSize(animView);
-        } else {
-            newPos = getSize(animView);
-        }
-        int duration = MAX_ESCAPE_ANIMATION_DURATION;
-        if (velocity != 0) {
-            duration = Math.min(duration,
-                                (int) (Math.abs(newPos - getTranslation(animView)) * 1000f / Math
-                                        .abs(velocity)));
-        } else {
-            duration = DEFAULT_ESCAPE_ANIMATION_DURATION;
-        }
+    private void dismissChild(final View view, float velocity) {
+        final View animView = mCurrView;
+        final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(animView);
+        float newPos = determinePos(animView, velocity);
+        int duration = determineDuration(animView, newPos, velocity);
 
         animView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        ObjectAnimator anim = createTranslationAnimation(animView, newPos);
-        anim.setInterpolator(sLinearInterpolator);
-        anim.setDuration(duration);
+        ObjectAnimator anim = createDismissAnimation(animView, newPos, duration);
         anim.addListener(new AnimatorListenerAdapter() {
             public void onAnimationEnd(Animator animation) {
                 mCallback.onChildDismissed(view);
-                animView.setLayerType(View.LAYER_TYPE_NONE, null);
+                mCurrView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
         anim.addUpdateListener(new AnimatorUpdateListener() {
@@ -249,6 +270,63 @@ public class SwipeHelper {
             }
         });
         anim.start();
+    }
+
+    private void dismissChildren(final Collection<ConversationItemView> views, float velocity) {
+        AnimatorListenerAdapter listener = new AnimatorListenerAdapter() {
+            public void onAnimationEnd(Animator animation) {
+                mCallback.onChildrenDismissed(views);
+                mCurrView.setLayerType(View.LAYER_TYPE_NONE, null);
+            }
+        };
+        final View animView = mCurrView;
+        final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(animView);
+        float newPos = determinePos(animView, velocity);
+        int duration = determineDuration(animView, newPos, velocity);
+        ArrayList<Animator> animations = new ArrayList<Animator>();
+        ObjectAnimator anim;
+        for (final ConversationItemView view : views) {
+            view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            anim = createDismissAnimation(view, newPos, duration);
+            anim.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    if (FADE_OUT_DURING_SWIPE && canAnimViewBeDismissed) {
+                        view.setAlpha(getAlphaForOffset(view));
+                    }
+                    invalidateGlobalRegion(view);
+                }
+            });
+            animations.add(anim);
+        }
+        AnimatorSet transitionSet = new AnimatorSet();
+        transitionSet.playTogether(animations);
+        transitionSet.addListener(listener);
+        transitionSet.start();
+    }
+
+    private int determineDuration(View animView, float newPos, float velocity) {
+        int duration = MAX_ESCAPE_ANIMATION_DURATION;
+        if (velocity != 0) {
+            duration = Math
+                    .min(duration,
+                            (int) (Math.abs(newPos - getTranslation(animView)) * 1000f / Math
+                                    .abs(velocity)));
+        } else {
+            duration = DEFAULT_ESCAPE_ANIMATION_DURATION;
+        }
+        return duration;
+    }
+
+    private float determinePos(View animView, float velocity) {
+        float newPos = 0;
+        if (velocity < 0 || (velocity == 0 && getTranslation(animView) < 0)
+        // if we use the Menu to dismiss an item in landscape, animate up
+                || (velocity == 0 && getTranslation(animView) == 0 && mSwipeDirection == Y)) {
+            newPos = -getSize(animView);
+        } else {
+            newPos = getSize(animView);
+        }
+        return newPos;
     }
 
     public void snapChild(final View view, float velocity) {
@@ -272,7 +350,6 @@ public class SwipeHelper {
         if (!mDragging) {
             return false;
         }
-
         mVelocityTracker.addMovement(ev);
         final int action = ev.getAction();
         switch (action) {
@@ -291,9 +368,21 @@ public class SwipeHelper {
                             delta = maxScrollDistance * (float) Math.sin((delta/size)*(Math.PI/2));
                         }
                     }
-                    setTranslation(mCurrAnimView, delta);
+                    if (mAssociatedViews != null && mAssociatedViews.size() > 1) {
+                        for (View v : mAssociatedViews) {
+                            setTranslation(v, delta);
+                        }
+                    } else {
+                        setTranslation(mCurrAnimView, delta);
+                    }
                     if (FADE_OUT_DURING_SWIPE && mCanCurrViewBeDimissed) {
-                        mCurrAnimView.setAlpha(getAlphaForOffset(mCurrAnimView));
+                        if (mAssociatedViews != null  && mAssociatedViews.size() > 1) {
+                            for (View v : mAssociatedViews) {
+                                v.setAlpha(getAlphaForOffset(mCurrAnimView));
+                            }
+                        } else {
+                            mCurrAnimView.setAlpha(getAlphaForOffset(mCurrAnimView));
+                        }
                     }
                     invalidateGlobalRegion(mCurrView);
                 }
@@ -318,12 +407,23 @@ public class SwipeHelper {
                             (childSwipedFastEnough || childSwipedFarEnough);
 
                     if (dismissChild) {
-                        // flingadingy
-                        dismissChild(mCurrView, childSwipedFastEnough ? velocity : 0f);
+                        if (mAssociatedViews != null && mAssociatedViews.size() > 1) {
+                            dismissChildren(mAssociatedViews, childSwipedFastEnough ?
+                                    velocity : 0f);
+                        } else {
+                            dismissChild(mCurrView, childSwipedFastEnough ? velocity : 0f);
+                        }
                     } else {
                         // snappity
                         mCallback.onDragCancelled(mCurrView);
-                        snapChild(mCurrView, velocity);
+
+                        if (mAssociatedViews != null && mAssociatedViews.size() > 1) {
+                            for (View v : mAssociatedViews) {
+                                snapChild(v, velocity);
+                            }
+                        } else {
+                            snapChild(mCurrView, velocity);
+                        }
                     }
                 }
                 break;
@@ -342,6 +442,10 @@ public class SwipeHelper {
 
         void onChildDismissed(View v);
 
+        void onChildrenDismissed(Collection<ConversationItemView> v);
+
         void onDragCancelled(View v);
+
+        ConversationSelectionSet getSelectionSet();
     }
 }

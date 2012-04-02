@@ -130,7 +130,7 @@ public class ConversationItemViewModel {
         }
     }
 
-    static ConversationItemViewModel forCursor(String account, Cursor cursor) {
+    static ConversationItemViewModel forCursor(Cursor cursor) {
         ConversationItemViewModel header = new ConversationItemViewModel();
         if (cursor != null) {
             header.faded = false;

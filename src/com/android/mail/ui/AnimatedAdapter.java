@@ -106,7 +106,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         if (!isPositionAnimating(view) && !isPositionFooter(view)) {
-            ((ConversationItemView) view).bind(cursor, mSelectedAccount.name, mViewMode,
+            ((ConversationItemView) view).bind(cursor, mViewMode,
                     mBatchConversations, mFolder);
         }
     }
@@ -229,14 +229,24 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
         Conversation conversation = new Conversation((ConversationCursor) getItem(position));
         conversation.position = position;
-        final AnimatingItemView view = (convertView == null) ? new AnimatingItemView(mContext)
-                : (AnimatingItemView) convertView;
-        view.startAnimation(conversation, this, mUndo);
-        return view;
+        if (mUndo) {
+            // The undo animation consists of fading in the conversation that
+            // had been destroyed.
+            ConversationItemView convView = (ConversationItemView) super.getView(position, null,
+                    parent);
+            convView.startUndoAnimation(this);
+            return convView;
+        } else {
+            // Destroying a conversation just shows a blank shrinking item.
+            final AnimatingItemView view = new AnimatingItemView(mContext);
+            view.startAnimation(conversation, this);
+            return view;
+        }
     }
 
     private boolean isPositionAnimating(int position) {
-        return mDeletingItems.contains(position);
+        return mDeletingItems.contains(position)
+                || (mUndo && mLastDeletingItems.contains(position));
     }
 
     private boolean isPositionAnimating(View view) {
@@ -249,28 +259,52 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public void onAnimationStart(Animator animation) {
-        // TODO Auto-generated method stub
+        if (mUndo) {
+            mDeletingItems.clear();
+            mLastDeletingItems.clear();
+            mUndo = false;
+        }
     }
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        if (!mDeletingItems.isEmpty()) {
-            // See if we have received all the animations we expected; if so,
-            // call the listener and reset it.
-            int position = ((AnimatingItemView)
-                    ((ObjectAnimator) animation).getTarget()).getData().position;
+        if (mUndo && !mLastDeletingItems.isEmpty()) {
+            // See if we have received all the animations we expected; if
+            // so, call the listener and reset it.
+            int position = ((ConversationItemView) ((ObjectAnimator) animation).getTarget())
+                    .getPosition();
+            mLastDeletingItems.remove(position);
+            if (mLastDeletingItems.isEmpty()) {
+                if (mActionCompleteListener != null) {
+                    mActionCompleteListener.onActionComplete();
+                    mActionCompleteListener = null;
+                }
+                mUndo = false;
+            }
+        } else if (!mDeletingItems.isEmpty()) {
+            // See if we have received all the animations we expected; if
+            // so, call the listener and reset it.
+            AnimatingItemView target = ((AnimatingItemView) ((ObjectAnimator) animation)
+                    .getTarget());
+            int position = target.getData().position;
             mDeletingItems.remove(position);
             if (mDeletingItems.isEmpty()) {
-                if (mUndo) {
-                    mLastDeletingItems.clear();
-                    mUndo = false;
-                }
                 if (mActionCompleteListener != null) {
                     mActionCompleteListener.onActionComplete();
                     mActionCompleteListener = null;
                 }
             }
         }
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return !isPositionAnimating(position);
     }
 
     @Override

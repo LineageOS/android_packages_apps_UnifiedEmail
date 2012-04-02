@@ -35,6 +35,7 @@
     <color name="light_text_color">#ff666666</color>
     <color name="default_folder_background_color">#f1f5ec</color>
     <color name="default_folder_foreground_color">#888888</color>
+    <color name="conversation_list_background_color">#bbbbbb</color>
 
     <!-- Compose colors -->
     <color name="compose_label_text">#aaaaaa</color>

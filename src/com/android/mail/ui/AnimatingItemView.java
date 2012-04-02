@@ -17,34 +17,22 @@
 
 package com.android.mail.ui;
 
-import com.android.mail.R;
-
 import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.util.AttributeSet;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
-import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
 
 public class AnimatingItemView extends LinearLayout {
+    public AnimatingItemView(Context context) {
+        super(context);
+    }
+
     private Conversation mData;
     private ObjectAnimator mAnimator;
     private int mAnimatedHeight;
-
-    public AnimatingItemView(Context context) {
-        this(context, null);
-    }
-
-    public AnimatingItemView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public AnimatingItemView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
 
     /**
      * Start the animation on an animating view.
@@ -53,14 +41,12 @@ public class AnimatingItemView extends LinearLayout {
      * @param undo true if an operation is being undone. We animate the item away during delete.
      * Undoing populates the item.
      */
-    public void startAnimation(Conversation item, AnimatorListener listener, boolean undo) {
+    public void startAnimation(Conversation item, AnimatorListener listener) {
         mData = item;
         setMinimumHeight(140);
-        final int start = undo ? 0 : 140;
-        final int end = undo ? 140 : 0;
-        if (!undo) {
-            setBackgroundResource(R.drawable.list_activated_holo);
-        }
+        final int start = 140;
+        final int end = 0;
+
         mAnimator = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
         mAnimatedHeight = start;
         mAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
@@ -69,12 +55,6 @@ public class AnimatingItemView extends LinearLayout {
         mAnimator.start();
     }
 
-    public AnimatingItemView(Context context, Conversation item, AnimatorListener listener,
-            boolean undo) {
-        // The context stays the same when views are recycled.
-        this(context);
-        startAnimation(item, listener, undo);
-    }
 
     public Conversation getData() {
         return mData;

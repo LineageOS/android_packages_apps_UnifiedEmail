@@ -19,6 +19,10 @@ package com.android.mail.browse;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.Animator.AnimatorListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -48,6 +52,9 @@ import android.text.util.Rfc822Tokenizer;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.MeasureSpec;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.Checkable;
 import android.widget.ListView;
 
 import com.android.mail.R;
@@ -108,6 +115,7 @@ public class ConversationItemView extends View {
     private static int TOUCH_SLOP;
     private static int sDateBackgroundHeight;
     private static int sStandardScaledDimen;
+    private static int sUndoAnimationDuration;
     private static CharacterStyle sLightTextStyle;
     private static CharacterStyle sNormalTextStyle;
 
@@ -136,16 +144,15 @@ public class ConversationItemView extends View {
 
     private final Context mContext;
 
-    private String mAccount;
-    private ConversationItemViewModel mHeader;
+    public ConversationItemViewModel mHeader;
     private ViewMode mViewMode;
     private boolean mDownEvent;
     private boolean mChecked = false;
-    private static int sFadedColor = -1;
     private static int sFadedActivatedColor = -1;
     private ConversationSelectionSet mSelectedConversationSet;
     private Folder mDisplayedFolder;
     private boolean mPriorityMarkersEnabled;
+    private int mAnimatedHeight = -1;
     private static Bitmap MORE_FOLDERS;
 
     static {
@@ -290,7 +297,6 @@ public class ConversationItemView extends View {
         mContext = context.getApplicationContext();
         mTabletDevice = Utils.useTabletUI(mContext);
 
-        mAccount = account;
         Resources res = mContext.getResources();
 
         if (CHECKMARK_OFF == null) {
@@ -341,6 +347,7 @@ public class ConversationItemView extends View {
             TOUCH_SLOP = res.getDimensionPixelSize(R.dimen.touch_slop);
             sDateBackgroundHeight = res.getDimensionPixelSize(R.dimen.date_background_height);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
+            sUndoAnimationDuration = res.getInteger(R.integer.undo_animation_duration);
 
             // Initialize static color.
             sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
@@ -348,17 +355,19 @@ public class ConversationItemView extends View {
         }
     }
 
-    public void bind(Cursor cursor, String account, ViewMode viewMode,
-            ConversationSelectionSet set, Folder folder) {
-        mAccount = account;
+    public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set,
+            Folder folder) {
         mViewMode = viewMode;
-        mHeader = ConversationItemViewModel.forCursor(account, cursor);
+        mHeader = ConversationItemViewModel.forCursor(cursor);
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
     }
 
+    /**
+     * Get the Conversation object associated with this view.
+     */
     public Conversation getConversation() {
         return mHeader.conversation;
     }
@@ -755,10 +764,14 @@ public class ConversationItemView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = measureWidth(widthMeasureSpec);
-        int height = measureHeight(heightMeasureSpec,
-                ConversationItemViewCoordinates.getMode(mContext, mViewMode));
-        setMeasuredDimension(width, height);
+        if (mAnimatedHeight == -1) {
+            int width = measureWidth(widthMeasureSpec);
+            int height = measureHeight(heightMeasureSpec,
+                    ConversationItemViewCoordinates.getMode(mContext, mViewMode));
+            setMeasuredDimension(width, height);
+        } else {
+            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
+        }
     }
 
     /**
@@ -983,7 +996,7 @@ public class ConversationItemView extends View {
         conv.position = mChecked ? ((ListView)getParent()).getPositionForView(this)
                 : Conversation.NO_POSITION;
         if (mSelectedConversationSet != null) {
-            mSelectedConversationSet.toggle(conv);
+            mSelectedConversationSet.toggle(this, conv);
         }
         // We update the background after the checked state has changed now that
         // we have a selected background asset. Setting the background usually
@@ -993,9 +1006,16 @@ public class ConversationItemView extends View {
     }
 
     /**
+     * Return if the checkbox for this item is checked.
+     */
+    public boolean isChecked() {
+        return mChecked;
+    }
+
+    /**
      * Toggle the star on this view and update the conversation.
      */
-    private void toggleStar() {
+    public void toggleStar() {
         mHeader.starred = !mHeader.starred;
         mHeader.starBitmap = mHeader.starred ? STAR_ON : STAR_OFF;
         postInvalidate(mCoordinates.starX, mCoordinates.starY, mCoordinates.starX
@@ -1005,52 +1025,112 @@ public class ConversationItemView extends View {
         mHeader.conversation.updateBoolean(mContext, ConversationColumns.STARRED, mHeader.starred);
     }
 
-    private boolean touchCheckmark(float x, float y) {
+    private boolean isTouchInCheckmark(float x, float y) {
         // Everything before senders and include a touch slop.
         return mHeader.checkboxVisible && x < mCoordinates.sendersX + TOUCH_SLOP;
     }
 
-    private boolean touchStar(float x, float y) {
+    private boolean isTouchInStar(float x, float y) {
         // Everything after the star and include a touch slop.
         return x > mCoordinates.starX - TOUCH_SLOP;
     }
 
+    /**
+     * ConversationItemView is given the first chance to handle touch events.
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        boolean handled = false;
+        boolean handled = true;
 
         int x = (int) event.getX();
         int y = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mDownEvent = true;
-                if (touchCheckmark(x, y) || touchStar(x, y)) {
-                    handled = true;
-                }
+                // In order to allow the down event and subsequent move events
+                // to bubble to the swipe handler, we need to return that all
+                // down events are handled.
+                handled = true;
                 break;
-
             case MotionEvent.ACTION_CANCEL:
                 mDownEvent = false;
                 break;
-
             case MotionEvent.ACTION_UP:
                 if (mDownEvent) {
-                    if (touchCheckmark(x, y)) {
+                    // ConversationItemView gets the first chance to handle up
+                    // events if there was a down event and there was no move
+                    // event in between. In this case, ConversationItemView
+                    // received the down event, and then an up event in the
+                    // same location (+/- slop). Treat this as a click on the
+                    // view or on a specific part of the view.
+                    if (isTouchInCheckmark(x, y)) {
                         // Touch on the check mark
                         toggleCheckMark();
-                    } else if (touchStar(x, y)) {
+                    } else if (isTouchInStar(x, y)) {
                         // Touch on the star
                         toggleStar();
+                    } else {
+                        ListView list = (ListView)getParent();
+                        int pos = list.getPositionForView(this);
+                        list.performItemClick(this, pos, mHeader.conversation.id);
                     }
                     handled = true;
+                } else {
+                    // There was no down event that this view was made aware of,
+                    // therefore it cannot handle it.
+                    handled = false;
                 }
                 break;
         }
 
         if (!handled) {
+            // Let View try to handle it as well.
             handled = super.onTouchEvent(event);
         }
 
         return handled;
+    }
+
+    /**
+     * Grow the height of the item and fade it in when bringing a conversation
+     * back from a destructive action.
+     *
+     * @param listener
+     */
+    public void startUndoAnimation(final AnimatorListener listener) {
+        setMinimumHeight(140);
+        final int start = 0 ;
+        final int end = 140;
+        ObjectAnimator undoAnimator = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
+        Animator fadeAnimator = ObjectAnimator.ofFloat(this, "itemAlpha", 0, 1.0f);
+        mAnimatedHeight = start;
+        undoAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
+        undoAnimator.setDuration(sUndoAnimationDuration);
+        AnimatorSet transitionSet = new AnimatorSet();
+        transitionSet.playTogether(undoAnimator, fadeAnimator);
+        transitionSet.addListener(listener);
+        transitionSet.start();
+    }
+
+    // Used by animator
+    @SuppressWarnings("unused")
+    public void setItemAlpha(float alpha) {
+        setAlpha(alpha);
+        invalidate();
+    }
+
+    // Used by animator
+    @SuppressWarnings("unused")
+    public void setAnimatedHeight(int height) {
+        mAnimatedHeight = height;
+        requestLayout();
+    }
+
+    /**
+     * Get the current position of this conversation item in the list.
+     */
+    public int getPosition() {
+        return mHeader != null && mHeader.conversation != null ?
+                mHeader.conversation.position : -1;
     }
 }
