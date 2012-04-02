@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class MessageModification {
 
-    private static final CharSequence EMAIL_SEPARATOR = "\n";
+    private static final CharSequence EMAIL_SEPARATOR = ",";
 
     /**
      * Sets the message's subject. Only valid for drafts.
