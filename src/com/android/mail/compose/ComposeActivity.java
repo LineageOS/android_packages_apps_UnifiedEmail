@@ -654,7 +654,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initAttachmentsFromIntent(Intent intent) {
-        final Bundle extras = intent.getExtras();
+        Bundle extras = intent.getExtras();
+        if (extras == null) {
+            extras = Bundle.EMPTY;
+        }
         final String action = intent.getAction();
         if (!mAttachmentsChanged) {
             long totalSize = 0;
