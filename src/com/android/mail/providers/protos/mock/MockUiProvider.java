@@ -403,10 +403,11 @@ public final class MockUiProvider extends ContentProvider {
 
     private static void addAccountInfoToAccountCache(Map<String, Object> accountInfo) {
         final Parcel dest = Parcel.obtain();
-
         dest.writeString((String) accountInfo.get(AccountColumns.NAME));
         dest.writeString("mock");
-        dest.writeInt(0);
+
+        final int providerVersion = 1;
+        dest.writeInt(providerVersion);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.URI), 0);
         dest.writeInt((Integer) accountInfo.get(AccountColumns.CAPABILITIES));
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.FOLDER_LIST_URI), 0);
@@ -419,6 +420,7 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SETTINGS_INTENT_URI), 0);
         dest.writeParcelable((Uri)accountInfo.get(AccountColumns.SETTINGS_QUERY_URI), 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.HELP_INTENT_URI), 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SEND_FEEDBACK_INTENT_URI), 0);
         dest.writeInt((Integer) accountInfo.get(AccountColumns.SYNC_STATUS));
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.COMPOSE_URI), 0);
         dest.writeString((String) accountInfo.get(AccountColumns.MIME_TYPE));
