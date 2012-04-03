@@ -164,7 +164,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final MessageHeaderView v = (MessageHeaderView) inflater.inflate(
                     R.layout.conversation_message_header, parent, false);
-            v.initialize(mDateBuilder, mAccount, mLoaderManager, false /* defaultReplyAll */);
+            v.initialize(mDateBuilder, mAccount, false /* defaultReplyAll */);
             v.setCallbacks(mMessageCallbacks);
             return v;
         }
@@ -205,20 +205,21 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         @Override
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
-            // TODO
-            return new View(context);
+            final MessageFooterView v = (MessageFooterView) inflater.inflate(
+                    R.layout.conversation_message_footer, parent, false);
+            v.initialize(mLoaderManager);
+            return v;
         }
 
         @Override
         public void bindView(View v) {
-            final Message message = headerItem.message;
-            // TODO
+            final MessageFooterView attachmentsView = (MessageFooterView) v;
+            attachmentsView.bind(headerItem.message, headerItem.expanded);
         }
 
         @Override
         public int measureHeight(View v, ViewGroup parent) {
-            // TODO
-            return 0;
+            return Utils.measureViewHeight(v, parent);
         }
 
         @Override

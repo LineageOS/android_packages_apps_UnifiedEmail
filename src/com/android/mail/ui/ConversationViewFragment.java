@@ -51,6 +51,7 @@ import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MessageCursor;
+import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
@@ -333,6 +334,10 @@ public final class ConversationViewFragment extends Fragment implements
 
         mAdapter.clear();
 
+        // We don't need to kick off attachment loaders during this first measurement phase,
+        // so disable them temporarily.
+        MessageFooterView.enableAttachmentLoaders(false);
+
         // N.B. the units of height for spacers are actually dp and not px because WebView assumes
         // a pixel is an mdpi pixel, unless you set device-dpi.
 
@@ -362,6 +367,9 @@ public final class ConversationViewFragment extends Fragment implements
             mTemplates.appendMessageHtml(msg, true /* expanded */, safeForImages, 1.0f, headerDp,
                     footerDp);
         }
+
+        // Re-enable attachment loaders
+        MessageFooterView.enableAttachmentLoaders(true);
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 

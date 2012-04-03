@@ -16,14 +16,10 @@
 
 package com.android.mail.browse;
 
-import android.app.LoaderManager;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
-import android.content.Loader;
-import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -47,27 +43,21 @@ import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.SenderInfoLoader.ContactInfo;
-import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
-import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
 
 public class MessageHeaderView extends LinearLayout implements OnClickListener,
-        OnMenuItemClickListener, HeaderBlock, LoaderManager.LoaderCallbacks<Cursor>,
-        ConversationContainer.DetachListener {
+        OnMenuItemClickListener, HeaderBlock {
 
     /**
      * Cap very long recipient lists during summary construction for efficiency.
@@ -101,7 +91,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private ViewGroup mCollapsedDetailsView;
     private ViewGroup mExpandedDetailsView;
     private ViewGroup mImagePromptView;
-    private ViewGroup mAttachmentsView;
     private View mBottomBorderView;
     private ImageView mPresenceView;
 
@@ -144,11 +133,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private int mDrawTranslateY;
 
-    /**
-     * List of attachments for this message, loaded asynchronously.
-     */
-    private AttachmentCursor mAttachments;
-
     private CharSequence mTimestampShort;
 
     /**
@@ -172,8 +156,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private boolean mCollapsedDetailsValid;
     private boolean mExpandedDetailsValid;
-
-    private LoaderManager mLoaderManager;
 
     private final LayoutInflater mInflater;
 
@@ -316,19 +298,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     public void initialize(FormattedDateBuilder dateBuilder, Account account,
-            LoaderManager loaderManager, boolean defaultReplyAll) {
+            boolean defaultReplyAll) {
         mDateBuilder = dateBuilder;
         mAccount = account;
-        mLoaderManager = loaderManager;
         mDefaultReplyAll = defaultReplyAll;
-    }
-
-    private Integer getAttachmentLoaderId() {
-        Integer id = null;
-        if (mMessage != null && mMessage.attachmentListUri != null) {
-            id = mMessage.attachmentListUri.hashCode();
-        }
-        return id;
     }
 
     public void bind(Message message, boolean expanded, boolean showImagePrompt) {
@@ -351,16 +324,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mCc = mMessage.getCcAddresses();
         mBcc = mMessage.getBccAddresses();
         mReplyTo = mMessage.getReplyToAddresses();
-
-        if (mAttachmentsView != null) {
-            mAttachmentsView.removeAllViews();
-        }
-
-        // kick off load of Attachment objects in background thread
-        final Integer attachmentLoaderId = getAttachmentLoaderId();
-        if (mMessage.hasAttachments && attachmentLoaderId != null) {
-            mLoaderManager.initLoader(getAttachmentLoaderId(), Bundle.EMPTY, this);
-        }
 
         /**
          * Turns draft mode on or off. Draft mode hides message operations other
@@ -406,49 +369,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         updateContactInfo();
 
         t.pause(HEADER_RENDER_TAG);
-    }
-
-    // Attachment list loader methods
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new AttachmentLoader(getContext(), mMessage.attachmentListUri);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAttachments = (AttachmentCursor) data;
-
-        if (mAttachments == null || mAttachments.isClosed()) {
-            return;
-        }
-
-        renderAttachments(mAttachmentsView);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAttachments = null;
-    }
-
-    private void destroyLoader() {
-        final Integer loaderId = getAttachmentLoaderId();
-        if (mLoaderManager != null && loaderId != null) {
-            LogUtils.d(LOG_TAG, "detaching header view, calling destroyLoader for message %d",
-                    loaderId);
-            mLoaderManager.destroyLoader(loaderId);
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        destroyLoader();
-    }
-
-    @Override
-    public void onDetachedFromParent() {
-        destroyLoader();
     }
 
     private boolean isInOutbox() {
@@ -901,7 +821,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             hideCollapsedDetails();
             hideExpandedDetails();
             hideShowImagePrompt();
-            hideAttachments();
+            // FIXME: coordinate with matching footer (if exists) to show/hide
+            // hideAttachments();
         } else {
             setMessageDetailsExpanded(mDetailsExpanded);
             if (mShowImagePrompt) {
@@ -909,67 +830,17 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             } else {
                 hideShowImagePrompt();
             }
+            // FIXME: coordinate with matching footer (if exists) to show/hide
+            /*
             if (mMessage.hasAttachments) {
                 showAttachments();
             } else {
                 hideAttachments();
             }
+            */
         }
         if (mBottomBorderView != null) {
             mBottomBorderView.setVisibility(vis);
-        }
-    }
-
-    private void showAttachments() {
-        if (mAttachmentsView == null) {
-            ViewGroup container = (ViewGroup) mInflater.inflate(
-                    R.layout.conversation_message_attachments, this, false);
-
-            addView(container);
-            mAttachmentsView = container;
-        }
-        renderAttachments(mAttachmentsView);
-        mAttachmentsView.setVisibility(VISIBLE);
-    }
-
-    private void renderAttachments(ViewGroup container) {
-        if (container == null) {
-            return;
-        }
-
-        List<Attachment> attachments;
-        if (mAttachments != null && !mAttachments.isClosed()) {
-            int i = -1;
-            attachments = Lists.newArrayList();
-            while (mAttachments.moveToPosition(++i)) {
-                attachments.add(mAttachments.get());
-            }
-        } else {
-            // before the attachment loader results are in, we can still render immediately using
-            // the basic info in the message's attachmentsJSON
-            attachments = mMessage.getAttachments();
-        }
-        renderAttachments(attachments, container);
-    }
-
-    private void renderAttachments(List<Attachment> attachments, ViewGroup container) {
-        for (Attachment attachment : attachments) {
-            MessageHeaderAttachment attachView = (MessageHeaderAttachment)
-                    container.findViewWithTag(attachment.uri);
-
-            if (attachView == null) {
-                attachView = MessageHeaderAttachment.inflate(mInflater, container);
-                attachView.setTag(attachment.uri);
-                container.addView(attachView);
-            }
-
-            attachView.render(attachment);
-        }
-    }
-
-    private void hideAttachments() {
-        if (mAttachmentsView != null) {
-            mAttachmentsView.setVisibility(GONE);
         }
     }
 
