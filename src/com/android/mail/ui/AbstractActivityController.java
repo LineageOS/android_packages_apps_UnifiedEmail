@@ -888,7 +888,7 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        showConversation(mCurrentConversation);
+        showConversation(conversation);
         if (mConvListContext != null && mConvListContext.isSearchResult()) {
             mViewMode.enterSearchResultsConversationMode();
         } else {
