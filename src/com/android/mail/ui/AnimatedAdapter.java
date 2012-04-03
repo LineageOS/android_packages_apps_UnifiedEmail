@@ -33,6 +33,7 @@ import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
 import com.android.mail.utils.LogUtils;
@@ -56,13 +57,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private boolean mShowFooter;
     private Folder mFolder;
     private final ListView mListView;
+    private Settings mCachedSettings;
     /**
      * Used only for debugging.
      */
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
-            ConversationSelectionSet batch, Account account, ViewMode viewMode, ListView listView) {
+            ConversationSelectionSet batch, Account account, Settings settings, ViewMode viewMode,
+            ListView listView) {
         // Use FLAG_REGISTER_CONTENT_OBSERVER to ensure special ConversationCursor notifications
         // (triggered by UI actions) cause any connected ListView to redraw.
         super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null,
@@ -73,6 +76,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mViewMode = viewMode;
         mShowFooter = false;
         mListView = listView;
+        mCachedSettings = settings;
     }
 
     @Override
@@ -106,8 +110,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         if (!isPositionAnimating(view) && !isPositionFooter(view)) {
-            ((ConversationItemView) view).bind(cursor, mViewMode,
-                    mBatchConversations, mFolder);
+            ((ConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
+                    mCachedSettings != null ? !mCachedSettings.hideCheckboxes : false);
         }
     }
 
@@ -236,7 +240,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             // The undo animation consists of fading in the conversation that
             // had been destroyed.
             ConversationItemView convView = (ConversationItemView) super.getView(position, null,
-                    parent);
+                    mListView);
+            convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
+                    mCachedSettings != null ? !mCachedSettings.hideCheckboxes : false);
             convView.startUndoAnimation(mViewMode, this);
             return convView;
         } else {

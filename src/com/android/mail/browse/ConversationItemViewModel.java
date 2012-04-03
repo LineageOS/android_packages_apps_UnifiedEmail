@@ -131,11 +131,15 @@ public class ConversationItemViewModel {
     }
 
     static ConversationItemViewModel forCursor(Cursor cursor) {
+        return forConversation(new Conversation(cursor));
+    }
+
+
+    static ConversationItemViewModel forConversation(Conversation conv) {
         ConversationItemViewModel header = new ConversationItemViewModel();
-        if (cursor != null) {
+        if (conv != null) {
             header.faded = false;
             header.checkboxVisible = true;
-            Conversation conv = new Conversation(cursor);
             header.conversation = conv;
             header.starred = conv.starred;
             header.unread = !conv.read;

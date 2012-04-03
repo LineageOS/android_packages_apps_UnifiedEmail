@@ -205,6 +205,7 @@ public class SwipeHelper {
                         float currY = ev.getY();
                         if (Math.abs(currY - mLastY) > mScrollSlop) {
                             mLastY = ev.getY();
+                            mCurrView.cancelTap();
                             return false;
                         }
                     }
@@ -349,6 +350,11 @@ public class SwipeHelper {
     public boolean onTouchEvent(MotionEvent ev) {
         if (!mDragging) {
             return false;
+        }
+        // If this item is being dragged, cancel any tap handlers/ events/
+        // actions for this item.
+        if (mCurrView != null) {
+            mCurrView.cancelTap();
         }
         mVelocityTracker.addMovement(ev);
         final int action = ev.getAction();

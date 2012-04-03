@@ -50,8 +50,10 @@ import android.text.style.StyleSpan;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 import android.util.SparseArray;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.View.MeasureSpec;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Checkable;
@@ -153,6 +155,9 @@ public class ConversationItemView extends View {
     private Folder mDisplayedFolder;
     private boolean mPriorityMarkersEnabled;
     private int mAnimatedHeight = -1;
+    private boolean mCheckboxesEnabled;
+    private CheckForTap mPendingCheckForTap;
+    private CheckForLongPress mPendingCheckForLongPress;
     private static Bitmap MORE_FOLDERS;
 
     static {
@@ -356,11 +361,24 @@ public class ConversationItemView extends View {
     }
 
     public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set,
-            Folder folder) {
+            Folder folder, boolean checkboxesEnabled) {
         mViewMode = viewMode;
         mHeader = ConversationItemViewModel.forCursor(cursor);
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
+        mCheckboxesEnabled = checkboxesEnabled;
+        setContentDescription(mHeader.getContentDescription(mContext));
+        requestLayout();
+    }
+
+
+    public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
+            Folder folder, boolean checkboxesEnabled) {
+        mViewMode = viewMode;
+        mHeader = ConversationItemViewModel.forConversation(conversation);
+        mSelectedConversationSet = set;
+        mDisplayedFolder = folder;
+        mCheckboxesEnabled = checkboxesEnabled;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
     }
@@ -456,7 +474,7 @@ public class ConversationItemView extends View {
 
         boolean isUnread = mHeader.unread;
 
-        final boolean checkboxEnabled = true;
+        final boolean checkboxEnabled = mCheckboxesEnabled;
         if (mHeader.checkboxVisible != checkboxEnabled) {
             mHeader.checkboxVisible = checkboxEnabled;
         }
@@ -990,19 +1008,22 @@ public class ConversationItemView extends View {
      * Toggle the check mark on this view and update the conversation
      */
     public void toggleCheckMark() {
-        mChecked = !mChecked;
-        Conversation conv = mHeader.conversation;
-        // Set the list position of this item in the conversation
-        conv.position = mChecked ? ((ListView)getParent()).getPositionForView(this)
-                : Conversation.NO_POSITION;
-        if (mSelectedConversationSet != null) {
-            mSelectedConversationSet.toggle(this, conv);
+        if (mHeader != null && mHeader.conversation != null) {
+            mChecked = !mChecked;
+            Conversation conv = mHeader.conversation;
+            // Set the list position of this item in the conversation
+            ListView listView = (ListView)getParent();
+            conv.position = mChecked && listView != null ? listView.getPositionForView(this)
+                    : Conversation.NO_POSITION;
+            if (mSelectedConversationSet != null) {
+                mSelectedConversationSet.toggle(this, conv);
+            }
+            // We update the background after the checked state has changed now that
+            // we have a selected background asset. Setting the background usually
+            // waits for a layout pass, but we don't need a full layout, just an
+            // update to the background.
+            requestLayout();
         }
-        // We update the background after the checked state has changed now that
-        // we have a selected background asset. Setting the background usually
-        // waits for a layout pass, but we don't need a full layout, just an
-        // update to the background.
-        requestLayout();
     }
 
     /**
@@ -1036,6 +1057,14 @@ public class ConversationItemView extends View {
     }
 
     /**
+     * Cancel any potential tap handling on this view.
+     */
+    public void cancelTap() {
+        removeCallbacks(mPendingCheckForTap);
+        removeCallbacks(mPendingCheckForLongPress);
+    }
+
+    /**
      * ConversationItemView is given the first chance to handle touch events.
      */
     @Override
@@ -1051,11 +1080,17 @@ public class ConversationItemView extends View {
                 // to bubble to the swipe handler, we need to return that all
                 // down events are handled.
                 handled = true;
+                // TODO (mindyp) Debounce
+                if (mPendingCheckForTap == null) {
+                    mPendingCheckForTap = new CheckForTap();
+                }
+                postDelayed(mPendingCheckForTap, ViewConfiguration.getTapTimeout());
                 break;
             case MotionEvent.ACTION_CANCEL:
                 mDownEvent = false;
                 break;
             case MotionEvent.ACTION_UP:
+                cancelTap();
                 if (mDownEvent) {
                     // ConversationItemView gets the first chance to handle up
                     // events if there was a down event and there was no move
@@ -1066,13 +1101,17 @@ public class ConversationItemView extends View {
                     if (isTouchInCheckmark(x, y)) {
                         // Touch on the check mark
                         toggleCheckMark();
+                        handled = true;
                     } else if (isTouchInStar(x, y)) {
                         // Touch on the star
                         toggleStar();
+                        handled = true;
                     } else {
-                        ListView list = (ListView)getParent();
-                        int pos = list.getPositionForView(this);
-                        list.performItemClick(this, pos, mHeader.conversation.id);
+                        ListView list = (ListView) getParent();
+                        if (!isChecked()) {
+                            int pos = list.getPositionForView(this);
+                            list.performItemClick(this, pos, mHeader.conversation.id);
+                        }
                     }
                     handled = true;
                 } else {
@@ -1089,6 +1128,36 @@ public class ConversationItemView extends View {
         }
 
         return handled;
+    }
+
+    /**
+     * Return if this item should respond to long clicks.
+     */
+    @Override
+    public boolean isLongClickable() {
+        return true;
+    }
+
+    final class CheckForTap implements Runnable {
+        public void run() {
+            // refreshDrawableState();
+            final int longPressTimeout = ViewConfiguration.getLongPressTimeout();
+            final boolean longClickable = isLongClickable();
+
+            if (longClickable) {
+                if (mPendingCheckForLongPress == null) {
+                    mPendingCheckForLongPress = new CheckForLongPress();
+                }
+                postDelayed(mPendingCheckForLongPress, longPressTimeout);
+            }
+        }
+    }
+
+    private class CheckForLongPress implements Runnable {
+        public void run() {
+            ConversationItemView.this.toggleCheckMark();
+            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        }
     }
 
     /**
