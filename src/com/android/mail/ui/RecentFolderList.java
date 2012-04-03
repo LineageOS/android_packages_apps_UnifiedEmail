@@ -151,11 +151,15 @@ public final class RecentFolderList {
      * be called with a null folder.
      * @param folder the folder we touched
      */
-    public void touchFolder(Folder folder) {
+    public void touchFolder(Folder folder, Account account) {
         // We haven't got a valid account yet, cannot proceed.
-        if (mAccount == null) {
-            LogUtils.w(TAG, "No account set for setting recent folders?");
-            return;
+        if (mAccount == null || !mAccount.equals(account)) {
+            if (account != null) {
+                setCurrentAccount(account);
+            } else {
+                LogUtils.w(TAG, "No account set for setting recent folders?");
+                return;
+            }
         }
         assert (folder != null);
         mFolderCache.putElement(folder.uri.toString(), folder);

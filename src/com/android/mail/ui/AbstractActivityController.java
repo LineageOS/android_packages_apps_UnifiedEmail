@@ -400,7 +400,7 @@ public abstract class AbstractActivityController implements ActivityController, 
      */
     private void updateRecentFolderList() {
         if (mFolder != null) {
-            mRecentFolderList.touchFolder(mFolder);
+            mRecentFolderList.touchFolder(mFolder, mAccount);
         }
     }
 
