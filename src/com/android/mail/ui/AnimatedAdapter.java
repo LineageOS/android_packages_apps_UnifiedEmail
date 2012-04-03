@@ -193,6 +193,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        // TODO (mindyp) turn off use of recycler for now as there is some issue
+        // in getItemViewType
+        convertView = null;
         if (mShowFooter && position == super.getCount()) {
             return mFooter;
         }
@@ -223,7 +226,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      */
     private View getAnimatingView(int position, View convertView, ViewGroup parent) {
         // We are getting the wrong view, and we need to gracefully carry on.
-        if (!(convertView instanceof AnimatingItemView)) {
+        if (convertView != null || !(convertView instanceof AnimatingItemView)) {
             LogUtils.d(LOG_TAG, "AnimatedAdapter.getAnimatingView received the wrong view!");
             convertView = null;
         }
