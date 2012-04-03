@@ -703,12 +703,17 @@ public class Utils {
      * Show the settings screen for the supplied account.
      */
      public static void showFolderSettings(Context context, Account account, Folder folder) {
-        final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
+         if (account == null || folder == null) {
+             LogUtils.e(LOG_TAG, "Invalid attempt to show folder settings. account: %s folder: %s",
+                     account, folder);
+             return;
+         }
+         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
 
-        settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
-        settingsIntent.putExtra(EditSettingsExtras.EXTRA_FOLDER, folder);
+         settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
+         settingsIntent.putExtra(EditSettingsExtras.EXTRA_FOLDER, folder);
 
-        context.startActivity(settingsIntent);
+         context.startActivity(settingsIntent);
     }
 
     /**
