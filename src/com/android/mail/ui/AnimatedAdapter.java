@@ -234,12 +234,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             // had been destroyed.
             ConversationItemView convView = (ConversationItemView) super.getView(position, null,
                     parent);
-            convView.startUndoAnimation(this);
+            convView.startUndoAnimation(mViewMode, this);
             return convView;
         } else {
             // Destroying a conversation just shows a blank shrinking item.
             final AnimatingItemView view = new AnimatingItemView(mContext);
-            view.startAnimation(conversation, this);
+            view.startAnimation(conversation, mViewMode, this);
             return view;
         }
     }

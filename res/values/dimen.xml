@@ -79,4 +79,6 @@
     <dimen name="widget_margin_left">17dip</dimen>
     <dimen name="widget_margin_right">17dip</dimen>
     <dimen name="widget_margin_bottom">22dip</dimen>
+    <dimen name="conversation_item_height">70sp</dimen>
+    <dimen name="conversation_item_height_wide">64sp</dimen>
 </resources>

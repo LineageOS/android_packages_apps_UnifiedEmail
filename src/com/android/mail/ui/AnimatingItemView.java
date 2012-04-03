@@ -23,6 +23,7 @@ import android.content.Context;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
+import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.providers.Conversation;
 
 public class AnimatingItemView extends LinearLayout {
@@ -41,10 +42,11 @@ public class AnimatingItemView extends LinearLayout {
      * @param undo true if an operation is being undone. We animate the item away during delete.
      * Undoing populates the item.
      */
-    public void startAnimation(Conversation item, AnimatorListener listener) {
+    public void startAnimation(Conversation item, ViewMode viewMode, AnimatorListener listener) {
         mData = item;
-        setMinimumHeight(140);
-        final int start = 140;
+        int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(), viewMode);
+        setMinimumHeight(minHeight);
+        final int start = minHeight;
         final int end = 0;
 
         mAnimator = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
@@ -54,7 +56,6 @@ public class AnimatingItemView extends LinearLayout {
         mAnimator.addListener(listener);
         mAnimator.start();
     }
-
 
     public Conversation getData() {
         return mData;
