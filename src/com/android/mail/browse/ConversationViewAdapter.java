@@ -149,10 +149,12 @@ public class ConversationViewAdapter extends BaseAdapter {
     public class MessageHeaderItem extends ConversationItem {
         public final Message message;
         public boolean expanded;
+        public boolean defaultReplyAll;
 
-        private MessageHeaderItem(Message message, boolean expanded) {
+        private MessageHeaderItem(Message message, boolean defaultReplyAll, boolean expanded) {
             this.message = message;
             this.expanded = expanded;
+            this.defaultReplyAll = defaultReplyAll;
         }
 
         @Override
@@ -164,7 +166,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final MessageHeaderView v = (MessageHeaderView) inflater.inflate(
                     R.layout.conversation_message_header, parent, false);
-            v.initialize(mDateBuilder, mAccount, false /* defaultReplyAll */);
+            v.initialize(mDateBuilder, mAccount, defaultReplyAll /* defaultReplyAll */);
             v.setCallbacks(mMessageCallbacks);
             return v;
         }
@@ -298,8 +300,8 @@ public class ConversationViewAdapter extends BaseAdapter {
         return addItem(new ConversationHeaderItem(conv));
     }
 
-    public int addMessageHeader(Message msg, boolean expanded) {
-        return addItem(new MessageHeaderItem(msg, expanded));
+    public int addMessageHeader(Message msg, boolean defaultReplyAll, boolean expanded) {
+        return addItem(new MessageHeaderItem(msg, defaultReplyAll, expanded));
     }
 
     public int addMessageFooter(MessageHeaderItem headerItem) {

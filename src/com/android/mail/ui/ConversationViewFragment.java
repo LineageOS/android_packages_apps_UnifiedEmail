@@ -353,7 +353,12 @@ public final class ConversationViewFragment extends Fragment implements
             final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
             allowNetworkImages |= safeForImages;
 
-            final int headerPos = mAdapter.addMessageHeader(msg, true /* expanded */);
+            final int headerPos = mAdapter
+                    .addMessageHeader(
+                            msg,
+                            (mActivity.getSettings().replyBehavior
+                                    == UIProvider.DefaultReplyBehavior.REPLY_ALL),
+                            true /* expanded */);
             final MessageHeaderItem headerItem = (MessageHeaderItem) mAdapter.getItem(headerPos);
 
             final int footerPos = mAdapter.addMessageFooter(headerItem);
