@@ -370,10 +370,10 @@ public final class TwoPaneController extends AbstractActivityController {
             final ArrayList<Conversation> single = new ArrayList<Conversation>();
             single.add(mCurrentConversation);
             int next = -1;
-            int pref = getAutoAdvanceSetting(mActivity);
-            Cursor c = mConversationListCursor;
+            final int pref = getAutoAdvanceSetting(mActivity);
+            final Cursor c = mConversationListCursor;
             int updatedPosition = -1;
-            int position = mCurrentConversation.position;
+            final int position = mCurrentConversation.position;
             if (c != null) {
                 switch (pref) {
                     case AutoAdvance.NEWER:
@@ -411,6 +411,7 @@ public final class TwoPaneController extends AbstractActivityController {
         }
     }
 
+    @Override
     protected void requestDelete(final ActionCompleteListener listener) {
         mConversationListFragment.requestDelete(listener);
     }

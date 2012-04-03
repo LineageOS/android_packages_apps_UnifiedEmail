@@ -407,7 +407,7 @@ public final class OnePaneController extends AbstractActivityController {
             Conversation next = null;
             final ArrayList<Conversation> single = new ArrayList<Conversation>();
             single.add(mCurrentConversation);
-            int mode = mViewMode.getMode();
+            final int mode = mViewMode.getMode();
             if (mode == ViewMode.CONVERSATION) {
                 next = getNextConversation();
             } else if (mode == ViewMode.CONVERSATION_LIST
@@ -421,6 +421,7 @@ public final class OnePaneController extends AbstractActivityController {
                     showConversation(next);
                 }
             } else {
+                // Don't have the next conversation, go back to conversation list.
                 if (mode == ViewMode.CONVERSATION_LIST) {
                     mConversationListFragment.requestListRefresh();
                 } else if (mode == ViewMode.CONVERSATION) {
@@ -440,6 +441,11 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
+    /**
+     * Returns true if we need to return back to conversation list based on the current
+     * AutoAdvance setting and the number of messages in the list.
+     * @return true if we need to return back to conversation list, false otherwise.
+     */
     private boolean returnToList() {
         ConversationCursor conversationListCursor = mConversationListCursor;
         int pref = getAutoAdvanceSetting(mActivity);

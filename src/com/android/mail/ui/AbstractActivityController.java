@@ -882,11 +882,12 @@ public abstract class AbstractActivityController implements ActivityController, 
      */
     @Override
     public void showConversation(Conversation conversation) {
+        // Set the current conversation just in case it wasn't already set.
+        setCurrentConversation(conversation);
     }
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        setCurrentConversation(conversation);
         showConversation(mCurrentConversation);
         if (mConvListContext != null && mConvListContext.isSearchResult()) {
             mViewMode.enterSearchResultsConversationMode();
@@ -895,7 +896,13 @@ public abstract class AbstractActivityController implements ActivityController, 
         }
     }
 
-    public void setCurrentConversation(Conversation conversation) {
+    /**
+     * Set the current conversation. This is the conversation on which all actions are performed.
+     * Do not modify mCurrentConversation except through this method, which makes it easy to
+     * perform common actions associated with changing the current conversation.
+     * @param conversation
+     */
+    protected void setCurrentConversation(Conversation conversation) {
         mCurrentConversation = conversation;
     }
 
