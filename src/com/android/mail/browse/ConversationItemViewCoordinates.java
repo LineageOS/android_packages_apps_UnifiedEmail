@@ -102,6 +102,9 @@ public class ConversationItemViewCoordinates {
     int replyStateX;
     int replyStateY;
 
+    // Minimum height of this view; used for animating.
+    int minHeight;
+
 
     // Cache to save Coordinates based on view width.
     private static SparseArray<ConversationItemViewCoordinates> mCache =
@@ -396,5 +399,12 @@ public class ConversationItemViewCoordinates {
 
     public static boolean isWideMode(int mode) {
         return mode == WIDE_MODE;
+    }
+
+    public static int getMinHeight(Context context, ViewMode viewMode) {
+        int mode = ConversationItemViewCoordinates.getMode(context, viewMode);
+        return context.getResources().getDimensionPixelSize(
+                mode == WIDE_MODE ? R.dimen.conversation_item_height
+                        : R.dimen.conversation_item_height_wide);
     }
 }

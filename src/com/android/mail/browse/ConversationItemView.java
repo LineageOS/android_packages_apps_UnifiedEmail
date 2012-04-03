@@ -1097,10 +1097,11 @@ public class ConversationItemView extends View {
      *
      * @param listener
      */
-    public void startUndoAnimation(final AnimatorListener listener) {
-        setMinimumHeight(140);
+    public void startUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
+        int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext, viewMode);
+        setMinimumHeight(minHeight);
         final int start = 0 ;
-        final int end = 140;
+        final int end = minHeight;
         ObjectAnimator undoAnimator = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
         Animator fadeAnimator = ObjectAnimator.ofFloat(this, "itemAlpha", 0, 1.0f);
         mAnimatedHeight = start;
