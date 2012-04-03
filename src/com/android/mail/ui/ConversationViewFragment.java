@@ -326,6 +326,11 @@ public final class ConversationViewFragment extends Fragment implements
 
         boolean allowNetworkImages = false;
 
+        // TODO: re-use any existing adapter item state (expanded, details expanded, show pics)
+
+        mAdapter.setDefaultReplyAll(mActivity.getSettings().replyBehavior ==
+                UIProvider.DefaultReplyBehavior.REPLY_ALL);
+
         // Walk through the cursor and build up an overlay adapter as you go.
         // Each overlay has an entry in the adapter for easy scroll handling in the container.
         // Items are not necessarily 1:1 in cursor and adapter because of super-collapsed blocks.
@@ -353,12 +358,9 @@ public final class ConversationViewFragment extends Fragment implements
             final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
             allowNetworkImages |= safeForImages;
 
-            final int headerPos = mAdapter
-                    .addMessageHeader(
-                            msg,
-                            (mActivity.getSettings().replyBehavior
-                                    == UIProvider.DefaultReplyBehavior.REPLY_ALL),
-                            true /* expanded */);
+            final boolean expanded = !msg.read || msg.starred || messageCursor.isLast();
+
+            final int headerPos = mAdapter.addMessageHeader(msg, expanded);
             final MessageHeaderItem headerItem = (MessageHeaderItem) mAdapter.getItem(headerPos);
 
             final int footerPos = mAdapter.addMessageFooter(headerItem);
@@ -369,7 +371,7 @@ public final class ConversationViewFragment extends Fragment implements
             final int headerDp = measureOverlayHeight(headerPos);
             final int footerDp = measureOverlayHeight(footerPos);
 
-            mTemplates.appendMessageHtml(msg, true /* expanded */, safeForImages, 1.0f, headerDp,
+            mTemplates.appendMessageHtml(msg, expanded, safeForImages, 1.0f, headerDp,
                     footerDp);
         }
 
@@ -439,14 +441,26 @@ public final class ConversationViewFragment extends Fragment implements
 
     // START message header callbacks
     @Override
-    public void setMessageSpacerHeight(Message msg, int height) {
-        // TODO: update message HTML spacer height
-        // TODO: expand this concept to handle bottom-aligned attachments
+    public void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeightPx) {
+        mConversationContainer.invalidateSpacerGeometry();
+
+        // update message HTML spacer height
+        LogUtils.i(LOG_TAG, "setting HTML spacer h=%dpx", newSpacerHeightPx);
+        final int heightDp = (int) (newSpacerHeightPx / mDensity);
+        mWebView.loadUrl(String.format("javascript:setMessageHeaderSpacerHeight('%s', %d);",
+                mTemplates.getMessageDomId(item.message), heightDp));
     }
 
     @Override
-    public void setMessageExpanded(Message msg, boolean expanded, int spacerHeight) {
-        // TODO: show/hide the HTML message body and update the spacer height
+    public void setMessageExpanded(MessageHeaderItem item, int newSpacerHeightPx) {
+        mConversationContainer.invalidateSpacerGeometry();
+
+        // show/hide the HTML message body and update the spacer height
+        LogUtils.i(LOG_TAG, "setting HTML spacer expanded=%s h=%dpx", item.isExpanded(),
+                newSpacerHeightPx);
+        final int heightDp = (int) (newSpacerHeightPx / mDensity);
+        mWebView.loadUrl(String.format("javascript:setMessageBodyVisible('%s', %s, %d);",
+                mTemplates.getMessageDomId(item.message), item.isExpanded(), heightDp));
     }
 
     @Override

@@ -17,8 +17,6 @@
 
 package com.android.mail.browse;
 
-import com.google.common.collect.Lists;
-
 import android.app.LoaderManager;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -36,7 +34,9 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 
@@ -60,6 +60,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final MessageHeaderViewCallbacks mMessageCallbacks;
     private ConversationViewHeaderCallbacks mConversationCallbacks;
     private final LayoutInflater mInflater;
+    private boolean mDefaultReplyAll;
 
     private final List<ConversationItem> mItems;
 
@@ -67,6 +68,8 @@ public class ConversationViewAdapter extends BaseAdapter {
     public static final int VIEW_TYPE_MESSAGE_HEADER = 1;
     public static final int VIEW_TYPE_MESSAGE_FOOTER = 2;
     public static final int VIEW_TYPE_COUNT = 3;
+
+    public static final String LOG_TAG = new LogUtils().getLogTag();
 
     public static abstract class ConversationItem {
         private int mHeight;  // in px
@@ -84,7 +87,6 @@ public class ConversationViewAdapter extends BaseAdapter {
          * @see CursorAdapter#bindView(View, Context, android.database.Cursor)
          */
         public abstract void bindView(View v);
-        public abstract int measureHeight(View v, ViewGroup parent);
         /**
          * Returns true if this overlay view is meant to be positioned right on top of the overlay
          * below. This special positioning allows {@link ConversationContainer} to stack overlays
@@ -93,11 +95,31 @@ public class ConversationViewAdapter extends BaseAdapter {
          */
         public abstract boolean isContiguous();
 
+        /**
+         * Measure the expected visible height of the overlay view. Even if the view is initially
+         * GONE, this method must return whatever height the view is going to be when it is later
+         * made VISIBLE.
+         */
+        public int measureHeight(View v, ViewGroup parent) {
+            return Utils.measureViewHeight(v, parent);
+        }
+
+        /**
+         * This method's behavior is critical and requires some 'splainin.
+         * <p>
+         * Subclasses that return a zero-size height to the {@link ConversationContainer} will
+         * cause the scrolling/recycling logic there to remove any matching view from the container.
+         * The item should switch to returning a non-zero height when its view should re-appear.
+         * <p>
+         * It's imperative that this method stay in sync with the current height of the HTML spacer
+         * that matches this overlay.
+         */
         public int getHeight() {
             return mHeight;
         }
 
         public void setHeight(int h) {
+            LogUtils.i(LOG_TAG, "IN setHeight=%dpx of overlay item: %s", h, this);
             mHeight = h;
         }
     }
@@ -135,11 +157,6 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         @Override
-        public int measureHeight(View v, ViewGroup parent) {
-            return Utils.measureViewHeight(v, parent);
-        }
-
-        @Override
         public boolean isContiguous() {
             return true;
         }
@@ -148,13 +165,14 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public class MessageHeaderItem extends ConversationItem {
         public final Message message;
-        public boolean expanded;
-        public boolean defaultReplyAll;
+        private boolean mExpanded;
+        public boolean detailsExpanded;
 
-        private MessageHeaderItem(Message message, boolean defaultReplyAll, boolean expanded) {
+        private MessageHeaderItem(Message message, boolean expanded) {
             this.message = message;
-            this.expanded = expanded;
-            this.defaultReplyAll = defaultReplyAll;
+            mExpanded = expanded;
+
+            detailsExpanded = false;
         }
 
         @Override
@@ -166,7 +184,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final MessageHeaderView v = (MessageHeaderView) inflater.inflate(
                     R.layout.conversation_message_header, parent, false);
-            v.initialize(mDateBuilder, mAccount, defaultReplyAll /* defaultReplyAll */);
+            v.initialize(mDateBuilder, mAccount);
             v.setCallbacks(mMessageCallbacks);
             return v;
         }
@@ -174,18 +192,22 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public void bindView(View v) {
             final MessageHeaderView header = (MessageHeaderView) v;
-            header.bind(message, expanded, message.shouldShowImagePrompt());
-        }
-
-        @Override
-        public int measureHeight(View v, ViewGroup parent) {
-            final MessageHeaderView header = (MessageHeaderView) v;
-            return header.measureHeight(parent);
+            header.bind(this, mDefaultReplyAll);
         }
 
         @Override
         public boolean isContiguous() {
-            return !expanded;
+            return !isExpanded();
+        }
+
+        public boolean isExpanded() {
+            return mExpanded;
+        }
+
+        public void setExpanded(boolean expanded) {
+            if (mExpanded != expanded) {
+                mExpanded = expanded;
+            }
         }
     }
 
@@ -216,17 +238,22 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public void bindView(View v) {
             final MessageFooterView attachmentsView = (MessageFooterView) v;
-            attachmentsView.bind(headerItem.message, headerItem.expanded);
-        }
-
-        @Override
-        public int measureHeight(View v, ViewGroup parent) {
-            return Utils.measureViewHeight(v, parent);
+            attachmentsView.bind(headerItem);
         }
 
         @Override
         public boolean isContiguous() {
             return true;
+        }
+
+        @Override
+        public int getHeight() {
+            // a footer may change height while its view does not exist because it is offscreen
+            // (but the header is onscreen and thus collapsible)
+            if (!headerItem.isExpanded()) {
+                return 0;
+            }
+            return super.getHeight();
         }
     }
 
@@ -242,6 +269,10 @@ public class ConversationViewAdapter extends BaseAdapter {
         mInflater = LayoutInflater.from(context);
 
         mItems = Lists.newArrayList();
+    }
+
+    public void setDefaultReplyAll(boolean defaultReplyAll) {
+        mDefaultReplyAll = defaultReplyAll;
     }
 
     @Override
@@ -300,8 +331,8 @@ public class ConversationViewAdapter extends BaseAdapter {
         return addItem(new ConversationHeaderItem(conv));
     }
 
-    public int addMessageHeader(Message msg, boolean defaultReplyAll, boolean expanded) {
-        return addItem(new MessageHeaderItem(msg, defaultReplyAll, expanded));
+    public int addMessageHeader(Message msg, boolean expanded) {
+        return addItem(new MessageHeaderItem(msg, expanded));
     }
 
     public int addMessageFooter(MessageHeaderItem headerItem) {
