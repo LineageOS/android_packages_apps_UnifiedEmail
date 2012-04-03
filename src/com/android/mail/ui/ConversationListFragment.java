@@ -283,6 +283,8 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setOnItemLongClickListener(this);
+        mListView.enableSwipe(
+                mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE));
 
         // Note - we manually save/restore the listview state.
         mListView.setSaveEnabled(false);
