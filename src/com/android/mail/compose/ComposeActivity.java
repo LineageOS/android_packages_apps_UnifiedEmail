@@ -1456,9 +1456,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             final Account selectedAccount, String fromAddress, final Spanned body,
             final String[] to, final String[] cc, final String[] bcc, final String subject,
             final CharSequence quotedText, final List<Attachment> attachments,
-            final String refMessageId, SendOrSaveCallback callback, Handler handler, boolean save,
+            final Message refMessage, SendOrSaveCallback callback, Handler handler, boolean save,
             int composeMode) {
         ContentValues values = new ContentValues();
+
+        String refMessageId = refMessage != null ? refMessage.uri.toString() : "";
 
         MessageModification.putToAddresses(values, to);
         MessageModification.putCcAddresses(values, cc);
@@ -1500,8 +1502,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 break;
         }
         MessageModification.putDraftType(values, draftType);
-        MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
-        MessageModification.putBodyHtml(values, fullBody.toString());
+        if (refMessage != null && !TextUtils.isEmpty(refMessage.bodyHtml)) {
+            MessageModification.putBodyHtml(values, fullBody.toString());
+        }
+        if (refMessage != null && !TextUtils.isEmpty(refMessage.bodyText)) {
+            MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
+        }
         MessageModification.putAttachments(values, attachments);
         if (!TextUtils.isEmpty(refMessageId)) {
             MessageModification.putRefMessageId(values, refMessageId);
@@ -1624,10 +1630,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mSendSaveTaskHandler = new Handler(handlerThread.getLooper());
         }
 
-        String refMessageString = mRefMessage != null ? mRefMessage.uri.toString() : "";
         mRequestId = sendOrSaveInternal(this, mAccount, selectedAccount, fromAddress, body, to, cc,
                 bcc, mSubject.getText().toString(), mQuotedTextView.getQuotedTextIfIncluded(),
-                mAttachmentsView.getAttachments(), refMessageString, callback,
+                mAttachmentsView.getAttachments(), mRefMessage, callback,
                 mSendSaveTaskHandler, save, mComposeMode);
 
         if (mRecipient != null && mRecipient.equals(mAccount.name)) {
