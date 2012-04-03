@@ -465,6 +465,7 @@ public final class OnePaneController extends AbstractActivityController {
         return pref == AutoAdvance.LIST || !canMove;
     }
 
+    @Override
     protected void requestDelete(final ActionCompleteListener listener) {
         final int position = mCurrentConversation.position;
         if (returnToList()) {

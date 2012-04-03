@@ -825,9 +825,9 @@ public abstract class AbstractActivityController implements ActivityController, 
             } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
                 // Save this search query for future suggestions.
                 final String query = intent.getStringExtra(SearchManager.QUERY);
-                final String AUTHORITY = MailAppProvider.getInstance().getSuggestionAuthority();
+                final String authority = mContext.getString(R.string.suggestions_authority);
                 SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
-                        mContext, AUTHORITY, SuggestionsProvider.MODE);
+                        mContext, authority, SuggestionsProvider.MODE);
                 suggestions.saveRecentQuery(query, null);
 
                 mViewMode.enterSearchResultsListMode();
@@ -1369,12 +1369,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     public void startSearch() {
         if (mAccount.supportsCapability(UIProvider.AccountCapabilities.LOCAL_SEARCH)
                 | mAccount.supportsCapability(UIProvider.AccountCapabilities.SERVER_SEARCH)) {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_SEARCH);
-            intent.putExtra(ConversationListContext.EXTRA_SEARCH_QUERY, mActionBarView.getQuery());
-            intent.putExtra(Utils.EXTRA_ACCOUNT, mAccount);
-            intent.setComponent(mActivity.getComponentName());
-            mActivity.startActivity(intent);
+            onSearchRequested(mActionBarView.getQuery());
         } else {
             Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
                     .getString(R.string.search_unsupported), Toast.LENGTH_SHORT).show();

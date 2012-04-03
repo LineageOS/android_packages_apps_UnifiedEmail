@@ -110,7 +110,7 @@ public abstract class MailAppProvider extends ContentProvider
      * The result from the {@link Activity} activity should include the list of accounts in
      * the returned intent, in the
 
-     * @return Intent or null, if the provider doesn't specify a behavior when no acccounts are
+     * @return Intent or null, if the provider doesn't specify a behavior when no accounts are
      * specified.
      */
     protected abstract Intent getNoAccountsIntent(Context context);
