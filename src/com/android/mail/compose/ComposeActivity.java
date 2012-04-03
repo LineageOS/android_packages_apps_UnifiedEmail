@@ -56,6 +56,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.BaseInputConnection;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -186,7 +187,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private boolean mForward;
     private String mRecipient;
     private QuotedTextView mQuotedTextView;
-    private TextView mBodyView;
+    private EditText mBodyView;
     private View mFromStatic;
     private TextView mFromStaticText;
     private View mFromSpinnerWrapper;
@@ -312,6 +313,53 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         initActionBar(action);
         initFromSpinner(action);
         initChangeListeners();
+        setFocus(action);
+    }
+
+    private void setFocus(int action) {
+        if (action == EDIT_DRAFT) {
+            int type = mDraft.draftType;
+            switch (type) {
+                case UIProvider.DraftType.COMPOSE:
+                case UIProvider.DraftType.FORWARD:
+                    action = COMPOSE;
+                    break;
+                case UIProvider.DraftType.REPLY:
+                case UIProvider.DraftType.REPLY_ALL:
+                default:
+                    action = REPLY;
+                    break;
+            }
+        }
+        switch (action) {
+            case FORWARD:
+            case COMPOSE:
+                mTo.requestFocus();
+                break;
+            case REPLY:
+            case REPLY_ALL:
+            default:
+                focusBody();
+                break;
+        }
+    }
+
+    /**
+     * Focus the body of the message.
+     */
+    public void focusBody() {
+        mBodyView.requestFocus();
+        int length = mBodyView.getText().length();
+
+        int signatureStartPos = getSignatureStartPosition(
+                mSignature, mBodyView.getText().toString());
+        if (signatureStartPos > -1) {
+            // In case the user deleted the newlines...
+            mBodyView.setSelection(signatureStartPos);
+        } else if (length > 0) {
+            // Move cursor to the end.
+            mBodyView.setSelection(length);
+        }
     }
 
     @Override
@@ -407,7 +455,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mSubject = (TextView) findViewById(R.id.subject);
         mQuotedTextView = (QuotedTextView) findViewById(R.id.quoted_text_view);
         mQuotedTextView.setRespondInlineListener(this);
-        mBodyView = (TextView) findViewById(R.id.body);
+        mBodyView = (EditText) findViewById(R.id.body);
         mFromStatic = findViewById(R.id.static_from_content);
         mFromStaticText = (TextView) findViewById(R.id.from_account_name);
         mFromSpinnerWrapper = findViewById(R.id.spinner_from_content);
@@ -1793,6 +1841,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void appendSignature() {
         String newSignature = mCachedSettings != null ? mCachedSettings.signature : null;
+        boolean hasFocus = mBodyView.hasFocus();
         if (!TextUtils.equals(newSignature, mSignature)) {
             mSignature = newSignature;
             if (!TextUtils.isEmpty(mSignature)
@@ -1802,6 +1851,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 mBodyView.removeTextChangedListener(this);
                 mBodyView.append(convertToPrintableSignature(mSignature));
                 mBodyView.addTextChangedListener(this);
+            }
+            if (hasFocus) {
+                focusBody();
             }
         }
     }
