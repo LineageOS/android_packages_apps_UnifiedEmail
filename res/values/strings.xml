@@ -16,6 +16,12 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Names of packages and authorities that are common to all apps
+    and read from resources -->
+
+    <!-- Name of the search suggestions authority that looks up recent suggestions. This
+         needs to be modified in AndroidManifest.xml and res/xml/searchable.xml as well.  -->
+    <string name="suggestions_authority" translatable="false">com.android.mail.suggestionsprovider</string>
 
     <!-- Layout tests strings -->
     <string name="mock_content_provider" translatable="false">Mock Content Provider</string>

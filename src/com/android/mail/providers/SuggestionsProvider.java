@@ -74,7 +74,7 @@ public class SuggestionsProvider extends SearchSuggestionsProvider {
 
     @Override
     public boolean onCreate() {
-        final String authority = MailAppProvider.getInstance().getSuggestionAuthority();
+        final String authority = getContext().getString(R.string.suggestions_authority);
         setupSuggestions(authority, MODE);
         super.onCreate();
         return true;
