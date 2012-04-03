@@ -362,8 +362,13 @@ public abstract class AbstractActivityController implements ActivityController, 
         // Only restart the loader if the defaultInboxUri is not the same as
         // the folder we are already loading.
         final boolean changed = !oldUri.equals(newUri);
-        if (settings != null && settings.defaultInbox != null
-                && (mFolder == null || mFolder.type == UIProvider.FolderType.INBOX) && changed) {
+        if (settings != null
+                && settings.defaultInbox != null
+                && (mFolder == null
+                // we really only want CHANGES to the inbox setting, not just
+                // the first setting of it.
+                || (mFolder.type == UIProvider.FolderType.INBOX && !oldUri.equals(Uri.EMPTY))
+                && changed)) {
             loadAccountInbox();
         }
     }
@@ -755,8 +760,8 @@ public abstract class AbstractActivityController implements ActivityController, 
      */
     protected void restoreState(Bundle savedState) {
         final Intent intent = mActivity.getIntent();
+        boolean handled = false;
         if (savedState != null) {
-            boolean handled = false;
             if (savedState.containsKey(SAVED_ACCOUNT)) {
                 mAccount = ((Account) savedState.getParcelable(SAVED_ACCOUNT));
                 mActionBarView.setAccount(mAccount);
@@ -773,34 +778,33 @@ public abstract class AbstractActivityController implements ActivityController, 
                 showConversation(mCurrentConversation);
                 handled = true;
             }
-            if (!handled) {
-                // Nothing was saved; just load the account inbox.
-                loadAccountInbox();
-            }
-            restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
         } else if (intent != null) {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
                     mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                    mActionBarView.setAccount(mAccount);
-                    restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
-                    mActivity.invalidateOptionsMenu();
                 } else if (intent.hasExtra(Utils.EXTRA_ACCOUNT_STRING)) {
                     mAccount = Account.newinstance(intent
                             .getStringExtra(Utils.EXTRA_ACCOUNT_STRING));
+                }
+                if (mAccount != null) {
                     mActionBarView.setAccount(mAccount);
-                    restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
                     mActivity.invalidateOptionsMenu();
                 }
 
+                Folder folder = null;
                 if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
                     // Open the folder.
                     LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
                             intent.getParcelableExtra(Utils.EXTRA_FOLDER));
-                    onFolderChanged((Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER));
+                    folder = (Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER);
+
                 } else if (intent.hasExtra(Utils.EXTRA_FOLDER_STRING)) {
                     // Open the folder.
-                    onFolderChanged(new Folder(intent.getStringExtra(Utils.EXTRA_FOLDER_STRING)));
+                    folder = new Folder(intent.getStringExtra(Utils.EXTRA_FOLDER_STRING));
+                }
+                if (folder != null) {
+                    onFolderChanged(folder);
+                    handled = true;
                 }
 
                 if (intent.hasExtra(Utils.EXTRA_CONVERSATION)) {
@@ -810,7 +814,14 @@ public abstract class AbstractActivityController implements ActivityController, 
                     setCurrentConversation((Conversation) intent
                             .getParcelableExtra(Utils.EXTRA_CONVERSATION));
                     showConversation(mCurrentConversation);
+                    handled = true;
                 }
+
+                if (!handled) {
+                    // Nothing was saved; just load the account inbox.
+                    loadAccountInbox();
+                }
+                restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
             } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
                 // Save this search query for future suggestions.
                 final String query = intent.getStringExtra(SearchManager.QUERY);
