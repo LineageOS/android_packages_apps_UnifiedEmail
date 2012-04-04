@@ -228,7 +228,7 @@ public final class ConversationCursor implements Cursor {
         @Override
         protected Void doInBackground(Void... params) {
             if (DEBUG) {
-                LogUtils.i(TAG, "[Start refresh " + hashCode() + "]");
+                LogUtils.i(TAG, "[Start refresh %d]", hashCode());
             }
             // Get new data
             mCursor = doQuery(mUri, mProjection, false);
@@ -243,7 +243,7 @@ public final class ConversationCursor implements Cursor {
                 sRequeryCursor.getCount();
                 sRefreshReady = true;
                 if (DEBUG) {
-                    LogUtils.i(TAG, "[Notify: onRefreshReady " + hashCode() + "]");
+                    LogUtils.i(TAG, "[Notify: onRefreshReady %d]", hashCode());
                 }
                 synchronized (sListeners) {
                     for (ConversationListener listener : sListeners) {
@@ -256,7 +256,7 @@ public final class ConversationCursor implements Cursor {
         @Override
         protected void onCancelled() {
             if (DEBUG) {
-                LogUtils.i(TAG, "[Ignoring refresh result " + hashCode() + "]");
+                LogUtils.i(TAG, "[Ignoring refresh result %d]", hashCode());
             }
             if (mCursor != null) {
                 mCursor.close();
@@ -501,7 +501,7 @@ public final class ConversationCursor implements Cursor {
                     map.put(REQUERY_COLUMN, 1);
                 }
                 if (DEBUG && (columnName != DELETED_COLUMN)) {
-                    LogUtils.i(TAG, "Caching value for " + uriString + ": " + columnName);
+                    LogUtils.i(TAG, "Caching value for %s: %s", uriString, columnName);
                 }
             } finally {
                 synchronized(sListeners) {
@@ -706,8 +706,8 @@ public final class ConversationCursor implements Cursor {
         synchronized(sCacheMapLock) {
             if (sRefreshTask != null) {
                 if (DEBUG) {
-                    LogUtils.i(TAG, "[refresh() returning; already running " +
-                            sRefreshTask.hashCode() + "]");
+                    LogUtils.i(TAG, "[refresh() returning; already running %d]",
+                            sRefreshTask.hashCode());
                 }
                 return false;
             }

@@ -97,7 +97,7 @@ public final class RecentFolderList {
                 ContentValues values = new ContentValues();
                 values.put(mFolder.uri.toString(), System.currentTimeMillis());
                 // TODO: Remove when well tested
-                LogUtils.i(TAG, "Save: " + mFolder.name);
+                LogUtils.i(TAG, "Save: %s", mFolder.name);
                 mContext.getContentResolver().update(uri, values, null, null);
             }
             return null;
@@ -139,7 +139,7 @@ public final class RecentFolderList {
             Folder folder = new Folder(c);
             mFolderCache.putElement(folder.uri.toString(), folder);
             // TODO: Remove when well tested
-            LogUtils.i(TAG, "Account " + mAccount.name + ", Recent: " + folder.name);
+            LogUtils.i(TAG, "Account %s, Recent: %s", mAccount.name, folder.name);
             if (++i == (MAX_RECENT_FOLDERS + MAX_EXCLUDED_FOLDERS))
                 break;
         }

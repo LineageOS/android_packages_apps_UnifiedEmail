@@ -960,7 +960,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                         args.getString(ConversationListContext.EXTRA_SEARCH_QUERY),
                         mActivity.getActivityContext());
             default:
-                LogUtils.wtf(LOG_TAG, "Loader returned unexpected id: " + id);
+                LogUtils.wtf(LOG_TAG, "Loader returned unexpected id: %d", id);
         }
         return null;
     }
@@ -1155,7 +1155,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 if (mConversationListFragment != null) {
                     mConversationListFragment.onFolderUpdated(folder);
                 }
-                LogUtils.v(LOG_TAG, "FOLDER STATUS = " + folder.syncStatus);
+                LogUtils.v(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
                 break;
             case LOADER_ACCOUNT_SETTINGS:
                 // An account may actually have no settings if it is one of the
@@ -1238,21 +1238,21 @@ public abstract class AbstractActivityController implements ActivityController, 
         public void performConversationAction(Collection<Conversation> single) {
             switch (mAction) {
                 case R.id.archive:
-                    LogUtils.d(LOG_TAG, "Archiving conversation " + mCurrentConversation);
+                    LogUtils.d(LOG_TAG, "Archiving conversation %s", mCurrentConversation);
                     Conversation.archive(mContext, single);
                     break;
                 case R.id.delete:
-                    LogUtils.d(LOG_TAG, "Deleting conversation " + mCurrentConversation);
+                    LogUtils.d(LOG_TAG, "Deleting conversation %s", mCurrentConversation);
                     Conversation.delete(mContext, single);
                     break;
                 case R.id.mute:
-                    LogUtils.d(LOG_TAG, "Muting conversation " + mCurrentConversation);
+                    LogUtils.d(LOG_TAG, "Muting conversation %s", mCurrentConversation);
                     if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE))
                         mCurrentConversation.localDeleteOnUpdate = true;
                     Conversation.mute(mContext, single);
                     break;
                 case R.id.report_spam:
-                    LogUtils.d(LOG_TAG, "reporting spam conversation " + mCurrentConversation);
+                    LogUtils.d(LOG_TAG, "reporting spam conversation %s", mCurrentConversation);
                     Conversation.reportSpam(mContext, single);
                     break;
             }
