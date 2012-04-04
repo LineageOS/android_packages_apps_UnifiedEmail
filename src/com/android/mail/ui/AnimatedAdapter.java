@@ -220,6 +220,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return super.getView(position, convertView, parent);
     }
 
+    @Override
+    public long getItemId(int position) {
+        if (mShowFooter && position == super.getCount()) {
+            return -1;
+        }
+        return super.getItemId(position);
+    }
+
     /**
      * Get an animating view. This happens when a list item is in the process of being removed
      * from the list (items being deleted).
@@ -251,6 +259,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             view.startAnimation(conversation, mViewMode, this);
             return view;
         }
+    }
+
+    @Override
+    public Object getItem(int position) {
+        if (mShowFooter && position == super.getCount()) {
+            return mFooter;
+        }
+        return super.getItem(position);
     }
 
     private boolean isPositionAnimating(int position) {
