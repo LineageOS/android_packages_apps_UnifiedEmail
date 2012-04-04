@@ -133,6 +133,10 @@ public abstract class AbstractActivityController implements ActivityController, 
      */
     private final ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
 
+    /**
+     * Action menu associated with the selected set.
+     */
+    SelectedConversationsActionMenu mCabActionMenu;
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     /** Constants used to differentiate between the types of loaders. */
@@ -887,6 +891,14 @@ public abstract class AbstractActivityController implements ActivityController, 
         setCurrentConversation(conversation);
     }
 
+    /**
+     * Children can override this method, but they must call super.showConversationList().
+     * {@inheritDoc}
+     */
+    @Override
+    public void showConversationList(ConversationListContext listContext) {
+    }
+
     @Override
     public void onConversationSelected(Conversation conversation) {
         showConversation(conversation);
@@ -1343,10 +1355,10 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
-        SelectedConversationsActionMenu menu = new SelectedConversationsActionMenu(mActivity,
+        mCabActionMenu = new SelectedConversationsActionMenu(mActivity,
                 set, mConversationListFragment.getAnimatedAdapter(), this,
                 mConversationListFragment, mAccount, mFolder);
-        menu.activate();
+        enableCabMode();
     }
 
 
@@ -1358,6 +1370,24 @@ public abstract class AbstractActivityController implements ActivityController, 
     @Override
     public ConversationSelectionSet getSelectedSet() {
         return mSelectedSet;
+    }
+
+    /**
+     * Disable the Contextual Action Bar (CAB). The selected set is not changed.
+     */
+    protected void disableCabMode() {
+        if (mCabActionMenu != null) {
+            mCabActionMenu.deactivate();
+        }
+    }
+
+    /**
+     * Re-enable the CAB menu if required. The selection set is not changed.
+     */
+    protected void enableCabMode() {
+        if (mCabActionMenu != null) {
+            mCabActionMenu.activate();
+        }
     }
 
     @Override

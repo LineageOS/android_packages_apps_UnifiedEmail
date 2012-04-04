@@ -129,7 +129,8 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void showConversationList(ConversationListContext context) {
+    public void showConversationList(ConversationListContext listContext) {
+        super.showConversationList(listContext);
         initializeConversationListFragment(true);
     }
 
