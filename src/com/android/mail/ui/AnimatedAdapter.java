@@ -251,7 +251,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             // The undo animation consists of fading in the conversation that
             // had been destroyed.
             ConversationItemView convView = (ConversationItemView) super.getView(position, null,
-                    mListView);
+                    parent);
             convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
                     mCachedSettings != null ? !mCachedSettings.hideCheckboxes : false,
                     mSwipeEnabled);
