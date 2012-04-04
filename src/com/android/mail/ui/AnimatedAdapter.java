@@ -58,6 +58,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Folder mFolder;
     private final ListView mListView;
     private Settings mCachedSettings;
+    private boolean mSwipeEnabled;
     /**
      * Used only for debugging.
      */
@@ -77,6 +78,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mShowFooter = false;
         mListView = listView;
         mCachedSettings = settings;
+        mSwipeEnabled = account.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE);
     }
 
     @Override
@@ -111,7 +113,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public void bindView(View view, Context context, Cursor cursor) {
         if (!isPositionAnimating(view) && !isPositionFooter(view)) {
             ((ConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
-                    mCachedSettings != null ? !mCachedSettings.hideCheckboxes : false);
+                    mCachedSettings != null ? !mCachedSettings.hideCheckboxes : false,
+                    mSwipeEnabled);
         }
     }
 
@@ -250,7 +253,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             ConversationItemView convView = (ConversationItemView) super.getView(position, null,
                     mListView);
             convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
-                    mCachedSettings != null ? !mCachedSettings.hideCheckboxes : false);
+                    mCachedSettings != null ? !mCachedSettings.hideCheckboxes : false,
+                    mSwipeEnabled);
             convView.startUndoAnimation(mViewMode, this);
             return convView;
         } else {

@@ -158,6 +158,7 @@ public class ConversationItemView extends View {
     private boolean mCheckboxesEnabled;
     private CheckForTap mPendingCheckForTap;
     private CheckForLongPress mPendingCheckForLongPress;
+    private boolean mSwipeEnabled;
     private static Bitmap MORE_FOLDERS;
 
     static {
@@ -361,24 +362,26 @@ public class ConversationItemView extends View {
     }
 
     public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set,
-            Folder folder, boolean checkboxesEnabled) {
+            Folder folder, boolean checkboxesEnabled, boolean swipeEnabled) {
         mViewMode = viewMode;
         mHeader = ConversationItemViewModel.forCursor(cursor);
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         mCheckboxesEnabled = checkboxesEnabled;
+        mSwipeEnabled = swipeEnabled;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
     }
 
 
     public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
-            Folder folder, boolean checkboxesEnabled) {
+            Folder folder, boolean checkboxesEnabled, boolean swipeEnabled) {
         mViewMode = viewMode;
         mHeader = ConversationItemViewModel.forConversation(conversation);
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         mCheckboxesEnabled = checkboxesEnabled;
+        mSwipeEnabled = swipeEnabled;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
     }
@@ -1069,6 +1072,9 @@ public class ConversationItemView extends View {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!mSwipeEnabled) {
+            return onTouchEventNoSwipe(event);
+        }
         boolean handled = true;
 
         int x = (int) event.getX();
@@ -1112,6 +1118,54 @@ public class ConversationItemView extends View {
                             int pos = list.getPositionForView(this);
                             list.performItemClick(this, pos, mHeader.conversation.id);
                         }
+                    }
+                    handled = true;
+                } else {
+                    // There was no down event that this view was made aware of,
+                    // therefore it cannot handle it.
+                    handled = false;
+                }
+                break;
+        }
+
+        if (!handled) {
+            // Let View try to handle it as well.
+            handled = super.onTouchEvent(event);
+        }
+
+        return handled;
+    }
+
+    private boolean onTouchEventNoSwipe(MotionEvent event) {
+        boolean handled = true;
+
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mDownEvent = true;
+                // In order to allow the down event and subsequent move events
+                // to bubble to the swipe handler, we need to return that all
+                // down events are handled.
+                handled = isTouchInCheckmark(x, y) || isTouchInStar(x, y);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                mDownEvent = false;
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mDownEvent) {
+                    // ConversationItemView gets the first chance to handle up
+                    // events if there was a down event and there was no move
+                    // event in between. In this case, ConversationItemView
+                    // received the down event, and then an up event in the
+                    // same location (+/- slop). Treat this as a click on the
+                    // view or on a specific part of the view.
+                    if (isTouchInCheckmark(x, y)) {
+                        // Touch on the check mark
+                        toggleCheckMark();
+                    } else if (isTouchInStar(x, y)) {
+                        // Touch on the star
+                        toggleStar();
                     }
                     handled = true;
                 } else {

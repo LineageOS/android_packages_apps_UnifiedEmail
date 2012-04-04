@@ -189,7 +189,10 @@ public class SwipeHelper {
             case MotionEvent.ACTION_DOWN:
                 mLastY = ev.getY();
                 mDragging = false;
-                mCurrView = (ConversationItemView)mCallback.getChildAtPosition(ev);
+                View view = mCallback.getChildAtPosition(ev);
+                if (view instanceof ConversationItemView) {
+                    mCurrView = (ConversationItemView) view;
+                }
                 mVelocityTracker.clear();
                 if (mCurrView != null) {
                     mCurrAnimView = mCallback.getChildContentView(mCurrView);

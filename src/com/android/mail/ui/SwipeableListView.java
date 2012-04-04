@@ -72,6 +72,10 @@ public class SwipeableListView extends ListView implements Callback {
         mEnableSwipe = enable;
     }
 
+    public boolean isSwipeEnabled() {
+        return mEnableSwipe;
+    }
+
     public void setSwipeCompleteListener(SwipeCompleteListener listener) {
         mSwipeCompleteListener = listener;
     }
