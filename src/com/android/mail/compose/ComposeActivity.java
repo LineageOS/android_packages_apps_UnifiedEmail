@@ -1550,10 +1550,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 break;
         }
         MessageModification.putDraftType(values, draftType);
-        if (refMessage != null && !TextUtils.isEmpty(refMessage.bodyHtml)) {
+        if (refMessage != null) {
+            if (!TextUtils.isEmpty(refMessage.bodyHtml)) {
+                MessageModification.putBodyHtml(values, fullBody.toString());
+            }
+            if (!TextUtils.isEmpty(refMessage.bodyText)) {
+                MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
+            }
+        } else {
             MessageModification.putBodyHtml(values, fullBody.toString());
-        }
-        if (refMessage != null && !TextUtils.isEmpty(refMessage.bodyText)) {
             MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
         }
         MessageModification.putAttachments(values, attachments);
