@@ -205,12 +205,15 @@ public class ConversationSelectionSet implements Parcelable {
     /**
      * Toggles the existence of the given conversation in the selection set. If the conversation is
      * currently selected, it is deselected. If it doesn't exist in the selection set, then it is
-     * selected.
+     * selected. If you are certain that you are deselecting a conversation (you have verified
+     * that {@link #contains(Conversation)} or {@link #containsKey(Long)} are true), then you
+     * may pass a null {@link ConversationItemView}.
      * @param conversation
      */
     public void toggle(ConversationItemView view, Conversation conversation) {
         long conversationId = conversation.id;
         if (containsKey(conversationId)) {
+            // We must not do anything with view here.
             remove(conversationId);
         } else {
             put(conversationId, view);

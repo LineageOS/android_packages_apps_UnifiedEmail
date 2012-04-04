@@ -504,6 +504,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
+    /**
+     * Listener to act upon destructive actions carried out on multiple conversations. Destructive
+     * actions are like delete/archive, and they require the UI state to remove the conversations
+     * from the UI.
+     */
     private class DestructiveActionListener implements ActionCompleteListener {
         private final int mAction;
         public DestructiveActionListener(int action) {
