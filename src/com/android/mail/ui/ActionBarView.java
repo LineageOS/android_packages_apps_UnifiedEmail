@@ -41,6 +41,7 @@ import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogUtils;
@@ -68,6 +69,10 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      * The account currently being shown
      */
     private Account mAccount;
+    /**
+     * The folder currently being shown
+     */
+    private Folder mFolder;
 
     // TODO(viki): This is a SnippetTextView in the Gmail source code. Resolve.
     private TextView mSubjectView;
@@ -75,6 +80,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private MenuItem mHelpItem;
     private MenuItem mSendFeedbackItem;
     private MenuItem mRefreshItem;
+    private MenuItem mFolderSettingsItem;
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
 
@@ -120,6 +126,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
         mSendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
         mRefreshItem = menu.findItem(R.id.refresh);
+        mFolderSettingsItem = menu.findItem(R.id.folder_options);
         return true;
     }
 
@@ -200,6 +207,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         setSelectedPosition(mSpinner.getSpacerPosition());
         mSpinner.setCurrentFolder(folder);
         mSpinner.notifyDataSetChanged();
+        mFolder = folder;
     }
 
     /**
@@ -276,6 +284,10 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         if (mSendFeedbackItem != null) {
             mSendFeedbackItem.setVisible(mAccount != null
                     && mAccount.supportsCapability(AccountCapabilities.SEND_FEEDBACK));
+        }
+        if (mFolderSettingsItem != null) {
+            mFolderSettingsItem.setVisible(mFolder != null
+                    && mFolder.supportsCapability(FolderCapabilities.SUPPORTS_SETTINGS));
         }
         switch (mMode) {
             case ViewMode.UNKNOWN:
