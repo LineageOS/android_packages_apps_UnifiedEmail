@@ -416,7 +416,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     // TODO(mindyp): set this up to store a copy of the folder as a transient
     // field in the account.
     protected void loadAccountInbox() {
-        restartOptionalLoader(LOADER_ACCOUNT_INBOX, null);
+        restartOptionalLoader(LOADER_ACCOUNT_INBOX, Bundle.EMPTY);
     }
 
     /** Set the current folder */
