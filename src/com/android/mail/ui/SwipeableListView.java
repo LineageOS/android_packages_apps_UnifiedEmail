@@ -38,7 +38,7 @@ import java.util.Collection;
 public class SwipeableListView extends ListView implements Callback {
     private SwipeHelper mSwipeHelper;
     private SwipeCompleteListener mSwipeCompleteListener;
-    private boolean ENABLE_SWIPE = true;
+    private boolean mEnableSwipe = false;
     private ListAdapter mDebugAdapter;
     private int mDebugLastCount;
 
@@ -65,6 +65,13 @@ public class SwipeableListView extends ListView implements Callback {
                 scrollSlop);
     }
 
+    /**
+     * Enable swipe gestures.
+     */
+    public void enableSwipe(boolean enable) {
+        mEnableSwipe = enable;
+    }
+
     public void setSwipeCompleteListener(SwipeCompleteListener listener) {
         mSwipeCompleteListener = listener;
     }
@@ -80,7 +87,7 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ENABLE_SWIPE) {
+        if (mEnableSwipe) {
             return mSwipeHelper.onInterceptTouchEvent(ev)
                     || super.onInterceptTouchEvent(ev);
         } else {
@@ -90,7 +97,7 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (ENABLE_SWIPE) {
+        if (mEnableSwipe) {
             return mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev);
         } else {
             return super.onTouchEvent(ev);
