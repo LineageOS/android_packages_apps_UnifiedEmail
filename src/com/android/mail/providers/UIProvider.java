@@ -445,7 +445,7 @@ public class UIProvider {
         public static final int PARENT = 0x0002;
         public static final int CAN_HOLD_MAIL = 0x0004;
         public static final int CAN_ACCEPT_MOVED_MESSAGES = 0x0008;
-        /**
+         /**
          * For accounts that support archive, this will indicate that this folder supports
          * the archive functionality.
          */
@@ -462,6 +462,11 @@ public class UIProvider {
          * this folder, the action is destructive.
          */
         public static final int DESTRUCTIVE_MUTE = 0x0040;
+
+        /**
+         * Indicates that a folder supports settings (sync lookback, etc.)
+         */
+        public static final int SUPPORTS_SETTINGS = 0x0080;
     }
 
     public static final class FolderColumns {
