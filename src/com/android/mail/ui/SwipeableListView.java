@@ -61,8 +61,11 @@ public class SwipeableListView extends ListView implements Callback {
         super(context, attrs, defStyle);
         float densityScale = getResources().getDisplayMetrics().density;
         float scrollSlop = context.getResources().getInteger(R.integer.swipeScrollSlop);
+        float minSwipe = context.getResources().getDimension(R.dimen.min_swipe);
+        float minVert = context.getResources().getDimension(R.dimen.min_vert);
+        float minLock = context.getResources().getDimension(R.dimen.min_lock);
         mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, densityScale, densityScale,
-                scrollSlop);
+                scrollSlop, minSwipe, minVert, minLock);
     }
 
     /**
@@ -183,6 +186,9 @@ public class SwipeableListView extends ListView implements Callback {
 
     private Conversation getConversation(View view) {
         Conversation c = ((ConversationItemView) view).getConversation();
+        if (view.getParent() == null) {
+            return c;
+        }
         c.position = getPositionForView(view);
         return c;
     }
