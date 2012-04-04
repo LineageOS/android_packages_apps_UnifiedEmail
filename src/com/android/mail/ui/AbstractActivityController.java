@@ -324,11 +324,11 @@ public abstract class AbstractActivityController implements ActivityController, 
             // Reset settings; they are no longer valid.
             onSettingsChanged(null);
             mActionBarView.setAccount(mAccount);
-            restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
+            restartOptionalLoader(LOADER_ACCOUNT_SETTINGS);
             loadAccountInbox();
 
             mRecentFolderList.setCurrentAccount(account);
-            restartOptionalLoader(LOADER_RECENT_FOLDERS, null /* args */);
+            restartOptionalLoader(LOADER_RECENT_FOLDERS);
             mActivity.invalidateOptionsMenu();
 
             disableNotificationsOnAccountChange(mAccount);
@@ -416,7 +416,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     // TODO(mindyp): set this up to store a copy of the folder as a transient
     // field in the account.
     protected void loadAccountInbox() {
-        restartOptionalLoader(LOADER_ACCOUNT_INBOX, Bundle.EMPTY);
+        restartOptionalLoader(LOADER_ACCOUNT_INBOX);
     }
 
     /** Set the current folder */
@@ -782,6 +782,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 showConversation(mCurrentConversation);
                 handled = true;
             }
+            startLoader(LOADER_ACCOUNT_SETTINGS);
         } else if (intent != null) {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
@@ -825,7 +826,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                     // Nothing was saved; just load the account inbox.
                     loadAccountInbox();
                 }
-                restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
+                restartOptionalLoader(LOADER_ACCOUNT_SETTINGS);
             } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
                 // Save this search query for future suggestions.
                 final String query = intent.getStringExtra(SearchManager.QUERY);
@@ -838,7 +839,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                 mActionBarView.setAccount(mAccount);
                 fetchSearchFolder(intent);
-                restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
+                restartOptionalLoader(LOADER_ACCOUNT_SETTINGS);
             }
         }
 
@@ -975,12 +976,23 @@ public abstract class AbstractActivityController implements ActivityController, 
      * give the controller a chance to invalidate UI corresponding the prior loader result.
      *
      * @param id loader ID to safely restart
-     * @param args arguments to pass to the restarted loader
      */
-    private void restartOptionalLoader(int id, Bundle args) {
+    private void restartOptionalLoader(int id) {
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.destroyLoader(id);
-        lm.restartLoader(id, args, this);
+        lm.restartLoader(id, Bundle.EMPTY, this);
+    }
+
+    /**
+     * Start a loader with the given id. This should be called when we know that the previous
+     * state of the application matches this state, and we are happy if we get the previously
+     * created loader with this id. If that is not true, consider calling
+     * {@link #restartOptionalLoader(int)} instead.
+     * @param id
+     */
+    private void startLoader(int id) {
+        final LoaderManager lm = mActivity.getLoaderManager();
+        lm.initLoader(id, Bundle.EMPTY, this);
     }
 
     private boolean accountsUpdated(Cursor accountCursor) {
