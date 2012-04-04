@@ -834,6 +834,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                 mActionBarView.setAccount(mAccount);
                 fetchSearchFolder(intent);
+                restartOptionalLoader(LOADER_ACCOUNT_SETTINGS, null /* args */);
             }
         }
 

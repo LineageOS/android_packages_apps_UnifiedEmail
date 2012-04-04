@@ -58,7 +58,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
 import com.android.mail.providers.Message;
-import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
@@ -354,12 +353,11 @@ public final class ConversationViewFragment extends Fragment implements
             final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
             allowNetworkImages |= safeForImages;
 
-            Settings settings = mActivity.getSettings();
             final int headerPos = mAdapter
                     .addMessageHeader(
                             msg,
-                            (settings != null ? mActivity.getSettings().replyBehavior
-                                    == UIProvider.DefaultReplyBehavior.REPLY_ALL : false),
+                            (mActivity.getSettings().replyBehavior
+                                    == UIProvider.DefaultReplyBehavior.REPLY_ALL),
                             true /* expanded */);
             final MessageHeaderItem headerItem = (MessageHeaderItem) mAdapter.getItem(headerPos);
 
