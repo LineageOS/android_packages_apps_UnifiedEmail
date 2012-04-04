@@ -297,4 +297,12 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         // The header is not enabled, so return false here.
         return false;
     }
+
+    /**
+     * Notify that the folder has changed.
+     */
+    public void onFolderUpdated(Folder folder) {
+        mCurrentFolder = folder;
+        notifyDataSetChanged();
+    }
 }

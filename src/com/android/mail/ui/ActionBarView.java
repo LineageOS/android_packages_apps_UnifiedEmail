@@ -425,4 +425,11 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         mController.onSearchRequested(query);
         return true;
     }
+
+    /**
+     * Notify that the folder has changed.
+     */
+    public void onFolderUpdated(Folder folder) {
+        mSpinner.onFolderUpdated(folder);
+    }
 }

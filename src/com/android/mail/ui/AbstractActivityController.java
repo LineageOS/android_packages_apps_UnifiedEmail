@@ -1126,6 +1126,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                     // Stop the spinner here.
                     mActionBarView.onRefreshStopped(folder.lastSyncResult);
                 }
+                mActionBarView.onFolderUpdated(folder);
                 if (mConversationListFragment != null) {
                     mConversationListFragment.onFolderUpdated(folder);
                 }
