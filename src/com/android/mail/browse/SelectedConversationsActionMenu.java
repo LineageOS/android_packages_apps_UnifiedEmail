@@ -99,10 +99,13 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private Folder mFolder;
 
-    private ActionCompleteListener mDeleteListener = new DestructiveActionListener(R.id.delete);
-    private ActionCompleteListener mArchiveListener = new DestructiveActionListener(R.id.archive);
-    private ActionCompleteListener mMuteListener = new DestructiveActionListener(R.id.mute);
-    private ActionCompleteListener mSpamListener = new DestructiveActionListener(R.id.report_spam);
+    private final ActionCompleteListener mDeleteListener =
+            new DestructiveActionListener(R.id.delete);
+    private final ActionCompleteListener mArchiveListener =
+            new DestructiveActionListener(R.id.archive);
+    private final ActionCompleteListener mMuteListener = new DestructiveActionListener(R.id.mute);
+    private final ActionCompleteListener mSpamListener =
+            new DestructiveActionListener(R.id.report_spam);
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
@@ -253,7 +256,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
-    private ActionCompleteListener mFolderChangeListener = new ActionCompleteListener() {
+    private final ActionCompleteListener mFolderChangeListener = new ActionCompleteListener() {
         @Override
         public void onActionComplete() {
             mActionCompleteListener.onActionComplete();
@@ -393,9 +396,14 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     /**
-     * Activates and shows this menu (essentially starting an {@link ActionMode}).
+     * Activates and shows this menu (essentially starting an {@link ActionMode}) if the selected
+     * set is non-empty.
      */
     public void activate() {
+        if (mSelectionSet.isEmpty()) {
+            // We have nothing to do since there is no conversation selected.
+            return;
+        }
         mActivated = true;
         if (mActionMode == null) {
             mActivity.startActionMode(this);

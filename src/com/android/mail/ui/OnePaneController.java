@@ -150,6 +150,8 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void showConversationList(ConversationListContext listContext) {
+        super.showConversationList(listContext);
+        enableCabMode();
         // TODO(viki): Check if the account has been changed since the previous
         // time.
         if (listContext != null && listContext.isSearchResult()) {
@@ -182,6 +184,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void showConversation(Conversation conversation) {
         super.showConversation(conversation);
+        disableCabMode();
         if (mConvListContext != null && mConvListContext.isSearchResult()) {
             mViewMode.enterSearchResultsConversationMode();
         } else {
