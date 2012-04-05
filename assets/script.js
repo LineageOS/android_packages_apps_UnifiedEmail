@@ -46,6 +46,7 @@ function toggleQuotedText(e) {
     var isHidden = getComputedStyle(elidedTextElement).display == 'none';
     toggleElement.innerHTML = isHidden ? MSG_HIDE_ELIDED : MSG_SHOW_ELIDED;
     elidedTextElement.style.display = isHidden ? 'block' : 'none';
+    measurePositions();
 }
 
 function collapseQuotedText() {
@@ -165,6 +166,32 @@ function unblockImages(messageDomId) {
             image.removeAttribute(BLOCKED_SRC_ATTR);
         }
     }
+}
+
+function setMessageHeaderSpacerHeight(messageDomId, spacerHeight) {
+    var spacer = document.querySelector("#" + messageDomId + " > .mail-message-header");
+    if (!spacer) {
+        console.log("can't set spacer for message with id: " + messageDomId);
+        return;
+    }
+    spacer.style.height = spacerHeight + "px";
+    measurePositions();
+}
+
+function setMessageBodyVisible(messageDomId, isVisible, spacerHeight) {
+    var i, len;
+    var visibility = isVisible ? "block" : "none";
+    var messageDiv = document.querySelector("#" + messageDomId);
+    var collapsibleDivs = document.querySelectorAll("#" + messageDomId + " > .collapsible");
+    if (!messageDiv || collapsibleDivs.length == 0) {
+        console.log("can't set body visibility for message with id: " + messageDomId);
+        return;
+    }
+    messageDiv.classList.toggle("expanded");
+    for (i = 0, len = collapsibleDivs.length; i < len; i++) {
+        collapsibleDivs[i].style.display = visibility;
+    }
+    setMessageHeaderSpacerHeight(messageDomId, spacerHeight);
 }
 // END Java->JavaScript handlers
 

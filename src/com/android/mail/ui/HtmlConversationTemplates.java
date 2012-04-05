@@ -167,6 +167,7 @@ public class HtmlConversationTemplates {
                 bodyDisplay,
                 zoomValue,
                 body,
+                bodyDisplay,
                 footerHeight
         );
     }

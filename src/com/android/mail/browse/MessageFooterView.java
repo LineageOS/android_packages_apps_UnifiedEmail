@@ -17,8 +17,6 @@
 
 package com.android.mail.browse;
 
-import com.google.common.collect.Lists;
-
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
@@ -30,19 +28,20 @@ import android.widget.LinearLayout;
 
 import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.browse.ConversationContainer.DetachListener;
+import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.utils.LogUtils;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 
 public class MessageFooterView extends LinearLayout implements DetachListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    private Message mMessage;
+    private MessageHeaderItem mMessageHeaderItem;
     private LoaderManager mLoaderManager;
     private AttachmentCursor mAttachmentsCursor;
-    private boolean mIsExpanded;
     private LayoutInflater mInflater;
 
     /**
@@ -82,45 +81,41 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mLoaderManager = loaderManager;
     }
 
-    public void bind(Message msg, boolean expanded) {
-        mMessage = msg;
-        mIsExpanded = expanded;
+    public void bind(MessageHeaderItem headerItem) {
+        mMessageHeaderItem = headerItem;
+
+        /*
+         * Assuming ConversationContainer does not requesting adapter views for zero-height items,
+         * we should just always render even if the matching header is collapsed.
+         */
 
         removeAllViewsInLayout();
 
         // kick off load of Attachment objects in background thread
         final Integer attachmentLoaderId = getAttachmentLoaderId();
         if (sEnableAttachmentLoaders && attachmentLoaderId != null) {
-            LogUtils.d(LOG_TAG, "binding footer view, calling initLoader for message %d",
+            LogUtils.i(LOG_TAG, "binding footer view, calling initLoader for message %d",
                     attachmentLoaderId);
             mLoaderManager.initLoader(attachmentLoaderId, Bundle.EMPTY, this);
         }
 
-        if (mIsExpanded) {
-            setVisibility(VISIBLE);
-            // Do an initial render if initLoader didn't already do one
-            if (getChildCount() == 0) {
-                renderAttachments();
-            }
-        } else {
-            setVisibility(GONE);
+        // Do an initial render if initLoader didn't already do one
+        if (getChildCount() == 0) {
+            renderAttachments();
         }
+        setVisibility(mMessageHeaderItem.isExpanded() ? VISIBLE : GONE);
     }
 
-    private void destroyLoader() {
+    private void unbind() {
         final Integer loaderId = getAttachmentLoaderId();
         if (mLoaderManager != null && loaderId != null) {
-            LogUtils.d(LOG_TAG, "detaching/reusing footer view,"
-                    + " calling destroyLoader for message %d", loaderId);
+            LogUtils.i(LOG_TAG, "detaching footer view, calling destroyLoader for message %d",
+                    loaderId);
             mLoaderManager.destroyLoader(loaderId);
         }
     }
 
     private void renderAttachments() {
-        if (!mIsExpanded) {
-            return;
-        }
-
         List<Attachment> attachments;
         if (mAttachmentsCursor != null && !mAttachmentsCursor.isClosed()) {
             int i = -1;
@@ -131,7 +126,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         } else {
             // before the attachment loader results are in, we can still render immediately using
             // the basic info in the message's attachmentsJSON
-            attachments = mMessage.getAttachments();
+            attachments = mMessageHeaderItem.message.getAttachments();
         }
         renderAttachments(attachments);
     }
@@ -153,8 +148,9 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     private Integer getAttachmentLoaderId() {
         Integer id = null;
-        if (mMessage != null && mMessage.hasAttachments && mMessage.attachmentListUri != null) {
-            id = mMessage.attachmentListUri.hashCode();
+        final Message msg = mMessageHeaderItem == null ? null : mMessageHeaderItem.message;
+        if (msg != null && msg.hasAttachments && msg.attachmentListUri != null) {
+            id = msg.attachmentListUri.hashCode();
         }
         return id;
     }
@@ -162,17 +158,17 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        destroyLoader();
+        unbind();
     }
 
     @Override
     public void onDetachedFromParent() {
-        destroyLoader();
+        unbind();
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new AttachmentLoader(getContext(), mMessage.attachmentListUri);
+        return new AttachmentLoader(getContext(), mMessageHeaderItem.message.attachmentListUri);
     }
 
     @Override

@@ -128,6 +128,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private int mWidthMeasureSpec;
 
+    private boolean mDisableLayoutTracing;
+
     private static final int VIEW_TAG_CONVERSATION_INDEX = R.id.view_tag_conversation_index;
 
     /**
@@ -263,7 +265,9 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     @Override
     public void onNotifierScroll(final int x, final int y) {
+        mDisableLayoutTracing = true;
         positionOverlays(x, y);
+        mDisableLayoutTracing = false;
     }
 
     private void positionOverlays(int x, int y) {
@@ -279,8 +283,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         if (mTouchInitialized) {
             mScale = mWebView.getScale();
         }
-        LogUtils.v(TAG, "in positionOverlays, raw scale=%f, effective scale=%f",
-                mWebView.getScale(), mScale);
+        traceLayout("in positionOverlays, raw scale=%f, effective scale=%f", mWebView.getScale(),
+                mScale);
 
         if (mOverlayBottoms == null) {
             return;
@@ -294,8 +298,13 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         // in a single stack until you encounter a non-contiguous expanded message header,
         // then decrement to the next spacer.
 
+        traceLayout("IN positionOverlays, spacerCount=%d overlayCount=%d", mOverlayBottoms.length,
+                mOverlayAdapter.getCount());
+
         int adapterIndex = mOverlayAdapter.getCount() - 1;
-        for (int spacerIndex = mOverlayBottoms.length - 1; spacerIndex >= 0; spacerIndex--) {
+        int spacerIndex = mOverlayBottoms.length - 1;
+        while (spacerIndex >= 0 && adapterIndex >= 0) {
+
             final int spacerBottomY = getOverlayBottom(spacerIndex);
 
             // always place at least one overlay per spacer
@@ -304,6 +313,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             int overlayBottomY = spacerBottomY;
             int overlayTopY = overlayBottomY - adapterItem.getHeight();
 
+            traceLayout("in loop, spacer=%d overlay=%d t/b=%d/%d (%s)", spacerIndex, adapterIndex,
+                    overlayTopY, overlayBottomY, adapterItem);
             positionOverlay(adapterIndex, overlayTopY, overlayBottomY);
 
             // and keep stacking overlays as long as they are contiguous
@@ -317,8 +328,12 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
                 overlayBottomY = overlayTopY; // stack on top of previous overlay
                 overlayTopY = overlayBottomY - adapterItem.getHeight();
 
+                traceLayout("in contig loop, spacer=%d overlay=%d t/b=%d/%d (%s)", spacerIndex,
+                        adapterIndex, overlayTopY, overlayBottomY, adapterItem);
                 positionOverlay(adapterIndex, overlayTopY, overlayBottomY);
             }
+
+            spacerIndex--;
         }
     }
 
@@ -326,6 +341,10 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      * Copied/stolen from {@link ListView}.
      */
     private void measureItem(View child) {
+        if (child.getVisibility() == GONE) {
+            return;
+        }
+
         ViewGroup.LayoutParams p = child.getLayoutParams();
         if (p == null) {
             p = new ViewGroup.LayoutParams(
@@ -346,7 +365,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     private void onOverlayScrolledOff(final View overlayView, final int itemType,
-            int overlayTop) {
+            int overlayTop, int overlayBottom) {
         // do it asynchronously, as scroll notification can happen during a draw, when it's not
         // safe to remove children
 
@@ -366,7 +385,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
         // push it out of view immediately
         // otherwise this scrolled-off header will continue to draw until the runnable runs
-        layoutOverlay(overlayView, overlayTop);
+        layoutOverlay(overlayView, overlayTop, overlayBottom);
     }
 
     public View getScrapView(int type) {
@@ -402,7 +421,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        LogUtils.d(TAG, "*** IN header container onMeasure spec for w/h=%d/%d", widthMeasureSpec,
+        LogUtils.i(TAG, "*** IN header container onMeasure spec for w/h=%d/%d", widthMeasureSpec,
                 heightMeasureSpec);
 
         if (mWebView.getVisibility() != GONE) {
@@ -422,7 +441,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        LogUtils.d(TAG, "*** IN header container onLayout");
+        LogUtils.i(TAG, "*** IN header container onLayout");
 
         mWebView.layout(0, 0, mWebView.getMeasuredWidth(), mWebView.getMeasuredHeight());
         positionOverlays(0, mOffsetY);
@@ -436,27 +455,42 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private void positionOverlay(int adapterIndex, int overlayTopY, int overlayBottomY) {
         View overlayView = findExistingOverlayView(adapterIndex);
         final int itemType = mOverlayAdapter.getItemViewType(adapterIndex);
-        // is the overlay visible?
-        if (overlayBottomY > mOffsetY && overlayTopY < mOffsetY + getHeight()) {
+        // is the overlay visible and does it have non-zero height?
+        if (overlayTopY != overlayBottomY && overlayBottomY > mOffsetY
+                && overlayTopY < mOffsetY + getHeight()) {
             // show and/or move overlay
             if (overlayView == null) {
                 overlayView = addOverlayView(adapterIndex);
                 measureItem(overlayView);
+                traceLayout("show overlay %d", adapterIndex);
+            } else {
+                traceLayout("move overlay %d", adapterIndex);
             }
             layoutOverlay(overlayView, overlayTopY);
         } else {
             // hide overlay
             if (overlayView != null) {
-                onOverlayScrolledOff(overlayView, itemType, overlayTopY);
+                traceLayout("hide overlay %d", adapterIndex);
+                onOverlayScrolledOff(overlayView, itemType, overlayTopY, overlayBottomY);
+            } else {
+                traceLayout("ignore non-visible overlay %d", adapterIndex);
             }
         }
     }
 
+    private void layoutOverlay(View child, int childTop) {
+        layoutOverlay(child, childTop, childTop + child.getMeasuredHeight());
+    }
+
     // layout an existing view
     // need its top offset into the conversation, its height, and the scroll offset
-    private void layoutOverlay(View child, int childTop) {
+    private void layoutOverlay(View child, int childTop, int childBottom) {
+        if (child.getVisibility() == GONE) {
+            return;
+        }
+
         final int top = childTop - mOffsetY;
-        final int bottom = top + child.getMeasuredHeight();
+        final int bottom = childBottom - mOffsetY;
         child.layout(0, top, child.getMeasuredWidth(), bottom);
     }
 
@@ -471,12 +505,10 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         // Since external components can contribute to the scrap heap (addScrapView), we can't
         // assume scrap views had already been attached.
         if (view.getRootView() != view) {
-            LogUtils.d(TAG, "want to REUSE scrolled-in view: index=%d obj=%s",
-                    adapterIndex, view);
+            LogUtils.d(TAG, "want to REUSE scrolled-in view: index=%d obj=%s", adapterIndex, view);
             attachViewToParent(view, -1, view.getLayoutParams());
         } else {
-            LogUtils.d(TAG, "want to CREATE scrolled-in view: index=%d obj=%s",
-                    adapterIndex, view);
+            LogUtils.d(TAG, "want to CREATE scrolled-in view: index=%d obj=%s", adapterIndex, view);
             addViewInLayout(view, -1, view.getLayoutParams(),
                     true /* preventRequestLayout */);
         }
@@ -488,22 +520,43 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         for (int i = 0, count = getOverlayCount(); i < count; i++) {
             final View overlay = getOverlayAt(i);
             final Integer tag = (Integer) overlay.getTag(VIEW_TAG_CONVERSATION_INDEX);
-            if (tag != null && tag == adapterIndex) {
+            // ignore children queued to be removed
+            // otherwise we'll re-use and lay out this view and then just throw it away
+            if (tag != null && tag == adapterIndex && !mChildrenToRemove.contains(overlay)) {
                 return overlay;
             }
         }
         return null;
     }
 
+    /**
+     * Prevents any layouts from happening until the next time {@link #onGeometryChange(int[])} is
+     * called. Useful when you know the HTML spacer coordinates are inconsistent with adapter items.
+     * <p>
+     * If you call this, you must ensure that a followup call to {@link #onGeometryChange(int[])}
+     * is made later, when the HTML spacer coordinates are updated.
+     *
+     */
+    public void invalidateSpacerGeometry() {
+        mOverlayBottoms = null;
+    }
+
     // TODO: add margin support for children that want it (e.g. tablet headers?)
     public void onGeometryChange(int[] overlayBottoms) {
-        LogUtils.d(TAG, "*** got overlay spacer bottoms:");
+        traceLayout("*** got overlay spacer bottoms:");
         for (int offsetY : overlayBottoms) {
-            LogUtils.d(TAG, "%d", offsetY);
+            traceLayout("%d", offsetY);
         }
 
         mOverlayBottoms = overlayBottoms;
         positionOverlays(0, mOffsetY);
+    }
+
+    private void traceLayout(String msg, Object... params) {
+        if (mDisableLayoutTracing) {
+            return;
+        }
+        LogUtils.i(TAG, msg, params);
     }
 
 }
