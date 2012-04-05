@@ -45,7 +45,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -71,6 +70,7 @@ import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.MessageModification;
+import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.DraftType;
@@ -178,6 +178,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private CcBccView mCcBccView;
     private AttachmentsView mAttachmentsView;
     private Account mAccount;
+    private ReplyFromAccount mReplyFromAccount;
     private Settings mCachedSettings;
     private Rfc822Validator mValidator;
     private TextView mSubject;
@@ -415,10 +416,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initFromSpinner(int action) {
+        mReplyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
+                mAccount.name, true, false);
         if (action == COMPOSE ||
             (action == EDIT_DRAFT
                 && mDraft.draftType == UIProvider.DraftType.COMPOSE)) {
-            mFromSpinner.setCurrentAccount(mAccount);
+            mFromSpinner.setCurrentAccount(mReplyFromAccount);
             mFromSpinner.asyncInitFromSpinner();
             boolean showSpinner = mFromSpinner.getCount() > 1;
             // If there is only 1 account, just show that account.
@@ -432,7 +435,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mFromStatic.setVisibility(View.VISIBLE);
             mFromStaticText.setText(mAccount.name);
             mFromSpinnerWrapper.setVisibility(View.GONE);
-            mFromSpinner.setCurrentAccount(mAccount);
+            mFromSpinner.setCurrentAccount(mReplyFromAccount);
         }
     }
 
@@ -1125,7 +1128,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         public void run() {
             final SendOrSaveMessage sendOrSaveMessage = mSendOrSaveMessage;
 
-            final Account selectedAccount = sendOrSaveMessage.mSelectedAccount;
+            final ReplyFromAccount selectedAccount = sendOrSaveMessage.mAccount;
             Message message = mSendOrSaveCallback.getMessage();
             long messageId = message != null ? message.id : UIProvider.INVALID_MESSAGE_ID;
             // If a previous draft has been saved, in an account that is different
@@ -1136,8 +1139,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     ContentResolver resolver = mContext.getContentResolver();
                     ContentValues values = new ContentValues();
                     values.put(BaseColumns._ID, messageId);
-                    if (selectedAccount.expungeMessageUri != null) {
-                        resolver.update(selectedAccount.expungeMessageUri, values, null,
+                    if (selectedAccount.account.expungeMessageUri != null) {
+                        resolver.update(selectedAccount.account.expungeMessageUri, values, null,
                                 null);
                     } else {
                         // TODO(mindyp) delete the conversation.
@@ -1155,9 +1158,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                         sendOrSaveMessage.mValues, null, null);
             } else {
                 ContentResolver resolver = mContext.getContentResolver();
-                Uri messageUri = resolver.insert(
-                        sendOrSaveMessage.mSave ? selectedAccount.saveDraftUri
-                                : selectedAccount.sendMessageUri, sendOrSaveMessage.mValues);
+                Uri messageUri = resolver
+                        .insert(sendOrSaveMessage.mSave ? selectedAccount.account.saveDraftUri
+                                : selectedAccount.account.sendMessageUri,
+                                sendOrSaveMessage.mValues);
                 if (sendOrSaveMessage.mSave && messageUri != null) {
                     Cursor messageCursor = resolver.query(messageUri,
                             UIProvider.MESSAGE_PROJECTION, null, null, null);
@@ -1196,17 +1200,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private String mSignature;
 
     /*package*/ static class SendOrSaveMessage {
-        final Account mAccount;
-        final Account mSelectedAccount;
+        final ReplyFromAccount mAccount;
         final ContentValues mValues;
         final String mRefMessageId;
         final boolean mSave;
         final int mRequestId;
 
-        public SendOrSaveMessage(Account account, Account selectedAccount, ContentValues values,
+        public SendOrSaveMessage(ReplyFromAccount account, ContentValues values,
                 String refMessageId, boolean save) {
             mAccount = account;
-            mSelectedAccount = selectedAccount;
             mValues = values;
             mRefMessageId = refMessageId;
             mSave = save;
@@ -1500,12 +1502,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     /* package */
-    static int sendOrSaveInternal(Context context, final Account account,
-            final Account selectedAccount, String fromAddress, final Spanned body,
-            final String[] to, final String[] cc, final String[] bcc, final String subject,
-            final CharSequence quotedText, final List<Attachment> attachments,
-            final Message refMessage, SendOrSaveCallback callback, Handler handler, boolean save,
-            int composeMode) {
+    static int sendOrSaveInternal(Context context, final ReplyFromAccount replyFromAccount,
+            String fromAddress, final Spanned body, final String[] to, final String[] cc,
+            final String[] bcc, final String subject, final CharSequence quotedText,
+            final List<Attachment> attachments, final Message refMessage,
+            SendOrSaveCallback callback, Handler handler, boolean save, int composeMode) {
         ContentValues values = new ContentValues();
 
         String refMessageId = refMessage != null ? refMessage.uri.toString() : "";
@@ -1513,6 +1514,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         MessageModification.putToAddresses(values, to);
         MessageModification.putCcAddresses(values, cc);
         MessageModification.putBccAddresses(values, bcc);
+
+        MessageModification.putCustomFromAddress(values, replyFromAccount.address);
 
         MessageModification.putSubject(values, subject);
         String htmlBody = Html.toHtml(body);
@@ -1566,7 +1569,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             MessageModification.putRefMessageId(values, refMessageId);
         }
 
-        SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(account, selectedAccount,
+        SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(replyFromAccount,
                 values, refMessageId, save);
         SendOrSaveTask sendOrSaveTask = new SendOrSaveTask(context, sendOrSaveMessage, callback);
 
@@ -1667,12 +1670,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         };
 
         // Get the selected account if the from spinner has been setup.
-        Account selectedAccount = mAccount;
+        ReplyFromAccount selectedAccount = mReplyFromAccount;
         String fromAddress = selectedAccount.name;
         if (selectedAccount == null || fromAddress == null) {
             // We don't have either the selected account or from address,
             // use mAccount.
-            selectedAccount = mAccount;
+            selectedAccount = mReplyFromAccount;
             fromAddress = mAccount.name;
         }
 
@@ -1683,7 +1686,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mSendSaveTaskHandler = new Handler(handlerThread.getLooper());
         }
 
-        mRequestId = sendOrSaveInternal(this, mAccount, selectedAccount, fromAddress, body, to, cc,
+        mRequestId = sendOrSaveInternal(this, mReplyFromAccount, fromAddress, body, to, cc,
                 bcc, mSubject.getText().toString(), mQuotedTextView.getQuotedTextIfIncluded(),
                 mAttachmentsView.getAttachments(), mRefMessage, callback,
                 mSendSaveTaskHandler, save, mComposeMode);
@@ -1691,7 +1694,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mRecipient != null && mRecipient.equals(mAccount.name)) {
             mRecipient = selectedAccount.name;
         }
-        mAccount = selectedAccount;
+        mAccount = selectedAccount.account;
 
         // Don't display the toast if the user is just changing the orientation,
         // but we still need to save the draft to the cursor because this is how we restore
@@ -1873,9 +1876,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     public void onAccountChanged() {
-        Account selectedAccountInfo = mFromSpinner.getCurrentAccount();
-        if (!mAccount.equals(selectedAccountInfo)) {
-            mAccount = selectedAccountInfo;
+        mReplyFromAccount = mFromSpinner.getCurrentAccount();
+        if (!mAccount.equals(mReplyFromAccount.account)) {
+            mAccount = mReplyFromAccount.account;
             mCachedSettings = null;
             getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
             // TODO: handle discarding attachments when switching accounts.

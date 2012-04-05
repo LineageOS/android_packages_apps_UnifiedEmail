@@ -93,7 +93,7 @@ public class UIProvider {
             AccountColumns.CAPABILITIES,
             AccountColumns.FOLDER_LIST_URI,
             AccountColumns.SEARCH_URI,
-            AccountColumns.ACCOUNT_FROM_ADDRESSES_URI,
+            AccountColumns.ACCOUNT_FROM_ADDRESSES,
             AccountColumns.SAVE_DRAFT_URI,
             AccountColumns.SEND_MAIL_URI,
             AccountColumns.EXPUNGE_MESSAGE_URI,
@@ -115,7 +115,7 @@ public class UIProvider {
     public static final int ACCOUNT_CAPABILITIES_COLUMN = 4;
     public static final int ACCOUNT_FOLDER_LIST_URI_COLUMN = 5;
     public static final int ACCOUNT_SEARCH_URI_COLUMN = 6;
-    public static final int ACCOUNT_FROM_ADDRESSES_URI_COLUMN = 7;
+    public static final int ACCOUNT_FROM_ADDRESSES_COLUMN = 7;
     public static final int ACCOUNT_SAVE_DRAFT_URI_COLUMN = 8;
     public static final int ACCOUNT_SEND_MESSAGE_URI_COLUMN = 9;
     public static final int ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN = 10;
@@ -266,10 +266,10 @@ public class UIProvider {
         public static final String SEARCH_URI = "searchUri";
 
         /**
-         * This string column contains the content provider uri that can be queried to access the
-         * from addresses for this account.
+         * This string column contains a json array of json objects representing
+         * custom from addresses for this account or null if there are none.
          */
-        public static final String ACCOUNT_FROM_ADDRESSES_URI = "accountFromAddressesUri";
+        public static final String ACCOUNT_FROM_ADDRESSES = "accountFromAddresses";
 
         /**
          * This string column contains the content provider uri that can be used to save (insert)
@@ -801,7 +801,8 @@ public class UIProvider {
         MessageColumns.READ,
         MessageColumns.STARRED,
         MessageColumns.QUOTE_START_POS,
-        MessageColumns.ATTACHMENTS
+        MessageColumns.ATTACHMENTS,
+        MessageColumns.CUSTOM_FROM_ADDRESS
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -840,6 +841,7 @@ public class UIProvider {
     public static final int MESSAGE_STARRED_COLUMN = 26;
     public static final int QUOTED_TEXT_OFFSET_COLUMN = 27;
     public static final int MESSAGE_ATTACHMENTS_COLUMN = 28;
+    public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 29;
 
 
     public static final class CursorStatus {
@@ -1018,6 +1020,7 @@ public class UIProvider {
          * This string columns contains a JSON array of serialized {@link Attachment} objects.
          */
         public static final String ATTACHMENTS = "attachments";
+        public static final String CUSTOM_FROM_ADDRESS = "customFrom";
 
         private MessageColumns() {}
     }

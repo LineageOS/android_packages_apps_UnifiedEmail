@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.ReplyFromAccount;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ import java.util.List;
  *
  * @author mindyp@google.com
  */
-public class FromAddressSpinnerAdapter extends ArrayAdapter<Account> {
+public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
     public static int REAL_ACCOUNT = 2;
 
     public static int ACCOUNT_DISPLAY = 0;
@@ -56,29 +57,30 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<Account> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Account fromItem = getItem(position);
-        View fromEntry = getInflater().inflate(R.layout.from_item, null);
-        ((TextView) fromEntry.findViewById(R.id.spinner_account_name))
-                .setText(fromItem.name);
+        ReplyFromAccount fromItem = getItem(position);
+        int res = fromItem.isCustomFrom ? R.layout.custom_from_item : R.layout.from_item;
+        View fromEntry = getInflater().inflate(res, null);
+        ((TextView) fromEntry.findViewById(R.id.spinner_account_name)).setText(fromItem.name);
         return fromEntry;
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        Account fromItem = getItem(position);
-        View fromEntry = getInflater().inflate(R.layout.from_dropdown_item, null);
-        TextView acctName = ((TextView) fromEntry.
-                findViewById(R.id.spinner_account_name));
+        ReplyFromAccount fromItem = getItem(position);
+        int res = fromItem.isCustomFrom ? R.layout.custom_from_dropdown_item
+                : R.layout.from_dropdown_item;
+        View fromEntry = getInflater().inflate(res, null);
+        TextView acctName = ((TextView) fromEntry.findViewById(R.id.spinner_account_name));
         acctName.setText(fromItem.name);
         return fromEntry;
     }
 
-    public int addAccounts(Account selectedAccount,
-            List<Account> replyFromAccounts) {
+    public int addAccounts(ReplyFromAccount selectedAccount,
+            List<ReplyFromAccount> replyFromAccounts) {
         int currentIndex = 0;
         int currentAccountIndex = 0;
         // Get the position of the current account
-        for (Account account : replyFromAccounts) {
+        for (ReplyFromAccount account : replyFromAccounts) {
             // Add the account to the Adapter
             add(account);
             // See if we have located the selected account.

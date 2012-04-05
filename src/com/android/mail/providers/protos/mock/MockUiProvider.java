@@ -24,10 +24,12 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.provider.BaseColumns;
 import android.text.Html;
+import android.text.TextUtils;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
+import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
@@ -43,6 +45,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -311,10 +316,18 @@ public final class MockUiProvider extends ContentProvider {
                         AccountCapabilities.LOCAL_SEARCH |
                         AccountCapabilities.THREADED_CONVERSATIONS |
                         AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV));
+        JSONArray replyFroms = new JSONArray();
+        ArrayList<ReplyFromAccount> list = new ArrayList<ReplyFromAccount>();
+        list.add(new ReplyFromAccount(null, Uri.parse(accountUri), "customAddress1@custom.com",
+                "Custom1", false, true));
+        list.add(new ReplyFromAccount(null, Uri.parse(accountUri), "customAddress2@custom.com",
+                "Custom2", false, true));
+        for (ReplyFromAccount a : list) {
+            replyFroms.put(a.serialize());
+        }
+        accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES, replyFroms.toString());
         accountMap.put(AccountColumns.FOLDER_LIST_URI, Uri.parse(accountUri + "/folders"));
         accountMap.put(AccountColumns.SEARCH_URI, Uri.parse(accountUri + "/search"));
-        accountMap.put(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI,
-                Uri.parse(accountUri + "/fromAddresses"));
         accountMap.put(AccountColumns.SAVE_DRAFT_URI, Uri.parse(accountUri + "/saveDraft"));
         accountMap.put(AccountColumns.SEND_MAIL_URI, Uri.parse(accountUri + "/sendMail"));
         accountMap.put(AccountColumns.EXPUNGE_MESSAGE_URI,
@@ -327,6 +340,7 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.COMPOSE_URI, Uri.parse(accountUri + "/compose"));
         accountMap.put(AccountColumns.RECENT_FOLDER_LIST_URI,
                 Uri.parse(accountUri + "/recentFolderListUri"));
+        accountMap.put(AccountColumns.MIME_TYPE, "account/mock");
         if (cacheMap) {
             addAccountInfoToAccountCache(accountMap);
         }
@@ -412,7 +426,7 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeInt((Integer) accountInfo.get(AccountColumns.CAPABILITIES));
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.FOLDER_LIST_URI), 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SEARCH_URI), 0);
-        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.ACCOUNT_FROM_ADDRESSES_URI), 0);
+        dest.writeString((String) accountInfo.get(AccountColumns.ACCOUNT_FROM_ADDRESSES));
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SAVE_DRAFT_URI), 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SEND_MAIL_URI), 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.EXPUNGE_MESSAGE_URI), 0);

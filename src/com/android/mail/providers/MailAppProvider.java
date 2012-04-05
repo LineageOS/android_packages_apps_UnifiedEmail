@@ -203,8 +203,8 @@ public abstract class MailAppProvider extends ContentProvider
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SEARCH_URI)) {
                     builder.add(account.searchUri);
                 } else if (TextUtils.equals(column,
-                        UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES_URI)) {
-                    builder.add(account.accountFromAddressesUri);
+                        UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES)) {
+                    builder.add(account.accountFromAddresses);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SAVE_DRAFT_URI)) {
                     builder.add(account.saveDraftUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.SEND_MAIL_URI)) {

@@ -42,7 +42,7 @@ public class AccountTests extends AndroidTestCase {
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
         Account outAccount = (Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
         assertEquals(outAccount.name, account.name);
-        assertEquals(outAccount.accountFromAddressesUri, account.accountFromAddressesUri);
+        assertEquals(outAccount.accountFromAddresses, account.accountFromAddresses);
         assertEquals(outAccount.capabilities, account.capabilities);
         assertEquals(outAccount.providerVersion, account.providerVersion);
         assertEquals(outAccount.uri, account.uri);

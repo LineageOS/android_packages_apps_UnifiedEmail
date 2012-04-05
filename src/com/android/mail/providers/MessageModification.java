@@ -72,6 +72,17 @@ public class MessageModification {
     }
 
     /**
+     * Sets the custom from address for a message, we only set this if its different than the
+     * default adress for the account.
+     *
+     * @param values the ContentValues that will be used to create or update the message
+     * @param customFromAddress from address
+     */
+     public static void putCustomFromAddress(ContentValues values, String customFromAddress) {
+        values.put(MessageColumns.CUSTOM_FROM_ADDRESS, customFromAddress);
+     }
+
+    /**
      * Saves a flag indicating the message is forwarded. Only valid for drafts
      * not yet sent to / retrieved from server.
      * @param values the ContentValues that will be used to create or update the

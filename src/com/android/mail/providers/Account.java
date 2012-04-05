@@ -17,6 +17,7 @@
 package com.android.mail.providers;
 
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -60,10 +61,9 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final Uri searchUri;
 
     /**
-     * The content provider uri that can be queried to access the from addresses
-     * for this account.
+     * The custom from addresses for this account or null if there are none.
      */
-    public final Uri accountFromAddressesUri;
+    public final String accountFromAddresses;
 
     /**
      * The content provider uri that can be used to save (insert) new draft
@@ -148,8 +148,8 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(UIProvider.AccountColumns.CAPABILITIES, capabilities);
             json.put(UIProvider.AccountColumns.FOLDER_LIST_URI, folderListUri);
             json.put(UIProvider.AccountColumns.SEARCH_URI, searchUri);
-            json.put(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES_URI,
-                    accountFromAddressesUri);
+            json.put(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES,
+                    accountFromAddresses);
             json.put(UIProvider.AccountColumns.SAVE_DRAFT_URI, saveDraftUri);
             json.put(UIProvider.AccountColumns.SEND_MAIL_URI, sendMessageUri);
             json.put(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
@@ -200,9 +200,7 @@ public class Account extends android.accounts.Account implements Parcelable {
      * @return a valid URI, possibly {@link android.net.Uri#EMPTY}
      */
     private static Uri getValidUri(String uri) {
-        if (uri == JSONObject.NULL)
-            return Uri.EMPTY;
-        return Uri.parse(uri);
+        return Utils.getValidUri(uri);
     }
 
     /**
@@ -226,8 +224,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         capabilities = Integer.valueOf(json.getInt(UIProvider.AccountColumns.CAPABILITIES));
         folderListUri = getValidUri(json.optString(UIProvider.AccountColumns.FOLDER_LIST_URI));
         searchUri = getValidUri(json.optString(UIProvider.AccountColumns.SEARCH_URI));
-        accountFromAddressesUri = getValidUri(json
-                .optString(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES_URI));
+        accountFromAddresses = UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES;
         saveDraftUri = getValidUri(json.optString(UIProvider.AccountColumns.SAVE_DRAFT_URI));
         sendMessageUri = getValidUri(json.optString(UIProvider.AccountColumns.SEND_MAIL_URI));
         expungeMessageUri = getValidUri(json
@@ -254,7 +251,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         capabilities = in.readInt();
         folderListUri = in.readParcelable(null);
         searchUri = in.readParcelable(null);
-        accountFromAddressesUri = in.readParcelable(null);
+        accountFromAddresses = in.readString();
         saveDraftUri = in.readParcelable(null);
         sendMessageUri = in.readParcelable(null);
         expungeMessageUri = in.readParcelable(null);
@@ -271,10 +268,8 @@ public class Account extends android.accounts.Account implements Parcelable {
 
     public Account(Cursor cursor) {
         super(cursor.getString(UIProvider.ACCOUNT_NAME_COLUMN), "unknown");
-        String fromAddresses = cursor
-                .getString(UIProvider.ACCOUNT_FROM_ADDRESSES_URI_COLUMN);
-        accountFromAddressesUri = !TextUtils.isEmpty(fromAddresses) ? Uri.parse(fromAddresses)
-                : null;
+        accountFromAddresses = cursor
+                .getString(UIProvider.ACCOUNT_FROM_ADDRESSES_COLUMN);
         capabilities = cursor.getInt(UIProvider.ACCOUNT_CAPABILITIES_COLUMN);
         providerVersion = cursor.getInt(UIProvider.ACCOUNT_PROVIDER_VERISON_COLUMN);
         uri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_URI_COLUMN));
@@ -341,7 +336,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeInt(capabilities);
         dest.writeParcelable(folderListUri, 0);
         dest.writeParcelable(searchUri, 0);
-        dest.writeParcelable(accountFromAddressesUri, 0);
+        dest.writeString(accountFromAddresses);
         dest.writeParcelable(saveDraftUri, 0);
         dest.writeParcelable(sendMessageUri, 0);
         dest.writeParcelable(expungeMessageUri, 0);
@@ -373,7 +368,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(",type=");
         sb.append(type);
         sb.append(",accountFromAddressUri=");
-        sb.append(accountFromAddressesUri);
+        sb.append(accountFromAddresses);
         sb.append(",capabilities=");
         sb.append(capabilities);
         sb.append(",providerVersion=");
@@ -426,7 +421,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(uri, other.uri) &&
                 Objects.equal(folderListUri, other.folderListUri) &&
                 Objects.equal(searchUri, other.searchUri) &&
-                Objects.equal(accountFromAddressesUri, other.accountFromAddressesUri) &&
+                Objects.equal(accountFromAddresses, other.accountFromAddresses) &&
                 Objects.equal(saveDraftUri, other.saveDraftUri) &&
                 Objects.equal(sendMessageUri, other.sendMessageUri) &&
                 Objects.equal(expungeMessageUri, other.expungeMessageUri) &&
@@ -444,7 +439,7 @@ public class Account extends android.accounts.Account implements Parcelable {
     @Override
     public int hashCode() {
         return super.hashCode() ^ Objects.hashCode(name, type, capabilities, providerVersion,
-                uri, folderListUri, searchUri, accountFromAddressesUri, saveDraftUri,
+                uri, folderListUri, searchUri, accountFromAddresses, saveDraftUri,
                 sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri, settingsQueryUri,
                 helpIntentUri, sendFeedbackIntentUri, syncStatus, composeIntentUri, mimeType,
                 recentFolderListUri);

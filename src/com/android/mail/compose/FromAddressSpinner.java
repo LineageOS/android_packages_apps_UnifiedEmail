@@ -16,6 +16,7 @@
 package com.android.mail.compose;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,13 +24,20 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
 
 import com.android.mail.providers.Account;
+import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.utils.AccountUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class FromAddressSpinner extends Spinner implements OnItemSelectedListener {
     private List<Account> mAccounts;
-    private Account mAccount;
+    private ReplyFromAccount mAccount;
+    private List<ReplyFromAccount> mReplyFromAccounts;
     private OnAccountChangedListener mAccountChangedListener;
 
     public FromAddressSpinner(Context context) {
@@ -40,18 +48,18 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
         super(context, set);
     }
 
-    public void setCurrentAccount(Account account) {
+    public void setCurrentAccount(ReplyFromAccount account) {
         mAccount = account;
     }
 
-    public Account getCurrentAccount() {
+    public ReplyFromAccount getCurrentAccount() {
         return mAccount;
     }
 
     public void asyncInitFromSpinner() {
         Account[] result = AccountUtils.getSyncingAccounts(getContext());
-        mAccounts = AccountUtils
-                .mergeAccountLists(mAccounts, result, true /* prioritizeAccountList */);
+        mAccounts = AccountUtils.mergeAccountLists(mAccounts, result,
+                true /* prioritizeAccountList */);
         initFromSpinner();
     }
 
@@ -66,12 +74,39 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
         FromAddressSpinnerAdapter adapter = new FromAddressSpinnerAdapter(getContext());
         int currentAccountIndex = 0;
 
-        currentAccountIndex = adapter.addAccounts(mAccount, mAccounts);
+        mReplyFromAccounts = new ArrayList<ReplyFromAccount>();
+        for (Account account : mAccounts) {
+            ReplyFromAccount replyFrom = new ReplyFromAccount(account, account.uri, account.name,
+                    account.name, false, false);
+            if (replyFrom != null) {
+                mReplyFromAccounts.add(replyFrom);
+            }
+            if (!TextUtils.isEmpty(account.accountFromAddresses)) {
+                // Parse and create an entry for each.
+                try {
+                    JSONArray accounts = new JSONArray(account.accountFromAddresses);
+                    JSONObject accountString;
+                    for (int i = 0; i < accounts.length(); i++) {
+                        accountString = (JSONObject) accounts.get(i);
+                        ReplyFromAccount a = ReplyFromAccount.deserialize(account, accountString);
+                        if (a != null) {
+                            mReplyFromAccounts.add(a);
+                        }
+                    }
+                } catch (JSONException e) {
+
+                }
+            }
+        }
+        currentAccountIndex = adapter.addAccounts(mAccount, mReplyFromAccounts);
 
         setAdapter(adapter);
         setSelection(currentAccountIndex, false);
         setOnItemSelectedListener(this);
-        mAccount = mAccounts.get(currentAccountIndex);
+        if (currentAccountIndex >= mReplyFromAccounts.size()) {
+            currentAccountIndex = 0;
+        }
+        mAccount = mReplyFromAccounts.get(currentAccountIndex);
     }
 
     public void setOnAccountChangedListener(OnAccountChangedListener listener) {
@@ -80,7 +115,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Account selection = (Account) getItemAtPosition(position);
+        ReplyFromAccount selection = (ReplyFromAccount) getItemAtPosition(position);
         if (!selection.name.equals(mAccount.name)) {
             mAccount = selection;
             mAccountChangedListener.onAccountChanged();

@@ -51,6 +51,8 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
 
+import org.json.JSONObject;
+
 import java.util.Locale;
 import java.util.Map;
 
@@ -835,5 +837,18 @@ public class Utils {
             return;
         }
         item.setVisible(shouldShow);
+    }
+
+    /**
+     * Parse a string (possibly null or empty) into a URI. If the string is null
+     * or empty, null is returned back. Otherwise an empty URI is returned.
+     *
+     * @param uri
+     * @return a valid URI, possibly {@link android.net.Uri#EMPTY}
+     */
+    public static Uri getValidUri(String uri) {
+        if (uri == JSONObject.NULL)
+            return Uri.EMPTY;
+        return Uri.parse(uri);
     }
 }

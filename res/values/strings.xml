@@ -96,6 +96,8 @@
     <string name="message_discarded">Message discarded.</string>
     <!-- Formatting string for the user's signaure. [CHAR LIMIT=10] -->
     <string name="signature">\n\n<xliff:g id="signature">%s</xliff:g></string>
+    <!--  Shown in the from dropdown in front of custom from addresses. [CHAR LIMIT=15] -->
+    <string name="custom_from_account_label">Send mail as:</string>
 
     <!-- Menu item: send this message -->
     <string name="send">Send</string>
