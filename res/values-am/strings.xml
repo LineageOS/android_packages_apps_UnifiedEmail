@@ -214,7 +214,7 @@
     <item quantity="other" msgid="8918589141287976985">"የተቀየሩ አቃፊዎች።"</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"ውጤቶች"</string>
-    <string name="search_unsupported" msgid="4654227193354052607">"ፍለጋ በዚህ መለያ አይደገፍም፡፡"</string>
+    <string name="search_unsupported" msgid="4654227193354052607">"ፍለጋ በዚህ መለያ አይደገፍም።"</string>
     <string name="searchMode" msgid="3329807422114758583">"የፍለጋ ሁናቴ"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"የውይይት ፍለጋ ሁናቴ"</string>
     <string name="setBackButton" msgid="3004728881963818222">"የተመለስ አዘራር አዘጋጅ"</string>
@@ -285,4 +285,6 @@
     <string name="loading" msgid="2600808404156989255">"ውይይቶች በመስቀል ላይ..."</string>
     <string name="retry" msgid="4515885444824418022">"እንደገና ሞክር"</string>
     <string name="load_more" msgid="420892447103014683">"ተጨማሪ ስቀል"</string>
+    <!-- no translation found for shortcut_name_title (8220482314700618391) -->
+    <skip />
 </resources>

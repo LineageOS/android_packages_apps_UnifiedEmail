@@ -214,7 +214,7 @@
     <item quantity="other" msgid="8918589141287976985">"Ordner geändert"</item>
   </plurals>
     <string name="search_results_header" msgid="4669917471897026269">"Ergebnisse"</string>
-    <string name="search_unsupported" msgid="4654227193354052607">"Die Suche wird bei diesem Konto nicht unterstützt."</string>
+    <string name="search_unsupported" msgid="4654227193354052607">"Die Suche wird für dieses Konto nicht unterstützt."</string>
     <string name="searchMode" msgid="3329807422114758583">"Suchmodus"</string>
     <string name="searchConversationMode" msgid="8015441927706455618">"Modus \"In Konversationen suchen\""</string>
     <string name="setBackButton" msgid="3004728881963818222">"Schaltfläche \"Zurück\" festlegen"</string>
@@ -285,4 +285,6 @@
     <string name="loading" msgid="2600808404156989255">"Konversationen werden geladen…"</string>
     <string name="retry" msgid="4515885444824418022">"Erneut versuchen"</string>
     <string name="load_more" msgid="420892447103014683">"Weitere laden"</string>
+    <!-- no translation found for shortcut_name_title (8220482314700618391) -->
+    <skip />
 </resources>
