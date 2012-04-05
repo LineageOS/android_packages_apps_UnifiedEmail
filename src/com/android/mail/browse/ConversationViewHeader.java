@@ -169,11 +169,6 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         }
     }
 
-    public int getPremeasuredHeight() {
-        ViewGroup parent = (ViewGroup) getParent();
-        return Utils.measureViewHeight(this, parent);
-    }
-
     @Override
     public void onClick(View v) {
         if (R.id.folders == v.getId()) {

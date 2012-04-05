@@ -35,7 +35,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -73,6 +72,7 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public static abstract class ConversationItem {
         private int mHeight;  // in px
+        private boolean mNeedsMeasure;
 
         /**
          * @see Adapter#getItemViewType(int)
@@ -96,15 +96,6 @@ public class ConversationViewAdapter extends BaseAdapter {
         public abstract boolean isContiguous();
 
         /**
-         * Measure the expected visible height of the overlay view. Even if the view is initially
-         * GONE, this method must return whatever height the view is going to be when it is later
-         * made VISIBLE.
-         */
-        public int measureHeight(View v, ViewGroup parent) {
-            return Utils.measureViewHeight(v, parent);
-        }
-
-        /**
          * This method's behavior is critical and requires some 'splainin.
          * <p>
          * Subclasses that return a zero-size height to the {@link ConversationContainer} will
@@ -120,7 +111,22 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         public void setHeight(int h) {
             LogUtils.i(LOG_TAG, "IN setHeight=%dpx of overlay item: %s", h, this);
-            mHeight = h;
+            if (mHeight != h) {
+                mHeight = h;
+                mNeedsMeasure = true;
+            }
+        }
+
+        public boolean isMeasurementValid() {
+            return !mNeedsMeasure;
+        }
+
+        public void markMeasurementValid() {
+            mNeedsMeasure = false;
+        }
+
+        public void invalidateMeasurement() {
+            mNeedsMeasure = true;
         }
     }
 
