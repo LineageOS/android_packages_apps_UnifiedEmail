@@ -349,12 +349,15 @@ public final class ConversationCursor implements Cursor {
                     // If we're in a requery and we're still around, remove the requery key
                     // We're good here, the cached change (delete/update) is on its way to UP
                     values.remove(REQUERY_COLUMN);
+                    LogUtils.i(TAG, new Error(),
+                            "IN resetCursor, remove requery column from %s", entry.getKey());
                 } else {
                     // Keep the deleted count up-to-date; remove the cache entry
                     if (values.containsKey(DELETED_COLUMN)) {
                         sDeletedCount--;
                         LogUtils.i(TAG, new Error(),
-                                "IN resetCursor, sDeletedCount decremented to: %d", sDeletedCount);
+                                "IN resetCursor, sDeletedCount decremented to: %d by %s",
+                                sDeletedCount, entry.getKey());
                     }
                     // Remove the entry
                     iter.remove();
@@ -478,6 +481,13 @@ public final class ConversationCursor implements Cursor {
                         map.remove(columnName);
                         if (DEBUG) {
                             LogUtils.i(TAG, "Undeleted %s, decremented deleted count=%d", uriString,
+                                    sDeletedCount);
+                        }
+                        return;
+                    } else if (!state) {
+                        // Trying to undelete, but it's not deleted; just return
+                        if (DEBUG) {
+                            LogUtils.i(TAG, "Undeleted %s, IGNORING, deleted count=%d", uriString,
                                     sDeletedCount);
                         }
                         return;
