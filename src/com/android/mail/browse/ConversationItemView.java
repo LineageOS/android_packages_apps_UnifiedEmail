@@ -362,12 +362,12 @@ public class ConversationItemView extends View {
     }
 
     public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set,
-            Folder folder, boolean checkboxesEnabled, boolean swipeEnabled) {
+            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled) {
         mViewMode = viewMode;
         mHeader = ConversationItemViewModel.forCursor(cursor);
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
-        mCheckboxesEnabled = checkboxesEnabled;
+        mCheckboxesEnabled = !checkboxesDisabled;
         mSwipeEnabled = swipeEnabled;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
@@ -375,12 +375,12 @@ public class ConversationItemView extends View {
 
 
     public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
-            Folder folder, boolean checkboxesEnabled, boolean swipeEnabled) {
+            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled) {
         mViewMode = viewMode;
         mHeader = ConversationItemViewModel.forConversation(conversation);
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
-        mCheckboxesEnabled = checkboxesEnabled;
+        mCheckboxesEnabled = !checkboxesDisabled;
         mSwipeEnabled = swipeEnabled;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();

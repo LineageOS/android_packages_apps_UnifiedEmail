@@ -113,7 +113,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public void bindView(View view, Context context, Cursor cursor) {
         if (!isPositionAnimating(view) && !isPositionFooter(view)) {
             ((ConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
-                    mCachedSettings != null ? !mCachedSettings.hideCheckboxes : false,
+                    mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
                     mSwipeEnabled);
         }
     }
@@ -253,7 +253,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             ConversationItemView convView = (ConversationItemView) super.getView(position, null,
                     parent);
             convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
-                    mCachedSettings != null ? !mCachedSettings.hideCheckboxes : false,
+                    mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
                     mSwipeEnabled);
             convView.startUndoAnimation(mViewMode, this);
             return convView;
