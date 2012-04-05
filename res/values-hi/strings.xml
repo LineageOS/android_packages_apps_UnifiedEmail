@@ -285,4 +285,6 @@
     <string name="loading" msgid="2600808404156989255">"बातचीत लोड हो रही हैं…"</string>
     <string name="retry" msgid="4515885444824418022">"पुन: प्रयास करें"</string>
     <string name="load_more" msgid="420892447103014683">"अधिक लोड करें"</string>
+    <!-- no translation found for shortcut_name_title (8220482314700618391) -->
+    <skip />
 </resources>

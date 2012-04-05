@@ -285,4 +285,6 @@
     <string name="loading" msgid="2600808404156989255">"スレッド読み込み中…"</string>
     <string name="retry" msgid="4515885444824418022">"再試行"</string>
     <string name="load_more" msgid="420892447103014683">"もっと読み込む"</string>
+    <!-- no translation found for shortcut_name_title (8220482314700618391) -->
+    <skip />
 </resources>
