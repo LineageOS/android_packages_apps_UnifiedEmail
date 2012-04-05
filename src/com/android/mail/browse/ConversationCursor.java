@@ -1085,6 +1085,10 @@ public final class ConversationCursor implements Cursor {
         public int apply(ArrayList<ConversationOperation> ops) {
             final HashMap<String, ArrayList<ContentProviderOperation>> batchMap =
                     new HashMap<String, ArrayList<ContentProviderOperation>>();
+            // STOPSHIP: Remove this test
+            if (offUiThread()) {
+                Log.w(TAG, "apply() called off of UI thread", new Throwable());
+            }
             // Increment sequence count
             sSequence++;
             // Execute locally and build CPO's for underlying provider
