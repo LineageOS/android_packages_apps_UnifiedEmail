@@ -36,6 +36,7 @@ public class Settings implements Parcelable {
     public boolean confirmArchive;
     public boolean confirmSend;
     public Uri defaultInbox;
+    public boolean forceReplyFromDefault;
 
     public Settings(Parcel inParcel) {
         signature = inParcel.readString();
@@ -49,6 +50,7 @@ public class Settings implements Parcelable {
         confirmSend = inParcel.readInt() != 0;
         final String inbox = inParcel.readString();
         defaultInbox = !TextUtils.isEmpty(inbox) ? Uri.parse(inbox) : null;
+        forceReplyFromDefault = inParcel.readInt() != 0;
     }
 
     public Settings(Cursor cursor) {
@@ -63,6 +65,8 @@ public class Settings implements Parcelable {
         confirmSend = cursor.getInt(UIProvider.SETTINGS_CONFIRM_SEND_COLUMN) != 0;
         final String inbox = cursor.getString(UIProvider.SETTINGS_DEFAULT_INBOX_COLUMN);
         defaultInbox = !TextUtils.isEmpty(inbox) ? Uri.parse(inbox) : null;
+        forceReplyFromDefault = cursor.getInt(
+                UIProvider.SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN) != 0;
     }
 
     @Override
@@ -82,6 +86,7 @@ public class Settings implements Parcelable {
         dest.writeInt(confirmArchive? 1 : 0);
         dest.writeInt(confirmSend? 1 : 0);
         dest.writeString(defaultInbox.toString());
+        dest.writeInt(forceReplyFromDefault ? 1 : 0);
     }
 
     @SuppressWarnings("hiding")
