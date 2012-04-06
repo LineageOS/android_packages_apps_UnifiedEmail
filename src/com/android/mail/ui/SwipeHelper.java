@@ -296,6 +296,11 @@ public class SwipeHelper {
                 mCurrView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         };
+        dismissChildren(views, velocity, listener);
+    }
+
+    private void dismissChildren(final Collection<ConversationItemView> views, float velocity,
+            AnimatorListenerAdapter listener) {
         final View animView = mCurrView;
         final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(animView);
         float newPos = determinePos(animView, velocity);
@@ -320,6 +325,12 @@ public class SwipeHelper {
         transitionSet.playTogether(animations);
         transitionSet.addListener(listener);
         transitionSet.start();
+    }
+
+    public void dismissChildren(ConversationItemView first,
+            final Collection<ConversationItemView> views, AnimatorListenerAdapter listener) {
+        mCurrView = first;
+        dismissChildren(views, 0f, listener);
     }
 
     private int determineDuration(View animView, float newPos, float velocity) {

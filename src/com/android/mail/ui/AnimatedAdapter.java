@@ -56,9 +56,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private View mFooter;
     private boolean mShowFooter;
     private Folder mFolder;
-    private final ListView mListView;
+    private final SwipeableListView mListView;
     private Settings mCachedSettings;
     private boolean mSwipeEnabled;
+
     /**
      * Used only for debugging.
      */
@@ -66,9 +67,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account, Settings settings, ViewMode viewMode,
-            ListView listView) {
-        // Use FLAG_REGISTER_CONTENT_OBSERVER to ensure special ConversationCursor notifications
-        // (triggered by UI actions) cause any connected ListView to redraw.
+            SwipeableListView listView) {
+        // Use FLAG_REGISTER_CONTENT_OBSERVER to ensure special
+        // ConversationCursor notifications (triggered by UI actions) cause any
+        // connected ListView to redraw.
         super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null,
                 FLAG_REGISTER_CONTENT_OBSERVER);
         mContext = context;

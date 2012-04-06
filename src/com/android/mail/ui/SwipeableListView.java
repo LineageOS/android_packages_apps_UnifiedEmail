@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -35,7 +37,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SwipeableListView extends ListView implements Callback {
+public class SwipeableListView extends ListView implements Callback{
     private SwipeHelper mSwipeHelper;
     private SwipeCompleteListener mSwipeCompleteListener;
     private boolean mEnableSwipe = false;
@@ -219,6 +221,26 @@ public class SwipeableListView extends ListView implements Callback {
     @Override
     public void onDragCancelled(View v) {
         mSwipeHelper.setAssociatedViews(null);
+    }
+
+    /**
+     * Archive items using the swipe away animation before shrinking them away.
+     */
+    public void archiveItems(ArrayList<ConversationItemView> views,
+            final ActionCompleteListener listener) {
+        if (views == null || views.size() == 0) {
+            return;
+        }
+        final ArrayList<Conversation> conversations = new ArrayList<Conversation>();
+        for (ConversationItemView view : views) {
+            conversations.add(view.getConversation());
+        }
+        mSwipeHelper.dismissChildren(views.get(0), views, new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ((AnimatedAdapter) getAdapter()).delete(conversations, listener);
+            }
+        });
     }
 
     public interface SwipeCompleteListener {
