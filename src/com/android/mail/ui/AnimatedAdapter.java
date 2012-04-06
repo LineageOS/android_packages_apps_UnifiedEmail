@@ -59,6 +59,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final SwipeableListView mListView;
     private Settings mCachedSettings;
     private boolean mSwipeEnabled;
+    private DragListener mDragListener;
 
     /**
      * Used only for debugging.
@@ -67,7 +68,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account, Settings settings, ViewMode viewMode,
-            SwipeableListView listView) {
+            SwipeableListView listView, DragListener dragListener) {
         // Use FLAG_REGISTER_CONTENT_OBSERVER to ensure special
         // ConversationCursor notifications (triggered by UI actions) cause any
         // connected ListView to redraw.
@@ -80,6 +81,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mShowFooter = false;
         mListView = listView;
         mCachedSettings = settings;
+        mDragListener = dragListener;
         mSwipeEnabled = account.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE);
     }
 
@@ -116,7 +118,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (!isPositionAnimating(view) && !isPositionFooter(view)) {
             ((ConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
                     mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
-                    mSwipeEnabled);
+                    mSwipeEnabled, mDragListener);
         }
     }
 
@@ -256,7 +258,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                     parent);
             convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
                     mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
-                    mSwipeEnabled);
+                    mSwipeEnabled, mDragListener);
             convView.startUndoAnimation(mViewMode, this);
             return convView;
         } else {
