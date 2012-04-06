@@ -770,7 +770,7 @@ public abstract class AbstractActivityController implements ActivityController, 
         if (savedState != null) {
             if (savedState.containsKey(SAVED_ACCOUNT)) {
                 mAccount = ((Account) savedState.getParcelable(SAVED_ACCOUNT));
-                onSettingsChanged(mAccount.settings);
+                mCachedSettings = mAccount.settings;
                 mActionBarView.setAccount(mAccount);
                 mActivity.invalidateOptionsMenu();
             }
@@ -795,7 +795,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 }
                 if (mAccount != null) {
                     mActionBarView.setAccount(mAccount);
-                    onSettingsChanged(mAccount.settings);
+                    mCachedSettings = mAccount.settings;
                     mActivity.invalidateOptionsMenu();
                 }
 
@@ -839,7 +839,7 @@ public abstract class AbstractActivityController implements ActivityController, 
 
                 mViewMode.enterSearchResultsListMode();
                 mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                onSettingsChanged(mAccount.settings);
+                mCachedSettings = mAccount.settings;
                 mActionBarView.setAccount(mAccount);
                 fetchSearchFolder(intent);
             }

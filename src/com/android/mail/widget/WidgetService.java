@@ -50,7 +50,14 @@ public class WidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new MailFactory(getApplicationContext(), intent);
+        return new MailFactory(getApplicationContext(), intent, this);
+    }
+
+
+    protected void configureValidAccountWidget(Context context, RemoteViews remoteViews,
+            int appWidgetId, Account account, Folder folder, String folderName) {
+        BaseWidgetProvider.configureValidAccountWidget(context, remoteViews, appWidgetId, account,
+                folder, folderName);
     }
 
     /**
@@ -74,8 +81,8 @@ public class WidgetService extends RemoteViewsService {
         private boolean mShouldShowViewMore;
         private boolean mFolderInformationShown = false;
         private ContentResolver mResolver;
-
-        public MailFactory(Context context, Intent intent) {
+        private WidgetService mService;
+        public MailFactory(Context context, Intent intent, WidgetService service) {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -83,6 +90,7 @@ public class WidgetService extends RemoteViewsService {
             mFolder = new Folder(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
             mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(mContext, mAccount);
             mResolver = context.getContentResolver();
+            mService = service;
         }
 
         @Override
@@ -253,7 +261,6 @@ public class WidgetService extends RemoteViewsService {
             if (!data.moveToFirst()) {
                 return;
             }
-
             final int unreadCount = data.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
             final String folderName = data.getString(UIProvider.FOLDER_NAME_COLUMN);
             mFolderCount = data.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
@@ -266,7 +273,7 @@ public class WidgetService extends RemoteViewsService {
                 // manager doesn't cache the state of the remote views when doing a partial
                 // widget update. This causes the folder name to be shown as blank if the state
                 // of the widget is restored.
-                BaseWidgetProvider.configureValidAccountWidget(
+                mService.configureValidAccountWidget(
                         mContext, remoteViews, mAppWidgetId, mAccount, mFolder, folderName);
                 appWidgetManager.updateAppWidget(mAppWidgetId, remoteViews);
                 mFolderInformationShown = true;

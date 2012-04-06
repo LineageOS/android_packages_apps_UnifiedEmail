@@ -243,7 +243,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
     private void selectAccount(Account account) {
         if (mCreateShortcut || mConfigureWidget) {
             // Invoked for a shortcut creation
-            final Intent intent = new Intent(this, FolderSelectionActivity.class);
+            final Intent intent = new Intent(this, getFolderSelectionActivity());
             intent.setFlags(
                     Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             intent.setAction(mCreateShortcut ?
@@ -258,6 +258,13 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
             // TODO: (mindyp) handle changing the account for this shortcut.
             finish();
         }
+    }
+
+    /**
+     * Return the class responsible for launching the folder selection activity.
+     */
+    protected Class<?> getFolderSelectionActivity() {
+        return FolderSelectionActivity.class;
     }
 
     @Override

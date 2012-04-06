@@ -20,9 +20,9 @@ import com.android.mail.R;
 import com.android.mail.persistence.Persistence;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.MailboxSelectionActivity;
+import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
@@ -200,26 +200,12 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private static boolean isAccountValid(Context context, Account account) {
+    protected static boolean isAccountValid(Context context, Account account) {
         if (account != null) {
-            // TODO(mindyp) accounts should be cached so that we can lookup
-            // cached versions and correct later.
-            Cursor accountCursor = null;
-            try {
-                accountCursor = context.getContentResolver().query(
-                        MailAppProvider.getAccountsUri(), UIProvider.ACCOUNTS_PROJECTION,
-                        null, null, null);
-                if (accountCursor.moveToFirst()) {
-                    do {
-                        String newAccount = accountCursor.getString(UIProvider.ACCOUNT_URI_COLUMN);
-                        if (account != null && newAccount != null
-                                && TextUtils.equals(account.uri.toString(), newAccount))
-                            return true;
-                    } while (accountCursor.moveToNext());
-                }
-            } finally {
-                if (accountCursor != null) {
-                    accountCursor.close();
+            Account[] accounts = AccountUtils.getSyncingAccounts(context);
+            for (Account existing : accounts) {
+                if (account != null && existing != null && account.uri.equals(existing.uri)) {
+                    return true;
                 }
             }
         }
@@ -232,7 +218,6 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     public static boolean isWidgetConfigured(Context context, int appWidgetId, Account account,
             Folder folder) {
         if (isAccountValid(context, account)) {
-            // TODO: (mindyp) get widget preferences.
             return Persistence.getPreferences(context).getString(
                     WIDGET_ACCOUNT_PREFIX + appWidgetId, null) != null;
         }
@@ -271,44 +256,42 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, remoteViews);
     }
 
-    private static boolean isFolderSynchronized(Context context, Account account, Folder folder) {
-        // TODO: (mindyp) check the folder settings to see if it is syncing.
-        return true;
+    /**
+     * Modifies the remoteView for the given account and folder.
+     */
+    static void configureValidAccountWidget(Context context, RemoteViews remoteViews,
+            int appWidgetId, Account account, Folder folder, String folderDisplayName) {
+        BaseWidgetProvider.configureValidAccountWidget(context, remoteViews, appWidgetId, account,
+                folder, folderDisplayName, WidgetService.class);
     }
 
     /**
      * Modifies the remoteView for the given account and folder.
      */
     static void configureValidAccountWidget(Context context, RemoteViews remoteViews,
-            int appWidgetId, Account account, Folder folder, String folderDisplayName) {
-        PendingIntent clickIntent;// Widget is configured, now display the
-                                  // chosen account.
-
-        final boolean isFolderSynchronized = isFolderSynchronized(context, account, folder);
-
+            int appWidgetId, Account account, Folder folder, String folderDisplayName,
+            Class<?> widgetService) {
         remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
         remoteViews.setTextViewText(R.id.widget_folder, folderDisplayName);
         remoteViews.setViewVisibility(R.id.widget_account, View.VISIBLE);
         remoteViews.setTextViewText(R.id.widget_account, account.name);
         remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.widget_compose, View.VISIBLE);
-        if (isFolderSynchronized) {
-            remoteViews.setViewVisibility(R.id.conversation_list, View.VISIBLE);
-            remoteViews.setViewVisibility(R.id.widget_folder_not_synced, View.GONE);
-        } else {
-            remoteViews.setViewVisibility(R.id.conversation_list, View.GONE);
-            remoteViews.setViewVisibility(R.id.widget_folder_not_synced, View.VISIBLE);
+        remoteViews.setViewVisibility(R.id.conversation_list, View.VISIBLE);
+        remoteViews.setViewVisibility(R.id.widget_folder_not_synced, View.GONE);
 
-            // TODO: (mindyp) Configure the remote view so clicks will launch an
-            // activity that
-            // will allow the user to enable sync for this folder.
-            // remoteViews.setOnClickPendingIntent(R.id.widget_folder_not_synced,
-            // clickIntent);
-        }
+        BaseWidgetProvider.configureValidWidgetIntents(context, remoteViews, appWidgetId, account,
+                folder, folderDisplayName, widgetService);
+    }
+
+    public static void configureValidWidgetIntents(Context context, RemoteViews remoteViews,
+            int appWidgetId, Account account, Folder folder, String folderDisplayName,
+            Class<?> serviceClass) {
         remoteViews.setViewVisibility(R.id.widget_configuration, View.GONE);
 
+
         // Launch an intent to avoid ANRs
-        final Intent intent = new Intent(context, WidgetService.class);
+        final Intent intent = new Intent(context, serviceClass);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.putExtra(EXTRA_ACCOUNT, account.serialize());
         intent.putExtra(EXTRA_FOLDER, folder.serialize());
@@ -316,7 +299,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         remoteViews.setRemoteAdapter(R.id.conversation_list, intent);
         // Open mail app when click on header
         final Intent mailIntent = Utils.createViewFolderIntent(folder, account, false);
-        clickIntent = PendingIntent.getActivity(context, 0, mailIntent,
+        PendingIntent clickIntent = PendingIntent.getActivity(context, 0, mailIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_header, clickIntent);
 

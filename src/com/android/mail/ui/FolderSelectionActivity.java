@@ -143,10 +143,10 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     /**
      * Create a widget for the specified account and folder
      */
-    private void createWidget() {
-        WidgetProvider.updateWidget(this, mAppWidgetId, mAccount, mSelectedFolder);
+    protected void createWidget(int id, Account account, Folder selectedFolder) {
+        WidgetProvider.updateWidget(this, id, account, selectedFolder);
         Intent result = new Intent();
-        result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+        result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
         setResult(RESULT_OK, result);
         finish();
     }
@@ -155,7 +155,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             // The only dialog that is
-            createWidget();
+            createWidget(mAppWidgetId, mAccount, mSelectedFolder);
         } else {
             doCancel();
         }
@@ -213,7 +213,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                     // Display a dialog offering to enable sync for this folder
                     showDialog(R.layout.folder_sync_for_widget_dialog);
                 } else {
-                    createWidget();
+                    createWidget(mAppWidgetId, mAccount, mSelectedFolder);
                 }
             }
         }
