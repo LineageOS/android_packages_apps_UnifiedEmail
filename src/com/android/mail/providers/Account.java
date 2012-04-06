@@ -33,6 +33,8 @@ import org.json.JSONObject;
 import java.lang.StringBuilder;
 
 public class Account extends android.accounts.Account implements Parcelable {
+    private static final String SETTINGS_KEY = "settings";
+
     /**
      * The version of the UI provider schema from which this account provider
      * will return results.
@@ -100,11 +102,6 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final Uri settingsIntentUri;
 
     /**
-     * The content provider uri that can be used to query user settings/preferences
-     */
-    public final Uri settingsQueryUri;
-
-    /**
      * Uri for VIEW intent that will cause the help screens for this account type to be
      * shown.
      */
@@ -133,10 +130,15 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public final Uri recentFolderListUri;
 
+    /**
+     * Settings object for this account.
+     */
+    public final Settings settings;
+
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     /**
-     * Return a serialized String for this folder.
+     * Return a serialized String for this account.
      */
     public synchronized String serialize() {
         JSONObject json = new JSONObject();
@@ -155,15 +157,17 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI, expungeMessageUri);
             json.put(UIProvider.AccountColumns.UNDO_URI, undoUri);
             json.put(UIProvider.AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
-            json.put(UIProvider.AccountColumns.SETTINGS_QUERY_URI, settingsQueryUri);
             json.put(UIProvider.AccountColumns.HELP_INTENT_URI, helpIntentUri);
             json.put(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI, sendFeedbackIntentUri);
             json.put(UIProvider.AccountColumns.SYNC_STATUS, syncStatus);
             json.put(UIProvider.AccountColumns.COMPOSE_URI, composeIntentUri);
             json.put(UIProvider.AccountColumns.MIME_TYPE, mimeType);
             json.put(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI, recentFolderListUri);
+            if (settings != null) {
+                json.put(SETTINGS_KEY, settings.toJSON());
+            }
         } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Could not serialize account with name " + name);
+            LogUtils.wtf(LOG_TAG, e, "Could not serialize account with name %s", name);
         }
         return json.toString();
     }
@@ -187,8 +191,8 @@ public class Account extends android.accounts.Account implements Parcelable {
             final String type = (String) json.get(UIProvider.AccountColumns.TYPE);
             return new Account(name, type, serializedAccount);
         } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Could not create an account from this input: \""
-                    + serializedAccount + "\"");
+            LogUtils.wtf(LOG_TAG, e, "Could not create an account from this input: \"%s\"",
+                    serializedAccount);
             return null;
         }
     }
@@ -232,8 +236,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         undoUri = getValidUri(json.optString(UIProvider.AccountColumns.UNDO_URI));
         settingsIntentUri = getValidUri(json
                 .optString(UIProvider.AccountColumns.SETTINGS_INTENT_URI));
-        settingsQueryUri = getValidUri(json.optString(
-                UIProvider.AccountColumns.SETTINGS_QUERY_URI));
         helpIntentUri = getValidUri(json.optString(UIProvider.AccountColumns.HELP_INTENT_URI));
         sendFeedbackIntentUri =
                 getValidUri(json.optString(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI));
@@ -242,6 +244,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         mimeType = json.optString(UIProvider.AccountColumns.MIME_TYPE);
         recentFolderListUri = getValidUri(
                 json.optString(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI));
+
+        settings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
     }
 
     public Account(Parcel in) {
@@ -257,13 +261,14 @@ public class Account extends android.accounts.Account implements Parcelable {
         expungeMessageUri = in.readParcelable(null);
         undoUri = in.readParcelable(null);
         settingsIntentUri = in.readParcelable(null);
-        settingsQueryUri = in.readParcelable(null);
         helpIntentUri = in.readParcelable(null);
         sendFeedbackIntentUri = in.readParcelable(null);
         syncStatus = in.readInt();
         composeIntentUri = in.readParcelable(null);
         mimeType = in.readString();
         recentFolderListUri = in.readParcelable(null);
+        final String serializedSettings = in.readString();
+        settings = Settings.newInstance(serializedSettings);
     }
 
     public Account(Cursor cursor) {
@@ -284,10 +289,10 @@ public class Account extends android.accounts.Account implements Parcelable {
         expungeMessageUri = !TextUtils.isEmpty(expunge) ? Uri.parse(expunge) : null;
         final String undo = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
         undoUri = !TextUtils.isEmpty(undo) ? Uri.parse(undo) : null;
-        final String settings = cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
-        settingsIntentUri = !TextUtils.isEmpty(settings) ? Uri.parse(settings) : null;
-        final String settingsQuery = cursor.getString(UIProvider.ACCOUNT_SETTINGS_QUERY_URI_COLUMN);
-        settingsQueryUri = !TextUtils.isEmpty(settingsQuery) ? Uri.parse(settingsQuery) : null;
+        final String settingsUriString =
+                cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
+        settingsIntentUri =
+                !TextUtils.isEmpty(settingsUriString) ? Uri.parse(settingsUriString) : null;
         final String help = cursor.getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN);
         helpIntentUri = !TextUtils.isEmpty(help) ? Uri.parse(help) : null;
         final String sendFeedback =
@@ -299,6 +304,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         mimeType = cursor.getString(UIProvider.ACCOUNT_MIME_TYPE_COLUMN);
         final String recent = cursor.getString(UIProvider.ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN);
         recentFolderListUri = !TextUtils.isEmpty(recent) ? Uri.parse(recent) : null;
+
+        settings = new Settings(cursor);
     }
 
     /**
@@ -342,21 +349,13 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(expungeMessageUri, 0);
         dest.writeParcelable(undoUri, 0);
         dest.writeParcelable(settingsIntentUri, 0);
-        dest.writeParcelable(settingsQueryUri, 0);
         dest.writeParcelable(helpIntentUri, 0);
         dest.writeParcelable(sendFeedbackIntentUri, 0);
         dest.writeInt(syncStatus);
         dest.writeParcelable(composeIntentUri, 0);
         dest.writeString(mimeType);
         dest.writeParcelable(recentFolderListUri, 0);
-    }
-
-    /**
-     * Get the settings associated with this account.
-     * TODO: this method is just a stand-in.
-     */
-    public Cursor getSettings() {
-        return null;
+        dest.writeString(settings.serialize());
     }
 
     @Override
@@ -387,8 +386,6 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(undoUri);
         sb.append(",settingsIntentUri=");
         sb.append(settingsIntentUri);
-        sb.append(",settingsQueryUri=");
-        sb.append(settingsQueryUri);
         sb.append(",helpIntentUri=");
         sb.append(helpIntentUri);
         sb.append(",sendFeedbackIntentUri=");
@@ -401,6 +398,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(mimeType);
         sb.append(",recentFoldersUri=");
         sb.append(recentFolderListUri);
+        sb.append(",settings=");
+        sb.append(settings.serialize());
 
         return sb.toString();
     }
@@ -427,7 +426,6 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(expungeMessageUri, other.expungeMessageUri) &&
                 Objects.equal(undoUri, other.undoUri) &&
                 Objects.equal(settingsIntentUri, other.settingsIntentUri) &&
-                Objects.equal(settingsQueryUri, other.settingsQueryUri) &&
                 Objects.equal(helpIntentUri, other.helpIntentUri) &&
                 Objects.equal(sendFeedbackIntentUri, other.sendFeedbackIntentUri) &&
                 (syncStatus == other.syncStatus) &&
@@ -440,7 +438,7 @@ public class Account extends android.accounts.Account implements Parcelable {
     public int hashCode() {
         return super.hashCode() ^ Objects.hashCode(name, type, capabilities, providerVersion,
                 uri, folderListUri, searchUri, accountFromAddresses, saveDraftUri,
-                sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri, settingsQueryUri,
+                sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri,
                 helpIntentUri, sendFeedbackIntentUri, syncStatus, composeIntentUri, mimeType,
                 recentFolderListUri);
     }

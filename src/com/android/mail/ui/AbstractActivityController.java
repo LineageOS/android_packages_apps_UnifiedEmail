@@ -145,7 +145,6 @@ public abstract class AbstractActivityController implements ActivityController, 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     /** Constants used to differentiate between the types of loaders. */
     private static final int LOADER_ACCOUNT_CURSOR = 0;
-    private static final int LOADER_ACCOUNT_SETTINGS = 1;
     private static final int LOADER_FOLDER_CURSOR = 2;
     private static final int LOADER_RECENT_FOLDERS = 3;
     private static final int LOADER_CONVERSATION_LIST = 4;
@@ -325,10 +324,8 @@ public abstract class AbstractActivityController implements ActivityController, 
             // the account Inbox.
             mAccount = account;
             mFolder = null;
-            // Reset settings; they are no longer valid.
-            onSettingsChanged(null);
+            onSettingsChanged(mAccount.settings);
             mActionBarView.setAccount(mAccount);
-            restartOptionalLoader(LOADER_ACCOUNT_SETTINGS);
             loadAccountInbox();
 
             mRecentFolderList.setCurrentAccount(account);
@@ -772,6 +769,7 @@ public abstract class AbstractActivityController implements ActivityController, 
         if (savedState != null) {
             if (savedState.containsKey(SAVED_ACCOUNT)) {
                 mAccount = ((Account) savedState.getParcelable(SAVED_ACCOUNT));
+                onSettingsChanged(mAccount.settings);
                 mActionBarView.setAccount(mAccount);
                 mActivity.invalidateOptionsMenu();
             }
@@ -786,7 +784,6 @@ public abstract class AbstractActivityController implements ActivityController, 
                 showConversation(mCurrentConversation);
                 handled = true;
             }
-            startLoader(LOADER_ACCOUNT_SETTINGS);
         } else if (intent != null) {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
@@ -797,6 +794,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 }
                 if (mAccount != null) {
                     mActionBarView.setAccount(mAccount);
+                    onSettingsChanged(mAccount.settings);
                     mActivity.invalidateOptionsMenu();
                 }
 
@@ -830,7 +828,6 @@ public abstract class AbstractActivityController implements ActivityController, 
                     // Nothing was saved; just load the account inbox.
                     loadAccountInbox();
                 }
-                restartOptionalLoader(LOADER_ACCOUNT_SETTINGS);
             } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
                 // Save this search query for future suggestions.
                 final String query = intent.getStringExtra(SearchManager.QUERY);
@@ -841,9 +838,9 @@ public abstract class AbstractActivityController implements ActivityController, 
 
                 mViewMode.enterSearchResultsListMode();
                 mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                onSettingsChanged(mAccount.settings);
                 mActionBarView.setAccount(mAccount);
                 fetchSearchFolder(intent);
-                restartOptionalLoader(LOADER_ACCOUNT_SETTINGS);
             }
         }
 
@@ -937,12 +934,6 @@ public abstract class AbstractActivityController implements ActivityController, 
             case LOADER_FOLDER_CURSOR:
                 return new CursorLoader(mContext, mFolder.uri, UIProvider.FOLDERS_PROJECTION, null,
                         null, null);
-            case LOADER_ACCOUNT_SETTINGS:
-                if (mAccount.settingsQueryUri != null) {
-                    return new CursorLoader(mContext, mAccount.settingsQueryUri,
-                            UIProvider.SETTINGS_PROJECTION, null, null, null);
-                }
-                break;
             case LOADER_RECENT_FOLDERS:
                 if (mAccount.recentFolderListUri != null) {
                     return new CursorLoader(mContext, mAccount.recentFolderListUri,
@@ -967,6 +958,11 @@ public abstract class AbstractActivityController implements ActivityController, 
                 LogUtils.wtf(LOG_TAG, "Loader returned unexpected id: %d", id);
         }
         return null;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     /**
@@ -1161,15 +1157,6 @@ public abstract class AbstractActivityController implements ActivityController, 
                 }
                 LogUtils.v(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
                 break;
-            case LOADER_ACCOUNT_SETTINGS:
-                // An account may actually have no settings if it is one of the
-                // special combined accounts.
-                Settings settings = null;
-                if (data.moveToFirst()) {
-                    settings = new Settings(data);
-                }
-                onSettingsChanged(settings);
-                break;
             case LOADER_RECENT_FOLDERS:
                 mRecentFolderList.loadFromUiProvider(data);
                 break;
@@ -1195,18 +1182,6 @@ public abstract class AbstractActivityController implements ActivityController, 
                 showConversationList(mConvListContext);
                 mActivity.invalidateOptionsMenu();
                 mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
-                break;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        switch (loader.getId()) {
-            case LOADER_ACCOUNT_SETTINGS:
-                onSettingsChanged(null);
                 break;
         }
     }

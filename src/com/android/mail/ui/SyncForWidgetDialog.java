@@ -43,7 +43,6 @@ public class SyncForWidgetDialog extends AlertDialog
         final ContentResolver resolver = context.getContentResolver();
 
         // Get the current sync window for the specified account
-        final Cursor settings = mAccount.getSettings();
         // TODO: get sync days from settings.
         final long syncDays = SYNC_DAYS;
 
@@ -77,7 +76,6 @@ public class SyncForWidgetDialog extends AlertDialog
                     @Override
                     protected Void doInBackground(Context... params) {
                         final Context context = params[0];
-                        final Cursor settings = mAccount.getSettings();
                         // TODO: (mindyp) enable syncing of folder.
 
                         return null;

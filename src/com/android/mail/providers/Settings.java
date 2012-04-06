@@ -16,27 +16,36 @@
 
 package com.android.mail.providers;
 
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
+
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
 /**
  * Model to hold Settings for an account.
  */
 public class Settings implements Parcelable {
-    public String signature;
-    public int autoAdvance;
-    public int messageTextSize;
-    public int snapHeaders;
-    public int replyBehavior;
-    public boolean hideCheckboxes;
-    public boolean confirmDelete;
-    public boolean confirmArchive;
-    public boolean confirmSend;
-    public Uri defaultInbox;
-    public boolean forceReplyFromDefault;
+    private static final String LOG_TAG = new LogUtils().getLogTag();
+
+    public final String signature;
+    public final int autoAdvance;
+    public final int messageTextSize;
+    public final int snapHeaders;
+    public final int replyBehavior;
+    public final boolean hideCheckboxes;
+    public final boolean confirmDelete;
+    public final boolean confirmArchive;
+    public final boolean confirmSend;
+    public final Uri defaultInbox;
+    public final boolean forceReplyFromDefault;
 
     public Settings(Parcel inParcel) {
         signature = inParcel.readString();
@@ -54,20 +63,172 @@ public class Settings implements Parcelable {
     }
 
     public Settings(Cursor cursor) {
-        signature = cursor.getString(UIProvider.SETTINGS_SIGNATURE_COLUMN);
-        autoAdvance = cursor.getInt(UIProvider.SETTINGS_AUTO_ADVANCE_COLUMN);
-        messageTextSize = cursor.getInt(UIProvider.SETTINGS_MESSAGE_TEXT_SIZE_COLUMN);
-        snapHeaders = cursor.getInt(UIProvider.SETTINGS_SNAP_HEADERS_COLUMN);
-        replyBehavior = cursor.getInt(UIProvider.SETTINGS_REPLY_BEHAVIOR_COLUMN);
-        hideCheckboxes = cursor.getInt(UIProvider.SETTINGS_HIDE_CHECKBOXES_COLUMN) != 0;
-        confirmDelete = cursor.getInt(UIProvider.SETTINGS_CONFIRM_DELETE_COLUMN) != 0;
-        confirmArchive = cursor.getInt(UIProvider.SETTINGS_CONFIRM_ARCHIVE_COLUMN) != 0;
-        confirmSend = cursor.getInt(UIProvider.SETTINGS_CONFIRM_SEND_COLUMN) != 0;
-        final String inbox = cursor.getString(UIProvider.SETTINGS_DEFAULT_INBOX_COLUMN);
+        signature = cursor.getString(UIProvider.ACCOUNT_SETTINGS_SIGNATURE_COLUMN);
+        autoAdvance = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN);
+        messageTextSize = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN);
+        snapHeaders = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN);
+        replyBehavior = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN);
+        hideCheckboxes = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN) != 0;
+        confirmDelete = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN) != 0;
+        confirmArchive = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN) != 0;
+        confirmSend = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN) != 0;
+        final String inbox = cursor.getString(UIProvider.ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN);
         defaultInbox = !TextUtils.isEmpty(inbox) ? Uri.parse(inbox) : null;
         forceReplyFromDefault = cursor.getInt(
-                UIProvider.SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN) != 0;
+                UIProvider.ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN) != 0;
     }
+
+    private Settings(JSONObject json) throws JSONException {
+        signature = (String) json.optString(UIProvider.AccountColumns.SettingsColumns.SIGNATURE);
+
+        autoAdvance = json.optInt(UIProvider.AccountColumns.SettingsColumns.AUTO_ADVANCE);
+        messageTextSize = json.optInt(UIProvider.AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE);
+        snapHeaders = json.optInt(UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS);
+        replyBehavior = json.optInt(UIProvider.AccountColumns.SettingsColumns.REPLY_BEHAVIOR);
+        hideCheckboxes = json.optBoolean(UIProvider.AccountColumns.SettingsColumns.HIDE_CHECKBOXES);
+        confirmDelete = json.optBoolean(UIProvider.AccountColumns.SettingsColumns.CONFIRM_DELETE);
+        confirmArchive = json.optBoolean(UIProvider.AccountColumns.SettingsColumns.CONFIRM_ARCHIVE);
+        confirmSend = json.optBoolean(UIProvider.AccountColumns.SettingsColumns.CONFIRM_SEND);
+        defaultInbox = getValidUri(
+                json.optString(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX));
+        forceReplyFromDefault =
+                json.optBoolean(UIProvider.AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT);
+    }
+
+    /**
+     * Parse a string (possibly null or empty) into a URI. If the string is null or empty, null
+     * is returned back. Otherwise an empty URI is returned.
+     * @param uri
+     * @return a valid URI, possibly {@link android.net.Uri#EMPTY}
+     */
+    private static Uri getValidUri(String uri) {
+        return Utils.getValidUri(uri);
+    }
+
+    /**
+     * Return a serialized String for these settings.
+     */
+    public synchronized String serialize() {
+        final JSONObject json = toJSON();
+        return json.toString();
+    }
+
+    /**
+     * Return a JSONObject for these settings.
+     */
+    public synchronized JSONObject toJSON() {
+        final JSONObject json = new JSONObject();
+        try {
+            json.put(UIProvider.AccountColumns.SettingsColumns.SIGNATURE, signature);
+            json.put(UIProvider.AccountColumns.SettingsColumns.AUTO_ADVANCE, autoAdvance);
+            json.put(UIProvider.AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, messageTextSize);
+            json.put(UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS, snapHeaders);
+            json.put(UIProvider.AccountColumns.SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
+            json.put(UIProvider.AccountColumns.SettingsColumns.HIDE_CHECKBOXES, hideCheckboxes);
+            json.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_DELETE, confirmDelete);
+            json.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, confirmArchive);
+            json.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_SEND, confirmSend);
+            json.put(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX, defaultInbox);
+            json.put(UIProvider.AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
+                    forceReplyFromDefault);
+        } catch (JSONException e) {
+            LogUtils.wtf(LOG_TAG, e, "Could not serialize settings");
+        }
+        return json;
+    }
+
+    /**
+     * Create a new instance of an Settings object using a serialized instance created previously
+     * using {@link #serialize()}. This returns null if the serialized instance was invalid or does
+     * not represent a valid account object.
+     *
+     * @param serializedAccount
+     * @return
+     */
+    public static Settings newInstance(String serializedSettings) {
+        JSONObject json = null;
+        try {
+            json = new JSONObject(serializedSettings);
+            return new Settings(json);
+        } catch (JSONException e) {
+            LogUtils.wtf(LOG_TAG, e, "Could not create an settings from this input: \"%s\"",
+                    serializedSettings);
+            return null;
+        }
+    }
+
+
+    /**
+     * Create a new instance of an Settings object using a JSONObject  instance created previously
+     * using {@link #toJSON(). This returns null if the serialized instance was invalid or does
+     * not represent a valid account object.
+     *
+     * @param serializedAccount
+     * @return
+     */
+    public static Settings newInstance(JSONObject json) {
+        if (json == null) {
+            return null;
+        }
+        try {
+            return new Settings(json);
+        } catch (JSONException e) {
+            LogUtils.wtf(LOG_TAG, e, "Could not create an settings from this input: \"%s\"",
+                    json.toString());
+            return null;
+        }
+    }
+
+
+
+    /**
+     * Integer column contaning the user's specified snap header preference.  This value
+     * will be one of the values in {@link UIProvider.SnapHeaderValue}
+     */
+    public static final String SNAP_HEADERS = "snap_headers";
+
+    /**
+     * Integer column containing the user's specified default reply behavior.  This value will
+     * be one of the values in {@link UIProvider.DefaultReplyBehavior}
+     */
+    public static final String REPLY_BEHAVIOR = "reply_behavior";
+
+    /**
+     * Integer column containing the user's specified checkbox preference. A
+     * non zero value means to hide checkboxes.
+     */
+    public static final String HIDE_CHECKBOXES = "hide_checkboxes";
+
+    /**
+     * Integer column containing the user's specified confirm delete preference value.
+     * A non zero value indicates that the user has indicated that a confirmation should
+     * be shown when a delete action is performed.
+     */
+    public static final String CONFIRM_DELETE = "confirm_delete";
+
+    /**
+     * Integer column containing the user's specified confirm archive preference value.
+     * A non zero value indicates that the user has indicated that a confirmation should
+     * be shown when an archive action is performed.
+     */
+    public static final String CONFIRM_ARCHIVE = "confirm_archive";
+
+    /**
+     * Integer column containing the user's specified confirm send preference value.
+     * A non zero value indicates that the user has indicated that a confirmation should
+     * be shown when a send action is performed.
+     */
+    public static final String CONFIRM_SEND = "confirm_send";
+    /**
+     * String folder containing the serialized default inbox folder for an account.
+     */
+    public static final String DEFAULT_INBOX = "default_inbox";
+    /**
+     * Integer column containing a non zero value if replies should always be sent from
+     * a default address instead of a recipient.
+     */
+    public static String FORCE_REPLY_FROM_DEFAULT = "force_reply_from_default";
+
 
     @Override
     public int describeContents() {

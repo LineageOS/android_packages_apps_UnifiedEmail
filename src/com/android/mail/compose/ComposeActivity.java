@@ -97,7 +97,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
-        AttachmentDeletedListener, OnAccountChangedListener, LoaderCallbacks<Cursor> {
+        AttachmentDeletedListener, OnAccountChangedListener {
     // Identifiers for which type of composition this is
     static final int COMPOSE = -1;
     static final int REPLY = 0;
@@ -159,7 +159,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // Request numbers for activities we start
     private static final int RESULT_PICK_ATTACHMENT = 1;
     private static final int RESULT_CREATE_ACCOUNT = 2;
-    private static final int ACCOUNT_SETTINGS_LOADER = 0;
     // TODO(mindyp) set mime-type for auto send?
     private static final String AUTO_SEND_ACTION = "com.android.mail.action.AUTO_SEND";
 
@@ -411,8 +410,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         assert(account != null);
         if (!account.equals(mAccount)) {
             mAccount = account;
+            mCachedSettings = mAccount.settings;
+            appendSignature();
         }
-        getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
     }
 
     private void initFromSpinner(int action) {
@@ -1694,7 +1694,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mRecipient != null && mRecipient.equals(mAccount.name)) {
             mRecipient = selectedAccount.name;
         }
-        mAccount = selectedAccount.account;
+        setAccount(selectedAccount.account);
 
         // Don't display the toast if the user is just changing the orientation,
         // but we still need to save the draft to the cursor because this is how we restore
@@ -1878,9 +1878,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void onAccountChanged() {
         mReplyFromAccount = mFromSpinner.getCurrentAccount();
         if (!mAccount.equals(mReplyFromAccount.account)) {
-            mAccount = mReplyFromAccount.account;
-            mCachedSettings = null;
-            getLoaderManager().restartLoader(ACCOUNT_SETTINGS_LOADER, null, this);
+            setAccount(mReplyFromAccount.account);
+
             // TODO: handle discarding attachments when switching accounts.
             // Only enable save for this draft if there is any other content
             // in the message.
@@ -2104,32 +2103,5 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             // Do nothing.
         }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == ACCOUNT_SETTINGS_LOADER) {
-            if (mAccount != null && mAccount.settingsQueryUri != null) {
-                return new CursorLoader(this, mAccount.settingsQueryUri,
-                        UIProvider.SETTINGS_PROJECTION, null, null, null);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (loader.getId() == ACCOUNT_SETTINGS_LOADER) {
-            if (data != null) {
-                data.moveToFirst();
-                mCachedSettings = new Settings(data);
-                appendSignature();
-            }
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        // Do nothing.
     }
 }

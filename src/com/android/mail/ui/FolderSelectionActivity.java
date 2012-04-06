@@ -202,7 +202,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                 finish();
             } else if (mConfigureWidget) {
                 // Check to see if the widget is set to be synchronized
-                final Cursor settings = mAccount.getSettings();
                 final Set<String> synchronizedFoldersSet = Sets.newHashSet();
 
                 // Add all of the synchronized folders to the set

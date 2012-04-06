@@ -44,6 +44,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.lang.IllegalStateException;
+import java.lang.Integer;
 import java.lang.StringBuilder;
 import java.util.Collections;
 import java.util.Map;
@@ -218,9 +219,6 @@ public abstract class MailAppProvider extends ContentProvider
                         UIProvider.AccountColumns.SETTINGS_INTENT_URI)) {
                     builder.add(account.settingsIntentUri);
                 } else if (TextUtils.equals(column,
-                        UIProvider.AccountColumns.SETTINGS_QUERY_URI)) {
-                    builder.add(account.settingsQueryUri);
-                } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.HELP_INTENT_URI)) {
                     builder.add(account.helpIntentUri);
                 } else if (TextUtils.equals(column,
@@ -235,6 +233,39 @@ public abstract class MailAppProvider extends ContentProvider
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI)) {
                     builder.add(account.recentFolderListUri);
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.SIGNATURE)) {
+                    builder.add(account.settings.signature);
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.AUTO_ADVANCE)) {
+                    builder.add(Integer.valueOf(account.settings.autoAdvance));
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE)) {
+                    builder.add(Integer.valueOf(account.settings.messageTextSize));
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.REPLY_BEHAVIOR)) {
+                    builder.add(Integer.valueOf(account.settings.replyBehavior));
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.HIDE_CHECKBOXES)) {
+                    builder.add(Integer.valueOf(account.settings.hideCheckboxes ? 1 : 0));
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.CONFIRM_DELETE)) {
+                    builder.add(Integer.valueOf(account.settings.confirmDelete ? 1 : 0));
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.CONFIRM_ARCHIVE)) {
+                    builder.add(Integer.valueOf(account.settings.confirmArchive ? 1 : 0));
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.CONFIRM_SEND)) {
+                    builder.add(Integer.valueOf(account.settings.confirmSend ? 1 : 0));
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX)) {
+                    builder.add(account.settings.defaultInbox);
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS)) {
+                    builder.add(Integer.valueOf(account.settings.snapHeaders));
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT)) {
+                    builder.add(Integer.valueOf(account.settings.forceReplyFromDefault ? 1 : 0));
                 } else {
                     throw new IllegalStateException("Column not found: " + column);
                 }
@@ -389,8 +420,12 @@ public abstract class MailAppProvider extends ContentProvider
                 try {
                     final AccountCacheEntry accountEntry =
                             new AccountCacheEntry(serializedAccount);
-                    addAccountImpl(accountEntry.mAccount, accountEntry.mAccountsQueryUri,
-                            false /* don't notify */);
+                    if (accountEntry.mAccount.settings != null) {
+                        addAccountImpl(accountEntry.mAccount, accountEntry.mAccountsQueryUri,
+                                false /* don't notify */);
+                    } else {
+                        LogUtils.e(LOG_TAG, "Dropping account that doesn't specify settings");
+                    }
                 } catch (Exception e) {
                     // Unable to create account object, skip to next
                     LogUtils.e(LOG_TAG, e,
