@@ -25,7 +25,7 @@ package com.android.mail.ui;
  * the UI).
  */
 // Called MenuHandler.ActivityCallback in the previous code.
-public interface MenuCallback extends HelpCallback {
+public interface DragListener {
     /**
      * Invoked when user starts drag and drop mode.
      */

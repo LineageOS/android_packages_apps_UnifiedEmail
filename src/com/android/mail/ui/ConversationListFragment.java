@@ -213,7 +213,8 @@ public final class ConversationListFragment extends ListFragment implements
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
                 getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
-                mActivity.getSettings(), mActivity.getViewMode(), mListView);
+                mActivity.getSettings(), mActivity.getViewMode(), mListView,
+                mActivity.getDragListener());
         mFooterView = (ConversationListFooterView) LayoutInflater.from(
                 mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
                 null);
@@ -471,6 +472,15 @@ public final class ConversationListFragment extends ListFragment implements
         requestDelete(listener);
     }
 
+    public void requestDelete(Collection<Conversation> conversations,
+            ActionCompleteListener listener) {
+        for (Conversation conv : conversations) {
+            conv.localDeleteOnUpdate = true;
+        }
+        // Delete the local delete items (all for now) and when done,
+        // update...
+        mListAdapter.delete(conversations, listener);
+    }
 
     public void onFolderUpdated(Folder folder) {
         mFolder = folder;

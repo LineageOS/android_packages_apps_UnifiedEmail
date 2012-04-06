@@ -22,6 +22,7 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ import android.view.MotionEvent;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
@@ -39,11 +41,11 @@ import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
  * ActivityControllers are delegates that implement methods by calling underlying views to modify,
  * or respond to user action.
  */
-public interface ActivityController extends MenuCallback, LayoutListener, SubjectDisplayChanger,
+public interface ActivityController extends DragListener, LayoutListener, SubjectDisplayChanger,
         ModeChangeListener, ConversationListCallbacks, FolderChangeCommitListener,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
         ActionCompleteListener, ConversationSetObserver,
-        FolderListFragment.FolderListSelectionListener {
+        FolderListFragment.FolderListSelectionListener, HelpCallback {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
@@ -264,4 +266,14 @@ public interface ActivityController extends MenuCallback, LayoutListener, Subjec
      * Start search mode if the account being view supports the search capability.
      */
     void startSearch();
+
+    /**
+     * Supports dragging conversations to a folder.
+     */
+    boolean supportsDrag(DragEvent event, Folder folder);
+
+    /**
+     * Handles dropping conversations to a folder.
+     */
+    void handleDrop(DragEvent event, Folder folder);
 }

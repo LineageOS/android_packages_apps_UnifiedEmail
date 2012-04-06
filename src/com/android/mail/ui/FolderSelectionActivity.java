@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -300,5 +301,20 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     @Override
     public FolderListSelectionListener getFolderListSelectionListener() {
         return this;
+    }
+
+    @Override
+    public DragListener getDragListener() {
+        return null;
+    }
+
+    @Override
+    public boolean supportsDrag(DragEvent event, Folder folder) {
+        return false;
+    }
+
+    @Override
+    public void handleDrop(DragEvent event, Folder folder) {
+        // Do nothing.
     }
 }

@@ -24,7 +24,8 @@ import com.android.mail.ui.FolderListFragment;
  * A controllable activity is an Activity that has a Controller attached. This activity must be
  * able to attach the various view fragments and delegate the method calls between them.
  */
-public interface ControllableActivity extends HelpCallback, RestrictedActivity {
+public interface ControllableActivity extends HelpCallback, RestrictedActivity,
+        FolderItemView.DropHandler {
     /**
      * Attaches the conversation list fragment to the activity controller. This callback is
      * currently required because the Activity Controller directly calls methods on the conversation
@@ -92,4 +93,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity {
      * pushed for hierarchical folders.
      */
     FolderListFragment.FolderListSelectionListener getFolderListSelectionListener();
+
+    DragListener getDragListener();
 }

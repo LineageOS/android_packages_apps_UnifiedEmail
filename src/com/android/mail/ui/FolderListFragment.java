@@ -18,8 +18,6 @@
 package com.android.mail.ui;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Context;
@@ -69,6 +67,7 @@ public final class FolderListFragment extends ListFragment implements
     public static final int MODE_PICK = 1;
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
     private static final String ARG_FOLDER_URI = "arg-folder-list-uri";
+    private FolderItemView.DropHandler mDropHandler;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -107,6 +106,9 @@ public final class FolderListFragment extends ListFragment implements
                     "create it. Cannot proceed.");
         }
         mActivity = (ControllableActivity) activity;
+        if (activity instanceof FolderItemView.DropHandler) {
+            mDropHandler = (FolderItemView.DropHandler) activity;
+        }
         mActivity.attachFolderList(this);
         mListener = mActivity.getFolderListSelectionListener();
         if (mActivity.isFinishing()) {
@@ -206,7 +208,7 @@ public final class FolderListFragment extends ListFragment implements
             }
             getCursor().moveToPosition(position);
             Folder folder = new Folder(getCursor());
-            folderItemView.bind(folder, null);
+            folderItemView.bind(folder, mDropHandler);
             if (mSelectedFolder != null && folder.uri.equals(mSelectedFolder.uri)) {
                 getListView().setItemChecked(position, true);
             }

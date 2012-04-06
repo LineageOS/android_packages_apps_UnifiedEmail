@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.LoaderManager;
 import android.app.SearchManager;
+import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -35,6 +36,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -62,12 +64,19 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.android.gm.ConversationInfo;
+import com.google.android.gm.LabelOperations;
+import com.google.android.gm.provider.Gmail;
+import com.google.android.gm.provider.Label;
+import com.google.android.gm.provider.LabelManager;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -1418,5 +1427,58 @@ public abstract class AbstractActivityController implements ActivityController, 
             Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
                     .getString(R.string.search_unsupported), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Supports dragging conversations to a folder.
+     */
+    @Override
+    public boolean supportsDrag(DragEvent event, Folder folder) {
+        return (folder != null
+                && event != null
+                && event.getClipDescription() != null
+                && folder.supportsCapability
+                    (UIProvider.FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
+                && folder.supportsCapability
+                    (UIProvider.FolderCapabilities.CAN_HOLD_MAIL)
+                && !mFolder.uri.equals(folder.uri));
+    }
+
+    /**
+     * Handles dropping conversations to a label.
+     */
+    @Override
+    public void handleDrop(DragEvent event, final Folder folder) {
+        /*
+         * Expect clip data has form: [conversations_uri, conversationId1,
+         * maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]
+         */
+        if (!supportsDrag(event, folder)) {
+            return;
+        }
+        ClipData data = event.getClipData();
+        ArrayList<Integer> conversationPositions = Lists.newArrayList();
+        for (int i = 1; i < data.getItemCount(); i += 3) {
+            int position = Integer.parseInt(data.getItemAt(i).getText().toString());
+            conversationPositions.add(position);
+        }
+        final Collection<Conversation> conversations = mSelectedSet.values();
+        mConversationListFragment.requestDelete(conversations,
+                new ActionCompleteListener() {
+                    @Override
+                    public void onActionComplete() {
+                        AbstractActivityController.this.onActionComplete();
+                        ArrayList<Folder> changes = new ArrayList<Folder>();
+                        changes.add(folder);
+                        Conversation.updateString(mContext, conversations,
+                                ConversationColumns.FOLDER_LIST, folder.uri.toString());
+                        Conversation.updateString(mContext, conversations,
+                                ConversationColumns.RAW_FOLDERS,
+                                Folder.getSerializedFolderString(mFolder, changes));
+                        mConversationListFragment.onUndoAvailable(new UndoOperation(conversations
+                                .size(), R.id.change_folder));
+                        mSelectedSet.clear();
+                    }
+                });
     }
 }

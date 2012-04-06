@@ -23,7 +23,9 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.Animator.AnimatorListener;
+import android.content.ClipData;
 import android.content.Context;
+import android.content.ClipData.Item;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -32,6 +34,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
@@ -54,6 +57,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.View.DragShadowBuilder;
 import android.view.View.MeasureSpec;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Checkable;
@@ -68,6 +72,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.ConversationSelectionSet;
+import com.android.mail.ui.DragListener;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
@@ -159,6 +164,9 @@ public class ConversationItemView extends View {
     private CheckForTap mPendingCheckForTap;
     private CheckForLongPress mPendingCheckForLongPress;
     private boolean mSwipeEnabled;
+    private int mLastTouchX;
+    private int mLastTouchY;
+    private DragListener mDragListener;
     private static Bitmap MORE_FOLDERS;
 
     static {
@@ -289,13 +297,13 @@ public class ConversationItemView extends View {
                 }
             }
         }
+    }
 
-        /**
-         * Helpers function to align an element in the center of a space.
-         */
-        private static int getPadding(int space, int length) {
-            return (space - length) / 2;
-        }
+    /**
+     * Helpers function to align an element in the center of a space.
+     */
+    private static int getPadding(int space, int length) {
+        return (space - length) / 2;
     }
 
     public ConversationItemView(Context context, String account) {
@@ -361,27 +369,29 @@ public class ConversationItemView extends View {
         }
     }
 
-    public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set,
-            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled) {
-        mViewMode = viewMode;
-        mHeader = ConversationItemViewModel.forCursor(cursor);
-        mSelectedConversationSet = set;
-        mDisplayedFolder = folder;
-        mCheckboxesEnabled = !checkboxesDisabled;
-        mSwipeEnabled = swipeEnabled;
-        setContentDescription(mHeader.getContentDescription(mContext));
-        requestLayout();
+    public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set, Folder folder,
+            boolean checkboxesDisabled, boolean swipeEnabled, DragListener dragListener) {
+        bind(ConversationItemViewModel.forCursor(cursor), viewMode, set, folder,
+                checkboxesDisabled, swipeEnabled, dragListener);
     }
 
-
     public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
-            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled) {
+            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
+            DragListener dragListener) {
+        bind(ConversationItemViewModel.forConversation(conversation), viewMode, set, folder,
+                checkboxesDisabled, swipeEnabled, dragListener);
+    }
+
+    private void bind(ConversationItemViewModel header, ViewMode viewMode,
+            ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
+            boolean swipeEnabled, DragListener dragListener) {
         mViewMode = viewMode;
-        mHeader = ConversationItemViewModel.forConversation(conversation);
+        mHeader = header;
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         mCheckboxesEnabled = !checkboxesDisabled;
         mSwipeEnabled = swipeEnabled;
+        mDragListener = dragListener;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
     }
@@ -1072,13 +1082,15 @@ public class ConversationItemView extends View {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        mLastTouchX = (int) event.getX();
+        mLastTouchY = (int) event.getY();
         if (!mSwipeEnabled) {
             return onTouchEventNoSwipe(event);
         }
         boolean handled = true;
 
-        int x = (int) event.getX();
-        int y = (int) event.getY();
+        int x = mLastTouchX;
+        int y = mLastTouchY;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mDownEvent = true;
@@ -1209,7 +1221,7 @@ public class ConversationItemView extends View {
 
     private class CheckForLongPress implements Runnable {
         public void run() {
-            ConversationItemView.this.toggleCheckMark();
+            ConversationItemView.this.toggleSelectionOrBeginDrag();
             performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         }
     }
@@ -1256,5 +1268,88 @@ public class ConversationItemView extends View {
     public int getPosition() {
         return mHeader != null && mHeader.conversation != null ?
                 mHeader.conversation.position : -1;
+    }
+
+    /**
+     * Select the current conversation.
+     */
+    private void selectConversation() {
+        if (!mSelectedConversationSet.containsKey(mHeader.conversation.id)) {
+            toggleCheckMark();
+        }
+    }
+
+    /**
+     * With two pane mode and mailboxes in one pane (tablet), add the conversation to the selected
+     * set and start drag mode.
+     * In two pane mode when viewing conversations (tablet), toggle selection.
+     * In one pane mode (phone, and portrait mode on tablet), toggle selection.
+     */
+    public void toggleSelectionOrBeginDrag() {
+        // If we are in one pane mode, or we are looking at conversations, drag and drop is
+        // meaningless.  Toggle checkmark and return early.
+        if (!Utils.useTabletUI(mContext) || mViewMode.getMode() != ViewMode.CONVERSATION_LIST) {
+            toggleCheckMark();
+            return;
+        }
+
+        // Begin drag mode. Keep the conversation selected (NOT toggle selection) and start drag.
+        selectConversation();
+        mDragListener.onStartDragMode();
+
+        // Clip data has form: [conversations_uri, conversationId1,
+        // maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]
+        int count = mSelectedConversationSet.size();
+        String description = Utils.formatPlural(mContext, R.plurals.move_conversation, count);
+
+        ClipData data = ClipData.newUri(mContext.getContentResolver(), description,
+                Conversation.MOVE_CONVERSATIONS_URI);
+        for (Conversation conversation : mSelectedConversationSet.values()) {
+            data.addItem(new Item(String.valueOf(conversation.position)));
+        }
+
+        // Start drag mode
+        startDrag(data, new ShadowBuilder(this, count, mLastTouchX, mLastTouchY), null, 0);
+    }
+
+    private class ShadowBuilder extends DragShadowBuilder {
+        private final Drawable mBackground;
+
+        private final View mView;
+        private final String mDragDesc;
+        private final int mTouchX;
+        private final int mTouchY;
+        private int mDragDescX;
+        private int mDragDescY;
+
+        public ShadowBuilder(View view, int count, int touchX, int touchY) {
+            super(view);
+            mView = view;
+            mBackground = mView.getResources().getDrawable(R.drawable.list_pressed_holo);
+            mDragDesc = Utils.formatPlural(mView.getContext(), R.plurals.move_conversation, count);
+            mTouchX = touchX;
+            mTouchY = touchY;
+        }
+
+        @Override
+        public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
+            int width = mView.getWidth();
+            int height = mView.getHeight();
+            mDragDescX = mCoordinates.sendersX;
+            mDragDescY = getPadding(height, mCoordinates.subjectFontSize)
+                    - mCoordinates.subjectAscent;
+            shadowSize.set(width, height);
+            shadowTouchPoint.set(mTouchX, mTouchY);
+        }
+
+        @Override
+        public void onDrawShadow(Canvas canvas) {
+            super.onDrawShadow(canvas);
+
+            mBackground.setBounds(0, 0, mView.getWidth(), mView.getHeight());
+            mBackground.draw(canvas);
+            sPaint.setTextSize(mCoordinates.subjectFontSize);
+            canvas.drawText(mDragDesc, mDragDescX, mDragDescY, sPaint);
+        }
     }
 }

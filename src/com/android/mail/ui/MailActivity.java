@@ -22,11 +22,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.ActionMode;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -269,5 +271,20 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public ConversationSelectionSet getSelectedSet() {
         return mController.getSelectedSet();
+    }
+
+    @Override
+    public DragListener getDragListener() {
+        return mController;
+    }
+
+    @Override
+    public boolean supportsDrag(DragEvent event, Folder folder) {
+        return mController.supportsDrag(event, folder);
+    }
+
+    @Override
+    public void handleDrop(DragEvent event, Folder folder) {
+        mController.handleDrop(event, folder);
     }
 }

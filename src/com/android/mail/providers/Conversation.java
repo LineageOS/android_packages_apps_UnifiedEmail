@@ -138,6 +138,8 @@ public class Conversation implements Parcelable {
 
     };
 
+    public static final Uri MOVE_CONVERSATIONS_URI = Uri.parse("content://moveconversations");
+
     public Conversation(Cursor cursor) {
         if (cursor != null) {
             id = cursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
