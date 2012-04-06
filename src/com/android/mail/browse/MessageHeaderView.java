@@ -83,6 +83,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private MessageHeaderViewCallbacks mCallbacks;
 
+    private ViewGroup mUpperHeaderView;
     private TextView mSenderNameView;
     private TextView mSenderEmailView;
     private QuickContactBadge mPhotoView;
@@ -185,6 +186,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mUpperHeaderView = (ViewGroup) findViewById(R.id.upper_header);
         mSenderNameView = (TextView) findViewById(R.id.sender_name);
         mSenderEmailView = (TextView) findViewById(R.id.sender_email);
         mPhotoView = (QuickContactBadge) findViewById(R.id.photo);
@@ -195,6 +197,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mCollapsedStarVis = mStarView.getVisibility();
         mTitleContainerCollapsedMarginRight = ((MarginLayoutParams) mTitleContainerView
                 .getLayoutParams()).rightMargin;
+
+        mBottomBorderView = findViewById(R.id.details_bottom_border);
 
         setExpanded(true);
 
@@ -939,20 +943,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      */
     private void showCollapsedDetails() {
         if (mCollapsedDetailsView == null) {
-            // Collapsed details is a merge layout that also contains the bottom
-            // border. The
-            // assumption is that collapsed is inflated before expanded. If we
-            // ever change this
-            // so either may be inflated first, the bottom border should be
-            // moved out into a
-            // separate layout and inflated alongside either collapsed or
-            // expanded, whichever is
-            // first.
-            mInflater.inflate(R.layout.conversation_message_details_header, this);
-
-            mBottomBorderView = findViewById(R.id.details_bottom_border);
-            mCollapsedDetailsView = (ViewGroup) findViewById(R.id.details_collapsed_content);
-
+            mCollapsedDetailsView = (ViewGroup) mInflater.inflate(
+                    R.layout.conversation_message_details_header, this, false);
+            addView(mCollapsedDetailsView, indexOfChild(mUpperHeaderView) + 1);
             mCollapsedDetailsView.setOnClickListener(this);
         }
         if (!mCollapsedDetailsValid) {
@@ -976,14 +969,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (mExpandedDetailsView == null) {
             View v = mInflater.inflate(R.layout.conversation_message_details_header_expanded,
                     this, false);
-
-            // Insert expanded details into the parent linear layout immediately
-            // after the
-            // previously inflated collapsed details view, and above any other
-            // optional views
-            // like 'show pictures' or attachments.
-            // we assume collapsed has been inflated by now
-            addView(v, indexOfChild(mCollapsedDetailsView) + 1);
+            addView(v, indexOfChild(mUpperHeaderView) + 1);
             v.setOnClickListener(this);
 
             mExpandedDetailsView = (ViewGroup) v;
