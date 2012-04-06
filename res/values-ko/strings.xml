@@ -48,6 +48,8 @@
     <string name="confirm_send_message" msgid="3221546155385562874">"메시지를 보내시겠습니까?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"메일을 삭제했습니다."</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
+    <!-- no translation found for custom_from_account_label (5069652141632649722) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"보내기"</string>
     <string name="mark_read" msgid="8438349154394313195">"읽음으로 표시"</string>
     <string name="mark_unread" msgid="6231373939351125713">"읽지않음으로 표시"</string>
