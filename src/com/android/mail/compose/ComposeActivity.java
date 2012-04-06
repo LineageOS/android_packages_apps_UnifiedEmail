@@ -83,6 +83,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import org.json.JSONException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -368,7 +370,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Update the from spinner as other accounts
         // may now be available.
         if (mFromSpinner != null && mAccount != null) {
-            mFromSpinner.asyncInitFromSpinner();
+            mFromSpinner.asyncInitFromSpinner(mComposeMode, mAccount);
         }
     }
 
@@ -416,27 +418,138 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initFromSpinner(int action) {
-        mReplyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
-                mAccount.name, true, false);
-        if (action == COMPOSE ||
-            (action == EDIT_DRAFT
-                && mDraft.draftType == UIProvider.DraftType.COMPOSE)) {
-            mFromSpinner.setCurrentAccount(mReplyFromAccount);
-            mFromSpinner.asyncInitFromSpinner();
-            boolean showSpinner = mFromSpinner.getCount() > 1;
+        if (action == EDIT_DRAFT &&
+                mDraft.draftType == UIProvider.DraftType.COMPOSE) {
+            action = COMPOSE;
+        }
+        mFromSpinner.asyncInitFromSpinner(action, mAccount);
+        if (mDraft != null) {
+            mReplyFromAccount = getReplyFromAccountFromDraft(mAccount, mDraft);
+        } else if (mRefMessage != null) {
+            mReplyFromAccount = getReplyFromAccountForReply(mAccount, mRefMessage);
+        }
+        if (mReplyFromAccount == null) {
+            mReplyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
+                    mAccount.name, true, false);
+        }
+        mFromSpinner.setCurrentAccount(mReplyFromAccount);
+        if (mFromSpinner.getCount() > 1) {
             // If there is only 1 account, just show that account.
             // Otherwise, give the user the ability to choose which account to
-            // send
-            // mail from / save drafts to.
-            mFromStatic.setVisibility(showSpinner ? View.GONE : View.VISIBLE);
+            // send mail from / save drafts to.
+            mFromStatic.setVisibility(View.GONE);
             mFromStaticText.setText(mAccount.name);
-            mFromSpinnerWrapper.setVisibility(showSpinner ? View.VISIBLE : View.GONE);
+            mFromSpinnerWrapper.setVisibility(View.VISIBLE);
         } else {
             mFromStatic.setVisibility(View.VISIBLE);
             mFromStaticText.setText(mAccount.name);
             mFromSpinnerWrapper.setVisibility(View.GONE);
-            mFromSpinner.setCurrentAccount(mReplyFromAccount);
         }
+    }
+
+    private ReplyFromAccount getReplyFromAccountForReply(Account account, Message refMessage) {
+        if (refMessage.accountUri != null) {
+            // This must be from combined inbox.
+            List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
+            for (ReplyFromAccount from : replyFromAccounts) {
+                if (from.account.uri.equals(refMessage.accountUri)) {
+                    return from;
+                }
+            }
+            return null;
+        } else {
+            return getReplyFromAccount(account, refMessage);
+        }
+    }
+
+    /**
+     * Given an account and which email address the message was sent to,
+     * return who the message should be sent from.
+     * @param account Account in which the message arrived.
+     * @param sentTo Email address to which the message was sent.
+     * @return the address from which to reply.
+     */
+    public ReplyFromAccount getReplyFromAccount(Account account, Message refMessage) {
+        // First see if we are supposed to use the default address or
+        // the address it was sentTo.
+        if (false) { //mCachedSettings.forceReplyFromDefault) {
+            return getDefaultReplyFromAccount(account);
+        } else {
+            // If we aren't explicityly told which account to look for, look at
+            // all the message recipients and find one that matches
+            // a custom from or account.
+            List<String> allRecipients = new ArrayList<String>();
+            allRecipients.addAll(Arrays.asList(Utils.splitCommaSeparatedString(refMessage.to)));
+            allRecipients.addAll(Arrays.asList(Utils.splitCommaSeparatedString(refMessage.cc)));
+            return getMatchingRecipient(account, allRecipients);
+        }
+    }
+
+    /**
+     * Compare all the recipients of an email to the current account and all
+     * custom addresses associated with that account. Return the match if there
+     * is one, or the default account if there isn't.
+     */
+    protected ReplyFromAccount getMatchingRecipient(Account account, List<String> sentTo) {
+        // Tokenize the list and place in a hashmap.
+        ReplyFromAccount matchingReplyFrom = null;
+        Rfc822Token[] tokens;
+        HashSet<String> recipientsMap = new HashSet<String>();
+        for (String address : sentTo) {
+            tokens = Rfc822Tokenizer.tokenize(address);
+            for (int i = 0; i < tokens.length; i++) {
+                recipientsMap.add(tokens[i].getAddress());
+            }
+        }
+
+        int matchingAddressCount = 0;
+        List<ReplyFromAccount> customFroms;
+        try {
+            customFroms = FromAddressSpinner.getAccountSpecificFroms(account);
+            if (customFroms != null) {
+                for (ReplyFromAccount entry : customFroms) {
+                    if (recipientsMap.contains(entry.address)) {
+                        matchingReplyFrom = entry;
+                        matchingAddressCount++;
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            LogUtils.wtf(LOG_TAG, "Exception parsing from addresses for account %s",
+                    account.name);
+        }
+        if (matchingAddressCount > 1) {
+            matchingReplyFrom = getDefaultReplyFromAccount(account);
+        }
+        return matchingReplyFrom;
+    }
+
+    private ReplyFromAccount getDefaultReplyFromAccount(Account account) {
+        List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
+        for (ReplyFromAccount from : replyFromAccounts) {
+            if (from.isDefault) {
+                return from;
+            }
+        }
+        return new ReplyFromAccount(account, account.uri, account.name, account.name, true, false);
+    }
+
+    private ReplyFromAccount getReplyFromAccountFromDraft(Account account, Message draft) {
+        String sender = draft.from;
+        ReplyFromAccount replyFromAccount = null;
+        List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
+        if (TextUtils.equals(account.name, sender)) {
+            replyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
+                    mAccount.name, true, false);
+        } else {
+            for (ReplyFromAccount fromAccount : replyFromAccounts) {
+                if (TextUtils.equals(fromAccount.name, sender)) {
+                    replyFromAccount = fromAccount;
+                    break;
+                }
+            }
+        }
+        return replyFromAccount;
     }
 
     private void findViews() {

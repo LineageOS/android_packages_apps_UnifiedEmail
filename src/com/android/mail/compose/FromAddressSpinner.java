@@ -26,6 +26,8 @@ import android.widget.Spinner;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.utils.AccountUtils;
+import com.android.mail.utils.LogUtils;
+import com.google.common.collect.ImmutableList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +41,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
     private ReplyFromAccount mAccount;
     private List<ReplyFromAccount> mReplyFromAccounts;
     private OnAccountChangedListener mAccountChangedListener;
+    private static final String LOG_TAG = new LogUtils().getLogTag();
 
     public FromAddressSpinner(Context context) {
         this(context, null);
@@ -50,16 +53,34 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
 
     public void setCurrentAccount(ReplyFromAccount account) {
         mAccount = account;
+        int currentIndex = 0;
+        for (ReplyFromAccount acct : mReplyFromAccounts) {
+            if (mAccount.name.equals(acct.account.name)) {
+                setSelection(currentIndex);
+                break;
+            }
+            currentIndex++;
+        }
     }
 
     public ReplyFromAccount getCurrentAccount() {
         return mAccount;
     }
 
-    public void asyncInitFromSpinner() {
-        Account[] result = AccountUtils.getSyncingAccounts(getContext());
-        mAccounts = AccountUtils.mergeAccountLists(mAccounts, result,
-                true /* prioritizeAccountList */);
+    /**
+     * @param action Action being performed; if this is COMPOSE, show all
+     *            accounts. Otherwise, show just the account this was launched
+     *            with.
+     * @param currentAccount Account used to launch activity.
+     */
+    public void asyncInitFromSpinner(int action, Account currentAccount) {
+        if (action == ComposeActivity.COMPOSE) {
+            Account[] result = AccountUtils.getSyncingAccounts(getContext());
+            mAccounts = AccountUtils
+                    .mergeAccountLists(mAccounts, result, true /* prioritizeAccountList */);
+        } else {
+            mAccounts = ImmutableList.of(currentAccount);
+        }
         initFromSpinner();
     }
 
@@ -72,41 +93,46 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
             return;
         }
         FromAddressSpinnerAdapter adapter = new FromAddressSpinnerAdapter(getContext());
-        int currentAccountIndex = 0;
 
         mReplyFromAccounts = new ArrayList<ReplyFromAccount>();
         for (Account account : mAccounts) {
-            ReplyFromAccount replyFrom = new ReplyFromAccount(account, account.uri, account.name,
-                    account.name, false, false);
-            if (replyFrom != null) {
-                mReplyFromAccounts.add(replyFrom);
+            try {
+                mReplyFromAccounts.addAll(getAccountSpecificFroms(account));
+            } catch (JSONException e) {
+                LogUtils.wtf(LOG_TAG, "Failed parsing from addresses associated with account %s",
+                        account.name);
             }
-            if (!TextUtils.isEmpty(account.accountFromAddresses)) {
-                // Parse and create an entry for each.
-                try {
-                    JSONArray accounts = new JSONArray(account.accountFromAddresses);
-                    JSONObject accountString;
-                    for (int i = 0; i < accounts.length(); i++) {
-                        accountString = (JSONObject) accounts.get(i);
-                        ReplyFromAccount a = ReplyFromAccount.deserialize(account, accountString);
-                        if (a != null) {
-                            mReplyFromAccounts.add(a);
-                        }
-                    }
-                } catch (JSONException e) {
+        }
+        adapter.addAccounts(mReplyFromAccounts);
 
+        setAdapter(adapter);
+        setOnItemSelectedListener(this);
+    }
+
+    public static List<ReplyFromAccount> getAccountSpecificFroms(Account account)
+            throws JSONException {
+        List<ReplyFromAccount> froms = new ArrayList<ReplyFromAccount>();
+        ReplyFromAccount replyFrom = new ReplyFromAccount(account, account.uri, account.name,
+                account.name, false, false);
+        if (replyFrom != null) {
+            froms.add(replyFrom);
+        }
+        if (!TextUtils.isEmpty(account.accountFromAddresses)) {
+            JSONArray accounts = new JSONArray(account.accountFromAddresses);
+            JSONObject accountString;
+            for (int i = 0; i < accounts.length(); i++) {
+                accountString = (JSONObject) accounts.get(i);
+                ReplyFromAccount a = ReplyFromAccount.deserialize(account, accountString);
+                if (a != null) {
+                    froms.add(a);
                 }
             }
         }
-        currentAccountIndex = adapter.addAccounts(mAccount, mReplyFromAccounts);
+        return froms;
+    }
 
-        setAdapter(adapter);
-        setSelection(currentAccountIndex, false);
-        setOnItemSelectedListener(this);
-        if (currentAccountIndex >= mReplyFromAccounts.size()) {
-            currentAccountIndex = 0;
-        }
-        mAccount = mReplyFromAccounts.get(currentAccountIndex);
+    public List<ReplyFromAccount> getReplyFromAccounts() {
+        return mReplyFromAccounts;
     }
 
     public void setOnAccountChangedListener(OnAccountChangedListener listener) {

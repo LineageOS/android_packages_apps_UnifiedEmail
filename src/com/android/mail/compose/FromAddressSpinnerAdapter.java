@@ -75,21 +75,11 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
         return fromEntry;
     }
 
-    public int addAccounts(ReplyFromAccount selectedAccount,
-            List<ReplyFromAccount> replyFromAccounts) {
-        int currentIndex = 0;
-        int currentAccountIndex = 0;
+    public void addAccounts(List<ReplyFromAccount> replyFromAccounts) {
         // Get the position of the current account
         for (ReplyFromAccount account : replyFromAccounts) {
             // Add the account to the Adapter
             add(account);
-            // See if we have located the selected account.
-            if (selectedAccount.name.equals(account.name)) {
-                currentAccountIndex = currentIndex;
-            }
-
-            currentIndex++;
         }
-        return currentAccountIndex;
     }
 }

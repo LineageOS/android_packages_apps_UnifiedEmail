@@ -884,7 +884,8 @@ public class UIProvider {
         MessageColumns.STARRED,
         MessageColumns.QUOTE_START_POS,
         MessageColumns.ATTACHMENTS,
-        MessageColumns.CUSTOM_FROM_ADDRESS
+        MessageColumns.CUSTOM_FROM_ADDRESS,
+        MessageColumns.MESSAGE_ACCOUNT_URI
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -924,6 +925,7 @@ public class UIProvider {
     public static final int QUOTED_TEXT_OFFSET_COLUMN = 27;
     public static final int MESSAGE_ATTACHMENTS_COLUMN = 28;
     public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 29;
+    public static final int MESSAGE_ACCOUNT_URI_COLUMN = 30;
 
 
     public static final class CursorStatus {
@@ -1103,7 +1105,11 @@ public class UIProvider {
          */
         public static final String ATTACHMENTS = "attachments";
         public static final String CUSTOM_FROM_ADDRESS = "customFrom";
-
+        /**
+         * Uri of the account associated with this message. Except in the case
+         * of showing a combined view, this column is almost always empty.
+         */
+        public static final String MESSAGE_ACCOUNT_URI = "messageAccountUri";
         private MessageColumns() {}
     }
 
