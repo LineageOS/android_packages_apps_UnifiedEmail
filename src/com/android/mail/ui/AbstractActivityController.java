@@ -708,6 +708,7 @@ public abstract class AbstractActivityController implements ActivityController, 
         intent.putExtra(ConversationListContext.EXTRA_SEARCH_QUERY, query);
         intent.putExtra(Utils.EXTRA_ACCOUNT, mAccount);
         intent.setComponent(mActivity.getComponentName());
+        mActionBarView.collapseSearch();
         mActivity.startActivity(intent);
     }
 

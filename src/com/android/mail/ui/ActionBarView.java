@@ -106,6 +106,15 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         super(context, attrs, defStyle);
     }
 
+    /**
+     * Collapses the search action view.
+     */
+    public void collapseSearch() {
+        if (mSearch != null) {
+            mSearch.collapseActionView();
+        }
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // If the mode is valid, then set the initial menu
         if (mMode == ViewMode.UNKNOWN) {
