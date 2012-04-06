@@ -15,32 +15,25 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout
-        android:id="@+id/details_collapsed_content"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/message_details_header_collapsed_height"
-        android:background="?android:attr/selectableItemBackground"
-        android:paddingLeft="@dimen/message_details_header_padding_left"
-        android:paddingRight="@dimen/message_details_header_padding_right"
-        android:gravity="center_vertical">
-        <TextView
-            android:id="@+id/recipients_summary"
-            android:layout_weight="1"
-            android:layout_marginRight="16dip"
-            android:singleLine="true"
-            android:bufferType="spannable"
-            style="@style/MessageHeaderSmallStyle" />
-        <TextView
-            android:id="@+id/date_summary"
-            android:lines="1"
-            style="@style/MessageHeaderDateTextStyle" />
-        <ImageView
-            style="@style/MessageHeaderExpanderMinimizedStyle" />
-    </LinearLayout>
-    <View
-        android:id="@+id/details_bottom_border"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/message_details_header_bottom_border_height"
-        android:background="@color/conv_subject_border" />
-</merge>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/details_collapsed_content"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/message_details_header_collapsed_height"
+    android:background="?android:attr/selectableItemBackground"
+    android:paddingLeft="@dimen/message_details_header_padding_left"
+    android:paddingRight="@dimen/message_details_header_padding_right"
+    android:gravity="center_vertical">
+    <TextView
+        android:id="@+id/recipients_summary"
+        android:layout_weight="1"
+        android:layout_marginRight="16dip"
+        android:singleLine="true"
+        android:bufferType="spannable"
+        style="@style/MessageHeaderSmallStyle" />
+    <TextView
+        android:id="@+id/date_summary"
+        android:lines="1"
+        style="@style/MessageHeaderDateTextStyle" />
+    <ImageView
+        style="@style/MessageHeaderExpanderMinimizedStyle" />
+</LinearLayout>

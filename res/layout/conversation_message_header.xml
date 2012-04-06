@@ -27,4 +27,11 @@
     <include layout="@layout/conversation_message_upper_header"
         android:id="@+id/upper_header" />
 
+    <View
+        android:id="@+id/details_bottom_border"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/message_details_header_bottom_border_height"
+        android:visibility="gone"
+        android:background="@color/conv_subject_border" />
+
 </com.android.mail.browse.MessageHeaderView>
