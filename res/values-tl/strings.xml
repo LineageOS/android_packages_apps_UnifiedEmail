@@ -48,6 +48,8 @@
     <string name="confirm_send_message" msgid="3221546155385562874">"Ipadala ang mensaheng ito?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Itinapon ang mensahe."</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
+    <!-- no translation found for custom_from_account_label (5069652141632649722) -->
+    <skip />
     <string name="send" msgid="8242003661397555986">"Ipadala"</string>
     <string name="mark_read" msgid="8438349154394313195">"Markahang nabasa na"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Markahang hindi pa nababasa"</string>
