@@ -442,6 +442,18 @@ public final class ConversationCursor implements Cursor {
                 cacheValue(uriString, columnName, value);
             }
         }
+        sConversationCursor.notifyDataChanged();
+    }
+
+    /**
+     * Must be called on UI thread; notify listeners that data has changed
+     */
+    private void notifyDataChanged() {
+        synchronized(sListeners) {
+            for (ConversationListener listener: sListeners) {
+                listener.onDataSetChanged();
+            }
+        }
     }
 
     /**
@@ -458,67 +470,59 @@ public final class ConversationCursor implements Cursor {
         }
 
         synchronized (sCacheMapLock) {
-            try {
-                // Get the map for our uri
-                ContentValues map = sCacheMap.get(uriString);
-                // Create one if necessary
-                if (map == null) {
-                    map = new ContentValues();
-                    sCacheMap.put(uriString, map);
-                }
-                // If we're caching a deletion, add to our count
-                if (columnName == DELETED_COLUMN) {
-                    final boolean state = (Boolean)value;
-                    final boolean hasValue = map.get(columnName) != null;
-                    if (state && !hasValue) {
-                        sDeletedCount++;
-                        if (DEBUG) {
-                            LogUtils.i(TAG, "Deleted %s, incremented deleted count=%d", uriString,
-                                    sDeletedCount);
-                        }
-                    } else if (!state && hasValue) {
-                        sDeletedCount--;
-                        map.remove(columnName);
-                        if (DEBUG) {
-                            LogUtils.i(TAG, "Undeleted %s, decremented deleted count=%d", uriString,
-                                    sDeletedCount);
-                        }
-                        return;
-                    } else if (!state) {
-                        // Trying to undelete, but it's not deleted; just return
-                        if (DEBUG) {
-                            LogUtils.i(TAG, "Undeleted %s, IGNORING, deleted count=%d", uriString,
-                                    sDeletedCount);
-                        }
-                        return;
+            // Get the map for our uri
+            ContentValues map = sCacheMap.get(uriString);
+            // Create one if necessary
+            if (map == null) {
+                map = new ContentValues();
+                sCacheMap.put(uriString, map);
+            }
+            // If we're caching a deletion, add to our count
+            if (columnName == DELETED_COLUMN) {
+                final boolean state = (Boolean)value;
+                final boolean hasValue = map.get(columnName) != null;
+                if (state && !hasValue) {
+                    sDeletedCount++;
+                    if (DEBUG) {
+                        LogUtils.i(TAG, "Deleted %s, incremented deleted count=%d", uriString,
+                                sDeletedCount);
                     }
-                }
-                // ContentValues has no generic "put", so we must test.  For now, the only classes
-                // of values implemented are Boolean/Integer/String, though others are trivially
-                // added
-                if (value instanceof Boolean) {
-                    map.put(columnName, ((Boolean) value).booleanValue() ? 1 : 0);
-                } else if (value instanceof Integer) {
-                    map.put(columnName, (Integer) value);
-                } else if (value instanceof String) {
-                    map.put(columnName, (String) value);
-                } else {
-                    final String cname = value.getClass().getName();
-                    throw new IllegalArgumentException("Value class not compatible with cache: "
-                            + cname);
-                }
-                if (sRefreshTask != null) {
-                    map.put(REQUERY_COLUMN, 1);
-                }
-                if (DEBUG && (columnName != DELETED_COLUMN)) {
-                    LogUtils.i(TAG, "Caching value for %s: %s", uriString, columnName);
-                }
-            } finally {
-                synchronized(sListeners) {
-                    for (ConversationListener listener: sListeners) {
-                        listener.onDataSetChanged();
+                } else if (!state && hasValue) {
+                    sDeletedCount--;
+                    map.remove(columnName);
+                    if (DEBUG) {
+                        LogUtils.i(TAG, "Undeleted %s, decremented deleted count=%d", uriString,
+                                sDeletedCount);
                     }
+                    return;
+                } else if (!state) {
+                    // Trying to undelete, but it's not deleted; just return
+                    if (DEBUG) {
+                        LogUtils.i(TAG, "Undeleted %s, IGNORING, deleted count=%d", uriString,
+                                sDeletedCount);
+                    }
+                    return;
                 }
+            }
+            // ContentValues has no generic "put", so we must test.  For now, the only classes
+            // of values implemented are Boolean/Integer/String, though others are trivially
+            // added
+            if (value instanceof Boolean) {
+                map.put(columnName, ((Boolean) value).booleanValue() ? 1 : 0);
+            } else if (value instanceof Integer) {
+                map.put(columnName, (Integer) value);
+            } else if (value instanceof String) {
+                map.put(columnName, (String) value);
+            } else {
+                final String cname = value.getClass().getName();
+                throw new IllegalArgumentException("Value class not compatible with cache: "
+                        + cname);
+            }
+            if (sRefreshTask != null) {
+                map.put(REQUERY_COLUMN, 1);
+            }
+            if (DEBUG && (columnName != DELETED_COLUMN)) {
+                LogUtils.i(TAG, "Caching value for %s: %s", uriString, columnName);
             }
         }
     }
@@ -1112,6 +1116,9 @@ public final class ConversationCursor implements Cursor {
                 }
                 authOps.add(op.execute(underlyingUri));
             }
+
+            // Notify listeners that data has changed
+            sConversationCursor.notifyDataChanged();
 
             // Send changes to underlying provider
             for (String authority: batchMap.keySet()) {
