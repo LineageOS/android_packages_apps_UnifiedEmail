@@ -101,14 +101,6 @@ public class SwipeHelper {
         mPagingTouchSlop = pagingTouchSlop;
     }
 
-    private float getPos(MotionEvent ev) {
-        return mSwipeDirection == X ? ev.getX() : ev.getY();
-    }
-
-    private float getTranslation(View v) {
-        return mSwipeDirection == X ? v.getTranslationX() : v.getTranslationY();
-    }
-
     private float getVelocity(VelocityTracker vt) {
         return mSwipeDirection == X ? vt.getXVelocity() :
                 vt.getYVelocity();
@@ -153,7 +145,7 @@ public class SwipeHelper {
         float viewSize = getSize(view);
         final float fadeSize = ALPHA_FADE_END * viewSize;
         float result = 1.0f;
-        float pos = getTranslation(view);
+        float pos = view.getTranslationX();
         if (pos >= viewSize * ALPHA_FADE_START) {
             result = 1.0f - (pos - viewSize * ALPHA_FADE_START) / fadeSize;
         } else if (pos < viewSize * (1.0f - ALPHA_FADE_START)) {
@@ -206,7 +198,7 @@ public class SwipeHelper {
                     mCurrAnimView = mCallback.getChildContentView(mCurrView);
                     mCanCurrViewBeDimissed = mCallback.canChildBeDismissed(mCurrView);
                     mVelocityTracker.addMovement(ev);
-                    mInitialTouchPosX = getPos(ev);
+                    mInitialTouchPosX = ev.getX();
                     mInitialTouchPosY = ev.getY();
                 }
                 break;
@@ -222,7 +214,7 @@ public class SwipeHelper {
                         }
                     }
                     mVelocityTracker.addMovement(ev);
-                    float pos = getPos(ev);
+                    float pos = ev.getX();
                     float delta = pos - mInitialTouchPosX;
                     if (Math.abs(delta) > mPagingTouchSlop) {
                         if (mCallback.getSelectionSet().isEmpty()
@@ -230,8 +222,9 @@ public class SwipeHelper {
                                         && mCurrView.isChecked())) {
                             mCallback.onBeginDrag(mCurrView);
                             mDragging = true;
-                            mInitialTouchPosX = getPos(ev) - getTranslation(mCurrAnimView);
+                            mInitialTouchPosX = ev.getX() - mCurrAnimView.getTranslationX();
                             mInitialTouchPosY = ev.getY();
+                            mCurrView.cancelTap();
                         }
                     }
                 }
@@ -338,7 +331,7 @@ public class SwipeHelper {
         if (velocity != 0) {
             duration = Math
                     .min(duration,
-                            (int) (Math.abs(newPos - getTranslation(animView)) * 1000f / Math
+                            (int) (Math.abs(newPos - animView.getTranslationX()) * 1000f / Math
                                     .abs(velocity)));
         } else {
             duration = DEFAULT_ESCAPE_ANIMATION_DURATION;
@@ -348,9 +341,9 @@ public class SwipeHelper {
 
     private float determinePos(View animView, float velocity) {
         float newPos = 0;
-        if (velocity < 0 || (velocity == 0 && getTranslation(animView) < 0)
+        if (velocity < 0 || (velocity == 0 && animView.getTranslationX() < 0)
         // if we use the Menu to dismiss an item in landscape, animate up
-                || (velocity == 0 && getTranslation(animView) == 0 && mSwipeDirection == Y)) {
+                || (velocity == 0 && animView.getTranslationX() == 0 && mSwipeDirection == Y)) {
             newPos = -getSize(animView);
         } else {
             newPos = getSize(animView);
@@ -391,7 +384,7 @@ public class SwipeHelper {
             case MotionEvent.ACTION_OUTSIDE:
             case MotionEvent.ACTION_MOVE:
                 if (mCurrView != null) {
-                    float deltaX = getPos(ev) - mInitialTouchPosX;
+                    float deltaX = ev.getX() - mInitialTouchPosX;
                     float deltaY = Math.abs(ev.getY() - mInitialTouchPosY);
                     // If the user has gone vertical and not gone horizontal AT
                     // LEAST minBeforeLock, switch to scroll. Otherwise, cancel
@@ -448,7 +441,7 @@ public class SwipeHelper {
                     // Decide whether to dismiss the current view
                     // Tweak constants below as required to prevent erroneous
                     // swipe/dismiss
-                    float translation = Math.abs(getTranslation(mCurrAnimView));
+                    float translation = Math.abs(mCurrAnimView.getTranslationX());
                     float currAnimViewSize = getSize(mCurrAnimView);
                     // Long swipe = translation of .4 * width
                     boolean childSwipedFarEnough = DISMISS_IF_SWIPED_FAR_ENOUGH
@@ -457,7 +450,7 @@ public class SwipeHelper {
                     // width
                     boolean childSwipedFastEnough = (Math.abs(velocity) > escapeVelocity)
                             && (Math.abs(velocity) > Math.abs(perpendicularVelocity))
-                            && (velocity > 0) == (getTranslation(mCurrAnimView) > 0)
+                            && (velocity > 0) == (mCurrAnimView.getTranslationX() > 0)
                             && translation > 0.05 * currAnimViewSize;
                     if (LOG_SWIPE_DISMISS_VELOCITY) {
                         Log.v(TAG, "Swipe/Dismiss: " + velocity + "/" + escapeVelocity + "/"

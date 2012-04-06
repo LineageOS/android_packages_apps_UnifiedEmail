@@ -20,9 +20,11 @@ package com.android.mail.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -62,12 +64,22 @@ public class SwipeableListView extends ListView implements Callback{
     public SwipeableListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         float densityScale = getResources().getDisplayMetrics().density;
+        float pagingTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
         float scrollSlop = context.getResources().getInteger(R.integer.swipeScrollSlop);
         float minSwipe = context.getResources().getDimension(R.dimen.min_swipe);
         float minVert = context.getResources().getDimension(R.dimen.min_vert);
         float minLock = context.getResources().getDimension(R.dimen.min_lock);
-        mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, densityScale, densityScale,
+        mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, densityScale, pagingTouchSlop,
                 scrollSlop, minSwipe, minVert, minLock);
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        float densityScale = getResources().getDisplayMetrics().density;
+        mSwipeHelper.setDensityScale(densityScale);
+        float pagingTouchSlop = ViewConfiguration.get(getContext()).getScaledPagingTouchSlop();
+        mSwipeHelper.setPagingTouchSlop(pagingTouchSlop);
     }
 
     /**
