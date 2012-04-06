@@ -17,8 +17,6 @@
 
 package com.android.mail.browse;
 
-import com.google.common.collect.Sets;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -35,6 +33,7 @@ import com.android.mail.browse.ConversationViewAdapter.ConversationItem;
 import com.android.mail.browse.ScrollNotifier.ScrollListener;
 import com.android.mail.utils.DequeMap;
 import com.android.mail.utils.LogUtils;
+import com.google.common.collect.Sets;
 
 import java.util.Set;
 
@@ -338,13 +337,22 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     /**
+     * Executes a measure pass over the specified child overlay view and returns the measured
+     * height. The measurement uses whatever the current container's width measure spec is.
+     * This method ignores view visibility and returns the height that the view would be if visible.
+     *
+     * @param overlayView an overlay view to measure. does not actually have to be attached yet.
+     * @return height that the view would be if it was visible
+     */
+    public int measureOverlay(View overlayView) {
+        measureOverlayView(overlayView);
+        return overlayView.getMeasuredHeight();
+    }
+
+    /**
      * Copied/stolen from {@link ListView}.
      */
-    private void measureItem(View child) {
-        if (child.getVisibility() == GONE) {
-            return;
-        }
-
+    private void measureOverlayView(View child) {
         ViewGroup.LayoutParams p = child.getLayoutParams();
         if (p == null) {
             p = new ViewGroup.LayoutParams(
@@ -429,14 +437,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
         mWidthMeasureSpec = widthMeasureSpec;
 
-        // Need to measure children in case this layout pass was triggered by a child layout change.
-        // TODO: restrict child measurement to just that case.
-        for (int i = 0, overlayCount = getOverlayCount(); i < overlayCount; i++) {
-            final View overlayView = getOverlayAt(i);
-            if (overlayView.getVisibility() != GONE) {
-                measureItem(overlayView);
-            }
-        }
+        // onLayout will re-measure and re-position overlays for the new container size, but the
+        // spacer offsets would still need to be updated to have them draw at their new locations.
     }
 
     @Override
@@ -447,6 +449,12 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         positionOverlays(0, mOffsetY);
     }
 
+    @Override
+    public void requestLayout() {
+        // Suppress layouts requested by children. Overlays don't push on each other, and WebView
+        // doesn't change its layout.
+    }
+
     private int getOverlayBottom(int spacerIndex) {
         // TODO: round or truncate?
         return (int) (mOverlayBottoms[spacerIndex] * mScale);
@@ -454,24 +462,34 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private void positionOverlay(int adapterIndex, int overlayTopY, int overlayBottomY) {
         View overlayView = findExistingOverlayView(adapterIndex);
-        final int itemType = mOverlayAdapter.getItemViewType(adapterIndex);
+        final ConversationItem item = mOverlayAdapter.getItem(adapterIndex);
+
         // is the overlay visible and does it have non-zero height?
         if (overlayTopY != overlayBottomY && overlayBottomY > mOffsetY
                 && overlayTopY < mOffsetY + getHeight()) {
             // show and/or move overlay
             if (overlayView == null) {
                 overlayView = addOverlayView(adapterIndex);
-                measureItem(overlayView);
-                traceLayout("show overlay %d", adapterIndex);
+                measureOverlayView(overlayView);
+                item.markMeasurementValid();
+                traceLayout("show/measure overlay %d", adapterIndex);
             } else {
                 traceLayout("move overlay %d", adapterIndex);
+                if (!item.isMeasurementValid()) {
+                    measureOverlayView(overlayView);
+                    item.markMeasurementValid();
+                    traceLayout("and (re)measure overlay %d, old/new heights=%d/%d", adapterIndex,
+                            overlayView.getHeight(), overlayView.getMeasuredHeight());
+                }
             }
+            traceLayout("laying out overlay %d with h=%d", adapterIndex,
+                    overlayView.getMeasuredHeight());
             layoutOverlay(overlayView, overlayTopY);
         } else {
             // hide overlay
             if (overlayView != null) {
                 traceLayout("hide overlay %d", adapterIndex);
-                onOverlayScrolledOff(overlayView, itemType, overlayTopY, overlayBottomY);
+                onOverlayScrolledOff(overlayView, item.getType(), overlayTopY, overlayBottomY);
             } else {
                 traceLayout("ignore non-visible overlay %d", adapterIndex);
             }
@@ -485,10 +503,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     // layout an existing view
     // need its top offset into the conversation, its height, and the scroll offset
     private void layoutOverlay(View child, int childTop, int childBottom) {
-        if (child.getVisibility() == GONE) {
-            return;
-        }
-
         final int top = childTop - mOffsetY;
         final int bottom = childBottom - mOffsetY;
         child.layout(0, top, child.getMeasuredWidth(), bottom);

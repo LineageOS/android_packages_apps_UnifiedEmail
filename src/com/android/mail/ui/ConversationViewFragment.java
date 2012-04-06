@@ -405,8 +405,9 @@ public final class ConversationViewFragment extends Fragment implements
             mConversationContainer.addScrapView(type, hostView);
         }
 
-        final int heightPx = convItem.measureHeight(hostView, mConversationContainer);
+        final int heightPx = mConversationContainer.measureOverlay(hostView);
         convItem.setHeight(heightPx);
+        convItem.markMeasurementValid();
 
         return (int) (heightPx / mDensity);
     }
