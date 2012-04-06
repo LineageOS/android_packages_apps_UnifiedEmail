@@ -268,6 +268,11 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     void startSearch();
 
     /**
+     * Exit the search mode, popping off one activity so that the back stack is fine.
+     */
+    void exitSearchMode();
+
+    /**
      * Supports dragging conversations to a folder.
      */
     boolean supportsDrag(DragEvent event, Folder folder);
@@ -278,4 +283,5 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     void handleDrop(DragEvent event, Folder folder);
 
     void onUndoCancel();
+
 }
