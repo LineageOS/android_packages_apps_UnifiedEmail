@@ -26,8 +26,8 @@ public class MessageHeaderViewTest extends AndroidTestCase {
     public void testRecipientSummaryLongTo() {
         String[] to = makeRecipientArray("TO", 60);
         String[] cc = makeRecipientArray("CC", 60);
-        String summary = MessageHeaderView.getRecipientSummaryText(getContext(), "", to, cc, null)
-                .toString();
+        String summary = MessageHeaderView.getRecipientSummaryText(getContext(), "", to, cc, null,
+                null).toString();
 
         assertTrue(summary.contains("TO00"));
         assertTrue(summary.contains("TO49"));
@@ -39,8 +39,8 @@ public class MessageHeaderViewTest extends AndroidTestCase {
         String[] to = makeRecipientArray("TO", 20);
         String[] cc = makeRecipientArray("CC", 10);
         String[] bcc = makeRecipientArray("BB", 60);
-        String summary = MessageHeaderView.getRecipientSummaryText(getContext(), "", to, cc, bcc)
-                .toString();
+        String summary = MessageHeaderView.getRecipientSummaryText(getContext(), "", to, cc, bcc,
+                null).toString();
 
         assertTrue(summary.contains("TO00"));
         assertTrue(summary.contains("TO19"));

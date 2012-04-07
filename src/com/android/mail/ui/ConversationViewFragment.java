@@ -54,6 +54,7 @@ import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
@@ -63,6 +64,9 @@ import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.Maps;
+
+import java.util.Map;
 
 
 /**
@@ -109,6 +113,8 @@ public final class ConversationViewFragment extends Fragment implements
     private float mDensity;
 
     private Folder mFolder;
+
+    private final Map<String, Address> mAddressCache = Maps.newHashMap();
 
     private static final String ARG_ACCOUNT = "account";
     private static final String ARG_CONVERSATION = "conversation";
@@ -159,7 +165,7 @@ public final class ConversationViewFragment extends Fragment implements
         mTemplates = new HtmlConversationTemplates(mContext);
 
         mAdapter = new ConversationViewAdapter(mActivity.getActivityContext(), mAccount,
-                getLoaderManager(), this, this);
+                getLoaderManager(), this, this, mAddressCache);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         mDensity = getResources().getDisplayMetrics().density;

@@ -31,6 +31,7 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
@@ -38,6 +39,7 @@ import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A specialized adapter that contains overlay views to draw on top of the underlying conversation
@@ -58,6 +60,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final LoaderManager mLoaderManager;
     private final MessageHeaderViewCallbacks mMessageCallbacks;
     private ConversationViewHeaderCallbacks mConversationCallbacks;
+    private Map<String, Address> mAddressCache;
     private final LayoutInflater mInflater;
     private boolean mDefaultReplyAll;
 
@@ -171,8 +174,15 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public class MessageHeaderItem extends ConversationItem {
         public final Message message;
+
+        // view state variables
         private boolean mExpanded;
         public boolean detailsExpanded;
+
+        // cached values to speed up re-rendering during view recycling
+        public CharSequence timestampShort;
+        public CharSequence timestampLong;
+        public CharSequence recipientSummaryText;
 
         private MessageHeaderItem(Message message, boolean expanded) {
             this.message = message;
@@ -190,7 +200,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final MessageHeaderView v = (MessageHeaderView) inflater.inflate(
                     R.layout.conversation_message_header, parent, false);
-            v.initialize(mDateBuilder, mAccount);
+            v.initialize(mDateBuilder, mAccount, mAddressCache);
             v.setCallbacks(mMessageCallbacks);
             return v;
         }
@@ -265,13 +275,14 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public ConversationViewAdapter(Context context, Account account, LoaderManager loaderManager,
             MessageHeaderViewCallbacks messageCallbacks,
-            ConversationViewHeaderCallbacks convCallbacks) {
+            ConversationViewHeaderCallbacks convCallbacks, Map<String, Address> addressCache) {
         mContext = context;
         mDateBuilder = new FormattedDateBuilder(context);
         mAccount = account;
         mLoaderManager = loaderManager;
         mMessageCallbacks = messageCallbacks;
         mConversationCallbacks = convCallbacks;
+        mAddressCache = addressCache;
         mInflater = LayoutInflater.from(context);
 
         mItems = Lists.newArrayList();

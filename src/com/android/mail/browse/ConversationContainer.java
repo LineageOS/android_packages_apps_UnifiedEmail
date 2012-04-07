@@ -19,6 +19,7 @@ package com.android.mail.browse;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -33,9 +34,6 @@ import com.android.mail.browse.ConversationViewAdapter.ConversationItem;
 import com.android.mail.browse.ScrollNotifier.ScrollListener;
 import com.android.mail.utils.DequeMap;
 import com.android.mail.utils.LogUtils;
-import com.google.common.collect.Sets;
-
-import java.util.Set;
 
 /**
  * A specialized ViewGroup container for conversation view. It is designed to contain a single
@@ -112,24 +110,22 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private final DequeMap<Integer, View> mScrapViews = new DequeMap<Integer, View>();
 
     /**
-     * The set of children queued for later removal by a Runnable posted to the UI thread (no
-     * synchronization required). Scroll changes cause children to be added to this set, and the
-     * Runnable later removes the children when it safely detaches them outside of a
-     * draw/getDisplayList operation.
+     * The current set of overlay views in the view hierarchy. Looking through this map is faster
+     * than traversing the view hierarchy.
      * <p>
      * WebView sometimes notifies of scroll changes during a draw (or display list generation), when
      * it's not safe to detach view children because ViewGroup is in the middle of iterating over
-     * its child array.
+     * its child array. So we remove any child from this list immediately and queue up a task to
+     * detach it later. Since nobody other than the detach task references that view in the
+     * meantime, we don't need any further checks or synchronization.
      */
-    private final Set<View> mChildrenToRemove;
+    private final SparseArray<View> mOverlayViews;
 
     private final float mDensity;
 
     private int mWidthMeasureSpec;
 
     private boolean mDisableLayoutTracing;
-
-    private static final int VIEW_TAG_CONVERSATION_INDEX = R.id.view_tag_conversation_index;
 
     /**
      * Child views of this container should implement this interface to be notified when they are
@@ -151,7 +147,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     public ConversationContainer(Context c, AttributeSet attrs) {
         super(c, attrs);
 
-        mChildrenToRemove = Sets.newHashSet();
+        mOverlayViews = new SparseArray<View>();
 
         mDensity = c.getResources().getDisplayMetrics().density;
         mScale = mDensity;
@@ -180,14 +176,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     public Adapter getOverlayAdapter() {
         return mOverlayAdapter;
-    }
-
-    private int getOverlayCount() {
-        return Math.max(0, getChildCount() - 1);
-    }
-
-    private View getOverlayAt(int i) {
-        return getChildAt(i + 1);
     }
 
     private void forwardFakeMotionEvent(MotionEvent original, int newAction) {
@@ -372,18 +360,14 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         child.measure(childWidthSpec, childHeightSpec);
     }
 
-    private void onOverlayScrolledOff(final View overlayView, final int itemType,
-            int overlayTop, int overlayBottom) {
-        // do it asynchronously, as scroll notification can happen during a draw, when it's not
-        // safe to remove children
+    private void onOverlayScrolledOff(final int adapterIndex, final View overlayView,
+            final int itemType, int overlayTop, int overlayBottom) {
+        // detach the view asynchronously, as scroll notification can happen during a draw, when
+        // it's not safe to remove children
 
-        // ensure that repeated scroll events that want to remove the same header only do it
-        // once
-        if (mChildrenToRemove.contains(overlayView)) {
-            return;
-        }
+        // but immediately remove this view from the view set so future lookups don't find it
+        mOverlayViews.remove(adapterIndex);
 
-        mChildrenToRemove.add(overlayView);
         post(new Runnable() {
             @Override
             public void run() {
@@ -407,7 +391,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private void detachOverlay(View overlayView, int itemType) {
         detachViewFromParent(overlayView);
         mScrapViews.add(itemType, overlayView);
-        mChildrenToRemove.remove(overlayView);
         if (overlayView instanceof DetachListener) {
             ((DetachListener) overlayView).onDetachedFromParent();
         }
@@ -461,7 +444,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     private void positionOverlay(int adapterIndex, int overlayTopY, int overlayBottomY) {
-        View overlayView = findExistingOverlayView(adapterIndex);
+        View overlayView = mOverlayViews.get(adapterIndex);
         final ConversationItem item = mOverlayAdapter.getItem(adapterIndex);
 
         // is the overlay visible and does it have non-zero height?
@@ -484,20 +467,17 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             }
             traceLayout("laying out overlay %d with h=%d", adapterIndex,
                     overlayView.getMeasuredHeight());
-            layoutOverlay(overlayView, overlayTopY);
+            layoutOverlay(overlayView, overlayTopY, overlayTopY + overlayView.getMeasuredHeight());
         } else {
             // hide overlay
             if (overlayView != null) {
                 traceLayout("hide overlay %d", adapterIndex);
-                onOverlayScrolledOff(overlayView, item.getType(), overlayTopY, overlayBottomY);
+                onOverlayScrolledOff(adapterIndex, overlayView, item.getType(), overlayTopY,
+                        overlayBottomY);
             } else {
                 traceLayout("ignore non-visible overlay %d", adapterIndex);
             }
         }
-    }
-
-    private void layoutOverlay(View child, int childTop) {
-        layoutOverlay(child, childTop, childTop + child.getMeasuredHeight());
     }
 
     // layout an existing view
@@ -513,7 +493,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         final View convertView = mScrapViews.poll(itemType);
 
         View view = mOverlayAdapter.getView(adapterIndex, convertView, this);
-        view.setTag(VIEW_TAG_CONVERSATION_INDEX, adapterIndex);
+        mOverlayViews.put(adapterIndex, view);
 
         // Only re-attach if the view had previously been added to a view hierarchy.
         // Since external components can contribute to the scrap heap (addScrapView), we can't
@@ -528,19 +508,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
 
         return view;
-    }
-
-    private View findExistingOverlayView(int adapterIndex) {
-        for (int i = 0, count = getOverlayCount(); i < count; i++) {
-            final View overlay = getOverlayAt(i);
-            final Integer tag = (Integer) overlay.getTag(VIEW_TAG_CONVERSATION_INDEX);
-            // ignore children queued to be removed
-            // otherwise we'll re-use and lay out this view and then just throw it away
-            if (tag != null && tag == adapterIndex && !mChildrenToRemove.contains(overlay)) {
-                return overlay;
-            }
-        }
-        return null;
     }
 
     /**
