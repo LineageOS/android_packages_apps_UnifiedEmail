@@ -219,7 +219,6 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setAdapter(mListAdapter);
         mListView.setSelectionSet(mActivity.getSelectedSet());
         mListAdapter.hideFooter();
-        mListView.setSwipeCompleteListener(this);
         // Don't need to add ourselves to our own set observer.
         // mActivity.getBatchConversations().addObserver(this);
         mActivity.setViewModeListener(this);
@@ -281,9 +280,10 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setOnItemLongClickListener(this);
-        mListView.enableSwipe(
-                mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE));
-
+        mListView.enableSwipe(mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO));
+        mListView.setSwipeAction(mAccount
+                .supportsCapability(UIProvider.AccountCapabilities.ARCHIVE) ? R.id.archive
+                : R.id.delete);
         // Note - we manually save/restore the listview state.
         mListView.setSaveEnabled(false);
 

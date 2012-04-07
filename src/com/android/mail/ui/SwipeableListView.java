@@ -41,7 +41,6 @@ import java.util.Collection;
 
 public class SwipeableListView extends ListView implements Callback{
     private SwipeHelper mSwipeHelper;
-    private SwipeCompleteListener mSwipeCompleteListener;
     private boolean mEnableSwipe = false;
     private ListAdapter mDebugAdapter;
     private int mDebugLastCount;
@@ -52,6 +51,7 @@ public class SwipeableListView extends ListView implements Callback{
     public static final String LOG_TAG = new LogUtils().getLogTag();
 
     private ConversationSelectionSet mConvSelectionSet;
+    private int mSwipeAction;
 
     public SwipeableListView(Context context) {
         this(context, null);
@@ -93,8 +93,8 @@ public class SwipeableListView extends ListView implements Callback{
         return mEnableSwipe;
     }
 
-    public void setSwipeCompleteListener(SwipeCompleteListener listener) {
-        mSwipeCompleteListener = listener;
+    public void setSwipeAction(int action) {
+        mSwipeAction = action;
     }
 
     public void setSelectionSet(ConversationSelectionSet set) {
@@ -175,46 +175,82 @@ public class SwipeableListView extends ListView implements Callback{
     }
 
     @Override
-    public View getChildContentView(View v) {
-        return v;
+    public boolean canChildBeDismissed(SwipeableItemView v) {
+        View view = v.getView();
+        return view instanceof ConversationItemView || view instanceof LeaveBehindItem;
     }
 
     @Override
-    public boolean canChildBeDismissed(View v) {
-        return v instanceof ConversationItemView;
-    }
-
-    @Override
-    public void onChildDismissed(View v) {
-        dismissChildren(ImmutableList.of(getConversation(v)));
-    }
-
-    @Override
-    public void onChildrenDismissed(Collection<ConversationItemView> views) {
-        final ArrayList<Conversation> conversations = new ArrayList<Conversation>();
-        for (ConversationItemView view : views) {
-            conversations.add(getConversation(view));
+    public void onChildDismissed(SwipeableItemView v) {
+        View view = v.getView();
+        if (view instanceof ConversationItemView) {
+        dismissChildren((ConversationItemView) v, null);
+        } else if (view instanceof LeaveBehindItem) {
+            ((LeaveBehindItem)view).commit();
         }
-        dismissChildren(conversations);
     }
 
-    private Conversation getConversation(View view) {
-        Conversation c = ((ConversationItemView) view).getConversation();
-        if (view.getParent() == null) {
-            return c;
-        }
-        c.position = getPositionForView(view);
-        return c;
+    @Override
+    public void onChildrenDismissed(SwipeableItemView target,
+            Collection<ConversationItemView> views) {
+        assert(target instanceof ConversationItemView);
+        dismissChildren((ConversationItemView) target.getView(), views);
     }
 
-    private void dismissChildren(final Collection<Conversation> conversations) {
-        AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
-        adapter.delete(conversations, new ActionCompleteListener() {
-            @Override
-            public void onActionComplete() {
-                mSwipeCompleteListener.onSwipeComplete(conversations);
+    private void dismissChildren(final ConversationItemView target,
+            final Collection<ConversationItemView> conversationViews) {
+        final Context context = getContext();
+        final AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
+        final UndoOperation undoOp;
+        if (conversationViews != null) {
+            final ArrayList<Conversation> conversations = new ArrayList<Conversation>(
+                    conversationViews.size());
+            for (ConversationItemView view : conversationViews) {
+                if (view.getConversation().id != target.getConversation().id) {
+                    conversations.add(view.getConversation());
+                }
             }
-        });
+            undoOp = new UndoOperation(
+                    conversationViews != null ? (conversations.size() + 1) : 1, mSwipeAction);
+            handleLeaveBehind(target, undoOp, context);
+            adapter.delete(conversations, new ActionCompleteListener() {
+                public void onActionComplete() {
+                    switch (mSwipeAction) {
+                        case R.id.archive:
+                            Conversation.archive(context, conversations);
+                            break;
+                        case R.id.delete:
+                            Conversation.delete(context, conversations);
+                            break;
+                    }
+                }
+            });
+        } else {
+            undoOp = new UndoOperation(1, mSwipeAction);
+            target.getConversation().position = getPositionForView(target);
+            handleLeaveBehind(target, undoOp, context);
+        }
+    }
+
+    private void handleLeaveBehind(ConversationItemView target, UndoOperation undoOp,
+            Context context) {
+        Conversation conv = target.getConversation();
+        final AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
+        adapter.setupLeaveBehind(conv, undoOp, conv.position);
+        switch (mSwipeAction) {
+            case R.id.archive:
+                Conversation.mostlyArchive(context,
+                        ImmutableList.of(target.getConversation()));
+                break;
+            case R.id.delete:
+                Conversation.mostlyDelete(context,
+                        ImmutableList.of(target.getConversation()));
+                break;
+        }
+        adapter.notifyDataSetChanged();
+        if (!mConvSelectionSet.isEmpty()) {
+            mConvSelectionSet.clear();
+        }
     }
 
     @Override
@@ -231,7 +267,7 @@ public class SwipeableListView extends ListView implements Callback{
     }
 
     @Override
-    public void onDragCancelled(View v) {
+    public void onDragCancelled(SwipeableItemView v) {
         mSwipeHelper.setAssociatedViews(null);
     }
 

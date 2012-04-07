@@ -68,7 +68,7 @@ public class SwipeHelper {
 
     private float mInitialTouchPosX;
     private boolean mDragging;
-    private ConversationItemView mCurrView;
+    private SwipeableItemView mCurrView;
     private View mCurrAnimView;
     private boolean mCanCurrViewBeDimissed;
     private float mDensityScale;
@@ -190,12 +190,12 @@ public class SwipeHelper {
                 mLastY = ev.getY();
                 mDragging = false;
                 View view = mCallback.getChildAtPosition(ev);
-                if (view instanceof ConversationItemView) {
-                    mCurrView = (ConversationItemView) view;
+                if (view instanceof SwipeableItemView) {
+                    mCurrView = (SwipeableItemView) view;
                 }
                 mVelocityTracker.clear();
                 if (mCurrView != null) {
-                    mCurrAnimView = mCallback.getChildContentView(mCurrView);
+                    mCurrAnimView = mCurrView.getView();
                     mCanCurrViewBeDimissed = mCallback.canChildBeDismissed(mCurrView);
                     mVelocityTracker.addMovement(ev);
                     mInitialTouchPosX = ev.getX();
@@ -217,10 +217,8 @@ public class SwipeHelper {
                     float pos = ev.getX();
                     float delta = pos - mInitialTouchPosX;
                     if (Math.abs(delta) > mPagingTouchSlop) {
-                        if (mCallback.getSelectionSet().isEmpty()
-                                || (!mCallback.getSelectionSet().isEmpty()
-                                        && mCurrView.isChecked())) {
-                            mCallback.onBeginDrag(mCurrView);
+                        if (mCurrView.canSwipe()) {
+                            mCallback.onBeginDrag(mCurrView.getView());
                             mDragging = true;
                             mInitialTouchPosX = ev.getX() - mCurrAnimView.getTranslationX();
                             mInitialTouchPosY = ev.getY();
@@ -254,9 +252,9 @@ public class SwipeHelper {
      * @param velocity The desired pixels/second speed at which the view should
      *            move
      */
-    private void dismissChild(final View view, float velocity) {
-        final View animView = mCurrView;
-        final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(animView);
+    private void dismissChild(final SwipeableItemView view, float velocity) {
+        final View animView = mCurrView.getView();
+        final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(view);
         float newPos = determinePos(animView, velocity);
         int duration = determineDuration(animView, newPos, velocity);
 
@@ -265,8 +263,8 @@ public class SwipeHelper {
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mCallback.onChildDismissed(view);
-                mCurrView.setLayerType(View.LAYER_TYPE_NONE, null);
+                mCallback.onChildDismissed(mCurrView);
+                animView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
         anim.addUpdateListener(new AnimatorUpdateListener() {
@@ -285,8 +283,8 @@ public class SwipeHelper {
         AnimatorListenerAdapter listener = new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mCallback.onChildrenDismissed(views);
-                mCurrView.setLayerType(View.LAYER_TYPE_NONE, null);
+                mCallback.onChildrenDismissed(mCurrView, views);
+                mCurrView.getView().setLayerType(View.LAYER_TYPE_NONE, null);
             }
         };
         dismissChildren(views, velocity, listener);
@@ -294,8 +292,8 @@ public class SwipeHelper {
 
     private void dismissChildren(final Collection<ConversationItemView> views, float velocity,
             AnimatorListenerAdapter listener) {
-        final View animView = mCurrView;
-        final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(animView);
+        final View animView = mCurrView.getView();
+        final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(mCurrView);
         float newPos = determinePos(animView, velocity);
         int duration = determineDuration(animView, newPos, velocity);
         ArrayList<Animator> animations = new ArrayList<Animator>();
@@ -351,9 +349,9 @@ public class SwipeHelper {
         return newPos;
     }
 
-    public void snapChild(final View view, float velocity) {
-        final View animView = mCallback.getChildContentView(view);
-        final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(animView);
+    public void snapChild(final SwipeableItemView view, float velocity) {
+        final View animView = view.getView();
+        final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(view);
         ObjectAnimator anim = createTranslationAnimation(animView, 0);
         int duration = SNAP_ANIM_LEN;
         anim.setDuration(duration);
@@ -426,7 +424,7 @@ public class SwipeHelper {
                             mCurrAnimView.setAlpha(getAlphaForOffset(mCurrAnimView));
                         }
                     }
-                    invalidateGlobalRegion(mCurrView);
+                    invalidateGlobalRegion(mCurrView.getView());
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -473,7 +471,7 @@ public class SwipeHelper {
                         mCallback.onDragCancelled(mCurrView);
 
                         if (mAssociatedViews != null && mAssociatedViews.size() > 1) {
-                            for (View v : mAssociatedViews) {
+                            for (SwipeableItemView v : mAssociatedViews) {
                                 snapChild(v, velocity);
                             }
                         } else {
@@ -489,17 +487,15 @@ public class SwipeHelper {
     public interface Callback {
         View getChildAtPosition(MotionEvent ev);
 
-        View getChildContentView(View v);
-
-        boolean canChildBeDismissed(View v);
+        boolean canChildBeDismissed(SwipeableItemView v);
 
         void onBeginDrag(View v);
 
-        void onChildDismissed(View v);
+        void onChildDismissed(SwipeableItemView v);
 
-        void onChildrenDismissed(Collection<ConversationItemView> v);
+        void onChildrenDismissed(SwipeableItemView target, Collection<ConversationItemView> v);
 
-        void onDragCancelled(View v);
+        void onDragCancelled(SwipeableItemView v);
 
         ConversationSelectionSet getSelectionSet();
     }

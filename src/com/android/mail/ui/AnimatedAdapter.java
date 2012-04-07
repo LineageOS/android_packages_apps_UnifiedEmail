@@ -21,10 +21,12 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.Cursor;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 
+import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Account;
@@ -32,11 +34,14 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
 import com.android.mail.utils.LogUtils;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
@@ -45,6 +50,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final static int TYPE_VIEW_DELETING = 1;
     private final static int TYPE_VIEW_UNDOING = 2;
     private final static int TYPE_VIEW_FOOTER = 3;
+    private final static int TYPE_VIEW_LEAVEBEHIND = 4;
     private HashSet<Integer> mDeletingItems = new HashSet<Integer>();
     private HashSet<Integer> mUndoingItems = new HashSet<Integer>();
     private Account mSelectedAccount;
@@ -61,6 +67,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Settings mCachedSettings;
     private boolean mSwipeEnabled;
     private DragListener mDragListener;
+    private HashMap<Long, UndoOperation> mLeaveBehindItems = new HashMap<Long, UndoOperation>();
 
     /**
      * Used only for debugging.
@@ -92,9 +99,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return mShowFooter ? count + 1 : count;
     }
 
-    public void setUndo(boolean state) {
-        mUndo = state;
-        if (mUndo) {
+    public void setUndo(boolean undo) {
+        if (undo) {
             mUndoingItems.addAll(mLastDeletingItems);
             mLastDeletingItems.clear();
             // Start animation
@@ -132,8 +138,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public int getViewTypeCount() {
         // TYPE_VIEW_CONVERSATION, TYPE_VIEW_DELETING, TYPE_VIEW_UNDOING, and
-        // TYPE_VIEW_FOOTER.
-        return 4;
+        // TYPE_VIEW_FOOTER, TYPE_VIEW_LEAVEBEHIND.
+        return 5;
     }
 
     @Override
@@ -144,6 +150,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
         if (isPositionUndoing(position)) {
             return TYPE_VIEW_UNDOING;
+        }
+        if (isPositionLeaveBehind(position)) {
+            return TYPE_VIEW_LEAVEBEHIND;
         }
         if (mShowFooter && position == super.getCount()) {
             return TYPE_VIEW_FOOTER;
@@ -218,6 +227,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         } else if (isPositionDeleting(position)) {
             return getDeletingView(position, convertView, parent);
         }
+        if (hasLeaveBehinds()) {
+            Conversation conv = new Conversation((ConversationCursor) getItem(position));
+            if(isPositionLeaveBehind(conv)) {
+                return getLeaveBehindItem(position, conv);
+            }
+        }
         // TODO: do this in the swipe helper?
         // If this view gets recycled, we need to reset things set by the
         // animation.
@@ -230,6 +245,23 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             }
         }
         return super.getView(position, convertView, parent);
+    }
+
+    private boolean hasLeaveBehinds() {
+        return !mLeaveBehindItems.isEmpty();
+    }
+
+    public void setupLeaveBehind(Conversation target, UndoOperation undoOp, int deletedRow) {
+        mLeaveBehindItems.put(target.id, undoOp);
+        mLastDeletingItems.add(deletedRow);
+    }
+
+    private LeaveBehindItem getLeaveBehindItem(int position, Conversation target) {
+        LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext).inflate(
+                R.layout.swipe_leavebehind, null);
+        leaveBehind.bindOperations(mSelectedAccount, this, mLeaveBehindItems.get(target.id),
+                target);
+        return leaveBehind;
     }
 
     @Override
@@ -292,12 +324,24 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return mUndoingItems.contains(position);
     }
 
+    private boolean isPositionLeaveBehind(Conversation conv) {
+        return mLeaveBehindItems.containsKey(conv.id) && conv.isMostlyDead();
+    }
+
+    private boolean isPositionLeaveBehind(int position) {
+        if (hasLeaveBehinds()) {
+            Conversation conv = new Conversation((ConversationCursor) getItem(position));
+            return mLeaveBehindItems.containsKey(conv.id) && conv.isMostlyDead();
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void onAnimationStart(Animator animation) {
-        if (mUndo) {
+        if (!mUndoingItems.isEmpty()) {
             mDeletingItems.clear();
             mLastDeletingItems.clear();
-            mUndo = false;
         } else {
             mUndoingItems.clear();
         }
@@ -305,7 +349,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        if (mUndo && !mUndoingItems.isEmpty()) {
+        if (!mUndoingItems.isEmpty()) {
             // See if we have received all the animations we expected; if
             // so, call the listener and reset it.
             final int position = ((ConversationItemView) ((ObjectAnimator) animation).getTarget())
@@ -316,7 +360,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                     mActionCompleteListener.onActionComplete();
                     mActionCompleteListener = null;
                 }
-                mUndo = false;
             }
         } else if (!mDeletingItems.isEmpty()) {
             // See if we have received all the animations we expected; if
@@ -381,5 +424,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     public void setFolder(Folder folder) {
         mFolder = folder;
+    }
+
+    public void clearLeaveBehind(Conversation item) {
+        mLeaveBehindItems.remove(item.id);
+        notifyDataSetChanged();
     }
 }

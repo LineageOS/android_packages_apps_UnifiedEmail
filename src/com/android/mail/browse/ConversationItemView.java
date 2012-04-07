@@ -68,10 +68,11 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.DragListener;
 import com.android.mail.ui.FolderDisplayer;
+import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
 
-public class ConversationItemView extends View {
+public class ConversationItemView extends View implements SwipeableItemView {
     // Timer.
     private static int sLayoutCount = 0;
     private static Timer sTimer; // Create the sTimer here if you need to do perf analysis.
@@ -1207,10 +1208,10 @@ public class ConversationItemView extends View {
         Animator fadeAnimator = ObjectAnimator.ofFloat(this, "itemAlpha", 0, 1.0f);
         mAnimatedHeight = start;
         undoAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
+        undoAnimator.addListener(listener);
         undoAnimator.setDuration(sUndoAnimationDuration);
         AnimatorSet transitionSet = new AnimatorSet();
         transitionSet.playTogether(undoAnimator, fadeAnimator);
-        transitionSet.addListener(listener);
         transitionSet.start();
     }
 
@@ -1243,6 +1244,17 @@ public class ConversationItemView extends View {
         if (!mSelectedConversationSet.containsKey(mHeader.conversation.id)) {
             toggleCheckMark();
         }
+    }
+
+    @Override
+    public boolean canSwipe() {
+        return mSelectedConversationSet.isEmpty()
+                || (!mSelectedConversationSet.isEmpty() && isChecked());
+    }
+
+    @Override
+    public View getView() {
+        return this;
     }
 
     /**

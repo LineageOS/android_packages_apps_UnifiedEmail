@@ -318,6 +318,7 @@
     <string name="no_conversations">No conversations.</string>
     <!-- Menu item: undo latest action [CHAR LIMIT=12]-->
     <string name="undo">Undo</string>
+
     <!-- Undo Strings: The following are shown in a dialog while we're waiting for the operation to complete --><skip />
     <plurals name="conversation_marking_read">
         <!-- Displayed while marking one conversation read -->
