@@ -245,7 +245,14 @@ public class Account extends android.accounts.Account implements Parcelable {
         recentFolderListUri = getValidUri(
                 json.optString(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI));
 
-        settings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
+        final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
+        if (jsonSettings != null) {
+            settings = jsonSettings;
+        } else {
+            LogUtils.e(LOG_TAG, new Throwable(),
+                    "Unexpected null settings in Account(name, type, jsonAccount)");
+            settings = Settings.EMPTY_SETTINGS;
+        }
     }
 
     public Account(Parcel in) {
@@ -268,7 +275,14 @@ public class Account extends android.accounts.Account implements Parcelable {
         mimeType = in.readString();
         recentFolderListUri = in.readParcelable(null);
         final String serializedSettings = in.readString();
-        settings = Settings.newInstance(serializedSettings);
+        final Settings parcelSettings = Settings.newInstance(serializedSettings);
+
+        if (parcelSettings != null) {
+            settings = parcelSettings;
+        } else {
+            LogUtils.e(LOG_TAG, new Throwable(), "Unexpected null settings in Account(Parcel)");
+            settings = Settings.EMPTY_SETTINGS;
+        }
     }
 
     public Account(Cursor cursor) {
@@ -355,7 +369,10 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(composeIntentUri, 0);
         dest.writeString(mimeType);
         dest.writeParcelable(recentFolderListUri, 0);
-        dest.writeString(settings.serialize());
+        if (settings == null) {
+            LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
+        }
+        dest.writeString(settings != null ? settings.serialize() : "");
     }
 
     @Override
