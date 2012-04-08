@@ -23,6 +23,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.MailboxSelectionActivity;
 import com.android.mail.utils.AccountUtils;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
@@ -37,6 +38,7 @@ import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -47,9 +49,12 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     public static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_FOLDER = "folder";
     public static final String EXTRA_UNREAD = "unread";
+    public static final String EXTRA_UPDATE_ALL_WIDGETS = "update-all-widgets";
     public static final String WIDGET_ACCOUNT_PREFIX = "widget-account-";
 
     private static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
+
+    private static final String LOG_TAG = new LogUtils().getLogTag();
 
     private static String createWidgetPreferenceValue(Account account, Folder folder) {
         return account.uri.toString() + ACCOUNT_FOLDER_PREFERENCE_SEPARATOR + folder.uri.toString();
@@ -84,11 +89,14 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     }
 
     /**
+     * If a widget provider extends this class, this method needs to be overriden, so the correct
+     * widget ids are returned.
      * @return the list ids for the currently configured widgets.
      */
-    private static int[] getCurrentWidgetIds(Context context) {
+    protected int[] getCurrentWidgetIds(Context context) {
         final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        final ComponentName mailComponent = new ComponentName(context, WidgetProvider.PROVIDER_NAME);
+        final ComponentName mailComponent =
+                new ComponentName(context, WidgetProvider.PROVIDER_NAME);
         return appWidgetManager.getAppWidgetIds(mailComponent);
     }
 
@@ -99,13 +107,17 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
+        LogUtils.d(LOG_TAG, "BaseWidgetProvider.onReceive: %s", intent);
+
         // Receive notification for a certain account.
         if (Utils.ACTION_NOTIFY_DATASET_CHANGED.equals(intent.getAction())) {
-            String account = intent.getExtras().getString(Utils.EXTRA_ACCOUNT);
-            if (account == null) {
+            final Bundle extras = intent.getExtras();
+            final Uri accountUri = (Uri)extras.getParcelable(Utils.EXTRA_ACCOUNT_URI);
+            final boolean updateAllWidgets = extras.getBoolean(EXTRA_UPDATE_ALL_WIDGETS, false);
+
+            if (accountUri == null && !updateAllWidgets) {
                 return;
             }
-            final Account accountToBeUpdated = Account.newinstance(account);
             final Set<Integer> widgetsToUpdate = Sets.newHashSet();
 
             for (int id : getCurrentWidgetIds(context)) {
@@ -117,7 +129,8 @@ public class BaseWidgetProvider extends AppWidgetProvider {
                 if (accountFolder != null) {
                     final String[] parsedInfo = TextUtils.split(accountFolder,
                             ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
-                    if (TextUtils.equals(accountToBeUpdated.uri.toString(), parsedInfo[0])) {
+                    if (updateAllWidgets ||
+                            TextUtils.equals(accountUri.toString(), parsedInfo[0])) {
                         widgetsToUpdate.add(id);
                     }
                 }
@@ -320,13 +333,5 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         clickIntent = PendingIntent.getActivity(context, 0, conversationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setPendingIntentTemplate(R.id.conversation_list, clickIntent);
-    }
-
-    /**
-     * Updates all of the configured widgets.
-     */
-    public static void updateAllWidgets(Context context) {
-        AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(
-                getCurrentWidgetIds(context), R.id.conversation_list);
     }
 }
