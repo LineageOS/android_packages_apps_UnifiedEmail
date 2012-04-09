@@ -247,4 +247,13 @@ public class ConversationSelectionSet implements Parcelable {
     public Collection<ConversationItemView> views() {
         return mInternalViewMap.values();
     }
+
+    /**
+     * @param deletedRows an arraylist of conversation IDs which have been deleted.
+     */
+    public void delete(ArrayList<Integer> deletedRows) {
+        for (long id : deletedRows) {
+            remove(id);
+        }
+    }
 }

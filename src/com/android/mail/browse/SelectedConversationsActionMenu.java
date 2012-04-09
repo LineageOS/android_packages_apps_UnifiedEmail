@@ -100,6 +100,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private Folder mFolder;
 
+    // These listeners are called at the end of the animation and they perform their actions on
+    // the conversations.
     private final ActionCompleteListener mDeleteListener =
             new DestructiveActionListener(R.id.delete);
     private final ActionCompleteListener mArchiveListener =
@@ -107,6 +109,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private final ActionCompleteListener mMuteListener = new DestructiveActionListener(R.id.mute);
     private final ActionCompleteListener mSpamListener =
             new DestructiveActionListener(R.id.report_spam);
+    private final ActionCompleteListener mRemoveStarListener =
+            new DestructiveActionListener(R.id.remove_star);
+    private final ActionCompleteListener mRemoveImportanceListener =
+            new DestructiveActionListener(R.id.mark_not_important);
 
     private SwipeableListView mListView;
 
@@ -114,15 +120,16 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
             ActionCompleteListener listener, UndoListener undoListener, Account account,
             Folder folder, SwipeableListView list) {
-        mSelectionSet = selectionSet;
         mActivity = activity;
-        mContext = mActivity.getActivityContext();
+        mSelectionSet = selectionSet;
         mListAdapter = adapter;
         mActionCompleteListener = listener;
         mUndoListener = undoListener;
         mAccount = account;
         mFolder = folder;
         mListView = list;
+
+        mContext = mActivity.getActivityContext();
     }
 
     @Override
@@ -152,7 +159,13 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 starConversations(true);
                 break;
             case R.id.remove_star:
-                starConversations(false);
+                if (mFolder.type == UIProvider.FolderType.STARRED) {
+                    LogUtils.d(LOG_TAG, "We are in a starred folder, removing the star");
+                    performDestructiveAction(R.id.remove_star, mRemoveStarListener);
+                } else {
+                    LogUtils.d(LOG_TAG, "Not in a starred folder.");
+                    starConversations(false);
+                }
                 break;
             case R.id.change_folder:
                 showChangeFoldersDialog();
@@ -161,7 +174,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 markConversationsImportant(true);
                 break;
             case R.id.mark_not_important:
-                markConversationsImportant(false);
+                if (mFolder.supportsCapability(UIProvider.FolderCapabilities.ONLY_IMPORTANT)) {
+                    performDestructiveAction(R.id.mark_not_important, mRemoveImportanceListener);
+                } else {
+                    markConversationsImportant(false);
+                }
                 break;
             default:
                 handled = false;
@@ -177,6 +194,20 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mSelectionSet.clear();
         // Redraw with changes
         mListAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Update the underlying list adapter and redraw the menus if necessary.
+     */
+    private void updateSelection() {
+        mListAdapter.notifyDataSetChanged();
+        if (mActionMode != null) {
+            // Calling mActivity.invalidateOptionsMenu doesn't have the correct behavior, since
+            // the action mode is not refreshed when activity's options menu is invalidated.
+            // Since we need to refresh our own menu, it is easy to call onPrepareActionMode
+            // directly.
+            onPrepareActionMode(mActionMode, mActionMode.getMenu());
+        }
     }
 
     private void performDestructiveAction(final int id, final ActionCompleteListener listener) {
@@ -217,26 +248,30 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     private void markConversationsRead(boolean read) {
-        Collection<Conversation> conversations = mSelectionSet.values();
+        final Collection<Conversation> conversations = mSelectionSet.values();
         Conversation.updateBoolean(mContext, conversations, ConversationColumns.READ, read);
-        clearSelection();
+        updateSelection();
     }
 
     private void markConversationsImportant(boolean important) {
-        Collection<Conversation> conversations = mSelectionSet.values();
-        int priority = important ? UIProvider.ConversationPriority.HIGH
+        final Collection<Conversation> conversations = mSelectionSet.values();
+        final int priority = important ? UIProvider.ConversationPriority.HIGH
                 : UIProvider.ConversationPriority.LOW;
         Conversation.updateInt(mContext, conversations, ConversationColumns.PRIORITY, priority);
-        clearSelection();
+        updateSelection();
     }
 
+    /**
+     * Mark the selected conversations with the star setting provided here.
+     * @param star true if you want all the conversations to have stars, false if you want to remove
+     * stars from all conversations
+     */
     private void starConversations(boolean star) {
-        Collection<Conversation> conversations = mSelectionSet.values();
+        final Collection<Conversation> conversations = mSelectionSet.values();
         if (conversations.size() > 0) {
-            Conversation.updateBoolean(mContext, conversations,
-                    ConversationColumns.STARRED, star);
+            Conversation.updateBoolean(mContext, conversations, ConversationColumns.STARRED, star);
         }
-        clearSelection();
+        updateSelection();
     }
 
     private void showChangeFoldersDialog() {
@@ -318,7 +353,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         // Determine read/ unread
         // Star/ unstar
-        Collection<Conversation> conversations = mSelectionSet.values();
+        final Collection<Conversation> conversations = mSelectionSet.values();
         boolean showStar = false;
         boolean showMarkUnread = false;
         boolean showMarkImportant = false;
@@ -361,12 +396,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
 
         return true;
-    }
-
-    public void onPrepareActionMode() {
-        if (mActionMode != null) {
-            onPrepareActionMode(mActionMode, mActionMode.getMenu());
-        }
     }
 
     @Override
@@ -486,7 +515,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         @Override
         public void onActionComplete() {
             // This is where we actually delete.
-            Collection<Conversation> conversations = mSelectionSet.values();
+            final Collection<Conversation> conversations = mSelectionSet.values();
             mActionCompleteListener.onActionComplete();
             mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), mAction));
             switch (mAction) {
@@ -507,6 +536,17 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     break;
                 case R.id.report_spam:
                     Conversation.reportSpam(mContext, conversations);
+                    break;
+                case R.id.remove_star:
+                    // Star removal is destructive in the Starred folder.
+                    Conversation.updateBoolean(mContext, conversations, ConversationColumns.STARRED,
+                            false);
+                    break;
+                case R.id.mark_not_important:
+                    // Marking not important is destructive in a mailbox containing only important
+                    // messages
+                    Conversation.updateInt(mContext, conversations, ConversationColumns.PRIORITY,
+                            UIProvider.ConversationPriority.LOW);
                     break;
             }
             clearSelection();

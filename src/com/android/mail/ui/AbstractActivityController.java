@@ -1319,6 +1319,11 @@ public abstract class AbstractActivityController implements ActivityController, 
     @Override
     public void onRefreshReady() {
         ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
+        // If we have any deletions from the server, and the conversations are in the list view,
+        // remove them from a selected set, if any
+        if (!deletedRows.isEmpty() && !mSelectedSet.isEmpty()) {
+            mSelectedSet.delete(deletedRows);
+        }
         // If we have any deletions from the server, animate them away
         if (!deletedRows.isEmpty() && mConversationListFragment != null) {
             AnimatedAdapter adapter = mConversationListFragment.getAnimatedAdapter();
