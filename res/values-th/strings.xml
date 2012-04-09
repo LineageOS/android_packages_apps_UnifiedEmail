@@ -48,8 +48,7 @@
     <string name="confirm_send_message" msgid="3221546155385562874">"ส่งข้อความนี้หรือไม่"</string>
     <string name="message_discarded" msgid="5079975378884765445">"ยกเลิกข้อความแล้ว"</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
-    <!-- no translation found for custom_from_account_label (5069652141632649722) -->
-    <skip />
+    <string name="custom_from_account_label" msgid="5069652141632649722">"ส่งอีเมลเป็น:"</string>
     <string name="send" msgid="8242003661397555986">"ส่ง"</string>
     <string name="mark_read" msgid="8438349154394313195">"ทำเครื่องหมายว่าอ่านแล้ว"</string>
     <string name="mark_unread" msgid="6231373939351125713">"ทำเครื่องหมายว่ายังไม่อ่าน"</string>
@@ -287,6 +286,5 @@
     <string name="loading" msgid="2600808404156989255">"กำลังโหลดการสนทนา…"</string>
     <string name="retry" msgid="4515885444824418022">"ลองอีกครั้ง"</string>
     <string name="load_more" msgid="420892447103014683">"โหลดเพิ่มเติม"</string>
-    <!-- no translation found for shortcut_name_title (8220482314700618391) -->
-    <skip />
+    <string name="shortcut_name_title" msgid="8220482314700618391">"ตั้งชื่อทางลัดของโฟลเดอร์"</string>
 </resources>

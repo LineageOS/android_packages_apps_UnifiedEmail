@@ -48,8 +48,7 @@
     <string name="confirm_send_message" msgid="3221546155385562874">"메시지를 보내시겠습니까?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"메일을 삭제했습니다."</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
-    <!-- no translation found for custom_from_account_label (5069652141632649722) -->
-    <skip />
+    <string name="custom_from_account_label" msgid="5069652141632649722">"다른 주소에서 메일 보내기:"</string>
     <string name="send" msgid="8242003661397555986">"보내기"</string>
     <string name="mark_read" msgid="8438349154394313195">"읽음으로 표시"</string>
     <string name="mark_unread" msgid="6231373939351125713">"읽지않음으로 표시"</string>
@@ -287,6 +286,5 @@
     <string name="loading" msgid="2600808404156989255">"대화 로드 중..."</string>
     <string name="retry" msgid="4515885444824418022">"다시 시도"</string>
     <string name="load_more" msgid="420892447103014683">"추가 로드"</string>
-    <!-- no translation found for shortcut_name_title (8220482314700618391) -->
-    <skip />
+    <string name="shortcut_name_title" msgid="8220482314700618391">"폴더 바로가기 이름 지정"</string>
 </resources>
