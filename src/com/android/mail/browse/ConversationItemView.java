@@ -50,23 +50,17 @@ import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.text.util.Rfc822Token;
-import android.text.util.Rfc822Tokenizer;
 import android.util.SparseArray;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.View.DragShadowBuilder;
-import android.view.View.MeasureSpec;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Checkable;
 import android.widget.ListView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
 import com.android.mail.perf.Timer;
-import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
@@ -124,7 +118,7 @@ public class ConversationItemView extends View {
     private static int sStandardScaledDimen;
     private static int sUndoAnimationDuration;
     private static CharacterStyle sLightTextStyle;
-    private static CharacterStyle sNormalTextStyle;
+    protected static CharacterStyle sNormalTextStyle;
 
     // Static paints.
     private static TextPaint sPaint = new TextPaint();
@@ -173,7 +167,6 @@ public class ConversationItemView extends View {
         sPaint.setAntiAlias(true);
         sFoldersPaint.setAntiAlias(true);
     }
-
 
     /**
      * Handles displaying folders in a conversation header view.
@@ -556,7 +549,7 @@ public class ConversationItemView extends View {
         createSubjectSpans(isUnread);
 
         // Parse senders fragments.
-        parseSendersFragments(isUnread);
+        mCoordinates.sendersView.parseSendersFragments(mHeader, isUnread, mMode);
 
         pauseTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
         pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
@@ -596,35 +589,6 @@ public class ConversationItemView extends View {
             mHeader.subjectLayout = new StaticLayout(mHeader.subjectText.subSequence(0, end),
                     sPaint, mCoordinates.subjectWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
         }
-    }
-
-    /**
-     * Parses senders text into small fragments.
-     */
-    private void parseSendersFragments(boolean isUnread) {
-        if (TextUtils.isEmpty(mHeader.conversation.senders)) {
-            return;
-        }
-        mHeader.sendersText = formatSenders(mHeader.conversation.senders);
-        mHeader.addSenderFragment(0, mHeader.sendersText.length(), sNormalTextStyle, true);
-    }
-
-    private String formatSenders(String sendersString) {
-        String[] senders = TextUtils.split(sendersString, Address.ADDRESS_DELIMETER);
-        String[] namesOnly = new String[senders.length];
-        Rfc822Token[] senderTokens;
-        String display;
-        for (int i = 0; i < senders.length; i++) {
-            senderTokens = Rfc822Tokenizer.tokenize(senders[i]);
-            if (senderTokens != null && senderTokens.length > 0) {
-                display = senderTokens[0].getName();
-                if (TextUtils.isEmpty(display)) {
-                    display = senderTokens[0].getAddress();
-                }
-                namesOnly[i] = display;
-            }
-        }
-        return TextUtils.join(Address.ADDRESS_DELIMETER + " ", namesOnly);
     }
 
     private boolean canFitFragment(int width, int line, int fixedWidth) {
@@ -875,7 +839,7 @@ public class ConversationItemView extends View {
         // Senders.
         boolean isUnread = mHeader.unread;
         sPaint.setTextSize(mCoordinates.sendersFontSize);
-        sPaint.setTypeface(isUnread ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+        sPaint.setTypeface(mCoordinates.sendersView.getTypeface(isUnread));
         int sendersColor = getFontColor(isUnread ? SENDERS_TEXT_COLOR_UNREAD
                 : SENDERS_TEXT_COLOR_READ);
         sPaint.setColor(sendersColor);

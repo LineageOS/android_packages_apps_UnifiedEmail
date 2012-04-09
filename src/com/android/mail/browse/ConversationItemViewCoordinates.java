@@ -104,6 +104,7 @@ public class ConversationItemViewCoordinates {
 
     // Minimum height of this view; used for animating.
     int minHeight;
+    SendersView sendersView;
 
 
     // Cache to save Coordinates based on view width.
@@ -322,7 +323,8 @@ public class ConversationItemViewCoordinates {
                 coordinates.showPersonalLevel = false;
             }
 
-            TextView senders = (TextView) view.findViewById(R.id.senders);
+            SendersView senders = (SendersView) view.findViewById(R.id.senders);
+            coordinates.sendersView = senders;
             coordinates.sendersX = getX(senders);
             coordinates.sendersY = getY(senders);
             coordinates.sendersWidth = senders.getWidth();
