@@ -16,6 +16,10 @@
 
 package com.android.mail.providers;
 
+import com.android.mail.providers.UIProvider.AutoAdvance;
+import com.android.mail.providers.UIProvider.DefaultReplyBehavior;
+import com.android.mail.providers.UIProvider.MessageTextSize;
+import com.android.mail.providers.UIProvider.SnapHeaderValue;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -35,6 +39,8 @@ import org.json.JSONObject;
 public class Settings implements Parcelable {
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
+    static final Settings EMPTY_SETTINGS = new Settings();
+
     public final String signature;
     public final int autoAdvance;
     public final int messageTextSize;
@@ -46,6 +52,20 @@ public class Settings implements Parcelable {
     public final boolean confirmSend;
     public final Uri defaultInbox;
     public final boolean forceReplyFromDefault;
+
+    private Settings() {
+        signature = null;
+        autoAdvance = AutoAdvance.LIST;
+        messageTextSize = MessageTextSize.NORMAL;
+        snapHeaders = SnapHeaderValue.ALWAYS;
+        replyBehavior = DefaultReplyBehavior.REPLY;
+        hideCheckboxes = false;
+        confirmDelete = false;
+        confirmArchive = false;
+        confirmSend = false;
+        defaultInbox = null;
+        forceReplyFromDefault = false;
+    }
 
     public Settings(Parcel inParcel) {
         signature = inParcel.readString();
