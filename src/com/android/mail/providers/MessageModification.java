@@ -22,6 +22,9 @@ import android.text.TextUtils;
 import com.android.mail.providers.UIProvider.DraftType;
 import com.android.mail.providers.UIProvider.MessageColumns;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.List;
 
 /**
@@ -157,20 +160,6 @@ public class MessageModification {
 
     public static void putAttachments(ContentValues values, List<Attachment> attachments) {
         values.put(
-                MessageColumns.JOINED_ATTACHMENT_INFOS, joinedAttachmentsString(attachments));
-    }
-
-    /**
-     * The string produced here is parsed by Gmail.MessageCursor#getAttachmentInfos.
-     */
-    public static String joinedAttachmentsString(List<Attachment> attachments) {
-        StringBuilder attachmentsSb = new StringBuilder();
-        for (Attachment attachment : attachments) {
-            if (attachmentsSb.length() != 0) {
-                attachmentsSb.append(UIProvider.MESSAGE_ATTACHMENT_INFO_SEPARATOR);
-            }
-            attachmentsSb.append(attachment.toJoinedString());
-        }
-        return attachmentsSb.toString();
+                MessageColumns.JOINED_ATTACHMENT_INFOS, Attachment.toJSONArray(attachments));
     }
 }

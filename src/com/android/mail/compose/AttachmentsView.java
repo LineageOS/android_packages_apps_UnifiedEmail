@@ -148,47 +148,53 @@ class AttachmentsView extends LinearLayout {
      * clearly above they keyboard if it happens to be open.
      */
     private void showAttachmentTooBigToast() {
-        Toast t = Toast.makeText(getContext(), R.string.generic_attachment_problem,
+        showErrorToast(R.string.too_large_to_attach);
+    }
+
+    private void showGenericAttachmentError() {
+        showErrorToast(R.string.generic_attachment_problem);
+    }
+
+    private void showErrorToast(int resId) {
+        Toast t = Toast.makeText(getContext(), resId,
                 Toast.LENGTH_LONG);
-        t.setText(R.string.too_large_to_attach);
+        t.setText(resId);
         t.setGravity(Gravity.CENTER_HORIZONTAL, 0,
                 getResources().getDimensionPixelSize(R.dimen.attachment_toast_yoffset));
         t.show();
     }
 
     /**
-     * Adds an attachment
-     * @param uri the uri to attach
-     * @param contentType the type of the resource pointed to by the URI or null if the type is
-     *   unknown
-     * @param doSave whether the message should be saved
+     * Generate an {@link Attachment} object for a given local content URI. Attempts to populate
+     * the {@link Attachment#name}, {@link Attachment#size}, and {@link Attachment#contentType}
+     * fields using a {@link ContentResolver}.
      *
-     * @return int size of the attachment added.
-     * @throws AttachmentFailureException if an error occurs adding the attachment.
+     * @param contentUri
+     * @return an Attachment object
+     * @throws AttachmentFailureException
      */
-    public long addAttachment(Account account, Uri uri, boolean doSave, boolean isLocal)
-            throws AttachmentFailureException {
+    public Attachment generateLocalAttachment(Uri contentUri) throws AttachmentFailureException {
+        // FIXME: do not query resolver for type on the UI thread
         final ContentResolver contentResolver = getContext().getContentResolver();
-        String contentType = contentResolver.getType(uri);
-        if (uri == null || TextUtils.isEmpty(uri.getPath())) {
-            showAttachmentTooBigToast();
+        String contentType = contentResolver.getType(contentUri);
+        if (contentUri == null || TextUtils.isEmpty(contentUri.getPath())) {
+            showGenericAttachmentError();
             throw new AttachmentFailureException("Attachment too large to attach");
         }
 
         if (contentType == null) contentType = "";
 
-        Attachment attachment = new Attachment();
-        // partId will be assigned by the engine.
+        final Attachment attachment = new Attachment();
+        attachment.uri = null; // URI will be assigned by the provider upon send/save
         attachment.name = null;
         attachment.contentType = contentType;
         attachment.size = 0;
-        attachment.contentUri = uri;
-        attachment.origin = isLocal ? Attachment.LOCAL_FILE : Attachment.SERVER_ATTACHMENT;
+        attachment.contentUri = contentUri;
 
         Cursor metadataCursor = null;
         try {
             metadataCursor = contentResolver.query(
-                    uri, new String[]{OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE},
+                    contentUri, new String[]{OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE},
                     null, null, null);
             if (metadataCursor != null) {
                 try {
@@ -209,8 +215,8 @@ class AttachmentsView extends LinearLayout {
 
             // Let's try to get DISPLAY_NAME
             try {
-                metadataCursor =
-                        getOptionalColumn(contentResolver, uri, OpenableColumns.DISPLAY_NAME);
+                metadataCursor = getOptionalColumn(contentResolver, contentUri,
+                        OpenableColumns.DISPLAY_NAME);
                 if (metadataCursor != null && metadataCursor.moveToNext()) {
                     attachment.name = metadataCursor.getString(0);
                 }
@@ -221,12 +227,12 @@ class AttachmentsView extends LinearLayout {
             // Let's try to get SIZE
             try {
                 metadataCursor =
-                        getOptionalColumn(contentResolver, uri, OpenableColumns.SIZE);
+                        getOptionalColumn(contentResolver, contentUri, OpenableColumns.SIZE);
                 if (metadataCursor != null && metadataCursor.moveToNext()) {
                     attachment.size = metadataCursor.getInt(0);
                 } else {
                     // Unable to get the size from the metadata cursor. Open the file and seek.
-                    attachment.size = getSizeFromFile(uri, contentResolver);
+                    attachment.size = getSizeFromFile(contentUri, contentResolver);
                 }
             } finally {
                 if (metadataCursor != null) metadataCursor.close();
@@ -241,12 +247,40 @@ class AttachmentsView extends LinearLayout {
         }
 
         if (attachment.name == null) {
-            attachment.name = uri.getLastPathSegment();
+            attachment.name = contentUri.getLastPathSegment();
         }
 
+        return attachment;
+    }
+
+    /**
+     * Adds a local attachment by file path.
+     * @param account
+     * @param contentUri the uri of the local file path
+     *
+     * @return size of the attachment added.
+     * @throws AttachmentFailureException if an error occurs adding the attachment.
+     */
+    public long addAttachment(Account account, Uri contentUri)
+            throws AttachmentFailureException {
+        return addAttachment(account, generateLocalAttachment(contentUri));
+    }
+
+    /**
+     * Adds an attachment of either local or remote origin, checking to see if the attachment
+     * exceeds file size limits.
+     * @param account
+     * @param attachment the attachment to be added.
+     *
+     * @return size of the attachment added.
+     * @throws AttachmentFailureException if an error occurs adding the attachment.
+     */
+    public long addAttachment(Account account, Attachment attachment)
+            throws AttachmentFailureException {
         int maxSize = UIProvider.getMailMaxAttachmentSize(account.name);
 
         // Error getting the size or the size was too big.
+        // FIXME: exceptions should not be used to direct control flow
         if (attachment.size == -1 || attachment.size > maxSize) {
             showAttachmentTooBigToast();
             throw new AttachmentFailureException("Attachment too large to attach");
@@ -263,28 +297,15 @@ class AttachmentsView extends LinearLayout {
 
 
     public void addAttachments(Account account, Message refMessage) {
-        boolean hasAttachments = refMessage.hasAttachments;
-        if (hasAttachments) {
-            Uri attachmentQuery = refMessage.attachmentListUri;
-            Cursor attachmentCursor = null;
+        if (refMessage.hasAttachments) {
             try {
-                attachmentCursor = getContext().getContentResolver().query(attachmentQuery,
-                        UIProvider.ATTACHMENT_PROJECTION, null, null, null);
-                String attachmentUri;
-                while (attachmentCursor.moveToNext()) {
-                    attachmentUri = attachmentCursor.getString(UIProvider.ATTACHMENT_URI_COLUMN);
-                    if (!TextUtils.isEmpty(attachmentUri)) {
-                        addAttachment(account, Uri.parse(attachmentUri), false, false);
-                    }
+                for (Attachment a : refMessage.getAttachments()) {
+                    addAttachment(account, a);
                 }
             } catch (AttachmentFailureException e) {
                 // A toast has already been shown to the user, no need to do
                 // anything.
                 LogUtils.e(LOG_TAG, e, "Error adding attachment");
-            } finally {
-                if (attachmentCursor != null) {
-                    attachmentCursor.close();
-                }
             }
         }
     }
