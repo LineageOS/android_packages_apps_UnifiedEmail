@@ -199,6 +199,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void showFolderList() {
         mViewMode.enterFolderListMode();
+        enableCabMode();
         mLastFolderListTransactionId = replaceFragment(
                 FolderListFragment.newInstance(null, mAccount.folderListUri),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
