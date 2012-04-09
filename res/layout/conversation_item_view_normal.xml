@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
-        <TextView
+        <com.android.mail.browse.SendersView
             android:id="@+id/senders"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
