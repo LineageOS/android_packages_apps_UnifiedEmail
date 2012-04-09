@@ -48,8 +48,7 @@
     <string name="confirm_send_message" msgid="3221546155385562874">"要发送此邮件吗？"</string>
     <string name="message_discarded" msgid="5079975378884765445">"邮件已舍弃。"</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
-    <!-- no translation found for custom_from_account_label (5069652141632649722) -->
-    <skip />
+    <string name="custom_from_account_label" msgid="5069652141632649722">"用以下地址发送邮件："</string>
     <string name="send" msgid="8242003661397555986">"发送"</string>
     <string name="mark_read" msgid="8438349154394313195">"标记为已读"</string>
     <string name="mark_unread" msgid="6231373939351125713">"标记为未读"</string>
