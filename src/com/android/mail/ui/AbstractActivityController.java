@@ -1353,7 +1353,6 @@ public abstract class AbstractActivityController implements ActivityController, 
         enableCabMode();
     }
 
-
     @Override
     public void onSetChanged(ConversationSelectionSet set) {
         // Do nothing. We don't care about changes to the set.
