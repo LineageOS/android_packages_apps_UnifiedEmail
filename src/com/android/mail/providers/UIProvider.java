@@ -52,6 +52,8 @@ public class UIProvider {
         public static final int BACKGROUND_SYNC = 1<<3;
         // An initial sync is needed for this Account/Folder to be used
         public static final int INITIAL_SYNC_NEEDED = 1<<4;
+        // Manual sync is required
+        public static final int MANUAL_SYNC_REQUIRED = 1<<5;
     }
 
     /**

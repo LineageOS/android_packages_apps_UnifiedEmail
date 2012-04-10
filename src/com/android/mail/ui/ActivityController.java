@@ -239,6 +239,23 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     void showConversation(Conversation conversation);
 
     /**
+     * Show the wait for account initilization mode.
+     */
+    public void showWaitForInitialization();
+
+    /**
+     * Dismiss the wait for account initization mode.
+     */
+    public void hideWaitForInitialization();
+
+    /**
+     * Update the wait for account intization mode.
+     */
+    public void updateWaitMode();
+
+    public boolean inWaitMode();
+
+    /**
      * Show the folder list associated with the currently selected account.
      */
     void showFolderList();

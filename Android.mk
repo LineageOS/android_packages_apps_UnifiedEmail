@@ -22,7 +22,7 @@ res_dirs := $(chips_dir) res
 # Build APK
 include $(CLEAR_VARS)
 
-src_dirs := src unified_src email_src gmail_src
+src_dirs := src unified_src
 LOCAL_PACKAGE_NAME := UnifiedEmail
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-common-chips

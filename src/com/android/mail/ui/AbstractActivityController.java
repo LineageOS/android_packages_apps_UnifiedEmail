@@ -22,6 +22,7 @@ import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.ClipData;
@@ -98,6 +99,8 @@ public abstract class AbstractActivityController implements ActivityController, 
     // Batch conversations stored in the Bundle using this key.
     private static final String SAVED_CONVERSATIONS = "saved-conversations";
 
+    protected static final String WAIT_FRAGMENT_TAG = "wait-fragment";
+
     /** Are we on a tablet device or not. */
     public final boolean IS_TABLET_DEVICE;
 
@@ -150,6 +153,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     private static final int LOADER_CONVERSATION_LIST = 4;
     private static final int LOADER_ACCOUNT_INBOX = 5;
     private static final int LOADER_SEARCH = 6;
+    private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 7;
 
 
     private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
@@ -333,6 +337,8 @@ public abstract class AbstractActivityController implements ActivityController, 
             mActivity.invalidateOptionsMenu();
 
             disableNotificationsOnAccountChange(mAccount);
+
+            restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
 
             MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
         } else {
@@ -842,6 +848,9 @@ public abstract class AbstractActivityController implements ActivityController, 
                 mRecentFolderList.setCurrentAccount(mAccount);
                 fetchSearchFolder(intent);
             }
+            if (mAccount != null) {
+                restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
+            }
         }
 
         /**
@@ -891,6 +900,42 @@ public abstract class AbstractActivityController implements ActivityController, 
     public void showConversation(Conversation conversation) {
         // Set the current conversation just in case it wasn't already set.
         setCurrentConversation(conversation);
+    }
+
+    /**
+     * Children can override this method, but they must call super.showWaitForInitialization().
+     * {@inheritDoc}
+     */
+    @Override
+    public void showWaitForInitialization() {
+        mViewMode.enterWaitingForInitializationMode();
+    }
+
+    @Override
+    public void hideWaitForInitialization() {
+    }
+
+    @Override
+    public void updateWaitMode() {
+        final FragmentManager manager = mActivity.getFragmentManager();
+        final WaitFragment waitFragment =
+                (WaitFragment)manager.findFragmentByTag(WAIT_FRAGMENT_TAG);
+        if (waitFragment != null) {
+            waitFragment.updateAccount(mAccount);
+        }
+    }
+
+    @Override
+    public boolean inWaitMode() {
+        final FragmentManager manager = mActivity.getFragmentManager();
+        final WaitFragment waitFragment =
+                (WaitFragment)manager.findFragmentByTag(WAIT_FRAGMENT_TAG);
+        if (waitFragment != null) {
+            final Account fragmentAccount = waitFragment.getAccount();
+            return fragmentAccount.uri.equals(mAccount.uri) &&
+                    mViewMode.getMode() == ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION;
+        }
+        return false;
     }
 
     /**
@@ -957,6 +1002,9 @@ public abstract class AbstractActivityController implements ActivityController, 
                 return Folder.forSearchResults(mAccount,
                         args.getString(ConversationListContext.EXTRA_SEARCH_QUERY),
                         mActivity.getActivityContext());
+            case LOADER_ACCOUNT_UPDATE_CURSOR:
+                return new CursorLoader(mContext, mAccount.uri, UIProvider.ACCOUNTS_PROJECTION,
+                        null, null, null);
             default:
                 LogUtils.wtf(LOG_TAG, "Loader returned unexpected id: %d", id);
         }
@@ -1141,6 +1189,39 @@ public abstract class AbstractActivityController implements ActivityController, 
                     final boolean accountListUpdated = accountsUpdated(data);
                     if (!isLoaderInitialized || accountListUpdated) {
                         isLoaderInitialized = updateAccounts(loader, data);
+                    }
+                }
+                break;
+            case LOADER_ACCOUNT_UPDATE_CURSOR:
+                // We have gotten an update for current account.
+
+                // Make sure that this is an update for what is the current account
+                if (data != null && data.moveToFirst()) {
+                    final Account updatedAccount = new Account(data);
+
+                    if (updatedAccount.uri.equals(mAccount.uri)) {
+                        // Update the controller's reference to the current acccount
+                        mAccount = updatedAccount;
+                        mCachedSettings = mAccount.settings;
+
+                        // Got an update for the current account
+                        final boolean inWaitingMode = inWaitMode();
+                        if (!updatedAccount.isAccountIntialized() && !inWaitingMode) {
+                            // Transition to waiting mode
+                            showWaitForInitialization();
+                        } else if (updatedAccount.isAccountIntialized() && inWaitingMode) {
+                            // Dismiss waiting mode
+                            hideWaitForInitialization();
+                        } else if (!updatedAccount.isAccountIntialized() && inWaitingMode) {
+                            // Update the WaitFragment's account object
+                            updateWaitMode();
+                        }
+                    } else {
+                        LogUtils.e(LOG_TAG, "Got update for account: %s with current account: %s",
+                                updatedAccount.uri, mAccount.uri);
+                        // We need to restart the loader, so the correct account information will
+                        // be returned
+                        restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
                     }
                 }
                 break;

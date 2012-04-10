@@ -58,4 +58,9 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/conv_header_text_light</item>
     </style>
+
+    <style name="WaitFragmentTitle" parent="@android:style/Widget.Holo.TextView">
+        <item name="android:textSize">30sp</item>
+    </style>
+
 </resources>

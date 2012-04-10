@@ -587,4 +587,20 @@
     <!-- Shortcut strings -->
     <!-- Title for shortcut naming dialog [CHAR LIMIT=100]-->
     <string name="shortcut_name_title">Name folder shortcut</string>
+
+    <!-- Wait fragment strings -->
+    <!-- Displayed in title bar during the initial sync  [CHAR LIMIT=40] -->
+    <string name="wait_for_sync_title">Waiting for sync</string>
+    <!-- Displayed in the middle of the screen during the initial sync [CHAR LIMIT=40] -->
+    <string name="wait_for_sync_body">Your email will appear shortly.</string>
+    <!-- Title for the screen displayed during the initial sync [CHAR LIMIT=100]  -->
+    <string name="not_synced_title">Account not synced</string>
+    <!-- Displayed in the middle of the screen during the initial sync [CHAR LIMIT=300]-->
+    <string name="wait_for_manual_sync_body">This account isn\'t set up to sync automatically.\nTouch <b>Sync Now</b> to sync mail once, or <b>Change Sync Settings</b> to set up this account to sync mail automatically.</string>
+    <!-- Displayed at the bottom of the screen during the initial sync. If pressed will sync users mail for the selected account. [CHAR LIMIT=12]  -->
+    <string name="manual_sync">Sync now</string>
+    <!-- Displayed at the bottom of the screen during the initial sync. If pressed will open sync setting screen for accounts. [CHAR LIMIT=30]  -->
+    <string name="change_sync_settings">Change sync settings</string>
+
+
 </resources>

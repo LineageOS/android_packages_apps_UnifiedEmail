@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.database.Cursor;
 import android.net.Uri;
@@ -48,6 +49,7 @@ public final class OnePaneController extends AbstractActivityController {
     private static final String FOLDER_LIST_TRANSACTION_KEY = "folder-list-transaction";
     private static final String CONVERSATION_LIST_TRANSACTION_KEY = "conversation-list-transaction";
     private static final String CONVERSATION_TRANSACTION_KEY = "conversation-transaction";
+
     private static final int INVALID_ID = -1;
     private boolean mConversationListVisible = false;
     private int mLastConversationListTransactionId = INVALID_ID;
@@ -168,12 +170,12 @@ public final class OnePaneController extends AbstractActivityController {
             // Maintain fragment transaction history so we can get back to the
             // fragment used to launch this list.
             mLastConversationListTransactionId = replaceFragment(conversationListFragment,
-                    transition);
+                    transition, null);
         } else {
             // If going to the inbox, clear the folder list transaction history.
             mInbox = listContext.folder;
             replaceFragment(conversationListFragment,
-                    transition);
+                    transition, null);
             mLastFolderListTransactionId = INVALID_ID;
         }
         mConversationListVisible = true;
@@ -191,8 +193,21 @@ public final class OnePaneController extends AbstractActivityController {
         }
         mLastConversationTransactionId = replaceFragment(
                 ConversationViewFragment.newInstance(mAccount, conversation, mFolder),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, null);
         mConversationListVisible = false;
+    }
+
+    @Override
+    public void showWaitForInitialization() {
+        super.showWaitForInitialization();
+
+        replaceFragment(WaitFragment.newInstance(mAccount),
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, WAIT_FRAGMENT_TAG);
+    }
+
+    @Override
+    public void hideWaitForInitialization() {
+        transitionToInbox();
     }
 
     @Override
@@ -201,15 +216,15 @@ public final class OnePaneController extends AbstractActivityController {
         enableCabMode();
         mLastFolderListTransactionId = replaceFragment(
                 FolderListFragment.newInstance(null, mAccount.folderListUri),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, null);
         mConversationListVisible = false;
     }
 
-    private int replaceFragment(Fragment fragment, int transition) {
+    private int replaceFragment(Fragment fragment, int transition, String tag) {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.setTransition(transition);
-        fragmentTransaction.replace(R.id.content_pane, fragment);
+        fragmentTransaction.replace(R.id.content_pane, fragment, tag);
         int transactionId = fragmentTransaction.commitAllowingStateLoss();
         resetActionBarIcon();
         return transactionId;
@@ -275,7 +290,7 @@ public final class OnePaneController extends AbstractActivityController {
             // at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(
                     FolderListFragment.newInstance(folder, folder.childFoldersListUri),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, null);
             return;
         }
         if (mViewMode.getMode() == ViewMode.FOLDER_LIST && folder != null

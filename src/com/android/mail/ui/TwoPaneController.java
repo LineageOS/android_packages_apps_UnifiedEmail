@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.database.Cursor;
 import android.net.Uri;
@@ -185,6 +186,10 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public void onViewModeChanged(int newMode) {
         super.onViewModeChanged(newMode);
+        if (newMode != ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
+            // Clear the wait fragment
+            hideWaitForInitialization();
+        }
         if (newMode != ViewMode.CONVERSATION) {
             // Clear this flag if the user jumps out of conversation mode
             // before a load completes.
@@ -221,6 +226,30 @@ public final class TwoPaneController extends AbstractActivityController {
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.replace(R.id.conversation_pane, convFragment);
         fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void showWaitForInitialization() {
+        super.showWaitForInitialization();
+
+        Fragment waitFragment = WaitFragment.newInstance(mAccount);
+        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragmentTransaction.replace(R.id.two_pane_activity, waitFragment, WAIT_FRAGMENT_TAG);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void hideWaitForInitialization() {
+        final FragmentManager manager = mActivity.getFragmentManager();
+        final WaitFragment waitFragment =
+                (WaitFragment)manager.findFragmentByTag(WAIT_FRAGMENT_TAG);
+        if (waitFragment != null) {
+            FragmentTransaction fragmentTransaction =
+                    mActivity.getFragmentManager().beginTransaction();
+            fragmentTransaction.remove(waitFragment);
+            fragmentTransaction.commitAllowingStateLoss();
+        }
     }
 
     /**

@@ -16,6 +16,7 @@
 
 package com.android.mail.providers;
 
+import com.android.mail.providers.UIProvider.SyncStatus;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -347,6 +348,10 @@ public class Account extends android.accounts.Account implements Parcelable {
 
     public boolean supportsCapability(int capability) {
         return (capabilities & capability) != 0;
+    }
+
+    public boolean isAccountIntialized() {
+        return (syncStatus & SyncStatus.INITIAL_SYNC_NEEDED) != SyncStatus.INITIAL_SYNC_NEEDED;
     }
 
     @Override

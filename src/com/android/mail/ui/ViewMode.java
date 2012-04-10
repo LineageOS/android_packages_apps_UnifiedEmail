@@ -62,6 +62,10 @@ public class ViewMode {
      */
     public static final int SEARCH_RESULTS_CONVERSATION = 5;
     /**
+     * Mode when showing the "waiting for sync" message.
+     */
+    public static final int WAITING_FOR_ACCOUNT_INITIALIZATION = 6;
+    /**
      * Uncertain mode. The mode has not been initialized.
      */
     public static final int UNKNOWN = 0;
@@ -142,6 +146,15 @@ public class ViewMode {
      */
     public boolean enterSearchResultsConversationMode() {
         return setModeInternal(SEARCH_RESULTS_CONVERSATION);
+    }
+
+    /**
+     * Requests a transition of the mode to show the "waiting for sync" messages
+     *
+     * @return Whether or not a change occurred.
+     */
+    public boolean enterWaitingForInitializationMode() {
+        return setModeInternal(WAITING_FOR_ACCOUNT_INITIALIZATION);
     }
 
     /**

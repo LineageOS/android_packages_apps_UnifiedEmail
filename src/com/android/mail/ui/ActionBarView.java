@@ -156,7 +156,9 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 // 4: SEARCH_RESULTS_LIST
                 R.menu.conversation_list_search_results_actions,
                 // 5: SEARCH_RESULTS_CONVERSATION
-                R.menu.conversation_search_results_actions
+                R.menu.conversation_search_results_actions,
+                // 6: WAITING_FOR_ACCOUNT_INITIALIZATION
+                R.menu.wait_mode_actions
         };
         return modeMenu[mMode];
     }
