@@ -62,7 +62,6 @@ import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
@@ -72,7 +71,6 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -1394,6 +1392,13 @@ public abstract class AbstractActivityController implements ActivityController, 
         } else {
             Toast.makeText(mActivity.getActivityContext(), mActivity.getActivityContext()
                     .getString(R.string.search_unsupported), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void exitSearchMode() {
+        if (mViewMode.getMode() == ViewMode.SEARCH_RESULTS_LIST) {
+            mActivity.finish();
         }
     }
 

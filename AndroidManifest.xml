@@ -41,6 +41,7 @@
         <activity
             android:label="@string/app_name"
             android:name=".ui.MailActivity"
+            android:launchMode="singleTop"
             android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />

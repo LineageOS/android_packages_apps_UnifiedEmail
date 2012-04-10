@@ -53,7 +53,8 @@ import com.android.mail.utils.Utils;
  * TODO(viki): Include ConversationSubjectDisplayer here as well.
  */
 public final class ActionBarView extends LinearLayout implements OnNavigationListener,
-        ViewMode.ModeChangeListener, OnQueryTextListener, OnSuggestionListener {
+        ViewMode.ModeChangeListener, OnQueryTextListener, OnSuggestionListener,
+        MenuItem.OnActionExpandListener {
     private ActionBar mActionBar;
     private RestrictedActivity mActivity;
     private ActivityController mController;
@@ -107,7 +108,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     }
 
     /**
-     * Collapses the search action view.
+     * Close the search view if it is expanded.
      */
     public void collapseSearch() {
         if (mSearch != null) {
@@ -123,6 +124,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         mSearch = menu.findItem(R.id.search);
         if (mSearch != null) {
             mSearchWidget = (SearchView) mSearch.getActionView();
+            mSearch.setOnActionExpandListener(this);
             SearchManager searchManager = (SearchManager) mActivity.getActivityContext()
                     .getSystemService(Context.SEARCH_SERVICE);
             if (searchManager != null && mSearchWidget != null) {
@@ -130,6 +132,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 mSearchWidget.setSearchableInfo(info);
                 mSearchWidget.setOnQueryTextListener(this);
                 mSearchWidget.setOnSuggestionListener(this);
+                mSearchWidget.setIconifiedByDefault(true);
             }
         }
         mHelpItem = menu.findItem(R.id.help_info_menu_item);
@@ -458,5 +461,25 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      */
     public void onFolderUpdated(Folder folder) {
         mSpinner.onFolderUpdated(folder);
+    }
+
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem item) {
+        // Do nothing. Required as part of the interface, we ar only interested in
+        // onMenuItemActionCollapse(MenuItem).
+        // Have to return true here. Unlike other callbacks, the return value here is whether
+        // we want to suppress the action (rather than consume the action). We don't want to
+        // suppress the action.
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+        // When the action menu is collapsed, we have performed a search, pop the search fragment.
+        mController.exitSearchMode();
+        // Have to return true here. Unlike other callbacks, the return value here is whether
+        // we want to suppress the action (rather than consume the action). We don't want to
+        // suppress the action.
+        return true;
     }
 }
