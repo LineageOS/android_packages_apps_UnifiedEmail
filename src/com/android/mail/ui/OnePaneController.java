@@ -265,6 +265,7 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mActivity.finish();
         }
+        mUndoBarView.hide(false);
         return true;
     }
 
