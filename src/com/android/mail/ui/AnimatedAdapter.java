@@ -24,7 +24,6 @@ import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.android.mail.browse.ConversationCursor;
@@ -154,8 +153,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * @param conversations
      * @param listener
      */
-    public void delete(Collection<Conversation> conversations,
-            ActionCompleteListener listener) {
+    public void delete(Collection<Conversation> conversations, ActionCompleteListener listener) {
         // Animate out the positions.
         // Call when all the animations are complete.
         final ArrayList<Integer> positions = new ArrayList<Integer>();
