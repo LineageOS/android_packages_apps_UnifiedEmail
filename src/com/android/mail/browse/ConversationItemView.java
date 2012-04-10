@@ -549,7 +549,7 @@ public class ConversationItemView extends View {
         createSubjectSpans(isUnread);
 
         // Parse senders fragments.
-        mCoordinates.sendersView.parseSendersFragments(mHeader, isUnread, mMode);
+        mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode);
 
         pauseTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
         pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);

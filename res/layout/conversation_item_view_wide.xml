@@ -43,7 +43,7 @@
         android:textSize="@dimen/wide_senders_font_size"
         android:layout_gravity="center_vertical"
         android:maxLines="2"
-        android:layout_marginTop="@dimen/wide_senders_margin_top"  />
+        android:layout_marginTop="@dimen/wide_senders_margin_top" />
     <TextView
         android:id="@+id/subject"
         android:layout_width="0dip"
