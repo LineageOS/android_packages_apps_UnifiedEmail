@@ -418,11 +418,6 @@ public final class ConversationViewFragment extends Fragment implements
         return (int) (heightPx / mDensity);
     }
 
-    public void onTouchEvent(MotionEvent event) {
-        // TODO: (mindyp) when there is an undo bar, check for event !in undo bar
-        // if its not in undo bar, dismiss the undo bar.
-    }
-
     // BEGIN conversation header callbacks
     @Override
     public void onFoldersClicked() {

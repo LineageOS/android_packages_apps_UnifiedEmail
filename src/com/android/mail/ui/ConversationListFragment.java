@@ -56,8 +56,7 @@ import java.util.Collection;
  * The conversation list UI component.
  */
 public final class ConversationListFragment extends ListFragment implements
-        OnItemLongClickListener, ModeChangeListener, UndoBarView.OnUndoCancelListener,
-        UndoBarView.UndoListener, SwipeCompleteListener {
+        OnItemLongClickListener, ModeChangeListener, SwipeCompleteListener {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     // Key used to keep track of the scroll state of the list.
@@ -187,8 +186,6 @@ public final class ConversationListFragment extends ListFragment implements
         mSearchStatusTextView = (TextView) mActivity.findViewById(R.id.search_status_text_view);
         mSearchResultCountTextView = (TextView) mActivity.findViewById(
                 R.id.search_result_count_view);
-        mUndoView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
-        mUndoView.setOnCancelListener(this);
     }
 
     private boolean isSearchResult() {
@@ -382,17 +379,6 @@ public final class ConversationListFragment extends ListFragment implements
         mHandler.removeCallbacks(mUpdateTimestampsRunnable);
     }
 
-    public void onTouchEvent(MotionEvent event) {
-        if (!mUndoView.isEventInUndo(event)) {
-            mUndoView.doHide();
-        }
-    }
-
-    @Override
-    public void onUndoCancel() {
-        mUndoView.hide(false);
-    }
-
     @Override
     public void onViewModeChanged(int newMode) {
         // Change the divider based on view mode.
@@ -428,17 +414,6 @@ public final class ConversationListFragment extends ListFragment implements
         conv.position = position;
         mCallbacks.onConversationSelected(conv);
         getListView().setItemChecked(position, true);
-    }
-
-    @Override
-    public void onUndoAvailable(UndoOperation op) {
-        if (op != null && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
-            if (mUndoView == null) {
-                mUndoView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
-            }
-            mUndoView.setOnCancelListener(mListAdapter);
-            mUndoView.show(true, mActivity.getActivityContext(), op, mAccount, mListAdapter);
-        }
     }
 
     private ConversationCursor getConversationListCursor() {
@@ -527,7 +502,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (!mActivity.getSelectedSet().isEmpty()) {
             mActivity.getSelectedSet().clear();
         }
-        onUndoAvailable(new UndoOperation(conversations.size(), mSwipeAction));
+        mActivity.onUndoAvailable(new UndoOperation(conversations.size(), mSwipeAction));
     }
 
     public void onCursorUpdated() {

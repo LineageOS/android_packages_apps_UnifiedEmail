@@ -29,5 +29,4 @@
     <!-- overlay views go here -->
 
     <!-- TODO: scroll indicators view goes on top of all other layers (or the parent draws it) -->
-
 </com.android.mail.browse.ConversationContainer>

@@ -45,7 +45,7 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
         ModeChangeListener, ConversationListCallbacks, FolderChangeCommitListener,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
         ActionCompleteListener, ConversationSetObserver,
-        FolderListFragment.FolderListSelectionListener, HelpCallback {
+        FolderListFragment.FolderListSelectionListener, HelpCallback, UndoBarView.UndoListener {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
@@ -276,4 +276,6 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
      * Handles dropping conversations to a folder.
      */
     void handleDrop(DragEvent event, Folder folder);
+
+    void onUndoCancel();
 }

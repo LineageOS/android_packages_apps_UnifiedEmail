@@ -316,4 +316,14 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public void handleDrop(DragEvent event, Folder folder) {
         // Do nothing.
     }
+
+    @Override
+    public void onUndoCancel() {
+        // Do nothing.
+    }
+
+    @Override
+    public void onUndoAvailable(UndoOperation undoOp) {
+        // Do nothing.
+    }
 }

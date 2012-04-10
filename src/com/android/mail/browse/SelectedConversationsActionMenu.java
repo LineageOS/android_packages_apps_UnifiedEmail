@@ -517,7 +517,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             // This is where we actually delete.
             final Collection<Conversation> conversations = mSelectionSet.values();
             mActionCompleteListener.onActionComplete();
-            mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), mAction));
+            mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), mAction, true));
             switch (mAction) {
                 case R.id.archive:
                     Conversation.archive(mContext, conversations);

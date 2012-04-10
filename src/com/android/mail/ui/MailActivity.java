@@ -287,4 +287,14 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void handleDrop(DragEvent event, Folder folder) {
         mController.handleDrop(event, folder);
     }
+
+    @Override
+    public void onUndoCancel() {
+        mController.onUndoCancel();
+    }
+
+    @Override
+    public void onUndoAvailable(UndoOperation undoOp) {
+        mController.onUndoAvailable(undoOp);
+    }
 }

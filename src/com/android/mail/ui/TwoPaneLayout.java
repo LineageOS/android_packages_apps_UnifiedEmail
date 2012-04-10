@@ -21,7 +21,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -40,12 +39,11 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.android.mail.R;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -70,7 +68,7 @@ import java.util.ArrayList;
  *
  * In the Gmail source code, this was called TriStateSplitLayout
  */
-final class TwoPaneLayout extends LinearLayout
+final class TwoPaneLayout extends RelativeLayout
         implements ModeChangeListener, OnTouchListener {
 
     /**

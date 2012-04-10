@@ -37,6 +37,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -400,7 +401,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 }
             }
             TwoPaneController.this.onActionComplete();
-            mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
+            onUndoAvailable(new UndoOperation(1, mAction));
             if (next != -1) {
                 mConversationListFragment.viewConversation(next);
                 mCurrentConversation.position = updatedPosition;
@@ -420,5 +421,40 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     protected DestructiveActionListener getFolderDestructiveActionListener() {
         return mFolderChangeListener;
+    }
+
+    @Override
+    public void onUndoAvailable(UndoOperation op) {
+        int mode = mViewMode.getMode();
+        RelativeLayout.LayoutParams params;
+        switch (mode) {
+            case ViewMode.CONVERSATION_LIST:
+                params = (RelativeLayout.LayoutParams) mUndoBarView.getLayoutParams();
+                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                params.width = mConversationListFragment.getListView().getWidth();
+                mUndoBarView.setLayoutParams(params);
+                mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
+                        mConversationListFragment.getAnimatedAdapter());
+                break;
+            case ViewMode.CONVERSATION:
+                if (op.mBatch) {
+                    // Show undo bar in the conversation list.
+                    params = (RelativeLayout.LayoutParams) mUndoBarView.getLayoutParams();
+                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                    params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+                    params.width = mConversationListFragment.getListView().getWidth();
+                } else {
+                    // Show undo bar in the conversation.
+                    params = (RelativeLayout.LayoutParams) mUndoBarView.getLayoutParams();
+                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                    params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                    params.width = mConversationViewFragment.getView().getWidth();
+                }
+                mUndoBarView.setLayoutParams(params);
+                mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
+                        mConversationListFragment.getAnimatedAdapter());
+                break;
+        }
     }
 }

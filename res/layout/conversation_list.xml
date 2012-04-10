@@ -45,13 +45,4 @@
        android:fadingEdge="none"
        android:layout_alignParentTop="true"/>
 
-    <com.android.mail.ui.UndoBarView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:alpha="0"
-        android:id="@+id/undo_view"
-        android:layout_alignParentBottom="true">
-        <include layout="@layout/undo_bar"/>
-    </com.android.mail.ui.UndoBarView>
 </RelativeLayout>

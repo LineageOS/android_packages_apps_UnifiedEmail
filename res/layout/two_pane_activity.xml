@@ -15,70 +15,79 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<com.android.mail.ui.TwoPaneLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/two_pane_activity"
-  android:orientation="horizontal"
-  android:splitMotionEvents="true"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent" >
-
-  <FrameLayout
-    android:id="@+id/content_pane"
-    android:layout_width="@dimen/folder_list_pane_width"
-    android:layout_height="match_parent"
-    android:background="@drawable/folder_bg_holo_light"/>
-
-  <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/conversation_column_container">
-
-      <RelativeLayout
-        android:id="@+id/conversation_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:id="@+id/conversation_list_pane"
-          android:layout_alignParentTop="true" />
-
-      </RelativeLayout>
-
-  </RelativeLayout>
-
-  <FrameLayout
-    android:id="@+id/conversation_pane_container"
-    android:layout_width="0dip"
-    android:layout_height="match_parent"
-    android:visibility="gone"
-    android:background="@android:color/white">
+<com.android.mail.ui.TwoPaneLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/two_pane_activity"
+    android:orientation="horizontal"
+    android:splitMotionEvents="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
     <FrameLayout
-        android:id="@+id/conversation_pane"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <View
-      android:id="@+id/conversation_overlay"
-      android:background="@android:color/transparent"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/conversation_error"
-        android:layout_width="match_parent"
+        android:id="@+id/content_pane"
+        android:layout_width="@dimen/folder_list_pane_width"
         android:layout_height="match_parent"
-        android:text="@string/no_conversations"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:visibility="gone"
-        android:background="@android:color/white"/>
+        android:background="@drawable/folder_bg_holo_light"/>
 
-  </FrameLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/conversation_column_container"
+        android:layout_toRightOf="@id/content_pane">
+
+        <RelativeLayout
+            android:id="@+id/conversation_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/conversation_list_pane"
+                android:layout_alignParentTop="true" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/conversation_pane_container"
+        android:layout_width="0dip"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@android:color/white"
+        android:layout_toRightOf="@id/conversation_column_container">
+
+        <FrameLayout
+            android:id="@+id/conversation_pane"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:id="@+id/conversation_overlay"
+            android:background="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/conversation_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/no_conversations"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="gone"
+            android:background="@android:color/white"/>
+
+    </FrameLayout>
+    <com.android.mail.ui.UndoBarView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:alpha="0"
+        android:id="@+id/undo_view"
+        android:layout_gravity="bottom">
+        <include layout="@layout/undo_bar"/>
+    </com.android.mail.ui.UndoBarView>
 </com.android.mail.ui.TwoPaneLayout>
 

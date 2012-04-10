@@ -100,7 +100,9 @@ public class UndoBarView extends FrameLayout {
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate the set of
                     // commands to undo
                     Conversation.undo(context, account.undoUri);
-                    listAdapter.setUndo(true);
+                    if (listAdapter != null) {
+                        listAdapter.setUndo(true);
+                    }
                 }
                 hide(true);
             }

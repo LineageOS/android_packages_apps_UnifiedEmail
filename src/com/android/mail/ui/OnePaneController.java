@@ -34,7 +34,6 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -417,12 +416,13 @@ public final class OnePaneController extends AbstractActivityController {
             } else if (mode == ViewMode.CONVERSATION_LIST
                     && mAction != R.id.inside_conversation_unread) {
                 OnePaneController.this.onActionComplete();
-                mConversationListFragment.onUndoAvailable(new UndoOperation(1, mAction));
+                onUndoAvailable(new UndoOperation(1, mAction));
             }
             performConversationAction(single);
             if (next != null) {
                 if (mode == ViewMode.CONVERSATION) {
                     showConversation(next);
+                    onUndoAvailable(new UndoOperation(1, mAction));
                 }
             } else {
                 // Don't have the next conversation, go back to conversation list.
@@ -495,5 +495,22 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     protected DestructiveActionListener getFolderDestructiveActionListener() {
         return mFolderChangeListener;
+    }
+
+    @Override
+    public void onUndoAvailable(UndoOperation op) {
+        if (op != null && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
+            int mode = mViewMode.getMode();
+            switch (mode) {
+                case ViewMode.CONVERSATION:
+                    mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
+                            null);
+                    break;
+                case ViewMode.CONVERSATION_LIST:
+                    mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
+                            mConversationListFragment.getAnimatedAdapter());
+                    break;
+            }
+        }
     }
 }

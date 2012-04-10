@@ -62,6 +62,7 @@ import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
@@ -141,6 +142,7 @@ public abstract class AbstractActivityController implements ActivityController, 
      * Action menu associated with the selected set.
      */
     SelectedConversationsActionMenu mCabActionMenu;
+    protected UndoBarView mUndoBarView;
 
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     /** Constants used to differentiate between the types of loaders. */
@@ -482,6 +484,7 @@ public abstract class AbstractActivityController implements ActivityController, 
         mViewMode.addListener(mActionBarView);
 
         restoreState(savedState);
+        mUndoBarView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
         return true;
     }
 
@@ -1193,22 +1196,6 @@ public abstract class AbstractActivityController implements ActivityController, 
         }
     }
 
-    @Override
-    public void onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            int mode = mViewMode.getMode();
-            if (mode == ViewMode.CONVERSATION_LIST) {
-                if (mConversationListFragment != null) {
-                    mConversationListFragment.onTouchEvent(event);
-                }
-            } else if (mode == ViewMode.CONVERSATION) {
-                if (mConversationViewFragment != null) {
-                    mConversationViewFragment.onTouchEvent(event);
-                }
-            }
-        }
-    }
-
     protected abstract class DestructiveActionListener implements ActionCompleteListener {
         protected final int mAction;
 
@@ -1359,7 +1346,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
         mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set,
-                mConversationListFragment.getAnimatedAdapter(), this, mConversationListFragment,
+                mConversationListFragment.getAnimatedAdapter(), this, this,
                 mAccount, mFolder, (SwipeableListView) mConversationListFragment.getListView());
         enableCabMode();
     }
@@ -1456,10 +1443,24 @@ public abstract class AbstractActivityController implements ActivityController, 
                         Conversation.updateString(mContext, conversations,
                                 ConversationColumns.RAW_FOLDERS,
                                 Folder.getSerializedFolderString(mFolder, changes));
-                        mConversationListFragment.onUndoAvailable(new UndoOperation(conversations
+                        onUndoAvailable(new UndoOperation(conversations
                                 .size(), R.id.change_folder));
                         mSelectedSet.clear();
                     }
                 });
+    }
+
+    @Override
+    public void onUndoCancel() {
+        mUndoBarView.hide(false);
+    }
+
+    @Override
+    public void onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (mUndoBarView != null && !mUndoBarView.isEventInUndo(event)) {
+                mUndoBarView.hide(true);
+            }
+        }
     }
 }
