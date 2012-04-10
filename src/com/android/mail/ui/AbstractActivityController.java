@@ -943,14 +943,17 @@ public abstract class AbstractActivityController implements ActivityController, 
                 break;
             case LOADER_ACCOUNT_INBOX:
                 Settings settings = getSettings();
-                Uri inboxUri;
+                final Uri inboxUri;
                 if (settings != null) {
                     inboxUri = settings.defaultInbox;
                 } else {
                     inboxUri = mAccount.folderListUri;
                 }
-                return new CursorLoader(mContext, inboxUri, UIProvider.FOLDERS_PROJECTION, null,
-                        null, null);
+                if (inboxUri != null) {
+                    return new CursorLoader(mContext, inboxUri, UIProvider.FOLDERS_PROJECTION, null,
+                            null, null);
+                }
+                break;
             case LOADER_SEARCH:
                 return Folder.forSearchResults(mAccount,
                         args.getString(ConversationListContext.EXTRA_SEARCH_QUERY),
