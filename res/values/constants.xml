@@ -44,7 +44,4 @@
     <integer name="swipeScrollSlop">2</integer>
    <!-- <integer name="widget_refresh_delay_ms">4000</integer>-->
     <integer name="widget_folder_refresh_delay_ms">500</integer>
-    <item type="id" name="folder"/>
-    <item type="id" name="personal_level"/>
-    <item type="id" name="reply_state" />
 </resources>

@@ -534,6 +534,9 @@ public abstract class AbstractActivityController implements ActivityController, 
             case R.id.feedback_menu_item:
                 Utils.sendFeedback(mActivity.getActivityContext(), mAccount);
                 break;
+            case R.id.manage_folders_item:
+                Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
+                break;
             default:
                 handled = false;
                 break;

@@ -1372,5 +1372,10 @@ public class UIProvider {
          * modify settings
          */
         public static final String EXTRA_FOLDER = "extra_folder";
+
+        /**
+         * Boolean extra which is set true if the user wants to "manage folders"
+         */
+        public static final String EXTRA_MANAGE_FOLDERS = "extra_manage_folders";
     }
 }
