@@ -18,6 +18,7 @@ package com.android.mail.utils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.SyncStatus;
 
 import android.accounts.AccountManagerCallback;
 
@@ -80,9 +81,9 @@ public class AccountUtils {
             if (accountsCursor != null) {
                 while (accountsCursor.moveToNext()) {
                     account = new Account(accountsCursor);
-                    // TODO: this may need to look at the state of the account if the caller
-                    // is only interested in accounts that are syncing.
-                    accounts.add(account);
+                    if ((account.syncStatus & SyncStatus.INITIAL_SYNC_NEEDED) == 0) {
+                        accounts.add(account);
+                    }
                 }
             }
         } finally {
