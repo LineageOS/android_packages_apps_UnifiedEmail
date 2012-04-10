@@ -16,6 +16,7 @@
 package com.android.mail.widget;
 
 import com.android.mail.R;
+import com.android.mail.browse.SendersView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -82,6 +83,8 @@ public class WidgetService extends RemoteViewsService {
         private boolean mFolderInformationShown = false;
         private ContentResolver mResolver;
         private WidgetService mService;
+        private int mSenderFormatVersion;
+
         public MailFactory(Context context, Intent intent, WidgetService service) {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(
@@ -197,12 +200,20 @@ public class WidgetService extends RemoteViewsService {
                 }
 
                 Conversation conversation = new Conversation(mConversationCursor);
+                SendersView.SendersInfo sendersInfo = new SendersView.SendersInfo(
+                        conversation.senders);
+                mSenderFormatVersion = sendersInfo.version;
+                String sendersString = sendersInfo.text;
                 // Split the senders and status from the instructions.
                 SpannableStringBuilder senderBuilder = new SpannableStringBuilder();
                 SpannableStringBuilder statusBuilder = new SpannableStringBuilder();
-                senderBuilder.append(conversation.senders != null ? conversation.senders : "");
-                // TODO: (mindyp) create stylized sender text.
 
+                if (mSenderFormatVersion == SendersView.MERGED_FORMATTING) {
+                    Utils.getStyledSenderSnippet(mContext, sendersString, senderBuilder,
+                            statusBuilder, MAX_SENDERS_LENGTH, false, false, false);
+                } else {
+                    senderBuilder.append(sendersString);
+                }
                 // Get styled date.
                 CharSequence date = DateUtils.getRelativeTimeSpanString(
                         mContext, conversation.dateMs);

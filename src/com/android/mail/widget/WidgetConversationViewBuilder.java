@@ -32,8 +32,6 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import java.util.Map;
-
 public class WidgetConversationViewBuilder {
     // Static font sizes
     private static int SENDERS_FONT_SIZE;

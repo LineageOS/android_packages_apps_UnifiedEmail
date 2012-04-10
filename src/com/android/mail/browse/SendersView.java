@@ -42,7 +42,7 @@ public class SendersView extends TextView {
     public static final int MERGED_FORMATTING = 1;
     public static String SENDERS_VERSION_SEPARATOR = "^**^";
     CharacterStyle sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
-    private Pattern SENDERS_VERSION_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
+    public static Pattern SENDERS_VERSION_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
     private int mFormatVersion = -1;
     private ForegroundColorSpan sLightTextStyle;
     private int DRAFT_TEXT_COLOR;
@@ -74,24 +74,15 @@ public class SendersView extends TextView {
             return;
         }
         Conversation conversation = header.conversation;
-        String sendersString = "";
-        String[] splits = TextUtils.split(conversation.senders, SENDERS_VERSION_SEPARATOR_PATTERN);
-        if (splits == null || splits.length < 2) {
-            mFormatVersion = DEFAULT_FORMATTING;
-            sendersString = header.conversation.senders;
-        } else {
-            mFormatVersion = Integer.parseInt(splits[0]);
-            // Format the rest of the senders string once the format version is
-            // stripped.
-            sendersString = splits[1];
-        }
+        SendersInfo info = new SendersInfo(conversation.senders);
+        mFormatVersion = info.version;
         switch (mFormatVersion) {
             case MERGED_FORMATTING:
-                formatMerged(header, sendersString, isUnread, mode);
+                formatMerged(header, info.text, isUnread, mode);
                 break;
             case DEFAULT_FORMATTING:
             default:
-                formatDefault(header, sendersString);
+                formatDefault(header, info.text);
                 break;
         }
     }
@@ -177,6 +168,27 @@ public class SendersView extends TextView {
             header.sendersText = header.sendersText.concat(statusBuilder.toString());
             header.addSenderFragment(pos, header.sendersText.length(), new ForegroundColorSpan(
                     DRAFT_TEXT_COLOR), true);
+        }
+    }
+
+    public static class SendersInfo {
+        public int version;
+        public String text;
+
+        public SendersInfo(String toParse) {
+            if (TextUtils.isEmpty(toParse)) {
+                version = 0;
+                text = "";
+            } else {
+                String[] splits = TextUtils.split(toParse, SENDERS_VERSION_SEPARATOR_PATTERN);
+                if (splits == null || splits.length < 2) {
+                    version = SendersView.DEFAULT_FORMATTING;
+                    text = toParse;
+                } else {
+                    version = Integer.parseInt(splits[0]);
+                    text = splits[1];
+                }
+            }
         }
     }
 }
