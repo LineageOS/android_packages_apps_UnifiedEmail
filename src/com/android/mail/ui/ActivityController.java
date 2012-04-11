@@ -51,32 +51,6 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     // as their counterpart in the Activity lifecycle.
 
     /**
-     * Attach the conversation list fragment to the appropriate view.
-     * @param conversationListFragment
-     */
-    // TODO(viki): Why does the activity controller have such a deep knowledge of the conversation
-    // list fragment? Calls to the fragment show up in handleLoadFinished, isConversationListMode,
-    // onDestructiveCommand, restoreState, showConversationAtCursor, handleKeyDown, etc.
-    // Instead, it might be beneficial to have a layout controller a la TriStateSplitLayout which
-    // exists both for one pane and two pane modes. The layout controller should know about the
-    // fragment, and send appropriate calls to it. Such a scheme will allow some separation of
-    // control and view logic, which is spread between the activity controller and the fragment
-    // currently.
-    void attachConversationList(ConversationListFragment conversationListFragment);
-
-    /**
-     * Attach the folder list fragment to the appropriate view.
-     * @param folderListFragment
-     */
-    void attachFolderList(FolderListFragment folderListFragment);
-
-    /**
-     * Attach the conversation view fragment to the appropriate view.
-     * @param conversationViewFragment
-     */
-    void attachConversationView(ConversationViewFragment conversationViewFragment);
-
-    /**
      * Returns the current account.
      */
     Account getCurrentAccount();

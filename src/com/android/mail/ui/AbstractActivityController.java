@@ -22,6 +22,7 @@ import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
@@ -104,7 +105,15 @@ public abstract class AbstractActivityController implements ActivityController,
     // Batch conversations stored in the Bundle using this key.
     private static final String SAVED_CONVERSATIONS = "saved-conversations";
 
-    protected static final String WAIT_FRAGMENT_TAG = "wait-fragment";
+    /** Tag  used when loading a wait fragment */
+    protected static final String TAG_WAIT = "wait-fragment";
+    /** Tag used when loading a conversation list fragment. */
+    protected static final String TAG_CONVERSATION_LIST = "tag-conversation-list";
+    /** Tag used when loading a conversation fragment. */
+    protected static final String TAG_CONVERSATION = "tag-conversation";
+    /** Tag used when loading a folder list fragment. */
+    protected static final String TAG_FOLDER_LIST = "tag-folder-list";
+
     private static final long CONVERSATION_LIST_THROTTLE_MS = 4000L;
 
     /** Are we on a tablet device or not. */
@@ -115,6 +124,7 @@ public abstract class AbstractActivityController implements ActivityController,
     protected ActionBarView mActionBarView;
     protected final RestrictedActivity mActivity;
     protected final Context mContext;
+    private final FragmentManager mFragmentManager;
     protected final RecentFolderList mRecentFolderList;
     protected ConversationListContext mConvListContext;
     protected Conversation mCurrentConversation;
@@ -123,7 +133,6 @@ public abstract class AbstractActivityController implements ActivityController,
     private SuppressNotificationReceiver mNewEmailReceiver = null;
 
     protected Handler mHandler = new Handler();
-    protected ConversationListFragment mConversationListFragment;
     /**
      * The current mode of the application. All changes in mode are initiated by
      * the activity controller. View mode changes are propagated to classes that
@@ -131,8 +140,6 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     protected final ViewMode mViewMode;
     protected ContentResolver mResolver;
-    protected FolderListFragment mFolderListFragment;
-    protected ConversationViewFragment mConversationViewFragment;
     protected boolean isLoaderInitialized = false;
     private AsyncRefreshTask mAsyncRefreshTask;
 
@@ -178,6 +185,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
+        mFragmentManager = mActivity.getFragmentManager();
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
         IS_TABLET_DEVICE = Utils.useTabletUI(mContext);
@@ -188,36 +196,6 @@ public abstract class AbstractActivityController implements ActivityController,
 
         mFolderItemUpdateDelayMs =
                 mContext.getResources().getInteger(R.integer.folder_item_refresh_delay_ms);
-    }
-
-    @Override
-    public synchronized void attachConversationList(ConversationListFragment fragment) {
-        // If there is an existing fragment, unregister it
-        if (mConversationListFragment != null) {
-            mViewMode.removeListener(mConversationListFragment);
-        }
-        mConversationListFragment = fragment;
-        // If the current fragment is non-null, add it as a listener.
-        if (fragment != null) {
-            mViewMode.addListener(mConversationListFragment);
-        }
-    }
-
-    @Override
-    public synchronized void attachFolderList(FolderListFragment fragment) {
-        // If there is an existing fragment, unregister it
-        if (mFolderListFragment != null) {
-            mViewMode.removeListener(mFolderListFragment);
-        }
-        mFolderListFragment = fragment;
-        if (fragment != null) {
-            mViewMode.addListener(mFolderListFragment);
-        }
-    }
-
-    @Override
-    public void attachConversationView(ConversationViewFragment conversationViewFragment) {
-        mConversationViewFragment = conversationViewFragment;
     }
 
     @Override
@@ -261,6 +239,36 @@ public abstract class AbstractActivityController implements ActivityController,
         return mConversationListCursor;
     }
 
+    /**
+     * Get the conversation list fragment for this activity. If the conversation list fragment
+     * is not attached, this method returns null
+     * @return
+     */
+    protected ConversationListFragment getConversationListFragment() {
+        final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION_LIST);
+        return (ConversationListFragment) fragment;
+    }
+
+    /**
+     * Returns the conversation view fragment attached with this activity. If no such fragment
+     * is attached, this method returns null.
+     * @return
+     */
+    protected ConversationViewFragment getConversationViewFragment() {
+        final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION);
+        return (ConversationViewFragment) fragment;
+    }
+
+    /**
+     * Returns the folder list fragment attached with this activity. If no such fragment is attached
+     * this method returns null.
+     * @return
+     */
+    protected FolderListFragment getFolderListFragment() {
+        final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_FOLDER_LIST);
+        return (FolderListFragment) fragment;
+    }
+
     @Override
     public void initConversationListCursor() {
         mActivity.getLoaderManager().restartLoader(LOADER_CONVERSATION_LIST, Bundle.EMPTY,
@@ -278,14 +286,15 @@ public abstract class AbstractActivityController implements ActivityController,
 
                         // Register the AbstractActivityController as a listener to changes in
                         // data in the cursor.
-                        if (mConversationListFragment != null) {
-                            mConversationListFragment.onCursorUpdated();
+                        final ConversationListFragment convList = getConversationListFragment();
+                        if (convList != null) {
+                            convList.onCursorUpdated();
                             if (!mConversationListenerAdded) {
                                 // TODO(mindyp): when we move to the cursor loader, we need
                                 // to add/remove the listener when we create/ destroy loaders.
                                 mConversationListCursor
                                         .addListener(AbstractActivityController.this);
-                                mConversationListFragment.getListView().setOnScrollListener(
+                                convList.getListView().setOnScrollListener(
                                         AbstractActivityController.this);
                                 mConversationListenerAdded = true;
                             }
@@ -294,8 +303,10 @@ public abstract class AbstractActivityController implements ActivityController,
                         if (shouldShowFirstConversation()) {
                             if (mConversationListCursor.getCount() > 0) {
                                 mConversationListCursor.moveToPosition(0);
-                                mConversationListFragment.getListView().setItemChecked(0, true);
-                                Conversation conv = new Conversation(mConversationListCursor);
+                                if (convList != null) {
+                                    convList.getListView().setItemChecked(0, true);
+                                }
+                                final Conversation conv = new Conversation(mConversationListCursor);
                                 conv.position = 0;
                                 onConversationSelected(conv);
                             }
@@ -304,10 +315,11 @@ public abstract class AbstractActivityController implements ActivityController,
 
                     @Override
                     public void onLoaderReset(Loader<ConversationCursor> loader) {
-                        if (mConversationListFragment == null) {
+                        final ConversationListFragment convList = getConversationListFragment();
+                        if (convList == null) {
                             return;
                         }
-                        mConversationListFragment.onCursorUpdated();
+                        convList.onCursorUpdated();
                     }
 
                     @Override
@@ -622,8 +634,9 @@ public abstract class AbstractActivityController implements ActivityController,
     protected void updateCurrentConversation(String columnName, boolean value) {
         Conversation.updateBoolean(mContext, ImmutableList.of(mCurrentConversation), columnName,
                 value);
-        if (mConversationListFragment != null) {
-            mConversationListFragment.requestListRefresh();
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            convList.requestListRefresh();
         }
     }
 
@@ -634,16 +647,18 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     protected void updateCurrentConversation(String columnName, int value) {
         Conversation.updateInt(mContext, ImmutableList.of(mCurrentConversation), columnName, value);
-        if (mConversationListFragment != null) {
-            mConversationListFragment.requestListRefresh();
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            convList.requestListRefresh();
         }
     }
 
     protected void updateCurrentConversation(String columnName, String value) {
         Conversation.updateString(mContext, ImmutableList.of(mCurrentConversation), columnName,
                 value);
-        if (mConversationListFragment != null) {
-            mConversationListFragment.requestListRefresh();
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            convList.requestListRefresh();
         }
     }
 
@@ -952,7 +967,7 @@ public abstract class AbstractActivityController implements ActivityController,
     public void updateWaitMode() {
         final FragmentManager manager = mActivity.getFragmentManager();
         final WaitFragment waitFragment =
-                (WaitFragment)manager.findFragmentByTag(WAIT_FRAGMENT_TAG);
+                (WaitFragment)manager.findFragmentByTag(TAG_WAIT);
         if (waitFragment != null) {
             waitFragment.updateAccount(mAccount);
         }
@@ -962,7 +977,7 @@ public abstract class AbstractActivityController implements ActivityController,
     public boolean inWaitMode() {
         final FragmentManager manager = mActivity.getFragmentManager();
         final WaitFragment waitFragment =
-                (WaitFragment)manager.findFragmentByTag(WAIT_FRAGMENT_TAG);
+                (WaitFragment)manager.findFragmentByTag(TAG_WAIT);
         if (waitFragment != null) {
             final Account fragmentAccount = waitFragment.getAccount();
             return fragmentAccount.uri.equals(mAccount.uri) &&
@@ -1271,8 +1286,9 @@ public abstract class AbstractActivityController implements ActivityController,
                     mActionBarView.onRefreshStopped(folder.lastSyncResult);
                 }
                 mActionBarView.onFolderUpdated(folder);
-                if (mConversationListFragment != null) {
-                    mConversationListFragment.onFolderUpdated(folder);
+                final ConversationListFragment convList = getConversationListFragment();
+                if (convList != null) {
+                    convList.onFolderUpdated(folder);
                 }
                 LogUtils.d(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
                 break;
@@ -1391,8 +1407,11 @@ public abstract class AbstractActivityController implements ActivityController,
         if (destructiveChange) {
             mCurrentConversation.localDeleteOnUpdate = true;
             requestDelete(listener);
-        } else if (mConversationListFragment != null) {
-            mConversationListFragment.requestListRefresh();
+        } else {
+            final ConversationListFragment convList = getConversationListFragment();
+            if (convList != null) {
+                convList.requestListRefresh();
+            }
         }
     }
 
@@ -1435,8 +1454,9 @@ public abstract class AbstractActivityController implements ActivityController,
             mSelectedSet.delete(deletedRows);
         }
         // If we have any deletions from the server, animate them away
-        if (!deletedRows.isEmpty() && mConversationListFragment != null) {
-            final AnimatedAdapter adapter = mConversationListFragment.getAnimatedAdapter();
+        final ConversationListFragment convList = getConversationListFragment();
+        if (!deletedRows.isEmpty() && convList != null) {
+            final AnimatedAdapter adapter = convList.getAnimatedAdapter();
             if (adapter != null) {
                 adapter.delete(deletedRows, this);
             }
@@ -1454,8 +1474,9 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     private void refreshAdapter() {
-        if (mConversationListFragment != null) {
-            AnimatedAdapter adapter = mConversationListFragment.getAnimatedAdapter();
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            final AnimatedAdapter adapter = convList.getAnimatedAdapter();
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
             }
@@ -1522,9 +1543,13 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onSetPopulated(ConversationSelectionSet set) {
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList == null) {
+            return;
+        }
         mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set,
-                mConversationListFragment.getAnimatedAdapter(), this, this,
-                mAccount, mFolder, (SwipeableListView) mConversationListFragment.getListView());
+                convList.getAnimatedAdapter(), this, this,
+                mAccount, mFolder, (SwipeableListView) convList.getListView());
         enableCabMode();
     }
 
@@ -1615,7 +1640,11 @@ public abstract class AbstractActivityController implements ActivityController,
             conversationPositions.add(position);
         }
         final Collection<Conversation> conversations = mSelectedSet.values();
-        mConversationListFragment.requestDelete(conversations,
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList == null) {
+            return;
+        }
+        convList.requestDelete(conversations,
                 new ActionCompleteListener() {
                     @Override
                     public void onActionComplete() {

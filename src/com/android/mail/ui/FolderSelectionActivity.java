@@ -231,10 +231,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public void attachConversationList(ConversationListFragment conversationList) {
-    }
-
-    @Override
     public ViewMode getViewMode() {
         return null;
     }
@@ -250,14 +246,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     @Override
     public ConversationListCallbacks getListHandler() {
         return null;
-    }
-
-    @Override
-    public void attachFolderList(FolderListFragment folderListFragment) {
-    }
-
-    @Override
-    public void attachConversationView(ConversationViewFragment conversationViewFragment) {
     }
 
     @Override

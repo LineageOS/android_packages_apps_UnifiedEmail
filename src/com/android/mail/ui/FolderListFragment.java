@@ -109,7 +109,6 @@ public final class FolderListFragment extends ListFragment implements
         if (activity instanceof FolderItemView.DropHandler) {
             mDropHandler = (FolderItemView.DropHandler) activity;
         }
-        mActivity.attachFolderList(this);
         mListener = mActivity.getFolderListSelectionListener();
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
@@ -150,9 +149,6 @@ public final class FolderListFragment extends ListFragment implements
     public void onDestroyView() {
         // Clear the adapter.
         setListAdapter(null);
-
-        mActivity.attachFolderList(null);
-
         super.onDestroyView();
     }
 

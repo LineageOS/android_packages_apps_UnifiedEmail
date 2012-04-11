@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.database.Cursor;
 import android.net.Uri;
@@ -47,6 +46,7 @@ import java.util.Collections;
 
 // Called OnePaneActivityController in Gmail.
 public final class OnePaneController extends AbstractActivityController {
+    // Used for saving transaction IDs in bundles
     private static final String FOLDER_LIST_TRANSACTION_KEY = "folder-list-transaction";
     private static final String CONVERSATION_LIST_TRANSACTION_KEY = "conversation-list-transaction";
     private static final String CONVERSATION_TRANSACTION_KEY = "conversation-transaction";
@@ -59,7 +59,6 @@ public final class OnePaneController extends AbstractActivityController {
     private Folder mInbox;
     /** Whether a conversation list for this account has ever been shown.*/
     private boolean mConversationListNeverShown = true;
-
 
     private final ActionCompleteListener mDeleteListener = new OnePaneDestructiveActionListener(
             R.id.delete);
@@ -175,8 +174,7 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             // If going to the inbox, clear the folder list transaction history.
             mInbox = listContext.folder;
-            replaceFragment(conversationListFragment,
-                    transition, null);
+            replaceFragment(conversationListFragment, transition, TAG_CONVERSATION_LIST);
             mLastFolderListTransactionId = INVALID_ID;
         }
         mConversationListVisible = true;
@@ -194,7 +192,7 @@ public final class OnePaneController extends AbstractActivityController {
         }
         mLastConversationTransactionId = replaceFragment(
                 ConversationViewFragment.newInstance(mAccount, conversation, mFolder),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, null);
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_CONVERSATION);
         mConversationListVisible = false;
     }
 
@@ -203,7 +201,7 @@ public final class OnePaneController extends AbstractActivityController {
         super.showWaitForInitialization();
 
         replaceFragment(WaitFragment.newInstance(mAccount),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, WAIT_FRAGMENT_TAG);
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT);
     }
 
     @Override
@@ -221,16 +219,25 @@ public final class OnePaneController extends AbstractActivityController {
         enableCabMode();
         mLastFolderListTransactionId = replaceFragment(
                 FolderListFragment.newInstance(null, mAccount.folderListUri),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, null);
+                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
         mConversationListVisible = false;
     }
 
+    /**
+     * Replace the content_pane with the fragment specified here. The tag is specified so that
+     * the {@link ActivityController} can look up the fragments through the
+     * {@link android.app.FragmentManager}.
+     * @param fragment
+     * @param transition
+     * @param tag
+     * @return transaction ID returned when the transition is committed.
+     */
     private int replaceFragment(Fragment fragment, int transition, String tag) {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.setTransition(transition);
         fragmentTransaction.replace(R.id.content_pane, fragment, tag);
-        int transactionId = fragmentTransaction.commitAllowingStateLoss();
+        final int transactionId = fragmentTransaction.commitAllowingStateLoss();
         resetActionBarIcon();
         return transactionId;
     }
@@ -296,7 +303,7 @@ public final class OnePaneController extends AbstractActivityController {
             // at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(
                     FolderListFragment.newInstance(folder, folder.childFoldersListUri),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, null);
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
             return;
         }
         if (mViewMode.getMode() == ViewMode.FOLDER_LIST && folder != null
@@ -448,7 +455,10 @@ public final class OnePaneController extends AbstractActivityController {
             } else {
                 // Don't have the next conversation, go back to conversation list.
                 if (mode == ViewMode.CONVERSATION_LIST) {
-                    mConversationListFragment.requestListRefresh();
+                    final ConversationListFragment convList = getConversationListFragment();
+                    if (convList != null) {
+                        convList.requestListRefresh();
+                    }
                 } else if (mode == ViewMode.CONVERSATION) {
                     final int position = mCurrentConversation.position;
                     final OnePaneDestructiveActionListener listener = this;
@@ -456,8 +466,9 @@ public final class OnePaneController extends AbstractActivityController {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (mConversationListFragment != null) {
-                                mConversationListFragment.requestDelete(position, listener);
+                            final ConversationListFragment convList = getConversationListFragment();
+                            if (convList != null) {
+                                convList.requestDelete(position, listener);
                             }
                         }
                     });
@@ -499,8 +510,9 @@ public final class OnePaneController extends AbstractActivityController {
 
                 @Override
                 public void run() {
-                    if (mConversationListFragment != null) {
-                        mConversationListFragment.requestDelete(position, listener);
+                    final ConversationListFragment convList = getConversationListFragment();
+                    if (convList != null) {
+                        convList.requestDelete(position, listener);
                     }
                 }
 
@@ -528,8 +540,11 @@ public final class OnePaneController extends AbstractActivityController {
                             null);
                     break;
                 case ViewMode.CONVERSATION_LIST:
-                    mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                            mConversationListFragment.getAnimatedAdapter());
+                    final ConversationListFragment convList = getConversationListFragment();
+                    if (convList != null) {
+                        mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
+                            convList.getAnimatedAdapter());
+                    }
                     break;
             }
         }

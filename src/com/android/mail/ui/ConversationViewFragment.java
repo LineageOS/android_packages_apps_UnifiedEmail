@@ -161,7 +161,6 @@ public final class ConversationViewFragment extends Fragment implements
             // Activity is finishing, just bail.
             return;
         }
-        mActivity.attachConversationView(this);
         mTemplates = new HtmlConversationTemplates(mContext);
 
         mAdapter = new ConversationViewAdapter(mActivity.getActivityContext(), mAccount,
@@ -228,7 +227,6 @@ public final class ConversationViewFragment extends Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         mViewsCreated = false;
-        mActivity.attachConversationView(null);
     }
 
     @Override

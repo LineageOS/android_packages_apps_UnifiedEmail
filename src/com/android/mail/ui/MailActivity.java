@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -61,21 +62,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     public MailActivity() {
         super();
-    }
-
-    @Override
-    public void attachConversationList(ConversationListFragment fragment) {
-        mController.attachConversationList(fragment);
-    }
-
-    @Override
-    public void attachFolderList(FolderListFragment fragment) {
-        mController.attachFolderList(fragment);
-    }
-
-    @Override
-    public void attachConversationView(ConversationViewFragment fragment) {
-        mController.attachConversationView(fragment);
     }
 
     @Override

@@ -48,7 +48,6 @@ import android.widget.FrameLayout;
 
 // Called OnePaneActivityController in Gmail.
 public final class TwoPaneController extends AbstractActivityController {
-    private boolean mJumpToFirstConversation;
     private TwoPaneLayout mLayout;
     private final ActionCompleteListener mDeleteListener = new TwoPaneDestructiveActionListener(
             R.id.delete);
@@ -94,9 +93,9 @@ public final class TwoPaneController extends AbstractActivityController {
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         // Use cross fading animation.
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        Fragment conversationListFragment = ConversationListFragment
-                .newInstance(mConvListContext);
-        fragmentTransaction.replace(R.id.conversation_list_pane, conversationListFragment);
+        Fragment conversationListFragment = ConversationListFragment.newInstance(mConvListContext);
+        fragmentTransaction.replace(R.id.conversation_list_pane, conversationListFragment,
+                TAG_CONVERSATION_LIST);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -114,12 +113,11 @@ public final class TwoPaneController extends AbstractActivityController {
         FolderListFragment folderListFragment = FolderListFragment.newInstance(parent, uri);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.replace(R.id.content_pane, folderListFragment);
+        fragmentTransaction.replace(R.id.content_pane, folderListFragment, TAG_FOLDER_LIST);
         fragmentTransaction.commitAllowingStateLoss();
         // Since we are showing the folder list, we are at the start of the view
         // stack.
         resetActionBarIcon();
-        attachFolderList(folderListFragment);
         if (getCurrentListContext() != null) {
             folderListFragment.selectFolder(getCurrentListContext().folder);
         }
@@ -178,8 +176,9 @@ public final class TwoPaneController extends AbstractActivityController {
             mActionBarView.setBackButton();
             return;
         }
-        if (mFolderListFragment != null) {
-            mFolderListFragment.selectFolder(folder);
+        final FolderListFragment folderList = getFolderListFragment();
+        if (folderList != null) {
+            folderList.selectFolder(folder);
         }
         super.onFolderChanged(folder);
     }
@@ -190,11 +189,6 @@ public final class TwoPaneController extends AbstractActivityController {
         if (newMode != ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION) {
             // Clear the wait fragment
             hideWaitForInitialization();
-        }
-        if (newMode != ViewMode.CONVERSATION) {
-            // Clear this flag if the user jumps out of conversation mode
-            // before a load completes.
-            mJumpToFirstConversation = false;
         }
         resetActionBarIcon();
     }
@@ -225,7 +219,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 mFolder);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.replace(R.id.conversation_pane, convFragment);
+        fragmentTransaction.replace(R.id.conversation_pane, convFragment, TAG_CONVERSATION);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -236,15 +230,14 @@ public final class TwoPaneController extends AbstractActivityController {
         Fragment waitFragment = WaitFragment.newInstance(mAccount);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.replace(R.id.two_pane_activity, waitFragment, WAIT_FRAGMENT_TAG);
+        fragmentTransaction.replace(R.id.two_pane_activity, waitFragment, TAG_WAIT);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override
     public void hideWaitForInitialization() {
         final FragmentManager manager = mActivity.getFragmentManager();
-        final WaitFragment waitFragment =
-                (WaitFragment)manager.findFragmentByTag(WAIT_FRAGMENT_TAG);
+        final WaitFragment waitFragment = (WaitFragment)manager.findFragmentByTag(TAG_WAIT);
         if (waitFragment != null) {
             FragmentTransaction fragmentTransaction =
                     mActivity.getFragmentManager().beginTransaction();
@@ -376,10 +369,16 @@ public final class TwoPaneController extends AbstractActivityController {
                         UIProvider.ConversationPriority.LOW);
                 break;
             case R.id.mute:
-                mConversationListFragment.requestDelete(mMuteListener);
+                ConversationListFragment convList = getConversationListFragment();
+                if (convList != null) {
+                    convList.requestDelete(mMuteListener);
+                }
                 break;
             case R.id.report_spam:
-                mConversationListFragment.requestDelete(mSpamListener);
+                convList = getConversationListFragment();
+                if (convList != null) {
+                    convList.requestDelete(mSpamListener);
+                }
                 break;
             default:
                 handled = false;
@@ -433,8 +432,11 @@ public final class TwoPaneController extends AbstractActivityController {
                 }
             }
             TwoPaneController.this.onActionComplete();
+            final ConversationListFragment convList = getConversationListFragment();
             if (next != -1) {
-                mConversationListFragment.viewConversation(next);
+                if (convList != null) {
+                    convList.viewConversation(next);
+                }
                 mCurrentConversation.position = updatedPosition;
                 onUndoAvailable(new UndoOperation(1, mAction));
             } else {
@@ -447,13 +449,18 @@ public final class TwoPaneController extends AbstractActivityController {
                 });
             }
             performConversationAction(single);
-            mConversationListFragment.requestListRefresh();
+            if (convList != null) {
+                convList.requestListRefresh();
+            }
         }
     }
 
     @Override
     protected void requestDelete(final ActionCompleteListener listener) {
-        mConversationListFragment.requestDelete(listener);
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            convList.requestDelete(listener);
+        }
     }
 
     @Override
@@ -465,16 +472,20 @@ public final class TwoPaneController extends AbstractActivityController {
     public void onUndoAvailable(UndoOperation op) {
         int mode = mViewMode.getMode();
         FrameLayout.LayoutParams params;
+        final ConversationListFragment convList = getConversationListFragment();
         switch (mode) {
             case ViewMode.CONVERSATION_LIST:
                 params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
                 params.width = mLayout.computeConversationListWidth();
                 params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                 mUndoBarView.setLayoutParams(params);
-                mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                        mConversationListFragment.getAnimatedAdapter());
+                if (convList != null) {
+                    mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
+                        convList.getAnimatedAdapter());
+                }
                 break;
             case ViewMode.CONVERSATION:
+                final ConversationViewFragment convView = getConversationViewFragment();
                 if (op.mBatch) {
                     // Show undo bar in the conversation list.
                     params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
@@ -484,11 +495,15 @@ public final class TwoPaneController extends AbstractActivityController {
                     // Show undo bar in the conversation.
                     params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
                     params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                    params.width = mConversationViewFragment.getView().getWidth();
+                    if (convView != null) {
+                        params.width = convView.getView().getWidth();
+                    }
                 }
                 mUndoBarView.setLayoutParams(params);
-                mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                        mConversationListFragment.getAnimatedAdapter());
+                if (convView != null) {
+                    mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
+                        convList.getAnimatedAdapter());
+                }
                 break;
         }
     }

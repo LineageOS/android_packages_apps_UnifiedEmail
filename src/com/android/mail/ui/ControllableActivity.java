@@ -28,15 +28,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
         FolderItemView.DropHandler, UndoBarView.OnUndoCancelListener,
         UndoBarView.UndoListener {
     /**
-     * Attaches the conversation list fragment to the activity controller. This callback is
-     * currently required because the Activity Controller directly calls methods on the conversation
-     * list fragment. This behavior should be modified to allow the controller to call a layout
-     * controller which knows about the fragments.
-     * @param conversationList
-     */
-    void attachConversationList(ConversationListFragment conversationList);
-
-    /**
      * Returns the ViewMode the activity is updating.
      * @see com.android.mail.ui.ViewMode
      * @return ViewMode.
@@ -61,18 +52,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      * @return
      */
     ConversationListCallbacks getListHandler();
-
-    /**
-     * Attaches a folder list fragment to the activity controller.
-     * @param folderListFragment cannot be null.
-     */
-    void attachFolderList(FolderListFragment folderListFragment);
-
-    /**
-     * Attaches a conversation view fragment to the activity controller.
-     * @param conversationViewFragment cannot be null.
-     */
-    void attachConversationView(ConversationViewFragment conversationViewFragment);
 
     /**
      * Return the folder change listener for this activity

@@ -219,10 +219,8 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setAdapter(mListAdapter);
         mListView.setSelectionSet(mActivity.getSelectedSet());
         mListAdapter.hideFooter();
-        // Don't need to add ourselves to our own set observer.
-        // mActivity.getBatchConversations().addObserver(this);
+        mListView.setSwipeCompleteListener(this);
         mActivity.setViewModeListener(this);
-        mActivity.attachConversationList(this);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         initializeUiForFirstDisplay();
         configureSearchResultHeader();
@@ -303,15 +301,9 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setAdapter(null);
 
         mActivity.unsetViewModeListener(this);
-
-        // Since we want to keep the conversation list around to request deletes on later,
-        // don't null out the conversation list fragment.
-        mActivity.attachConversationList(null);
-
         if (!mActivity.isChangingConfigurations()) {
             mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
         }
-
         super.onDestroyView();
     }
 
