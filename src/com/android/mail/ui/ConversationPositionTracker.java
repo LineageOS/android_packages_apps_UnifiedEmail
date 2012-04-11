@@ -46,16 +46,14 @@ public class ConversationPositionTracker {
                 boolean smoothScroll);
     }
 
-    /** The ID of the current conversation being viewed */
-    private long mConversationId;
     /** Cursor into the conversations */
     private ConversationCursor mCursor;
     /** Observers interested in change in position */
     private final List<Observer> mObservers = Lists.newArrayList();
-    /** The position of the current conversation in the conversation list */
-    private int mPosition;
     /** Is the current position a valid position? */
     private boolean mIsPositionValid;
+    /** The currently selected conversation */
+    private Conversation mConversation;
 
     /**
      * This utility method returns the conversation ID at the current cursor position.
@@ -70,22 +68,22 @@ public class ConversationPositionTracker {
      * Constructs a position tracker that doesn't point to any specific conversation.
      */
     public ConversationPositionTracker() {
-        initialize(-1, -1);
+        initialize(null);
     }
 
     /**
      * Constructs an iterator over the underlying conversation list data backed by the specified
      * loader.
      */
-    public ConversationPositionTracker(long initialConversationId, int initialPosition) {
-        initialize(initialConversationId, initialPosition);
+    public ConversationPositionTracker(Conversation conversation) {
+        initialize(conversation);
     }
 
     /**
      * Clears the current selected position.
      */
     public void clearPosition() {
-        initialize(-1, -1);
+        initialize(null);
         notifyPositionChanged(false);
     }
 
@@ -96,7 +94,7 @@ public class ConversationPositionTracker {
         if (mCursor == null || !mIsPositionValid) {
             return null;
         }
-        mCursor.moveToPosition(mPosition);
+        mCursor.moveToPosition(mConversation.position);
         return new Conversation(mCursor);
     }
 
@@ -120,7 +118,7 @@ public class ConversationPositionTracker {
             return null;
         }
 
-        mCursor.moveToPosition(mPosition - 1);
+        mCursor.moveToPosition(mConversation.position - 1);
         return new Conversation(mCursor);
     }
 
@@ -207,9 +205,8 @@ public class ConversationPositionTracker {
      *  valid. This requires a call to
      *  {@link #updateAdapterAndCursor(AnimatedAdapter, ConversationCursor)}.
      */
-    public void initialize(long initialConversationId, int initialPosition) {
-        mConversationId = initialConversationId;
-        mPosition = initialPosition;
+    public void initialize(Conversation conversation) {
+        mConversation = conversation;
         // Unless we have any cursor, this is an invalid position.
         mIsPositionValid = false;
     }

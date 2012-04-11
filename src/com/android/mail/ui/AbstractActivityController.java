@@ -141,6 +141,8 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     private final int mFolderItemUpdateDelayMs;
 
+    /** Keeps track of selected and unselected conversations */
+    private final ConversationPositionTracker mTracker = new ConversationPositionTracker();
     /**
      * Action menu associated with the selected set.
      */
@@ -969,6 +971,10 @@ public abstract class AbstractActivityController implements ActivityController, 
      */
     protected void setCurrentConversation(Conversation conversation) {
         mCurrentConversation = conversation;
+        // TODO(viki); What position are we viewing?
+        mTracker.initialize(mCurrentConversation);
+        mTracker.updateAdapterAndCursor(mConversationListFragment.getAnimatedAdapter(),
+                mConversationListCursor);
     }
 
     /**
@@ -1119,8 +1125,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 newAccount = mAccount;
             }
         } else {
-            final String lastAccountUri = MailAppProvider.getInstance()
-                    .getLastViewedAccount();
+            final String lastAccountUri = MailAppProvider.getInstance().getLastViewedAccount();
             if (lastAccountUri != null) {
                 for (int i = 0; i < allAccounts.length; i++) {
                     final Account acct = allAccounts[i];
