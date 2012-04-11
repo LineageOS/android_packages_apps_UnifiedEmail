@@ -773,10 +773,8 @@ public abstract class AbstractActivityController implements ActivityController, 
         boolean handled = false;
         if (savedState != null) {
             if (savedState.containsKey(SAVED_ACCOUNT)) {
-                mAccount = ((Account) savedState.getParcelable(SAVED_ACCOUNT));
-                mCachedSettings = mAccount.settings;
-                mActionBarView.setAccount(mAccount);
-                mActivity.invalidateOptionsMenu();
+                final Account account = ((Account) savedState.getParcelable(SAVED_ACCOUNT));
+                onAccountChanged(account);
             }
             if (savedState.containsKey(SAVED_FOLDER)) {
                 // Open the folder.
@@ -792,15 +790,10 @@ public abstract class AbstractActivityController implements ActivityController, 
         } else if (intent != null) {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
-                    mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                    onAccountChanged(((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT)));
                 } else if (intent.hasExtra(Utils.EXTRA_ACCOUNT_STRING)) {
-                    mAccount = Account.newinstance(intent
-                            .getStringExtra(Utils.EXTRA_ACCOUNT_STRING));
-                }
-                if (mAccount != null) {
-                    mActionBarView.setAccount(mAccount);
-                    mCachedSettings = mAccount.settings;
-                    mActivity.invalidateOptionsMenu();
+                    onAccountChanged(Account.newinstance(intent
+                            .getStringExtra(Utils.EXTRA_ACCOUNT_STRING)));
                 }
 
                 Folder folder = null;
@@ -842,9 +835,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 suggestions.saveRecentQuery(query, null);
 
                 mViewMode.enterSearchResultsListMode();
-                mAccount = ((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                mCachedSettings = mAccount.settings;
-                mActionBarView.setAccount(mAccount);
+                onAccountChanged(((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT)));
                 fetchSearchFolder(intent);
             }
         }
