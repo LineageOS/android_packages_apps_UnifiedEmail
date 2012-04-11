@@ -42,11 +42,11 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 /**
- * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
- * limited.
+ * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
+ * abounds.
  */
 
-// Called OnePaneActivityController in Gmail.
+// Called TwoPaneActivityController in Gmail.
 public final class TwoPaneController extends AbstractActivityController {
     private TwoPaneLayout mLayout;
     private final ActionCompleteListener mDeleteListener = new TwoPaneDestructiveActionListener(
@@ -194,6 +194,15 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
+    public void onConversationVisibilityChanged(boolean visible) {
+        super.onConversationVisibilityChanged(visible);
+
+        if (!visible) {
+            mPagerController.hide();
+        }
+    }
+
+    @Override
     public void resetActionBarIcon() {
         if (mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
             mActionBarView.removeBackButton();
@@ -215,12 +224,8 @@ public final class TwoPaneController extends AbstractActivityController {
         } else {
             mViewMode.enterConversationMode();
         }
-        Fragment convFragment = ConversationViewFragment.newInstance(mAccount, conversation,
-                mFolder);
-        FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.replace(R.id.conversation_pane, convFragment, TAG_CONVERSATION);
-        fragmentTransaction.commitAllowingStateLoss();
+
+        mPagerController.show(mAccount, mFolder, conversation);
     }
 
     @Override
@@ -487,7 +492,6 @@ public final class TwoPaneController extends AbstractActivityController {
                 }
                 break;
             case ViewMode.CONVERSATION:
-                final ConversationViewFragment convView = getConversationViewFragment();
                 if (op.mBatch) {
                     // Show undo bar in the conversation list.
                     params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
@@ -497,15 +501,11 @@ public final class TwoPaneController extends AbstractActivityController {
                     // Show undo bar in the conversation.
                     params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
                     params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                    if (convView != null) {
-                        params.width = convView.getView().getWidth();
-                    }
+                    params.width = mLayout.getConversationView().getWidth();
                 }
                 mUndoBarView.setLayoutParams(params);
-                if (convView != null) {
-                    mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                        convList.getAnimatedAdapter());
-                }
+                mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
+                    convList.getAnimatedAdapter());
                 break;
         }
     }

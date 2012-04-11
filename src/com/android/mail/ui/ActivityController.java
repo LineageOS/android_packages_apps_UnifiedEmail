@@ -147,6 +147,11 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     void onPause();
 
     /**
+     * @see android.app.Activity#onDestroy
+     */
+    void onDestroy();
+
+    /**
      * @see android.app.Activity#onPrepareDialog
      * @param id
      * @param dialog
@@ -279,5 +284,11 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     void handleDrop(DragEvent event, Folder folder);
 
     void onUndoCancel();
+
+    /**
+     * Coordinates actions that might occur in response to a conversation that has finished loading
+     * and is now user-visible.
+     */
+    void onConversationSeen(Conversation conv);
 
 }

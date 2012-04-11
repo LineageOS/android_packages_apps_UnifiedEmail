@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.providers.Conversation;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.ui.FolderListFragment;
 
@@ -75,4 +76,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
     FolderListFragment.FolderListSelectionListener getFolderListSelectionListener();
 
     DragListener getDragListener();
+
+    void onConversationSeen(Conversation conv);
 }

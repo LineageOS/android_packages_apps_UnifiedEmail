@@ -32,6 +32,7 @@ import android.widget.ScrollView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ScrollNotifier.ScrollListener;
+import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.DequeMap;
 import com.android.mail.utils.LogUtils;
 
@@ -58,7 +59,7 @@ import com.android.mail.utils.LogUtils;
  */
 public class ConversationContainer extends ViewGroup implements ScrollListener {
 
-    private static final String TAG = new LogUtils().getLogTag();
+    private static final String TAG = ConversationViewFragment.LAYOUT_TAG;
 
     private ConversationViewAdapter mOverlayAdapter;
     private int[] mOverlayBottoms;
@@ -230,11 +231,18 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             mTouchInitialized = true;
         }
 
+        // no interception when WebView handles the first DOWN
+        if (mWebView.isHandlingTouch()) {
+            return false;
+        }
+
         boolean intercept = false;
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_POINTER_DOWN:
+                LogUtils.d(TAG, "Container is intercepting non-primary touch!");
                 intercept = true;
                 mMissedPointerDown = true;
+                requestDisallowInterceptTouchEvent(true);
                 break;
 
             case MotionEvent.ACTION_DOWN:
@@ -253,8 +261,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
                 break;
         }
 
-        LogUtils.v(TAG, "in Container.InterceptTouch. action=%d x/y=%f/%f pointers=%d result=%s",
-                ev.getActionMasked(), ev.getX(), ev.getY(), ev.getPointerCount(), intercept);
+//        LogUtils.v(TAG, "in Container.InterceptTouch. action=%d x/y=%f/%f pointers=%d result=%s",
+//                ev.getActionMasked(), ev.getX(), ev.getY(), ev.getPointerCount(), intercept);
         return intercept;
     }
 
@@ -262,7 +270,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getActionMasked();
 
-        if (action == MotionEvent.ACTION_UP) {
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             mTouchIsDown = false;
         } else if (!mTouchIsDown &&
                 (action == MotionEvent.ACTION_MOVE || action == MotionEvent.ACTION_POINTER_DOWN)) {
@@ -278,8 +286,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
         final boolean webViewResult = mWebView.onTouchEvent(ev);
 
-        LogUtils.v(TAG, "in Container.OnTouch. action=%d x/y=%f/%f pointers=%d",
-                ev.getActionMasked(), ev.getX(), ev.getY(), ev.getPointerCount());
+//        LogUtils.v(TAG, "in Container.OnTouch. action=%d x/y=%f/%f pointers=%d",
+//                ev.getActionMasked(), ev.getX(), ev.getY(), ev.getPointerCount());
         return webViewResult;
     }
 
@@ -445,8 +453,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        LogUtils.i(TAG, "*** IN header container onMeasure spec for w/h=%d/%d", widthMeasureSpec,
-                heightMeasureSpec);
+        if (LogUtils.isLoggable(TAG, LogUtils.DEBUG)) {
+            LogUtils.d(TAG, "*** IN header container onMeasure spec for w/h=%s/%s",
+                    MeasureSpec.toString(widthMeasureSpec),
+                    MeasureSpec.toString(heightMeasureSpec));
+        }
 
         if (mWebView.getVisibility() != GONE) {
             measureChild(mWebView, widthMeasureSpec, heightMeasureSpec);
@@ -459,7 +470,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        LogUtils.i(TAG, "*** IN header container onLayout");
+        LogUtils.d(TAG, "*** IN header container onLayout");
 
         mWebView.layout(0, 0, mWebView.getMeasuredWidth(), mWebView.getMeasuredHeight());
         positionOverlays(0, mOffsetY);

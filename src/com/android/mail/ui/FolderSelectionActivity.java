@@ -35,6 +35,7 @@ import android.widget.Button;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
@@ -312,6 +313,11 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     @Override
     public void onUndoAvailable(UndoOperation undoOp) {
+        // Do nothing.
+    }
+
+    @Override
+    public void onConversationSeen(Conversation conv) {
         // Do nothing.
     }
 }

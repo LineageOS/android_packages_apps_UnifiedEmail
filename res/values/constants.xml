@@ -24,6 +24,9 @@
     <!-- Boolean value indicating whether hardware acceleration should be used. -->
     <integer name="use_hardware_acceleration">1</integer>
 
+    <!-- left/right conversations will auto-load if they have no more than this number of messages -->
+    <integer name="max_auto_load_messages">20</integer>
+
     <!-- Frequency (in milliseconds) for the refresh of timestamps in conversation list fragments. -->
     <integer name="timestamp_update_interval">60000</integer>
 

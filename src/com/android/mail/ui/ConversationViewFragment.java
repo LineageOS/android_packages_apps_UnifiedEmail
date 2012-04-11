@@ -84,6 +84,7 @@ public final class ConversationViewFragment extends Fragment implements
         SuperCollapsedBlock.OnClickListener {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
+    public static final String LAYOUT_TAG = "ConvLayout";
 
     private static final int MESSAGE_LOADER_ID = 0;
 
@@ -118,6 +119,9 @@ public final class ConversationViewFragment extends Fragment implements
 
     private float mDensity;
 
+    /**
+     * Folder is used to help determine valid menu actions for this conversation.
+     */
     private Folder mFolder;
 
     private final Map<String, Address> mAddressCache = Maps.newHashMap();
@@ -130,8 +134,14 @@ public final class ConversationViewFragment extends Fragment implements
      */
     private String mTempBodiesHtml;
 
+    private boolean mUserVisible;
+
+    private int  mMaxAutoLoadMessages;
+
+    private boolean mDeferredConversationLoad;
+
     private static final String ARG_ACCOUNT = "account";
-    private static final String ARG_CONVERSATION = "conversation";
+    public static final String ARG_CONVERSATION = "conversation";
     private static final String ARG_FOLDER = "folder";
 
     /**
@@ -143,7 +153,7 @@ public final class ConversationViewFragment extends Fragment implements
 
     /**
      * Creates a new instance of {@link ConversationViewFragment}, initialized
-     * to display conversation.
+     * to display a conversation.
      */
     public static ConversationViewFragment newInstance(Account account,
             Conversation conversation, Folder folder) {
@@ -156,8 +166,31 @@ public final class ConversationViewFragment extends Fragment implements
        return f;
     }
 
+    /**
+     * Creates a new instance of {@link ConversationViewFragment}, initialized
+     * to display a conversation with other parameters inherited/copied from an existing bundle,
+     * typically one created using {@link #makeBasicArgs}.
+     */
+    public static ConversationViewFragment newInstance(Bundle existingArgs,
+            Conversation conversation) {
+        ConversationViewFragment f = new ConversationViewFragment();
+        Bundle args = new Bundle(existingArgs);
+        args.putParcelable(ARG_CONVERSATION, conversation);
+        f.setArguments(args);
+        return f;
+    }
+
+    public static Bundle makeBasicArgs(Account account, Folder folder) {
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_ACCOUNT, account);
+        args.putParcelable(ARG_FOLDER, folder);
+        return args;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        LogUtils.d(LOG_TAG, "IN CVF.onActivityCreated, this=%s subj=%s", this,
+                mConversation.subject);
         super.onActivityCreated(savedInstanceState);
         // Strictly speaking, we get back an android.app.Activity from getActivity. However, the
         // only activity creating a ConversationListContext is a MailActivity which is of type
@@ -183,13 +216,14 @@ public final class ConversationViewFragment extends Fragment implements
 
         mDensity = getResources().getDisplayMetrics().density;
 
-        // Show conversation and start loading messages.
+        mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
+
         showConversation();
     }
 
     @Override
     public void onCreate(Bundle savedState) {
-        LogUtils.v(LOG_TAG, "onCreate in FolderListFragment(this=%s)", this);
+        LogUtils.d(LOG_TAG, "onCreate in ConversationViewFragment (this=%s)", this);
         super.onCreate(savedState);
 
         Bundle args = getArguments();
@@ -205,7 +239,7 @@ public final class ConversationViewFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.conversation_view, null);
+        View rootView = inflater.inflate(R.layout.conversation_view, container, false);
         mConversationContainer = (ConversationContainer) rootView
                 .findViewById(R.id.conversation_container);
         mWebView = (ConversationWebView) mConversationContainer.findViewById(R.id.webview);
@@ -284,12 +318,52 @@ public final class ConversationViewFragment extends Fragment implements
                         && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)
                         && !mConversation.muted);
     }
+
+    /**
+     * {@link #setUserVisibleHint(boolean)} only works on API >= 15, so implement our own for
+     * reliability on older platforms.
+     */
+    public void setExtraUserVisibleHint(boolean isVisibleToUser) {
+        LogUtils.v(LOG_TAG, "in CVF.setHint, val=%s (%s)", isVisibleToUser, this);
+
+        if (mUserVisible != isVisibleToUser) {
+            mUserVisible = isVisibleToUser;
+
+            if (isVisibleToUser && mViewsCreated) {
+
+                if (mCursor == null && mDeferredConversationLoad) {
+                    // load
+                    LogUtils.v(LOG_TAG, "Fragment is now user-visible, showing conversation: %s",
+                            mConversation.uri);
+                    showConversation();
+                    mDeferredConversationLoad = false;
+                } else {
+                    onConversationSeen();
+                }
+
+            }
+        }
+    }
+
     /**
      * Handles a request to show a new conversation list, either from a search query or for viewing
      * a folder. This will initiate a data load, and hence must be called on the UI thread.
      */
     private void showConversation() {
+        if (!mUserVisible && mConversation.numMessages > mMaxAutoLoadMessages) {
+            LogUtils.v(LOG_TAG, "Fragment not user-visible, not showing conversation: %s",
+                    mConversation.uri);
+            mDeferredConversationLoad = true;
+            return;
+        }
+        LogUtils.v(LOG_TAG,
+                "Fragment is short or user-visible, immediately rendering conversation: %s",
+                mConversation.uri);
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, Bundle.EMPTY, this);
+    }
+
+    public Conversation getConversation() {
+        return mConversation;
     }
 
     @Override
@@ -301,6 +375,12 @@ public final class ConversationViewFragment extends Fragment implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         MessageCursor messageCursor = (MessageCursor) data;
 
+        // ignore truly duplicate results
+        // this can happen when restoring after rotation
+        if (mCursor == messageCursor) {
+            return;
+        }
+
         // TODO: handle Gmail loading states (like LOADING and ERROR)
         if (messageCursor.getCount() == 0) {
             if (mCursor != null) {
@@ -311,6 +391,10 @@ public final class ConversationViewFragment extends Fragment implements
             }
             return;
         }
+
+        // TODO: if this is not user-visible, delay render until user-visible fragment is done.
+        // This is needed in addition to the showConversation() delay to speed up rotation and
+        // restoration.
 
         renderConversation(messageCursor);
     }
@@ -343,6 +427,9 @@ public final class ConversationViewFragment extends Fragment implements
      */
     private String renderMessageBodies(MessageCursor messageCursor) {
         int pos = -1;
+
+        LogUtils.d(LOG_TAG, "IN renderMessageBodies, fragment=%s subj=%s", this,
+                mConversation.subject);
         boolean allowNetworkImages = false;
 
         // TODO: re-use any existing adapter item state (expanded, details expanded, show pics)
@@ -501,6 +588,19 @@ public final class ConversationViewFragment extends Fragment implements
         return (int) (heightPx / mDensity);
     }
 
+    private void onConversationSeen() {
+        // mark as read upon open
+        if (!mConversation.read) {
+            mConversation.markRead(mContext, true /* read */);
+            mConversation.read = true;
+        }
+
+        ControllableActivity activity = (ControllableActivity) getActivity();
+        if (activity != null) {
+            activity.onConversationSeen(mConversation);
+        }
+    }
+
     // BEGIN conversation header callbacks
     @Override
     public void onFoldersClicked() {
@@ -530,7 +630,7 @@ public final class ConversationViewFragment extends Fragment implements
         mConversationContainer.invalidateSpacerGeometry();
 
         // update message HTML spacer height
-        LogUtils.i(LOG_TAG, "setting HTML spacer h=%dpx", newSpacerHeightPx);
+        LogUtils.i(LAYOUT_TAG, "setting HTML spacer h=%dpx", newSpacerHeightPx);
         final int heightDp = (int) (newSpacerHeightPx / mDensity);
         mWebView.loadUrl(String.format("javascript:setMessageHeaderSpacerHeight('%s', %d);",
                 mTemplates.getMessageDomId(item.message), heightDp));
@@ -541,7 +641,7 @@ public final class ConversationViewFragment extends Fragment implements
         mConversationContainer.invalidateSpacerGeometry();
 
         // show/hide the HTML message body and update the spacer height
-        LogUtils.i(LOG_TAG, "setting HTML spacer expanded=%s h=%dpx", item.isExpanded(),
+        LogUtils.i(LAYOUT_TAG, "setting HTML spacer expanded=%s h=%dpx", item.isExpanded(),
                 newSpacerHeightPx);
         final int heightDp = (int) (newSpacerHeightPx / mDensity);
         mWebView.loadUrl(String.format("javascript:setMessageBodyVisible('%s', %s, %d);",
@@ -613,15 +713,16 @@ public final class ConversationViewFragment extends Fragment implements
 
         @Override
         public void onPageFinished(WebView view, String url) {
+            LogUtils.i(LOG_TAG, "IN CVF.onPageFinished, url=%s fragment=%s", url,
+                    ConversationViewFragment.this);
+
             super.onPageFinished(view, url);
 
             // TODO: save off individual message unread state (here, or in onLoadFinished?) so
             // 'mark unread' restores the original unread state for each individual message
 
-            // mark as read upon open
-            if (!mConversation.read) {
-                mConversation.markRead(mContext, true /* read */);
-                mConversation.read = true;
+            if (mUserVisible) {
+                onConversationSeen();
             }
         }
 

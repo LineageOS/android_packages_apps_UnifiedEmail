@@ -534,6 +534,10 @@ final class TwoPaneLayout extends RelativeLayout
         mListPaint.setAntiAlias(true);
     }
 
+    public View getConversationView() {
+        return mConversationView;
+    }
+
     private boolean isAnimatingFade() {
         return mAnimatingFade;
     }

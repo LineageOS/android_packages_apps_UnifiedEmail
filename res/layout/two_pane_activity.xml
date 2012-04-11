@@ -58,12 +58,9 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             android:background="@android:color/white"
-            android:layout_toRightOf="@id/conversation_column_container">
+            android:layout_alignParentRight="true">
 
-            <FrameLayout
-                android:id="@+id/conversation_pane"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+            <include layout="@layout/conversation_pager" />
 
             <View
                 android:id="@+id/conversation_overlay"

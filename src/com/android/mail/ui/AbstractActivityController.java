@@ -34,6 +34,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.DataSetObservable;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,6 +54,7 @@ import android.widget.Toast;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.ConversationPagerController;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.compose.ComposeActivity;
@@ -112,8 +115,6 @@ public abstract class AbstractActivityController implements ActivityController,
     protected static final String TAG_WAIT = "wait-fragment";
     /** Tag used when loading a conversation list fragment. */
     protected static final String TAG_CONVERSATION_LIST = "tag-conversation-list";
-    /** Tag used when loading a conversation fragment. */
-    protected static final String TAG_CONVERSATION = "tag-conversation";
     /** Tag used when loading a folder list fragment. */
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
 
@@ -149,6 +150,22 @@ public abstract class AbstractActivityController implements ActivityController,
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected Settings mCachedSettings;
     protected ConversationCursor mConversationListCursor;
+    private final DataSetObservable mConversationListObservable = new DataSetObservable() {
+        @Override
+        public void registerObserver(DataSetObserver observer) {
+            final int count = mObservers.size();
+            super.registerObserver(observer);
+            LogUtils.d(LOG_TAG, "IN AAC.registerListObserver: %s before=%d after=%d", observer,
+                    count, mObservers.size());
+        }
+        @Override
+        public void unregisterObserver(DataSetObserver observer) {
+            final int count = mObservers.size();
+            super.unregisterObserver(observer);
+            LogUtils.d(LOG_TAG, "IN AAC.unregisterListObserver: %s before=%d after=%d", observer,
+                    count, mObservers.size());
+        }
+    };
     protected boolean mConversationListenerAdded = false;
 
     private boolean mIsConversationListScrolling = false;
@@ -175,6 +192,7 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     SelectedConversationsActionMenu mCabActionMenu;
     protected UndoBarView mUndoBarView;
+    protected ConversationPagerController mPagerController;
 
     // this is split out from the general loader dispatcher because its loader doesn't return a
     // basic Cursor
@@ -270,19 +288,6 @@ public abstract class AbstractActivityController implements ActivityController,
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION_LIST);
         if (isValidFragment(fragment)) {
             return (ConversationListFragment) fragment;
-        }
-        return null;
-    }
-
-    /**
-     * Returns the conversation view fragment attached with this activity. If no such fragment
-     * is attached, this method returns null.
-     * @return
-     */
-    protected ConversationViewFragment getConversationViewFragment() {
-        final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION);
-        if (isValidFragment(fragment)) {
-            return (ConversationViewFragment) fragment;
         }
         return null;
     }
@@ -547,13 +552,32 @@ public abstract class AbstractActivityController implements ActivityController,
         assert (mActionBarView != null);
         mViewMode.addListener(mActionBarView);
 
-        restoreState(savedState);
-        mUndoBarView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
-        return true;
-    }
+        mPagerController = new ConversationPagerController(mActivity, this);
 
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        mUndoBarView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
+
+        final Intent intent = mActivity.getIntent();
+        // immediately handle a clean launch with intent, and any state restoration
+        // that does not rely on restored fragments or loader data
+        // any state restoration that relies on those can be done later in
+        // onRestoreInstanceState, once fragments are up and loader data is re-delivered
+        if (savedState != null) {
+            if (savedState.containsKey(SAVED_ACCOUNT)) {
+                setAccount((Account) savedState.getParcelable(SAVED_ACCOUNT));
+                mActivity.invalidateOptionsMenu();
+            }
+            if (savedState.containsKey(SAVED_FOLDER)) {
+                // Open the folder.
+                onFolderChanged((Folder) savedState.getParcelable(SAVED_FOLDER));
+            }
+        } else if (intent != null) {
+            handleIntent(intent);
+        }
+
+        // Create the accounts loader; this loads the account switch spinner.
+        mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
+
+        return true;
     }
 
     @Override
@@ -804,6 +828,12 @@ public abstract class AbstractActivityController implements ActivityController,
         // TODO(viki): Auto-generated method stub
     }
 
+    @Override
+    public void onDestroy() {
+        // unregister the ViewPager's observer on the conversation cursor
+        mPagerController.onDestroy();
+    }
+
     /**
      * {@inheritDoc} Subclasses must override this to listen to mode changes
      * from the ViewMode. Subclasses <b>must</b> call the parent's
@@ -815,11 +845,6 @@ public abstract class AbstractActivityController implements ActivityController,
         // reset the action bar icon based on the mode. Why don't the individual
         // controllers do
         // this themselves?
-
-        // In conversation list mode, clean up the conversation.
-        if (newMode == ViewMode.CONVERSATION_LIST) {
-            // Clean up the conversation here.
-        }
 
         // We don't want to invalidate the options menu when switching to
         // conversation
@@ -854,90 +879,13 @@ public abstract class AbstractActivityController implements ActivityController,
      *
      * @param savedState
      */
-    protected void restoreState(Bundle savedState) {
-        final Intent intent = mActivity.getIntent();
-        boolean handled = false;
-        if (savedState != null) {
-            if (savedState.containsKey(SAVED_ACCOUNT)) {
-                setAccount((Account) savedState.getParcelable(SAVED_ACCOUNT));
-                mActivity.invalidateOptionsMenu();
-            }
-            if (savedState.containsKey(SAVED_FOLDER)) {
-                // Open the folder.
-                onFolderChanged((Folder) savedState.getParcelable(SAVED_FOLDER));
-                handled = true;
-            }
-            if (savedState.containsKey(SAVED_CONVERSATION)) {
-                // Open the conversation.
-                setCurrentConversation((Conversation) savedState.getParcelable(SAVED_CONVERSATION));
-                showConversation(mCurrentConversation);
-                handled = true;
-            }
-        } else if (intent != null) {
-            if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-                if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
-                    setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                } else if (intent.hasExtra(Utils.EXTRA_ACCOUNT_STRING)) {
-                    setAccount(Account.newinstance(intent
-                            .getStringExtra(Utils.EXTRA_ACCOUNT_STRING)));
-                }
-                if (mAccount != null) {
-                    mActivity.invalidateOptionsMenu();
-                }
-
-                Folder folder = null;
-                if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
-                    // Open the folder.
-                    LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
-                            intent.getParcelableExtra(Utils.EXTRA_FOLDER));
-                    folder = (Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER);
-
-                } else if (intent.hasExtra(Utils.EXTRA_FOLDER_STRING)) {
-                    // Open the folder.
-                    folder = new Folder(intent.getStringExtra(Utils.EXTRA_FOLDER_STRING));
-                }
-                if (folder != null) {
-                    onFolderChanged(folder);
-                    handled = true;
-                }
-
-                if (intent.hasExtra(Utils.EXTRA_CONVERSATION)) {
-                    // Open the conversation.
-                    LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
-                            intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                    setCurrentConversation((Conversation) intent
-                            .getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                    showConversation(mCurrentConversation);
-                    handled = true;
-                }
-
-                if (!handled) {
-                    // Nothing was saved; just load the account inbox.
-                    loadAccountInbox();
-                }
-            } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-                if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
-                    // Save this search query for future suggestions.
-                    final String query = intent.getStringExtra(SearchManager.QUERY);
-                    final String authority = mContext.getString(R.string.suggestions_authority);
-                    SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
-                            mContext, authority, SuggestionsProvider.MODE);
-                    suggestions.saveRecentQuery(query, null);
-
-                    mViewMode.enterSearchResultsListMode();
-                    setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                    mActivity.invalidateOptionsMenu();
-                    restartOptionalLoader(LOADER_RECENT_FOLDERS);
-                    mRecentFolderList.setCurrentAccount(mAccount);
-                    fetchSearchFolder(intent);
-                } else {
-                    LogUtils.e(LOG_TAG, "Missing account extra from search intent.  Finishing");
-                    mActivity.finish();
-                }
-            }
-            if (mAccount != null) {
-                restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
-            }
+    @Override
+    public void onRestoreInstanceState(Bundle savedState) {
+        LogUtils.d(LOG_TAG, "IN AAC.onRestoreInstanceState");
+        if (savedState.containsKey(SAVED_CONVERSATION)) {
+            // Open the conversation.
+            setCurrentConversation((Conversation) savedState.getParcelable(SAVED_CONVERSATION));
+            showConversation(mCurrentConversation);
         }
 
         /**
@@ -947,8 +895,74 @@ public abstract class AbstractActivityController implements ActivityController,
          * @param savedState
          */
         restoreSelectedConversations(savedState);
-        // Create the accounts loader; this loads the account switch spinner.
-        mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
+    }
+
+    private void handleIntent(Intent intent) {
+        boolean handled = false;
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
+                setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+            } else if (intent.hasExtra(Utils.EXTRA_ACCOUNT_STRING)) {
+                setAccount(Account.newinstance(intent
+                        .getStringExtra(Utils.EXTRA_ACCOUNT_STRING)));
+            }
+            if (mAccount != null) {
+                mActivity.invalidateOptionsMenu();
+            }
+
+            Folder folder = null;
+            if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
+                // Open the folder.
+                LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
+                        intent.getParcelableExtra(Utils.EXTRA_FOLDER));
+                folder = (Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER);
+
+            } else if (intent.hasExtra(Utils.EXTRA_FOLDER_STRING)) {
+                // Open the folder.
+                folder = new Folder(intent.getStringExtra(Utils.EXTRA_FOLDER_STRING));
+            }
+            if (folder != null) {
+                onFolderChanged(folder);
+                handled = true;
+            }
+
+            if (intent.hasExtra(Utils.EXTRA_CONVERSATION)) {
+                // Open the conversation.
+                LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
+                        intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
+                setCurrentConversation((Conversation) intent
+                        .getParcelableExtra(Utils.EXTRA_CONVERSATION));
+                showConversation(mCurrentConversation);
+                handled = true;
+            }
+
+            if (!handled) {
+                // Nothing was saved; just load the account inbox.
+                loadAccountInbox();
+            }
+        } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
+                // Save this search query for future suggestions.
+                final String query = intent.getStringExtra(SearchManager.QUERY);
+                final String authority = mContext.getString(R.string.suggestions_authority);
+                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
+                        mContext, authority, SuggestionsProvider.MODE);
+                suggestions.saveRecentQuery(query, null);
+
+                mViewMode.enterSearchResultsListMode();
+                setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
+                mActivity.invalidateOptionsMenu();
+                restartOptionalLoader(LOADER_RECENT_FOLDERS);
+                mRecentFolderList.setCurrentAccount(mAccount);
+                fetchSearchFolder(intent);
+            } else {
+                LogUtils.e(LOG_TAG, "Missing account extra from search intent.  Finishing");
+                mActivity.finish();
+            }
+        }
+        if (mAccount != null) {
+            restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
+        }
     }
 
     /**
@@ -966,6 +980,8 @@ public abstract class AbstractActivityController implements ActivityController,
             mSelectedSet.clear();
             return;
         }
+
+        // putAll will take care of calling our registered onSetPopulated method
         mSelectedSet.putAll(selectedSet);
     }
 
@@ -1045,7 +1061,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * perform common actions associated with changing the current conversation.
      * @param conversation
      */
-    protected void setCurrentConversation(Conversation conversation) {
+    @Override
+    public void setCurrentConversation(Conversation conversation) {
         mCurrentConversation = conversation;
         mTracker.initialize(mCurrentConversation);
     }
@@ -1129,6 +1146,16 @@ public abstract class AbstractActivityController implements ActivityController,
     private void startLoader(int id) {
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.initLoader(id, Bundle.EMPTY, this);
+    }
+
+    @Override
+    public void registerConversationListObserver(DataSetObserver observer) {
+        mConversationListObservable.registerObserver(observer);
+    }
+
+    @Override
+    public void unregisterConversationListObserver(DataSetObserver observer) {
+        mConversationListObservable.unregisterObserver(observer);
     }
 
     private boolean accountsUpdated(Cursor accountCursor) {
@@ -1506,6 +1533,8 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void onDataSetChanged() {
         refreshAdapter();
+
+        mConversationListObservable.notifyChanged();
     }
 
     private void refreshAdapter() {
@@ -1712,6 +1741,11 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
+    @Override
+    public void onConversationSeen(Conversation conv) {
+        mPagerController.onConversationSeen(conv);
+    }
+
     private class ConversationListLoaderCallbacks implements
         LoaderManager.LoaderCallbacks<ConversationCursor> {
 
@@ -1724,6 +1758,8 @@ public abstract class AbstractActivityController implements ActivityController,
 
         @Override
         public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
+            LogUtils.d(LOG_TAG, "IN AAC.ConversationCursor.onLoadFinished, data=%s loader=%s",
+                    data, loader);
             mConversationListCursor = data;
 
             // Call the method that updates things when values in the cursor change

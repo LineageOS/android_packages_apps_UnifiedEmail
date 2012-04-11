@@ -22,6 +22,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 
+import com.android.mail.utils.LogUtils;
+
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -29,6 +31,14 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
 
     private final Set<ScrollListener> mScrollListeners =
             new CopyOnWriteArraySet<ScrollListener>();
+
+    /**
+     * True when WebView is handling a touch-- in between POINTER_DOWN and
+     * POINTER_UP/POINTER_CANCEL.
+     */
+    private boolean mHandlingTouch;
+
+    private static final String LOG_TAG = new LogUtils().getLogTag();
 
     public ConversationWebView(Context c) {
         this(c, null);
@@ -59,14 +69,27 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        boolean result = super.onTouchEvent(ev);
+        final int action = ev.getActionMasked();
 
-        if (result) {
-            // Events handled by the WebView should not be monkeyed with by any overlay interceptor
-            requestDisallowInterceptTouchEvent(true);
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                mHandlingTouch = true;
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                LogUtils.d(LOG_TAG, "WebView disabling intercepts: POINTER_DOWN");
+                requestDisallowInterceptTouchEvent(true);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                mHandlingTouch = false;
+                break;
         }
 
-        return result;
+        return super.onTouchEvent(ev);
+    }
+
+    public boolean isHandlingTouch() {
+        return mHandlingTouch;
     }
 
 }

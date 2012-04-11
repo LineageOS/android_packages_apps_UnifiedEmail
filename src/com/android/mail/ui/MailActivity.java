@@ -29,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
@@ -220,6 +221,12 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mController.onDestroy();
+    }
+
+    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         mController.onWindowFocusChanged(hasFocus);
@@ -288,5 +295,10 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public void onUndoAvailable(UndoOperation undoOp) {
         mController.onUndoAvailable(undoOp);
+    }
+
+    @Override
+    public void onConversationSeen(Conversation conv) {
+        mController.onConversationSeen(conv);
     }
 }

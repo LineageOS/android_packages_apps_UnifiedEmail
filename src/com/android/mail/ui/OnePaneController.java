@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.database.Cursor;
 import android.net.Uri;
@@ -82,8 +83,8 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    protected void restoreState(Bundle inState) {
-        super.restoreState(inState);
+    public void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
         // TODO(mindyp) handle saved state.
         if (inState != null) {
             mLastFolderListTransactionId = inState.getInt(FOLDER_LIST_TRANSACTION_KEY, INVALID_ID);
@@ -147,6 +148,13 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onViewModeChanged(int newMode) {
         super.onViewModeChanged(newMode);
+
+        // When entering conversation list mode, hide and clean up any currently visible
+        // conversation.
+        // TODO: improve this transition
+        if (newMode == ViewMode.CONVERSATION_LIST) {
+            mPagerController.hide();
+        }
     }
 
     @Override
@@ -190,9 +198,26 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mViewMode.enterConversationMode();
         }
-        mLastConversationTransactionId = replaceFragment(
-                ConversationViewFragment.newInstance(mAccount, conversation, mFolder),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_CONVERSATION);
+
+        // Switching to conversation view is an incongruous transition: we are not replacing a
+        // fragment with another fragment as usual. Instead, reveal the heretofore inert
+        // conversation ViewPager and just remove the previously visible fragment
+        // (e.g. conversation list, or possibly label list?).
+        FragmentManager fm = mActivity.getFragmentManager();
+        Fragment f = fm.findFragmentById(R.id.content_pane);
+        if (f != null) {
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.addToBackStack(null);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.remove(f);
+            ft.commitAllowingStateLoss();
+        }
+
+        // TODO: improve this transition
+        mPagerController.show(mAccount, mFolder, conversation);
+
+        resetActionBarIcon();
+
         mConversationListVisible = false;
     }
 

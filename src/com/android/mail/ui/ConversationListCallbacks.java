@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.database.DataSetObserver;
+
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Conversation;
 
@@ -32,4 +34,9 @@ public interface ConversationListCallbacks {
     void onConversationSelected(Conversation conversation);
 
     ConversationCursor getConversationListCursor();
+
+    void setCurrentConversation(Conversation c);
+
+    void registerConversationListObserver(DataSetObserver observer);
+    void unregisterConversationListObserver(DataSetObserver observer);
 }

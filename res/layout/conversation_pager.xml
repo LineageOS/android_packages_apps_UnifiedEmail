@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2012 The Android Open Source Project
+     Copyright (C) 2012 Google Inc.
+     Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,25 +15,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.mail.browse.ConversationPager
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/conversation_pane"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/content_pane"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <!-- TODO: put a bottom-anchored PagerTitleStrip in here -->
 
-    <include layout="@layout/conversation_pager" />
-
-    <com.android.mail.ui.UndoBarView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:alpha="0"
-        android:id="@+id/undo_view"
-        android:layout_gravity="bottom">
-            <include layout="@layout/undo_bar"/>
-    </com.android.mail.ui.UndoBarView>
-</FrameLayout>
+</com.android.mail.browse.ConversationPager>

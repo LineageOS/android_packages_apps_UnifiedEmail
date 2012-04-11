@@ -24,13 +24,14 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.CursorAdapter;
 
+import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.LogUtils;
 
 public abstract class ConversationOverlayItem {
     private int mHeight;  // in px
     private boolean mNeedsMeasure;
 
-    public static final String LOG_TAG = new LogUtils().getLogTag();
+    public static final String LOG_TAG = ConversationViewFragment.LAYOUT_TAG;
 
     /**
      * @see Adapter#getItemViewType(int)
