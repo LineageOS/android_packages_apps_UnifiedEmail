@@ -835,7 +835,11 @@ public abstract class AbstractActivityController implements ActivityController, 
                 suggestions.saveRecentQuery(query, null);
 
                 mViewMode.enterSearchResultsListMode();
-                onAccountChanged(((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT)));
+                mAccount = (((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT)));
+                mActionBarView.setAccount(mAccount);
+                mActivity.invalidateOptionsMenu();
+                restartOptionalLoader(LOADER_RECENT_FOLDERS);
+                mRecentFolderList.setCurrentAccount(mAccount);
                 fetchSearchFolder(intent);
             }
         }
