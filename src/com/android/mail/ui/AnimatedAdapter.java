@@ -23,12 +23,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
-import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -43,7 +41,9 @@ import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
         android.animation.Animator.AnimatorListener, OnUndoCancelListener {
-    private static int ITEM_VIEW_TYPE_FOOTER = 1;
+    private final static int TYPE_VIEW_CONVERSATION = 0;
+    private final static int TYPE_VIEW_ANIMATING = 1;
+    private final static int TYPE_VIEW_FOOTER = 2;
     private HashSet<Integer> mDeletingItems = new HashSet<Integer>();
     private Account mSelectedAccount;
     private Context mContext;
@@ -86,7 +86,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public int getCount() {
-        int count = super.getCount();
+        final int count = super.getCount();
         return mShowFooter ? count + 1 : count;
     }
 
@@ -114,11 +114,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        if (!isPositionAnimating(view) && !isPositionFooter(view)) {
-            ((ConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
-                    mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
-                    mSwipeEnabled, mDragListener);
+        if (! (view instanceof ConversationItemView)) {
+            return;
         }
+        ((ConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
+                mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
+                        mSwipeEnabled, mDragListener);
     }
 
     @Override
@@ -128,19 +129,20 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public int getViewTypeCount() {
-        // Our normal view and the animating (not recycled) view
+        // TYPE_VIEW_CONVERSATION, TYPE_VIEW_ANIMATING, and TYPE_VIEW_FOOTER.
         return 3;
     }
 
     @Override
     public int getItemViewType(int position) {
-        // Don't recycle animating views
+        // Try to recycle views.
         if (isPositionAnimating(position)) {
-            return AdapterView.ITEM_VIEW_TYPE_IGNORE;
-        } else if (mShowFooter && position == super.getCount()) {
-            return ITEM_VIEW_TYPE_FOOTER;
+            return TYPE_VIEW_ANIMATING;
         }
-        return 0;
+        if (mShowFooter && position == super.getCount()) {
+            return TYPE_VIEW_FOOTER;
+        }
+        return TYPE_VIEW_CONVERSATION;
     }
 
     /**
@@ -176,8 +178,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
 
-        int startPosition = mListView.getFirstVisiblePosition();
-        int endPosition = mListView.getLastVisiblePosition();
+        final int startPosition = mListView.getFirstVisiblePosition();
+        final int endPosition = mListView.getLastVisiblePosition();
 
         // Only animate visible items
         for (int deletedRow: deletedRows) {
@@ -202,9 +204,24 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO (mindyp) turn off use of recycler for now as there is some issue
-        // in getItemViewType
-        convertView = null;
+        if (convertView != null) {
+            // Print errors if we get the wrong view type.
+            final int type = getItemViewType(position);
+            switch (type) {
+                case TYPE_VIEW_CONVERSATION:
+                    if (!(convertView instanceof ConversationItemView)) {
+                        LogUtils.e(LOG_TAG, "At position " + position + " expecting Conversation"
+                                + " got %s", convertView.toString());
+                    }
+                    break;
+                case TYPE_VIEW_ANIMATING:
+                    if (!(convertView instanceof AnimatingItemView)) {
+                        LogUtils.e(LOG_TAG, "At position " + position + " expecting Animating"
+                                + " got %s", convertView.toString());
+                    }
+                    break;
+            }
+        }
         if (mShowFooter && position == super.getCount()) {
             return mFooter;
         }
@@ -243,7 +260,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      */
     private View getAnimatingView(int position, View convertView, ViewGroup parent) {
         // We are getting the wrong view, and we need to gracefully carry on.
-        if (convertView != null || !(convertView instanceof AnimatingItemView)) {
+        if (convertView != null && !(convertView instanceof AnimatingItemView)) {
             LogUtils.d(LOG_TAG, "AnimatedAdapter.getAnimatingView received the wrong view!");
             convertView = null;
         }
@@ -252,8 +269,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (mUndo) {
             // The undo animation consists of fading in the conversation that
             // had been destroyed.
-            ConversationItemView convView = (ConversationItemView) super.getView(position, null,
-                    parent);
+            final ConversationItemView convView =
+                    (ConversationItemView) super.getView(position, null, parent);
             convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
                     mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
                     mSwipeEnabled, mDragListener);
@@ -280,14 +297,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 || (mUndo && mLastDeletingItems.contains(position));
     }
 
-    private boolean isPositionAnimating(View view) {
-        return (view instanceof AnimatingItemView);
-    }
-
-    private boolean isPositionFooter(View view) {
-        return (view instanceof ConversationListFooterView);
-    }
-
     @Override
     public void onAnimationStart(Animator animation) {
         if (mUndo) {
@@ -302,7 +311,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (mUndo && !mLastDeletingItems.isEmpty()) {
             // See if we have received all the animations we expected; if
             // so, call the listener and reset it.
-            int position = ((ConversationItemView) ((ObjectAnimator) animation).getTarget())
+            final int position = ((ConversationItemView) ((ObjectAnimator) animation).getTarget())
                     .getPosition();
             mLastDeletingItems.remove(position);
             if (mLastDeletingItems.isEmpty()) {
@@ -317,7 +326,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             // so, call the listener and reset it.
             AnimatingItemView target = ((AnimatingItemView) ((ObjectAnimator) animation)
                     .getTarget());
-            int position = target.getData().position;
+            final int position = target.getData().position;
             mDeletingItems.remove(position);
             if (mDeletingItems.isEmpty()) {
                 if (mActionCompleteListener != null) {
@@ -326,10 +335,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 }
             }
         }
+        // The view types have changed, since the animating views are gone.
+        notifyDataSetChanged();
     }
 
     @Override
     public boolean areAllItemsEnabled() {
+        // The animating positions are not enabled.
         return false;
     }
 
@@ -345,7 +357,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public void onAnimationRepeat(Animator animation) {
-        // TODO Auto-generated method stub
     }
 
     @Override

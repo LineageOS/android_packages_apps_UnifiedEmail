@@ -192,8 +192,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      */
     private void clearSelection() {
         mSelectionSet.clear();
-        // Redraw with changes
-        mListAdapter.notifyDataSetChanged();
     }
 
     /**
