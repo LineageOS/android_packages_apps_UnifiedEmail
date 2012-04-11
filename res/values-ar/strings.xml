@@ -48,7 +48,7 @@
     <string name="confirm_send_message" msgid="3221546155385562874">"هل تريد إرسال هذه الرسالة؟"</string>
     <string name="message_discarded" msgid="5079975378884765445">"تمّ إلغاء الرسالة."</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
-    <string name="custom_from_account_label" msgid="5069652141632649722">"إرسال بريد باسم"</string>
+    <string name="custom_from_account_label" msgid="5069652141632649722">"إرسال بريد كـ:"</string>
     <string name="send" msgid="8242003661397555986">"إرسال"</string>
     <string name="mark_read" msgid="8438349154394313195">"وضع علامة كمقروء"</string>
     <string name="mark_unread" msgid="6231373939351125713">"وضع علامة كـ \"غير مقروءة\""</string>

@@ -48,7 +48,7 @@
     <string name="confirm_send_message" msgid="3221546155385562874">"Отправить это сообщение?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Черновик удален."</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
-    <string name="custom_from_account_label" msgid="5069652141632649722">"Отправить как:"</string>
+    <string name="custom_from_account_label" msgid="5069652141632649722">"От:"</string>
     <string name="send" msgid="8242003661397555986">"Отправить"</string>
     <string name="mark_read" msgid="8438349154394313195">"Отметить как прочитанное"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Отметить как непрочитанное"</string>

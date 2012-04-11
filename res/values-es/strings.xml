@@ -286,6 +286,5 @@
     <string name="loading" msgid="2600808404156989255">"Cargando conversaciones..."</string>
     <string name="retry" msgid="4515885444824418022">"Reintentar"</string>
     <string name="load_more" msgid="420892447103014683">"Cargar más"</string>
-    <!-- no translation found for shortcut_name_title (8220482314700618391) -->
-    <skip />
+    <string name="shortcut_name_title" msgid="8220482314700618391">"Asignar nombre a acceso directo de carpeta"</string>
 </resources>
