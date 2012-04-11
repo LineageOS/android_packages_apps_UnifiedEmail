@@ -837,6 +837,15 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
+    /**
+     * Make sure mPosition is correct after locally deleting/undeleting items
+     */
+    private void recalibratePosition() {
+        int pos = mPosition;
+        moveToFirst();
+        moveToPosition(pos);
+    }
+
     @Override
     public boolean moveToLast() {
         throw new UnsupportedOperationException("moveToLast unsupported!");
@@ -1080,6 +1089,7 @@ public final class ConversationCursor implements Cursor {
                     undeleteLocal(uri);
                 }
                 mUndoSequence = 0;
+                sConversationCursor.recalibratePosition();
             }
         }
 
@@ -1105,7 +1115,9 @@ public final class ConversationCursor implements Cursor {
             }
             // Increment sequence count
             sSequence++;
+
             // Execute locally and build CPO's for underlying provider
+            boolean recalibrateRequired = false;
             for (ConversationOperation op: ops) {
                 Uri underlyingUri = uriFromCachingUri(op.mUri);
                 String authority = underlyingUri.getAuthority();
@@ -1115,8 +1127,16 @@ public final class ConversationCursor implements Cursor {
                     batchMap.put(authority, authOps);
                 }
                 authOps.add(op.execute(underlyingUri));
+                // Keep track of whether our operations require recalibrating the cursor position
+                if (op.mRecalibrateRequired) {
+                    recalibrateRequired = true;
+                }
             }
 
+            // Recalibrate cursor position if required
+            if (recalibrateRequired) {
+                sConversationCursor.recalibratePosition();
+            }
             // Notify listeners that data has changed
             sConversationCursor.notifyDataChanged();
 
@@ -1165,6 +1185,9 @@ public final class ConversationCursor implements Cursor {
         // This would be the case for a folder change in which the conversation is no longer
         // in the folder represented by the ConversationCursor
         private final boolean mLocalDeleteOnUpdate;
+        // After execution, this indicates whether or not the operation requires recalibration of
+        // the current cursor position (i.e. it removed or added items locally)
+        private boolean mRecalibrateRequired = true;
 
         /**
          * Set to true to immediately notify any {@link DataSetObserver}s watching the global
@@ -1205,6 +1228,7 @@ public final class ConversationCursor implements Cursor {
                         sProvider.deleteLocal(mUri);
                     } else {
                         sProvider.updateLocal(mUri, mValues);
+                        mRecalibrateRequired = false;
                     }
                     op = ContentProviderOperation.newUpdate(uri)
                             .withValues(mValues)
