@@ -99,7 +99,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
             try {
                 mReplyFromAccounts.addAll(getAccountSpecificFroms(account));
             } catch (JSONException e) {
-                LogUtils.wtf(LOG_TAG, "Failed parsing from addresses associated with account %s",
+                LogUtils.e(LOG_TAG, e, "Failed parsing from addresses associated with account %s",
                         account.name);
             }
         }
@@ -118,14 +118,19 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
             froms.add(replyFrom);
         }
         if (!TextUtils.isEmpty(account.accountFromAddresses)) {
-            JSONArray accounts = new JSONArray(account.accountFromAddresses);
-            JSONObject accountString;
-            for (int i = 0; i < accounts.length(); i++) {
-                accountString = (JSONObject) accounts.get(i);
-                ReplyFromAccount a = ReplyFromAccount.deserialize(account, accountString);
-                if (a != null) {
-                    froms.add(a);
+            try {
+                JSONArray accounts = new JSONArray(account.accountFromAddresses);
+                JSONObject accountString;
+                for (int i = 0; i < accounts.length(); i++) {
+                    accountString = (JSONObject) accounts.get(i);
+                    ReplyFromAccount a = ReplyFromAccount.deserialize(account, accountString);
+                    if (a != null) {
+                        froms.add(a);
+                    }
                 }
+            } catch (JSONException e) {
+                LogUtils.e(LOG_TAG, e, "Failed to parse accountFromAddresses for account %s",
+                        account.name);
             }
         }
         return froms;
