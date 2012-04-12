@@ -184,12 +184,12 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     }
 
     public void setAccounts(Account[] accounts) {
-        Account currentAccount = mController.getCurrentAccount();
+        final Account currentAccount = mController.getCurrentAccount();
         mSpinner.setAccounts(accounts);
 
         int position;
         for (position = 0; position < accounts.length; position++) {
-            if (accounts[position].equals(currentAccount)) {
+            if (accounts[position].uri.equals(currentAccount.uri)) {
                 break;
             }
         }
