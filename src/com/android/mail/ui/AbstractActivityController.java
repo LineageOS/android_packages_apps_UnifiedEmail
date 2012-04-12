@@ -139,6 +139,8 @@ public abstract class AbstractActivityController implements ActivityController, 
      */
     private final ConversationSelectionSet mSelectedSet = new ConversationSelectionSet();
 
+    private final int mFolderItemUpdateDelayMs;
+
     /**
      * Action menu associated with the selected set.
      */
@@ -167,6 +169,9 @@ public abstract class AbstractActivityController implements ActivityController, 
         // Allow the fragment to observe changes to its own selection set. No other object is
         // aware of the selected set.
         mSelectedSet.addObserver(this);
+
+        mFolderItemUpdateDelayMs =
+                mContext.getResources().getInteger(R.integer.folder_item_refresh_delay_ms);
     }
 
     @Override
@@ -977,8 +982,10 @@ public abstract class AbstractActivityController implements ActivityController, 
                 return new CursorLoader(mContext, MailAppProvider.getAccountsUri(),
                         UIProvider.ACCOUNTS_PROJECTION, null, null, null);
             case LOADER_FOLDER_CURSOR:
-                return new CursorLoader(mContext, mFolder.uri, UIProvider.FOLDERS_PROJECTION, null,
-                        null, null);
+                final CursorLoader loader = new CursorLoader(mContext, mFolder.uri,
+                        UIProvider.FOLDERS_PROJECTION, null, null, null);
+                loader.setUpdateThrottle(mFolderItemUpdateDelayMs);
+                return loader;
             case LOADER_RECENT_FOLDERS:
                 if (mAccount.recentFolderListUri != null) {
                     return new CursorLoader(mContext, mAccount.recentFolderListUri,
