@@ -1193,7 +1193,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 break;
             case R.id.help_info_menu_item:
                 // TODO: enable context sensitive help
-                Utils.showHelp(this, mAccount.helpIntentUri, null);
+                Utils.showHelp(this, mAccount, null);
                 break;
             case R.id.feedback_menu_item:
                 Utils.sendFeedback(this, mAccount);

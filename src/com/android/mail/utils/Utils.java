@@ -620,8 +620,12 @@ public class Utils {
      * @param fromWhere Information about the activity the user was in
      * when they requested help.
      */
-    public static void showHelp(Context context, Uri accountHelpUrl, String fromWhere) {
-        final Uri uri = addParamsToUrl(context, accountHelpUrl.toString());
+    public static void showHelp(Context context, Account account, String fromWhere) {
+        if (account == null || account.helpIntentUri == null) {
+            LogUtils.e(LOG_TAG, "unable to show help for account: %s", account);
+            return;
+        }
+        final Uri uri = addParamsToUrl(context, account.helpIntentUri.toString());
         Uri.Builder builder = uri.buildUpon();
         // Add the activity specific information parameter.
         if (fromWhere != null) {

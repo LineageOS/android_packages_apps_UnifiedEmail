@@ -541,7 +541,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 break;
             case R.id.help_info_menu_item:
                 // TODO: enable context sensitive help
-                Utils.showHelp(mActivity.getActivityContext(), mAccount.helpIntentUri, null);
+                Utils.showHelp(mActivity.getActivityContext(), mAccount, null);
                 break;
             case R.id.feedback_menu_item:
                 Utils.sendFeedback(mActivity.getActivityContext(), mAccount);
