@@ -175,7 +175,9 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         mController = callback;
         mActivity = activity;
 
-        mSpinner = new AccountSpinnerAdapter(getContext(), recentFolders);
+        // We don't want to include the "Show all folders" menu item on tablet devices
+        final boolean showAllFolders = !Utils.useTabletUI(getContext());
+        mSpinner = new AccountSpinnerAdapter(getContext(), recentFolders, showAllFolders);
         // Set the mode to Navigation mode and listen on navigation changes.
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         mActionBar.setListNavigationCallbacks(mSpinner, this);
@@ -248,6 +250,13 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 final Object folder = mSpinner.getItem(position);
                 assert (folder instanceof Folder);
                 mController.onFolderChanged((Folder) folder);
+                break;
+            case AccountSpinnerAdapter.TYPE_ALL_FOLDERS:
+                // Change the currently selected item to an element which is a spacer: valid
+                // but not useful. This allows us to receive subsequent taps on the
+                // "show all folders" menu item.
+                setSelectedPosition(mSpinner.getSpacerPosition());
+                mController.showFolderList();
                 break;
         }
         return false;

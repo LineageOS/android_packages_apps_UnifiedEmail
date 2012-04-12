@@ -294,7 +294,7 @@
     <!-- Strings used to show myself in a To/Cc list. [CHAR LIMIT=15] -->
     <string name="me">me</string>
     <string name="folders">Folders</string>
-    <!-- List item to open fodlers view in account dropdown [CHAR LIMIT=50] -->
+    <!-- List item to open folders view in account dropdown [CHAR LIMIT=50] -->
     <string name="show_all_folders">Show all folders</string>
 
     <plurals name="confirm_delete_conversation">
