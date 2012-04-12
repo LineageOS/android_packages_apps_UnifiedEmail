@@ -184,7 +184,6 @@ class AttachmentsView extends LinearLayout {
         attachment.size = 0;
         attachment.contentUri = uri;
         attachment.origin = isLocal ? Attachment.LOCAL_FILE : Attachment.SERVER_ATTACHMENT;
-        attachment.originExtras = uri.toString();
 
         Cursor metadataCursor = null;
         try {

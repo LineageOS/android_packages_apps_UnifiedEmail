@@ -149,7 +149,7 @@ public class Attachment implements Parcelable {
     }
 
     public Attachment(String attachmentString) {
-        String[] attachmentValues = attachmentString.split("\\|");
+        String[] attachmentValues = TextUtils.split(attachmentString, "\\|");
         if (attachmentValues != null) {
             partId = attachmentValues[0];
             name = attachmentValues[1];
@@ -170,8 +170,7 @@ public class Attachment implements Parcelable {
         // FIXME: contentType is read/written twice
         return TextUtils.join("|", Lists.newArrayList(partId == null ? "" : partId,
                 name == null ? "" : name.replaceAll("[|\n]", ""), contentType, size, contentType,
-                origin + "", contentUri, TextUtils.isEmpty(originExtras) ? contentUri
-                        : originExtras, ""));
+                origin + "", contentUri, originExtras == null ? "" : originExtras, ""));
     }
 
     private static Intent getOptionalIntentFromBlob(byte[] blob) {
