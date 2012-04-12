@@ -63,6 +63,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * The actual collection of sorted recent folders obtained from {@link #mRecentFolders}
      */
     private ArrayList<Folder> mRecentFolderList = new ArrayList<Folder>();
+    /**
+     * Boolean indicating whether the "Show All Folders" items should be shown
+     */
+    private final boolean mShowAllFoldersItem;
 
     /** The folder currently being viewed */
     private Folder mCurrentFolder;
@@ -71,6 +75,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public static final int TYPE_ACCOUNT = 0;
     public static final int TYPE_HEADER = 1;
     public static final int TYPE_FOLDER = 2;
+    public static final int TYPE_ALL_FOLDERS = 3;
 
     /**
      * There can be three types of views: Accounts (test@android.com, fifi@example.com), folders
@@ -89,6 +94,13 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         if (position == mNumAccounts) {
             return TYPE_HEADER;
         }
+        if (mShowAllFoldersItem) {
+            // The first few positions have accounts, and then the header.
+            final int offset = position - mNumAccounts - 1;
+            if (offset >= mRecentFolderList.size()) {
+                return TYPE_ALL_FOLDERS;
+            }
+        }
         // Finally, the recent folders.
         return TYPE_FOLDER;
     }
@@ -105,11 +117,14 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * Create a spinner adapter with the context and the list of recent folders.
      * @param context
      * @param recentFolders
+     * @param showAllFolders
      */
-    public AccountSpinnerAdapter(Context context, RecentFolderList recentFolders) {
+    public AccountSpinnerAdapter(Context context, RecentFolderList recentFolders,
+            boolean showAllFolders) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mRecentFolders = recentFolders;
+        mShowAllFoldersItem = showAllFolders;
     }
 
     /**
@@ -154,8 +169,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // All the accounts, plus one header, plus recent folders
-        return mNumAccounts + 1 + mRecentFolderList.size();
+        // All the accounts, plus one header, plus recent folders, plus one if the
+        // "show all folders" item should be shown
+        return mNumAccounts + 1 + mRecentFolderList.size() + (mShowAllFoldersItem ? 1 : 0);
     }
 
     @Override
@@ -165,6 +181,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 return getAccount(position);
             case TYPE_HEADER:
                 return "account spinner header";
+            case TYPE_ALL_FOLDERS:
+                return "show all folders";
             default:
                 // The first few positions have accounts, and then the header.
                 final int offset = position - mNumAccounts - 1;
@@ -208,8 +226,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        // Two views, and one header
-        return 3;
+        // Two views, and one header, and potentially one "show all folders" item
+        return 3 + (mShowAllFoldersItem ? 1 : 0);
     }
 
     @Override
@@ -247,6 +265,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 final Folder folder = mRecentFolderList.get(offset);
                 textLabel = folder.name;
                 unreadCount = folder.unreadCount;
+                break;
+            case TYPE_ALL_FOLDERS:
+                textLabel = mContext.getResources().getString(R.string.show_all_folders);
                 break;
         }
         convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
