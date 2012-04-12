@@ -310,14 +310,15 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         @Override
         public void onActionComplete() {
             mActionCompleteListener.onActionComplete();
-            Collection<Conversation> deletionSet = mDeletionSet;
-            if (deletionSet != null && deletionSet.size() > 0) {
+            final Collection<Conversation> deletionSet = mDeletionSet;
+            final boolean isDestructive = (deletionSet != null && deletionSet.size() > 0);
+            if (isDestructive) {
                 // Only show undo if this was a destructive folder change.
                 UndoOperation undoOp = new UndoOperation(deletionSet.size(), R.id.change_folder);
                 mUndoListener.onUndoAvailable(undoOp);
                 mDeletionSet = null;
             }
-            StringBuilder foldersUrisString = new StringBuilder();
+            final StringBuilder foldersUrisString = new StringBuilder();
             boolean first = true;
             for (Folder f : mFolderChangeList) {
                 if (first) {
@@ -333,6 +334,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     ConversationColumns.RAW_FOLDERS,
                     Folder.getSerializedFolderString(mFolder, mFolderChangeList));
             clearSelection();
+            if (isDestructive) {
+                mListAdapter.notifyDataSetChanged();
+            }
         }
     };
 
@@ -477,6 +481,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         deactivate();
         mSelectionSet.removeObserver(this);
         clearSelection();
+        mListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -553,6 +558,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     break;
             }
             clearSelection();
+            // The list calls notifyDataSetChanged on itself after destructive actions.
+            // We don't need to
         }
     }
 }
