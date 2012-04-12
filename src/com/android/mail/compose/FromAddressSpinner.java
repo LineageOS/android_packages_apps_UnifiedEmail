@@ -28,6 +28,7 @@ import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +40,7 @@ import java.util.List;
 public class FromAddressSpinner extends Spinner implements OnItemSelectedListener {
     private List<Account> mAccounts;
     private ReplyFromAccount mAccount;
-    private List<ReplyFromAccount> mReplyFromAccounts;
+    private final List<ReplyFromAccount> mReplyFromAccounts = Lists.newArrayList();
     private OnAccountChangedListener mAccountChangedListener;
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -94,7 +95,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
         }
         FromAddressSpinnerAdapter adapter = new FromAddressSpinnerAdapter(getContext());
 
-        mReplyFromAccounts = new ArrayList<ReplyFromAccount>();
+        mReplyFromAccounts.clear();
         for (Account account : mAccounts) {
             try {
                 mReplyFromAccounts.addAll(getAccountSpecificFroms(account));
