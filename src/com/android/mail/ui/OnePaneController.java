@@ -35,6 +35,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -212,6 +213,10 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void showFolderList() {
+        if (mAccount == null) {
+            LogUtils.e(LOG_TAG, "Null account in showFolderList");
+            return;
+        }
         mViewMode.enterFolderListMode();
         enableCabMode();
         mLastFolderListTransactionId = replaceFragment(
