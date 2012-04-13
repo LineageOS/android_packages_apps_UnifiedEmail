@@ -843,20 +843,25 @@ public abstract class AbstractActivityController implements ActivityController, 
                     loadAccountInbox();
                 }
             } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-                // Save this search query for future suggestions.
-                final String query = intent.getStringExtra(SearchManager.QUERY);
-                final String authority = mContext.getString(R.string.suggestions_authority);
-                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
-                        mContext, authority, SuggestionsProvider.MODE);
-                suggestions.saveRecentQuery(query, null);
+                if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
+                    // Save this search query for future suggestions.
+                    final String query = intent.getStringExtra(SearchManager.QUERY);
+                    final String authority = mContext.getString(R.string.suggestions_authority);
+                    SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
+                            mContext, authority, SuggestionsProvider.MODE);
+                    suggestions.saveRecentQuery(query, null);
 
-                mViewMode.enterSearchResultsListMode();
-                mAccount = (((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT)));
-                mActionBarView.setAccount(mAccount);
-                mActivity.invalidateOptionsMenu();
-                restartOptionalLoader(LOADER_RECENT_FOLDERS);
-                mRecentFolderList.setCurrentAccount(mAccount);
-                fetchSearchFolder(intent);
+                    mViewMode.enterSearchResultsListMode();
+                    mAccount = (Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
+                    mActionBarView.setAccount(mAccount);
+                    mActivity.invalidateOptionsMenu();
+                    restartOptionalLoader(LOADER_RECENT_FOLDERS);
+                    mRecentFolderList.setCurrentAccount(mAccount);
+                    fetchSearchFolder(intent);
+                } else {
+                    LogUtils.e(LOG_TAG, "Missing account extra from search intent.  Finishing");
+                    mActivity.finish();
+                }
             }
             if (mAccount != null) {
                 restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
@@ -993,7 +998,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 loader.setUpdateThrottle(mFolderItemUpdateDelayMs);
                 return loader;
             case LOADER_RECENT_FOLDERS:
-                if (mAccount.recentFolderListUri != null) {
+                if (mAccount != null && mAccount.recentFolderListUri != null) {
                     return new CursorLoader(mContext, mAccount.recentFolderListUri,
                             UIProvider.FOLDERS_PROJECTION, null, null, null);
                 }
