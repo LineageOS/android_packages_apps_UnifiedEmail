@@ -860,9 +860,11 @@ public class ConversationItemView extends View {
         sPaint.setTypeface(Typeface.DEFAULT);
         sPaint.setColor(mHeader.fontColor);
         canvas.save();
-        canvas.translate(mCoordinates.subjectX,
-                mCoordinates.subjectY + mHeader.subjectLayout.getTopPadding());
-        mHeader.subjectLayout.draw(canvas);
+        if (mHeader.subjectLayout != null) {
+            canvas.translate(mCoordinates.subjectX,
+                    mCoordinates.subjectY + mHeader.subjectLayout.getTopPadding());
+            mHeader.subjectLayout.draw(canvas);
+        }
         canvas.restore();
 
         // Folders.
