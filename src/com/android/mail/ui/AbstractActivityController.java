@@ -569,8 +569,7 @@ public abstract class AbstractActivityController implements ActivityController, 
      * @param activity
      * @return the autoadvance setting, a constant from {@link AutoAdvance}
      */
-    static int getAutoAdvanceSetting(RestrictedActivity activity) {
-        final Settings settings = activity.getSettings();
+    static int getAutoAdvanceSetting(Settings settings) {
         // TODO(mindyp): if this isn't set, then show the dialog telling the user to set it.
         // Remove defaulting to AutoAdvance.LIST.
         final int autoAdvance = (settings != null) ?
@@ -1331,7 +1330,7 @@ public abstract class AbstractActivityController implements ActivityController, 
          * @return
          */
         public Conversation getNextConversation() {
-            final int pref = getAutoAdvanceSetting(mActivity);
+            final int pref = getAutoAdvanceSetting(mCachedSettings);
             final boolean getNewer = (pref == AutoAdvance.NEWER && mTracker.hasNewer());
             final boolean getOlder = (pref == AutoAdvance.OLDER && mTracker.hasOlder());
             final Conversation next = getNewer ? mTracker.getNewer() :

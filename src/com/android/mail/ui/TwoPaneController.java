@@ -404,7 +404,7 @@ public final class TwoPaneController extends AbstractActivityController {
             final ArrayList<Conversation> single = new ArrayList<Conversation>();
             single.add(mCurrentConversation);
             int next = -1;
-            final int pref = getAutoAdvanceSetting(mActivity);
+            final int pref = getAutoAdvanceSetting(mCachedSettings);
             final Cursor c = mConversationListCursor;
             int updatedPosition = -1;
             final int position = mCurrentConversation.position;

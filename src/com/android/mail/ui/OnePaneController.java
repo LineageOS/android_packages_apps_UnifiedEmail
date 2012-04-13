@@ -468,7 +468,7 @@ public final class OnePaneController extends AbstractActivityController {
      */
     private boolean returnToList() {
         ConversationCursor conversationListCursor = mConversationListCursor;
-        int pref = getAutoAdvanceSetting(mActivity);
+        int pref = getAutoAdvanceSetting(mCachedSettings);
         final int position = mCurrentConversation.position;
         boolean canMove = false;
         switch (pref) {
