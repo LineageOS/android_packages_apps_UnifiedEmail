@@ -99,14 +99,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
         AttachmentDeletedListener, OnAccountChangedListener {
     // Identifiers for which type of composition this is
-    static final int COMPOSE = -1;
-    static final int REPLY = 0;
-    static final int REPLY_ALL = 1;
-    static final int FORWARD = 2;
-    static final int EDIT_DRAFT = 3;
+    public static final int COMPOSE = -1;
+    public static final int REPLY = 0;
+    public static final int REPLY_ALL = 1;
+    public static final int FORWARD = 2;
+    public static final int EDIT_DRAFT = 3;
 
     // Integer extra holding one of the above compose action
-    private static final String EXTRA_ACTION = "action";
+    public static final String EXTRA_ACTION = "action";
 
     private static final String EXTRA_SHOW_CC_BCC = "showCcBcc";
 
@@ -154,7 +154,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     static final String EXTRA_ATTACHMENTS = "attachments";
 
     //  If this is a reply/forward then this extra will hold the original message
-    private static final String EXTRA_IN_REFERENCE_TO_MESSAGE = "in-reference-to-message";
+    public static final String EXTRA_IN_REFERENCE_TO_MESSAGE = "in-reference-to-message";
     // If this is an action to edit an existing draft messagge, this extra will hold the
     // draft message
     private static final String ORIGINAL_DRAFT_MESSAGE = "original-draft-message";
