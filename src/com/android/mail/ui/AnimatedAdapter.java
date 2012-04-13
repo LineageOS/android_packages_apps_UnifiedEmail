@@ -131,8 +131,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public int getViewTypeCount() {
-        // TYPE_VIEW_CONVERSATION, TYPE_VIEW_ANIMATING, and TYPE_VIEW_FOOTER.
-        return 3;
+        // TYPE_VIEW_CONVERSATION, TYPE_VIEW_DELETING, TYPE_VIEW_UNDOING, and
+        // TYPE_VIEW_FOOTER.
+        return 4;
     }
 
     @Override
