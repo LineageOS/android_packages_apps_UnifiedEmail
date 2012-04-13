@@ -258,10 +258,14 @@ public abstract class AbstractActivityController implements ActivityController, 
                     public void onLoadFinished(Loader<ConversationCursor> loader,
                             ConversationCursor data) {
                         mConversationListCursor = data;
+
+                        // Call the method that updates things when values in the cursor change
                         if (mConversationListCursor.isRefreshReady()) {
-                            mConversationListCursor.sync();
-                            refreshAdapter();
+                            onRefreshReady();
                         }
+
+                        // Register the AbstractActivityController as a listener to changes in
+                        // data in the cursor.
                         if (mConversationListFragment != null) {
                             mConversationListFragment.onCursorUpdated();
                             if (!mConversationListenerAdded) {
@@ -271,8 +275,8 @@ public abstract class AbstractActivityController implements ActivityController, 
                                         .addListener(AbstractActivityController.this);
                                 mConversationListenerAdded = true;
                             }
-                            mTracker.updateCursor(mConversationListCursor);
                         }
+                        // Shown for search results in two-pane mode only.
                         if (shouldShowFirstConversation()) {
                             if (mConversationListCursor.getCount() > 0) {
                                 mConversationListCursor.moveToPosition(0);
@@ -282,7 +286,6 @@ public abstract class AbstractActivityController implements ActivityController, 
                                 onConversationSelected(conv);
                             }
                         }
-
                     }
 
                     @Override
@@ -1383,13 +1386,18 @@ public abstract class AbstractActivityController implements ActivityController, 
     @Override
     public void onRefreshRequired() {
         // Refresh the query in the background
-        getConversationListCursor().refresh();
+        mConversationListCursor.refresh();
         mTracker.updateCursor(mConversationListCursor);
     }
 
+    /**
+     * Called when the {@link ConversationCursor} is changed or has new data in it.
+     * <p>
+     * {@inheritDoc}
+     */
     @Override
     public void onRefreshReady() {
-        ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
+        final ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
         // If we have any deletions from the server, and the conversations are in the list view,
         // remove them from a selected set, if any
         if (!deletedRows.isEmpty() && !mSelectedSet.isEmpty()) {
@@ -1397,16 +1405,16 @@ public abstract class AbstractActivityController implements ActivityController, 
         }
         // If we have any deletions from the server, animate them away
         if (!deletedRows.isEmpty() && mConversationListFragment != null) {
-            AnimatedAdapter adapter = mConversationListFragment.getAnimatedAdapter();
+            final AnimatedAdapter adapter = mConversationListFragment.getAnimatedAdapter();
             if (adapter != null) {
-                mConversationListFragment.getAnimatedAdapter().delete(deletedRows,
-                       this);
+                adapter.delete(deletedRows, this);
             }
         } else {
             // Swap cursors
-            getConversationListCursor().sync();
+            mConversationListCursor.sync();
             refreshAdapter();
         }
+        mTracker.updateCursor(mConversationListCursor);
     }
 
     @Override
