@@ -21,10 +21,9 @@ import android.database.Cursor;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Conversation;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
+import com.android.mail.utils.LogUtils;
 
-import java.util.List;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * An iterator over a conversation list that keeps track of the position of a conversation, and
@@ -32,28 +31,16 @@ import java.util.List;
  * is in a different position.
  */
 public class ConversationPositionTracker {
-    /**
-     * Observer for changes in {@link ConversationPositionTracker}.
-     */
-    public interface Observer {
-        /**
-         * Method that is called when the conversation positions change.
-         * @param selectedConversationPos
-         * @param smoothScroll
-         */
-        // TODO(viki) why are we passing the selected conversation positions back?
-        void onPositionChanged(ConversationPositionTracker selectedConversationPos,
-                boolean smoothScroll);
-    }
+    protected static final String LOG_TAG = new LogUtils().getLogTag();
 
     /** Cursor into the conversations */
-    private ConversationCursor mCursor;
-    /** Observers interested in change in position */
-    private final List<Observer> mObservers = Lists.newArrayList();
-    /** Is the current position a valid position? */
-    private boolean mIsPositionValid;
+    private ConversationCursor mCursor = null;
+    /** Did we recalculate positions after updating the cursor? */
+    private boolean mCursorDirty = false;
     /** The currently selected conversation */
     private Conversation mConversation;
+    /** The selected set */
+    private final ConversationSelectionSet mSelectedSet;
 
     /**
      * This utility method returns the conversation ID at the current cursor position.
@@ -67,16 +54,8 @@ public class ConversationPositionTracker {
     /**
      * Constructs a position tracker that doesn't point to any specific conversation.
      */
-    public ConversationPositionTracker() {
-        initialize(null);
-    }
-
-    /**
-     * Constructs an iterator over the underlying conversation list data backed by the specified
-     * loader.
-     */
-    public ConversationPositionTracker(Conversation conversation) {
-        initialize(conversation);
+    public ConversationPositionTracker(ConversationSelectionSet selectedSet) {
+        mSelectedSet = selectedSet;
     }
 
     /**
@@ -84,18 +63,14 @@ public class ConversationPositionTracker {
      */
     public void clearPosition() {
         initialize(null);
-        notifyPositionChanged(false);
     }
 
-    /**
-     * @return the current conversation position.
-     */
-    public Conversation getConversation() {
-        if (mCursor == null || !mIsPositionValid) {
-            return null;
-        }
-        mCursor.moveToPosition(mConversation.position);
-        return new Conversation(mCursor);
+    /** Move cursor to a specific position and return the conversation there */
+    private Conversation conversationAtPosition(int position){
+        mCursor.moveToPosition(position);
+        final Conversation conv = new Conversation(mCursor);
+        conv.position = position;
+        return conv;
     }
 
     /**
@@ -114,29 +89,28 @@ public class ConversationPositionTracker {
      * conversation exists, this method returns null.
      */
     public Conversation getNewer() {
+        calculatePosition();
         if (!hasNewer()) {
             return null;
         }
-
-        mCursor.moveToPosition(mConversation.position - 1);
-        return new Conversation(mCursor);
+        return conversationAtPosition(mConversation.position - 1);
     }
 
     /**
      * @return the {@link Conversation} of the next newer conversation not in the selection set. If
      * no such conversation exists, this method returns null.
      */
-    public Conversation getNewer(ConversationSelectionSet batchConversations) {
-        if (!mIsPositionValid || !isDataLoaded()) {
+    public Conversation getNewerUnselected() {
+        calculatePosition();
+        if (!isDataLoaded()) {
             return null;
         }
 
-        int pos = mPosition - 1;
+        int pos = mConversation.position - 1;
         while (pos >= 0) {
-            mCursor.moveToPosition(pos);
-            final Conversation conversation = new Conversation(mCursor);
+            final Conversation conversation = conversationAtPosition(pos);
             final long id = conversation.id;
-            if (!batchConversations.containsKey(id)) {
+            if (!mSelectedSet.containsKey(id)) {
                 return conversation;
             }
             pos--;
@@ -149,26 +123,26 @@ public class ConversationPositionTracker {
      * conversation exists, this method returns null.
      */
     public Conversation getOlder() {
+        calculatePosition();
         if (!hasOlder()) {
             return null;
         }
-        mCursor.moveToPosition(mPosition + 1);
-        return new Conversation(mCursor);
+        return conversationAtPosition(mConversation.position + 1);
     }
 
     /**
      * @return the {@link Conversation} of the next older conversation not in the selection set.
      */
-    public Conversation getOlder(ConversationSelectionSet batchConversations) {
-        if (!mIsPositionValid || !isDataLoaded()) {
+    public Conversation getOlderUnselected() {
+        calculatePosition();
+        if (!isDataLoaded()) {
             return null;
         }
-        int pos = mPosition + 1;
+        int pos = mConversation.position + 1;
         while (pos < mCursor.getCount()) {
-            mCursor.moveToPosition(pos);
-            final Conversation conversation = new Conversation(mCursor);
+            final Conversation conversation = conversationAtPosition(pos);
             final long id = conversation.id;
-            if (!batchConversations.containsKey(id)) {
+            if (!mSelectedSet.containsKey(id)) {
                 return conversation;
             }
             pos++;
@@ -180,7 +154,8 @@ public class ConversationPositionTracker {
      * @return the current conversation position in the list.
      */
     public int getPosition() {
-        return mPosition;
+        calculatePosition();
+        return mConversation.position;
     }
 
     /**
@@ -188,7 +163,8 @@ public class ConversationPositionTracker {
      */
     @VisibleForTesting
     boolean hasNewer() {
-        return mIsPositionValid && isDataLoaded() && mCursor.moveToPosition(mPosition - 1);
+        calculatePosition();
+        return isDataLoaded() && mCursor.moveToPosition(mConversation.position - 1);
     }
 
     /**
@@ -196,98 +172,25 @@ public class ConversationPositionTracker {
      */
     @VisibleForTesting
     boolean hasOlder() {
-        return mIsPositionValid && isDataLoaded() && mCursor.moveToPosition(mPosition + 1);
+        calculatePosition();
+        return isDataLoaded() && mCursor.moveToPosition(mConversation.position + 1);
     }
 
     /**
      *  Initializes the tracker with initial conversation id and initial position. This invalidates
      *  the positions in the tracker. We need a valid cursor before we can bless the position as
      *  valid. This requires a call to
-     *  {@link #updateAdapterAndCursor(AnimatedAdapter, ConversationCursor)}.
+     *  {@link #updateCursor(ConversationCursor)}.
      */
     public void initialize(Conversation conversation) {
+        final String d = (conversation == null) ? "NOOL" : conversation.toString();
         mConversation = conversation;
-        // Unless we have any cursor, this is an invalid position.
-        mIsPositionValid = false;
+        mCursorDirty = true;
     }
 
     /** @return whether or not we have a valid cursor to check the position of. */
     private boolean isDataLoaded() {
         return mCursor != null && !mCursor.isClosed();
-    }
-
-    /**
-     * @return whether or not the position is still a valid position in the conversation list.
-     */
-    public boolean isValid() {
-        return mIsPositionValid && (mPosition >= 0);
-    }
-
-    /**
-     * Moves to a specific position in the list.
-     * @return true if the move was successful and false otherwise.
-     */
-    public boolean moveToPosition(int position, boolean smoothScroll) {
-        if (!isDataLoaded() || !mCursor.moveToPosition(position)) {
-            return false;
-        }
-        mPosition = position;
-        mConversationId = getConversationId(mCursor);
-        notifyPositionChanged(smoothScroll);
-        return true;
-    }
-
-    /**
-     * Let the observers know that the underlying list data has changed.
-     * @param smoothScroll
-     */
-    private void notifyPositionChanged(boolean smoothScroll) {
-        for (Observer observer : Lists.newArrayList(mObservers)) {
-            observer.onPositionChanged(this, smoothScroll);
-        }
-    }
-
-    private boolean onListDataChanged(AnimatedAdapter listAdapter, boolean positionIsValidBefore) {
-        // Update the internal state for where the current conversation is in
-        // the list.
-        int conversationPosition = 0;
-        while (listAdapter.getItem(conversationPosition) != null) {
-            if (listAdapter.getItemId(conversationPosition) == mConversationId) {
-                final boolean changed = mPosition != conversationPosition;
-                mPosition = conversationPosition;
-                mIsPositionValid = true;
-
-                if (changed || !positionIsValidBefore) {
-                    // Pre-emptively try to load the next cursor position so
-                    // that the cursor window can be filled. The odd behavior of
-                    // the ConversationCursor requires us to do this to ensure
-                    // the adjacent conversation information is loaded for calls
-                    // to hasNext.
-                    notifyPositionChanged(!positionIsValidBefore);
-                }
-                return true;
-            }
-            conversationPosition++;
-        }
-
-        // If the conversation is no longer found in the list, try to save the same position if
-        // it is still a valid position. Otherwise, go back to a valid position until we can find
-        // a valid one.
-        final int listSize = listAdapter.getCount();
-        if (mPosition >= listSize) {
-            if (listSize == 0) {
-                mIsPositionValid = false;
-            } else {
-                mPosition = listAdapter.getCount() - 1;
-            }
-        }
-
-        // Did not keep the same conversation, but could still be a valid conversation.
-        if (mIsPositionValid) {
-            mConversationId = listAdapter.getItemId(mPosition);
-            notifyPositionChanged(true);
-        }
-        return false;
     }
 
     /**
@@ -299,81 +202,73 @@ public class ConversationPositionTracker {
      * @return Whether or not the same conversation was found after the update and this position
      *     tracker is in a valid state.
      */
-    public boolean updateAdapterAndCursor(AnimatedAdapter listAdapter, ConversationCursor cursor) {
+    public void updateCursor(ConversationCursor cursor) {
         mCursor = cursor;
-        // If we don't have a valid position, exit early.
-        if (mPosition < 0) {
-            return false;
-        }
-
-        if (!isDataLoaded()) {
-            mIsPositionValid = false;
-            return false;
-        }
-
-        // We only need to scroll the list if originally the position is not
-        // valid.
-        final boolean positionIsValidBefore = mIsPositionValid;
-        if (listAdapter != null) {
-            return onListDataChanged(listAdapter, positionIsValidBefore);
-        } else {
-            return onListDataChanged(mCursor, positionIsValidBefore);
-        }
-
+        // Now we should run applyCursor before proceeding.
+        mCursorDirty = true;
     }
 
-    private boolean onListDataChanged(ConversationCursor cursor, boolean positionIsValidBefore) {
+    /**
+     * Recalculate the current position based on the cursor. This needs to be done once for
+     * each (Conversation, Cursor) pair. We could do this on every change of conversation or
+     * cursor, but that would be wasteful, since the recalculation of position is only required
+     * when transitioning to the next conversation. Transitions don't happen frequently, but
+     * changes in conversation and cursor do. So we defer this till it is actually needed.
+     *
+     * This method could change the current conversation if it cannot find the current conversation
+     * in the cursor. When this happens, this method sets the current conversation to some safe
+     * value and logs the reasons why it couldn't find the conversation.
+     *
+     * Calling this method repeatedly is safe: it returns early if it detects it has already been
+     * called.
+     */
+    private void calculatePosition() {
+        // Run this method once for a mConversation, mCursor pair.
+        if (!mCursorDirty) {
+            return;
+        }
+        mCursorDirty = false;
+
+        // If we don't have a valid position, exit early.
+        if (mConversation.position < 0) {
+            return;
+        }
+
+        final int listSize = (mCursor == null) ? 0 : mCursor.getCount();
+        if (!isDataLoaded() || listSize == 0) {
+            return;
+        }
         // Update the internal state for where the current conversation is in
-        // the list.
-        int conversationPosition = 0;
-        while (mCursor.moveToPosition(conversationPosition)) {
-            if (getConversationId(mCursor) == mConversationId) {
-
-                mPosition = conversationPosition;
-                mIsPositionValid = true;
-
+        // the list.  Start from the beginning and find the current conversation in it.
+        int newPosition = 0;
+        while (mCursor.moveToPosition(newPosition)) {
+            if (getConversationId(mCursor) == mConversation.id) {
+                mConversation.position = newPosition;
+                final boolean changed = (mConversation.position != newPosition);
                 // Pre-emptively try to load the next cursor position so that the cursor window
                 // can be filled. The odd behavior of the ConversationCursor requires us to do this
                 // to ensure the adjacent conversation information is loaded for calls to hasNext.
-                mCursor.moveToPosition(conversationPosition + 1);
-
-                notifyPositionChanged(!positionIsValidBefore);
-                return true;
+                mCursor.moveToPosition(newPosition + 1);
+                return;
             }
-            conversationPosition++;
+            newPosition++;
         }
         // If the conversation is no longer found in the list, try to save the same position if
         // it is still a valid position. Otherwise, go back to a valid position until we can find
         // a valid one.
-        final int listSize = mCursor.getCount();
-        if (mPosition >= listSize) {
-            if (listSize == 0) {
-                mIsPositionValid = false;
-            } else {
-                mPosition = mCursor.getCount() - 1;
-            }
+        if (mConversation.position >= listSize) {
+            // Go to the last position since our expected position is past this somewhere.
+            newPosition = mCursor.getCount() - 1;
         }
 
         // Did not keep the same conversation, but could still be a valid conversation.
-        if (mIsPositionValid) {
-            mCursor.moveToPosition(mPosition);
-            mConversationId = getConversationId(mCursor);
-            notifyPositionChanged(true);
+        if (isDataLoaded()){
+            LogUtils.d(LOG_TAG, "ConversationPositionTracker: Could not find conversation %s" +
+                    " in the cursor. Moving to position %d ", mConversation.toString(),
+                    newPosition);
+            mCursor.moveToPosition(newPosition);
+            mConversation = new Conversation(mCursor);
         }
-        return false;
-    }
-
-    /**
-     * Registers an observer to be notified when the selected conversation position changed.
-     */
-    public void registerObserver(Observer observer) {
-        mObservers.add(observer);
-    }
-
-    /**
-     * Unregisters an observer.
-     */
-    public void unregisterObserver(Observer observer) {
-        mObservers.remove(observer);
+        return;
     }
 }
