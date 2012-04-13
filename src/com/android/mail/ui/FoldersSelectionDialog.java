@@ -75,7 +75,8 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
             HashSet<String> conversationFolders = new HashSet<String>();
             for (Conversation conversation: selectedConversations) {
                 if (conversation != null && !TextUtils.isEmpty(conversation.folderList)) {
-                    conversationFolders.addAll(Arrays.asList(conversation.folderList.split(",")));
+                    conversationFolders.addAll(Arrays.asList(TextUtils.split(
+                            conversation.folderList, ",")));
                 }
             }
             mAdapter = new FolderSelectorAdapter(context, foldersCursor,

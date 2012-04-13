@@ -93,7 +93,7 @@ public class SuggestionsProvider extends SearchSuggestionsProvider {
         // Get the custom suggestions for email which are from, to, etc.
         if (query != null) {
             // Tokenize the query.
-            String[] tokens = query.split(" ");
+            String[] tokens = TextUtils.split(query, " ");
             // There are multiple tokens, so query on the last token only.
             if (tokens != null && tokens.length > 1) {
                 query = tokens[tokens.length - 1];

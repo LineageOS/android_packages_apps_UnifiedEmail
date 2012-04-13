@@ -115,7 +115,7 @@ public class MimeType {
         final String supportedTypes = Gservices.getString(
                 context.getContentResolver(), GservicesKeys.GMAIL_GVIEW_SUPPORTED_TYPES);
         if (supportedTypes != null) {
-            sGviewSupportedTypes = ImmutableSet.of(supportedTypes.split(","));
+            sGviewSupportedTypes = ImmutableSet.of(TextUtils.split(supportedTypes, ","));
         }
         return sGviewSupportedTypes.contains(contentType);
     }*/

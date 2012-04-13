@@ -263,8 +263,8 @@ public class Attachment implements Parcelable {
         ArrayList<Attachment> infoList = new ArrayList<Attachment>();
         if (!TextUtils.isEmpty(infoString)) {
             Attachment attachment;
-            String[] attachmentStrings = infoString
-                    .split(UIProvider.MESSAGE_ATTACHMENT_INFO_SEPARATOR);
+            String[] attachmentStrings = TextUtils.split(infoString,
+                    UIProvider.MESSAGE_ATTACHMENT_INFO_SEPARATOR);
             for (String attachmentString : attachmentStrings) {
                 attachment = new Attachment(attachmentString);
                 infoList.add(attachment);

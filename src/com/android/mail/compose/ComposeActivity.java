@@ -688,7 +688,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     String toText = dataUri.getSchemeSpecificPart();
                     if (toText != null) {
                         mTo.setText("");
-                        addToAddresses(Arrays.asList(toText.split(",")));
+                        addToAddresses(Arrays.asList(TextUtils.split(toText, ",")));
                     }
                 }
             }
@@ -716,11 +716,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (intent.hasExtra(extra)) {
                 String value = intent.getStringExtra(extra);
                 if (EXTRA_TO.equals(extra)) {
-                    addToAddresses(Arrays.asList(value.split(",")));
+                    addToAddresses(Arrays.asList(TextUtils.split(value, ",")));
                 } else if (EXTRA_CC.equals(extra)) {
-                    addCcAddresses(Arrays.asList(value.split(",")), null);
+                    addCcAddresses(Arrays.asList(TextUtils.split(value, ",")), null);
                 } else if (EXTRA_BCC.equals(extra)) {
-                    addBccAddresses(Arrays.asList(value.split(",")));
+                    addBccAddresses(Arrays.asList(TextUtils.split(value, ",")));
                 } else if (EXTRA_SUBJECT.equals(extra)) {
                     mSubject.setText(value);
                 } else if (EXTRA_BODY.equals(extra)) {
@@ -772,7 +772,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             } else {
                 to = decodeEmailInUri(mailToString.substring(length, index));
             }
-            addToAddresses(Arrays.asList(to.split(" ,")));
+            addToAddresses(Arrays.asList(TextUtils.split(to, ",")));
         } catch (UnsupportedEncodingException e) {
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
                 LogUtils.e(LOG_TAG, "%s while decoding '%s'", e.getMessage(), mailToString);
