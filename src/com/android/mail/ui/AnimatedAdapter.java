@@ -42,9 +42,11 @@ import java.util.HashSet;
 public class AnimatedAdapter extends SimpleCursorAdapter implements
         android.animation.Animator.AnimatorListener, OnUndoCancelListener {
     private final static int TYPE_VIEW_CONVERSATION = 0;
-    private final static int TYPE_VIEW_ANIMATING = 1;
-    private final static int TYPE_VIEW_FOOTER = 2;
+    private final static int TYPE_VIEW_DELETING = 1;
+    private final static int TYPE_VIEW_UNDOING = 2;
+    private final static int TYPE_VIEW_FOOTER = 3;
     private HashSet<Integer> mDeletingItems = new HashSet<Integer>();
+    private HashSet<Integer> mUndoingItems = new HashSet<Integer>();
     private Account mSelectedAccount;
     private Context mContext;
     private ConversationSelectionSet mBatchConversations;
@@ -93,8 +95,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public void setUndo(boolean state) {
         mUndo = state;
         if (mUndo) {
-            mDeletingItems.clear();
-            mDeletingItems.addAll(mLastDeletingItems);
+            mUndoingItems.addAll(mLastDeletingItems);
+            mLastDeletingItems.clear();
             // Start animation
             notifyDataSetChanged();
             mActionCompleteListener = new ActionCompleteListener() {
@@ -136,8 +138,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public int getItemViewType(int position) {
         // Try to recycle views.
-        if (isPositionAnimating(position)) {
-            return TYPE_VIEW_ANIMATING;
+        if (isPositionDeleting(position)) {
+            return TYPE_VIEW_DELETING;
+        }
+        if (isPositionUndoing(position)) {
+            return TYPE_VIEW_UNDOING;
         }
         if (mShowFooter && position == super.getCount()) {
             return TYPE_VIEW_FOOTER;
@@ -204,29 +209,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView != null) {
-            // Print errors if we get the wrong view type.
-            final int type = getItemViewType(position);
-            switch (type) {
-                case TYPE_VIEW_CONVERSATION:
-                    if (!(convertView instanceof ConversationItemView)) {
-                        LogUtils.e(LOG_TAG, "At position " + position + " expecting Conversation"
-                                + " got %s", convertView.toString());
-                    }
-                    break;
-                case TYPE_VIEW_ANIMATING:
-                    if (!(convertView instanceof AnimatingItemView)) {
-                        LogUtils.e(LOG_TAG, "At position " + position + " expecting Animating"
-                                + " got %s", convertView.toString());
-                    }
-                    break;
-            }
-        }
         if (mShowFooter && position == super.getCount()) {
             return mFooter;
         }
-        if (isPositionAnimating(position)) {
-            return getAnimatingView(position, convertView, parent);
+        if (isPositionUndoing(position)) {
+            return getUndoingView(position, convertView, parent);
+        } else if (isPositionDeleting(position)) {
+            return getDeletingView(position, convertView, parent);
         }
         // TODO: do this in the swipe helper?
         // If this view gets recycled, we need to reset things set by the
@@ -258,7 +247,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * @param parent the parent view
      * @return the view to show when animating an operation.
      */
-    private View getAnimatingView(int position, View convertView, ViewGroup parent) {
+    private View getDeletingView(int position, View convertView, ViewGroup parent) {
         // We are getting the wrong view, and we need to gracefully carry on.
         if (convertView != null && !(convertView instanceof AnimatingItemView)) {
             LogUtils.d(LOG_TAG, "AnimatedAdapter.getAnimatingView received the wrong view!");
@@ -266,22 +255,24 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
         Conversation conversation = new Conversation((ConversationCursor) getItem(position));
         conversation.position = position;
-        if (mUndo) {
-            // The undo animation consists of fading in the conversation that
-            // had been destroyed.
-            final ConversationItemView convView =
-                    (ConversationItemView) super.getView(position, null, parent);
-            convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
-                    mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
-                    mSwipeEnabled, mDragListener);
-            convView.startUndoAnimation(mViewMode, this);
-            return convView;
-        } else {
-            // Destroying a conversation just shows a blank shrinking item.
-            final AnimatingItemView view = new AnimatingItemView(mContext);
-            view.startAnimation(conversation, mViewMode, this);
-            return view;
-        }
+        // Destroying a conversation just shows a blank shrinking item.
+        final AnimatingItemView view = new AnimatingItemView(mContext);
+        view.startAnimation(conversation, mViewMode, this);
+        return view;
+    }
+
+    private View getUndoingView(int position, View convertView, ViewGroup parent) {
+        Conversation conversation = new Conversation((ConversationCursor) getItem(position));
+        conversation.position = position;
+        // The undo animation consists of fading in the conversation that
+        // had been destroyed.
+        final ConversationItemView convView = (ConversationItemView) super.getView(position, null,
+                parent);
+        convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
+                mCachedSettings != null ? mCachedSettings.hideCheckboxes : false, mSwipeEnabled,
+                mDragListener);
+        convView.startUndoAnimation(mViewMode, this);
+        return convView;
     }
 
     @Override
@@ -292,9 +283,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return super.getItem(position);
     }
 
-    private boolean isPositionAnimating(int position) {
-        return mDeletingItems.contains(position)
-                || (mUndo && mLastDeletingItems.contains(position));
+    private boolean isPositionDeleting(int position) {
+        return mDeletingItems.contains(position);
+    }
+
+    private boolean isPositionUndoing(int position) {
+        return mUndoingItems.contains(position);
     }
 
     @Override
@@ -303,18 +297,20 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mDeletingItems.clear();
             mLastDeletingItems.clear();
             mUndo = false;
+        } else {
+            mUndoingItems.clear();
         }
     }
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        if (mUndo && !mLastDeletingItems.isEmpty()) {
+        if (mUndo && !mUndoingItems.isEmpty()) {
             // See if we have received all the animations we expected; if
             // so, call the listener and reset it.
             final int position = ((ConversationItemView) ((ObjectAnimator) animation).getTarget())
                     .getPosition();
-            mLastDeletingItems.remove(position);
-            if (mLastDeletingItems.isEmpty()) {
+            mUndoingItems.remove(position);
+            if (mUndoingItems.isEmpty()) {
                 if (mActionCompleteListener != null) {
                     mActionCompleteListener.onActionComplete();
                     mActionCompleteListener = null;
@@ -347,7 +343,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public boolean isEnabled(int position) {
-        return !isPositionAnimating(position);
+        return !isPositionDeleting(position) && !isPositionUndoing(position);
     }
 
     @Override
