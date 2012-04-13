@@ -48,7 +48,7 @@
     <string name="confirm_send_message" msgid="3221546155385562874">"Gửi tin nhắn này?"</string>
     <string name="message_discarded" msgid="5079975378884765445">"Tin nhắn đã bị hủy."</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
-    <string name="custom_from_account_label" msgid="5069652141632649722">"Gửi với đ.chỉ:"</string>
+    <string name="custom_from_account_label" msgid="5069652141632649722">"Gửi với địa chỉ:"</string>
     <string name="send" msgid="8242003661397555986">"Gửi"</string>
     <string name="mark_read" msgid="8438349154394313195">"Đánh dấu là đã đọc"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Đánh dấu là chưa đọc"</string>
@@ -287,4 +287,16 @@
     <string name="retry" msgid="4515885444824418022">"Thử lại"</string>
     <string name="load_more" msgid="420892447103014683">"Tải thêm"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Lối tắt thư mục tên"</string>
+    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
+    <skip />
+    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
+    <skip />
+    <!-- no translation found for not_synced_title (794279749170198599) -->
+    <skip />
+    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
+    <skip />
+    <!-- no translation found for manual_sync (6743983544685622800) -->
+    <skip />
+    <!-- no translation found for change_sync_settings (5514293926214426577) -->
+    <skip />
 </resources>

@@ -247,7 +247,7 @@
     <string name="show_elided" msgid="5255917904110437886">"▶ Tampilkan kutipan teks"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Sembunyikan kutipan teks"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
-    <string name="ok" msgid="8339355733816891026">"OK"</string>
+    <string name="ok" msgid="8339355733816891026">"Oke"</string>
     <string name="done" msgid="3079981801778027540">"Selesai"</string>
     <string name="cancel" msgid="8762981157252199115">"Batal"</string>
     <string name="close" msgid="419945428844076406">"Tutup"</string>
@@ -286,6 +286,17 @@
     <string name="loading" msgid="2600808404156989255">"Memuat percakapan..."</string>
     <string name="retry" msgid="4515885444824418022">"Coba lagi"</string>
     <string name="load_more" msgid="420892447103014683">"Muat lainnya"</string>
-    <!-- no translation found for shortcut_name_title (8220482314700618391) -->
+    <string name="shortcut_name_title" msgid="8220482314700618391">"Beri nama pintasan folder"</string>
+    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
+    <skip />
+    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
+    <skip />
+    <!-- no translation found for not_synced_title (794279749170198599) -->
+    <skip />
+    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
+    <skip />
+    <!-- no translation found for manual_sync (6743983544685622800) -->
+    <skip />
+    <!-- no translation found for change_sync_settings (5514293926214426577) -->
     <skip />
 </resources>
