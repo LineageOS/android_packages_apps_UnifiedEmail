@@ -278,7 +278,7 @@ final class TwoPaneLayout extends RelativeLayout
     /**
      * Computes the width of the conversation list in stable state of the current mode.
      */
-    private int computeConversationListWidth() {
+    protected int computeConversationListWidth() {
         return computeConversationListWidth(getMeasuredWidth());
     }
 

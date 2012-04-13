@@ -37,8 +37,9 @@ import android.app.FragmentTransaction;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -305,6 +306,8 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public boolean onBackPressed() {
+        // Clear any visible undo bars.
+        mUndoBarView.hide(false);
         popView(false);
         return true;
     }
@@ -430,12 +433,18 @@ public final class TwoPaneController extends AbstractActivityController {
                 }
             }
             TwoPaneController.this.onActionComplete();
-            onUndoAvailable(new UndoOperation(1, mAction));
             if (next != -1) {
                 mConversationListFragment.viewConversation(next);
                 mCurrentConversation.position = updatedPosition;
+                onUndoAvailable(new UndoOperation(1, mAction));
             } else {
                 onBackPressed();
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onUndoAvailable(new UndoOperation(1, mAction));
+                    }
+                });
             }
             performConversationAction(single);
             mConversationListFragment.requestListRefresh();
@@ -455,13 +464,12 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public void onUndoAvailable(UndoOperation op) {
         int mode = mViewMode.getMode();
-        RelativeLayout.LayoutParams params;
+        FrameLayout.LayoutParams params;
         switch (mode) {
             case ViewMode.CONVERSATION_LIST:
-                params = (RelativeLayout.LayoutParams) mUndoBarView.getLayoutParams();
-                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-                params.width = mConversationListFragment.getListView().getWidth();
+                params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
+                params.width = mLayout.computeConversationListWidth();
+                params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                 mUndoBarView.setLayoutParams(params);
                 mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
                         mConversationListFragment.getAnimatedAdapter());
@@ -469,15 +477,13 @@ public final class TwoPaneController extends AbstractActivityController {
             case ViewMode.CONVERSATION:
                 if (op.mBatch) {
                     // Show undo bar in the conversation list.
-                    params = (RelativeLayout.LayoutParams) mUndoBarView.getLayoutParams();
-                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                    params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-                    params.width = mConversationListFragment.getListView().getWidth();
+                    params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
+                    params.gravity = Gravity.BOTTOM | Gravity.LEFT;
+                    params.width = mLayout.computeConversationListWidth();
                 } else {
                     // Show undo bar in the conversation.
-                    params = (RelativeLayout.LayoutParams) mUndoBarView.getLayoutParams();
-                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                    params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                    params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
+                    params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                     params.width = mConversationViewFragment.getView().getWidth();
                 }
                 mUndoBarView.setLayoutParams(params);
