@@ -141,6 +141,10 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     private final int mFolderItemUpdateDelayMs;
 
+    /** Keeps track of selected and unselected conversations */
+    private final ConversationPositionTracker mTracker =
+            new ConversationPositionTracker(mSelectedSet);
+
     /**
      * Action menu associated with the selected set.
      */
@@ -267,6 +271,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                                         .addListener(AbstractActivityController.this);
                                 mConversationListenerAdded = true;
                             }
+                            mTracker.updateCursor(mConversationListCursor);
                         }
                         if (shouldShowFirstConversation()) {
                             if (mConversationListCursor.getCount() > 0) {
@@ -969,6 +974,7 @@ public abstract class AbstractActivityController implements ActivityController, 
      */
     protected void setCurrentConversation(Conversation conversation) {
         mCurrentConversation = conversation;
+        mTracker.initialize(mCurrentConversation);
     }
 
     /**
@@ -1119,8 +1125,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 newAccount = mAccount;
             }
         } else {
-            final String lastAccountUri = MailAppProvider.getInstance()
-                    .getLastViewedAccount();
+            final String lastAccountUri = MailAppProvider.getInstance().getLastViewedAccount();
             if (lastAccountUri != null) {
                 for (int i = 0; i < allAccounts.length; i++) {
                     final Account acct = allAccounts[i];
@@ -1312,25 +1317,17 @@ public abstract class AbstractActivityController implements ActivityController, 
             }
         }
 
+        /**
+         * Get the next conversation according to the AutoAdvance settings and the list of
+         * conversations available in the folder.
+         * @return
+         */
         public Conversation getNextConversation() {
-            Conversation next = null;
-            int pref = getAutoAdvanceSetting(mActivity);
-            Cursor c = mConversationListCursor;
-            if (c != null) {
-                c.moveToPosition(mCurrentConversation.position);
-            }
-            switch (pref) {
-                case AutoAdvance.NEWER:
-                    if (c.moveToPrevious()) {
-                        next = new Conversation(c);
-                    }
-                    break;
-                case AutoAdvance.OLDER:
-                    if (c.moveToNext()) {
-                        next = new Conversation(c);
-                    }
-                    break;
-            }
+            final int pref = getAutoAdvanceSetting(mActivity);
+            final boolean getNewer = (pref == AutoAdvance.NEWER && mTracker.hasNewer());
+            final boolean getOlder = (pref == AutoAdvance.OLDER && mTracker.hasOlder());
+            final Conversation next = getNewer ? mTracker.getNewer() :
+                (getOlder ? mTracker.getOlder() : null);
             return next;
         }
 
@@ -1382,6 +1379,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     public void onRefreshRequired() {
         // Refresh the query in the background
         getConversationListCursor().refresh();
+        mTracker.updateCursor(mConversationListCursor);
     }
 
     @Override
