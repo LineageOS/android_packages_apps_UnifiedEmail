@@ -65,6 +65,12 @@ public class Conversation implements Parcelable {
     // in the ConversationList for the current folder, that is it's now in some other folder(s)
     public transient boolean localDeleteOnUpdate;
 
+    // Constituents of convFlags below
+    // Flag indicating that the item has been deleted, but will continue being shown in the list
+    // Delete/Archive of a mostly-dead item will NOT propagate the delete/archive, but WILL remove
+    // the item from the cursor
+    public static final int FLAG_MOSTLY_DEAD = 1 << 0;
+
     @Override
     public int describeContents() {
         return 0;
@@ -207,11 +213,28 @@ public class Conversation implements Parcelable {
         return conversation;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return uri.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return uri.hashCode();
+    }
+
     /**
      * Get if this conversation is marked as high priority.
      */
     public boolean isImportant() {
         return priority == UIProvider.ConversationPriority.IMPORTANT;
+    }
+
+    /**
+     * Get if this conversation is mostly dead
+     */
+    public boolean isMostlyDead() {
+        return (convFlags & FLAG_MOSTLY_DEAD) != 0;
     }
 
     // Below are methods that update Conversation data (update/delete)
@@ -310,6 +333,28 @@ public class Conversation implements Parcelable {
     }
 
     /**
+     * Delete a single conversation
+     * @param context the caller's context
+     * @return the sequence number of the operation (for undo)
+     */
+    public int mostlyArchive(Context context) {
+        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
+        conversations.add(this);
+        return archive(context, conversations);
+    }
+
+    /**
+     * Delete a single conversation
+     * @param context the caller's context
+     * @return the sequence number of the operation (for undo)
+     */
+    public int mostlyDelete(Context context) {
+        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
+        conversations.add(this);
+        return delete(context, conversations);
+    }
+
+    /**
      * Mark a single conversation read/unread.
      * @param context the caller's context
      * @param read true for read, false for unread
@@ -323,23 +368,6 @@ public class Conversation implements Parcelable {
                 context,
                 getOperationsForConversations(Arrays.asList(this), ConversationOperation.UPDATE,
                         values, true /* autoNotify */));
-    }
-
-    /**
-     * Delete a group of conversations immediately in the UI and in a single transaction in the
-     * underlying provider
-     * @param context the caller's context
-     * @param conversations a collection of conversations
-     * @return the sequence number of the operation (for undo)
-     */
-    public static int delete(Context context, Collection<Conversation> conversations) {
-        ArrayList<ConversationOperation> ops = Lists.newArrayList();
-        for (Conversation conv: conversations) {
-            ConversationOperation op =
-                    new ConversationOperation(ConversationOperation.DELETE, conv);
-            ops.add(op);
-        }
-        return apply(context, ops);
     }
 
     // Convenience methods
@@ -381,31 +409,62 @@ public class Conversation implements Parcelable {
         undoLocal(context);
     }
 
+    /**
+     * Delete a group of conversations immediately in the UI and in a single transaction in the
+     * underlying provider. See applyAction for argument descriptions
+     */
+    public static int delete(Context context, Collection<Conversation> conversations) {
+        return applyAction(context, conversations, ConversationOperation.DELETE);
+    }
+
+    /**
+     * As above, for archive
+     */
     public static int archive(Context context, Collection<Conversation> conversations) {
-        ArrayList<ConversationOperation> ops = Lists.newArrayList();
-        for (Conversation conv: conversations) {
-            ConversationOperation op =
-                    new ConversationOperation(ConversationOperation.ARCHIVE, conv);
-            ops.add(op);
-        }
-        return apply(context, ops);
+        return applyAction(context, conversations, ConversationOperation.ARCHIVE);
     }
 
+    /**
+     * As above, for mute
+     */
     public static int mute(Context context, Collection<Conversation> conversations) {
-        ArrayList<ConversationOperation> ops = Lists.newArrayList();
-        for (Conversation conv: conversations) {
-            ConversationOperation op =
-                    new ConversationOperation(ConversationOperation.MUTE, conv);
-            ops.add(op);
-        }
-        return apply(context, ops);
+        return applyAction(context, conversations, ConversationOperation.MUTE);
     }
 
+    /**
+     * As above, for report spam
+     */
     public static int reportSpam(Context context, Collection<Conversation> conversations) {
+        return applyAction(context, conversations, ConversationOperation.REPORT_SPAM);
+    }
+
+    /**
+     * As above, for mostly archive
+     */
+    public static int mostlyArchive(Context context, Collection<Conversation> conversations) {
+        return applyAction(context, conversations, ConversationOperation.MOSTLY_ARCHIVE);
+    }
+
+    /**
+     * As above, for mostly delete
+     */
+    public static int mostlyDelete(Context context, Collection<Conversation> conversations) {
+        return applyAction(context, conversations, ConversationOperation.MOSTLY_DELETE);
+    }
+
+    /**
+     * Convenience method for performing an operation on a group of conversations
+     * @param context the caller's context
+     * @param conversations the conversations to be affected
+     * @param opAction the action to take
+     * @return the sequence number of the operation applied in CC
+     */
+    private static int applyAction(Context context, Collection<Conversation> conversations,
+            int opAction) {
         ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
             ConversationOperation op =
-                    new ConversationOperation(ConversationOperation.REPORT_SPAM, conv);
+                    new ConversationOperation(opAction, conv);
             ops.add(op);
         }
         return apply(context, ops);

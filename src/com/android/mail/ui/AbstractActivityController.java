@@ -44,6 +44,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.Toast;
 
 import com.android.mail.ConversationListContext;
@@ -73,6 +75,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -91,7 +95,8 @@ import java.util.Set;
  * In the Gmail codebase, this was called BaseActivityController
  * </p>
  */
-public abstract class AbstractActivityController implements ActivityController, ConversationListener {
+public abstract class AbstractActivityController implements ActivityController,
+        ConversationListener, OnScrollListener {
     // Keys for serialization of various information in Bundles.
     private static final String SAVED_ACCOUNT = "saved-account";
     private static final String SAVED_FOLDER = "saved-folder";
@@ -100,6 +105,7 @@ public abstract class AbstractActivityController implements ActivityController, 
     private static final String SAVED_CONVERSATIONS = "saved-conversations";
 
     protected static final String WAIT_FRAGMENT_TAG = "wait-fragment";
+    private static final long CONVERSATION_LIST_THROTTLE_MS = 4000L;
 
     /** Are we on a tablet device or not. */
     public final boolean IS_TABLET_DEVICE;
@@ -134,6 +140,12 @@ public abstract class AbstractActivityController implements ActivityController, 
     protected Settings mCachedSettings;
     protected ConversationCursor mConversationListCursor;
     protected boolean mConversationListenerAdded = false;
+
+    private boolean mIsConversationListScrolling = false;
+    private long mConversationListRefreshTime = 0;
+    private Timer mConversationListTimer = new Timer();
+    private RefreshTimerTask mConversationListRefreshTask;
+
     /**
      * Selected conversations, if any.
      */
@@ -273,6 +285,8 @@ public abstract class AbstractActivityController implements ActivityController, 
                                 // to add/remove the listener when we create/ destroy loaders.
                                 mConversationListCursor
                                         .addListener(AbstractActivityController.this);
+                                mConversationListFragment.getListView().setOnScrollListener(
+                                        AbstractActivityController.this);
                                 mConversationListenerAdded = true;
                             }
                         }
@@ -341,6 +355,7 @@ public abstract class AbstractActivityController implements ActivityController, 
             // the account Inbox.
             mAccount = account;
             mFolder = null;
+            cancelRefreshTask();
             onSettingsChanged(mAccount.settings);
             mActionBarView.setAccount(mAccount);
             loadAccountInbox();
@@ -421,6 +436,7 @@ public abstract class AbstractActivityController implements ActivityController, 
             // the list is shown to the user, this could fire in one pane if the user goes directly
             // to a conversation
             updateRecentFolderList();
+            cancelRefreshTask();
         }
     }
 
@@ -1258,7 +1274,7 @@ public abstract class AbstractActivityController implements ActivityController, 
                 if (mConversationListFragment != null) {
                     mConversationListFragment.onFolderUpdated(folder);
                 }
-                LogUtils.v(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
+                LogUtils.d(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
                 break;
             case LOADER_RECENT_FOLDERS:
                 mRecentFolderList.loadFromUiProvider(data);
@@ -1384,9 +1400,25 @@ public abstract class AbstractActivityController implements ActivityController, 
 
     @Override
     public void onRefreshRequired() {
+        if (mIsConversationListScrolling) {
+            LogUtils.d(LOG_TAG, "onRefreshRequired: delay until scrolling done");
+            return;
+        }
         // Refresh the query in the background
-        mConversationListCursor.refresh();
-        mTracker.updateCursor(mConversationListCursor);
+        long now = System.currentTimeMillis();
+        long sinceLastRefresh = now - mConversationListRefreshTime;
+        if (sinceLastRefresh > CONVERSATION_LIST_THROTTLE_MS) {
+            if (getConversationListCursor().isRefreshRequired()) {
+                getConversationListCursor().refresh();
+                mTracker.updateCursor(mConversationListCursor);
+                mConversationListRefreshTime = now;
+            }
+        } else {
+            long delay = CONVERSATION_LIST_THROTTLE_MS - sinceLastRefresh;
+            LogUtils.d(LOG_TAG, "onRefreshRequired: delay for ", delay, "ms");
+            mConversationListRefreshTask = new RefreshTimerTask(this, mHandler);
+            mConversationListTimer.schedule(mConversationListRefreshTask, delay);
+        }
     }
 
     /**
@@ -1408,7 +1440,7 @@ public abstract class AbstractActivityController implements ActivityController, 
             if (adapter != null) {
                 adapter.delete(deletedRows, this);
             }
-        } else {
+        } if (!mIsConversationListScrolling) {
             // Swap cursors
             mConversationListCursor.sync();
             refreshAdapter();
@@ -1428,6 +1460,60 @@ public abstract class AbstractActivityController implements ActivityController, 
                 adapter.notifyDataSetChanged();
             }
         }
+    }
+
+    /**
+     * This class handles throttled refresh of the conversation list
+     */
+    static class RefreshTimerTask extends TimerTask {
+        final Handler mHandler;
+        final AbstractActivityController mController;
+
+        RefreshTimerTask(AbstractActivityController controller, Handler handler) {
+            mHandler = handler;
+            mController = controller;
+        }
+
+        @Override
+        public void run() {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    LogUtils.d(LOG_TAG, "Delay done... calling onRefreshRequired");
+                    mController.onRefreshRequired();
+                }});
+        }
+    }
+
+    /**
+     * Cancel the refresh task, if it's running
+     */
+    private void cancelRefreshTask () {
+        if (mConversationListRefreshTask != null) {
+            mConversationListRefreshTask.cancel();
+            mConversationListRefreshTask = null;
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        boolean isScrolling = (scrollState != OnScrollListener.SCROLL_STATE_IDLE);
+        if (!isScrolling) {
+            ConversationCursor cc = getConversationListCursor();
+            if (cc.isRefreshRequired()) {
+                LogUtils.d(LOG_TAG, "Stop scrolling: refresh");
+                cc.refresh();
+            } else if (cc.isRefreshReady()) {
+                LogUtils.d(LOG_TAG, "Stop scrolling: try sync");
+                onRefreshReady();
+            }
+        }
+        mIsConversationListScrolling = isScrolling;
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+            int totalItemCount) {
     }
 
     @Override

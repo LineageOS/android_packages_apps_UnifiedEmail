@@ -26,7 +26,6 @@ import android.content.OperationApplicationException;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.database.CursorWrapper;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
@@ -35,7 +34,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
@@ -98,6 +96,10 @@ public final class ConversationCursor implements Cursor {
     private static int sSequence = 0;
     // Whether our first query on this cursor should include a limit
     private static boolean sInitialConversationLimit = false;
+    // A list of mostly-dead items
+    private static ArrayList<Conversation> sMostlyDead = new ArrayList<Conversation>();
+    // Whether our loader is paused
+    private static boolean sPaused = false;
 
     // Column names for this cursor
     private final String[] mColumnNames;
@@ -107,6 +109,8 @@ public final class ConversationCursor implements Cursor {
     private final CursorObserver mCursorObserver;
     // Whether our observer is currently registered with the underlying cursor
     private boolean mCursorObserverRegistered = false;
+    // Whether or not sync from underlying provider should be deferred
+    private static boolean sDeferSync = false;
 
     // The current position of the cursor
     private int mPosition = -1;
@@ -213,6 +217,40 @@ public final class ConversationCursor implements Cursor {
     }
 
     /**
+     * Pause notifications to UI
+     */
+    public static void pause() {
+        if (DEBUG) {
+            LogUtils.i(TAG, "[Paused]");
+        }
+        sPaused = true;
+    }
+
+    /**
+     * Resume notifications to UI; if any are pending, send them
+     */
+    public static void resume() {
+        if (DEBUG) {
+            LogUtils.i(TAG, "[Resumed]");
+        }
+        sPaused = false;
+        checkNotifyUI();
+    }
+
+    private static void checkNotifyUI() {
+        if (!sPaused && !sDeferSync) {
+            if (sRefreshRequired && (sRefreshTask == null)) {
+                sConversationCursor.notifyRefreshRequired();
+            } else if (sRefreshReady) {
+                sConversationCursor.notifyRefreshReady();
+            }
+        } else {
+            LogUtils.i(TAG, "[checkNotifyUI: " + (sPaused ? "Paused " : "") +
+                    (sDeferSync ? "Defer" : ""));
+        }
+    }
+
+    /**
      * Runnable that performs the query on the underlying provider
      */
     private static class RefreshTask extends AsyncTask<Void, Void, Void> {
@@ -245,10 +283,8 @@ public final class ConversationCursor implements Cursor {
                 if (DEBUG) {
                     LogUtils.i(TAG, "[Notify: onRefreshReady %d]", hashCode());
                 }
-                synchronized (sListeners) {
-                    for (ConversationListener listener : sListeners) {
-                        listener.onRefreshReady();
-                    }
+                if (!sDeferSync && !sPaused) {
+                    sConversationCursor.notifyRefreshReady();
                 }
             }
         }
@@ -273,10 +309,6 @@ public final class ConversationCursor implements Cursor {
         Wrapper(Cursor cursor, Uri uri) {
             super(cursor);
             mUri = uri;
-        }
-
-        Uri getUri() {
-            return mUri;
         }
     }
 
@@ -436,6 +468,12 @@ public final class ConversationCursor implements Cursor {
         return builder.build();
     }
 
+    private static String uriStringFromCachingUri(Uri uri) {
+        Uri underlyingUri = uriFromCachingUri(uri);
+        // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
+        return Uri.decode(underlyingUri.toString());
+    }
+
     public static void setConversationColumn(String uriString, String columnName, Object value) {
         synchronized (sCacheMapLock) {
             if (sConversationCursor != null) {
@@ -443,17 +481,6 @@ public final class ConversationCursor implements Cursor {
             }
         }
         sConversationCursor.notifyDataChanged();
-    }
-
-    /**
-     * Must be called on UI thread; notify listeners that data has changed
-     */
-    private void notifyDataChanged() {
-        synchronized(sListeners) {
-            for (ConversationListener listener: sListeners) {
-                listener.onDataSetChanged();
-            }
-        }
     }
 
     /**
@@ -534,6 +561,10 @@ public final class ConversationCursor implements Cursor {
      */
     private Object getCachedValue(int columnIndex) {
         String uri = sUnderlyingCursor.getString(sUriColumnIndex);
+        return getCachedValue(uri, columnIndex);
+    }
+
+    private Object getCachedValue(String uri, int columnIndex) {
         ContentValues uriMap = sCacheMap.get(uri);
         if (uriMap != null) {
             String columnName;
@@ -551,23 +582,64 @@ public final class ConversationCursor implements Cursor {
      * When the underlying cursor changes, we want to alert the listener
      */
     private void underlyingChanged() {
-        if (mCursorObserverRegistered) {
-            try {
-                sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
-            } catch (IllegalStateException e) {
-                // Maybe the cursor was GC'd?
+        synchronized(sCacheMapLock) {
+            if (mCursorObserverRegistered) {
+                try {
+                    sUnderlyingCursor.unregisterContentObserver(mCursorObserver);
+                } catch (IllegalStateException e) {
+                    // Maybe the cursor was GC'd?
+                }
+                mCursorObserverRegistered = false;
             }
-            mCursorObserverRegistered = false;
+            if (!sPaused) {
+                notifyRefreshRequired();
+            }
+            sRefreshRequired = true;
         }
+    }
+
+    /**
+     * Must be called on UI thread; notify listeners that a refresh is required
+     */
+    private void notifyRefreshRequired() {
         if (DEBUG) {
             LogUtils.i(TAG, "[Notify: onRefreshRequired()]");
         }
-        synchronized(sListeners) {
-            for (ConversationListener listener: sListeners) {
-                listener.onRefreshRequired();
+        if (!sDeferSync) {
+            synchronized(sListeners) {
+                for (ConversationListener listener: sListeners) {
+                    listener.onRefreshRequired();
+                }
             }
         }
-        sRefreshRequired = true;
+    }
+
+    /**
+     * Must be called on UI thread; notify listeners that a new cursor is ready
+     */
+    private void notifyRefreshReady() {
+        if (DEBUG) {
+            LogUtils.i(TAG, "[Notify: onRefreshReady()]");
+        }
+        synchronized(sListeners) {
+            for (ConversationListener listener: sListeners) {
+                listener.onRefreshReady();
+            }
+        }
+    }
+
+    /**
+     * Must be called on UI thread; notify listeners that data has changed
+     */
+    private void notifyDataChanged() {
+        if (DEBUG) {
+            LogUtils.i(TAG, "[Notify: onDataSetChanged()]");
+        }
+        synchronized(sListeners) {
+            for (ConversationListener listener: sListeners) {
+                listener.onDataSetChanged();
+            }
+        }
     }
 
     /**
@@ -629,83 +701,7 @@ public final class ConversationCursor implements Cursor {
      * @return a list of positions deleted in ConversationCursor
      */
     public ArrayList<Integer> getRefreshDeletions () {
-        // It's possible that the requery cursor is null in the case that loadInBackground() causes
-        // ConversationCursor.create to do a sync() between the time that refreshReady() is called
-        // and the subsequent call to getRefreshDeletions().  This is harmless, and an empty
-        // result list is correct.
         return EMPTY_DELETION_LIST;
-//        if (sRequeryCursor == null) {
-//            if (DEBUG) {
-//                LogUtils.i(TAG, "[getRefreshDeletions() called; no cursor]");
-//            }
-//            return EMPTY_DELETION_LIST;
-//        } else if (!sRequeryCursor.getUri().equals(sUnderlyingCursor.getUri())) {
-//            if (DEBUG) {
-//                LogUtils.i(TAG, "[getRefreshDeletions(); cursors differ]");
-//            }
-//            return EMPTY_DELETION_LIST;
-//        }
-//        Cursor deviceCursor = sConversationCursor;
-//        Cursor serverCursor = sRequeryCursor;
-//        ArrayList<Integer> deleteList = new ArrayList<Integer>();
-//        int serverCount = serverCursor.getCount();
-//        int deviceCount = deviceCursor.getCount();
-//        deviceCursor.moveToFirst();
-//        serverCursor.moveToFirst();
-//        while (serverCount > 0 || deviceCount > 0) {
-//            if (serverCount == 0) {
-//                for (; deviceCount > 0; deviceCount--, deviceCursor.moveToPrevious()) {
-//                    deleteList.add(deviceCursor.getPosition());
-//                    if (deleteList.size() > 6) {
-//                        if (DEBUG) {
-//                            LogUtils.i(TAG, "[getRefreshDeletions(); mega changes]");
-//                        }
-//                        return EMPTY_DELETION_LIST;
-//                    }
-//                }
-//                break;
-//            } else if (deviceCount == 0) {
-//                break;
-//            }
-//            long deviceMs = deviceCursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
-//            long serverMs = serverCursor.getLong(UIProvider.CONVERSATION_DATE_RECEIVED_MS_COLUMN);
-//            String deviceUri = deviceCursor.getString(UIProvider.CONVERSATION_URI_COLUMN);
-//            String serverUri = serverCursor.getString(UIProvider.CONVERSATION_URI_COLUMN);
-//            deviceCursor.moveToNext();
-//            serverCursor.moveToNext();
-//            serverCount--;
-//            deviceCount--;
-//            if (serverMs == deviceMs) {
-//                // Check for duplicates here; if our identical dates refer to different messages,
-//                // we'll just quit here for now (at worst, this will cause a non-animating delete)
-//                // My guess is that this happens VERY rarely, if at all
-//                if (!deviceUri.equals(serverUri)) {
-//                    // To do this right, we'd find all of the rows with the same ms (date), etc...
-//                    //return deleteList;
-//                }
-//                continue;
-//            } else if (deviceMs > serverMs) {
-//                deleteList.add(deviceCursor.getPosition() - 1);
-//                if (deleteList.size() > 6) {
-//                    if (DEBUG) {
-//                        LogUtils.i(TAG, "[getRefreshDeletions(); mega changes]");
-//                    }
-//                    return EMPTY_DELETION_LIST;
-//                }
-//                // Move back because we've already advanced cursor (that's why we subtract 1 above)
-//                serverCount++;
-//                serverCursor.moveToPrevious();
-//            } else if (serverMs > deviceMs) {
-//                // If we wanted to track insertions, we'd so so here
-//                // Move back because we've already advanced cursor
-//                deviceCount++;
-//                deviceCursor.moveToPrevious();
-//            }
-//        }
-//        if (DEBUG) {
-//            LogUtils.i(TAG, "getRefreshDeletions(): " + deleteList);
-//        }
-//        return deleteList;
     }
 
     /**
@@ -771,10 +767,6 @@ public final class ConversationCursor implements Cursor {
             if (!ret) return false;
             if (getCachedValue(DELETED_COLUMN_INDEX) instanceof Integer) continue;
             mPosition--;
-            // STOPSHIP: Remove this if statement
-            if (mPosition < 0) {
-                mStackTrace = new Throwable().getStackTrace();
-            }
             return true;
         }
     }
@@ -799,24 +791,8 @@ public final class ConversationCursor implements Cursor {
         return moveToNext();
     }
 
-    // STOPSHIP: Remove this
-    private StackTraceElement[] mStackTrace = null;
-
     @Override
     public boolean moveToPosition(int pos) {
-        // STOPSHIP: Remove this if statement
-        if (pos == -1) {
-            mStackTrace = new Throwable().getStackTrace();
-        }
-        // STOPSHIP: Remove this check
-        if (offUiThread()) {
-            LogUtils.w(TAG, new Throwable(), "********** moveToPosition OFF UI THREAD: %d", pos);
-        }
-        if (pos < -1 || pos >= getCount()) {
-            // STOPSHIP: Remove this logging
-            LogUtils.w(TAG, new Throwable(), "********** moveToPosition OUT OF RANGE: %d", pos);
-            return false;
-        }
         if (pos == mPosition) return true;
         if (pos > mPosition) {
             while (pos > mPosition) {
@@ -883,20 +859,9 @@ public final class ConversationCursor implements Cursor {
 
     @Override
     public long getLong(int columnIndex) {
-        // STOPSHIP: Remove try/catch
-        try {
-            Object obj = getCachedValue(columnIndex);
-            if (obj != null) return (Long)obj;
-            return sUnderlyingCursor.getLong(columnIndex);
-        } catch (CursorIndexOutOfBoundsException e) {
-            if (mStackTrace != null) {
-                Log.e(TAG, "Stack trace at last moveToPosition(-1)");
-                Throwable t = new Throwable();
-                t.setStackTrace(mStackTrace);
-                t.printStackTrace();
-            }
-            throw e;
-        }
+        Object obj = getCachedValue(columnIndex);
+        if (obj != null) return (Long)obj;
+        return sUnderlyingCursor.getLong(columnIndex);
     }
 
     @Override
@@ -1062,12 +1027,7 @@ public final class ConversationCursor implements Cursor {
         private int mUndoSequence = 0;
         private ArrayList<Uri> mUndoDeleteUris = new ArrayList<Uri>();
 
-        @VisibleForTesting
-        void deleteLocal(Uri uri) {
-            Uri underlyingUri = uriFromCachingUri(uri);
-            // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
-            String uriString =  Uri.decode(underlyingUri.toString());
-            cacheValue(uriString, DELETED_COLUMN, true);
+        void addToUndoSequence(Uri uri) {
             if (sSequence != mUndoSequence) {
                 mUndoSequence = sSequence;
                 mUndoDeleteUris.clear();
@@ -1076,17 +1036,61 @@ public final class ConversationCursor implements Cursor {
         }
 
         @VisibleForTesting
+        void deleteLocal(Uri uri) {
+            String uriString = uriStringFromCachingUri(uri);
+            cacheValue(uriString, DELETED_COLUMN, true);
+            addToUndoSequence(uri);
+        }
+
+        @VisibleForTesting
         void undeleteLocal(Uri uri) {
-            Uri underlyingUri = uriFromCachingUri(uri);
-            // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
-            String uriString =  Uri.decode(underlyingUri.toString());
+            String uriString = uriStringFromCachingUri(uri);
             cacheValue(uriString, DELETED_COLUMN, false);
+        }
+
+        void setMostlyDead(Conversation conv) {
+            Uri uri = conv.uri;
+            String uriString = uriStringFromCachingUri(uri);
+            cacheValue(uriString,
+                    UIProvider.ConversationColumns.FLAGS, Conversation.FLAG_MOSTLY_DEAD);
+            conv.convFlags |= Conversation.FLAG_MOSTLY_DEAD;
+            sMostlyDead.add(conv);
+            LogUtils.i(TAG, "[Mostly dead, deferring: %s", uri);
+            addToUndoSequence(uri);
+            sDeferSync = true;
+        }
+
+        void commitMostlyDead(Conversation conv) {
+            conv.convFlags &= ~Conversation.FLAG_MOSTLY_DEAD;
+            sMostlyDead.remove(conv);
+            LogUtils.i(TAG, "[All dead: %s]", conv.uri);
+            if (sMostlyDead.isEmpty()) {
+                sDeferSync = false;
+                checkNotifyUI();
+            }
+        }
+
+        boolean clearMostlyDead(Uri uri) {
+            String uriString =  uriStringFromCachingUri(uri);
+            Object val = sConversationCursor.getCachedValue(uriString,
+                    UIProvider.CONVERSATION_FLAGS_COLUMN);
+            if (val != null) {
+                int flags = ((Integer)val).intValue();
+                if ((flags & Conversation.FLAG_MOSTLY_DEAD) != 0) {
+                    cacheValue(uriString, UIProvider.ConversationColumns.FLAGS,
+                            flags &= ~Conversation.FLAG_MOSTLY_DEAD);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void undo() {
             if (sSequence == mUndoSequence) {
                 for (Uri uri: mUndoDeleteUris) {
-                    undeleteLocal(uri);
+                    if (!clearMostlyDead(uri)) {
+                        undeleteLocal(uri);
+                    }
                 }
                 mUndoSequence = 0;
                 sConversationCursor.recalibratePosition();
@@ -1098,9 +1102,7 @@ public final class ConversationCursor implements Cursor {
             if (values == null) {
                 return;
             }
-            Uri underlyingUri = uriFromCachingUri(uri);
-            // Remember to decode the underlying Uri as it might be encoded (as w/ Gmail)
-            String uriString =  Uri.decode(underlyingUri.toString());
+            String uriString = uriStringFromCachingUri(uri);
             for (String columnName: values.keySet()) {
                 cacheValue(uriString, columnName, values.get(columnName));
             }
@@ -1109,10 +1111,6 @@ public final class ConversationCursor implements Cursor {
         public int apply(ArrayList<ConversationOperation> ops) {
             final HashMap<String, ArrayList<ContentProviderOperation>> batchMap =
                     new HashMap<String, ArrayList<ContentProviderOperation>>();
-            // STOPSHIP: Remove this test
-            if (offUiThread()) {
-                Log.w(TAG, "apply() called off of UI thread", new Throwable());
-            }
             // Increment sequence count
             sSequence++;
 
@@ -1126,7 +1124,10 @@ public final class ConversationCursor implements Cursor {
                     authOps = new ArrayList<ContentProviderOperation>();
                     batchMap.put(authority, authOps);
                 }
-                authOps.add(op.execute(underlyingUri));
+                ContentProviderOperation cpo = op.execute(underlyingUri);
+                if (cpo != null) {
+                    authOps.add(cpo);
+                }
                 // Keep track of whether our operations require recalibrating the cursor position
                 if (op.mRecalibrateRequired) {
                     recalibrateRequired = true;
@@ -1171,15 +1172,19 @@ public final class ConversationCursor implements Cursor {
      * atomically as part of a "batch" operation.
      */
     public static class ConversationOperation {
+        private static final int MOSTLY = 0x80;
         public static final int DELETE = 0;
         public static final int INSERT = 1;
         public static final int UPDATE = 2;
         public static final int ARCHIVE = 3;
         public static final int MUTE = 4;
         public static final int REPORT_SPAM = 5;
+        public static final int MOSTLY_ARCHIVE = MOSTLY | ARCHIVE;
+        public static final int MOSTLY_DELETE = MOSTLY | DELETE;
 
         private final int mType;
         private final Uri mUri;
+        private final Conversation mConversation;
         private final ContentValues mValues;
         // True if an updated item should be removed locally (from ConversationCursor)
         // This would be the case for a folder change in which the conversation is no longer
@@ -1188,6 +1193,8 @@ public final class ConversationCursor implements Cursor {
         // After execution, this indicates whether or not the operation requires recalibration of
         // the current cursor position (i.e. it removed or added items locally)
         private boolean mRecalibrateRequired = true;
+        // Whether this item is already mostly dead
+        private final boolean mMostlyDead;
 
         /**
          * Set to true to immediately notify any {@link DataSetObserver}s watching the global
@@ -1207,9 +1214,11 @@ public final class ConversationCursor implements Cursor {
                 boolean autoNotify) {
             mType = type;
             mUri = conv.uri;
+            mConversation = conv;
             mValues = values;
             mLocalDeleteOnUpdate = conv.localDeleteOnUpdate;
             mAutoNotify = autoNotify;
+            mMostlyDead = conv.isMostlyDead();
         }
 
         private ContentProviderOperation execute(Uri underlyingUri) {
@@ -1217,12 +1226,8 @@ public final class ConversationCursor implements Cursor {
                     .appendQueryParameter(UIProvider.SEQUENCE_QUERY_PARAMETER,
                             Integer.toString(sSequence))
                     .build();
-            ContentProviderOperation op;
+            ContentProviderOperation op = null;
             switch(mType) {
-                case DELETE:
-                    sProvider.deleteLocal(mUri);
-                    op = ContentProviderOperation.newDelete(uri).build();
-                    break;
                 case UPDATE:
                     if (mLocalDeleteOnUpdate) {
                         sProvider.deleteLocal(mUri);
@@ -1239,9 +1244,35 @@ public final class ConversationCursor implements Cursor {
                     op = ContentProviderOperation.newInsert(uri)
                             .withValues(mValues).build();
                     break;
+                // Destructive actions below!
+                // "Mostly" operations are reflected globally, but not locally, except to set
+                // FLAG_MOSTLY_DEAD in the conversation itself
+                case DELETE:
+                    sProvider.deleteLocal(mUri);
+                    if (!mMostlyDead) {
+                        op = ContentProviderOperation.newDelete(uri).build();
+                    } else {
+                        sProvider.commitMostlyDead(mConversation);
+                    }
+                    break;
+                case MOSTLY_DELETE:
+                    sProvider.setMostlyDead(mConversation);
+                    op = ContentProviderOperation.newDelete(uri).build();
+                    break;
                 case ARCHIVE:
                     sProvider.deleteLocal(mUri);
-
+                    if (!mMostlyDead) {
+                        // Create an update operation that represents archive
+                        op = ContentProviderOperation.newUpdate(uri).withValue(
+                                ConversationOperations.OPERATION_KEY,
+                                ConversationOperations.ARCHIVE)
+                                .build();
+                    } else {
+                        sProvider.commitMostlyDead(mConversation);
+                    }
+                    break;
+                case MOSTLY_ARCHIVE:
+                    sProvider.setMostlyDead(mConversation);
                     // Create an update operation that represents archive
                     op = ContentProviderOperation.newUpdate(uri).withValue(
                             ConversationOperations.OPERATION_KEY, ConversationOperations.ARCHIVE)

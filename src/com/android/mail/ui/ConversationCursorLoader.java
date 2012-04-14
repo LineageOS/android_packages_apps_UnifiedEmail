@@ -58,10 +58,12 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
     @Override
     protected void onStartLoading() {
         forceLoad();
+        ConversationCursor.resume();
     }
 
     @Override
     protected void onStopLoading() {
         cancelLoad();
+        ConversationCursor.pause();
     }
 }
