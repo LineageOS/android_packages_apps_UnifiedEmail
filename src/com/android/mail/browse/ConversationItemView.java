@@ -17,15 +17,13 @@
 
 package com.android.mail.browse;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.Animator.AnimatorListener;
 import android.content.ClipData;
-import android.content.Context;
 import android.content.ClipData.Item;
+import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -71,6 +69,7 @@ import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
+import com.google.common.annotations.VisibleForTesting;
 
 public class ConversationItemView extends View implements SwipeableItemView {
     // Timer.
@@ -561,8 +560,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
         final String snippet = mHeader.conversation.snippet;
         int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
         int snippetColor = isUnread ? SNIPPET_TEXT_COLOR_UNREAD : SNIPPET_TEXT_COLOR_READ;
-        mHeader.subjectText = new SpannableStringBuilder(mContext.getString(
-                R.string.subject_and_snippet, subject, snippet));
+        mHeader.subjectText = new SpannableStringBuilder((snippet != null) ?
+                mContext.getString(R.string.subject_and_snippet, subject, snippet) : subject);
         if (isUnread) {
             mHeader.subjectText.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -571,8 +570,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
         mHeader.subjectText.setSpan(new ForegroundColorSpan(fontColor), 0,
                 subject.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         fontColor = getFontColor(snippetColor);
-        mHeader.subjectText.setSpan(new ForegroundColorSpan(fontColor), subject.length() + 1,
-                mHeader.subjectText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (snippet != null) {
+            mHeader.subjectText.setSpan(new ForegroundColorSpan(fontColor), subject.length() + 1,
+                    mHeader.subjectText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
     private int getFontColor(int defaultColor) {
@@ -1039,6 +1040,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     /**
      * Cancel any potential tap handling on this view.
      */
+    @Override
     public void cancelTap() {
         removeCallbacks(mPendingCheckForTap);
         removeCallbacks(mPendingCheckForLongPress);
@@ -1172,6 +1174,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     final class CheckForTap implements Runnable {
+        @Override
         public void run() {
             // refreshDrawableState();
             final int longPressTimeout = ViewConfiguration.getLongPressTimeout();
@@ -1187,6 +1190,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     private class CheckForLongPress implements Runnable {
+        @Override
         public void run() {
             ConversationItemView.this.toggleSelectionOrBeginDrag();
             performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
