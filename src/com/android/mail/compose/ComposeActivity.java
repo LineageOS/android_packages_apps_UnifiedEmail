@@ -22,14 +22,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
@@ -73,6 +70,7 @@ import com.android.mail.providers.MessageModification;
 import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.DraftType;
 import com.android.mail.R;
 import com.android.mail.utils.AccountUtils;
@@ -1141,6 +1139,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         inflater.inflate(R.menu.compose_menu, menu);
         mSave = menu.findItem(R.id.save);
         mSend = menu.findItem(R.id.send);
+        MenuItem helpItem = menu.findItem(R.id.help_info_menu_item);
+        MenuItem sendFeedbackItem = menu.findItem(R.id.feedback_menu_item);
+        if (helpItem != null) {
+            helpItem.setVisible(mAccount != null
+                    && mAccount.supportsCapability(AccountCapabilities.HELP_CONTENT));
+        }
+        if (sendFeedbackItem != null) {
+            sendFeedbackItem.setVisible(mAccount != null
+                    && mAccount.supportsCapability(AccountCapabilities.SEND_FEEDBACK));
+        }
         return true;
     }
 
