@@ -54,10 +54,17 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
 
     public void setCurrentAccount(ReplyFromAccount account) {
         mAccount = account;
+        selectCurrentAccount();
+    }
+
+    private void selectCurrentAccount() {
+        if (mAccount == null) {
+            return;
+        }
         int currentIndex = 0;
         for (ReplyFromAccount acct : mReplyFromAccounts) {
             if (mAccount.name.equals(acct.account.name)) {
-                setSelection(currentIndex);
+                setSelection(currentIndex, true);
                 break;
             }
             currentIndex++;
@@ -107,6 +114,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
         adapter.addAccounts(mReplyFromAccounts);
 
         setAdapter(adapter);
+        selectCurrentAccount();
         setOnItemSelectedListener(this);
     }
 
