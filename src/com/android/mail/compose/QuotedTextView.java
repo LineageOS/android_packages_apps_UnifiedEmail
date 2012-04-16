@@ -179,7 +179,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
      * tapped by the user. Also updates the visibility of the QuotedText area.
      * @param checked Either true or false.
      */
-    private void updateCheckedState(boolean checked) {
+    public void updateCheckedState(boolean checked) {
         mShowHideCheckBox.setChecked(checked);
         updateQuotedTextVisibility(checked);
         if (mShowHideListener != null) {

@@ -165,6 +165,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // Max size for attachments (5 megs). Will be overridden by account settings if found.
     // TODO(mindyp): read this from account settings?
     private static final int DEFAULT_MAX_ATTACHMENT_SIZE = 25 * 1024 * 1024;
+    private static final String EXTRA_SELECTED_REPLY_FROM_ACCOUNT = "replyFromAccount";
+    private static final String EXTRA_REQUEST_ID = "requestId";
+    private static final String EXTRA_FOCUS_SELECTION_START = "focusSelectionStart";
+    private static final String EXTRA_FOCUS_SELECTION_END = null;
+    private static final String EXTRA_MESSAGE = "extraMessage";
 
     /**
      * A single thread for running tasks in the background.
@@ -260,8 +265,21 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         setContentView(R.layout.compose);
         findViews();
         Intent intent = getIntent();
-
-        Account account = (Account)intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
+        Account account;
+        Message message;
+        int action;
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_MESSAGE)) {
+            action = savedInstanceState.getInt(EXTRA_ACTION, COMPOSE);
+            account = savedInstanceState.getParcelable(Utils.EXTRA_ACCOUNT);
+            message = (Message) savedInstanceState.getParcelable(EXTRA_MESSAGE);
+            mRefMessage = (Message) savedInstanceState.getParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE);
+        } else {
+            account = (Account)intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
+            action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
+            // Initialize the message from the message in the intent
+            message = (Message) intent.getParcelableExtra(ORIGINAL_DRAFT_MESSAGE);
+            mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
+        }
         if (account == null) {
             final Account[] syncingAccounts = AccountUtils.getSyncingAccounts(this);
             if (syncingAccounts.length > 0) {
@@ -273,18 +291,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mAccount == null) {
             return;
         }
-        int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
-        mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
-        if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
-            if (mRefMessage != null) {
-                initFromRefMessage(action, mAccount.name);
-            }
+
+        if (message != null && action != EDIT_DRAFT) {
+            initFromDraftMessage(message);
+            initQuotedTextFromRefMessage(mRefMessage, action);
         } else if (action == EDIT_DRAFT) {
-            // Initialize the message from the message in the intent
-            final Message message = (Message) intent.getParcelableExtra(ORIGINAL_DRAFT_MESSAGE);
-
-            initFromMessage(message);
-
+            initFromDraftMessage(message);
             // Update the action to the draft type of the previous draft
             switch (message.draftType) {
                 case UIProvider.DraftType.REPLY:
@@ -301,6 +313,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     action = COMPOSE;
                     break;
             }
+            initQuotedTextFromRefMessage(mRefMessage, action);
+        } else if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
+            if (mRefMessage != null) {
+                initFromRefMessage(action, mAccount.name);
+            }
         } else {
             initFromExtras(intent);
         }
@@ -311,7 +328,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         initRecipients();
         initAttachmentsFromIntent(intent);
         initActionBar(action);
-        initFromSpinner(action);
+        initFromSpinner(savedInstanceState != null ? savedInstanceState : intent.getExtras(),
+                action);
         initChangeListeners();
         setFocus(action);
     }
@@ -382,7 +400,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mRecipientErrorDialog != null) {
             mRecipientErrorDialog.dismiss();
         }
-
         saveIfNeeded();
     }
 
@@ -396,13 +413,108 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     @Override
+    public final void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(EXTRA_FOCUS_SELECTION_START)) {
+                int selectionStart = savedInstanceState.getInt(EXTRA_FOCUS_SELECTION_START);
+                int selectionEnd = savedInstanceState.getInt(EXTRA_FOCUS_SELECTION_END);
+                // There should be a focus and it should be an EditText since we
+                // only save these extras if these conditions are true.
+                EditText focusEditText = (EditText) getCurrentFocus();
+                final int length = focusEditText.getText().length();
+                if (selectionStart < length && selectionEnd < length) {
+                    focusEditText.setSelection(selectionStart, selectionEnd);
+                }
+            }
+        }
+    }
+
+    @Override
     public final void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
+        // The framework is happy to save and restore the selection but only if it also saves and
+        // restores the contents of the edit text. That's a lot of text to put in a bundle so we do
+        // this manually.
+        View focus = getCurrentFocus();
+        if (focus != null && focus instanceof EditText) {
+            EditText focusEditText = (EditText) focus;
+            state.putInt(EXTRA_FOCUS_SELECTION_START, focusEditText.getSelectionStart());
+            state.putInt(EXTRA_FOCUS_SELECTION_END, focusEditText.getSelectionEnd());
+        }
+        ReplyFromAccount selectedReplyFromAccount = mFromSpinner.getReplyFromAccounts().get(
+                mFromSpinner.getSelectedItemPosition());
+        if (selectedReplyFromAccount != null) {
+            state.putString(EXTRA_SELECTED_REPLY_FROM_ACCOUNT, selectedReplyFromAccount.serialize()
+                    .toString());
+            state.putParcelable(Utils.EXTRA_ACCOUNT, selectedReplyFromAccount.account);
+        } else {
+            state.putParcelable(Utils.EXTRA_ACCOUNT, mAccount);
+        }
 
-        // onSaveInstanceState is only called if the user might come back to this activity so it is
-        // not an ideal location to save the draft. However, if we have never saved the draft before
-        // we have to save it here in order to have an id to save in the bundle.
-        saveIfNeededOnOrientationChanged();
+        if (mDraftId == UIProvider.INVALID_MESSAGE_ID && mRequestId !=0) {
+            // We don't have a draft id, and we have a request id,
+            // save the request id.
+            state.putInt(EXTRA_REQUEST_ID, mRequestId);
+        }
+
+        // We want to restore the current mode after a pause
+        // or rotation.
+        int mode = getMode();
+        state.putInt(EXTRA_ACTION, mode);
+
+        Message message = createMessage(selectedReplyFromAccount, mode);
+        state.putParcelable(EXTRA_MESSAGE, message);
+
+        if (mRefMessage != null) {
+            state.putParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE, mRefMessage);
+        }
+    }
+
+    private int getMode() {
+        int mode = ComposeActivity.COMPOSE;
+        ActionBar actionBar = getActionBar();
+        if (actionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST) {
+            mode = actionBar.getSelectedNavigationIndex();
+        }
+        return mode;
+    }
+
+    private Message createMessage(ReplyFromAccount selectedReplyFromAccount, int mode) {
+        Message message = new Message();
+        message.id = UIProvider.INVALID_MESSAGE_ID;
+        message.serverId =UIProvider.INVALID_MESSAGE_ID;
+        message.uri = null;
+        message.conversationUri = null;
+        message.subject = mSubject.getText().toString();
+        message.snippet = null;
+        message.from = selectedReplyFromAccount.name;
+        message.to = mTo.getText().toString();
+        message.cc = mTo.getText().toString();
+        message.bcc = mTo.getText().toString();
+        message.replyTo = null;
+        message.dateReceivedMs = 0;
+        String htmlBody = Html.toHtml(mBodyView.getText());
+        StringBuilder fullBody = new StringBuilder(htmlBody);
+        message.bodyHtml = fullBody.toString();
+        message.bodyText = mBodyView.getText().toString();
+        message.embedsExternalResources = false;
+        message.refMessageId = mRefMessage != null ? mRefMessage.uri.toString() : null;
+        message.draftType = mode;
+        message.appendRefMessageContent = mQuotedTextView.getQuotedTextIfIncluded() != null;
+        ArrayList<Attachment> attachments = mAttachmentsView.getAttachments();
+        message.hasAttachments = attachments != null && attachments.size() > 0;
+        message.attachmentListUri = null;
+        message.messageFlags = 0;
+        message.saveUri = null;
+        message.sendUri = null;
+        message.alwaysShowImages = false;
+        message.attachmentsJson = Attachment.toJSONArray(attachments);
+        CharSequence quotedText = mQuotedTextView.getQuotedText();
+        message.quotedTextOffset = !TextUtils.isEmpty(quotedText) ? QuotedTextView
+                .getQuotedTextOffset(quotedText.toString()) : -1;
+        message.accountUri = null;
+        return message;
     }
 
     @VisibleForTesting
@@ -417,16 +529,21 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private void initFromSpinner(int action) {
-        if (action == EDIT_DRAFT &&
-                mDraft.draftType == UIProvider.DraftType.COMPOSE) {
+    private void initFromSpinner(Bundle bundle, int action) {
+        if (action == EDIT_DRAFT && mDraft.draftType == UIProvider.DraftType.COMPOSE) {
             action = COMPOSE;
         }
         mFromSpinner.asyncInitFromSpinner(action, mAccount);
-        if (mDraft != null) {
-            mReplyFromAccount = getReplyFromAccountFromDraft(mAccount, mDraft);
-        } else if (mRefMessage != null) {
-            mReplyFromAccount = getReplyFromAccountForReply(mAccount, mRefMessage);
+        if (bundle != null && bundle.containsKey(EXTRA_SELECTED_REPLY_FROM_ACCOUNT)) {
+            mReplyFromAccount = ReplyFromAccount.deserialize(mAccount,
+                    bundle.getString(EXTRA_SELECTED_REPLY_FROM_ACCOUNT));
+        }
+        if (mReplyFromAccount == null) {
+            if (mDraft != null) {
+                mReplyFromAccount = getReplyFromAccountFromDraft(mAccount, mDraft);
+            } else if (mRefMessage != null) {
+                mReplyFromAccount = getReplyFromAccountForReply(mAccount, mRefMessage);
+            }
         }
         if (mReplyFromAccount == null) {
             mReplyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
@@ -534,8 +651,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return new ReplyFromAccount(account, account.uri, account.name, account.name, true, false);
     }
 
-    private ReplyFromAccount getReplyFromAccountFromDraft(Account account, Message draft) {
-        String sender = draft.from;
+    private ReplyFromAccount getReplyFromAccountFromDraft(Account account, Message msg) {
+        String sender = msg.from;
         ReplyFromAccount replyFromAccount = null;
         List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
         if (TextUtils.equals(account.name, sender)) {
@@ -628,14 +745,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mForward = true;
         }
         initRecipientsFromRefMessage(recipientAddress, mRefMessage, action);
-        initBodyFromRefMessage(mRefMessage, action);
+        initQuotedTextFromRefMessage(mRefMessage, action);
         if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
             initAttachments(mRefMessage);
         }
         updateHideOrShowCcBcc();
     }
 
-    private void initFromMessage(Message message) {
+    private void initFromDraftMessage(Message message) {
         LogUtils.d(LOG_TAG, "Intializing draft from previous draft message");
 
         mDraft = message;
@@ -659,10 +776,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } else {
             mBodyView.setText(message.bodyText);
         }
-
-        // TODO: load attachments from the previous message
-        // TODO: set the from address spinner to the right from account
-        // TODO: initialize quoted text value
     }
 
     /**
@@ -676,7 +789,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * web gmail interaction.
      */
     public void initFromExtras(Intent intent) {
-
         // If we were invoked with a SENDTO intent, the value
         // should take precedence
         final Uri dataUri = intent.getData();
@@ -731,7 +843,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            final String action = intent.getAction();
             CharSequence text = extras.getCharSequence(Intent.EXTRA_TEXT);
             if (text != null) {
                 setBody(text, true /* with signature */);
@@ -739,6 +850,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         updateHideOrShowCcBcc();
+    }
+
+    private void initFromMessageInIntent(Message message) {
+        mTo.append(message.to);
+        mCc.append(message.cc);
+        mBcc.append(message.bcc);
+        mBodyView.setText(message.bodyText);
+        mSubject.setText(message.subject);
+        List<Attachment> attachments = message.getAttachments();
+        for (Attachment a : attachments) {
+            mAttachmentsView.addAttachment(a);
+        }
+        mQuotedTextView.updateCheckedState(message.appendRefMessageContent);
     }
 
     @VisibleForTesting
@@ -877,8 +1001,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
 
-    private void initBodyFromRefMessage(Message refMessage, int action) {
-        if (action == REPLY || action == REPLY_ALL || action == FORWARD) {
+    private void initQuotedTextFromRefMessage(Message refMessage, int action) {
+        if (mRefMessage != null && (action == REPLY || action == REPLY_ALL || action == FORWARD)) {
             mQuotedTextView.setQuotedText(action, refMessage, action != FORWARD);
         }
     }
@@ -1630,23 +1754,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     /* package */
-    static int sendOrSaveInternal(Context context, final ReplyFromAccount replyFromAccount,
-            String fromAddress, final Spanned body, final String[] to, final String[] cc,
-            final String[] bcc, final String subject, final CharSequence quotedText,
-            final List<Attachment> attachments, final Message refMessage,
-            SendOrSaveCallback callback, Handler handler, boolean save, int composeMode) {
+    static int sendOrSaveInternal(Context context, ReplyFromAccount replyFromAccount,
+            Message message, final Message refMessage, Spanned body, SendOrSaveCallback callback,
+            Handler handler, boolean save, int composeMode) {
         ContentValues values = new ContentValues();
 
         String refMessageId = refMessage != null ? refMessage.uri.toString() : "";
 
-        MessageModification.putToAddresses(values, to);
-        MessageModification.putCcAddresses(values, cc);
-        MessageModification.putBccAddresses(values, bcc);
+        MessageModification.putToAddresses(values, message.getToAddresses());
+        MessageModification.putCcAddresses(values, message.getCcAddresses());
+        MessageModification.putBccAddresses(values, message.getBccAddresses());
 
-        MessageModification.putCustomFromAddress(values, replyFromAccount.address);
+        MessageModification.putCustomFromAddress(values, message.from);
 
-        MessageModification.putSubject(values, subject);
+        MessageModification.putSubject(values, message.subject);
         String htmlBody = Html.toHtml(body);
+        String quotedText = !TextUtils.isEmpty(message.bodyText) && message.quotedTextOffset > -1 ?
+                message.bodyText.substring(message.quotedTextOffset) : null;
         boolean includeQuotedText = !TextUtils.isEmpty(quotedText);
         StringBuilder fullBody = new StringBuilder(htmlBody);
         if (includeQuotedText) {
@@ -1692,7 +1816,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             MessageModification.putBodyHtml(values, fullBody.toString());
             MessageModification.putBody(values, Html.fromHtml(fullBody.toString()).toString());
         }
-        MessageModification.putAttachments(values, attachments);
+        MessageModification.putAttachments(values, message.getAttachments());
         if (!TextUtils.isEmpty(refMessageId)) {
             MessageModification.putRefMessageId(values, refMessageId);
         }
@@ -1814,9 +1938,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mSendSaveTaskHandler = new Handler(handlerThread.getLooper());
         }
 
-        mRequestId = sendOrSaveInternal(this, mReplyFromAccount, fromAddress, body, to, cc,
-                bcc, mSubject.getText().toString(), mQuotedTextView.getQuotedTextIfIncluded(),
-                mAttachmentsView.getAttachments(), mRefMessage, callback,
+        Message msg = createMessage(mReplyFromAccount, getMode());
+        mRequestId = sendOrSaveInternal(this, mReplyFromAccount, msg, mRefMessage, body, callback,
                 mSendSaveTaskHandler, save, mComposeMode);
 
         if (mRecipient != null && mRecipient.equals(mAccount.name)) {
@@ -2103,34 +2226,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (shouldSave()) {
             doSave(!mAddingAttachment /* show toast */, true /* reset IME */);
         }
-    }
-
-    private void saveIfNeededOnOrientationChanged() {
-        if (mAccount == null) {
-            // We have not chosen an account yet so there's no way that we can save. This is ok,
-            // though, since we are saving our state before AccountsActivity is activated. Thus, the
-            // user has not interacted with us yet and there is no real state to save.
-            return;
-        }
-
-        if (shouldSave()) {
-            doSaveOrientationChanged(!mAddingAttachment /* show toast */, true /* reset IME */);
-        }
-    }
-
-    /**
-     * Save a draft if a draft already exists or the message is not empty.
-     */
-    public void doSaveOrientationChanged(boolean showToast, boolean resetIME) {
-        saveOnOrientationChanged();
-        if (resetIME) {
-            // Clear the IME composing suggestions from the body.
-            BaseInputConnection.removeComposingSpans(mBodyView.getEditableText());
-        }
-    }
-
-    protected boolean saveOnOrientationChanged() {
-        return sendOrSaveWithSanityChecks(true, false, true);
     }
 
     @Override

@@ -56,8 +56,6 @@ public class Message implements Parcelable {
     public boolean hasAttachments;
     public Uri attachmentListUri;
     public long messageFlags;
-    @Deprecated
-    public String joinedAttachmentInfos;
     public String saveUri;
     public String sendUri;
     public boolean alwaysShowImages;
@@ -122,7 +120,6 @@ public class Message implements Parcelable {
         dest.writeInt(hasAttachments ? 1 : 0);
         dest.writeParcelable(attachmentListUri, 0);
         dest.writeLong(messageFlags);
-        dest.writeString(joinedAttachmentInfos);
         dest.writeString(saveUri);
         dest.writeString(sendUri);
         dest.writeInt(alwaysShowImages ? 1 : 0);
@@ -153,7 +150,6 @@ public class Message implements Parcelable {
         hasAttachments = in.readInt() != 0;
         attachmentListUri = in.readParcelable(null);
         messageFlags = in.readLong();
-        joinedAttachmentInfos = in.readString();
         saveUri = in.readString();
         sendUri = in.readString();
         alwaysShowImages = in.readInt() != 0;
@@ -220,8 +216,6 @@ public class Message implements Parcelable {
             attachmentListUri = hasAttachments && !TextUtils.isEmpty(attachmentsUri) ? Uri
                     .parse(attachmentsUri) : null;
             messageFlags = cursor.getLong(UIProvider.MESSAGE_FLAGS_COLUMN);
-            joinedAttachmentInfos = cursor
-                    .getString(UIProvider.MESSAGE_JOINED_ATTACHMENT_INFOS_COLUMN);
             saveUri = cursor
                     .getString(UIProvider.MESSAGE_SAVE_URI_COLUMN);
             sendUri = cursor

@@ -63,7 +63,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
         }
         int currentIndex = 0;
         for (ReplyFromAccount acct : mReplyFromAccounts) {
-            if (mAccount.name.equals(acct.account.name)) {
+            if (mAccount.name.equals(acct.name)) {
                 setSelection(currentIndex, true);
                 break;
             }

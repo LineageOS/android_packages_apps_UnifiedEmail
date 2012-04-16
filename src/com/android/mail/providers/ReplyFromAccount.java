@@ -17,6 +17,7 @@
 package com.android.mail.providers;
 
 import android.net.Uri;
+import android.os.Parcelable;
 
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -78,6 +79,16 @@ public class ReplyFromAccount implements Serializable {
             boolean isCustomFrom = json.getBoolean(IS_CUSTOM_FROM);
             replyFromAccount = new ReplyFromAccount(account, uri, addressString, nameString,
                     isDefault, isCustomFrom);
+        } catch (JSONException e) {
+            LogUtils.wtf(LOG_TAG, e, "Could not deserialize replyfromaccount");
+        }
+        return replyFromAccount;
+    }
+
+    public static ReplyFromAccount deserialize(Account account, String stringExtra) {
+        ReplyFromAccount replyFromAccount = null;
+        try {
+            replyFromAccount =  deserialize(account, new JSONObject(stringExtra));
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not deserialize replyfromaccount");
         }
