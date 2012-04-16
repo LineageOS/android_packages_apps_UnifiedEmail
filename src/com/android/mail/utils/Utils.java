@@ -741,7 +741,9 @@ public class Utils {
      * Show the feedback screen for the supplied account.
      */
     public static void sendFeedback(Context context, Account account) {
-        openUrl(context, account.sendFeedbackIntentUri);
+        if (account.sendFeedbackIntentUri != null) {
+            openUrl(context, account.sendFeedbackIntentUri);
+        }
     }
 
     /**
