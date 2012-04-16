@@ -219,7 +219,6 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setAdapter(mListAdapter);
         mListView.setSelectionSet(mActivity.getSelectedSet());
         mListAdapter.hideFooter();
-        mListView.setSwipeCompleteListener(this);
         mActivity.setViewModeListener(this);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         initializeUiForFirstDisplay();
