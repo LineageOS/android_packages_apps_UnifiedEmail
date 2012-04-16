@@ -16,14 +16,11 @@
 
 package com.android.mail.utils;
 
-import com.google.common.collect.Maps;
-
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.provider.Browser;
@@ -50,6 +47,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
+import com.google.common.collect.Maps;
 
 import org.json.JSONObject;
 
@@ -871,5 +869,9 @@ public class Utils {
         if (uri == JSONObject.NULL)
             return Uri.EMPTY;
         return Uri.parse(uri);
+    }
+
+    public static boolean isEmpty(Uri uri) {
+        return uri == null || uri.equals(Uri.EMPTY);
     }
 }

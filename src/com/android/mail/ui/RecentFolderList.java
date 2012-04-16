@@ -27,6 +27,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.LruCache;
+import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,7 +94,7 @@ public final class RecentFolderList {
         @Override
         protected Void doInBackground(Void... v) {
             Uri uri = mAccount.recentFolderListUri;
-            if (uri != null) {
+            if (!Utils.isEmpty(uri)) {
                 ContentValues values = new ContentValues();
                 values.put(mFolder.uri.toString(), System.currentTimeMillis());
                 // TODO: Remove when well tested
