@@ -286,7 +286,7 @@
     <string name="loading" msgid="2600808404156989255">"Cargando…"</string>
     <string name="retry" msgid="4515885444824418022">"Volver a intentar"</string>
     <string name="load_more" msgid="420892447103014683">"Realizar más cargas"</string>
-    <string name="shortcut_name_title" msgid="8220482314700618391">"Definir acceso directo a carpeta"</string>
+    <string name="shortcut_name_title" msgid="8220482314700618391">"Definir el nombre del acceso directo a la carpeta"</string>
     <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
     <skip />
     <!-- no translation found for wait_for_sync_body (7718316938173643688) -->

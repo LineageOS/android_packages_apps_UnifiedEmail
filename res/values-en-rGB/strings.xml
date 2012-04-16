@@ -287,16 +287,10 @@
     <string name="retry" msgid="4515885444824418022">"Retry"</string>
     <string name="load_more" msgid="420892447103014683">"Load more"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Name folder shortcut"</string>
-    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
-    <skip />
-    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
-    <skip />
-    <!-- no translation found for not_synced_title (794279749170198599) -->
-    <skip />
-    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
-    <skip />
-    <!-- no translation found for manual_sync (6743983544685622800) -->
-    <skip />
-    <!-- no translation found for change_sync_settings (5514293926214426577) -->
-    <skip />
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"Waiting for sync"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"Your email will appear shortly."</string>
+    <string name="not_synced_title" msgid="794279749170198599">"Account not synced"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"This account isn\'t set up to sync automatically."\n"Touch "<b>"Sync Now"</b>" to sync mail once, or "<b>"Change Sync Settings"</b>" to set up this account to sync mail automatically."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Sync now"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"Change sync settings"</string>
 </resources>
