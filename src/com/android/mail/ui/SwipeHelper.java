@@ -364,6 +364,21 @@ public class SwipeHelper {
                 invalidateGlobalRegion(animView);
             }
         });
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                animView.setAlpha(1.0f);
+            }
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
         anim.start();
     }
 
