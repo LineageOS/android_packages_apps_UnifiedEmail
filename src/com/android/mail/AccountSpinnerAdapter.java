@@ -18,6 +18,7 @@
 package com.android.mail;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.RecentFolderList;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
@@ -39,9 +41,9 @@ import java.util.ArrayList;
 public class AccountSpinnerAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
     /**
-     * The current account being viewed
+     * The position of the current account being viewed as an index into the mAccounts array.
      */
-    private Account mCurrentAccount = null;
+    private int mCurrentAccount = -1;
     /**
      * Total number of accounts.
      */
@@ -77,6 +79,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public static final int TYPE_FOLDER = 2;
     public static final int TYPE_ALL_FOLDERS = 3;
 
+    private static final String LOG_TAG = new LogUtils().getLogTag();
     /**
      * There can be three types of views: Accounts (test@android.com, fifi@example.com), folders
      * (Inbox, Outbox) or header and footer. This method returns the type of account at given
@@ -128,12 +131,33 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     }
 
     /**
+     * Find the position of the given needle in the given array of accounts.
+     * @param haystack the array of accounts to search
+     * @param needle the URI of account to find
+     * @return a position between 0 and haystack.length-1 if an account is found, -1 if not found.
+     */
+    private static int findPositionOfAccount(Account[] haystack, Uri needle) {
+        // Need to go through the list of current accounts, and fix the position.
+        for (int i = 0, size = haystack.length; i < size; ++i) {
+            if (haystack[i].uri.equals(needle)) {
+                LogUtils.d(LOG_TAG, "Found need at position to %d", i);
+                return i;
+            }
+        }
+        return -1;
+    }
+    /**
      * Set the accounts for this spinner.
      * @param accounts
      */
     public void setAccounts(Account[] accounts) {
+        final Uri currentAccount = getCurrentAccountUri();
         mAccounts = accounts;
         mNumAccounts = accounts.length;
+        mCurrentAccount = findPositionOfAccount(accounts, currentAccount);
+        if (isCurrentAccountInvalid()) {
+            mCurrentAccount = getSafeAccount();
+        }
         notifyDataSetChanged();
     }
 
@@ -158,13 +182,21 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return if changed.
      */
     public boolean setCurrentAccount(Account account) {
-        if (account != null && !account.equals(mCurrentAccount)) {
-            mCurrentAccount = account;
-            mRecentFolderList = mRecentFolders.getRecentFolderList(mCurrentFolder);
-            notifyDataSetChanged();
-            return true;
+        if (account == null) {
+            return false;
         }
-        return false;
+        if (account.uri.equals(getCurrentAccountUri())) {
+            // The current account matches what is being given, get out.
+            return false;
+        }
+        mCurrentAccount = findPositionOfAccount(mAccounts, account.uri);
+        if (isCurrentAccountInvalid()) {
+            mCurrentAccount = getSafeAccount();
+        }
+        LogUtils.d(LOG_TAG, "Setting the current account position to %d", mCurrentAccount);
+        mRecentFolderList = mRecentFolders.getRecentFolderList(mCurrentFolder);
+        notifyDataSetChanged();
+        return true;
     }
 
     @Override
@@ -205,8 +237,58 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         return mCurrentFolder != null ? mCurrentFolder.unreadCount : 0;
     }
 
+    /**
+     * Returns whether the current account is an invalid offset into the array.
+     * @return true if the current account is invalid, and false otherwise.
+     */
+    private boolean isCurrentAccountInvalid() {
+        if (mAccounts.length <= mCurrentAccount || mCurrentAccount < 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the current active account if one exists, or null if there is no current account.
+     * @return
+     */
+    private Account getCurrentAccount() {
+        if (isCurrentAccountInvalid()) {
+            return null;
+        }
+        return mAccounts[mCurrentAccount];
+    }
+
     private String getCurrentAccountName() {
-        return mCurrentAccount != null ? mCurrentAccount.name : "";
+        if (isCurrentAccountInvalid()) {
+            return "";
+        }
+        return mAccounts[mCurrentAccount].name;
+    }
+
+    private Uri getCurrentAccountUri() {
+        if (isCurrentAccountInvalid()) {
+            return Uri.EMPTY;
+        }
+        return mAccounts[mCurrentAccount].uri;
+    }
+
+    /**
+     * If we cannot find a safe account to use, we need to fall back on something safe. We should
+     * return a value that will definitely be valid here. Since this method is called when something
+     * went wrong, we log the issue here.
+     * @return
+     */
+    private int getSafeAccount() {
+        if (mAccounts.length > 0) {
+            LogUtils.d(LOG_TAG, "getSafeAccount called when there are %d accounts. Returning 0",
+                    mAccounts.length);
+            return 0;
+        } else {
+            // This is truly strange. We cannot return a valid account when there are no accounts.
+            LogUtils.wtf(LOG_TAG, "getSafeAccount called and there are no accounts. Crashing.");
+            return -1;
+        }
     }
 
     // This call renders the view that will be shown in the header.
