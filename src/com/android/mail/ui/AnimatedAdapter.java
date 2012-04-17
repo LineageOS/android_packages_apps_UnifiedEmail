@@ -269,6 +269,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             }
             mLeaveBehindItems.clear();
         }
+        notifyDataSetChanged();
     }
 
     private LeaveBehindItem getLeaveBehindItem(int position, Conversation target) {

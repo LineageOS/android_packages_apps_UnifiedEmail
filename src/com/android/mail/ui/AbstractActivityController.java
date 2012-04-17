@@ -742,6 +742,7 @@ public abstract class AbstractActivityController implements ActivityController,
         isLoaderInitialized = false;
 
         enableNotifications();
+        commitLeaveBehindItems();
     }
 
     @Override
@@ -793,7 +794,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onStop() {
-        // TODO(viki): Auto-generated method stub
+     // TODO(viki): Auto-generated method stub
     }
 
     @Override
@@ -823,6 +824,13 @@ public abstract class AbstractActivityController implements ActivityController,
         // mode, as it will happen when the conversation finishes loading.
         if (newMode != ViewMode.CONVERSATION) {
             mActivity.invalidateOptionsMenu();
+        }
+    }
+
+    protected void commitLeaveBehindItems() {
+        ConversationListFragment fragment = getConversationListFragment();
+        if (fragment != null) {
+            fragment.commitLeaveBehindItems();
         }
     }
 

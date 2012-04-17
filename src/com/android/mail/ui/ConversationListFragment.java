@@ -303,6 +303,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (!mActivity.isChangingConfigurations()) {
             mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
         }
+        commitLeaveBehindItems();
         super.onDestroyView();
     }
 
@@ -501,5 +502,11 @@ public final class ConversationListFragment extends ListFragment implements
             mListAdapter.swapCursor(mCallbacks.getConversationListCursor());
         }
         onFolderUpdated(mFolder);
+    }
+
+    public void commitLeaveBehindItems() {
+        if (mListAdapter != null) {
+            mListAdapter.commitLeaveBehindItems();
+        }
     }
 }

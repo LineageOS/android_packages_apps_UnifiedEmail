@@ -277,12 +277,14 @@ public final class TwoPaneController extends AbstractActivityController {
         int mode = mViewMode.getMode();
         if (mode == ViewMode.CONVERSATION) {
             if (!mLayout.isConversationListVisible()) {
+                commitLeaveBehindItems();
                 unhideConversationList();
             } else {
                 mActivity.onBackPressed();
             }
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             if (!mLayout.isConversationListVisible()) {
+                commitLeaveBehindItems();
                 unhideConversationList();
             } else {
                 mActivity.finish();
