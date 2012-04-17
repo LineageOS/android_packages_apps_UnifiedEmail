@@ -898,6 +898,7 @@ public class UIProvider {
     };
 
     /** Separates attachment info parts in strings in a message. */
+    @Deprecated
     public static final String MESSAGE_ATTACHMENT_INFO_SEPARATOR = "\n";
     public static final String MESSAGE_LIST_TYPE =
             "vnd.android.cursor.dir/vnd.com.android.mail.message";
@@ -1070,8 +1071,9 @@ public class UIProvider {
          * This string column contains a specially formatted string representing all
          * attachments that we added to a message that is being sent or saved.
          *
-         * TODO: remove this and use ATTACHMENTS JSON instead
+         * TODO: remove this and use {@link #ATTACHMENTS} instead
          */
+        @Deprecated
         public static final String JOINED_ATTACHMENT_INFOS = "joinedAttachmentInfos";
         /**
          * This string column contains the content provider URI for saving this

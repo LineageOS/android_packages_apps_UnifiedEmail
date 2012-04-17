@@ -27,24 +27,29 @@ import com.android.mail.R;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.LogUtils;
 
+import org.json.JSONException;
+
 /**
  * This view is used in the ComposeActivity to display an attachment along with its name/size
  * and a Remove button.
  */
 class AttachmentComposeView extends LinearLayout {
-    private final long mSize;
-    private final String mFilename;
+    private final Attachment mAttachment;
     private final static String LOG_TAG = new LogUtils().getLogTag();
 
     public AttachmentComposeView(Context c, Attachment attachment) {
         super(c);
-        mFilename = attachment.name;
-        mSize = attachment.size;
+        mAttachment = attachment;
 
-        LogUtils.d(LOG_TAG, ">>>>> Attachment uri: %s", attachment.originExtras);
-        LogUtils.d(LOG_TAG, ">>>>>           type: %s", attachment.contentType);
-        LogUtils.d(LOG_TAG, ">>>>>           name: %s", mFilename);
-        LogUtils.d(LOG_TAG, ">>>>>           size: %d", mSize);
+        if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+            String attachStr = null;
+            try {
+                attachStr = attachment.toJSON().toString(2);
+            } catch (JSONException e) {
+                attachStr = attachment.toString();
+            }
+            LogUtils.d(LOG_TAG, "attachment view: %s", attachStr);
+        }
 
         LayoutInflater factory = LayoutInflater.from(getContext());
 
@@ -58,11 +63,11 @@ class AttachmentComposeView extends LinearLayout {
     }
 
     private void populateAttachmentData(Context context) {
-        ((TextView) findViewById(R.id.attachment_name)).setText(mFilename);
+        ((TextView) findViewById(R.id.attachment_name)).setText(mAttachment.name);
 
-        if (mSize != 0) {
+        if (mAttachment.size > 0) {
             ((TextView) findViewById(R.id.attachment_size)).
-                    setText(AttachmentUtils.convertToHumanReadableSize(context, mSize));
+                    setText(AttachmentUtils.convertToHumanReadableSize(context, mAttachment.size));
         } else {
             ((TextView) findViewById(R.id.attachment_size)).setVisibility(View.GONE);
         }

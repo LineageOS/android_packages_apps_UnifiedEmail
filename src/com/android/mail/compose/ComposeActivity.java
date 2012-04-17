@@ -17,11 +17,11 @@
 package com.android.mail.compose;
 
 import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -47,8 +47,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.BaseInputConnection;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -58,6 +58,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.common.Rfc822Validator;
+import com.android.ex.chips.RecipientEditTextView;
+import com.android.mail.R;
 import com.android.mail.compose.AttachmentsView.AttachmentDeletedListener;
 import com.android.mail.compose.AttachmentsView.AttachmentFailureException;
 import com.android.mail.compose.FromAddressSpinner.OnAccountChangedListener;
@@ -72,11 +74,9 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.DraftType;
-import com.android.mail.R;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.android.ex.chips.RecipientEditTextView;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -647,7 +647,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (message.hasAttachments) {
             List<Attachment> attachments = message.getAttachments();
             for (Attachment a : attachments) {
-                addAttachmentAndUpdateView(a.uri);
+                addAttachmentAndUpdateView(a);
             }
         }
 
@@ -829,8 +829,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     final Uri uri = Uri.parse(uriString);
                     long size = 0;
                     try {
-                        size =  mAttachmentsView.addAttachment(mAccount, uri, false /* doSave */,
-                                true /* local file */);
+                        size =  mAttachmentsView.addAttachment(mAccount, uri);
                     } catch (AttachmentFailureException e) {
                         // A toast has already been shown to the user,
                         // just break out of the loop.
@@ -843,8 +842,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 final Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
                 long size = 0;
                 try {
-                    size =  mAttachmentsView.addAttachment(mAccount, uri, false /* doSave */,
-                            true /* local file */);
+                    size =  mAttachmentsView.addAttachment(mAccount, uri);
                 } catch (AttachmentFailureException e) {
                     // A toast has already been shown to the user, so just
                     // exit.
@@ -859,8 +857,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 for (Parcelable uri : uris) {
                     long size = 0;
                     try {
-                        size = mAttachmentsView.addAttachment(mAccount, (Uri) uri,
-                                false /* doSave */, true /* local file */);
+                        size = mAttachmentsView.addAttachment(mAccount, (Uri) uri);
                     } catch (AttachmentFailureException e) {
                         // A toast has already been shown to the user,
                         // just break out of the loop.
@@ -910,14 +907,22 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         addAttachmentAndUpdateView(data != null ? data.getData() : (Uri) null);
     }
 
-    public void addAttachmentAndUpdateView(Uri uri) {
-        if (uri == null) {
+    public void addAttachmentAndUpdateView(Uri contentUri) {
+        if (contentUri == null) {
             return;
         }
         try {
-            long size =  mAttachmentsView.addAttachment(mAccount, uri,
-                    false /* doSave */,
-                    true /* local file */);
+            addAttachmentAndUpdateView(mAttachmentsView.generateLocalAttachment(contentUri));
+        } catch (AttachmentFailureException e) {
+            // A toast has already been shown to the user, no need to do
+            // anything.
+            LogUtils.e(LOG_TAG, e, "Error adding attachment");
+        }
+    }
+
+    public void addAttachmentAndUpdateView(Attachment attachment) {
+        try {
+            long size =  mAttachmentsView.addAttachment(mAccount, attachment);
             if (size > 0) {
                 mAttachmentsChanged = true;
                 updateSaveUi();
@@ -1574,7 +1579,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /**
      * Returns a boolean indicating whether warnings should be shown for empty
      * subject and body fields
-     * 
+     *
      * @return True if a warning should be shown for empty text fields
      */
     protected boolean showEmptyTextWarnings() {

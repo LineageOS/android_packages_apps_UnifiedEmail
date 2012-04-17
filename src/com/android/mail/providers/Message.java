@@ -56,6 +56,7 @@ public class Message implements Parcelable {
     public boolean hasAttachments;
     public Uri attachmentListUri;
     public long messageFlags;
+    @Deprecated
     public String joinedAttachmentInfos;
     public String saveUri;
     public String sendUri;
