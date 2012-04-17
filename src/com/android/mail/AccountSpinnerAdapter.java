@@ -169,8 +169,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public boolean setCurrentFolder(Folder folder) {
         if (folder != null && folder != mCurrentFolder) {
             mCurrentFolder = folder;
-            mRecentFolderList = mRecentFolders.getRecentFolderList(folder);
-            notifyDataSetChanged();
+            requestRecentFoldersAndRedraw();
             return true;
         }
         return false;
@@ -194,8 +193,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             mCurrentAccount = getSafeAccount();
         }
         LogUtils.d(LOG_TAG, "Setting the current account position to %d", mCurrentAccount);
-        mRecentFolderList = mRecentFolders.getRecentFolderList(mCurrentFolder);
-        notifyDataSetChanged();
+        requestRecentFoldersAndRedraw();
         return true;
     }
 
@@ -406,6 +404,15 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void onFolderUpdated(Folder folder) {
         mCurrentFolder = folder;
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Cause a refresh of the recent folders for the current folder and redraw the spinner with
+     * the new information.
+     */
+    public void requestRecentFoldersAndRedraw() {
+        mRecentFolderList = mRecentFolders.getRecentFolderList(mCurrentFolder);
         notifyDataSetChanged();
     }
 }

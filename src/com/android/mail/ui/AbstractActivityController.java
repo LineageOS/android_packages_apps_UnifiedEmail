@@ -1315,6 +1315,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 break;
             case LOADER_RECENT_FOLDERS:
                 mRecentFolderList.loadFromUiProvider(data);
+                mActionBarView.requestRecentFoldersAndRedraw();
                 break;
             case LOADER_ACCOUNT_INBOX:
                 if (data.moveToFirst() && !data.isClosed()) {

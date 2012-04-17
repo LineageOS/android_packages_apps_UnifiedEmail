@@ -65,7 +65,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private int mMode = ViewMode.UNKNOWN;
 
     private MenuItem mSearch;
-    AccountSpinnerAdapter mSpinner;
+    private AccountSpinnerAdapter mSpinner;
     /**
      * The account currently being shown
      */
@@ -492,5 +492,12 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         // we want to suppress the action (rather than consume the action). We don't want to
         // suppress the action.
         return true;
+    }
+
+    /**
+     * Request the Accounts spinner to redraw itself in light of new data that it needs to request.
+     */
+    public void requestRecentFoldersAndRedraw() {
+        mSpinner.requestRecentFoldersAndRedraw();
     }
 }
