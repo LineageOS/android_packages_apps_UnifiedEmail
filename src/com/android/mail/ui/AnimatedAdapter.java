@@ -67,7 +67,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Settings mCachedSettings;
     private boolean mSwipeEnabled;
     private DragListener mDragListener;
-    private HashMap<Long, UndoOperation> mLeaveBehindItems = new HashMap<Long, UndoOperation>();
+    private HashMap<Long, LeaveBehindItem> mLeaveBehindItems = new HashMap<Long, LeaveBehindItem>();
 
     /**
      * Used only for debugging.
@@ -252,16 +252,27 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     public void setupLeaveBehind(Conversation target, UndoOperation undoOp, int deletedRow) {
-        mLeaveBehindItems.put(target.id, undoOp);
+        commitLeaveBehindItems();
+        LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext).inflate(
+                R.layout.swipe_leavebehind, null);
+        leaveBehind.bindOperations(mSelectedAccount, this, undoOp,
+                target);
+        mLeaveBehindItems.put(target.id, leaveBehind);
         mLastDeletingItems.add(deletedRow);
     }
 
+    public void commitLeaveBehindItems() {
+        // Remove any previously existing leave behinds.
+        if (!mLeaveBehindItems.isEmpty()) {
+            for (LeaveBehindItem item : mLeaveBehindItems.values()) {
+                item.commit();
+            }
+            mLeaveBehindItems.clear();
+        }
+    }
+
     private LeaveBehindItem getLeaveBehindItem(int position, Conversation target) {
-        LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext).inflate(
-                R.layout.swipe_leavebehind, null);
-        leaveBehind.bindOperations(mSelectedAccount, this, mLeaveBehindItems.get(target.id),
-                target);
-        return leaveBehind;
+        return mLeaveBehindItems.get(target.id);
     }
 
     @Override
