@@ -108,6 +108,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // Integer extra holding one of the above compose action
     private static final String EXTRA_ACTION = "action";
 
+    private static final String EXTRA_SHOW_CC_BCC = "showCcBcc";
+
     private static final String UTF8_ENCODING_NAME = "UTF-8";
 
     private static final String MAIL_TO = "mailto";
@@ -295,6 +297,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (message != null && action != EDIT_DRAFT) {
             initFromDraftMessage(message);
             initQuotedTextFromRefMessage(mRefMessage, action);
+            showCcBcc(savedInstanceState);
         } else if (action == EDIT_DRAFT) {
             initFromDraftMessage(message);
             // Update the action to the draft type of the previous draft
@@ -469,6 +472,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mRefMessage != null) {
             state.putParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE, mRefMessage);
         }
+        state.putBoolean(EXTRA_SHOW_CC_BCC, mCcBccView.isVisible());
     }
 
     private int getMode() {
@@ -1022,6 +1026,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             } else {
                 mCcBccButton.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private void showCcBcc(Bundle state) {
+        if (state != null && state.containsKey(EXTRA_SHOW_CC_BCC)) {
+            boolean show = state.getBoolean(EXTRA_SHOW_CC_BCC);
+            mCcBccView.show(false, show, show);
         }
     }
 
