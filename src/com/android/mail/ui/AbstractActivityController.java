@@ -170,6 +170,11 @@ public abstract class AbstractActivityController implements ActivityController,
     SelectedConversationsActionMenu mCabActionMenu;
     protected UndoBarView mUndoBarView;
 
+    // this is split out from the general loader dispatcher because its loader doesn't return a
+    // basic Cursor
+    private final ConversationListLoaderCallbacks mListCursorCallbacks =
+            new ConversationListLoaderCallbacks();
+
     protected static final String LOG_TAG = new LogUtils().getLogTag();
     /** Constants used to differentiate between the types of loaders. */
     private static final int LOADER_ACCOUNT_CURSOR = 0;
@@ -288,68 +293,6 @@ public abstract class AbstractActivityController implements ActivityController,
             return (FolderListFragment) fragment;
         }
         return null;
-    }
-
-    @Override
-    public void initConversationListCursor() {
-        mActivity.getLoaderManager().restartLoader(LOADER_CONVERSATION_LIST, Bundle.EMPTY,
-                new LoaderManager.LoaderCallbacks<ConversationCursor>() {
-
-                    @Override
-                    public void onLoadFinished(Loader<ConversationCursor> loader,
-                            ConversationCursor data) {
-                        mConversationListCursor = data;
-
-                        // Call the method that updates things when values in the cursor change
-                        if (mConversationListCursor.isRefreshReady()) {
-                            onRefreshReady();
-                        }
-
-                        // Register the AbstractActivityController as a listener to changes in
-                        // data in the cursor.
-                        final ConversationListFragment convList = getConversationListFragment();
-                        if (convList != null) {
-                            convList.onCursorUpdated();
-                            if (!mConversationListenerAdded) {
-                                // TODO(mindyp): when we move to the cursor loader, we need
-                                // to add/remove the listener when we create/ destroy loaders.
-                                mConversationListCursor
-                                        .addListener(AbstractActivityController.this);
-                                convList.getListView().setOnScrollListener(
-                                        AbstractActivityController.this);
-                                mConversationListenerAdded = true;
-                            }
-                        }
-                        // Shown for search results in two-pane mode only.
-                        if (shouldShowFirstConversation()) {
-                            if (mConversationListCursor.getCount() > 0) {
-                                mConversationListCursor.moveToPosition(0);
-                                if (convList != null) {
-                                    convList.getListView().setItemChecked(0, true);
-                                }
-                                final Conversation conv = new Conversation(mConversationListCursor);
-                                conv.position = 0;
-                                onConversationSelected(conv);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onLoaderReset(Loader<ConversationCursor> loader) {
-                        final ConversationListFragment convList = getConversationListFragment();
-                        if (convList == null) {
-                            return;
-                        }
-                        convList.onCursorUpdated();
-                    }
-
-                    @Override
-                    public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
-                        return new ConversationCursorLoader((Activity) mActivity, mAccount,
-                                UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
-                    }
-
-                });
     }
 
     /**
@@ -492,11 +435,23 @@ public abstract class AbstractActivityController implements ActivityController,
     private void setFolder(Folder folder) {
         // Start watching folder for sync status.
         if (folder != null && !folder.equals(mFolder)) {
+            final boolean folderWasNull = (mFolder == null);
+            final LoaderManager lm = mActivity.getLoaderManager();
             mActionBarView.setRefreshInProgress(false);
             mFolder = folder;
             mActionBarView.setFolder(mFolder);
-            mActivity.getLoaderManager().restartLoader(LOADER_FOLDER_CURSOR, null, this);
-            initConversationListCursor();
+
+            // Only when we switch from one folder to another do we want to restart the
+            // folder and conversation list loaders (to trigger onCreateLoader).
+            // The first time this runs when the activity is [re-]initialized, we want to re-use the
+            // previous loader's instance and data upon configuration change (e.g. rotation).
+            if (folderWasNull) {
+                lm.initLoader(LOADER_FOLDER_CURSOR, null, this);
+                lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
+            } else {
+                lm.restartLoader(LOADER_FOLDER_CURSOR, null, this);
+                lm.restartLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
+            }
         } else if (folder == null) {
             LogUtils.wtf(LOG_TAG, "Folder in setFolder is null");
         }
@@ -552,6 +507,10 @@ public abstract class AbstractActivityController implements ActivityController,
         restoreState(savedState);
         mUndoBarView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
         return true;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
     }
 
     @Override
@@ -1705,5 +1664,64 @@ public abstract class AbstractActivityController implements ActivityController,
                 mUndoBarView.hide(true);
             }
         }
+    }
+
+    private class ConversationListLoaderCallbacks implements
+        LoaderManager.LoaderCallbacks<ConversationCursor> {
+
+        @Override
+        public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
+            Loader<ConversationCursor> result = new ConversationCursorLoader((Activity) mActivity,
+                    mAccount, UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
+            return result;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
+            mConversationListCursor = data;
+
+            // Call the method that updates things when values in the cursor change
+            if (mConversationListCursor.isRefreshReady()) {
+                onRefreshReady();
+            }
+
+            // Register the AbstractActivityController as a listener to changes in
+            // data in the cursor.
+            final ConversationListFragment convList = getConversationListFragment();
+            if (convList != null) {
+                convList.onCursorUpdated();
+                if (!mConversationListenerAdded) {
+                    // TODO(mindyp): when we move to the cursor loader, we need
+                    // to add/remove the listener when we create/ destroy loaders.
+                    mConversationListCursor
+                            .addListener(AbstractActivityController.this);
+                    convList.getListView().setOnScrollListener(
+                            AbstractActivityController.this);
+                    mConversationListenerAdded = true;
+                }
+            }
+            // Shown for search results in two-pane mode only.
+            if (shouldShowFirstConversation()) {
+                if (mConversationListCursor.getCount() > 0) {
+                    mConversationListCursor.moveToPosition(0);
+                    if (convList != null) {
+                        convList.getListView().setItemChecked(0, true);
+                    }
+                    final Conversation conv = new Conversation(mConversationListCursor);
+                    conv.position = 0;
+                    onConversationSelected(conv);
+                }
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<ConversationCursor> loader) {
+            final ConversationListFragment convList = getConversationListFragment();
+            if (convList == null) {
+                return;
+            }
+            convList.onCursorUpdated();
+        }
+
     }
 }

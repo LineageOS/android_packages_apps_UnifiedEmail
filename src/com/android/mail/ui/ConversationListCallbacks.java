@@ -32,6 +32,4 @@ public interface ConversationListCallbacks {
     void onConversationSelected(Conversation conversation);
 
     ConversationCursor getConversationListCursor();
-
-    void initConversationListCursor();
 }

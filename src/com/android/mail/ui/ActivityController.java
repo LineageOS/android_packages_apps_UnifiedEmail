@@ -169,6 +169,11 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     void onResume();
 
     /**
+     * @see android.app.Activity#onRestoreInstanceState
+     */
+    void onRestoreInstanceState(Bundle savedInstanceState);
+
+    /**
      * @see android.app.Activity#onSaveInstanceState
      * @param outState
      */

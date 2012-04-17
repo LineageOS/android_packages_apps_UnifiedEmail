@@ -136,6 +136,12 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mController.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
     public Dialog onCreateDialog(int id, Bundle bundle) {
         Dialog dialog = mController.onCreateDialog(id, bundle);
         // TODO(viki): Handle what's new and the sync window upgrade dialog here.
