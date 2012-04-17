@@ -20,7 +20,7 @@ package com.android.mail.ui;
 import android.content.Context;
 import android.text.Html;
 import android.util.AttributeSet;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.View;
@@ -29,13 +29,10 @@ import android.view.View.OnClickListener;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
-import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.google.common.collect.ImmutableList;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-public class LeaveBehindItem extends RelativeLayout implements OnClickListener, SwipeableItemView {
+public class LeaveBehindItem extends LinearLayout implements OnClickListener,
+    SwipeableItemView {
 
     private UndoOperation mUndoOp;
     private Account mAccount;
@@ -80,9 +77,9 @@ public class LeaveBehindItem extends RelativeLayout implements OnClickListener, 
         mAccount = account;
         mAdapter = adapter;
         mConversation = target;
-        ((TextView) findViewById(R.id.undo_description)).setText(Html.fromHtml(mUndoOp
+        ((TextView) findViewById(R.id.undo_descriptionview)).setText(Html.fromHtml(mUndoOp
                 .getDescription(getContext())));
-        ((Button) findViewById(R.id.undo_button)).setOnClickListener(this);
+        ((RelativeLayout) findViewById(R.id.undo_button)).setOnClickListener(this);
     }
 
     public void commit() {

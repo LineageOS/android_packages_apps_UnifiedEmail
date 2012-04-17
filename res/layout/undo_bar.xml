@@ -24,54 +24,6 @@
     android:layout_marginRight="4dip"
     android:orientation="horizontal">
 
-        <TextView android:id="@+id/undo_descriptionview"
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:text="@string/no_conversations"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:paddingLeft="16dip"
-            android:layout_weight="1"/>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/undo_button"
-            android:clickable="true">
-
-            <!-- TODO: replace this when we have a vertical bar asset -->
-            <View
-                android:layout_width="1dip"
-                android:layout_height="match_parent"
-                android:background="#aaaaaa"
-                android:layout_marginTop="10dip"
-                android:layout_marginBottom="10dip"
-                android:layout_marginRight="12dip"
-                android:id="@+id/undo_separator"/>
-
-            <!-- TODO: replace this with the undo asset -->
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/undo_icon"
-                android:layout_marginRight="8dip"
-                android:layout_toRightOf="@id/undo_separator"
-                android:src="@drawable/ic_menu_revert_holo_dark" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                style="@style/UndoTextStyle"
-                android:text="@string/undo"
-                android:textAllCaps="true"
-                android:paddingRight="16dip"
-                android:layout_toRightOf="@id/undo_icon"/>
-
-        </RelativeLayout>
+    <include layout="@layout/undo_row"/>
 
 </LinearLayout>

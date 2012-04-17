@@ -15,30 +15,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<!-- This layout is used as a template to create custom view CanvasConversationHeaderView
-    in normal mode. To be able to get the correct measurements, every source field should
-    be populated with data here. E.g:
-    - Text View should set text to a random long string (android:text="@string/long_string")
-    - Image View should set source to a specific asset -->
 <com.android.mail.ui.LeaveBehindItem
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/conversation_item_height"
     android:background="@android:color/black"
-    android:layout_gravity="center_vertical"
-    android:gravity="center_vertical">
-    <Button android:id="@+id/undo_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="@string/undo"/>
-    <TextView android:id="@+id/undo_description"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginLeft="16dip"
-        android:clickable="true"/>
+    android:gravity="center_vertical"
+    android:clickable="true"
+    android:layout_marginLeft="4dip"
+    android:layout_marginRight="4dip"
+    android:orientation="horizontal">
+
+    <include layout="@layout/undo_row"/>
+
 </com.android.mail.ui.LeaveBehindItem>
