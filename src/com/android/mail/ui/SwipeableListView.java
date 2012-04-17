@@ -227,7 +227,8 @@ public class SwipeableListView extends ListView implements Callback{
             });
         } else {
             undoOp = new UndoOperation(1, mSwipeAction);
-            target.getConversation().position = getPositionForView(target);
+            target.getConversation().position = target.getParent() != null ?
+                    getPositionForView(target) : -1;
             handleLeaveBehind(target, undoOp, context);
         }
     }
