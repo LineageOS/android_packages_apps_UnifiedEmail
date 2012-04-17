@@ -246,6 +246,9 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     protected ConversationListFragment getConversationListFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION_LIST);
+        if (fragment != null && fragment.getActivity() == null) {
+            return null;
+        }
         return (ConversationListFragment) fragment;
     }
 
@@ -256,6 +259,9 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     protected ConversationViewFragment getConversationViewFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION);
+        if (fragment != null && fragment.getActivity() == null) {
+            return null;
+        }
         return (ConversationViewFragment) fragment;
     }
 
@@ -266,6 +272,9 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     protected FolderListFragment getFolderListFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_FOLDER_LIST);
+        if (fragment != null && fragment.getActivity() == null) {
+            return null;
+        }
         return (FolderListFragment) fragment;
     }
 
