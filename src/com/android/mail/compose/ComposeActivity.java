@@ -407,7 +407,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     void setAccount(Account account) {
-        assert(account != null);
+        if (account == null) {
+            return;
+        }
         if (!account.equals(mAccount)) {
             mAccount = account;
             mCachedSettings = mAccount.settings;
