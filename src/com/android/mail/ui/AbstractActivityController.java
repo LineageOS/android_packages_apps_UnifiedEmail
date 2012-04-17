@@ -240,16 +240,28 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
+     * Check if the fragment is attached to an activity and has a root view.
+     * @param in
+     * @return true if the fragment is valid, false otherwise
+     */
+    private static final boolean isValidFragment(Fragment in) {
+        if (in == null || in.getActivity() == null || in.getView() == null) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Get the conversation list fragment for this activity. If the conversation list fragment
      * is not attached, this method returns null
      * @return
      */
     protected ConversationListFragment getConversationListFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION_LIST);
-        if (fragment != null && fragment.getActivity() == null) {
-            return null;
+        if (isValidFragment(fragment)) {
+            return (ConversationListFragment) fragment;
         }
-        return (ConversationListFragment) fragment;
+        return null;
     }
 
     /**
@@ -259,10 +271,10 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     protected ConversationViewFragment getConversationViewFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION);
-        if (fragment != null && fragment.getActivity() == null) {
-            return null;
+        if (isValidFragment(fragment)) {
+            return (ConversationViewFragment) fragment;
         }
-        return (ConversationViewFragment) fragment;
+        return null;
     }
 
     /**
@@ -272,10 +284,10 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     protected FolderListFragment getFolderListFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_FOLDER_LIST);
-        if (fragment != null && fragment.getActivity() == null) {
-            return null;
+        if (isValidFragment(fragment)) {
+            return (FolderListFragment) fragment;
         }
-        return (FolderListFragment) fragment;
+        return null;
     }
 
     @Override
