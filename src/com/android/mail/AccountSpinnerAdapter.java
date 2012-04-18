@@ -43,7 +43,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     /**
      * The position of the current account being viewed as an index into the mAccounts array.
      */
-    private int mCurrentAccount = -1;
+    private int mCurrentAccountPos = -1;
+    /**
+     * The position of the current account being viewed.
+     */
+    private Account mCurrentAccount = null;
     /**
      * Total number of accounts.
      */
@@ -154,9 +158,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         final Uri currentAccount = getCurrentAccountUri();
         mAccounts = accounts;
         mNumAccounts = accounts.length;
-        mCurrentAccount = findPositionOfAccount(accounts, currentAccount);
-        if (isCurrentAccountInvalid()) {
-            mCurrentAccount = getSafeAccount();
+        if (!isCurrentAccountInvalid()) {
+            mCurrentAccountPos = findPositionOfAccount(accounts, currentAccount);
         }
         notifyDataSetChanged();
     }
@@ -181,19 +184,22 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return if changed.
      */
     public boolean setCurrentAccount(Account account) {
-        // If the account is missing or we have no accounts array, we cannot proceed.
-        if (account == null || mAccounts.length <= 0) {
+        // If the account is missing or we have no accounts array, we cannot
+        // proceed.
+        if (account == null) {
             return false;
         }
         if (account.uri.equals(getCurrentAccountUri())) {
             // The current account matches what is being given, get out.
             return false;
         }
-        mCurrentAccount = findPositionOfAccount(mAccounts, account.uri);
-        if (isCurrentAccountInvalid()) {
-            mCurrentAccount = getSafeAccount();
+        mCurrentAccount = account;
+        if (mAccounts.length > 0 && !isCurrentAccountInvalid()) {
+            mCurrentAccountPos = findPositionOfAccount(mAccounts, account.uri);
+        } else {
+            mCurrentAccountPos = -1;
         }
-        LogUtils.d(LOG_TAG, "Setting the current account position to %d", mCurrentAccount);
+        LogUtils.d(LOG_TAG, "Setting the current account position to %d", mCurrentAccountPos);
         requestRecentFoldersAndRedraw();
         return true;
     }
@@ -241,53 +247,21 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return true if the current account is invalid, and false otherwise.
      */
     private boolean isCurrentAccountInvalid() {
-        if (mAccounts.length <= mCurrentAccount || mCurrentAccount < 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns the current active account if one exists, or null if there is no current account.
-     * @return
-     */
-    private Account getCurrentAccount() {
-        if (isCurrentAccountInvalid()) {
-            return null;
-        }
-        return mAccounts[mCurrentAccount];
+        return mCurrentAccount == null;
     }
 
     private String getCurrentAccountName() {
-        if (isCurrentAccountInvalid()) {
+        if (isCurrentAccountInvalid() || mCurrentAccountPos == -1) {
             return "";
         }
-        return mAccounts[mCurrentAccount].name;
+        return mAccounts[mCurrentAccountPos].name;
     }
 
     private Uri getCurrentAccountUri() {
         if (isCurrentAccountInvalid()) {
             return Uri.EMPTY;
         }
-        return mAccounts[mCurrentAccount].uri;
-    }
-
-    /**
-     * If we cannot find a safe account to use, we need to fall back on something safe. We should
-     * return a value that will definitely be valid here. Since this method is called when something
-     * went wrong, we log the issue here.
-     * @return
-     */
-    private int getSafeAccount() {
-        if (mAccounts.length > 0) {
-            LogUtils.d(LOG_TAG, "getSafeAccount called when there are %d accounts. Returning 0",
-                    mAccounts.length);
-            return 0;
-        } else {
-            // This is truly strange. We cannot return a valid account when there are no accounts.
-            LogUtils.wtf(LOG_TAG, "getSafeAccount called and there are no accounts. Crashing.");
-            return -1;
-        }
+        return mCurrentAccount.uri;
     }
 
     // This call renders the view that will be shown in the header.
