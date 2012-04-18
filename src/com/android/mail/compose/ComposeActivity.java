@@ -1780,8 +1780,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         MessageModification.putSubject(values, message.subject);
         String htmlBody = Html.toHtml(body);
-        String quotedText = !TextUtils.isEmpty(message.bodyText) && message.quotedTextOffset > -1 ?
-                message.bodyText.substring(message.quotedTextOffset) : null;
+        String quotedText = !TextUtils.isEmpty(message.bodyText) && message.quotedTextOffset > -1
+                && message.quotedTextOffset < message.bodyText.length() ? message.bodyText
+                .substring(message.quotedTextOffset) : null;
         boolean includeQuotedText = !TextUtils.isEmpty(quotedText);
         StringBuilder fullBody = new StringBuilder(htmlBody);
         if (includeQuotedText) {

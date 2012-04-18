@@ -141,11 +141,14 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return a position between 0 and haystack.length-1 if an account is found, -1 if not found.
      */
     private static int findPositionOfAccount(Account[] haystack, Uri needle) {
-        // Need to go through the list of current accounts, and fix the position.
-        for (int i = 0, size = haystack.length; i < size; ++i) {
-            if (haystack[i].uri.equals(needle)) {
-                LogUtils.d(LOG_TAG, "Found need at position to %d", i);
-                return i;
+        if (haystack != null && haystack.length > 0 && needle != null) {
+            // Need to go through the list of current accounts, and fix the
+            // position.
+            for (int i = 0, size = haystack.length; i < size; ++i) {
+                if (haystack[i].uri.equals(needle)) {
+                    LogUtils.d(LOG_TAG, "Found need at position to %d", i);
+                    return i;
+                }
             }
         }
         return -1;
@@ -194,11 +197,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             return false;
         }
         mCurrentAccount = account;
-        if (mAccounts.length > 0 && !isCurrentAccountInvalid()) {
-            mCurrentAccountPos = findPositionOfAccount(mAccounts, account.uri);
-        } else {
-            mCurrentAccountPos = -1;
-        }
+        mCurrentAccountPos = findPositionOfAccount(mAccounts, account.uri);
         LogUtils.d(LOG_TAG, "Setting the current account position to %d", mCurrentAccountPos);
         requestRecentFoldersAndRedraw();
         return true;
