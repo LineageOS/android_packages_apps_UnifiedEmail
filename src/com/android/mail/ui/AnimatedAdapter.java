@@ -24,20 +24,21 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.SimpleCursorAdapter;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
 import com.android.mail.utils.LogUtils;
-import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +46,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
-        android.animation.Animator.AnimatorListener, OnUndoCancelListener {
+        android.animation.Animator.AnimatorListener, OnUndoCancelListener, ConversationListener,
+        OnScrollListener {
     private final static int TYPE_VIEW_CONVERSATION = 0;
     private final static int TYPE_VIEW_DELETING = 1;
     private final static int TYPE_VIEW_UNDOING = 2;
@@ -57,7 +59,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Context mContext;
     private ConversationSelectionSet mBatchConversations;
     private ActionCompleteListener mActionCompleteListener;
-    private boolean mUndo = false;
     private ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
     private ViewMode mViewMode;
     private View mFooter;
@@ -68,6 +69,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private boolean mSwipeEnabled;
     private DragListener mDragListener;
     private HashMap<Long, LeaveBehindItem> mLeaveBehindItems = new HashMap<Long, LeaveBehindItem>();
+
+    private ConversationCursor mConversationCursor;
+    // TODO: Hook this up (set list view's onScrollListener)
+    private boolean mIsConversationListScrolling = false;
 
     /**
      * Used only for debugging.
@@ -91,6 +96,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mCachedSettings = settings;
         mDragListener = dragListener;
         mSwipeEnabled = account.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE);
+        mConversationCursor = cursor;
+        if (cursor != null) {
+            cursor.setAdapter(this);
+        }
     }
 
     @Override
@@ -441,5 +450,55 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public void clearLeaveBehind(Conversation item) {
         mLeaveBehindItems.remove(item.id);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRefreshRequired() {
+        if (mConversationCursor.isRefreshRequired()) {
+            mConversationCursor.refresh();
+        }
+    }
+
+    /**
+     * Called when the {@link ConversationCursor} is changed or has new data in it.
+     * <p>
+     * {@inheritDoc}
+     */
+    @Override
+    public void onRefreshReady() {
+        // Note: mIsConversationListScrolling will always be false until the listener is hooked up
+        if (!mIsConversationListScrolling) {
+            // Swap cursors
+            mConversationCursor.sync();
+            notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onDataSetChanged() {
+        notifyDataSetChanged();
+    }
+
+    // TODO: Hook this up (currently not used)
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (mConversationCursor != null) {
+            boolean isScrolling = (scrollState != OnScrollListener.SCROLL_STATE_IDLE);
+            if (!isScrolling) {
+                if (mConversationCursor.isRefreshRequired()) {
+                    LogUtils.d(LOG_TAG, "Stop scrolling: refresh");
+                    mConversationCursor.refresh();
+                } else if (mConversationCursor.isRefreshReady()) {
+                    LogUtils.d(LOG_TAG, "Stop scrolling: try sync");
+                    onRefreshReady();
+                }
+            }
+            mIsConversationListScrolling = isScrolling;
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+            int totalItemCount) {
     }
 }
