@@ -798,6 +798,12 @@ public abstract class AbstractActivityController implements ActivityController,
         // TODO(viki): Auto-generated method stub
     }
 
+    private void setAccount(Account account) {
+        mAccount = account;
+        mCachedSettings = mAccount.settings;
+        mActionBarView.setAccount(mAccount);
+    }
+
     /**
      * Restore the state from the previous bundle. Subclasses should call this
      * method from the parent class, since it performs important UI
@@ -810,8 +816,8 @@ public abstract class AbstractActivityController implements ActivityController,
         boolean handled = false;
         if (savedState != null) {
             if (savedState.containsKey(SAVED_ACCOUNT)) {
-                final Account account = ((Account) savedState.getParcelable(SAVED_ACCOUNT));
-                onAccountChanged(account);
+                setAccount((Account) savedState.getParcelable(SAVED_ACCOUNT));
+                mActivity.invalidateOptionsMenu();
             }
             if (savedState.containsKey(SAVED_FOLDER)) {
                 // Open the folder.
@@ -827,10 +833,13 @@ public abstract class AbstractActivityController implements ActivityController,
         } else if (intent != null) {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
-                    onAccountChanged(((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT)));
+                    setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                 } else if (intent.hasExtra(Utils.EXTRA_ACCOUNT_STRING)) {
-                    onAccountChanged(Account.newinstance(intent
+                    setAccount(Account.newinstance(intent
                             .getStringExtra(Utils.EXTRA_ACCOUNT_STRING)));
+                }
+                if (mAccount != null) {
+                    mActivity.invalidateOptionsMenu();
                 }
 
                 Folder folder = null;
@@ -873,8 +882,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     suggestions.saveRecentQuery(query, null);
 
                     mViewMode.enterSearchResultsListMode();
-                    mAccount = (Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
-                    mActionBarView.setAccount(mAccount);
+                    setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                     mActivity.invalidateOptionsMenu();
                     restartOptionalLoader(LOADER_RECENT_FOLDERS);
                     mRecentFolderList.setCurrentAccount(mAccount);
