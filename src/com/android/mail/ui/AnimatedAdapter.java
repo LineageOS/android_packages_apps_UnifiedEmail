@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
-        android.animation.Animator.AnimatorListener, OnUndoCancelListener {
+        android.animation.Animator.AnimatorListener, OnUndoCancelListener, Settings.ChangeListener {
     private final static int TYPE_VIEW_CONVERSATION = 0;
     private final static int TYPE_VIEW_DELETING = 1;
     private final static int TYPE_VIEW_UNDOING = 2;
@@ -443,5 +443,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public void clearLeaveBehind(Conversation item) {
         mLeaveBehindItems.remove(item.id);
         notifyDataSetChanged();
+    }
+
+    /**
+     * @param updatedSettings
+     */
+    @Override
+    public void onSettingsChanged(Settings updatedSettings) {
+        mCachedSettings = updatedSettings;
     }
 }

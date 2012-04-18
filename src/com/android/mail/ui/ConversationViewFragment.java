@@ -59,6 +59,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
 import com.android.mail.providers.Message;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
@@ -327,14 +328,14 @@ public final class ConversationViewFragment extends Fragment implements
      */
     private String renderMessageBodies(MessageCursor messageCursor) {
         int pos = -1;
-
         boolean allowNetworkImages = false;
 
         // TODO: re-use any existing adapter item state (expanded, details expanded, show pics)
-
-        mAdapter.setDefaultReplyAll(mActivity.getSettings().replyBehavior ==
-                UIProvider.DefaultReplyBehavior.REPLY_ALL);
-
+        final Settings settings = mActivity.getSettings();
+        if (settings != null) {
+            mAdapter.setDefaultReplyAll(settings.replyBehavior ==
+                    UIProvider.DefaultReplyBehavior.REPLY_ALL);
+        }
         // Walk through the cursor and build up an overlay adapter as you go.
         // Each overlay has an entry in the adapter for easy scroll handling in the container.
         // Items are not necessarily 1:1 in cursor and adapter because of super-collapsed blocks.

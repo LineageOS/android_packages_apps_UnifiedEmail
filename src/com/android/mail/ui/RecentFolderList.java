@@ -177,7 +177,7 @@ public final class RecentFolderList {
         if (excludedFolder != null) {
             excludedUris.add(excludedFolder.uri);
         }
-        Settings settings = mController.getSettings();
+        final Settings settings = mController.getSettings();
         if (settings != null) {
             // This could already be in the list, but that's ok
             excludedUris.add(settings.defaultInbox);

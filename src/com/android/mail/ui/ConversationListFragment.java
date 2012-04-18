@@ -41,6 +41,7 @@ import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -55,7 +56,8 @@ import java.util.Collection;
  * The conversation list UI component.
  */
 public final class ConversationListFragment extends ListFragment implements
-        OnItemLongClickListener, ModeChangeListener, SwipeCompleteListener {
+        OnItemLongClickListener, ModeChangeListener, SwipeCompleteListener,
+        Settings.ChangeListener {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     // Key used to keep track of the scroll state of the list.
@@ -507,6 +509,14 @@ public final class ConversationListFragment extends ListFragment implements
     public void commitLeaveBehindItems() {
         if (mListAdapter != null) {
             mListAdapter.commitLeaveBehindItems();
+
+        }
+    }
+
+    @Override
+    public void onSettingsChanged(Settings updatedSettings) {
+        if (mListAdapter != null) {
+            mListAdapter.onSettingsChanged(updatedSettings);
         }
     }
 }

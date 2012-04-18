@@ -374,15 +374,15 @@ public final class OnePaneController extends AbstractActivityController {
         final int id = item.getItemId();
         switch (id) {
             case R.id.y_button: {
-                final Settings settings = mActivity.getSettings();
-                final boolean showDialog = (settings != null && settings.confirmArchive);
+                final boolean showDialog =
+                        (mCachedSettings != null && mCachedSettings.confirmArchive);
                 confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
                         mArchiveListener);
                 break;
             }
             case R.id.delete: {
-                final Settings settings = mActivity.getSettings();
-                final boolean showDialog = (settings != null && settings.confirmDelete);
+                final boolean showDialog =
+                        (mCachedSettings != null && mCachedSettings.confirmDelete);
                 confirmAndDelete(showDialog,
                         R.plurals.confirm_delete_conversation, mDeleteListener);
                 break;
@@ -483,21 +483,13 @@ public final class OnePaneController extends AbstractActivityController {
      * @return true if we need to return back to conversation list, false otherwise.
      */
     private boolean returnToList() {
-        ConversationCursor conversationListCursor = mConversationListCursor;
-        int pref = getAutoAdvanceSetting(mCachedSettings);
+        final int pref = getAutoAdvanceSetting(mCachedSettings);
         final int position = mCurrentConversation.position;
-        boolean canMove = false;
-        switch (pref) {
-            case AutoAdvance.NEWER:
-                canMove = position - 1 >= 0;
-                break;
-            case AutoAdvance.OLDER:
-                Cursor c = conversationListCursor;
-                if (c != null) {
-                    canMove = position + 1 < c.getCount();
-                }
-                break;
-        }
+        final boolean moveToNewer = (pref == AutoAdvance.NEWER && (position - 1 >= 0));
+        final boolean moveToOlder = (pref == AutoAdvance.OLDER && mConversationListCursor != null
+                && (position + 1 < mConversationListCursor.getCount()));
+        final boolean canMove = moveToNewer || moveToOlder;
+        // Return true if we cannot move forward or back, or if the user wants to go back to list.
         return pref == AutoAdvance.LIST || !canMove;
     }
 

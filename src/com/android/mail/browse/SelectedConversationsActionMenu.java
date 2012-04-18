@@ -209,12 +209,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     private void performDestructiveAction(final int id, final ActionCompleteListener listener) {
-        Settings settings = mActivity.getSettings();
+        final Settings settings = mActivity.getSettings();
         final Collection<Conversation> conversations = mSelectionSet.values();
-        boolean showDialog = false;
-        if (settings != null) {
-            showDialog = (id == R.id.delete) ? settings.confirmDelete : settings.confirmArchive;
-        }
+        final boolean showDialog = (settings != null
+                && (id == R.id.delete) ? settings.confirmDelete : settings.confirmArchive);
         if (showDialog) {
             int resId = id == R.id.delete ? R.plurals.confirm_delete_conversation
                     : R.plurals.confirm_archive_conversation;

@@ -66,6 +66,7 @@ import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
@@ -153,6 +154,9 @@ public abstract class AbstractActivityController implements ActivityController,
     private Timer mConversationListTimer = new Timer();
     private RefreshTimerTask mConversationListRefreshTask;
 
+    /** Listeners that are intersted in changes to current account settings. */
+    private final ArrayList<Settings.ChangeListener> mSettingsListeners = Lists.newArrayList();
+
     /**
      * Selected conversations, if any.
      */
@@ -184,7 +188,6 @@ public abstract class AbstractActivityController implements ActivityController,
     private static final int LOADER_ACCOUNT_INBOX = 5;
     private static final int LOADER_SEARCH = 6;
     private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 7;
-
 
     private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
 
@@ -371,8 +374,9 @@ public abstract class AbstractActivityController implements ActivityController,
     public void onSettingsChanged(Settings settings) {
         final Uri oldUri = getDefaultInboxUri(mCachedSettings);
         final Uri newUri = getDefaultInboxUri(settings);
-        mCachedSettings = settings;
+        dispatchSettingsChange(settings);
         resetActionBarIcon();
+
         // Only restart the loader if the defaultInboxUri is not the same as
         // the folder we are already loading.
         final boolean changed = !oldUri.equals(newUri);
@@ -390,6 +394,44 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public Settings getSettings() {
         return mCachedSettings;
+    }
+
+    /**
+     * Adds a listener interested in change in settings. If a class is storing a reference to
+     * Settings, it should listen on changes, so it can receive updates to settings.
+     * Must happen in the UI thread.
+     */
+    public void addSettingsListener(Settings.ChangeListener listener) {
+        mSettingsListeners.add(listener);
+    }
+
+    /**
+     * Removes a listener from receiving settings changes.
+     * Must happen in the UI thread.
+     */
+    public void removeSettingsListener(Settings.ChangeListener listener) {
+        mSettingsListeners.remove(listener);
+    }
+
+    /**
+     * Method that lets the settings listeners know when the settings got changed.
+     */
+    private void dispatchSettingsChange(Settings updatedSettings) {
+        mCachedSettings = updatedSettings;
+        // Copy the list of current listeners so that
+        final ArrayList<Settings.ChangeListener> allListeners =
+                new ArrayList<Settings.ChangeListener>(mSettingsListeners);
+        for (Settings.ChangeListener listener : allListeners) {
+            if (listener != null) {
+                listener.onSettingsChanged(mCachedSettings);
+            }
+        }
+        // And we know that the ConversationListFragment is interested in changes to settings,
+        // though it hasn't registered itself with us.
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            convList.onSettingsChanged(mCachedSettings);
+        }
     }
 
     private void fetchSearchFolder(Intent intent) {
@@ -799,7 +841,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     private void setAccount(Account account) {
         mAccount = account;
-        mCachedSettings = mAccount.settings;
+        dispatchSettingsChange(mAccount.settings);
         mActionBarView.setAccount(mAccount);
     }
 
@@ -1032,10 +1074,9 @@ public abstract class AbstractActivityController implements ActivityController,
                 }
                 break;
             case LOADER_ACCOUNT_INBOX:
-                Settings settings = getSettings();
                 final Uri inboxUri;
-                if (settings != null) {
-                    inboxUri = settings.defaultInbox;
+                if (mCachedSettings != null) {
+                    inboxUri = mCachedSettings.defaultInbox;
                 } else {
                     inboxUri = mAccount.folderListUri;
                 }
@@ -1245,9 +1286,9 @@ public abstract class AbstractActivityController implements ActivityController,
                     final Account updatedAccount = new Account(data);
 
                     if (updatedAccount.uri.equals(mAccount.uri)) {
-                        // Update the controller's reference to the current acccount
+                        // Update the controller's reference to the current account
                         mAccount = updatedAccount;
-                        mCachedSettings = mAccount.settings;
+                        dispatchSettingsChange(mAccount.settings);
 
                         // Got an update for the current account
                         final boolean inWaitingMode = inWaitMode();
