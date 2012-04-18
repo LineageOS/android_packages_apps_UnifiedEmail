@@ -249,7 +249,7 @@ public class SwipeableListView extends ListView implements Callback{
                 break;
         }
         adapter.notifyDataSetChanged();
-        if (!mConvSelectionSet.isEmpty()) {
+        if (mConvSelectionSet != null && !mConvSelectionSet.isEmpty()) {
             mConvSelectionSet.clear();
         }
     }
