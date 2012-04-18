@@ -253,7 +253,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         if (isCurrentAccountInvalid() || mCurrentAccountPos == -1) {
             return "";
         }
-        return mAccounts[mCurrentAccountPos].name;
+        return mCurrentAccount.name;
     }
 
     private Uri getCurrentAccountUri() {
