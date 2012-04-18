@@ -160,11 +160,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (isPositionUndoing(position)) {
             return TYPE_VIEW_UNDOING;
         }
-        if (isPositionLeaveBehind(position)) {
-            return TYPE_VIEW_LEAVEBEHIND;
-        }
         if (mShowFooter && position == super.getCount()) {
             return TYPE_VIEW_FOOTER;
+        }
+        if (isPositionLeaveBehind(position)) {
+            return TYPE_VIEW_LEAVEBEHIND;
         }
         return TYPE_VIEW_CONVERSATION;
     }
@@ -351,11 +351,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     private boolean isPositionLeaveBehind(int position) {
         if (hasLeaveBehinds()) {
-            Conversation conv = new Conversation((ConversationCursor) getItem(position));
-            return mLeaveBehindItems.containsKey(conv.id) && conv.isMostlyDead();
-        } else {
-            return false;
+            Object item = getItem(position);
+            if (item instanceof ConversationCursor) {
+                Conversation conv = new Conversation((ConversationCursor) item);
+                return mLeaveBehindItems.containsKey(conv.id) && conv.isMostlyDead();
+            }
         }
+        return false;
     }
 
     @Override
