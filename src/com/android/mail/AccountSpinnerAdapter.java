@@ -181,7 +181,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return if changed.
      */
     public boolean setCurrentAccount(Account account) {
-        if (account == null) {
+        // If the account is missing or we have no accounts array, we cannot proceed.
+        if (account == null || mAccounts.length <= 0) {
             return false;
         }
         if (account.uri.equals(getCurrentAccountUri())) {
