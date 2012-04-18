@@ -591,10 +591,10 @@ public final class ConversationCursor implements Cursor {
                 }
                 mCursorObserverRegistered = false;
             }
+            sRefreshRequired = true;
             if (!sPaused) {
                 notifyRefreshRequired();
             }
-            sRefreshRequired = true;
         }
     }
 
@@ -663,6 +663,7 @@ public final class ConversationCursor implements Cursor {
             sRefreshTask = null;
             sRefreshReady = false;
         }
+        notifyDataChanged();
     }
 
     public boolean isRefreshRequired() {

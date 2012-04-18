@@ -1415,18 +1415,18 @@ public abstract class AbstractActivityController implements ActivityController,
         // Refresh the query in the background
         long now = System.currentTimeMillis();
         long sinceLastRefresh = now - mConversationListRefreshTime;
-        if (sinceLastRefresh > CONVERSATION_LIST_THROTTLE_MS) {
+//        if (sinceLastRefresh > CONVERSATION_LIST_THROTTLE_MS) {
             if (getConversationListCursor().isRefreshRequired()) {
                 getConversationListCursor().refresh();
                 mTracker.updateCursor(mConversationListCursor);
                 mConversationListRefreshTime = now;
             }
-        } else {
-            long delay = CONVERSATION_LIST_THROTTLE_MS - sinceLastRefresh;
-            LogUtils.d(LOG_TAG, "onRefreshRequired: delay for ", delay, "ms");
-            mConversationListRefreshTask = new RefreshTimerTask(this, mHandler);
-            mConversationListTimer.schedule(mConversationListRefreshTask, delay);
-        }
+//        } else {
+//            long delay = CONVERSATION_LIST_THROTTLE_MS - sinceLastRefresh;
+//            LogUtils.d(LOG_TAG, "onRefreshRequired: delay for %sms", delay);
+//            mConversationListRefreshTask = new RefreshTimerTask(this, mHandler);
+//            mConversationListTimer.schedule(mConversationListRefreshTask, delay);
+//        }
     }
 
     /**

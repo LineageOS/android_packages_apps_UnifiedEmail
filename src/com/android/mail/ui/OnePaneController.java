@@ -170,7 +170,7 @@ public final class OnePaneController extends AbstractActivityController {
             // Maintain fragment transaction history so we can get back to the
             // fragment used to launch this list.
             mLastConversationListTransactionId = replaceFragment(conversationListFragment,
-                    transition, null);
+                    transition, TAG_CONVERSATION_LIST);
         } else {
             // If going to the inbox, clear the folder list transaction history.
             mInbox = listContext.folder;
