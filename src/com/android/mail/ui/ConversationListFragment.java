@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
@@ -296,7 +295,8 @@ public final class ConversationListFragment extends ListFragment implements
     public void onDestroyView() {
         mListSavedState = mListView.onSaveInstanceState();
 
-        // Clear the adapter.
+        // Set a null cursor in the dapter, and clear the list's adapter
+        mListAdapter.swapCursor(null);
         mListView.setAdapter(null);
 
         mActivity.unsetViewModeListener(this);
