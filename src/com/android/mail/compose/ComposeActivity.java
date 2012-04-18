@@ -494,8 +494,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.snippet = null;
         message.from = selectedReplyFromAccount.name;
         message.to = mTo.getText().toString();
-        message.cc = mTo.getText().toString();
-        message.bcc = mTo.getText().toString();
+        message.cc = mCc.getText().toString();
+        message.bcc = mBcc.getText().toString();
         message.replyTo = null;
         message.dateReceivedMs = 0;
         String htmlBody = Html.toHtml(mBodyView.getText());
