@@ -1095,7 +1095,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                         handled = true;
                     } else {
                         ListView list = (ListView) getParent();
-                        if (!isChecked()) {
+                        if (!isChecked() && list != null) {
                             int pos = list.getPositionForView(this);
                             list.performItemClick(this, pos, mHeader.conversation.id);
                         }
