@@ -330,7 +330,6 @@ public abstract class AbstractActivityController implements ActivityController,
             // Current account is different from the new account, restart loaders and show
             // the account Inbox.
             mAccount = account;
-            mFolder = null;
             cancelRefreshTask();
             onSettingsChanged(mAccount.settings);
             mActionBarView.setAccount(mAccount);
