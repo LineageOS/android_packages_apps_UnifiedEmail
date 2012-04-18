@@ -39,8 +39,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
-import com.android.mail.ui.AnimatedAdapter;
-import com.android.mail.ui.ConversationPositionTracker;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -82,6 +80,9 @@ public final class ConversationCursor implements Cursor {
     // The index of the Uri whose data is reflected in the cached row
     // Updates/Deletes to this Uri are cached
     private static int sUriColumnIndex;
+    // The listeners registered for this cursor
+    private static ArrayList<ConversationListener> sListeners =
+        new ArrayList<ConversationListener>();
     // The ConversationProvider instance
     @VisibleForTesting
     static ConversationProvider sProvider;
@@ -110,10 +111,6 @@ public final class ConversationCursor implements Cursor {
     private boolean mCursorObserverRegistered = false;
     // Whether or not sync from underlying provider should be deferred
     private static boolean sDeferSync = false;
-    // The adapter using this cursor
-    private static AnimatedAdapter sAdapter;
-    // The position tracker that's watching this cursor
-    private static ConversationPositionTracker sTracker;
 
     // The current position of the cursor
     private int mPosition = -1;
@@ -142,6 +139,7 @@ public final class ConversationCursor implements Cursor {
             sUnderlyingCursor.close();
         }
         sUnderlyingCursor = cursor;
+        sListeners.clear();
         sRefreshRequired = false;
         sRefreshReady = false;
         sRefreshTask = null;
@@ -163,22 +161,6 @@ public final class ConversationCursor implements Cursor {
         sActivity = activity;
         sInitialConversationLimit = initialConversationLimit;
         mResolver = activity.getContentResolver();
-    }
-
-    /**
-     * Set the adapter using this ConversationCursor
-     * @param adapter the adapter
-     */
-    public void setAdapter(AnimatedAdapter adapter) {
-        sAdapter = adapter;
-    }
-
-    /**
-     * Set the position tracker for this cursor; we notify it at every sync
-     * @param tracker the tracker
-     */
-    public static void setTracker(ConversationPositionTracker tracker) {
-        sTracker = tracker;
     }
 
     /**
@@ -431,6 +413,28 @@ public final class ConversationCursor implements Cursor {
     }
 
     /**
+     * Add a listener for this cursor; we'll notify it when our data changes
+     */
+    public void addListener(ConversationListener listener) {
+        synchronized (sListeners) {
+            if (!sListeners.contains(listener)) {
+                sListeners.add(listener);
+            } else {
+                LogUtils.i(TAG, "Ignoring duplicate add of listener");
+            }
+        }
+    }
+
+    /**
+     * Remove a listener for this cursor
+     */
+    public void removeListener(ConversationListener listener) {
+        synchronized(sListeners) {
+            sListeners.remove(listener);
+        }
+    }
+
+    /**
      * Generate a forwarding Uri to ConversationProvider from an original Uri.  We do this by
      * changing the authority to ours, but otherwise leaving the Uri intact.
      * NOTE: This won't handle query parameters, so the functionality will need to be added if
@@ -602,7 +606,11 @@ public final class ConversationCursor implements Cursor {
             LogUtils.i(TAG, "[Notify: onRefreshRequired()]");
         }
         if (!sDeferSync) {
-            sAdapter.onRefreshRequired();
+            synchronized(sListeners) {
+                for (ConversationListener listener: sListeners) {
+                    listener.onRefreshRequired();
+                }
+            }
         }
     }
 
@@ -613,7 +621,11 @@ public final class ConversationCursor implements Cursor {
         if (DEBUG) {
             LogUtils.i(TAG, "[Notify: onRefreshReady()]");
         }
-        sAdapter.onRefreshReady();
+        synchronized(sListeners) {
+            for (ConversationListener listener: sListeners) {
+                listener.onRefreshReady();
+            }
+        }
     }
 
     /**
@@ -623,7 +635,11 @@ public final class ConversationCursor implements Cursor {
         if (DEBUG) {
             LogUtils.i(TAG, "[Notify: onDataSetChanged()]");
         }
-        sAdapter.notifyDataSetChanged();
+        synchronized(sListeners) {
+            for (ConversationListener listener: sListeners) {
+                listener.onDataSetChanged();
+            }
+        }
     }
 
     /**
@@ -648,9 +664,6 @@ public final class ConversationCursor implements Cursor {
             sRefreshReady = false;
         }
         notifyDataChanged();
-        if (sTracker != null) {
-            sTracker.updateCursor(sConversationCursor);
-        }
     }
 
     public boolean isRefreshRequired() {
