@@ -287,16 +287,10 @@
     <string name="retry" msgid="4515885444824418022">"Thử lại"</string>
     <string name="load_more" msgid="420892447103014683">"Tải thêm"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Lối tắt thư mục tên"</string>
-    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
-    <skip />
-    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
-    <skip />
-    <!-- no translation found for not_synced_title (794279749170198599) -->
-    <skip />
-    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
-    <skip />
-    <!-- no translation found for manual_sync (6743983544685622800) -->
-    <skip />
-    <!-- no translation found for change_sync_settings (5514293926214426577) -->
-    <skip />
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"Đang đợi đồng bộ hóa"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"Email của bạn sẽ xuất hiện trong chốc lát."</string>
+    <string name="not_synced_title" msgid="794279749170198599">"Tài khoản chưa được đồng bộ hóa"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tài khoản này không được thiết lập để tự động đồng bộ hóa."\n"Chạm vào "<b>"Đồng bộ hóa ngay bây giờ"</b>" để đồng bộ hóa thư một lần hoặc "<b>"Thay đổi cài đặt đồng bộ hóa"</b>" để thiết lập tài khoản này tự động đồng bộ hóa thư."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Đồng bộ hóa ngay bây giờ"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"Thay đổi cài đặt đồng bộ hóa"</string>
 </resources>

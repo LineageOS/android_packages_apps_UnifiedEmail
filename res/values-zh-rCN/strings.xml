@@ -287,16 +287,10 @@
     <string name="retry" msgid="4515885444824418022">"重试"</string>
     <string name="load_more" msgid="420892447103014683">"加载更多"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"为文件夹快捷方式命名"</string>
-    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
-    <skip />
-    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
-    <skip />
-    <!-- no translation found for not_synced_title (794279749170198599) -->
-    <skip />
-    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
-    <skip />
-    <!-- no translation found for manual_sync (6743983544685622800) -->
-    <skip />
-    <!-- no translation found for change_sync_settings (5514293926214426577) -->
-    <skip />
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"正在等待同步"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"稍后将显示您的电子邮件。"</string>
+    <string name="not_synced_title" msgid="794279749170198599">"帐户未同步"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"此帐户未设置为自动同步。可"\n"触摸"<b>"立即同步"</b>"同步邮件一次，或者触摸"<b>"更改同步设置"</b>"，将此帐户设置为自动同步邮件。"</string>
+    <string name="manual_sync" msgid="6743983544685622800">"立即同步"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"更改同步设置"</string>
 </resources>

@@ -287,16 +287,10 @@
     <string name="retry" msgid="4515885444824418022">"Erneut versuchen"</string>
     <string name="load_more" msgid="420892447103014683">"Weitere laden"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Ordnerverknüpfung benennen"</string>
-    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
-    <skip />
-    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
-    <skip />
-    <!-- no translation found for not_synced_title (794279749170198599) -->
-    <skip />
-    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
-    <skip />
-    <!-- no translation found for manual_sync (6743983544685622800) -->
-    <skip />
-    <!-- no translation found for change_sync_settings (5514293926214426577) -->
-    <skip />
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"Warten auf Synchronisierung"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"Ihre E-Mails werden in Kürze angezeigt."</string>
+    <string name="not_synced_title" msgid="794279749170198599">"Konto nicht synchronisiert"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Für dieses Konto ist keine automatische Synchronisierung eingerichtet."\n"Zur einmaligen Synchronisierung der E-Mails tippen Sie auf "<b>"Jetzt synchronisieren"</b>". Zum Einrichten der automatischen Synchronisierung für dieses Konto tippen Sie auf "<b>"Synchronisierungseinstellungen ändern"</b>"."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Jetzt synch."</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"Synchr.-Einstellungen ändern"</string>
 </resources>
