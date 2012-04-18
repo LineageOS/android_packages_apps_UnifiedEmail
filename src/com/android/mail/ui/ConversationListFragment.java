@@ -492,12 +492,13 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onSwipeComplete(Collection<Conversation> conversations) {
         Context context = getActivity().getApplicationContext();
+        ConversationCursor cc = getConversationListCursor();
         switch (mSwipeAction) {
             case R.id.archive:
-                Conversation.archive(context, conversations);
+                cc.archive(context, conversations);
                 break;
             case R.id.delete:
-                Conversation.delete(context, conversations);
+                cc.delete(context, conversations);
                 break;
         }
         mListAdapter.notifyDataSetChanged();

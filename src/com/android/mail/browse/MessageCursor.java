@@ -17,13 +17,13 @@
 
 package com.android.mail.browse;
 
-import com.google.common.collect.Maps;
-
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.ConversationListCallbacks;
+import com.google.common.collect.Maps;
 
 import java.util.Map;
 
@@ -34,16 +34,18 @@ import java.util.Map;
 public class MessageCursor extends CursorWrapper {
 
     private final Map<Long, Message> mCache = Maps.newHashMap();
+    private final ConversationListCallbacks mListController;
 
-    public MessageCursor(Cursor inner) {
+    public MessageCursor(Cursor inner, ConversationListCallbacks listController) {
         super(inner);
+        mListController = listController;
     }
 
     public Message getMessage() {
         final long id = getWrappedCursor().getLong(UIProvider.MESSAGE_ID_COLUMN);
         Message m = mCache.get(id);
         if (m == null) {
-            m = new Message(this);
+            m = new Message(this, mListController);
             mCache.put(id, m);
         }
         return m;
@@ -60,4 +62,5 @@ public class MessageCursor extends CursorWrapper {
         }
         return false;
     }
+
 }

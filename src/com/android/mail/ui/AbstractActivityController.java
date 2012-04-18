@@ -54,8 +54,8 @@ import android.widget.Toast;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
-import com.android.mail.browse.ConversationPagerController;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
+import com.android.mail.browse.ConversationPagerController;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
@@ -114,7 +114,9 @@ public abstract class AbstractActivityController implements ActivityController,
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
     /** Tag used when loading a conversation list fragment. */
-    protected static final String TAG_CONVERSATION_LIST = "tag-conversation-list";
+    public static final String TAG_CONVERSATION_LIST = "tag-conversation-list";
+    /** Tag used when loading a conversation fragment. */
+    public static final String TAG_CONVERSATION = "tag-conversation";
     /** Tag used when loading a folder list fragment. */
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
 
@@ -679,8 +681,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param value
      */
     protected void updateCurrentConversation(String columnName, boolean value) {
-        Conversation.updateBoolean(mContext, ImmutableList.of(mCurrentConversation), columnName,
-                value);
+        mConversationListCursor.updateBoolean(mContext, ImmutableList.of(mCurrentConversation),
+                columnName, value);
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             convList.requestListRefresh();
@@ -693,7 +695,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param value
      */
     protected void updateCurrentConversation(String columnName, int value) {
-        Conversation.updateInt(mContext, ImmutableList.of(mCurrentConversation), columnName, value);
+        mConversationListCursor.updateInt(mContext, ImmutableList.of(mCurrentConversation),
+                columnName, value);
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             convList.requestListRefresh();
@@ -701,8 +704,8 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     protected void updateCurrentConversation(String columnName, String value) {
-        Conversation.updateString(mContext, ImmutableList.of(mCurrentConversation), columnName,
-                value);
+        mConversationListCursor.updateString(mContext, ImmutableList.of(mCurrentConversation),
+                columnName, value);
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             convList.requestListRefresh();
@@ -1399,21 +1402,21 @@ public abstract class AbstractActivityController implements ActivityController,
             switch (mAction) {
                 case R.id.archive:
                     LogUtils.d(LOG_TAG, "Archiving conversation %s", mCurrentConversation);
-                    Conversation.archive(mContext, single);
+                    mConversationListCursor.archive(mContext, single);
                     break;
                 case R.id.delete:
                     LogUtils.d(LOG_TAG, "Deleting conversation %s", mCurrentConversation);
-                    Conversation.delete(mContext, single);
+                    mConversationListCursor.delete(mContext, single);
                     break;
                 case R.id.mute:
                     LogUtils.d(LOG_TAG, "Muting conversation %s", mCurrentConversation);
                     if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE))
                         mCurrentConversation.localDeleteOnUpdate = true;
-                    Conversation.mute(mContext, single);
+                    mConversationListCursor.mute(mContext, single);
                     break;
                 case R.id.report_spam:
                     LogUtils.d(LOG_TAG, "reporting spam conversation %s", mCurrentConversation);
-                    Conversation.reportSpam(mContext, single);
+                    mConversationListCursor.reportSpam(mContext, single);
                     break;
             }
         }
@@ -1715,9 +1718,9 @@ public abstract class AbstractActivityController implements ActivityController,
                         AbstractActivityController.this.onActionComplete();
                         ArrayList<Folder> changes = new ArrayList<Folder>();
                         changes.add(folder);
-                        Conversation.updateString(mContext, conversations,
+                        mConversationListCursor.updateString(mContext, conversations,
                                 ConversationColumns.FOLDER_LIST, folder.uri.toString());
-                        Conversation.updateString(mContext, conversations,
+                        mConversationListCursor.updateString(mContext, conversations,
                                 ConversationColumns.RAW_FOLDERS,
                                 Folder.getSerializedFolderString(mFolder, changes));
                         onUndoAvailable(new UndoOperation(conversations
@@ -1731,6 +1734,7 @@ public abstract class AbstractActivityController implements ActivityController,
     public void onUndoCancel() {
         mUndoBarView.hide(false);
     }
+
 
     @Override
     public void onTouchEvent(MotionEvent event) {
@@ -1752,7 +1756,7 @@ public abstract class AbstractActivityController implements ActivityController,
         @Override
         public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
             Loader<ConversationCursor> result = new ConversationCursorLoader((Activity) mActivity,
-                    mAccount, UIProvider.CONVERSATION_PROJECTION, mFolder.conversationListUri);
+                    mAccount, mFolder.conversationListUri, mFolder.name);
             return result;
         }
 
@@ -1761,26 +1765,14 @@ public abstract class AbstractActivityController implements ActivityController,
             LogUtils.d(LOG_TAG, "IN AAC.ConversationCursor.onLoadFinished, data=%s loader=%s",
                     data, loader);
             mConversationListCursor = data;
-
-            // Call the method that updates things when values in the cursor change
-            if (mConversationListCursor.isRefreshReady()) {
-                onRefreshReady();
-            }
+            mConversationListCursor.addListener(AbstractActivityController.this);
 
             // Register the AbstractActivityController as a listener to changes in
             // data in the cursor.
             final ConversationListFragment convList = getConversationListFragment();
             if (convList != null) {
                 convList.onCursorUpdated();
-                if (!mConversationListenerAdded) {
-                    // TODO(mindyp): when we move to the cursor loader, we need
-                    // to add/remove the listener when we create/ destroy loaders.
-                    mConversationListCursor
-                            .addListener(AbstractActivityController.this);
-                    convList.getListView().setOnScrollListener(
-                            AbstractActivityController.this);
-                    mConversationListenerAdded = true;
-                }
+                convList.getListView().setOnScrollListener(AbstractActivityController.this);
             }
             // Shown for search results in two-pane mode only.
             if (shouldShowFirstConversation()) {
@@ -1804,6 +1796,40 @@ public abstract class AbstractActivityController implements ActivityController,
             }
             convList.onCursorUpdated();
         }
+    }
 
+    @Override
+    public void sendConversationRead(String toFragment, Conversation conversation, boolean state,
+            boolean local) {
+        if (toFragment.equals(TAG_CONVERSATION_LIST)) {
+            ConversationCursor cc = getConversationListCursor();
+            if (cc != null) {
+                if (local) {
+                    cc.setConversationColumn(conversation.uri.toString(), ConversationColumns.READ,
+                            state);
+                } else {
+                    cc.markRead(mContext, state, conversation);
+                }
+            }
+        } else if (toFragment.equals(TAG_CONVERSATION)) {
+            // TODO Handle setting read in conversation view
+        }
+    }
+
+    @Override
+    public void sendConversationUriStarred(String toFragment, String conversationUri,
+            boolean state, boolean local) {
+        if (toFragment.equals(TAG_CONVERSATION_LIST)) {
+            ConversationCursor cc = getConversationListCursor();
+            if (cc != null) {
+                if (local) {
+                    cc.setConversationColumn(conversationUri, ConversationColumns.STARRED, state);
+                } else {
+                    cc.updateBoolean(mContext, conversationUri, ConversationColumns.STARRED, state);
+                }
+            }
+        } else if (toFragment.equals(TAG_CONVERSATION)) {
+            // TODO Handle setting starred in conversation view
+        }
     }
 }

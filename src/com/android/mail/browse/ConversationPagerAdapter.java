@@ -37,7 +37,7 @@ import com.android.mail.utils.LogUtils;
 public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     private final DataSetObserver mListObserver = new ListObserver();
-    private ConversationListCallbacks mListProxy;
+    private ConversationListCallbacks mListController;
     private Cursor mCursor;
     private final Bundle mCommonFragmentArgs;
     private final Conversation mInitialConversation;
@@ -177,10 +177,10 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         final ConversationViewFragment fragment = (ConversationViewFragment) item;
         fragment.setExtraUserVisibleHint(visible);
 
-        if (visible && mListProxy != null) {
+        if (visible && mListController != null) {
             final Conversation c = fragment.getConversation();
             LogUtils.d(LOG_TAG, "pager adapter setting current conv: %s (%s)", c.subject, item);
-            mListProxy.setCurrentConversation(c);
+            mListController.setCurrentConversation(c);
         }
     }
 
@@ -216,15 +216,15 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         return POSITION_NONE;
     }
 
-    public void setListProxy(ConversationListCallbacks listProxy) {
-        if (mListProxy != null) {
-            mListProxy.unregisterConversationListObserver(mListObserver);
+    public void setListController(ConversationListCallbacks listController) {
+        if (mListController != null) {
+            mListController.unregisterConversationListObserver(mListObserver);
         }
-        mListProxy = listProxy;
-        if (mListProxy != null) {
-            mListProxy.registerConversationListObserver(mListObserver);
+        mListController = listController;
+        if (mListController != null) {
+            mListController.registerConversationListObserver(mListObserver);
 
-            swapCursor(mListProxy.getConversationListCursor());
+            swapCursor(mListController.getConversationListCursor());
         } else {
             mCursor = null;
         }
@@ -234,7 +234,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     private class ListObserver extends DataSetObserver {
         @Override
         public void onChanged() {
-            swapCursor(mListProxy.getConversationListCursor());
+            swapCursor(mListController.getConversationListCursor());
         }
         @Override
         public void onInvalidated() {

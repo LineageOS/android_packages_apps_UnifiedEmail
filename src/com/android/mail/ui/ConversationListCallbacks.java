@@ -39,4 +39,10 @@ public interface ConversationListCallbacks {
 
     void registerConversationListObserver(DataSetObserver observer);
     void unregisterConversationListObserver(DataSetObserver observer);
+
+    // conversation modification commands
+    public void sendConversationRead(String toFragment, Conversation conversation, boolean state,
+            boolean local);
+    public void sendConversationUriStarred(String toFragment, String conversationUri,
+            boolean state, boolean local);
 }

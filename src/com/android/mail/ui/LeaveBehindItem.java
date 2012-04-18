@@ -20,13 +20,14 @@ package com.android.mail.ui;
 import android.content.Context;
 import android.text.Html;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.view.View;
-import android.view.View.OnClickListener;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.google.common.collect.ImmutableList;
@@ -38,6 +39,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     private Account mAccount;
     private AnimatedAdapter mAdapter;
     private Conversation mConversation;
+    private ConversationCursor mConversationCursor;
 
     public LeaveBehindItem(Context context) {
         this(context, null);
@@ -65,7 +67,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
                     // commands to undo
                     mAdapter.clearLeaveBehind(mConversation);
                     mAdapter.setUndo(true);
-                    Conversation.undo(getContext(), mAccount.undoUri);
+                    mConversationCursor.undo(getContext(), mAccount.undoUri);
                 }
                 break;
         }
@@ -76,6 +78,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         mUndoOp = undoOp;
         mAccount = account;
         mAdapter = adapter;
+        mConversationCursor = (ConversationCursor)adapter.getCursor();
         mConversation = target;
         ((TextView) findViewById(R.id.undo_descriptionview)).setText(Html.fromHtml(mUndoOp
                 .getDescription(getContext())));
@@ -83,10 +86,11 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     }
 
     public void commit() {
-        Conversation.delete(getContext(), ImmutableList.of(mConversation));
+        mConversationCursor.delete(getContext(), ImmutableList.of(mConversation));
         mAdapter.clearLeaveBehind(mConversation);
     }
 
+    @Override
     public boolean canSwipe() {
         return true;
     }

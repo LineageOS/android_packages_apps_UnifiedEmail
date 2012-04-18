@@ -24,10 +24,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.MessageCursor;
-import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.MessageColumns;
+import com.android.mail.ui.AbstractActivityController;
+import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.utils.Utils;
 
 import java.util.Collections;
@@ -72,8 +72,9 @@ public class Message implements Parcelable {
 
     private transient List<Attachment> mAttachments = null;
 
-    // While viewing a list of messages, points to the MessageCursor that contains it
-    private transient MessageCursor mMessageCursor = null;
+    // While viewing a list of messages, points to the cursor that contains it
+    private transient MessageCursor mOwningCursor = null;
+    private transient ConversationListCallbacks mListController = null;
 
     @Override
     public int describeContents() {
@@ -181,10 +182,11 @@ public class Message implements Parcelable {
 
     };
 
-    public Message(MessageCursor cursor) {
-        this((Cursor)cursor);
+    public Message(MessageCursor cursor, ConversationListCallbacks listController) {
+        this(cursor);
         // Only set message cursor if appropriate
-        mMessageCursor = cursor;
+        mOwningCursor = cursor;
+        mListController = listController;
     }
 
     public Message(Cursor cursor) {
@@ -306,14 +308,17 @@ public class Message implements Parcelable {
      */
     public void star(boolean starred, AsyncQueryHandler handler, int token, Object cookie) {
         this.starred = starred;
-        boolean conversationStarred = starred;
         // If we're unstarring, we need to find out if the conversation is still starred
-        if (mMessageCursor != null && !starred) {
-            conversationStarred = mMessageCursor.isConversationStarred();
+        if (mListController != null) {
+            boolean conversationStarred = starred;
+                if (!starred) {
+                    conversationStarred = mOwningCursor.isConversationStarred();
+                }
+                // Update the conversation cursor so that changes are reflected simultaneously
+                mListController.sendConversationUriStarred(
+                        AbstractActivityController.TAG_CONVERSATION_LIST, conversationUri,
+                        conversationStarred, true /*local*/);
         }
-        // Update the conversation cursor so that changes are reflected simultaneously
-        ConversationCursor.setConversationColumn(conversationUri, ConversationColumns.STARRED,
-                conversationStarred);
         final ContentValues values = new ContentValues(1);
         values.put(UIProvider.MessageColumns.STARRED, starred ? 1 : 0);
 

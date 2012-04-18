@@ -52,7 +52,7 @@ public class ConversationPagerController {
     private ConversationPager mPager;
     private ConversationPagerAdapter mPagerAdapter;
     private FragmentManager mFragmentManager;
-    private ConversationListCallbacks mListProxy;
+    private ConversationListCallbacks mListController;
     private boolean mShown;
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
@@ -72,10 +72,10 @@ public class ConversationPagerController {
     private static final boolean ENABLE_SINGLETON_INITIAL_LOAD = false;
 
     public ConversationPagerController(RestrictedActivity activity,
-            ConversationListCallbacks listProxy) {
+            ConversationListCallbacks listController) {
         mFragmentManager = activity.getFragmentManager();
         mPager = (ConversationPager) activity.findViewById(R.id.conversation_pane);
-        mListProxy = listProxy;
+        mListController = listController;
     }
 
     public void show(Account account, Folder folder, Conversation initialConversation) {
@@ -90,7 +90,7 @@ public class ConversationPagerController {
         mPagerAdapter = new ConversationPagerAdapter(mFragmentManager, account, folder,
                 initialConversation);
         mPagerAdapter.setSingletonMode(ENABLE_SINGLETON_INITIAL_LOAD);
-        mPagerAdapter.setListProxy(mListProxy);
+        mPagerAdapter.setListController(mListController);
         LogUtils.d(LOG_TAG, "IN CPC.show, adapter=%s", mPagerAdapter);
 
         LogUtils.d(LOG_TAG, "init pager adapter, count=%d initial=%s", mPagerAdapter.getCount(),
@@ -127,7 +127,7 @@ public class ConversationPagerController {
     private void cleanup() {
         if (mPagerAdapter != null) {
             // stop observing the conversation list
-            mPagerAdapter.setListProxy(null);
+            mPagerAdapter.setListController(null);
             mPagerAdapter = null;
         }
     }

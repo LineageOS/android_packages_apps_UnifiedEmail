@@ -153,21 +153,6 @@ public final class ConversationViewFragment extends Fragment implements
 
     /**
      * Creates a new instance of {@link ConversationViewFragment}, initialized
-     * to display a conversation.
-     */
-    public static ConversationViewFragment newInstance(Account account,
-            Conversation conversation, Folder folder) {
-       ConversationViewFragment f = new ConversationViewFragment();
-       Bundle args = new Bundle();
-       args.putParcelable(ARG_ACCOUNT, account);
-       args.putParcelable(ARG_CONVERSATION, conversation);
-       args.putParcelable(ARG_FOLDER, folder);
-       f.setArguments(args);
-       return f;
-    }
-
-    /**
-     * Creates a new instance of {@link ConversationViewFragment}, initialized
      * to display a conversation with other parameters inherited/copied from an existing bundle,
      * typically one created using {@link #makeBasicArgs}.
      */
@@ -368,7 +353,8 @@ public final class ConversationViewFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new MessageLoader(mContext, mConversation.messageListUri);
+        return new MessageLoader(mContext, mConversation.messageListUri,
+                mActivity.getListHandler());
     }
 
     @Override
@@ -591,7 +577,9 @@ public final class ConversationViewFragment extends Fragment implements
     private void onConversationSeen() {
         // mark as read upon open
         if (!mConversation.read) {
-            mConversation.markRead(mContext, true /* read */);
+            mActivity.getListHandler().sendConversationRead(
+                    AbstractActivityController.TAG_CONVERSATION_LIST, mConversation, true,
+                    false /*local*/);
             mConversation.read = true;
         }
 
@@ -667,15 +655,16 @@ public final class ConversationViewFragment extends Fragment implements
 
     private static class MessageLoader extends CursorLoader {
         private boolean mDeliveredFirstResults = false;
+        private final ConversationListCallbacks mListController;
 
-        public MessageLoader(Context c, Uri uri) {
+        public MessageLoader(Context c, Uri uri, ConversationListCallbacks listController) {
             super(c, uri, UIProvider.MESSAGE_PROJECTION, null, null, null);
+            mListController = listController;
         }
 
         @Override
         public Cursor loadInBackground() {
-            return new MessageCursor(super.loadInBackground());
-
+            return new MessageCursor(super.loadInBackground(), mListController);
         }
 
         @Override

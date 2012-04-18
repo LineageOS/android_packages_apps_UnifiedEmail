@@ -17,21 +17,29 @@
 
 package com.android.mail.browse;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.ui.AnimatedAdapter;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.ui.ActionCompleteListener;
+import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.FoldersSelectionDialog;
-import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
+import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SwipeableListView;
 import com.android.mail.ui.UndoBarView.UndoListener;
 import com.android.mail.ui.UndoOperation;
@@ -42,14 +50,6 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 /**
  * A component that displays a custom view for an {@code ActionBar}'s {@code
@@ -100,6 +100,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private Folder mFolder;
 
+    private final ConversationCursor mConversationCursor;
+
     // These listeners are called at the end of the animation and they perform their actions on
     // the conversations.
     private final ActionCompleteListener mDeleteListener =
@@ -123,6 +125,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mActivity = activity;
         mSelectionSet = selectionSet;
         mListAdapter = adapter;
+        mConversationCursor = (ConversationCursor)adapter.getCursor();
         mActionCompleteListener = listener;
         mUndoListener = undoListener;
         mAccount = account;
@@ -245,7 +248,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private void markConversationsRead(boolean read) {
         final Collection<Conversation> conversations = mSelectionSet.values();
-        Conversation.updateBoolean(mContext, conversations, ConversationColumns.READ, read);
+        mConversationCursor.updateBoolean(mContext, conversations, ConversationColumns.READ, read);
         updateSelection();
     }
 
@@ -253,7 +256,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final Collection<Conversation> conversations = mSelectionSet.values();
         final int priority = important ? UIProvider.ConversationPriority.HIGH
                 : UIProvider.ConversationPriority.LOW;
-        Conversation.updateInt(mContext, conversations, ConversationColumns.PRIORITY, priority);
+        mConversationCursor.updateInt(mContext, conversations, ConversationColumns.PRIORITY,
+                priority);
         updateSelection();
     }
 
@@ -265,7 +269,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private void starConversations(boolean star) {
         final Collection<Conversation> conversations = mSelectionSet.values();
         if (conversations.size() > 0) {
-            Conversation.updateBoolean(mContext, conversations, ConversationColumns.STARRED, star);
+            mConversationCursor.updateBoolean(mContext, conversations, ConversationColumns.STARRED,
+                    star);
         }
         updateSelection();
     }
@@ -326,9 +331,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 }
                 foldersUrisString.append(f.uri.toString());
             }
-            Conversation.updateString(mContext, mSelectionSet.values(),
+            mConversationCursor.updateString(mContext, mSelectionSet.values(),
                     ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
-            Conversation.updateString(mContext, mSelectionSet.values(),
+            mConversationCursor.updateString(mContext, mSelectionSet.values(),
                     ConversationColumns.RAW_FOLDERS,
                     Folder.getSerializedFolderString(mFolder, mFolderChangeList));
             clearSelection();
@@ -526,10 +531,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), mAction, true));
             switch (mAction) {
                 case R.id.archive:
-                    Conversation.archive(mContext, conversations);
+                    mConversationCursor.archive(mContext, conversations);
                     break;
                 case R.id.delete:
-                    Conversation.delete(mContext, conversations);
+                    mConversationCursor.delete(mContext, conversations);
                     break;
                 case R.id.mute:
                     if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
@@ -538,21 +543,21 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                             conversation.localDeleteOnUpdate = true;
                         }
                     }
-                    Conversation.mute(mContext, conversations);
+                    mConversationCursor.mute(mContext, conversations);
                     break;
                 case R.id.report_spam:
-                    Conversation.reportSpam(mContext, conversations);
+                    mConversationCursor.reportSpam(mContext, conversations);
                     break;
                 case R.id.remove_star:
                     // Star removal is destructive in the Starred folder.
-                    Conversation.updateBoolean(mContext, conversations, ConversationColumns.STARRED,
-                            false);
+                    mConversationCursor.updateBoolean(mContext, conversations,
+                            ConversationColumns.STARRED, false);
                     break;
                 case R.id.mark_not_important:
                     // Marking not important is destructive in a mailbox containing only important
                     // messages
-                    Conversation.updateInt(mContext, conversations, ConversationColumns.PRIORITY,
-                            UIProvider.ConversationPriority.LOW);
+                    mConversationCursor.updateInt(mContext, conversations,
+                            ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                     break;
             }
             clearSelection();
