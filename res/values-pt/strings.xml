@@ -287,16 +287,10 @@
     <string name="retry" msgid="4515885444824418022">"Tentar novamente"</string>
     <string name="load_more" msgid="420892447103014683">"Carregar mais"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Atalho da pasta Nome"</string>
-    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
-    <skip />
-    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
-    <skip />
-    <!-- no translation found for not_synced_title (794279749170198599) -->
-    <skip />
-    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
-    <skip />
-    <!-- no translation found for manual_sync (6743983544685622800) -->
-    <skip />
-    <!-- no translation found for change_sync_settings (5514293926214426577) -->
-    <skip />
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"Aguardando sincronização"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"Seu e-mail será exibido em breve."</string>
+    <string name="not_synced_title" msgid="794279749170198599">"Conta não sincronizada"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Esta conta não está configurada para sincronizar automaticamente."\n"Toque em "<b>"Sincronizar agora"</b>" para sincronizar os e-mails uma vez ou em "<b>"Alterar configurações de sincronização"</b>" para configurar a sincronização automática de e-mails desta conta."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Sincr. agora"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"Alterar config. de sincr."</string>
 </resources>

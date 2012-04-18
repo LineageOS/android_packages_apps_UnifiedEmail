@@ -287,16 +287,10 @@
     <string name="retry" msgid="4515885444824418022">"पुन: प्रयास करें"</string>
     <string name="load_more" msgid="420892447103014683">"अधिक लोड करें"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"नाम फ़ोल्‍डर शॉर्टकट"</string>
-    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
-    <skip />
-    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
-    <skip />
-    <!-- no translation found for not_synced_title (794279749170198599) -->
-    <skip />
-    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
-    <skip />
-    <!-- no translation found for manual_sync (6743983544685622800) -->
-    <skip />
-    <!-- no translation found for change_sync_settings (5514293926214426577) -->
-    <skip />
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"समन्‍वयन की प्रतीक्षा कर रहा है"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"आपका ईमेल शीघ्र ही दिखाई देगा."</string>
+    <string name="not_synced_title" msgid="794279749170198599">"खाता समन्वयित नहीं है"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"यह खाता स्वचालित रूप से समन्वयित करने के लिए सेट नहीं है. "\n"एक बार मेल समन्‍वयित करने के लिए, "<b>"अभी समन्वयित करें"</b>" स्‍पर्श करें, या इस खाते को मेल स्वचालित रूप से समन्‍वयित करने के लिए सेट करने हेतु "<b>"समन्वयन सेटिंग बदलें"</b>" स्‍पर्श करें."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"अभी समन्वयित करें"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"समन्वयन सेटिंग बदलें"</string>
 </resources>

@@ -287,16 +287,10 @@
     <string name="retry" msgid="4515885444824418022">"ลองอีกครั้ง"</string>
     <string name="load_more" msgid="420892447103014683">"โหลดเพิ่มเติม"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"ตั้งชื่อทางลัดของโฟลเดอร์"</string>
-    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
-    <skip />
-    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
-    <skip />
-    <!-- no translation found for not_synced_title (794279749170198599) -->
-    <skip />
-    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
-    <skip />
-    <!-- no translation found for manual_sync (6743983544685622800) -->
-    <skip />
-    <!-- no translation found for change_sync_settings (5514293926214426577) -->
-    <skip />
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"กำลังรอการซิงค์"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"อีเมลของคุณจะปรากฏในไม่ช้า"</string>
+    <string name="not_synced_title" msgid="794279749170198599">"บัญชีไม่ได้ซิงค์"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"บัญชีนี้ไม่ได้รับการตั้งค่าให้ซิงค์อัตโนมัติ"\n"แตะ "<b>"ซิงค์เลย"</b>" เพื่อซิงค์เมลหนึ่งครั้ง หรือแตะ "<b>"เปลี่ยนการตั้งค่าการซิงค์"</b>" เพื่อตั้งค่าบัญชีนี้ให้ซิงค์เมลอัตโนมัติ"</string>
+    <string name="manual_sync" msgid="6743983544685622800">"ซิงค์เลย"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"เปลี่ยนการตั้งค่าการซิงค์"</string>
 </resources>

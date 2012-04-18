@@ -287,16 +287,10 @@
     <string name="retry" msgid="4515885444824418022">"再試行"</string>
     <string name="load_more" msgid="420892447103014683">"もっと読み込む"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"フォルダのショートカットへの名前の指定"</string>
-    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
-    <skip />
-    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
-    <skip />
-    <!-- no translation found for not_synced_title (794279749170198599) -->
-    <skip />
-    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
-    <skip />
-    <!-- no translation found for manual_sync (6743983544685622800) -->
-    <skip />
-    <!-- no translation found for change_sync_settings (5514293926214426577) -->
-    <skip />
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"同期を待機中"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"まもなくメールが表示されます。"</string>
+    <string name="not_synced_title" msgid="794279749170198599">"アカウントが同期していません"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"このアカウントには自動同期が設定されていません。"\n"メールを一度だけ同期させるには["<b>"今すぐ同期"</b>"]をタップします。このアカウントでメールが自動的に同期されるように設定するには、["<b>"同期設定の変更"</b>"]をタップします。"</string>
+    <string name="manual_sync" msgid="6743983544685622800">"今すぐ同期"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"同期設定の変更"</string>
 </resources>

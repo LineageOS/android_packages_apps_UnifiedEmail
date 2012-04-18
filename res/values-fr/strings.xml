@@ -287,16 +287,10 @@
     <string name="retry" msgid="4515885444824418022">"Réessayer"</string>
     <string name="load_more" msgid="420892447103014683">"Afficher plus"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"Nom du raccourci du dossier"</string>
-    <!-- no translation found for wait_for_sync_title (2767841242539238015) -->
-    <skip />
-    <!-- no translation found for wait_for_sync_body (7718316938173643688) -->
-    <skip />
-    <!-- no translation found for not_synced_title (794279749170198599) -->
-    <skip />
-    <!-- no translation found for wait_for_manual_sync_body (2003192935254244968) -->
-    <skip />
-    <!-- no translation found for manual_sync (6743983544685622800) -->
-    <skip />
-    <!-- no translation found for change_sync_settings (5514293926214426577) -->
-    <skip />
+    <string name="wait_for_sync_title" msgid="2767841242539238015">"En attente de synchronisation"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"Votre e-mail va bientôt s\'afficher."</string>
+    <string name="not_synced_title" msgid="794279749170198599">"Compte non synchronisé"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"La synchronisation automatique n\'est pas configurée pour ce compte."\n"Appuyez sur "<b>"Synchroniser"</b>" pour une synchronisation ponctuelle de la messagerie ou sur "<b>"Modifier les paramètres"</b>" pour activer la synchronisation automatique."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Synchroniser"</string>
+    <string name="change_sync_settings" msgid="5514293926214426577">"Modifier paramètres synchro"</string>
 </resources>
