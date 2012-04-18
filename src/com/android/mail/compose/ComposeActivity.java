@@ -1042,7 +1042,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void showCcBcc(Bundle state) {
         if (state != null && state.containsKey(EXTRA_SHOW_CC_BCC)) {
             boolean show = state.getBoolean(EXTRA_SHOW_CC_BCC);
-            mCcBccView.show(false, show, show);
+            if (show) {
+                mCcBccView.show(false, show, show);
+            }
         }
     }
 
