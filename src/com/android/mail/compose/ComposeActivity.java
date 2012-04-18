@@ -118,6 +118,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private static final String EXTRA_BODY = "body";
 
+    private static final String EXTRA_FROM_ACCOUNT_STRING = "fromAccountString";
+
     // Extra that we can get passed from other activities
     private static final String EXTRA_TO = "to";
     private static final String EXTRA_CC = "cc";
@@ -534,13 +536,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initFromSpinner(Bundle bundle, int action) {
+        String accountString = null;
         if (action == EDIT_DRAFT && mDraft.draftType == UIProvider.DraftType.COMPOSE) {
             action = COMPOSE;
         }
         mFromSpinner.asyncInitFromSpinner(action, mAccount);
-        if (bundle != null && bundle.containsKey(EXTRA_SELECTED_REPLY_FROM_ACCOUNT)) {
-            mReplyFromAccount = ReplyFromAccount.deserialize(mAccount,
-                    bundle.getString(EXTRA_SELECTED_REPLY_FROM_ACCOUNT));
+        if (bundle != null) {
+            if (bundle.containsKey(EXTRA_SELECTED_REPLY_FROM_ACCOUNT)) {
+                mReplyFromAccount = ReplyFromAccount.deserialize(mAccount,
+                        bundle.getString(EXTRA_SELECTED_REPLY_FROM_ACCOUNT));
+            } else if (bundle.containsKey(EXTRA_FROM_ACCOUNT_STRING)) {
+                accountString = bundle.getString(EXTRA_FROM_ACCOUNT_STRING);
+                mReplyFromAccount = mFromSpinner.getMatchingReplyFromAccount(accountString);
+            }
         }
         if (mReplyFromAccount == null) {
             if (mDraft != null) {
@@ -553,7 +561,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mReplyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
                     mAccount.name, true, false);
         }
+
         mFromSpinner.setCurrentAccount(mReplyFromAccount);
+
         if (mFromSpinner.getCount() > 1) {
             // If there is only 1 account, just show that account.
             // Otherwise, give the user the ability to choose which account to

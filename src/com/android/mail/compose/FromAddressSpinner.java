@@ -71,6 +71,17 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
         }
     }
 
+    public ReplyFromAccount getMatchingReplyFromAccount(String accountString) {
+        if (!TextUtils.isEmpty(accountString)) {
+            for (ReplyFromAccount acct : mReplyFromAccounts) {
+                if (accountString.equals(acct.name)) {
+                    return acct;
+                }
+            }
+        }
+        return null;
+    }
+
     public ReplyFromAccount getCurrentAccount() {
         return mAccount;
     }
