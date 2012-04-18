@@ -601,7 +601,7 @@ public final class ConversationCursor implements Cursor {
         if (DEBUG) {
             LogUtils.i(TAG, "[Notify: onRefreshRequired()]");
         }
-        if (!sDeferSync) {
+        if (!sDeferSync && sAdapter != null) {
             sAdapter.onRefreshRequired();
         }
     }
@@ -613,7 +613,9 @@ public final class ConversationCursor implements Cursor {
         if (DEBUG) {
             LogUtils.i(TAG, "[Notify: onRefreshReady()]");
         }
-        sAdapter.onRefreshReady();
+        if (sAdapter != null) {
+            sAdapter.onRefreshReady();
+        }
     }
 
     /**
@@ -623,7 +625,9 @@ public final class ConversationCursor implements Cursor {
         if (DEBUG) {
             LogUtils.i(TAG, "[Notify: onDataSetChanged()]");
         }
-        sAdapter.notifyDataSetChanged();
+        if (sAdapter != null) {
+            sAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
