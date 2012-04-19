@@ -15,15 +15,10 @@
  */
 package com.android.mail.compose;
 
-import com.android.mail.R;
-import com.android.mail.providers.Message;
-import com.android.mail.utils.Utils;
-
-import java.text.DateFormat;
-import java.util.Date;
-
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.Html;
+import android.text.SpannedString;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -34,9 +29,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
+import com.android.mail.R;
+import com.android.mail.providers.Message;
+import com.android.mail.utils.Utils;
 import com.google.android.common.html.parser.HtmlDocument;
 import com.google.android.common.html.parser.HtmlParser;
 import com.google.android.common.html.parser.HtmlTreeBuilder;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 /*
  * View for displaying the quoted text in the compose screen for a reply
@@ -239,8 +240,20 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         public void onRespondInline(String text);
     }
 
+    private String getHtmlText(Message message) {
+        if (message.bodyHtml != null) {
+            return message.bodyHtml;
+        } else if (message.bodyText != null) {
+            // STOPSHIP Sanitize this
+            return Html.toHtml(new SpannedString(message.bodyText));
+        } else {
+            return "";
+        }
+    }
+
     public void setQuotedText(int action, Message refMessage, boolean allow) {
         setVisibility(View.VISIBLE);
+        String htmlText = getHtmlText(refMessage);
         StringBuffer quotedText = new StringBuffer();
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
         Date date = new Date(refMessage.dateReceivedMs);
@@ -255,7 +268,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
                                     refMessage.from, true)));
             quotedText.append(HEADER_SEPARATOR);
             quotedText.append(BLOCKQUOTE_BEGIN);
-            quotedText.append(refMessage.bodyHtml);
+            quotedText.append(htmlText);
             quotedText.append(BLOCKQUOTE_END);
             quotedText.append(QUOTE_END);
         } else if (action == ComposeActivity.FORWARD) {
@@ -272,7 +285,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
                     Utils.cleanUpString(ccAddresses, true /* remove empty quotes */)));
         }
         quotedText.append(HEADER_SEPARATOR);
-        quotedText.append(refMessage.bodyHtml);
+        quotedText.append(htmlText);
         quotedText.append(QUOTE_END);
         setQuotedText(quotedText);
         allowQuotedText(allow);
@@ -280,7 +293,6 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         // may be a forward.
         allowRespondInline(true);
     }
-
 
     /**
      * Set quoted text. Some use cases may not want to display the check box (i.e. forwarding) so
