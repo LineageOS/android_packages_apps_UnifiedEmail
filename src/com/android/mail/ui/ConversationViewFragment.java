@@ -34,7 +34,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -45,14 +44,17 @@ import android.webkit.WebViewClient;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationContainer;
+import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
-import com.android.mail.browse.ConversationViewAdapter.ConversationItem;
+import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
+import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
+import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
@@ -65,8 +67,10 @@ import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -76,7 +80,8 @@ import java.util.Map;
 public final class ConversationViewFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
         ConversationViewHeader.ConversationViewHeaderCallbacks,
-        MessageHeaderViewCallbacks {
+        MessageHeaderViewCallbacks,
+        SuperCollapsedBlock.OnClickListener {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -116,6 +121,14 @@ public final class ConversationViewFragment extends Fragment implements
     private Folder mFolder;
 
     private final Map<String, Address> mAddressCache = Maps.newHashMap();
+
+    /**
+     * Temporary string containing the message bodies of the messages within a super-collapsed
+     * block, for one-time use during block expansion. We cannot easily pass the body HTML
+     * into JS without problematic escaping, so hold onto it momentarily and signal JS to fetch it
+     * using {@link MailJsBridge}.
+     */
+    private String mTempBodiesHtml;
 
     private static final String ARG_ACCOUNT = "account";
     private static final String ARG_CONVERSATION = "conversation";
@@ -165,7 +178,7 @@ public final class ConversationViewFragment extends Fragment implements
         mTemplates = new HtmlConversationTemplates(mContext);
 
         mAdapter = new ConversationViewAdapter(mActivity.getActivityContext(), mAccount,
-                getLoaderManager(), this, this, mAddressCache);
+                getLoaderManager(), this, this, this, mAddressCache);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         mDensity = getResources().getDisplayMetrics().density;
@@ -227,6 +240,8 @@ public final class ConversationViewFragment extends Fragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mConversationContainer.setOverlayAdapter(null);
+        mAdapter = null;
         mViewsCreated = false;
     }
 
@@ -357,27 +372,44 @@ public final class ConversationViewFragment extends Fragment implements
 
         mTemplates.startConversation(convHeaderDp);
 
+        int collapsedStart = -1;
+        Message prevCollapsedMsg = null;
+        boolean prevSafeForImages = false;
+
         while (messageCursor.moveToPosition(++pos)) {
             final Message msg = messageCursor.getMessage();
+
             // TODO: save/restore 'show pics' state
             final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
             allowNetworkImages |= safeForImages;
 
             final boolean expanded = !msg.read || msg.starred || messageCursor.isLast();
 
-            final int headerPos = mAdapter.addMessageHeader(msg, expanded);
-            final MessageHeaderItem headerItem = (MessageHeaderItem) mAdapter.getItem(headerPos);
+            if (!expanded) {
+                // contribute to a super-collapsed block that will be emitted just before the next
+                // expanded header
+                if (collapsedStart < 0) {
+                    collapsedStart = pos;
+                }
+                prevCollapsedMsg = msg;
+                prevSafeForImages = safeForImages;
+                continue;
+            }
 
-            final int footerPos = mAdapter.addMessageFooter(headerItem);
+            // resolve any deferred decisions on previous collapsed items
+            if (collapsedStart >= 0) {
+                if (pos - collapsedStart == 1) {
+                    // special-case for a single collapsed message: no need to super-collapse it
+                    renderMessage(prevCollapsedMsg, false /* expanded */,
+                            prevSafeForImages);
+                } else {
+                    renderSuperCollapsedBlock(collapsedStart, pos - 1);
+                }
+                prevCollapsedMsg = null;
+                collapsedStart = -1;
+            }
 
-            // Measure item header and footer heights to allocate spacers in HTML
-            // But since the views themselves don't exist yet, render each item temporarily into
-            // a host view for measurement.
-            final int headerDp = measureOverlayHeight(headerPos);
-            final int footerDp = measureOverlayHeight(footerPos);
-
-            mTemplates.appendMessageHtml(msg, expanded, safeForImages, 1.0f, headerDp,
-                    footerDp);
+            renderMessage(msg, expanded, safeForImages);
         }
 
         // Re-enable attachment loaders
@@ -388,24 +420,76 @@ public final class ConversationViewFragment extends Fragment implements
         return mTemplates.endConversation(mBaseUri, 320);
     }
 
+    private void renderSuperCollapsedBlock(int start, int end) {
+        final int blockPos = mAdapter.addSuperCollapsedBlock(start, end);
+        final int blockDp = measureOverlayHeight(blockPos);
+        mTemplates.appendSuperCollapsedHtml(start, blockDp);
+    }
+
+    private void renderMessage(Message msg, boolean expanded, boolean safeForImages) {
+        final int headerPos = mAdapter.addMessageHeader(msg, expanded);
+        final MessageHeaderItem headerItem = (MessageHeaderItem) mAdapter.getItem(headerPos);
+
+        final int footerPos = mAdapter.addMessageFooter(headerItem);
+
+        // Measure item header and footer heights to allocate spacers in HTML
+        // But since the views themselves don't exist yet, render each item temporarily into
+        // a host view for measurement.
+        final int headerDp = measureOverlayHeight(headerPos);
+        final int footerDp = measureOverlayHeight(footerPos);
+
+        mTemplates.appendMessageHtml(msg, expanded, safeForImages, 1.0f, headerDp,
+                footerDp);
+    }
+
+    private String renderCollapsedHeaders(MessageCursor cursor,
+            SuperCollapsedBlockItem blockToReplace) {
+        final List<ConversationOverlayItem> replacements = Lists.newArrayList();
+
+        mTemplates.reset();
+
+        for (int i = blockToReplace.getStart(), end = blockToReplace.getEnd(); i <= end; i++) {
+            cursor.moveToPosition(i);
+            final Message msg = cursor.getMessage();
+            final MessageHeaderItem header = mAdapter.newMessageHeaderItem(msg,
+                    false /* expanded */);
+            final MessageFooterItem footer = mAdapter.newMessageFooterItem(header);
+
+            final int headerDp = measureOverlayHeight(header);
+            final int footerDp = measureOverlayHeight(footer);
+
+            mTemplates.appendMessageHtml(msg, false /* expanded */, msg.alwaysShowImages, 1.0f,
+                    headerDp, footerDp);
+            replacements.add(header);
+            replacements.add(footer);
+        }
+
+        mAdapter.replaceSuperCollapsedBlock(blockToReplace, replacements);
+
+        return mTemplates.emit();
+    }
+
+    private int measureOverlayHeight(int position) {
+        return measureOverlayHeight(mAdapter.getItem(position));
+    }
+
     /**
-     * Measure the height of an adapter view by rendering the data in the adapter into a temporary
-     * host view, and asking the adapter item to immediately measure itself. This method will reuse
+     * Measure the height of an adapter view by rendering and adapter item into a temporary
+     * host view, and asking the view to immediately measure itself. This method will reuse
      * a previous adapter view from {@link ConversationContainer}'s scrap views if one was generated
      * earlier.
      * <p>
-     * After measuring the height, this method also saves the height in the {@link ConversationItem}
-     * for later use in overlay positioning.
+     * After measuring the height, this method also saves the height in the
+     * {@link ConversationOverlayItem} for later use in overlay positioning.
      *
-     * @param position index into the adapter
+     * @param convItem adapter item with data to render and measure
      * @return height in dp of the rendered view
      */
-    private int measureOverlayHeight(int position) {
-        final ConversationItem convItem = mAdapter.getItem(position);
+    private int measureOverlayHeight(ConversationOverlayItem convItem) {
         final int type = convItem.getType();
 
         final View convertView = mConversationContainer.getScrapView(type);
-        final View hostView = mAdapter.getView(position, convertView, mConversationContainer);
+        final View hostView = mAdapter.getView(convItem, convertView, mConversationContainer);
         if (convertView == null) {
             mConversationContainer.addScrapView(type, hostView);
         }
@@ -471,6 +555,16 @@ public final class ConversationViewFragment extends Fragment implements
     }
     // END message header callbacks
 
+    @Override
+    public void onSuperCollapsedClick(SuperCollapsedBlockItem item) {
+        if (mCursor == null || !mViewsCreated) {
+            return;
+        }
+
+        mTempBodiesHtml = renderCollapsedHeaders(mCursor, item);
+        mWebView.loadUrl("javascript:replaceSuperCollapsedBlock(" + item.getStart() + ")");
+    }
+
     private static class MessageLoader extends CursorLoader {
         private boolean mDeliveredFirstResults = false;
 
@@ -533,17 +627,22 @@ public final class ConversationViewFragment extends Fragment implements
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            final Activity activity = getActivity();
+            if (!mViewsCreated || activity == null) {
+                return false;
+            }
+
             boolean result = false;
             final Uri uri = Uri.parse(url);
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            intent.putExtra(Browser.EXTRA_APPLICATION_ID, getActivity().getPackageName());
+            intent.putExtra(Browser.EXTRA_APPLICATION_ID, activity.getPackageName());
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
             // FIXME: give provider a chance to customize url intents?
             // Utils.addGoogleUriAccountIntentExtras(mContext, uri, mAccount, intent);
 
             try {
-                mActivity.getActivityContext().startActivity(intent);
+                activity.startActivity(intent);
                 result = true;
             } catch (ActivityNotFoundException ex) {
                 // If no application can handle the URL, assume that the
@@ -564,18 +663,38 @@ public final class ConversationViewFragment extends Fragment implements
 
         @SuppressWarnings("unused")
         public void onWebContentGeometryChange(final String[] overlayBottomStrs) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (!mViewsCreated) {
-                        LogUtils.d(LOG_TAG, "ignoring webContentGeometryChange because views" +
-                                " are gone, %s", ConversationViewFragment.this);
-                        return;
-                    }
+            try {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!mViewsCreated) {
+                            LogUtils.d(LOG_TAG, "ignoring webContentGeometryChange because views" +
+                                    " are gone, %s", ConversationViewFragment.this);
+                            return;
+                        }
 
-                    mConversationContainer.onGeometryChange(parseInts(overlayBottomStrs));
+                        mConversationContainer.onGeometryChange(parseInts(overlayBottomStrs));
+                    }
+                });
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onWebContentGeometryChange");
+            }
+        }
+
+        @SuppressWarnings("unused")
+        public String getTempMessageBodies() {
+            try {
+                if (!mViewsCreated) {
+                    return "";
                 }
-            });
+
+                final String s = mTempBodiesHtml;
+                mTempBodiesHtml = null;
+                return s;
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.getTempMessageBodies");
+                return "";
+            }
         }
 
     }

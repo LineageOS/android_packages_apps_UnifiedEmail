@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.MotionEvent;
@@ -30,7 +31,6 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationViewAdapter.ConversationItem;
 import com.android.mail.browse.ScrollNotifier.ScrollListener;
 import com.android.mail.utils.DequeMap;
 import com.android.mail.utils.LogUtils;
@@ -118,14 +118,20 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      * its child array. So we remove any child from this list immediately and queue up a task to
      * detach it later. Since nobody other than the detach task references that view in the
      * meantime, we don't need any further checks or synchronization.
+     * <p>
+     * We keep {@link OverlayView} wrappers instead of bare views so that when it's time to dispose
+     * of all views (on data set or adapter change), we can at least recycle them into the typed
+     * scrap piles for later reuse.
      */
-    private final SparseArray<View> mOverlayViews;
+    private final SparseArray<OverlayView> mOverlayViews;
 
     private final float mDensity;
 
     private int mWidthMeasureSpec;
 
     private boolean mDisableLayoutTracing;
+
+    private final DataSetObserver mAdapterObserver = new AdapterObserver();
 
     /**
      * Child views of this container should implement this interface to be notified when they are
@@ -140,6 +146,16 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         void onDetachedFromParent();
     }
 
+    private static class OverlayView {
+        public View view;
+        int itemType;
+
+        public OverlayView(View view, int itemType) {
+            this.view = view;
+            this.itemType = itemType;
+        }
+    }
+
     public ConversationContainer(Context c) {
         this(c, null);
     }
@@ -147,7 +163,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     public ConversationContainer(Context c, AttributeSet attrs) {
         super(c, attrs);
 
-        mOverlayViews = new SparseArray<View>();
+        mOverlayViews = new SparseArray<OverlayView>();
 
         mDensity = c.getResources().getDisplayMetrics().density;
         mScale = mDensity;
@@ -170,12 +186,29 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     public void setOverlayAdapter(ConversationViewAdapter a) {
+        if (mOverlayAdapter != null) {
+            mOverlayAdapter.unregisterDataSetObserver(mAdapterObserver);
+            clearOverlays();
+        }
         mOverlayAdapter = a;
-        // TODO: register/unregister for dataset notifications on the new/old adapter
+        if (mOverlayAdapter != null) {
+            mOverlayAdapter.registerDataSetObserver(mAdapterObserver);
+        }
     }
 
     public Adapter getOverlayAdapter() {
         return mOverlayAdapter;
+    }
+
+    private void clearOverlays() {
+        for (int i = 0, len = mOverlayViews.size(); i < len; i++) {
+            detachOverlay(mOverlayViews.valueAt(i));
+        }
+        mOverlayViews.clear();
+    }
+
+    private void onDataSetChanged() {
+        clearOverlays();
     }
 
     private void forwardFakeMotionEvent(MotionEvent original, int newAction) {
@@ -295,7 +328,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             final int spacerBottomY = getOverlayBottom(spacerIndex);
 
             // always place at least one overlay per spacer
-            ConversationItem adapterItem = mOverlayAdapter.getItem(adapterIndex);
+            ConversationOverlayItem adapterItem = mOverlayAdapter.getItem(adapterIndex);
 
             int overlayBottomY = spacerBottomY;
             int overlayTopY = overlayBottomY - adapterItem.getHeight();
@@ -360,8 +393,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         child.measure(childWidthSpec, childHeightSpec);
     }
 
-    private void onOverlayScrolledOff(final int adapterIndex, final View overlayView,
-            final int itemType, int overlayTop, int overlayBottom) {
+    private void onOverlayScrolledOff(final int adapterIndex, final OverlayView overlay,
+            int overlayTop, int overlayBottom) {
         // detach the view asynchronously, as scroll notification can happen during a draw, when
         // it's not safe to remove children
 
@@ -371,13 +404,13 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         post(new Runnable() {
             @Override
             public void run() {
-                detachOverlay(overlayView, itemType);
+                detachOverlay(overlay);
             }
         });
 
         // push it out of view immediately
         // otherwise this scrolled-off header will continue to draw until the runnable runs
-        layoutOverlay(overlayView, overlayTop, overlayBottom);
+        layoutOverlay(overlay.view, overlayTop, overlayBottom);
     }
 
     public View getScrapView(int type) {
@@ -388,11 +421,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         mScrapViews.add(type, v);
     }
 
-    private void detachOverlay(View overlayView, int itemType) {
-        detachViewFromParent(overlayView);
-        mScrapViews.add(itemType, overlayView);
-        if (overlayView instanceof DetachListener) {
-            ((DetachListener) overlayView).onDetachedFromParent();
+    private void detachOverlay(OverlayView overlay) {
+        detachViewFromParent(overlay.view);
+        mScrapViews.add(overlay.itemType, overlay.view);
+        if (overlay.view instanceof DetachListener) {
+            ((DetachListener) overlay.view).onDetachedFromParent();
         }
     }
 
@@ -444,12 +477,13 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     private void positionOverlay(int adapterIndex, int overlayTopY, int overlayBottomY) {
-        View overlayView = mOverlayViews.get(adapterIndex);
-        final ConversationItem item = mOverlayAdapter.getItem(adapterIndex);
+        final OverlayView overlay = mOverlayViews.get(adapterIndex);
+        final ConversationOverlayItem item = mOverlayAdapter.getItem(adapterIndex);
 
         // is the overlay visible and does it have non-zero height?
         if (overlayTopY != overlayBottomY && overlayBottomY > mOffsetY
                 && overlayTopY < mOffsetY + getHeight()) {
+            View overlayView = overlay != null ? overlay.view : null;
             // show and/or move overlay
             if (overlayView == null) {
                 overlayView = addOverlayView(adapterIndex);
@@ -470,10 +504,9 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             layoutOverlay(overlayView, overlayTopY, overlayTopY + overlayView.getMeasuredHeight());
         } else {
             // hide overlay
-            if (overlayView != null) {
+            if (overlay != null) {
                 traceLayout("hide overlay %d", adapterIndex);
-                onOverlayScrolledOff(adapterIndex, overlayView, item.getType(), overlayTopY,
-                        overlayBottomY);
+                onOverlayScrolledOff(adapterIndex, overlay, overlayTopY, overlayBottomY);
             } else {
                 traceLayout("ignore non-visible overlay %d", adapterIndex);
             }
@@ -493,7 +526,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         final View convertView = mScrapViews.poll(itemType);
 
         View view = mOverlayAdapter.getView(adapterIndex, convertView, this);
-        mOverlayViews.put(adapterIndex, view);
+        mOverlayViews.put(adapterIndex, new OverlayView(view, itemType));
 
         // Only re-attach if the view had previously been added to a view hierarchy.
         // Since external components can contribute to the scrap heap (addScrapView), we can't
@@ -538,6 +571,13 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             return;
         }
         LogUtils.i(TAG, msg, params);
+    }
+
+    private class AdapterObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            onDataSetChanged();
+        }
     }
 
 }

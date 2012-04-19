@@ -193,6 +193,26 @@ function setMessageBodyVisible(messageDomId, isVisible, spacerHeight) {
     }
     setMessageHeaderSpacerHeight(messageDomId, spacerHeight);
 }
+
+function replaceSuperCollapsedBlock(startIndex) {
+    var parent, block, header;
+
+    block = document.querySelector(".mail-super-collapsed-block[index='" + startIndex + "']");
+    if (!block) {
+        console.log("can't expand super collapsed block at index: " + startIndex);
+        return;
+    }
+    parent = block.parentNode;
+    block.innerHTML = window.mail.getTempMessageBodies();
+
+    header = block.firstChild;
+    while (header) {
+        parent.insertBefore(header, block);
+        header = block.firstChild;
+    }
+    parent.removeChild(block);
+    measurePositions();
+}
 // END Java->JavaScript handlers
 
 collapseQuotedText();

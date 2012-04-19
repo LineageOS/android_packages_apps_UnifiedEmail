@@ -202,7 +202,7 @@ public class HtmlConversationTemplates {
         return emit();
     }
 
-    private String emit() {
+    public String emit() {
         String out = mFormatter.toString();
         // release the builder memory ASAP
         mFormatter = null;

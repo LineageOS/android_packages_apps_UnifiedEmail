@@ -22,22 +22,21 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.BaseAdapter;
-import android.widget.CursorAdapter;
 
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
+import com.android.mail.browse.SuperCollapsedBlock.OnClickListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +47,8 @@ import java.util.Map;
  * message may have a header and footer, and since they are not drawn coupled together, they each
  * get an adapter item.
  * <p>
- * Each item in this adapter is a {@link ConversationItem} to expose enough information to
- * {@link ConversationContainer} so that it can position overlays properly.
+ * Each item in this adapter is a {@link ConversationOverlayItem} to expose enough information
+ * to {@link ConversationContainer} so that it can position overlays properly.
  *
  */
 public class ConversationViewAdapter extends BaseAdapter {
@@ -60,80 +59,20 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final LoaderManager mLoaderManager;
     private final MessageHeaderViewCallbacks mMessageCallbacks;
     private ConversationViewHeaderCallbacks mConversationCallbacks;
+    private OnClickListener mSuperCollapsedListener;
     private Map<String, Address> mAddressCache;
     private final LayoutInflater mInflater;
     private boolean mDefaultReplyAll;
 
-    private final List<ConversationItem> mItems;
+    private final List<ConversationOverlayItem> mItems;
 
     public static final int VIEW_TYPE_CONVERSATION_HEADER = 0;
     public static final int VIEW_TYPE_MESSAGE_HEADER = 1;
     public static final int VIEW_TYPE_MESSAGE_FOOTER = 2;
-    public static final int VIEW_TYPE_COUNT = 3;
+    public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 3;
+    public static final int VIEW_TYPE_COUNT = 4;
 
-    public static final String LOG_TAG = new LogUtils().getLogTag();
-
-    public static abstract class ConversationItem {
-        private int mHeight;  // in px
-        private boolean mNeedsMeasure;
-
-        /**
-         * @see Adapter#getItemViewType(int)
-         */
-        public abstract int getType();
-        /**
-         * Inflate and perform one-time initialization on a view for later binding.
-         */
-        public abstract View createView(Context context, LayoutInflater inflater,
-                ViewGroup parent);
-        /**
-         * @see CursorAdapter#bindView(View, Context, android.database.Cursor)
-         */
-        public abstract void bindView(View v);
-        /**
-         * Returns true if this overlay view is meant to be positioned right on top of the overlay
-         * below. This special positioning allows {@link ConversationContainer} to stack overlays
-         * together even when zoomed into a conversation, when the overlay spacers spread farther
-         * apart.
-         */
-        public abstract boolean isContiguous();
-
-        /**
-         * This method's behavior is critical and requires some 'splainin.
-         * <p>
-         * Subclasses that return a zero-size height to the {@link ConversationContainer} will
-         * cause the scrolling/recycling logic there to remove any matching view from the container.
-         * The item should switch to returning a non-zero height when its view should re-appear.
-         * <p>
-         * It's imperative that this method stay in sync with the current height of the HTML spacer
-         * that matches this overlay.
-         */
-        public int getHeight() {
-            return mHeight;
-        }
-
-        public void setHeight(int h) {
-            LogUtils.i(LOG_TAG, "IN setHeight=%dpx of overlay item: %s", h, this);
-            if (mHeight != h) {
-                mHeight = h;
-                mNeedsMeasure = true;
-            }
-        }
-
-        public boolean isMeasurementValid() {
-            return !mNeedsMeasure;
-        }
-
-        public void markMeasurementValid() {
-            mNeedsMeasure = false;
-        }
-
-        public void invalidateMeasurement() {
-            mNeedsMeasure = true;
-        }
-    }
-
-    public class ConversationHeaderItem extends ConversationItem {
+    public class ConversationHeaderItem extends ConversationOverlayItem {
         public final Conversation mConversation;
 
         private ConversationHeaderItem(Conversation conv) {
@@ -172,7 +111,7 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     }
 
-    public class MessageHeaderItem extends ConversationItem {
+    public class MessageHeaderItem extends ConversationOverlayItem {
         public final Message message;
 
         // view state variables
@@ -227,7 +166,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
     }
 
-    public class MessageFooterItem extends ConversationItem {
+    public class MessageFooterItem extends ConversationOverlayItem {
         /**
          * A footer can only exist if there is a matching header. Requiring a header allows a
          * footer to stay in sync with the expanded state of the header.
@@ -273,15 +212,60 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
     }
 
+    public class SuperCollapsedBlockItem extends ConversationOverlayItem {
+
+        private final int mStart;
+        private int mEnd;
+
+        private SuperCollapsedBlockItem(int start, int end) {
+            mStart = start;
+            mEnd = end;
+        }
+
+        @Override
+        public int getType() {
+            return VIEW_TYPE_SUPER_COLLAPSED_BLOCK;
+        }
+
+        @Override
+        public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
+            final SuperCollapsedBlock scb = (SuperCollapsedBlock) inflater.inflate(
+                    R.layout.super_collapsed_block, parent, false);
+            scb.initialize(mSuperCollapsedListener);
+            return scb;
+        }
+
+        @Override
+        public void bindView(View v) {
+            final SuperCollapsedBlock scb = (SuperCollapsedBlock) v;
+            scb.bind(this);
+        }
+
+        @Override
+        public boolean isContiguous() {
+            return true;
+        }
+
+        public int getStart() {
+            return mStart;
+        }
+
+        public int getEnd() {
+            return mEnd;
+        }
+    }
+
     public ConversationViewAdapter(Context context, Account account, LoaderManager loaderManager,
             MessageHeaderViewCallbacks messageCallbacks,
-            ConversationViewHeaderCallbacks convCallbacks, Map<String, Address> addressCache) {
+            ConversationViewHeaderCallbacks convCallbacks,
+            SuperCollapsedBlock.OnClickListener scbListener, Map<String, Address> addressCache) {
         mContext = context;
         mDateBuilder = new FormattedDateBuilder(context);
         mAccount = account;
         mLoaderManager = loaderManager;
         mMessageCallbacks = messageCallbacks;
         mConversationCallbacks = convCallbacks;
+        mSuperCollapsedListener = scbListener;
         mAddressCache = addressCache;
         mInflater = LayoutInflater.from(context);
 
@@ -308,7 +292,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public ConversationItem getItem(int position) {
+    public ConversationOverlayItem getItem(int position) {
         return mItems.get(position);
     }
 
@@ -319,8 +303,11 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        return getView(getItem(position), convertView, parent);
+    }
+
+    public View getView(ConversationOverlayItem item, View convertView, ViewGroup parent) {
         final View v;
-        final ConversationItem item = getItem(position);
 
         if (convertView == null) {
             v = item.createView(mContext, mInflater, parent);
@@ -332,7 +319,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         return v;
     }
 
-    public int addItem(ConversationItem item) {
+    public int addItem(ConversationOverlayItem item) {
         final int pos = mItems.size();
         mItems.add(item);
         notifyDataSetChanged();
@@ -354,6 +341,30 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public int addMessageFooter(MessageHeaderItem headerItem) {
         return addItem(new MessageFooterItem(headerItem));
+    }
+
+    public MessageHeaderItem newMessageHeaderItem(Message message, boolean expanded) {
+        return new MessageHeaderItem(message, expanded);
+    }
+
+    public MessageFooterItem newMessageFooterItem(MessageHeaderItem headerItem) {
+        return new MessageFooterItem(headerItem);
+    }
+
+    public int addSuperCollapsedBlock(int start, int end) {
+        return addItem(new SuperCollapsedBlockItem(start, end));
+    }
+
+    public void replaceSuperCollapsedBlock(SuperCollapsedBlockItem blockToRemove,
+            Collection<ConversationOverlayItem> replacements) {
+        final int pos = mItems.indexOf(blockToRemove);
+        if (pos == -1) {
+            return;
+        }
+
+        mItems.remove(pos);
+        mItems.addAll(pos, replacements);
+        notifyDataSetChanged();
     }
 
 }
