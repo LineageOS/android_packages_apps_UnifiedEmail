@@ -66,7 +66,6 @@ import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
@@ -100,11 +99,14 @@ import java.util.TimerTask;
 public abstract class AbstractActivityController implements ActivityController,
         ConversationListener, OnScrollListener {
     // Keys for serialization of various information in Bundles.
+    /** Tag for {@link #mAccount} */
     private static final String SAVED_ACCOUNT = "saved-account";
+    /** Tag for {@link #mFolder} */
     private static final String SAVED_FOLDER = "saved-folder";
+    /** Tag for {@link #mCurrentConversation} */
     private static final String SAVED_CONVERSATION = "saved-conversation";
-    // Batch conversations stored in the Bundle using this key.
-    private static final String SAVED_CONVERSATIONS = "saved-conversations";
+    /** Tag for {@link #mSelectedSet} */
+    private static final String SAVED_SELECTED_SET = "saved-selected-set";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
@@ -772,7 +774,7 @@ public abstract class AbstractActivityController implements ActivityController,
             outState.putParcelable(SAVED_CONVERSATION, mCurrentConversation);
         }
         if (!mSelectedSet.isEmpty()) {
-            outState.putParcelable(SAVED_CONVERSATIONS, mSelectedSet);
+            outState.putParcelable(SAVED_SELECTED_SET, mSelectedSet);
         }
     }
 
@@ -959,16 +961,12 @@ public abstract class AbstractActivityController implements ActivityController,
             mSelectedSet.clear();
             return;
         }
-        final ConversationSelectionSet selectedSet = savedState.getParcelable(SAVED_CONVERSATIONS);
+        final ConversationSelectionSet selectedSet = savedState.getParcelable(SAVED_SELECTED_SET);
         if (selectedSet == null || selectedSet.isEmpty()) {
             mSelectedSet.clear();
             return;
         }
-
-        // putAll will take care of calling our registered onSetPopulated method
-        // FIXME: disabled until we correctly handle selection set bringup when list fragment
-        // does not yet exist (b/6268401)
-        //mSelectedSet.putAll(selectedSet);
+        mSelectedSet.putAll(selectedSet);
     }
 
     @Override

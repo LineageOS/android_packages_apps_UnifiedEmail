@@ -225,7 +225,12 @@ public class ConversationSelectionSet implements Parcelable {
         return mInternalMap.values();
     }
 
-    /** @see java.util.HashMap#putAll(java.util.Map) */
+    /**
+     * Puts all conversations given in the input argument into the selection set. If there are
+     * any listeners they are notified once after adding <em>all</em> conversations to the selection
+     * set.
+     * @see java.util.HashMap#putAll(java.util.Map)
+     */
     public void putAll(ConversationSelectionSet other) {
         if (other == null) {
             return;
