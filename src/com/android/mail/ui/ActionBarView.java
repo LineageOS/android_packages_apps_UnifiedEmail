@@ -178,8 +178,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         // We don't want to include the "Show all folders" menu item on tablet devices
         final boolean showAllFolders = !Utils.useTabletUI(getContext());
         mSpinner = new AccountSpinnerAdapter(getContext(), recentFolders, showAllFolders);
-        // Set the mode to Navigation mode and listen on navigation changes.
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
         mActionBar.setListNavigationCallbacks(mSpinner, this);
     }
 
@@ -327,10 +326,16 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 break;
             case ViewMode.CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
-                showNavList();
+                // FIXME: use a resource to have fine-grained control over whether the spinner
+                // or the subject appears
+                if (Utils.useTabletUI(mActivity.getActivityContext())) {
+                    showNavList();
+                } else {
+                    mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                }
                 break;
             case ViewMode.SEARCH_RESULTS_LIST:
-                showNavList();
+                mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                 setPopulatedSearchView();
                 // Remove focus from the search action menu in search results mode so the IME and
                 // the suggestions don't get in the way.
@@ -341,7 +346,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
-                showNavList();
+                mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                 if (Utils.useTabletUI(mActivity.getActivityContext())) {
                     setPopulatedSearchView();
                 }
