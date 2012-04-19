@@ -70,10 +70,10 @@
     <string name="menu_manage_folders" msgid="7499103037978814445">"አቃፊዎች አቀናብር"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"አቃፊዎች"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"አመሳስልና አሳውቅ"</string>
-    <string name="menu_folder_options" msgid="8897520487430647932">"የአቃፊ ቅንጅቶች"</string>
+    <string name="menu_folder_options" msgid="8897520487430647932">"የአቃፊ ቅንብሮች"</string>
     <string name="menu_done" msgid="5791134842152855128">"ተከናውኗል"</string>
-    <string name="menu_account_settings" msgid="8230989362863431918">"የመለያ ቅንጅቶች"</string>
-    <string name="menu_settings" msgid="6007027046949837282">"ቅንጅቶች"</string>
+    <string name="menu_account_settings" msgid="8230989362863431918">"የመለያ ቅንብሮች"</string>
+    <string name="menu_settings" msgid="6007027046949837282">"ቅንብሮች"</string>
     <string name="menu_search" msgid="5297197523031943248">"ፍለጋ"</string>
     <string name="more" msgid="1238344647379009858">"ተጨማሪ"</string>
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> ከ<xliff:g id="TOTAL">%2$s</xliff:g>"</string>
