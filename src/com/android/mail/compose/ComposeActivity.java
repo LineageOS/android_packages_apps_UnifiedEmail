@@ -1800,8 +1800,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             final String text = quotedText.toString();
             if (QuotedTextView.containsQuotedText(text)) {
                 int pos = QuotedTextView.getQuotedTextOffset(text);
-                fullBody.append(text.substring(0, pos));
-                MessageModification.putQuoteStartPos(values, fullBody.length());
+                final int quoteStartPos = fullBody.length() + pos;
+                fullBody.append(text);
+                MessageModification.putQuoteStartPos(values, quoteStartPos);
                 MessageModification.putForward(values, composeMode == ComposeActivity.FORWARD);
                 MessageModification.putAppendRefMessageContent(values, includeQuotedText);
             } else {
