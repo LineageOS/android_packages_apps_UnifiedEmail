@@ -228,6 +228,14 @@ public final class ConversationListFragment extends ListFragment implements
         // force setting the mode manually this time around.
         onViewModeChanged(mActivity.getViewMode().getMode());
 
+        // Restore the list state
+        if (mListSavedState != null) {
+            mListView.onRestoreInstanceState(mListSavedState);
+
+            // TODO: find a better way to unset the selected item when restoring
+            mListView.clearChoices();
+        }
+
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
             return;

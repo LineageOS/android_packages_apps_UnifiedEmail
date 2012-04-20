@@ -49,11 +49,14 @@ import java.util.Collections;
 public final class OnePaneController extends AbstractActivityController {
     // Used for saving transaction IDs in bundles
     private static final String FOLDER_LIST_TRANSACTION_KEY = "folder-list-transaction";
+    private static final String INBOX_CONVERSATION_LIST_TRANSACTION_KEY =
+            "inbox_conversation-list-transaction";
     private static final String CONVERSATION_LIST_TRANSACTION_KEY = "conversation-list-transaction";
     private static final String CONVERSATION_TRANSACTION_KEY = "conversation-transaction";
 
     private static final int INVALID_ID = -1;
     private boolean mConversationListVisible = false;
+    private int mLastInboxConversationListTransactionId = INVALID_ID;
     private int mLastConversationListTransactionId = INVALID_ID;
     private int mLastConversationTransactionId = INVALID_ID;
     private int mLastFolderListTransactionId = INVALID_ID;
@@ -88,6 +91,8 @@ public final class OnePaneController extends AbstractActivityController {
         // TODO(mindyp) handle saved state.
         if (inState != null) {
             mLastFolderListTransactionId = inState.getInt(FOLDER_LIST_TRANSACTION_KEY, INVALID_ID);
+            mLastInboxConversationListTransactionId =
+                    inState.getInt(INBOX_CONVERSATION_LIST_TRANSACTION_KEY, INVALID_ID);
             mLastConversationListTransactionId = inState.getInt(CONVERSATION_LIST_TRANSACTION_KEY,
                     INVALID_ID);
             mLastConversationTransactionId = inState.getInt(CONVERSATION_TRANSACTION_KEY,
@@ -100,6 +105,8 @@ public final class OnePaneController extends AbstractActivityController {
         super.onSaveInstanceState(outState);
         // TODO(mindyp) handle saved state.
         outState.putInt(FOLDER_LIST_TRANSACTION_KEY, mLastFolderListTransactionId);
+        outState.putInt(INBOX_CONVERSATION_LIST_TRANSACTION_KEY,
+                mLastInboxConversationListTransactionId);
         outState.putInt(CONVERSATION_LIST_TRANSACTION_KEY, mLastConversationListTransactionId);
         outState.putInt(CONVERSATION_TRANSACTION_KEY, mLastConversationTransactionId);
     }
@@ -182,8 +189,13 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             // If going to the inbox, clear the folder list transaction history.
             mInbox = listContext.folder;
-            replaceFragment(conversationListFragment, transition, TAG_CONVERSATION_LIST);
+            mLastInboxConversationListTransactionId = replaceFragment(conversationListFragment,
+                    transition, TAG_CONVERSATION_LIST);
             mLastFolderListTransactionId = INVALID_ID;
+
+            // If we ever to to the inbox, we want to unset the transation id for any other
+            // non-inbox folder.
+            mLastConversationListTransactionId = INVALID_ID;
         }
         mConversationListVisible = true;
         mConversationListNeverShown = false;
@@ -378,7 +390,12 @@ public final class OnePaneController extends AbstractActivityController {
         if (isTransactionIdValid(mLastConversationListTransactionId)) {
             mActivity.getFragmentManager().popBackStack(mLastConversationListTransactionId, 0);
             resetActionBarIcon();
+        } else if (isTransactionIdValid(mLastInboxConversationListTransactionId)) {
+            mActivity.getFragmentManager().popBackStack(mLastInboxConversationListTransactionId, 0);
+            resetActionBarIcon();
+            onFolderChanged(mInbox);
         } else {
+            // TODO: revist if this block is necessary
             ConversationListContext listContext = ConversationListContext.forFolder(mContext,
                     mAccount, mInbox);
             // Set the correct context for what the conversation view will be now.
