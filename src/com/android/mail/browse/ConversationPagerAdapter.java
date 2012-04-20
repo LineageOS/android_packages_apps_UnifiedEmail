@@ -211,7 +211,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         // This should just about never happen. Clients should never pass a missing conversation,
         // or else we will run through the entire (very large) cursor for nothing, possibly even
         // incurring side effects like network fetches.
-        LogUtils.wtf(LOG_TAG, new Error(),
+        LogUtils.e(LOG_TAG, new Error(),
                 "PagerAdapter iterated over entire conversation cursor with no match");
         return POSITION_NONE;
     }
