@@ -291,6 +291,6 @@
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Tu correo aparecerá en breve."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Cuenta no sincronizada"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Esta cuenta no está configurada para sincronizar el correo automáticamente."\n"Toca "<b>"Sincronizar ahora"</b>" para sincronizar el correo una vez o "<b>"Cambiar la configuración de sincronización"</b>" para que esta cuenta sincronice el correo automáticamente."</string>
-    <string name="manual_sync" msgid="6743983544685622800">"Sincronizar ahora"</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Sincr. ahora"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Cambiar conf. de sinc."</string>
 </resources>
