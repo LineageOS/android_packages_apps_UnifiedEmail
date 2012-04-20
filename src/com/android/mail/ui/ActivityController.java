@@ -33,8 +33,8 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
-import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
+import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 
 /**
  * An Activity controller knows how to combine views and listeners into a functioning activity.

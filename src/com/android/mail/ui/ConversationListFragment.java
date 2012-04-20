@@ -57,7 +57,7 @@ import java.util.Collection;
  */
 public final class ConversationListFragment extends ListFragment implements
         OnItemLongClickListener, ModeChangeListener, SwipeCompleteListener,
-        Settings.ChangeListener, ConversationSender {
+        Settings.ChangeListener {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     // Key used to keep track of the scroll state of the list.
@@ -484,13 +484,12 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onSwipeComplete(Collection<Conversation> conversations) {
         Context context = getActivity().getApplicationContext();
-        ConversationCursor cc = getConversationListCursor();
         switch (mSwipeAction) {
             case R.id.archive:
-                cc.archive(context, conversations);
+                Conversation.archive(context, conversations);
                 break;
             case R.id.delete:
-                cc.delete(context, conversations);
+                Conversation.delete(context, conversations);
                 break;
         }
         mListAdapter.notifyDataSetChanged();
@@ -519,10 +518,5 @@ public final class ConversationListFragment extends ListFragment implements
         if (mListAdapter != null) {
             mListAdapter.onSettingsChanged(updatedSettings);
         }
-    }
-
-    @Override
-    public void setConversationRouter(AbstractActivityController conversationManager) {
-        // TODO Send changes to conversation view here
     }
 }

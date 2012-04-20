@@ -81,8 +81,7 @@ public final class ConversationViewFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
         ConversationViewHeader.ConversationViewHeaderCallbacks,
         MessageHeaderViewCallbacks,
-        SuperCollapsedBlock.OnClickListener,
-        ConversationSender {
+        SuperCollapsedBlock.OnClickListener {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
@@ -124,8 +123,6 @@ public final class ConversationViewFragment extends Fragment implements
      * Folder is used to help determine valid menu actions for this conversation.
      */
     private Folder mFolder;
-
-    private AbstractActivityController mConversationRouter;
 
     private final Map<String, Address> mAddressCache = Maps.newHashMap();
 
@@ -371,7 +368,7 @@ public final class ConversationViewFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new MessageLoader(mContext, mConversation.messageListUri, this);
+        return new MessageLoader(mContext, mConversation.messageListUri);
     }
 
     @Override
@@ -594,9 +591,7 @@ public final class ConversationViewFragment extends Fragment implements
     private void onConversationSeen() {
         // mark as read upon open
         if (!mConversation.read) {
-            mConversationRouter.sendConversationRead(
-                    AbstractActivityController.TAG_CONVERSATION_LIST, mConversation, true,
-                    false /*local*/);
+            mConversation.markRead(mContext, true /* read */);
             mConversation.read = true;
         }
 
@@ -672,16 +667,14 @@ public final class ConversationViewFragment extends Fragment implements
 
     private static class MessageLoader extends CursorLoader {
         private boolean mDeliveredFirstResults = false;
-        private final ConversationViewFragment mFragment;
 
-        public MessageLoader(Context c, Uri uri, ConversationViewFragment fragment) {
+        public MessageLoader(Context c, Uri uri) {
             super(c, uri, UIProvider.MESSAGE_PROJECTION, null, null, null);
-            mFragment = fragment;
         }
 
         @Override
         public Cursor loadInBackground() {
-            return new MessageCursor(super.loadInBackground(), mFragment);
+            return new MessageCursor(super.loadInBackground());
 
         }
 
@@ -805,27 +798,6 @@ public final class ConversationViewFragment extends Fragment implements
             }
         }
 
-    }
-
-    // Is the conversation starred?
-    public boolean isConversationStarred() {
-        int pos = -1;
-        while (mCursor.moveToPosition(++pos)) {
-            Message m = mCursor.getMessage();
-            if (m.starred) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void setConversationRouter(AbstractActivityController conversationRouter) {
-        mConversationRouter = conversationRouter;
-    }
-
-    public AbstractActivityController getConversationRouter() {
-        return mConversationRouter;
     }
 
 }

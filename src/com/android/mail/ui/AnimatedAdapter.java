@@ -34,8 +34,10 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
 import com.android.mail.utils.LogUtils;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -125,7 +127,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
         ((ConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
-                        mSwipeEnabled, mDragListener, this);
+                        mSwipeEnabled, mDragListener);
     }
 
     @Override
@@ -313,7 +315,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 parent);
         convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false, mSwipeEnabled,
-                mDragListener, this);
+                mDragListener);
         convView.startUndoAnimation(mViewMode, this);
         return convView;
     }

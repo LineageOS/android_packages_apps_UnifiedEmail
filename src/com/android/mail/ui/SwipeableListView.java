@@ -29,11 +29,11 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogUtils;
+
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -214,15 +214,13 @@ public class SwipeableListView extends ListView implements Callback{
                     conversationViews != null ? (conversations.size() + 1) : 1, mSwipeAction);
             handleLeaveBehind(target, undoOp, context);
             adapter.delete(conversations, new ActionCompleteListener() {
-                @Override
                 public void onActionComplete() {
-                    ConversationCursor cc = (ConversationCursor)adapter.getCursor();
                     switch (mSwipeAction) {
                         case R.id.archive:
-                            cc.archive(context, conversations);
+                            Conversation.archive(context, conversations);
                             break;
                         case R.id.delete:
-                            cc.delete(context, conversations);
+                            Conversation.delete(context, conversations);
                             break;
                     }
                 }
@@ -240,13 +238,14 @@ public class SwipeableListView extends ListView implements Callback{
         Conversation conv = target.getConversation();
         final AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
         adapter.setupLeaveBehind(conv, undoOp, conv.position);
-        ConversationCursor cc = (ConversationCursor)adapter.getCursor();
         switch (mSwipeAction) {
             case R.id.archive:
-                cc.mostlyArchive(context, ImmutableList.of(target.getConversation()));
+                Conversation.mostlyArchive(context,
+                        ImmutableList.of(target.getConversation()));
                 break;
             case R.id.delete:
-                cc.mostlyDelete(context, ImmutableList.of(target.getConversation()));
+                Conversation.mostlyDelete(context,
+                        ImmutableList.of(target.getConversation()));
                 break;
         }
         adapter.notifyDataSetChanged();

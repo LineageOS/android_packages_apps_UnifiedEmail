@@ -20,121 +20,45 @@ package com.android.mail.ui;
 import android.app.Activity;
 import android.content.AsyncTaskLoader;
 import android.net.Uri;
-import android.util.Log;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 
-import java.util.ArrayList;
-
 public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor> {
-    private static final String TAG = "ConversationCursorLoader";
-    private static final boolean DEBUG = true; // STOPSHIP
     private final Uri mUri;
+    private final String[] mProjection;
     private final Activity mActivity;
-    private boolean mInitialConversationLimit;
-    private final ConversationCursor mConversationCursor;
-    private boolean mInit = false;
-    private boolean mClosed = false;
-    private boolean mRetain = false;
-    private boolean mRetained = false;
-    private final String mName;
+    private final boolean mInitialConversationLimit;
 
-    private static final ArrayList<ConversationCursorLoader> sLoaders =
-            new ArrayList<ConversationCursorLoader>();
-
-    public ConversationCursorLoader(Activity activity, Account account, Uri uri, String name) {
+    public ConversationCursorLoader(Activity activity, Account account, String[] projection,
+            Uri uri) {
         super(activity);
-        mActivity = activity;
+        mProjection = projection;
         mUri = uri;
-        mName = name;
+        mActivity = activity;
         mInitialConversationLimit =
                 account.supportsCapability(AccountCapabilities.INITIAL_CONVERSATION_LIMIT);
         // Initialize the state of the conversation cursor
-        mConversationCursor = new ConversationCursor(
-                mActivity, mUri, mInitialConversationLimit, mName);
-        addLoader();
-    }
-
-    private void dumpLoaders() {
-        if (DEBUG) {
-            Log.d(TAG, "Loaders: ");
-            for (ConversationCursorLoader loader: sLoaders) {
-                Log.d(TAG, " >> " + loader.mName + " (" + mUri + ")");
-            }
-        }
-    }
-
-    private void addLoader() {
-        if (DEBUG) {
-            Log.d(TAG, "Add loader: " + mUri);
-        }
-        sLoaders.add(this);
-        if (sLoaders.size() > 1) {
-            dumpLoaders();
-        }
-    }
-
-    /**
-     * Indicate whether the loader's cursor should be retained after reset
-     * @param state whether this laoder's cursor should be retained
-     */
-    public void retainCursor(boolean state) {
-        mRetain = state;
-    }
-
-    @Override
-    public void onReset() {
-        if (!mRetain) {
-            if (DEBUG) {
-                Log.d(TAG, "Reset loader/disable cursor: " + mName);
-            }
-            mConversationCursor.disable();
-            mClosed = true;
-            sLoaders.remove(this);
-            if (!sLoaders.isEmpty()) {
-                dumpLoaders();
-            }
-        } else {
-            if (DEBUG) {
-                Log.d(TAG, "Reset loader/retain cursor: " + mName);
-                mRetained = true;
-            }
-        }
+        ConversationCursor.initialize(mActivity, mInitialConversationLimit);
     }
 
     @Override
     public ConversationCursor loadInBackground() {
-        if (!mInit) {
-            mConversationCursor.load();
-            mInit = true;
-        }
-        return mConversationCursor;
+        return ConversationCursor.create(mActivity, UIProvider.ConversationColumns.URI, mUri,
+                mProjection);
     }
 
     @Override
     protected void onStartLoading() {
-        if (mClosed) {
-            mClosed = false;
-            mConversationCursor.load();
-            addLoader();
-            if (DEBUG) {
-                Log.d(TAG, "Restarting reset loader: " + mName);
-            }
-        } else if (mRetained) {
-            mRetained = false;
-            if (DEBUG) {
-                Log.d(TAG, "Resuming retained loader: " + mName);
-            }
-        }
         forceLoad();
-        mConversationCursor.resume();
+        //ConversationCursor.resume();
     }
 
     @Override
     protected void onStopLoading() {
         cancelLoad();
-        mConversationCursor.pause();
+        //ConversationCursor.pause();
     }
 }

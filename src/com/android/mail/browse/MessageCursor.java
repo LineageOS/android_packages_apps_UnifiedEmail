@@ -17,13 +17,13 @@
 
 package com.android.mail.browse;
 
+import com.google.common.collect.Maps;
+
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.ConversationViewFragment;
-import com.google.common.collect.Maps;
 
 import java.util.Map;
 
@@ -34,20 +34,30 @@ import java.util.Map;
 public class MessageCursor extends CursorWrapper {
 
     private final Map<Long, Message> mCache = Maps.newHashMap();
-    private final ConversationViewFragment mFragment;
 
-    public MessageCursor(Cursor inner, ConversationViewFragment fragment) {
+    public MessageCursor(Cursor inner) {
         super(inner);
-        mFragment = fragment;
     }
 
     public Message getMessage() {
         final long id = getWrappedCursor().getLong(UIProvider.MESSAGE_ID_COLUMN);
         Message m = mCache.get(id);
         if (m == null) {
-            m = new Message(this, mFragment);
+            m = new Message(this);
             mCache.put(id, m);
         }
         return m;
+    }
+
+    // Is the conversation starred?
+    public boolean isConversationStarred() {
+        int pos = -1;
+        while (moveToPosition(++pos)) {
+            Message m = getMessage();
+            if (m.starred) {
+                return true;
+            }
+        }
+        return false;
     }
 }

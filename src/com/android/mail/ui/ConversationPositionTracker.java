@@ -22,6 +22,7 @@ import android.database.Cursor;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Conversation;
 import com.android.mail.utils.LogUtils;
+
 import com.google.common.annotations.VisibleForTesting;
 
 /**
@@ -223,7 +224,7 @@ public class ConversationPositionTracker {
      */
     private void calculatePosition() {
         // Run this method once for a mConversation, mCursor pair.
-        if (mCursor == null || !mCursorDirty) {
+        if (!mCursorDirty) {
             return;
         }
         mCursorDirty = false;

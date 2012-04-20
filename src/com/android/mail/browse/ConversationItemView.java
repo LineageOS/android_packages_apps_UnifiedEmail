@@ -63,7 +63,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.DragListener;
 import com.android.mail.ui.FolderDisplayer;
@@ -75,8 +74,7 @@ import com.google.common.annotations.VisibleForTesting;
 public class ConversationItemView extends View implements SwipeableItemView {
     // Timer.
     private static int sLayoutCount = 0;
-    private static Timer sTimer; // Create the sTimer here if you need to do
-                                 // perf analysis.
+    private static Timer sTimer; // Create the sTimer here if you need to do perf analysis.
     private static final int PERF_LAYOUT_ITERATIONS = 50;
     private static final String PERF_TAG_LAYOUT = "CCHV.layout";
     private static final String PERF_TAG_CALCULATE_TEXTS_BITMAPS = "CCHV.txtsbmps";
@@ -163,7 +161,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private int mLastTouchX;
     private int mLastTouchY;
     private DragListener mDragListener;
-    private AnimatedAdapter mAdapter;
     private static Bitmap MORE_FOLDERS;
 
     static {
@@ -260,8 +257,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
                 // TODO (mindyp): how to we get this?
                 final boolean isMuted = false;
-                // labelValues.folderId ==
-                // sGmail.getFolderMap(mAccount).getFolderIdIgnored();
+                     //   labelValues.folderId == sGmail.getFolderMap(mAccount).getFolderIdIgnored();
 
                 // Draw the box.
                 sFoldersPaint.setColor(bgColor);
@@ -367,22 +363,21 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set, Folder folder,
-            boolean checkboxesDisabled, boolean swipeEnabled, DragListener dragListener,
-            AnimatedAdapter adapter) {
+            boolean checkboxesDisabled, boolean swipeEnabled, DragListener dragListener) {
         bind(ConversationItemViewModel.forCursor(cursor), viewMode, set, folder,
-                checkboxesDisabled, swipeEnabled, dragListener, adapter);
+                checkboxesDisabled, swipeEnabled, dragListener);
     }
 
     public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
             Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
-            DragListener dragListener, AnimatedAdapter adapter) {
+            DragListener dragListener) {
         bind(ConversationItemViewModel.forConversation(conversation), viewMode, set, folder,
-                checkboxesDisabled, swipeEnabled, dragListener, adapter);
+                checkboxesDisabled, swipeEnabled, dragListener);
     }
 
     private void bind(ConversationItemViewModel header, ViewMode viewMode,
             ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
-            boolean swipeEnabled, DragListener dragListener, AnimatedAdapter adapter) {
+            boolean swipeEnabled, DragListener dragListener) {
         mViewMode = viewMode;
         mHeader = header;
         mSelectedConversationSet = set;
@@ -390,7 +385,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
         mCheckboxesEnabled = !checkboxesDisabled;
         mSwipeEnabled = swipeEnabled;
         mDragListener = dragListener;
-        mAdapter = adapter;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
     }
@@ -779,7 +773,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     /**
      * Determine the width of this view.
-     * 
+     *
      * @param measureSpec A measureSpec packed into an int
      * @return The width of the view, honoring constraints from measureSpec
      */
@@ -805,7 +799,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     /**
      * Determine the height of this view.
-     * 
+     *
      * @param measureSpec A measureSpec packed into an int
      * @param mode The current mode of this view
      * @return The height of the view, honoring constraints from measureSpec
@@ -999,16 +993,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
             mChecked = !mChecked;
             Conversation conv = mHeader.conversation;
             // Set the list position of this item in the conversation
-            ListView listView = (ListView) getParent();
+            ListView listView = (ListView)getParent();
             conv.position = mChecked && listView != null ? listView.getPositionForView(this)
                     : Conversation.NO_POSITION;
             if (mSelectedConversationSet != null) {
                 mSelectedConversationSet.toggle(this, conv);
             }
-            // We update the background after the checked state has changed now
-            // that
-            // we have a selected background asset. Setting the background
-            // usually
+            // We update the background after the checked state has changed now that
+            // we have a selected background asset. Setting the background usually
             // waits for a layout pass, but we don't need a full layout, just an
             // update to the background.
             requestLayout();
@@ -1031,9 +1023,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
         postInvalidate(mCoordinates.starX, mCoordinates.starY, mCoordinates.starX
                 + mHeader.starBitmap.getWidth(),
                 mCoordinates.starY + mHeader.starBitmap.getHeight());
-        ConversationCursor cursor = (ConversationCursor)mAdapter.getCursor();
-        cursor.updateBoolean(mContext, mHeader.conversation, ConversationColumns.STARRED,
-                mHeader.starred);
+        // Generalize this...
+        mHeader.conversation.updateBoolean(mContext, ConversationColumns.STARRED, mHeader.starred);
     }
 
     private boolean isTouchInCheckmark(float x, float y) {
@@ -1209,13 +1200,13 @@ public class ConversationItemView extends View implements SwipeableItemView {
     /**
      * Grow the height of the item and fade it in when bringing a conversation
      * back from a destructive action.
-     * 
+     *
      * @param listener
      */
     public void startUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
         int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext, viewMode);
         setMinimumHeight(minHeight);
-        final int start = 0;
+        final int start = 0 ;
         final int end = minHeight;
         ObjectAnimator undoAnimator = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
         Animator fadeAnimator = ObjectAnimator.ofFloat(this, "itemAlpha", 0, 1.0f);
@@ -1271,22 +1262,20 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     /**
-     * With two pane mode and mailboxes in one pane (tablet), add the
-     * conversation to the selected set and start drag mode. In two pane mode
-     * when viewing conversations (tablet), toggle selection. In one pane mode
-     * (phone, and portrait mode on tablet), toggle selection.
+     * With two pane mode and mailboxes in one pane (tablet), add the conversation to the selected
+     * set and start drag mode.
+     * In two pane mode when viewing conversations (tablet), toggle selection.
+     * In one pane mode (phone, and portrait mode on tablet), toggle selection.
      */
     public void toggleSelectionOrBeginDrag() {
-        // If we are in one pane mode, or we are looking at conversations, drag
-        // and drop is
-        // meaningless. Toggle checkmark and return early.
+        // If we are in one pane mode, or we are looking at conversations, drag and drop is
+        // meaningless.  Toggle checkmark and return early.
         if (!Utils.useTabletUI(mContext) || mViewMode.getMode() != ViewMode.CONVERSATION_LIST) {
             toggleCheckMark();
             return;
         }
 
-        // Begin drag mode. Keep the conversation selected (NOT toggle
-        // selection) and start drag.
+        // Begin drag mode. Keep the conversation selected (NOT toggle selection) and start drag.
         selectConversation();
         mDragListener.onStartDragMode();
 

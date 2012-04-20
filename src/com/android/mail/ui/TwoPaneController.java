@@ -17,6 +17,20 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.ConversationListContext;
+import com.android.mail.R;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AutoAdvance;
+import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.utils.LogUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -26,19 +40,6 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-
-import com.android.mail.ConversationListContext;
-import com.android.mail.R;
-import com.android.mail.providers.Account;
-import com.android.mail.providers.Conversation;
-import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AutoAdvance;
-import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.utils.LogUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
@@ -487,7 +488,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 mUndoBarView.setLayoutParams(params);
                 if (convList != null) {
                     mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                        convList.getAnimatedAdapter(), mConversationListCursor);
+                        convList.getAnimatedAdapter());
                 }
                 break;
             case ViewMode.CONVERSATION:
@@ -504,7 +505,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 }
                 mUndoBarView.setLayoutParams(params);
                 mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                        convList.getAnimatedAdapter(), null);
+                    convList.getAnimatedAdapter());
                 break;
         }
     }

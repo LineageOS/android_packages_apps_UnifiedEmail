@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;

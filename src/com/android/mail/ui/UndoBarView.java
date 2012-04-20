@@ -28,8 +28,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
-import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -90,8 +90,7 @@ public class UndoBarView extends FrameLayout {
      * specified {@link UndoOperation}.
      */
     public void show(boolean animate, final Context context, UndoOperation op,
-            final Account account, final AnimatedAdapter listAdapter,
-            final ConversationCursor conversationCursor) {
+            final Account account, final AnimatedAdapter listAdapter) {
         mUndoButtonView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View widget) {
@@ -100,9 +99,7 @@ public class UndoBarView extends FrameLayout {
                     // the resulting cursor might be interesting...
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate the set of
                     // commands to undo
-                    if (conversationCursor != null) {
-                        conversationCursor.undo(context, account.undoUri);
-                    }
+                    Conversation.undo(context, account.undoUri);
                     if (listAdapter != null) {
                         listAdapter.setUndo(true);
                     }
@@ -215,7 +212,6 @@ public class UndoBarView extends FrameLayout {
     /**
      * Implemented by objects that need to know when the undo bar is cancelled.
      */
-    // TODO: rename this interface
     public interface OnUndoCancelListener {
         public void onUndoCancel();
     }

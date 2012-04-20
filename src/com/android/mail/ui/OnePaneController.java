@@ -174,7 +174,6 @@ public final class OnePaneController extends AbstractActivityController {
                 ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
                 : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
         Fragment conversationListFragment = ConversationListFragment.newInstance(listContext);
-
         if (!inInbox()) {
             // Maintain fragment transaction history so we can get back to the
             // fragment used to launch this list.
@@ -265,9 +264,6 @@ public final class OnePaneController extends AbstractActivityController {
         fragmentTransaction.replace(R.id.content_pane, fragment, tag);
         final int transactionId = fragmentTransaction.commitAllowingStateLoss();
         resetActionBarIcon();
-        if (fragment instanceof ConversationSender) {
-            ((ConversationSender) fragment).setConversationRouter(this);
-        }
         return transactionId;
     }
 
@@ -558,13 +554,13 @@ public final class OnePaneController extends AbstractActivityController {
             switch (mode) {
                 case ViewMode.CONVERSATION:
                     mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                            null, null);
+                            null);
                     break;
                 case ViewMode.CONVERSATION_LIST:
                     final ConversationListFragment convList = getConversationListFragment();
                     if (convList != null) {
                         mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                            convList.getAnimatedAdapter(), mConversationListCursor);
+                            convList.getAnimatedAdapter());
                     }
                     break;
             }
