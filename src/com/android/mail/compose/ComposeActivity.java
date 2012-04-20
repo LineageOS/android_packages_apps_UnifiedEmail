@@ -1778,8 +1778,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     /* package */
     static int sendOrSaveInternal(Context context, ReplyFromAccount replyFromAccount,
-            Message message, final Message refMessage, Spanned body, SendOrSaveCallback callback,
-            Handler handler, boolean save, int composeMode) {
+            Message message, final Message refMessage, Spanned body, final CharSequence quotedText,
+            SendOrSaveCallback callback, Handler handler, boolean save, int composeMode) {
         ContentValues values = new ContentValues();
 
         String refMessageId = refMessage != null ? refMessage.uri.toString() : "";
@@ -1792,9 +1792,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         MessageModification.putSubject(values, message.subject);
         String htmlBody = Html.toHtml(body);
-        String quotedText = !TextUtils.isEmpty(message.bodyText) && message.quotedTextOffset > -1
-                && message.quotedTextOffset < message.bodyText.length() ? message.bodyText
-                .substring(message.quotedTextOffset) : null;
+
         boolean includeQuotedText = !TextUtils.isEmpty(quotedText);
         StringBuilder fullBody = new StringBuilder(htmlBody);
         if (includeQuotedText) {
@@ -1963,7 +1961,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         Message msg = createMessage(mReplyFromAccount, getMode());
-        mRequestId = sendOrSaveInternal(this, mReplyFromAccount, msg, mRefMessage, body, callback,
+        mRequestId = sendOrSaveInternal(this, mReplyFromAccount, msg, mRefMessage, body,
+                mQuotedTextView.getQuotedTextIfIncluded(), callback,
                 mSendSaveTaskHandler, save, mComposeMode);
 
         if (mRecipient != null && mRecipient.equals(mAccount.name)) {
