@@ -288,7 +288,7 @@
     <string name="load_more" msgid="420892447103014683">"ተጨማሪ ስቀል"</string>
     <string name="shortcut_name_title" msgid="8220482314700618391">"ለአቃፊ አቋራጭ ስም ስጥ"</string>
     <string name="wait_for_sync_title" msgid="2767841242539238015">"ማመሳሰል በመጠበቅ ላይ"</string>
-    <string name="wait_for_sync_body" msgid="7718316938173643688">"ኢሜልህ ከትንሽ ጊዜ በኋላ ብቅ ይላል።"</string>
+    <string name="wait_for_sync_body" msgid="7718316938173643688">"ኢሜይልህ ከትንሽ ጊዜ በኋላ ብቅ ይላል።"</string>
     <string name="not_synced_title" msgid="794279749170198599">"መለያ አልተመሳሰለም"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"ይህ መለያ በራስ-ሰር እንዲመሳሰል አልተዋቀረም።"\n"መልዕክት አንዴ ለማመሳሰል "<b>"አሁን አመሳስል"</b>"ን ንካ፣ ወይም ደግሞ ይሄ መለያ መልዕክት በራስ-ሰር እንዲያመሳስል ለማዋቀር "<b>"የማመሳሰል ቅንብሮችን ቀይር"</b>"።"</string>
     <string name="manual_sync" msgid="6743983544685622800">"አሁን አመሳስል"</string>
