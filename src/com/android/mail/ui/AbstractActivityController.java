@@ -336,35 +336,39 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     protected abstract boolean isConversationListVisible();
 
+    /**
+     * Switch the current account to the one provided as an argument to the method.
+     * @param account
+     */
+    private void switchAccount(Account account){
+        // Current account is different from the new account, restart loaders and show
+        // the account Inbox.
+        mAccount = account;
+        cancelRefreshTask();
+        onSettingsChanged(mAccount.settings);
+        mActionBarView.setAccount(mAccount);
+        loadAccountInbox();
+
+        mRecentFolderList.setCurrentAccount(account);
+        restartOptionalLoader(LOADER_RECENT_FOLDERS);
+        mActivity.invalidateOptionsMenu();
+        disableNotificationsOnAccountChange(mAccount);
+        restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
+        MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
+    }
+
     @Override
     public void onAccountChanged(Account account) {
-        if (!account.equals(mAccount)) {
-            // Current account is different from the new account, restart loaders and show
-            // the account Inbox.
-            mAccount = account;
-            cancelRefreshTask();
-            onSettingsChanged(mAccount.settings);
-            mActionBarView.setAccount(mAccount);
-            loadAccountInbox();
-
-            mRecentFolderList.setCurrentAccount(account);
-            restartOptionalLoader(LOADER_RECENT_FOLDERS);
-            mActivity.invalidateOptionsMenu();
-
-            disableNotificationsOnAccountChange(mAccount);
-
-            restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
-
-            MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
-        } else {
-            // Current account is the same as the new account. Load the default inbox if the
-            // current inbox is not the same as the default inbox.
-            final Uri oldUri = mFolder != null ? mFolder.uri : Uri.EMPTY;
-            final Uri newUri = getDefaultInboxUri(mCachedSettings);
-            if ((mFolder == null || mFolder.type == UIProvider.FolderType.INBOX)
-                    && !oldUri.equals(newUri)) {
-                loadAccountInbox();
-            }
+        LogUtils.d(LOG_TAG, "onAccountChanged (%s) called.", account.uri);
+        final boolean accountChanged = (mAccount == null) || !account.uri.equals(mAccount.uri);
+        if (accountChanged) {
+            switchAccount(account);
+            return;
+        }
+        // Current account is the same as the new account, but the settings might be different.
+        if (!account.settings.equals(mAccount.settings)){
+            onSettingsChanged(account.settings);
+            return;
         }
     }
 
@@ -380,24 +384,16 @@ public abstract class AbstractActivityController implements ActivityController,
         return Uri.EMPTY;
     }
 
+    /**
+     * Changes the settings for the current account. The new settings are provided as a parameter.
+     * @param settings
+     */
     public void onSettingsChanged(Settings settings) {
-        final Uri oldUri = getDefaultInboxUri(mCachedSettings);
-        final Uri newUri = getDefaultInboxUri(settings);
         dispatchSettingsChange(settings);
         resetActionBarIcon();
-
-        // Only restart the loader if the defaultInboxUri is not the same as
-        // the folder we are already loading.
-        final boolean changed = !oldUri.equals(newUri);
-        if (settings != null
-                && settings.defaultInbox != null
-                && (mFolder == null
-                // we really only want CHANGES to the inbox setting, not just
-                // the first setting of it.
-                || (mFolder.type == UIProvider.FolderType.INBOX && !oldUri.equals(Uri.EMPTY))
-                && changed)) {
-            loadAccountInbox();
-        }
+        mActivity.invalidateOptionsMenu();
+        // If the user was viewing the default Inbox here, and the new setting contains a different
+        // default Inbox, we don't want to load a different folder here.
     }
 
     @Override
@@ -477,7 +473,8 @@ public abstract class AbstractActivityController implements ActivityController,
 
     // TODO(mindyp): set this up to store a copy of the folder as a transient
     // field in the account.
-    protected void loadAccountInbox() {
+    @Override
+    public void loadAccountInbox() {
         restartOptionalLoader(LOADER_ACCOUNT_INBOX);
     }
 
@@ -485,6 +482,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private void setFolder(Folder folder) {
         // Start watching folder for sync status.
         if (folder != null && !folder.equals(mFolder)) {
+            LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
             final boolean folderWasNull = (mFolder == null);
             final LoaderManager lm = mActivity.getLoaderManager();
             mActionBarView.setRefreshInProgress(false);
@@ -1098,6 +1096,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 } else {
                     inboxUri = mAccount.folderListUri;
                 }
+                LogUtils.d(LOG_TAG, "Loading the default inbox: %s", inboxUri.toString());
                 if (inboxUri != null) {
                     return new CursorLoader(mContext, inboxUri, UIProvider.FOLDERS_PROJECTION, null,
                             null, null);
@@ -1243,7 +1242,6 @@ public abstract class AbstractActivityController implements ActivityController,
         }
 
         onAccountChanged(newAccount);
-
         mActionBarView.setAccounts(allAccounts);
         return (allAccounts.length > 0);
     }

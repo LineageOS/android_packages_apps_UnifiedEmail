@@ -206,8 +206,10 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      */
     private void setSelectedPosition(int position) {
         // Only change the position if we are in the correct mode.
-        if (mActionBar.getNavigationMode() != ActionBar.NAVIGATION_MODE_LIST)
+        if (mActionBar.getNavigationMode() != ActionBar.NAVIGATION_MODE_LIST) {
             return;
+        }
+        LogUtils.d(LOG_TAG, "ActionBarView.setSelectedNavigationItem(%d)", position);
         mActionBar.setSelectedNavigationItem(position);
     }
 
@@ -237,17 +239,27 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
 
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
+        LogUtils.d(LOG_TAG, "onNavigationItemSelected(%d, %d) called", position, id);
         final int type = mSpinner.getType(position);
         switch (type) {
             case AccountSpinnerAdapter.TYPE_ACCOUNT:
                 // Get the capabilities associated with this account.
-                final Object account = mSpinner.getItem(position);
-                assert (account instanceof Account);
-                mController.onAccountChanged((Account) account);
+                final Account account = (Account) mSpinner.getItem(position);
+                LogUtils.d(LOG_TAG, "onNavigationItemSelected: Selecting account: %s",
+                        account.name);
+                if (mAccount.uri.equals(account.uri)) {
+                    // The selected account is the same, let's load the default inbox.
+                    mController.loadAccountInbox();
+                } else {
+                    // Switching accounts.
+                    mController.onAccountChanged(account);
+                }
                 break;
             case AccountSpinnerAdapter.TYPE_FOLDER:
                 final Object folder = mSpinner.getItem(position);
                 assert (folder instanceof Folder);
+                LogUtils.d(LOG_TAG, "onNavigationItemSelected: Selecting folder: %s",
+                        ((Folder)folder).name);
                 mController.onFolderChanged((Folder) folder);
                 break;
             case AccountSpinnerAdapter.TYPE_ALL_FOLDERS:
