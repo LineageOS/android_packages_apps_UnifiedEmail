@@ -33,6 +33,7 @@ import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.FragmentStatePagerAdapter2;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
@@ -199,21 +200,25 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
             return 0;
         }
 
+        final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(mCursor);
+
+        int result = POSITION_NONE;
         int pos = -1;
         while (mCursor.moveToPosition(++pos)) {
             final long id = mCursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
             if (conv.id == id) {
                 LogUtils.d(LOG_TAG, "pager adapter found repositioned convo '%s' at pos=%d",
                         conv.subject, pos);
-                return pos;
+                result = pos;
+                break;
             }
         }
-        // This should just about never happen. Clients should never pass a missing conversation,
-        // or else we will run through the entire (very large) cursor for nothing, possibly even
-        // incurring side effects like network fetches.
-        LogUtils.e(LOG_TAG, new Error(),
-                "PagerAdapter iterated over entire conversation cursor with no match");
-        return POSITION_NONE;
+
+        if (networkWasEnabled) {
+            Utils.enableConversationCursorNetworkAccess(mCursor);
+        }
+
+        return result;
     }
 
     public void setListController(ConversationListCallbacks listController) {

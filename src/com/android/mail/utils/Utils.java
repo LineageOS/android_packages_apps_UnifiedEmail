@@ -21,8 +21,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.Browser;
 import android.text.Html;
 import android.text.Spannable;
@@ -46,6 +48,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
 import com.google.common.collect.Maps;
 
@@ -875,5 +878,40 @@ public class Utils {
 
     public static boolean isEmpty(Uri uri) {
         return uri == null || uri.equals(Uri.EMPTY);
+    }
+
+    public static boolean executeConversationCursorCommand(Cursor cursor, String commandKey,
+            boolean value) {
+        final Bundle params = new Bundle();
+        params.putBoolean(commandKey, value);
+        final Bundle response = cursor.respond(params);
+        final String result = response.getString(commandKey,
+                UIProvider.ConversationCursorCommand.COMMAND_RESPONSE_FAILED);
+
+        return UIProvider.ConversationCursorCommand.COMMAND_RESPONSE_OK.equals(result);
+    }
+
+    /**
+     * Commands a cursor representing a set of conversations to disable any network requests it may
+     * do as clients move through the cursor.
+     *
+     * @param cursor a conversation cursor
+     * @return true iff the provider supports network requests and they were previously enabled
+     */
+    public static boolean disableConversationCursorNetworkAccess(Cursor cursor) {
+        return executeConversationCursorCommand(cursor,
+                UIProvider.ConversationCursorCommand.COMMAND_KEY_ALLOW_NETWORK_ACCESS, false);
+    }
+
+    /**
+     * Commands a cursor representing a set of conversations to [re-]enable any network requests it
+     * may do as clients move through the cursor.
+     *
+     * @param cursor a conversation cursor
+     * @return true iff the provider supports network requests and they are successfully enabled
+     */
+    public static boolean enableConversationCursorNetworkAccess(Cursor cursor) {
+        return executeConversationCursorCommand(cursor,
+                UIProvider.ConversationCursorCommand.COMMAND_KEY_ALLOW_NETWORK_ACCESS, true);
     }
 }

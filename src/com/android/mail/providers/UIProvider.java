@@ -816,6 +816,23 @@ public class UIProvider {
         }
     }
 
+    public static final class ConversationCursorCommand {
+
+        public static final String COMMAND_RESPONSE_OK = "ok";
+        public static final String COMMAND_RESPONSE_FAILED = "failed";
+
+        /**
+         * This bundle key has a boolean value: true to allow cursor network access (whether this
+         * is true by default is up to the provider), false to temporarily disable network access.
+         * <p>
+         * A provider that implements this command should include this key in its response with a
+         * value of {@link #COMMAND_RESPONSE_OK} or {@link #COMMAND_RESPONSE_FAILED}.
+         */
+        public static final String COMMAND_KEY_ALLOW_NETWORK_ACCESS = "allowNetwork";
+
+        private ConversationCursorCommand() {}
+    }
+
     /**
      * List of operations that can can be performed on a conversation. These operations are applied
      * with {@link ContentProvider#update(Uri, ContentValues, String, String[])}
