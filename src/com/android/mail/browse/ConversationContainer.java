@@ -473,13 +473,13 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         LogUtils.d(TAG, "*** IN header container onLayout");
 
         mWebView.layout(0, 0, mWebView.getMeasuredWidth(), mWebView.getMeasuredHeight());
-        positionOverlays(0, mOffsetY);
-    }
 
-    @Override
-    public void requestLayout() {
-        // Suppress layouts requested by children. Overlays don't push on each other, and WebView
-        // doesn't change its layout.
+        // being in a layout pass means overlay children may require measurement, so invalidate them
+        for (int i = 0, len = mOverlayAdapter.getCount(); i < len; i++) {
+            mOverlayAdapter.getItem(i).invalidateMeasurement();
+        }
+
+        positionOverlays(0, mOffsetY);
     }
 
     private int getOverlayBottom(int spacerIndex) {
