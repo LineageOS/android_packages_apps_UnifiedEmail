@@ -290,7 +290,7 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"Inasubiri ulandanishi"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Barua pepe yako itaonekana baada ya muda mfupi."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Akaunti haijalandanishwa"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Akaunti hii haijasanidiwa kulandanishwa otomatiki."\n"Gusa"<b>"Landanisha Sasa"</b>" ili kulandanisha barua mara moja, au "<b>"Badilisha Mipangilio ya Kulandanisha"</b>" kusanidi akaunti hii ilandanishe barua otomatiki."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Akaunti hii haijasanidiwa kulandanishwa kiotomatiki."\n"Gusa"<b>"Landanisha Sasa"</b>" ili kulandanisha barua mara moja, au "<b>"Badilisha Mipangilio ya Kulandanisha"</b>" ili kusanidi akaunti hii ilandanishe barua kiotomatiki."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Landanisha sasa"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Badilisha mipangilio ya ulandanishi"</string>
 </resources>
