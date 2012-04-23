@@ -1562,6 +1562,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 .setCancelable(false)
                 .setPositiveButton(
                         R.string.ok, new Dialog.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // after the user dismisses the recipient error
                                 // dialog we want to make sure to refocus the
@@ -1689,6 +1690,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 sendOrSave(mBodyView.getEditableText(), save, showToast, orientationChanged);
             }
@@ -1881,6 +1883,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         SendOrSaveCallback callback = new SendOrSaveCallback() {
             private int mRestoredRequestId;
 
+            @Override
             public void initializeSendOrSave(SendOrSaveTask sendOrSaveTask) {
                 synchronized (mActiveTasks) {
                     int numTasks = mActiveTasks.size();
@@ -1897,6 +1900,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 }
             }
 
+            @Override
             public void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage,
                     Message message) {
                 synchronized (mDraftLock) {
@@ -1913,12 +1917,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 }
             }
 
+            @Override
             public Message getMessage() {
                 synchronized (mDraftLock) {
                     return mDraft;
                 }
             }
 
+            @Override
             public void sendOrSaveFinished(SendOrSaveTask task, boolean success) {
                 if (success) {
                     // Successfully sent or saved so reset change markers
@@ -2223,7 +2229,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 if (mAccount.expungeMessageUri != null) {
                     getContentResolver().update(mAccount.expungeMessageUri, values, null, null);
                 } else {
-                    // TODO(mindyp): call delete on this conversation instead.
+                    getContentResolver().delete(mDraft.uri, null, null);
                 }
                 // This is not strictly necessary (since we should not try to
                 // save the draft after calling this) but it ensures that if we
@@ -2266,6 +2272,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /**
      * This is called any time one of our text fields changes.
      */
+    @Override
     public void afterTextChanged(Editable s) {
         mTextChanged = true;
         updateSaveUi();
@@ -2276,6 +2283,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Do nothing.
     }
 
+    @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         // Do nothing.
     }
