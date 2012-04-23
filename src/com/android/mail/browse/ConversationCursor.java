@@ -1448,7 +1448,7 @@ public final class ConversationCursor implements Cursor {
 
     @Override
     public Bundle respond(Bundle extras) {
-        throw new UnsupportedOperationException();
+        return mUnderlyingCursor.respond(extras);
     }
 
     @Override
