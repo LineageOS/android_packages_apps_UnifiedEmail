@@ -21,6 +21,8 @@ import android.database.Cursor;
 
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Settings;
+import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -182,7 +184,11 @@ public class ConversationPositionTracker {
      *  {@link #updateCursor(ConversationCursor)}.
      */
     public void initialize(Conversation conversation) {
-        final String d = (conversation == null) ? "NOOL" : conversation.toString();
+        if (conversation.position < 0) {
+            LogUtils.wtf(LOG_TAG, "ConversationPositionTracker.initialize called with negative"
+                    + " position. This is certainly wrong.");
+            throw new IllegalArgumentException();
+        }
         mConversation = conversation;
         mCursorDirty = true;
     }
@@ -269,5 +275,25 @@ public class ConversationPositionTracker {
             mConversation = new Conversation(mCursor);
         }
         return;
+    }
+
+    /**
+     * Get the next conversation according to the AutoAdvance settings and the list of
+     * conversations available in the folder. If no next conversation can be found, this method
+     * returns null.
+     * @param settings the settings associated with the account that contain the auto advance
+     * preference for the user.
+     * @return
+     */
+    public Conversation getNextConversation(Settings settings) {
+        final int pref = Settings.getAutoAdvanceSetting(settings);
+        final boolean getNewer = (pref == AutoAdvance.NEWER && hasNewer());
+        final boolean getOlder = (pref == AutoAdvance.OLDER && hasOlder());
+        final Conversation next = getNewer ? getNewer() :
+            (getOlder ? getOlder() : null);
+        LogUtils.d(LOG_TAG, "ConversationPositionTracker.getNextConversation: " +
+                "getNewer = %b, getOlder = %b, Next conversation is %s",
+                getNewer, getOlder, next);
+        return next;
     }
 }

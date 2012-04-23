@@ -66,7 +66,6 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
-import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
@@ -175,7 +174,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private Timer mConversationListTimer = new Timer();
     private RefreshTimerTask mConversationListRefreshTask;
 
-    /** Listeners that are intersted in changes to current account settings. */
+    /** Listeners that are interested in changes to current account settings. */
     private final ArrayList<Settings.ChangeListener> mSettingsListeners = Lists.newArrayList();
 
     /**
@@ -186,7 +185,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private final int mFolderItemUpdateDelayMs;
 
     /** Keeps track of selected and unselected conversations */
-    private final ConversationPositionTracker mTracker =
+    final protected ConversationPositionTracker mTracker =
             new ConversationPositionTracker(mSelectedSet);
 
     /**
@@ -637,21 +636,6 @@ public abstract class AbstractActivityController implements ActivityController,
                 break;
         }
         return handled;
-    }
-
-    /**
-     * Return the auto advance setting for the current account.
-     * @param activity
-     * @return the autoadvance setting, a constant from {@link AutoAdvance}
-     */
-    static int getAutoAdvanceSetting(Settings settings) {
-        // TODO(mindyp): if this isn't set, then show the dialog telling the user to set it.
-        // Remove defaulting to AutoAdvance.LIST.
-        final int autoAdvance = (settings != null) ?
-                (settings.autoAdvance == AutoAdvance.UNSET ?
-                        AutoAdvance.LIST : settings.autoAdvance)
-                : AutoAdvance.LIST;
-        return autoAdvance;
     }
 
     /**
@@ -1388,9 +1372,14 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
+    /**
+     * Destructive actions on Conversations. This class should only be created by controllers, and
+     * clients should only require {@link DestructiveAction}s, not specific implementations of the.
+     * Only the controllers should know what kind of destructive actions are being created.
+     */
+    // TODO(viki): Remove all dependencies and make it protected.
     protected abstract class AbstractDestructiveAction implements DestructiveAction {
         protected final int mAction;
-
         /**
          * Create a listener object. action is one of four constants: R.id.y_button (archive),
          * R.id.delete , R.id.mute, and R.id.report_spam.
@@ -1422,23 +1411,6 @@ public abstract class AbstractActivityController implements ActivityController,
                     break;
             }
         }
-
-        /**
-         * Get the next conversation according to the AutoAdvance settings and the list of
-         * conversations available in the folder.
-         * @return
-         */
-        public Conversation getNextConversation() {
-            final int pref = getAutoAdvanceSetting(mCachedSettings);
-            final boolean getNewer = (pref == AutoAdvance.NEWER && mTracker.hasNewer());
-            final boolean getOlder = (pref == AutoAdvance.OLDER && mTracker.hasOlder());
-            final Conversation next = getNewer ? mTracker.getNewer() :
-                (getOlder ? mTracker.getOlder() : null);
-            return next;
-        }
-
-        @Override
-        public abstract void performAction();
     }
 
     // Called from the FolderSelectionDialog after a user is done changing

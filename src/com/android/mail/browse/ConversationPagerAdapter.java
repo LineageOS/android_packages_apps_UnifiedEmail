@@ -91,6 +91,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
                         position);
             }
             c = mInitialConversation;
+            c.position = 0;
         } else {
             if (!mCursor.moveToPosition(position)) {
                 LogUtils.wtf(LOG_TAG, "unable to seek to ConversationCursor pos=%d (%s)", position,
@@ -100,8 +101,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
             // TODO: switch to something like MessageCursor or AttachmentCursor
             // to re-use these models
             c = new Conversation(mCursor);
+            c.position = position;
         }
-
         final Fragment f = ConversationViewFragment.newInstance(mCommonFragmentArgs, c);
         LogUtils.d(LOG_TAG, "IN PagerAdapter.getItem, frag=%s subj=%s", f, c.subject);
         return f;

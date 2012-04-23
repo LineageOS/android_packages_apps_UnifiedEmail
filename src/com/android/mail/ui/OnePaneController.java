@@ -483,7 +483,7 @@ public final class OnePaneController extends AbstractActivityController {
             single.add(mCurrentConversation);
             final int mode = mViewMode.getMode();
             if (mode == ViewMode.CONVERSATION) {
-                next = getNextConversation();
+                next = mTracker.getNextConversation(mCachedSettings);
             } else if (mode == ViewMode.CONVERSATION_LIST
                     && mAction != R.id.inside_conversation_unread) {
                 OnePaneController.this.performAction();
@@ -491,12 +491,13 @@ public final class OnePaneController extends AbstractActivityController {
             }
             performConversationAction(single);
             if (next != null) {
+                // We have a conversation to auto advance to
                 if (mode == ViewMode.CONVERSATION) {
                     showConversation(next);
                     onUndoAvailable(new UndoOperation(1, mAction));
                 }
             } else {
-                // Don't have the next conversation, go back to conversation list.
+                // We don't have a conversation to show: show conversation list instead.
                 if (mode == ViewMode.CONVERSATION_LIST) {
                     final ConversationListFragment convList = getConversationListFragment();
                     if (convList != null) {
@@ -526,7 +527,7 @@ public final class OnePaneController extends AbstractActivityController {
      * @return true if we need to return back to conversation list, false otherwise.
      */
     private boolean returnToList() {
-        final int pref = getAutoAdvanceSetting(mCachedSettings);
+        final int pref = Settings.getAutoAdvanceSetting(mCachedSettings);
         final int position = mCurrentConversation.position;
         final boolean moveToNewer = (pref == AutoAdvance.NEWER && (position - 1 >= 0));
         final boolean moveToOlder = (pref == AutoAdvance.OLDER && mConversationListCursor != null

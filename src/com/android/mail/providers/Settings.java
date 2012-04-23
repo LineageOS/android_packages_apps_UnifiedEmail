@@ -282,6 +282,23 @@ public class Settings implements Parcelable {
         dest.writeInt(forceReplyFromDefault ? 1 : 0);
     }
 
+    /**
+     * Return the auto advance setting for the settings provided. It is safe to pass this method
+     * a null object. It always returns a valid {@link AutoAdvance} setting.
+     * @return the auto advance setting, a constant from {@link AutoAdvance}
+     */
+    public static int getAutoAdvanceSetting(Settings settings) {
+        // TODO(mindyp): if this isn't set, then show the dialog telling the user to set it.
+        // Remove defaulting to AutoAdvance.LIST.
+        final int autoAdvance = (settings != null) ?
+                (settings.autoAdvance == AutoAdvance.UNSET ?
+                        AutoAdvance.LIST : settings.autoAdvance)
+                : AutoAdvance.LIST;
+        return autoAdvance;
+    }
+
+
+
     @SuppressWarnings("hiding")
     public static final Creator<Settings> CREATOR = new Creator<Settings>() {
         @Override

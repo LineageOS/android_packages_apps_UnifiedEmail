@@ -32,6 +32,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
@@ -394,7 +395,7 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     /**
-     * An object that performs an action on the conversation database. This is an
+     * An object that performs an action on the conversation database. This is a
      * {@link DestructiveAction}: this is called <b>after</a> the conversation list has animated
      * the conversation away. Once the animation is completed, the {@link #performAction()}
      * method is called which performs the correct data operation.
@@ -408,44 +409,17 @@ public final class TwoPaneController extends AbstractActivityController {
         public void performAction() {
             final ArrayList<Conversation> single = new ArrayList<Conversation>();
             single.add(mCurrentConversation);
-            int next = -1;
-            final int pref = getAutoAdvanceSetting(mCachedSettings);
-            final Cursor c = mConversationListCursor;
-            int updatedPosition = -1;
-            final int position = mCurrentConversation.position;
-            if (c != null) {
-                switch (pref) {
-                    case AutoAdvance.NEWER:
-                        if (position - 1 >= 0) {
-                            // This conversation was deleted, so to get to the previous
-                            // conversation, show what is now in its position - 1.
-                            next = position - 1;
-                            // The position is correct, since no items before this have
-                            // been deleted.
-                            updatedPosition = position - 1;
-                        }
-                        break;
-                    case AutoAdvance.OLDER:
-                        if (position + 1 < c.getCount()) {
-                            // This conversation was deleted, so to get to the next
-                            // conversation, show what is now in position + 1.
-                            next = position + 1;
-                            // Since this conversation was deleted, update the conversation
-                            // we are showing to have the position this conversation was in.
-                            updatedPosition = position;
-                        }
-                        break;
-                }
-            }
+            final Conversation nextConversation = mTracker.getNextConversation(mCachedSettings);
             TwoPaneController.this.performAction();
             final ConversationListFragment convList = getConversationListFragment();
-            if (next != -1) {
+            if (nextConversation != null) {
+                // We have a conversation to auto advance to
                 if (convList != null) {
-                    convList.viewConversation(next);
+                    convList.viewConversation(nextConversation.position);
                 }
-                mCurrentConversation.position = updatedPosition;
                 onUndoAvailable(new UndoOperation(1, mAction));
             } else {
+                // We don't have a conversation to show: show conversation list instead.
                 onBackPressed();
                 mHandler.post(new Runnable() {
                     @Override

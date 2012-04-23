@@ -1331,11 +1331,17 @@ public class UIProvider {
     // Parameter used to indicate the sequence number for an undoable operation
     public static final String SEQUENCE_QUERY_PARAMETER = "seq";
 
-
+    /**
+     * Settings for auto advancing when the current conversation has been destroyed.
+     */
     public static final class AutoAdvance {
+        /** No setting specified. */
         public static final int UNSET = 0;
+        /** Go to the older message (if available) */
         public static final int OLDER = 1;
+        /** Go to the newer message (if available) */
         public static final int NEWER = 2;
+        /** Go back to conversation list*/
         public static final int LIST = 3;
     }
 

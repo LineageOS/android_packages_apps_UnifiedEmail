@@ -410,6 +410,7 @@ public final class ConversationListFragment extends ListFragment implements
      * @param position
      */
     protected void viewConversation(int position) {
+        LogUtils.d(LOG_TAG, "ConversationListFragment.viewConversation(%d)", position);
         getListView().setItemChecked(position, true);
         ConversationCursor conversationListCursor = getConversationListCursor();
         conversationListCursor.moveToPosition(position);
