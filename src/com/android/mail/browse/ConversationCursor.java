@@ -195,7 +195,7 @@ public final class ConversationCursor implements Cursor {
         if (DEBUG) {
             LogUtils.i(TAG, "[Paused: " + mName + "]");
         }
-        //mPaused = true;
+        mPaused = true;
     }
 
     /**
@@ -251,9 +251,9 @@ public final class ConversationCursor implements Cursor {
                 if (DEBUG) {
                     LogUtils.i(TAG, "[Query done " + mName + ": %d]", hashCode());
                 }
-                //if (!mDeferSync && !mPaused) {
+                if (!mDeferSync && !mPaused) {
                     notifyRefreshReady();
-                //}
+                }
             }
         }
 
