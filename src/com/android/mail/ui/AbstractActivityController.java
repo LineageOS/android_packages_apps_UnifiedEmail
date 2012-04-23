@@ -1339,27 +1339,31 @@ public abstract class AbstractActivityController implements ActivityController,
                 break;
             case LOADER_FOLDER_CURSOR:
                 // Check status of the cursor.
-                data.moveToFirst();
-                Folder folder = new Folder(data);
-                if (folder.isSyncInProgress()) {
-                    mActionBarView.onRefreshStarted();
+                if (data != null && data.moveToFirst()) {
+                    Folder folder = new Folder(data);
+                    if (folder.isSyncInProgress()) {
+                        mActionBarView.onRefreshStarted();
+                    } else {
+                        // Stop the spinner here.
+                        mActionBarView.onRefreshStopped(folder.lastSyncResult);
+                    }
+                    mActionBarView.onFolderUpdated(folder);
+                    final ConversationListFragment convList = getConversationListFragment();
+                    if (convList != null) {
+                        convList.onFolderUpdated(folder);
+                    }
+                    LogUtils.d(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
                 } else {
-                    // Stop the spinner here.
-                    mActionBarView.onRefreshStopped(folder.lastSyncResult);
+                    LogUtils.d(LOG_TAG, "Unable to get the folder %s",
+                            mFolder != null ? mAccount.name : "");
                 }
-                mActionBarView.onFolderUpdated(folder);
-                final ConversationListFragment convList = getConversationListFragment();
-                if (convList != null) {
-                    convList.onFolderUpdated(folder);
-                }
-                LogUtils.d(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
                 break;
             case LOADER_RECENT_FOLDERS:
                 mRecentFolderList.loadFromUiProvider(data);
                 mActionBarView.requestRecentFoldersAndRedraw();
                 break;
             case LOADER_ACCOUNT_INBOX:
-                if (data.moveToFirst() && !data.isClosed()) {
+                if (data != null && !data.isClosed() && data.moveToFirst()) {
                     Folder inbox = new Folder(data);
                     onFolderChanged(inbox);
                     // Just want to get the inbox, don't care about updates to it
