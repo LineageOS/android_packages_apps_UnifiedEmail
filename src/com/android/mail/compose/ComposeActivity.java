@@ -447,8 +447,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             state.putInt(EXTRA_FOCUS_SELECTION_START, focusEditText.getSelectionStart());
             state.putInt(EXTRA_FOCUS_SELECTION_END, focusEditText.getSelectionEnd());
         }
-        ReplyFromAccount selectedReplyFromAccount = mFromSpinner.getReplyFromAccounts().get(
-                mFromSpinner.getSelectedItemPosition());
+
+        final List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
+        final ReplyFromAccount selectedReplyFromAccount =
+                (replyFromAccounts.size() > mFromSpinner.getSelectedItemPosition()) ?
+                        replyFromAccounts.get(mFromSpinner.getSelectedItemPosition()) :
+                        null;
         if (selectedReplyFromAccount != null) {
             state.putString(EXTRA_SELECTED_REPLY_FROM_ACCOUNT, selectedReplyFromAccount.serialize()
                     .toString());
