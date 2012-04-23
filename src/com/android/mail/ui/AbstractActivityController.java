@@ -264,7 +264,7 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public ConversationCursor getConversationListCursor() {
+    public final ConversationCursor getConversationListCursor() {
         return mConversationListCursor;
     }
 
@@ -1464,8 +1464,8 @@ public abstract class AbstractActivityController implements ActivityController,
         long now = System.currentTimeMillis();
         long sinceLastRefresh = now - mConversationListRefreshTime;
 //        if (sinceLastRefresh > CONVERSATION_LIST_THROTTLE_MS) {
-            if (getConversationListCursor().isRefreshRequired()) {
-                getConversationListCursor().refresh();
+            if (mConversationListCursor.isRefreshRequired()) {
+                mConversationListCursor.refresh();
                 mTracker.updateCursor(mConversationListCursor);
                 mConversationListRefreshTime = now;
             }
@@ -1559,11 +1559,10 @@ public abstract class AbstractActivityController implements ActivityController,
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         boolean isScrolling = (scrollState != OnScrollListener.SCROLL_STATE_IDLE);
         if (!isScrolling) {
-            ConversationCursor cc = getConversationListCursor();
-            if (cc.isRefreshRequired()) {
+            if (mConversationListCursor.isRefreshRequired()) {
                 LogUtils.d(LOG_TAG, "Stop scrolling: refresh");
-                cc.refresh();
-            } else if (cc.isRefreshReady()) {
+                mConversationListCursor.refresh();
+            } else if (mConversationListCursor.isRefreshReady()) {
                 LogUtils.d(LOG_TAG, "Stop scrolling: try sync");
                 onRefreshReady();
             }
@@ -1622,7 +1621,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void performAction() {
-        if (getConversationListCursor().isRefreshReady()) {
+        if (mConversationListCursor != null && mConversationListCursor.isRefreshReady()) {
             refreshAdapter();
         }
     }
@@ -1774,13 +1773,12 @@ public abstract class AbstractActivityController implements ActivityController,
     public void sendConversationRead(String toFragment, Conversation conversation, boolean state,
             boolean local) {
         if (toFragment.equals(TAG_CONVERSATION_LIST)) {
-            ConversationCursor cc = getConversationListCursor();
-            if (cc != null) {
+            if (mConversationListCursor != null) {
                 if (local) {
-                    cc.setConversationColumn(conversation.uri.toString(), ConversationColumns.READ,
+                    mConversationListCursor.setConversationColumn(conversation.uri.toString(), ConversationColumns.READ,
                             state);
                 } else {
-                    cc.markRead(mContext, state, conversation);
+                    mConversationListCursor.markRead(mContext, state, conversation);
                 }
             }
         } else if (toFragment.equals(TAG_CONVERSATION)) {
@@ -1792,12 +1790,11 @@ public abstract class AbstractActivityController implements ActivityController,
     public void sendConversationUriStarred(String toFragment, String conversationUri,
             boolean state, boolean local) {
         if (toFragment.equals(TAG_CONVERSATION_LIST)) {
-            ConversationCursor cc = getConversationListCursor();
-            if (cc != null) {
+            if (mConversationListCursor != null) {
                 if (local) {
-                    cc.setConversationColumn(conversationUri, ConversationColumns.STARRED, state);
+                    mConversationListCursor.setConversationColumn(conversationUri, ConversationColumns.STARRED, state);
                 } else {
-                    cc.updateBoolean(mContext, conversationUri, ConversationColumns.STARRED, state);
+                    mConversationListCursor.updateBoolean(mContext, conversationUri, ConversationColumns.STARRED, state);
                 }
             }
         } else if (toFragment.equals(TAG_CONVERSATION)) {
