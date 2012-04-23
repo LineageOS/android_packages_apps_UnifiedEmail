@@ -44,7 +44,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
 public interface ActivityController extends DragListener, LayoutListener, SubjectDisplayChanger,
         ModeChangeListener, ConversationListCallbacks, FolderChangeCommitListener,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
-        ActionCompleteListener, ConversationSetObserver,
+        DestructiveAction, ConversationSetObserver,
         FolderListFragment.FolderListSelectionListener, HelpCallback, UndoBarView.UndoListener {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
@@ -290,5 +290,11 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
      * and is now user-visible.
      */
     void onConversationSeen(Conversation conv);
+
+    /**
+     * Returns the destructive action that can change the folders for a specific conversation.
+     * @return
+     */
+    public abstract DestructiveAction getFolderDestructiveAction();
 
 }

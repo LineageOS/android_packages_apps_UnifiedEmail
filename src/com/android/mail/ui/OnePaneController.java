@@ -64,18 +64,18 @@ public final class OnePaneController extends AbstractActivityController {
     /** Whether a conversation list for this account has ever been shown.*/
     private boolean mConversationListNeverShown = true;
 
-    private final ActionCompleteListener mDeleteListener = new OnePaneDestructiveActionListener(
+    private final DestructiveAction mDeleteListener = new OnePaneDestructiveAction(
             R.id.delete);
-    private final ActionCompleteListener mArchiveListener = new OnePaneDestructiveActionListener(
+    private final DestructiveAction mArchiveListener = new OnePaneDestructiveAction(
             R.id.archive);
-    private final ActionCompleteListener mMuteListener = new OnePaneDestructiveActionListener(
+    private final DestructiveAction mMuteListener = new OnePaneDestructiveAction(
             R.id.mute);
-    private final ActionCompleteListener mSpamListener = new OnePaneDestructiveActionListener(
+    private final DestructiveAction mSpamListener = new OnePaneDestructiveAction(
             R.id.report_spam);
-    private final ActionCompleteListener mUnreadListener = new OnePaneDestructiveActionListener(
+    private final DestructiveAction mUnreadListener = new OnePaneDestructiveAction(
             R.id.inside_conversation_unread);
-    private final OnePaneDestructiveActionListener mFolderChangeListener =
-            new OnePaneDestructiveActionListener(R.id.change_folder);
+    private final OnePaneDestructiveAction mFolderChangeListener =
+            new OnePaneDestructiveAction(R.id.change_folder);
 
     /**
      * @param activity
@@ -467,17 +467,17 @@ public final class OnePaneController extends AbstractActivityController {
         if (returnToList()) {
             onBackPressed();
         } else {
-            mUnreadListener.onActionComplete();
+            mUnreadListener.performAction();
         }
     }
 
-    private class OnePaneDestructiveActionListener extends DestructiveActionListener {
-        public OnePaneDestructiveActionListener(int action) {
+    private class OnePaneDestructiveAction extends AbstractDestructiveAction {
+        public OnePaneDestructiveAction(int action) {
             super(action);
         }
 
         @Override
-        public void onActionComplete() {
+        public void performAction() {
             Conversation next = null;
             final ArrayList<Conversation> single = new ArrayList<Conversation>();
             single.add(mCurrentConversation);
@@ -486,7 +486,7 @@ public final class OnePaneController extends AbstractActivityController {
                 next = getNextConversation();
             } else if (mode == ViewMode.CONVERSATION_LIST
                     && mAction != R.id.inside_conversation_unread) {
-                OnePaneController.this.onActionComplete();
+                OnePaneController.this.performAction();
                 onUndoAvailable(new UndoOperation(1, mAction));
             }
             performConversationAction(single);
@@ -504,7 +504,7 @@ public final class OnePaneController extends AbstractActivityController {
                     }
                 } else if (mode == ViewMode.CONVERSATION) {
                     final int position = mCurrentConversation.position;
-                    final OnePaneDestructiveActionListener listener = this;
+                    final OnePaneDestructiveAction listener = this;
                     onBackPressed();
                     mHandler.post(new Runnable() {
                         @Override
@@ -537,7 +537,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    protected void requestDelete(final ActionCompleteListener listener) {
+    protected void requestDelete(final DestructiveAction listener) {
         final int position = mCurrentConversation.position;
         if (returnToList()) {
             onBackPressed();
@@ -556,12 +556,12 @@ public final class OnePaneController extends AbstractActivityController {
             if (mConversationListCursor != null) {
                 mConversationListCursor.moveToPosition(position);
             }
-            listener.onActionComplete();
+            listener.performAction();
         }
     }
 
     @Override
-    protected DestructiveActionListener getFolderDestructiveActionListener() {
+    public DestructiveAction getFolderDestructiveAction() {
         return mFolderChangeListener;
     }
 

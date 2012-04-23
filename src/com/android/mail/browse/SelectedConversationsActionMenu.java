@@ -33,7 +33,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.ui.ActionCompleteListener;
+import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
@@ -90,7 +90,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private AnimatedAdapter mListAdapter;
 
-    private ActionCompleteListener mActionCompleteListener;
+    private DestructiveAction mActionCompleteListener;
 
     private UndoListener mUndoListener;
 
@@ -104,29 +104,29 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     // These listeners are called at the end of the animation and they perform their actions on
     // the conversations.
-    private final ActionCompleteListener mDeleteListener =
+    private final DestructiveAction mDeleteListener =
             new DestructiveActionListener(R.id.delete);
-    private final ActionCompleteListener mArchiveListener =
+    private final DestructiveAction mArchiveListener =
             new DestructiveActionListener(R.id.archive);
-    private final ActionCompleteListener mMuteListener = new DestructiveActionListener(R.id.mute);
-    private final ActionCompleteListener mSpamListener =
+    private final DestructiveAction mMuteListener = new DestructiveActionListener(R.id.mute);
+    private final DestructiveAction mSpamListener =
             new DestructiveActionListener(R.id.report_spam);
-    private final ActionCompleteListener mRemoveStarListener =
+    private final DestructiveAction mRemoveStarListener =
             new DestructiveActionListener(R.id.remove_star);
-    private final ActionCompleteListener mRemoveImportanceListener =
+    private final DestructiveAction mRemoveImportanceListener =
             new DestructiveActionListener(R.id.mark_not_important);
 
     private SwipeableListView mListView;
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            ActionCompleteListener listener, UndoListener undoListener, Account account,
+            DestructiveAction action, UndoListener undoListener, Account account,
             Folder folder, SwipeableListView list) {
         mActivity = activity;
         mSelectionSet = selectionSet;
         mListAdapter = adapter;
         mConversationCursor = (ConversationCursor)adapter.getCursor();
-        mActionCompleteListener = listener;
+        mActionCompleteListener = action;
         mUndoListener = undoListener;
         mAccount = account;
         mFolder = folder;
@@ -211,7 +211,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
-    private void performDestructiveAction(final int id, final ActionCompleteListener listener) {
+    private void performDestructiveAction(final int id, final DestructiveAction action) {
         final Settings settings = mActivity.getSettings();
         final Collection<Conversation> conversations = mSelectionSet.values();
         final boolean showDialog = (settings != null
@@ -224,17 +224,17 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     .setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            destroy(id, conversations, listener);
+                            destroy(id, conversations, action);
                         }
                     }).setNegativeButton(R.string.cancel, null).create().show();
         } else {
-            destroy(id, conversations, listener);
+            destroy(id, conversations, action);
         }
     }
 
 
     private void destroy(int id, Collection<Conversation> conversations,
-            ActionCompleteListener listener) {
+            DestructiveAction listener) {
         if (id == R.id.archive) {
             ArrayList<ConversationItemView> views = new ArrayList<ConversationItemView>();
             for (ConversationItemView view : mSelectionSet.views()) {
@@ -305,14 +305,14 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             // update...
             mListAdapter.delete(mDeletionSet, mFolderChangeListener);
         } else {
-            mFolderChangeListener.onActionComplete();
+            mFolderChangeListener.performAction();
         }
     }
 
-    private final ActionCompleteListener mFolderChangeListener = new ActionCompleteListener() {
+    private final DestructiveAction mFolderChangeListener = new DestructiveAction() {
         @Override
-        public void onActionComplete() {
-            mActionCompleteListener.onActionComplete();
+        public void performAction() {
+            mActionCompleteListener.performAction();
             final Collection<Conversation> deletionSet = mDeletionSet;
             final boolean isDestructive = (deletionSet != null && deletionSet.size() > 0);
             if (isDestructive) {
@@ -517,17 +517,17 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      * actions are like delete/archive, and they require the UI state to remove the conversations
      * from the UI.
      */
-    private class DestructiveActionListener implements ActionCompleteListener {
+    private class DestructiveActionListener implements DestructiveAction {
         private final int mAction;
         public DestructiveActionListener(int action) {
             mAction = action;
         }
 
         @Override
-        public void onActionComplete() {
+        public void performAction() {
             // This is where we actually delete.
             final Collection<Conversation> conversations = mSelectionSet.values();
-            mActionCompleteListener.onActionComplete();
+            mActionCompleteListener.performAction();
             mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), mAction, true));
             switch (mAction) {
                 case R.id.archive:

@@ -48,16 +48,16 @@ import java.util.Collections;
 // Called TwoPaneActivityController in Gmail.
 public final class TwoPaneController extends AbstractActivityController {
     private TwoPaneLayout mLayout;
-    private final ActionCompleteListener mDeleteListener = new TwoPaneDestructiveActionListener(
+    private final DestructiveAction mDeleteListener = new TwoPaneDestructiveAction(
             R.id.delete);
-    private final ActionCompleteListener mArchiveListener = new TwoPaneDestructiveActionListener(
+    private final DestructiveAction mArchiveListener = new TwoPaneDestructiveAction(
             R.id.archive);
-    private final ActionCompleteListener mMuteListener = new TwoPaneDestructiveActionListener(
+    private final DestructiveAction mMuteListener = new TwoPaneDestructiveAction(
             R.id.mute);
-    private final ActionCompleteListener mSpamListener = new TwoPaneDestructiveActionListener(
+    private final DestructiveAction mSpamListener = new TwoPaneDestructiveAction(
             R.id.report_spam);
-    private final TwoPaneDestructiveActionListener mFolderChangeListener =
-            new TwoPaneDestructiveActionListener(R.id.change_folder);
+    private final DestructiveAction mFolderChangeListener =
+            new TwoPaneDestructiveAction(R.id.change_folder);
 
     /**
      * @param activity
@@ -395,17 +395,17 @@ public final class TwoPaneController extends AbstractActivityController {
 
     /**
      * An object that performs an action on the conversation database. This is an
-     * ActionCompleteListener since this is called <b>after</a> the conversation list has animated
-     * the conversation away. Once the animation is completed, the {@link #onActionComplete()}
+     * {@link DestructiveAction}: this is called <b>after</a> the conversation list has animated
+     * the conversation away. Once the animation is completed, the {@link #performAction()}
      * method is called which performs the correct data operation.
      */
-    private class TwoPaneDestructiveActionListener extends DestructiveActionListener {
-        public TwoPaneDestructiveActionListener(int action) {
+    private class TwoPaneDestructiveAction extends AbstractDestructiveAction {
+        public TwoPaneDestructiveAction(int action) {
             super(action);
         }
 
         @Override
-        public void onActionComplete() {
+        public void performAction() {
             final ArrayList<Conversation> single = new ArrayList<Conversation>();
             single.add(mCurrentConversation);
             int next = -1;
@@ -437,7 +437,7 @@ public final class TwoPaneController extends AbstractActivityController {
                         break;
                 }
             }
-            TwoPaneController.this.onActionComplete();
+            TwoPaneController.this.performAction();
             final ConversationListFragment convList = getConversationListFragment();
             if (next != -1) {
                 if (convList != null) {
@@ -462,7 +462,7 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    protected void requestDelete(final ActionCompleteListener listener) {
+    protected void requestDelete(final DestructiveAction listener) {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             convList.requestDelete(listener);
@@ -470,7 +470,7 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    protected DestructiveActionListener getFolderDestructiveActionListener() {
+    public DestructiveAction getFolderDestructiveAction() {
         return mFolderChangeListener;
     }
 

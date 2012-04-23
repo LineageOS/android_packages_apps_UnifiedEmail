@@ -429,16 +429,16 @@ public final class ConversationListFragment extends ListFragment implements
         mListAdapter.notifyDataSetChanged();
     }
 
-    public void requestDelete(final ActionCompleteListener listener) {
+    public void requestDelete(final DestructiveAction listener) {
         if (isVisible() && mCurrentPosition > -1) {
             mListAdapter.delete(new ArrayList<Integer>(ImmutableList.of(mCurrentPosition)),
                     listener);
         } else {
-            listener.onActionComplete();
+            listener.performAction();
         }
     }
 
-    public void requestDelete(int position, ActionCompleteListener listener) {
+    public void requestDelete(int position, DestructiveAction listener) {
         if (position > -1) {
             mCurrentPosition = position;
             ConversationCursor conversationListCursor = getConversationListCursor();
@@ -450,7 +450,7 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     public void requestDelete(Collection<Conversation> conversations,
-            ActionCompleteListener listener) {
+            DestructiveAction listener) {
         for (Conversation conv : conversations) {
             conv.localDeleteOnUpdate = true;
         }

@@ -48,7 +48,7 @@ public final class RecentFolderList {
     /** The application context */
     private final Context mContext;
     /** The AbstractActivityController that created us*/
-    private final AbstractActivityController mController;
+    private final ActivityController mController;
     /** The current account */
     private Account mAccount = null;
 
@@ -110,7 +110,7 @@ public final class RecentFolderList {
      * retrieve the RecentFolderList from persistent storage (if any).
      * @param account
      */
-    public RecentFolderList(Context context, AbstractActivityController controller) {
+    public RecentFolderList(Context context, ActivityController controller) {
         mFolderCache = new LruCache<String, Folder>(MAX_RECENT_FOLDERS);
         mContext = context;
         mController = controller;
