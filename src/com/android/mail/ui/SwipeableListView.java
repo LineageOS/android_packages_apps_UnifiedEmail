@@ -213,9 +213,9 @@ public class SwipeableListView extends ListView implements Callback{
             undoOp = new UndoOperation(
                     conversationViews != null ? (conversations.size() + 1) : 1, mSwipeAction);
             handleLeaveBehind(target, undoOp, context);
-            adapter.delete(conversations, new ActionCompleteListener() {
+            adapter.delete(conversations, new DestructiveAction() {
                 @Override
-                public void onActionComplete() {
+                public void performAction() {
                     ConversationCursor cc = (ConversationCursor)adapter.getCursor();
                     switch (mSwipeAction) {
                         case R.id.archive:
@@ -277,7 +277,7 @@ public class SwipeableListView extends ListView implements Callback{
      * Archive items using the swipe away animation before shrinking them away.
      */
     public void archiveItems(ArrayList<ConversationItemView> views,
-            final ActionCompleteListener listener) {
+            final DestructiveAction listener) {
         if (views == null || views.size() == 0) {
             return;
         }

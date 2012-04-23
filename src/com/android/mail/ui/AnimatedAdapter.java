@@ -54,7 +54,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Account mSelectedAccount;
     private Context mContext;
     private ConversationSelectionSet mBatchConversations;
-    private ActionCompleteListener mActionCompleteListener;
+    private DestructiveAction mActionCompleteListener;
     private boolean mUndo = false;
     private ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
     private ViewMode mViewMode;
@@ -103,9 +103,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mLastDeletingItems.clear();
             // Start animation
             notifyDataSetChanged();
-            mActionCompleteListener = new ActionCompleteListener() {
+            mActionCompleteListener = new DestructiveAction() {
                 @Override
-                public void onActionComplete() {
+                public void performAction() {
                     notifyDataSetChanged();
                 }
             };
@@ -168,7 +168,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * @param conversations
      * @param listener
      */
-    public void delete(Collection<Conversation> conversations, ActionCompleteListener listener) {
+    public void delete(Collection<Conversation> conversations, DestructiveAction listener) {
         // Animate out the positions.
         // Call when all the animations are complete.
         final ArrayList<Integer> positions = new ArrayList<Integer>();
@@ -187,7 +187,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * @param listener called when the animation is complete. At this point, it is safe to remove
      * the conversations from the database.
      */
-    public void delete(ArrayList<Integer> deletedRows, ActionCompleteListener listener) {
+    public void delete(ArrayList<Integer> deletedRows, DestructiveAction listener) {
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
 
@@ -204,7 +204,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
         if (mDeletingItems.isEmpty()) {
             // If we have no deleted items on screen, skip the animation
-            listener.onActionComplete();
+            listener.performAction();
         } else {
             mActionCompleteListener = listener;
         }
@@ -369,7 +369,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mUndoingItems.remove(position);
             if (mUndoingItems.isEmpty()) {
                 if (mActionCompleteListener != null) {
-                    mActionCompleteListener.onActionComplete();
+                    mActionCompleteListener.performAction();
                     mActionCompleteListener = null;
                 }
             }
@@ -382,7 +382,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mDeletingItems.remove(position);
             if (mDeletingItems.isEmpty()) {
                 if (mActionCompleteListener != null) {
-                    mActionCompleteListener.onActionComplete();
+                    mActionCompleteListener.performAction();
                     mActionCompleteListener = null;
                 }
             }

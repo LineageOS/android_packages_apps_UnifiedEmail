@@ -662,7 +662,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * removal of the conversation.
      *
      */
-    protected abstract class FolderChangeListener implements ActionCompleteListener {
+    protected abstract class FolderChangeListener implements DestructiveAction {
         protected final String mFolderChangeList;
         protected final boolean mDestructiveChange;
 
@@ -672,7 +672,7 @@ public abstract class AbstractActivityController implements ActivityController,
         }
 
         @Override
-        public abstract void onActionComplete();
+        public abstract void performAction();
     }
 
     /**
@@ -727,17 +727,17 @@ public abstract class AbstractActivityController implements ActivityController,
      * from the database.
      * @param showDialog
      * @param confirmResource
-     * @param listener
+     * @param action
      */
     protected void confirmAndDelete(boolean showDialog, int confirmResource,
-            final ActionCompleteListener listener) {
+            final DestructiveAction action) {
         final ArrayList<Conversation> single = new ArrayList<Conversation>();
         single.add(mCurrentConversation);
         if (showDialog) {
             final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    requestDelete(listener);
+                    requestDelete(action);
                 }
             };
             final CharSequence message = Utils.formatPlural(mContext, confirmResource, 1);
@@ -746,12 +746,12 @@ public abstract class AbstractActivityController implements ActivityController,
                     .setNegativeButton(R.string.cancel, null)
                     .create().show();
         } else {
-            requestDelete(listener);
+            requestDelete(action);
         }
     }
 
 
-    protected abstract void requestDelete(ActionCompleteListener listener);
+    protected abstract void requestDelete(DestructiveAction action);
 
 
     @Override
@@ -1386,7 +1386,7 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
-    protected abstract class DestructiveActionListener implements ActionCompleteListener {
+    protected abstract class AbstractDestructiveAction implements DestructiveAction {
         protected final int mAction;
 
         /**
@@ -1394,7 +1394,7 @@ public abstract class AbstractActivityController implements ActivityController,
          * R.id.delete , R.id.mute, and R.id.report_spam.
          * @param action
          */
-        public DestructiveActionListener(int action) {
+        public AbstractDestructiveAction(int action) {
             mAction = action;
         }
 
@@ -1436,7 +1436,7 @@ public abstract class AbstractActivityController implements ActivityController,
         }
 
         @Override
-        public abstract void onActionComplete();
+        public abstract void performAction();
     }
 
     // Called from the FolderSelectionDialog after a user is done changing
@@ -1453,7 +1453,7 @@ public abstract class AbstractActivityController implements ActivityController,
             }
         }
         final boolean destructiveChange = !folderUris.contains(mFolder.uri.toString());
-        DestructiveActionListener listener = getFolderDestructiveActionListener();
+        DestructiveAction listener = getFolderDestructiveAction();
         StringBuilder foldersUrisString = new StringBuilder();
         boolean first = true;
         for (Folder f : folderChangeList) {
@@ -1479,8 +1479,6 @@ public abstract class AbstractActivityController implements ActivityController,
             }
         }
     }
-
-    protected abstract DestructiveActionListener getFolderDestructiveActionListener();
 
     @Override
     public void onRefreshRequired() {
@@ -1649,7 +1647,7 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void onActionComplete() {
+    public void performAction() {
         if (getConversationListCursor().isRefreshReady()) {
             refreshAdapter();
         }
@@ -1712,10 +1710,10 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
         convList.requestDelete(conversations,
-                new ActionCompleteListener() {
+                new DestructiveAction() {
                     @Override
-                    public void onActionComplete() {
-                        AbstractActivityController.this.onActionComplete();
+                    public void performAction() {
+                        AbstractActivityController.this.performAction();
                         ArrayList<Folder> changes = new ArrayList<Folder>();
                         changes.add(folder);
                         mConversationListCursor.updateString(mContext, conversations,
