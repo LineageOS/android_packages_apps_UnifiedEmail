@@ -16,18 +16,6 @@
 
 package com.android.mail.widget;
 
-import com.android.mail.R;
-import com.android.mail.persistence.Persistence;
-import com.android.mail.providers.Account;
-import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.MailboxSelectionActivity;
-import com.android.mail.utils.AccountUtils;
-import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
-import com.google.common.collect.Sets;
-import com.google.common.primitives.Ints;
-
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -42,6 +30,18 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import com.android.mail.R;
+import com.android.mail.persistence.Persistence;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.MailboxSelectionActivity;
+import com.android.mail.utils.AccountUtils;
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
+import com.google.common.collect.Sets;
+import com.google.common.primitives.Ints;
 
 import java.util.Set;
 
@@ -184,8 +184,9 @@ public class BaseWidgetProvider extends AppWidgetProvider {
                     accountCursor = resolver.query(Uri.parse(accountUri),
                             UIProvider.ACCOUNTS_PROJECTION, null, null, null);
                     if (accountCursor != null) {
-                        accountCursor.moveToFirst();
-                        account = new Account(accountCursor);
+                        if (accountCursor.moveToFirst()) {
+                            account = new Account(accountCursor);
+                        }
                     }
                 } finally {
                     if (accountCursor != null) {
@@ -200,8 +201,9 @@ public class BaseWidgetProvider extends AppWidgetProvider {
                     folderCursor = resolver.query(Uri.parse(folderUri),
                             UIProvider.FOLDERS_PROJECTION, null, null, null);
                     if (folderCursor != null) {
-                        folderCursor.moveToFirst();
-                        folder = new Folder(folderCursor);
+                        if (folderCursor.moveToFirst()) {
+                            folder = new Folder(folderCursor);
+                        }
                     }
                 } finally {
                     if (folderCursor != null) {
