@@ -526,7 +526,10 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onConversationListVisibilityChanged(boolean visible) {
-        // TODO(viki): Auto-generated method stub
+        if (mConversationListCursor != null) {
+            // The conversation list is visible.
+            Utils.setConversationCursorVisibility(mConversationListCursor, visible);
+        }
     }
 
     /**
@@ -853,7 +856,11 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        // TODO(viki): Auto-generated method stub
+        ConversationListFragment convList = getConversationListFragment();
+        if (hasFocus && convList != null && convList.isVisible()) {
+            // The conversation list is visible.
+            Utils.setConversationCursorVisibility(mConversationListCursor, true);
+        }
     }
 
     private void setAccount(Account account) {
@@ -1531,17 +1538,22 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void onDataSetChanged() {
-        refreshAdapter();
+        updateConversationListFragment();
 
         mConversationListObservable.notifyChanged();
     }
 
-    private void refreshAdapter() {
+    private void updateConversationListFragment() {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             final AnimatedAdapter adapter = convList.getAnimatedAdapter();
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
+            }
+
+            if (convList.isVisible()) {
+                // The conversation list is visible.
+                Utils.setConversationCursorVisibility(mConversationListCursor, true);
             }
         }
     }
@@ -1646,7 +1658,7 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public final void performAction() {
         if (mConversationListCursor != null && mConversationListCursor.isRefreshReady()) {
-            refreshAdapter();
+            updateConversationListFragment();
         }
         mSelectedSet.clear();
     }
@@ -1778,6 +1790,11 @@ public abstract class AbstractActivityController implements ActivityController,
             if (convList != null) {
                 convList.onCursorUpdated();
                 convList.getListView().setOnScrollListener(AbstractActivityController.this);
+
+                if (convList.isVisible()) {
+                    // The conversation list is visible.
+                    Utils.setConversationCursorVisibility(mConversationListCursor, true);
+                }
             }
             // Shown for search results in two-pane mode only.
             if (shouldShowFirstConversation()) {

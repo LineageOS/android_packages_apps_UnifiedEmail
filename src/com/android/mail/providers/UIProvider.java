@@ -834,6 +834,12 @@ public class UIProvider {
          */
         public static final String COMMAND_KEY_ALLOW_NETWORK_ACCESS = "allowNetwork";
 
+        /**
+         * This bundle key has a boolean value: true to indicate that this cursor has been shown
+         * to the user.
+         */
+        public static final String COMMAND_KEY_SET_VISIBILITY = "setVisibility";
+
         private ConversationCursorCommand() {}
     }
 

@@ -34,6 +34,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,8 +113,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     protected boolean isConversationListVisible() {
-        // TODO(viki): Auto-generated method stub
-        return false;
+        return mLayout.isConversationListVisible();
     }
 
     @Override
@@ -144,6 +144,14 @@ public final class TwoPaneController extends AbstractActivityController {
         mLayout.setListener(this);
         final boolean isParentInitialized = super.onCreate(savedState);
         return isParentInitialized;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus && isConversationListVisible()) {
+            // The conversation list is visible.
+            Utils.setConversationCursorVisibility(mConversationListCursor, true);
+        }
     }
 
     @Override

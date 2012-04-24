@@ -184,6 +184,7 @@ public final class OnePaneController extends AbstractActivityController {
             mLastConversationListTransactionId = INVALID_ID;
         }
         mConversationListVisible = true;
+        onConversationListVisibilityChanged(true);
         mConversationListNeverShown = false;
     }
 
@@ -217,6 +218,7 @@ public final class OnePaneController extends AbstractActivityController {
         resetActionBarIcon();
 
         mConversationListVisible = false;
+        onConversationListVisibilityChanged(false);
     }
 
     @Override
@@ -244,6 +246,7 @@ public final class OnePaneController extends AbstractActivityController {
                 FolderListFragment.newInstance(null, mAccount.folderListUri),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
         mConversationListVisible = false;
+        onConversationListVisibilityChanged(false);
     }
 
     /**
@@ -389,6 +392,9 @@ public final class OnePaneController extends AbstractActivityController {
             showConversationList(listContext);
         }
         resetActionBarIcon();
+
+        mConversationListVisible = true;
+        onConversationListVisibilityChanged(true);
     }
 
     @Override

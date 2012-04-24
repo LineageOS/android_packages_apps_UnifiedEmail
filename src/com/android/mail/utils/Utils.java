@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Browser;
 import android.text.Html;
@@ -913,5 +914,36 @@ public class Utils {
     public static boolean enableConversationCursorNetworkAccess(Cursor cursor) {
         return executeConversationCursorCommand(cursor,
                 UIProvider.ConversationCursorCommand.COMMAND_KEY_ALLOW_NETWORK_ACCESS, true);
+    }
+
+    /**
+     * Commands a cursor representing a set of conversations to set its visibility state.
+     *
+     * @param cursor a conversation cursor
+     */
+    public static void setConversationCursorVisibility(Cursor cursor, boolean visible) {
+        new MarkConversationCursorVisibleTask(cursor, visible).execute();
+    }
+
+    /**
+     * Async task for  marking conversations "seen"
+     */
+    private static class MarkConversationCursorVisibleTask extends AsyncTask<Void, Void, Void> {
+        private final Cursor mCursor;
+        private final boolean mVisible;
+
+        public MarkConversationCursorVisibleTask(Cursor cursor, boolean visible) {
+            mCursor = cursor;
+            mVisible = visible;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            if (mCursor != null) {
+                executeConversationCursorCommand(mCursor,
+                        UIProvider.ConversationCursorCommand.COMMAND_KEY_SET_VISIBILITY, mVisible);
+            }
+            return null;
+        }
     }
 }
