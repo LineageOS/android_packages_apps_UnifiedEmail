@@ -1639,6 +1639,11 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public void startSearch() {
+        if (mAccount == null) {
+            // We cannot search if there is no account. Drop the request to the floor.
+            LogUtils.d(LOG_TAG, "AbstractActivityController.startSearch(): null account");
+            return;
+        }
         if (mAccount.supportsCapability(UIProvider.AccountCapabilities.LOCAL_SEARCH)
                 | mAccount.supportsCapability(UIProvider.AccountCapabilities.SERVER_SEARCH)) {
             onSearchRequested(mActionBarView.getQuery());
