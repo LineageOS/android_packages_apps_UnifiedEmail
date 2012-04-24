@@ -244,6 +244,10 @@ public class UIProvider {
          * Whether initial conversation queries should use a limit parameter
          */
         public static final int INITIAL_CONVERSATION_LIMIT = 0x20000;
+        /**
+         * Whether the account cannot be used for sending
+         */
+        public static final int SENDING_UNAVAILABLE = 0x40000;
     }
 
     public static final class AccountColumns {

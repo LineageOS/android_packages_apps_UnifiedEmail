@@ -25,6 +25,7 @@ import android.widget.Spinner;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.ReplyFromAccount;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableList;
@@ -132,6 +133,10 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
     public static List<ReplyFromAccount> getAccountSpecificFroms(Account account)
             throws JSONException {
         List<ReplyFromAccount> froms = new ArrayList<ReplyFromAccount>();
+        // Skip this account if sending unsupported
+        if (account.supportsCapability(AccountCapabilities.SENDING_UNAVAILABLE)) {
+            return froms;
+        }
         ReplyFromAccount replyFrom = new ReplyFromAccount(account, account.uri, account.name,
                 account.name, false, false);
         if (replyFrom != null) {
