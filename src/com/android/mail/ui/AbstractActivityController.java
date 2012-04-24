@@ -1426,7 +1426,7 @@ public abstract class AbstractActivityController implements ActivityController,
     // Called from the FolderSelectionDialog after a user is done changing
     // folders.
     @Override
-    public void onFolderChangesCommit(ArrayList<Folder> folderChangeList) {
+    public final void onFolderChangesCommit(ArrayList<Folder> folderChangeList) {
         // Get currently active folder info and compare it to the list
         // these conversations have been given; if they no longer contain
         // the selected folder, delete them from the list.
@@ -1914,6 +1914,64 @@ public abstract class AbstractActivityController implements ActivityController,
     // What we have right now is a half-way solution during the refactoring.
     public final DestructiveAction getDestructiveAction(int action) {
         final DestructiveAction da = new BatchDestruction(action);
+        registerDestructiveAction(da);
+        return da;
+    }
+
+    private class FolderDestruction implements DestructiveAction {
+        private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
+        private final ArrayList<Folder> mFolderList = new ArrayList<Folder>();
+        private final boolean mIsDestructive;
+
+        /**
+         * Create a new folder destruction object to act on the given conversations.
+         * @param target
+         */
+        private FolderDestruction(Collection<Conversation> target, Collection<Folder> folders,
+                boolean isDestructive) {
+            mTarget.addAll(target);
+            mFolderList.addAll(folders);
+            mIsDestructive = isDestructive;
+        }
+
+        /* (non-Javadoc)
+         * @see com.android.mail.ui.DestructiveAction#performAction()
+         */
+        @Override
+        public void performAction() {
+            AbstractActivityController.this.performAction();
+            if (mIsDestructive) {
+                // Only show undo if this was a destructive folder change.
+                UndoOperation undoOp = new UndoOperation(mTarget.size(), R.id.change_folder);
+                onUndoAvailable(undoOp);
+            }
+            final StringBuilder foldersUrisString = new StringBuilder();
+            boolean first = true;
+            for (Folder f : mFolderList) {
+                if (first) {
+                    first = false;
+                } else {
+                    foldersUrisString.append(',');
+                }
+                foldersUrisString.append(f.uri.toString());
+            }
+            mConversationListCursor.updateString(mContext, mTarget,
+                    ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
+            mConversationListCursor.updateString(mContext, mTarget,
+                    ConversationColumns.RAW_FOLDERS,
+                    Folder.getSerializedFolderString(mFolder, mFolderList));
+            if (mIsDestructive) {
+                final ConversationListFragment convList = getConversationListFragment();
+                if (convList == null) {
+                    return;
+                }
+                convList.requestListRefresh();
+            }
+        }
+    }
+    public final DestructiveAction getFolderChange(Collection<Conversation> target,
+            Collection<Folder> folders, boolean isDestructive){
+        final DestructiveAction da = new FolderDestruction(target, folders, isDestructive);
         registerDestructiveAction(da);
         return da;
     }
