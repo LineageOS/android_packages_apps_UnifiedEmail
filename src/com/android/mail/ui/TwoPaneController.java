@@ -20,7 +20,6 @@ package com.android.mail.ui;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -32,9 +31,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
 
@@ -49,16 +46,6 @@ import java.util.Collections;
 // Called TwoPaneActivityController in Gmail.
 public final class TwoPaneController extends AbstractActivityController {
     private TwoPaneLayout mLayout;
-    private final DestructiveAction mDeleteListener = new TwoPaneDestructiveAction(
-            R.id.delete);
-    private final DestructiveAction mArchiveListener = new TwoPaneDestructiveAction(
-            R.id.archive);
-    private final DestructiveAction mMuteListener = new TwoPaneDestructiveAction(
-            R.id.mute);
-    private final DestructiveAction mSpamListener = new TwoPaneDestructiveAction(
-            R.id.report_spam);
-    private final DestructiveAction mFolderChangeListener =
-            new TwoPaneDestructiveAction(R.id.change_folder);
 
     /**
      * @param activity
@@ -350,14 +337,14 @@ public final class TwoPaneController extends AbstractActivityController {
                 final boolean showDialog =
                         (mCachedSettings != null && mCachedSettings.confirmArchive);
                 confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
-                        mArchiveListener);
+                        getAction(R.id.archive));
                 break;
             }
             case R.id.delete: {
                 final boolean showDialog =
                         (mCachedSettings != null && mCachedSettings.confirmDelete);
                 confirmAndDelete(showDialog, R.plurals.confirm_delete_conversation,
-                        mDeleteListener);
+                        getAction(R.id.delete));
                 break;
             }
             case R.id.change_folders:
@@ -378,13 +365,13 @@ public final class TwoPaneController extends AbstractActivityController {
             case R.id.mute:
                 ConversationListFragment convList = getConversationListFragment();
                 if (convList != null) {
-                    convList.requestDelete(mMuteListener);
+                    convList.requestDelete(getAction(R.id.mute));
                 }
                 break;
             case R.id.report_spam:
                 convList = getConversationListFragment();
                 if (convList != null) {
-                    convList.requestDelete(mSpamListener);
+                    convList.requestDelete(getAction(R.id.report_spam));
                 }
                 break;
             default:
@@ -401,19 +388,26 @@ public final class TwoPaneController extends AbstractActivityController {
      * method is called which performs the correct data operation.
      */
     private class TwoPaneDestructiveAction extends AbstractDestructiveAction {
+        /** Whether this destructive action has already been performed */
+        public boolean mCompleted;
+
         public TwoPaneDestructiveAction(int action) {
             super(action);
         }
 
         @Override
         public void performAction() {
+            if (mCompleted) {
+                return;
+            }
+            mCompleted = true;
             final ArrayList<Conversation> single = new ArrayList<Conversation>();
             single.add(mCurrentConversation);
             final Conversation nextConversation = mTracker.getNextConversation(mCachedSettings);
             TwoPaneController.this.performAction();
             final ConversationListFragment convList = getConversationListFragment();
             if (nextConversation != null) {
-                // We have a conversation to auto advance to
+                // We have a conversation to auto advance to.
                 if (convList != null) {
                     convList.viewConversation(nextConversation.position);
                 }
@@ -428,11 +422,25 @@ public final class TwoPaneController extends AbstractActivityController {
                     }
                 });
             }
-            performConversationAction(single);
+            baseAction(single);
             if (convList != null) {
                 convList.requestListRefresh();
             }
         }
+    }
+
+    /**
+     * Get a destructive action specific to the {@link TwoPaneController}.
+     * This is a temporary method, to control the profusion of {@link DestructiveAction} classes
+     * that are created. Please do not copy this paradigm.
+     * TODO(viki): Resolve the various actions and clean up their calling sequence.
+     * @param action
+     * @return
+     */
+    private final DestructiveAction getAction(int action) {
+        DestructiveAction da = new TwoPaneDestructiveAction(action);
+        registerDestructiveAction(da);
+        return da;
     }
 
     @Override
@@ -445,7 +453,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public DestructiveAction getFolderDestructiveAction() {
-        return mFolderChangeListener;
+        return getAction(R.id.change_folder);
     }
 
     @Override

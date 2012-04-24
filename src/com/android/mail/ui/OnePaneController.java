@@ -20,14 +20,12 @@ package com.android.mail.ui;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
-import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -63,19 +61,6 @@ public final class OnePaneController extends AbstractActivityController {
     private Folder mInbox;
     /** Whether a conversation list for this account has ever been shown.*/
     private boolean mConversationListNeverShown = true;
-
-    private final DestructiveAction mDeleteListener = new OnePaneDestructiveAction(
-            R.id.delete);
-    private final DestructiveAction mArchiveListener = new OnePaneDestructiveAction(
-            R.id.archive);
-    private final DestructiveAction mMuteListener = new OnePaneDestructiveAction(
-            R.id.mute);
-    private final DestructiveAction mSpamListener = new OnePaneDestructiveAction(
-            R.id.report_spam);
-    private final DestructiveAction mUnreadListener = new OnePaneDestructiveAction(
-            R.id.inside_conversation_unread);
-    private final OnePaneDestructiveAction mFolderChangeListener =
-            new OnePaneDestructiveAction(R.id.change_folder);
 
     /**
      * @param activity
@@ -420,14 +405,14 @@ public final class OnePaneController extends AbstractActivityController {
                 final boolean showDialog =
                         (mCachedSettings != null && mCachedSettings.confirmArchive);
                 confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
-                        mArchiveListener);
+                        getAction(R.id.archive));
                 break;
             }
             case R.id.delete: {
                 final boolean showDialog =
                         (mCachedSettings != null && mCachedSettings.confirmDelete);
                 confirmAndDelete(showDialog,
-                        R.plurals.confirm_delete_conversation, mDeleteListener);
+                        R.plurals.confirm_delete_conversation, getAction(R.id.delete));
                 break;
             }
             case R.id.change_folders:
@@ -447,10 +432,10 @@ public final class OnePaneController extends AbstractActivityController {
                         UIProvider.ConversationPriority.LOW);
                 break;
             case R.id.mute:
-                requestDelete(mMuteListener);
+                requestDelete(getAction(R.id.mute));
                 break;
             case R.id.report_spam:
-                requestDelete(mSpamListener);
+                requestDelete(getAction(R.id.report_spam));
                 break;
             default:
                 handled = false;
@@ -467,17 +452,25 @@ public final class OnePaneController extends AbstractActivityController {
         if (returnToList()) {
             onBackPressed();
         } else {
-            mUnreadListener.performAction();
+            final DestructiveAction action = getAction(R.id.inside_conversation_unread);
+            action.performAction();
         }
     }
 
     private class OnePaneDestructiveAction extends AbstractDestructiveAction {
+        /** Whether this destructive action has already been performed */
+        public boolean mCompleted;
+
         public OnePaneDestructiveAction(int action) {
             super(action);
         }
 
         @Override
         public void performAction() {
+            if (mCompleted) {
+                return;
+            }
+            mCompleted = true;
             Conversation next = null;
             final ArrayList<Conversation> single = new ArrayList<Conversation>();
             single.add(mCurrentConversation);
@@ -489,7 +482,7 @@ public final class OnePaneController extends AbstractActivityController {
                 OnePaneController.this.performAction();
                 onUndoAvailable(new UndoOperation(1, mAction));
             }
-            performConversationAction(single);
+            baseAction(single);
             if (next != null) {
                 // We have a conversation to auto advance to
                 if (mode == ViewMode.CONVERSATION) {
@@ -519,6 +512,20 @@ public final class OnePaneController extends AbstractActivityController {
                 }
             }
         }
+    }
+
+    /**
+     * Get a destructive action specific to the {@link OnePaneController}.
+     * This is a temporary method, to control the profusion of {@link DestructiveAction} classes
+     * that are created. Please do not copy this paradigm.
+     * TODO(viki): Resolve the various actions and clean up their calling sequence.
+     * @param action
+     * @return
+     */
+    private final DestructiveAction getAction(int action) {
+        DestructiveAction da = new OnePaneDestructiveAction(action);
+        registerDestructiveAction(da);
+        return da;
     }
 
     /**
@@ -563,7 +570,7 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public DestructiveAction getFolderDestructiveAction() {
-        return mFolderChangeListener;
+        return getAction(R.id.change_folder);
     }
 
     @Override

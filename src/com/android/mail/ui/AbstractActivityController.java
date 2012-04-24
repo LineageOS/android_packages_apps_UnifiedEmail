@@ -1393,6 +1393,10 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     // TODO(viki): Remove all dependencies and make it protected.
     protected abstract class AbstractDestructiveAction implements DestructiveAction {
+        /**
+         * The action to be performed. This is specified as the resource ID of the menu item
+         * corresponding to this action: R.id.delete, R.id.report_spam, etc.
+         */
         protected final int mAction;
 
         /**
@@ -1404,7 +1408,13 @@ public abstract class AbstractActivityController implements ActivityController,
             mAction = action;
         }
 
-        public void performConversationAction(Collection<Conversation> single) {
+        /**
+         * The action common to child classes. This performs the action specified in the constructor
+         * on the conversations given here.
+         * @param single A single conversation, packaged inside a collection that we want to apply
+         * the action to.
+         */
+        protected void baseAction(Collection<Conversation> single) {
             switch (mAction) {
                 case R.id.archive:
                     LogUtils.d(LOG_TAG, "Archiving conversation %s", mCurrentConversation);
@@ -1840,10 +1850,12 @@ public abstract class AbstractActivityController implements ActivityController,
 
     /**
      * Register a destructive action with the controller. This performs the previous destructive
-     * action as a side effect.
+     * action as a side effect. This method is final because we don't want the child classes to
+     * embellish this method any more. This is a temporary workaround to reduce the number of
+     * {@link DestructiveAction} classes. Please do not copy this paradigm.
      * @param action
      */
-    private void registerDestructiveAction(DestructiveAction action) {
+    protected final void registerDestructiveAction(DestructiveAction action) {
         // TODO(viki): This is not a good idea. The best solution is for clients to request a
         // destructive action from the controller and for the controller to own the action. This is
         // a half-way solution while refactoring DestructiveAction.
@@ -1858,7 +1870,8 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     private class BatchDestruction implements DestructiveAction {
         private final int mAction;
-        public boolean mCompleted;
+        /** Whether this destructive action has already been performed */
+        public boolean mCompleted = false;
         private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
 
         /**
