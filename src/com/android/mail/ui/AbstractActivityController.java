@@ -1080,7 +1080,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 } else {
                     inboxUri = mAccount.folderListUri;
                 }
-                LogUtils.d(LOG_TAG, "Loading the default inbox: %s", inboxUri.toString());
+                LogUtils.d(LOG_TAG, "Loading the default inbox: %s", inboxUri);
                 if (inboxUri != null) {
                     return new CursorLoader(mContext, inboxUri, UIProvider.FOLDERS_PROJECTION, null,
                             null, null);
