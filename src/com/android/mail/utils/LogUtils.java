@@ -362,7 +362,7 @@ public class LogUtils {
      *            additional arguments are ignored.
      */
     public static int wtf(String tag, String format, Object... args) {
-        return Log.wtf(tag, String.format(format, args));
+        return Log.wtf(tag, String.format(format, args), new Error());
     }
 
     /**

@@ -915,8 +915,14 @@ public abstract class AbstractActivityController implements ActivityController,
                 // Open the conversation.
                 LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
                         intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
-                setCurrentConversation((Conversation) intent
-                        .getParcelableExtra(Utils.EXTRA_CONVERSATION));
+                final Conversation conversation =
+                        (Conversation)intent.getParcelableExtra(Utils.EXTRA_CONVERSATION);
+                if (conversation != null && conversation.position < 0) {
+                    // Set the position to 0 on this conversation, as we don't know where it is
+                    // in the list
+                    conversation.position = 0;
+                }
+                setCurrentConversation(conversation);
                 showConversation(mCurrentConversation);
                 handled = true;
             }
