@@ -33,6 +33,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.ui.AbstractActivityController;
 import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ConversationSelectionSet;
@@ -89,8 +90,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private Menu mMenu;
 
     private AnimatedAdapter mListAdapter;
-
-    private DestructiveAction mActionCompleteListener;
+    // TODO(viki): Bad idea.  This is a relic of the previous method of having a DestructiveAction.
+    // A better implementation is not to have clients know about destructive actions but rather
+    // request them from the controller directly. Then, you wouldn't need to know when to commit
+    // them.
+    private AbstractActivityController mController;
 
     private UndoListener mUndoListener;
 
@@ -102,31 +106,17 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private final ConversationCursor mConversationCursor;
 
-    // These listeners are called at the end of the animation and they perform their actions on
-    // the conversations.
-    private final DestructiveAction mDeleteListener =
-            new DestructiveActionListener(R.id.delete);
-    private final DestructiveAction mArchiveListener =
-            new DestructiveActionListener(R.id.archive);
-    private final DestructiveAction mMuteListener = new DestructiveActionListener(R.id.mute);
-    private final DestructiveAction mSpamListener =
-            new DestructiveActionListener(R.id.report_spam);
-    private final DestructiveAction mRemoveStarListener =
-            new DestructiveActionListener(R.id.remove_star);
-    private final DestructiveAction mRemoveImportanceListener =
-            new DestructiveActionListener(R.id.mark_not_important);
-
     private SwipeableListView mListView;
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            DestructiveAction action, UndoListener undoListener, Account account,
+            AbstractActivityController controller, UndoListener undoListener, Account account,
             Folder folder, SwipeableListView list) {
         mActivity = activity;
         mSelectionSet = selectionSet;
         mListAdapter = adapter;
         mConversationCursor = (ConversationCursor)adapter.getCursor();
-        mActionCompleteListener = action;
+        mController = controller;
         mUndoListener = undoListener;
         mAccount = account;
         mFolder = folder;
@@ -135,22 +125,33 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mContext = mActivity.getActivityContext();
     }
 
+    /**
+     * Registers a destructive action with the controller and returns it.
+     * @param action
+     * @return the {@link DestructiveAction} associated with this action.
+     */
+    // TODO(viki): This is a placeholder during the refactoring. Ideally the controller hands
+    // the ID of the action to clients.
+    private final DestructiveAction getAction(int type) {
+        return mController.getDestructiveAction(type);
+    }
+
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         boolean handled = true;
         Collection<Conversation> conversations = mSelectionSet.values();
         switch (item.getItemId()) {
             case R.id.delete:
-                performDestructiveAction(R.id.delete, mDeleteListener);
+                performDestructiveAction(R.id.delete, getAction(R.id.delete));
                 break;
             case R.id.archive:
-                performDestructiveAction(R.id.archive, mArchiveListener);
+                performDestructiveAction(R.id.archive, getAction(R.id.archive));
                 break;
             case R.id.mute:
-                mListAdapter.delete(conversations, mMuteListener);
+                mListAdapter.delete(conversations, getAction(R.id.mute));
                 break;
             case R.id.report_spam:
-                mListAdapter.delete(conversations, mSpamListener);
+                mListAdapter.delete(conversations, getAction(R.id.report_spam));
                 break;
             case R.id.read:
                 markConversationsRead(true);
@@ -164,7 +165,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             case R.id.remove_star:
                 if (mFolder.type == UIProvider.FolderType.STARRED) {
                     LogUtils.d(LOG_TAG, "We are in a starred folder, removing the star");
-                    performDestructiveAction(R.id.remove_star, mRemoveStarListener);
+                    performDestructiveAction(R.id.remove_star, getAction(R.id.remove_star));
                 } else {
                     LogUtils.d(LOG_TAG, "Not in a starred folder.");
                     starConversations(false);
@@ -178,7 +179,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 break;
             case R.id.mark_not_important:
                 if (mFolder.supportsCapability(UIProvider.FolderCapabilities.ONLY_IMPORTANT)) {
-                    performDestructiveAction(R.id.mark_not_important, mRemoveImportanceListener);
+                    performDestructiveAction(R.id.mark_not_important,
+                            getAction(R.id.mark_not_important));
                 } else {
                     markConversationsImportant(false);
                 }
@@ -312,7 +314,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private final DestructiveAction mFolderChangeListener = new DestructiveAction() {
         @Override
         public void performAction() {
-            mActionCompleteListener.performAction();
+            mController.performAction();
             final Collection<Conversation> deletionSet = mDeletionSet;
             final boolean isDestructive = (deletionSet != null && deletionSet.size() > 0);
             if (isDestructive) {
@@ -509,60 +511,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             if (item != null) {
                 item.setEnabled(enable);
             }
-        }
-    }
-
-    /**
-     * Listener to act upon destructive actions carried out on multiple conversations. Destructive
-     * actions are like delete/archive, and they require the UI state to remove the conversations
-     * from the UI.
-     */
-    private class DestructiveActionListener implements DestructiveAction {
-        private final int mAction;
-        public DestructiveActionListener(int action) {
-            mAction = action;
-        }
-
-        @Override
-        public void performAction() {
-            // This is where we actually delete.
-            final Collection<Conversation> conversations = mSelectionSet.values();
-            mActionCompleteListener.performAction();
-            mUndoListener.onUndoAvailable(new UndoOperation(conversations.size(), mAction, true));
-            switch (mAction) {
-                case R.id.archive:
-                    mConversationCursor.archive(mContext, conversations);
-                    break;
-                case R.id.delete:
-                    mConversationCursor.delete(mContext, conversations);
-                    break;
-                case R.id.mute:
-                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
-                        // Make sure to set the localDeleteOnUpdate flag for these conversatons.
-                        for (Conversation conversation: conversations) {
-                            conversation.localDeleteOnUpdate = true;
-                        }
-                    }
-                    mConversationCursor.mute(mContext, conversations);
-                    break;
-                case R.id.report_spam:
-                    mConversationCursor.reportSpam(mContext, conversations);
-                    break;
-                case R.id.remove_star:
-                    // Star removal is destructive in the Starred folder.
-                    mConversationCursor.updateBoolean(mContext, conversations,
-                            ConversationColumns.STARRED, false);
-                    break;
-                case R.id.mark_not_important:
-                    // Marking not important is destructive in a mailbox containing only important
-                    // messages
-                    mConversationCursor.updateInt(mContext, conversations,
-                            ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
-                    break;
-            }
-            clearSelection();
-            // The list calls notifyDataSetChanged on itself after destructive actions.
-            // We don't need to
         }
     }
 }

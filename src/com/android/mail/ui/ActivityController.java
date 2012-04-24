@@ -301,5 +301,4 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
      * Load the default inbox associated with the current account.
      */
     public abstract void loadAccountInbox();
-
 }

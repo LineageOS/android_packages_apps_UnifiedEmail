@@ -212,6 +212,9 @@ public abstract class AbstractActivityController implements ActivityController,
 
     private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
 
+    /** The pending destructive action to be carried out before swapping the conversation cursor.*/
+    private DestructiveAction mPendingDestruction;
+
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
         mFragmentManager = mActivity.getFragmentManager();
@@ -1386,6 +1389,7 @@ public abstract class AbstractActivityController implements ActivityController,
     // TODO(viki): Remove all dependencies and make it protected.
     protected abstract class AbstractDestructiveAction implements DestructiveAction {
         protected final int mAction;
+
         /**
          * Create a listener object. action is one of four constants: R.id.y_button (archive),
          * R.id.delete , R.id.mute, and R.id.report_spam.
@@ -1626,10 +1630,11 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void performAction() {
+    public final void performAction() {
         if (mConversationListCursor != null && mConversationListCursor.isRefreshReady()) {
             refreshAdapter();
         }
+        mSelectedSet.clear();
     }
 
     @Override
@@ -1741,6 +1746,8 @@ public abstract class AbstractActivityController implements ActivityController,
         public void onLoadFinished(Loader<ConversationCursor> loader, ConversationCursor data) {
             LogUtils.d(LOG_TAG, "IN AAC.ConversationCursor.onLoadFinished, data=%s loader=%s",
                     data, loader);
+            // Clear our all pending destructive actions before swapping the conversation cursor
+            destroyPending(null);
             mConversationListCursor = data;
             mConversationListCursor.addListener(AbstractActivityController.this);
 
@@ -1806,5 +1813,108 @@ public abstract class AbstractActivityController implements ActivityController,
         } else if (toFragment.equals(TAG_CONVERSATION)) {
             // TODO Handle setting starred in conversation view
         }
+    }
+
+    /**
+     * Destroy the pending {@link DestructiveAction} till now and assign the given action as the
+     * next destructive action..
+     * @param nextAction the next destructive action to be performed. This can be null.
+     */
+    private final void destroyPending(DestructiveAction nextAction) {
+        // If there is a pending action, perform that first.
+        if (mPendingDestruction != null) {
+            mPendingDestruction.performAction();
+        }
+        mPendingDestruction = nextAction;
+    }
+
+    /**
+     * Register a destructive action with the controller. This performs the previous destructive
+     * action as a side effect.
+     * @param action
+     */
+    private void registerDestructiveAction(DestructiveAction action) {
+        // TODO(viki): This is not a good idea. The best solution is for clients to request a
+        // destructive action from the controller and for the controller to own the action. This is
+        // a half-way solution while refactoring DestructiveAction.
+        destroyPending(action);
+        return;
+    }
+
+    /**
+     * Listener to act upon destructive actions carried out on multiple conversations. Destructive
+     * actions are like delete/archive, and they require the UI state to remove the conversations
+     * from the UI.
+     */
+    private class BatchDestruction implements DestructiveAction {
+        private final int mAction;
+        public boolean mCompleted;
+        private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
+
+        /**
+         * Create a destructive action with an ID that is the same as the menu IDs: R.id.delete,
+         * R.id.archive, R.id.mute, ...
+         * @param action
+         */
+        private BatchDestruction(int action) {
+            mAction = action;
+            mTarget.addAll(mSelectedSet.values());
+        }
+
+        @Override
+        public void performAction() {
+            if (mCompleted) {
+                return;
+            }
+            mCompleted = true;
+            AbstractActivityController.this.performAction();
+            onUndoAvailable(new UndoOperation(mTarget.size(), mAction, true));
+            switch (mAction) {
+                case R.id.archive:
+                    mConversationListCursor.archive(mContext, mTarget);
+                    break;
+                case R.id.delete:
+                    mConversationListCursor.delete(mContext, mTarget);
+                    break;
+                case R.id.mute:
+                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
+                        // Make sure to set the localDeleteOnUpdate flag for these conversations.
+                        for (Conversation conversation: mTarget) {
+                            conversation.localDeleteOnUpdate = true;
+                        }
+                    }
+                    mConversationListCursor.mute(mContext, mTarget);
+                    break;
+                case R.id.report_spam:
+                    mConversationListCursor.reportSpam(mContext, mTarget);
+                    break;
+                case R.id.remove_star:
+                    // Star removal is destructive in the Starred folder.
+                    mConversationListCursor.updateBoolean(mContext, mTarget,
+                            ConversationColumns.STARRED, false);
+                    break;
+                case R.id.mark_not_important:
+                    // Marking not important is destructive in a mailbox containing only important
+                    // messages
+                    mConversationListCursor.updateInt(mContext, mTarget,
+                            ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
+                    break;
+            }
+            // The list calls notifyDataSetChanged on itself after destructive actions.
+            // We don't need to.
+        }
+    }
+
+    /**
+     * Get a destructive action for selected conversations.
+     * @param action
+     * @return
+     */
+    // TODO(viki): This either should be in the ActivityController or removed entirely.
+    // What we have right now is a half-way solution during the refactoring.
+    public final DestructiveAction getDestructiveAction(int action) {
+        final DestructiveAction da = new BatchDestruction(action);
+        registerDestructiveAction(da);
+        return da;
     }
 }
