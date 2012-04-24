@@ -346,6 +346,8 @@ public abstract class AbstractActivityController implements ActivityController,
         // Current account is different from the new account, restart loaders and show
         // the account Inbox.
         mAccount = account;
+        LogUtils.d(LOG_TAG, "AbstractActivityController.switchAccount(): mAccount = %s",
+                mAccount.uri);
         cancelRefreshTask();
         onSettingsChanged(mAccount.settings);
         mActionBarView.setAccount(mAccount);
@@ -856,6 +858,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     private void setAccount(Account account) {
         mAccount = account;
+        LogUtils.d(LOG_TAG, "AbstractActivityController.setAccount(): mAccount = %s", mAccount.uri);
         dispatchSettingsChange(mAccount.settings);
         mActionBarView.setAccount(mAccount);
     }
@@ -1307,6 +1310,8 @@ public abstract class AbstractActivityController implements ActivityController,
                     if (updatedAccount.uri.equals(mAccount.uri)) {
                         // Update the controller's reference to the current account
                         mAccount = updatedAccount;
+                        LogUtils.d(LOG_TAG, "AbstractActivityController.onLoadFinished(): "
+                                + "mAccount = %s", mAccount.uri);
                         dispatchSettingsChange(mAccount.settings);
 
                         // Got an update for the current account
