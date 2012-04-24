@@ -88,7 +88,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mListView = listView;
         mCachedSettings = settings;
         mDragListener = dragListener;
-        mSwipeEnabled = account.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE);
+        mSwipeEnabled = account.supportsCapability(UIProvider.AccountCapabilities.UNDO);
     }
 
     @Override
