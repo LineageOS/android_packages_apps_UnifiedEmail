@@ -43,7 +43,6 @@ import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SwipeableListView;
 import com.android.mail.ui.UndoBarView.UndoListener;
-import com.android.mail.ui.UndoOperation;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
@@ -65,10 +64,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      * The set of conversations to display the menu for.
      */
     protected final ConversationSelectionSet mSelectionSet;
-    /**
-     * The set of conversations to marked for deletion
-     */
-    protected Collection<Conversation> mDeletionSet;
     /**
      * The new folder list (after selection)
      */
@@ -281,6 +276,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         new FoldersSelectionDialog(mContext, mAccount, this, mSelectionSet.values()).show();
     }
 
+    // Both this class and AbstractActivityController are listeners for folder changes and the
+    // logic is largely the same.
+    // TODO(viki): hold all this in AbstractActivityController.
     @Override
     public void onFolderChangesCommit(ArrayList<Folder> folderChangeList) {
         mFolderChangeList = folderChangeList;
@@ -295,55 +293,30 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             }
         }
         if (!folderUris.contains(mFolder.uri.toString())) {
+            // All these conversations are *removed* from the current folder. Animate deletion.
+            final boolean isDestructive = true;
+            // We copy the selected set because it might change as the animation starts, and we want
+            // to apply the action to the current selection.
             final Collection<Conversation> conversations = mSelectionSet.values();
             // Indicate delete on update (i.e. no longer in this folder)
-            mDeletionSet = new ArrayList<Conversation>();
+            final Collection<Conversation> deletionSet = new ArrayList<Conversation>();
             for (Conversation conv : conversations) {
                 conv.localDeleteOnUpdate = true;
                 // For Gmail, add... if (noLongerInList(conv))...
-                mDeletionSet.add(conv);
+                deletionSet.add(conv);
             }
-            // Delete the local delete items (all for now) and when done,
-            // update...
-            mListAdapter.delete(mDeletionSet, mFolderChangeListener);
+            // Delete the local delete items (all for now) and when done, update...
+            final DestructiveAction action = mController.getFolderChange(deletionSet,
+                    mFolderChangeList, isDestructive);
+            mListAdapter.delete(deletionSet, action);
         } else {
-            mFolderChangeListener.performAction();
+            // Conversations are not removed. They just have their labels changed.
+            final boolean isDestructive = false;
+            final DestructiveAction action = mController.getFolderChange(mSelectionSet.values(),
+                    mFolderChangeList, isDestructive);
+            action.performAction();
         }
     }
-
-    private final DestructiveAction mFolderChangeListener = new DestructiveAction() {
-        @Override
-        public void performAction() {
-            mController.performAction();
-            final Collection<Conversation> deletionSet = mDeletionSet;
-            final boolean isDestructive = (deletionSet != null && deletionSet.size() > 0);
-            if (isDestructive) {
-                // Only show undo if this was a destructive folder change.
-                UndoOperation undoOp = new UndoOperation(deletionSet.size(), R.id.change_folder);
-                mUndoListener.onUndoAvailable(undoOp);
-                mDeletionSet = null;
-            }
-            final StringBuilder foldersUrisString = new StringBuilder();
-            boolean first = true;
-            for (Folder f : mFolderChangeList) {
-                if (first) {
-                    first = false;
-                } else {
-                    foldersUrisString.append(',');
-                }
-                foldersUrisString.append(f.uri.toString());
-            }
-            mConversationCursor.updateString(mContext, mSelectionSet.values(),
-                    ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
-            mConversationCursor.updateString(mContext, mSelectionSet.values(),
-                    ConversationColumns.RAW_FOLDERS,
-                    Folder.getSerializedFolderString(mFolder, mFolderChangeList));
-            clearSelection();
-            if (isDestructive) {
-                mListAdapter.notifyDataSetChanged();
-            }
-        }
-    };
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
