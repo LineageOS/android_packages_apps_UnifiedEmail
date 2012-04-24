@@ -998,6 +998,7 @@ public class UIProvider {
     public static final class MessageFlags {
         public static final int REPLIED =       1 << 2;
         public static final int FORWARDED =     1 << 3;
+        public static final int CALENDAR_INVITE =     1 << 4;
     }
 
     public static final class MessageColumns {
@@ -1139,6 +1140,28 @@ public class UIProvider {
          */
         public static final String MESSAGE_ACCOUNT_URI = "messageAccountUri";
         private MessageColumns() {}
+    }
+
+    /**
+     * List of operations that can can be performed on a message. These operations are applied
+     * with {@link ContentProvider#update(Uri, ContentValues, String, String[])}
+     * where the message uri is specified, and the ContentValues specifies the operation to
+     * be performed, e.g. values.put(RESPOND_COLUMN, RESPOND_ACCEPT)
+     * <p/>
+     * Note not all UI providers will support these operations.
+     */
+    public static final class MessageOperations {
+        /**
+         * Respond to a calendar invitation
+         */
+        public static final String RESPOND_COLUMN = "respond";
+
+        public static final int RESPOND_ACCEPT = 1;
+        public static final int RESPOND_TENTATIVE = 2;
+        public static final int RESPOND_DECLINE = 3;
+
+        private MessageOperations() {
+        }
     }
 
     public static final String ATTACHMENT_LIST_TYPE =
