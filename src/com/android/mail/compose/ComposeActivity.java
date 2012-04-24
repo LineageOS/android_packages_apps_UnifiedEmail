@@ -449,9 +449,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         final List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
+        final int selectedPos = mFromSpinner.getSelectedItemPosition();
         final ReplyFromAccount selectedReplyFromAccount =
-                (replyFromAccounts.size() > mFromSpinner.getSelectedItemPosition()) ?
-                        replyFromAccounts.get(mFromSpinner.getSelectedItemPosition()) :
+                (replyFromAccounts.size() > 0 && replyFromAccounts.size() > selectedPos) ?
+                        replyFromAccounts.get(selectedPos) :
                         null;
         if (selectedReplyFromAccount != null) {
             state.putString(EXTRA_SELECTED_REPLY_FROM_ACCOUNT, selectedReplyFromAccount.serialize()
