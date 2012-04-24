@@ -25,7 +25,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.android.mail.R;
@@ -42,11 +41,6 @@ import java.util.Collection;
 public class SwipeableListView extends ListView implements Callback{
     private SwipeHelper mSwipeHelper;
     private boolean mEnableSwipe = false;
-    private ListAdapter mDebugAdapter;
-    private int mDebugLastCount;
-
-    // TODO: remove me and all enclosed blocks when b/6255909 is fixed
-    private static final boolean DEBUG_LOGGING_CONVERSATION_CURSOR = true;
 
     public static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -123,36 +117,6 @@ public class SwipeableListView extends ListView implements Callback{
         } else {
             return super.onTouchEvent(ev);
         }
-    }
-
-    @Override
-    public void setAdapter(ListAdapter adapter) {
-        super.setAdapter(adapter);
-        if (DEBUG_LOGGING_CONVERSATION_CURSOR) {
-            mDebugAdapter = adapter;
-        }
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (DEBUG_LOGGING_CONVERSATION_CURSOR) {
-            final int count = mDebugAdapter == null ? 0 : mDebugAdapter.getCount();
-            if (count != mDebugLastCount) {
-                LogUtils.i(LOG_TAG, "Conversation ListView about to change mItemCount to: %d",
-                        count);
-                mDebugLastCount = count;
-            }
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
-    protected void layoutChildren() {
-        if (DEBUG_LOGGING_CONVERSATION_CURSOR) {
-            LogUtils.i(LOG_TAG, "Conversation ListView may compare last mItemCount to new val: %d",
-                    mDebugAdapter == null ? 0 : mDebugAdapter.getCount());
-        }
-        super.layoutChildren();
     }
 
     @Override
