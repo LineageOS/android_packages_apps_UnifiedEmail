@@ -232,6 +232,21 @@ public class Message implements Parcelable {
         }
     }
 
+    public boolean isFlaggedReplied() {
+        return (messageFlags & UIProvider.MessageFlags.REPLIED) ==
+                UIProvider.MessageFlags.REPLIED;
+    }
+
+    public boolean isFlaggedForwarded() {
+        return (messageFlags & UIProvider.MessageFlags.FORWARDED) ==
+                UIProvider.MessageFlags.FORWARDED;
+    }
+
+    public boolean isFlaggedCalendarInvite() {
+        return (messageFlags & UIProvider.MessageFlags.CALENDAR_INVITE) ==
+                UIProvider.MessageFlags.CALENDAR_INVITE;
+    }
+
     public synchronized String[] getToAddresses() {
         if (mToAddresses == null) {
             mToAddresses = Utils.splitCommaSeparatedString(to);

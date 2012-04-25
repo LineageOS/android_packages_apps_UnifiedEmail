@@ -491,6 +491,18 @@
     <string name="show_elided">\u25B6 Show quoted text</string>
     <!-- Shown in HTML to allow the user to hide quoted text; should match Gmail web UI. 25BC is Unicode for a downward-pointing triangle. [CHAR LIMIT=50] -->
     <string name="hide_elided">\u25BC Hide quoted text</string>
+    <!-- Shown as a heading in message view when a message contains a calendar invite [CHAR LIMIT=30]-->
+    <string name="message_invite_title">Calendar invite</string>
+    <!-- Shown as a button label in message view to launch calendar to see this invite [CHAR LIMIT=40]-->
+    <string name="message_invite_calendar_view">View in Calendar</string>
+    <!-- Shown as a text label in message view describing the choices of whether to attend an invite [CHAR LIMIT=20]-->
+    <string name="message_invite_label_attending">Going?</string>
+    <!-- Shown as a button label in message view to accept a calendar invite [CHAR LIMIT=20]-->
+    <string name="message_invite_accept">Yes</string>
+    <!-- Shown as a button label in message view to give a tentative response to a calendar invite [CHAR LIMIT=20]-->
+    <string name="message_invite_tentative">Maybe</string>
+    <!-- Shown as a button label in message view to decline a calendar invite [CHAR LIMIT=20]-->
+    <string name="message_invite_decline">No</string>
 
     <!-- An enumeration comma for separating items in lists. [CHAR LIMIT=2] -->
     <string name="enumeration_comma">,\u0020</string>
