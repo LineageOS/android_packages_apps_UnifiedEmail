@@ -882,7 +882,14 @@ public abstract class AbstractActivityController implements ActivityController,
         LogUtils.d(LOG_TAG, "IN AAC.onRestoreInstanceState");
         if (savedState.containsKey(SAVED_CONVERSATION)) {
             // Open the conversation.
-            setCurrentConversation((Conversation) savedState.getParcelable(SAVED_CONVERSATION));
+            final Conversation conversation =
+                    (Conversation)savedState.getParcelable(SAVED_CONVERSATION);
+            if (conversation != null && conversation.position < 0) {
+                // Set the position to 0 on this conversation, as we don't know where it is
+                // in the list
+                conversation.position = 0;
+            }
+            setCurrentConversation(conversation);
             showConversation(mCurrentConversation);
         }
 
