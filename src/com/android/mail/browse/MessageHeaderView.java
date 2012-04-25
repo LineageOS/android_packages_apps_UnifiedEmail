@@ -93,6 +93,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private ViewGroup mCollapsedDetailsView;
     private ViewGroup mExpandedDetailsView;
     private ViewGroup mImagePromptView;
+    private MessageInviteView mInviteView;
     private View mBottomBorderView;
     private ImageView mPresenceView;
     private View mPhotoSpacerView;
@@ -886,12 +887,18 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             hideCollapsedDetails();
             hideExpandedDetails();
             hideShowImagePrompt();
+            hideInvite();
         } else {
             setMessageDetailsExpanded(mMessageHeaderItem.detailsExpanded);
             if (mShowImagePrompt) {
                 showImagePrompt();
             } else {
                 hideShowImagePrompt();
+            }
+            if (mMessage.isFlaggedCalendarInvite()) {
+                showInvite();
+            } else {
+                hideInvite();
             }
         }
         if (mBottomBorderView != null) {
@@ -920,6 +927,22 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (mExpandedDetailsView != null) {
             mExpandedDetailsView.setVisibility(GONE);
         }
+    }
+
+    private void hideInvite() {
+        if (mInviteView != null) {
+            mInviteView.setVisibility(GONE);
+        }
+    }
+
+    private void showInvite() {
+        if (mInviteView == null) {
+            mInviteView = (MessageInviteView) mInflater.inflate(
+                    R.layout.conversation_message_invite, this, false);
+            addView(mInviteView);
+        }
+        mInviteView.bind(mMessage);
+        mInviteView.setVisibility(VISIBLE);
     }
 
     private void hideShowImagePrompt() {
