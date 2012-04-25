@@ -1448,7 +1448,10 @@ public final class ConversationCursor implements Cursor {
 
     @Override
     public Bundle respond(Bundle extras) {
-        return mUnderlyingCursor.respond(extras);
+        if (mUnderlyingCursor != null) {
+            return mUnderlyingCursor.respond(extras);
+        }
+        return Bundle.EMPTY;
     }
 
     @Override
