@@ -505,7 +505,7 @@ public final class OnePaneController extends AbstractActivityController {
                 } else if (mode == ViewMode.CONVERSATION) {
                     final int position = mCurrentConversation.position;
                     final OnePaneDestructiveAction listener = this;
-                    onBackPressed();
+                    transitionBackToConversationListMode();
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
