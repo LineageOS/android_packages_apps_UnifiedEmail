@@ -33,9 +33,6 @@ import java.util.ArrayList;
 
 public class NotificationUtils {
 
-    // TODO: add degraded experience for ICS.
-    // The plan is to do a 2 line where the first line is sender and subject
-    // (stylized) and the second line is account and unread count.
     private static boolean newNotificationsAvailable() {
         return TextUtils.equals("JellyBean", Build.VERSION.RELEASE);
     }
@@ -43,38 +40,26 @@ public class NotificationUtils {
     public static Notification.Builder buildNotification(Context context, Notification.Builder nf,
             String subject, String sender, String snippet, int smallIconResId, String account,
             Bitmap senderBitmap, int count) {
-     /*   if (newNotificationsAvailable()) {
-            nf.setContentTitle(sender).setContentText(subject).setLargeIcon(senderBitmap)
-                    .setSubText(account).setNumber(count).setSmallIcon(smallIconResId)
-                    .setTicker(sender);
-        } else {
-            nf.setContentTitle(sender).setContentText(subject).setLargeIcon(senderBitmap)
-                    .setPriority(Notification.PRIORITY_HIGH).setSubText(account).setNumber(count)
-                    .setSmallIcon(smallIconResId).setTicker(sender);
-        }*/
+        nf.setContentTitle(sender).setContentText(subject).setLargeIcon(senderBitmap)
+                .setSubText(account).setNumber(count).setSmallIcon(smallIconResId)
+                .setTicker(sender);
         return nf;
     }
 
-    // TODO: add degraded experience for ICS.
-    // The plan is to do a 2 line where the first line is sender and subject
-    // (stylized) and the second line is account and unread count.
+    // Currently unused.
     public static Notification.Builder buildExpandedNotification(Context context,
             Notification.Builder nf, String subject, String sender, String snippet,
             int smallIconResId, ArrayList<NotificationAction> actions, String account,
             Bitmap senderBitmap, int count) {
-     /*   if (newNotificationsAvailable()) {
-            nf.setContentTitle(sender).setContentText(subject).setLargeIcon(senderBitmap)
-                    .setPriority(Notification.PRIORITY_HIGH).setSubText(account).setNumber(count)
-                    .setSmallIcon(smallIconResId).setTicker(sender);
+        nf.setContentTitle(sender).setContentText(subject).setLargeIcon(senderBitmap)
+                .setPriority(Notification.PRIORITY_HIGH).setSubText(account).setNumber(count)
+                .setSmallIcon(smallIconResId).setTicker(sender);
+        if (newNotificationsAvailable()) {
             for (NotificationAction action : actions) {
                 nf.addAction(action.iconResId, context.getText(action.titleResId),
                         action.clickIntent);
             }
-        } else {
-            nf.setContentTitle(sender).setContentText(subject).setLargeIcon(senderBitmap)
-                    .setPriority(Notification.PRIORITY_HIGH).setSubText(account).setNumber(count)
-                    .setSmallIcon(smallIconResId).setTicker(sender);
-        }*/
+        }
         return nf;
     }
 
