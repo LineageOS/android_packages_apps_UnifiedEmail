@@ -38,7 +38,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SwipeableListView extends ListView implements Callback{
+public class SwipeableListView extends ListView implements Callback {
     private SwipeHelper mSwipeHelper;
     private boolean mEnableSwipe = false;
 
@@ -177,20 +177,9 @@ public class SwipeableListView extends ListView implements Callback{
             undoOp = new UndoOperation(
                     conversationViews != null ? (conversations.size() + 1) : 1, mSwipeAction);
             handleLeaveBehind(target, undoOp, context);
-            adapter.delete(conversations, new DestructiveAction() {
-                @Override
-                public void performAction() {
-                    ConversationCursor cc = (ConversationCursor)adapter.getCursor();
-                    switch (mSwipeAction) {
-                        case R.id.archive:
-                            cc.archive(context, conversations);
-                            break;
-                        case R.id.delete:
-                            cc.delete(context, conversations);
-                            break;
-                    }
-                }
-            });
+            final DestructiveAction action =
+                    adapter.getSwipeableAction(mSwipeAction, conversations);
+            adapter.delete(conversations, action);
         } else {
             undoOp = new UndoOperation(1, mSwipeAction);
             target.getConversation().position = target.getParent() != null ?
