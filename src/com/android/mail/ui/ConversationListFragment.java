@@ -213,10 +213,6 @@ public final class ConversationListFragment extends ListFragment implements
                 getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
                 mActivity.getSettings(), mActivity.getViewMode(), mListView,
                 mActivity.getDragListener());
-        // We need a reference to the controller to be able to make Destructive Actions. The only
-        // way to get it is through the ControllableActivity for now.
-        // TODO(viki): Remove in favor of an interface that provides all the Destructive Actions.
-        mListAdapter.setController((AbstractActivityController) mActivity.getDragListener());
         mFooterView = (ConversationListFooterView) LayoutInflater.from(
                 mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
                 null);
