@@ -66,7 +66,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private boolean mSwipeEnabled;
     private DragListener mDragListener;
     private HashMap<Long, LeaveBehindItem> mLeaveBehindItems = new HashMap<Long, LeaveBehindItem>();
-    private AbstractActivityController mController;
 
     /**
      * Used only for debugging.
@@ -439,10 +438,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mFolder = folder;
     }
 
-    public void setController(AbstractActivityController controller) {
-        mController = controller;
-    }
-
     public void clearLeaveBehind(Conversation item) {
         mLeaveBehindItems.remove(item.id);
         notifyDataSetChanged();
@@ -454,15 +449,5 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public void onSettingsChanged(Settings updatedSettings) {
         mCachedSettings = updatedSettings;
-    }
-
-    /**
-     * @param action
-     * @param conversations
-     * @return
-     */
-    public DestructiveAction getSwipeableAction(
-            int action, ArrayList<Conversation> conversations) {
-        return mController.getSwipeableAction(action, conversations);
     }
 }

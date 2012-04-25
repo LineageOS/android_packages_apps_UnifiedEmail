@@ -1896,7 +1896,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private class BatchDestruction implements DestructiveAction {
         private final int mAction;
         /** Whether this destructive action has already been performed */
-        private boolean mCompleted = false;
+        public boolean mCompleted = false;
         private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
 
         /**
@@ -1970,8 +1970,6 @@ public abstract class AbstractActivityController implements ActivityController,
         private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
         private final ArrayList<Folder> mFolderList = new ArrayList<Folder>();
         private final boolean mIsDestructive;
-        /** Whether this destructive action has already been performed */
-        private boolean mCompleted = false;
 
         /**
          * Create a new folder destruction object to act on the given conversations.
@@ -1989,10 +1987,6 @@ public abstract class AbstractActivityController implements ActivityController,
          */
         @Override
         public void performAction() {
-            if (mCompleted) {
-                return;
-            }
-            mCompleted = true;
             AbstractActivityController.this.performAction();
             if (mIsDestructive) {
                 // Only show undo if this was a destructive folder change.
@@ -2026,39 +2020,6 @@ public abstract class AbstractActivityController implements ActivityController,
     public final DestructiveAction getFolderChange(Collection<Conversation> target,
             Collection<Folder> folders, boolean isDestructive){
         final DestructiveAction da = new FolderDestruction(target, folders, isDestructive);
-        registerDestructiveAction(da);
-        return da;
-    }
-
-    private class SwipeableAction implements DestructiveAction {
-        final int mAction;
-        final Collection<Conversation> mTarget = new ArrayList<Conversation>();
-        /** Whether this destructive action has already been performed */
-        private boolean mCompleted = false;
-
-        public SwipeableAction(int action, Collection<Conversation> target){
-            mAction = action;
-            mTarget.addAll(target);
-        }
-
-        @Override
-        public void performAction() {
-            if (mCompleted) {
-                return;
-            }
-            mCompleted = true;
-            switch (mAction) {
-                case R.id.archive:
-                    mConversationListCursor.archive(mContext, mTarget);
-                    break;
-                case R.id.delete:
-                    mConversationListCursor.delete(mContext, mTarget);
-                    break;
-            }
-        }
-    }
-    public final DestructiveAction getSwipeableAction(int action, Collection<Conversation> target){
-        final DestructiveAction da = new SwipeableAction(action, target);
         registerDestructiveAction(da);
         return da;
     }
