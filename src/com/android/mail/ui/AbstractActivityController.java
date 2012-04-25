@@ -1466,7 +1466,6 @@ public abstract class AbstractActivityController implements ActivityController,
             }
         }
         final boolean destructiveChange = !folderUris.contains(mFolder.uri.toString());
-        DestructiveAction listener = getFolderDestructiveAction();
         StringBuilder foldersUrisString = new StringBuilder();
         boolean first = true;
         for (Folder f : folderChangeList) {
@@ -1483,6 +1482,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // TODO: (mindyp): set ConversationColumns.RAW_FOLDERS like in
         // SelectedConversationsActionMenu
         if (destructiveChange) {
+            DestructiveAction listener = getFolderDestructiveAction();
             mCurrentConversation.localDeleteOnUpdate = true;
             requestDelete(listener);
         } else {
