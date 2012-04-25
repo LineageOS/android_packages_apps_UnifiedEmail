@@ -1525,7 +1525,6 @@ public abstract class AbstractActivityController implements ActivityController,
         } if (!mIsConversationListScrolling) {
             // Swap cursors
             mConversationListCursor.sync();
-            refreshAdapter();
         }
         mTracker.updateCursor(mConversationListCursor);
     }
@@ -1770,6 +1769,8 @@ public abstract class AbstractActivityController implements ActivityController,
             destroyPending(null);
             mConversationListCursor = data;
             mConversationListCursor.addListener(AbstractActivityController.this);
+
+            mConversationListObservable.notifyChanged();
 
             // Register the AbstractActivityController as a listener to changes in
             // data in the cursor.

@@ -39,7 +39,6 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     private final DataSetObserver mListObserver = new ListObserver();
     private ConversationListCallbacks mListController;
-    private Cursor mCursor;
     private final Bundle mCommonFragmentArgs;
     private final Conversation mInitialConversation;
     /**
@@ -76,7 +75,18 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     }
 
     public boolean isSingletonMode() {
-        return mSingletonMode || mCursor == null;
+        return mSingletonMode || getCursor() == null;
+    }
+
+    private Cursor getCursor() {
+        if (mListController == null) {
+            // Should never happen. It's the pager controller's responsibility to ensure the list
+            // controller reference is around at least as long as the pager is active and has this
+            // adapter.
+            LogUtils.wtf(LOG_TAG, new Error(), "Pager adapter has an unexpected null cursor");
+        }
+
+        return mListController.getConversationListCursor();
     }
 
     @Override
@@ -93,14 +103,15 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
             c = mInitialConversation;
             c.position = 0;
         } else {
-            if (!mCursor.moveToPosition(position)) {
+            final Cursor cursor = getCursor();
+            if (!cursor.moveToPosition(position)) {
                 LogUtils.wtf(LOG_TAG, "unable to seek to ConversationCursor pos=%d (%s)", position,
-                        mCursor);
+                        cursor);
                 return null;
             }
             // TODO: switch to something like MessageCursor or AttachmentCursor
             // to re-use these models
-            c = new Conversation(mCursor);
+            c = new Conversation(cursor);
             c.position = position;
         }
         final Fragment f = ConversationViewFragment.newInstance(mCommonFragmentArgs, c);
@@ -110,7 +121,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     @Override
     public int getCount() {
-        return (isSingletonMode()) ? 1 : mCursor.getCount();
+        return (isSingletonMode()) ? 1 : getCursor().getCount();
     }
 
     @Override
@@ -186,11 +197,6 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         }
     }
 
-    public void swapCursor(Cursor listCursor) {
-        mCursor = listCursor;
-        notifyDataSetChanged();
-    }
-
     public int getConversationPosition(Conversation conv) {
         if (isSingletonMode()) {
             if (conv != mInitialConversation) {
@@ -201,12 +207,14 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
             return 0;
         }
 
-        final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(mCursor);
+        final Cursor cursor = getCursor();
+
+        final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
 
         int result = POSITION_NONE;
         int pos = -1;
-        while (mCursor.moveToPosition(++pos)) {
-            final long id = mCursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
+        while (cursor.moveToPosition(++pos)) {
+            final long id = cursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
             if (conv.id == id) {
                 LogUtils.d(LOG_TAG, "pager adapter found repositioned convo '%s' at pos=%d",
                         conv.subject, pos);
@@ -216,7 +224,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         }
 
         if (networkWasEnabled) {
-            Utils.enableConversationCursorNetworkAccess(mCursor);
+            Utils.enableConversationCursorNetworkAccess(cursor);
         }
 
         return result;
@@ -230,9 +238,10 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         if (mListController != null) {
             mListController.registerConversationListObserver(mListObserver);
 
-            swapCursor(mListController.getConversationListCursor());
+            notifyDataSetChanged();
         } else {
-            mCursor = null;
+            // We're being torn down; do not notify.
+            // Let the pager controller manage pager lifecycle.
         }
     }
 
@@ -240,7 +249,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     private class ListObserver extends DataSetObserver {
         @Override
         public void onChanged() {
-            swapCursor(mListController.getConversationListCursor());
+            notifyDataSetChanged();
         }
         @Override
         public void onInvalidated() {
