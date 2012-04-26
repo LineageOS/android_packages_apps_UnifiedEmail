@@ -246,6 +246,18 @@
     <string name="invalid_recipient" msgid="2161317422860961623">"Adresa <xliff:g id="WRONGEMAIL">%s</xliff:g> nije važeća."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Prikaži citirani tekst"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Sakrij citirani tekst"</string>
+    <!-- no translation found for message_invite_title (6757287288611722175) -->
+    <skip />
+    <!-- no translation found for message_invite_calendar_view (1898326841767645665) -->
+    <skip />
+    <!-- no translation found for message_invite_label_attending (7378806613557157546) -->
+    <skip />
+    <!-- no translation found for message_invite_accept (869753811259793266) -->
+    <skip />
+    <!-- no translation found for message_invite_tentative (3898050756490962079) -->
+    <skip />
+    <!-- no translation found for message_invite_decline (4524135969656266758) -->
+    <skip />
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"U redu"</string>
     <string name="done" msgid="3079981801778027540">"Gotovo"</string>
