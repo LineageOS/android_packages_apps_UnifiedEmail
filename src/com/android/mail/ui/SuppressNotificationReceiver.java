@@ -119,7 +119,7 @@ public class SuppressNotificationReceiver extends BroadcastReceiver {
         final ConversationListContext listContext = mController.getCurrentListContext();
         if (listContext == null) {
             // A non-null list context was expected
-            LogUtils.wtf(LOG_TAG, "unexpected null context");
+            LogUtils.e(LOG_TAG, "unexpected null context");
             return;
         }
 
