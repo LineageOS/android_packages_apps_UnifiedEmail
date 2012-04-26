@@ -55,7 +55,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     /**
      * Array of all the accounts on the device.
      */
-    private Account[] mAccounts = new Account[0];
+    private Account[] mAllAccounts = new Account[0];
 
     /**
      *  The name of the account is the 2nd column in {@link UIProvider#ACCOUNTS_PROJECTION}
@@ -146,7 +146,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             // position.
             for (int i = 0, size = haystack.length; i < size; ++i) {
                 if (haystack[i].uri.equals(needle)) {
-                    LogUtils.d(LOG_TAG, "Found need at position to %d", i);
+                    LogUtils.d(LOG_TAG, "findPositionOfAccount: Found needle at position %d", i);
                     return i;
                 }
             }
@@ -157,12 +157,13 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * Set the accounts for this spinner.
      * @param accounts
      */
-    public void setAccounts(Account[] accounts) {
+    public void setAccountArray(Account[] accounts) {
         final Uri currentAccount = getCurrentAccountUri();
-        mAccounts = accounts;
+        mAllAccounts = accounts;
         mNumAccounts = accounts.length;
         if (!isCurrentAccountInvalid()) {
             mCurrentAccountPos = findPositionOfAccount(accounts, currentAccount);
+            LogUtils.d(LOG_TAG, "setAccountArray: mCurrentAccountPos = %d", mCurrentAccountPos);
         }
         notifyDataSetChanged();
     }
@@ -197,8 +198,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             return false;
         }
         mCurrentAccount = account;
-        mCurrentAccountPos = findPositionOfAccount(mAccounts, account.uri);
-        LogUtils.d(LOG_TAG, "Setting the current account position to %d", mCurrentAccountPos);
+        mCurrentAccountPos = findPositionOfAccount(mAllAccounts, account.uri);
+        LogUtils.d(LOG_TAG, "setCurrentAccount: mCurrentAccountPos = %d", mCurrentAccountPos);
         requestRecentFoldersAndRedraw();
         return true;
     }
@@ -348,7 +349,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         if (position >= mNumAccounts) {
             return "";
         }
-        return mAccounts[position].name;
+        return mAllAccounts[position].name;
     }
 
     /**
@@ -357,7 +358,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return the account at the given position.
      */
     private Account getAccount(int position) {
-        return mAccounts[position];
+        return mAllAccounts[position];
     }
 
 
