@@ -246,6 +246,18 @@
     <string name="invalid_recipient" msgid="2161317422860961623">"地址 <xliff:g id="WRONGEMAIL">%s</xliff:g> 無效。"</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ 顯示引用文字"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ 隱藏引用文字"</string>
+    <!-- no translation found for message_invite_title (6757287288611722175) -->
+    <skip />
+    <!-- no translation found for message_invite_calendar_view (1898326841767645665) -->
+    <skip />
+    <!-- no translation found for message_invite_label_attending (7378806613557157546) -->
+    <skip />
+    <!-- no translation found for message_invite_accept (869753811259793266) -->
+    <skip />
+    <!-- no translation found for message_invite_tentative (3898050756490962079) -->
+    <skip />
+    <!-- no translation found for message_invite_decline (4524135969656266758) -->
+    <skip />
     <string name="enumeration_comma" msgid="5191660524342286026">"、 "</string>
     <string name="ok" msgid="8339355733816891026">"確定"</string>
     <string name="done" msgid="3079981801778027540">"完成"</string>
@@ -290,7 +302,7 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"正在等待同步處理"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"您的電子郵件即將顯示。"</string>
     <string name="not_synced_title" msgid="794279749170198599">"帳戶尚未同步處理"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"這個帳戶尚未設成自動同步處理。"\n"請輕觸 [立即同步處理]"<b></b>"，同步處理一次您的郵件，或者輕觸 [變更同步處理設定]"<b></b>"，將帳戶設定成自動同步處理郵件。"</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"這個帳戶尚未設成自動同步處理。"\n"請輕觸 [立即同步處理]"<b></b>"，將您的郵件同步處理一次，或者輕觸 [變更同步處理設定]"<b></b>"，將帳戶設定成自動同步處理郵件。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"立即同步處理"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"變更同步處理設定"</string>
 </resources>
