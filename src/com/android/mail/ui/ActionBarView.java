@@ -75,7 +75,6 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      */
     private Folder mFolder;
 
-    // TODO(viki): This is a SnippetTextView in the Gmail source code. Resolve.
     private TextView mSubjectView;
     private SearchView mSearchWidget;
     private MenuItem mHelpItem;
@@ -94,6 +93,11 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             mActivity.invalidateOptionsMenu();
         }
     };
+    /**
+     * Whether the first navigation event should be ignored. The {@link #ignoreFirstNavigation(int)}
+     * method talks about why this is required.
+     */
+    private boolean mIgnoreFirstNavigation = true;
 
     public ActionBarView(Context context) {
         this(context, null);
@@ -174,17 +178,21 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         mActionBar = actionBar;
         mController = callback;
         mActivity = activity;
-
         // We don't want to include the "Show all folders" menu item on tablet devices
         final boolean showAllFolders = !Utils.useTabletUI(getContext());
         mSpinner = new AccountSpinnerAdapter(getContext(), recentFolders, showAllFolders);
+    }
 
+    /**
+     * Attach the action bar to the view.
+     */
+    public void attach() {
         mActionBar.setListNavigationCallbacks(mSpinner, this);
     }
 
     public void setAccounts(Account[] accounts) {
         final Account currentAccount = mController.getCurrentAccount();
-        mSpinner.setAccounts(accounts);
+        mSpinner.setAccountArray(accounts);
 
         int position;
         for (position = 0; position < accounts.length; position++) {
@@ -237,8 +245,42 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         mSpinner.notifyDataSetChanged();
     }
 
+    /**
+     * Returns true if this list navigation event is erroneous and should be ignored.
+     *
+     *  Rationale: When a spinner is brought up for the first time, and it has never been brought up
+     * before, it shows the 0th element. This is fine in most cases, since the navigation mode has
+     * to select something. However, if we already have an account: for example if we went from the
+     * widget to Conversation view, and the spinner never got a chance to initialize, it needs to
+     * ignore this first navigation. If the spinner has ever been shown, then we will allow
+     * subsequent calls to onNavigationItemSelected.
+     * @param position the position selected in the drop down.
+     */
+    private boolean ignoreFirstNavigation(int position) {
+        if (mIgnoreFirstNavigation && position == 0 && mAccount != null) {
+            // Ignore the first navigation item selected because it is the list initializing
+            // We already have an account.
+            LogUtils.d(LOG_TAG, "ignoreFirstNavigation: Ignoring navigation to position 0."
+                    + " mAccount = %s", mAccount.uri);
+            // All user taps are now valid: even a tap on the current account to take the user to
+            // the default inbox.
+            mIgnoreFirstNavigation = false;
+            setSelectedPosition(mSpinner.getSpacerPosition());
+            // Yes, we want to ignore this navigation. It is not a user-initiated navigation.
+            return true;
+        }
+        // Spinner was correctly initialized and is receiving a valid first tap.  All subsequent
+        // taps are user events.
+        mIgnoreFirstNavigation = false;
+        // No, we don't want to ignore this navigation.
+        return false;
+    }
+
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
+        if (ignoreFirstNavigation(position)) {
+            return false;
+        }
         LogUtils.d(LOG_TAG, "onNavigationItemSelected(%d, %d) called", position, id);
         final int type = mSpinner.getType(position);
         switch (type) {
@@ -343,11 +385,11 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 if (Utils.useTabletUI(mActivity.getActivityContext())) {
                     showNavList();
                 } else {
-                    mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                    setStandardMode();
                 }
                 break;
             case ViewMode.SEARCH_RESULTS_LIST:
-                mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                setStandardMode();
                 setPopulatedSearchView();
                 // Remove focus from the search action menu in search results mode so the IME and
                 // the suggestions don't get in the way.
@@ -358,7 +400,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
-                mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                setStandardMode();
                 if (Utils.useTabletUI(mActivity.getActivityContext())) {
                     setPopulatedSearchView();
                 }
@@ -367,17 +409,27 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE,
                         ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
-                mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                setStandardMode();
                 mActionBar.setTitle(R.string.folder_list_title);
                 break;
         }
         return false;
     }
 
+    /**
+     * Put the ActionBar in List navigation mode. This starts the spinner up if it is missing.
+     */
     private void showNavList() {
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
                 ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+    }
+
+    /**
+     * Set the actionbar mode to standard mode: no list navigation.
+     */
+    private void setStandardMode() {
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
     }
 
     private void setPopulatedSearchView() {

@@ -313,8 +313,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * Initialize the action bar. This is not visible to OnePaneController and
      * TwoPaneController so they cannot override this behavior.
      */
-    private void initCustomActionBarView() {
-        ActionBar actionBar = mActivity.getActionBar();
+    private void initializeActionBar() {
+        final ActionBar actionBar = mActivity.getActionBar();
         mActionBarView = (ActionBarView) LayoutInflater.from(mContext).inflate(
                 R.layout.actionbar_view, null);
         if (actionBar != null && mActionBarView != null) {
@@ -322,11 +322,22 @@ public abstract class AbstractActivityController implements ActivityController,
             // the same actions
             // on mActionBarView instead.
             mActionBarView.initialize(mActivity, this, mViewMode, actionBar, mRecentFolderList);
+        }
+    }
+
+    /**
+     * Attach the action bar to the activity.
+     */
+    private void attachActionBar() {
+        final ActionBar actionBar = mActivity.getActionBar();
+        if (actionBar != null && mActionBarView != null) {
             actionBar.setCustomView(mActionBarView, new ActionBar.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
                     ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_TITLE);
+            mActionBarView.attach();
         }
+        mViewMode.addListener(mActionBarView);
     }
 
     /**
@@ -544,27 +555,21 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public boolean onCreate(Bundle savedState) {
-        // Initialize the action bar view.
-        initCustomActionBarView();
+        initializeActionBar();
         // Allow shortcut keys to function for the ActionBar and menus.
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
         mResolver = mActivity.getContentResolver();
-
         mNewEmailReceiver = new SuppressNotificationReceiver();
 
         // All the individual UI components listen for ViewMode changes. This
         // simplifies the amount of logic in the AbstractActivityController, but increases the
         // possibility of timing-related bugs.
         mViewMode.addListener(this);
-        assert (mActionBarView != null);
-        mViewMode.addListener(mActionBarView);
-
         mPagerController = new ConversationPagerController(mActivity, this);
-
         mUndoBarView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
 
         final Intent intent = mActivity.getIntent();
-        // immediately handle a clean launch with intent, and any state restoration
+        // Immediately handle a clean launch with intent, and any state restoration
         // that does not rely on restored fragments or loader data
         // any state restoration that relies on those can be done later in
         // onRestoreInstanceState, once fragments are up and loader data is re-delivered
@@ -580,10 +585,9 @@ public abstract class AbstractActivityController implements ActivityController,
         } else if (intent != null) {
             handleIntent(intent);
         }
-
         // Create the accounts loader; this loads the account switch spinner.
         mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
-
+        attachActionBar();
         return true;
     }
 
