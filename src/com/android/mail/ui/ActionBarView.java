@@ -204,7 +204,9 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             position = 0;
             LogUtils.w(LOG_TAG, "IN actionbarview setAccounts, account not found, using first.");
         }
-        final boolean viewingDefaultInbox = mFolder.uri.equals(mAccount.settings.defaultInbox);
+        final boolean viewingDefaultInbox =
+                (mFolder == null || mAccount == null || mAccount.settings == null) ? false :
+                    mFolder.uri.equals(mAccount.settings.defaultInbox);
         final boolean accountInSpinner = (position >= 0);
         if (accountInSpinner && viewingDefaultInbox) {
             // This position corresponds to current account and default Inbox.  Select it.
