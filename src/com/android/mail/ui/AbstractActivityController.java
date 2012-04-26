@@ -567,6 +567,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mViewMode.addListener(this);
         mPagerController = new ConversationPagerController(mActivity, this);
         mUndoBarView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
+        attachActionBar();
 
         final Intent intent = mActivity.getIntent();
         // Immediately handle a clean launch with intent, and any state restoration
@@ -587,7 +588,6 @@ public abstract class AbstractActivityController implements ActivityController,
         }
         // Create the accounts loader; this loads the account switch spinner.
         mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
-        attachActionBar();
         return true;
     }
 
