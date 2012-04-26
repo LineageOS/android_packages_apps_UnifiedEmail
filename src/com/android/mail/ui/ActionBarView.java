@@ -204,8 +204,16 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             position = 0;
             LogUtils.w(LOG_TAG, "IN actionbarview setAccounts, account not found, using first.");
         }
-
-        setSelectedPosition(position);
+        final boolean viewingDefaultInbox = mFolder.uri.equals(mAccount.settings.defaultInbox);
+        final boolean accountInSpinner = (position >= 0);
+        if (accountInSpinner && viewingDefaultInbox) {
+            // This position corresponds to current account and default Inbox.  Select it.
+            setSelectedPosition(position);
+        } else {
+            // Set the selected position to a dead spacer. The user is either viewing a different
+            // folder, or the account is missing from the spinner.
+            setSelectedPosition(mSpinner.getSpacerPosition());
+        }
     }
 
     /**
@@ -332,6 +340,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     public boolean onPrepareOptionsMenu(Menu menu) {
         // We start out with every option enabled. Based on the current view, we disable actions
         // that are possible.
+        LogUtils.d(LOG_TAG, "ActionBarView.onPrepareOptionsMenu().");
         if (mSubjectView != null){
             mSubjectView.setVisibility(GONE);
         }
