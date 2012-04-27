@@ -184,11 +184,6 @@ public class ConversationPositionTracker {
      *  {@link #updateCursor(ConversationCursor)}.
      */
     public void initialize(Conversation conversation) {
-        if (conversation.position < 0) {
-            LogUtils.wtf(LOG_TAG, "ConversationPositionTracker.initialize called with negative"
-                    + " position. This is certainly wrong.");
-            throw new IllegalArgumentException();
-        }
         mConversation = conversation;
         mCursorDirty = true;
     }
@@ -233,11 +228,6 @@ public class ConversationPositionTracker {
             return;
         }
         mCursorDirty = false;
-
-        // If we don't have a valid position, exit early.
-        if (mConversation.position < 0) {
-            return;
-        }
 
         final int listSize = (mCursor == null) ? 0 : mCursor.getCount();
         if (!isDataLoaded() || listSize == 0) {
