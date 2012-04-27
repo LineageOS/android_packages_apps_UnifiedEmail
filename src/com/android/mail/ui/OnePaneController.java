@@ -371,6 +371,7 @@ public final class OnePaneController extends AbstractActivityController {
 
     private void transitionBackToConversationListMode() {
         int mode = mViewMode.getMode();
+        enableCabMode();
         if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             mViewMode.enterSearchResultsListMode();
         } else {

@@ -874,7 +874,7 @@ public class Utils {
      * @return a valid URI, possibly {@link android.net.Uri#EMPTY}
      */
     public static Uri getValidUri(String uri) {
-        if (uri == JSONObject.NULL)
+        if (uri == null || uri == JSONObject.NULL)
             return Uri.EMPTY;
         return Uri.parse(uri);
     }
