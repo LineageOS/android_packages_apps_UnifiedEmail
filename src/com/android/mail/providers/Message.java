@@ -64,6 +64,7 @@ public class Message implements Parcelable {
     public int quotedTextOffset;
     public String attachmentsJson;
     public Uri accountUri;
+    public Uri eventIntentUri;
 
     private transient String[] mToAddresses = null;
     private transient String[] mCcAddresses = null;
@@ -127,6 +128,7 @@ public class Message implements Parcelable {
         dest.writeInt(quotedTextOffset);
         dest.writeString(attachmentsJson);
         dest.writeParcelable(accountUri, 0);
+        dest.writeParcelable(eventIntentUri, 0);
     }
 
     private Message(Parcel in) {
@@ -157,6 +159,7 @@ public class Message implements Parcelable {
         quotedTextOffset = in.readInt();
         attachmentsJson = in.readString();
         accountUri = in.readParcelable(null);
+        eventIntentUri = in.readParcelable(null);
     }
 
     public Message() {
@@ -229,6 +232,8 @@ public class Message implements Parcelable {
             attachmentsJson = cursor.getString(UIProvider.MESSAGE_ATTACHMENTS_COLUMN);
             String accountUriString = cursor.getString(UIProvider.MESSAGE_ACCOUNT_URI_COLUMN);
             accountUri = !TextUtils.isEmpty(accountUriString) ? Uri.parse(accountUriString) : null;
+            eventIntentUri =
+                    Utils.getValidUri(cursor.getString(UIProvider.MESSAGE_EVENT_INTENT_COLUMN));
         }
     }
 
