@@ -20,18 +20,21 @@ package com.android.mail.browse;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.android.mail.R;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 public class MessageInviteView extends LinearLayout implements View.OnClickListener {
 
     private Message mMessage;
+    private final Context mContext;
     private InviteCommandHandler mCommandHandler = new InviteCommandHandler();
 
     public MessageInviteView(Context c) {
@@ -40,6 +43,7 @@ public class MessageInviteView extends LinearLayout implements View.OnClickListe
 
     public MessageInviteView(Context c, AttributeSet attrs) {
         super(c, attrs);
+        mContext = c;
     }
 
     @Override
@@ -62,7 +66,11 @@ public class MessageInviteView extends LinearLayout implements View.OnClickListe
 
         switch(v.getId()) {
             case R.id.invite_calendar_view:
-                // TODO: launch calendar with some intent
+                if (!Utils.isEmpty(mMessage.eventIntentUri)) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(mMessage.eventIntentUri);
+                    mContext.startActivity(intent);
+                }
                 break;
             case R.id.accept:
                 command = UIProvider.MessageOperations.RESPOND_ACCEPT;
@@ -94,5 +102,4 @@ public class MessageInviteView extends LinearLayout implements View.OnClickListe
         }
 
     }
-
 }
