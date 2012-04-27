@@ -223,7 +223,7 @@
     <!-- Dialog box title [CHAR LIMIT=30] -->
     <string name="more_info_attachment">Info</string>
     <!-- Dialog box message, displayed when we block downloading an attachment due to security concerns. [CHAR LIMIT=200]-->
-    <string name="attachment_type_blocked">Can\'t save or open this type of attachment because it could contain malicious software.</string>
+    <string name="attachment_type_blocked">Unfortunately, you can\'t save or open this type of attachment.</string>
     <!-- Dialog box message, displayed when we could not view an attachment. [CHAR LIMIT=200]-->
     <string name="no_application_found">No app can open this attachment for viewing.</string>
     <!-- Dialog box title. [CHAR LIMIT=30] -->
