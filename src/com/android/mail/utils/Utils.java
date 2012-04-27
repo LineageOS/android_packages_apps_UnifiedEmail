@@ -583,7 +583,8 @@ public class Utils {
     public static Intent createViewConversationIntent(Conversation conversation, Folder folder,
             Account account) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         intent.setDataAndType(conversation.uri, account.mimeType);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account);
         intent.putExtra(Utils.EXTRA_FOLDER, folder);
@@ -603,7 +604,8 @@ public class Utils {
     public static Intent createViewFolderIntent(Folder folder, Account account,
             boolean pendingIntent) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         intent.setDataAndType(folder.uri, account.mimeType);
         if (pendingIntent) {
             intent.putExtra(Utils.EXTRA_ACCOUNT_STRING, account.serialize());
