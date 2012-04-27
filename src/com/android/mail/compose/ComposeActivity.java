@@ -2014,6 +2014,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void doAttach() {
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         if (android.provider.Settings.System.getInt(getContentResolver(),
                 UIProvider.getAttachmentTypeSetting(), 0) != 0) {
             i.setType("*/*");
