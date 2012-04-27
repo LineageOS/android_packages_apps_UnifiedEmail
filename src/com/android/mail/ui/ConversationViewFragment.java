@@ -251,6 +251,17 @@ public final class ConversationViewFragment extends Fragment implements
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
+        final float fontScale = getResources().getConfiguration().fontScale;
+        final int textZoomPercent = getResources().getInteger(
+                R.integer.conversation_text_zoom_percent);
+
+        // scale down the default size a bit on small-screen devices
+        // the goal is an effective default font size of 14dp
+        int textZoom = settings.getTextZoom() * textZoomPercent / 100;
+        // and then apply any system font scaling
+        textZoom = (int) (textZoom * fontScale);
+        settings.setTextZoom(textZoom);
+
         mViewsCreated = true;
 
         return rootView;
