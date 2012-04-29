@@ -1040,7 +1040,6 @@ public final class ConversationCursor implements Cursor {
             Uri uri = conv.uri;
             String uriString = uriStringFromCachingUri(uri);
             conversationCursor.setMostlyDead(uriString, conv);
-            LogUtils.i(TAG, "[Mostly dead, deferring: %s", uri);
             addToUndoSequence(uri);
         }
 
@@ -1103,12 +1102,13 @@ public final class ConversationCursor implements Cursor {
                 }
             }
 
+            // Notify listeners that data has changed
+            conversationCursor.notifyDataChanged();
+
             // Recalibrate cursor position if required
             if (recalibrateRequired) {
                 conversationCursor.recalibratePosition();
             }
-            // Notify listeners that data has changed
-            conversationCursor.notifyDataChanged();
 
             // Send changes to underlying provider
             for (String authority: batchMap.keySet()) {
@@ -1137,6 +1137,7 @@ public final class ConversationCursor implements Cursor {
     }
 
     void setMostlyDead(String uriString, Conversation conv) {
+        LogUtils.i(TAG, "[Mostly dead, deferring: %s] ", uriString);
         cacheValue(uriString,
                 UIProvider.ConversationColumns.FLAGS, Conversation.FLAG_MOSTLY_DEAD);
         conv.convFlags |= Conversation.FLAG_MOSTLY_DEAD;

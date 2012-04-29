@@ -203,7 +203,11 @@ public class Conversation implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        return uri.equals(o);
+        if (o instanceof Conversation) {
+            Conversation conv = (Conversation)o;
+            return conv.uri.equals(uri);
+        }
+        return false;
     }
 
     @Override
