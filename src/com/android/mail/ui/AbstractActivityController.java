@@ -658,10 +658,7 @@ public abstract class AbstractActivityController implements ActivityController,
     protected void updateCurrentConversation(String columnName, boolean value) {
         mConversationListCursor.updateBoolean(mContext, ImmutableList.of(mCurrentConversation),
                 columnName, value);
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
-            convList.requestListRefresh();
-        }
+        refreshConversationList();
     }
 
     /**
@@ -672,19 +669,13 @@ public abstract class AbstractActivityController implements ActivityController,
     protected void updateCurrentConversation(String columnName, int value) {
         mConversationListCursor.updateInt(mContext, ImmutableList.of(mCurrentConversation),
                 columnName, value);
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
-            convList.requestListRefresh();
-        }
+        refreshConversationList();
     }
 
     protected void updateCurrentConversation(String columnName, String value) {
         mConversationListCursor.updateString(mContext, ImmutableList.of(mCurrentConversation),
                 columnName, value);
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
-            convList.requestListRefresh();
-        }
+        refreshConversationList();
     }
 
     private void requestFolderRefresh() {
@@ -725,9 +716,13 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
-
-    protected abstract void requestDelete(DestructiveAction action);
-
+    /**
+     * Request the removal of the current conversation with the specified destructive action.
+     * @param action
+     */
+    protected void requestDelete(DestructiveAction action) {
+        removeAndDestroy(ImmutableList.of(mCurrentConversation), action);
+    }
 
     @Override
     public void onPrepareDialog(int id, Dialog dialog, Bundle bundle) {
@@ -1476,10 +1471,7 @@ public abstract class AbstractActivityController implements ActivityController,
             mCurrentConversation.localDeleteOnUpdate = true;
             requestDelete(listener);
         } else {
-            final ConversationListFragment convList = getConversationListFragment();
-            if (convList != null) {
-                convList.requestListRefresh();
-            }
+            refreshConversationList();
         }
     }
 
@@ -1543,13 +1535,8 @@ public abstract class AbstractActivityController implements ActivityController,
     private void updateConversationListFragment() {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
-            final AnimatedAdapter adapter = convList.getAnimatedAdapter();
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
-
+            refreshConversationList();
             if (convList.isVisible()) {
-                // The conversation list is visible.
                 Utils.setConversationCursorVisibility(mConversationListCursor, true);
             }
         }
@@ -1999,11 +1986,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     ConversationColumns.RAW_FOLDERS,
                     Folder.getSerializedFolderString(mFolder, mFolderList));
             if (mIsDestructive) {
-                final ConversationListFragment convList = getConversationListFragment();
-                if (convList == null) {
-                    return;
-                }
-                convList.requestListRefresh();
+                refreshConversationList();
             }
         }
     }
@@ -2012,5 +1995,29 @@ public abstract class AbstractActivityController implements ActivityController,
         final DestructiveAction da = new FolderDestruction(target, folders, isDestructive);
         registerDestructiveAction(da);
         return da;
+    }
+
+    /**
+     * Safely refresh the conversation list if it exists.
+     */
+    public void refreshConversationList() {
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList == null) {
+            return;
+        }
+        convList.requestListRefresh();
+    }
+
+    /**
+     * Remove conversations from the UI and call the destructive action when the UI state is
+     * updated.
+     * @param target
+     * @param action
+     */
+    public void removeAndDestroy(Collection<Conversation> target, DestructiveAction action) {
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            convList.requestDelete(target, action);
+        }
     }
 }

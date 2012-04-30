@@ -430,6 +430,10 @@ public final class ConversationListFragment extends ListFragment implements
         mListAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * @deprecated
+     * @param listener
+     */
     public void requestDelete(final DestructiveAction listener) {
         if (isVisible() && mCurrentPosition > -1) {
             mListAdapter.delete(new ArrayList<Integer>(ImmutableList.of(mCurrentPosition)),
@@ -439,7 +443,12 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
-    public void requestDelete(int position, DestructiveAction listener) {
+    /**
+     * @deprecated
+     * @param position
+     * @param action
+     */
+    public void requestDelete(int position, DestructiveAction action) {
         if (position > -1) {
             mCurrentPosition = position;
             ConversationCursor conversationListCursor = getConversationListCursor();
@@ -447,17 +456,17 @@ public final class ConversationListFragment extends ListFragment implements
                 conversationListCursor.moveToPosition(position);
             }
         }
-        requestDelete(listener);
+        requestDelete(action);
     }
 
     public void requestDelete(Collection<Conversation> conversations,
-            DestructiveAction listener) {
+            DestructiveAction action) {
         for (Conversation conv : conversations) {
             conv.localDeleteOnUpdate = true;
         }
         // Delete the local delete items (all for now) and when done,
         // update...
-        mListAdapter.delete(conversations, listener);
+        mListAdapter.delete(conversations, action);
     }
 
     public void onFolderUpdated(Folder folder) {

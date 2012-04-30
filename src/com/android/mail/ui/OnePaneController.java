@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import com.google.common.collect.ImmutableList;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -36,6 +38,7 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 /**
@@ -479,8 +482,7 @@ public final class OnePaneController extends AbstractActivityController {
             }
             mCompleted = true;
             Conversation next = null;
-            final ArrayList<Conversation> single = new ArrayList<Conversation>();
-            single.add(mCurrentConversation);
+            final Collection<Conversation> single = ImmutableList.of(mCurrentConversation);
             final int mode = mViewMode.getMode();
             if (mode == ViewMode.CONVERSATION) {
                 next = mTracker.getNextConversation(mCachedSettings);
@@ -499,10 +501,7 @@ public final class OnePaneController extends AbstractActivityController {
             } else {
                 // We don't have a conversation to show: show conversation list instead.
                 if (mode == ViewMode.CONVERSATION_LIST) {
-                    final ConversationListFragment convList = getConversationListFragment();
-                    if (convList != null) {
-                        convList.requestListRefresh();
-                    }
+                    refreshConversationList();
                 } else if (mode == ViewMode.CONVERSATION) {
                     final int position = mCurrentConversation.position;
                     final OnePaneDestructiveAction listener = this;
@@ -552,26 +551,23 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    protected void requestDelete(final DestructiveAction listener) {
-        final int position = mCurrentConversation.position;
+    protected void requestDelete(final DestructiveAction action) {
+        final Collection<Conversation> single = ImmutableList.of(mCurrentConversation);
         if (returnToList()) {
-            onBackPressed();
+            // This is wrong.  Either request delete should go back or listeners should go back
+            // but not both.
+            transitionBackToConversationListMode();
             mHandler.post(new Runnable() {
-
                 @Override
                 public void run() {
-                    final ConversationListFragment convList = getConversationListFragment();
-                    if (convList != null) {
-                        convList.requestDelete(position, listener);
-                    }
+                    removeAndDestroy(single, action);
                 }
-
             });
         } else {
             if (mConversationListCursor != null) {
-                mConversationListCursor.moveToPosition(position);
+                mConversationListCursor.moveToPosition(mCurrentConversation.position);
             }
-            listener.performAction();
+            action.performAction();
         }
     }
 

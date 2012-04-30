@@ -431,9 +431,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 });
             }
             baseAction(single);
-            if (convList != null) {
-                convList.requestListRefresh();
-            }
+            refreshConversationList();
         }
     }
 
@@ -449,14 +447,6 @@ public final class TwoPaneController extends AbstractActivityController {
         DestructiveAction da = new TwoPaneDestructiveAction(action);
         registerDestructiveAction(da);
         return da;
-    }
-
-    @Override
-    protected void requestDelete(final DestructiveAction listener) {
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
-            convList.requestDelete(listener);
-        }
     }
 
     @Override
