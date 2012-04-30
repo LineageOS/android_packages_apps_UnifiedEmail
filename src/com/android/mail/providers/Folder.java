@@ -474,8 +474,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     public static String getSerializedFolderString(Folder currentFolder,
-            ArrayList<Folder> folders) {
-        ArrayList<String> folderList = new ArrayList<String>();
+            Collection<Folder> folders) {
+        final Collection<String> folderList = new ArrayList<String>();
         for (Folder folderEntry : folders) {
             // If the current folder is a system folder, and the folder entry has the same type
             // as that system defined folder, don't show it.
@@ -486,5 +486,24 @@ public class Folder implements Parcelable, Comparable<Folder> {
             }
         }
         return TextUtils.join(Folder.FOLDER_SEPARATOR, folderList);
+    }
+
+    /**
+     * Returns a comma separated list of folder URIs for all the folders in the collection.
+     * @param folders
+     * @return
+     */
+    public final static String getUriString(Collection<Folder> folders) {
+        final StringBuilder uris = new StringBuilder();
+        boolean first = true;
+        for (Folder f : folders) {
+            if (first) {
+                first = false;
+            } else {
+                uris.append(',');
+            }
+            uris.append(f.uri.toString());
+        }
+        return uris.toString();
     }
 }

@@ -1384,51 +1384,72 @@ public abstract class AbstractActivityController implements ActivityController,
      * Destructive actions on Conversations. This class should only be created by controllers, and
      * clients should only require {@link DestructiveAction}s, not specific implementations of the.
      * Only the controllers should know what kind of destructive actions are being created.
+     *
+     * These Destructive Actions should not be used by themselves. These must be used by
+     * classes that update the UI state like {@link OnePaneController.OnePaneDestructiveAction}, 
+     * {@link TwoPaneController.TwoPaneDestructiveAction} and others.
      */
-    // TODO(viki): Remove all dependencies and make it protected.
-    protected abstract class AbstractDestructiveAction implements DestructiveAction {
+    protected class ConversationAction implements DestructiveAction {
         /**
          * The action to be performed. This is specified as the resource ID of the menu item
          * corresponding to this action: R.id.delete, R.id.report_spam, etc.
          */
         protected final int mAction;
+        /** The action will act upon these conversations */
+        private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
 
         /**
          * Create a listener object. action is one of four constants: R.id.y_button (archive),
          * R.id.delete , R.id.mute, and R.id.report_spam.
          * @param action
+         * @param target Conversation that we want to apply the action to.
          */
-        public AbstractDestructiveAction(int action) {
+        public ConversationAction(int action, Collection<Conversation> target) {
             mAction = action;
+            mTarget.addAll(target);
         }
 
         /**
          * The action common to child classes. This performs the action specified in the constructor
          * on the conversations given here.
-         * @param single A single conversation, packaged inside a collection that we want to apply
-         * the action to.
          */
-        protected void baseAction(Collection<Conversation> single) {
+        @Override
+        public void performAction() {
             switch (mAction) {
                 case R.id.archive:
-                    LogUtils.d(LOG_TAG, "Archiving conversation %s", mCurrentConversation);
-                    mConversationListCursor.archive(mContext, single);
+                    LogUtils.d(LOG_TAG, "Archiving: %s", mCurrentConversation);
+                    mConversationListCursor.archive(mContext, mTarget);
                     break;
                 case R.id.delete:
-                    LogUtils.d(LOG_TAG, "Deleting conversation %s", mCurrentConversation);
-                    mConversationListCursor.delete(mContext, single);
+                    LogUtils.d(LOG_TAG, "Deleting: %s", mCurrentConversation);
+                    mConversationListCursor.delete(mContext, mTarget);
                     break;
                 case R.id.mute:
-                    LogUtils.d(LOG_TAG, "Muting conversation %s", mCurrentConversation);
-                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE))
+                    LogUtils.d(LOG_TAG, "Muting: %s", mCurrentConversation);
+                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
                         mCurrentConversation.localDeleteOnUpdate = true;
-                    mConversationListCursor.mute(mContext, single);
+                    }
+                    mConversationListCursor.mute(mContext, mTarget);
                     break;
                 case R.id.report_spam:
-                    LogUtils.d(LOG_TAG, "reporting spam conversation %s", mCurrentConversation);
-                    mConversationListCursor.reportSpam(mContext, single);
+                    LogUtils.d(LOG_TAG, "Reporting spam: %s", mCurrentConversation);
+                    mConversationListCursor.reportSpam(mContext, mTarget);
+                    break;
+                case R.id.remove_star:
+                    LogUtils.d(LOG_TAG, "Removing star: %s", mCurrentConversation);
+                    // Star removal is destructive in the Starred folder.
+                    mConversationListCursor.updateBoolean(mContext, mTarget,
+                            ConversationColumns.STARRED, false);
+                    break;
+                case R.id.mark_not_important:
+                    LogUtils.d(LOG_TAG, "Marking not-important: %s", mCurrentConversation);
+                    // Marking not important is destructive in a mailbox containing only important
+                    // messages
+                    mConversationListCursor.updateInt(mContext, mTarget,
+                            ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                     break;
             }
+            refreshConversationList();
         }
     }
 
@@ -1451,17 +1472,8 @@ public abstract class AbstractActivityController implements ActivityController,
         final boolean currentlyViewingInbox = (mFolder.type == UIProvider.FolderType.INBOX);
         final boolean destructiveChange = currentlyViewingInbox ? !hasInbox :
                 !folderUris.contains(mFolder.uri.toString());
-        final StringBuilder foldersUrisString = new StringBuilder();
-        boolean first = true;
-        for (Folder f : folderChangeList) {
-            if (first) {
-                first = false;
-            } else {
-                foldersUrisString.append(',');
-            }
-            foldersUrisString.append(f.uri.toString());
-        }
-        updateCurrentConversation(ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
+        updateCurrentConversation(ConversationColumns.FOLDER_LIST,
+                Folder.getUriString(folderChangeList));
         updateCurrentConversation(ConversationColumns.RAW_FOLDERS,
                 Folder.getSerializedFolderString(mFolder, folderChangeList));
         // TODO: (mindyp): set ConversationColumns.RAW_FOLDERS like in
@@ -1690,41 +1702,14 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     @Override
     public void handleDrop(DragEvent event, final Folder folder) {
-        /*
-         * Expect clip data has form: [conversations_uri, conversationId1,
-         * maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]
-         */
         if (!supportsDrag(event, folder)) {
             return;
         }
-        ClipData data = event.getClipData();
-        ArrayList<Integer> conversationPositions = Lists.newArrayList();
-        for (int i = 1; i < data.getItemCount(); i += 3) {
-            int position = Integer.parseInt(data.getItemAt(i).getText().toString());
-            conversationPositions.add(position);
-        }
         final Collection<Conversation> conversations = mSelectedSet.values();
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList == null) {
-            return;
-        }
-        convList.requestDelete(conversations,
-                new DestructiveAction() {
-                    @Override
-                    public void performAction() {
-                        AbstractActivityController.this.performAction();
-                        ArrayList<Folder> changes = new ArrayList<Folder>();
-                        changes.add(folder);
-                        mConversationListCursor.updateString(mContext, conversations,
-                                ConversationColumns.FOLDER_LIST, folder.uri.toString());
-                        mConversationListCursor.updateString(mContext, conversations,
-                                ConversationColumns.RAW_FOLDERS,
-                                Folder.getSerializedFolderString(mFolder, changes));
-                        onUndoAvailable(new UndoOperation(conversations
-                                .size(), R.id.change_folder));
-                        mSelectedSet.clear();
-                    }
-                });
+        final Collection<Folder> dropTarget = ImmutableList.of(folder);
+        // Drag and drop is destructive: we remove conversations from the current folder.
+        final DestructiveAction action = getFolderChange(conversations, dropTarget, true);
+        removeAndDestroy(conversations, action);
     }
 
     @Override
@@ -1871,10 +1856,9 @@ public abstract class AbstractActivityController implements ActivityController,
      * from the UI.
      */
     private class BatchDestruction implements DestructiveAction {
-        private final int mAction;
+        private ConversationAction mConversationDeleter;
         /** Whether this destructive action has already been performed */
         public boolean mCompleted = false;
-        private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
 
         /**
          * Create a destructive action with an ID that is the same as the menu IDs: R.id.delete,
@@ -1882,8 +1866,7 @@ public abstract class AbstractActivityController implements ActivityController,
          * @param action
          */
         private BatchDestruction(int action) {
-            mAction = action;
-            mTarget.addAll(mSelectedSet.values());
+            mConversationDeleter = new ConversationAction(action, mSelectedSet.values());
         }
 
         @Override
@@ -1893,40 +1876,9 @@ public abstract class AbstractActivityController implements ActivityController,
             }
             mCompleted = true;
             AbstractActivityController.this.performAction();
-            onUndoAvailable(new UndoOperation(mTarget.size(), mAction, true));
-            switch (mAction) {
-                case R.id.archive:
-                    mConversationListCursor.archive(mContext, mTarget);
-                    break;
-                case R.id.delete:
-                    mConversationListCursor.delete(mContext, mTarget);
-                    break;
-                case R.id.mute:
-                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
-                        // Make sure to set the localDeleteOnUpdate flag for these conversations.
-                        for (Conversation conversation: mTarget) {
-                            conversation.localDeleteOnUpdate = true;
-                        }
-                    }
-                    mConversationListCursor.mute(mContext, mTarget);
-                    break;
-                case R.id.report_spam:
-                    mConversationListCursor.reportSpam(mContext, mTarget);
-                    break;
-                case R.id.remove_star:
-                    // Star removal is destructive in the Starred folder.
-                    mConversationListCursor.updateBoolean(mContext, mTarget,
-                            ConversationColumns.STARRED, false);
-                    break;
-                case R.id.mark_not_important:
-                    // Marking not important is destructive in a mailbox containing only important
-                    // messages
-                    mConversationListCursor.updateInt(mContext, mTarget,
-                            ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
-                    break;
-            }
-            // The list calls notifyDataSetChanged on itself after destructive actions.
-            // We don't need to.
+            final int size = mConversationDeleter.mTarget.size();
+            onUndoAvailable(new UndoOperation(size, mConversationDeleter.mAction, true));
+            mConversationDeleter.performAction();
         }
     }
 
@@ -1943,6 +1895,11 @@ public abstract class AbstractActivityController implements ActivityController,
         return da;
     }
 
+    /**
+     * Class to change the folders that are assigned to a set of conversations. This is destructive
+     * because the user can remove the current folder from the conversation, in which case it has
+     * to be animated away from the current folder.
+     */
     private class FolderDestruction implements DestructiveAction {
         private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
         private final ArrayList<Folder> mFolderList = new ArrayList<Folder>();
@@ -1959,9 +1916,6 @@ public abstract class AbstractActivityController implements ActivityController,
             mIsDestructive = isDestructive;
         }
 
-        /* (non-Javadoc)
-         * @see com.android.mail.ui.DestructiveAction#performAction()
-         */
         @Override
         public void performAction() {
             AbstractActivityController.this.performAction();
@@ -1970,18 +1924,8 @@ public abstract class AbstractActivityController implements ActivityController,
                 UndoOperation undoOp = new UndoOperation(mTarget.size(), R.id.change_folder);
                 onUndoAvailable(undoOp);
             }
-            final StringBuilder foldersUrisString = new StringBuilder();
-            boolean first = true;
-            for (Folder f : mFolderList) {
-                if (first) {
-                    first = false;
-                } else {
-                    foldersUrisString.append(',');
-                }
-                foldersUrisString.append(f.uri.toString());
-            }
             mConversationListCursor.updateString(mContext, mTarget,
-                    ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
+                    ConversationColumns.FOLDER_LIST, Folder.getUriString(mFolderList));
             mConversationListCursor.updateString(mContext, mTarget,
                     ConversationColumns.RAW_FOLDERS,
                     Folder.getSerializedFolderString(mFolder, mFolderList));

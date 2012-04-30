@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import com.google.common.collect.ImmutableList;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -391,16 +393,19 @@ public final class TwoPaneController extends AbstractActivityController {
 
     /**
      * An object that performs an action on the conversation database. This is a
-     * {@link DestructiveAction}: this is called <b>after</a> the conversation list has animated
+     * {@link DestructiveAction}: this is called <b>after</b> the conversation list has animated
      * the conversation away. Once the animation is completed, the {@link #performAction()}
      * method is called which performs the correct data operation.
      */
-    private class TwoPaneDestructiveAction extends AbstractDestructiveAction {
+    private class TwoPaneDestructiveAction implements DestructiveAction {
         /** Whether this destructive action has already been performed */
-        public boolean mCompleted;
+        private boolean mCompleted;
+        private final int mId;
+        private final DestructiveAction mAction;
 
         public TwoPaneDestructiveAction(int action) {
-            super(action);
+            mAction = new ConversationAction(action, ImmutableList.of(mCurrentConversation));
+            mId = action;
         }
 
         @Override
@@ -409,8 +414,6 @@ public final class TwoPaneController extends AbstractActivityController {
                 return;
             }
             mCompleted = true;
-            final ArrayList<Conversation> single = new ArrayList<Conversation>();
-            single.add(mCurrentConversation);
             final Conversation nextConversation = mTracker.getNextConversation(mCachedSettings);
             TwoPaneController.this.performAction();
             final ConversationListFragment convList = getConversationListFragment();
@@ -419,18 +422,18 @@ public final class TwoPaneController extends AbstractActivityController {
                 if (convList != null) {
                     convList.viewConversation(nextConversation.position);
                 }
-                onUndoAvailable(new UndoOperation(1, mAction));
+                onUndoAvailable(new UndoOperation(1, mId));
             } else {
                 // We don't have a conversation to show: show conversation list instead.
                 onBackPressed();
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        onUndoAvailable(new UndoOperation(1, mAction));
+                        onUndoAvailable(new UndoOperation(1, mId));
                     }
                 });
             }
-            baseAction(single);
+            mAction.performAction();
             refreshConversationList();
         }
     }
