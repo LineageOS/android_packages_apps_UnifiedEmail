@@ -108,7 +108,8 @@
     <string name="install_attachment" msgid="2803531650273683382">"Pasang"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Batal"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Info"</string>
-    <string name="attachment_type_blocked" msgid="2574422813386113664">"Tidak dapat menyimpan atau membuka jenis lampiran ini karena mungkin berisi perangkat lunak berbahaya."</string>
+    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
+    <skip />
     <string name="no_application_found" msgid="1945184804521392093">"Tidak ada apl yang dapat membuka lampiran ini untuk ditampilkan."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Mengambil lampiran"</string>
     <string name="please_wait" msgid="8797634225088247121">"Harap tunggu..."</string>
@@ -246,18 +247,12 @@
     <string name="invalid_recipient" msgid="2161317422860961623">"Alamat <xliff:g id="WRONGEMAIL">%s</xliff:g> tidak valid."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Tampilkan kutipan teks"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Sembunyikan kutipan teks"</string>
-    <!-- no translation found for message_invite_title (6757287288611722175) -->
-    <skip />
-    <!-- no translation found for message_invite_calendar_view (1898326841767645665) -->
-    <skip />
-    <!-- no translation found for message_invite_label_attending (7378806613557157546) -->
-    <skip />
-    <!-- no translation found for message_invite_accept (869753811259793266) -->
-    <skip />
-    <!-- no translation found for message_invite_tentative (3898050756490962079) -->
-    <skip />
-    <!-- no translation found for message_invite_decline (4524135969656266758) -->
-    <skip />
+    <string name="message_invite_title" msgid="6757287288611722175">"Undangan kalender"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Lihat di Kalender"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"Hadir?"</string>
+    <string name="message_invite_accept" msgid="869753811259793266">"Ya"</string>
+    <string name="message_invite_tentative" msgid="3898050756490962079">"Mungkin"</string>
+    <string name="message_invite_decline" msgid="4524135969656266758">"Tidak"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"Oke"</string>
     <string name="done" msgid="3079981801778027540">"Selesai"</string>

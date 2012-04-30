@@ -108,7 +108,8 @@
     <string name="install_attachment" msgid="2803531650273683382">"Sakinisha"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Ghairi"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Maelezo"</string>
-    <string name="attachment_type_blocked" msgid="2574422813386113664">"Haiwezi kuhifadhi au kufungua aina hii ya kiambatisho kwa sababu kinaweza kuwa  na programu hasidi."</string>
+    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
+    <skip />
     <string name="no_application_found" msgid="1945184804521392093">"Hakuna programu inayoweza kufungua kiambatisho hiki ili kitazamwe."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Inaleta kiambatisho"</string>
     <string name="please_wait" msgid="8797634225088247121">"Tafadhali subiri…"</string>
