@@ -108,7 +108,8 @@
     <string name="install_attachment" msgid="2803531650273683382">"설치"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"취소"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"정보"</string>
-    <string name="attachment_type_blocked" msgid="2574422813386113664">"이 유형의 첨부파일에는 악성 소프트웨어가 포함되어 있을 수 있으므로 파일을 저장하거나 열 수 없습니다."</string>
+    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
+    <skip />
     <string name="no_application_found" msgid="1945184804521392093">"이 첨부파일을 열어서 볼 수 있는 앱이 없습니다."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"첨부파일 가져오는 중"</string>
     <string name="please_wait" msgid="8797634225088247121">"잠시 기다려 주세요..."</string>
@@ -246,18 +247,12 @@
     <string name="invalid_recipient" msgid="2161317422860961623">"주소(<xliff:g id="WRONGEMAIL">%s</xliff:g>)가 잘못되었습니다."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ 받은메일 표시"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ 받은메일 숨기기"</string>
-    <!-- no translation found for message_invite_title (6757287288611722175) -->
-    <skip />
-    <!-- no translation found for message_invite_calendar_view (1898326841767645665) -->
-    <skip />
-    <!-- no translation found for message_invite_label_attending (7378806613557157546) -->
-    <skip />
-    <!-- no translation found for message_invite_accept (869753811259793266) -->
-    <skip />
-    <!-- no translation found for message_invite_tentative (3898050756490962079) -->
-    <skip />
-    <!-- no translation found for message_invite_decline (4524135969656266758) -->
-    <skip />
+    <string name="message_invite_title" msgid="6757287288611722175">"캘린더 초대"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"캘린더에서 보기"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"참석하시겠습니까?"</string>
+    <string name="message_invite_accept" msgid="869753811259793266">"예"</string>
+    <string name="message_invite_tentative" msgid="3898050756490962079">"미정"</string>
+    <string name="message_invite_decline" msgid="4524135969656266758">"아니요"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"확인"</string>
     <string name="done" msgid="3079981801778027540">"완료"</string>

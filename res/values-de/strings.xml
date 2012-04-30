@@ -108,7 +108,8 @@
     <string name="install_attachment" msgid="2803531650273683382">"Installieren"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Abbrechen"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Info"</string>
-    <string name="attachment_type_blocked" msgid="2574422813386113664">"Diese Art von Anhang kann nicht geöffnet oder gespeichert werden, da er möglicherweise schädliche Software enthält."</string>
+    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
+    <skip />
     <string name="no_application_found" msgid="1945184804521392093">"Dieser Anhang kann von keiner App zum Anzeigen geöffnet werden."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Anhang wird abgerufen..."</string>
     <string name="please_wait" msgid="8797634225088247121">"Bitte warten…"</string>
@@ -246,18 +247,12 @@
     <string name="invalid_recipient" msgid="2161317422860961623">"Die Adresse <xliff:g id="WRONGEMAIL">%s</xliff:g> ist ungültig."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Zitierten Text anzeigen"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Zitierten Text ausblenden"</string>
-    <!-- no translation found for message_invite_title (6757287288611722175) -->
-    <skip />
-    <!-- no translation found for message_invite_calendar_view (1898326841767645665) -->
-    <skip />
-    <!-- no translation found for message_invite_label_attending (7378806613557157546) -->
-    <skip />
-    <!-- no translation found for message_invite_accept (869753811259793266) -->
-    <skip />
-    <!-- no translation found for message_invite_tentative (3898050756490962079) -->
-    <skip />
-    <!-- no translation found for message_invite_decline (4524135969656266758) -->
-    <skip />
+    <string name="message_invite_title" msgid="6757287288611722175">"Kalendereinladung"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Im Kalender anzeigen"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"Mit dabei?"</string>
+    <string name="message_invite_accept" msgid="869753811259793266">"Ja"</string>
+    <string name="message_invite_tentative" msgid="3898050756490962079">"Vielleicht"</string>
+    <string name="message_invite_decline" msgid="4524135969656266758">"Nein"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Fertig"</string>
