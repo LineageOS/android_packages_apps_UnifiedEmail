@@ -39,6 +39,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 /**
@@ -341,19 +342,19 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
-        final int id = item.getItemId();
-        switch (id) {
+        final Collection<Conversation> target = ImmutableList.of(mCurrentConversation);
+        switch (item.getItemId()) {
             case R.id.y_button: {
                 final boolean showDialog =
                         (mCachedSettings != null && mCachedSettings.confirmArchive);
-                confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
+                confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
                         getAction(R.id.archive));
                 break;
             }
             case R.id.delete: {
                 final boolean showDialog =
                         (mCachedSettings != null && mCachedSettings.confirmDelete);
-                confirmAndDelete(showDialog, R.plurals.confirm_delete_conversation,
+                confirmAndDelete(target, showDialog, R.plurals.confirm_delete_conversation,
                         getAction(R.id.delete));
                 break;
             }
@@ -375,13 +376,13 @@ public final class TwoPaneController extends AbstractActivityController {
             case R.id.mute:
                 ConversationListFragment convList = getConversationListFragment();
                 if (convList != null) {
-                    convList.requestDelete(getAction(R.id.mute));
+                    convList.requestDelete(target, getAction(R.id.mute));
                 }
                 break;
             case R.id.report_spam:
                 convList = getConversationListFragment();
                 if (convList != null) {
-                    convList.requestDelete(getAction(R.id.report_spam));
+                    convList.requestDelete(target, getAction(R.id.report_spam));
                 }
                 break;
             default:
@@ -401,6 +402,7 @@ public final class TwoPaneController extends AbstractActivityController {
         /** Whether this destructive action has already been performed */
         private boolean mCompleted;
         private final int mId;
+        /** Action that updates the underlying database to modify the conversation. */
         private final DestructiveAction mAction;
 
         public TwoPaneDestructiveAction(int action) {
@@ -410,15 +412,13 @@ public final class TwoPaneController extends AbstractActivityController {
 
         @Override
         public void performAction() {
-            if (mCompleted) {
+            if (isPerformed()) {
                 return;
             }
-            mCompleted = true;
             final Conversation nextConversation = mTracker.getNextConversation(mCachedSettings);
-            TwoPaneController.this.performAction();
-            final ConversationListFragment convList = getConversationListFragment();
             if (nextConversation != null) {
                 // We have a conversation to auto advance to.
+                final ConversationListFragment convList = getConversationListFragment();
                 if (convList != null) {
                     convList.viewConversation(nextConversation.position);
                 }
@@ -426,15 +426,21 @@ public final class TwoPaneController extends AbstractActivityController {
             } else {
                 // We don't have a conversation to show: show conversation list instead.
                 onBackPressed();
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onUndoAvailable(new UndoOperation(1, mId));
-                    }
-                });
+                onUndoAvailable(new UndoOperation(1, mId));
             }
             mAction.performAction();
             refreshConversationList();
+        }
+        /**
+         * Returns true if this action has been performed, false otherwise.
+         * @return
+         */
+        private synchronized boolean isPerformed() {
+            if (mCompleted) {
+                return true;
+            }
+            mCompleted = true;
+            return false;
         }
     }
 
@@ -447,7 +453,7 @@ public final class TwoPaneController extends AbstractActivityController {
      * @return
      */
     private final DestructiveAction getAction(int action) {
-        DestructiveAction da = new TwoPaneDestructiveAction(action);
+        final DestructiveAction da = new TwoPaneDestructiveAction(action);
         registerDestructiveAction(da);
         return da;
     }
@@ -459,8 +465,8 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void onUndoAvailable(UndoOperation op) {
-        int mode = mViewMode.getMode();
-        FrameLayout.LayoutParams params;
+        final int mode = mViewMode.getMode();
+        final FrameLayout.LayoutParams params;
         final ConversationListFragment convList = getConversationListFragment();
         switch (mode) {
             case ViewMode.CONVERSATION_LIST:

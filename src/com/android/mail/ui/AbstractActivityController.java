@@ -26,7 +26,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
-import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -695,15 +694,13 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param confirmResource
      * @param action
      */
-    protected void confirmAndDelete(boolean showDialog, int confirmResource,
-            final DestructiveAction action) {
-        final ArrayList<Conversation> single = new ArrayList<Conversation>();
-        single.add(mCurrentConversation);
+    protected void confirmAndDelete(final Collection<Conversation> target, boolean showDialog,
+            int confirmResource, final DestructiveAction action) {
         if (showDialog) {
             final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    requestDelete(action);
+                    requestDelete(target, action);
                 }
             };
             final CharSequence message = Utils.formatPlural(mContext, confirmResource, 1);
@@ -712,7 +709,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     .setNegativeButton(R.string.cancel, null)
                     .create().show();
         } else {
-            requestDelete(action);
+            requestDelete(target, action);
         }
     }
 
@@ -720,8 +717,9 @@ public abstract class AbstractActivityController implements ActivityController,
      * Request the removal of the current conversation with the specified destructive action.
      * @param action
      */
-    protected void requestDelete(DestructiveAction action) {
-        removeAndDestroy(ImmutableList.of(mCurrentConversation), action);
+    protected void requestDelete(final Collection<Conversation> target,
+            final DestructiveAction action) {
+        removeAndDestroy(target, action);
     }
 
     @Override
@@ -1386,7 +1384,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * Only the controllers should know what kind of destructive actions are being created.
      *
      * These Destructive Actions should not be used by themselves. These must be used by
-     * classes that update the UI state like {@link OnePaneController.OnePaneDestructiveAction}, 
+     * classes that update the UI state like {@link OnePaneController.OnePaneDestructiveAction},
      * {@link TwoPaneController.TwoPaneDestructiveAction} and others.
      */
     protected class ConversationAction implements DestructiveAction {
@@ -1394,9 +1392,11 @@ public abstract class AbstractActivityController implements ActivityController,
          * The action to be performed. This is specified as the resource ID of the menu item
          * corresponding to this action: R.id.delete, R.id.report_spam, etc.
          */
-        protected final int mAction;
+        private final int mAction;
         /** The action will act upon these conversations */
         private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
+        /** Whether this destructive action has already been performed */
+        private boolean mCompleted;
 
         /**
          * Create a listener object. action is one of four constants: R.id.y_button (archive),
@@ -1415,34 +1415,39 @@ public abstract class AbstractActivityController implements ActivityController,
          */
         @Override
         public void performAction() {
+            if (isPerformed()) {
+                return;
+            }
             switch (mAction) {
                 case R.id.archive:
-                    LogUtils.d(LOG_TAG, "Archiving: %s", mCurrentConversation);
+                    LogUtils.d(LOG_TAG, "Archiving: %s", mTarget);
                     mConversationListCursor.archive(mContext, mTarget);
                     break;
                 case R.id.delete:
-                    LogUtils.d(LOG_TAG, "Deleting: %s", mCurrentConversation);
+                    LogUtils.d(LOG_TAG, "Deleting: %s", mTarget);
                     mConversationListCursor.delete(mContext, mTarget);
                     break;
                 case R.id.mute:
-                    LogUtils.d(LOG_TAG, "Muting: %s", mCurrentConversation);
+                    LogUtils.d(LOG_TAG, "Muting: %s", mTarget);
                     if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
-                        mCurrentConversation.localDeleteOnUpdate = true;
+                        for (Conversation c : mTarget) {
+                            c.localDeleteOnUpdate = true;
+                        }
                     }
                     mConversationListCursor.mute(mContext, mTarget);
                     break;
                 case R.id.report_spam:
-                    LogUtils.d(LOG_TAG, "Reporting spam: %s", mCurrentConversation);
+                    LogUtils.d(LOG_TAG, "Reporting spam: %s", mTarget);
                     mConversationListCursor.reportSpam(mContext, mTarget);
                     break;
                 case R.id.remove_star:
-                    LogUtils.d(LOG_TAG, "Removing star: %s", mCurrentConversation);
+                    LogUtils.d(LOG_TAG, "Removing star: %s", mTarget);
                     // Star removal is destructive in the Starred folder.
                     mConversationListCursor.updateBoolean(mContext, mTarget,
                             ConversationColumns.STARRED, false);
                     break;
                 case R.id.mark_not_important:
-                    LogUtils.d(LOG_TAG, "Marking not-important: %s", mCurrentConversation);
+                    LogUtils.d(LOG_TAG, "Marking not-important: %s", mTarget);
                     // Marking not important is destructive in a mailbox containing only important
                     // messages
                     mConversationListCursor.updateInt(mContext, mTarget,
@@ -1450,6 +1455,18 @@ public abstract class AbstractActivityController implements ActivityController,
                     break;
             }
             refreshConversationList();
+        }
+
+        /**
+         * Returns true if this action has been performed, false otherwise.
+         * @return
+         */
+        private synchronized boolean isPerformed() {
+            if (mCompleted) {
+                return true;
+            }
+            mCompleted = true;
+            return false;
         }
     }
 
@@ -1479,9 +1496,10 @@ public abstract class AbstractActivityController implements ActivityController,
         // TODO: (mindyp): set ConversationColumns.RAW_FOLDERS like in
         // SelectedConversationsActionMenu
         if (destructiveChange) {
-            DestructiveAction listener = getFolderDestructiveAction();
             mCurrentConversation.localDeleteOnUpdate = true;
-            requestDelete(listener);
+            final Collection<Conversation> target = ImmutableList.of(mCurrentConversation);
+            final DestructiveAction folderChange = getFolderDestructiveAction();
+            requestDelete(target, folderChange);
         } else {
             refreshConversationList();
         }
@@ -1517,20 +1535,7 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     @Override
     public void onRefreshReady() {
-        final ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
-        // If we have any deletions from the server, and the conversations are in the list view,
-        // remove them from a selected set, if any
-        if (!deletedRows.isEmpty() && !mSelectedSet.isEmpty()) {
-            mSelectedSet.delete(deletedRows);
-        }
-        // If we have any deletions from the server, animate them away
-        final ConversationListFragment convList = getConversationListFragment();
-        if (!deletedRows.isEmpty() && convList != null) {
-            final AnimatedAdapter adapter = convList.getAnimatedAdapter();
-            if (adapter != null) {
-                adapter.delete(deletedRows, this);
-            }
-        } if (!mIsConversationListScrolling) {
+        if (!mIsConversationListScrolling) {
             // Swap cursors
             mConversationListCursor.sync();
         }
@@ -1540,7 +1545,6 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void onDataSetChanged() {
         updateConversationListFragment();
-
         mConversationListObservable.notifyChanged();
     }
 
@@ -1649,14 +1653,6 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mCabActionMenu != null) {
             mCabActionMenu.activate();
         }
-    }
-
-    @Override
-    public final void performAction() {
-        if (mConversationListCursor != null && mConversationListCursor.isRefreshReady()) {
-            updateConversationListFragment();
-        }
-        mSelectedSet.clear();
     }
 
     @Override
@@ -1858,7 +1854,8 @@ public abstract class AbstractActivityController implements ActivityController,
     private class BatchDestruction implements DestructiveAction {
         private ConversationAction mConversationDeleter;
         /** Whether this destructive action has already been performed */
-        public boolean mCompleted = false;
+        private boolean mCompleted = false;
+        private final int mId;
 
         /**
          * Create a destructive action with an ID that is the same as the menu IDs: R.id.delete,
@@ -1867,18 +1864,29 @@ public abstract class AbstractActivityController implements ActivityController,
          */
         private BatchDestruction(int action) {
             mConversationDeleter = new ConversationAction(action, mSelectedSet.values());
+            mId = action;
         }
 
         @Override
         public void performAction() {
-            if (mCompleted) {
+            if (isPerformed()) {
                 return;
             }
-            mCompleted = true;
-            AbstractActivityController.this.performAction();
             final int size = mConversationDeleter.mTarget.size();
-            onUndoAvailable(new UndoOperation(size, mConversationDeleter.mAction, true));
+            onUndoAvailable(new UndoOperation(size, mId, true));
             mConversationDeleter.performAction();
+            mSelectedSet.clear();
+        }
+        /**
+         * Returns true if this action has been performed, false otherwise.
+         * @return
+         */
+        private synchronized boolean isPerformed() {
+            if (mCompleted) {
+                return true;
+            }
+            mCompleted = true;
+            return false;
         }
     }
 
@@ -1889,7 +1897,7 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     // TODO(viki): This either should be in the ActivityController or removed entirely.
     // What we have right now is a half-way solution during the refactoring.
-    public final DestructiveAction getDestructiveAction(int action) {
+    public final DestructiveAction getBatchDestruction(int action) {
         final DestructiveAction da = new BatchDestruction(action);
         registerDestructiveAction(da);
         return da;
@@ -1904,13 +1912,15 @@ public abstract class AbstractActivityController implements ActivityController,
         private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
         private final ArrayList<Folder> mFolderList = new ArrayList<Folder>();
         private final boolean mIsDestructive;
+        /** Whether this destructive action has already been performed */
+        private boolean mCompleted;
 
         /**
          * Create a new folder destruction object to act on the given conversations.
          * @param target
          */
-        private FolderDestruction(Collection<Conversation> target, Collection<Folder> folders,
-                boolean isDestructive) {
+        private FolderDestruction(final Collection<Conversation> target,
+                final Collection<Folder> folders, boolean isDestructive) {
             mTarget.addAll(target);
             mFolderList.addAll(folders);
             mIsDestructive = isDestructive;
@@ -1918,9 +1928,10 @@ public abstract class AbstractActivityController implements ActivityController,
 
         @Override
         public void performAction() {
-            AbstractActivityController.this.performAction();
+            if (isPerformed()) {
+                return;
+            }
             if (mIsDestructive) {
-                // Only show undo if this was a destructive folder change.
                 UndoOperation undoOp = new UndoOperation(mTarget.size(), R.id.change_folder);
                 onUndoAvailable(undoOp);
             }
@@ -1929,11 +1940,21 @@ public abstract class AbstractActivityController implements ActivityController,
             mConversationListCursor.updateString(mContext, mTarget,
                     ConversationColumns.RAW_FOLDERS,
                     Folder.getSerializedFolderString(mFolder, mFolderList));
-            if (mIsDestructive) {
-                refreshConversationList();
+            refreshConversationList();
+        }
+        /**
+         * Returns true if this action has been performed, false otherwise.
+         * @return
+         */
+        private synchronized boolean isPerformed() {
+            if (mCompleted) {
+                return true;
             }
+            mCompleted = true;
+            return false;
         }
     }
+
     public final DestructiveAction getFolderChange(Collection<Conversation> target,
             Collection<Folder> folders, boolean isDestructive){
         final DestructiveAction da = new FolderDestruction(target, folders, isDestructive);
@@ -1958,7 +1979,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param target
      * @param action
      */
-    public void removeAndDestroy(Collection<Conversation> target, DestructiveAction action) {
+    public void removeAndDestroy(final Collection<Conversation> target,
+            final DestructiveAction action) {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             convList.requestDelete(target, action);

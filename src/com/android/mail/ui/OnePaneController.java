@@ -37,7 +37,6 @@ import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -409,25 +408,25 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
-        final int id = item.getItemId();
-        switch (id) {
+        final Collection<Conversation> target = ImmutableList.of(mCurrentConversation);
+        switch (item.getItemId()) {
             case R.id.y_button: {
                 final boolean showDialog =
                         (mCachedSettings != null && mCachedSettings.confirmArchive);
-                confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
+                confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
                         getAction(R.id.archive));
                 break;
             }
             case R.id.delete: {
                 final boolean showDialog =
                         (mCachedSettings != null && mCachedSettings.confirmDelete);
-                confirmAndDelete(showDialog,
+                confirmAndDelete(target, showDialog,
                         R.plurals.confirm_delete_conversation, getAction(R.id.delete));
                 break;
             }
             case R.id.change_folders:
                 new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                        Collections.singletonList(mCurrentConversation)).show();
+                        target).show();
                 break;
             case R.id.inside_conversation_unread:
                 // Mark as unread and advance.
@@ -442,10 +441,10 @@ public final class OnePaneController extends AbstractActivityController {
                         UIProvider.ConversationPriority.LOW);
                 break;
             case R.id.mute:
-                requestDelete(getAction(R.id.mute));
+                requestDelete(target, getAction(R.id.mute));
                 break;
             case R.id.report_spam:
-                requestDelete(getAction(R.id.report_spam));
+                requestDelete(target, getAction(R.id.report_spam));
                 break;
             default:
                 handled = false;
@@ -472,9 +471,10 @@ public final class OnePaneController extends AbstractActivityController {
      */
     private class OnePaneDestructiveAction implements DestructiveAction {
         /** Whether this destructive action has already been performed */
-        public boolean mCompleted;
+        private boolean mCompleted;
         /** Menu Id that created this action */
-        final int mId;
+        private final int mId;
+        /** Action that updates the underlying database to modify the conversation. */
         private final DestructiveAction mAction;
 
         public OnePaneDestructiveAction(int action) {
@@ -485,45 +485,39 @@ public final class OnePaneController extends AbstractActivityController {
 
         @Override
         public void performAction() {
-            if (mCompleted) {
+            if (isPerformed()) {
                 return;
             }
-            mCompleted = true;
-            Conversation next = null;
-            final int mode = mViewMode.getMode();
-            if (mode == ViewMode.CONVERSATION) {
-                next = mTracker.getNextConversation(mCachedSettings);
-            } else if (mode == ViewMode.CONVERSATION_LIST
-                    && mId != R.id.inside_conversation_unread) {
-                OnePaneController.this.performAction();
-                onUndoAvailable(new UndoOperation(1, mId));
-            }
             mAction.performAction();
-            if (next != null) {
-                // We have a conversation to auto advance to
-                if (mode == ViewMode.CONVERSATION) {
-                    showConversation(next);
-                    onUndoAvailable(new UndoOperation(1, mId));
-                }
-            } else {
-                // We don't have a conversation to show: show conversation list instead.
-                if (mode == ViewMode.CONVERSATION_LIST) {
+            switch (mViewMode.getMode()) {
+                case ViewMode.CONVERSATION:
+                    final Conversation next = mTracker.getNextConversation(mCachedSettings);
+                    if (next != null) {
+                        showConversation(next);
+                        onUndoAvailable(new UndoOperation(1, mId));
+                    } else {
+                        // No next conversation, we should got back to conversation list.
+                        transitionBackToConversationListMode();
+                    }
+                    break;
+                case ViewMode.CONVERSATION_LIST:
+                    if (mId != R.id.inside_conversation_unread) {
+                        onUndoAvailable(new UndoOperation(1, mId));
+                    }
                     refreshConversationList();
-                } else if (mode == ViewMode.CONVERSATION) {
-                    final int position = mCurrentConversation.position;
-                    final OnePaneDestructiveAction listener = this;
-                    transitionBackToConversationListMode();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            final ConversationListFragment convList = getConversationListFragment();
-                            if (convList != null) {
-                                convList.requestDelete(position, listener);
-                            }
-                        }
-                    });
-                }
+                    break;
             }
+        }
+        /**
+         * Returns true if this action has been performed, false otherwise.
+         * @return
+         */
+        private synchronized boolean isPerformed() {
+            if (mCompleted) {
+                return true;
+            }
+            mCompleted = true;
+            return false;
         }
     }
 
@@ -536,7 +530,7 @@ public final class OnePaneController extends AbstractActivityController {
      * @return
      */
     private final DestructiveAction getAction(int action) {
-        DestructiveAction da = new OnePaneDestructiveAction(action);
+        final DestructiveAction da = new OnePaneDestructiveAction(action);
         registerDestructiveAction(da);
         return da;
     }
@@ -558,27 +552,6 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    protected void requestDelete(final DestructiveAction action) {
-        final Collection<Conversation> single = ImmutableList.of(mCurrentConversation);
-        if (returnToList()) {
-            // This is wrong.  Either request delete should go back or listeners should go back
-            // but not both.
-            transitionBackToConversationListMode();
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    removeAndDestroy(single, action);
-                }
-            });
-        } else {
-            if (mConversationListCursor != null) {
-                mConversationListCursor.moveToPosition(mCurrentConversation.position);
-            }
-            action.performAction();
-        }
-    }
-
-    @Override
     public DestructiveAction getFolderDestructiveAction() {
         return getAction(R.id.change_folder);
     }
@@ -586,7 +559,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onUndoAvailable(UndoOperation op) {
         if (op != null && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
-            int mode = mViewMode.getMode();
+            final int mode = mViewMode.getMode();
             switch (mode) {
                 case ViewMode.CONVERSATION:
                     mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,

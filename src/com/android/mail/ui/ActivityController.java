@@ -44,7 +44,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
 public interface ActivityController extends DragListener, LayoutListener, SubjectDisplayChanger,
         ModeChangeListener, ConversationListCallbacks, FolderChangeCommitListener,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
-        DestructiveAction, ConversationSetObserver,
+        ConversationSetObserver,
         FolderListFragment.FolderListSelectionListener, HelpCallback, UndoBarView.UndoListener {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name

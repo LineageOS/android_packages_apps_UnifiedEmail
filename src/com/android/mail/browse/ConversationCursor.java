@@ -68,7 +68,7 @@ public final class ConversationCursor implements Cursor {
     // A sentinel value for the "index" of the deleted column; it's an int that is otherwise invalid
     private static final int DELETED_COLUMN_INDEX = -1;
     // Empty deletion list
-    private static final ArrayList<Integer> EMPTY_DELETION_LIST = Lists.newArrayList();
+    private static final Collection<Conversation> EMPTY_DELETION_LIST = Lists.newArrayList();
     // The index of the Uri whose data is reflected in the cached row
     // Updates/Deletes to this Uri are cached
     private static int sUriColumnIndex;
@@ -667,7 +667,7 @@ public final class ConversationCursor implements Cursor {
      * been swapped into place; this allows the UI to animate these away if desired
      * @return a list of positions deleted in ConversationCursor
      */
-    public ArrayList<Integer> getRefreshDeletions () {
+    public Collection<Conversation> getRefreshDeletions () {
         return EMPTY_DELETION_LIST;
     }
 

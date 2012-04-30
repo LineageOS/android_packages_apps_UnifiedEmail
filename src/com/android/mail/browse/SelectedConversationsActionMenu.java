@@ -128,7 +128,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     // TODO(viki): This is a placeholder during the refactoring. Ideally the controller hands
     // the ID of the action to clients.
     private final DestructiveAction getAction(int type) {
-        return mController.getDestructiveAction(type);
+        return mController.getBatchDestruction(type);
     }
 
     @Override
@@ -137,10 +137,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         Collection<Conversation> conversations = mSelectionSet.values();
         switch (item.getItemId()) {
             case R.id.delete:
-                performDestructiveAction(R.id.delete, getAction(R.id.delete));
+                performDestructiveAction(R.id.delete);
                 break;
             case R.id.archive:
-                performDestructiveAction(R.id.archive, getAction(R.id.archive));
+                performDestructiveAction(R.id.archive);
                 break;
             case R.id.mute:
                 mListAdapter.delete(conversations, getAction(R.id.mute));
@@ -160,7 +160,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             case R.id.remove_star:
                 if (mFolder.type == UIProvider.FolderType.STARRED) {
                     LogUtils.d(LOG_TAG, "We are in a starred folder, removing the star");
-                    performDestructiveAction(R.id.remove_star, getAction(R.id.remove_star));
+                    performDestructiveAction(R.id.remove_star);
                 } else {
                     LogUtils.d(LOG_TAG, "Not in a starred folder.");
                     starConversations(false);
@@ -174,8 +174,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 break;
             case R.id.mark_not_important:
                 if (mFolder.supportsCapability(UIProvider.FolderCapabilities.ONLY_IMPORTANT)) {
-                    performDestructiveAction(R.id.mark_not_important,
-                            getAction(R.id.mark_not_important));
+                    performDestructiveAction(R.id.mark_not_important);
                 } else {
                     markConversationsImportant(false);
                 }
@@ -208,7 +207,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
-    private void performDestructiveAction(final int id, final DestructiveAction action) {
+    private void performDestructiveAction(final int id) {
+        final DestructiveAction action = getAction(id);
         final Settings settings = mActivity.getSettings();
         final Collection<Conversation> conversations = mSelectionSet.values();
         final boolean showDialog = (settings != null
@@ -230,8 +230,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
 
-    private void destroy(int id, Collection<Conversation> conversations,
-            DestructiveAction listener) {
+    private void destroy(int id, final Collection<Conversation> conversations,
+            final DestructiveAction listener) {
         if (id == R.id.archive) {
             ArrayList<ConversationItemView> views = new ArrayList<ConversationItemView>();
             for (ConversationItemView view : mSelectionSet.views()) {
@@ -297,18 +297,17 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             final boolean isDestructive = true;
             // We copy the selected set because it might change as the animation starts, and we want
             // to apply the action to the current selection.
-            final Collection<Conversation> conversations = mSelectionSet.values();
-            // Indicate delete on update (i.e. no longer in this folder)
-            final Collection<Conversation> deletionSet = new ArrayList<Conversation>();
-            for (Conversation conv : conversations) {
+            final Collection<Conversation> target = new ArrayList<Conversation>();
+            for (Conversation conv : mSelectionSet.values()) {
+                // Indicate delete on update (i.e. no longer in this folder)
                 conv.localDeleteOnUpdate = true;
                 // For Gmail, add... if (noLongerInList(conv))...
-                deletionSet.add(conv);
+                target.add(conv);
             }
             // Delete the local delete items (all for now) and when done, update...
-            final DestructiveAction action = mController.getFolderChange(deletionSet,
+            final DestructiveAction action = mController.getFolderChange(target,
                     mFolderChangeList, isDestructive);
-            mListAdapter.delete(deletionSet, action);
+            mListAdapter.delete(target, action);
         } else {
             // Conversations are not removed. They just have their labels changed.
             final boolean isDestructive = false;
@@ -321,7 +320,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         mSelectionSet.addObserver(this);
-        MenuInflater inflater = mActivity.getMenuInflater();
+        final MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(R.menu.conversation_list_selection_actions_menu, menu);
         mActionMode = mode;
         mMenu = menu;
