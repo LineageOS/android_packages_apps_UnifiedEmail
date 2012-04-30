@@ -108,7 +108,8 @@
     <string name="install_attachment" msgid="2803531650273683382">"Installi"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Tühista"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Teave"</string>
-    <string name="attachment_type_blocked" msgid="2574422813386113664">"Seda tüüpi manust ei saa salvestada või avada, kuna see võib sisaldada pahavara."</string>
+    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
+    <skip />
     <string name="no_application_found" msgid="1945184804521392093">"Ükski rakendus ei saa seda manust vaatamiseks avada."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Manuse toomine"</string>
     <string name="please_wait" msgid="8797634225088247121">"Oodake …"</string>
@@ -246,18 +247,12 @@
     <string name="invalid_recipient" msgid="2161317422860961623">"Aadress <xliff:g id="WRONGEMAIL">%s</xliff:g> on kehtetu."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Kuva osundatud tekst"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Peida osundatud tekst"</string>
-    <!-- no translation found for message_invite_title (6757287288611722175) -->
-    <skip />
-    <!-- no translation found for message_invite_calendar_view (1898326841767645665) -->
-    <skip />
-    <!-- no translation found for message_invite_label_attending (7378806613557157546) -->
-    <skip />
-    <!-- no translation found for message_invite_accept (869753811259793266) -->
-    <skip />
-    <!-- no translation found for message_invite_tentative (3898050756490962079) -->
-    <skip />
-    <!-- no translation found for message_invite_decline (4524135969656266758) -->
-    <skip />
+    <string name="message_invite_title" msgid="6757287288611722175">"Kalendri kutse"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Kuva kalendris"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"Kas osalete?"</string>
+    <string name="message_invite_accept" msgid="869753811259793266">"Jah"</string>
+    <string name="message_invite_tentative" msgid="3898050756490962079">"Võib-olla"</string>
+    <string name="message_invite_decline" msgid="4524135969656266758">"Ei"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Valmis"</string>

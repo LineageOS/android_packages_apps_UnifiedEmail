@@ -108,7 +108,8 @@
     <string name="install_attachment" msgid="2803531650273683382">"I-install"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Kanselahin"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Impormasyon"</string>
-    <string name="attachment_type_blocked" msgid="2574422813386113664">"Hindi ma-save o mabuksan ang ganitong uri ng attachment dahil maaaring naglalaman ito ng nakakahamak na software."</string>
+    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
+    <skip />
     <string name="no_application_found" msgid="1945184804521392093">"Walang app na makakapagbukas sa attachment na ito para sa pagtingin."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Pagkuha ng attachment"</string>
     <string name="please_wait" msgid="8797634225088247121">"Mangyaring maghintay…"</string>
@@ -246,18 +247,12 @@
     <string name="invalid_recipient" msgid="2161317422860961623">"Ang address na <xliff:g id="WRONGEMAIL">%s</xliff:g> ay di-wasto."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Ipakita ang kasamang teksto"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Itago ang kasamang teksto"</string>
-    <!-- no translation found for message_invite_title (6757287288611722175) -->
-    <skip />
-    <!-- no translation found for message_invite_calendar_view (1898326841767645665) -->
-    <skip />
-    <!-- no translation found for message_invite_label_attending (7378806613557157546) -->
-    <skip />
-    <!-- no translation found for message_invite_accept (869753811259793266) -->
-    <skip />
-    <!-- no translation found for message_invite_tentative (3898050756490962079) -->
-    <skip />
-    <!-- no translation found for message_invite_decline (4524135969656266758) -->
-    <skip />
+    <string name="message_invite_title" msgid="6757287288611722175">"Imbitasyon sa kalendaryo"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Tingnan sa Kalendaryo"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"Pupunta?"</string>
+    <string name="message_invite_accept" msgid="869753811259793266">"Oo"</string>
+    <string name="message_invite_tentative" msgid="3898050756490962079">"Siguro"</string>
+    <string name="message_invite_decline" msgid="4524135969656266758">"Hindi"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">", "</string>
     <string name="ok" msgid="8339355733816891026">"OK"</string>
     <string name="done" msgid="3079981801778027540">"Tapos na"</string>
