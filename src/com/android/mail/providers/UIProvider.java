@@ -668,7 +668,8 @@ public class UIProvider {
         ConversationColumns.FLAGS,
         ConversationColumns.PERSONAL_LEVEL,
         ConversationColumns.SPAM,
-        ConversationColumns.MUTED
+        ConversationColumns.MUTED,
+        ConversationColumns.COLOR
     };
 
     // These column indexes only work when the caller uses the
@@ -693,6 +694,7 @@ public class UIProvider {
     public static final int CONVERSATION_PERSONAL_LEVEL_COLUMN = 17;
     public static final int CONVERSATION_IS_SPAM_COLUMN = 18;
     public static final int CONVERSATION_MUTED_COLUMN = 19;
+    public static final int CONVERSATION_COLOR_COLUMN = 20;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -815,6 +817,11 @@ public class UIProvider {
          * This int column indicates whether the conversation was muted.
          */
         public static final String MUTED = "muted";
+
+        /**
+         * This int column contains a color for the conversation (used in Email only)
+         */
+        public static final String COLOR = "color";
 
         private ConversationColumns() {
         }

@@ -45,6 +45,7 @@ public class Conversation implements Parcelable {
     public int personalLevel;
     public boolean spam;
     public boolean muted;
+    public int color;
 
     // Used within the UI to indicate the adapter position of this conversation
     public transient int position;
@@ -86,6 +87,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(personalLevel);
         dest.writeInt(spam ? 1 : 0);
         dest.writeInt(muted ? 1 : 0);
+        dest.writeInt(color);
     }
 
     private Conversation(Parcel in) {
@@ -109,6 +111,7 @@ public class Conversation implements Parcelable {
         personalLevel = in.readInt();
         spam = in.readInt() != 0;
         muted = in.readInt() != 0;
+        color = in.readInt();
         position = NO_POSITION;
         localDeleteOnUpdate = false;
     }
@@ -162,6 +165,7 @@ public class Conversation implements Parcelable {
             personalLevel = cursor.getInt(UIProvider.CONVERSATION_PERSONAL_LEVEL_COLUMN);
             spam = cursor.getInt(UIProvider.CONVERSATION_IS_SPAM_COLUMN) != 0;
             muted = cursor.getInt(UIProvider.CONVERSATION_MUTED_COLUMN) != 0;
+            color = cursor.getInt(UIProvider.CONVERSATION_COLOR_COLUMN);
             position = NO_POSITION;
             localDeleteOnUpdate = false;
         }
@@ -198,6 +202,7 @@ public class Conversation implements Parcelable {
         conversation.personalLevel = personalLevel;
         conversation.spam = spam;
         conversation.muted = muted;
+        conversation.color = 0;
         return conversation;
     }
 
