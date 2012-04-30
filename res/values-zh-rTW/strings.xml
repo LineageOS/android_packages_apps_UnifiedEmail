@@ -108,7 +108,8 @@
     <string name="install_attachment" msgid="2803531650273683382">"安裝"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"取消"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"資訊"</string>
-    <string name="attachment_type_blocked" msgid="2574422813386113664">"系統不允許儲存或開啟這類可能含有惡意軟體的附件。"</string>
+    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
+    <skip />
     <string name="no_application_found" msgid="1945184804521392093">"沒有應用程式可開啟這個附件供您檢視。"</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"擷取附件"</string>
     <string name="please_wait" msgid="8797634225088247121">"請稍候…"</string>
@@ -246,18 +247,12 @@
     <string name="invalid_recipient" msgid="2161317422860961623">"地址 <xliff:g id="WRONGEMAIL">%s</xliff:g> 無效。"</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ 顯示引用文字"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ 隱藏引用文字"</string>
-    <!-- no translation found for message_invite_title (6757287288611722175) -->
-    <skip />
-    <!-- no translation found for message_invite_calendar_view (1898326841767645665) -->
-    <skip />
-    <!-- no translation found for message_invite_label_attending (7378806613557157546) -->
-    <skip />
-    <!-- no translation found for message_invite_accept (869753811259793266) -->
-    <skip />
-    <!-- no translation found for message_invite_tentative (3898050756490962079) -->
-    <skip />
-    <!-- no translation found for message_invite_decline (4524135969656266758) -->
-    <skip />
+    <string name="message_invite_title" msgid="6757287288611722175">"日曆邀請"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"於日曆中查看"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"是否參加？"</string>
+    <string name="message_invite_accept" msgid="869753811259793266">"是"</string>
+    <string name="message_invite_tentative" msgid="3898050756490962079">"不確定"</string>
+    <string name="message_invite_decline" msgid="4524135969656266758">"否"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">"、 "</string>
     <string name="ok" msgid="8339355733816891026">"確定"</string>
     <string name="done" msgid="3079981801778027540">"完成"</string>
