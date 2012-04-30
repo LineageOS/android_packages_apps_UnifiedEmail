@@ -467,12 +467,20 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
-    private class OnePaneDestructiveAction extends AbstractDestructiveAction {
+    /**
+     * Destroy conversations and update the UI state for a one pane activity.
+     */
+    private class OnePaneDestructiveAction implements DestructiveAction {
         /** Whether this destructive action has already been performed */
         public boolean mCompleted;
+        /** Menu Id that created this action */
+        final int mId;
+        private final DestructiveAction mAction;
 
         public OnePaneDestructiveAction(int action) {
-            super(action);
+            final Collection<Conversation> single = ImmutableList.of(mCurrentConversation);
+            mAction = new ConversationAction(action, single);
+            mId = action;
         }
 
         @Override
@@ -482,21 +490,20 @@ public final class OnePaneController extends AbstractActivityController {
             }
             mCompleted = true;
             Conversation next = null;
-            final Collection<Conversation> single = ImmutableList.of(mCurrentConversation);
             final int mode = mViewMode.getMode();
             if (mode == ViewMode.CONVERSATION) {
                 next = mTracker.getNextConversation(mCachedSettings);
             } else if (mode == ViewMode.CONVERSATION_LIST
-                    && mAction != R.id.inside_conversation_unread) {
+                    && mId != R.id.inside_conversation_unread) {
                 OnePaneController.this.performAction();
-                onUndoAvailable(new UndoOperation(1, mAction));
+                onUndoAvailable(new UndoOperation(1, mId));
             }
-            baseAction(single);
+            mAction.performAction();
             if (next != null) {
                 // We have a conversation to auto advance to
                 if (mode == ViewMode.CONVERSATION) {
                     showConversation(next);
-                    onUndoAvailable(new UndoOperation(1, mAction));
+                    onUndoAvailable(new UndoOperation(1, mId));
                 }
             } else {
                 // We don't have a conversation to show: show conversation list instead.
