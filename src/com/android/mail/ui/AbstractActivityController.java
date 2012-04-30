@@ -651,25 +651,6 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * Implements folder changes. This class is a listener because folder changes need to be
-     * performed <b>after</b> the ConversationListFragment has finished animating away the
-     * removal of the conversation.
-     *
-     */
-    protected abstract class FolderChangeListener implements DestructiveAction {
-        protected final String mFolderChangeList;
-        protected final boolean mDestructiveChange;
-
-        public FolderChangeListener(String changeList, boolean destructive) {
-            mFolderChangeList = changeList;
-            mDestructiveChange = destructive;
-        }
-
-        @Override
-        public abstract void performAction();
-    }
-
-    /**
      * Update the specified column name in conversation for a boolean value.
      * @param columnName
      * @param value
@@ -1463,14 +1444,19 @@ public abstract class AbstractActivityController implements ActivityController,
         // Get currently active folder info and compare it to the list
         // these conversations have been given; if they no longer contain
         // the selected folder, delete them from the list.
-        HashSet<String> folderUris = new HashSet<String>();
+        final HashSet<String> folderUris = new HashSet<String>();
+        boolean hasInbox = false;
         if (folderChangeList != null && !folderChangeList.isEmpty()) {
             for (Folder f : folderChangeList) {
                 folderUris.add(f.uri.toString());
+                hasInbox |= (f.type == UIProvider.FolderType.INBOX);
             }
         }
-        final boolean destructiveChange = !folderUris.contains(mFolder.uri.toString());
-        StringBuilder foldersUrisString = new StringBuilder();
+        // Destructive if we are in Priority Inbox and we remove the Inbox label.
+        final boolean currentlyViewingInbox = (mFolder.type == UIProvider.FolderType.INBOX);
+        final boolean destructiveChange = currentlyViewingInbox ? !hasInbox :
+                !folderUris.contains(mFolder.uri.toString());
+        final StringBuilder foldersUrisString = new StringBuilder();
         boolean first = true;
         for (Folder f : folderChangeList) {
             if (first) {
