@@ -108,8 +108,7 @@
     <string name="install_attachment" msgid="2803531650273683382">"Installer"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Annuller"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Oplysninger"</string>
-    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
-    <skip />
+    <string name="attachment_type_blocked" msgid="7878184764428642891">"Du kan desværre ikke gemme eller åbne denne type vedhæftede fil."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Der er ikke nogen app, der kan åbne og vise denne vedhæftede fil."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Henter vedhæftet fil"</string>
     <string name="please_wait" msgid="8797634225088247121">"Vent…"</string>
