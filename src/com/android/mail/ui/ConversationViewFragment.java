@@ -234,7 +234,7 @@ public final class ConversationViewFragment extends Fragment implements
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                LogUtils.i(LOG_TAG, "JS: %s (%s:%d)", consoleMessage.message(),
+                LogUtils.d(LOG_TAG, "JS: %s (%s:%d)", consoleMessage.message(),
                         consoleMessage.sourceId(), consoleMessage.lineNumber());
                 return true;
             }
