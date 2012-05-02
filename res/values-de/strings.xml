@@ -108,8 +108,7 @@
     <string name="install_attachment" msgid="2803531650273683382">"Installieren"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Abbrechen"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Info"</string>
-    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
-    <skip />
+    <string name="attachment_type_blocked" msgid="7878184764428642891">"Sie können diesen Anhangstyp leider weder speichern noch öffnen."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Dieser Anhang kann von keiner App zum Anzeigen geöffnet werden."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Anhang wird abgerufen..."</string>
     <string name="please_wait" msgid="8797634225088247121">"Bitte warten…"</string>
@@ -248,7 +247,7 @@
     <string name="show_elided" msgid="5255917904110437886">"▶ Zitierten Text anzeigen"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Zitierten Text ausblenden"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"Kalendereinladung"</string>
-    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Im Kalender anzeigen"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Im Kalender ansehen"</string>
     <string name="message_invite_label_attending" msgid="7378806613557157546">"Mit dabei?"</string>
     <string name="message_invite_accept" msgid="869753811259793266">"Ja"</string>
     <string name="message_invite_tentative" msgid="3898050756490962079">"Vielleicht"</string>

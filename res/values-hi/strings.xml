@@ -108,8 +108,7 @@
     <string name="install_attachment" msgid="2803531650273683382">"इंस्‍टॉल"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"रद्द करें"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"जानकारी"</string>
-    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
-    <skip />
+    <string name="attachment_type_blocked" msgid="7878184764428642891">"दुर्भाग्‍यवश, आप इस प्रकार के अनुलग्‍नक को सहेज या खोल नहीं सकते."</string>
     <string name="no_application_found" msgid="1945184804521392093">"कोई भी एप्लिकेशन इस अनुलग्नक को देखने के लिए नहीं खोल सकता."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"अनुलग्‍नक फ़ेच कर रहा है"</string>
     <string name="please_wait" msgid="8797634225088247121">"कृपया प्रतीक्षा करें…"</string>

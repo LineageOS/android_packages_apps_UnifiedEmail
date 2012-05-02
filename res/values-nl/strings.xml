@@ -108,8 +108,7 @@
     <string name="install_attachment" msgid="2803531650273683382">"Installeren"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Annuleren"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Info"</string>
-    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
-    <skip />
+    <string name="attachment_type_blocked" msgid="7878184764428642891">"U kunt dit type bijlage niet opslaan of openen."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Er is geen app die deze bijlage kan openen voor weergave."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Bijlage ophalen"</string>
     <string name="please_wait" msgid="8797634225088247121">"Even geduld…"</string>

@@ -108,8 +108,7 @@
     <string name="install_attachment" msgid="2803531650273683382">"Instalaţi"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Anulaţi"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informaţii"</string>
-    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
-    <skip />
+    <string name="attachment_type_blocked" msgid="7878184764428642891">"Din păcate, nu puteţi salva sau deschide acest tip de ataşament."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Nu există o aplicaţie care să poată deschide acest ataşament pentru vizualizare."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Se preia ataşamentul"</string>
     <string name="please_wait" msgid="8797634225088247121">"Aşteptaţi…"</string>
