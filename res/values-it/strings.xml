@@ -108,8 +108,7 @@
     <string name="install_attachment" msgid="2803531650273683382">"Installa"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Annulla"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informazioni"</string>
-    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
-    <skip />
+    <string name="attachment_type_blocked" msgid="7878184764428642891">"Purtroppo, non puoi salvare o aprire questo tipo di allegato."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Nessuna applicazione può aprire questo allegato per la visualizzazione."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Recupero allegato"</string>
     <string name="please_wait" msgid="8797634225088247121">"Attendi…"</string>

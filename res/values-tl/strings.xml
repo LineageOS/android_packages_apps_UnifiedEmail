@@ -108,8 +108,7 @@
     <string name="install_attachment" msgid="2803531650273683382">"I-install"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Kanselahin"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Impormasyon"</string>
-    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
-    <skip />
+    <string name="attachment_type_blocked" msgid="7878184764428642891">"Sa kasamaang palad, hindi mo mase-save o mabubuksan ang ganitong uri ng attachment."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Walang app na makakapagbukas sa attachment na ito para sa pagtingin."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Pagkuha ng attachment"</string>
     <string name="please_wait" msgid="8797634225088247121">"Mangyaring maghintay…"</string>
