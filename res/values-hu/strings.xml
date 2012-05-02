@@ -108,8 +108,7 @@
     <string name="install_attachment" msgid="2803531650273683382">"Telepítés"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Mégse"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Információ"</string>
-    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
-    <skip />
+    <string name="attachment_type_blocked" msgid="7878184764428642891">"Sajnos nem menthet el vagy nyithat meg ilyen típusú csatolmányt."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Egyetlen alkalmazás sem tudja megjeleníteni ezt a mellékletet."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Melléklet letöltése..."</string>
     <string name="please_wait" msgid="8797634225088247121">"Kérjük, várjon..."</string>
@@ -247,7 +246,7 @@
     <string name="invalid_recipient" msgid="2161317422860961623">"A(z) <xliff:g id="WRONGEMAIL">%s</xliff:g> cím érvénytelen."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Idézett szöveg megjelenítése"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Idézett szöveg elrejtése"</string>
-    <string name="message_invite_title" msgid="6757287288611722175">"Naptár meghívó"</string>
+    <string name="message_invite_title" msgid="6757287288611722175">"Meghívó"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"Megtekintés a Naptárban"</string>
     <string name="message_invite_label_attending" msgid="7378806613557157546">"Részt vesz?"</string>
     <string name="message_invite_accept" msgid="869753811259793266">"Igen"</string>

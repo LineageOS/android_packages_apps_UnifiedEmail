@@ -108,8 +108,7 @@
     <string name="install_attachment" msgid="2803531650273683382">"Pasang"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Batal"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Info"</string>
-    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
-    <skip />
+    <string name="attachment_type_blocked" msgid="7878184764428642891">"Sayangnya, Anda tidak dapat menyimpan atau membuka jenis lampiran ini."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Tidak ada apl yang dapat membuka lampiran ini untuk ditampilkan."</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"Mengambil lampiran"</string>
     <string name="please_wait" msgid="8797634225088247121">"Harap tunggu..."</string>
@@ -121,7 +120,7 @@
     <string name="contextmenu_copylink" msgid="3580131515400610839">"Salin URL tautan"</string>
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Panggil..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"SMS..."</string>
-    <string name="contextmenu_add_contact" msgid="8395100913366045250">"Tambahkan kenalan"</string>
+    <string name="contextmenu_add_contact" msgid="8395100913366045250">"Tambahkan kontak"</string>
     <string name="contextmenu_send_mail" msgid="8301941130009797208">"Kirim email"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"Peta"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Bagikan tautan"</string>
@@ -229,8 +228,8 @@
     <string name="add_label" msgid="1638508840481944248">"Tambahkan label"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Bentangkan detail penerima"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Ciutkan detail penerima"</string>
-    <string name="contact_info_string" msgid="6911322458329265644">"Tampilkan informasi data kenalan untuk <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="contact_info_string_default" msgid="596531738469809159">"Tampilkan informasi kenalan"</string>
+    <string name="contact_info_string" msgid="6911322458329265644">"Tampilkan informasi kontak untuk <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="contact_info_string_default" msgid="596531738469809159">"Tampilkan informasi kontak"</string>
     <string name="expand_read_messages" msgid="7458927270492299063">"Bentangkan pesan terbaca"</string>
     <string name="show_messages_read" msgid="9132147830566909631">"Pesan yang telah dibaca sebelumnya"</string>
     <string name="date_heading" msgid="2414358582984879303">"Tanggal:"</string>

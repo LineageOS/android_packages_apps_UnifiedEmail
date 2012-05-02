@@ -108,8 +108,7 @@
     <string name="install_attachment" msgid="2803531650273683382">"安装"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"取消"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"信息"</string>
-    <!-- no translation found for attachment_type_blocked (7878184764428642891) -->
-    <skip />
+    <string name="attachment_type_blocked" msgid="7878184764428642891">"很抱歉，您无法保存或打开此类型的附件。"</string>
     <string name="no_application_found" msgid="1945184804521392093">"无应用可打开此附件，因此无法查看。"</string>
     <string name="fetching_attachment" msgid="2599763030649526179">"正在提取附件"</string>
     <string name="please_wait" msgid="8797634225088247121">"请稍候…"</string>
