@@ -248,7 +248,7 @@
     <string name="hide_elided" msgid="8907305605854960737">"▼ Sembunyikan teks yang dipetik"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"Jemputan Kalendar"</string>
     <string name="message_invite_calendar_view" msgid="1898326841767645665">"Lihat dalam Kalendar"</string>
-    <string name="message_invite_label_attending" msgid="7378806613557157546">"Akan pergi?"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"Akan hadiri?"</string>
     <string name="message_invite_accept" msgid="869753811259793266">"Ya"</string>
     <string name="message_invite_tentative" msgid="3898050756490962079">"Mungkin"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"Tidak"</string>
