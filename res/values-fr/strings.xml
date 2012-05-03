@@ -247,7 +247,7 @@
     <string name="show_elided" msgid="5255917904110437886">"▶ Afficher le texte des messages précédents"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Masquer le texte des messages précédents"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"Invitation Google Agenda"</string>
-    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Afficher dans Google Agenda"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Afficher dans l\'agenda"</string>
     <string name="message_invite_label_attending" msgid="7378806613557157546">"Participer ?"</string>
     <string name="message_invite_accept" msgid="869753811259793266">"Oui"</string>
     <string name="message_invite_tentative" msgid="3898050756490962079">"Peut-être"</string>

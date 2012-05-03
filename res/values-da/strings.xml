@@ -246,8 +246,8 @@
     <string name="invalid_recipient" msgid="2161317422860961623">"Adressen <xliff:g id="WRONGEMAIL">%s</xliff:g> er ugyldig."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Vis citeret tekst"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Skjul citeret tekst"</string>
-    <string name="message_invite_title" msgid="6757287288611722175">"Invitation i kalender"</string>
-    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Vis i kalender"</string>
+    <string name="message_invite_title" msgid="6757287288611722175">"Invitation i Kalender"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Vis i Kalender"</string>
     <string name="message_invite_label_attending" msgid="7378806613557157546">"Deltager du?"</string>
     <string name="message_invite_accept" msgid="869753811259793266">"Ja"</string>
     <string name="message_invite_tentative" msgid="3898050756490962079">"Måske"</string>
