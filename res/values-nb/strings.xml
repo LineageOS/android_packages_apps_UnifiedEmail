@@ -247,8 +247,8 @@
     <string name="show_elided" msgid="5255917904110437886">"▶ Vis sitert tekst"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Skjul sitert tekst"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"Kalenderinvitasjon"</string>
-    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Vis i kalenderen"</string>
-    <string name="message_invite_label_attending" msgid="7378806613557157546">"Bli med?"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"Se i kalenderen"</string>
+    <string name="message_invite_label_attending" msgid="7378806613557157546">"Skal du delta?"</string>
     <string name="message_invite_accept" msgid="869753811259793266">"Ja"</string>
     <string name="message_invite_tentative" msgid="3898050756490962079">"Kanskje"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"Nei"</string>
