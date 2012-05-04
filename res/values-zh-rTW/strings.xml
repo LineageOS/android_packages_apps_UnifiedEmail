@@ -247,10 +247,10 @@
     <string name="show_elided" msgid="5255917904110437886">"▶ 顯示引用文字"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ 隱藏引用文字"</string>
     <string name="message_invite_title" msgid="6757287288611722175">"日曆邀請"</string>
-    <string name="message_invite_calendar_view" msgid="1898326841767645665">"於日曆中查看"</string>
+    <string name="message_invite_calendar_view" msgid="1898326841767645665">"查看日曆"</string>
     <string name="message_invite_label_attending" msgid="7378806613557157546">"是否參加？"</string>
     <string name="message_invite_accept" msgid="869753811259793266">"是"</string>
-    <string name="message_invite_tentative" msgid="3898050756490962079">"不確定"</string>
+    <string name="message_invite_tentative" msgid="3898050756490962079">"或許"</string>
     <string name="message_invite_decline" msgid="4524135969656266758">"否"</string>
     <string name="enumeration_comma" msgid="5191660524342286026">"、 "</string>
     <string name="ok" msgid="8339355733816891026">"確定"</string>
