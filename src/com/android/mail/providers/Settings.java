@@ -283,6 +283,20 @@ public class Settings implements Parcelable {
     }
 
     /**
+     * Returns the URI of the current account's default inbox if available, otherwise
+     * returns the empty URI {@link Uri#EMPTY}
+     * @param settings a settings object, possibly null.
+     * @return a valid default Inbox URI, or {@link Uri#EMPTY} if settings are null or no default
+     * is specified.
+     */
+    public static Uri getDefaultInboxUri(Settings settings) {
+        if (settings != null && settings.defaultInbox != null) {
+            return settings.defaultInbox;
+        }
+        return Uri.EMPTY;
+    }
+
+    /**
      * Return the auto advance setting for the settings provided. It is safe to pass this method
      * a null object. It always returns a valid {@link AutoAdvance} setting.
      * @return the auto advance setting, a constant from {@link AutoAdvance}

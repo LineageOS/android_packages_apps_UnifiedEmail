@@ -387,18 +387,6 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * Returns the URI of the current account's default inbox if available, otherwise
-     * returns the empty URI {@link Uri#EMPTY}
-     * @return
-     */
-    private Uri getDefaultInboxUri(Settings settings) {
-        if (settings != null && settings.defaultInbox != null) {
-            return settings.defaultInbox;
-        }
-        return Uri.EMPTY;
-    }
-
-    /**
      * Changes the settings for the current account. The new settings are provided as a parameter.
      * @param settings
      */
@@ -1078,12 +1066,9 @@ public abstract class AbstractActivityController implements ActivityController,
                 }
                 break;
             case LOADER_ACCOUNT_INBOX:
-                final Uri inboxUri;
-                if (mCachedSettings != null) {
-                    inboxUri = mCachedSettings.defaultInbox;
-                } else {
-                    inboxUri = mAccount.folderListUri;
-                }
+                final Uri defaultInbox = Settings.getDefaultInboxUri(mCachedSettings);
+                final Uri inboxUri = defaultInbox.equals(Uri.EMPTY) ?
+                    mAccount.folderListUri : defaultInbox;
                 LogUtils.d(LOG_TAG, "Loading the default inbox: %s", inboxUri);
                 if (inboxUri != null) {
                     return new CursorLoader(mContext, inboxUri, UIProvider.FOLDERS_PROJECTION, null,

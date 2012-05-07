@@ -23,6 +23,7 @@ import android.app.SearchableInfo;
 import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -40,6 +41,7 @@ import com.android.mail.R;
 import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
@@ -204,9 +206,10 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             position = 0;
             LogUtils.w(LOG_TAG, "IN actionbarview setAccounts, account not found, using first.");
         }
+        final Uri defaultInbox = Settings.getDefaultInboxUri(mAccount.settings);
         final boolean viewingDefaultInbox =
                 (mFolder == null || mAccount == null || mAccount.settings == null) ? false :
-                    mFolder.uri.equals(mAccount.settings.defaultInbox);
+                    mFolder.uri.equals(defaultInbox);
         final boolean accountInSpinner = (position >= 0);
         if (accountInSpinner && viewingDefaultInbox) {
             // This position corresponds to current account and default Inbox.  Select it.

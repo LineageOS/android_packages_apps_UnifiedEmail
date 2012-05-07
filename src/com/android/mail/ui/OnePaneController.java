@@ -115,7 +115,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     private boolean inInbox() {
-        Uri inboxUri = mCachedSettings != null ? mCachedSettings.defaultInbox : null;
+        final Uri inboxUri = Settings.getDefaultInboxUri(mCachedSettings);
         return mConvListContext != null && mConvListContext.folder != null ? (!mConvListContext
                 .isSearchResult() && mConvListContext.folder.uri.equals(inboxUri)) : false;
     }
