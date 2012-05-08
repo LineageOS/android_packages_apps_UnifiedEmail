@@ -29,6 +29,8 @@
     <dimen name="total_conversationbar_width">150dip</dimen>
     <dimen name="max_total_folder_width">64dip</dimen>
     <dimen name="max_total_folder_width_wide">64dip</dimen>
+    <dimen name="color_block_width">32dip</dimen>
+    <dimen name="color_block_height">6dip</dimen>
     <dimen name="subject_width">0dip</dimen>
     <dimen name="folders_font_size">12sp</dimen>
     <dimen name="wide_senders_margin_top">0sp</dimen>
