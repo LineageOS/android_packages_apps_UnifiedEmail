@@ -271,14 +271,13 @@ public class ConversationPositionTracker {
      * Get the next conversation according to the AutoAdvance settings and the list of
      * conversations available in the folder. If no next conversation can be found, this method
      * returns null.
-     * @param settings the settings associated with the account that contain the auto advance
-     * preference for the user.
+     * @param autoAdvance the auto advance preference for the user as an
+     * {@link Settings#autoAdvance} value.
      * @return
      */
-    public Conversation getNextConversation(Settings settings) {
-        final int pref = Settings.getAutoAdvanceSetting(settings);
-        final boolean getNewer = (pref == AutoAdvance.NEWER && hasNewer());
-        final boolean getOlder = (pref == AutoAdvance.OLDER && hasOlder());
+    public Conversation getNextConversation(int autoAdvance) {
+        final boolean getNewer = (autoAdvance == AutoAdvance.NEWER && hasNewer());
+        final boolean getOlder = (autoAdvance == AutoAdvance.OLDER && hasOlder());
         final Conversation next = getNewer ? getNewer() :
             (getOlder ? getOlder() : null);
         LogUtils.d(LOG_TAG, "ConversationPositionTracker.getNextConversation: " +
@@ -286,4 +285,5 @@ public class ConversationPositionTracker {
                 getNewer, getOlder, next);
         return next;
     }
+
 }

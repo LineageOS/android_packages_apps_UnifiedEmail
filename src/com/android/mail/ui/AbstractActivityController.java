@@ -148,7 +148,6 @@ public abstract class AbstractActivityController implements ActivityController,
     private AsyncRefreshTask mAsyncRefreshTask;
 
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
-    protected Settings mCachedSettings;
     protected ConversationCursor mConversationListCursor;
     private final DataSetObservable mConversationListObservable = new DataSetObservable() {
         @Override
@@ -220,7 +219,7 @@ public abstract class AbstractActivityController implements ActivityController,
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
         IS_TABLET_DEVICE = Utils.useTabletUI(mContext);
-        mRecentFolderList = new RecentFolderList(mContext, this);
+        mRecentFolderList = new RecentFolderList(mContext);
         // Allow the fragment to observe changes to its own selection set. No other object is
         // aware of the selected set.
         mSelectedSet.addObserver(this);
@@ -400,7 +399,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public Settings getSettings() {
-        return mCachedSettings;
+        return mAccount.settings;
     }
 
     /**
@@ -424,20 +423,19 @@ public abstract class AbstractActivityController implements ActivityController,
      * Method that lets the settings listeners know when the settings got changed.
      */
     private void dispatchSettingsChange(Settings updatedSettings) {
-        mCachedSettings = updatedSettings;
         // Copy the list of current listeners so that
         final ArrayList<Settings.ChangeListener> allListeners =
                 new ArrayList<Settings.ChangeListener>(mSettingsListeners);
         for (Settings.ChangeListener listener : allListeners) {
             if (listener != null) {
-                listener.onSettingsChanged(mCachedSettings);
+                listener.onSettingsChanged(updatedSettings);
             }
         }
         // And we know that the ConversationListFragment is interested in changes to settings,
         // though it hasn't registered itself with us.
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
-            convList.onSettingsChanged(mCachedSettings);
+            convList.onSettingsChanged(updatedSettings);
         }
     }
 
@@ -1066,7 +1064,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 }
                 break;
             case LOADER_ACCOUNT_INBOX:
-                final Uri defaultInbox = Settings.getDefaultInboxUri(mCachedSettings);
+                final Uri defaultInbox = Settings.getDefaultInboxUri(mAccount.settings);
                 final Uri inboxUri = defaultInbox.equals(Uri.EMPTY) ?
                     mAccount.folderListUri : defaultInbox;
                 LogUtils.d(LOG_TAG, "Loading the default inbox: %s", inboxUri);

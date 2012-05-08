@@ -103,7 +103,7 @@ public final class OnePaneController extends AbstractActivityController {
         final int mode = mViewMode.getMode();
         // If the settings aren't loaded yet, we may not know what the default
         // inbox is, so err toward this being the account inbox.
-        if ((mCachedSettings != null && mConvListContext != null && !inInbox())
+        if ((mAccount.settings != null && mConvListContext != null && !inInbox())
                 || mode == ViewMode.SEARCH_RESULTS_LIST
                 || mode == ViewMode.SEARCH_RESULTS_CONVERSATION
                 || mode == ViewMode.CONVERSATION
@@ -115,7 +115,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     private boolean inInbox() {
-        final Uri inboxUri = Settings.getDefaultInboxUri(mCachedSettings);
+        final Uri inboxUri = Settings.getDefaultInboxUri(mAccount.settings);
         return mConvListContext != null && mConvListContext.folder != null ? (!mConvListContext
                 .isSearchResult() && mConvListContext.folder.uri.equals(inboxUri)) : false;
     }
@@ -409,17 +409,16 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
         final Collection<Conversation> target = ImmutableList.of(mCurrentConversation);
+        final Settings settings = mAccount.settings;
         switch (item.getItemId()) {
             case R.id.y_button: {
-                final boolean showDialog =
-                        (mCachedSettings != null && mCachedSettings.confirmArchive);
+                final boolean showDialog = (settings != null && settings.confirmArchive);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
                         getAction(R.id.archive));
                 break;
             }
             case R.id.delete: {
-                final boolean showDialog =
-                        (mCachedSettings != null && mCachedSettings.confirmDelete);
+                final boolean showDialog = (settings != null && settings.confirmDelete);
                 confirmAndDelete(target, showDialog,
                         R.plurals.confirm_delete_conversation, getAction(R.id.delete));
                 break;
@@ -491,7 +490,8 @@ public final class OnePaneController extends AbstractActivityController {
             mAction.performAction();
             switch (mViewMode.getMode()) {
                 case ViewMode.CONVERSATION:
-                    final Conversation next = mTracker.getNextConversation(mCachedSettings);
+                    final Conversation next = mTracker.getNextConversation(
+                            Settings.getAutoAdvanceSetting(mAccount.settings));
                     if (next != null) {
                         showConversation(next);
                         onUndoAvailable(new UndoOperation(1, mId));
@@ -541,7 +541,7 @@ public final class OnePaneController extends AbstractActivityController {
      * @return true if we need to return back to conversation list, false otherwise.
      */
     private boolean returnToList() {
-        final int pref = Settings.getAutoAdvanceSetting(mCachedSettings);
+        final int pref = Settings.getAutoAdvanceSetting(mAccount.settings);
         final int position = mCurrentConversation.position;
         final boolean moveToNewer = (pref == AutoAdvance.NEWER && (position - 1 >= 0));
         final boolean moveToOlder = (pref == AutoAdvance.OLDER && mConversationListCursor != null

@@ -54,6 +54,11 @@ public class Settings implements Parcelable {
     static final Settings EMPTY_SETTINGS = new Settings();
 
     public final String signature;
+    /**
+     * Auto advance setting for this account.
+     * Integer, one of {@link AutoAdvance#LIST}, {@link AutoAdvance#NEWER},
+     * {@link AutoAdvance#OLDER} or  {@link AutoAdvance#UNSET}
+     */
     public final int autoAdvance;
     public final int messageTextSize;
     public final int snapHeaders;

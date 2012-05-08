@@ -33,6 +33,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
@@ -343,17 +344,16 @@ public final class TwoPaneController extends AbstractActivityController {
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
         final Collection<Conversation> target = ImmutableList.of(mCurrentConversation);
+        final Settings settings = mAccount.settings;
         switch (item.getItemId()) {
             case R.id.y_button: {
-                final boolean showDialog =
-                        (mCachedSettings != null && mCachedSettings.confirmArchive);
+                final boolean showDialog = (settings != null && settings.confirmArchive);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
                         getAction(R.id.archive));
                 break;
             }
             case R.id.delete: {
-                final boolean showDialog =
-                        (mCachedSettings != null && mCachedSettings.confirmDelete);
+                final boolean showDialog = (settings != null && settings.confirmDelete);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_delete_conversation,
                         getAction(R.id.delete));
                 break;
@@ -415,7 +415,8 @@ public final class TwoPaneController extends AbstractActivityController {
             if (isPerformed()) {
                 return;
             }
-            final Conversation nextConversation = mTracker.getNextConversation(mCachedSettings);
+            final Conversation nextConversation = mTracker.getNextConversation(
+                    Settings.getAutoAdvanceSetting(mAccount.settings));
             if (nextConversation != null) {
                 // We have a conversation to auto advance to.
                 final ConversationListFragment convList = getConversationListFragment();
