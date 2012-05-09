@@ -200,7 +200,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         mCurrentAccount = account;
         mCurrentAccountPos = findPositionOfAccount(mAllAccounts, account.uri);
         LogUtils.d(LOG_TAG, "setCurrentAccount: mCurrentAccountPos = %d", mCurrentAccountPos);
-        requestRecentFoldersAndRedraw();
+        if (mCurrentAccountPos >= 0) {
+            requestRecentFoldersAndRedraw();
+        }
         return true;
     }
 
