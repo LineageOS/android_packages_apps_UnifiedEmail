@@ -343,7 +343,9 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
-        final Collection<Conversation> target = ImmutableList.of(mCurrentConversation);
+        final Collection<Conversation> target =
+                (mCurrentConversation == null) ? new ArrayList<Conversation>() :
+                    ImmutableList.of(mCurrentConversation);
         final Settings settings = mAccount.settings;
         switch (item.getItemId()) {
             case R.id.y_button: {
