@@ -358,7 +358,7 @@ public final class OnePaneController extends AbstractActivityController {
      */
     @Override
     public boolean onUpPressed() {
-        int mode = mViewMode.getMode();
+        final int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         } else if ((!inInbox() && mode == ViewMode.CONVERSATION_LIST)
@@ -372,7 +372,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     private void transitionBackToConversationListMode() {
-        int mode = mViewMode.getMode();
+        final int mode = mViewMode.getMode();
         enableCabMode();
         if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             mViewMode.enterSearchResultsListMode();
@@ -387,8 +387,8 @@ public final class OnePaneController extends AbstractActivityController {
             resetActionBarIcon();
             onFolderChanged(mInbox);
         } else {
-            // TODO: revist if this block is necessary
-            ConversationListContext listContext = ConversationListContext.forFolder(mContext,
+            // TODO: revisit if this block is necessary
+            final ConversationListContext listContext = ConversationListContext.forFolder(mContext,
                     mAccount, mInbox);
             // Set the correct context for what the conversation view will be now.
             onFolderChanged(mInbox);
@@ -408,7 +408,8 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
-        final Collection<Conversation> target = ImmutableList.of(mCurrentConversation);
+        final Collection<Conversation> target = (mCurrentConversation != null) ?
+                ImmutableList.of(mCurrentConversation) : null;
         final Settings settings = mAccount.settings;
         switch (item.getItemId()) {
             case R.id.y_button: {

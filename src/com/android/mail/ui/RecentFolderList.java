@@ -175,7 +175,8 @@ public final class RecentFolderList {
         if (excludedFolder != null) {
             excludedUris.add(excludedFolder.uri);
         }
-        final Uri defaultInbox = Settings.getDefaultInboxUri(mAccount.settings);
+        final Uri defaultInbox = (mAccount == null) ?
+            Uri.EMPTY : Settings.getDefaultInboxUri(mAccount.settings);
         if (!defaultInbox.equals(Uri.EMPTY)) {
             // This could already be in the list, but that's ok
             excludedUris.add(defaultInbox);
