@@ -408,8 +408,8 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
-        final Collection<Conversation> target = (mCurrentConversation != null) ?
-                ImmutableList.of(mCurrentConversation) : null;
+        final Collection<Conversation> target = (mCurrentConversation == null) ?
+                Collections.EMPTY_LIST : ImmutableList.of(mCurrentConversation);
         final Settings settings = mAccount.settings;
         switch (item.getItemId()) {
             case R.id.y_button: {
