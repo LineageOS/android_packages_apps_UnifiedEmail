@@ -1379,6 +1379,8 @@ public abstract class AbstractActivityController implements ActivityController,
         private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
         /** Whether this destructive action has already been performed */
         private boolean mCompleted;
+        /** Whether this is an action on the currently selected set. */
+        private final boolean mIsSelectedSet;
 
         /**
          * Create a listener object. action is one of four constants: R.id.y_button (archive),
@@ -1387,8 +1389,19 @@ public abstract class AbstractActivityController implements ActivityController,
          * @param target Conversation that we want to apply the action to.
          */
         public ConversationAction(int action, Collection<Conversation> target) {
+            this(action, target, false);
+        }
+        /**
+         * Create a listener object. action is one of four constants: R.id.y_button (archive),
+         * R.id.delete , R.id.mute, and R.id.report_spam.
+         * @param action
+         * @param target Conversation that we want to apply the action to.
+         * @param isBatch whether the conversations are in the currently selected batch set.
+         */
+        public ConversationAction(int action, Collection<Conversation> target, boolean isBatch) {
             mAction = action;
             mTarget.addAll(target);
+            mIsSelectedSet = isBatch;
         }
 
         /**
@@ -1437,6 +1450,10 @@ public abstract class AbstractActivityController implements ActivityController,
                     break;
             }
             refreshConversationList();
+            if (mIsSelectedSet) {
+                onUndoAvailable(new UndoOperation(mTarget.size(), mAction));
+                mSelectedSet.clear();
+            }
         }
 
         /**
@@ -1829,58 +1846,12 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * Listener to act upon destructive actions carried out on multiple conversations. Destructive
-     * actions are like delete/archive, and they require the UI state to remove the conversations
-     * from the UI.
-     */
-    private class BatchDestruction implements DestructiveAction {
-        private ConversationAction mConversationDeleter;
-        /** Whether this destructive action has already been performed */
-        private boolean mCompleted = false;
-        private final int mId;
-
-        /**
-         * Create a destructive action with an ID that is the same as the menu IDs: R.id.delete,
-         * R.id.archive, R.id.mute, ...
-         * @param action
-         */
-        private BatchDestruction(int action) {
-            mConversationDeleter = new ConversationAction(action, mSelectedSet.values());
-            mId = action;
-        }
-
-        @Override
-        public void performAction() {
-            if (isPerformed()) {
-                return;
-            }
-            final int size = mConversationDeleter.mTarget.size();
-            onUndoAvailable(new UndoOperation(size, mId, true));
-            mConversationDeleter.performAction();
-            mSelectedSet.clear();
-        }
-        /**
-         * Returns true if this action has been performed, false otherwise.
-         * @return
-         */
-        private synchronized boolean isPerformed() {
-            if (mCompleted) {
-                return true;
-            }
-            mCompleted = true;
-            return false;
-        }
-    }
-
-    /**
      * Get a destructive action for selected conversations.
      * @param action
      * @return
      */
-    // TODO(viki): This either should be in the ActivityController or removed entirely.
-    // What we have right now is a half-way solution during the refactoring.
     public final DestructiveAction getBatchDestruction(int action) {
-        final DestructiveAction da = new BatchDestruction(action);
+        final DestructiveAction da = new ConversationAction(action, mSelectedSet.values(), true);
         registerDestructiveAction(da);
         return da;
     }
