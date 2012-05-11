@@ -30,8 +30,8 @@
     <string name="discard" msgid="1714960202994370243">"छोड़ें"</string>
     <string name="compose" msgid="1473559896062432878">"लिखें"</string>
   <string-array name="compose_modes">
-    <item msgid="8631190144210933782">"उत्तर दें"</item>
-    <item msgid="4085029907540221568">"सभी को उत्तर दें"</item>
+    <item msgid="8631190144210933782">"जवाब दें"</item>
+    <item msgid="4085029907540221568">"सभी को जवाब दें"</item>
     <item msgid="857480048798815437">"अग्रेषित करें"</item>
   </string-array>
     <string name="reply_attribution" msgid="717207316577386788">"<xliff:g id="DATE">%s</xliff:g> को, <xliff:g id="PERSON">%s</xliff:g> ने लिखा:"</string>
@@ -62,7 +62,7 @@
     <string name="previous" msgid="309943944831349924">"नई"</string>
     <string name="refresh" msgid="490989798005710951">"रीफ्रेश करें"</string>
     <string name="reply" msgid="2032052598496088561">"प्रत्‍युत्तर दें"</string>
-    <string name="reply_all" msgid="7257248094625487557">"सब को उत्तर दें"</string>
+    <string name="reply_all" msgid="7257248094625487557">"सब को जवाब दें"</string>
     <string name="resume_draft" msgid="6450150180834092146">"संपादित करें"</string>
     <string name="forward" msgid="6822914459902983767">"अग्रेषित करें"</string>
     <string name="menu_compose" msgid="6274193058224230645">"लिखें"</string>
