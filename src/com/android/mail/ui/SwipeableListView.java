@@ -33,7 +33,6 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogUtils;
-import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -207,10 +206,10 @@ public class SwipeableListView extends ListView implements Callback{
         ConversationCursor cc = (ConversationCursor)adapter.getCursor();
         switch (mSwipeAction) {
             case R.id.archive:
-                cc.mostlyArchive(context, ImmutableList.of(target.getConversation()));
+                cc.mostlyArchive(context, Conversation.listOf(target.getConversation()));
                 break;
             case R.id.delete:
-                cc.mostlyDelete(context, ImmutableList.of(target.getConversation()));
+                cc.mostlyDelete(context, Conversation.listOf(target.getConversation()));
                 break;
         }
         adapter.notifyDataSetChanged();

@@ -16,11 +16,16 @@
 
 package com.android.mail.providers;
 
+import com.google.common.collect.ImmutableList;
+
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+
+import java.util.Collection;
+import java.util.Collections;
 
 public class Conversation implements Parcelable {
     public static final int NO_POSITION = -1;
@@ -59,6 +64,9 @@ public class Conversation implements Parcelable {
     // Delete/Archive of a mostly-dead item will NOT propagate the delete/archive, but WILL remove
     // the item from the cursor
     public static final int FLAG_MOSTLY_DEAD = 1 << 0;
+
+    /** An immutable, empty conversation list */
+    public static final Collection<Conversation> EMPTY = Collections.emptyList();
 
     @Override
     public int describeContents() {
@@ -232,5 +240,16 @@ public class Conversation implements Parcelable {
      */
     public boolean isMostlyDead() {
         return (convFlags & FLAG_MOSTLY_DEAD) != 0;
+    }
+
+    /**
+     * Returns a collection of a single conversation. This method always returns a valid collection
+     * even if the input conversation is null.
+     * @param in a conversation, possibly null.
+     * @return a collection of the conversation.
+     */
+    public static Collection<Conversation> listOf(Conversation in) {
+        final Collection<Conversation> target = (in == null) ? EMPTY : ImmutableList.of(in);
+        return target;
     }
 }

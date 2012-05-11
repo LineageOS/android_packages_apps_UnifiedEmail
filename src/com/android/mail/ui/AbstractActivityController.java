@@ -69,7 +69,6 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -641,7 +640,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param value
      */
     protected void updateCurrentConversation(String columnName, boolean value) {
-        mConversationListCursor.updateBoolean(mContext, ImmutableList.of(mCurrentConversation),
+        mConversationListCursor.updateBoolean(mContext, Conversation.listOf(mCurrentConversation),
                 columnName, value);
         refreshConversationList();
     }
@@ -652,13 +651,13 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param value
      */
     protected void updateCurrentConversation(String columnName, int value) {
-        mConversationListCursor.updateInt(mContext, ImmutableList.of(mCurrentConversation),
+        mConversationListCursor.updateInt(mContext, Conversation.listOf(mCurrentConversation),
                 columnName, value);
         refreshConversationList();
     }
 
     protected void updateCurrentConversation(String columnName, String value) {
-        mConversationListCursor.updateString(mContext, ImmutableList.of(mCurrentConversation),
+        mConversationListCursor.updateString(mContext, Conversation.listOf(mCurrentConversation),
                 columnName, value);
         refreshConversationList();
     }
@@ -1480,7 +1479,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // SelectedConversationsActionMenu
         if (destructiveChange) {
             mCurrentConversation.localDeleteOnUpdate = true;
-            final Collection<Conversation> target = ImmutableList.of(mCurrentConversation);
+            final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
             final DestructiveAction folderChange = getFolderDestructiveAction();
             requestDelete(target, folderChange);
         } else {
@@ -1685,7 +1684,7 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
         final Collection<Conversation> conversations = mSelectedSet.values();
-        final Collection<Folder> dropTarget = ImmutableList.of(folder);
+        final Collection<Folder> dropTarget = Folder.listOf(folder);
         // Drag and drop is destructive: we remove conversations from the current folder.
         final DestructiveAction action = getFolderChange(conversations, dropTarget, true);
         removeAndDestroy(conversations, action);

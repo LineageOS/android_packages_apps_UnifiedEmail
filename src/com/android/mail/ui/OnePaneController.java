@@ -17,8 +17,6 @@
 
 package com.android.mail.ui;
 
-import com.google.common.collect.ImmutableList;
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -408,8 +406,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
-        final Collection<Conversation> target = (mCurrentConversation == null) ?
-                Collections.EMPTY_LIST : ImmutableList.of(mCurrentConversation);
+        final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
         final Settings settings = mAccount.settings;
         switch (item.getItemId()) {
             case R.id.y_button: {
@@ -478,7 +475,7 @@ public final class OnePaneController extends AbstractActivityController {
         private final DestructiveAction mAction;
 
         public OnePaneDestructiveAction(int action) {
-            final Collection<Conversation> single = ImmutableList.of(mCurrentConversation);
+            final Collection<Conversation> single = Conversation.listOf(mCurrentConversation);
             mAction = new ConversationAction(action, single);
             mId = action;
         }
