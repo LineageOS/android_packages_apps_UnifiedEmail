@@ -689,9 +689,10 @@ public abstract class AbstractActivityController implements ActivityController,
     /**
      * Confirm (based on user's settings) and delete a conversation from the conversation list and
      * from the database.
-     * @param showDialog
-     * @param confirmResource
-     * @param action
+     * @param target the conversations to act upon
+     * @param showDialog true if a confirmation dialog is to be shown, false otherwise.
+     * @param confirmResource the resource ID of the string that is shown in the confirmation dialog
+     * @param action the action to perform after animating the deletion of the conversations.
      */
     protected void confirmAndDelete(final Collection<Conversation> target, boolean showDialog,
             int confirmResource, final DestructiveAction action) {
@@ -702,7 +703,8 @@ public abstract class AbstractActivityController implements ActivityController,
                     requestDelete(target, action);
                 }
             };
-            final CharSequence message = Utils.formatPlural(mContext, confirmResource, 1);
+            final CharSequence message = Utils.formatPlural(mContext, confirmResource,
+                    target.size());
             new AlertDialog.Builder(mActivity.getActivityContext()).setMessage(message)
                     .setPositiveButton(R.string.ok, onClick)
                     .setNegativeButton(R.string.cancel, null)
@@ -729,10 +731,8 @@ public abstract class AbstractActivityController implements ActivityController,
                 !Conversation.contains(target, mCurrentConversation)) {
             final Conversation next = mTracker.getNextConversation(
                     Settings.getAutoAdvanceSetting(mAccount.settings));
-            if (next != null) {
-                showConversation(next);
-                // TODO(viki): Change showConversation to allow for null inputs.
-            }
+            LogUtils.d(LOG_TAG, "requestDelete: showing %s next.", next);
+            showConversation(next);
         }
         // No visible UI element handled it on our behalf. Perform the action ourself.
         action.performAction();
@@ -1408,10 +1408,6 @@ public abstract class AbstractActivityController implements ActivityController,
      * Destructive actions on Conversations. This class should only be created by controllers, and
      * clients should only require {@link DestructiveAction}s, not specific implementations of the.
      * Only the controllers should know what kind of destructive actions are being created.
-     *
-     * These Destructive Actions should not be used by themselves. These must be used by
-     * classes that update the UI state like {@link OnePaneController.OnePaneDestructiveAction},
-     * {@link TwoPaneController.TwoPaneDestructiveAction} and others.
      */
     protected class ConversationAction implements DestructiveAction {
         /**
@@ -1426,15 +1422,6 @@ public abstract class AbstractActivityController implements ActivityController,
         /** Whether this is an action on the currently selected set. */
         private final boolean mIsSelectedSet;
 
-        /**
-         * Create a listener object. action is one of four constants: R.id.y_button (archive),
-         * R.id.delete , R.id.mute, and R.id.report_spam.
-         * @param action
-         * @param target Conversation that we want to apply the action to.
-         */
-        public ConversationAction(int action, Collection<Conversation> target) {
-            this(action, target, false);
-        }
         /**
          * Create a listener object. action is one of four constants: R.id.y_button (archive),
          * R.id.delete , R.id.mute, and R.id.report_spam.
@@ -1457,6 +1444,10 @@ public abstract class AbstractActivityController implements ActivityController,
             if (isPerformed()) {
                 return;
             }
+            // Certain actions force a return to list.
+            boolean forceReturnToList = false;
+            // Enable undo for batch operations. Some actions disable the undo ability.
+            boolean undoEnabled = mIsSelectedSet;
             LogUtils.d(LOG_TAG, "Target is: %s", mTarget);
             switch (mAction) {
                 case R.id.archive:
@@ -1493,10 +1484,25 @@ public abstract class AbstractActivityController implements ActivityController,
                     mConversationListCursor.updateInt(mContext, mTarget,
                             ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                     break;
+                case R.id.inside_conversation_unread:
+                    LogUtils.d(LOG_TAG, "Marking conversation unread: %s", mTarget);
+                    mConversationListCursor.updateBoolean(mContext, mTarget,
+                            ConversationColumns.READ, false);
+                    forceReturnToList = true;
+                    undoEnabled = false;
+            }
+            if (undoEnabled) {
+                onUndoAvailable(new UndoOperation(mTarget.size(), mAction));
+            }
+            // If the currently shown conversation is destroyed, show the next one.
+            final ConversationViewFragment convView = getConversationViewFragment();
+            if (convView != null && Conversation.contains(mTarget, mCurrentConversation)) {
+                final Conversation next = forceReturnToList ? null :
+                    mTracker.getNextConversation(Settings.getAutoAdvanceSetting(mAccount.settings));
+                showConversation(next);
             }
             refreshConversationList();
             if (mIsSelectedSet) {
-                onUndoAvailable(new UndoOperation(mTarget.size(), mAction));
                 mSelectedSet.clear();
             }
         }
@@ -1514,12 +1520,26 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
+    /**
+     * Get a destructive action for a menu action.
+     * This is a temporary method, to control the profusion of {@link DestructiveAction} classes
+     * that are created. Please do not copy this paradigm.
+     * @param action the resource ID of the menu action: R.id.delete, for example
+     * @param target the conversations to act upon.
+     * @return a {@link DestructiveAction} that performs the specified action.
+     */
+    protected final DestructiveAction getAction(int action, Collection<Conversation> target) {
+        final DestructiveAction da = new ConversationAction(action, target, false);
+        registerDestructiveAction(da);
+        return da;
+    }
+
     // Called from the FolderSelectionDialog after a user is done selecting folders to assign the
     // conversations to.
     @Override
     public final void onFolderChangesCommit(
             Collection<Folder> folders, Collection<Conversation> target) {
-        final boolean isDestructive = !Folder.contains(folders, mFolder);
+        final boolean isDestructive = !Folder.containerIncludes(folders, mFolder);
         LogUtils.d(LOG_TAG, "onFolderChangesCommit: isDestructive = %b", isDestructive);
         if (isDestructive) {
             for (final Conversation c : target) {
@@ -1528,7 +1548,7 @@ public abstract class AbstractActivityController implements ActivityController,
         }
         final DestructiveAction folderChange = getFolderChange(target, folders, isDestructive);
         // Update the UI elements depending no their visibility and availability
-        // TODO(viki): Consolidate this into requestDelete.
+        // TODO(viki): Consolidate this into a single method requestDelete.
         if (isDestructive) {
             requestDelete(target, folderChange);
         } else {
@@ -1537,7 +1557,7 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void onRefreshRequired() {
+    public final void onRefreshRequired() {
         if (mIsConversationListScrolling) {
             LogUtils.d(LOG_TAG, "onRefreshRequired: delay until scrolling done");
             return;
@@ -1558,7 +1578,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * {@inheritDoc}
      */
     @Override
-    public void onRefreshReady() {
+    public final void onRefreshReady() {
         if (!mIsConversationListScrolling) {
             // Swap cursors
             mConversationListCursor.sync();
@@ -1567,12 +1587,15 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void onDataSetChanged() {
+    public final void onDataSetChanged() {
         updateConversationListFragment();
         mConversationListObservable.notifyChanged();
     }
 
-    private void updateConversationListFragment() {
+    /**
+     * If the Conversation List Fragment is visible, updates the fragment.
+     */
+    private final void updateConversationListFragment() {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             refreshConversationList();
@@ -1858,11 +1881,10 @@ public abstract class AbstractActivityController implements ActivityController,
     /**
      * Register a destructive action with the controller. This performs the previous destructive
      * action as a side effect. This method is final because we don't want the child classes to
-     * embellish this method any more. This is a temporary workaround to reduce the number of
-     * {@link DestructiveAction} classes. Please do not copy this paradigm.
+     * embellish this method any more.
      * @param action
      */
-    protected final void registerDestructiveAction(DestructiveAction action) {
+    private final void registerDestructiveAction(DestructiveAction action) {
         // TODO(viki): This is not a good idea. The best solution is for clients to request a
         // destructive action from the controller and for the controller to own the action. This is
         // a half-way solution while refactoring DestructiveAction.

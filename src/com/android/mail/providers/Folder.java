@@ -512,8 +512,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
-     * Returns true if the URI of the folder specified as the needle was found in the collection of
-     * folders specified as the haystack. False otherwise. This method is safe to call with null
+     * Returns true if a conversation assigned to the needle will be assigned to the collection of
+     * folders in the haystack. False otherwise. This method is safe to call with null
      * arguments.
      * This method returns true under two circumstances
      * <ul><li> If the URI of the needle was found in the collection of URIs that comprise the
@@ -525,11 +525,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * continue to appear in the Priority Inbox. However, the URI of Priority Inbox and Inbox will
      * be different. So a direct equality check is insufficient.
      * </li></ul>
-     * @param haystack
-     * @param needle
-     * @return
+     * @param haystack a collection of folders, possibly overlapping
+     * @param needle a folder
+     * @return true if a conversation inside the needle will be in the folders in the haystack.
      */
-    public final static boolean contains(Collection<Folder> haystack, Folder needle) {
+    public final static boolean containerIncludes(Collection<Folder> haystack, Folder needle) {
         // If the haystack is empty, it cannot contain anything.
         if (haystack == null || haystack.size() <= 0) {
             return false;

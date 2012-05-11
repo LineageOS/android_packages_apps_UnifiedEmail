@@ -219,23 +219,25 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     void showConversationList(ConversationListContext listContext);
 
     /**
-     * Show the conversation provided here.
-     * @param conversation conversation to display.
+     * Show the conversation provided here. If the conversation is null, this is a request to pop
+     * <em>out</em> of conversation view mode and head back to conversation list mode, or whatever
+     * should best show in its place.
+     * @param conversation conversation to display, possibly null.
      */
     void showConversation(Conversation conversation);
 
     /**
-     * Show the wait for account initilization mode.
+     * Show the wait for account initialization mode.
      */
     public void showWaitForInitialization();
 
     /**
-     * Dismiss the wait for account initization mode.
+     * Dismiss the wait for account initialization mode.
      */
     public void hideWaitForInitialization();
 
     /**
-     * Update the wait for account intization mode.
+     * Update the wait for account initialization mode.
      */
     public void updateWaitMode();
 
@@ -292,13 +294,6 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
      * and is now user-visible.
      */
     void onConversationSeen(Conversation conv);
-
-    /**
-     * Returns the destructive action that can change the folders for a specific conversation.
-     * @param target the conversations to act upon.
-     * @return
-     */
-    public abstract DestructiveAction getFolderDestructiveAction(Collection<Conversation> target);
 
     /**
      * Load the default inbox associated with the current account.

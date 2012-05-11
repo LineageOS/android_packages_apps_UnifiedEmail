@@ -404,12 +404,21 @@ public final class ConversationListFragment extends ListFragment implements
      */
     protected void viewConversation(int position) {
         LogUtils.d(LOG_TAG, "ConversationListFragment.viewConversation(%d)", position);
+        setSelected(position);
+        final ConversationCursor cursor = getConversationListCursor();
+        if (cursor != null && cursor.moveToPosition(position)) {
+            final Conversation conv = new Conversation(cursor);
+            conv.position = position;
+            mCallbacks.onConversationSelected(conv);
+        }
+    }
+
+    /**
+     * Sets the selected position (the highlighted conversation) to the position provided here.
+     * @param position
+     */
+    protected final void setSelected(int position) {
         getListView().setItemChecked(position, true);
-        ConversationCursor conversationListCursor = getConversationListCursor();
-        conversationListCursor.moveToPosition(position);
-        Conversation conv = new Conversation(conversationListCursor);
-        conv.position = position;
-        mCallbacks.onConversationSelected(conv);
     }
 
     private ConversationCursor getConversationListCursor() {
