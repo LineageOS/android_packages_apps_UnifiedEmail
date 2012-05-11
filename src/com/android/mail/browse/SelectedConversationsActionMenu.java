@@ -39,24 +39,21 @@ import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.FoldersSelectionDialog;
-import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SwipeableListView;
-import com.android.mail.ui.UndoBarView.UndoListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * A component that displays a custom view for an {@code ActionBar}'s {@code
  * ContextMode} specific to operating on a set of conversations.
  */
 public class SelectedConversationsActionMenu implements ActionMode.Callback,
-        ConversationSetObserver, FolderChangeCommitListener {
+        ConversationSetObserver {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -64,10 +61,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      * The set of conversations to display the menu for.
      */
     protected final ConversationSelectionSet mSelectionSet;
-    /**
-     * The new folder list (after selection)
-     */
-    protected ArrayList<Folder> mFolderChangeList;
 
     private final RestrictedActivity mActivity;
 
@@ -91,8 +84,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     // them.
     private AbstractActivityController mController;
 
-    private UndoListener mUndoListener;
-
     private Account mAccount;
 
     protected int mCheckedItem = 0;
@@ -105,14 +96,13 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            AbstractActivityController controller, UndoListener undoListener, Account account,
+            AbstractActivityController controller, Account account,
             Folder folder, SwipeableListView list) {
         mActivity = activity;
         mSelectionSet = selectionSet;
         mListAdapter = adapter;
         mConversationCursor = (ConversationCursor)adapter.getCursor();
         mController = controller;
-        mUndoListener = undoListener;
         mAccount = account;
         mFolder = folder;
         mListView = list;
@@ -122,7 +112,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     /**
      * Registers a destructive action with the controller and returns it.
-     * @param action
+     * @param type the resource id of the menu item that corresponds to this action: R.id.delete
+     *  for example.
      * @return the {@link DestructiveAction} associated with this action.
      */
     // TODO(viki): This is a placeholder during the refactoring. Ideally the controller hands
@@ -167,7 +158,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 }
                 break;
             case R.id.change_folder:
-                showChangeFoldersDialog();
+                new FoldersSelectionDialog(mContext, mAccount, mController, mSelectionSet.values())
+                    .show();
                 break;
             case R.id.mark_important:
                 markConversationsImportant(true);
@@ -270,51 +262,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     star);
         }
         updateSelection();
-    }
-
-    private void showChangeFoldersDialog() {
-        new FoldersSelectionDialog(mContext, mAccount, this, mSelectionSet.values()).show();
-    }
-
-    // Both this class and AbstractActivityController are listeners for folder changes and the
-    // logic is largely the same.
-    // TODO(viki): hold all this in AbstractActivityController.
-    @Override
-    public void onFolderChangesCommit(ArrayList<Folder> folderChangeList) {
-        mFolderChangeList = folderChangeList;
-        // Do the change here...
-        // Get currently active folder info and compare it to the list
-        // these conversations have been given; if they no longer contain
-        // the selected folder, delete them from the list.
-        HashSet<String> folderUris = new HashSet<String>();
-        if (folderChangeList != null && !folderChangeList.isEmpty()) {
-            for (Folder f : folderChangeList) {
-                folderUris.add(f.uri.toString());
-            }
-        }
-        if (!folderUris.contains(mFolder.uri.toString())) {
-            // All these conversations are *removed* from the current folder. Animate deletion.
-            final boolean isDestructive = true;
-            // We copy the selected set because it might change as the animation starts, and we want
-            // to apply the action to the current selection.
-            final Collection<Conversation> target = new ArrayList<Conversation>();
-            for (Conversation conv : mSelectionSet.values()) {
-                // Indicate delete on update (i.e. no longer in this folder)
-                conv.localDeleteOnUpdate = true;
-                // For Gmail, add... if (noLongerInList(conv))...
-                target.add(conv);
-            }
-            // Delete the local delete items (all for now) and when done, update...
-            final DestructiveAction action = mController.getFolderChange(target,
-                    mFolderChangeList, isDestructive);
-            mListAdapter.delete(target, action);
-        } else {
-            // Conversations are not removed. They just have their labels changed.
-            final boolean isDestructive = false;
-            final DestructiveAction action = mController.getFolderChange(mSelectionSet.values(),
-                    mFolderChangeList, isDestructive);
-            action.performAction();
-        }
     }
 
     @Override

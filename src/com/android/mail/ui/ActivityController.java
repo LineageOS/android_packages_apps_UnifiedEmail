@@ -36,6 +36,8 @@ import com.android.mail.providers.Settings;
 import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
+import java.util.Collection;
+
 /**
  * An Activity controller knows how to combine views and listeners into a functioning activity.
  * ActivityControllers are delegates that implement methods by calling underlying views to modify,
@@ -293,9 +295,10 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
 
     /**
      * Returns the destructive action that can change the folders for a specific conversation.
+     * @param target the conversations to act upon.
      * @return
      */
-    public abstract DestructiveAction getFolderDestructiveAction();
+    public abstract DestructiveAction getFolderDestructiveAction(Collection<Conversation> target);
 
     /**
      * Load the default inbox associated with the current account.

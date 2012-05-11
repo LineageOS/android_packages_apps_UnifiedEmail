@@ -36,7 +36,6 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
 
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -412,22 +411,18 @@ public final class OnePaneController extends AbstractActivityController {
             case R.id.y_button: {
                 final boolean showDialog = (settings != null && settings.confirmArchive);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
-                        getAction(R.id.archive));
+                        getAction(R.id.archive, target));
                 break;
             }
             case R.id.delete: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
                 confirmAndDelete(target, showDialog,
-                        R.plurals.confirm_delete_conversation, getAction(R.id.delete));
+                        R.plurals.confirm_delete_conversation, getAction(R.id.delete, target));
                 break;
             }
-            case R.id.change_folders:
-                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                        target).show();
-                break;
             case R.id.inside_conversation_unread:
                 // Mark as unread and advance.
-                performInsideConversationUnread();
+                performInsideConversationUnread(target);
                 break;
             case R.id.mark_important:
                 updateCurrentConversation(ConversationColumns.PRIORITY,
@@ -438,10 +433,10 @@ public final class OnePaneController extends AbstractActivityController {
                         UIProvider.ConversationPriority.LOW);
                 break;
             case R.id.mute:
-                requestDelete(target, getAction(R.id.mute));
+                requestDelete(target, getAction(R.id.mute, target));
                 break;
             case R.id.report_spam:
-                requestDelete(target, getAction(R.id.report_spam));
+                requestDelete(target, getAction(R.id.report_spam, target));
                 break;
             default:
                 handled = false;
@@ -453,12 +448,12 @@ public final class OnePaneController extends AbstractActivityController {
     // TODO: If when the conversation was opened, some of the messages were unread,
     // this is supposed to restore that state. Otherwise, this should mark all
     // messages as unread
-    private void performInsideConversationUnread() {
+    private void performInsideConversationUnread(Collection<Conversation> target) {
         updateCurrentConversation(ConversationColumns.READ, false);
         if (returnToList()) {
             onBackPressed();
         } else {
-            final DestructiveAction action = getAction(R.id.inside_conversation_unread);
+            final DestructiveAction action = getAction(R.id.inside_conversation_unread, target);
             action.performAction();
         }
     }
@@ -474,9 +469,8 @@ public final class OnePaneController extends AbstractActivityController {
         /** Action that updates the underlying database to modify the conversation. */
         private final DestructiveAction mAction;
 
-        public OnePaneDestructiveAction(int action) {
-            final Collection<Conversation> single = Conversation.listOf(mCurrentConversation);
-            mAction = new ConversationAction(action, single);
+        public OnePaneDestructiveAction(int action, Collection<Conversation> target) {
+            mAction = new ConversationAction(action, target);
             mId = action;
         }
 
@@ -527,8 +521,8 @@ public final class OnePaneController extends AbstractActivityController {
      * @param action
      * @return
      */
-    private final DestructiveAction getAction(int action) {
-        final DestructiveAction da = new OnePaneDestructiveAction(action);
+    private final DestructiveAction getAction(int action, Collection<Conversation> target) {
+        final DestructiveAction da = new OnePaneDestructiveAction(action, target);
         registerDestructiveAction(da);
         return da;
     }
@@ -550,8 +544,8 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public DestructiveAction getFolderDestructiveAction() {
-        return getAction(R.id.change_folder);
+    public DestructiveAction getFolderDestructiveAction(Collection<Conversation> target) {
+        return getAction(R.id.change_folder, target);
     }
 
     @Override

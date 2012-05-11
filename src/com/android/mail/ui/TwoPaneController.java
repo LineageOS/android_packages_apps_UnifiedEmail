@@ -341,27 +341,21 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
-        final Collection<Conversation> target =
-                (mCurrentConversation == null) ? new ArrayList<Conversation>() :
-                    Conversation.listOf(mCurrentConversation);
+        final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
         final Settings settings = mAccount.settings;
         switch (item.getItemId()) {
             case R.id.y_button: {
                 final boolean showDialog = (settings != null && settings.confirmArchive);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
-                        getAction(R.id.archive));
+                        getAction(R.id.archive, target));
                 break;
             }
             case R.id.delete: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_delete_conversation,
-                        getAction(R.id.delete));
+                        getAction(R.id.delete, target));
                 break;
             }
-            case R.id.change_folders:
-                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                        Collections.singletonList(mCurrentConversation)).show();
-                break;
             case R.id.inside_conversation_unread:
                 updateCurrentConversation(ConversationColumns.READ, false);
                 break;
@@ -376,13 +370,13 @@ public final class TwoPaneController extends AbstractActivityController {
             case R.id.mute:
                 ConversationListFragment convList = getConversationListFragment();
                 if (convList != null) {
-                    convList.requestDelete(target, getAction(R.id.mute));
+                    convList.requestDelete(target, getAction(R.id.mute, target));
                 }
                 break;
             case R.id.report_spam:
                 convList = getConversationListFragment();
                 if (convList != null) {
-                    convList.requestDelete(target, getAction(R.id.report_spam));
+                    convList.requestDelete(target, getAction(R.id.report_spam, target));
                 }
                 break;
             default:
@@ -405,8 +399,8 @@ public final class TwoPaneController extends AbstractActivityController {
         /** Action that updates the underlying database to modify the conversation. */
         private final DestructiveAction mAction;
 
-        public TwoPaneDestructiveAction(int action) {
-            mAction = new ConversationAction(action, Conversation.listOf(mCurrentConversation));
+        public TwoPaneDestructiveAction(int action, Collection<Conversation> target) {
+            mAction = new ConversationAction(action, target);
             mId = action;
         }
 
@@ -453,15 +447,15 @@ public final class TwoPaneController extends AbstractActivityController {
      * @param action
      * @return
      */
-    private final DestructiveAction getAction(int action) {
-        final DestructiveAction da = new TwoPaneDestructiveAction(action);
+    private final DestructiveAction getAction(int action, Collection<Conversation> target) {
+        final DestructiveAction da = new TwoPaneDestructiveAction(action, target);
         registerDestructiveAction(da);
         return da;
     }
 
     @Override
-    public DestructiveAction getFolderDestructiveAction() {
-        return getAction(R.id.change_folder);
+    public DestructiveAction getFolderDestructiveAction(Collection<Conversation> target) {
+        return getAction(R.id.change_folder, target);
     }
 
     @Override

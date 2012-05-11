@@ -74,7 +74,7 @@ import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -289,6 +289,19 @@ public abstract class AbstractActivityController implements ActivityController,
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION_LIST);
         if (isValidFragment(fragment)) {
             return (ConversationListFragment) fragment;
+        }
+        return null;
+    }
+
+    /**
+     * Get the conversation view fragment for this activity. If the conversation view fragment
+     * is not attached, this method returns null
+     * @return
+     */
+    protected ConversationViewFragment getConversationViewFragment() {
+        final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION);
+        if (isValidFragment(fragment)) {
+            return (ConversationViewFragment) fragment;
         }
         return null;
     }
@@ -627,6 +640,10 @@ public abstract class AbstractActivityController implements ActivityController,
             case R.id.manage_folders_item:
                 Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
                 break;
+            case R.id.change_folder:
+                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
+                        Conversation.listOf(mCurrentConversation)).show();
+                break;
             default:
                 handled = false;
                 break;
@@ -699,12 +716,40 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * Request the removal of the current conversation with the specified destructive action.
+     * Requests the removal of the current conversation with the specified destructive action.
      * @param action
      */
     protected void requestDelete(final Collection<Conversation> target,
             final DestructiveAction action) {
-        removeAndDestroy(target, action);
+        // The conversation list handles deletion if it exists.
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            convList.requestDelete(target, action);
+            return;
+        }
+        // Update the conversation fragment if the current conversation is deleted.
+        if (getConversationViewFragment() != null &&
+                !Conversation.contains(target, mCurrentConversation)) {
+            final Conversation next = mTracker.getNextConversation(
+                    Settings.getAutoAdvanceSetting(mAccount.settings));
+            if (next != null) {
+                showConversation(next);
+                // TODO(viki): Change showConversation to allow for null inputs.
+            }
+        }
+        // No visible UI element handled it on our behalf. Perform the action ourself.
+        action.performAction();
+    }
+
+    /**
+     * Requests that the action be performed and the UI state is updated to reflect the new change.
+     * @param target
+     * @param action
+     */
+    protected void requestUpdate(final Collection<Conversation> target,
+            final DestructiveAction action) {
+        action.performAction();
+        refreshConversationList();
     }
 
     @Override
@@ -1413,6 +1458,7 @@ public abstract class AbstractActivityController implements ActivityController,
             if (isPerformed()) {
                 return;
             }
+            LogUtils.d(LOG_TAG, "Target is: %s", mTarget);
             switch (mAction) {
                 case R.id.archive:
                     LogUtils.d(LOG_TAG, "Archiving: %s", mTarget);
@@ -1469,38 +1515,25 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
-    // Called from the FolderSelectionDialog after a user is done changing
-    // folders.
+    // Called from the FolderSelectionDialog after a user is done selecting folders to assign the
+    // conversations to.
     @Override
-    public final void onFolderChangesCommit(ArrayList<Folder> folderChangeList) {
-        // Get currently active folder info and compare it to the list
-        // these conversations have been given; if they no longer contain
-        // the selected folder, delete them from the list.
-        final HashSet<String> folderUris = new HashSet<String>();
-        boolean hasInbox = false;
-        if (folderChangeList != null && !folderChangeList.isEmpty()) {
-            for (Folder f : folderChangeList) {
-                folderUris.add(f.uri.toString());
-                hasInbox |= (f.type == UIProvider.FolderType.INBOX);
+    public final void onFolderChangesCommit(
+            Collection<Folder> folders, Collection<Conversation> target) {
+        final boolean isDestructive = !Folder.contains(folders, mFolder);
+        LogUtils.d(LOG_TAG, "onFolderChangesCommit: isDestructive = %b", isDestructive);
+        if (isDestructive) {
+            for (final Conversation c : target) {
+                c.localDeleteOnUpdate = true;
             }
         }
-        // Destructive if we are in Priority Inbox and we remove the Inbox label.
-        final boolean currentlyViewingInbox = (mFolder.type == UIProvider.FolderType.INBOX);
-        final boolean destructiveChange = currentlyViewingInbox ? !hasInbox :
-                !folderUris.contains(mFolder.uri.toString());
-        updateCurrentConversation(ConversationColumns.FOLDER_LIST,
-                Folder.getUriString(folderChangeList));
-        updateCurrentConversation(ConversationColumns.RAW_FOLDERS,
-                Folder.getSerializedFolderString(mFolder, folderChangeList));
-        // TODO: (mindyp): set ConversationColumns.RAW_FOLDERS like in
-        // SelectedConversationsActionMenu
-        if (destructiveChange) {
-            mCurrentConversation.localDeleteOnUpdate = true;
-            final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
-            final DestructiveAction folderChange = getFolderDestructiveAction();
+        final DestructiveAction folderChange = getFolderChange(target, folders, isDestructive);
+        // Update the UI elements depending no their visibility and availability
+        // TODO(viki): Consolidate this into requestDelete.
+        if (isDestructive) {
             requestDelete(target, folderChange);
         } else {
-            refreshConversationList();
+            requestUpdate(target, folderChange);
         }
     }
 
@@ -1621,7 +1654,7 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
         mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set,
-                convList.getAnimatedAdapter(), this, this,
+                convList.getAnimatedAdapter(), this,
                 mAccount, mFolder, (SwipeableListView) convList.getListView());
         enableCabMode();
     }
@@ -1704,7 +1737,7 @@ public abstract class AbstractActivityController implements ActivityController,
         final Collection<Folder> dropTarget = Folder.listOf(folder);
         // Drag and drop is destructive: we remove conversations from the current folder.
         final DestructiveAction action = getFolderChange(conversations, dropTarget, true);
-        removeAndDestroy(conversations, action);
+        requestDelete(conversations, action);
     }
 
     @Override
@@ -1908,7 +1941,7 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
-    public final DestructiveAction getFolderChange(Collection<Conversation> target,
+    private final DestructiveAction getFolderChange(Collection<Conversation> target,
             Collection<Folder> folders, boolean isDestructive){
         final DestructiveAction da = new FolderDestruction(target, folders, isDestructive);
         registerDestructiveAction(da);
@@ -1918,25 +1951,11 @@ public abstract class AbstractActivityController implements ActivityController,
     /**
      * Safely refresh the conversation list if it exists.
      */
-    public void refreshConversationList() {
+    protected final void refreshConversationList() {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList == null) {
             return;
         }
         convList.requestListRefresh();
-    }
-
-    /**
-     * Remove conversations from the UI and call the destructive action when the UI state is
-     * updated.
-     * @param target
-     * @param action
-     */
-    public void removeAndDestroy(final Collection<Conversation> target,
-            final DestructiveAction action) {
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
-            convList.requestDelete(target, action);
-        }
     }
 }

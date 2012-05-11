@@ -243,6 +243,32 @@ public class Conversation implements Parcelable {
     }
 
     /**
+     * Returns true if the URI of the conversation specified as the needle was found in the
+     * collection of conversations specified as the haystack. False otherwise. This method is safe
+     * to call with nullarguments.
+     * @param haystack
+     * @param needle
+     * @return true if the needle was found in the haystack, false otherwise.
+     */
+    public final static boolean contains(Collection<Conversation> haystack, Conversation needle) {
+        // If the haystack is empty, it cannot contain anything.
+        if (haystack == null || haystack.size() <= 0) {
+            return false;
+        }
+        // The null folder exists everywhere.
+        if (needle == null) {
+            return true;
+        }
+        final Uri toFind = needle.uri;
+        for (final Conversation c : haystack) {
+            if (toFind.equals(c.uri)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns a collection of a single conversation. This method always returns a valid collection
      * even if the input conversation is null.
      * @param in a conversation, possibly null.

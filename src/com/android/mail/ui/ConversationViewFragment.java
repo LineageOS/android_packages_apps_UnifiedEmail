@@ -217,7 +217,7 @@ public final class ConversationViewFragment extends Fragment implements
         mFolder = args.getParcelable(ARG_FOLDER);
         mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
 
-        // not really, we just want to get a crack to store a reference to the change_folders item
+        // Not really, we just want to get a crack to store a reference to the change_folder item
         setHasOptionsMenu(true);
     }
 
@@ -279,7 +279,7 @@ public final class ConversationViewFragment extends Fragment implements
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        mChangeFoldersMenuItem = menu.findItem(R.id.change_folders);
+        mChangeFoldersMenuItem = menu.findItem(R.id.change_folder);
     }
 
     @Override
@@ -405,15 +405,6 @@ public final class ConversationViewFragment extends Fragment implements
     private void renderConversation(MessageCursor messageCursor) {
         mWebView.loadDataWithBaseURL(mBaseUri, renderMessageBodies(messageCursor), "text/html",
                 "utf-8", null);
-        mCursor = messageCursor;
-    }
-
-    private void updateConversation(MessageCursor messageCursor) {
-        // TODO: handle server-side conversation updates
-        // for simple things like header data changes, just re-render the affected headers
-        // if a new message is present, save off the pending cursor and show a notification to
-        // re-render
-
         mCursor = messageCursor;
     }
 

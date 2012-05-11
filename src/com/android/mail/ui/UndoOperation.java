@@ -23,10 +23,9 @@ import android.content.Context;
  * A simple holder class that stores the information to undo the application of a folder.
  */
 public class UndoOperation {
-    public int mAction;
-    public int mCount;
-    public boolean mBatch;
-
+    private final int mAction;
+    private final int mCount;
+    public final boolean mBatch;
 
     /**
      * Create an UndoOperation
@@ -50,7 +49,6 @@ public class UndoOperation {
      * when the user taps the undo bar.
      */
     public String getDescription(Context context) {
-        String desc = "";
         int resId = -1;
         switch (mAction) {
             case R.id.delete:
@@ -72,10 +70,8 @@ public class UndoOperation {
                 resId = -1;
                 break;
         }
-        if (resId != -1) {
-            desc = String.format(
-                    context.getResources().getQuantityString(resId, mCount), mCount);
-        }
+        final String desc = (resId == -1) ? "" :
+                String.format(context.getResources().getQuantityString(resId, mCount), mCount);
         return desc;
     }
 }
