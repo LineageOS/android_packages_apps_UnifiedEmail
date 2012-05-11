@@ -117,8 +117,6 @@ public abstract class AbstractActivityController implements ActivityController,
     /** Tag used when loading a folder list fragment. */
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
 
-    private static final long CONVERSATION_LIST_THROTTLE_MS = 4000L;
-
     /** Are we on a tablet device or not. */
     public final boolean IS_TABLET_DEVICE;
 
@@ -168,7 +166,6 @@ public abstract class AbstractActivityController implements ActivityController,
 
     private boolean mIsConversationListScrolling = false;
     private long mConversationListRefreshTime = 0;
-    private Timer mConversationListTimer = new Timer();
     private RefreshTimerTask mConversationListRefreshTask;
 
     /** Listeners that are interested in changes to current account settings. */
@@ -1544,20 +1541,13 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
         // Refresh the query in the background
-        long now = System.currentTimeMillis();
-        long sinceLastRefresh = now - mConversationListRefreshTime;
-//        if (sinceLastRefresh > CONVERSATION_LIST_THROTTLE_MS) {
+        final long now = System.currentTimeMillis();
+        final long sinceLastRefresh = now - mConversationListRefreshTime;
             if (mConversationListCursor.isRefreshRequired()) {
                 mConversationListCursor.refresh();
                 mTracker.updateCursor(mConversationListCursor);
                 mConversationListRefreshTime = now;
             }
-//        } else {
-//            long delay = CONVERSATION_LIST_THROTTLE_MS - sinceLastRefresh;
-//            LogUtils.d(LOG_TAG, "onRefreshRequired: delay for %sms", delay);
-//            mConversationListRefreshTask = new RefreshTimerTask(this, mHandler);
-//            mConversationListTimer.schedule(mConversationListRefreshTask, delay);
-//        }
     }
 
     /**
