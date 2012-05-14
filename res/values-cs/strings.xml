@@ -126,7 +126,7 @@
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Sdílet odkaz"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Nápověda"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"Odeslat názor"</string>
-    <string name="num_selected" msgid="2943309946439316255">"Počet vybraných zpráv: <xliff:g id="NUMBER">%d</xliff:g>"</string>
+    <string name="num_selected" msgid="2943309946439316255">"Vybrané zprávy: <xliff:g id="NUMBER">%d</xliff:g>"</string>
   <plurals name="move_conversation">
     <item quantity="one" msgid="3657821200245019288">"Přesunout konverzaci"</item>
     <item quantity="other" msgid="1685896770174368261">"Přesunutí <xliff:g id="ID_1">%1$d</xliff:g> konverzací"</item>
