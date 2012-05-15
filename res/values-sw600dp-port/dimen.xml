@@ -15,18 +15,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_height="wrap_content"
-      android:layout_width="match_parent"
-      android:id="@+id/body_wrapper">
-
-  <EditText android:id="@+id/body_text"
-      android:layout_height="wrap_content"
-      android:layout_width="match_parent"
-      android:hint="@string/body_hint"
-      android:minHeight="48dip"
-      android:gravity="top"
-      android:inputType="textLongMessage|textMultiLine|textAutoCorrect|textCapSentences"
-      android:imeOptions="flagNoFullscreen|actionDone|flagNoEnterAction" />
-
-</RelativeLayout>
+<resources>
+    <dimen name="compose_scrollview_width">600dip</dimen>
+    <dimen name="compose_area_left_padding">76dip</dimen>
+    <dimen name="compose_area_right_padding">78dip</dimen>
+</resources>
