@@ -183,8 +183,8 @@
     <item quantity="other" msgid="5071459475389411227">"Цепочек, помеченных как спам: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="5457612502965117672">"Цепочек, помещенных в архив: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
-    <item quantity="other" msgid="3012054504370916482">"Цепочек, помещенных в архив: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="5457612502965117672">"Архивировано (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
+    <item quantity="other" msgid="3012054504370916482">"Архивировано (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
   </plurals>
   <plurals name="conversation_moved_to_inbox">
     <item quantity="one" msgid="8031416635831380071">"Цепочек, перемещенных во входящие: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
