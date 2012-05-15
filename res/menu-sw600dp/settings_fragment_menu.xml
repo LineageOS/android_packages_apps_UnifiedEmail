@@ -17,32 +17,18 @@
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/send"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/send"
-        android:icon="@drawable/send" />
+    <item android:id="@+id/add_account"
+        android:showAsAction="ifRoom"
+        android:title="@string/add_account"/>
 
-    <item android:id="@+id/save"
-        android:showAsAction="never"
-        android:title="@string/save_draft"
-        android:alphabeticShortcut="@string/trigger_save_char" />
-
-    <item android:id="@+id/discard"
-        android:showAsAction="never"
-        android:title="@string/discard" />
-
-    <item android:id="@+id/settings"
-        android:title="@string/menu_preferences"
-        android:showAsAction="never" />>
-
-    <item
-        android:id="@+id/help_info_menu_item"
-        android:showAsAction="never"
-        android:title="@string/help_and_info" />
+    <item android:id="@+id/help_info_menu_item"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/help_and_info"
+        android:showAsAction="never"/>
 
     <item
         android:id="@+id/feedback_menu_item"
-        android:showAsAction="never"
+        android:icon="@android:drawable/ic_menu_send"
         android:title="@string/feedback" />
 
 </menu>

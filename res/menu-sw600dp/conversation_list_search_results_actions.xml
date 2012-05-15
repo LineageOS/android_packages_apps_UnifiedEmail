@@ -23,38 +23,73 @@
         android:icon="@drawable/ic_menu_compose_normal_holo_light"
         android:alphabeticShortcut="@string/trigger_compose_char" />
 
-    <!-- Available only for accounts with SERVER_SEARCH and in a folder
-      that supports FOLDER_SERVER_SEARCH -->
     <item android:id="@+id/search"
         android:title="@string/menu_search"
         android:showAsAction="always|collapseActionView"
         android:icon="@drawable/ic_menu_search_holo_light"
         android:actionLayout="@layout/gmail_actionbar_searchview" />
 
+    <item
+        android:id="@+id/delete"
+        android:title="@string/delete"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/trash" />
+
+    <!-- Always available -->
+    <item
+        android:id="@+id/change_folder"
+        android:title="@string/menu_change_folders"
+        android:showAsAction="never"
+        android:icon="@drawable/ic_menu_folders_holo_light" />
+
+    <item android:id="@+id/inside_conversation_unread"
+        android:title="@string/mark_read"
+        android:showAsAction="never"
+        android:icon="@drawable/ic_menu_mark_unread_holo_light" />
+
+    <item
+        android:id="@+id/mark_important"
+        android:title="@string/mark_important"
+        android:showAsAction="never"
+        android:icon="@drawable/ic_email_caret_double" />
+
+    <item
+        android:id="@+id/mark_not_important"
+        android:title="@string/mark_not_important"
+        android:showAsAction="never"
+        android:icon="@drawable/ic_email_caret_single" />
+
+    <item
+        android:id="@+id/mute"
+        android:title="@string/mute"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/report_spam"
+        android:title="@string/report_spam"
+        android:showAsAction="never"
+        android:icon="@drawable/ic_spam_normal_holo_light" />
+
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
-
-    <!-- Available for Folders with SUPPORTS_SETTINGS capability -->
-    <item android:id="@+id/folder_options"
-        android:title="@string/menu_folder_options"
-        android:showAsAction="never"  />
 
     <item android:id="@+id/settings"
         android:title="@string/menu_settings"
         android:showAsAction="never" />
 
-    <!-- Available if the account specifies a help url -->
     <item
         android:id="@+id/help_info_menu_item"
-        android:title="@string/help_and_info"
-        android:showAsAction="never" />
+        android:icon="@android:drawable/ic_menu_help"
+        android:showAsAction="never"
+        android:title="@string/help_and_info" />
 
     <item
         android:id="@+id/feedback_menu_item"
-        android:title="@string/feedback"
-        android:showAsAction="never" />
+        android:icon="@android:drawable/ic_menu_send"
+        android:showAsAction="never"
+        android:title="@string/feedback" />
 
 </menu>

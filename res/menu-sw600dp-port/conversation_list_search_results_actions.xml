@@ -17,31 +17,42 @@
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/send"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/send"
-        android:icon="@drawable/send" />
+    <item android:id="@+id/compose"
+        android:title="@string/menu_compose"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_menu_compose_normal_holo_light"
+        android:alphabeticShortcut="@string/trigger_compose_char" />
 
-    <item android:id="@+id/save"
-        android:showAsAction="never"
-        android:title="@string/save_draft"
-        android:alphabeticShortcut="@string/trigger_save_char" />
+    <item android:id="@+id/search"
+        android:title="@string/menu_search"
+        android:showAsAction="always|collapseActionView"
+        android:icon="@drawable/ic_menu_search_holo_light"
+        android:actionLayout="@layout/gmail_actionbar_searchview" />
 
-    <item android:id="@+id/discard"
+    <item android:id="@+id/refresh"
+        android:title="@string/refresh"
         android:showAsAction="never"
-        android:title="@string/discard" />
+        android:icon="@drawable/ic_menu_refresh_holo_light"
+        android:alphabeticShortcut="@string/trigger_refresh_char" />
+
+    <!-- Available for Folders with SUPPORTS_SETTINGS capability -->
+    <item android:id="@+id/folder_options"
+        android:title="@string/menu_folder_options"
+        android:showAsAction="never"  />
 
     <item android:id="@+id/settings"
-        android:title="@string/menu_preferences"
-        android:showAsAction="never" />>
+        android:title="@string/menu_settings"
+        android:showAsAction="never" />
 
     <item
         android:id="@+id/help_info_menu_item"
+        android:icon="@android:drawable/ic_menu_help"
         android:showAsAction="never"
         android:title="@string/help_and_info" />
 
     <item
         android:id="@+id/feedback_menu_item"
+        android:icon="@android:drawable/ic_menu_send"
         android:showAsAction="never"
         android:title="@string/feedback" />
 
