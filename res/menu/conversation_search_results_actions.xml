@@ -20,7 +20,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Depends on AccountCapabilities.ARCHIVE -->
     <item
-        android:id="@+id/y_button"
+        android:id="@+id/archive"
         android:title="@string/archive"
         android:showAsAction="ifRoom"
         android:icon="@drawable/archive"
