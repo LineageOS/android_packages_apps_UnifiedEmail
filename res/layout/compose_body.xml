@@ -20,13 +20,14 @@
       android:layout_width="match_parent"
       android:id="@+id/body_wrapper">
 
-  <EditText android:id="@+id/body_text"
+  <EditText android:id="@+id/body"
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
       android:hint="@string/body_hint"
       android:minHeight="48dip"
       android:gravity="top"
       android:inputType="textLongMessage|textMultiLine|textAutoCorrect|textCapSentences"
-      android:imeOptions="flagNoFullscreen|actionDone|flagNoEnterAction" />
+      android:imeOptions="flagNoFullscreen|actionDone|flagNoEnterAction"
+      android:textColorHint="@color/compose_label_text" />
 
 </RelativeLayout>

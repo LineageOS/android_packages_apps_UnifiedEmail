@@ -28,7 +28,7 @@
         android:layout_weight="1" />
 
     <Button android:id="@+id/add_cc_bcc"
-        android:text="@string/plus_cc_label"
+        android:text="@string/add_cc_label"
         style="@style/ComposeButton"
         android:layout_marginLeft="16dip" />
 
