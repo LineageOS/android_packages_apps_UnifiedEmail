@@ -15,9 +15,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
-    <style name="unreadCountActionBarTablet" parent="@style/UnreadCountActionBar">
-        <item name="android:layout_marginLeft">12dp</item>
-        <item name="android:layout_width">wrap_content</item>
-    </style>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Compose screen, button: add Cc/Bcc fields [CHAR LIMIT=20]-->
+    <string name="plus_cc_label">+ Cc/Bcc</string>
+    <!-- Compose screen, button: add bcc fields [CHAR LIMIT=20]-->
+    <string name="plus_bcc_label">+ Bcc</string>
+    <!-- Menu item: options for this label. [CHAR LIMIT = 30] -->
+    <string name="menu_label_options">Manage labels</string>
 </resources>
