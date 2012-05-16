@@ -51,4 +51,7 @@
     activity.  Throttle loader updates. -->
     <integer name="folder_item_refresh_delay_ms">500</integer>
     <integer name="conversation_text_zoom_percent">87</integer>
+
+    <!-- Whether the list is collapsed in conversation view mode -->
+    <bool name="list_collapsed">true</bool>
 </resources>
