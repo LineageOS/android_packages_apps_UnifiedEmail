@@ -26,4 +26,7 @@
 
     <!-- Whether the list is collapsed in conversation view mode -->
     <bool name="list_collapsed">false</bool>
+
+    <!-- Whether to show single or 2 pane search results -->
+    <bool name="show_two_pane_search_results">true</bool>
 </resources>
