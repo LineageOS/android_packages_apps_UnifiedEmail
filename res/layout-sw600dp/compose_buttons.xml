@@ -34,8 +34,8 @@
 
     <ImageView android:id="@+id/add_attachment"
         android:text="@string/add_file_attachment"
-        android:layout_width="32dip"
-        android:layout_height="32dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/ic_attachment_holo_light"
         android:clickable="true"
         android:layout_gravity="center_vertical|left"
