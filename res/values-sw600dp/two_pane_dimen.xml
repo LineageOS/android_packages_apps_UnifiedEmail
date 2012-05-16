@@ -17,7 +17,7 @@
 -->
 
 <resources>
-    <dimen name="folder_list_pane_width">320dip</dimen>
+    <dimen name="folder_list_pane_width">240dip</dimen>
     <dimen name="new_message_notification_margin_left">32dip</dimen>
     <dimen name="new_message_notification_margin_right">32dip</dimen>
     <dimen name="new_message_notification_margin_bottom">12dip</dimen>

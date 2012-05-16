@@ -37,9 +37,7 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
@@ -115,7 +113,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     protected boolean isConversationListVisible() {
-        return mLayout.isConversationListVisible();
+        return !mLayout.isConversationListCollapsed();
     }
 
     @Override
@@ -217,7 +215,6 @@ public final class TwoPaneController extends AbstractActivityController {
         int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             mViewMode.enterSearchResultsConversationMode();
-            unhideConversationList();
         } else {
             mViewMode.enterConversationMode();
         }
@@ -249,22 +246,6 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     /**
-     * Show the conversation list if it can be shown in the current orientation.
-     * @return true if the conversation list was shown
-     */
-    private boolean unhideConversationList() {
-        // Find if the conversation list can be shown
-        int mode = mViewMode.getMode();
-        final boolean isConversationListShowable = (mode == ViewMode.CONVERSATION
-                && mLayout.isConversationListCollapsible()
-                || (mode == ViewMode.SEARCH_RESULTS_CONVERSATION));
-        if (isConversationListShowable) {
-            return mLayout.uncollapseList();
-        }
-        return false;
-    }
-
-    /**
      * Up works as follows:
      * 1) If the user is in a conversation and:
      *  a) the conversation list is hidden (portrait mode), shows the conv list and
@@ -278,16 +259,14 @@ public final class TwoPaneController extends AbstractActivityController {
     public boolean onUpPressed() {
         int mode = mViewMode.getMode();
         if (mode == ViewMode.CONVERSATION) {
-            if (!mLayout.isConversationListVisible()) {
+            if (mLayout.isConversationListCollapsed()) {
                 commitLeaveBehindItems();
-                unhideConversationList();
-            } else {
-                mActivity.onBackPressed();
             }
+            mActivity.onBackPressed();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
-            if (!mLayout.isConversationListVisible()) {
+            if (mLayout.isConversationListCollapsed()) {
                 commitLeaveBehindItems();
-                unhideConversationList();
+                onBackPressed();
             } else {
                 mActivity.finish();
             }

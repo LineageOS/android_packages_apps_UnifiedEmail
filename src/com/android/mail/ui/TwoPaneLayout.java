@@ -232,12 +232,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * This is only relevant in a collapsible view, and will be 0 otherwise.
      */
     private int computeConversationListLeft(int width) {
-        if (isConversationListCollapsible()) {
-            return mListCollapsed ? -width : 0;
-
-        } else {
-            return 0;
-        }
+        return isConversationListCollapsed() ? -width : 0;
     }
 
     /**
@@ -278,7 +273,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
             case ViewMode.CONVERSATION:
                 // Fallthrough
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
-                if (isConversationListCollapsible()) {
+                if (isConversationListCollapsed()) {
                     return totalWidth;
                 }
                 return totalWidth - (int) (totalWidth * sScaledConversationListWeight);
@@ -312,7 +307,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mListener.onConversationListVisibilityChanged(isConversationListVisible());
+                    mListener.onConversationListVisibilityChanged(!isConversationListCollapsed());
                 }
             });
         }
@@ -413,7 +408,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         // On the initial call, measurements may not have been done (i.e. this Layout has never
         // been rendered), so no animation will be done.
         if (getMeasuredWidth() == 0) {
-            mListCollapsed = true;
             onFinishEnteringConversationMode();
             return;
         }
@@ -429,7 +423,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
         // Shrink the conversation list to make room for the conversation, and default
         // it to collapsed in case it is collapsible.
-        mListCollapsed = true;
         int targetWidth = computeConversationListWidth();
         setConversationListWidth(targetWidth);
 
@@ -480,8 +473,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         mConversationView = findViewById(R.id.conversation_pane_container);
         mConversationViewOverlay = findViewById(R.id.conversation_overlay);
 
-        mConversationViewOverlay.setOnTouchListener(this);
-
         sAnimationSlideLeftDuration = res.getInteger(R.integer.activity_slide_left_duration);
         sAnimationSlideRightDuration = res.getInteger(R.integer.activity_slide_right_duration);
         final int sFolderListWeight = res.getInteger(R.integer.folder_list_weight);
@@ -507,28 +498,20 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     }
 
     /**
-     * @return whether the conversation list can be collapsed or not. This depends on orientation.
-     */
-    public boolean isConversationListCollapsible() {
-        return mContext.getResources().getInteger(R.integer.conversation_list_collapsible) != 0;
-    }
-
-    /**
      * @return Whether or not the conversation list is visible on screen.
      */
-    public boolean isConversationListVisible() {
+    public boolean isConversationListCollapsed() {
         if (mListCollapsed == null) {
             mListCollapsed = new Boolean(mContext.getResources()
                     .getBoolean(R.bool.list_collapsed));
         }
-        return !mListCollapsed;
+        return mListCollapsed;
     }
 
     /**
      * Finalizes state after animations settle when entering the conversation list mode.
      */
     private void onFinishEnteringConversationListMode() {
-        mListCollapsed = false;
         mConversationView.setVisibility(View.GONE);
         mConversationViewOverlay.setVisibility(View.GONE);
         mFoldersView.setVisibility(View.VISIBLE);
