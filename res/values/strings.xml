@@ -448,6 +448,12 @@
     <!--  Text anchor for control to add / change labels on a conversation when
           viewing it. [CHAR LIMIT=40] -->
     <string name="add_label">Add label</string>
+    <!-- position bar label in conversation view: number out of total [CHAR LIMIT=50]-->
+    <string name="conversation_count"><xliff:g id="count">%1$s</xliff:g> of <xliff:g id="total">%2$s</xliff:g></string>
+    <!-- position bar label in conversation view: label for a newer conversation [CHAR LIMIT=20]-->
+    <string name="conversation_newer">Newer</string>
+    <!-- position bar label in conversation view: label for an older conversation [CHAR LIMIT=20]-->
+    <string name="conversation_older">Older</string>
 
     <!-- Conversation message header strings -->
     <!--  Icon name for expanding recipient details in a message when viewing it. [CHAR LIMIT=40] -->
