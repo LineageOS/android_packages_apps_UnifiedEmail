@@ -83,7 +83,8 @@
             <com.android.mail.compose.QuotedTextView android:id="@+id/quoted_text_view"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/compose_area_right_padding" />
 
             <FrameLayout
                 android:id="@+id/composearea_tap_trap_bottom"
