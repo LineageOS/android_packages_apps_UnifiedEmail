@@ -116,7 +116,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     }
 
     private void renderAttachments() {
-        List<Attachment> attachments;
+        final List<Attachment> attachments;
         if (mAttachmentsCursor != null && !mAttachmentsCursor.isClosed()) {
             int i = -1;
             attachments = Lists.newArrayList();
