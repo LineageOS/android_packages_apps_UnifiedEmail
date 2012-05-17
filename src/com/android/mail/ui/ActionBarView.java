@@ -409,7 +409,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 setPopulatedSearchView();
                 // Remove focus from the search action menu in search results mode so the IME and
                 // the suggestions don't get in the way.
-                if (mMode == ViewMode.SEARCH_RESULTS_LIST && mSearch != null) {
+                if (mSearch != null) {
                     mSearchWidget = (SearchView) mSearch.getActionView();
                     mSearchWidget.clearFocus();
                 }
