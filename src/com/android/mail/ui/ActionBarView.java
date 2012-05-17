@@ -26,6 +26,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -417,7 +418,8 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 setStandardMode();
-                if (Utils.useTabletUI(mActivity.getActivityContext())) {
+                if (Utils.useTabletUI(mActivity.getActivityContext())
+                        && !showConversationSubject()) {
                     setPopulatedSearchView();
                 }
                 break;
@@ -459,10 +461,12 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private void setPopulatedSearchView() {
         if (mSearch != null) {
             mSearch.expandActionView();
-            ConversationListContext context = mController.getCurrentListContext();
-            if (context != null) {
-                mSearchWidget.setQuery(context.searchQuery, false);
+            String query = mActivity.getIntent().getStringExtra(
+                    ConversationListContext.EXTRA_SEARCH_QUERY);
+            if (!TextUtils.isEmpty(query)) {
+                mSearchWidget.setQuery(query, false);
             }
+            mSearchWidget.clearFocus();
         }
     }
 

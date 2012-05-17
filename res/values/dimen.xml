@@ -87,4 +87,5 @@
     <dimen name="min_swipe">10dip</dimen>
     <dimen name="min_vert">10dip</dimen>
     <dimen name="min_lock">20dip</dimen>
+    <dimen name="search_view_width">400dip</dimen>
 </resources>

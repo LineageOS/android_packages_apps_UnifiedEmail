@@ -44,6 +44,7 @@ import android.widget.RelativeLayout;
 import com.android.mail.R;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -128,6 +129,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     private final AnimatorListener mConversationListener =
             new AnimatorListener(AnimatorListener.CONVERSATION);
     private boolean mIsSearchResult = false;
+    private boolean mShowTwoPaneSearchResults;
 
     private class AnimatorListener implements Animator.AnimatorListener {
         public static final int CONVERSATION_LIST = 1;
@@ -475,7 +477,8 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
         Resources res = getResources();
         mFoldersView = findViewById(R.id.content_pane);
-        if (mIsSearchResult) {
+        mShowTwoPaneSearchResults = Utils.showTwoPaneSearchResults(mContext);
+        if (mIsSearchResult && !mShowTwoPaneSearchResults) {
             mFoldersView.setVisibility(View.GONE);
         }
         mConversationListContainer = findViewById(R.id.conversation_column_container);
@@ -508,7 +511,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     }
 
     private boolean isFolderListCollapsed() {
-        return mIsSearchResult;
+        return mIsSearchResult && !mShowTwoPaneSearchResults;
     }
 
     /**

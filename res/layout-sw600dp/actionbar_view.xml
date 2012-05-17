@@ -23,9 +23,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <!-- Not working currently: no search implemented yet -->
-    <!-- <include layout="@layout/actionbar_searchview" /> -->
-
     <include layout="@layout/actionbar_label" />
 
     <include layout="@layout/actionbar_subject" />

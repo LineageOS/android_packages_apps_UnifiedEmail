@@ -48,7 +48,6 @@ import java.util.Collection;
 // Called TwoPaneActivityController in Gmail.
 public final class TwoPaneController extends AbstractActivityController {
     private TwoPaneLayout mLayout;
-    private Boolean mShowTwoPaneSearchResults;
 
     /**
      * @param activity
@@ -64,7 +63,7 @@ public final class TwoPaneController extends AbstractActivityController {
      */
     private void initializeConversationListFragment(boolean show) {
         if (show) {
-            if (mConvListContext != null && mConvListContext.isSearchResult()) {
+            if (Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())) {
                 mViewMode.enterSearchResultsListMode();
             } else {
                 mViewMode.enterConversationListMode();
@@ -268,7 +267,9 @@ public final class TwoPaneController extends AbstractActivityController {
             mActivity.onBackPressed();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             if (mLayout.isConversationListCollapsed()
-                    || (mConvListContext.isSearchResult() && !showTwoPaneSearchResults())) {
+                    || (mConvListContext.isSearchResult() && !Utils
+                            .showTwoPaneSearchResults
+                                (mActivity.getApplicationContext()))) {
                 commitLeaveBehindItems();
                 onBackPressed();
             } else {
@@ -303,7 +304,7 @@ public final class TwoPaneController extends AbstractActivityController {
         int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
-        } else if (mViewMode.getMode() == ViewMode.CONVERSATION) {
+        } else if (mode == ViewMode.CONVERSATION) {
             // Go to conversation list.
             mViewMode.enterConversationListMode();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
@@ -316,27 +317,20 @@ public final class TwoPaneController extends AbstractActivityController {
         }
     }
 
-    private boolean showTwoPaneSearchResults() {
-        if (mShowTwoPaneSearchResults == null) {
-            mShowTwoPaneSearchResults = new Boolean(mContext.getResources().getBoolean(
-                    R.bool.show_two_pane_search_results));
-        }
-        return mShowTwoPaneSearchResults;
-    }
-
     @Override
     public void exitSearchMode() {
         int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST
-                || (mode == ViewMode.SEARCH_RESULTS_CONVERSATION && showTwoPaneSearchResults())) {
+                || (mode == ViewMode.SEARCH_RESULTS_CONVERSATION
+                        && Utils.showTwoPaneSearchResults(mActivity.getApplicationContext()))) {
             mActivity.finish();
         }
     }
 
     @Override
     public boolean shouldShowFirstConversation() {
-        return mConvListContext != null && mConvListContext.isSearchResult()
-                && showTwoPaneSearchResults();
+        return Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())
+                && Utils.showTwoPaneSearchResults(mActivity.getApplicationContext());
     }
 
     @Override

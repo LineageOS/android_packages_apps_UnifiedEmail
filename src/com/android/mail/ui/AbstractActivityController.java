@@ -792,7 +792,9 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mFolder != null) {
             outState.putParcelable(SAVED_FOLDER, mFolder);
         }
-        if (mCurrentConversation != null && mViewMode.getMode() == ViewMode.CONVERSATION) {
+        if (mCurrentConversation != null
+                && (mViewMode.getMode() == ViewMode.CONVERSATION ||
+                mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION)) {
             outState.putParcelable(SAVED_CONVERSATION, mCurrentConversation);
         }
         if (!mSelectedSet.isEmpty()) {
@@ -1064,7 +1066,7 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void onConversationSelected(Conversation conversation) {
         showConversation(conversation);
-        if (mConvListContext != null && mConvListContext.isSearchResult()) {
+        if (Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())) {
             mViewMode.enterSearchResultsConversationMode();
         } else {
             mViewMode.enterConversationMode();
