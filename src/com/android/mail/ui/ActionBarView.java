@@ -100,6 +100,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      * method talks about why this is required.
      */
     private boolean mIgnoreFirstNavigation = true;
+    private Boolean mShowConversationSubject;
 
     public ActionBarView(Context context) {
         this(context, null);
@@ -396,7 +397,8 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 // FIXME: use a resource to have fine-grained control over whether the spinner
                 // or the subject appears
-                if (Utils.useTabletUI(mActivity.getActivityContext())) {
+                if (Utils.useTabletUI(mActivity.getActivityContext())
+                        && !showConversationSubject()) {
                     showNavList();
                 } else {
                     setStandardMode();
@@ -428,6 +430,14 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 break;
         }
         return false;
+    }
+
+    private boolean showConversationSubject() {
+        if (mShowConversationSubject == null) {
+            mShowConversationSubject = new Boolean(mActivity.getActivityContext().getResources()
+                    .getBoolean(R.bool.show_conversation_subject));
+        }
+        return mShowConversationSubject;
     }
 
     /**

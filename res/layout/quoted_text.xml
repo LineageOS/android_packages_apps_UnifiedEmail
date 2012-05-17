@@ -37,6 +37,7 @@
                 android:contentDescription="@string/quoted_text"/>
 
             <TextView
+                android:id="@+id/hide_quoted_text_label"
                 android:text="@string/quoted_text_label"
                 android:textAllCaps="true"
                 android:layout_height="match_parent"
@@ -45,7 +46,8 @@
                 style="@style/QuotedTextHeaderStyle"
                 android:layout_toRightOf="@+id/hide_quoted_text"
                 android:gravity="center_vertical|left"
-                android:ellipsize="end"/>
+                android:ellipsize="end"
+                android:clickable="true" />
         </RelativeLayout>
 
         <View android:layout_height="match_parent"
