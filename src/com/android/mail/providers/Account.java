@@ -16,22 +16,19 @@
 
 package com.android.mail.providers;
 
-import com.android.mail.providers.UIProvider.SyncStatus;
-import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
-
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.android.mail.providers.UIProvider.SyncStatus;
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.lang.StringBuilder;
 
 public class Account extends android.accounts.Account implements Parcelable {
     private static final String SETTINGS_KEY = "settings";
@@ -130,6 +127,10 @@ public class Account extends android.accounts.Account implements Parcelable {
      * URI for recent folders for this account.
      */
     public final Uri recentFolderListUri;
+    /**
+     * The color used for this account in combined view (Email)
+     */
+    public final int color;
 
     /**
      * Settings object for this account.
@@ -245,6 +246,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         mimeType = json.optString(UIProvider.AccountColumns.MIME_TYPE);
         recentFolderListUri = getValidUri(
                 json.optString(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI));
+        color = Integer.valueOf(json.getInt(UIProvider.AccountColumns.COLOR));
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -275,6 +277,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         composeIntentUri = in.readParcelable(null);
         mimeType = in.readString();
         recentFolderListUri = in.readParcelable(null);
+        color = in.readInt();
         final String serializedSettings = in.readString();
         final Settings parcelSettings = Settings.newInstance(serializedSettings);
 
@@ -319,6 +322,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         mimeType = cursor.getString(UIProvider.ACCOUNT_MIME_TYPE_COLUMN);
         final String recent = cursor.getString(UIProvider.ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN);
         recentFolderListUri = !TextUtils.isEmpty(recent) ? Uri.parse(recent) : null;
+        color = cursor.getInt(UIProvider.ACCOUNT_COLOR_COLUMN);
 
         settings = new Settings(cursor);
     }
@@ -374,6 +378,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(composeIntentUri, 0);
         dest.writeString(mimeType);
         dest.writeParcelable(recentFolderListUri, 0);
+        dest.writeInt(color);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
         }
@@ -420,6 +425,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(mimeType);
         sb.append(",recentFoldersUri=");
         sb.append(recentFolderListUri);
+        sb.append(",color=");
+        sb.append(Integer.toHexString(color));
         sb.append(",settings=");
         sb.append(settings.serialize());
 
@@ -453,7 +460,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 (syncStatus == other.syncStatus) &&
                 Objects.equal(composeIntentUri, other.composeIntentUri) &&
                 TextUtils.equals(mimeType, other.mimeType) &&
-                Objects.equal(recentFolderListUri, other.recentFolderListUri);
+                Objects.equal(recentFolderListUri, other.recentFolderListUri) &&
+                color == other.color;
     }
 
     @Override
@@ -462,7 +470,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 uri, folderListUri, searchUri, accountFromAddresses, saveDraftUri,
                 sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri,
                 helpIntentUri, sendFeedbackIntentUri, syncStatus, composeIntentUri, mimeType,
-                recentFolderListUri);
+                recentFolderListUri, color);
     }
 
     @SuppressWarnings("hiding")

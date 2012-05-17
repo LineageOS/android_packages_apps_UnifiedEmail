@@ -302,6 +302,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         String textLabel = "";
+        int color = 0;
         int unreadCount = 0;
         switch (getType(position)) {
             case TYPE_HEADER:
@@ -316,6 +317,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 return convertView;
             case TYPE_ACCOUNT:
                 textLabel = getAccountFolder(position);
+                color = getAccountColor(position);
                 break;
             case TYPE_FOLDER:
                 final int offset = position - mNumAccounts - 1;
@@ -329,6 +331,13 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         }
         convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
         ((TextView) convertView.findViewById(R.id.account_spinner_accountname)).setText(textLabel);
+        View colorView = convertView.findViewById(R.id.account_spinner_color);
+        if (color != 0) {
+            colorView.setVisibility(View.VISIBLE);
+            colorView.setBackgroundColor(color);
+        } else {
+            colorView.setVisibility(View.INVISIBLE);
+        }
         populateUnreadCountView(
                 (TextView) convertView.findViewById(R.id.account_spinner_unread_count),
                 unreadCount);
@@ -352,6 +361,18 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             return "";
         }
         return mAllAccounts[position].name;
+    }
+
+    /**
+     * Returns the color of the account (or zero, if none).
+     * @param position
+     * @return the folder of the account at the given position.
+     */
+    private int getAccountColor(int position) {
+        if (position >= mNumAccounts) {
+            return 0;
+        }
+        return mAllAccounts[position].color;
     }
 
     /**
