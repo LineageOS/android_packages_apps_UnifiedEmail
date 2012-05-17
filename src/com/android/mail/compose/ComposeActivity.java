@@ -272,6 +272,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Intent intent = getIntent();
         Account account;
         Message message;
+        boolean showQuotedText = false;
+
         int action;
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_MESSAGE)) {
             action = savedInstanceState.getInt(EXTRA_ACTION, COMPOSE);
@@ -301,6 +303,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             initFromDraftMessage(message);
             initQuotedTextFromRefMessage(mRefMessage, action);
             showCcBcc(savedInstanceState);
+            showQuotedText = message.appendRefMessageContent;
         } else if (action == EDIT_DRAFT) {
             initFromDraftMessage(message);
             showCcBcc(message);
@@ -321,10 +324,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     break;
             }
             initQuotedTextFromRefMessage(mRefMessage, action);
+            showQuotedText = message.appendRefMessageContent;
         } else if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
             if (mRefMessage != null) {
                 initFromRefMessage(action, mAccount.name);
                 showCcBcc(mRefMessage);
+                showQuotedText = true;
             }
         } else {
             initFromExtras(intent);
@@ -341,6 +346,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         initChangeListeners();
         setFocus(action);
         updateHideOrShowCcBcc();
+        updateHideOrShowQuotedText(showQuotedText);
+    }
+
+    private void updateHideOrShowQuotedText(boolean showQuotedText) {
+        mQuotedTextView.updateCheckedState(showQuotedText);
     }
 
     private void setFocus(int action) {
