@@ -25,6 +25,7 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
 import android.text.Html;
@@ -98,6 +99,10 @@ public class Utils {
     private static String sVersionCode = null;
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
+
+    public static boolean isRunningJellybeanOrLater() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+    }
 
     /**
      * Sets WebView in a restricted mode suitable for email use.
