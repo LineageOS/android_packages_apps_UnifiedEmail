@@ -101,4 +101,18 @@ public class CcBccView extends RelativeLayout {
         transitionSet.playSequentially(heightAnimator, fadeAnimation);
         transitionSet.start();
     }
+
+    /**
+     * @return whether the CC field is visible
+     */
+    public boolean isCcVisible() {
+        return mCc.getVisibility() == View.VISIBLE;
+    }
+
+    /**
+     * @return whether the BCC field is visible
+     */
+    public boolean isBccVisible() {
+        return mBcc.getVisibility() == View.VISIBLE;
+    }
 }
