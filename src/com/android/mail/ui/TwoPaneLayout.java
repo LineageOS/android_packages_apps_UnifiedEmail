@@ -127,6 +127,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
             new AnimatorListener(AnimatorListener.CONVERSATION_LIST);
     private final AnimatorListener mConversationListener =
             new AnimatorListener(AnimatorListener.CONVERSATION);
+    private boolean mIsSearchResult = false;
 
     private class AnimatorListener implements Animator.AnimatorListener {
         public static final int CONVERSATION_LIST = 1;
@@ -285,7 +286,8 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * Computes the width of the folder list in stable state of the current mode.
      */
     private int computeFolderListWidth() {
-        return (int) (getMeasuredWidth() * sScaledFolderListWeight);
+        return isFolderListCollapsed() ?
+                0 : (int) (getMeasuredWidth() * sScaledFolderListWeight);
     }
 
     /**
@@ -459,15 +461,23 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
                 .leftMargin;
     }
 
+    public void initializeLayout(Context context) {
+        initializeLayout(context, false);
+    }
+
     /**
      * Initializes the layout with a specific context.
      */
     @VisibleForTesting
-    public void initializeLayout(Context context) {
+    public void initializeLayout(Context context, boolean isSearchResult) {
         mContext = context;
+        mIsSearchResult = isSearchResult;
 
         Resources res = getResources();
         mFoldersView = findViewById(R.id.content_pane);
+        if (mIsSearchResult) {
+            mFoldersView.setVisibility(View.GONE);
+        }
         mConversationListContainer = findViewById(R.id.conversation_column_container);
         mListView = findViewById(R.id.conversation_list);
         mConversationView = findViewById(R.id.conversation_pane_container);
@@ -495,6 +505,10 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
     private boolean isAnimatingFade() {
         return mAnimatingFade;
+    }
+
+    private boolean isFolderListCollapsed() {
+        return mIsSearchResult;
     }
 
     /**

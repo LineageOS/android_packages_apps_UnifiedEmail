@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -47,6 +48,7 @@ import java.util.Collection;
 // Called TwoPaneActivityController in Gmail.
 public final class TwoPaneController extends AbstractActivityController {
     private TwoPaneLayout mLayout;
+    private Boolean mShowTwoPaneSearchResults;
 
     /**
      * @param activity
@@ -136,7 +138,8 @@ public final class TwoPaneController extends AbstractActivityController {
         if (mLayout == null) {
             LogUtils.d(LOG_TAG, "mLayout is null!");
         }
-        mLayout.initializeLayout(mActivity.getApplicationContext());
+        mLayout.initializeLayout(mActivity.getApplicationContext(),
+                Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
 
         // The tablet layout needs to refer to mode changes.
         mViewMode.addListener(mLayout);
@@ -264,7 +267,8 @@ public final class TwoPaneController extends AbstractActivityController {
             }
             mActivity.onBackPressed();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
-            if (mLayout.isConversationListCollapsed()) {
+            if (mLayout.isConversationListCollapsed()
+                    || (mConvListContext.isSearchResult() && !showTwoPaneSearchResults())) {
                 commitLeaveBehindItems();
                 onBackPressed();
             } else {
@@ -312,9 +316,27 @@ public final class TwoPaneController extends AbstractActivityController {
         }
     }
 
+    private boolean showTwoPaneSearchResults() {
+        if (mShowTwoPaneSearchResults == null) {
+            mShowTwoPaneSearchResults = new Boolean(mContext.getResources().getBoolean(
+                    R.bool.show_two_pane_search_results));
+        }
+        return mShowTwoPaneSearchResults;
+    }
+
+    @Override
+    public void exitSearchMode() {
+        int mode = mViewMode.getMode();
+        if (mode == ViewMode.SEARCH_RESULTS_LIST
+                || (mode == ViewMode.SEARCH_RESULTS_CONVERSATION && showTwoPaneSearchResults())) {
+            mActivity.finish();
+        }
+    }
+
     @Override
     public boolean shouldShowFirstConversation() {
-        return mConvListContext != null && mConvListContext.isSearchResult();
+        return mConvListContext != null && mConvListContext.isSearchResult()
+                && showTwoPaneSearchResults();
     }
 
     @Override
