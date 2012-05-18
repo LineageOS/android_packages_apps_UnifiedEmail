@@ -300,7 +300,7 @@ public final class ConversationViewFragment extends Fragment implements
                                 .supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
         // TODO(mindyp) show/ hide spam and mute based on conversation
         // properties to be added.
-        Utils.setMenuItemVisibility(menu, R.id.y_button,
+        Utils.setMenuItemVisibility(menu, R.id.archive,
                 mAccount.supportsCapability(AccountCapabilities.ARCHIVE) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
         Utils.setMenuItemVisibility(menu, R.id.report_spam,

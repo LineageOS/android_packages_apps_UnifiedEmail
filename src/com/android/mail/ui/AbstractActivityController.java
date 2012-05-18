@@ -723,6 +723,7 @@ public abstract class AbstractActivityController implements ActivityController,
         // The conversation list handles deletion if it exists.
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
+            LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
             convList.requestDelete(target, action);
             return;
         }

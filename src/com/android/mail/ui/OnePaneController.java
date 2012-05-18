@@ -415,7 +415,8 @@ public final class OnePaneController extends AbstractActivityController {
         final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
         final Settings settings = mAccount.settings;
         switch (item.getItemId()) {
-            case R.id.y_button: {
+            case R.id.archive: {
+                LogUtils.d(LOG_TAG, "Entering archive");
                 final boolean showDialog = (settings != null && settings.confirmArchive);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
                         getAction(R.id.archive, target));
