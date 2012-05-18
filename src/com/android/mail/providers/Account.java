@@ -193,7 +193,7 @@ public class Account extends android.accounts.Account implements Parcelable {
             final String type = (String) json.get(UIProvider.AccountColumns.TYPE);
             return new Account(name, type, serializedAccount);
         } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Could not create an account from this input: \"%s\"",
+            LogUtils.e(LOG_TAG, e, "Could not create an account from this input: \"%s\"",
                     serializedAccount);
             return null;
         }
