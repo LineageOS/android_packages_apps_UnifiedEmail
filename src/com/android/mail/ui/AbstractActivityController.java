@@ -872,6 +872,12 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     private void setAccount(Account account) {
+        if (account == null) {
+            LogUtils.w(LOG_TAG, new Error(),
+                    "AAC ignoring null (presumably invalid) account restoration");
+            return;
+        }
+
         mAccount = account;
         LogUtils.d(LOG_TAG, "AbstractActivityController.setAccount(): mAccount = %s", mAccount.uri);
         dispatchSettingsChange(mAccount.settings);
@@ -919,9 +925,10 @@ public abstract class AbstractActivityController implements ActivityController,
                 setAccount(Account.newinstance(intent
                         .getStringExtra(Utils.EXTRA_ACCOUNT_STRING)));
             }
-            if (mAccount != null) {
-                mActivity.invalidateOptionsMenu();
+            if (mAccount == null) {
+                return;
             }
+            mActivity.invalidateOptionsMenu();
 
             Folder folder = null;
             if (intent.hasExtra(Utils.EXTRA_FOLDER)) {

@@ -225,9 +225,9 @@ public class Account extends android.accounts.Account implements Parcelable {
     private Account(String name, String type, String jsonAccount) throws JSONException {
         super(name, type);
         final JSONObject json = new JSONObject(jsonAccount);
-        providerVersion = Integer.valueOf(json.getInt(UIProvider.AccountColumns.PROVIDER_VERSION));
+        providerVersion = json.getInt(UIProvider.AccountColumns.PROVIDER_VERSION);
         uri = Uri.parse(json.optString(UIProvider.AccountColumns.URI));
-        capabilities = Integer.valueOf(json.getInt(UIProvider.AccountColumns.CAPABILITIES));
+        capabilities = json.getInt(UIProvider.AccountColumns.CAPABILITIES);
         folderListUri = getValidUri(json.optString(UIProvider.AccountColumns.FOLDER_LIST_URI));
         searchUri = getValidUri(json.optString(UIProvider.AccountColumns.SEARCH_URI));
         accountFromAddresses = UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES;
@@ -241,12 +241,12 @@ public class Account extends android.accounts.Account implements Parcelable {
         helpIntentUri = getValidUri(json.optString(UIProvider.AccountColumns.HELP_INTENT_URI));
         sendFeedbackIntentUri =
                 getValidUri(json.optString(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI));
-        syncStatus = Integer.valueOf(json.optInt(UIProvider.AccountColumns.SYNC_STATUS));
+        syncStatus = json.optInt(UIProvider.AccountColumns.SYNC_STATUS);
         composeIntentUri = getValidUri(json.optString(UIProvider.AccountColumns.COMPOSE_URI));
         mimeType = json.optString(UIProvider.AccountColumns.MIME_TYPE);
         recentFolderListUri = getValidUri(
                 json.optString(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI));
-        color = Integer.valueOf(json.getInt(UIProvider.AccountColumns.COLOR));
+        color = json.optInt(UIProvider.AccountColumns.COLOR, 0);
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
