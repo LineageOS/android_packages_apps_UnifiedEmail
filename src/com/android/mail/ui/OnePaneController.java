@@ -190,6 +190,13 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void showConversation(Conversation conversation) {
         super.showConversation(conversation);
+        if (conversation == null) {
+            // This is a request to remove the conversation view, and pop back the view stack.
+            // If we are in conversation list view already, this should be a safe thing to do, so
+            // we don't check viewmode.
+            transitionBackToConversationListMode();
+            return;
+        }
         disableCabMode();
         if (mConvListContext != null && mConvListContext.isSearchResult()) {
             mViewMode.enterSearchResultsConversationMode();
@@ -422,7 +429,7 @@ public final class OnePaneController extends AbstractActivityController {
             }
             case R.id.inside_conversation_unread:
                 // Mark as unread and advance.
-                performInsideConversationUnread(target);
+                requestUpdate(target, getAction(R.id.inside_conversation_unread, target));
                 break;
             case R.id.mark_important:
                 updateCurrentConversation(ConversationColumns.PRIORITY,
@@ -443,109 +450,6 @@ public final class OnePaneController extends AbstractActivityController {
                 break;
         }
         return handled || super.onOptionsItemSelected(item);
-    }
-
-    // TODO: If when the conversation was opened, some of the messages were unread,
-    // this is supposed to restore that state. Otherwise, this should mark all
-    // messages as unread
-    private void performInsideConversationUnread(Collection<Conversation> target) {
-        updateCurrentConversation(ConversationColumns.READ, false);
-        if (returnToList()) {
-            onBackPressed();
-        } else {
-            final DestructiveAction action = getAction(R.id.inside_conversation_unread, target);
-            action.performAction();
-        }
-    }
-
-    /**
-     * Destroy conversations and update the UI state for a one pane activity.
-     */
-    private class OnePaneDestructiveAction implements DestructiveAction {
-        /** Whether this destructive action has already been performed */
-        private boolean mCompleted;
-        /** Menu Id that created this action */
-        private final int mId;
-        /** Action that updates the underlying database to modify the conversation. */
-        private final DestructiveAction mAction;
-
-        public OnePaneDestructiveAction(int action, Collection<Conversation> target) {
-            mAction = new ConversationAction(action, target);
-            mId = action;
-        }
-
-        @Override
-        public void performAction() {
-            if (isPerformed()) {
-                return;
-            }
-            mAction.performAction();
-            switch (mViewMode.getMode()) {
-                case ViewMode.CONVERSATION:
-                    final Conversation next = mTracker.getNextConversation(
-                            Settings.getAutoAdvanceSetting(mAccount.settings));
-                    if (next != null) {
-                        showConversation(next);
-                        onUndoAvailable(new UndoOperation(1, mId));
-                    } else {
-                        // No next conversation, we should got back to conversation list.
-                        transitionBackToConversationListMode();
-                    }
-                    break;
-                case ViewMode.CONVERSATION_LIST:
-                    if (mId != R.id.inside_conversation_unread) {
-                        onUndoAvailable(new UndoOperation(1, mId));
-                    }
-                    refreshConversationList();
-                    break;
-            }
-        }
-        /**
-         * Returns true if this action has been performed, false otherwise.
-         * @return
-         */
-        private synchronized boolean isPerformed() {
-            if (mCompleted) {
-                return true;
-            }
-            mCompleted = true;
-            return false;
-        }
-    }
-
-    /**
-     * Get a destructive action specific to the {@link OnePaneController}.
-     * This is a temporary method, to control the profusion of {@link DestructiveAction} classes
-     * that are created. Please do not copy this paradigm.
-     * TODO(viki): Resolve the various actions and clean up their calling sequence.
-     * @param action
-     * @return
-     */
-    private final DestructiveAction getAction(int action, Collection<Conversation> target) {
-        final DestructiveAction da = new OnePaneDestructiveAction(action, target);
-        registerDestructiveAction(da);
-        return da;
-    }
-
-    /**
-     * Returns true if we need to return back to conversation list based on the current
-     * AutoAdvance setting and the number of messages in the list.
-     * @return true if we need to return back to conversation list, false otherwise.
-     */
-    private boolean returnToList() {
-        final int pref = Settings.getAutoAdvanceSetting(mAccount.settings);
-        final int position = mCurrentConversation.position;
-        final boolean moveToNewer = (pref == AutoAdvance.NEWER && (position - 1 >= 0));
-        final boolean moveToOlder = (pref == AutoAdvance.OLDER && mConversationListCursor != null
-                && (position + 1 < mConversationListCursor.getCount()));
-        final boolean canMove = moveToNewer || moveToOlder;
-        // Return true if we cannot move forward or back, or if the user wants to go back to list.
-        return pref == AutoAdvance.LIST || !canMove;
-    }
-
-    @Override
-    public DestructiveAction getFolderDestructiveAction(Collection<Conversation> target) {
-        return getAction(R.id.change_folder, target);
     }
 
     @Override

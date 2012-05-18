@@ -210,18 +210,28 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void showConversation(Conversation conversation) {
+        super.showConversation(conversation);
         if (mActivity == null) {
             return;
         }
-        super.showConversation(conversation);
-        int mode = mViewMode.getMode();
+        if (conversation == null) {
+            // This is a request to remove the conversation view and show the conversation list
+            // fragment instead.
+            onBackPressed();
+            return;
+        }
+        final int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             mViewMode.enterSearchResultsConversationMode();
         } else {
             mViewMode.enterConversationMode();
         }
-
         mPagerController.show(mAccount, mFolder, conversation);
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            LogUtils.d(LOG_TAG, "showConversation: Selecting position %d.", conversation.position);
+            convList.setSelected(conversation.position);
+        }
     }
 
     @Override
@@ -379,78 +389,6 @@ public final class TwoPaneController extends AbstractActivityController {
                 break;
         }
         return handled || super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * An object that performs an action on the conversation database. This is a
-     * {@link DestructiveAction}: this is called <b>after</b> the conversation list has animated
-     * the conversation away. Once the animation is completed, the {@link #performAction()}
-     * method is called which performs the correct data operation.
-     */
-    private class TwoPaneDestructiveAction implements DestructiveAction {
-        /** Whether this destructive action has already been performed */
-        private boolean mCompleted;
-        private final int mId;
-        /** Action that updates the underlying database to modify the conversation. */
-        private final DestructiveAction mAction;
-
-        public TwoPaneDestructiveAction(int action, Collection<Conversation> target) {
-            mAction = new ConversationAction(action, target);
-            mId = action;
-        }
-
-        @Override
-        public void performAction() {
-            if (isPerformed()) {
-                return;
-            }
-            final Conversation nextConversation = mTracker.getNextConversation(
-                    Settings.getAutoAdvanceSetting(mAccount.settings));
-            if (nextConversation != null) {
-                // We have a conversation to auto advance to.
-                final ConversationListFragment convList = getConversationListFragment();
-                if (convList != null) {
-                    convList.viewConversation(nextConversation.position);
-                }
-                onUndoAvailable(new UndoOperation(1, mId));
-            } else {
-                // We don't have a conversation to show: show conversation list instead.
-                onBackPressed();
-                onUndoAvailable(new UndoOperation(1, mId));
-            }
-            mAction.performAction();
-            refreshConversationList();
-        }
-        /**
-         * Returns true if this action has been performed, false otherwise.
-         * @return
-         */
-        private synchronized boolean isPerformed() {
-            if (mCompleted) {
-                return true;
-            }
-            mCompleted = true;
-            return false;
-        }
-    }
-
-    /**
-     * Get a destructive action specific to the {@link TwoPaneController}.
-     * This is a temporary method, to control the profusion of {@link DestructiveAction} classes
-     * that are created. Please do not copy this paradigm.
-     * TODO(viki): Resolve the various actions and clean up their calling sequence.
-     * @param action
-     * @return
-     */
-    private final DestructiveAction getAction(int action, Collection<Conversation> target) {
-        final DestructiveAction da = new TwoPaneDestructiveAction(action, target);
-        registerDestructiveAction(da);
-        return da;
-    }
-
-    @Override
-    public DestructiveAction getFolderDestructiveAction(Collection<Conversation> target) {
-        return getAction(R.id.change_folder, target);
     }
 
     @Override
