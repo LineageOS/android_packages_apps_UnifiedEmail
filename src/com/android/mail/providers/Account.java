@@ -165,6 +165,7 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(UIProvider.AccountColumns.COMPOSE_URI, composeIntentUri);
             json.put(UIProvider.AccountColumns.MIME_TYPE, mimeType);
             json.put(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI, recentFolderListUri);
+            json.put(UIProvider.AccountColumns.COLOR, color);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
