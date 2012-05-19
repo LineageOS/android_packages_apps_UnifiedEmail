@@ -877,7 +877,7 @@ public abstract class AbstractActivityController implements ActivityController,
                     "AAC ignoring null (presumably invalid) account restoration");
             return;
         }
-        LogUtils.d(LOG_TAG, "AbstractActivityController.setAccount(): mAccount = %s", mAccount.uri);
+        LogUtils.d(LOG_TAG, "AbstractActivityController.setAccount(): account = %s", account.uri);
         mAccount = account;
         mActionBarView.setAccount(mAccount);
         if (account.settings == null) {
