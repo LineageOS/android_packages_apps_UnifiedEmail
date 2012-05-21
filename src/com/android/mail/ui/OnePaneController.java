@@ -31,7 +31,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
 
@@ -111,6 +110,11 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
+    /**
+     * Returns true if the user is currently in the conversation list view, viewing the default
+     * inbox.
+     * @return
+     */
     private boolean inInbox() {
         final Uri inboxUri = Settings.getDefaultInboxUri(mAccount.settings);
         return mConvListContext != null && mConvListContext.folder != null ? (!mConvListContext
@@ -125,7 +129,6 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public boolean onCreate(Bundle savedInstanceState) {
-        // Set 1-pane content view.
         mActivity.setContentView(R.layout.one_pane_activity);
         // The parent class sets the correct viewmode and starts the application off.
         return super.onCreate(savedInstanceState);
@@ -183,6 +186,7 @@ public final class OnePaneController extends AbstractActivityController {
             mLastConversationListTransactionId = INVALID_ID;
         }
         mConversationListVisible = true;
+        onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
         mConversationListNeverShown = false;
     }
@@ -208,10 +212,10 @@ public final class OnePaneController extends AbstractActivityController {
         // fragment with another fragment as usual. Instead, reveal the heretofore inert
         // conversation ViewPager and just remove the previously visible fragment
         // (e.g. conversation list, or possibly label list?).
-        FragmentManager fm = mActivity.getFragmentManager();
-        Fragment f = fm.findFragmentById(R.id.content_pane);
+        final FragmentManager fm = mActivity.getFragmentManager();
+        final Fragment f = fm.findFragmentById(R.id.content_pane);
         if (f != null) {
-            FragmentTransaction ft = fm.beginTransaction();
+            final FragmentTransaction ft = fm.beginTransaction();
             ft.addToBackStack(null);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.remove(f);
@@ -220,7 +224,7 @@ public final class OnePaneController extends AbstractActivityController {
 
         // TODO: improve this transition
         mPagerController.show(mAccount, mFolder, conversation);
-
+        onConversationVisibilityChanged(true);
         resetActionBarIcon();
 
         mConversationListVisible = false;
@@ -252,6 +256,7 @@ public final class OnePaneController extends AbstractActivityController {
                 FolderListFragment.newInstance(null, mAccount.folderListUri),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
         mConversationListVisible = false;
+        onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(false);
     }
 
@@ -401,6 +406,7 @@ public final class OnePaneController extends AbstractActivityController {
         resetActionBarIcon();
 
         mConversationListVisible = true;
+        onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
     }
 

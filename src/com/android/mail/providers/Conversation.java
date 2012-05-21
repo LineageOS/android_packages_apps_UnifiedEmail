@@ -126,7 +126,7 @@ public class Conversation implements Parcelable {
 
     @Override
     public String toString() {
-        return "[conversation id=" + id + "]";
+        return "[conversation id=" + id + ", subject =" + subject + "]";
     }
 
     public static final Creator<Conversation> CREATOR = new Creator<Conversation>() {
@@ -259,9 +259,9 @@ public class Conversation implements Parcelable {
         if (needle == null) {
             return true;
         }
-        final Uri toFind = needle.uri;
+        final long toFind = needle.id;
         for (final Conversation c : haystack) {
-            if (toFind.equals(c.uri)) {
+            if (toFind == c.id) {
                 return true;
             }
         }
@@ -277,5 +277,21 @@ public class Conversation implements Parcelable {
     public static Collection<Conversation> listOf(Conversation in) {
         final Collection<Conversation> target = (in == null) ? EMPTY : ImmutableList.of(in);
         return target;
+    }
+
+    /**
+     * Create a human-readable string of all the conversations
+     * @param collection Any collection of conversations
+     * @return string with a human readable representation of the conversations.
+     */
+    public static String toString(Collection<Conversation> collection) {
+        final StringBuilder out = new StringBuilder(collection.size() + " conversations:");
+        int count = 0;
+        for (final Conversation c : collection) {
+            count++;
+            // Indent the conversations to make them easy to read in debug output.
+            out.append("      " + count + ": " + c.toString() + "\n");
+        }
+        return out.toString();
     }
 }

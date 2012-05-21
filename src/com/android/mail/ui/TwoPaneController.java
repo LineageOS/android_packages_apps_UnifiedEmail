@@ -346,11 +346,11 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = true;
+        LogUtils.d(LOG_TAG, "TwoPane.onOptionsItemSelected(%d) called.", item.getItemId());
         final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
         final Settings settings = mAccount.settings;
         switch (item.getItemId()) {
             case R.id.archive: {
-                LogUtils.d(LOG_TAG, "Entering archive");
                 final boolean showDialog = (settings != null && settings.confirmArchive);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
                         getAction(R.id.archive, target));

@@ -179,8 +179,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private final int mFolderItemUpdateDelayMs;
 
     /** Keeps track of selected and unselected conversations */
-    final protected ConversationPositionTracker mTracker =
-            new ConversationPositionTracker(mSelectedSet);
+    final protected ConversationPositionTracker mTracker = new ConversationPositionTracker();
 
     /**
      * Action menu associated with the selected set.
@@ -208,6 +207,8 @@ public abstract class AbstractActivityController implements ActivityController,
 
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
     private DestructiveAction mPendingDestruction;
+    /** Indicates if a conversation view is visible. */
+    private boolean mIsConversationVisible;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -538,12 +539,12 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * By default, doing nothing is right. A two-pane controller will need to
-     * override this.
+     * Called when a conversation is visible. Child classes must call the super class implementation
+     * before performing local computation.
      */
     @Override
     public void onConversationVisibilityChanged(boolean visible) {
-        // Do nothing.
+        mIsConversationVisible = visible;
         return;
     }
 
@@ -607,6 +608,7 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
+        LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
         boolean handled = true;
         switch (id) {
             case android.R.id.home:
@@ -731,7 +733,8 @@ public abstract class AbstractActivityController implements ActivityController,
         if (getConversationViewFragment() != null &&
                 !Conversation.contains(target, mCurrentConversation)) {
             final Conversation next = mTracker.getNextConversation(
-                    Settings.getAutoAdvanceSetting(mAccount.settings));
+                    Settings.getAutoAdvanceSetting(mAccount.settings), target,
+                    mCurrentConversation);
             LogUtils.d(LOG_TAG, "requestDelete: showing %s next.", next);
             showConversation(next);
         }
@@ -1459,18 +1462,32 @@ public abstract class AbstractActivityController implements ActivityController,
             boolean forceReturnToList = false;
             // Enable undo for batch operations. Some actions disable the undo ability.
             boolean undoEnabled = mIsSelectedSet;
-            LogUtils.d(LOG_TAG, "Target is: %s", mTarget);
+
+            // Are we destroying the currently shown conversation? Show the next one.
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)){
+                LogUtils.d(LOG_TAG, "ConversationAction.performAction(): mIsConversationVisible=%b"
+                        + "\nmTarget=%s\nCurrent=%s", mIsConversationVisible,
+                        Conversation.toString(mTarget), mCurrentConversation);
+            }
+            if (mIsConversationVisible && Conversation.contains(mTarget, mCurrentConversation)) {
+                final Conversation next = forceReturnToList ? null :
+                    mTracker.getNextConversation(Settings.getAutoAdvanceSetting(mAccount.settings),
+                            mTarget, mCurrentConversation);
+                LogUtils.d(LOG_TAG, "Next conversation is: %s", next);
+                showConversation(next);
+            }
+
             switch (mAction) {
                 case R.id.archive:
-                    LogUtils.d(LOG_TAG, "Archiving: %s", mTarget);
+                    LogUtils.d(LOG_TAG, "Archiving");
                     mConversationListCursor.archive(mContext, mTarget);
                     break;
                 case R.id.delete:
-                    LogUtils.d(LOG_TAG, "Deleting: %s", mTarget);
+                    LogUtils.d(LOG_TAG, "Deleting");
                     mConversationListCursor.delete(mContext, mTarget);
                     break;
                 case R.id.mute:
-                    LogUtils.d(LOG_TAG, "Muting: %s", mTarget);
+                    LogUtils.d(LOG_TAG, "Muting");
                     if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
                         for (Conversation c : mTarget) {
                             c.localDeleteOnUpdate = true;
@@ -1479,24 +1496,24 @@ public abstract class AbstractActivityController implements ActivityController,
                     mConversationListCursor.mute(mContext, mTarget);
                     break;
                 case R.id.report_spam:
-                    LogUtils.d(LOG_TAG, "Reporting spam: %s", mTarget);
+                    LogUtils.d(LOG_TAG, "Reporting spam");
                     mConversationListCursor.reportSpam(mContext, mTarget);
                     break;
                 case R.id.remove_star:
-                    LogUtils.d(LOG_TAG, "Removing star: %s", mTarget);
+                    LogUtils.d(LOG_TAG, "Removing star");
                     // Star removal is destructive in the Starred folder.
                     mConversationListCursor.updateBoolean(mContext, mTarget,
                             ConversationColumns.STARRED, false);
                     break;
                 case R.id.mark_not_important:
-                    LogUtils.d(LOG_TAG, "Marking not-important: %s", mTarget);
+                    LogUtils.d(LOG_TAG, "Marking not-important");
                     // Marking not important is destructive in a mailbox containing only important
                     // messages
                     mConversationListCursor.updateInt(mContext, mTarget,
                             ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                     break;
                 case R.id.inside_conversation_unread:
-                    LogUtils.d(LOG_TAG, "Marking conversation unread: %s", mTarget);
+                    LogUtils.d(LOG_TAG, "Marking conversation unread");
                     mConversationListCursor.updateBoolean(mContext, mTarget,
                             ConversationColumns.READ, false);
                     forceReturnToList = true;
@@ -1504,13 +1521,6 @@ public abstract class AbstractActivityController implements ActivityController,
             }
             if (undoEnabled) {
                 onUndoAvailable(new UndoOperation(mTarget.size(), mAction));
-            }
-            // If the currently shown conversation is destroyed, show the next one.
-            final ConversationViewFragment convView = getConversationViewFragment();
-            if (convView != null && Conversation.contains(mTarget, mCurrentConversation)) {
-                final Conversation next = forceReturnToList ? null :
-                    mTracker.getNextConversation(Settings.getAutoAdvanceSetting(mAccount.settings));
-                showConversation(next);
             }
             refreshConversationList();
             if (mIsSelectedSet) {
