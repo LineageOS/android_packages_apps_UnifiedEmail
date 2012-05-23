@@ -101,6 +101,25 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     }
 
     /**
+     * Get an array of account/mailbox string pairs for currently configured widgets
+     * @return the account/mailbox string pairs
+     */
+    static public String[][] getWidgetInfo(Context context, int[] widgetIds) {
+        String[][] widgetInfo = new String[widgetIds.length][2];
+        for (int i = 0; i < widgetIds.length; i++) {
+            // Retrieve the persisted information for this widget from
+            // preferences.
+            final String accountFolder = Persistence.getPreferences(context).getString(
+                    WIDGET_ACCOUNT_PREFIX + widgetIds[i], null);
+            // If the account matched, update the widget.
+            if (accountFolder != null) {
+                widgetInfo[i] = TextUtils.split(accountFolder, ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
+            }
+        }
+        return widgetInfo;
+    }
+
+    /**
      * Catches ACTION_NOTIFY_DATASET_CHANGED intent and update the corresponding
      * widgets.
      */
@@ -113,9 +132,10 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         if (Utils.ACTION_NOTIFY_DATASET_CHANGED.equals(intent.getAction())) {
             final Bundle extras = intent.getExtras();
             final Uri accountUri = (Uri)extras.getParcelable(Utils.EXTRA_ACCOUNT_URI);
+            final Uri folderUri = (Uri)extras.getParcelable(Utils.EXTRA_FOLDER_URI);
             final boolean updateAllWidgets = extras.getBoolean(EXTRA_UPDATE_ALL_WIDGETS, false);
 
-            if (accountUri == null && !updateAllWidgets) {
+            if (accountUri == null && folderUri == null && !updateAllWidgets) {
                 return;
             }
             final Set<Integer> widgetsToUpdate = Sets.newHashSet();
@@ -129,12 +149,20 @@ public class BaseWidgetProvider extends AppWidgetProvider {
                 if (accountFolder != null) {
                     final String[] parsedInfo = TextUtils.split(accountFolder,
                             ACCOUNT_FOLDER_PREFERENCE_SEPARATOR);
-                    if (updateAllWidgets ||
-                            TextUtils.equals(accountUri.toString(), parsedInfo[0])) {
+                    boolean updateThis = updateAllWidgets;
+                    if (!updateThis) {
+                        if (accountUri != null &&
+                                TextUtils.equals(accountUri.toString(), parsedInfo[0])) {
+                            updateThis = true;
+                        } else if (folderUri != null &&
+                                TextUtils.equals(folderUri.toString(), parsedInfo[1])) {
+                            updateThis = true;
+                        }
+                    }
+                    if (updateThis) {
                         widgetsToUpdate.add(id);
                     }
                 }
-
             }
             if (widgetsToUpdate.size() > 0) {
                 final int[] widgets = Ints.toArray(widgetsToUpdate);
