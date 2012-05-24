@@ -64,6 +64,7 @@ import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
@@ -1460,8 +1461,7 @@ public abstract class AbstractActivityController implements ActivityController,
             }
             // Certain actions force a return to list.
             boolean forceReturnToList = false;
-            // Enable undo for batch operations. Some actions disable the undo ability.
-            boolean undoEnabled = mIsSelectedSet;
+            boolean undoEnabled = mAccount.supportsCapability(AccountCapabilities.UNDO);
 
             // Are we destroying the currently shown conversation? Show the next one.
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)){
