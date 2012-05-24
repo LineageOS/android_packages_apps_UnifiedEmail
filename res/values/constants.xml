@@ -60,4 +60,10 @@
 
     <!-- Whether to show conversation subject in conversation view -->
     <bool name="show_conversation_subject">true</bool>
+
+	<!-- Amount of memory in bytes allocated for image cache -->
+    <integer name="config_image_cache_max_bytes">1500000</integer>
+
+    <!-- Number of decoded contact photo bitmaps retained in an LRU cache -->
+    <integer name="config_image_cache_max_bitmaps">24</integer>
 </resources>

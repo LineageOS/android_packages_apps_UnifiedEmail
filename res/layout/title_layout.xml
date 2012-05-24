@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (C) 2011 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/title_layout"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/titlebar_height"
+    android:background="@color/title_background"
+    android:padding="0dp"
+    android:visibility="gone">
+    <LinearLayout android:id="@+id/titlebar_icon_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/titlebar_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_ab_back_holo_dark"/>
+        <ImageView
+            android:id="@+id/titlebar_icon"
+            android:layout_width="@dimen/titlebar_icon_size"
+            android:layout_height="@dimen/titlebar_icon_size"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/title_button_1"
+        android:layout_toRightOf="@+id/titlebar_icon_layout"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:layout_marginLeft="4dip"
+        android:layout_marginRight="4dip">
+        <TextView
+            android:id="@+id/titlebar_label"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/title_text_color"/>
+        <TextView
+            android:id="@+id/titlebar_label_2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="12sp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/title_text_color"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <ProgressBar android:id="@+id/progress_spinner"
+        style="?android:attr/progressBarStyleSmallInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/title_button_1"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dip"
+        android:visibility="gone"
+        android:indeterminate="true"/>
+    <ImageButton android:id="@+id/title_button_1"
+        android:layout_width="@dimen/titlebar_height"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/title_button_2"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
+    <ImageButton android:id="@+id/title_button_2"
+        android:layout_width="@dimen/titlebar_height"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/title_button_3"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
+    <ImageButton android:id="@+id/title_button_3"
+        android:layout_width="@dimen/titlebar_height"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
+</RelativeLayout>
