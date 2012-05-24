@@ -158,8 +158,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 }
                 break;
             case R.id.change_folder:
-                new FoldersSelectionDialog(mContext, mAccount, mController, mSelectionSet.values())
-                    .show();
+                new FoldersSelectionDialog(mContext, mAccount, mController, mSelectionSet.values(),
+                        true).show();
                 break;
             case R.id.mark_important:
                 markConversationsImportant(true);
