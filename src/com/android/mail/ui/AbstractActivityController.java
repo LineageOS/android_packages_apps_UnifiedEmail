@@ -66,6 +66,7 @@ import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
+import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
@@ -1460,7 +1461,6 @@ public abstract class AbstractActivityController implements ActivityController,
                 return;
             }
             // Certain actions force a return to list.
-            boolean forceReturnToList = false;
             boolean undoEnabled = mAccount.supportsCapability(AccountCapabilities.UNDO);
 
             // Are we destroying the currently shown conversation? Show the next one.
@@ -1470,9 +1470,9 @@ public abstract class AbstractActivityController implements ActivityController,
                         Conversation.toString(mTarget), mCurrentConversation);
             }
             if (mIsConversationVisible && Conversation.contains(mTarget, mCurrentConversation)) {
-                final Conversation next = forceReturnToList ? null :
-                    mTracker.getNextConversation(Settings.getAutoAdvanceSetting(mAccount.settings),
-                            mTarget, mCurrentConversation);
+                int advance = Settings.getAutoAdvanceSetting(mAccount.settings);
+                final Conversation next = advance == AutoAdvance.LIST ? null : mTracker
+                        .getNextConversation(advance, mTarget, mCurrentConversation);
                 LogUtils.d(LOG_TAG, "Next conversation is: %s", next);
                 showConversation(next);
             }
@@ -1516,8 +1516,8 @@ public abstract class AbstractActivityController implements ActivityController,
                     LogUtils.d(LOG_TAG, "Marking conversation unread");
                     mConversationListCursor.updateBoolean(mContext, mTarget,
                             ConversationColumns.READ, false);
-                    forceReturnToList = true;
                     undoEnabled = false;
+                    onBackPressed();
             }
             if (undoEnabled) {
                 onUndoAvailable(new UndoOperation(mTarget.size(), mAction));
