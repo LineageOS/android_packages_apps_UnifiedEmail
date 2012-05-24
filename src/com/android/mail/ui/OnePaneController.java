@@ -416,50 +416,6 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean handled = true;
-        final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
-        final Settings settings = mAccount.settings;
-        switch (item.getItemId()) {
-            case R.id.archive: {
-                LogUtils.d(LOG_TAG, "Entering archive");
-                final boolean showDialog = (settings != null && settings.confirmArchive);
-                confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
-                        getAction(R.id.archive, target));
-                break;
-            }
-            case R.id.delete: {
-                final boolean showDialog = (settings != null && settings.confirmDelete);
-                confirmAndDelete(target, showDialog,
-                        R.plurals.confirm_delete_conversation, getAction(R.id.delete, target));
-                break;
-            }
-            case R.id.inside_conversation_unread:
-                // Mark as unread and advance.
-                requestUpdate(target, getAction(R.id.inside_conversation_unread, target));
-                break;
-            case R.id.mark_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.HIGH);
-                break;
-            case R.id.mark_not_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.LOW);
-                break;
-            case R.id.mute:
-                requestDelete(target, getAction(R.id.mute, target));
-                break;
-            case R.id.report_spam:
-                requestDelete(target, getAction(R.id.report_spam, target));
-                break;
-            default:
-                handled = false;
-                break;
-        }
-        return handled || super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onUndoAvailable(UndoOperation op) {
         if (op != null && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
             final int mode = mViewMode.getMode();

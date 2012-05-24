@@ -612,7 +612,39 @@ public abstract class AbstractActivityController implements ActivityController,
         final int id = item.getItemId();
         LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
         boolean handled = true;
+        final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
+        final Settings settings = mAccount.settings;
         switch (id) {
+            case R.id.archive: {
+                final boolean showDialog = (settings != null && settings.confirmArchive);
+                confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
+                        getAction(R.id.archive, target));
+                break;
+            }
+            case R.id.delete: {
+                final boolean showDialog = (settings != null && settings.confirmDelete);
+                confirmAndDelete(target, showDialog, R.plurals.confirm_delete_conversation,
+                        getAction(R.id.delete, target));
+                break;
+            }
+            case R.id.mark_important:
+                updateCurrentConversation(ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.HIGH);
+                break;
+            case R.id.mark_not_important:
+                updateCurrentConversation(ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.LOW);
+                break;
+            case R.id.mute:
+                requestDelete(target, getAction(R.id.mute, target));
+                break;
+            case R.id.report_spam:
+                requestDelete(target, getAction(R.id.report_spam, target));
+                break;
+            case R.id.inside_conversation_unread:
+                updateCurrentConversation(ConversationColumns.READ, false);
+                mViewMode.enterConversationListMode();
+                break;
             case android.R.id.home:
                 onUpPressed();
                 break;
@@ -1512,12 +1544,6 @@ public abstract class AbstractActivityController implements ActivityController,
                     mConversationListCursor.updateInt(mContext, mTarget,
                             ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                     break;
-                case R.id.inside_conversation_unread:
-                    LogUtils.d(LOG_TAG, "Marking conversation unread");
-                    mConversationListCursor.updateBoolean(mContext, mTarget,
-                            ConversationColumns.READ, false);
-                    undoEnabled = false;
-                    onBackPressed();
             }
             if (undoEnabled) {
                 onUndoAvailable(new UndoOperation(mTarget.size(), mAction));

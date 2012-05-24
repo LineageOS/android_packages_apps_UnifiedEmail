@@ -353,55 +353,6 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean handled = true;
-        LogUtils.d(LOG_TAG, "TwoPane.onOptionsItemSelected(%d) called.", item.getItemId());
-        final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
-        final Settings settings = mAccount.settings;
-        switch (item.getItemId()) {
-            case R.id.archive: {
-                final boolean showDialog = (settings != null && settings.confirmArchive);
-                confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
-                        getAction(R.id.archive, target));
-                break;
-            }
-            case R.id.delete: {
-                final boolean showDialog = (settings != null && settings.confirmDelete);
-                confirmAndDelete(target, showDialog, R.plurals.confirm_delete_conversation,
-                        getAction(R.id.delete, target));
-                break;
-            }
-            case R.id.inside_conversation_unread:
-                updateCurrentConversation(ConversationColumns.READ, false);
-                break;
-            case R.id.mark_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.HIGH);
-                break;
-            case R.id.mark_not_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.LOW);
-                break;
-            case R.id.mute:
-                ConversationListFragment convList = getConversationListFragment();
-                if (convList != null) {
-                    convList.requestDelete(target, getAction(R.id.mute, target));
-                }
-                break;
-            case R.id.report_spam:
-                convList = getConversationListFragment();
-                if (convList != null) {
-                    convList.requestDelete(target, getAction(R.id.report_spam, target));
-                }
-                break;
-            default:
-                handled = false;
-                break;
-        }
-        return handled || super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onUndoAvailable(UndoOperation op) {
         final int mode = mViewMode.getMode();
         final FrameLayout.LayoutParams params;
