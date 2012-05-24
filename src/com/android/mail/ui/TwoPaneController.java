@@ -163,6 +163,15 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
+    public void onFolderChanged(Folder folder) {
+        super.onFolderChanged(folder);
+        final FolderListFragment folderList = getFolderListFragment();
+        if (folderList != null) {
+            folderList.selectFolder(folder);
+        }
+    }
+
+    @Override
     public void onFolderSelected(Folder folder, boolean childView) {
         if (!childView && folder.hasChildren) {
             // Replace this fragment with a new FolderListFragment
