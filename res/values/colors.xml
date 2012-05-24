@@ -56,4 +56,18 @@
 
     <!-- Folder colors -->
     <color name="folder_disabled_drop_target_text_color">#999999</color>
+
+    <!-- Photo Viewer Colors -->
+    <color name="solid_black">#ff000000</color>
+    <color name="title_background">#ff292929</color>
+    <color name="title_text_color">#ffffffff</color>
+    <color name="clear">#00000000</color>
+    <color name="participants_gallery">#FF3d3d3d</color>
+    <color name="stream_content_color">#333</color>
+    <color name="stream_comment_bg_color">#aaedf0f4</color>
+    <color name="stream_link">#ff33bede</color>
+    <color name="photo_selection_color">#ff58d83e</color>
+    <color name="photo_background_color">#ff000000</color>
+    <color name="photo_crop_dim_color">#cc000000</color>
+    <color name="photo_crop_highlight_color">#fff</color>
 </resources>

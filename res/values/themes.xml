@@ -17,14 +17,9 @@
 -->
 
 <resources>
-    <add-resource name="RecipientEditTextViewStyle" type="style" />
-    <add-resource name="ComposeEditTextView" type="style" />
-    <add-resource name="LargeComposeAreaBody" type="style" />
-    <add-resource name="RecipientComposeFieldSpacer" type="style" />
-    <add-resource name="ComposeHeading" type="style" />
-    <add-resource name="RecipientComposeHeading" type="style" />
-    <add-resource name="ComposeFieldLayout" type="style" />
-    <add-resource name="RecipientComposeFieldLayout" type="style" />
-    <add-resource name="ComposeBodyStyle" type="style" />
-    <add-resource name="ComposeSubjectStyle" type="style" />
+    <style name="PhotoViewTheme" parent="android:Theme.Holo">
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@drawable/photo_view_background</item>
+    </style>
 </resources>
