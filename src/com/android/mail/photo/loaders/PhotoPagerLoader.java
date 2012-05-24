@@ -19,6 +19,7 @@ package com.android.mail.photo.loaders;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.net.Uri;
 
 import com.android.mail.photo.provider.PhotoContract.PhotoQuery;
@@ -39,9 +40,25 @@ public class PhotoPagerLoader extends PhotoCursorLoader {
 
         final Uri loaderUri = getLoaderUri();
 
+        if (true) {
+            returnCursor = new MatrixCursor(PhotoQuery.PROJECTION);
+            ((MatrixCursor) returnCursor).newRow()
+            .add(0)             // _id
+            .add(loaderUri.toString());
+            return returnCursor;
+        }
+
         setUri(loaderUri);
         setProjection(PhotoQuery.PROJECTION);
         returnCursor = super.esLoadInBackground();
+
+        if (returnCursor == null || returnCursor.getCount() == 0) {
+            returnCursor.close();
+            returnCursor = new MatrixCursor(PhotoQuery.PROJECTION);
+            ((MatrixCursor) returnCursor).newRow()
+            .add(0)             // _id
+            .add(loaderUri.toString());      // url
+        }
 
         return returnCursor;
     }
