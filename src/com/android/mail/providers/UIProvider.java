@@ -568,6 +568,10 @@ public class UIProvider {
          * All the messages in this folder are important.
          */
         public static final int ONLY_IMPORTANT = 0x0100;
+        /**
+         * Deletions in this folder can't be undone (could include archive if desirable)
+         */
+        public static final int DELETE_ACTION_FINAL = 0x0200;
     }
 
     public static final class FolderColumns {
