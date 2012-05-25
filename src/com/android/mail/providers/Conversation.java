@@ -16,13 +16,13 @@
 
 package com.android.mail.providers;
 
-import com.google.common.collect.ImmutableList;
-
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+
+import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -51,6 +51,7 @@ public class Conversation implements Parcelable {
     public boolean spam;
     public boolean muted;
     public int color;
+    public Uri accountUri;
 
     // Used within the UI to indicate the adapter position of this conversation
     public transient int position;
@@ -96,6 +97,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(spam ? 1 : 0);
         dest.writeInt(muted ? 1 : 0);
         dest.writeInt(color);
+        dest.writeParcelable(accountUri, 0);
     }
 
     private Conversation(Parcel in) {
@@ -120,6 +122,7 @@ public class Conversation implements Parcelable {
         spam = in.readInt() != 0;
         muted = in.readInt() != 0;
         color = in.readInt();
+        accountUri = in.readParcelable(null);
         position = NO_POSITION;
         localDeleteOnUpdate = false;
     }
@@ -174,6 +177,8 @@ public class Conversation implements Parcelable {
             spam = cursor.getInt(UIProvider.CONVERSATION_IS_SPAM_COLUMN) != 0;
             muted = cursor.getInt(UIProvider.CONVERSATION_MUTED_COLUMN) != 0;
             color = cursor.getInt(UIProvider.CONVERSATION_COLOR_COLUMN);
+            String account = cursor.getString(UIProvider.CONVERSATION_ACCOUNT_URI_COLUMN);
+            accountUri = !TextUtils.isEmpty(account) ? Uri.parse(account) : null;
             position = NO_POSITION;
             localDeleteOnUpdate = false;
         }
@@ -186,7 +191,7 @@ public class Conversation implements Parcelable {
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
             boolean starred, String folderList, String rawFolders, int convFlags,
-            int personalLevel, boolean spam, boolean muted) {
+            int personalLevel, boolean spam, boolean muted, Uri accountUri) {
 
         final Conversation conversation = new Conversation();
 
@@ -211,6 +216,7 @@ public class Conversation implements Parcelable {
         conversation.spam = spam;
         conversation.muted = muted;
         conversation.color = 0;
+        conversation.accountUri = accountUri;
         return conversation;
     }
 

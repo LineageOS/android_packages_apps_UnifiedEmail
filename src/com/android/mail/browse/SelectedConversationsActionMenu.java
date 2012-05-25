@@ -20,24 +20,27 @@ package com.android.mail.browse;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.ui.AbstractActivityController;
-import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
+import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.FoldersSelectionDialog;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SwipeableListView;
@@ -158,8 +161,31 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 }
                 break;
             case R.id.change_folder:
-                new FoldersSelectionDialog(mContext, mAccount, mController, mSelectionSet.values(),
-                        true).show();
+                boolean cantMove = false;
+                Account acct = mAccount;
+                // Special handling for virtual folders
+                if (mFolder.supportsCapability(FolderCapabilities.IS_VIRTUAL)) {
+                    Uri accountUri = null;
+                    for (Conversation conv: mSelectionSet.values()) {
+                        if (accountUri == null) {
+                            accountUri = conv.accountUri;
+                        } else if (!accountUri.equals(conv.accountUri)) {
+                            // Tell the user why we can't do this
+                            Toast.makeText(mContext, R.string.cant_move_or_change_labels,
+                                    Toast.LENGTH_LONG).show();
+                            cantMove = true;
+                            break;
+                        }
+                    }
+                    if (!cantMove) {
+                        // Get the actual account here, so that we display its folders in the dialog
+                        acct = MailAppProvider.getAccountFromAccountUri(accountUri);
+                    }
+                }
+                if (!cantMove) {
+                    new FoldersSelectionDialog(mContext, acct, mController,
+                            mSelectionSet.values(), true).show();
+                }
                 break;
             case R.id.mark_important:
                 markConversationsImportant(true);
