@@ -51,10 +51,7 @@ public class WidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        Context context = getApplicationContext();
-        Account account = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
-        return new MailFactory(context, intent, this, new WidgetConversationViewBuilder(context,
-                account), account);
+        return new MailFactory(getApplicationContext(), intent, this);
     }
 
 
@@ -88,14 +85,14 @@ public class WidgetService extends RemoteViewsService {
         private WidgetService mService;
         private int mSenderFormatVersion;
 
-        public MailFactory(Context context, Intent intent, WidgetService service,
-                WidgetConversationViewBuilder builder, Account account) {
+        public MailFactory(Context context, Intent intent, WidgetService service) {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            mAccount = account;
+            mAccount = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
             mFolder = new Folder(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
-            mWidgetConversationViewBuilder = builder;
+            mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(context,
+                    mAccount);
             mResolver = context.getContentResolver();
             mService = service;
         }

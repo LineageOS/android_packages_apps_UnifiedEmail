@@ -20,6 +20,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderDisplayer;
+import com.android.mail.widget.WidgetConversationViewBuilder.WidgetFolderDisplayer;
 
 import java.util.Map;
 
@@ -55,6 +56,7 @@ public class WidgetConversationViewBuilder {
     private static Bitmap ATTACHMENT;
 
     private final Context mContext;
+    private WidgetFolderDisplayer mFolderDisplayer;
 
     /**
      * Label Displayer for Widget
@@ -219,6 +221,11 @@ public class WidgetConversationViewBuilder {
         } else {
             remoteViews.setViewVisibility(R.id.widget_unread_background, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_read_background, View.VISIBLE);
+        }
+        if (mContext.getResources().getBoolean(R.bool.display_folder_colors_in_widget)) {
+            mFolderDisplayer = new WidgetFolderDisplayer(mContext);
+            mFolderDisplayer.loadConversationFolders(folders, currentFolder);
+            mFolderDisplayer.displayFolders(remoteViews);
         }
 
         return remoteViews;

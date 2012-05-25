@@ -66,4 +66,7 @@
 
     <!-- Number of decoded contact photo bitmaps retained in an LRU cache -->
     <integer name="config_image_cache_max_bitmaps">24</integer>
+
+    <!-- Whether to display folder colors in the widget -->
+    <bool name="display_folder_colors_in_widget">false</bool>
 </resources>
