@@ -21,6 +21,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.android.mail.photo.provider.PhotoContract.PhotoQuery;
 
@@ -28,37 +29,29 @@ import com.android.mail.photo.provider.PhotoContract.PhotoQuery;
  * Loader for a set of photo IDs.
  */
 public class PhotoPagerLoader extends PhotoCursorLoader {
-
+    private String mResolvedPhotoUri;
     public PhotoPagerLoader(
-            Context context, Uri photosUri, int pageHint) {
+            Context context, Uri photosUri, String resolvedPhotoUri, int pageHint) {
         super(context, photosUri, pageHint != LOAD_LIMIT_UNLIMITED, pageHint);
+        mResolvedPhotoUri = resolvedPhotoUri;
     }
 
     @Override
     public Cursor esLoadInBackground() {
         Cursor returnCursor = null;
 
-        final Uri loaderUri = getLoaderUri();
-
-        if (true) {
+        if (!TextUtils.isEmpty(mResolvedPhotoUri)) {
             returnCursor = new MatrixCursor(PhotoQuery.PROJECTION);
             ((MatrixCursor) returnCursor).newRow()
             .add(0)             // _id
-            .add(loaderUri.toString());
+            .add(mResolvedPhotoUri);
             return returnCursor;
         }
 
+        final Uri loaderUri = getLoaderUri();
         setUri(loaderUri);
         setProjection(PhotoQuery.PROJECTION);
         returnCursor = super.esLoadInBackground();
-
-        if (returnCursor == null || returnCursor.getCount() == 0) {
-            returnCursor.close();
-            returnCursor = new MatrixCursor(PhotoQuery.PROJECTION);
-            ((MatrixCursor) returnCursor).newRow()
-            .add(0)             // _id
-            .add(loaderUri.toString());      // url
-        }
 
         return returnCursor;
     }

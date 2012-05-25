@@ -459,7 +459,7 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
             final PhotoViewIntentBuilder builder =
                     Intents.newPhotoViewActivityIntentBuilder(getContext());
             builder.setAlbumName(mAttachment.name)
-                .setPhotosUri(mAttachment.contentUri.toString());
+                .setResolvedPhotoUri(mAttachment.contentUri.toString());
 
             getContext().startActivity(builder.build());
             return;

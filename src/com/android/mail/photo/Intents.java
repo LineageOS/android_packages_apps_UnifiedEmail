@@ -19,6 +19,7 @@ package com.android.mail.photo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.android.mail.photo.fragments.PhotoViewFragment;
 import com.android.mail.photo.loaders.PhotoCursorLoader;
@@ -34,7 +35,7 @@ public class Intents {
     public static final String EXTRA_PHOTO_INDEX = "photo_index";
     public static final String EXTRA_PHOTO_ID = "photo_id";
     public static final String EXTRA_PHOTOS_URI = "photos_uri";
-    public static final String EXTRA_PHOTO_URL = "photo_url";
+    public static final String EXTRA_RESOLVED_PHOTO_URI = "resolved_photo_uri";
     public static final String EXTRA_ALBUM_NAME = "album_name";
     public static final String EXTRA_OWNER_ID = "owner_id";
     public static final String EXTRA_TAG = "tag";
@@ -89,7 +90,7 @@ public class Intents {
         /** The URI of the group of photos to display */
         private String mPhotosUri;
         /** The URL of the photo to display */
-        private String mPhotoUrl;
+        private String mResolvedPhotoUri;
 
         private PhotoViewIntentBuilder(Context context, Class<?> cls) {
             mIntent = new Intent(context, cls);
@@ -142,15 +143,25 @@ public class Intents {
             return this;
         }
 
-        /** Sets the photo URL */
-        public PhotoViewIntentBuilder setPhotoUrl(String photoUrl) {
-            mPhotoUrl = photoUrl;
+        /** Sets the resolved photo URI. This method is for the case
+         *  where the URI given to {@link PhotoViewActivity} points directly
+         *  to a single image and does not need to be resolved via a query
+         *  to the {@link ContentProvider}. If this value is set, it supersedes
+         *  {@link #setPhotosUri(String)}. */
+        public PhotoViewIntentBuilder setResolvedPhotoUri(String resolvedPhotoUri) {
+            mResolvedPhotoUri = resolvedPhotoUri;
             return this;
         }
 
         /** Build the intent */
         public Intent build() {
+            if (TextUtils.isEmpty(mPhotosUri) && TextUtils.isEmpty(mResolvedPhotoUri)) {
+                throw new IllegalArgumentException("Either PhotosUri or ResolvedPhotoUri must be set.");
+            }
+
             mIntent.setAction(Intent.ACTION_VIEW);
+
+            mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
             if (mAlbumName != null) {
                 mIntent.putExtra(EXTRA_ALBUM_NAME, mAlbumName);
@@ -182,8 +193,8 @@ public class Intents {
                 mIntent.putExtra(EXTRA_PHOTOS_URI, mPhotosUri);
             }
 
-            if (mPhotoUrl != null) {
-                mIntent.putExtra(EXTRA_PHOTO_URL, mPhotoUrl);
+            if (mResolvedPhotoUri != null) {
+                mIntent.putExtra(EXTRA_RESOLVED_PHOTO_URI, mResolvedPhotoUri);
             }
 
             return mIntent;

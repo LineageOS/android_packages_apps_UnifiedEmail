@@ -148,9 +148,10 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
 
     public static int sMemoryClass;
 
-    // TODO(toddke) This will need to be replaced by an array of MediaRefs to support local photos
     /** The URI of the photos we're viewing; may be {@code null} */
     private String mPhotosUri;
+    /** The resolved URI of the photo to view; may be {@code null}. */
+    private String mResolvedPhotoUri;
     /** The index of the currently viewed photo */
     private int mPhotoIndex;
     /** A hint for which cursor page the photo is located on */
@@ -230,9 +231,14 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
             mAlbumName = getResources().getString(R.string.photo_view_default_title);
         }
 
-        // id of the photos to view; optional
+        // uri of the photos to view; optional
         if (mIntent.hasExtra(Intents.EXTRA_PHOTOS_URI)) {
             mPhotosUri = mIntent.getStringExtra(Intents.EXTRA_PHOTOS_URI);
+        }
+
+        // resolved uri of the photo to view; optional; supersedes mPhotosUri
+        if (mIntent.hasExtra(Intents.EXTRA_RESOLVED_PHOTO_URI)) {
+            mResolvedPhotoUri = mIntent.getStringExtra(Intents.EXTRA_RESOLVED_PHOTO_URI);
         }
 
         // the loader page hint
@@ -497,7 +503,10 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == LOADER_PHOTO_LIST) {
             mFragmentIsLoading = true;
-            return new PhotoPagerLoader(this, Uri.parse(mPhotosUri), mPageHint);
+            final Uri uri =
+                    TextUtils.isEmpty(mResolvedPhotoUri) ?
+                    Uri.parse(mPhotosUri) : Uri.parse(mResolvedPhotoUri);
+            return new PhotoPagerLoader(this, uri, mResolvedPhotoUri, mPageHint);
         }
         return null;
     }
