@@ -156,7 +156,8 @@ public class Intents {
         /** Build the intent */
         public Intent build() {
             if (TextUtils.isEmpty(mPhotosUri) && TextUtils.isEmpty(mResolvedPhotoUri)) {
-                throw new IllegalArgumentException("Either PhotosUri or ResolvedPhotoUri must be set.");
+                throw new IllegalArgumentException(
+                        "Either PhotosUri or ResolvedPhotoUri must be set.");
             }
 
             mIntent.setAction(Intent.ACTION_VIEW);

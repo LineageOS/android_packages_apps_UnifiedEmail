@@ -506,7 +506,7 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
             final Uri uri =
                     TextUtils.isEmpty(mResolvedPhotoUri) ?
                     Uri.parse(mPhotosUri) : Uri.parse(mResolvedPhotoUri);
-            return new PhotoPagerLoader(this, uri, mResolvedPhotoUri, mPageHint);
+            return new PhotoPagerLoader(this, uri, mPageHint);
         }
         return null;
     }
