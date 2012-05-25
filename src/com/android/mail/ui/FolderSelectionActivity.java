@@ -319,4 +319,9 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public void onConversationSeen(Conversation conv) {
         // Do nothing.
     }
+
+    @Override
+    public Folder getCurrentFolder() {
+        return null;
+    }
 }

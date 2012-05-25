@@ -300,4 +300,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void onConversationSeen(Conversation conv) {
         mController.onConversationSeen(conv);
     }
+
+    @Override
+    public Folder getCurrentFolder() {
+        return mController.getFolder();
+    }
 }

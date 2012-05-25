@@ -518,6 +518,11 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
+    public Folder getFolder() {
+        return mFolder;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_ACCOUNT_REQUEST_CODE) {
             // We were waiting for the user to create an account
