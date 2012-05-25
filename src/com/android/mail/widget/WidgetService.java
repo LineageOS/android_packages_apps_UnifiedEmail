@@ -51,7 +51,10 @@ public class WidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new MailFactory(getApplicationContext(), intent, this);
+        Context context = getApplicationContext();
+        Account account = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
+        return new MailFactory(context, intent, this, new WidgetConversationViewBuilder(context,
+                account), account);
     }
 
 
@@ -64,7 +67,7 @@ public class WidgetService extends RemoteViewsService {
     /**
      * Remote Views Factory for Mail Widget.
      */
-    private static class MailFactory
+    protected static class MailFactory
             implements RemoteViewsService.RemoteViewsFactory, OnLoadCompleteListener<Cursor> {
         private static final int MAX_CONVERSATIONS_COUNT = 25;
         private static final int MAX_SENDERS_LENGTH = 25;
@@ -85,13 +88,14 @@ public class WidgetService extends RemoteViewsService {
         private WidgetService mService;
         private int mSenderFormatVersion;
 
-        public MailFactory(Context context, Intent intent, WidgetService service) {
+        public MailFactory(Context context, Intent intent, WidgetService service,
+                WidgetConversationViewBuilder builder, Account account) {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            mAccount = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
+            mAccount = account;
             mFolder = new Folder(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
-            mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(mContext, mAccount);
+            mWidgetConversationViewBuilder = builder;
             mResolver = context.getContentResolver();
             mService = service;
         }
@@ -221,8 +225,8 @@ public class WidgetService extends RemoteViewsService {
                 // Load up our remote view.
                 RemoteViews remoteViews = mWidgetConversationViewBuilder.getStyledView(
                         senderBuilder, statusBuilder, date, filterTag(conversation.subject),
-                        conversation.snippet, conversation.folderList, conversation.hasAttachments,
-                        conversation.read);
+                        conversation.snippet, conversation.rawFolders, conversation.hasAttachments,
+                        conversation.read, mFolder);
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation,
