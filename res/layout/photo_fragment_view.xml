@@ -20,19 +20,11 @@
     android:layout_height="match_parent"
     android:background="@color/solid_black"
     >
-    <com.android.mail.photo.views.PhotoLayout
-        android:id="@+id/photo_layout"
+    <com.android.mail.photo.views.PhotoView
+        android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-        <com.android.mail.photo.views.PhotoView
-            android:id="@+id/photo_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-    </com.android.mail.photo.views.PhotoLayout>
-
+        />
 
     <FrameLayout
         android:id="@id/android:empty"

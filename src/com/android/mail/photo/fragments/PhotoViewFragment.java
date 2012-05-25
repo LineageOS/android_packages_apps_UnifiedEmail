@@ -39,7 +39,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
@@ -53,7 +52,6 @@ import com.android.mail.photo.PhotoViewActivity.OnMenuItemListener;
 import com.android.mail.photo.PhotoViewActivity.OnScreenListener;
 import com.android.mail.photo.loaders.PhotoBitmapLoader;
 import com.android.mail.photo.util.ImageUtils;
-import com.android.mail.photo.views.PhotoLayout;
 import com.android.mail.photo.views.PhotoView;
 
 import java.io.File;
@@ -199,7 +197,6 @@ public class PhotoViewFragment extends BaseFragment implements
     /** Whether or not the photo is a place holder */
     private boolean mIsPlaceHolder = true;
 
-    private PhotoLayout mPhotoLayout;
     private PhotoView mPhotoView;
 
     /** The height of the action bar; may be {@code 0} if there is no action bar available */
@@ -289,14 +286,10 @@ public class PhotoViewFragment extends BaseFragment implements
         final View view = super.onCreateView(inflater, container, savedInstanceState,
                 R.layout.photo_fragment_view);
 
-        mPhotoLayout = (PhotoLayout) view.findViewById(R.id.photo_layout);
         mPhotoView = (PhotoView) view.findViewById(R.id.photo_view);
 
         mIsPlaceHolder = true;
         mPhotoView.setPhotoLoading(true);
-
-        // Bind the photo data
-        setPhotoLayoutFixedHeight();
 
         mPhotoView.setOnClickListener(this);
         mPhotoView.setFullScreen(mFullScreen, false);
@@ -337,11 +330,6 @@ public class PhotoViewFragment extends BaseFragment implements
         if (mPhotoView != null) {
             mPhotoView.clear();
             mPhotoView = null;
-        }
-
-        if (mPhotoLayout != null) {
-            mPhotoLayout.clear();
-            mPhotoLayout = null;
         }
 
         super.onDestroyView();
@@ -510,22 +498,6 @@ public class PhotoViewFragment extends BaseFragment implements
 
     @Override
     public void onActionBarHeightCalculated(int actionBarHeight) {
-        final boolean heightChanged = (actionBarHeight != mActionBarHeight);
-        mActionBarHeight = actionBarHeight;
-        if (heightChanged && mActionBarHeight > 0) {
-            setPhotoLayoutFixedHeight();
-        }
-    }
-
-    private void setPhotoLayoutFixedHeight() {
-        if (mPhotoLayout != null) {
-            ViewParent viewParent = mPhotoLayout.getParent();
-            if (viewParent instanceof View) {
-                mPhotoLayout.setFixedHeight(
-                        ((View) mPhotoLayout.getParent()).getMeasuredHeight() -
-                        (mDisableSpacer ? 0 : mActionBarHeight));
-            }
-        }
     }
 
     @Override
