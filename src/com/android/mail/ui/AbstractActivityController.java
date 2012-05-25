@@ -675,7 +675,7 @@ public abstract class AbstractActivityController implements ActivityController,
                 break;
             case R.id.change_folder:
                 new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                        Conversation.listOf(mCurrentConversation)).show();
+                        Conversation.listOf(mCurrentConversation), false).show();
                 break;
             default:
                 handled = false;
@@ -1585,7 +1585,7 @@ public abstract class AbstractActivityController implements ActivityController,
     // conversations to.
     @Override
     public final void onFolderChangesCommit(
-            Collection<Folder> folders, Collection<Conversation> target) {
+            Collection<Folder> folders, Collection<Conversation> target, boolean batch) {
         final boolean isDestructive = !Folder.containerIncludes(folders, mFolder);
         LogUtils.d(LOG_TAG, "onFolderChangesCommit: isDestructive = %b", isDestructive);
         if (isDestructive) {
@@ -1593,7 +1593,8 @@ public abstract class AbstractActivityController implements ActivityController,
                 c.localDeleteOnUpdate = true;
             }
         }
-        final DestructiveAction folderChange = getFolderChange(target, folders, isDestructive);
+        final DestructiveAction folderChange = getFolderChange(target, folders, isDestructive,
+                batch);
         // Update the UI elements depending no their visibility and availability
         // TODO(viki): Consolidate this into a single method requestDelete.
         if (isDestructive) {
@@ -1798,7 +1799,7 @@ public abstract class AbstractActivityController implements ActivityController,
         final Collection<Conversation> conversations = mSelectedSet.values();
         final Collection<Folder> dropTarget = Folder.listOf(folder);
         // Drag and drop is destructive: we remove conversations from the current folder.
-        final DestructiveAction action = getFolderChange(conversations, dropTarget, true);
+        final DestructiveAction action = getFolderChange(conversations, dropTarget, true, true);
         requestDelete(conversations, action);
     }
 
@@ -1961,16 +1962,18 @@ public abstract class AbstractActivityController implements ActivityController,
         private final boolean mIsDestructive;
         /** Whether this destructive action has already been performed */
         private boolean mCompleted;
+        private boolean mIsSelectedSet;
 
         /**
          * Create a new folder destruction object to act on the given conversations.
          * @param target
          */
         private FolderDestruction(final Collection<Conversation> target,
-                final Collection<Folder> folders, boolean isDestructive) {
+                final Collection<Folder> folders, boolean isDestructive, boolean isBatch) {
             mTarget.addAll(target);
             mFolderList.addAll(folders);
             mIsDestructive = isDestructive;
+            mIsSelectedSet = isBatch;
         }
 
         @Override
@@ -1988,6 +1991,9 @@ public abstract class AbstractActivityController implements ActivityController,
                     ConversationColumns.RAW_FOLDERS,
                     Folder.getSerializedFolderString(mFolder, mFolderList));
             refreshConversationList();
+            if (mIsSelectedSet) {
+                mSelectedSet.clear();
+            }
         }
         /**
          * Returns true if this action has been performed, false otherwise.
@@ -2003,8 +2009,8 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     private final DestructiveAction getFolderChange(Collection<Conversation> target,
-            Collection<Folder> folders, boolean isDestructive){
-        final DestructiveAction da = new FolderDestruction(target, folders, isDestructive);
+            Collection<Folder> folders, boolean isDestructive, boolean isBatch){
+        final DestructiveAction da = new FolderDestruction(target, folders, isDestructive, isBatch);
         registerDestructiveAction(da);
         return da;
     }

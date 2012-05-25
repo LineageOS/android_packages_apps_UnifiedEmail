@@ -47,6 +47,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
     private boolean mSingle = false;
     private FolderSelectorAdapter mAdapter;
     private final Collection<Conversation> mTarget;
+    private boolean mBatch;
 
     public interface FolderChangeCommitListener {
         /**
@@ -54,16 +55,18 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
          * folders that they might be assigned to.
          * @param folders the folders to assign the conversations to.
          * @param target the conversations to act upon.
+         * @param batch whether this is a batch operation
          */
         public void onFolderChangesCommit(
-                Collection<Folder> folders, Collection<Conversation> target);
+                Collection<Folder> folders, Collection<Conversation> target, boolean batch);
     }
 
     public FoldersSelectionDialog(final Context context, Account account,
             final FolderChangeCommitListener commitListener,
-            Collection<Conversation> target) {
+            Collection<Conversation> target, boolean isBatch) {
         mCommitListener = commitListener;
         mTarget = target;
+        mBatch = isBatch;
 
         // Mapping of a folder's uri to its checked state
         mCheckedState = new HashMap<Folder, Boolean>();
@@ -150,7 +153,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
                     }
                 }
                 if (mCommitListener != null) {
-                    mCommitListener.onFolderChangesCommit(folders, mTarget);
+                    mCommitListener.onFolderChangesCommit(folders, mTarget, mBatch);
                 }
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
