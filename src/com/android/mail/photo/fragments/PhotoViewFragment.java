@@ -173,7 +173,7 @@ public class PhotoViewFragment extends BaseFragment implements
     private final static int LOADER_ID_PHOTO = R.id.photo_view_photo_loader_id;
 
     /** The size of the photo */
-    private static Integer sPhotoSize;
+    public static Integer sPhotoSize;
 
     /** The ID of this photo */
     private long mPhotoId;

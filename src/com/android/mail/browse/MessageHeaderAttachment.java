@@ -45,6 +45,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.photo.Intents;
+import com.android.mail.photo.Intents.PhotoViewIntentBuilder;
+import com.android.mail.photo.util.MediaStoreUtils;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
@@ -452,6 +455,16 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
      * View an attachment by an application on device.
      */
     private void sendViewIntent() {
+        if (MediaStoreUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.contentType))) {
+            final PhotoViewIntentBuilder builder =
+                    Intents.newPhotoViewActivityIntentBuilder(getContext());
+            builder.setAlbumName(mAttachment.name)
+                .setPhotosUri(mAttachment.contentUri.toString());
+
+            getContext().startActivity(builder.build());
+            return;
+        }
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);

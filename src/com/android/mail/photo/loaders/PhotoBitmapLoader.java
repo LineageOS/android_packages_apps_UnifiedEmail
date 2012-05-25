@@ -17,14 +17,14 @@
 
 package com.android.mail.photo.loaders;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v4.content.AsyncTaskLoader;
-import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
+import com.android.mail.photo.fragments.PhotoViewFragment;
+import com.android.mail.photo.util.ImageUtils;
 
 /**
  * Loader for the bitmap of a photo.
@@ -43,28 +43,13 @@ public class PhotoBitmapLoader extends AsyncTaskLoader<Bitmap> {
     public Bitmap loadInBackground() {
         Context context = getContext();
 
-        Bitmap bitmap = null;
-        InputStream stream = null;
-
-        try {
-            if (context != null) {
-                stream = context.getAssets().open(mPhotoUrl);
-
-                bitmap = BitmapFactory.decodeStream(stream);
-            }
-        } catch (final IOException e) {
-            Log.d("PhotoBitmapLoader", "Caught IOException", e);
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
+        if (context != null && mPhotoUrl != null) {
+            final ContentResolver resolver = context.getContentResolver();
+            return ImageUtils.createLocalBitmap(resolver, Uri.parse(mPhotoUrl),
+                    PhotoViewFragment.sPhotoSize);
         }
 
-        return bitmap;
+        return null;
     }
 
     /**

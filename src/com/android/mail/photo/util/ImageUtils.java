@@ -294,7 +294,9 @@ public class ImageUtils {
             final Bitmap decodedBitmap = decodeStream(inputStream, null, opts);
 
             // Correct thumbnail orientation as necessary
-            return rotateBitmap(resolver, uri, decodedBitmap);
+            // TODO: Fix rotation if it's actually a problem
+            //return rotateBitmap(resolver, uri, decodedBitmap);
+            return decodedBitmap;
 
         } catch (FileNotFoundException exception) {
             // Do nothing - the photo will appear to be missing
