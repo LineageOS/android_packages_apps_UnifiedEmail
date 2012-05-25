@@ -16,6 +16,7 @@
 
 package com.android.mail.providers;
 
+import android.app.Activity;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -457,6 +458,19 @@ public abstract class MailAppProvider extends ContentProvider
                     SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         }
         return mSharedPrefs;
+    }
+
+    static public Account getAccountFromAccountUri(Uri accountUri) {
+        MailAppProvider provider = getInstance();
+        if (provider != null && provider.mAccountsFullyLoaded) {
+            synchronized(provider.mAccountCache) {
+                AccountCacheEntry entry = provider.mAccountCache.get(accountUri);
+                if (entry != null) {
+                    return entry.mAccount;
+                }
+            }
+        }
+        return null;
     }
 
     @Override

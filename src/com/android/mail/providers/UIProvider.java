@@ -572,6 +572,12 @@ public class UIProvider {
          * Deletions in this folder can't be undone (could include archive if desirable)
          */
         public static final int DELETE_ACTION_FINAL = 0x0200;
+        /**
+         * This folder is virtual, i.e. contains conversations potentially pulled from other
+         * folders, potentially even from different accounts.  Examples might be a "starred"
+         * folder, or an "unread" folder (per account or provider-wide)
+         */
+        public static final int IS_VIRTUAL = 0x400;
     }
 
     public static final class FolderColumns {
@@ -679,7 +685,8 @@ public class UIProvider {
         ConversationColumns.PERSONAL_LEVEL,
         ConversationColumns.SPAM,
         ConversationColumns.MUTED,
-        ConversationColumns.COLOR
+        ConversationColumns.COLOR,
+        ConversationColumns.ACCOUNT_URI
     };
 
     // These column indexes only work when the caller uses the
@@ -705,6 +712,7 @@ public class UIProvider {
     public static final int CONVERSATION_IS_SPAM_COLUMN = 18;
     public static final int CONVERSATION_MUTED_COLUMN = 19;
     public static final int CONVERSATION_COLOR_COLUMN = 20;
+    public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 21;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -832,6 +840,11 @@ public class UIProvider {
          * This int column contains a color for the conversation (used in Email only)
          */
         public static final String COLOR = "color";
+
+        /**
+         * This String column contains the Uri for this conversation's account
+         */
+        public static final String ACCOUNT_URI = "accountUri";
 
         private ConversationColumns() {
         }

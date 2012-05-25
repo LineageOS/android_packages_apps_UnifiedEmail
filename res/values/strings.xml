@@ -693,4 +693,9 @@
 
     <!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->
     <string name="image_file_name_format" translatable="false">"'IMG'_yyyyMMdd_HHmmss"</string>
+
+    <!--  The move message / change labels action can't be taken because the selected messages
+        come from different accounts -->
+    <string name="cant_move_or_change_labels">Can\'t move because selection contains multiple
+        accounts.</string>
 </resources>
