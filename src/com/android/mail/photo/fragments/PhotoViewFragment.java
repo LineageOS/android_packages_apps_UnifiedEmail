@@ -178,7 +178,7 @@ public class PhotoViewFragment extends BaseFragment implements
     /** The gaia ID of the photo owner */
     private String mOwnerId;
     /** The URL of a photo to display */
-    private String mPhotoUrl;
+    private String mResolvedPhotoUri;
     /** Name of the photo */
     private String mDisplayName;
     /** Album name used if the photo doesn't have one. See b/5678229. */
@@ -274,7 +274,7 @@ public class PhotoViewFragment extends BaseFragment implements
 
         mPhotoId = mIntent.getLongExtra(Intents.EXTRA_PHOTO_ID, INVALID_ID);
         mOwnerId = mIntent.getStringExtra(Intents.EXTRA_OWNER_ID);
-        mPhotoUrl = mIntent.getStringExtra(Intents.EXTRA_PHOTO_URL);
+        mResolvedPhotoUri = mIntent.getStringExtra(Intents.EXTRA_RESOLVED_PHOTO_URI);
         mDefaultAlbumName = mIntent.getStringExtra(Intents.EXTRA_ALBUM_NAME);
 
         setHasOptionsMenu(true);
@@ -354,7 +354,7 @@ public class PhotoViewFragment extends BaseFragment implements
     @Override
     public Loader<Bitmap> onCreateLoader(int id, Bundle args) {
         if (id == LOADER_ID_PHOTO) {
-            return new PhotoBitmapLoader(getActivity(), mPhotoUrl);
+            return new PhotoBitmapLoader(getActivity(), mResolvedPhotoUri);
         } else {
             return null;
         }

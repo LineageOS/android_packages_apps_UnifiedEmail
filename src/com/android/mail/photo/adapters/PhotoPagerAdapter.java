@@ -65,7 +65,7 @@ public class PhotoPagerAdapter extends BaseCursorPagerAdapter {
         final PhotoViewIntentBuilder builder =
                 Intents.newPhotoViewFragmentIntentBuilder(mContext);
           builder.setPhotoId(photoId)
-            .setPhotoUrl(photoUrl)
+            .setResolvedPhotoUri(photoUrl)
             .setAlbumName(mDefaultAlbumName)
             .setForceLoadId(mForceLoadId);
 
