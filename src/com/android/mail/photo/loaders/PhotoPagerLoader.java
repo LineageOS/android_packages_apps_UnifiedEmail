@@ -19,38 +19,26 @@ package com.android.mail.photo.loaders;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.net.Uri;
-import android.text.TextUtils;
 
-import com.android.mail.photo.provider.PhotoContract.PhotoQuery;
+import com.android.mail.providers.UIProvider;
 
 /**
  * Loader for a set of photo IDs.
  */
 public class PhotoPagerLoader extends PhotoCursorLoader {
-    private String mResolvedPhotoUri;
     public PhotoPagerLoader(
-            Context context, Uri photosUri, String resolvedPhotoUri, int pageHint) {
+            Context context, Uri photosUri, int pageHint) {
         super(context, photosUri, pageHint != LOAD_LIMIT_UNLIMITED, pageHint);
-        mResolvedPhotoUri = resolvedPhotoUri;
     }
 
     @Override
     public Cursor esLoadInBackground() {
         Cursor returnCursor = null;
 
-        if (!TextUtils.isEmpty(mResolvedPhotoUri)) {
-            returnCursor = new MatrixCursor(PhotoQuery.PROJECTION);
-            ((MatrixCursor) returnCursor).newRow()
-            .add(0)             // _id
-            .add(mResolvedPhotoUri);
-            return returnCursor;
-        }
-
         final Uri loaderUri = getLoaderUri();
         setUri(loaderUri);
-        setProjection(PhotoQuery.PROJECTION);
+        setProjection(UIProvider.ATTACHMENT_PROJECTION);
         returnCursor = super.esLoadInBackground();
 
         return returnCursor;

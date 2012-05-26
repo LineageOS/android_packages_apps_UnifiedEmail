@@ -25,15 +25,17 @@ import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 
+import com.android.mail.providers.UIProvider;
+
 import java.util.HashMap;
 
 /**
- * Page adapter for use with an EsCursorLoader. Unlike other cursor adapters, this has no
+ * Page adapter for use with an BaseCursorLoader. Unlike other cursor adapters, this has no
  * observers for automatic refresh. Instead, it depends upon external mechanisms to provide
  * the update signal.
  */
 public abstract class BaseCursorPagerAdapter extends BaseFragmentPagerAdapter {
-    private static final String TAG = "EsCursorPagerAdapter";
+    private static final String TAG = "BaseCursorPagerAdapter";
 
     Context mContext;
     private boolean mDataValid;
@@ -90,7 +92,7 @@ public abstract class BaseCursorPagerAdapter extends BaseFragmentPagerAdapter {
 
         final Integer rowId;
         if (moveCursorTo(position)) {
-            rowId = mCursor.getInt(mRowIDColumn);
+            rowId = mCursor.getString(mRowIDColumn).hashCode();
         } else {
             rowId = null;
         }
@@ -151,7 +153,7 @@ public abstract class BaseCursorPagerAdapter extends BaseFragmentPagerAdapter {
      */
     public long getItemId(int position) {
         if (mDataValid && moveCursorTo(position)) {
-            return mCursor.getLong(mRowIDColumn);
+            return mCursor.getString(mRowIDColumn).hashCode();
         } else {
             return 0;
         }
@@ -177,7 +179,7 @@ public abstract class BaseCursorPagerAdapter extends BaseFragmentPagerAdapter {
         Cursor oldCursor = mCursor;
         mCursor = newCursor;
         if (newCursor != null) {
-            mRowIDColumn = newCursor.getColumnIndexOrThrow("_id");
+            mRowIDColumn = UIProvider.ATTACHMENT_URI_COLUMN;
             mDataValid = true;
         } else {
             mRowIDColumn = -1;
@@ -205,7 +207,7 @@ public abstract class BaseCursorPagerAdapter extends BaseFragmentPagerAdapter {
     @Override
     protected String makeFragmentName(int viewId, int index) {
         if (moveCursorTo(index)) {
-            return "android:espager:" + viewId + ":" + mCursor.getInt(mRowIDColumn);
+            return "android:pager:" + viewId + ":" + mCursor.getString(mRowIDColumn).hashCode();
         } else {
             return super.makeFragmentName(viewId, index);
         }
@@ -231,7 +233,7 @@ public abstract class BaseCursorPagerAdapter extends BaseFragmentPagerAdapter {
         mCursor = c;
         mDataValid = cursorPresent;
         mContext = context;
-        mRowIDColumn = cursorPresent ? c.getColumnIndexOrThrow("_id") : -1;
+        mRowIDColumn = cursorPresent ? UIProvider.ATTACHMENT_URI_COLUMN : -1;
     }
 
     /**
@@ -248,7 +250,7 @@ public abstract class BaseCursorPagerAdapter extends BaseFragmentPagerAdapter {
 
         mCursor.moveToPosition(-1);
         while (mCursor.moveToNext()) {
-            final int rowId = mCursor.getInt(mRowIDColumn);
+            final int rowId = mCursor.getString(mRowIDColumn).hashCode();
             final int position = mCursor.getPosition();
 
             itemPosition.append(rowId, position);

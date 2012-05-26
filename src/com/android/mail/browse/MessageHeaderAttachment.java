@@ -71,10 +71,12 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
     private Attachment mAttachment;
     private ImageView mIcon;
     private ImageView.ScaleType mIconScaleType;
+    private int mPhotoIndex;
     private TextView mTitle;
     private TextView mSubTitle;
     private String mAttachmentSizeText;
     private String mDisplayType;
+    private Uri mAttachmentsListUri;
     private ProgressDialog mViewProgressDialog;
     private AttachmentCommandHandler mCommandHandler;
     private ProgressBar mProgress;
@@ -203,9 +205,11 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
      * cause sub-views to update.
      *
      */
-    public void render(Attachment attachment) {
+    public void render(Attachment attachment, Uri attachmentsListUri, int index) {
         final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
+        mAttachmentsListUri = attachmentsListUri;
+        mPhotoIndex = index;
 
         LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
                 " contentUri=%s MIME=%s", attachment.name, attachment.state,
@@ -459,7 +463,8 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
             final PhotoViewIntentBuilder builder =
                     Intents.newPhotoViewActivityIntentBuilder(getContext());
             builder.setAlbumName(mAttachment.name)
-                .setResolvedPhotoUri(mAttachment.contentUri.toString());
+                .setPhotosUri(mAttachmentsListUri.toString())
+                .setPhotoIndex(mPhotoIndex);
 
             getContext().startActivity(builder.build());
             return;
