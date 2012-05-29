@@ -65,7 +65,6 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ConversationSelectionSet;
-import com.android.mail.ui.DragListener;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.ViewMode;
@@ -162,7 +161,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private boolean mSwipeEnabled;
     private int mLastTouchX;
     private int mLastTouchY;
-    private DragListener mDragListener;
     private AnimatedAdapter mAdapter;
     private static Bitmap MORE_FOLDERS;
 
@@ -367,29 +365,27 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set, Folder folder,
-            boolean checkboxesDisabled, boolean swipeEnabled, DragListener dragListener,
-            AnimatedAdapter adapter) {
+            boolean checkboxesDisabled, boolean swipeEnabled, AnimatedAdapter adapter) {
         bind(ConversationItemViewModel.forCursor(cursor), viewMode, set, folder,
-                checkboxesDisabled, swipeEnabled, dragListener, adapter);
+                checkboxesDisabled, swipeEnabled, adapter);
     }
 
     public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
             Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
-            DragListener dragListener, AnimatedAdapter adapter) {
+            AnimatedAdapter adapter) {
         bind(ConversationItemViewModel.forConversation(conversation), viewMode, set, folder,
-                checkboxesDisabled, swipeEnabled, dragListener, adapter);
+                checkboxesDisabled, swipeEnabled, adapter);
     }
 
     private void bind(ConversationItemViewModel header, ViewMode viewMode,
             ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
-            boolean swipeEnabled, DragListener dragListener, AnimatedAdapter adapter) {
+            boolean swipeEnabled, AnimatedAdapter adapter) {
         mViewMode = viewMode;
         mHeader = header;
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         mCheckboxesEnabled = !checkboxesDisabled;
         mSwipeEnabled = swipeEnabled;
-        mDragListener = dragListener;
         mAdapter = adapter;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
@@ -1298,7 +1294,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Begin drag mode. Keep the conversation selected (NOT toggle
         // selection) and start drag.
         selectConversation();
-        mDragListener.onStartDragMode();
 
         // Clip data has form: [conversations_uri, conversationId1,
         // maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]

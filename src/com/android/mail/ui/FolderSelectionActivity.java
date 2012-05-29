@@ -291,11 +291,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public DragListener getDragListener() {
-        return null;
-    }
-
-    @Override
     public boolean supportsDrag(DragEvent event, Folder folder) {
         return false;
     }

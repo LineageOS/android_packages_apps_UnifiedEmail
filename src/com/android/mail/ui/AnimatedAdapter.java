@@ -78,7 +78,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final SwipeableListView mListView;
     private Settings mCachedSettings;
     private boolean mSwipeEnabled;
-    private DragListener mDragListener;
     private HashMap<Long, LeaveBehindItem> mLeaveBehindItems = new HashMap<Long, LeaveBehindItem>();
 
     /**
@@ -88,7 +87,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account, Settings settings, ViewMode viewMode,
-            SwipeableListView listView, DragListener dragListener) {
+            SwipeableListView listView) {
         // Use FLAG_REGISTER_CONTENT_OBSERVER to ensure special
         // ConversationCursor notifications (triggered by UI actions) cause any
         // connected ListView to redraw.
@@ -101,7 +100,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mShowFooter = false;
         mListView = listView;
         mCachedSettings = settings;
-        mDragListener = dragListener;
         mSwipeEnabled = account.supportsCapability(UIProvider.AccountCapabilities.UNDO);
     }
 
@@ -134,7 +132,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
         ((ConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
-                        mSwipeEnabled, mDragListener, this);
+                        mSwipeEnabled, this);
     }
 
     @Override
@@ -321,7 +319,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 parent);
         convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false, mSwipeEnabled,
-                mDragListener, this);
+                this);
         convView.startUndoAnimation(mViewMode, this);
         return convView;
     }

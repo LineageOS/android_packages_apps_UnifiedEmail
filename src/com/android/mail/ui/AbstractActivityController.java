@@ -242,19 +242,9 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public int getMode() {
-        return mViewMode.getMode();
-    }
-
-    @Override
     public String getUnshownSubject(String subject) {
         // Calculate how much of the subject is shown, and return the remaining.
         return null;
-    }
-
-    @Override
-    public void handleConversationLoadError() {
-        // TODO(viki): Auto-generated method stub
     }
 
     @Override
@@ -789,7 +779,6 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void onPrepareDialog(int id, Dialog dialog, Bundle bundle) {
         // TODO(viki): Auto-generated method stub
-
     }
 
     @Override
@@ -801,7 +790,6 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void onPause() {
         isLoaderInitialized = false;
-
         enableNotifications();
         commitLeaveBehindItems();
     }
@@ -851,17 +839,7 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void onStartDragMode() {
-        // TODO(viki): Auto-generated method stub
-    }
-
-    @Override
     public void onStop() {
-     // TODO(viki): Auto-generated method stub
-    }
-
-    @Override
-    public void onStopDragMode() {
         // TODO(viki): Auto-generated method stub
     }
 
@@ -1089,7 +1067,11 @@ public abstract class AbstractActivityController implements ActivityController,
         }
     }
 
-    @Override
+    /**
+     * Returns true if we are waiting for the account to sync, and cannot show any folders or
+     * conversation for the current account yet.
+     * @return
+     */
     public boolean inWaitMode() {
         final FragmentManager manager = mActivity.getFragmentManager();
         final WaitFragment waitFragment =
@@ -1197,18 +1179,6 @@ public abstract class AbstractActivityController implements ActivityController,
         final LoaderManager lm = mActivity.getLoaderManager();
         lm.destroyLoader(id);
         lm.restartLoader(id, Bundle.EMPTY, this);
-    }
-
-    /**
-     * Start a loader with the given id. This should be called when we know that the previous
-     * state of the application matches this state, and we are happy if we get the previously
-     * created loader with this id. If that is not true, consider calling
-     * {@link #restartOptionalLoader(int)} instead.
-     * @param id
-     */
-    private void startLoader(int id) {
-        final LoaderManager lm = mActivity.getLoaderManager();
-        lm.initLoader(id, Bundle.EMPTY, this);
     }
 
     @Override
