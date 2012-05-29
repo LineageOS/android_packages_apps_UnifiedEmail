@@ -226,6 +226,9 @@
     <string name="search_results_searching_header" msgid="3821361153909466819">"กำลังค้นหา..."</string>
     <string name="recent_folders" msgid="8240081561436891330">"ล่าสุด"</string>
     <string name="add_label" msgid="1638508840481944248">"เพิ่มป้ายกำกับ"</string>
+    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> จาก <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
+    <string name="conversation_newer" msgid="7381341099165809801">"ใหม่กว่า"</string>
+    <string name="conversation_older" msgid="6384287019562069353">"เก่ากว่า"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"ขยายรายละเอียดผู้รับ"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"ยุบรายละเอียดผู้รับ"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"แสดงข้อมูลติดต่อของ <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -299,4 +302,35 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"บัญชีนี้ไม่ได้รับการตั้งค่าให้ซิงค์อัตโนมัติ"\n"แตะ "<b>"ซิงค์เลย"</b>" เพื่อซิงค์เมลหนึ่งครั้ง หรือแตะ "<b>"เปลี่ยนการตั้งค่าการซิงค์"</b>" เพื่อตั้งค่าบัญชีนี้ให้ซิงค์เมลอัตโนมัติ"</string>
     <string name="manual_sync" msgid="6743983544685622800">"ซิงค์เลย"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"เปลี่ยนการตั้งค่าการซิงค์"</string>
+    <string name="photo_view_default_title" msgid="305616940993932174">"รูปภาพจากข้อความ"</string>
+    <string name="photo_view_load_error" msgid="1802859675974843136">"ไม่สามารถโหลดรูปภาพ"</string>
+    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"ไม่สามารถใช้วิดีโอได้ในขณะนี้ โปรดรีเฟรช"</string>
+    <string name="photo_view_placeholder_image" msgid="465734985000555852">"ไม่สามารถใช้รายการได้ในขณะนี้ โปรดรีเฟรช"</string>
+    <string name="photo_network_error" msgid="6545183306958652345">"รูปภาพไม่สามารถใช้ได้ในขณะนี้"</string>
+    <string name="loading_photo" msgid="6784297653634402137">"กำลังโหลด…"</string>
+    <string name="post_operation_pending" msgid="1312168212880219407">"กำลังส่ง…"</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"ภาพนี้มีขนาดใหญ่เกินไปสำหรับการดาวน์โหลด คุณอยากลองดาวน์โหลดที่ความละเอียดน้อยลงหรือไม่"</string>
+    <string name="download_photo_error" msgid="7511376299526085797">"ไม่สามารถบันทึกรูปภาพไปยังอุปกรณ์"</string>
+    <string name="yes" msgid="7474216525286833848">"ใช่"</string>
+    <string name="no" msgid="427548507197604096">"ไม่"</string>
+    <string name="camera_photo_error" msgid="653424229752191252">"ไม่พบรูปภาพ"</string>
+    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> จาก <xliff:g id="COUNT">%d</xliff:g>"</string>
+    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
+    <string name="truncated_info_see_more" msgid="2068973974507128729">" ดูเพิ่มเติม »"</string>
+    <string name="posted_just_now" msgid="7872790861965011674">"เมื่อสักครู่"</string>
+  <plurals name="num_minutes_ago">
+    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> นาที"</item>
+    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> นาที"</item>
+  </plurals>
+  <plurals name="num_hours_ago">
+    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> ชั่วโมง"</item>
+    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> ชั่วโมง"</item>
+  </plurals>
+  <plurals name="num_days_ago">
+    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> วัน"</item>
+    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> วัน"</item>
+  </plurals>
+    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"กำลังแทรกรูปภาพ…"</string>
+    <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
+    <skip />
 </resources>

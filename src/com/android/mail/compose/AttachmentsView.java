@@ -135,7 +135,6 @@ class AttachmentsView extends LinearLayout {
 
     /**
      * Interface to implement to be notified about changes to the attachments.
-     * @author mindyp@google.com
      *
      */
     public interface AttachmentDeletedListener {

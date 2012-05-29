@@ -68,7 +68,7 @@ public final class ConversationCursor implements Cursor {
     // A sentinel value for the "index" of the deleted column; it's an int that is otherwise invalid
     private static final int DELETED_COLUMN_INDEX = -1;
     // Empty deletion list
-    private static final ArrayList<Integer> EMPTY_DELETION_LIST = Lists.newArrayList();
+    private static final Collection<Conversation> EMPTY_DELETION_LIST = Lists.newArrayList();
     // The index of the Uri whose data is reflected in the cached row
     // Updates/Deletes to this Uri are cached
     private static int sUriColumnIndex;
@@ -667,7 +667,7 @@ public final class ConversationCursor implements Cursor {
      * been swapped into place; this allows the UI to animate these away if desired
      * @return a list of positions deleted in ConversationCursor
      */
-    public ArrayList<Integer> getRefreshDeletions () {
+    public Collection<Conversation> getRefreshDeletions () {
         return EMPTY_DELETION_LIST;
     }
 
@@ -1040,7 +1040,6 @@ public final class ConversationCursor implements Cursor {
             Uri uri = conv.uri;
             String uriString = uriStringFromCachingUri(uri);
             conversationCursor.setMostlyDead(uriString, conv);
-            LogUtils.i(TAG, "[Mostly dead, deferring: %s", uri);
             addToUndoSequence(uri);
         }
 
@@ -1103,12 +1102,13 @@ public final class ConversationCursor implements Cursor {
                 }
             }
 
+            // Notify listeners that data has changed
+            conversationCursor.notifyDataChanged();
+
             // Recalibrate cursor position if required
             if (recalibrateRequired) {
                 conversationCursor.recalibratePosition();
             }
-            // Notify listeners that data has changed
-            conversationCursor.notifyDataChanged();
 
             // Send changes to underlying provider
             for (String authority: batchMap.keySet()) {
@@ -1137,6 +1137,7 @@ public final class ConversationCursor implements Cursor {
     }
 
     void setMostlyDead(String uriString, Conversation conv) {
+        LogUtils.i(TAG, "[Mostly dead, deferring: %s] ", uriString);
         cacheValue(uriString,
                 UIProvider.ConversationColumns.FLAGS, Conversation.FLAG_MOSTLY_DEAD);
         conv.convFlags |= Conversation.FLAG_MOSTLY_DEAD;

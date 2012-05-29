@@ -34,9 +34,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.RelativeLayout;
@@ -44,6 +42,7 @@ import android.widget.RelativeLayout;
 import com.android.mail.R;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -68,19 +67,16 @@ import java.util.ArrayList;
  *
  * In the Gmail source code, this was called TriStateSplitLayout
  */
-final class TwoPaneLayout extends RelativeLayout
-        implements ModeChangeListener, OnTouchListener {
+final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
     /**
      * Scaling modifier for sAnimationSlideRightDuration.
      */
     private static final double SLIDE_DURATION_SCALE = 2.0 / 3.0;
     private static final String LOG_TAG = new LogUtils().getLogTag();
-    private static final TimeInterpolator sCollapseInterpolator = new DecelerateInterpolator(2.5f);
     private static final TimeInterpolator sLeftInterpolator = new DecelerateInterpolator(2.25f);
     private static final TimeInterpolator sRightInterpolator = new DecelerateInterpolator(2.5f);
 
-    private static int sAnimationCollapseDuration;
     private static int sAnimationSlideLeftDuration;
     private static int sAnimationSlideRightDuration;
     private static double sScaledConversationListWeight;
@@ -113,7 +109,7 @@ final class TwoPaneLayout extends RelativeLayout
     private int mListBitmapLeft;
     /** Whether or not the conversation list can be collapsed all the way to hidden on the left.
      * This is used only in portrait view*/
-    private boolean mListCollapsed;
+    private Boolean mListCollapsed;
     private LayoutListener mListener;
     private int mListLeft;
     private Paint mListPaint;
@@ -128,18 +124,14 @@ final class TwoPaneLayout extends RelativeLayout
 
     private final AnimatorListener mConversationListListener =
             new AnimatorListener(AnimatorListener.CONVERSATION_LIST);
-    private final AnimatorListener mCollapseListListener =
-            new AnimatorListener(AnimatorListener.COLLAPSE_LIST);
     private final AnimatorListener mConversationListener =
             new AnimatorListener(AnimatorListener.CONVERSATION);
-    private final AnimatorListener mUncollapseListListener =
-            new AnimatorListener(AnimatorListener.UNCOLLAPSE_LIST);
+    private boolean mIsSearchResult = false;
+    private boolean mShowTwoPaneSearchResults;
 
     private class AnimatorListener implements Animator.AnimatorListener {
         public static final int CONVERSATION_LIST = 1;
-        public static final int COLLAPSE_LIST = 2;
-        public static final int CONVERSATION = 3;
-        public static final int UNCOLLAPSE_LIST = 4;
+        public static final int CONVERSATION = 2;
 
         /**
          * Different animator listeners need to perform different actions on start and finish based
@@ -174,14 +166,8 @@ final class TwoPaneLayout extends RelativeLayout
                 case CONVERSATION_LIST:
                     onFinishEnteringConversationListMode();
                     return;
-                case COLLAPSE_LIST:
-                    onCollapseList();
-                    return;
                 case CONVERSATION:
                     onFinishEnteringConversationMode();
-                    return;
-                case UNCOLLAPSE_LIST:
-                    onUncollapseList();
                     return;
             }
         }
@@ -243,36 +229,11 @@ final class TwoPaneLayout extends RelativeLayout
     }
 
     /**
-     * Collapses the conversation list to the left if it is in an expanded state.
-     * Only applies in portrait mode.
-     */
-    private boolean collapseList() {
-        if (mListCollapsed) {
-            return false;
-        }
-        mListCollapsed = true;
-
-        PropertyValuesHolder listLeftValues = PropertyValuesHolder.ofInt(
-                "conversationListLeft",
-                getConversationListLeft(),
-                computeConversationListLeft(computeConversationListWidth()));
-
-        startLayoutAnimation(sAnimationCollapseDuration, mCollapseListListener,
-                sCollapseInterpolator, listLeftValues);
-        return true;
-    }
-
-    /**
      * Computes left position of the conversation list relative to its uncollapsed position.
      * This is only relevant in a collapsible view, and will be 0 otherwise.
      */
     private int computeConversationListLeft(int width) {
-        if (isConversationListCollapsible()) {
-            return mListCollapsed ? -width : 0;
-
-        } else {
-            return 0;
-        }
+        return isConversationListCollapsed() ? -width : 0;
     }
 
     /**
@@ -313,7 +274,7 @@ final class TwoPaneLayout extends RelativeLayout
             case ViewMode.CONVERSATION:
                 // Fallthrough
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
-                if (isConversationListCollapsible()) {
+                if (isConversationListCollapsed()) {
                     return totalWidth;
                 }
                 return totalWidth - (int) (totalWidth * sScaledConversationListWeight);
@@ -325,7 +286,8 @@ final class TwoPaneLayout extends RelativeLayout
      * Computes the width of the folder list in stable state of the current mode.
      */
     private int computeFolderListWidth() {
-        return (int) (getMeasuredWidth() * sScaledFolderListWeight);
+        return isFolderListCollapsed() ?
+                0 : (int) (getMeasuredWidth() * sScaledFolderListWeight);
     }
 
     /**
@@ -347,7 +309,7 @@ final class TwoPaneLayout extends RelativeLayout
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mListener.onConversationListVisibilityChanged(isConversationListVisible());
+                    mListener.onConversationListVisibilityChanged(!isConversationListCollapsed());
                 }
             });
         }
@@ -448,7 +410,6 @@ final class TwoPaneLayout extends RelativeLayout
         // On the initial call, measurements may not have been done (i.e. this Layout has never
         // been rendered), so no animation will be done.
         if (getMeasuredWidth() == 0) {
-            mListCollapsed = true;
             onFinishEnteringConversationMode();
             return;
         }
@@ -464,7 +425,6 @@ final class TwoPaneLayout extends RelativeLayout
 
         // Shrink the conversation list to make room for the conversation, and default
         // it to collapsed in case it is collapsible.
-        mListCollapsed = true;
         int targetWidth = computeConversationListWidth();
         setConversationListWidth(targetWidth);
 
@@ -501,25 +461,31 @@ final class TwoPaneLayout extends RelativeLayout
                 .leftMargin;
     }
 
+    public void initializeLayout(Context context) {
+        initializeLayout(context, false);
+    }
+
     /**
      * Initializes the layout with a specific context.
      */
     @VisibleForTesting
-    public void initializeLayout(Context context) {
+    public void initializeLayout(Context context, boolean isSearchResult) {
         mContext = context;
+        mIsSearchResult = isSearchResult;
 
         Resources res = getResources();
         mFoldersView = findViewById(R.id.content_pane);
+        mShowTwoPaneSearchResults = Utils.showTwoPaneSearchResults(mContext);
+        if (mIsSearchResult && !mShowTwoPaneSearchResults) {
+            mFoldersView.setVisibility(View.GONE);
+        }
         mConversationListContainer = findViewById(R.id.conversation_column_container);
         mListView = findViewById(R.id.conversation_list);
         mConversationView = findViewById(R.id.conversation_pane_container);
         mConversationViewOverlay = findViewById(R.id.conversation_overlay);
 
-        mConversationViewOverlay.setOnTouchListener(this);
-
         sAnimationSlideLeftDuration = res.getInteger(R.integer.activity_slide_left_duration);
         sAnimationSlideRightDuration = res.getInteger(R.integer.activity_slide_right_duration);
-        sAnimationCollapseDuration = res.getInteger(R.integer.activity_collapse_duration);
         final int sFolderListWeight = res.getInteger(R.integer.folder_list_weight);
         final int sConversationListWeight = res.getInteger(R.integer.conversation_list_weight);
         final int sConversationViewWeight = res.getInteger(R.integer.conversation_view_weight);
@@ -542,33 +508,25 @@ final class TwoPaneLayout extends RelativeLayout
         return mAnimatingFade;
     }
 
-    /**
-     * @return whether the conversation list can be collapsed or not. This depends on orientation.
-     */
-    public boolean isConversationListCollapsible() {
-        return mContext.getResources().getInteger(R.integer.conversation_list_collapsible) != 0;
+    private boolean isFolderListCollapsed() {
+        return mIsSearchResult && !mShowTwoPaneSearchResults;
     }
 
     /**
      * @return Whether or not the conversation list is visible on screen.
      */
-    public boolean isConversationListVisible() {
-        return !isConversationListCollapsible() || !mListCollapsed;
-    }
-
-    /**
-     * Finalizes state after animations settle when collapsing the conversation list.
-     */
-    private void onCollapseList() {
-        mConversationViewOverlay.setVisibility(View.GONE);
-        dispatchConversationListVisibilityChange();
+    public boolean isConversationListCollapsed() {
+        if (mListCollapsed == null) {
+            mListCollapsed = new Boolean(mContext.getResources()
+                    .getBoolean(R.bool.list_collapsed));
+        }
+        return mListCollapsed;
     }
 
     /**
      * Finalizes state after animations settle when entering the conversation list mode.
      */
     private void onFinishEnteringConversationListMode() {
-        mListCollapsed = false;
         mConversationView.setVisibility(View.GONE);
         mConversationViewOverlay.setVisibility(View.GONE);
         mFoldersView.setVisibility(View.VISIBLE);
@@ -590,9 +548,6 @@ final class TwoPaneLayout extends RelativeLayout
     private void onFinishEnteringConversationMode() {
         mFoldersView.setVisibility(View.GONE);
         setConversationListWidth(computeConversationListWidth());
-        if (isConversationListCollapsible()) {
-            onCollapseList();
-        }
         dispatchConversationVisibilityChanged(true);
     }
 
@@ -632,27 +587,6 @@ final class TwoPaneLayout extends RelativeLayout
         int widthSpec = MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY);
         int heightSpec = MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY);
         measure(widthSpec, heightSpec);
-    }
-
-    @Override
-    public boolean onTouch(View target, MotionEvent event) {
-        if (isConversationListCollapsible() && (target == mConversationViewOverlay)) {
-            collapseList();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Finalizes state after animations complete when expanding the conversation list.
-     */
-    private void onUncollapseList() {
-        if (isConversationListCollapsible()) {
-            mConversationViewOverlay.setVisibility(View.VISIBLE);
-        } else {
-            mConversationViewOverlay.setVisibility(View.GONE);
-        }
-        dispatchConversationListVisibilityChange();
     }
 
     @Override
@@ -793,24 +727,5 @@ final class TwoPaneLayout extends RelativeLayout
 
         mOutstandingAnimator = animator;
         animator.start();
-    }
-
-    /**
-     * Expands the conversation list out from the left if it is in a collapsed state.
-     * Only applies in portrait mode.
-     */
-    public boolean uncollapseList() {
-        if (!mListCollapsed) {
-            return false;
-        }
-        mListCollapsed = false;
-
-        PropertyValuesHolder listLeftValues = PropertyValuesHolder.ofInt(
-                "conversationListLeft",
-                getConversationListLeft(), 0);
-
-        startLayoutAnimation(sAnimationCollapseDuration, mUncollapseListListener,
-                sCollapseInterpolator, listLeftValues);
-        return true;
     }
 }

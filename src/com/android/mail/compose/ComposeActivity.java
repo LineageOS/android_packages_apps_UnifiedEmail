@@ -108,7 +108,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // Integer extra holding one of the above compose action
     private static final String EXTRA_ACTION = "action";
 
-    private static final String EXTRA_SHOW_CC_BCC = "showCcBcc";
+    private static final String EXTRA_SHOW_CC = "showCc";
+    private static final String EXTRA_SHOW_BCC = "showBcc";
 
     private static final String UTF8_ENCODING_NAME = "UTF-8";
 
@@ -271,6 +272,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Intent intent = getIntent();
         Account account;
         Message message;
+        boolean showQuotedText = false;
+
         int action;
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_MESSAGE)) {
             action = savedInstanceState.getInt(EXTRA_ACTION, COMPOSE);
@@ -300,8 +303,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             initFromDraftMessage(message);
             initQuotedTextFromRefMessage(mRefMessage, action);
             showCcBcc(savedInstanceState);
+            showQuotedText = message.appendRefMessageContent;
         } else if (action == EDIT_DRAFT) {
             initFromDraftMessage(message);
+            showCcBcc(message);
             // Update the action to the draft type of the previous draft
             switch (message.draftType) {
                 case UIProvider.DraftType.REPLY:
@@ -319,9 +324,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     break;
             }
             initQuotedTextFromRefMessage(mRefMessage, action);
+            showQuotedText = message.appendRefMessageContent;
         } else if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
             if (mRefMessage != null) {
                 initFromRefMessage(action, mAccount.name);
+                showCcBcc(mRefMessage);
+                showQuotedText = true;
             }
         } else {
             initFromExtras(intent);
@@ -337,6 +345,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 action);
         initChangeListeners();
         setFocus(action);
+        updateHideOrShowCcBcc();
+        updateHideOrShowQuotedText(showQuotedText);
+    }
+
+    private void updateHideOrShowQuotedText(boolean showQuotedText) {
+        mQuotedTextView.updateCheckedState(showQuotedText);
     }
 
     private void setFocus(int action) {
@@ -479,7 +493,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mRefMessage != null) {
             state.putParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE, mRefMessage);
         }
-        state.putBoolean(EXTRA_SHOW_CC_BCC, mCcBccView.isVisible());
+        state.putBoolean(EXTRA_SHOW_CC, mCcBccView.isCcVisible());
+        state.putBoolean(EXTRA_SHOW_BCC, mCcBccView.isBccVisible());
     }
 
     private int getMode() {
@@ -609,7 +624,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public ReplyFromAccount getReplyFromAccount(Account account, Message refMessage) {
         // First see if we are supposed to use the default address or
         // the address it was sentTo.
-        if (false) { //mCachedSettings.forceReplyFromDefault) {
+        if (mCachedSettings.forceReplyFromDefault) {
             return getDefaultReplyFromAccount(account);
         } else {
             // If we aren't explicityly told which account to look for, look at
@@ -769,7 +784,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (action == ComposeActivity.FORWARD || mAttachmentsChanged) {
             initAttachments(mRefMessage);
         }
-        updateHideOrShowCcBcc();
     }
 
     private void initFromDraftMessage(Message message) {
@@ -868,21 +882,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 setBody(text, true /* with signature */);
             }
         }
-
-        updateHideOrShowCcBcc();
-    }
-
-    private void initFromMessageInIntent(Message message) {
-        mTo.append(message.to);
-        mCc.append(message.cc);
-        mBcc.append(message.bcc);
-        mBodyView.setText(message.bodyText);
-        mSubject.setText(message.subject);
-        List<Attachment> attachments = message.getAttachments();
-        for (Attachment a : attachments) {
-            mAttachmentsView.addAttachment(a);
-        }
-        mQuotedTextView.updateCheckedState(message.appendRefMessageContent);
     }
 
     @VisibleForTesting
@@ -953,8 +952,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 LogUtils.e(LOG_TAG, "%s while decoding body '%s'", e.getMessage(), body);
             }
         }
-
-        updateHideOrShowCcBcc();
     }
 
     private void initAttachments(Message refMessage) {
@@ -1029,15 +1026,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void updateHideOrShowCcBcc() {
         // Its possible there is a menu item OR a button.
-        boolean ccVisible = !TextUtils.isEmpty(mCc.getText());
-        boolean bccVisible = !TextUtils.isEmpty(mBcc.getText());
-        if (ccVisible || bccVisible) {
-            mCcBccView.show(false, ccVisible, bccVisible);
-        }
+        boolean ccVisible = mCcBccView.isCcVisible();
+        boolean bccVisible = mCcBccView.isBccVisible();
         if (mCcBccButton != null) {
-            if (!mCc.isShown() || !mBcc.isShown()) {
+            if (!ccVisible || !bccVisible) {
                 mCcBccButton.setVisibility(View.VISIBLE);
-                mCcBccButton.setText(getString(!mCc.isShown() ? R.string.add_cc_label
+                mCcBccButton.setText(getString(!ccVisible ? R.string.add_cc_label
                         : R.string.add_bcc_label));
             } else {
                 mCcBccButton.setVisibility(View.GONE);
@@ -1046,12 +1040,24 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void showCcBcc(Bundle state) {
-        if (state != null && state.containsKey(EXTRA_SHOW_CC_BCC)) {
-            boolean show = state.getBoolean(EXTRA_SHOW_CC_BCC);
-            if (show) {
-                mCcBccView.show(false, show, show);
+        if (state != null && state.containsKey(EXTRA_SHOW_CC)) {
+            boolean showCc = state.getBoolean(EXTRA_SHOW_CC);
+            boolean showBcc = state.getBoolean(EXTRA_SHOW_BCC);
+            if (showCc || showBcc) {
+                mCcBccView.show(false, showCc, showBcc);
             }
         }
+    }
+
+    private void showCcBcc(Message refMessage) {
+        if (refMessage != null) {
+            boolean showCc = !TextUtils.isEmpty(refMessage.cc);
+            boolean showBcc = !TextUtils.isEmpty(refMessage.bcc);
+            if (showCc || showBcc) {
+                mCcBccView.show(false, showCc, showBcc);
+            }
+        }
+        updateHideOrShowCcBcc();
     }
 
     /**

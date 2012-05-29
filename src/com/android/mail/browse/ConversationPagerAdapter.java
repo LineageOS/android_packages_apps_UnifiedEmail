@@ -19,12 +19,15 @@ package com.android.mail.browse;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
 
+import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -57,12 +60,27 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
      * setPrimary somehow adds or removes items from the conversation cursor. Crazy!
      */
     private boolean mSafeToNotify;
+    /**
+     * Need to keep this around to look up pager title strings.
+     */
+    private Resources mResources;
+    /**
+     * This isn't great to create a circular dependency, but our usage of {@link #getPageTitle(int)}
+     * requires knowing which page is the currently visible to dynamically name offscreen pages
+     * "newer" and "older". And {@link #setPrimaryItem(ViewGroup, int, Object)} does not work well
+     * because it isn't updated as often as {@link ViewPager#getCurrentItem()} is.
+     * <p>
+     * We must be careful to null out this reference when the pager and adapter are decoupled to
+     * minimize dangling references.
+     */
+    private ViewPager mPager;
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
-    public ConversationPagerAdapter(FragmentManager fm, Account account, Folder folder,
-            Conversation initialConversation) {
+    public ConversationPagerAdapter(Resources res, FragmentManager fm, Account account,
+            Folder folder, Conversation initialConversation) {
         super(fm, false /* enableSavedStates */);
+        mResources = res;
         mCommonFragmentArgs = ConversationViewFragment.makeBasicArgs(account, folder);
         mInitialConversation = initialConversation;
     }
@@ -143,12 +161,16 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     @Override
     public CharSequence getPageTitle(int position) {
+        final String title;
+        final int currentPosition = mPager.getCurrentItem();
 
-        // TODO: implement this to show "1 of 123" or whatever
-        // maybe when the position is not the pager's current position, this could
-        // return "newer" or "older"?
-
-        return null;
+        if (position == currentPosition) {
+            title = mResources.getString(R.string.conversation_count, position + 1, getCount());
+        } else {
+            title = mResources.getString(position > currentPosition ?
+                    R.string.conversation_newer : R.string.conversation_older);
+        }
+        return title;
     }
 
     @Override
@@ -228,6 +250,10 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         }
 
         return result;
+    }
+
+    public void setPager(ViewPager pager) {
+        mPager = pager;
     }
 
     public void setListController(ConversationListCallbacks listController) {

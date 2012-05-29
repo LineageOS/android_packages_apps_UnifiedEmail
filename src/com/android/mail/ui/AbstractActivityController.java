@@ -26,7 +26,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
-import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -65,20 +64,19 @@ import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
+import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.Timer;
 import java.util.TimerTask;
 
 
@@ -119,11 +117,6 @@ public abstract class AbstractActivityController implements ActivityController,
     /** Tag used when loading a folder list fragment. */
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
 
-    private static final long CONVERSATION_LIST_THROTTLE_MS = 4000L;
-
-    /** Are we on a tablet device or not. */
-    public final boolean IS_TABLET_DEVICE;
-
     protected Account mAccount;
     protected Folder mFolder;
     protected ActionBarView mActionBarView;
@@ -149,7 +142,6 @@ public abstract class AbstractActivityController implements ActivityController,
     private AsyncRefreshTask mAsyncRefreshTask;
 
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
-    protected Settings mCachedSettings;
     protected ConversationCursor mConversationListCursor;
     private final DataSetObservable mConversationListObservable = new DataSetObservable() {
         @Override
@@ -171,7 +163,6 @@ public abstract class AbstractActivityController implements ActivityController,
 
     private boolean mIsConversationListScrolling = false;
     private long mConversationListRefreshTime = 0;
-    private Timer mConversationListTimer = new Timer();
     private RefreshTimerTask mConversationListRefreshTask;
 
     /** Listeners that are interested in changes to current account settings. */
@@ -185,8 +176,7 @@ public abstract class AbstractActivityController implements ActivityController,
     private final int mFolderItemUpdateDelayMs;
 
     /** Keeps track of selected and unselected conversations */
-    final protected ConversationPositionTracker mTracker =
-            new ConversationPositionTracker(mSelectedSet);
+    final protected ConversationPositionTracker mTracker = new ConversationPositionTracker();
 
     /**
      * Action menu associated with the selected set.
@@ -214,14 +204,15 @@ public abstract class AbstractActivityController implements ActivityController,
 
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
     private DestructiveAction mPendingDestruction;
+    /** Indicates if a conversation view is visible. */
+    private boolean mIsConversationVisible;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
         mFragmentManager = mActivity.getFragmentManager();
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
-        IS_TABLET_DEVICE = Utils.useTabletUI(mContext);
-        mRecentFolderList = new RecentFolderList(mContext, this);
+        mRecentFolderList = new RecentFolderList(mContext);
         // Allow the fragment to observe changes to its own selection set. No other object is
         // aware of the selected set.
         mSelectedSet.addObserver(this);
@@ -292,6 +283,19 @@ public abstract class AbstractActivityController implements ActivityController,
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION_LIST);
         if (isValidFragment(fragment)) {
             return (ConversationListFragment) fragment;
+        }
+        return null;
+    }
+
+    /**
+     * Get the conversation view fragment for this activity. If the conversation view fragment
+     * is not attached, this method returns null
+     * @return
+     */
+    protected ConversationViewFragment getConversationViewFragment() {
+        final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION);
+        if (isValidFragment(fragment)) {
+            return (ConversationViewFragment) fragment;
         }
         return null;
     }
@@ -388,18 +392,6 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * Returns the URI of the current account's default inbox if available, otherwise
-     * returns the empty URI {@link Uri#EMPTY}
-     * @return
-     */
-    private Uri getDefaultInboxUri(Settings settings) {
-        if (settings != null && settings.defaultInbox != null) {
-            return settings.defaultInbox;
-        }
-        return Uri.EMPTY;
-    }
-
-    /**
      * Changes the settings for the current account. The new settings are provided as a parameter.
      * @param settings
      */
@@ -413,7 +405,7 @@ public abstract class AbstractActivityController implements ActivityController,
 
     @Override
     public Settings getSettings() {
-        return mCachedSettings;
+        return mAccount.settings;
     }
 
     /**
@@ -437,20 +429,19 @@ public abstract class AbstractActivityController implements ActivityController,
      * Method that lets the settings listeners know when the settings got changed.
      */
     private void dispatchSettingsChange(Settings updatedSettings) {
-        mCachedSettings = updatedSettings;
         // Copy the list of current listeners so that
         final ArrayList<Settings.ChangeListener> allListeners =
                 new ArrayList<Settings.ChangeListener>(mSettingsListeners);
         for (Settings.ChangeListener listener : allListeners) {
             if (listener != null) {
-                listener.onSettingsChanged(mCachedSettings);
+                listener.onSettingsChanged(updatedSettings);
             }
         }
         // And we know that the ConversationListFragment is interested in changes to settings,
         // though it hasn't registered itself with us.
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
-            convList.onSettingsChanged(mCachedSettings);
+            convList.onSettingsChanged(updatedSettings);
         }
     }
 
@@ -521,6 +512,11 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
+    public Folder getFolder() {
+        return mFolder;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_ACCOUNT_REQUEST_CODE) {
             // We were waiting for the user to create an account
@@ -544,12 +540,12 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * By default, doing nothing is right. A two-pane controller will need to
-     * override this.
+     * Called when a conversation is visible. Child classes must call the super class implementation
+     * before performing local computation.
      */
     @Override
     public void onConversationVisibilityChanged(boolean visible) {
-        // Do nothing.
+        mIsConversationVisible = visible;
         return;
     }
 
@@ -613,8 +609,41 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
+        LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
         boolean handled = true;
+        final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
+        final Settings settings = mAccount.settings;
         switch (id) {
+            case R.id.archive: {
+                final boolean showDialog = (settings != null && settings.confirmArchive);
+                confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
+                        getAction(R.id.archive, target));
+                break;
+            }
+            case R.id.delete: {
+                final boolean showDialog = (settings != null && settings.confirmDelete);
+                confirmAndDelete(target, showDialog, R.plurals.confirm_delete_conversation,
+                        getAction(R.id.delete, target));
+                break;
+            }
+            case R.id.mark_important:
+                updateCurrentConversation(ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.HIGH);
+                break;
+            case R.id.mark_not_important:
+                updateCurrentConversation(ConversationColumns.PRIORITY,
+                        UIProvider.ConversationPriority.LOW);
+                break;
+            case R.id.mute:
+                requestDelete(target, getAction(R.id.mute, target));
+                break;
+            case R.id.report_spam:
+                requestDelete(target, getAction(R.id.report_spam, target));
+                break;
+            case R.id.inside_conversation_unread:
+                updateCurrentConversation(ConversationColumns.READ, false);
+                mViewMode.enterConversationListMode();
+                break;
             case android.R.id.home:
                 onUpPressed();
                 break;
@@ -643,6 +672,10 @@ public abstract class AbstractActivityController implements ActivityController,
             case R.id.manage_folders_item:
                 Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
                 break;
+            case R.id.change_folder:
+                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
+                        Conversation.listOf(mCurrentConversation), false).show();
+                break;
             default:
                 handled = false;
                 break;
@@ -656,12 +689,9 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param value
      */
     protected void updateCurrentConversation(String columnName, boolean value) {
-        mConversationListCursor.updateBoolean(mContext, ImmutableList.of(mCurrentConversation),
+        mConversationListCursor.updateBoolean(mContext, Conversation.listOf(mCurrentConversation),
                 columnName, value);
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
-            convList.requestListRefresh();
-        }
+        refreshConversationList();
     }
 
     /**
@@ -670,21 +700,15 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param value
      */
     protected void updateCurrentConversation(String columnName, int value) {
-        mConversationListCursor.updateInt(mContext, ImmutableList.of(mCurrentConversation),
+        mConversationListCursor.updateInt(mContext, Conversation.listOf(mCurrentConversation),
                 columnName, value);
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
-            convList.requestListRefresh();
-        }
+        refreshConversationList();
     }
 
     protected void updateCurrentConversation(String columnName, String value) {
-        mConversationListCursor.updateString(mContext, ImmutableList.of(mCurrentConversation),
+        mConversationListCursor.updateString(mContext, Conversation.listOf(mCurrentConversation),
                 columnName, value);
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
-            convList.requestListRefresh();
-        }
+        refreshConversationList();
     }
 
     private void requestFolderRefresh() {
@@ -700,34 +724,67 @@ public abstract class AbstractActivityController implements ActivityController,
     /**
      * Confirm (based on user's settings) and delete a conversation from the conversation list and
      * from the database.
-     * @param showDialog
-     * @param confirmResource
-     * @param action
+     * @param target the conversations to act upon
+     * @param showDialog true if a confirmation dialog is to be shown, false otherwise.
+     * @param confirmResource the resource ID of the string that is shown in the confirmation dialog
+     * @param action the action to perform after animating the deletion of the conversations.
      */
-    protected void confirmAndDelete(boolean showDialog, int confirmResource,
-            final DestructiveAction action) {
-        final ArrayList<Conversation> single = new ArrayList<Conversation>();
-        single.add(mCurrentConversation);
+    protected void confirmAndDelete(final Collection<Conversation> target, boolean showDialog,
+            int confirmResource, final DestructiveAction action) {
         if (showDialog) {
             final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    requestDelete(action);
+                    requestDelete(target, action);
                 }
             };
-            final CharSequence message = Utils.formatPlural(mContext, confirmResource, 1);
+            final CharSequence message = Utils.formatPlural(mContext, confirmResource,
+                    target.size());
             new AlertDialog.Builder(mActivity.getActivityContext()).setMessage(message)
                     .setPositiveButton(R.string.ok, onClick)
                     .setNegativeButton(R.string.cancel, null)
                     .create().show();
         } else {
-            requestDelete(action);
+            requestDelete(target, action);
         }
     }
 
+    /**
+     * Requests the removal of the current conversation with the specified destructive action.
+     * @param action
+     */
+    protected void requestDelete(final Collection<Conversation> target,
+            final DestructiveAction action) {
+        // The conversation list handles deletion if it exists.
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
+            convList.requestDelete(target, action);
+            return;
+        }
+        // Update the conversation fragment if the current conversation is deleted.
+        if (getConversationViewFragment() != null &&
+                !Conversation.contains(target, mCurrentConversation)) {
+            final Conversation next = mTracker.getNextConversation(
+                    Settings.getAutoAdvanceSetting(mAccount.settings), target,
+                    mCurrentConversation);
+            LogUtils.d(LOG_TAG, "requestDelete: showing %s next.", next);
+            showConversation(next);
+        }
+        // No visible UI element handled it on our behalf. Perform the action ourself.
+        action.performAction();
+    }
 
-    protected abstract void requestDelete(DestructiveAction action);
-
+    /**
+     * Requests that the action be performed and the UI state is updated to reflect the new change.
+     * @param target
+     * @param action
+     */
+    protected void requestUpdate(final Collection<Conversation> target,
+            final DestructiveAction action) {
+        action.performAction();
+        refreshConversationList();
+    }
 
     @Override
     public void onPrepareDialog(int id, Dialog dialog, Bundle bundle) {
@@ -772,7 +829,9 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mFolder != null) {
             outState.putParcelable(SAVED_FOLDER, mFolder);
         }
-        if (mCurrentConversation != null && mViewMode.getMode() == ViewMode.CONVERSATION) {
+        if (mCurrentConversation != null
+                && (mViewMode.getMode() == ViewMode.CONVERSATION ||
+                mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION)) {
             outState.putParcelable(SAVED_CONVERSATION, mCurrentConversation);
         }
         if (!mSelectedSet.isEmpty()) {
@@ -849,10 +908,19 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     private void setAccount(Account account) {
+        if (account == null) {
+            LogUtils.w(LOG_TAG, new Error(),
+                    "AAC ignoring null (presumably invalid) account restoration");
+            return;
+        }
+        LogUtils.d(LOG_TAG, "AbstractActivityController.setAccount(): account = %s", account.uri);
         mAccount = account;
-        LogUtils.d(LOG_TAG, "AbstractActivityController.setAccount(): mAccount = %s", mAccount.uri);
-        dispatchSettingsChange(mAccount.settings);
         mActionBarView.setAccount(mAccount);
+        if (account.settings == null) {
+            LogUtils.w(LOG_TAG, new Error(), "AAC ignoring account with null settings.");
+            return;
+        }
+        dispatchSettingsChange(mAccount.settings);
     }
 
     /**
@@ -896,9 +964,10 @@ public abstract class AbstractActivityController implements ActivityController,
                 setAccount(Account.newinstance(intent
                         .getStringExtra(Utils.EXTRA_ACCOUNT_STRING)));
             }
-            if (mAccount != null) {
-                mActivity.invalidateOptionsMenu();
+            if (mAccount == null) {
+                return;
             }
+            mActivity.invalidateOptionsMenu();
 
             Folder folder = null;
             if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
@@ -1044,7 +1113,7 @@ public abstract class AbstractActivityController implements ActivityController,
     @Override
     public void onConversationSelected(Conversation conversation) {
         showConversation(conversation);
-        if (mConvListContext != null && mConvListContext.isSearchResult()) {
+        if (Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())) {
             mViewMode.enterSearchResultsConversationMode();
         } else {
             mViewMode.enterConversationMode();
@@ -1085,12 +1154,9 @@ public abstract class AbstractActivityController implements ActivityController,
                 }
                 break;
             case LOADER_ACCOUNT_INBOX:
-                final Uri inboxUri;
-                if (mCachedSettings != null) {
-                    inboxUri = mCachedSettings.defaultInbox;
-                } else {
-                    inboxUri = mAccount.folderListUri;
-                }
+                final Uri defaultInbox = Settings.getDefaultInboxUri(mAccount.settings);
+                final Uri inboxUri = defaultInbox.equals(Uri.EMPTY) ?
+                    mAccount.folderListUri : defaultInbox;
                 LogUtils.d(LOG_TAG, "Loading the default inbox: %s", inboxUri);
                 if (inboxUri != null) {
                     return new CursorLoader(mContext, inboxUri, UIProvider.FOLDERS_PROJECTION, null,
@@ -1390,120 +1456,170 @@ public abstract class AbstractActivityController implements ActivityController,
      * clients should only require {@link DestructiveAction}s, not specific implementations of the.
      * Only the controllers should know what kind of destructive actions are being created.
      */
-    // TODO(viki): Remove all dependencies and make it protected.
-    protected abstract class AbstractDestructiveAction implements DestructiveAction {
+    protected class ConversationAction implements DestructiveAction {
         /**
          * The action to be performed. This is specified as the resource ID of the menu item
          * corresponding to this action: R.id.delete, R.id.report_spam, etc.
          */
-        protected final int mAction;
+        private final int mAction;
+        /** The action will act upon these conversations */
+        private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
+        /** Whether this destructive action has already been performed */
+        private boolean mCompleted;
+        /** Whether this is an action on the currently selected set. */
+        private final boolean mIsSelectedSet;
 
         /**
          * Create a listener object. action is one of four constants: R.id.y_button (archive),
          * R.id.delete , R.id.mute, and R.id.report_spam.
          * @param action
+         * @param target Conversation that we want to apply the action to.
+         * @param isBatch whether the conversations are in the currently selected batch set.
          */
-        public AbstractDestructiveAction(int action) {
+        public ConversationAction(int action, Collection<Conversation> target, boolean isBatch) {
             mAction = action;
+            mTarget.addAll(target);
+            mIsSelectedSet = isBatch;
         }
 
         /**
          * The action common to child classes. This performs the action specified in the constructor
          * on the conversations given here.
-         * @param single A single conversation, packaged inside a collection that we want to apply
-         * the action to.
          */
-        protected void baseAction(Collection<Conversation> single) {
+        @Override
+        public void performAction() {
+            if (isPerformed()) {
+                return;
+            }
+            // Certain actions force a return to list.
+            boolean undoEnabled = mAccount.supportsCapability(AccountCapabilities.UNDO);
+
+            // Are we destroying the currently shown conversation? Show the next one.
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)){
+                LogUtils.d(LOG_TAG, "ConversationAction.performAction(): mIsConversationVisible=%b"
+                        + "\nmTarget=%s\nCurrent=%s", mIsConversationVisible,
+                        Conversation.toString(mTarget), mCurrentConversation);
+            }
+            if (mIsConversationVisible && Conversation.contains(mTarget, mCurrentConversation)) {
+                int advance = Settings.getAutoAdvanceSetting(mAccount.settings);
+                final Conversation next = advance == AutoAdvance.LIST ? null : mTracker
+                        .getNextConversation(advance, mTarget, mCurrentConversation);
+                LogUtils.d(LOG_TAG, "Next conversation is: %s", next);
+                showConversation(next);
+            }
+
             switch (mAction) {
                 case R.id.archive:
-                    LogUtils.d(LOG_TAG, "Archiving conversation %s", mCurrentConversation);
-                    mConversationListCursor.archive(mContext, single);
+                    LogUtils.d(LOG_TAG, "Archiving");
+                    mConversationListCursor.archive(mContext, mTarget);
                     break;
                 case R.id.delete:
-                    LogUtils.d(LOG_TAG, "Deleting conversation %s", mCurrentConversation);
-                    mConversationListCursor.delete(mContext, single);
+                    LogUtils.d(LOG_TAG, "Deleting");
+                    mConversationListCursor.delete(mContext, mTarget);
+                    if (!mFolder.supportsCapability(FolderCapabilities.DELETE_ACTION_FINAL)) {
+                        undoEnabled = false;
+                    }
                     break;
                 case R.id.mute:
-                    LogUtils.d(LOG_TAG, "Muting conversation %s", mCurrentConversation);
-                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE))
-                        mCurrentConversation.localDeleteOnUpdate = true;
-                    mConversationListCursor.mute(mContext, single);
+                    LogUtils.d(LOG_TAG, "Muting");
+                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
+                        for (Conversation c : mTarget) {
+                            c.localDeleteOnUpdate = true;
+                        }
+                    }
+                    mConversationListCursor.mute(mContext, mTarget);
                     break;
                 case R.id.report_spam:
-                    LogUtils.d(LOG_TAG, "reporting spam conversation %s", mCurrentConversation);
-                    mConversationListCursor.reportSpam(mContext, single);
+                    LogUtils.d(LOG_TAG, "Reporting spam");
+                    mConversationListCursor.reportSpam(mContext, mTarget);
+                    break;
+                case R.id.remove_star:
+                    LogUtils.d(LOG_TAG, "Removing star");
+                    // Star removal is destructive in the Starred folder.
+                    mConversationListCursor.updateBoolean(mContext, mTarget,
+                            ConversationColumns.STARRED, false);
+                    break;
+                case R.id.mark_not_important:
+                    LogUtils.d(LOG_TAG, "Marking not-important");
+                    // Marking not important is destructive in a mailbox containing only important
+                    // messages
+                    mConversationListCursor.updateInt(mContext, mTarget,
+                            ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                     break;
             }
+            if (undoEnabled) {
+                onUndoAvailable(new UndoOperation(mTarget.size(), mAction));
+            }
+            refreshConversationList();
+            if (mIsSelectedSet) {
+                mSelectedSet.clear();
+            }
+        }
+
+        /**
+         * Returns true if this action has been performed, false otherwise.
+         * @return
+         */
+        private synchronized boolean isPerformed() {
+            if (mCompleted) {
+                return true;
+            }
+            mCompleted = true;
+            return false;
         }
     }
 
-    // Called from the FolderSelectionDialog after a user is done changing
-    // folders.
+    /**
+     * Get a destructive action for a menu action.
+     * This is a temporary method, to control the profusion of {@link DestructiveAction} classes
+     * that are created. Please do not copy this paradigm.
+     * @param action the resource ID of the menu action: R.id.delete, for example
+     * @param target the conversations to act upon.
+     * @return a {@link DestructiveAction} that performs the specified action.
+     */
+    protected final DestructiveAction getAction(int action, Collection<Conversation> target) {
+        final DestructiveAction da = new ConversationAction(action, target, false);
+        registerDestructiveAction(da);
+        return da;
+    }
+
+    // Called from the FolderSelectionDialog after a user is done selecting folders to assign the
+    // conversations to.
     @Override
-    public final void onFolderChangesCommit(ArrayList<Folder> folderChangeList) {
-        // Get currently active folder info and compare it to the list
-        // these conversations have been given; if they no longer contain
-        // the selected folder, delete them from the list.
-        final HashSet<String> folderUris = new HashSet<String>();
-        boolean hasInbox = false;
-        if (folderChangeList != null && !folderChangeList.isEmpty()) {
-            for (Folder f : folderChangeList) {
-                folderUris.add(f.uri.toString());
-                hasInbox |= (f.type == UIProvider.FolderType.INBOX);
+    public final void onFolderChangesCommit(
+            Collection<Folder> folders, Collection<Conversation> target, boolean batch) {
+        final boolean isDestructive = !Folder.containerIncludes(folders, mFolder);
+        LogUtils.d(LOG_TAG, "onFolderChangesCommit: isDestructive = %b", isDestructive);
+        if (isDestructive) {
+            for (final Conversation c : target) {
+                c.localDeleteOnUpdate = true;
             }
         }
-        // Destructive if we are in Priority Inbox and we remove the Inbox label.
-        final boolean currentlyViewingInbox = (mFolder.type == UIProvider.FolderType.INBOX);
-        final boolean destructiveChange = currentlyViewingInbox ? !hasInbox :
-            !folderUris.contains(mFolder.uri.toString());
-        final StringBuilder foldersUrisString = new StringBuilder();
-        boolean first = true;
-        for (Folder f : folderChangeList) {
-            if (first) {
-                first = false;
-            } else {
-                foldersUrisString.append(',');
-            }
-            foldersUrisString.append(f.uri.toString());
-        }
-        updateCurrentConversation(ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
-        updateCurrentConversation(ConversationColumns.RAW_FOLDERS,
-                Folder.getSerializedFolderString(mFolder, folderChangeList));
-        // TODO: (mindyp): set ConversationColumns.RAW_FOLDERS like in
-        // SelectedConversationsActionMenu
-        if (destructiveChange) {
-            DestructiveAction listener = getFolderDestructiveAction();
-            mCurrentConversation.localDeleteOnUpdate = true;
-            requestDelete(listener);
+        final DestructiveAction folderChange = getFolderChange(target, folders, isDestructive,
+                batch);
+        // Update the UI elements depending no their visibility and availability
+        // TODO(viki): Consolidate this into a single method requestDelete.
+        if (isDestructive) {
+            requestDelete(target, folderChange);
         } else {
-            final ConversationListFragment convList = getConversationListFragment();
-            if (convList != null) {
-                convList.requestListRefresh();
-            }
+            requestUpdate(target, folderChange);
         }
     }
 
     @Override
-    public void onRefreshRequired() {
+    public final void onRefreshRequired() {
         if (mIsConversationListScrolling) {
             LogUtils.d(LOG_TAG, "onRefreshRequired: delay until scrolling done");
             return;
         }
         // Refresh the query in the background
-        long now = System.currentTimeMillis();
-        long sinceLastRefresh = now - mConversationListRefreshTime;
-//        if (sinceLastRefresh > CONVERSATION_LIST_THROTTLE_MS) {
+        final long now = System.currentTimeMillis();
+        final long sinceLastRefresh = now - mConversationListRefreshTime;
             if (mConversationListCursor.isRefreshRequired()) {
                 mConversationListCursor.refresh();
                 mTracker.updateCursor(mConversationListCursor);
                 mConversationListRefreshTime = now;
             }
-//        } else {
-//            long delay = CONVERSATION_LIST_THROTTLE_MS - sinceLastRefresh;
-//            LogUtils.d(LOG_TAG, "onRefreshRequired: delay for %sms", delay);
-//            mConversationListRefreshTask = new RefreshTimerTask(this, mHandler);
-//            mConversationListTimer.schedule(mConversationListRefreshTask, delay);
-//        }
     }
 
     /**
@@ -1512,21 +1628,8 @@ public abstract class AbstractActivityController implements ActivityController,
      * {@inheritDoc}
      */
     @Override
-    public void onRefreshReady() {
-        final ArrayList<Integer> deletedRows = mConversationListCursor.getRefreshDeletions();
-        // If we have any deletions from the server, and the conversations are in the list view,
-        // remove them from a selected set, if any
-        if (!deletedRows.isEmpty() && !mSelectedSet.isEmpty()) {
-            mSelectedSet.delete(deletedRows);
-        }
-        // If we have any deletions from the server, animate them away
-        final ConversationListFragment convList = getConversationListFragment();
-        if (!deletedRows.isEmpty() && convList != null) {
-            final AnimatedAdapter adapter = convList.getAnimatedAdapter();
-            if (adapter != null) {
-                adapter.delete(deletedRows, this);
-            }
-        } if (!mIsConversationListScrolling) {
+    public final void onRefreshReady() {
+        if (!mIsConversationListScrolling) {
             // Swap cursors
             mConversationListCursor.sync();
         }
@@ -1534,22 +1637,19 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     @Override
-    public void onDataSetChanged() {
+    public final void onDataSetChanged() {
         updateConversationListFragment();
-
         mConversationListObservable.notifyChanged();
     }
 
-    private void updateConversationListFragment() {
+    /**
+     * If the Conversation List Fragment is visible, updates the fragment.
+     */
+    private final void updateConversationListFragment() {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
-            final AnimatedAdapter adapter = convList.getAnimatedAdapter();
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
-
+            refreshConversationList();
             if (convList.isVisible()) {
-                // The conversation list is visible.
                 Utils.setConversationCursorVisibility(mConversationListCursor, true);
             }
         }
@@ -1619,7 +1719,7 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
         mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set,
-                convList.getAnimatedAdapter(), this, this,
+                convList.getAnimatedAdapter(), this,
                 mAccount, mFolder, (SwipeableListView) convList.getListView());
         enableCabMode();
     }
@@ -1650,14 +1750,6 @@ public abstract class AbstractActivityController implements ActivityController,
         if (mCabActionMenu != null) {
             mCabActionMenu.activate();
         }
-    }
-
-    @Override
-    public final void performAction() {
-        if (mConversationListCursor != null && mConversationListCursor.isRefreshReady()) {
-            updateConversationListFragment();
-        }
-        mSelectedSet.clear();
     }
 
     @Override
@@ -1703,41 +1795,14 @@ public abstract class AbstractActivityController implements ActivityController,
      */
     @Override
     public void handleDrop(DragEvent event, final Folder folder) {
-        /*
-         * Expect clip data has form: [conversations_uri, conversationId1,
-         * maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]
-         */
         if (!supportsDrag(event, folder)) {
             return;
         }
-        ClipData data = event.getClipData();
-        ArrayList<Integer> conversationPositions = Lists.newArrayList();
-        for (int i = 1; i < data.getItemCount(); i += 3) {
-            int position = Integer.parseInt(data.getItemAt(i).getText().toString());
-            conversationPositions.add(position);
-        }
         final Collection<Conversation> conversations = mSelectedSet.values();
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList == null) {
-            return;
-        }
-        convList.requestDelete(conversations,
-                new DestructiveAction() {
-                    @Override
-                    public void performAction() {
-                        AbstractActivityController.this.performAction();
-                        ArrayList<Folder> changes = new ArrayList<Folder>();
-                        changes.add(folder);
-                        mConversationListCursor.updateString(mContext, conversations,
-                                ConversationColumns.FOLDER_LIST, folder.uri.toString());
-                        mConversationListCursor.updateString(mContext, conversations,
-                                ConversationColumns.RAW_FOLDERS,
-                                Folder.getSerializedFolderString(mFolder, changes));
-                        onUndoAvailable(new UndoOperation(conversations
-                                .size(), R.id.change_folder));
-                        mSelectedSet.clear();
-                    }
-                });
+        final Collection<Folder> dropTarget = Folder.listOf(folder);
+        // Drag and drop is destructive: we remove conversations from the current folder.
+        final DestructiveAction action = getFolderChange(conversations, dropTarget, true, true);
+        requestDelete(conversations, action);
     }
 
     @Override
@@ -1866,11 +1931,10 @@ public abstract class AbstractActivityController implements ActivityController,
     /**
      * Register a destructive action with the controller. This performs the previous destructive
      * action as a side effect. This method is final because we don't want the child classes to
-     * embellish this method any more. This is a temporary workaround to reduce the number of
-     * {@link DestructiveAction} classes. Please do not copy this paradigm.
+     * embellish this method any more.
      * @param action
      */
-    protected final void registerDestructiveAction(DestructiveAction action) {
+    private final void registerDestructiveAction(DestructiveAction action) {
         // TODO(viki): This is not a good idea. The best solution is for clients to request a
         // destructive action from the controller and for the controller to own the action. This is
         // a half-way solution while refactoring DestructiveAction.
@@ -1879,138 +1943,88 @@ public abstract class AbstractActivityController implements ActivityController,
     }
 
     /**
-     * Listener to act upon destructive actions carried out on multiple conversations. Destructive
-     * actions are like delete/archive, and they require the UI state to remove the conversations
-     * from the UI.
-     */
-    private class BatchDestruction implements DestructiveAction {
-        private final int mAction;
-        /** Whether this destructive action has already been performed */
-        public boolean mCompleted = false;
-        private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
-
-        /**
-         * Create a destructive action with an ID that is the same as the menu IDs: R.id.delete,
-         * R.id.archive, R.id.mute, ...
-         * @param action
-         */
-        private BatchDestruction(int action) {
-            mAction = action;
-            mTarget.addAll(mSelectedSet.values());
-        }
-
-        @Override
-        public void performAction() {
-            if (mCompleted) {
-                return;
-            }
-            mCompleted = true;
-            AbstractActivityController.this.performAction();
-            onUndoAvailable(new UndoOperation(mTarget.size(), mAction, true));
-            switch (mAction) {
-                case R.id.archive:
-                    mConversationListCursor.archive(mContext, mTarget);
-                    break;
-                case R.id.delete:
-                    mConversationListCursor.delete(mContext, mTarget);
-                    break;
-                case R.id.mute:
-                    if (mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)) {
-                        // Make sure to set the localDeleteOnUpdate flag for these conversations.
-                        for (Conversation conversation: mTarget) {
-                            conversation.localDeleteOnUpdate = true;
-                        }
-                    }
-                    mConversationListCursor.mute(mContext, mTarget);
-                    break;
-                case R.id.report_spam:
-                    mConversationListCursor.reportSpam(mContext, mTarget);
-                    break;
-                case R.id.remove_star:
-                    // Star removal is destructive in the Starred folder.
-                    mConversationListCursor.updateBoolean(mContext, mTarget,
-                            ConversationColumns.STARRED, false);
-                    break;
-                case R.id.mark_not_important:
-                    // Marking not important is destructive in a mailbox containing only important
-                    // messages
-                    mConversationListCursor.updateInt(mContext, mTarget,
-                            ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
-                    break;
-            }
-            // The list calls notifyDataSetChanged on itself after destructive actions.
-            // We don't need to.
-        }
-    }
-
-    /**
      * Get a destructive action for selected conversations.
      * @param action
      * @return
      */
-    // TODO(viki): This either should be in the ActivityController or removed entirely.
-    // What we have right now is a half-way solution during the refactoring.
-    public final DestructiveAction getDestructiveAction(int action) {
-        final DestructiveAction da = new BatchDestruction(action);
+    public final DestructiveAction getBatchDestruction(int action) {
+        final DestructiveAction da = new ConversationAction(action, mSelectedSet.values(), true);
         registerDestructiveAction(da);
         return da;
     }
 
+    /**
+     * Class to change the folders that are assigned to a set of conversations. This is destructive
+     * because the user can remove the current folder from the conversation, in which case it has
+     * to be animated away from the current folder.
+     */
     private class FolderDestruction implements DestructiveAction {
         private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
         private final ArrayList<Folder> mFolderList = new ArrayList<Folder>();
         private final boolean mIsDestructive;
+        /** Whether this destructive action has already been performed */
+        private boolean mCompleted;
+        private boolean mIsSelectedSet;
 
         /**
          * Create a new folder destruction object to act on the given conversations.
          * @param target
          */
-        private FolderDestruction(Collection<Conversation> target, Collection<Folder> folders,
-                boolean isDestructive) {
+        private FolderDestruction(final Collection<Conversation> target,
+                final Collection<Folder> folders, boolean isDestructive, boolean isBatch) {
             mTarget.addAll(target);
             mFolderList.addAll(folders);
             mIsDestructive = isDestructive;
+            mIsSelectedSet = isBatch;
         }
 
-        /* (non-Javadoc)
-         * @see com.android.mail.ui.DestructiveAction#performAction()
-         */
         @Override
         public void performAction() {
-            AbstractActivityController.this.performAction();
+            if (isPerformed()) {
+                return;
+            }
             if (mIsDestructive) {
-                // Only show undo if this was a destructive folder change.
                 UndoOperation undoOp = new UndoOperation(mTarget.size(), R.id.change_folder);
                 onUndoAvailable(undoOp);
             }
-            final StringBuilder foldersUrisString = new StringBuilder();
-            boolean first = true;
-            for (Folder f : mFolderList) {
-                if (first) {
-                    first = false;
-                } else {
-                    foldersUrisString.append(',');
-                }
-                foldersUrisString.append(f.uri.toString());
-            }
             mConversationListCursor.updateString(mContext, mTarget,
-                    ConversationColumns.FOLDER_LIST, foldersUrisString.toString());
+                    ConversationColumns.FOLDER_LIST, Folder.getUriString(mFolderList));
             mConversationListCursor.updateString(mContext, mTarget,
                     ConversationColumns.RAW_FOLDERS,
                     Folder.getSerializedFolderString(mFolder, mFolderList));
-            if (mIsDestructive) {
-                final ConversationListFragment convList = getConversationListFragment();
-                if (convList == null) {
-                    return;
-                }
-                convList.requestListRefresh();
+            refreshConversationList();
+            if (mIsSelectedSet) {
+                mSelectedSet.clear();
             }
         }
+        /**
+         * Returns true if this action has been performed, false otherwise.
+         * @return
+         */
+        private synchronized boolean isPerformed() {
+            if (mCompleted) {
+                return true;
+            }
+            mCompleted = true;
+            return false;
+        }
     }
-    public final DestructiveAction getFolderChange(Collection<Conversation> target,
-            Collection<Folder> folders, boolean isDestructive){
-        final DestructiveAction da = new FolderDestruction(target, folders, isDestructive);
+
+    private final DestructiveAction getFolderChange(Collection<Conversation> target,
+            Collection<Folder> folders, boolean isDestructive, boolean isBatch){
+        final DestructiveAction da = new FolderDestruction(target, folders, isDestructive, isBatch);
         registerDestructiveAction(da);
         return da;
+    }
+
+    /**
+     * Safely refresh the conversation list if it exists.
+     */
+    protected final void refreshConversationList() {
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList == null) {
+            return;
+        }
+        convList.requestListRefresh();
     }
 }

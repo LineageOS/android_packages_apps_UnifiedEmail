@@ -71,8 +71,7 @@ public class UIProviderValidator {
             String[] allColumnProjection) {
         final String[] resultProjection;
         if (requestedProjection != null) {
-            if (isValidProjection(requestedProjection,
-                    ImmutableSet.copyOf(allColumnProjection))) {
+            if (isValidProjection(requestedProjection, ImmutableSet.copyOf(allColumnProjection))) {
                 // The requested projection is valid, use it.
                 resultProjection = requestedProjection;
             } else {

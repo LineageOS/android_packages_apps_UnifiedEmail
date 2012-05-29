@@ -27,5 +27,4 @@
     <add-resource name="RecipientComposeFieldLayout" type="style" />
     <add-resource name="ComposeBodyStyle" type="style" />
     <add-resource name="ComposeSubjectStyle" type="style" />
-
 </resources>

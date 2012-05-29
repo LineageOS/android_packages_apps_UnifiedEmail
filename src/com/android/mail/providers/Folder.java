@@ -20,22 +20,23 @@ package com.android.mail.providers;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.net.Uri.Builder;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.android.mail.utils.LogUtils;
+
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -146,6 +147,9 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Used only for debugging.
      */
     private static final String LOG_TAG = new LogUtils().getLogTag();
+
+    /** An immutable, empty conversation list */
+    public static final Collection<Folder> EMPTY = Collections.emptyList();
 
     /**
      * Examples of expected format for the joined folder strings
@@ -474,8 +478,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     public static String getSerializedFolderString(Folder currentFolder,
-            ArrayList<Folder> folders) {
-        ArrayList<String> folderList = new ArrayList<String>();
+            Collection<Folder> folders) {
+        final Collection<String> folderList = new ArrayList<String>();
         for (Folder folderEntry : folders) {
             // If the current folder is a system folder, and the folder entry has the same type
             // as that system defined folder, don't show it.
@@ -486,5 +490,79 @@ public class Folder implements Parcelable, Comparable<Folder> {
             }
         }
         return TextUtils.join(Folder.FOLDER_SEPARATOR, folderList);
+    }
+
+    /**
+     * Returns a comma separated list of folder URIs for all the folders in the collection.
+     * @param folders
+     * @return
+     */
+    public final static String getUriString(Collection<Folder> folders) {
+        final StringBuilder uris = new StringBuilder();
+        boolean first = true;
+        for (Folder f : folders) {
+            if (first) {
+                first = false;
+            } else {
+                uris.append(',');
+            }
+            uris.append(f.uri.toString());
+        }
+        return uris.toString();
+    }
+
+    /**
+     * Returns true if a conversation assigned to the needle will be assigned to the collection of
+     * folders in the haystack. False otherwise. This method is safe to call with null
+     * arguments.
+     * This method returns true under two circumstances
+     * <ul><li> If the URI of the needle was found in the collection of URIs that comprise the
+     * haystack.
+     * </li><li> If the needle is of the type Inbox, and at least one of the folders in the haystack
+     * are of type Inbox. <em>Rationale</em>: there are special folders that are marked as inbox,
+     * and the user might not have the control to assign conversations to them. This happens for
+     * the Priority Inbox in Gmail. When you assign a conversation to an Inbox folder, it will
+     * continue to appear in the Priority Inbox. However, the URI of Priority Inbox and Inbox will
+     * be different. So a direct equality check is insufficient.
+     * </li></ul>
+     * @param haystack a collection of folders, possibly overlapping
+     * @param needle a folder
+     * @return true if a conversation inside the needle will be in the folders in the haystack.
+     */
+    public final static boolean containerIncludes(Collection<Folder> haystack, Folder needle) {
+        // If the haystack is empty, it cannot contain anything.
+        if (haystack == null || haystack.size() <= 0) {
+            return false;
+        }
+        // The null folder exists everywhere.
+        if (needle == null) {
+            return true;
+        }
+        boolean hasInbox = false;
+        // Get currently active folder info and compare it to the list
+        // these conversations have been given; if they no longer contain
+        // the selected folder, delete them from the list.
+        final Uri toFind = needle.uri;
+        for (Folder f : haystack) {
+            if (toFind.equals(f.uri)) {
+                return true;
+            }
+            hasInbox |= (f.type == UIProvider.FolderType.INBOX);
+        }
+        // Did not find the URI of needle directly. If the needle is an Inbox and one of the folders
+        // was an inbox, then the needle is contained (check Javadoc for explanation).
+        final boolean needleIsInbox = (needle.type == UIProvider.FolderType.INBOX);
+        return needleIsInbox ? hasInbox : false;
+    }
+
+    /**
+     * Returns a collection of a single folder. This method always returns a valid collection
+     * even if the input folder is null.
+     * @param in a folder, possibly null.
+     * @return a collection of the folder.
+     */
+    public static Collection<Folder> listOf(Folder in) {
+        final Collection<Folder> target = (in == null) ? EMPTY : ImmutableList.of(in);
+        return target;
     }
 }

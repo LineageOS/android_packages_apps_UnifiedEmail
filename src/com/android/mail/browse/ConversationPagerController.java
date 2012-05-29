@@ -19,6 +19,7 @@ package com.android.mail.browse;
 
 import android.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
@@ -49,7 +50,7 @@ import com.android.mail.utils.LogUtils;
  */
 public class ConversationPagerController {
 
-    private ConversationPager mPager;
+    private ViewPager mPager;
     private ConversationPagerAdapter mPagerAdapter;
     private FragmentManager mFragmentManager;
     private ConversationListCallbacks mListController;
@@ -74,7 +75,7 @@ public class ConversationPagerController {
     public ConversationPagerController(RestrictedActivity activity,
             ConversationListCallbacks listController) {
         mFragmentManager = activity.getFragmentManager();
-        mPager = (ConversationPager) activity.findViewById(R.id.conversation_pane);
+        mPager = (ViewPager) activity.findViewById(R.id.conversation_pane);
         mListController = listController;
     }
 
@@ -87,10 +88,13 @@ public class ConversationPagerController {
             // position if the account+folder combo are the same, but the conversation is different
         }
 
-        mPagerAdapter = new ConversationPagerAdapter(mFragmentManager, account, folder,
-                initialConversation);
+        mPager.setVisibility(View.VISIBLE);
+
+        mPagerAdapter = new ConversationPagerAdapter(mPager.getResources(), mFragmentManager,
+                account, folder, initialConversation);
         mPagerAdapter.setSingletonMode(ENABLE_SINGLETON_INITIAL_LOAD);
         mPagerAdapter.setListController(mListController);
+        mPagerAdapter.setPager(mPager);
         LogUtils.d(LOG_TAG, "IN CPC.show, adapter=%s", mPagerAdapter);
 
         LogUtils.d(LOG_TAG, "init pager adapter, count=%d initial=%s", mPagerAdapter.getCount(),
@@ -113,6 +117,7 @@ public class ConversationPagerController {
             return;
         }
         mShown = false;
+        mPager.setVisibility(View.GONE);
 
         LogUtils.d(LOG_TAG, "IN CPC.hide, clearing adapter and unregistering list observer");
         mPager.setAdapter(null);
@@ -128,6 +133,7 @@ public class ConversationPagerController {
         if (mPagerAdapter != null) {
             // stop observing the conversation list
             mPagerAdapter.setListController(null);
+            mPagerAdapter.setPager(null);
             mPagerAdapter = null;
         }
     }

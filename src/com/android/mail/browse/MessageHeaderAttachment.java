@@ -25,6 +25,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -40,6 +45,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.photo.Intents;
+import com.android.mail.photo.Intents.PhotoViewIntentBuilder;
+import com.android.mail.photo.util.MediaStoreUtils;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
@@ -48,6 +56,8 @@ import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
+
+import java.io.IOException;
 
 /**
  * View for a single attachment in conversation view. Shows download status and allows launching
@@ -60,10 +70,13 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
 
     private Attachment mAttachment;
     private ImageView mIcon;
+    private ImageView.ScaleType mIconScaleType;
+    private int mPhotoIndex;
     private TextView mTitle;
     private TextView mSubTitle;
     private String mAttachmentSizeText;
     private String mDisplayType;
+    private Uri mAttachmentsListUri;
     private ProgressDialog mViewProgressDialog;
     private AttachmentCommandHandler mCommandHandler;
     private ProgressBar mProgress;
@@ -74,6 +87,8 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
     private Button mPlayButton;
     private Button mInstallButton;
     private Button mCancelButton;
+
+    private ThumbnailLoadTask mThumbnailTask;
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -89,6 +104,81 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
          */
         public void sendCommand(ContentValues params) {
             startUpdate(0, null, mAttachment.uri, params, null, null);
+        }
+
+    }
+
+    private class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
+
+        private final int mWidth;
+        private final int mHeight;
+
+        public ThumbnailLoadTask(int width, int height) {
+            mWidth = width;
+            mHeight = height;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Uri... params) {
+            final Uri thumbnailUri = params[0];
+
+            AssetFileDescriptor fd = null;
+            Bitmap result = null;
+
+            try {
+                fd = getContext().getContentResolver().openAssetFileDescriptor(thumbnailUri, "r");
+                if (isCancelled() || fd == null) {
+                    return null;
+                }
+
+                final BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inJustDecodeBounds = true;
+
+                BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, opts);
+                if (isCancelled() || opts.outWidth == -1 || opts.outHeight == -1) {
+                    return null;
+                }
+
+                opts.inJustDecodeBounds = false;
+                // Shrink both X and Y (but do not over-shrink)
+                // and pick the least affected dimension to ensure the thumbnail is fillable
+                // (i.e. ScaleType.CENTER_CROP)
+                final int wDivider = Math.max(opts.outWidth / mWidth, 1);
+                final int hDivider = Math.max(opts.outHeight / mHeight, 1);
+                opts.inSampleSize = Math.min(wDivider, hDivider);
+
+                LogUtils.d(LOG_TAG, "in background, src w/h=%d/%d dst w/h=%d/%d, divider=%d",
+                        opts.outWidth, opts.outHeight, mWidth, mHeight, opts.inSampleSize);
+
+                result = BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, opts);
+
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Unable to decode thumbnail %s", thumbnailUri);
+            } finally {
+                if (fd != null) {
+                    try {
+                        fd.close();
+                    } catch (IOException e) {
+                        LogUtils.e(LOG_TAG, e, "");
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            if (result == null) {
+                LogUtils.d(LOG_TAG, "back in UI thread, decode failed");
+                setThumbnailToDefault();
+                return;
+            }
+
+            LogUtils.d(LOG_TAG, "back in UI thread, decode success, w/h=%d/%d", result.getWidth(),
+                    result.getHeight());
+            mIcon.setImageBitmap(result);
+            mIcon.setScaleType(mIconScaleType);
         }
 
     }
@@ -115,9 +205,11 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
      * cause sub-views to update.
      *
      */
-    public void render(Attachment attachment) {
+    public void render(Attachment attachment, Uri attachmentsListUri, int index) {
         final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
+        mAttachmentsListUri = attachmentsListUri;
+        mPhotoIndex = index;
 
         LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
                 " contentUri=%s MIME=%s", attachment.name, attachment.state,
@@ -135,24 +227,32 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
             updateSubtitleText(null);
         }
 
-        if (attachment.isImage() && attachment.thumbnailUri != null) {
-            if (prevAttachment == null || prevAttachment.thumbnailUri == null ||
-                    !attachment.thumbnailUri.equals(prevAttachment.thumbnailUri)) {
-                // FIXME: this decodes on the UI thread. Also, it doesn't handle large images, so
-                // using the full image is out of the question.
-                mIcon.setImageURI(attachment.thumbnailUri);
+        final Uri imageUri = attachment.getImageUri();
+        final Uri prevImageUri = (prevAttachment == null) ? null : prevAttachment.getImageUri();
+        // begin loading a thumbnail if this is an image and either the thumbnail or the original
+        // content is ready (and different from any existing image)
+        if (imageUri != null && (prevImageUri == null || !imageUri.equals(prevImageUri))) {
+            // cancel/dispose any existing task and start a new one
+            if (mThumbnailTask != null) {
+                mThumbnailTask.cancel(true);
             }
-        }
-        if (mIcon.getDrawable() == null) {
-            // not an image, or image load failed. fall back to default.
-            mIcon.setImageResource(R.drawable.ic_menu_attachment_holo_light);
-            mIcon.setScaleType(ImageView.ScaleType.CENTER);
+            mThumbnailTask = new ThumbnailLoadTask(mIcon.getWidth(), mIcon.getHeight());
+            mThumbnailTask.execute(imageUri);
+        } else {
+            // not an image, or no thumbnail exists. fall back to default.
+            // async image load must separately ensure the default appears upon load failure.
+            setThumbnailToDefault();
         }
 
         mProgress.setMax(attachment.size);
 
         updateActions();
         updateStatus();
+    }
+
+    private void setThumbnailToDefault() {
+        mIcon.setImageResource(R.drawable.ic_menu_attachment_holo_light);
+        mIcon.setScaleType(ImageView.ScaleType.CENTER);
     }
 
     /**
@@ -242,6 +342,8 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
         mPlayButton.setOnClickListener(this);
         mInstallButton.setOnClickListener(this);
         mCancelButton.setOnClickListener(this);
+
+        mIconScaleType = mIcon.getScaleType();
     }
 
     @Override
@@ -357,6 +459,17 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
      * View an attachment by an application on device.
      */
     private void sendViewIntent() {
+        if (MediaStoreUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.contentType))) {
+            final PhotoViewIntentBuilder builder =
+                    Intents.newPhotoViewActivityIntentBuilder(getContext());
+            builder.setAlbumName(mAttachment.name)
+                .setPhotosUri(mAttachmentsListUri.toString())
+                .setPhotoIndex(mPhotoIndex);
+
+            getContext().startActivity(builder.build());
+            return;
+        }
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);

@@ -54,8 +54,22 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Account mSelectedAccount;
     private Context mContext;
     private ConversationSelectionSet mBatchConversations;
-    private DestructiveAction mActionCompleteListener;
-    private boolean mUndo = false;
+    /**
+     * The next action to perform. Do not read or write this. All accesses should
+     * be in {@link #performAndSetNextAction(DestructiveAction)} which commits the
+     * previous action, if any.
+     */
+    private DestructiveAction mPendingDestruction;
+    /**
+     * A destructive action that refreshes the list and performs no other action.
+     */
+    private final DestructiveAction mRefreshAction = new DestructiveAction() {
+        @Override
+        public void performAction() {
+            notifyDataSetChanged();
+        }
+    };
+
     private ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
     private ViewMode mViewMode;
     private View mFooter;
@@ -103,12 +117,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mLastDeletingItems.clear();
             // Start animation
             notifyDataSetChanged();
-            mActionCompleteListener = new DestructiveAction() {
-                @Override
-                public void performAction() {
-                    notifyDataSetChanged();
-                }
-            };
+            performAndSetNextAction(mRefreshAction);
         }
     }
 
@@ -184,10 +193,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * This listener will be called when the animations are complete and is required to
      * delete the conversations.
      * @param deletedRows the position in the list view to be deleted.
-     * @param listener called when the animation is complete. At this point, it is safe to remove
-     * the conversations from the database.
+     * @param action the destructive action that modifies the database.
      */
-    public void delete(ArrayList<Integer> deletedRows, DestructiveAction listener) {
+    public void delete(ArrayList<Integer> deletedRows, DestructiveAction action) {
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
 
@@ -204,9 +212,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
         if (mDeletingItems.isEmpty()) {
             // If we have no deleted items on screen, skip the animation
-            listener.performAction();
+            action.performAction();
         } else {
-            mActionCompleteListener = listener;
+            performAndSetNextAction(action);
         }
 
         // TODO(viki): Rather than notifying for a full data set change,
@@ -359,6 +367,18 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
     }
 
+    /**
+     * Performs the pending destruction, if any and assigns the next pending action.
+     * @param next The next action that is to be performed, possibly null (if no next action is
+     * needed).
+     */
+    private final void performAndSetNextAction(DestructiveAction next) {
+        if (mPendingDestruction != null) {
+            mPendingDestruction.performAction();
+        }
+        mPendingDestruction = next;
+    }
+
     @Override
     public void onAnimationEnd(Animator animation) {
         if (!mUndoingItems.isEmpty()) {
@@ -368,23 +388,17 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                     .getPosition();
             mUndoingItems.remove(position);
             if (mUndoingItems.isEmpty()) {
-                if (mActionCompleteListener != null) {
-                    mActionCompleteListener.performAction();
-                    mActionCompleteListener = null;
-                }
+                performAndSetNextAction(null);
             }
         } else if (!mDeletingItems.isEmpty()) {
             // See if we have received all the animations we expected; if
             // so, call the listener and reset it.
-            AnimatingItemView target = ((AnimatingItemView) ((ObjectAnimator) animation)
+            final AnimatingItemView target = ((AnimatingItemView) ((ObjectAnimator) animation)
                     .getTarget());
             final int position = target.getData().position;
             mDeletingItems.remove(position);
             if (mDeletingItems.isEmpty()) {
-                if (mActionCompleteListener != null) {
-                    mActionCompleteListener.performAction();
-                    mActionCompleteListener = null;
-                }
+                performAndSetNextAction(null);
             }
         }
         // The view types have changed, since the animating views are gone.

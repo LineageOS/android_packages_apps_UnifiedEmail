@@ -22,7 +22,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -31,12 +30,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AutoAdvance;
-import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -101,7 +95,7 @@ public final class OnePaneController extends AbstractActivityController {
         final int mode = mViewMode.getMode();
         // If the settings aren't loaded yet, we may not know what the default
         // inbox is, so err toward this being the account inbox.
-        if ((mCachedSettings != null && mConvListContext != null && !inInbox())
+        if ((mAccount.settings != null && mConvListContext != null && !inInbox())
                 || mode == ViewMode.SEARCH_RESULTS_LIST
                 || mode == ViewMode.SEARCH_RESULTS_CONVERSATION
                 || mode == ViewMode.CONVERSATION
@@ -112,8 +106,13 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
+    /**
+     * Returns true if the user is currently in the conversation list view, viewing the default
+     * inbox.
+     * @return
+     */
     private boolean inInbox() {
-        Uri inboxUri = mCachedSettings != null ? mCachedSettings.defaultInbox : null;
+        final Uri inboxUri = Settings.getDefaultInboxUri(mAccount.settings);
         return mConvListContext != null && mConvListContext.folder != null ? (!mConvListContext
                 .isSearchResult() && mConvListContext.folder.uri.equals(inboxUri)) : false;
     }
@@ -126,7 +125,6 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public boolean onCreate(Bundle savedInstanceState) {
-        // Set 1-pane content view.
         mActivity.setContentView(R.layout.one_pane_activity);
         // The parent class sets the correct viewmode and starts the application off.
         return super.onCreate(savedInstanceState);
@@ -184,6 +182,7 @@ public final class OnePaneController extends AbstractActivityController {
             mLastConversationListTransactionId = INVALID_ID;
         }
         mConversationListVisible = true;
+        onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
         mConversationListNeverShown = false;
     }
@@ -191,6 +190,13 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void showConversation(Conversation conversation) {
         super.showConversation(conversation);
+        if (conversation == null) {
+            // This is a request to remove the conversation view, and pop back the view stack.
+            // If we are in conversation list view already, this should be a safe thing to do, so
+            // we don't check viewmode.
+            transitionBackToConversationListMode();
+            return;
+        }
         disableCabMode();
         if (mConvListContext != null && mConvListContext.isSearchResult()) {
             mViewMode.enterSearchResultsConversationMode();
@@ -202,10 +208,10 @@ public final class OnePaneController extends AbstractActivityController {
         // fragment with another fragment as usual. Instead, reveal the heretofore inert
         // conversation ViewPager and just remove the previously visible fragment
         // (e.g. conversation list, or possibly label list?).
-        FragmentManager fm = mActivity.getFragmentManager();
-        Fragment f = fm.findFragmentById(R.id.content_pane);
+        final FragmentManager fm = mActivity.getFragmentManager();
+        final Fragment f = fm.findFragmentById(R.id.content_pane);
         if (f != null) {
-            FragmentTransaction ft = fm.beginTransaction();
+            final FragmentTransaction ft = fm.beginTransaction();
             ft.addToBackStack(null);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.remove(f);
@@ -214,7 +220,7 @@ public final class OnePaneController extends AbstractActivityController {
 
         // TODO: improve this transition
         mPagerController.show(mAccount, mFolder, conversation);
-
+        onConversationVisibilityChanged(true);
         resetActionBarIcon();
 
         mConversationListVisible = false;
@@ -246,6 +252,7 @@ public final class OnePaneController extends AbstractActivityController {
                 FolderListFragment.newInstance(null, mAccount.folderListUri),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
         mConversationListVisible = false;
+        onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(false);
     }
 
@@ -356,7 +363,7 @@ public final class OnePaneController extends AbstractActivityController {
      */
     @Override
     public boolean onUpPressed() {
-        int mode = mViewMode.getMode();
+        final int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         } else if ((!inInbox() && mode == ViewMode.CONVERSATION_LIST)
@@ -385,8 +392,8 @@ public final class OnePaneController extends AbstractActivityController {
             resetActionBarIcon();
             onFolderChanged(mInbox);
         } else {
-            // TODO: revist if this block is necessary
-            ConversationListContext listContext = ConversationListContext.forFolder(mContext,
+            // TODO: revisit if this block is necessary
+            final ConversationListContext listContext = ConversationListContext.forFolder(mContext,
                     mAccount, mInbox);
             // Set the correct context for what the conversation view will be now.
             onFolderChanged(mInbox);
@@ -395,6 +402,7 @@ public final class OnePaneController extends AbstractActivityController {
         resetActionBarIcon();
 
         mConversationListVisible = true;
+        onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
     }
 
@@ -404,186 +412,9 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean handled = true;
-        final int id = item.getItemId();
-        switch (id) {
-            case R.id.y_button: {
-                final boolean showDialog =
-                        (mCachedSettings != null && mCachedSettings.confirmArchive);
-                confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
-                        getAction(R.id.archive));
-                break;
-            }
-            case R.id.delete: {
-                final boolean showDialog =
-                        (mCachedSettings != null && mCachedSettings.confirmDelete);
-                confirmAndDelete(showDialog,
-                        R.plurals.confirm_delete_conversation, getAction(R.id.delete));
-                break;
-            }
-            case R.id.change_folders:
-                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                        Collections.singletonList(mCurrentConversation)).show();
-                break;
-            case R.id.inside_conversation_unread:
-                // Mark as unread and advance.
-                performInsideConversationUnread();
-                break;
-            case R.id.mark_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.HIGH);
-                break;
-            case R.id.mark_not_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.LOW);
-                break;
-            case R.id.mute:
-                requestDelete(getAction(R.id.mute));
-                break;
-            case R.id.report_spam:
-                requestDelete(getAction(R.id.report_spam));
-                break;
-            default:
-                handled = false;
-                break;
-        }
-        return handled || super.onOptionsItemSelected(item);
-    }
-
-    // TODO: If when the conversation was opened, some of the messages were unread,
-    // this is supposed to restore that state. Otherwise, this should mark all
-    // messages as unread
-    private void performInsideConversationUnread() {
-        updateCurrentConversation(ConversationColumns.READ, false);
-        if (returnToList()) {
-            onBackPressed();
-        } else {
-            final DestructiveAction action = getAction(R.id.inside_conversation_unread);
-            action.performAction();
-        }
-    }
-
-    private class OnePaneDestructiveAction extends AbstractDestructiveAction {
-        /** Whether this destructive action has already been performed */
-        public boolean mCompleted;
-
-        public OnePaneDestructiveAction(int action) {
-            super(action);
-        }
-
-        @Override
-        public void performAction() {
-            if (mCompleted) {
-                return;
-            }
-            mCompleted = true;
-            Conversation next = null;
-            final ArrayList<Conversation> single = new ArrayList<Conversation>();
-            single.add(mCurrentConversation);
-            final int mode = mViewMode.getMode();
-            if (mode == ViewMode.CONVERSATION) {
-                next = mTracker.getNextConversation(mCachedSettings);
-            } else if (mode == ViewMode.CONVERSATION_LIST
-                    && mAction != R.id.inside_conversation_unread) {
-                OnePaneController.this.performAction();
-                onUndoAvailable(new UndoOperation(1, mAction));
-            }
-            baseAction(single);
-            if (next != null) {
-                // We have a conversation to auto advance to
-                if (mode == ViewMode.CONVERSATION) {
-                    showConversation(next);
-                    onUndoAvailable(new UndoOperation(1, mAction));
-                }
-            } else {
-                // We don't have a conversation to show: show conversation list instead.
-                if (mode == ViewMode.CONVERSATION_LIST) {
-                    final ConversationListFragment convList = getConversationListFragment();
-                    if (convList != null) {
-                        convList.requestListRefresh();
-                    }
-                } else if (mode == ViewMode.CONVERSATION) {
-                    final int position = mCurrentConversation.position;
-                    final OnePaneDestructiveAction listener = this;
-                    transitionBackToConversationListMode();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            final ConversationListFragment convList = getConversationListFragment();
-                            if (convList != null) {
-                                convList.requestDelete(position, listener);
-                            }
-                        }
-                    });
-                }
-            }
-        }
-    }
-
-    /**
-     * Get a destructive action specific to the {@link OnePaneController}.
-     * This is a temporary method, to control the profusion of {@link DestructiveAction} classes
-     * that are created. Please do not copy this paradigm.
-     * TODO(viki): Resolve the various actions and clean up their calling sequence.
-     * @param action
-     * @return
-     */
-    private final DestructiveAction getAction(int action) {
-        DestructiveAction da = new OnePaneDestructiveAction(action);
-        registerDestructiveAction(da);
-        return da;
-    }
-
-    /**
-     * Returns true if we need to return back to conversation list based on the current
-     * AutoAdvance setting and the number of messages in the list.
-     * @return true if we need to return back to conversation list, false otherwise.
-     */
-    private boolean returnToList() {
-        final int pref = Settings.getAutoAdvanceSetting(mCachedSettings);
-        final int position = mCurrentConversation.position;
-        final boolean moveToNewer = (pref == AutoAdvance.NEWER && (position - 1 >= 0));
-        final boolean moveToOlder = (pref == AutoAdvance.OLDER && mConversationListCursor != null
-                && (position + 1 < mConversationListCursor.getCount()));
-        final boolean canMove = moveToNewer || moveToOlder;
-        // Return true if we cannot move forward or back, or if the user wants to go back to list.
-        return pref == AutoAdvance.LIST || !canMove;
-    }
-
-    @Override
-    protected void requestDelete(final DestructiveAction listener) {
-        final int position = mCurrentConversation.position;
-        if (returnToList()) {
-            onBackPressed();
-            mHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    final ConversationListFragment convList = getConversationListFragment();
-                    if (convList != null) {
-                        convList.requestDelete(position, listener);
-                    }
-                }
-
-            });
-        } else {
-            if (mConversationListCursor != null) {
-                mConversationListCursor.moveToPosition(position);
-            }
-            listener.performAction();
-        }
-    }
-
-    @Override
-    public DestructiveAction getFolderDestructiveAction() {
-        return getAction(R.id.change_folder);
-    }
-
-    @Override
     public void onUndoAvailable(UndoOperation op) {
         if (op != null && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
-            int mode = mViewMode.getMode();
+            final int mode = mViewMode.getMode();
             switch (mode) {
                 case ViewMode.CONVERSATION:
                     mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,

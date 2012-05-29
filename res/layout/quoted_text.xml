@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -63,11 +63,8 @@
             style="@style/RespondInlineButtonStyle"
             android:text="@string/respond_inline"
             android:textAllCaps="true"
-            android:layout_width="0dip"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right"
-            android:paddingRight="8dip"
             android:background="@null"/>
 
     </LinearLayout>
@@ -82,6 +79,8 @@
     <WebView android:id="@+id/quoted_text_web_view"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_below="@id/divider_bar" />
+        android:layout_below="@id/divider_bar"
+        android:focusableInTouchMode="false"
+        android:focusable="false" />
 
 </RelativeLayout>

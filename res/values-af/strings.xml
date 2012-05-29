@@ -226,6 +226,9 @@
     <string name="search_results_searching_header" msgid="3821361153909466819">"Soek tans…"</string>
     <string name="recent_folders" msgid="8240081561436891330">"Onlangs"</string>
     <string name="add_label" msgid="1638508840481944248">"Voeg etiket by"</string>
+    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> van <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
+    <string name="conversation_newer" msgid="7381341099165809801">"Nuwer"</string>
+    <string name="conversation_older" msgid="6384287019562069353">"Ouer"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Vou ontvanger se details uit"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Vou ontvanger se details in"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Wys kontakinligting vir <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -299,4 +302,46 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Hierdie rekening is nie opgestel om outomaties te sinkroniseer nie."\n"Raak "<b>"Sinkroniseer nou"</b>" om pos een keer te sinkroniseer, of "<b>"Verander sinkroniseer-instellings"</b>" om hierdie rekening op te stel om pos outomaties te sinkroniseer."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sinkroniseer nou"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Verander sinkroniseer-instellings"</string>
+    <!-- no translation found for photo_view_default_title (305616940993932174) -->
+    <skip />
+    <!-- no translation found for photo_view_load_error (1802859675974843136) -->
+    <skip />
+    <!-- no translation found for photo_view_video_not_ready (8488887700991406631) -->
+    <skip />
+    <!-- no translation found for photo_view_placeholder_image (465734985000555852) -->
+    <skip />
+    <!-- no translation found for photo_network_error (6545183306958652345) -->
+    <skip />
+    <!-- no translation found for loading_photo (6784297653634402137) -->
+    <skip />
+    <!-- no translation found for post_operation_pending (1312168212880219407) -->
+    <skip />
+    <!-- no translation found for download_photo_retry (1894223549069749239) -->
+    <skip />
+    <!-- no translation found for download_photo_error (7511376299526085797) -->
+    <skip />
+    <!-- no translation found for yes (7474216525286833848) -->
+    <skip />
+    <!-- no translation found for no (427548507197604096) -->
+    <skip />
+    <!-- no translation found for camera_photo_error (653424229752191252) -->
+    <skip />
+    <!-- no translation found for photo_view_count (1568865177363028519) -->
+    <skip />
+    <!-- no translation found for truncated_info (4901078975545890098) -->
+    <skip />
+    <!-- no translation found for truncated_info_see_more (2068973974507128729) -->
+    <skip />
+    <!-- no translation found for posted_just_now (7872790861965011674) -->
+    <skip />
+    <!-- no translation found for num_minutes_ago:one (4750191148321568233) -->
+    <!-- no translation found for num_minutes_ago:other (4976118461634588647) -->
+    <!-- no translation found for num_hours_ago:one (2178354472031148118) -->
+    <!-- no translation found for num_hours_ago:other (1470820825143524326) -->
+    <!-- no translation found for num_days_ago:one (5538890823169916595) -->
+    <!-- no translation found for num_days_ago:other (2756574969735638578) -->
+    <!-- no translation found for dialog_inserting_camera_photo (2711654208680211224) -->
+    <skip />
+    <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
+    <skip />
 </resources>

@@ -226,6 +226,9 @@
     <string name="search_results_searching_header" msgid="3821361153909466819">"Buscando..."</string>
     <string name="recent_folders" msgid="8240081561436891330">"Recientes"</string>
     <string name="add_label" msgid="1638508840481944248">"Añadir etiqueta"</string>
+    <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> de <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
+    <string name="conversation_newer" msgid="7381341099165809801">"Más reciente"</string>
+    <string name="conversation_older" msgid="6384287019562069353">"Anterior"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Ampliar información del destinatario"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Contraer información del destinatario"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Mostrar información de contacto de <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -299,4 +302,35 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Esta cuenta no está configurada para sincronizarse de forma automática."\n"Toca "<b>"Sincronizar ahora"</b>" para sincronizar el correo una vez o selecciona "<b>"Cambiar ajustes de sincronización"</b>" para configurar la sincronización automática del correo en esta cuenta."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincronizar ahora"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Cambiar ajustes de sincronización"</string>
+    <string name="photo_view_default_title" msgid="305616940993932174">"Fotos del mensaje"</string>
+    <string name="photo_view_load_error" msgid="1802859675974843136">"No se puede cargar la foto."</string>
+    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"Vídeo no disponible en este momento. Actualiza la página."</string>
+    <string name="photo_view_placeholder_image" msgid="465734985000555852">"Elemento no disponible. Actualiza la página."</string>
+    <string name="photo_network_error" msgid="6545183306958652345">"La foto no está disponible en este momento."</string>
+    <string name="loading_photo" msgid="6784297653634402137">"Cargando…"</string>
+    <string name="post_operation_pending" msgid="1312168212880219407">"Enviando…"</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"Esta imagen es demasiado grande para descargarla. ¿Quieres descargarla con una resolución menor?"</string>
+    <string name="download_photo_error" msgid="7511376299526085797">"La foto no se ha podido guardar en el dispositivo."</string>
+    <string name="yes" msgid="7474216525286833848">"Sí"</string>
+    <string name="no" msgid="427548507197604096">"No"</string>
+    <string name="camera_photo_error" msgid="653424229752191252">"No se puede encontrar la foto."</string>
+    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> de <xliff:g id="COUNT">%d</xliff:g>"</string>
+    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
+    <string name="truncated_info_see_more" msgid="2068973974507128729">" Más »"</string>
+    <string name="posted_just_now" msgid="7872790861965011674">"Ahora"</string>
+  <plurals name="num_minutes_ago">
+    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> min"</item>
+    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> min"</item>
+  </plurals>
+  <plurals name="num_hours_ago">
+    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> hora"</item>
+    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> horas"</item>
+  </plurals>
+  <plurals name="num_days_ago">
+    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> día"</item>
+    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> días"</item>
+  </plurals>
+    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"Insertando foto…"</string>
+    <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
+    <skip />
 </resources>

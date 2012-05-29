@@ -22,6 +22,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.google.common.collect.ImmutableList;
+
+import java.util.Collection;
+import java.util.Collections;
+
 public class Conversation implements Parcelable {
     public static final int NO_POSITION = -1;
 
@@ -45,6 +50,8 @@ public class Conversation implements Parcelable {
     public int personalLevel;
     public boolean spam;
     public boolean muted;
+    public int color;
+    public Uri accountUri;
 
     // Used within the UI to indicate the adapter position of this conversation
     public transient int position;
@@ -58,6 +65,9 @@ public class Conversation implements Parcelable {
     // Delete/Archive of a mostly-dead item will NOT propagate the delete/archive, but WILL remove
     // the item from the cursor
     public static final int FLAG_MOSTLY_DEAD = 1 << 0;
+
+    /** An immutable, empty conversation list */
+    public static final Collection<Conversation> EMPTY = Collections.emptyList();
 
     @Override
     public int describeContents() {
@@ -86,6 +96,8 @@ public class Conversation implements Parcelable {
         dest.writeInt(personalLevel);
         dest.writeInt(spam ? 1 : 0);
         dest.writeInt(muted ? 1 : 0);
+        dest.writeInt(color);
+        dest.writeParcelable(accountUri, 0);
     }
 
     private Conversation(Parcel in) {
@@ -109,13 +121,15 @@ public class Conversation implements Parcelable {
         personalLevel = in.readInt();
         spam = in.readInt() != 0;
         muted = in.readInt() != 0;
+        color = in.readInt();
+        accountUri = in.readParcelable(null);
         position = NO_POSITION;
         localDeleteOnUpdate = false;
     }
 
     @Override
     public String toString() {
-        return "[conversation id=" + id + "]";
+        return "[conversation id=" + id + ", subject =" + subject + "]";
     }
 
     public static final Creator<Conversation> CREATOR = new Creator<Conversation>() {
@@ -162,6 +176,9 @@ public class Conversation implements Parcelable {
             personalLevel = cursor.getInt(UIProvider.CONVERSATION_PERSONAL_LEVEL_COLUMN);
             spam = cursor.getInt(UIProvider.CONVERSATION_IS_SPAM_COLUMN) != 0;
             muted = cursor.getInt(UIProvider.CONVERSATION_MUTED_COLUMN) != 0;
+            color = cursor.getInt(UIProvider.CONVERSATION_COLOR_COLUMN);
+            String account = cursor.getString(UIProvider.CONVERSATION_ACCOUNT_URI_COLUMN);
+            accountUri = !TextUtils.isEmpty(account) ? Uri.parse(account) : null;
             position = NO_POSITION;
             localDeleteOnUpdate = false;
         }
@@ -174,7 +191,7 @@ public class Conversation implements Parcelable {
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
             boolean starred, String folderList, String rawFolders, int convFlags,
-            int personalLevel, boolean spam, boolean muted) {
+            int personalLevel, boolean spam, boolean muted, Uri accountUri) {
 
         final Conversation conversation = new Conversation();
 
@@ -198,12 +215,18 @@ public class Conversation implements Parcelable {
         conversation.personalLevel = personalLevel;
         conversation.spam = spam;
         conversation.muted = muted;
+        conversation.color = 0;
+        conversation.accountUri = accountUri;
         return conversation;
     }
 
     @Override
     public boolean equals(Object o) {
-        return uri.equals(o);
+        if (o instanceof Conversation) {
+            Conversation conv = (Conversation)o;
+            return conv.uri.equals(uri);
+        }
+        return false;
     }
 
     @Override
@@ -223,5 +246,58 @@ public class Conversation implements Parcelable {
      */
     public boolean isMostlyDead() {
         return (convFlags & FLAG_MOSTLY_DEAD) != 0;
+    }
+
+    /**
+     * Returns true if the URI of the conversation specified as the needle was found in the
+     * collection of conversations specified as the haystack. False otherwise. This method is safe
+     * to call with nullarguments.
+     * @param haystack
+     * @param needle
+     * @return true if the needle was found in the haystack, false otherwise.
+     */
+    public final static boolean contains(Collection<Conversation> haystack, Conversation needle) {
+        // If the haystack is empty, it cannot contain anything.
+        if (haystack == null || haystack.size() <= 0) {
+            return false;
+        }
+        // The null folder exists everywhere.
+        if (needle == null) {
+            return true;
+        }
+        final long toFind = needle.id;
+        for (final Conversation c : haystack) {
+            if (toFind == c.id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a collection of a single conversation. This method always returns a valid collection
+     * even if the input conversation is null.
+     * @param in a conversation, possibly null.
+     * @return a collection of the conversation.
+     */
+    public static Collection<Conversation> listOf(Conversation in) {
+        final Collection<Conversation> target = (in == null) ? EMPTY : ImmutableList.of(in);
+        return target;
+    }
+
+    /**
+     * Create a human-readable string of all the conversations
+     * @param collection Any collection of conversations
+     * @return string with a human readable representation of the conversations.
+     */
+    public static String toString(Collection<Conversation> collection) {
+        final StringBuilder out = new StringBuilder(collection.size() + " conversations:");
+        int count = 0;
+        for (final Conversation c : collection) {
+            count++;
+            // Indent the conversations to make them easy to read in debug output.
+            out.append("      " + count + ": " + c.toString() + "\n");
+        }
+        return out.toString();
     }
 }

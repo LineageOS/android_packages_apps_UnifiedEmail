@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +15,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/compose"
         android:title="@string/menu_compose"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:icon="@drawable/ic_menu_compose_normal_holo_light"
         android:alphabeticShortcut="@string/trigger_compose_char" />
 
     <!-- Available only for accounts with SERVER_SEARCH and in a folder
       that supports FOLDER_SERVER_SEARCH -->
-    <item android:id="@+id/search" android:title="@string/menu_search"
+    <item android:id="@+id/search"
+        android:title="@string/menu_search"
         android:showAsAction="always|collapseActionView"
         android:icon="@drawable/ic_menu_search_holo_light"
         android:actionLayout="@layout/mail_actionbar_searchview" />
@@ -37,21 +37,24 @@
         android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
 
+    <!-- Available for Folders with SUPPORTS_SETTINGS capability -->
     <item android:id="@+id/folder_options"
-        android:title="@string/menu_manage_folders"
-        android:icon="@drawable/ic_menu_folders_holo_light" />
+        android:title="@string/menu_folder_options"
+        android:showAsAction="never"  />
 
     <item android:id="@+id/settings"
-        android:title="@string/menu_settings" />
+        android:title="@string/menu_settings"
+        android:showAsAction="never" />
 
+    <!-- Available if the account specifies a help url -->
     <item
         android:id="@+id/help_info_menu_item"
-        android:icon="@android:drawable/ic_menu_help"
-        android:title="@string/help_and_info" />
+        android:title="@string/help_and_info"
+        android:showAsAction="never" />
 
     <item
         android:id="@+id/feedback_menu_item"
-        android:icon="@android:drawable/ic_menu_send"
-        android:title="@string/feedback" />
+        android:title="@string/feedback"
+        android:showAsAction="never" />
 
 </menu>

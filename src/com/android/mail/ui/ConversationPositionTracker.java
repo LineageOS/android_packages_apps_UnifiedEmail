@@ -24,7 +24,8 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.utils.LogUtils;
-import com.google.common.annotations.VisibleForTesting;
+
+import java.util.Collection;
 
 /**
  * An iterator over a conversation list that keeps track of the position of a conversation, and
@@ -40,9 +41,6 @@ public class ConversationPositionTracker {
     private boolean mCursorDirty = false;
     /** The currently selected conversation */
     private Conversation mConversation;
-    /** The selected set */
-    private final ConversationSelectionSet mSelectedSet;
-
     /**
      * This utility method returns the conversation ID at the current cursor position.
      * @return the conversation id at the cursor.
@@ -55,15 +53,7 @@ public class ConversationPositionTracker {
     /**
      * Constructs a position tracker that doesn't point to any specific conversation.
      */
-    public ConversationPositionTracker(ConversationSelectionSet selectedSet) {
-        mSelectedSet = selectedSet;
-    }
-
-    /**
-     * Clears the current selected position.
-     */
-    public void clearPosition() {
-        initialize(null);
+    public ConversationPositionTracker() {
     }
 
     /** Move cursor to a specific position and return the conversation there */
@@ -77,7 +67,7 @@ public class ConversationPositionTracker {
     /**
      * @return the total number of conversations in the list.
      */
-    public int getCount() {
+    private int getCount() {
         if (isDataLoaded()) {
             return mCursor.getCount();
         } else {
@@ -89,30 +79,18 @@ public class ConversationPositionTracker {
      * @return the {@link Conversation} of the newer conversation by one position. If no such
      * conversation exists, this method returns null.
      */
-    public Conversation getNewer() {
-        calculatePosition();
-        if (!hasNewer()) {
+    public Conversation getNewer(Collection<Conversation> victims, Conversation current) {
+        int pos = calculatePosition();
+        if (!isDataLoaded() || pos < 0) {
             return null;
         }
-        return conversationAtPosition(mConversation.position - 1);
-    }
-
-    /**
-     * @return the {@link Conversation} of the next newer conversation not in the selection set. If
-     * no such conversation exists, this method returns null.
-     */
-    public Conversation getNewerUnselected() {
-        calculatePosition();
-        if (!isDataLoaded()) {
-            return null;
-        }
-
-        int pos = mConversation.position - 1;
+        // Walk backward from the existing position, trying to find a conversation that is not a
+        // victim.
+        pos--;
         while (pos >= 0) {
-            final Conversation conversation = conversationAtPosition(pos);
-            final long id = conversation.id;
-            if (!mSelectedSet.containsKey(id)) {
-                return conversation;
+            final Conversation candidate = conversationAtPosition(pos);
+            if (!Conversation.contains(victims, candidate)) {
+                return candidate;
             }
             pos--;
         }
@@ -123,28 +101,18 @@ public class ConversationPositionTracker {
      * @return the {@link Conversation} of the older conversation by one spot. If no such
      * conversation exists, this method returns null.
      */
-    public Conversation getOlder() {
-        calculatePosition();
-        if (!hasOlder()) {
+    public Conversation getOlder(Collection<Conversation> victims, Conversation current) {
+        int pos = calculatePosition();
+        if (!isDataLoaded() || pos < 0) {
             return null;
         }
-        return conversationAtPosition(mConversation.position + 1);
-    }
-
-    /**
-     * @return the {@link Conversation} of the next older conversation not in the selection set.
-     */
-    public Conversation getOlderUnselected() {
-        calculatePosition();
-        if (!isDataLoaded()) {
-            return null;
-        }
-        int pos = mConversation.position + 1;
-        while (pos < mCursor.getCount()) {
-            final Conversation conversation = conversationAtPosition(pos);
-            final long id = conversation.id;
-            if (!mSelectedSet.containsKey(id)) {
-                return conversation;
+        // Walk forward from the existing position, trying to find a conversation that is not a
+        // victim.
+        pos++;
+        while (pos < getCount()) {
+            final Conversation candidate = conversationAtPosition(pos);
+            if (!Conversation.contains(victims, candidate)) {
+                return candidate;
             }
             pos++;
         }
@@ -152,36 +120,11 @@ public class ConversationPositionTracker {
     }
 
     /**
-     * @return the current conversation position in the list.
-     */
-    public int getPosition() {
-        calculatePosition();
-        return mConversation.position;
-    }
-
-    /**
-     * @return whether or not there is a newer conversation in the list.
-     */
-    @VisibleForTesting
-    boolean hasNewer() {
-        calculatePosition();
-        return isDataLoaded() && mCursor.moveToPosition(mConversation.position - 1);
-    }
-
-    /**
-     * @return whether or not there is an older conversation in the list.
-     */
-    @VisibleForTesting
-    boolean hasOlder() {
-        calculatePosition();
-        return isDataLoaded() && mCursor.moveToPosition(mConversation.position + 1);
-    }
-
-    /**
-     *  Initializes the tracker with initial conversation id and initial position. This invalidates
-     *  the positions in the tracker. We need a valid cursor before we can bless the position as
-     *  valid. This requires a call to
-     *  {@link #updateCursor(ConversationCursor)}.
+     * Initializes the tracker with initial conversation id and initial position. This invalidates
+     * the positions in the tracker. We need a valid cursor before we can bless the position as
+     * valid. This requires a call to
+     * {@link #updateCursor(ConversationCursor)}.
+     * TODO(viki): Get rid of this method and the mConversation field entirely.
      */
     public void initialize(Conversation conversation) {
         mConversation = conversation;
@@ -221,17 +164,19 @@ public class ConversationPositionTracker {
      *
      * Calling this method repeatedly is safe: it returns early if it detects it has already been
      * called.
+     * @return the position of the current conversation in the cursor.
      */
-    private void calculatePosition() {
+    private int calculatePosition() {
+        final int invalidPosition = -1;
         // Run this method once for a mConversation, mCursor pair.
         if (mCursor == null || !mCursorDirty) {
-            return;
+            return invalidPosition;
         }
         mCursorDirty = false;
 
         final int listSize = (mCursor == null) ? 0 : mCursor.getCount();
         if (!isDataLoaded() || listSize == 0) {
-            return;
+            return invalidPosition;
         }
         // Update the internal state for where the current conversation is in
         // the list.  Start from the beginning and find the current conversation in it.
@@ -244,7 +189,7 @@ public class ConversationPositionTracker {
                 // can be filled. The odd behavior of the ConversationCursor requires us to do this
                 // to ensure the adjacent conversation information is loaded for calls to hasNext.
                 mCursor.moveToPosition(newPosition + 1);
-                return;
+                return newPosition;
             }
             newPosition++;
         }
@@ -264,26 +209,27 @@ public class ConversationPositionTracker {
             mCursor.moveToPosition(newPosition);
             mConversation = new Conversation(mCursor);
         }
-        return;
+        return newPosition;
     }
 
     /**
      * Get the next conversation according to the AutoAdvance settings and the list of
      * conversations available in the folder. If no next conversation can be found, this method
      * returns null.
-     * @param settings the settings associated with the account that contain the auto advance
-     * preference for the user.
+     * @param autoAdvance the auto advance preference for the user as an
+     * {@link Settings#autoAdvance} value.
      * @return
      */
-    public Conversation getNextConversation(Settings settings) {
-        final int pref = Settings.getAutoAdvanceSetting(settings);
-        final boolean getNewer = (pref == AutoAdvance.NEWER && hasNewer());
-        final boolean getOlder = (pref == AutoAdvance.OLDER && hasOlder());
-        final Conversation next = getNewer ? getNewer() :
-            (getOlder ? getOlder() : null);
+    public Conversation getNextConversation(int autoAdvance, Collection<Conversation> mTarget,
+            Conversation current) {
+        final boolean getNewer = autoAdvance == AutoAdvance.NEWER;
+        final boolean getOlder = autoAdvance == AutoAdvance.OLDER;
+        final Conversation next = getNewer ? getNewer(mTarget, current) :
+            (getOlder ? getOlder(mTarget, current) : null);
         LogUtils.d(LOG_TAG, "ConversationPositionTracker.getNextConversation: " +
                 "getNewer = %b, getOlder = %b, Next conversation is %s",
                 getNewer, getOlder, next);
         return next;
     }
+
 }

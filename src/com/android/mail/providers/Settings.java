@@ -54,6 +54,11 @@ public class Settings implements Parcelable {
     static final Settings EMPTY_SETTINGS = new Settings();
 
     public final String signature;
+    /**
+     * Auto advance setting for this account.
+     * Integer, one of {@link AutoAdvance#LIST}, {@link AutoAdvance#NEWER},
+     * {@link AutoAdvance#OLDER} or  {@link AutoAdvance#UNSET}
+     */
     public final int autoAdvance;
     public final int messageTextSize;
     public final int snapHeaders;
@@ -280,6 +285,20 @@ public class Settings implements Parcelable {
         dest.writeInt(confirmSend? 1 : 0);
         dest.writeString(defaultInbox.toString());
         dest.writeInt(forceReplyFromDefault ? 1 : 0);
+    }
+
+    /**
+     * Returns the URI of the current account's default inbox if available, otherwise
+     * returns the empty URI {@link Uri#EMPTY}
+     * @param settings a settings object, possibly null.
+     * @return a valid default Inbox URI, or {@link Uri#EMPTY} if settings are null or no default
+     * is specified.
+     */
+    public static Uri getDefaultInboxUri(Settings settings) {
+        if (settings != null && settings.defaultInbox != null) {
+            return settings.defaultInbox;
+        }
+        return Uri.EMPTY;
     }
 
     /**

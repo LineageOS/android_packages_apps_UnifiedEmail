@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,18 @@
      limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/ComposeFieldLayout">
+      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:id="@+id/body_wrapper">
 
-    <EditText android:id="@+id/body"
-        style="@style/ComposeBodyStyle"
-        android:hint="@string/body_hint"/>
+  <EditText android:id="@+id/body"
+      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:hint="@string/body_hint"
+      android:minHeight="48dip"
+      android:gravity="top"
+      android:inputType="textLongMessage|textMultiLine|textAutoCorrect|textCapSentences"
+      android:imeOptions="flagNoFullscreen|actionDone|flagNoEnterAction"
+      android:textColorHint="@color/compose_label_text" />
 
 </RelativeLayout>

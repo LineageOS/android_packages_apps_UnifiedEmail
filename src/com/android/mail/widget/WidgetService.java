@@ -64,7 +64,7 @@ public class WidgetService extends RemoteViewsService {
     /**
      * Remote Views Factory for Mail Widget.
      */
-    private static class MailFactory
+    protected static class MailFactory
             implements RemoteViewsService.RemoteViewsFactory, OnLoadCompleteListener<Cursor> {
         private static final int MAX_CONVERSATIONS_COUNT = 25;
         private static final int MAX_SENDERS_LENGTH = 25;
@@ -91,7 +91,8 @@ public class WidgetService extends RemoteViewsService {
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             mAccount = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
             mFolder = new Folder(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
-            mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(mContext, mAccount);
+            mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(context,
+                    mAccount);
             mResolver = context.getContentResolver();
             mService = service;
         }
@@ -221,8 +222,8 @@ public class WidgetService extends RemoteViewsService {
                 // Load up our remote view.
                 RemoteViews remoteViews = mWidgetConversationViewBuilder.getStyledView(
                         senderBuilder, statusBuilder, date, filterTag(conversation.subject),
-                        conversation.snippet, conversation.folderList, conversation.hasAttachments,
-                        conversation.read);
+                        conversation.snippet, conversation.rawFolders, conversation.hasAttachments,
+                        conversation.read, mFolder);
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation,

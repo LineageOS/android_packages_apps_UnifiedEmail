@@ -20,43 +20,43 @@ package com.android.mail.browse;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.ui.AbstractActivityController;
-import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
+import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.FoldersSelectionDialog;
-import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SwipeableListView;
-import com.android.mail.ui.UndoBarView.UndoListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * A component that displays a custom view for an {@code ActionBar}'s {@code
  * ContextMode} specific to operating on a set of conversations.
  */
 public class SelectedConversationsActionMenu implements ActionMode.Callback,
-        ConversationSetObserver, FolderChangeCommitListener {
+        ConversationSetObserver {
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -64,10 +64,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      * The set of conversations to display the menu for.
      */
     protected final ConversationSelectionSet mSelectionSet;
-    /**
-     * The new folder list (after selection)
-     */
-    protected ArrayList<Folder> mFolderChangeList;
 
     private final RestrictedActivity mActivity;
 
@@ -91,8 +87,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     // them.
     private AbstractActivityController mController;
 
-    private UndoListener mUndoListener;
-
     private Account mAccount;
 
     protected int mCheckedItem = 0;
@@ -105,14 +99,13 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
             ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            AbstractActivityController controller, UndoListener undoListener, Account account,
+            AbstractActivityController controller, Account account,
             Folder folder, SwipeableListView list) {
         mActivity = activity;
         mSelectionSet = selectionSet;
         mListAdapter = adapter;
         mConversationCursor = (ConversationCursor)adapter.getCursor();
         mController = controller;
-        mUndoListener = undoListener;
         mAccount = account;
         mFolder = folder;
         mListView = list;
@@ -122,13 +115,14 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     /**
      * Registers a destructive action with the controller and returns it.
-     * @param action
+     * @param type the resource id of the menu item that corresponds to this action: R.id.delete
+     *  for example.
      * @return the {@link DestructiveAction} associated with this action.
      */
     // TODO(viki): This is a placeholder during the refactoring. Ideally the controller hands
     // the ID of the action to clients.
     private final DestructiveAction getAction(int type) {
-        return mController.getDestructiveAction(type);
+        return mController.getBatchDestruction(type);
     }
 
     @Override
@@ -137,10 +131,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         Collection<Conversation> conversations = mSelectionSet.values();
         switch (item.getItemId()) {
             case R.id.delete:
-                performDestructiveAction(R.id.delete, getAction(R.id.delete));
+                performDestructiveAction(R.id.delete);
                 break;
             case R.id.archive:
-                performDestructiveAction(R.id.archive, getAction(R.id.archive));
+                performDestructiveAction(R.id.archive);
                 break;
             case R.id.mute:
                 mListAdapter.delete(conversations, getAction(R.id.mute));
@@ -160,22 +154,45 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             case R.id.remove_star:
                 if (mFolder.type == UIProvider.FolderType.STARRED) {
                     LogUtils.d(LOG_TAG, "We are in a starred folder, removing the star");
-                    performDestructiveAction(R.id.remove_star, getAction(R.id.remove_star));
+                    performDestructiveAction(R.id.remove_star);
                 } else {
                     LogUtils.d(LOG_TAG, "Not in a starred folder.");
                     starConversations(false);
                 }
                 break;
             case R.id.change_folder:
-                showChangeFoldersDialog();
+                boolean cantMove = false;
+                Account acct = mAccount;
+                // Special handling for virtual folders
+                if (mFolder.supportsCapability(FolderCapabilities.IS_VIRTUAL)) {
+                    Uri accountUri = null;
+                    for (Conversation conv: mSelectionSet.values()) {
+                        if (accountUri == null) {
+                            accountUri = conv.accountUri;
+                        } else if (!accountUri.equals(conv.accountUri)) {
+                            // Tell the user why we can't do this
+                            Toast.makeText(mContext, R.string.cant_move_or_change_labels,
+                                    Toast.LENGTH_LONG).show();
+                            cantMove = true;
+                            break;
+                        }
+                    }
+                    if (!cantMove) {
+                        // Get the actual account here, so that we display its folders in the dialog
+                        acct = MailAppProvider.getAccountFromAccountUri(accountUri);
+                    }
+                }
+                if (!cantMove) {
+                    new FoldersSelectionDialog(mContext, acct, mController,
+                            mSelectionSet.values(), true).show();
+                }
                 break;
             case R.id.mark_important:
                 markConversationsImportant(true);
                 break;
             case R.id.mark_not_important:
                 if (mFolder.supportsCapability(UIProvider.FolderCapabilities.ONLY_IMPORTANT)) {
-                    performDestructiveAction(R.id.mark_not_important,
-                            getAction(R.id.mark_not_important));
+                    performDestructiveAction(R.id.mark_not_important);
                 } else {
                     markConversationsImportant(false);
                 }
@@ -208,7 +225,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
-    private void performDestructiveAction(final int id, final DestructiveAction action) {
+    private void performDestructiveAction(final int id) {
+        final DestructiveAction action = getAction(id);
         final Settings settings = mActivity.getSettings();
         final Collection<Conversation> conversations = mSelectionSet.values();
         final boolean showDialog = (settings != null
@@ -230,8 +248,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
 
-    private void destroy(int id, Collection<Conversation> conversations,
-            DestructiveAction listener) {
+    private void destroy(int id, final Collection<Conversation> conversations,
+            final DestructiveAction listener) {
         if (id == R.id.archive) {
             ArrayList<ConversationItemView> views = new ArrayList<ConversationItemView>();
             for (ConversationItemView view : mSelectionSet.views()) {
@@ -272,56 +290,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         updateSelection();
     }
 
-    private void showChangeFoldersDialog() {
-        new FoldersSelectionDialog(mContext, mAccount, this, mSelectionSet.values()).show();
-    }
-
-    // Both this class and AbstractActivityController are listeners for folder changes and the
-    // logic is largely the same.
-    // TODO(viki): hold all this in AbstractActivityController.
-    @Override
-    public void onFolderChangesCommit(ArrayList<Folder> folderChangeList) {
-        mFolderChangeList = folderChangeList;
-        // Do the change here...
-        // Get currently active folder info and compare it to the list
-        // these conversations have been given; if they no longer contain
-        // the selected folder, delete them from the list.
-        HashSet<String> folderUris = new HashSet<String>();
-        if (folderChangeList != null && !folderChangeList.isEmpty()) {
-            for (Folder f : folderChangeList) {
-                folderUris.add(f.uri.toString());
-            }
-        }
-        if (!folderUris.contains(mFolder.uri.toString())) {
-            // All these conversations are *removed* from the current folder. Animate deletion.
-            final boolean isDestructive = true;
-            // We copy the selected set because it might change as the animation starts, and we want
-            // to apply the action to the current selection.
-            final Collection<Conversation> conversations = mSelectionSet.values();
-            // Indicate delete on update (i.e. no longer in this folder)
-            final Collection<Conversation> deletionSet = new ArrayList<Conversation>();
-            for (Conversation conv : conversations) {
-                conv.localDeleteOnUpdate = true;
-                // For Gmail, add... if (noLongerInList(conv))...
-                deletionSet.add(conv);
-            }
-            // Delete the local delete items (all for now) and when done, update...
-            final DestructiveAction action = mController.getFolderChange(deletionSet,
-                    mFolderChangeList, isDestructive);
-            mListAdapter.delete(deletionSet, action);
-        } else {
-            // Conversations are not removed. They just have their labels changed.
-            final boolean isDestructive = false;
-            final DestructiveAction action = mController.getFolderChange(mSelectionSet.values(),
-                    mFolderChangeList, isDestructive);
-            action.performAction();
-        }
-    }
-
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         mSelectionSet.addObserver(this);
-        MenuInflater inflater = mActivity.getMenuInflater();
+        final MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(R.menu.conversation_list_selection_actions_menu, menu);
         mActionMode = mode;
         mMenu = menu;

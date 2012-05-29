@@ -20,4 +20,18 @@
     <item type="id" name="personal_level"/>
     <item type="id" name="reply_state" />
     <item type="id" name="manage_folders_item"/>
+
+    <!-- Loaders for PhotoViewActivity -->
+    <item type="id" name="photo_view_photo_list_loader_id"/>
+
+    <!-- Loaders for PhotoViewFragment -->
+    <item type="id" name="photo_view_photo_loader_id"/>
+    
+    <!--  Dialogs for PhotoViewActivity -->
+    <item type="id" name="photo_view_pending_dialog"/>
+    <item type="id" name="photo_view_download_nonfull_failed_dialog"/>
+    <item type="id" name="photo_view_download_full_failed_dialog"/>
+
+    <!-- Dialogs for Photo View -->
+    <item type="id" name="dialog_insert_photo"/>
 </resources>

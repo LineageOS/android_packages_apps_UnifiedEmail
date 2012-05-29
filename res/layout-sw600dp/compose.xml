@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingLeft="100dip">
+            android:paddingLeft="@dimen/compose_area_left_padding">
 
             <LinearLayout android:id="@+id/content"
                 android:orientation="horizontal"
@@ -65,7 +65,7 @@
                 android:orientation="vertical"
                 android:layout_marginTop="8dip"
                 android:paddingTop="2dip"
-                android:layout_marginRight="100dip"
+                android:layout_marginRight="@dimen/compose_area_right_padding"
                 android:paddingBottom="0dip"
                 android:paddingLeft="0dip"
                 android:visibility="gone" />
@@ -73,7 +73,7 @@
             <!-- Compose Area -->
             <FrameLayout android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="100dip">
+                android:layout_marginRight="@dimen/compose_area_right_padding">
 
                 <include layout="@layout/compose_body"/>
 
@@ -83,7 +83,8 @@
             <com.android.mail.compose.QuotedTextView android:id="@+id/quoted_text_view"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/compose_area_right_padding" />
 
             <FrameLayout
                 android:id="@+id/composearea_tap_trap_bottom"

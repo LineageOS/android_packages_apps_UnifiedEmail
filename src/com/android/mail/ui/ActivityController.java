@@ -36,6 +36,8 @@ import com.android.mail.providers.Settings;
 import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
+import java.util.Collection;
+
 /**
  * An Activity controller knows how to combine views and listeners into a functioning activity.
  * ActivityControllers are delegates that implement methods by calling underlying views to modify,
@@ -44,7 +46,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
 public interface ActivityController extends DragListener, LayoutListener, SubjectDisplayChanger,
         ModeChangeListener, ConversationListCallbacks, FolderChangeCommitListener,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
-        DestructiveAction, ConversationSetObserver,
+        ConversationSetObserver,
         FolderListFragment.FolderListSelectionListener, HelpCallback, UndoBarView.UndoListener {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
@@ -217,23 +219,25 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     void showConversationList(ConversationListContext listContext);
 
     /**
-     * Show the conversation provided here.
-     * @param conversation conversation to display.
+     * Show the conversation provided here. If the conversation is null, this is a request to pop
+     * <em>out</em> of conversation view mode and head back to conversation list mode, or whatever
+     * should best show in its place.
+     * @param conversation conversation to display, possibly null.
      */
     void showConversation(Conversation conversation);
 
     /**
-     * Show the wait for account initilization mode.
+     * Show the wait for account initialization mode.
      */
     public void showWaitForInitialization();
 
     /**
-     * Dismiss the wait for account initization mode.
+     * Dismiss the wait for account initialization mode.
      */
     public void hideWaitForInitialization();
 
     /**
-     * Update the wait for account intization mode.
+     * Update the wait for account initialization mode.
      */
     public void updateWaitMode();
 
@@ -292,13 +296,12 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     void onConversationSeen(Conversation conv);
 
     /**
-     * Returns the destructive action that can change the folders for a specific conversation.
-     * @return
-     */
-    public abstract DestructiveAction getFolderDestructiveAction();
-
-    /**
      * Load the default inbox associated with the current account.
      */
     public abstract void loadAccountInbox();
+
+    /**
+     * Return the folder currently being viewed by the activity.
+     */
+    public abstract Folder getFolder();
 }

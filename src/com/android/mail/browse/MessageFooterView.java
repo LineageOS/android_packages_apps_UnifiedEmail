@@ -116,7 +116,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     }
 
     private void renderAttachments() {
-        List<Attachment> attachments;
+        final List<Attachment> attachments;
         if (mAttachmentsCursor != null && !mAttachmentsCursor.isClosed()) {
             int i = -1;
             attachments = Lists.newArrayList();
@@ -132,6 +132,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     }
 
     private void renderAttachments(List<Attachment> attachments) {
+        int index = 0;
         for (Attachment attachment : attachments) {
             MessageHeaderAttachment attachView = (MessageHeaderAttachment) findViewWithTag(
                     attachment.uri);
@@ -142,7 +143,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 addView(attachView);
             }
 
-            attachView.render(attachment);
+            attachView.render(attachment, mMessageHeaderItem.message.attachmentListUri, index);
+            index++;
         }
     }
 

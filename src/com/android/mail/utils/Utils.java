@@ -25,6 +25,7 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
 import android.text.Html;
@@ -78,6 +79,7 @@ public class Utils {
     public static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_ACCOUNT_STRING = "accountString";
     public static final String EXTRA_ACCOUNT_URI = "accountUri";
+    public static final String EXTRA_FOLDER_URI = "folderUri";
     public static final String EXTRA_COMPOSE_URI = "composeUri";
     public static final String EXTRA_CONVERSATION = "conversationUri";
     public static final String EXTRA_FOLDER = "folder";
@@ -98,6 +100,10 @@ public class Utils {
     private static String sVersionCode = null;
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
+
+    public static boolean isRunningJellybeanOrLater() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+    }
 
     /**
      * Sets WebView in a restricted mode suitable for email use.
@@ -947,5 +953,12 @@ public class Utils {
             }
             return null;
         }
+    }
+
+    /**
+     * @return whether to show two pane or single pane search results.
+     */
+    public static boolean showTwoPaneSearchResults(Context context) {
+        return context.getResources().getBoolean(R.bool.show_two_pane_search_results);
     }
 }

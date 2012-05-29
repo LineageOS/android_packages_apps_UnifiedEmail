@@ -49,6 +49,10 @@ public class ConversationItemViewCoordinates {
     private static int FOLDER_CELL_WIDTH = -1;
     private static int sConversationHeights[];
 
+    // For combined views
+    private static int COLOR_BLOCK_WIDTH = -1;
+    private static int COLOR_BLOCK_HEIGHT = -1;
+
     // Checkmark.
     int checkmarkX;
     int checkmarkY;
@@ -87,6 +91,7 @@ public class ConversationItemViewCoordinates {
     int foldersFontSize;
     int foldersAscent;
     boolean showFolders;
+    boolean showColorBlock;
 
     // Date.
     int dateXEnd;
@@ -239,6 +244,22 @@ public class ConversationItemViewCoordinates {
         }
     }
 
+    public static int getColorBlockWidth(Context context) {
+        Resources res = context.getResources();
+        if (COLOR_BLOCK_WIDTH <= 0) {
+            COLOR_BLOCK_WIDTH = res.getDimensionPixelSize(R.dimen.color_block_width);
+        }
+        return COLOR_BLOCK_WIDTH;
+    }
+
+    public static int getColorBlockHeight(Context context) {
+        Resources res = context.getResources();
+        if (COLOR_BLOCK_HEIGHT <= 0) {
+            COLOR_BLOCK_HEIGHT = res.getDimensionPixelSize(R.dimen.color_block_height);
+        }
+        return COLOR_BLOCK_HEIGHT;
+    }
+
     /**
      * Returns the width available to draw folders in this mode.
      */
@@ -357,6 +378,11 @@ public class ConversationItemViewCoordinates {
                 }
             } else {
                 coordinates.showFolders = false;
+            }
+
+            View colorBlock = view.findViewById(R.id.color_block);
+            if (colorBlock != null) {
+                coordinates.showColorBlock = true;
             }
 
             View replyState = view.findViewById(R.id.reply_state);

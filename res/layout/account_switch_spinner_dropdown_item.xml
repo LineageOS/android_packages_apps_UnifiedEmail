@@ -16,19 +16,22 @@
      limitations under the License.
 -->
 
-<!-- View shown for each entry in the dropdown list from the navigation spinner in the
-     actionbar. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="?android:attr/spinnerDropDownItemStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/account_dropdown_item_height"
-    android:gravity="center_vertical">
-
+    android:gravity="center_horizontal">
+    <View android:id="@+id/account_spinner_color"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_height="@dimen/color_block_height"
+        android:layout_width="@dimen/color_block_width"/>
     <RelativeLayout
         android:layout_height="wrap_content"
-        android:layout_width="0dip"
-        android:layout_weight="1">
+        android:layout_width="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true">
         <TextView
             android:id="@+id/account_spinner_folder"
             android:singleLine="true"
@@ -36,20 +39,18 @@
             android:layout_width="match_parent"
             android:ellipsize="end"
             style="@style/AccountSpinnerDropdownTextPrimary"
-            android:visibility="gone" />
-
+            android:visibility="gone"/>
         <TextView
             android:id="@+id/account_spinner_accountname"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:ellipsize="end"
             android:layout_below="@id/account_spinner_folder"
-            style="@style/AccountSpinnerDropdownTextSecondary" />
-
+            style="@style/AccountSpinnerDropdownTextSecondary"/>
     </RelativeLayout>
-
     <TextView
         android:id="@+id/account_spinner_unread_count"
-        style="@style/UnreadCount" />
-
-</LinearLayout>
+        style="@style/UnreadCount"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"/>
+</RelativeLayout>

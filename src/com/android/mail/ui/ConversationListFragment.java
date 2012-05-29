@@ -47,9 +47,7 @@ import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.common.collect.ImmutableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -93,9 +91,6 @@ public final class ConversationListFragment extends ListFragment implements
 
     private View mSearchStatusView;
 
-    /** The currently selected conversation */
-    private int mCurrentPosition = -1;
-
     /**
      * Current Account being viewed
      */
@@ -104,8 +99,6 @@ public final class ConversationListFragment extends ListFragment implements
      * Current folder being viewed.
      */
     private Folder mFolder;
-
-    private UndoBarView mUndoView;
 
     /**
      * A simple method to update the timestamps of conversations periodically.
@@ -334,15 +327,16 @@ public final class ConversationListFragment extends ListFragment implements
         }
         assert (view instanceof ConversationItemView);
         ConversationItemView item = (ConversationItemView) view;
+        item.getConversation();
         // TODO(mindyp) handle drag mode, long press.
         // Handle drag mode if allowed, otherwise toggle selection.
         //        if (!mViewMode.getMode() == ViewMode.CONVERSATION_LIST || !mTabletDevice) {
         // Add this conversation to the selected set.
-        final Conversation conversation = item.getConversation();
+        // final Conversation conversation  = item.getConversation();
         // mSelectedSet.toggle(conversation);
         item.toggleCheckMark();
         // Verify that the checkbox is in sync with the selection set.
-        //assert (item.isSelected() == mSelectedSet.contains(conversation));
+        // assert (item.isSelected() == mSelectedSet.contains(conversation));
         return true;
     }
 
@@ -353,7 +347,6 @@ public final class ConversationListFragment extends ListFragment implements
             return;
         }
         viewConversation(position);
-        mCurrentPosition = position;
     }
 
     @Override
@@ -411,12 +404,21 @@ public final class ConversationListFragment extends ListFragment implements
      */
     protected void viewConversation(int position) {
         LogUtils.d(LOG_TAG, "ConversationListFragment.viewConversation(%d)", position);
+        setSelected(position);
+        final ConversationCursor cursor = getConversationListCursor();
+        if (cursor != null && cursor.moveToPosition(position)) {
+            final Conversation conv = new Conversation(cursor);
+            conv.position = position;
+            mCallbacks.onConversationSelected(conv);
+        }
+    }
+
+    /**
+     * Sets the selected position (the highlighted conversation) to the position provided here.
+     * @param position
+     */
+    protected final void setSelected(int position) {
         getListView().setItemChecked(position, true);
-        ConversationCursor conversationListCursor = getConversationListCursor();
-        conversationListCursor.moveToPosition(position);
-        Conversation conv = new Conversation(conversationListCursor);
-        conv.position = position;
-        mCallbacks.onConversationSelected(conv);
     }
 
     private ConversationCursor getConversationListCursor() {
@@ -430,34 +432,19 @@ public final class ConversationListFragment extends ListFragment implements
         mListAdapter.notifyDataSetChanged();
     }
 
-    public void requestDelete(final DestructiveAction listener) {
-        if (isVisible() && mCurrentPosition > -1) {
-            mListAdapter.delete(new ArrayList<Integer>(ImmutableList.of(mCurrentPosition)),
-                    listener);
-        } else {
-            listener.performAction();
-        }
-    }
-
-    public void requestDelete(int position, DestructiveAction listener) {
-        if (position > -1) {
-            mCurrentPosition = position;
-            ConversationCursor conversationListCursor = getConversationListCursor();
-            if (conversationListCursor != null) {
-                conversationListCursor.moveToPosition(position);
-            }
-        }
-        requestDelete(listener);
-    }
-
-    public void requestDelete(Collection<Conversation> conversations,
-            DestructiveAction listener) {
+    /**
+     * Change the UI to delete the conversations provided and then call the
+     * {@link DestructiveAction} provided here <b>after</b> the UI has been updated.
+     * @param conversations
+     * @param action
+     */
+    public void requestDelete(Collection<Conversation> conversations, DestructiveAction action) {
         for (Conversation conv : conversations) {
             conv.localDeleteOnUpdate = true;
         }
         // Delete the local delete items (all for now) and when done,
         // update...
-        mListAdapter.delete(conversations, listener);
+        mListAdapter.delete(conversations, action);
     }
 
     public void onFolderUpdated(Folder folder) {

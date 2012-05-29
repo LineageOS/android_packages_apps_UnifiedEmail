@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2012 Google Inc.
+     Licensed to The Android Open Source Project.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<!-- Action bar items for the tablet when viewing a conversation -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/archive"
+        android:title="@string/archive"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/archive"
+        android:alphabeticShortcut="@string/trigger_y_char" />
+
+    <item
+        android:id="@+id/delete"
+        android:title="@string/delete"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/trash" />
+
+    <!-- Always available -->
+    <item
+        android:id="@+id/change_folder"
+        android:title="@string/menu_change_folders"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_menu_folders_holo_light" />
+
+    <item android:id="@+id/inside_conversation_unread"
+        android:title="@string/mark_unread"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_menu_mark_unread_holo_light" />
+
+    <item
+        android:id="@+id/mark_important"
+        android:showAsAction="never"
+        android:title="@string/mark_important" />
+
+    <item
+        android:id="@+id/mark_not_important"
+        android:showAsAction="never"
+        android:title="@string/mark_not_important" />
+
+    <item
+        android:id="@+id/mute"
+        android:title="@string/mute"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/report_spam"
+        android:title="@string/report_spam"
+        android:showAsAction="never"/>
+
+    <!-- Available for Folders with SUPPORTS_SETTINGS capability -->
+    <item android:id="@+id/folder_options"
+        android:title="@string/menu_folder_options"
+        android:showAsAction="never"  />
+
+    <item android:id="@+id/settings"
+        android:title="@string/menu_settings"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/help_info_menu_item"
+        android:showAsAction="never"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/help_and_info" />
+
+    <item
+        android:id="@+id/feedback_menu_item"
+        android:showAsAction="never"
+        android:icon="@android:drawable/ic_menu_send"
+        android:title="@string/feedback" />
+
+</menu>

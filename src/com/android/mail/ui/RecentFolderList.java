@@ -47,8 +47,6 @@ public final class RecentFolderList {
     private static final String TAG = "RecentFolderList";
     /** The application context */
     private final Context mContext;
-    /** The AbstractActivityController that created us*/
-    private final ActivityController mController;
     /** The current account */
     private Account mAccount = null;
 
@@ -110,10 +108,9 @@ public final class RecentFolderList {
      * retrieve the RecentFolderList from persistent storage (if any).
      * @param account
      */
-    public RecentFolderList(Context context, ActivityController controller) {
+    public RecentFolderList(Context context) {
         mFolderCache = new LruCache<String, Folder>(MAX_RECENT_FOLDERS);
         mContext = context;
-        mController = controller;
     }
 
     /**
@@ -169,22 +166,24 @@ public final class RecentFolderList {
 
     /**
      * Generate a sorted list of recent folders, excluding the passed in folder (if any) and
-     * the current account's default inbox
+     * the current account's default inbox. This must be called <em>after</em>
+     * {@link #setCurrentAccount(Account)} has been called.
      * @param excludedFolder the folder to be excluded (typically the current folder)
      */
     public ArrayList<Folder> getRecentFolderList(Folder excludedFolder) {
-        ArrayList<Uri> excludedUris = new ArrayList<Uri>();
+        final ArrayList<Uri> excludedUris = new ArrayList<Uri>();
         if (excludedFolder != null) {
             excludedUris.add(excludedFolder.uri);
         }
-        final Settings settings = mController.getSettings();
-        if (settings != null) {
+        final Uri defaultInbox = (mAccount == null) ?
+            Uri.EMPTY : Settings.getDefaultInboxUri(mAccount.settings);
+        if (!defaultInbox.equals(Uri.EMPTY)) {
             // This could already be in the list, but that's ok
-            excludedUris.add(settings.defaultInbox);
+            excludedUris.add(defaultInbox);
         }
         final List<Folder> recent = new ArrayList<Folder>(mFolderCache.values());
         Collections.sort(recent, ALPHABET_IGNORECASE);
-        ArrayList<Folder> recentFolders = new ArrayList<Folder>();
+        final ArrayList<Folder> recentFolders = new ArrayList<Folder>();
         for (Folder f : recent) {
             if (!excludedUris.contains(f.uri)) {
                 recentFolders.add(f);

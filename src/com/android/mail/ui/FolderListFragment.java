@@ -114,6 +114,7 @@ public final class FolderListFragment extends ListFragment implements
             // Activity is finishing, just bail.
             return;
         }
+        selectFolder(mActivity.getCurrentFolder());
         getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
     }
 

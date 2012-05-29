@@ -23,11 +23,6 @@
         <item name="android:layout_marginTop">3sp</item>
     </style>
 
-    <style name="SendersStyle">
-        <item name="android:layout_marginLeft">48dip</item>
-        <item name="android:layout_marginTop">10sp</item>
-    </style>
-
     <style name="SubjectStyle">
         <item name="android:layout_marginLeft">8dip</item>
         <item name="android:layout_marginTop">-6sp</item>

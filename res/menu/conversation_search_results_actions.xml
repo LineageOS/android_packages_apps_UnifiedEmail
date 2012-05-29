@@ -20,7 +20,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Depends on AccountCapabilities.ARCHIVE -->
     <item
-        android:id="@+id/y_button"
+        android:id="@+id/archive"
         android:title="@string/archive"
         android:showAsAction="ifRoom"
         android:icon="@drawable/archive"
@@ -34,7 +34,7 @@
 
     <!-- Always available -->
     <item
-        android:id="@+id/change_folders"
+        android:id="@+id/change_folder"
         android:title="@string/menu_change_folders"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_folders_holo_light" />

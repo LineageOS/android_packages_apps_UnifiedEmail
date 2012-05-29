@@ -23,8 +23,10 @@ import android.app.SearchableInfo;
 import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +42,7 @@ import com.android.mail.R;
 import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.ConversationListContext;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
@@ -98,6 +101,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      * method talks about why this is required.
      */
     private boolean mIgnoreFirstNavigation = true;
+    private Boolean mShowConversationSubject;
 
     public ActionBarView(Context context) {
         this(context, null);
@@ -204,9 +208,10 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             position = 0;
             LogUtils.w(LOG_TAG, "IN actionbarview setAccounts, account not found, using first.");
         }
+        final Uri defaultInbox = Settings.getDefaultInboxUri(mAccount.settings);
         final boolean viewingDefaultInbox =
                 (mFolder == null || mAccount == null || mAccount.settings == null) ? false :
-                    mFolder.uri.equals(mAccount.settings.defaultInbox);
+                    mFolder.uri.equals(defaultInbox);
         final boolean accountInSpinner = (position >= 0);
         if (accountInSpinner && viewingDefaultInbox) {
             // This position corresponds to current account and default Inbox.  Select it.
@@ -393,7 +398,8 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 // FIXME: use a resource to have fine-grained control over whether the spinner
                 // or the subject appears
-                if (Utils.useTabletUI(mActivity.getActivityContext())) {
+                if (Utils.useTabletUI(mActivity.getActivityContext())
+                        && !showConversationSubject()) {
                     showNavList();
                 } else {
                     setStandardMode();
@@ -404,7 +410,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 setPopulatedSearchView();
                 // Remove focus from the search action menu in search results mode so the IME and
                 // the suggestions don't get in the way.
-                if (mMode == ViewMode.SEARCH_RESULTS_LIST && mSearch != null) {
+                if (mSearch != null) {
                     mSearchWidget = (SearchView) mSearch.getActionView();
                     mSearchWidget.clearFocus();
                 }
@@ -412,7 +418,8 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 setStandardMode();
-                if (Utils.useTabletUI(mActivity.getActivityContext())) {
+                if (Utils.useTabletUI(mActivity.getActivityContext())
+                        && !showConversationSubject()) {
                     setPopulatedSearchView();
                 }
                 break;
@@ -425,6 +432,14 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 break;
         }
         return false;
+    }
+
+    private boolean showConversationSubject() {
+        if (mShowConversationSubject == null) {
+            mShowConversationSubject = new Boolean(mActivity.getActivityContext().getResources()
+                    .getBoolean(R.bool.show_conversation_subject));
+        }
+        return mShowConversationSubject;
     }
 
     /**
@@ -446,10 +461,12 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private void setPopulatedSearchView() {
         if (mSearch != null) {
             mSearch.expandActionView();
-            ConversationListContext context = mController.getCurrentListContext();
-            if (context != null) {
-                mSearchWidget.setQuery(context.searchQuery, false);
+            String query = mActivity.getIntent().getStringExtra(
+                    ConversationListContext.EXTRA_SEARCH_QUERY);
+            if (!TextUtils.isEmpty(query)) {
+                mSearchWidget.setQuery(query, false);
             }
+            mSearchWidget.clearFocus();
         }
     }
 

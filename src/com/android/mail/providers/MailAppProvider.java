@@ -16,22 +16,16 @@
 
 package com.android.mail.providers;
 
-import com.android.mail.providers.Account;
-import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
-import com.android.mail.providers.protos.boot.AccountReceiver;
-import com.android.mail.utils.MatrixCursorWithExtra;
-
-import android.content.Intent;
-import android.content.Loader;
+import android.app.Activity;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
 import android.content.Loader.OnLoadCompleteListener;
 import android.content.SharedPreferences;
-import com.android.mail.utils.LogUtils;
-
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -39,13 +33,14 @@ import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
+import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
+import com.android.mail.providers.protos.boot.AccountReceiver;
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.MatrixCursorWithExtra;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.lang.IllegalStateException;
-import java.lang.Integer;
-import java.lang.StringBuilder;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -233,6 +228,8 @@ public abstract class MailAppProvider extends ContentProvider
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI)) {
                     builder.add(account.recentFolderListUri);
+                } else if (TextUtils.equals(column, UIProvider.AccountColumns.COLOR)) {
+                    builder.add(account.color);
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.SettingsColumns.SIGNATURE)) {
                     builder.add(account.settings.signature);
@@ -461,6 +458,19 @@ public abstract class MailAppProvider extends ContentProvider
                     SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         }
         return mSharedPrefs;
+    }
+
+    static public Account getAccountFromAccountUri(Uri accountUri) {
+        MailAppProvider provider = getInstance();
+        if (provider != null && provider.mAccountsFullyLoaded) {
+            synchronized(provider.mAccountCache) {
+                AccountCacheEntry entry = provider.mAccountCache.get(accountUri);
+                if (entry != null) {
+                    return entry.mAccount;
+                }
+            }
+        }
+        return null;
     }
 
     @Override

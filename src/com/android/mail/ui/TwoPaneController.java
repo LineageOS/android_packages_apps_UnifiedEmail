@@ -20,10 +20,10 @@ package com.android.mail.ui;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.android.mail.ConversationListContext;
@@ -31,13 +31,8 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
@@ -62,7 +57,7 @@ public final class TwoPaneController extends AbstractActivityController {
      */
     private void initializeConversationListFragment(boolean show) {
         if (show) {
-            if (mConvListContext != null && mConvListContext.isSearchResult()) {
+            if (Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())) {
                 mViewMode.enterSearchResultsListMode();
             } else {
                 mViewMode.enterConversationListMode();
@@ -113,7 +108,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     protected boolean isConversationListVisible() {
-        return mLayout.isConversationListVisible();
+        return !mLayout.isConversationListCollapsed();
     }
 
     @Override
@@ -136,7 +131,8 @@ public final class TwoPaneController extends AbstractActivityController {
         if (mLayout == null) {
             LogUtils.d(LOG_TAG, "mLayout is null!");
         }
-        mLayout.initializeLayout(mActivity.getApplicationContext());
+        mLayout.initializeLayout(mActivity.getApplicationContext(),
+                Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
 
         // The tablet layout needs to refer to mode changes.
         mViewMode.addListener(mLayout);
@@ -158,6 +154,15 @@ public final class TwoPaneController extends AbstractActivityController {
     public void onAccountChanged(Account account) {
         super.onAccountChanged(account);
         renderFolderList();
+    }
+
+    @Override
+    public void onFolderChanged(Folder folder) {
+        super.onFolderChanged(folder);
+        final FolderListFragment folderList = getFolderListFragment();
+        if (folderList != null) {
+            folderList.selectFolder(folder);
+        }
     }
 
     @Override
@@ -208,19 +213,28 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void showConversation(Conversation conversation) {
+        super.showConversation(conversation);
         if (mActivity == null) {
             return;
         }
-        super.showConversation(conversation);
-        int mode = mViewMode.getMode();
+        if (conversation == null) {
+            // This is a request to remove the conversation view and show the conversation list
+            // fragment instead.
+            onBackPressed();
+            return;
+        }
+        final int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             mViewMode.enterSearchResultsConversationMode();
-            unhideConversationList();
         } else {
             mViewMode.enterConversationMode();
         }
-
         mPagerController.show(mAccount, mFolder, conversation);
+        final ConversationListFragment convList = getConversationListFragment();
+        if (convList != null) {
+            LogUtils.d(LOG_TAG, "showConversation: Selecting position %d.", conversation.position);
+            convList.setSelected(conversation.position);
+        }
     }
 
     @Override
@@ -247,22 +261,6 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     /**
-     * Show the conversation list if it can be shown in the current orientation.
-     * @return true if the conversation list was shown
-     */
-    private boolean unhideConversationList() {
-        // Find if the conversation list can be shown
-        int mode = mViewMode.getMode();
-        final boolean isConversationListShowable = (mode == ViewMode.CONVERSATION
-                && mLayout.isConversationListCollapsible()
-                || (mode == ViewMode.SEARCH_RESULTS_CONVERSATION));
-        if (isConversationListShowable) {
-            return mLayout.uncollapseList();
-        }
-        return false;
-    }
-
-    /**
      * Up works as follows:
      * 1) If the user is in a conversation and:
      *  a) the conversation list is hidden (portrait mode), shows the conv list and
@@ -276,16 +274,17 @@ public final class TwoPaneController extends AbstractActivityController {
     public boolean onUpPressed() {
         int mode = mViewMode.getMode();
         if (mode == ViewMode.CONVERSATION) {
-            if (!mLayout.isConversationListVisible()) {
+            if (mLayout.isConversationListCollapsed()) {
                 commitLeaveBehindItems();
-                unhideConversationList();
-            } else {
-                mActivity.onBackPressed();
             }
+            mActivity.onBackPressed();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
-            if (!mLayout.isConversationListVisible()) {
+            if (mLayout.isConversationListCollapsed()
+                    || (mConvListContext.isSearchResult() && !Utils
+                            .showTwoPaneSearchResults
+                                (mActivity.getApplicationContext()))) {
                 commitLeaveBehindItems();
-                unhideConversationList();
+                onBackPressed();
             } else {
                 mActivity.finish();
             }
@@ -318,7 +317,7 @@ public final class TwoPaneController extends AbstractActivityController {
         int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
-        } else if (mViewMode.getMode() == ViewMode.CONVERSATION) {
+        } else if (mode == ViewMode.CONVERSATION) {
             // Go to conversation list.
             mViewMode.enterConversationListMode();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
@@ -332,142 +331,25 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
+    public void exitSearchMode() {
+        int mode = mViewMode.getMode();
+        if (mode == ViewMode.SEARCH_RESULTS_LIST
+                || (mode == ViewMode.SEARCH_RESULTS_CONVERSATION
+                        && Utils.showTwoPaneSearchResults(mActivity.getApplicationContext()))) {
+            mActivity.finish();
+        }
+    }
+
+    @Override
     public boolean shouldShowFirstConversation() {
-        return mConvListContext != null && mConvListContext.isSearchResult();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean handled = true;
-        final int id = item.getItemId();
-        switch (id) {
-            case R.id.y_button: {
-                final boolean showDialog =
-                        (mCachedSettings != null && mCachedSettings.confirmArchive);
-                confirmAndDelete(showDialog, R.plurals.confirm_archive_conversation,
-                        getAction(R.id.archive));
-                break;
-            }
-            case R.id.delete: {
-                final boolean showDialog =
-                        (mCachedSettings != null && mCachedSettings.confirmDelete);
-                confirmAndDelete(showDialog, R.plurals.confirm_delete_conversation,
-                        getAction(R.id.delete));
-                break;
-            }
-            case R.id.change_folders:
-                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                        Collections.singletonList(mCurrentConversation)).show();
-                break;
-            case R.id.inside_conversation_unread:
-                updateCurrentConversation(ConversationColumns.READ, false);
-                break;
-            case R.id.mark_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.HIGH);
-                break;
-            case R.id.mark_not_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.LOW);
-                break;
-            case R.id.mute:
-                ConversationListFragment convList = getConversationListFragment();
-                if (convList != null) {
-                    convList.requestDelete(getAction(R.id.mute));
-                }
-                break;
-            case R.id.report_spam:
-                convList = getConversationListFragment();
-                if (convList != null) {
-                    convList.requestDelete(getAction(R.id.report_spam));
-                }
-                break;
-            default:
-                handled = false;
-                break;
-        }
-        return handled || super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * An object that performs an action on the conversation database. This is a
-     * {@link DestructiveAction}: this is called <b>after</a> the conversation list has animated
-     * the conversation away. Once the animation is completed, the {@link #performAction()}
-     * method is called which performs the correct data operation.
-     */
-    private class TwoPaneDestructiveAction extends AbstractDestructiveAction {
-        /** Whether this destructive action has already been performed */
-        public boolean mCompleted;
-
-        public TwoPaneDestructiveAction(int action) {
-            super(action);
-        }
-
-        @Override
-        public void performAction() {
-            if (mCompleted) {
-                return;
-            }
-            mCompleted = true;
-            final ArrayList<Conversation> single = new ArrayList<Conversation>();
-            single.add(mCurrentConversation);
-            final Conversation nextConversation = mTracker.getNextConversation(mCachedSettings);
-            TwoPaneController.this.performAction();
-            final ConversationListFragment convList = getConversationListFragment();
-            if (nextConversation != null) {
-                // We have a conversation to auto advance to.
-                if (convList != null) {
-                    convList.viewConversation(nextConversation.position);
-                }
-                onUndoAvailable(new UndoOperation(1, mAction));
-            } else {
-                // We don't have a conversation to show: show conversation list instead.
-                onBackPressed();
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onUndoAvailable(new UndoOperation(1, mAction));
-                    }
-                });
-            }
-            baseAction(single);
-            if (convList != null) {
-                convList.requestListRefresh();
-            }
-        }
-    }
-
-    /**
-     * Get a destructive action specific to the {@link TwoPaneController}.
-     * This is a temporary method, to control the profusion of {@link DestructiveAction} classes
-     * that are created. Please do not copy this paradigm.
-     * TODO(viki): Resolve the various actions and clean up their calling sequence.
-     * @param action
-     * @return
-     */
-    private final DestructiveAction getAction(int action) {
-        DestructiveAction da = new TwoPaneDestructiveAction(action);
-        registerDestructiveAction(da);
-        return da;
-    }
-
-    @Override
-    protected void requestDelete(final DestructiveAction listener) {
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
-            convList.requestDelete(listener);
-        }
-    }
-
-    @Override
-    public DestructiveAction getFolderDestructiveAction() {
-        return getAction(R.id.change_folder);
+        return Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())
+                && Utils.showTwoPaneSearchResults(mActivity.getApplicationContext());
     }
 
     @Override
     public void onUndoAvailable(UndoOperation op) {
-        int mode = mViewMode.getMode();
-        FrameLayout.LayoutParams params;
+        final int mode = mViewMode.getMode();
+        final FrameLayout.LayoutParams params;
         final ConversationListFragment convList = getConversationListFragment();
         switch (mode) {
             case ViewMode.CONVERSATION_LIST:

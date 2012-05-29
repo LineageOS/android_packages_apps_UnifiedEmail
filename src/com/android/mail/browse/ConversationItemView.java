@@ -880,6 +880,16 @@ public class ConversationItemView extends View implements SwipeableItemView {
             mHeader.folderDisplayer.drawFolders(canvas, mCoordinates, mFoldersXEnd, mMode);
         }
 
+        // If this folder has a color (combined view/Email), show it here
+        if (mHeader.conversation.color != 0) {
+            sFoldersPaint.setColor(mHeader.conversation.color);
+            sFoldersPaint.setStyle(Paint.Style.FILL);
+            int width = ConversationItemViewCoordinates.getColorBlockWidth(mContext);
+            int height = ConversationItemViewCoordinates.getColorBlockHeight(mContext);
+            canvas.drawRect(mCoordinates.dateXEnd - width, 0, mCoordinates.dateXEnd,
+                    height, sFoldersPaint);
+        }
+
         // Date background: shown when there is an attachment or a visible
         // folder.
         if (!isActivated()

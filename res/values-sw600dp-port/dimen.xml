@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,8 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Boolean value indicating whether conversation can be collapsed. -->
-    <integer name="conversation_list_collapsible">0</integer>
-    <integer name="conversation_list_header_mode">0</integer>
-    <!-- Boolean value indicating whether, from within the conversation view, the mark unread
-         action can be shown with the archive action. -->
-    <integer name="can_show_conversation_mark_unread_with_archive_action">0</integer>
-    <integer name="folder_list_weight">1</integer>
-    <integer name="conversation_list_weight">3</integer>
-    <integer name="conversation_view_weight">6</integer>
+    <dimen name="compose_scrollview_width">600dip</dimen>
+    <dimen name="compose_area_left_padding">76dip</dimen>
+    <dimen name="compose_area_right_padding">78dip</dimen>
+    <dimen name="search_view_width">400dip</dimen>
 </resources>

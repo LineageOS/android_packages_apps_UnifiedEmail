@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Map.Entry;
 
 public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceClickListener {
@@ -47,19 +46,28 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
     private HashMap<Folder, Boolean> mCheckedState;
     private boolean mSingle = false;
     private FolderSelectorAdapter mAdapter;
+    private final Collection<Conversation> mTarget;
+    private boolean mBatch;
 
     public interface FolderChangeCommitListener {
         /**
-         * Commit the folder selection change to the underlying provider.
-         * @param uris
+         * Assign the target conversations to the given folders, and remove them from all other
+         * folders that they might be assigned to.
+         * @param folders the folders to assign the conversations to.
+         * @param target the conversations to act upon.
+         * @param batch whether this is a batch operation
          */
-        public void onFolderChangesCommit(ArrayList<Folder> folders);
+        public void onFolderChangesCommit(
+                Collection<Folder> folders, Collection<Conversation> target, boolean batch);
     }
 
     public FoldersSelectionDialog(final Context context, Account account,
             final FolderChangeCommitListener commitListener,
-            Collection<Conversation> selectedConversations) {
+            Collection<Conversation> target, boolean isBatch) {
         mCommitListener = commitListener;
+        mTarget = target;
+        mBatch = isBatch;
+
         // Mapping of a folder's uri to its checked state
         mCheckedState = new HashMap<Folder, Boolean>();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -69,11 +77,11 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         mSingle = !account
                 .supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
         // TODO: (mindyp) make async
-        Cursor foldersCursor = context.getContentResolver().query(account.folderListUri,
+        final Cursor foldersCursor = context.getContentResolver().query(account.folderListUri,
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
         try {
-            HashSet<String> conversationFolders = new HashSet<String>();
-            for (Conversation conversation: selectedConversations) {
+            final HashSet<String> conversationFolders = new HashSet<String>();
+            for (Conversation conversation: target) {
                 if (conversation != null && !TextUtils.isEmpty(conversation.folderList)) {
                     conversationFolders.addAll(Arrays.asList(TextUtils.split(
                             conversation.folderList, ",")));
@@ -82,11 +90,10 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
             mAdapter = new FolderSelectorAdapter(context, foldersCursor,
                     conversationFolders, mSingle);
             builder.setAdapter(mAdapter, this);
-            String folderUri;
             // Pre-load existing conversation folders.
             if (foldersCursor.moveToFirst()) {
                 do {
-                    folderUri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
+                    final String folderUri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
                     if (conversationFolders.contains(folderUri)) {
                         mCheckedState.put(new Folder(foldersCursor), true);
                     }
@@ -116,7 +123,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
      */
     public void update(FolderSelectorAdapter.FolderRow row) {
         // Update the UI
-        boolean add = !row.isPresent();
+        final boolean add = !row.isPresent();
         if (mSingle) {
             if (!add) {
                 // This would remove the check on a single radio button, so just
@@ -139,15 +146,14 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
     public void onClick(DialogInterface dialog, int which) {
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
-                ArrayList<Folder> checkedItems = new ArrayList<Folder>();
-                Set<Entry<Folder, Boolean>> states = mCheckedState.entrySet();
-                for (Entry<Folder, Boolean> entry : states) {
+                final Collection<Folder> folders = new ArrayList<Folder>();
+                for (Entry<Folder, Boolean> entry : mCheckedState.entrySet()) {
                     if (entry.getValue()) {
-                        checkedItems.add(entry.getKey());
+                        folders.add(entry.getKey());
                     }
                 }
                 if (mCommitListener != null) {
-                    mCommitListener.onFolderChangesCommit(checkedItems);
+                    mCommitListener.onFolderChangesCommit(folders, mTarget, mBatch);
                 }
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
@@ -160,7 +166,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
 
     @Override
     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-        FolderRow row = mAdapter.getItem(which);
+        final FolderRow row = mAdapter.getItem(which);
         if (mSingle) {
             // Clear any other checked items.
             mCheckedState.clear();

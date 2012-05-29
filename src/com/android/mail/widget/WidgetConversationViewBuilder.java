@@ -18,6 +18,11 @@ package com.android.mail.widget;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Folder;
+import com.android.mail.ui.FolderDisplayer;
+import com.android.mail.widget.WidgetConversationViewBuilder.WidgetFolderDisplayer;
+
+import java.util.Map;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -51,6 +56,64 @@ public class WidgetConversationViewBuilder {
     private static Bitmap ATTACHMENT;
 
     private final Context mContext;
+    private WidgetFolderDisplayer mFolderDisplayer;
+
+    /**
+     * Label Displayer for Widget
+     */
+    protected static class WidgetFolderDisplayer extends FolderDisplayer {
+        public WidgetFolderDisplayer(Context context) {
+            super(context);
+        }
+
+        // Maximum number of folders we want to display
+        private static final int MAX_DISPLAYED_FOLDERS_COUNT = 3;
+
+        /*
+         * Load Conversation Labels
+         */
+        @Override
+        public void loadConversationFolders(String rawFolders, Folder ignoreFolder) {
+            super.loadConversationFolders(rawFolders, ignoreFolder);
+        }
+
+        private int getFolderViewId(int position) {
+            switch (position) {
+                case 0:
+                    return R.id.widget_folder_0;
+                case 1:
+                    return R.id.widget_folder_1;
+                case 2:
+                    return R.id.widget_folder_2;
+            }
+            return 0;
+        }
+
+        /**
+         * Display folders
+         */
+        public void displayFolders(RemoteViews remoteViews) {
+            int displayedFolder = 0;
+            for (Folder folderValues : mFoldersSortedSet) {
+                int viewId = getFolderViewId(displayedFolder);
+                if (viewId == 0) {
+                    continue;
+                }
+                remoteViews.setViewVisibility(viewId, View.VISIBLE);
+                int color[] = new int[] {folderValues.getBackgroundColor(mDefaultBgColor)};
+                Bitmap bitmap = Bitmap.createBitmap(color, 1, 1, Bitmap.Config.RGB_565);
+                remoteViews.setImageViewBitmap(viewId, bitmap);
+
+                if (++displayedFolder == MAX_DISPLAYED_FOLDERS_COUNT) {
+                    break;
+                }
+            }
+
+            for (int i = displayedFolder; i < MAX_DISPLAYED_FOLDERS_COUNT; i++) {
+                remoteViews.setViewVisibility(getFolderViewId(i), View.GONE);
+            }
+        }
+    }
 
     /*
      * Get font sizes and bitmaps from Resources
@@ -94,9 +157,9 @@ public class WidgetConversationViewBuilder {
     /*
      * Return the full View
      */
-    public RemoteViews getStyledView(
-            CharSequence senders, CharSequence status, CharSequence date, CharSequence subject,
-            CharSequence snippet, String folders, boolean hasAttachments, boolean read) {
+    public RemoteViews getStyledView(CharSequence senders, CharSequence status, CharSequence date,
+            CharSequence subject, CharSequence snippet, String folders, boolean hasAttachments,
+            boolean read, Folder currentFolder) {
 
         final boolean isUnread = !read;
 
@@ -158,6 +221,11 @@ public class WidgetConversationViewBuilder {
         } else {
             remoteViews.setViewVisibility(R.id.widget_unread_background, View.GONE);
             remoteViews.setViewVisibility(R.id.widget_read_background, View.VISIBLE);
+        }
+        if (mContext.getResources().getBoolean(R.bool.display_folder_colors_in_widget)) {
+            mFolderDisplayer = new WidgetFolderDisplayer(mContext);
+            mFolderDisplayer.loadConversationFolders(folders, currentFolder);
+            mFolderDisplayer.displayFolders(remoteViews);
         }
 
         return remoteViews;
