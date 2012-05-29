@@ -42,29 +42,16 @@ import java.util.Map.Entry;
 
 public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceClickListener {
     private AlertDialog mDialog;
-    private FolderChangeCommitListener mCommitListener;
+    private ConversationUpdater mUpdater;
     private HashMap<Folder, Boolean> mCheckedState;
     private boolean mSingle = false;
     private FolderSelectorAdapter mAdapter;
     private final Collection<Conversation> mTarget;
     private boolean mBatch;
 
-    public interface FolderChangeCommitListener {
-        /**
-         * Assign the target conversations to the given folders, and remove them from all other
-         * folders that they might be assigned to.
-         * @param folders the folders to assign the conversations to.
-         * @param target the conversations to act upon.
-         * @param batch whether this is a batch operation
-         */
-        public void onFolderChangesCommit(
-                Collection<Folder> folders, Collection<Conversation> target, boolean batch);
-    }
-
     public FoldersSelectionDialog(final Context context, Account account,
-            final FolderChangeCommitListener commitListener,
-            Collection<Conversation> target, boolean isBatch) {
-        mCommitListener = commitListener;
+            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch) {
+        mUpdater = updater;
         mTarget = target;
         mBatch = isBatch;
 
@@ -152,8 +139,8 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
                         folders.add(entry.getKey());
                     }
                 }
-                if (mCommitListener != null) {
-                    mCommitListener.onFolderChangesCommit(folders, mTarget, mBatch);
+                if (mUpdater != null) {
+                    mUpdater.assignFolder(folders, mTarget, mBatch);
                 }
                 break;
             case DialogInterface.BUTTON_NEGATIVE:

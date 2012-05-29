@@ -36,10 +36,11 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.ui.AbstractActivityController;
 import com.android.mail.ui.AnimatedAdapter;
+import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
+import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.FoldersSelectionDialog;
 import com.android.mail.ui.RestrictedActivity;
@@ -81,48 +82,28 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private Menu mMenu;
 
     private AnimatedAdapter mListAdapter;
-    // TODO(viki): Bad idea.  This is a relic of the previous method of having a DestructiveAction.
-    // A better implementation is not to have clients know about destructive actions but rather
-    // request them from the controller directly. Then, you wouldn't need to know when to commit
-    // them.
-    private AbstractActivityController mController;
 
-    private Account mAccount;
+    /** Object that can update conversation state on our behalf. */
+    private final ConversationUpdater mUpdater;
 
-    protected int mCheckedItem = 0;
+    private final Account mAccount;
 
-    private Folder mFolder;
+    private final Folder mFolder;
 
-    private final ConversationCursor mConversationCursor;
-
-    private SwipeableListView mListView;
+    private final SwipeableListView mListView;
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
-            ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            AbstractActivityController controller, Account account,
+            ConversationSelectionSet selectionSet, AnimatedAdapter adapter, Account account,
             Folder folder, SwipeableListView list) {
         mActivity = activity;
         mSelectionSet = selectionSet;
         mListAdapter = adapter;
-        mConversationCursor = (ConversationCursor)adapter.getCursor();
-        mController = controller;
         mAccount = account;
         mFolder = folder;
         mListView = list;
 
         mContext = mActivity.getActivityContext();
-    }
-
-    /**
-     * Registers a destructive action with the controller and returns it.
-     * @param type the resource id of the menu item that corresponds to this action: R.id.delete
-     *  for example.
-     * @return the {@link DestructiveAction} associated with this action.
-     */
-    // TODO(viki): This is a placeholder during the refactoring. Ideally the controller hands
-    // the ID of the action to clients.
-    private final DestructiveAction getAction(int type) {
-        return mController.getBatchDestruction(type);
+        mUpdater = ((ControllableActivity) mActivity).getConversationUpdater();
     }
 
     @Override
@@ -137,10 +118,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 performDestructiveAction(R.id.archive);
                 break;
             case R.id.mute:
-                mListAdapter.delete(conversations, getAction(R.id.mute));
+                mListAdapter.delete(conversations, mUpdater.getBatchAction(R.id.mute));
                 break;
             case R.id.report_spam:
-                mListAdapter.delete(conversations, getAction(R.id.report_spam));
+                mListAdapter.delete(conversations, mUpdater.getBatchAction(R.id.report_spam));
                 break;
             case R.id.read:
                 markConversationsRead(true);
@@ -183,7 +164,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     }
                 }
                 if (!cantMove) {
-                    new FoldersSelectionDialog(mContext, acct, mController,
+                    new FoldersSelectionDialog(mContext, acct, mUpdater,
                             mSelectionSet.values(), true).show();
                 }
                 break;
@@ -226,7 +207,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     private void performDestructiveAction(final int id) {
-        final DestructiveAction action = getAction(id);
+        final DestructiveAction action = mUpdater.getBatchAction(id);
         final Settings settings = mActivity.getSettings();
         final Collection<Conversation> conversations = mSelectionSet.values();
         final boolean showDialog = (settings != null
@@ -262,17 +243,14 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     private void markConversationsRead(boolean read) {
-        final Collection<Conversation> conversations = mSelectionSet.values();
-        mConversationCursor.updateBoolean(mContext, conversations, ConversationColumns.READ, read);
+        mUpdater.updateConversation(mSelectionSet.values(), ConversationColumns.READ, read);
         updateSelection();
     }
 
     private void markConversationsImportant(boolean important) {
-        final Collection<Conversation> conversations = mSelectionSet.values();
         final int priority = important ? UIProvider.ConversationPriority.HIGH
                 : UIProvider.ConversationPriority.LOW;
-        mConversationCursor.updateInt(mContext, conversations, ConversationColumns.PRIORITY,
-                priority);
+        mUpdater.updateConversation(mSelectionSet.values(), ConversationColumns.PRIORITY, priority);
         updateSelection();
     }
 
@@ -282,11 +260,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      * stars from all conversations
      */
     private void starConversations(boolean star) {
-        final Collection<Conversation> conversations = mSelectionSet.values();
-        if (conversations.size() > 0) {
-            mConversationCursor.updateBoolean(mContext, conversations, ConversationColumns.STARRED,
-                    star);
-        }
+        mUpdater.updateConversation(mSelectionSet.values(), ConversationColumns.STARRED, star);
         updateSelection();
     }
 

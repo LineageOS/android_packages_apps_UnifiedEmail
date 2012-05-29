@@ -27,13 +27,14 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.widget.AbsListView.OnScrollListener;
 
 import com.android.mail.ConversationListContext;
+import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
-import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
@@ -42,10 +43,11 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * or respond to user action.
  */
 public interface ActivityController extends LayoutListener, SubjectDisplayChanger,
-        ModeChangeListener, ConversationListCallbacks, FolderChangeCommitListener,
+        ModeChangeListener, ConversationListCallbacks,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
-        ConversationSetObserver,
-        FolderListFragment.FolderListSelectionListener, HelpCallback, UndoBarView.UndoListener {
+        ConversationSetObserver, ConversationListener, OnScrollListener,
+        FolderListFragment.FolderListSelectionListener, HelpCallback, UndoBarView.UndoListener,
+        ConversationUpdater {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.

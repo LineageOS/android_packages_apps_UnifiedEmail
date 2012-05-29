@@ -740,6 +740,9 @@ public class UIProvider {
         public static final int CALENDAR_INVITE = 1<<4;
     }
 
+    /**
+     * Names of columns representing fields in a Conversation.
+     */
     public static final class ConversationColumns {
         public static final String URI = "conversationUri";
         /**
