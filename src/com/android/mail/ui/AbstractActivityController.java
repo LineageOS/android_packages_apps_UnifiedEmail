@@ -53,7 +53,6 @@ import android.widget.Toast;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
-import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationPagerController;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.compose.ComposeActivity;
@@ -96,8 +95,7 @@ import java.util.TimerTask;
  * In the Gmail codebase, this was called BaseActivityController
  * </p>
  */
-public abstract class AbstractActivityController implements ActivityController,
-        ConversationListener, OnScrollListener {
+public abstract class AbstractActivityController implements ActivityController {
     // Keys for serialization of various information in Bundles.
     /** Tag for {@link #mAccount} */
     private static final String SAVED_ACCOUNT = "saved-account";
@@ -617,12 +615,12 @@ public abstract class AbstractActivityController implements ActivityController,
                 break;
             }
             case R.id.mark_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.HIGH);
+                updateConversation(Conversation.listOf(mCurrentConversation),
+                        ConversationColumns.PRIORITY, UIProvider.ConversationPriority.HIGH);
                 break;
             case R.id.mark_not_important:
-                updateCurrentConversation(ConversationColumns.PRIORITY,
-                        UIProvider.ConversationPriority.LOW);
+                updateConversation(Conversation.listOf(mCurrentConversation),
+                        ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                 break;
             case R.id.mute:
                 requestDelete(target, getAction(R.id.mute, target));
@@ -631,7 +629,10 @@ public abstract class AbstractActivityController implements ActivityController,
                 requestDelete(target, getAction(R.id.report_spam, target));
                 break;
             case R.id.inside_conversation_unread:
-                updateCurrentConversation(ConversationColumns.READ, false);
+                // TODO(viki): This is strange, and potentially incorrect. READ is an int column
+                // in the provider.
+                updateConversation(Conversation.listOf(mCurrentConversation),
+                        ConversationColumns.READ, false);
                 mViewMode.enterConversationListMode();
                 break;
             case android.R.id.home:
@@ -673,31 +674,23 @@ public abstract class AbstractActivityController implements ActivityController,
         return handled;
     }
 
-    /**
-     * Update the specified column name in conversation for a boolean value.
-     * @param columnName
-     * @param value
-     */
-    protected void updateCurrentConversation(String columnName, boolean value) {
-        mConversationListCursor.updateBoolean(mContext, Conversation.listOf(mCurrentConversation),
-                columnName, value);
+    @Override
+    public void updateConversation(Collection <Conversation> target, String columnName,
+            boolean value) {
+        mConversationListCursor.updateBoolean(mContext, target, columnName, value);
         refreshConversationList();
     }
 
-    /**
-     * Update the specified column name in conversation for an integer value.
-     * @param columnName
-     * @param value
-     */
-    protected void updateCurrentConversation(String columnName, int value) {
-        mConversationListCursor.updateInt(mContext, Conversation.listOf(mCurrentConversation),
-                columnName, value);
+    @Override
+    public void updateConversation(Collection <Conversation> target, String columnName, int value) {
+        mConversationListCursor.updateInt(mContext, target, columnName, value);
         refreshConversationList();
     }
 
-    protected void updateCurrentConversation(String columnName, String value) {
-        mConversationListCursor.updateString(mContext, Conversation.listOf(mCurrentConversation),
-                columnName, value);
+    @Override
+    public void updateConversation(Collection <Conversation> target, String columnName,
+            String value) {
+        mConversationListCursor.updateString(mContext, target, columnName, value);
         refreshConversationList();
     }
 
@@ -1426,7 +1419,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * clients should only require {@link DestructiveAction}s, not specific implementations of the.
      * Only the controllers should know what kind of destructive actions are being created.
      */
-    protected class ConversationAction implements DestructiveAction {
+    private class ConversationAction implements DestructiveAction {
         /**
          * The action to be performed. This is specified as the resource ID of the menu item
          * corresponding to this action: R.id.delete, R.id.report_spam, etc.
@@ -1547,7 +1540,7 @@ public abstract class AbstractActivityController implements ActivityController,
      * @param target the conversations to act upon.
      * @return a {@link DestructiveAction} that performs the specified action.
      */
-    protected final DestructiveAction getAction(int action, Collection<Conversation> target) {
+    private final DestructiveAction getAction(int action, Collection<Conversation> target) {
         final DestructiveAction da = new ConversationAction(action, target, false);
         registerDestructiveAction(da);
         return da;
@@ -1556,7 +1549,7 @@ public abstract class AbstractActivityController implements ActivityController,
     // Called from the FolderSelectionDialog after a user is done selecting folders to assign the
     // conversations to.
     @Override
-    public final void onFolderChangesCommit(
+    public final void assignFolder(
             Collection<Folder> folders, Collection<Conversation> target, boolean batch) {
         final boolean isDestructive = !Folder.containerIncludes(folders, mFolder);
         LogUtils.d(LOG_TAG, "onFolderChangesCommit: isDestructive = %b", isDestructive);
@@ -1689,8 +1682,8 @@ public abstract class AbstractActivityController implements ActivityController,
             return;
         }
         mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set,
-                convList.getAnimatedAdapter(), this,
-                mAccount, mFolder, (SwipeableListView) convList.getListView());
+                convList.getAnimatedAdapter(), mAccount, mFolder,
+                (SwipeableListView) convList.getListView());
         enableCabMode();
     }
 
@@ -1912,12 +1905,8 @@ public abstract class AbstractActivityController implements ActivityController,
         return;
     }
 
-    /**
-     * Get a destructive action for selected conversations.
-     * @param action
-     * @return
-     */
-    public final DestructiveAction getBatchDestruction(int action) {
+    @Override
+    public final DestructiveAction getBatchAction(int action) {
         final DestructiveAction da = new ConversationAction(action, mSelectedSet.values(), true);
         registerDestructiveAction(da);
         return da;
