@@ -76,8 +76,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      */
     FolderListFragment.FolderListSelectionListener getFolderListSelectionListener();
 
-    DragListener getDragListener();
-
     void onConversationSeen(Conversation conv);
 
     /**

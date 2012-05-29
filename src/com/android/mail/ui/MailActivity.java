@@ -272,11 +272,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public DragListener getDragListener() {
-        return mController;
-    }
-
-    @Override
     public boolean supportsDrag(DragEvent event, Folder folder) {
         return mController.supportsDrag(event, folder);
     }

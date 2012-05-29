@@ -18,11 +18,10 @@
 package com.android.mail.photo.provider;
 
 import android.net.Uri;
-import android.provider.BaseColumns;
 
 public final class PhotoContract {
     /** Columns for the view {@link #PHOTO_VIEW} */
-    public static interface PhotoViewColumns extends BaseColumns {
+    public static interface PhotoViewColumns {
         /**
          * This column is a {@link Uri} that can be queried
          * for this individual image (resulting cursor has one single row for this image).
@@ -51,5 +50,15 @@ public final class PhotoContract {
         public final static int INDEX_URI = 0;
         public final static int INDEX_CONTENT_URI = 1;
         public final static int INDEX_CONTENT_TYPE = 2;
+    }
+
+    public static final class ContentTypeParameters {
+        /**
+         * Parameter used to specify which type of content to return.
+         * Allows multiple types to be specified.
+         */
+        public static final String CONTENT_TYPE = "contentType";
+
+        private ContentTypeParameters() {}
     }
 }

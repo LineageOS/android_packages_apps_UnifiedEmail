@@ -36,14 +36,12 @@ import com.android.mail.providers.Settings;
 import com.android.mail.ui.FoldersSelectionDialog.FolderChangeCommitListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
-import java.util.Collection;
-
 /**
  * An Activity controller knows how to combine views and listeners into a functioning activity.
  * ActivityControllers are delegates that implement methods by calling underlying views to modify,
  * or respond to user action.
  */
-public interface ActivityController extends DragListener, LayoutListener, SubjectDisplayChanger,
+public interface ActivityController extends LayoutListener, SubjectDisplayChanger,
         ModeChangeListener, ConversationListCallbacks, FolderChangeCommitListener,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
         ConversationSetObserver,
@@ -61,18 +59,6 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
      * Returns the current conversation list context.
      */
     ConversationListContext getCurrentListContext();
-
-    /**
-     * Return the current mode the activity is in. Values need to be matched against constants in
-     * {@link ViewMode}.
-     * @return
-     */
-    int getMode();
-
-    /**
-     *
-     */
-    void handleConversationLoadError();
 
     /**
      * @see android.app.Activity#onActivityResult
@@ -241,8 +227,6 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
      */
     public void updateWaitMode();
 
-    public boolean inWaitMode();
-
     /**
      * Show the folder list associated with the currently selected account.
      */
@@ -265,6 +249,11 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
      */
     boolean shouldShowFirstConversation();
 
+    /**
+     * Get the selected set of conversations. Guaranteed to return non-null, this should return
+     * an empty set if no conversation is currently selected.
+     * @return
+     */
     public ConversationSelectionSet getSelectedSet();
 
     /**
@@ -298,10 +287,10 @@ public interface ActivityController extends DragListener, LayoutListener, Subjec
     /**
      * Load the default inbox associated with the current account.
      */
-    public abstract void loadAccountInbox();
+    public void loadAccountInbox();
 
     /**
      * Return the folder currently being viewed by the activity.
      */
-    public abstract Folder getFolder();
+    public Folder getFolder();
 }
