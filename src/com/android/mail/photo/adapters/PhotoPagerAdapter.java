@@ -23,12 +23,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.android.mail.photo.Intents;
-import com.android.mail.photo.Pageable;
 import com.android.mail.photo.Intents.PhotoViewIntentBuilder;
+import com.android.mail.photo.Pageable;
 import com.android.mail.photo.fragments.LoadingFragment;
 import com.android.mail.photo.fragments.PhotoViewFragment;
 import com.android.mail.photo.provider.PhotoContract.PhotoQuery;
-import com.android.mail.providers.UIProvider;
 
 /**
  * Pager adapter for the photo view
@@ -59,8 +58,7 @@ public class PhotoPagerAdapter extends BaseCursorPagerAdapter {
 
     @Override
     public Fragment getItem(Context context, Cursor cursor) {
-//        final long photoId = cursor.getLong(PhotoQuery.INDEX_PHOTO_ID);
-        final String photoUri = cursor.getString(UIProvider.ATTACHMENT_CONTENT_URI_COLUMN);
+        final String photoUri = cursor.getString(PhotoQuery.INDEX_CONTENT_URI);
 
         // create new PhotoViewFragment
         final PhotoViewIntentBuilder builder =

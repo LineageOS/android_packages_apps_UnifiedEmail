@@ -236,11 +236,6 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
             mPhotosUri = mIntent.getStringExtra(Intents.EXTRA_PHOTOS_URI);
         }
 
-        // resolved uri of the photo to view; optional; supersedes mPhotosUri
-        if (mIntent.hasExtra(Intents.EXTRA_RESOLVED_PHOTO_URI)) {
-            mResolvedPhotoUri = mIntent.getStringExtra(Intents.EXTRA_RESOLVED_PHOTO_URI);
-        }
-
         // the loader page hint
         if (mIntent.hasExtra(Intents.EXTRA_PAGE_HINT) && currentItem < 0) {
             mPageHint = mIntent.getIntExtra(Intents.EXTRA_PAGE_HINT,
@@ -503,10 +498,7 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == LOADER_PHOTO_LIST) {
             mFragmentIsLoading = true;
-            final Uri uri =
-                    TextUtils.isEmpty(mResolvedPhotoUri) ?
-                    Uri.parse(mPhotosUri) : Uri.parse(mResolvedPhotoUri);
-            return new PhotoPagerLoader(this, uri, mPageHint);
+            return new PhotoPagerLoader(this, Uri.parse(mPhotosUri), mPageHint);
         }
         return null;
     }

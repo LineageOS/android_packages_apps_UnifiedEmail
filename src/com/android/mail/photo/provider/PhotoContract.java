@@ -17,37 +17,39 @@
 
 package com.android.mail.photo.provider;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 public final class PhotoContract {
     /** Columns for the view {@link #PHOTO_VIEW} */
     public static interface PhotoViewColumns extends BaseColumns {
-        public static final String PHOTO_ID = "photo_id";
+        /**
+         * This column is a {@link Uri} that can be queried
+         * for this individual image (resulting cursor has one single row for this image).
+         */
         public static final String URI = "uri";
-        public static final String OWNER_ID = "owner_id";
-        public static final String TITLE = "title";
-        public static final String VIDEO_DATA = "video_data";
-        public static final String ALBUM_NAME = "album_name";
+        /**
+         * This column is a {@link Uri} that points to the downloaded local file
+         * This value is undefined in any other state.
+         */
+        public static final String CONTENT_URI = "contentUri";
+        /**
+         * This string column is the MIME type.
+         */
+        public static final String CONTENT_TYPE = "contentType";
+
     }
 
     public static interface PhotoQuery {
         /** Projection of the returned cursor */
         public final static String[] PROJECTION = {
-            PhotoViewColumns._ID,
             PhotoViewColumns.URI,
-            PhotoViewColumns.PHOTO_ID,
-            PhotoViewColumns.OWNER_ID,
-            PhotoViewColumns.TITLE,
-            PhotoViewColumns.VIDEO_DATA,
-            PhotoViewColumns.ALBUM_NAME,
+            PhotoViewColumns.CONTENT_URI,
+            PhotoViewColumns.CONTENT_TYPE,
         };
 
-        public final static int INDEX_ID = 0;
-        public final static int INDEX_URI = 1;
-        public final static int INDEX_PHOTO_ID = 2;
-        public final static int INDEX_OWNER_ID = 3;
-        public final static int INDEX_TITLE = 4;
-        public final static int INDEX_VIDEO_DATA = 5;
-        public final static int INDEX_ALBUM_NAME = 6;
+        public final static int INDEX_URI = 0;
+        public final static int INDEX_CONTENT_URI = 1;
+        public final static int INDEX_CONTENT_TYPE = 2;
     }
 }

@@ -21,7 +21,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import com.android.mail.providers.UIProvider;
+import com.android.mail.photo.provider.PhotoContract.PhotoQuery;
 
 /**
  * Loader for a set of photo IDs.
@@ -38,7 +38,7 @@ public class PhotoPagerLoader extends PhotoCursorLoader {
 
         final Uri loaderUri = getLoaderUri();
         setUri(loaderUri);
-        setProjection(UIProvider.ATTACHMENT_PROJECTION);
+        setProjection(PhotoQuery.PROJECTION);
         returnCursor = super.esLoadInBackground();
 
         return returnCursor;

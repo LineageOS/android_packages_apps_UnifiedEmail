@@ -73,8 +73,6 @@ public class Intents {
     public static class PhotoViewIntentBuilder {
         private final Intent mIntent;
 
-        /** The id of the photo being displayed */
-        private long mPhotoId;
         /** The name of the album being displayed */
         private String mAlbumName;
         /** The ID of the photo to force load */
@@ -94,11 +92,6 @@ public class Intents {
 
         private PhotoViewIntentBuilder(Context context, Class<?> cls) {
             mIntent = new Intent(context, cls);
-        }
-
-        public PhotoViewIntentBuilder setPhotoId(long photoId) {
-            mPhotoId = photoId;
-            return this;
         }
 
         /** Sets the album name */
