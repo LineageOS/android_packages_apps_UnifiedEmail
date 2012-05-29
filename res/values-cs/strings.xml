@@ -46,7 +46,7 @@
     <string name="confirm_send_message_with_no_subject" msgid="8900379985826988281">"V předmětu zprávy není žádný text."</string>
     <string name="confirm_send_message_with_no_body" msgid="4606328514693368953">"V těle zprávy není žádný text."</string>
     <string name="confirm_send_message" msgid="3221546155385562874">"Odeslat tuto zprávu?"</string>
-    <string name="message_discarded" msgid="5079975378884765445">"Zpráva byla zrušena."</string>
+    <string name="message_discarded" msgid="5079975378884765445">"Zpráva byla zahozena."</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
     <string name="custom_from_account_label" msgid="5069652141632649722">"Odeslat jako:"</string>
     <string name="send" msgid="8242003661397555986">"Odeslat"</string>
@@ -341,5 +341,7 @@
     <!-- no translation found for num_days_ago:one (5538890823169916595) -->
     <!-- no translation found for num_days_ago:other (2756574969735638578) -->
     <!-- no translation found for dialog_inserting_camera_photo (2711654208680211224) -->
+    <skip />
+    <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
     <skip />
 </resources>
