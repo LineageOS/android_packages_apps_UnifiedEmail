@@ -22,7 +22,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -31,10 +30,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.utils.LogUtils;
-
-import java.util.Collection;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
