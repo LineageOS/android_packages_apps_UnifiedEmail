@@ -76,9 +76,7 @@ import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
-import java.util.Timer;
 import java.util.TimerTask;
 
 
@@ -118,9 +116,6 @@ public abstract class AbstractActivityController implements ActivityController,
     public static final String TAG_CONVERSATION = "tag-conversation";
     /** Tag used when loading a folder list fragment. */
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
-
-    /** Are we on a tablet device or not. */
-    public final boolean IS_TABLET_DEVICE;
 
     protected Account mAccount;
     protected Folder mFolder;
@@ -217,7 +212,6 @@ public abstract class AbstractActivityController implements ActivityController,
         mFragmentManager = mActivity.getFragmentManager();
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
-        IS_TABLET_DEVICE = Utils.useTabletUI(mContext);
         mRecentFolderList = new RecentFolderList(mContext);
         // Allow the fragment to observe changes to its own selection set. No other object is
         // aware of the selected set.
