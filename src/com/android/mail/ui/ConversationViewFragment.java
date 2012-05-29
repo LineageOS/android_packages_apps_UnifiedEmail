@@ -144,6 +144,8 @@ public final class ConversationViewFragment extends Fragment implements
     public static final String ARG_CONVERSATION = "conversation";
     private static final String ARG_FOLDER = "folder";
 
+    private static final boolean DEBUG_DUMP_CONVERSATION_HTML = false;
+
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
@@ -403,8 +405,28 @@ public final class ConversationViewFragment extends Fragment implements
     }
 
     private void renderConversation(MessageCursor messageCursor) {
-        mWebView.loadDataWithBaseURL(mBaseUri, renderMessageBodies(messageCursor), "text/html",
-                "utf-8", null);
+        final String convHtml = renderMessageBodies(messageCursor);
+
+        if (DEBUG_DUMP_CONVERSATION_HTML) {
+            java.io.FileWriter fw = null;
+            try {
+                fw = new java.io.FileWriter("/sdcard/conv" + mConversation.id
+                        + ".html");
+                fw.write(convHtml);
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (fw != null) {
+                    try {
+                        fw.close();
+                    } catch (java.io.IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        mWebView.loadDataWithBaseURL(mBaseUri, convHtml, "text/html", "utf-8", null);
         mCursor = messageCursor;
     }
 
