@@ -824,7 +824,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mBodyView.setText(bodyText);
         }
         if (quotedTextIndex > -1 && quotedText != null) {
-            mQuotedTextView.setQuotedTextFromDraft(quotedText);
+            mQuotedTextView.setQuotedTextFromDraft(quotedText, mForward);
         }
     }
 
