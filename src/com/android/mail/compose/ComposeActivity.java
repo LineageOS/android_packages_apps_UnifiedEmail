@@ -803,12 +803,28 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 addAttachmentAndUpdateView(a);
             }
         }
-
+        int quotedTextIndex = message.appendRefMessageContent && !mForward ?
+                message.quotedTextOffset : -1;
         // Set the body
+        CharSequence quotedText = null;
         if (!TextUtils.isEmpty(message.bodyHtml)) {
-            mBodyView.setText(Html.fromHtml(message.bodyHtml));
+            CharSequence htmlText = Html.fromHtml(message.bodyHtml);
+            if (quotedTextIndex > -1) {
+                htmlText = htmlText.subSequence(0, quotedTextIndex);
+                quotedText = message.bodyHtml.subSequence(quotedTextIndex,
+                        message.bodyHtml.length());
+            }
+            mBodyView.setText(htmlText);
         } else {
-            mBodyView.setText(message.bodyText);
+            CharSequence bodyText = quotedTextIndex > -1 ?
+                    message.bodyText.substring(0, quotedTextIndex) : message.bodyText;
+            if (quotedTextIndex > -1) {
+                quotedText = message.bodyText.substring(quotedTextIndex);
+            }
+            mBodyView.setText(bodyText);
+        }
+        if (quotedTextIndex > -1 && quotedText != null) {
+            mQuotedTextView.setQuotedTextFromDraft(quotedText);
         }
     }
 
@@ -1826,21 +1842,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 fullBody.append(text);
             }
         }
-        int draftType = -1;
-        switch (composeMode) {
-            case ComposeActivity.COMPOSE:
-                draftType = DraftType.COMPOSE;
-                break;
-            case ComposeActivity.REPLY:
-                draftType = DraftType.REPLY;
-                break;
-            case ComposeActivity.REPLY_ALL:
-                draftType = DraftType.REPLY_ALL;
-                break;
-            case ComposeActivity.FORWARD:
-                draftType = DraftType.FORWARD;
-                break;
-        }
+        int draftType = getDraftType(composeMode);
         MessageModification.putDraftType(values, draftType);
         if (refMessage != null) {
             if (!TextUtils.isEmpty(refMessage.bodyHtml)) {
@@ -1869,6 +1871,25 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         handler.post(sendOrSaveTask);
 
         return sendOrSaveMessage.requestId();
+    }
+
+    private static int getDraftType(int mode) {
+        int draftType = -1;
+        switch (mode) {
+            case ComposeActivity.COMPOSE:
+                draftType = DraftType.COMPOSE;
+                break;
+            case ComposeActivity.REPLY:
+                draftType = DraftType.REPLY;
+                break;
+            case ComposeActivity.REPLY_ALL:
+                draftType = DraftType.REPLY_ALL;
+                break;
+            case ComposeActivity.FORWARD:
+                draftType = DraftType.FORWARD;
+                break;
+        }
+        return draftType;
     }
 
     private void sendOrSave(Spanned body, boolean save, boolean showToast,
