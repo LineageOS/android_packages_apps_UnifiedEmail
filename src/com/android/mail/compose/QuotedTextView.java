@@ -324,11 +324,11 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     }
 
     public static boolean containsQuotedText(String text) {
-        int pos = text.indexOf(QuotedTextView.HEADER_SEPARATOR);
+        int pos = text.indexOf(QuotedTextView.QUOTE_BEGIN);
         return pos >= 0;
     }
 
     public static int getQuotedTextOffset(String text) {
-        return text.indexOf(QuotedTextView.HEADER_SEPARATOR) + HEADER_SEPARATOR_LENGTH;
+        return text.indexOf(QuotedTextView.QUOTE_BEGIN);
     }
 }
