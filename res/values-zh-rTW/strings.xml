@@ -52,7 +52,7 @@
     <string name="send" msgid="8242003661397555986">"傳送"</string>
     <string name="mark_read" msgid="8438349154394313195">"標示為已讀取"</string>
     <string name="mark_unread" msgid="6231373939351125713">"標示為未讀取"</string>
-    <string name="mute" msgid="1995954983688603977">"忽略"</string>
+    <string name="mute" msgid="1995954983688603977">"略過"</string>
     <string name="add_star" msgid="2866003744391266498">"加上星號"</string>
     <string name="remove_star" msgid="4372327933122106128">"移除星號"</string>
     <string name="archive" msgid="847250094775910499">"封存"</string>
@@ -175,8 +175,8 @@
     <item quantity="other" msgid="850868849811019745">"正在等待系統開始處理 <xliff:g id="COUNT">%1$d</xliff:g> 個會話群組。"</item>
   </plurals>
   <plurals name="conversation_muted">
-    <item quantity="one" msgid="3197365771487542615">"已忽略 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組。"</item>
-    <item quantity="other" msgid="1941193356069303587">"已忽略 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組。"</item>
+    <item quantity="one" msgid="3197365771487542615">"已略過 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組。"</item>
+    <item quantity="other" msgid="1941193356069303587">"已略過 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組。"</item>
   </plurals>
   <plurals name="conversation_spammed">
     <item quantity="one" msgid="3060864972122279220">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組回報為垃圾郵件。"</item>

@@ -302,46 +302,35 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"See konto ei ole seadistatud automaatseks sünkroonimiseks."\n"Puudutage käsku "<b>"Sünkrooni kohe"</b>", et meile üks kord sünkroonida, või käsku "<b>"Muuda sünkroonimisseadeid"</b>", et seadistada see konto meilide automaatseks sünkroonimiseks."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sünkr. kohe"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Muuda sünkroonimisseadeid"</string>
-    <!-- no translation found for photo_view_default_title (305616940993932174) -->
-    <skip />
-    <!-- no translation found for photo_view_load_error (1802859675974843136) -->
-    <skip />
-    <!-- no translation found for photo_view_video_not_ready (8488887700991406631) -->
-    <skip />
-    <!-- no translation found for photo_view_placeholder_image (465734985000555852) -->
-    <skip />
-    <!-- no translation found for photo_network_error (6545183306958652345) -->
-    <skip />
-    <!-- no translation found for loading_photo (6784297653634402137) -->
-    <skip />
-    <!-- no translation found for post_operation_pending (1312168212880219407) -->
-    <skip />
-    <!-- no translation found for download_photo_retry (1894223549069749239) -->
-    <skip />
-    <!-- no translation found for download_photo_error (7511376299526085797) -->
-    <skip />
-    <!-- no translation found for yes (7474216525286833848) -->
-    <skip />
-    <!-- no translation found for no (427548507197604096) -->
-    <skip />
-    <!-- no translation found for camera_photo_error (653424229752191252) -->
-    <skip />
-    <!-- no translation found for photo_view_count (1568865177363028519) -->
-    <skip />
-    <!-- no translation found for truncated_info (4901078975545890098) -->
-    <skip />
-    <!-- no translation found for truncated_info_see_more (2068973974507128729) -->
-    <skip />
-    <!-- no translation found for posted_just_now (7872790861965011674) -->
-    <skip />
-    <!-- no translation found for num_minutes_ago:one (4750191148321568233) -->
-    <!-- no translation found for num_minutes_ago:other (4976118461634588647) -->
-    <!-- no translation found for num_hours_ago:one (2178354472031148118) -->
-    <!-- no translation found for num_hours_ago:other (1470820825143524326) -->
-    <!-- no translation found for num_days_ago:one (5538890823169916595) -->
-    <!-- no translation found for num_days_ago:other (2756574969735638578) -->
-    <!-- no translation found for dialog_inserting_camera_photo (2711654208680211224) -->
-    <skip />
+    <string name="photo_view_default_title" msgid="305616940993932174">"Fotod sõnumist"</string>
+    <string name="photo_view_load_error" msgid="1802859675974843136">"Fotot ei saanud laadida."</string>
+    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"Video pole praegu saadaval. Värskendage."</string>
+    <string name="photo_view_placeholder_image" msgid="465734985000555852">"Üksus pole praegu saadaval. Värskendage."</string>
+    <string name="photo_network_error" msgid="6545183306958652345">"Foto pole praegu saadaval."</string>
+    <string name="loading_photo" msgid="6784297653634402137">"Laadimine …"</string>
+    <string name="post_operation_pending" msgid="1312168212880219407">"Saatmine ..."</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"See kujutis on allalaadimiseks liiga suur. Kas soovite proovida laadida seda alla väiksema eraldusvõimega?"</string>
+    <string name="download_photo_error" msgid="7511376299526085797">"Fotot ei saanud seadmesse salvestada."</string>
+    <string name="yes" msgid="7474216525286833848">"Jah"</string>
+    <string name="no" msgid="427548507197604096">"Ei"</string>
+    <string name="camera_photo_error" msgid="653424229752191252">"Fotot ei leitud."</string>
+    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g>/<xliff:g id="COUNT">%d</xliff:g>"</string>
+    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
+    <string name="truncated_info_see_more" msgid="2068973974507128729">" Kuva rohkem »"</string>
+    <string name="posted_just_now" msgid="7872790861965011674">"Äsja"</string>
+  <plurals name="num_minutes_ago">
+    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> minut tagasi"</item>
+    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> minutit tagasi"</item>
+  </plurals>
+  <plurals name="num_hours_ago">
+    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> tund tagasi"</item>
+    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> tundi tagasi"</item>
+  </plurals>
+  <plurals name="num_days_ago">
+    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> päev tagasi"</item>
+    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> päeva tagasi"</item>
+  </plurals>
+    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"Foto sisestamine …"</string>
     <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
     <skip />
 </resources>
