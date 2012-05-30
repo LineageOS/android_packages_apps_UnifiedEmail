@@ -105,7 +105,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         boolean handled = true;
-        Collection<Conversation> conversations = mSelectionSet.values();
         switch (item.getItemId()) {
             case R.id.delete:
                 performDestructiveAction(R.id.delete);
@@ -114,10 +113,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 performDestructiveAction(R.id.archive);
                 break;
             case R.id.mute:
-                mUpdater.delete(conversations, mUpdater.getBatchAction(R.id.mute));
+                mUpdater.delete(mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute));
                 break;
             case R.id.report_spam:
-                mUpdater.delete(conversations, mUpdater.getBatchAction(R.id.report_spam));
+                mUpdater.delete(mSelectionSet.values(), mUpdater.getBatchAction(R.id.report_spam));
                 break;
             case R.id.read:
                 markConversationsRead(true);
@@ -237,25 +236,52 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
+    /**
+     * Marks the read state of currently selected conversations (<b>and</b> the backing storage)
+     * to the value provided here.
+     * @param read is true if the conversations are to be marked as read, false if they are to be
+     * marked unread.
+     */
     private void markConversationsRead(boolean read) {
-        mUpdater.updateConversation(mSelectionSet.values(), ConversationColumns.READ, read);
-        updateSelection();
-    }
-
-    private void markConversationsImportant(boolean important) {
-        final int priority = important ? UIProvider.ConversationPriority.HIGH
-                : UIProvider.ConversationPriority.LOW;
-        mUpdater.updateConversation(mSelectionSet.values(), ConversationColumns.PRIORITY, priority);
+        final Collection<Conversation> target = mSelectionSet.values();
+        mUpdater.updateConversation(target, ConversationColumns.READ, read);
+        // Update the conversations in the selection too.
+        for (final Conversation c : target) {
+            c.read = read;
+        }
         updateSelection();
     }
 
     /**
-     * Mark the selected conversations with the star setting provided here.
+     * Marks the important state of currently selected conversations (<b>and</b> the backing
+     * storage) to the value provided here.
+     * @param important is true if the conversations are to be marked as important, false if they
+     * are to be marked not important.
+     */
+    private void markConversationsImportant(boolean important) {
+        final Collection<Conversation> target = mSelectionSet.values();
+        final int priority = important ? UIProvider.ConversationPriority.HIGH
+                : UIProvider.ConversationPriority.LOW;
+        mUpdater.updateConversation(target, ConversationColumns.PRIORITY, priority);
+        // Update the conversations in the selection too.
+        for (final Conversation c : target) {
+            c.priority = priority;
+        }
+        updateSelection();
+    }
+
+    /**
+     * Marks the selected conversations with the star setting provided here.
      * @param star true if you want all the conversations to have stars, false if you want to remove
      * stars from all conversations
      */
     private void starConversations(boolean star) {
-        mUpdater.updateConversation(mSelectionSet.values(), ConversationColumns.STARRED, star);
+        final Collection<Conversation> target = mSelectionSet.values();
+        mUpdater.updateConversation(target, ConversationColumns.STARRED, star);
+        // Update the conversations in the selection too.
+        for (final Conversation c : target) {
+            c.starred = star;
+        }
         updateSelection();
     }
 
