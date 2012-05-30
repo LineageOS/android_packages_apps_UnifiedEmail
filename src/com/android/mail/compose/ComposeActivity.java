@@ -527,7 +527,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.bodyText = mBodyView.getText().toString();
         message.embedsExternalResources = false;
         message.refMessageId = mRefMessage != null ? mRefMessage.uri.toString() : null;
-        message.draftType = mode;
+        message.draftType = getDraftType(mode);
         message.appendRefMessageContent = mQuotedTextView.getQuotedTextIfIncluded() != null;
         ArrayList<Attachment> attachments = mAttachmentsView.getAttachments();
         message.hasAttachments = attachments != null && attachments.size() > 0;
@@ -824,7 +824,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mBodyView.setText(bodyText);
         }
         if (quotedTextIndex > -1 && quotedText != null) {
-            mQuotedTextView.setQuotedTextFromDraft(quotedText);
+            mQuotedTextView.setQuotedTextFromDraft(quotedText, mForward);
         }
     }
 
