@@ -1367,7 +1367,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 showCcBccViews();
                 break;
             case R.id.save:
-                doSave(true, false);
+                doSave(true);
                 break;
             case R.id.send:
                 doSend();
@@ -1399,12 +1399,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         sendOrSaveWithSanityChecks(false, true, false);
     }
 
-    private void doSave(boolean showToast, boolean resetIME) {
+    private void doSave(boolean showToast) {
+        // Clear the IME composing suggestions from the body and subject before saving.
+        clearImeText(mBodyView);
+        clearImeText(mSubject);
         sendOrSaveWithSanityChecks(true, showToast, false);
-        if (resetIME) {
-            // Clear the IME composing suggestions from the body.
-            BaseInputConnection.removeComposingSpans(mBodyView.getEditableText());
-        }
+    }
+
+    private void clearImeText(TextView v) {
+        v.clearComposingText();
+        BaseInputConnection.removeComposingSpans(v.getEditableText());
     }
 
     /*package*/ interface SendOrSaveCallback {
@@ -2288,7 +2292,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         if (shouldSave()) {
-            doSave(!mAddingAttachment /* show toast */, true /* reset IME */);
+            doSave(!mAddingAttachment /* show toast */);
         }
     }
 
