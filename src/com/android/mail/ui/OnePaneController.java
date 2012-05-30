@@ -93,9 +93,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void resetActionBarIcon() {
         final int mode = mViewMode.getMode();
-        // If the settings aren't loaded yet, we may not know what the default
-        // inbox is, so err toward this being the account inbox.
-        if ((mAccount.settings != null && mConvListContext != null && !inInbox())
+        if (!inInbox(mAccount, mConvListContext)
                 || mode == ViewMode.SEARCH_RESULTS_LIST
                 || mode == ViewMode.SEARCH_RESULTS_CONVERSATION
                 || mode == ViewMode.CONVERSATION
@@ -111,10 +109,14 @@ public final class OnePaneController extends AbstractActivityController {
      * inbox.
      * @return
      */
-    private boolean inInbox() {
-        final Uri inboxUri = Settings.getDefaultInboxUri(mAccount.settings);
-        return mConvListContext != null && mConvListContext.folder != null ? (!mConvListContext
-                .isSearchResult() && mConvListContext.folder.uri.equals(inboxUri)) : false;
+    private static boolean inInbox(final Account account, final ConversationListContext context) {
+        // If we don't have valid state, then we are not in the inbox.
+        if (account == null || context == null || context.folder == null
+                || account.settings == null) {
+            return false;
+        }
+        final Uri inboxUri = Settings.getDefaultInboxUri(account.settings);
+        return !context.isSearchResult() && context.folder.uri.equals(inboxUri);
     }
 
     @Override
@@ -165,7 +167,7 @@ public final class OnePaneController extends AbstractActivityController {
                 : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
         Fragment conversationListFragment = ConversationListFragment.newInstance(listContext);
 
-        if (!inInbox()) {
+        if (!inInbox(mAccount, mConvListContext)) {
             // Maintain fragment transaction history so we can get back to the
             // fragment used to launch this list.
             mLastConversationListTransactionId = replaceFragment(conversationListFragment,
@@ -290,13 +292,13 @@ public final class OnePaneController extends AbstractActivityController {
      */
     @Override
     public boolean onBackPressed() {
-        int mode = mViewMode.getMode();
+        final int mode = mViewMode.getMode();
         if (mode == ViewMode.FOLDER_LIST) {
             mLastFolderListTransactionId = INVALID_ID;
             transitionToInbox();
         } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
-        } else if (mode == ViewMode.CONVERSATION_LIST && !inInbox()) {
+        } else if (mode == ViewMode.CONVERSATION_LIST && !inInbox(mAccount, mConvListContext)) {
             if (isTransactionIdValid(mLastFolderListTransactionId)) {
                 // Go back to previous folder list.
                 mViewMode.enterFolderListMode();
@@ -366,7 +368,7 @@ public final class OnePaneController extends AbstractActivityController {
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
-        } else if ((!inInbox() && mode == ViewMode.CONVERSATION_LIST)
+        } else if ((!inInbox(mAccount, mConvListContext) && mode == ViewMode.CONVERSATION_LIST)
                 || mode == ViewMode.CONVERSATION
                 || mode == ViewMode.FOLDER_LIST
                 || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
