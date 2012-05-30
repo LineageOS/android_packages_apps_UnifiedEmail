@@ -623,10 +623,10 @@ public abstract class AbstractActivityController implements ActivityController {
                         ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                 break;
             case R.id.mute:
-                requestDelete(target, getAction(R.id.mute, target));
+                delete(target, getAction(R.id.mute, target));
                 break;
             case R.id.report_spam:
-                requestDelete(target, getAction(R.id.report_spam, target));
+                delete(target, getAction(R.id.report_spam, target));
                 break;
             case R.id.inside_conversation_unread:
                 // TODO(viki): This is strange, and potentially incorrect. READ is an int column
@@ -718,7 +718,7 @@ public abstract class AbstractActivityController implements ActivityController {
             final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    requestDelete(target, action);
+                    delete(target, action);
                 }
             };
             final CharSequence message = Utils.formatPlural(mContext, confirmResource,
@@ -728,16 +728,12 @@ public abstract class AbstractActivityController implements ActivityController {
                     .setNegativeButton(R.string.cancel, null)
                     .create().show();
         } else {
-            requestDelete(target, action);
+            delete(target, action);
         }
     }
 
-    /**
-     * Requests the removal of the current conversation with the specified destructive action.
-     * @param action
-     */
-    protected void requestDelete(final Collection<Conversation> target,
-            final DestructiveAction action) {
+    @Override
+    public void delete(final Collection<Conversation> target, final DestructiveAction action) {
         // The conversation list handles deletion if it exists.
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
@@ -763,7 +759,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param target
      * @param action
      */
-    protected void requestUpdate(final Collection<Conversation> target,
+    private void requestUpdate(final Collection<Conversation> target,
             final DestructiveAction action) {
         action.performAction();
         refreshConversationList();
@@ -1563,7 +1559,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // Update the UI elements depending no their visibility and availability
         // TODO(viki): Consolidate this into a single method requestDelete.
         if (isDestructive) {
-            requestDelete(target, folderChange);
+            delete(target, folderChange);
         } else {
             requestUpdate(target, folderChange);
         }
@@ -1681,8 +1677,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (convList == null) {
             return;
         }
-        mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set,
-                convList.getAnimatedAdapter(), mAccount, mFolder,
+        mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set, mAccount, mFolder,
                 (SwipeableListView) convList.getListView());
         enableCabMode();
     }
@@ -1765,7 +1760,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final Collection<Folder> dropTarget = Folder.listOf(folder);
         // Drag and drop is destructive: we remove conversations from the current folder.
         final DestructiveAction action = getFolderChange(conversations, dropTarget, true, true);
-        requestDelete(conversations, action);
+        delete(conversations, action);
     }
 
     @Override
@@ -1976,10 +1971,8 @@ public abstract class AbstractActivityController implements ActivityController {
         return da;
     }
 
-    /**
-     * Safely refresh the conversation list if it exists.
-     */
-    protected final void refreshConversationList() {
+    @Override
+    public final void refreshConversationList() {
         final ConversationListFragment convList = getConversationListFragment();
         if (convList == null) {
             return;

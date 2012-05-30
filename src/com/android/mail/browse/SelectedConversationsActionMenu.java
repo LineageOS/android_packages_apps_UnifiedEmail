@@ -36,7 +36,6 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.ui.AnimatedAdapter;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
@@ -75,13 +74,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private final Context mContext;
 
     @VisibleForTesting
-    ActionMode mActionMode;
+    private ActionMode mActionMode;
 
     private boolean mActivated = false;
 
     private Menu mMenu;
-
-    private AnimatedAdapter mListAdapter;
 
     /** Object that can update conversation state on our behalf. */
     private final ConversationUpdater mUpdater;
@@ -93,11 +90,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private final SwipeableListView mListView;
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
-            ConversationSelectionSet selectionSet, AnimatedAdapter adapter, Account account,
+            ConversationSelectionSet selectionSet, Account account,
             Folder folder, SwipeableListView list) {
         mActivity = activity;
         mSelectionSet = selectionSet;
-        mListAdapter = adapter;
         mAccount = account;
         mFolder = folder;
         mListView = list;
@@ -118,10 +114,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 performDestructiveAction(R.id.archive);
                 break;
             case R.id.mute:
-                mListAdapter.delete(conversations, mUpdater.getBatchAction(R.id.mute));
+                mUpdater.delete(conversations, mUpdater.getBatchAction(R.id.mute));
                 break;
             case R.id.report_spam:
-                mListAdapter.delete(conversations, mUpdater.getBatchAction(R.id.report_spam));
+                mUpdater.delete(conversations, mUpdater.getBatchAction(R.id.report_spam));
                 break;
             case R.id.read:
                 markConversationsRead(true);
@@ -196,7 +192,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      * Update the underlying list adapter and redraw the menus if necessary.
      */
     private void updateSelection() {
-        mListAdapter.notifyDataSetChanged();
+        mUpdater.refreshConversationList();
         if (mActionMode != null) {
             // Calling mActivity.invalidateOptionsMenu doesn't have the correct behavior, since
             // the action mode is not refreshed when activity's options menu is invalidated.
@@ -228,7 +224,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
-
     private void destroy(int id, final Collection<Conversation> conversations,
             final DestructiveAction listener) {
         if (id == R.id.archive) {
@@ -238,7 +233,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             }
             mListView.archiveItems(views, listener);
         } else {
-            mListAdapter.delete(conversations, listener);
+            mUpdater.delete(conversations, listener);
         }
     }
 
@@ -405,7 +400,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         deactivate();
         mSelectionSet.removeObserver(this);
         clearSelection();
-        mListAdapter.notifyDataSetChanged();
+        mUpdater.refreshConversationList();
     }
 
     /**

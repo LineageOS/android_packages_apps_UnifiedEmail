@@ -58,6 +58,13 @@ public interface ConversationUpdater {
     void updateConversation(Collection <Conversation> target, String columnName, boolean value);
 
     /**
+     * Requests the removal of the current conversation with the specified destructive action.
+     * @param target the conversations to act upon.
+     * @param action to perform after the UI has been updated to remove the conversations
+     */
+    void delete(final Collection<Conversation> target, final DestructiveAction action);
+
+    /**
      * Get a destructive action for selected conversations. The action corresponds to Menu item
      * identifiers, for example R.id.unread, or R.id.delete.
      * @param action
@@ -74,4 +81,9 @@ public interface ConversationUpdater {
      */
     public void assignFolder(
             Collection<Folder> folders, Collection<Conversation> target, boolean batch);
+
+    /**
+     * Refreshes the conversation list, if one exists.
+     */
+    void refreshConversationList();
 }
