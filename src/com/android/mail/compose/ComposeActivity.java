@@ -803,7 +803,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 addAttachmentAndUpdateView(a);
             }
         }
-        int quotedTextIndex = message.appendRefMessageContent && !mForward ?
+        int quotedTextIndex = message.appendRefMessageContent ?
                 message.quotedTextOffset : -1;
         // Set the body
         CharSequence quotedText = null;
