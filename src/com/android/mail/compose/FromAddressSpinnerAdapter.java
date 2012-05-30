@@ -23,7 +23,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.android.mail.R;
-import com.android.mail.providers.Account;
 import com.android.mail.providers.ReplyFromAccount;
 
 import java.util.List;
@@ -35,6 +34,9 @@ import java.util.List;
  * @author mindyp@google.com
  */
 public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
+    private static final int FROM = 0;
+    private static final int CUSTOM_FROM = 1;
+
     public static int REAL_ACCOUNT = 2;
 
     public static int ACCOUNT_DISPLAY = 0;
@@ -56,11 +58,26 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
     }
 
     @Override
+    public int getViewTypeCount() {
+        // FROM and CUSTOM_FROM
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int pos) {
+        return getItem(pos).isCustomFrom ? CUSTOM_FROM : FROM;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ReplyFromAccount fromItem = getItem(position);
         int res = fromItem.isCustomFrom ? R.layout.custom_from_item : R.layout.from_item;
-        View fromEntry = getInflater().inflate(res, null);
+        View fromEntry = convertView == null ? getInflater().inflate(res, null) : convertView;
         ((TextView) fromEntry.findViewById(R.id.spinner_account_name)).setText(fromItem.name);
+        if (fromItem.isCustomFrom) {
+            ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
+                    .setText(fromItem.address);
+        }
         return fromEntry;
     }
 
@@ -72,6 +89,10 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
         View fromEntry = getInflater().inflate(res, null);
         TextView acctName = ((TextView) fromEntry.findViewById(R.id.spinner_account_name));
         acctName.setText(fromItem.name);
+        if (fromItem.isCustomFrom) {
+            ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
+                    .setText(fromItem.address);
+        }
         return fromEntry;
     }
 
