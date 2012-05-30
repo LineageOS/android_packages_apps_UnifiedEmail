@@ -902,15 +902,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     protected String decodeEmailInUri(String s) throws UnsupportedEncodingException {
-        // TODO: handle the case where there are spaces in the display name as well as the email
-        // such as "Guy with spaces <guy+with+spaces@gmail.com>" as they it could be encoded
-        // ambiguously.
-
+        // TODO: handle the case where there are spaces in the display name as
+        // well as the email such as "Guy with spaces <guy+with+spaces@gmail.com>"
+        // as they could be encoded ambiguously.
         // Since URLDecode.decode changes + into ' ', and + is a valid
         // email character, we need to find/ replace these ourselves before
         // decoding.
         String replacePlus = s.replace("+", "%2B");
-        return URLDecoder.decode(replacePlus, UTF8_ENCODING_NAME);
+        try {
+            return URLDecoder.decode(replacePlus, UTF8_ENCODING_NAME);
+        } catch (IllegalArgumentException e) {
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
+                LogUtils.e(LOG_TAG, "%s while decoding '%s'", e.getMessage(), s);
+            } else {
+                LogUtils.e(LOG_TAG, e, "Exception  while decoding mailto address");
+            }
+            return null;
+        }
     }
 
     /**
@@ -931,7 +939,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             } else {
                 to = decodeEmailInUri(mailToString.substring(length, index));
             }
-            addToAddresses(Arrays.asList(TextUtils.split(to, ",")));
+            if (!TextUtils.isEmpty(to)) {
+                addToAddresses(Arrays.asList(TextUtils.split(to, ",")));
+            }
         } catch (UnsupportedEncodingException e) {
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
                 LogUtils.e(LOG_TAG, "%s while decoding '%s'", e.getMessage(), mailToString);
