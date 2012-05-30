@@ -294,6 +294,15 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         allowRespondInline(true);
     }
 
+    public void setQuotedTextFromDraft(CharSequence htmlText) {
+        setVisibility(View.VISIBLE);
+        setQuotedText(htmlText);
+        allowQuotedText(true);
+        // If there is quoted text, we always allow respond inline, since this
+        // may be a forward.
+        allowRespondInline(true);
+    }
+
     /**
      * Set quoted text. Some use cases may not want to display the check box (i.e. forwarding) so
      * allow control of that.
