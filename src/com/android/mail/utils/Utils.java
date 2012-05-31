@@ -52,6 +52,10 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
+import com.google.android.common.html.parser.HtmlDocument;
+import com.google.android.common.html.parser.HtmlParser;
+import com.google.android.common.html.parser.HtmlTree;
+import com.google.android.common.html.parser.HtmlTreeBuilder;
 import com.google.common.collect.Maps;
 
 import org.json.JSONObject;
@@ -506,6 +510,29 @@ public class Utils {
     public static boolean useTabletUI(Context context) {
         return context.getResources().getInteger(R.integer.use_tablet_ui) != 0;
     }
+
+    /**
+     * Returns displayable text from the provided HTML string.
+     *
+     * @param htmlText HTML string
+     * @return Plain text string representation of the specified Html string
+     */
+    public static String convertHtmlToPlainText(String htmlText) {
+        return getHtmlTree(htmlText).getPlainText();
+    }
+
+    /**
+     * Returns a {@link HtmlTree} representation of the specified HTML string.
+     */
+    public static HtmlTree getHtmlTree(String htmlText) {
+        final HtmlParser parser = new HtmlParser();
+        final HtmlDocument doc = parser.parse(htmlText);
+        final HtmlTreeBuilder builder = new HtmlTreeBuilder();
+        doc.accept(builder);
+
+        return builder.getTree();
+    }
+
 
     /**
      * Perform a simulated measure pass on the given child view, assuming the
