@@ -1342,8 +1342,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         @Override
         public void onDrawShadow(Canvas canvas) {
-            super.onDrawShadow(canvas);
-
             mBackground.setBounds(0, 0, mView.getWidth(), mView.getHeight());
             mBackground.draw(canvas);
             sPaint.setTextSize(mCoordinates.subjectFontSize);
