@@ -69,4 +69,7 @@
 
     <!-- Whether to display folder colors in the widget -->
     <bool name="display_folder_colors_in_widget">false</bool>
+
+    <!-- Determines the number of columns in an AttachmentTileRow -->
+    <integer name="attachment_tile_column_count">2</integer>
 </resources>

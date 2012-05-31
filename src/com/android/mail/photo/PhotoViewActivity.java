@@ -150,8 +150,6 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
 
     /** The URI of the photos we're viewing; may be {@code null} */
     private String mPhotosUri;
-    /** The resolved URI of the photo to view; may be {@code null}. */
-    private String mResolvedPhotoUri;
     /** The index of the currently viewed photo */
     private int mPhotoIndex;
     /** A hint for which cursor page the photo is located on */

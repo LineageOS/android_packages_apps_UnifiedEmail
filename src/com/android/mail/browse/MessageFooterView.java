@@ -23,9 +23,9 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
+import com.android.mail.R;
 import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.browse.ConversationContainer.DetachListener;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
@@ -39,10 +39,11 @@ import java.util.List;
 public class MessageFooterView extends LinearLayout implements DetachListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    private int mColumnCount;
+
     private MessageHeaderItem mMessageHeaderItem;
     private LoaderManager mLoaderManager;
     private AttachmentCursor mAttachmentsCursor;
-    private LayoutInflater mInflater;
 
     /**
      * An easy way for the conversation view to disable immediately kicking off attachment loaders
@@ -59,7 +60,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     public MessageFooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        mInflater = LayoutInflater.from(context);
+        mColumnCount = context.getResources().getInteger(
+                R.integer.attachment_tile_column_count);
     }
 
     /**
@@ -132,19 +134,37 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     }
 
     private void renderAttachments(List<Attachment> attachments) {
-        int index = 0;
-        for (Attachment attachment : attachments) {
-            MessageHeaderAttachment attachView = (MessageHeaderAttachment) findViewWithTag(
-                    attachment.uri);
+        if (attachments == null || attachments.isEmpty()) {
+            return;
+        }
 
-            if (attachView == null) {
-                attachView = MessageHeaderAttachment.inflate(mInflater, this);
-                attachView.setTag(attachment.uri);
-                addView(attachView);
+        int rowStartIndex = 0; // the index for the first attachment in the current row
+        final Context context = getContext();
+        final int attachmentListSize = attachments.size();
+        final int numRows = (attachmentListSize - 1)/mColumnCount + 1;
+
+        for (int i = 0; i < numRows; i++) {
+            // Get the row view if it already exists.
+            AttachmentTileRow rowView = (AttachmentTileRow) getChildAt(i);
+
+            // If the row view does not exist, create it and add it to its parent.
+            if (rowView == null) {
+                rowView = new AttachmentTileRow(context,
+                        mMessageHeaderItem.message.attachmentListUri, mColumnCount);
+                addView(rowView);
             }
 
-            attachView.render(attachment, mMessageHeaderItem.message.attachmentListUri, index);
-            index++;
+            // Get the sub-list of attachments for that row.
+            int rowEnd = rowStartIndex + mColumnCount;
+            if (rowEnd > attachmentListSize) {
+                rowEnd = attachmentListSize;
+            }
+            List<Attachment> sublist = attachments.subList(rowStartIndex, rowEnd);
+
+            // Setup the tiles in this row.
+            rowView.configureRow(sublist, i);
+
+            rowStartIndex += mColumnCount;
         }
     }
 
@@ -188,5 +208,4 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     public void onLoaderReset(Loader<Cursor> loader) {
         mAttachmentsCursor = null;
     }
-
 }

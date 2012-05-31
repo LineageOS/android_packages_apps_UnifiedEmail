@@ -64,7 +64,7 @@ import java.io.IOException;
  * intents to act on an attachment.
  *
  */
-public class MessageHeaderAttachment extends LinearLayout implements OnClickListener,
+public class MessageAttachmentTile extends LinearLayout implements OnClickListener,
         OnMenuItemClickListener, DialogInterface.OnCancelListener,
         DialogInterface.OnDismissListener {
 
@@ -183,18 +183,18 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
 
     }
 
-    public MessageHeaderAttachment(Context context) {
+    public MessageAttachmentTile(Context context) {
         super(context);
     }
 
-    public MessageHeaderAttachment(Context context, AttributeSet attrs) {
+    public MessageAttachmentTile(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mCommandHandler = new AttachmentCommandHandler();
     }
 
-    public static MessageHeaderAttachment inflate(LayoutInflater inflater, ViewGroup parent) {
-        MessageHeaderAttachment view = (MessageHeaderAttachment) inflater.inflate(
+    public static MessageAttachmentTile inflate(LayoutInflater inflater, ViewGroup parent) {
+        MessageAttachmentTile view = (MessageAttachmentTile) inflater.inflate(
                 R.layout.conversation_message_attachment, parent, false);
         return view;
     }
@@ -206,6 +206,11 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
      *
      */
     public void render(Attachment attachment, Uri attachmentsListUri, int index) {
+        if (attachment == null) {
+            setVisibility(View.INVISIBLE);
+            return;
+        }
+
         final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
         mAttachmentsListUri = attachmentsListUri;
@@ -244,7 +249,9 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
             setThumbnailToDefault();
         }
 
-        mProgress.setMax(attachment.size);
+        if (mProgress != null) {
+            mProgress.setMax(attachment.size);
+        }
 
         updateActions();
         updateStatus();
@@ -321,27 +328,27 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mIcon = (ImageView) findViewById(R.id.attachment_icon);
-        mTitle = (TextView) findViewById(R.id.attachment_title);
-        mSubTitle = (TextView) findViewById(R.id.attachment_subtitle);
+        mIcon = (ImageView) findViewById(R.id.attachment_tile_image);
+        mTitle = (TextView) findViewById(R.id.attachment_tile_title);
+        mSubTitle = (TextView) findViewById(R.id.attachment_tile_subtitle);
         mProgress = (ProgressBar) findViewById(R.id.attachment_progress);
 
-        mPreviewButton = (Button) findViewById(R.id.preview_attachment);
-        mViewButton = (Button) findViewById(R.id.view_attachment);
-        mSaveButton = (Button) findViewById(R.id.save_attachment);
-        mInfoButton = (Button) findViewById(R.id.info_attachment);
-        mPlayButton = (Button) findViewById(R.id.play_attachment);
-        mInstallButton = (Button) findViewById(R.id.install_attachment);
-        mCancelButton = (Button) findViewById(R.id.cancel_attachment);
+//        mPreviewButton = (Button) findViewById(R.id.preview_attachment);
+//        mViewButton = (Button) findViewById(R.id.view_attachment);
+        mSaveButton = (Button) findViewById(R.id.attachment_tile_secondary_button);
+//        mInfoButton = (Button) findViewById(R.id.info_attachment);
+//        mPlayButton = (Button) findViewById(R.id.play_attachment);
+//        mInstallButton = (Button) findViewById(R.id.install_attachment);
+//        mCancelButton = (Button) findViewById(R.id.cancel_attachment);
 
         setOnClickListener(this);
-        mPreviewButton.setOnClickListener(this);
-        mViewButton.setOnClickListener(this);
+//        mPreviewButton.setOnClickListener(this);
+//        mViewButton.setOnClickListener(this);
         mSaveButton.setOnClickListener(this);
-        mInfoButton.setOnClickListener(this);
-        mPlayButton.setOnClickListener(this);
-        mInstallButton.setOnClickListener(this);
-        mCancelButton.setOnClickListener(this);
+//        mInfoButton.setOnClickListener(this);
+//        mPlayButton.setOnClickListener(this);
+//        mInstallButton.setOnClickListener(this);
+//        mCancelButton.setOnClickListener(this);
 
         mIconScaleType = mIcon.getScaleType();
     }
@@ -363,9 +370,11 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
                 break;
             case R.id.view_attachment:
             case R.id.play_attachment:
+            case R.id.attachment_tile:
                 showAttachment(AttachmentDestination.CACHE);
                 break;
             case R.id.save_attachment:
+            case R.id.attachment_tile_secondary_button:
                 if (mAttachment.canSave()) {
                     startDownloadingAttachment(AttachmentDestination.EXTERNAL);
                 }
@@ -383,8 +392,6 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
                 cancelAttachment();
                 break;
             default:
-                // entire attachment view is clickable.
-                // TODO: this should execute a default action
                 break;
         }
         return true;
@@ -415,7 +422,9 @@ public class MessageHeaderAttachment extends LinearLayout implements OnClickList
     }
 
     private void setButtonVisible(View button, boolean visible) {
-        button.setVisibility(visible ? VISIBLE : GONE);
+        if (button != null) {
+            button.setVisibility(visible ? VISIBLE : GONE);
+        }
     }
 
     /**
