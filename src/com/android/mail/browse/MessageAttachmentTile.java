@@ -140,12 +140,6 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
                 }
 
                 opts.inJustDecodeBounds = false;
-                // Shrink both X and Y (but do not over-shrink)
-                // and pick the least affected dimension to ensure the thumbnail is fillable
-                // (i.e. ScaleType.CENTER_CROP)
-                final int wDivider = Math.max(opts.outWidth / mWidth, 1);
-                final int hDivider = Math.max(opts.outHeight / mHeight, 1);
-                opts.inSampleSize = Math.min(wDivider, hDivider);
 
                 LogUtils.d(LOG_TAG, "in background, src w/h=%d/%d dst w/h=%d/%d, divider=%d",
                         opts.outWidth, opts.outHeight, mWidth, mHeight, opts.inSampleSize);
@@ -243,7 +237,7 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
             }
             mThumbnailTask = new ThumbnailLoadTask(mIcon.getWidth(), mIcon.getHeight());
             mThumbnailTask.execute(imageUri);
-        } else {
+        } else if (imageUri == null) {
             // not an image, or no thumbnail exists. fall back to default.
             // async image load must separately ensure the default appears upon load failure.
             setThumbnailToDefault();

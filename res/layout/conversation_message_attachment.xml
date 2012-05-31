@@ -24,7 +24,7 @@
     android:orientation="vertical"
     android:divider="?android:attr/dividerHorizontal"
     android:showDividers="middle"
-    android:background="@drawable/attachment_bg_holo">
+    android:background="@android:color/black">
 
     <RelativeLayout
         android:id="@+id/attachment_tile_layout"
@@ -35,7 +35,7 @@
             android:id="@+id/attachment_tile_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitCenter" />
 
         <RelativeLayout
             android:layout_width="match_parent"
