@@ -226,9 +226,9 @@
     <string name="search_results_searching_header" msgid="3821361153909466819">"正在搜索..."</string>
     <string name="recent_folders" msgid="8240081561436891330">"最近"</string>
     <string name="add_label" msgid="1638508840481944248">"添加标签"</string>
-    <string name="conversation_count" msgid="4459776616201694172">"第 <xliff:g id="COUNT">%1$s</xliff:g> 个，共 <xliff:g id="TOTAL">%2$s</xliff:g> 个"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"上一个会话"</string>
-    <string name="conversation_older" msgid="6384287019562069353">"下一个会话"</string>
+    <string name="conversation_count" msgid="4459776616201694172">"第 <xliff:g id="COUNT">%1$s</xliff:g> 封，共 <xliff:g id="TOTAL">%2$s</xliff:g> 封"</string>
+    <string name="conversation_newer" msgid="7381341099165809801">"更晚"</string>
+    <string name="conversation_older" msgid="6384287019562069353">"更早"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"展开收件人详细信息"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"折叠收件人详细信息"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"显示<xliff:g id="NAME">%1$s</xliff:g>的联系人信息"</string>
@@ -302,46 +302,35 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"此帐户未设置为自动同步。您可以"\n"触摸"<b>"立即同步"</b>"同步邮件一次，或者触摸"<b>"更改同步设置"</b>"，将此帐户设置为自动同步邮件。"</string>
     <string name="manual_sync" msgid="6743983544685622800">"立即同步"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"更改同步设置"</string>
-    <!-- no translation found for photo_view_default_title (305616940993932174) -->
-    <skip />
-    <!-- no translation found for photo_view_load_error (1802859675974843136) -->
-    <skip />
-    <!-- no translation found for photo_view_video_not_ready (8488887700991406631) -->
-    <skip />
-    <!-- no translation found for photo_view_placeholder_image (465734985000555852) -->
-    <skip />
-    <!-- no translation found for photo_network_error (6545183306958652345) -->
-    <skip />
-    <!-- no translation found for loading_photo (6784297653634402137) -->
-    <skip />
-    <!-- no translation found for post_operation_pending (1312168212880219407) -->
-    <skip />
-    <!-- no translation found for download_photo_retry (1894223549069749239) -->
-    <skip />
-    <!-- no translation found for download_photo_error (7511376299526085797) -->
-    <skip />
-    <!-- no translation found for yes (7474216525286833848) -->
-    <skip />
-    <!-- no translation found for no (427548507197604096) -->
-    <skip />
-    <!-- no translation found for camera_photo_error (653424229752191252) -->
-    <skip />
-    <!-- no translation found for photo_view_count (1568865177363028519) -->
-    <skip />
-    <!-- no translation found for truncated_info (4901078975545890098) -->
-    <skip />
-    <!-- no translation found for truncated_info_see_more (2068973974507128729) -->
-    <skip />
-    <!-- no translation found for posted_just_now (7872790861965011674) -->
-    <skip />
-    <!-- no translation found for num_minutes_ago:one (4750191148321568233) -->
-    <!-- no translation found for num_minutes_ago:other (4976118461634588647) -->
-    <!-- no translation found for num_hours_ago:one (2178354472031148118) -->
-    <!-- no translation found for num_hours_ago:other (1470820825143524326) -->
-    <!-- no translation found for num_days_ago:one (5538890823169916595) -->
-    <!-- no translation found for num_days_ago:other (2756574969735638578) -->
-    <!-- no translation found for dialog_inserting_camera_photo (2711654208680211224) -->
-    <skip />
+    <string name="photo_view_default_title" msgid="305616940993932174">"邮件中的照片"</string>
+    <string name="photo_view_load_error" msgid="1802859675974843136">"无法加载照片。"</string>
+    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"视频目前无法播放，请刷新。"</string>
+    <string name="photo_view_placeholder_image" msgid="465734985000555852">"此项目前无法显示，请刷新。"</string>
+    <string name="photo_network_error" msgid="6545183306958652345">"暂时无法下载照片。"</string>
+    <string name="loading_photo" msgid="6784297653634402137">"正在加载…"</string>
+    <string name="post_operation_pending" msgid="1312168212880219407">"正在发送…"</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"此图片过大，无法下载。是否重新尝试下载分辨率较低的图片？"</string>
+    <string name="download_photo_error" msgid="7511376299526085797">"照片无法保存到设备中。"</string>
+    <string name="yes" msgid="7474216525286833848">"是"</string>
+    <string name="no" msgid="427548507197604096">"否"</string>
+    <string name="camera_photo_error" msgid="653424229752191252">"找不到照片。"</string>
+    <string name="photo_view_count" msgid="1568865177363028519">"第 <xliff:g id="CURRENT_POS">%d</xliff:g> 张，共 <xliff:g id="COUNT">%d</xliff:g> 张"</string>
+    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
+    <string name="truncated_info_see_more" msgid="2068973974507128729">"查看更多 »"</string>
+    <string name="posted_just_now" msgid="7872790861965011674">"刚才"</string>
+  <plurals name="num_minutes_ago">
+    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> 分钟"</item>
+    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> 分钟"</item>
+  </plurals>
+  <plurals name="num_hours_ago">
+    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> 小时"</item>
+    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> 小时"</item>
+  </plurals>
+  <plurals name="num_days_ago">
+    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> 天"</item>
+    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> 天"</item>
+  </plurals>
+    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"正在插入照片…"</string>
     <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
     <skip />
 </resources>
