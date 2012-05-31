@@ -47,7 +47,7 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.photo.Intents;
 import com.android.mail.photo.Intents.PhotoViewIntentBuilder;
-import com.android.mail.photo.util.MediaStoreUtils;
+import com.android.mail.photo.util.ImageUtils;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
@@ -462,7 +462,7 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
      * View an attachment by an application on device.
      */
     private void sendViewIntent() {
-        if (MediaStoreUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.contentType))) {
+        if (ImageUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.contentType))) {
             final PhotoViewIntentBuilder builder =
                     Intents.newPhotoViewActivityIntentBuilder(getContext());
             builder.setAlbumName(mAttachment.name)
