@@ -150,7 +150,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      *
      * @see #onAppUpPressed
      */
-    private static final String EXTRA_FROM_EMAIL_TASK = "fromemail";
+    public static final String EXTRA_FROM_EMAIL_TASK = "fromemail";
 
     static final String EXTRA_ATTACHMENTS = "attachments";
 
@@ -215,6 +215,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Message mDraft;
     private Object mDraftLock = new Object();
     private ImageView mAttachmentsButton;
+
+    /**
+     * Boolean indicating whether ComposeActivity was launched from a Gmail controlled view.
+     */
+    private boolean mLaunchedFromEmail = false;
+
 
     /**
      * Can be called from a non-UI thread.
@@ -297,6 +303,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         setAccount(account);
         if (mAccount == null) {
             return;
+        }
+
+        if (intent.getBooleanExtra(EXTRA_FROM_EMAIL_TASK, false)) {
+            mLaunchedFromEmail = true;
+        } else if (Intent.ACTION_SEND.equals(intent.getAction())) {
+            final Uri dataUri = intent.getData();
+            if (dataUri != null) {
+                final String dataScheme = intent.getData().getScheme();
+                final String accountScheme = mAccount.composeIntentUri.getScheme();
+                mLaunchedFromEmail = TextUtils.equals(dataScheme, accountScheme);
+            }
         }
 
         if (message != null && action != EDIT_DRAFT) {
@@ -1389,7 +1406,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 Utils.showSettings(this, mAccount);
                 break;
             case android.R.id.home:
-                finish();
+                onAppUpPressed();
                 break;
             case R.id.help_info_menu_item:
                 // TODO: enable context sensitive help
@@ -1403,6 +1420,26 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 break;
         }
         return !handled ? super.onOptionsItemSelected(item) : handled;
+    }
+
+    private void onAppUpPressed() {
+        if (mLaunchedFromEmail) {
+            // If this was started from Gmail, simply treat app up as the system back button, so
+            // that the last view is restored.
+            onBackPressed();
+            return;
+        }
+
+        // Fire the main activity to ensure it launches the "top" screen of mail.
+        // Since the main Activity is singleTask, it should revive that task if it was already
+        // started.
+        final Intent mailIntent =
+                Utils.createViewFolderIntent(mAccount.settings.defaultInbox, mAccount, null, false);
+
+        mailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        startActivity(mailIntent);
+        finish();
     }
 
     private void doSend() {
