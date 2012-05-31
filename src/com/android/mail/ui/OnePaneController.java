@@ -332,6 +332,7 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void onFolderSelected(Folder folder, boolean childView) {
+        super.onFolderSelected(folder, childView);
         if (!childView && folder.hasChildren) {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
@@ -348,7 +349,6 @@ public final class OnePaneController extends AbstractActivityController {
             // folder setting so that the folder will be re-loaded/ shown.
             mFolder = null;
         }
-        super.onFolderChanged(folder);
     }
 
     private boolean isTransactionIdValid(int id) {

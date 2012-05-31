@@ -111,11 +111,11 @@ public class FolderItemView extends RelativeLayout {
         mFolderParentIcon = (ImageView) findViewById(R.id.folder_parent_icon);
     }
 
-    public void bind(Folder folder, DropHandler dropHandler) {
+    public void bind(Folder folder, DropHandler dropHandler, boolean showParentIcon) {
         mFolder = folder;
         mDropHandler = dropHandler;
         mFolderTextView.setText(folder.name);
-        if (mFolder.hasChildren) {
+        if (mFolder.hasChildren && showParentIcon) {
             mFolderParentIcon.setVisibility(View.VISIBLE);
         }
         final int count = getFolderItemCount();

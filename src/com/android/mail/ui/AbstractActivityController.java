@@ -456,6 +456,11 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
+    @Override
+    public void onFolderSelected(Folder folder, boolean childView) {
+        onFolderChanged(folder);
+    }
+
     /**
      * Update the recent folders. This only needs to be done once when accessing a new folder.
      */

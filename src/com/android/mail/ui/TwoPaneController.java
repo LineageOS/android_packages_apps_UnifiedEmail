@@ -101,9 +101,6 @@ public final class TwoPaneController extends AbstractActivityController {
         // Since we are showing the folder list, we are at the start of the view
         // stack.
         resetActionBarIcon();
-        if (getCurrentListContext() != null) {
-            folderListFragment.selectFolder(getCurrentListContext().folder);
-        }
     }
 
     @Override
@@ -161,12 +158,13 @@ public final class TwoPaneController extends AbstractActivityController {
         super.onFolderChanged(folder);
         final FolderListFragment folderList = getFolderListFragment();
         if (folderList != null) {
-            folderList.selectFolder(folder);
+            folderList.selectInitialFolder(folder);
         }
     }
 
     @Override
     public void onFolderSelected(Folder folder, boolean childView) {
+        super.onFolderSelected(folder, childView);
         if (!childView && folder.hasChildren) {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
@@ -178,9 +176,8 @@ public final class TwoPaneController extends AbstractActivityController {
         }
         final FolderListFragment folderList = getFolderListFragment();
         if (folderList != null) {
-            folderList.selectFolder(folder);
+            folderList.selectInitialFolder(folder);
         }
-        super.onFolderChanged(folder);
     }
 
     @Override
