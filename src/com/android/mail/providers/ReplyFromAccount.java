@@ -17,7 +17,6 @@
 package com.android.mail.providers;
 
 import android.net.Uri;
-import android.os.Parcelable;
 
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -26,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.regex.Pattern;
 
 public class ReplyFromAccount implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -34,6 +32,7 @@ public class ReplyFromAccount implements Serializable {
     private static final String LOG_TAG = new LogUtils().getLogTag();
     private static final String BASE_ACCOUNT_URI = "baseAccountUri";
     private static final String ADDRESS_STRING = "address";
+    private static final String REPLY_TO = "replyTo";
     private static final String NAME_STRING = "name";
     private static final String IS_DEFAULT = "isDefault";
     private static final String IS_CUSTOM_FROM = "isCustom";
@@ -41,16 +40,18 @@ public class ReplyFromAccount implements Serializable {
     public Account account;
     Uri baseAccountUri;
     public String address;
+    public String replyTo;
     public String name;
     public boolean isDefault;
     public boolean isCustomFrom;
 
     public ReplyFromAccount(Account account, Uri baseAccountUri, String address, String name,
-            boolean isDefault, boolean isCustom) {
+            String replyTo, boolean isDefault, boolean isCustom) {
         this.account = account;
         this.baseAccountUri = baseAccountUri;
         this.address = address;
         this.name = name;
+        this.replyTo = replyTo;
         this.isDefault = isDefault;
         this.isCustomFrom = isCustom;
     }
@@ -61,6 +62,7 @@ public class ReplyFromAccount implements Serializable {
             json.put(BASE_ACCOUNT_URI, baseAccountUri);
             json.put(ADDRESS_STRING, address);
             json.put(NAME_STRING, name);
+            json.put(REPLY_TO, replyTo);
             json.put(IS_DEFAULT, isDefault);
             json.put(IS_CUSTOM_FROM, isCustomFrom);
         } catch (JSONException e) {
@@ -75,10 +77,11 @@ public class ReplyFromAccount implements Serializable {
             Uri uri = Utils.getValidUri(json.getString(BASE_ACCOUNT_URI));
             String addressString = json.getString(ADDRESS_STRING);
             String nameString = json.getString(NAME_STRING);
+            String replyTo = json.getString(REPLY_TO);
             boolean isDefault = json.getBoolean(IS_DEFAULT);
             boolean isCustomFrom = json.getBoolean(IS_CUSTOM_FROM);
             replyFromAccount = new ReplyFromAccount(account, uri, addressString, nameString,
-                    isDefault, isCustomFrom);
+                    replyTo, isDefault, isCustomFrom);
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not deserialize replyfromaccount");
         }

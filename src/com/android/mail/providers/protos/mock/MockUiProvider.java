@@ -315,9 +315,9 @@ public final class MockUiProvider extends ContentProvider {
         JSONArray replyFroms = new JSONArray();
         ArrayList<ReplyFromAccount> list = new ArrayList<ReplyFromAccount>();
         list.add(new ReplyFromAccount(null, Uri.parse(accountUri), "customAddress1@custom.com",
-                "Custom1", false, true));
+                "customAddress2@custom.com", "Custom1", false, true));
         list.add(new ReplyFromAccount(null, Uri.parse(accountUri), "customAddress2@custom.com",
-                "Custom2", false, true));
+                "customAddress2@custom.com", "Custom2", false, true));
         for (ReplyFromAccount a : list) {
             replyFroms.put(a.serialize());
         }

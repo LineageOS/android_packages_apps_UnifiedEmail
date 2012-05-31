@@ -16,6 +16,8 @@
 package com.android.mail.compose;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.text.util.Rfc822Tokenizer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +38,7 @@ import java.util.List;
 public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
     private static final int FROM = 0;
     private static final int CUSTOM_FROM = 1;
+    private static String sFormatString;
 
     public static int REAL_ACCOUNT = 2;
 
@@ -47,6 +50,7 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
 
     public FromAddressSpinnerAdapter(Context context) {
         super(context, R.layout.from_item, R.id.spinner_account_name);
+        sFormatString = getContext().getString(R.string.formatted_email_address);
     }
 
     protected LayoutInflater getInflater() {
@@ -91,9 +95,16 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
         acctName.setText(fromItem.name);
         if (fromItem.isCustomFrom) {
             ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
-                    .setText(fromItem.address);
+                    .setText(formatAddress(fromItem.address));
         }
         return fromEntry;
+    }
+
+    private CharSequence formatAddress(String address) {
+        if (TextUtils.isEmpty(address)) {
+            return "";
+        }
+        return String.format(sFormatString, Rfc822Tokenizer.tokenize(address)[0].getAddress());
     }
 
     public void addAccounts(List<ReplyFromAccount> replyFromAccounts) {

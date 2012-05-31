@@ -597,7 +597,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         if (mReplyFromAccount == null) {
             mReplyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
-                    mAccount.name, true, false);
+                    mAccount.name, mAccount.name, true, false);
         }
 
         mFromSpinner.setCurrentAccount(mReplyFromAccount);
@@ -700,7 +700,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 return from;
             }
         }
-        return new ReplyFromAccount(account, account.uri, account.name, account.name, true, false);
+        return new ReplyFromAccount(account, account.uri, account.name, account.name, account.name,
+                true, false);
     }
 
     private ReplyFromAccount getReplyFromAccountFromDraft(Account account, Message msg) {
@@ -709,7 +710,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
         if (TextUtils.equals(account.name, sender)) {
             replyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
-                    mAccount.name, true, false);
+                    mAccount.name, mAccount.name, true, false);
         } else {
             for (ReplyFromAccount fromAccount : replyFromAccounts) {
                 if (TextUtils.equals(fromAccount.name, sender)) {
