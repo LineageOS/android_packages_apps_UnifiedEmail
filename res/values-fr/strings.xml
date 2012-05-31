@@ -342,6 +342,5 @@
     <!-- no translation found for num_days_ago:other (2756574969735638578) -->
     <!-- no translation found for dialog_inserting_camera_photo (2711654208680211224) -->
     <skip />
-    <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
-    <skip />
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Impossible de déplacer les messages, car la sélection comprend plusieurs comptes."</string>
 </resources>
