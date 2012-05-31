@@ -331,6 +331,5 @@
     <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> ימים"</item>
   </plurals>
     <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"מכניס תמונה…"</string>
-    <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
-    <skip />
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"לא ניתן לבצע העברה מכיוון שהבחירה כוללת מספר חשבונות."</string>
 </resources>
