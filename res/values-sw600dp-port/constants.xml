@@ -15,8 +15,6 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Boolean value indicating whether the table UI should be used. -->
-    <integer name="use_tablet_ui">1</integer>
     <!-- Boolean value indicating whether conversation can be collapsed. -->
     <integer name="conversation_list_collapsible">1</integer>
     <integer name="conversation_header_mode">1</integer>
