@@ -226,7 +226,7 @@ public final class TwoPaneController extends AbstractActivityController {
         } else {
             mViewMode.enterConversationMode();
         }
-        mPagerController.show(mAccount, mFolder, conversation);
+        mPagerController.show(mAccount, getFolder(), conversation);
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             LogUtils.d(LOG_TAG, "showConversation: Selecting position %d.", conversation.position);
@@ -288,9 +288,7 @@ public final class TwoPaneController extends AbstractActivityController {
         } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         } else if (mode == ViewMode.CONVERSATION_LIST) {
-            // This case can only happen if the user is looking at child folders.
-            createFolderListFragment(null, mAccount.folderListUri);
-            loadAccountInbox();
+            popView(true);
         }
         return true;
     }
@@ -309,9 +307,11 @@ public final class TwoPaneController extends AbstractActivityController {
      * @param preventClose Whether to prevent closing the app if the stack is empty.
      */
     protected void popView(boolean preventClose) {
-        // If the user is in search query entry mode, or the user is viewing search results, exit
+        // If the user is in search query entry mode, or the user is viewing
+        // search results, exit
         // the mode.
         int mode = mViewMode.getMode();
+        FolderListFragment folderListFragment = getFolderListFragment();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         } else if (mode == ViewMode.CONVERSATION) {
@@ -320,8 +320,20 @@ public final class TwoPaneController extends AbstractActivityController {
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             mViewMode.enterSearchResultsListMode();
         } else {
-            // There is nothing else to pop off the stack.
-            if (!preventClose) {
+            if (mode == ViewMode.CONVERSATION_LIST && getFolderListFragment().showingHierarchy()) {
+                // If the user navigated via the left folders list into a child folder,
+                // back should take the user up to the parent folder's conversation list.
+                if (getFolder().parent != null) {
+                    onFolderSelected(getFolder().parent, true);
+                } else  {
+                    // Show inbox; we are at the top of the hierarchy we were
+                    // showing, and it doesn't have a parent, so we must want to
+                    // the basic account folder list.
+                    createFolderListFragment(null, mAccount.folderListUri);
+                    loadAccountInbox();
+                }
+            } else if (!preventClose) {
+                // There is nothing else to pop off the stack.
                 mActivity.finish();
             }
         }

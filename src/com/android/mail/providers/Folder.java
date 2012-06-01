@@ -138,10 +138,17 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public Uri loadMoreUri;
 
     /**
+     * Parent folder of this folder, or null if there is none. This is set as
+     * part of the execution of the application and not obtained or stored via
+     * the provider.
+     */
+    public Folder parent;
+
+    /**
      * Total number of members that comprise an instance of a folder. This is
      * the number of members that need to be serialized or parceled.
      */
-    private static final int NUMBER_MEMBERS = UIProvider.FOLDERS_PROJECTION.length;
+    private static final int NUMBER_MEMBERS = UIProvider.FOLDERS_PROJECTION.length + 1;
 
     /**
      * Used only for debugging.
@@ -190,6 +197,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         bgColor = in.readString();
         fgColor = in.readString();
         loadMoreUri = in.readParcelable(null);
+        parent = in.readParcelable(null);
      }
 
     public Folder(Cursor cursor) {
@@ -218,6 +226,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         fgColor = cursor.getString(UIProvider.FOLDER_FG_COLOR_COLUMN);
         String loadMore = cursor.getString(UIProvider.FOLDER_LOAD_MORE_URI_COLUMN);
         loadMoreUri = !TextUtils.isEmpty(loadMore) ? Uri.parse(loadMore) : null;
+        parent = null;
     }
 
     @Override
@@ -241,6 +250,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         dest.writeString(bgColor);
         dest.writeString(fgColor);
         dest.writeParcelable(loadMoreUri, 0);
+        dest.writeParcelable(parent, 0);
     }
 
     /**
@@ -265,7 +275,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
         out.append(iconResId).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(bgColor == null ? "" : bgColor).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(fgColor == null? "" : fgColor).append(FOLDER_COMPONENT_SEPARATOR);
-        out.append(loadMoreUri);
+        out.append(loadMoreUri).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(""); //set parent to empty
         return out.toString();
     }
 
@@ -331,6 +342,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         fgColor = folderMembers[16];
         String loadMore = folderMembers[17];
         loadMoreUri = !TextUtils.isEmpty(loadMore) ? Uri.parse(loadMore) : null;
+        parent = null;
     }
 
     /**

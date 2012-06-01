@@ -221,7 +221,7 @@ public final class OnePaneController extends AbstractActivityController {
         }
 
         // TODO: improve this transition
-        mPagerController.show(mAccount, mFolder, conversation);
+        mPagerController.show(mAccount, getFolder(), conversation);
         onConversationVisibilityChanged(true);
         resetActionBarIcon();
 
@@ -248,6 +248,9 @@ public final class OnePaneController extends AbstractActivityController {
             LogUtils.e(LOG_TAG, "Null account in showFolderList");
             return;
         }
+        // Null out the currently selected folder; we have nothing selected the
+        // first time the user enters the folder list
+        setFolder(null);
         mViewMode.enterFolderListMode();
         enableCabMode();
         mLastFolderListTransactionId = replaceFragment(
@@ -294,17 +297,43 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean onBackPressed() {
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.FOLDER_LIST) {
-            mLastFolderListTransactionId = INVALID_ID;
-            transitionToInbox();
+            if (getFolderListFragment().showingHierarchy()) {
+                // If we are showing the folder list and the user is exploring
+                // the children of a single parent folder,
+                // back should display the parent folder's parent and siblings.
+                if (getFolder() != null && getFolder().parent != null) {
+                    onFolderSelected(getFolder().parent, true);
+                } else {
+                    // If there was no parent, this must have been a top level
+                    // folder, so just show the top level folder list.
+                    showFolderList();
+                }
+            } else {
+                // We are at the topmost list of folders; just go back to
+                // whatever conv list we were viewing before.
+                mLastFolderListTransactionId = INVALID_ID;
+                transitionToInbox();
+            }
         } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         } else if (mode == ViewMode.CONVERSATION_LIST && !inInbox(mAccount, mConvListContext)) {
-            if (isTransactionIdValid(mLastFolderListTransactionId)) {
-                // Go back to previous folder list.
+            if (mLastFolderListTransactionId != INVALID_ID) {
+                // If the user got here by navigating via the folder list, back
+                // should bring them back to the folder list.
                 mViewMode.enterFolderListMode();
+                if (getFolder() != null && getFolder().parent != null) {
+                    // If there was a parent folder, show the parent and
+                    // siblings of the current folder for which we are viewing
+                    // the conversation list.
+                    setFolder(getFolder().parent);
+                } else {
+                    // Otherwise, clear the selected folder and go back to whatever the last
+                    // folder list displayed was.
+                    setFolder(null);
+                }
                 mActivity.getFragmentManager().popBackStack(mLastFolderListTransactionId, 0);
             } else {
-                // Go back to Inbox.
+                mLastFolderListTransactionId = INVALID_ID;
                 transitionToInbox();
             }
         } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
@@ -332,22 +361,23 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void onFolderSelected(Folder folder, boolean childView) {
-        super.onFolderSelected(folder, childView);
-        if (!childView && folder.hasChildren) {
+        if (folder.hasChildren && !getFolderListFragment().showingHierarchy()) {
+            setFolder(folder);
             // Replace this fragment with a new FolderListFragment
-            // showing this folder's children if we are not already looking
-            // at the child view for this folder.
+            // showing this folder's children if we are not already
+            // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(
                     FolderListFragment.newInstance(folder, folder.childFoldersListUri),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
             return;
-        }
-        if (mViewMode.getMode() == ViewMode.FOLDER_LIST && folder != null
-                && folder.equals(mFolder)) {
-            // if we are in folder list when we select a new folder,
-            // and it is the same as the existing folder, clear the previous
-            // folder setting so that the folder will be re-loaded/ shown.
-            mFolder = null;
+        } else {
+            // We are looking at the child folders of this folder, so just
+            // open the conv list for this folder.
+            // We set the folder to null to clear the selected folder and
+            // make sure that everything gets updated in case we were previously
+            // viewing the child folders or conversation list for the selected folder.
+            setFolder(null);
+            super.onFolderChanged(folder);
         }
     }
 
