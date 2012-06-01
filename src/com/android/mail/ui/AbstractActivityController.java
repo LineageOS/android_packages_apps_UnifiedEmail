@@ -116,7 +116,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
 
     protected Account mAccount;
-    protected Folder mFolder;
+    private Folder mFolder;
     protected ActionBarView mActionBarView;
     protected final RestrictedActivity mActivity;
     protected final Context mContext;
@@ -443,7 +443,7 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onFolderChanged(Folder folder) {
         if (folder != null && !folder.equals(mFolder)) {
-            setFolder(folder);
+            updateFolder(folder);
             mConvListContext = ConversationListContext.forFolder(mContext, mAccount, mFolder);
             showConversationList(mConvListContext);
 
@@ -478,21 +478,21 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /** Set the current folder */
-    private void setFolder(Folder folder) {
+    private void updateFolder(Folder folder) {
         // Start watching folder for sync status.
         if (folder != null && !folder.equals(mFolder)) {
             LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
-            final boolean folderWasNull = (mFolder == null);
             final LoaderManager lm = mActivity.getLoaderManager();
             mActionBarView.setRefreshInProgress(false);
-            mFolder = folder;
+            setFolder(folder);
             mActionBarView.setFolder(mFolder);
 
             // Only when we switch from one folder to another do we want to restart the
             // folder and conversation list loaders (to trigger onCreateLoader).
             // The first time this runs when the activity is [re-]initialized, we want to re-use the
             // previous loader's instance and data upon configuration change (e.g. rotation).
-            if (folderWasNull) {
+            // If there was not already an instance of the loader, init it.
+            if (lm.getLoader(LOADER_FOLDER_CURSOR) == null) {
                 lm.initLoader(LOADER_FOLDER_CURSOR, null, this);
                 lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
             } else {
@@ -502,6 +502,17 @@ public abstract class AbstractActivityController implements ActivityController {
         } else if (folder == null) {
             LogUtils.wtf(LOG_TAG, "Folder in setFolder is null");
         }
+    }
+
+    /**
+     * Set the folder that is used for all current operations, including what
+     * conversation list to show (if applicable), what item to select in the
+     * FolderListFragment.
+     *
+     * @param folder
+     */
+    public void setFolder(Folder folder) {
+        mFolder = folder;
     }
 
     @Override
@@ -1404,7 +1415,7 @@ public abstract class AbstractActivityController implements ActivityController {
             case LOADER_SEARCH:
                 data.moveToFirst();
                 Folder search = new Folder(data);
-                setFolder(search);
+                updateFolder(search);
                 mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder,
                         mActivity.getIntent()
                                 .getStringExtra(UIProvider.SearchQueryParameters.QUERY));
