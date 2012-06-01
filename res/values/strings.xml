@@ -634,7 +634,7 @@
     <!-- Message displayed when trying to play a video that isn't ready [CHAR LIMIT=100] -->
     <string name="photo_view_video_not_ready">Video not available at this time. Please refresh.</string>
 
-        <!-- Message displayed when displaying a place holder image (for photos & videos) [CHAR LIMIT=50] -->
+        <!-- Message displayed when displaying a place holder image (for photos & videos) [CHAR LIMIT=60] -->
     <string name="photo_view_placeholder_image">Item not available at this time. Please refresh.</string>
 
     <!-- Text shown when a photo fails to download. -->
