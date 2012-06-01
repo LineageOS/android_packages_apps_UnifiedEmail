@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +15,17 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="false"
-        android:color="#ff999999"/>
-    <item android:state_checked="true"
-        android:color="@android:color/white" />
+    <item android:state_focused="true"
+          android:drawable="@drawable/list_conversation_wide_read_focused_holo" />
     <item android:state_activated="true"
-        android:color="@android:color/white" />
-    <item
-        android:color="@android:color/black" />
+          android:drawable="@drawable/list_conversation_wide_read_pressed_holo" />
+    <item android:state_pressed="true"
+          android:drawable="@drawable/list_conversation_wide_read_pressed_holo" />
+    <item android:state_selected="true"
+          android:drawable="@drawable/list_conversation_wide_read_selected_holo" />
+    <item android:state_selected="true"
+          android:state_activated="true"
+          android:drawable="@drawable/list_conversation_wide_read_selected_holo" />
+    <item android:drawable="@drawable/list_conversation_wide_read_normal_holo" />
 </selector>

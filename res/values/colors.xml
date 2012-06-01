@@ -70,4 +70,9 @@
     <color name="photo_background_color">#ff000000</color>
     <color name="photo_crop_dim_color">#cc000000</color>
     <color name="photo_crop_highlight_color">#fff</color>
+
+    <!--  Color of the semi-transparent shadow box on attachment tiles -->
+    <color name="attachment_tile_shadow_box_color">#7F000000</color>
+    <!--  Color of the subtitle message in the attachment tile -->
+    <color name="attachment_tile_subtitle_color">#CCCCCC</color>
 </resources>

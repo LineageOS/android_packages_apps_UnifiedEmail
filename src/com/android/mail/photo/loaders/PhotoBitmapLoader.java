@@ -30,22 +30,22 @@ import com.android.mail.photo.util.ImageUtils;
  * Loader for the bitmap of a photo.
  */
 public class PhotoBitmapLoader extends AsyncTaskLoader<Bitmap> {
-    private final String mPhotoUrl;
+    private final String mPhotoUri;
 
     private Bitmap mBitmap;
 
-    public PhotoBitmapLoader(Context context, String photoUrl) {
+    public PhotoBitmapLoader(Context context, String photoUri) {
         super(context);
-        mPhotoUrl = photoUrl;
+        mPhotoUri = photoUri;
     }
 
     @Override
     public Bitmap loadInBackground() {
         Context context = getContext();
 
-        if (context != null && mPhotoUrl != null) {
+        if (context != null && mPhotoUri != null) {
             final ContentResolver resolver = context.getContentResolver();
-            return ImageUtils.createLocalBitmap(resolver, Uri.parse(mPhotoUrl),
+            return ImageUtils.createLocalBitmap(resolver, Uri.parse(mPhotoUri),
                     PhotoViewFragment.sPhotoSize);
         }
 

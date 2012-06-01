@@ -207,12 +207,9 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     private void respondInline() {
         // Copy the text in the quoted message to the body of the
         // message after stripping the html.
-        HtmlParser parser = new HtmlParser();
-        HtmlDocument doc = parser.parse(getQuotedText().toString());
-        HtmlTreeBuilder builder = new HtmlTreeBuilder();
-        doc.accept(builder);
+        final String plainText = Utils.convertHtmlToPlainText(getQuotedText().toString());
         if (mRespondInlineListener != null) {
-            mRespondInlineListener.onRespondInline("\n" + builder.getTree().getPlainText());
+            mRespondInlineListener.onRespondInline("\n" + plainText);
         }
         // Set quoted text to unchecked and not visible.
         updateCheckedState(false);
@@ -294,6 +291,15 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         allowRespondInline(true);
     }
 
+    public void setQuotedTextFromDraft(CharSequence htmlText, boolean forward) {
+        setVisibility(View.VISIBLE);
+        setQuotedText(htmlText);
+        allowQuotedText(!forward);
+        // If there is quoted text, we always allow respond inline, since this
+        // may be a forward.
+        allowRespondInline(true);
+    }
+
     /**
      * Set quoted text. Some use cases may not want to display the check box (i.e. forwarding) so
      * allow control of that.
@@ -315,11 +321,11 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     }
 
     public static boolean containsQuotedText(String text) {
-        int pos = text.indexOf(QuotedTextView.HEADER_SEPARATOR);
+        int pos = text.indexOf(QuotedTextView.QUOTE_BEGIN);
         return pos >= 0;
     }
 
     public static int getQuotedTextOffset(String text) {
-        return text.indexOf(QuotedTextView.HEADER_SEPARATOR) + HEADER_SEPARATOR_LENGTH;
+        return text.indexOf(QuotedTextView.QUOTE_BEGIN);
     }
 }

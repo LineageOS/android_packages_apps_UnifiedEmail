@@ -36,10 +36,10 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.ui.AbstractActivityController;
-import com.android.mail.ui.AnimatedAdapter;
+import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
+import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.FoldersSelectionDialog;
 import com.android.mail.ui.RestrictedActivity;
@@ -74,61 +74,37 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private final Context mContext;
 
     @VisibleForTesting
-    ActionMode mActionMode;
+    private ActionMode mActionMode;
 
     private boolean mActivated = false;
 
     private Menu mMenu;
 
-    private AnimatedAdapter mListAdapter;
-    // TODO(viki): Bad idea.  This is a relic of the previous method of having a DestructiveAction.
-    // A better implementation is not to have clients know about destructive actions but rather
-    // request them from the controller directly. Then, you wouldn't need to know when to commit
-    // them.
-    private AbstractActivityController mController;
+    /** Object that can update conversation state on our behalf. */
+    private final ConversationUpdater mUpdater;
 
-    private Account mAccount;
+    private final Account mAccount;
 
-    protected int mCheckedItem = 0;
+    private final Folder mFolder;
 
-    private Folder mFolder;
-
-    private final ConversationCursor mConversationCursor;
-
-    private SwipeableListView mListView;
+    private final SwipeableListView mListView;
 
     public SelectedConversationsActionMenu(RestrictedActivity activity,
-            ConversationSelectionSet selectionSet, AnimatedAdapter adapter,
-            AbstractActivityController controller, Account account,
+            ConversationSelectionSet selectionSet, Account account,
             Folder folder, SwipeableListView list) {
         mActivity = activity;
         mSelectionSet = selectionSet;
-        mListAdapter = adapter;
-        mConversationCursor = (ConversationCursor)adapter.getCursor();
-        mController = controller;
         mAccount = account;
         mFolder = folder;
         mListView = list;
 
         mContext = mActivity.getActivityContext();
-    }
-
-    /**
-     * Registers a destructive action with the controller and returns it.
-     * @param type the resource id of the menu item that corresponds to this action: R.id.delete
-     *  for example.
-     * @return the {@link DestructiveAction} associated with this action.
-     */
-    // TODO(viki): This is a placeholder during the refactoring. Ideally the controller hands
-    // the ID of the action to clients.
-    private final DestructiveAction getAction(int type) {
-        return mController.getBatchDestruction(type);
+        mUpdater = ((ControllableActivity) mActivity).getConversationUpdater();
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         boolean handled = true;
-        Collection<Conversation> conversations = mSelectionSet.values();
         switch (item.getItemId()) {
             case R.id.delete:
                 performDestructiveAction(R.id.delete);
@@ -137,10 +113,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 performDestructiveAction(R.id.archive);
                 break;
             case R.id.mute:
-                mListAdapter.delete(conversations, getAction(R.id.mute));
+                mUpdater.delete(mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute));
                 break;
             case R.id.report_spam:
-                mListAdapter.delete(conversations, getAction(R.id.report_spam));
+                mUpdater.delete(mSelectionSet.values(), mUpdater.getBatchAction(R.id.report_spam));
                 break;
             case R.id.read:
                 markConversationsRead(true);
@@ -183,7 +159,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     }
                 }
                 if (!cantMove) {
-                    new FoldersSelectionDialog(mContext, acct, mController,
+                    new FoldersSelectionDialog(mContext, acct, mUpdater,
                             mSelectionSet.values(), true).show();
                 }
                 break;
@@ -215,7 +191,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      * Update the underlying list adapter and redraw the menus if necessary.
      */
     private void updateSelection() {
-        mListAdapter.notifyDataSetChanged();
+        mUpdater.refreshConversationList();
         if (mActionMode != null) {
             // Calling mActivity.invalidateOptionsMenu doesn't have the correct behavior, since
             // the action mode is not refreshed when activity's options menu is invalidated.
@@ -226,7 +202,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     }
 
     private void performDestructiveAction(final int id) {
-        final DestructiveAction action = getAction(id);
+        final DestructiveAction action = mUpdater.getBatchAction(id);
         final Settings settings = mActivity.getSettings();
         final Collection<Conversation> conversations = mSelectionSet.values();
         final boolean showDialog = (settings != null
@@ -247,7 +223,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
-
     private void destroy(int id, final Collection<Conversation> conversations,
             final DestructiveAction listener) {
         if (id == R.id.archive) {
@@ -257,35 +232,55 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             }
             mListView.archiveItems(views, listener);
         } else {
-            mListAdapter.delete(conversations, listener);
+            mUpdater.delete(conversations, listener);
         }
     }
 
+    /**
+     * Marks the read state of currently selected conversations (<b>and</b> the backing storage)
+     * to the value provided here.
+     * @param read is true if the conversations are to be marked as read, false if they are to be
+     * marked unread.
+     */
     private void markConversationsRead(boolean read) {
-        final Collection<Conversation> conversations = mSelectionSet.values();
-        mConversationCursor.updateBoolean(mContext, conversations, ConversationColumns.READ, read);
-        updateSelection();
-    }
-
-    private void markConversationsImportant(boolean important) {
-        final Collection<Conversation> conversations = mSelectionSet.values();
-        final int priority = important ? UIProvider.ConversationPriority.HIGH
-                : UIProvider.ConversationPriority.LOW;
-        mConversationCursor.updateInt(mContext, conversations, ConversationColumns.PRIORITY,
-                priority);
+        final Collection<Conversation> target = mSelectionSet.values();
+        mUpdater.updateConversation(target, ConversationColumns.READ, read);
+        // Update the conversations in the selection too.
+        for (final Conversation c : target) {
+            c.read = read;
+        }
         updateSelection();
     }
 
     /**
-     * Mark the selected conversations with the star setting provided here.
+     * Marks the important state of currently selected conversations (<b>and</b> the backing
+     * storage) to the value provided here.
+     * @param important is true if the conversations are to be marked as important, false if they
+     * are to be marked not important.
+     */
+    private void markConversationsImportant(boolean important) {
+        final Collection<Conversation> target = mSelectionSet.values();
+        final int priority = important ? UIProvider.ConversationPriority.HIGH
+                : UIProvider.ConversationPriority.LOW;
+        mUpdater.updateConversation(target, ConversationColumns.PRIORITY, priority);
+        // Update the conversations in the selection too.
+        for (final Conversation c : target) {
+            c.priority = priority;
+        }
+        updateSelection();
+    }
+
+    /**
+     * Marks the selected conversations with the star setting provided here.
      * @param star true if you want all the conversations to have stars, false if you want to remove
      * stars from all conversations
      */
     private void starConversations(boolean star) {
-        final Collection<Conversation> conversations = mSelectionSet.values();
-        if (conversations.size() > 0) {
-            mConversationCursor.updateBoolean(mContext, conversations, ConversationColumns.STARRED,
-                    star);
+        final Collection<Conversation> target = mSelectionSet.values();
+        mUpdater.updateConversation(target, ConversationColumns.STARRED, star);
+        // Update the conversations in the selection too.
+        for (final Conversation c : target) {
+            c.starred = star;
         }
         updateSelection();
     }
@@ -431,7 +426,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         deactivate();
         mSelectionSet.removeObserver(this);
         clearSelection();
-        mListAdapter.notifyDataSetChanged();
+        mUpdater.refreshConversationList();
     }
 
     /**

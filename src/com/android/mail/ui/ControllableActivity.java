@@ -67,6 +67,11 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      */
     boolean shouldShowFirstConversation();
 
+    /**
+     * Get the set of currently selected conversations. This method returns a non-null value.
+     * In case no conversation is currently selected, it returns an empty selection set.
+     * @return
+     */
     ConversationSelectionSet getSelectedSet();
 
     /**
@@ -82,4 +87,12 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      * Get the folder currently being accessed by the activity.
      */
     Folder getCurrentFolder();
+
+    /**
+     * Returns an object that can update conversation state. Holding a reference to the
+     * ConversationUpdater is safe since the ConversationUpdater is guaranteed to persist across
+     * changes to the conversation cursor.
+     * @return
+     */
+    ConversationUpdater getConversationUpdater();
 }

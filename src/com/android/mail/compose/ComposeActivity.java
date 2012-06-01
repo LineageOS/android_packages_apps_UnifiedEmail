@@ -150,7 +150,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      *
      * @see #onAppUpPressed
      */
-    private static final String EXTRA_FROM_EMAIL_TASK = "fromemail";
+    public static final String EXTRA_FROM_EMAIL_TASK = "fromemail";
 
     static final String EXTRA_ATTACHMENTS = "attachments";
 
@@ -215,6 +215,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Message mDraft;
     private Object mDraftLock = new Object();
     private ImageView mAttachmentsButton;
+
+    /**
+     * Boolean indicating whether ComposeActivity was launched from a Gmail controlled view.
+     */
+    private boolean mLaunchedFromEmail = false;
+
 
     /**
      * Can be called from a non-UI thread.
@@ -297,6 +303,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         setAccount(account);
         if (mAccount == null) {
             return;
+        }
+
+        if (intent.getBooleanExtra(EXTRA_FROM_EMAIL_TASK, false)) {
+            mLaunchedFromEmail = true;
+        } else if (Intent.ACTION_SEND.equals(intent.getAction())) {
+            final Uri dataUri = intent.getData();
+            if (dataUri != null) {
+                final String dataScheme = intent.getData().getScheme();
+                final String accountScheme = mAccount.composeIntentUri.getScheme();
+                mLaunchedFromEmail = TextUtils.equals(dataScheme, accountScheme);
+            }
         }
 
         if (message != null && action != EDIT_DRAFT) {
@@ -527,7 +544,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.bodyText = mBodyView.getText().toString();
         message.embedsExternalResources = false;
         message.refMessageId = mRefMessage != null ? mRefMessage.uri.toString() : null;
-        message.draftType = mode;
+        message.draftType = getDraftType(mode);
         message.appendRefMessageContent = mQuotedTextView.getQuotedTextIfIncluded() != null;
         ArrayList<Attachment> attachments = mAttachmentsView.getAttachments();
         message.hasAttachments = attachments != null && attachments.size() > 0;
@@ -580,7 +597,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         if (mReplyFromAccount == null) {
             mReplyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
-                    mAccount.name, true, false);
+                    mAccount.name, mAccount.name, true, false);
         }
 
         mFromSpinner.setCurrentAccount(mReplyFromAccount);
@@ -683,7 +700,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 return from;
             }
         }
-        return new ReplyFromAccount(account, account.uri, account.name, account.name, true, false);
+        return new ReplyFromAccount(account, account.uri, account.name, account.name, account.name,
+                true, false);
     }
 
     private ReplyFromAccount getReplyFromAccountFromDraft(Account account, Message msg) {
@@ -692,7 +710,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         List<ReplyFromAccount> replyFromAccounts = mFromSpinner.getReplyFromAccounts();
         if (TextUtils.equals(account.name, sender)) {
             replyFromAccount = new ReplyFromAccount(mAccount, mAccount.uri, mAccount.name,
-                    mAccount.name, true, false);
+                    mAccount.name, mAccount.name, true, false);
         } else {
             for (ReplyFromAccount fromAccount : replyFromAccounts) {
                 if (TextUtils.equals(fromAccount.name, sender)) {
@@ -803,12 +821,28 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 addAttachmentAndUpdateView(a);
             }
         }
-
+        int quotedTextIndex = message.appendRefMessageContent ?
+                message.quotedTextOffset : -1;
         // Set the body
+        CharSequence quotedText = null;
         if (!TextUtils.isEmpty(message.bodyHtml)) {
-            mBodyView.setText(Html.fromHtml(message.bodyHtml));
+            CharSequence htmlText = Html.fromHtml(message.bodyHtml);
+            if (quotedTextIndex > -1) {
+                htmlText = htmlText.subSequence(0, quotedTextIndex);
+                quotedText = message.bodyHtml.subSequence(quotedTextIndex,
+                        message.bodyHtml.length());
+            }
+            mBodyView.setText(htmlText);
         } else {
-            mBodyView.setText(message.bodyText);
+            CharSequence bodyText = quotedTextIndex > -1 ?
+                    message.bodyText.substring(0, quotedTextIndex) : message.bodyText;
+            if (quotedTextIndex > -1) {
+                quotedText = message.bodyText.substring(quotedTextIndex);
+            }
+            mBodyView.setText(bodyText);
+        }
+        if (quotedTextIndex > -1 && quotedText != null) {
+            mQuotedTextView.setQuotedTextFromDraft(quotedText, mForward);
         }
     }
 
@@ -886,15 +920,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     protected String decodeEmailInUri(String s) throws UnsupportedEncodingException {
-        // TODO: handle the case where there are spaces in the display name as well as the email
-        // such as "Guy with spaces <guy+with+spaces@gmail.com>" as they it could be encoded
-        // ambiguously.
-
+        // TODO: handle the case where there are spaces in the display name as
+        // well as the email such as "Guy with spaces <guy+with+spaces@gmail.com>"
+        // as they could be encoded ambiguously.
         // Since URLDecode.decode changes + into ' ', and + is a valid
         // email character, we need to find/ replace these ourselves before
         // decoding.
         String replacePlus = s.replace("+", "%2B");
-        return URLDecoder.decode(replacePlus, UTF8_ENCODING_NAME);
+        try {
+            return URLDecoder.decode(replacePlus, UTF8_ENCODING_NAME);
+        } catch (IllegalArgumentException e) {
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
+                LogUtils.e(LOG_TAG, "%s while decoding '%s'", e.getMessage(), s);
+            } else {
+                LogUtils.e(LOG_TAG, e, "Exception  while decoding mailto address");
+            }
+            return null;
+        }
     }
 
     /**
@@ -915,7 +957,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             } else {
                 to = decodeEmailInUri(mailToString.substring(length, index));
             }
-            addToAddresses(Arrays.asList(TextUtils.split(to, ",")));
+            if (!TextUtils.isEmpty(to)) {
+                addToAddresses(Arrays.asList(TextUtils.split(to, ",")));
+            }
         } catch (UnsupportedEncodingException e) {
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.VERBOSE)) {
                 LogUtils.e(LOG_TAG, "%s while decoding '%s'", e.getMessage(), mailToString);
@@ -1351,7 +1395,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 showCcBccViews();
                 break;
             case R.id.save:
-                doSave(true, false);
+                doSave(true);
                 break;
             case R.id.send:
                 doSend();
@@ -1363,7 +1407,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 Utils.showSettings(this, mAccount);
                 break;
             case android.R.id.home:
-                finish();
+                onAppUpPressed();
                 break;
             case R.id.help_info_menu_item:
                 // TODO: enable context sensitive help
@@ -1379,16 +1423,40 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return !handled ? super.onOptionsItemSelected(item) : handled;
     }
 
+    private void onAppUpPressed() {
+        if (mLaunchedFromEmail) {
+            // If this was started from Gmail, simply treat app up as the system back button, so
+            // that the last view is restored.
+            onBackPressed();
+            return;
+        }
+
+        // Fire the main activity to ensure it launches the "top" screen of mail.
+        // Since the main Activity is singleTask, it should revive that task if it was already
+        // started.
+        final Intent mailIntent =
+                Utils.createViewFolderIntent(mAccount.settings.defaultInbox, mAccount, null, false);
+
+        mailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        startActivity(mailIntent);
+        finish();
+    }
+
     private void doSend() {
         sendOrSaveWithSanityChecks(false, true, false);
     }
 
-    private void doSave(boolean showToast, boolean resetIME) {
+    private void doSave(boolean showToast) {
+        // Clear the IME composing suggestions from the body and subject before saving.
+        clearImeText(mBodyView);
+        clearImeText(mSubject);
         sendOrSaveWithSanityChecks(true, showToast, false);
-        if (resetIME) {
-            // Clear the IME composing suggestions from the body.
-            BaseInputConnection.removeComposingSpans(mBodyView.getEditableText());
-        }
+    }
+
+    private void clearImeText(TextView v) {
+        v.clearComposingText();
+        BaseInputConnection.removeComposingSpans(v.getEditableText());
     }
 
     /*package*/ interface SendOrSaveCallback {
@@ -1826,21 +1894,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 fullBody.append(text);
             }
         }
-        int draftType = -1;
-        switch (composeMode) {
-            case ComposeActivity.COMPOSE:
-                draftType = DraftType.COMPOSE;
-                break;
-            case ComposeActivity.REPLY:
-                draftType = DraftType.REPLY;
-                break;
-            case ComposeActivity.REPLY_ALL:
-                draftType = DraftType.REPLY_ALL;
-                break;
-            case ComposeActivity.FORWARD:
-                draftType = DraftType.FORWARD;
-                break;
-        }
+        int draftType = getDraftType(composeMode);
         MessageModification.putDraftType(values, draftType);
         if (refMessage != null) {
             if (!TextUtils.isEmpty(refMessage.bodyHtml)) {
@@ -1869,6 +1923,25 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         handler.post(sendOrSaveTask);
 
         return sendOrSaveMessage.requestId();
+    }
+
+    private static int getDraftType(int mode) {
+        int draftType = -1;
+        switch (mode) {
+            case ComposeActivity.COMPOSE:
+                draftType = DraftType.COMPOSE;
+                break;
+            case ComposeActivity.REPLY:
+                draftType = DraftType.REPLY;
+                break;
+            case ComposeActivity.REPLY_ALL:
+                draftType = DraftType.REPLY_ALL;
+                break;
+            case ComposeActivity.FORWARD:
+                draftType = DraftType.FORWARD;
+                break;
+        }
+        return draftType;
     }
 
     private void sendOrSave(Spanned body, boolean save, boolean showToast,
@@ -2267,7 +2340,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         if (shouldSave()) {
-            doSave(!mAddingAttachment /* show toast */, true /* reset IME */);
+            doSave(!mAddingAttachment /* show toast */);
         }
     }
 

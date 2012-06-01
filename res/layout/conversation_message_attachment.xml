@@ -15,69 +15,99 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.mail.browse.MessageHeaderAttachment xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<com.android.mail.browse.MessageAttachmentTile
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/attachment_tile"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
     android:orientation="vertical"
     android:divider="?android:attr/dividerHorizontal"
     android:showDividers="middle"
-    android:background="@drawable/attachment_bg_holo">
+    android:background="@android:color/black">
 
     <RelativeLayout
+        android:id="@+id/attachment_tile_layout"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="match_parent" >
 
         <ImageView
-            android:id="@+id/attachment_icon"
-            android:layout_width="48dp"
+            android:id="@+id/attachment_tile_image"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="#e5e5e5" />
+            android:scaleType="fitCenter" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/attachment_icon"
+            android:layout_height="@dimen/attachment_tile_shadowbox_height"
+            android:background="@color/attachment_tile_shadow_box_color"
+            android:layout_alignParentBottom="true"
             android:gravity="center_vertical"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp">
+            android:paddingLeft="8dip">
 
-            <TextView
-                android:id="@+id/attachment_title"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true" />
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/attachment_tile_secondary_button"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:paddingRight="4dip">
 
-            <TextView
-                android:id="@+id/attachment_subtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/attachment_title"
-                android:singleLine="true" />
+                <TextView
+                    android:id="@+id/attachment_tile_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:singleLine="true"
+                    android:fadingEdge="horizontal"
+                    android:fadingEdgeLength="3dip"
+                    android:ellipsize="marquee" />
+
+                <TextView
+                    android:id="@+id/attachment_tile_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/attachment_tile_subtitle_color"
+                    android:singleLine="true"
+                    android:paddingBottom="4dip"
+                    android:fadingEdge="horizontal"
+                    android:fadingEdgeLength="3dip"
+                    android:layout_marginTop="-3dip"
+                    android:ellipsize="marquee" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@id/attachment_tile_secondary_button"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_height="@dimen/attachment_tile_shadowbox_height"
+                android:layout_width="wrap_content"
+                android:drawableLeft="@drawable/ic_divider_dashed_holo_dark"
+                android:layout_alignParentRight="true"
+                android:text="@string/save_attachment"
+                android:textColor="@android:color/white" />
 
             <ProgressBar
                 android:id="@+id/attachment_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/attachment_title"
+                android:layout_alignParentBottom="true"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:indeterminate="false"
                 android:visibility="gone" />
 
         </RelativeLayout>
 
+        <View
+            android:id="@+id/attachment_tile_push_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground" />
+
     </RelativeLayout>
 
-    <LinearLayout
-            android:id="@+id/attachment_buttons"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="?android:attr/dividerVertical"
-            android:showDividers="middle"
-            android:dividerPadding="8dp"
-            android:orientation="horizontal">
-        <include layout="@layout/conversation_message_attachment_buttons" />
-    </LinearLayout>
-
-</com.android.mail.browse.MessageHeaderAttachment>
+</com.android.mail.browse.MessageAttachmentTile>

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.mail.photo.util;
+package com.android.mail.photo.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

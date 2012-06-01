@@ -52,6 +52,10 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.EditSettingsExtras;
+import com.google.android.common.html.parser.HtmlDocument;
+import com.google.android.common.html.parser.HtmlParser;
+import com.google.android.common.html.parser.HtmlTree;
+import com.google.android.common.html.parser.HtmlTreeBuilder;
 import com.google.common.collect.Maps;
 
 import org.json.JSONObject;
@@ -508,6 +512,29 @@ public class Utils {
     }
 
     /**
+     * Returns displayable text from the provided HTML string.
+     *
+     * @param htmlText HTML string
+     * @return Plain text string representation of the specified Html string
+     */
+    public static String convertHtmlToPlainText(String htmlText) {
+        return getHtmlTree(htmlText).getPlainText();
+    }
+
+    /**
+     * Returns a {@link HtmlTree} representation of the specified HTML string.
+     */
+    public static HtmlTree getHtmlTree(String htmlText) {
+        final HtmlParser parser = new HtmlParser();
+        final HtmlDocument doc = parser.parse(htmlText);
+        final HtmlTreeBuilder builder = new HtmlTreeBuilder();
+        doc.accept(builder);
+
+        return builder.getTree();
+    }
+
+
+    /**
      * Perform a simulated measure pass on the given child view, assuming the
      * child has a ViewGroup parent and that it should be laid out within that
      * parent with a matching width but variable height. Code largely lifted
@@ -609,16 +636,35 @@ public class Utils {
      */
     public static Intent createViewFolderIntent(Folder folder, Account account,
             boolean pendingIntent) {
+        return createViewFolderIntent(folder.uri, account, folder, pendingIntent);
+    }
+
+    /**
+     * Create an intent to open a folder.
+     *
+     * @param folderUri Folder uri.
+     * @param account
+     * @param folder Folder to open.
+     * @param pendingIntent If this will be used as a pending intent we need to
+     *            send strings not parcelables.
+     * @return
+     */
+    public static Intent createViewFolderIntent(Uri folderUri, Account account, Folder folder,
+            boolean pendingIntent) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
                 Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        intent.setDataAndType(folder.uri, account.mimeType);
+        intent.setDataAndType(folderUri, account.mimeType);
         if (pendingIntent) {
             intent.putExtra(Utils.EXTRA_ACCOUNT_STRING, account.serialize());
-            intent.putExtra(Utils.EXTRA_FOLDER_STRING, folder.serialize());
+            if (folder != null) {
+                intent.putExtra(Utils.EXTRA_FOLDER_STRING, folder.serialize());
+            }
         } else {
             intent.putExtra(Utils.EXTRA_ACCOUNT, account);
-            intent.putExtra(Utils.EXTRA_FOLDER, folder);
+            if (folder != null) {
+                intent.putExtra(Utils.EXTRA_FOLDER, folder);
+            }
         }
         return intent;
     }

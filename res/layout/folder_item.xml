@@ -45,7 +45,7 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentRight="true"
         android:layout_toLeftOf="@id/folder_parent_icon"
-        android:textColor="@color/text_color_unread_invertible" />
+        android:textColor="@color/folder_name_color_primary_invertible" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_below="@id/name"
-            android:textColor="@color/text_color_primary_invertible"
+            android:textColor="@color/folder_name_color_primary_invertible"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:visibility="gone" />
 

@@ -27,11 +27,13 @@ import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.android.mail.R;
+import com.android.mail.compose.ComposeActivity;
 import com.android.mail.persistence.Persistence;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
@@ -351,12 +353,19 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         composeIntent.setAction(Intent.ACTION_SEND);
         composeIntent.putExtra(Utils.EXTRA_ACCOUNT, account);
         composeIntent.setData(account.composeIntentUri);
+        composeIntent.putExtra(ComposeActivity.EXTRA_FROM_EMAIL_TASK, true);
         if (account.composeIntentUri != null) {
             composeIntent.putExtra(Utils.EXTRA_COMPOSE_URI, account.composeIntentUri);
         }
-        clickIntent = PendingIntent.getActivity(context, 0, composeIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Build a task stack that forces the conversation list on the stack before the compose
+        // activity.
+        final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        clickIntent = taskStackBuilder.addNextIntent(mailIntent)
+                .addNextIntent(composeIntent)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_compose, clickIntent);
+
         // On click intent for Conversation
         final Intent conversationIntent = new Intent();
         conversationIntent.setAction(Intent.ACTION_VIEW);

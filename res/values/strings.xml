@@ -180,6 +180,8 @@
     <string name="quoted_text_label">Quote text</string>
     <!--  Button for including inline responses. [CHAR LIMIT=25] -->
     <string name="respond_inline">Respond inline</string>
+    <!-- Format string for email addresses -->
+    <string name="formatted_email_address" translate="false">&lt;<xliff:g id="email">%1$s</xliff:g>&gt;</string>
 
     <!-- Attachments -->
     <!-- Size unit, displayed in a button next to an attachment [CHAR LIMIT=5]-->

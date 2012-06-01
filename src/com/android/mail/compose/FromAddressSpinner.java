@@ -138,7 +138,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
             return froms;
         }
         ReplyFromAccount replyFrom = new ReplyFromAccount(account, account.uri, account.name,
-                account.name, false, false);
+                account.name, account.name, false, false);
         if (replyFrom != null) {
             froms.add(replyFrom);
         }

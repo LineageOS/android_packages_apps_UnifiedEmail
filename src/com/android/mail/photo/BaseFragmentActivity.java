@@ -36,11 +36,9 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.mail.R;
-import com.android.mail.photo.util.ImageCache;
 
 import java.util.ArrayList;
 
@@ -762,12 +760,5 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
         }
 
         return null;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        ImageCache.getInstance(this).refresh();
     }
 }
