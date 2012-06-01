@@ -88,6 +88,8 @@
     <string name="quoted_text" msgid="7250749398672037355">"Dołącz cytowany tekst"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Cytowany tekst"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Odpowiedz w tekście"</string>
+    <!-- no translation found for formatted_email_address (7547733689030368784) -->
+    <skip />
     <string name="bytes" msgid="8851050881674287386">"B"</string>
     <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
     <string name="megabytes" msgid="1469217534120857347">"MB"</string>
@@ -331,6 +333,5 @@
     <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> dni"</item>
   </plurals>
     <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"Wstawiam zdjęcie…"</string>
-    <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
-    <skip />
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Nie można przenieść, ponieważ wybrane elementy pochodzą z wielu kont."</string>
 </resources>

@@ -88,6 +88,8 @@
     <string name="quoted_text" msgid="7250749398672037355">"Включване на цитирания текст"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Цитиране на текста"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Отговор в текста"</string>
+    <!-- no translation found for formatted_email_address (7547733689030368784) -->
+    <skip />
     <string name="bytes" msgid="8851050881674287386">"Б"</string>
     <string name="kilobytes" msgid="8506546136898321025">"КБ"</string>
     <string name="megabytes" msgid="1469217534120857347">"МБ"</string>
@@ -342,6 +344,5 @@
     <!-- no translation found for num_days_ago:other (2756574969735638578) -->
     <!-- no translation found for dialog_inserting_camera_photo (2711654208680211224) -->
     <skip />
-    <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
-    <skip />
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Не може да се премести, защото са избрани няколко профила."</string>
 </resources>
