@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -43,7 +44,7 @@ import com.android.mail.utils.LogUtils;
  * The folder list UI component.
  */
 public final class FolderListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Cursor>, ViewMode.ModeChangeListener, OnClickListener {
+        LoaderManager.LoaderCallbacks<Cursor>, ViewMode.ModeChangeListener {
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     private ControllableActivity mActivity;
@@ -114,7 +115,7 @@ public final class FolderListFragment extends ListFragment implements
             // Activity is finishing, just bail.
             return;
         }
-        selectFolder(mActivity.getCurrentFolder());
+        selectInitialFolder(mActivity.getCurrentFolder());
         getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
     }
 
@@ -129,8 +130,7 @@ public final class FolderListFragment extends ListFragment implements
         final Bundle args = getArguments();
         mFolderListUri = Uri.parse(args.getString(ARG_FOLDER_URI));
         mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
-        View rootView = inflater.inflate(mParentFolder != null ?
-                R.layout.folder_list_with_parent : R.layout.folder_list, null);
+        View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -139,9 +139,7 @@ public final class FolderListFragment extends ListFragment implements
         mListView.setSaveEnabled(false);
 
         if (mParentFolder != null) {
-            TextView parentFolderView = (TextView) rootView.findViewById(R.id.parent_folder_name);
-            parentFolderView.setText(mParentFolder.name);
-            parentFolderView.setOnClickListener(this);
+            mSelectedFolder = mParentFolder;
         }
         return rootView;
     }
@@ -159,10 +157,15 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     public void viewFolder(int position) {
-        mFolderListCursor.moveToPosition(position);
-        mSelectedFolder = new Folder(mFolderListCursor);
+        Object item = getListAdapter().getItem(position);
+        Folder folder;
+        if (item instanceof Folder) {
+            folder = (Folder) item;
+        } else {
+            folder = new Folder((Cursor) item);
+        }
         // Go to the conversation list for this folder.
-        mListener.onFolderSelected(mSelectedFolder, mParentFolder != null);
+        mListener.onFolderSelected(folder, mParentFolder != null);
     }
 
     @Override
@@ -179,8 +182,13 @@ public final class FolderListFragment extends ListFragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mFolderListCursor = data;
-        setListAdapter(new FolderListAdapter(mActivity.getActivityContext(),
+        if (mParentFolder != null) {
+            setListAdapter(new HierarchicalFolderListAdapter(mActivity.getActivityContext(),
+                    mFolderListCursor, mParentFolder));
+        } else {
+            setListAdapter(new FolderListAdapter(mActivity.getActivityContext(),
                 R.layout.folder_item, mFolderListCursor, null, null));
+        }
     }
 
     @Override
@@ -205,7 +213,57 @@ public final class FolderListFragment extends ListFragment implements
             }
             getCursor().moveToPosition(position);
             Folder folder = new Folder(getCursor());
-            folderItemView.bind(folder, mDropHandler);
+            folderItemView.bind(folder, mDropHandler, true);
+            if (mSelectedFolder != null && folder.uri.equals(mSelectedFolder.uri)) {
+                getListView().setItemChecked(position, true);
+            }
+            Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.folder_box));
+            return folderItemView;
+        }
+    }
+
+    private class HierarchicalFolderListAdapter extends ArrayAdapter<Folder> {
+
+        private static final int PARENT = 0;
+        private static final int CHILD = 1;
+        private final Uri mParentUri;
+
+        public HierarchicalFolderListAdapter(Context context, Cursor c, Folder parentFolder) {
+            super(context, R.layout.folder_item);
+            mParentUri = parentFolder.uri;
+            add(parentFolder);
+            if (c != null && c.getCount() > 0) {
+                c.moveToFirst();
+                do {
+                    add(new Folder(c));
+                } while (c.moveToNext());
+            }
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            // Child and Parent
+            return 2;
+        }
+
+        public int getItemViewType(int position) {
+            Folder f = this.getItem(position);
+            return f.uri.equals(mParentUri) ? PARENT : CHILD;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            FolderItemView folderItemView;
+            Folder folder = getItem(position);
+            boolean isParent = folder.uri.equals(mParentUri);
+            if (convertView != null) {
+                folderItemView = (FolderItemView) convertView;
+            } else {
+                int resId = isParent ? R.layout.folder_item : R.layout.child_folder_item;
+                folderItemView = (FolderItemView) LayoutInflater.from(
+                        mActivity.getActivityContext()).inflate(resId, null);
+            }
+            folderItemView.bind(folder, mDropHandler, false);
             if (mSelectedFolder != null && folder.uri.equals(mSelectedFolder.uri)) {
                 getListView().setItemChecked(position, true);
             }
@@ -219,16 +277,8 @@ public final class FolderListFragment extends ListFragment implements
         // Listen on mode changes, when we move to Folder list mode, change accordingly.
     }
 
-    public void selectFolder(Folder folder) {
+    public void selectInitialFolder(Folder folder) {
         mSelectedFolder = folder;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.parent_folder_name && mParentFolder != null) {
-            mSelectedFolder = mParentFolder;
-            mListener.onFolderSelected(mSelectedFolder, mParentFolder != null);
-        }
     }
 
     public interface FolderListSelectionListener {
