@@ -88,6 +88,8 @@
     <string name="quoted_text" msgid="7250749398672037355">"Уключыць цытаваны тэкст"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Цытаваць тэкст"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Адказаць у лісце"</string>
+    <!-- no translation found for formatted_email_address (7547733689030368784) -->
+    <skip />
     <string name="bytes" msgid="8851050881674287386">"B"</string>
     <string name="kilobytes" msgid="8506546136898321025">"Кб"</string>
     <string name="megabytes" msgid="1469217534120857347">"Мб"</string>
@@ -302,46 +304,34 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Гэты ўліковы запіс не наладжаны на аўтаматычную сінхранізацыю."\n"Дакраніцеся да кнопкі "<b>"Сінхранаваць зараз"</b>", каб адзін раз сінхранiзаваць пошту, або да кнопкі "<b>"Змена параметраў сінхранізацыі"</b>", каб наладзіць аўтаматычную сінхранізацыю пошты ў гэтым уліковым запісе."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Сінхранаваць зараз"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Змена параметраў сінхранізацыі"</string>
-    <!-- no translation found for photo_view_default_title (305616940993932174) -->
-    <skip />
-    <!-- no translation found for photo_view_load_error (1802859675974843136) -->
-    <skip />
-    <!-- no translation found for photo_view_video_not_ready (8488887700991406631) -->
-    <skip />
-    <!-- no translation found for photo_view_placeholder_image (465734985000555852) -->
-    <skip />
-    <!-- no translation found for photo_network_error (6545183306958652345) -->
-    <skip />
-    <!-- no translation found for loading_photo (6784297653634402137) -->
-    <skip />
-    <!-- no translation found for post_operation_pending (1312168212880219407) -->
-    <skip />
-    <!-- no translation found for download_photo_retry (1894223549069749239) -->
-    <skip />
-    <!-- no translation found for download_photo_error (7511376299526085797) -->
-    <skip />
-    <!-- no translation found for yes (7474216525286833848) -->
-    <skip />
-    <!-- no translation found for no (427548507197604096) -->
-    <skip />
-    <!-- no translation found for camera_photo_error (653424229752191252) -->
-    <skip />
-    <!-- no translation found for photo_view_count (1568865177363028519) -->
-    <skip />
-    <!-- no translation found for truncated_info (4901078975545890098) -->
-    <skip />
-    <!-- no translation found for truncated_info_see_more (2068973974507128729) -->
-    <skip />
-    <!-- no translation found for posted_just_now (7872790861965011674) -->
-    <skip />
-    <!-- no translation found for num_minutes_ago:one (4750191148321568233) -->
-    <!-- no translation found for num_minutes_ago:other (4976118461634588647) -->
-    <!-- no translation found for num_hours_ago:one (2178354472031148118) -->
-    <!-- no translation found for num_hours_ago:other (1470820825143524326) -->
-    <!-- no translation found for num_days_ago:one (5538890823169916595) -->
-    <!-- no translation found for num_days_ago:other (2756574969735638578) -->
-    <!-- no translation found for dialog_inserting_camera_photo (2711654208680211224) -->
-    <skip />
-    <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
-    <skip />
+    <string name="photo_view_default_title" msgid="305616940993932174">"Фота з паведамлення"</string>
+    <string name="photo_view_load_error" msgid="1802859675974843136">"Немагчыма загрузіць фатаграфію"</string>
+    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"Зараз відэа недаступнае. Абнавіце старонку."</string>
+    <string name="photo_view_placeholder_image" msgid="465734985000555852">"Зараз элемент недаступны. Абнавіце старонку."</string>
+    <string name="photo_network_error" msgid="6545183306958652345">"Зараз фатаграфія недаступная."</string>
+    <string name="loading_photo" msgid="6784297653634402137">"Загрузка..."</string>
+    <string name="post_operation_pending" msgid="1312168212880219407">"Адпраўка..."</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"Гэта выява занадта вялікая для спампоўкі. Паўтарыць спробу ў меншым разрозненнi?"</string>
+    <string name="download_photo_error" msgid="7511376299526085797">"Фатаграфію нельга захаваць на прыладу."</string>
+    <string name="yes" msgid="7474216525286833848">"Так"</string>
+    <string name="no" msgid="427548507197604096">"Не"</string>
+    <string name="camera_photo_error" msgid="653424229752191252">"Не атрымалася знайсці фатаграфію."</string>
+    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> з <xliff:g id="COUNT">%d</xliff:g>"</string>
+    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
+    <string name="truncated_info_see_more" msgid="2068973974507128729">" Дадатковая інфармацыя »"</string>
+    <string name="posted_just_now" msgid="7872790861965011674">"Зараз"</string>
+  <plurals name="num_minutes_ago">
+    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> хв. таму"</item>
+    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> хв. таму"</item>
+  </plurals>
+  <plurals name="num_hours_ago">
+    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> гадз. таму"</item>
+    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> гадз. таму"</item>
+  </plurals>
+  <plurals name="num_days_ago">
+    <item quantity="one" msgid="5538890823169916595">"Дзён таму: <xliff:g id="COUNT">%d</xliff:g>"</item>
+    <item quantity="other" msgid="2756574969735638578">"Дзён таму: <xliff:g id="COUNT">%d</xliff:g>"</item>
+  </plurals>
+    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"Устаўка фота..."</string>
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Немагчыма працягваць, таму што выбар змяшчае некалькі ўліковых запісаў."</string>
 </resources>

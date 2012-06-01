@@ -88,6 +88,8 @@
     <string name="quoted_text" msgid="7250749398672037355">"उद्धरित पाठ शामिल करें"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"उद्धरित पाठ"</string>
     <string name="respond_inline" msgid="6797117334768201180">"इनलाइन प्रतिसाद दें"</string>
+    <!-- no translation found for formatted_email_address (7547733689030368784) -->
+    <skip />
     <string name="bytes" msgid="8851050881674287386">"B"</string>
     <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
     <string name="megabytes" msgid="1469217534120857347">"MB"</string>
@@ -302,46 +304,35 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"यह खाता स्वचालित रूप से समन्वयित करने के लिए सेट नहीं है. "\n"एक बार मेल समन्‍वयित करने के लिए, "<b>"अभी समन्वयित करें"</b>" स्‍पर्श करें, या इस खाते को मेल स्वचालित रूप से समन्‍वयित करने के लिए सेट करने हेतु "<b>"समन्वयन सेटिंग बदलें"</b>" स्‍पर्श करें."</string>
     <string name="manual_sync" msgid="6743983544685622800">"अभी समन्वयित करें"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"समन्वयन सेटिंग बदलें"</string>
-    <!-- no translation found for photo_view_default_title (305616940993932174) -->
-    <skip />
-    <!-- no translation found for photo_view_load_error (1802859675974843136) -->
-    <skip />
-    <!-- no translation found for photo_view_video_not_ready (8488887700991406631) -->
-    <skip />
-    <!-- no translation found for photo_view_placeholder_image (465734985000555852) -->
-    <skip />
-    <!-- no translation found for photo_network_error (6545183306958652345) -->
-    <skip />
-    <!-- no translation found for loading_photo (6784297653634402137) -->
-    <skip />
-    <!-- no translation found for post_operation_pending (1312168212880219407) -->
-    <skip />
-    <!-- no translation found for download_photo_retry (1894223549069749239) -->
-    <skip />
-    <!-- no translation found for download_photo_error (7511376299526085797) -->
-    <skip />
-    <!-- no translation found for yes (7474216525286833848) -->
-    <skip />
-    <!-- no translation found for no (427548507197604096) -->
-    <skip />
-    <!-- no translation found for camera_photo_error (653424229752191252) -->
-    <skip />
-    <!-- no translation found for photo_view_count (1568865177363028519) -->
-    <skip />
-    <!-- no translation found for truncated_info (4901078975545890098) -->
-    <skip />
-    <!-- no translation found for truncated_info_see_more (2068973974507128729) -->
-    <skip />
-    <!-- no translation found for posted_just_now (7872790861965011674) -->
-    <skip />
-    <!-- no translation found for num_minutes_ago:one (4750191148321568233) -->
-    <!-- no translation found for num_minutes_ago:other (4976118461634588647) -->
-    <!-- no translation found for num_hours_ago:one (2178354472031148118) -->
-    <!-- no translation found for num_hours_ago:other (1470820825143524326) -->
-    <!-- no translation found for num_days_ago:one (5538890823169916595) -->
-    <!-- no translation found for num_days_ago:other (2756574969735638578) -->
-    <!-- no translation found for dialog_inserting_camera_photo (2711654208680211224) -->
-    <skip />
+    <string name="photo_view_default_title" msgid="305616940993932174">"संदेश के फ़ोटो"</string>
+    <string name="photo_view_load_error" msgid="1802859675974843136">"फ़ोटो लोड नहीं किया जा सका."</string>
+    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"इस समय वीडियो उपलब्‍ध नहीं है. कृपया रीफ्रेश करें."</string>
+    <string name="photo_view_placeholder_image" msgid="465734985000555852">"इस समय आइटम उपलब्‍ध नहीं है. कृपया रीफ्रेश करें."</string>
+    <string name="photo_network_error" msgid="6545183306958652345">"अभी फ़ोटो उपलब्‍ध नहीं है."</string>
+    <string name="loading_photo" msgid="6784297653634402137">"लोड हो रहा है…"</string>
+    <string name="post_operation_pending" msgid="1312168212880219407">"भेजा जा रहा है…"</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"डाउनलोड करने के लिए यह छवि बहुत बड़ी है, क्‍या आप कम रिज़ॉल्‍यूशन पर पुन: प्रयास करना चाहेंगे?"</string>
+    <string name="download_photo_error" msgid="7511376299526085797">"उपकरण में फ़ोटो को सहेजा नहीं जा सका."</string>
+    <string name="yes" msgid="7474216525286833848">"हां"</string>
+    <string name="no" msgid="427548507197604096">"नहीं"</string>
+    <string name="camera_photo_error" msgid="653424229752191252">"फ़ोटो नहीं ढूंढ सकता."</string>
+    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="COUNT">%d</xliff:g> में से <xliff:g id="CURRENT_POS">%d</xliff:g>"</string>
+    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
+    <string name="truncated_info_see_more" msgid="2068973974507128729">" अधिक देखें »"</string>
+    <string name="posted_just_now" msgid="7872790861965011674">"अभी-अभी"</string>
+  <plurals name="num_minutes_ago">
+    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> मिनट"</item>
+    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> मिनट"</item>
+  </plurals>
+  <plurals name="num_hours_ago">
+    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> घंटा"</item>
+    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> घंटे"</item>
+  </plurals>
+  <plurals name="num_days_ago">
+    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> दिन"</item>
+    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> दिन"</item>
+  </plurals>
+    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"फ़ोटो सम्‍मिलित कर रहा है…"</string>
     <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
     <skip />
 </resources>
