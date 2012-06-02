@@ -78,6 +78,9 @@ public class ConversationItemViewModel {
     // A list of all the fragments that cover sendersText
     final ArrayList<SenderFragment> senderFragments;
 
+    SpannableStringBuilder sendersDisplayText;
+    StaticLayout sendersDisplayLayout;
+
     boolean hasDraftMessage;
 
     // Subject
@@ -253,10 +256,6 @@ public class ConversationItemViewModel {
      * Describes the style of a Senders fragment.
      */
     static class SenderFragment {
-        // Coordinate where the text to be drawn.
-        int x;
-        int y;
-
         // Indices that determine which substring of mSendersText we are
         // displaying.
         int start;
