@@ -550,6 +550,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Subject.
         createSubjectSpans(isUnread);
 
+        mHeader.sendersDisplayText = new SpannableStringBuilder();
+
         // Parse senders fragments.
         mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode);
 
@@ -733,11 +735,25 @@ public class ConversationItemView extends View implements SwipeableItemView {
                     width = (int) sPaint.measureText(senderFragment.ellipsizedText);
                 }
             }
-            senderFragment.x = mCoordinates.sendersX + totalWidth;
-            senderFragment.y = sendersY;
             senderFragment.shouldDisplay = true;
             totalWidth += width;
+
+            final CharSequence fragmentDisplayText;
+            if (senderFragment.ellipsizedText != null) {
+                fragmentDisplayText = senderFragment.ellipsizedText;
+            } else {
+                fragmentDisplayText = mHeader.sendersText.substring(start, end);
+            }
+            final int spanStart = mHeader.sendersDisplayText.length();
+            mHeader.sendersDisplayText.append(fragmentDisplayText);
+            mHeader.sendersDisplayText.setSpan(senderFragment.style, spanStart,
+                    mHeader.sendersDisplayText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+
+        sPaint.setTextSize(mCoordinates.sendersFontSize);
+        sPaint.setTypeface(Typeface.DEFAULT);
+        mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
+                mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
 
         pauseTimer(PERF_TAG_CALCULATE_COORDINATES);
     }
@@ -775,7 +791,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     /**
      * Determine the width of this view.
-     * 
+     *
      * @param measureSpec A measureSpec packed into an int
      * @return The width of the view, honoring constraints from measureSpec
      */
@@ -801,7 +817,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     /**
      * Determine the height of this view.
-     * 
+     *
      * @param measureSpec A measureSpec packed into an int
      * @param mode The current mode of this view
      * @return The height of the view, honoring constraints from measureSpec
@@ -847,17 +863,11 @@ public class ConversationItemView extends View implements SwipeableItemView {
         int sendersColor = getFontColor(isUnread ? SENDERS_TEXT_COLOR_UNREAD
                 : SENDERS_TEXT_COLOR_READ);
         sPaint.setColor(sendersColor);
-        for (SenderFragment fragment : mHeader.senderFragments) {
-            if (fragment.shouldDisplay) {
-                fragment.style.updateDrawState(sPaint);
-                if (fragment.ellipsizedText != null) {
-                    canvas.drawText(fragment.ellipsizedText, fragment.x, fragment.y, sPaint);
-                } else {
-                    canvas.drawText(mHeader.sendersText, fragment.start, fragment.end, fragment.x,
-                            fragment.y, sPaint);
-                }
-            }
-        }
+        canvas.save();
+        canvas.translate(mCoordinates.sendersX,
+                mCoordinates.sendersY + mHeader.sendersDisplayLayout.getTopPadding());
+        mHeader.sendersDisplayLayout.draw(canvas);
+        canvas.restore();
 
         // Subject.
         sPaint.setTextSize(mCoordinates.subjectFontSize);
@@ -1215,7 +1225,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     /**
      * Grow the height of the item and fade it in when bringing a conversation
      * back from a destructive action.
-     * 
+     *
      * @param listener
      */
     public void startUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
