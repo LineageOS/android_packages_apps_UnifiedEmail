@@ -40,6 +40,7 @@ import java.util.ArrayList;
  * <li>override-able {@link #setItemVisible(Fragment, boolean)} method for subclasses to
  * add supplemental handling of visibility hints manually on pre-v15 devices</li>
  * <li>add support to handle data set changes that cause item positions to change</li>
+ * <li>allow read access to existing Fragments by index ({@link #getFragmentAt(int)})</li>
  * </ul>
  */
 public abstract class FragmentStatePagerAdapter2 extends PagerAdapter {
@@ -229,5 +230,9 @@ public abstract class FragmentStatePagerAdapter2 extends PagerAdapter {
                 mFragments.removeAt(i);
             }
         }
+    }
+
+    public Fragment getFragmentAt(int position) {
+        return mFragments.get(position);
     }
 }

@@ -305,4 +305,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public ConversationUpdater getConversationUpdater() {
         return mController;
     }
+
+    @Override
+    public SubjectDisplayChanger getSubjectDisplayChanger() {
+        return mController.getSubjectDisplayChanger();
+    }
 }

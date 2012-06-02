@@ -18,9 +18,9 @@
 package com.android.mail.ui;
 
 import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
-import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -35,18 +35,18 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.mail.R;
 import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.ConversationListContext;
+import com.android.mail.R;
+import com.android.mail.browse.SnippetTextView;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
-import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -57,7 +57,7 @@ import com.android.mail.utils.Utils;
  */
 public final class ActionBarView extends LinearLayout implements OnNavigationListener,
         ViewMode.ModeChangeListener, OnQueryTextListener, OnSuggestionListener,
-        MenuItem.OnActionExpandListener {
+        MenuItem.OnActionExpandListener, SubjectDisplayChanger {
     private ActionBar mActionBar;
     private RestrictedActivity mActivity;
     private ActivityController mController;
@@ -78,7 +78,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      */
     private Folder mFolder;
 
-    private TextView mSubjectView;
+    private SnippetTextView mSubjectView;
     private SearchView mSearchWidget;
     private MenuItem mHelpItem;
     private MenuItem mSendFeedbackItem;
@@ -101,7 +101,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      * method talks about why this is required.
      */
     private boolean mIgnoreFirstNavigation = true;
-    private Boolean mShowConversationSubject;
+    private final boolean mShowConversationSubject;
 
     public ActionBarView(Context context) {
         this(context, null);
@@ -113,6 +113,15 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
 
     public ActionBarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        mShowConversationSubject = getResources().getBoolean(R.bool.show_conversation_subject);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        mSubjectView = (SnippetTextView) findViewById(R.id.conversation_subject);
     }
 
     /**
@@ -348,10 +357,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         // We start out with every option enabled. Based on the current view, we disable actions
         // that are possible.
         LogUtils.d(LOG_TAG, "ActionBarView.onPrepareOptionsMenu().");
-        if (mSubjectView != null){
-            mSubjectView.setVisibility(GONE);
-        }
-        if (mFolderView != null){
+        if (mFolderView != null) {
             mFolderView.setVisibility(GONE);
         }
 
@@ -396,10 +402,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
                 break;
             case ViewMode.CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
-                // FIXME: use a resource to have fine-grained control over whether the spinner
-                // or the subject appears
-                if (Utils.useTabletUI(mActivity.getActivityContext())
-                        && !showConversationSubject()) {
+                if (!mShowConversationSubject) {
                     showNavList();
                 } else {
                     setStandardMode();
@@ -418,8 +421,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 setStandardMode();
-                if (Utils.useTabletUI(mActivity.getActivityContext())
-                        && !showConversationSubject()) {
+                if (!mShowConversationSubject) {
                     setPopulatedSearchView();
                 }
                 break;
@@ -434,20 +436,12 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
         return false;
     }
 
-    private boolean showConversationSubject() {
-        if (mShowConversationSubject == null) {
-            mShowConversationSubject = new Boolean(mActivity.getActivityContext().getResources()
-                    .getBoolean(R.bool.show_conversation_subject));
-        }
-        return mShowConversationSubject;
-    }
-
     /**
      * Put the ActionBar in List navigation mode. This starts the spinner up if it is missing.
      */
     private void showNavList() {
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+        mActionBar.setDisplayOptions(0,
                 ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
@@ -456,6 +450,7 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      */
     private void setStandardMode() {
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
     private void setPopulatedSearchView() {
@@ -583,6 +578,10 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
 
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
+        // Work around b/6664203 by manually forcing this view to be VISIBLE upon ActionView
+        // collapse. DISPLAY_SHOW_CUSTOM will still control its final visibility.
+        setVisibility(VISIBLE);
+
         // When the action menu is collapsed, we have performed a search, pop the search fragment.
         mController.exitSearchMode();
         // Have to return true here. Unlike other callbacks, the return value here is whether
@@ -596,5 +595,32 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
      */
     public void requestRecentFoldersAndRedraw() {
         mSpinner.requestRecentFoldersAndRedraw();
+    }
+
+    @Override
+    public void setSubject(String subject) {
+        if (!mShowConversationSubject) {
+            return;
+        }
+
+        mSubjectView.setText(subject);
+    }
+
+    @Override
+    public void clearSubject() {
+        if (!mShowConversationSubject) {
+            return;
+        }
+
+        mSubjectView.setText(null);
+    }
+
+    @Override
+    public String getUnshownSubject(String subject) {
+        if (!mShowConversationSubject) {
+            return subject;
+        }
+
+        return mSubjectView.getTextRemainder(subject);
     }
 }

@@ -34,14 +34,14 @@
         android:layout_alignParentLeft="true">
         <TextView
             android:id="@+id/account_spinner_folder"
-            style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title.Inverse"
+            style="@style/AccountSpinnerAnchorTextPrimary"
             android:singleLine="true"
             android:ellipsize="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/account_spinner_account_name"
-            style="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle.Inverse"
+            style="@style/AccountSpinnerAnchorTextSecondary"
             android:singleLine="true"
             android:ellipsize="end"
             android:layout_marginRight="4dp"

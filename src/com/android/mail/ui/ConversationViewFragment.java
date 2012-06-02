@@ -599,17 +599,26 @@ public final class ConversationViewFragment extends Fragment implements
     }
 
     private void onConversationSeen() {
+        // Ignore unsafe calls made after a fragment is detached from an activity
+        final ControllableActivity activity = (ControllableActivity) getActivity();
+        if (activity == null) {
+            LogUtils.w(LOG_TAG, "ignoring onConversationSeen for conv=%s", mConversation.id);
+            return;
+        }
+
         // mark as read upon open
         if (!mConversation.read) {
-            mActivity.getListHandler().sendConversationRead(
+            activity.getListHandler().sendConversationRead(
                     AbstractActivityController.TAG_CONVERSATION_LIST, mConversation, true,
                     false /*local*/);
             mConversation.read = true;
         }
 
-        ControllableActivity activity = (ControllableActivity) getActivity();
-        if (activity != null) {
-            activity.onConversationSeen(mConversation);
+        activity.onConversationSeen(mConversation);
+
+        final SubjectDisplayChanger sdc = activity.getSubjectDisplayChanger();
+        if (sdc != null) {
+            sdc.setSubject(mConversation.subject);
         }
     }
 
@@ -631,8 +640,11 @@ public final class ConversationViewFragment extends Fragment implements
 
     @Override
     public String getSubjectRemainder(String subject) {
-        // TODO: hook this up to action bar
-        return subject;
+        final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
+        if (sdc == null) {
+            return subject;
+        }
+        return sdc.getUnshownSubject(subject);
     }
     // END conversation header callbacks
 

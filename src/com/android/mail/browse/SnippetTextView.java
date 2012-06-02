@@ -31,6 +31,8 @@ import android.widget.TextView;
 public class SnippetTextView extends TextView {
 
     private int mMaxLines;
+    private int mLastWSpec;
+    private int mLastHSpec;
 
     public SnippetTextView(Context context) {
         this(context, null);
@@ -46,7 +48,15 @@ public class SnippetTextView extends TextView {
         mMaxLines = maxlines;
     }
 
-    public String getTextRemainder(final String text, int wSpec, int hSpec) {
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        mLastWSpec = widthMeasureSpec;
+        mLastHSpec = heightMeasureSpec;
+    }
+
+    public String getTextRemainder(final String text) {
         if (text == null || text.length() == 0) {
             return null;
         }
@@ -60,7 +70,7 @@ public class SnippetTextView extends TextView {
         Layout layout = getLayout();
 
         if (layout == null) {
-            measure(wSpec, hSpec);
+            measure(mLastWSpec, mLastHSpec);
             layout = getLayout();
         }
 

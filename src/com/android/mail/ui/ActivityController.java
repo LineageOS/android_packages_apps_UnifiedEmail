@@ -42,7 +42,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
  * ActivityControllers are delegates that implement methods by calling underlying views to modify,
  * or respond to user action.
  */
-public interface ActivityController extends LayoutListener, SubjectDisplayChanger,
+public interface ActivityController extends LayoutListener,
         ModeChangeListener, ConversationListCallbacks,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
         ConversationSetObserver, ConversationListener, OnScrollListener,
@@ -295,4 +295,9 @@ public interface ActivityController extends LayoutListener, SubjectDisplayChange
      * Return the folder currently being viewed by the activity.
      */
     public Folder getFolder();
+
+    /**
+     * @return a {@link SubjectDisplayChanger}, or null
+     */
+    SubjectDisplayChanger getSubjectDisplayChanger();
 }

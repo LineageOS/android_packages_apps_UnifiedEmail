@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2011 Google Inc.
      Licensed to The Android Open Source Project.
@@ -15,9 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<!-- conversation subject does not appear in action bar on tablets. -->
-<View xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:visibility="gone" />
+<resources>
+    <!-- Whether to show conversation subject in conversation view -->
+    <bool name="show_conversation_subject">false</bool>
+</resources>
