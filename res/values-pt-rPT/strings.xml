@@ -88,8 +88,7 @@
     <string name="quoted_text" msgid="7250749398672037355">"Incluir texto citado"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Citar texto"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Responder in-line"</string>
-    <!-- no translation found for formatted_email_address (7547733689030368784) -->
-    <skip />
+    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="8851050881674287386">"B"</string>
     <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
     <string name="megabytes" msgid="1469217534120857347">"MB"</string>
@@ -285,9 +284,6 @@
     <item quantity="other" msgid="6856940335775567991">"Sincronizar: últimos <xliff:g id="COUNT">%1$d</xliff:g> dias"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Sincronizar: Nenhuma"</string>
-    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Sincronizar pasta"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Para ver as conversas no widget, sincronize esta pasta."</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Sincronizar últimos <xliff:g id="NUMSYNCDAYS">%d</xliff:g> dias"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Alterar pastas"</string>
     <string name="search_hint" msgid="3625734263059221350">"Pesquisar correio"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
@@ -304,45 +300,34 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"A conta não está configurada para sincronização automática."\n"Toque em "<b>"Sincronizar Agora"</b>" para sincronizar correio uma vez ou em "<b>"Alterar Definições de Sincronização"</b>" para configurar esta conta para sincronização automática de correio."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincronizar agora"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Alterar def. de sincronização"</string>
-    <!-- no translation found for photo_view_default_title (305616940993932174) -->
-    <skip />
-    <!-- no translation found for photo_view_load_error (1802859675974843136) -->
-    <skip />
-    <!-- no translation found for photo_view_video_not_ready (8488887700991406631) -->
-    <skip />
-    <!-- no translation found for photo_view_placeholder_image (465734985000555852) -->
-    <skip />
-    <!-- no translation found for photo_network_error (6545183306958652345) -->
-    <skip />
-    <!-- no translation found for loading_photo (6784297653634402137) -->
-    <skip />
-    <!-- no translation found for post_operation_pending (1312168212880219407) -->
-    <skip />
-    <!-- no translation found for download_photo_retry (1894223549069749239) -->
-    <skip />
-    <!-- no translation found for download_photo_error (7511376299526085797) -->
-    <skip />
-    <!-- no translation found for yes (7474216525286833848) -->
-    <skip />
-    <!-- no translation found for no (427548507197604096) -->
-    <skip />
-    <!-- no translation found for camera_photo_error (653424229752191252) -->
-    <skip />
-    <!-- no translation found for photo_view_count (1568865177363028519) -->
-    <skip />
-    <!-- no translation found for truncated_info (4901078975545890098) -->
-    <skip />
-    <!-- no translation found for truncated_info_see_more (2068973974507128729) -->
-    <skip />
-    <!-- no translation found for posted_just_now (7872790861965011674) -->
-    <skip />
-    <!-- no translation found for num_minutes_ago:one (4750191148321568233) -->
-    <!-- no translation found for num_minutes_ago:other (4976118461634588647) -->
-    <!-- no translation found for num_hours_ago:one (2178354472031148118) -->
-    <!-- no translation found for num_hours_ago:other (1470820825143524326) -->
-    <!-- no translation found for num_days_ago:one (5538890823169916595) -->
-    <!-- no translation found for num_days_ago:other (2756574969735638578) -->
-    <!-- no translation found for dialog_inserting_camera_photo (2711654208680211224) -->
-    <skip />
+    <string name="photo_view_default_title" msgid="305616940993932174">"Fotografias da mensagem"</string>
+    <string name="photo_view_load_error" msgid="1802859675974843136">"Não foi possível carregar a fotografia."</string>
+    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"Vídeo não disponível neste momento. Atualize."</string>
+    <string name="photo_view_placeholder_image" msgid="465734985000555852">"Item não disponível neste momento. Atualize."</string>
+    <string name="photo_network_error" msgid="6545183306958652345">"De momento, a fotografia não está disponível."</string>
+    <string name="loading_photo" msgid="6784297653634402137">"A carregar…"</string>
+    <string name="post_operation_pending" msgid="1312168212880219407">"A enviar..."</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"Esta imagem é demasiado grande para ser transferida. Pretende tentar novamente com uma resolução mais baixa?"</string>
+    <string name="download_photo_error" msgid="7511376299526085797">"Não foi possível guardar a fotografia no dispositivo."</string>
+    <string name="yes" msgid="7474216525286833848">"Sim"</string>
+    <string name="no" msgid="427548507197604096">"Não"</string>
+    <string name="camera_photo_error" msgid="653424229752191252">"Não é possível localizar a fotografia."</string>
+    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> de <xliff:g id="COUNT">%d</xliff:g>"</string>
+    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
+    <string name="truncated_info_see_more" msgid="2068973974507128729">" Ver mais »"</string>
+    <string name="posted_just_now" msgid="7872790861965011674">"Mesmo agora"</string>
+  <plurals name="num_minutes_ago">
+    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> minuto"</item>
+    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> minutos"</item>
+  </plurals>
+  <plurals name="num_hours_ago">
+    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> hora"</item>
+    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> horas"</item>
+  </plurals>
+  <plurals name="num_days_ago">
+    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> dia"</item>
+    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> dias"</item>
+  </plurals>
+    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"A introduzir fotografia…"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Não é possível mover, porque a seleção contém várias contas."</string>
 </resources>

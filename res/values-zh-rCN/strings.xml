@@ -285,9 +285,6 @@
     <item quantity="other" msgid="6856940335775567991">"同步：过去 <xliff:g id="COUNT">%1$d</xliff:g> 天的会话"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"同步：否"</string>
-    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"同步文件夹"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"要在窗口小部件中查看会话，请同步此文件夹。"</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"同步过去 <xliff:g id="NUMSYNCDAYS">%d</xliff:g> 天的会话"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"更改文件夹"</string>
     <string name="search_hint" msgid="3625734263059221350">"搜索邮件"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
