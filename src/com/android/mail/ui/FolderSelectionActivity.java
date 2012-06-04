@@ -56,11 +56,16 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
+    private static final int CONFIGURE = 0;
+
+    private static final int VIEW = 1;
+
     private Account mAccount;
     private Folder mSelectedFolder;
     private boolean mConfigureShortcut;
     private boolean mConfigureWidget;
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private int mMode = -1;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -80,6 +85,9 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
             if (actionBar != null) {
                 actionBar.setIcon(R.mipmap.ic_launcher_shortcut_folder);
             }
+            mMode = CONFIGURE;
+        } else {
+            mMode = VIEW;
         }
 
         if (mConfigureWidget) {
@@ -93,8 +101,10 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         mAccount = intent.getParcelableExtra(EXTRA_ACCOUNT_SHORTCUT);
         Button firstButton = (Button) findViewById(R.id.first_button);
         firstButton.setVisibility(View.VISIBLE);
-        // TODO(mindyp) disable the manage folders buttons until we have a mange folders screen.
-        firstButton.setEnabled(false);
+        // TODO(mindyp) disable the manage folders buttons until we have a manage folders screen.
+        if (mMode == VIEW) {
+            firstButton.setEnabled(false);
+        }
         firstButton.setOnClickListener(this);
 
         createFolderListFragment(null, mAccount.folderListUri);
@@ -118,8 +128,12 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.cancel:
-                doCancel();
+            case R.id.first_button:
+                if (mMode == CONFIGURE) {
+                    doCancel();
+                } else {
+                    // TODO (mindyp): open manage folders screen.
+                }
                 break;
         }
     }

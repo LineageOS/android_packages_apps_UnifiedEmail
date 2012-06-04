@@ -22,23 +22,13 @@
     android:orientation="vertical"
     android:divider="?android:attr/dividerHorizontal"
     android:showDividers="beginning"
-    android:dividerPadding="16dip"
-    android:background="@null">
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
+    android:dividerPadding="16dip">
+    <Button
+        android:id="@+id/first_button"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:text="@string/cancel"
         android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:measureWithLargestChild="true"
-        android:background="@null">
-        <Button
-            android:id="@+id/first_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_weight="1"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel" />
-    </LinearLayout>
+        android:paddingRight="2dip" />
 </LinearLayout>
