@@ -572,14 +572,6 @@
     </plurals>
     <!-- Manage folders mode, sync option: don't synchronize any conversation with this folder [CHAR LIMIT=100] -->
     <string name="sync_none">Sync: None</string>
-    <!-- Title for dialog encouraging users enable sync for a currently non-synced folder [CHAR LIMIT=30] -->
-    <string name="folder_sync_for_widget_title">Sync folder</string>
-
-    <!-- Dialog text encouraging users to enable sync for a newly created widget [CHAR LIMIT=400] -->
-    <string name="folder_sync_for_widget_description">To view conversations in the widget, sync this folder.</string>
-
-    <!-- Checkbox text to enable sync for a folder where a widget is in the processes of being added, and sync had been not been enabled [CHAR LIMIT=30] -->
-    <string name="folder_sync_for_widget_checkbox">Sync last <xliff:g id="numSyncDays" example="30">%d</xliff:g> days</string>
 
     <!-- Folder selection dialog -->
     <!-- Title for change folders dialog [CHAR LIMIT=30] -->

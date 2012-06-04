@@ -143,17 +143,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         finish();
     }
 
-    @Override
-    public Dialog onCreateDialog(int id, Bundle bundle) {
-        Dialog dialog = null;
-        switch (id) {
-            case R.layout.folder_sync_for_widget_dialog:
-                dialog = new SyncForWidgetDialog(this, mAccount, mSelectedFolder, this);
-                break;
-        }
-        return dialog == null ? super.onCreateDialog(id, bundle) : dialog;
-    }
-
     /**
      * Create a widget for the specified account and folder
      */
@@ -215,20 +204,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                 startActivity(shortcutNameIntent);
                 finish();
             } else if (mConfigureWidget) {
-                // Check to see if the widget is set to be synchronized
-                final Set<String> synchronizedFoldersSet = Sets.newHashSet();
-
-                // Add all of the synchronized folders to the set
-                // TODO: (mindyp) deal with folders.
-                // synchronizedFoldersSet.addAll(settings.getFoldersIncluded());
-                // synchronizedFoldersSet.addAll(settings.getFoldersPartial());
-
-                if (!synchronizedFoldersSet.contains(mSelectedFolder.name)) {
-                    // Display a dialog offering to enable sync for this folder
-                    showDialog(R.layout.folder_sync_for_widget_dialog);
-                } else {
-                    createWidget(mAppWidgetId, mAccount, mSelectedFolder);
-                }
+                createWidget(mAppWidgetId, mAccount, mSelectedFolder);
             }
         }
     }
