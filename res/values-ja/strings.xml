@@ -285,9 +285,6 @@
     <item quantity="other" msgid="6856940335775567991">"同期: 過去<xliff:g id="COUNT">%1$d</xliff:g>日分"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"同期: なし"</string>
-    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"フォルダの同期"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"ウィジェットでスレッドを表示するには、このフォルダを同期します。"</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"過去<xliff:g id="NUMSYNCDAYS">%d</xliff:g>日分を同期する"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"フォルダの変更"</string>
     <string name="search_hint" msgid="3625734263059221350">"メールを検索"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->

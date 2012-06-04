@@ -285,9 +285,6 @@
     <item quantity="other" msgid="6856940335775567991">"동기화: 지난 <xliff:g id="COUNT">%1$d</xliff:g>일"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"동기화: 안함"</string>
-    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"폴더 동기화"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"위젯에서 대화를 보려면 이 폴더를 동기화하세요."</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"지난 <xliff:g id="NUMSYNCDAYS">%d</xliff:g>일 동기화"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"폴더 변경"</string>
     <string name="search_hint" msgid="3625734263059221350">"메일 검색"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->

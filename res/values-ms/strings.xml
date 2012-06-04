@@ -88,8 +88,7 @@
     <string name="quoted_text" msgid="7250749398672037355">"Sertakan teks petikan"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Petik teks"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Menjawab dalam baris"</string>
-    <!-- no translation found for formatted_email_address (7547733689030368784) -->
-    <skip />
+    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="8851050881674287386">"B"</string>
     <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
     <string name="megabytes" msgid="1469217534120857347">"MB"</string>
@@ -285,9 +284,6 @@
     <item quantity="other" msgid="6856940335775567991">"Segerak: <xliff:g id="COUNT">%1$d</xliff:g> hari terakhir"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Segerakan: Tiada"</string>
-    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Segerak folder"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Untuk melihat perbualan dalam widget, segerakkan folder ini."</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Segerak <xliff:g id="NUMSYNCDAYS">%d</xliff:g> hari terakhir"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Tukar folder"</string>
     <string name="search_hint" msgid="3625734263059221350">"Cari dalam mel"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->

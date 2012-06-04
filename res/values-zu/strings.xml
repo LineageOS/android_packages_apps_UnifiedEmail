@@ -284,9 +284,6 @@
     <item quantity="other" msgid="6856940335775567991">"Vumelanisa: Izinsuku ezingu-<xliff:g id="COUNT">%1$d</xliff:g> zokugcina"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Ukuvumelanisa: Akukho"</string>
-    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Vumelanisa ifolda"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Ukuze ubuke izingxoxo kusinqunjwana, vumelanisa le folda."</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Vumelanisa izinsuku ezingu-<xliff:g id="NUMSYNCDAYS">%d</xliff:g> zokugcina"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Shintsha amafolda"</string>
     <string name="search_hint" msgid="3625734263059221350">"Sesha imeyili"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->

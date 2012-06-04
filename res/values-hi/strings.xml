@@ -285,9 +285,6 @@
     <item quantity="other" msgid="6856940335775567991">"समन्‍वयित करें: अंतिम <xliff:g id="COUNT">%1$d</xliff:g> दिन"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"समन्‍वयित करें: कोई भी नहीं"</string>
-    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"फ़ोल्डर समन्वयित करें"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"विजेट में बातचीत देखने के लिए, इस फ़ोल्डर को समन्वयित करें."</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"पिछले <xliff:g id="NUMSYNCDAYS">%d</xliff:g> दिन समन्वयित करें"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"फ़ोल्डर परिवर्तित करें"</string>
     <string name="search_hint" msgid="3625734263059221350">"मेल खोजें"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
@@ -333,6 +330,5 @@
     <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> दिन"</item>
   </plurals>
     <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"फ़ोटो सम्‍मिलित कर रहा है…"</string>
-    <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
-    <skip />
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"चयन में एकाधिक खाते होने के कारण नहीं ले जाया जा सकता."</string>
 </resources>

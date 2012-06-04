@@ -22,7 +22,7 @@
     <string name="cc" msgid="7017720927911078193">"Kopie"</string>
     <string name="bcc" msgid="3098643138241111579">"Skrytá kopie"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Předmět"</string>
-    <string name="body_hint" msgid="4279864165439577668">"Napsat e-mail"</string>
+    <string name="body_hint" msgid="4279864165439577668">"Napsat zprávu"</string>
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Přiložit soubor"</string>
@@ -65,7 +65,7 @@
     <string name="reply_all" msgid="7257248094625487557">"Odpovědět všem"</string>
     <string name="resume_draft" msgid="6450150180834092146">"Upravit"</string>
     <string name="forward" msgid="6822914459902983767">"Přeposlat"</string>
-    <string name="menu_compose" msgid="6274193058224230645">"Napsat"</string>
+    <string name="menu_compose" msgid="6274193058224230645">"Nová zpráva"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Změnit složky"</string>
     <string name="menu_manage_folders" msgid="7499103037978814445">"Správa složek"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Složky"</string>
@@ -285,9 +285,6 @@
     <item quantity="other" msgid="6856940335775567991">"Synchronizovat <xliff:g id="COUNT">%1$d</xliff:g> d."</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"Synchronizovat: nic"</string>
-    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"Synchronizace složky"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"Chcete-li ve widgetu zobrazit konverzace, synchronizujte tuto složku."</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"Synchronizovat <xliff:g id="NUMSYNCDAYS">%d</xliff:g> d."</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"Změnit složky"</string>
     <string name="search_hint" msgid="3625734263059221350">"Vyhledat v poště"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->

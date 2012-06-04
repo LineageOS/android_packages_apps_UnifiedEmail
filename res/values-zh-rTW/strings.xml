@@ -285,9 +285,6 @@
     <item quantity="other" msgid="6856940335775567991">"同步處理：最近 <xliff:g id="COUNT">%1$d</xliff:g> 天"</item>
   </plurals>
     <string name="sync_none" msgid="3581727068747471804">"同步處理：無"</string>
-    <string name="folder_sync_for_widget_title" msgid="6889243150191948255">"同步處理資料夾"</string>
-    <string name="folder_sync_for_widget_description" msgid="3287913520283417367">"如要在小工具中查看會話群組，請同步處理這個資料夾。"</string>
-    <string name="folder_sync_for_widget_checkbox" msgid="5810741160405575956">"同步處理最近 <xliff:g id="NUMSYNCDAYS">%d</xliff:g> 天"</string>
     <string name="folder_selection_dialog_title" msgid="9194093596644845383">"變更資料夾"</string>
     <string name="search_hint" msgid="3625734263059221350">"搜尋郵件"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
@@ -308,7 +305,7 @@
     <string name="photo_view_load_error" msgid="1802859675974843136">"無法載入相片。"</string>
     <string name="photo_view_video_not_ready" msgid="8488887700991406631">"影片正準備中，請重新整理頁面。"</string>
     <string name="photo_view_placeholder_image" msgid="465734985000555852">"目前無法瀏覽，請重新整理頁面。"</string>
-    <string name="photo_network_error" msgid="6545183306958652345">"系統目前無法取得相片。"</string>
+    <string name="photo_network_error" msgid="6545183306958652345">"目前無法下載相片。"</string>
     <string name="loading_photo" msgid="6784297653634402137">"載入中..."</string>
     <string name="post_operation_pending" msgid="1312168212880219407">"傳送中..."</string>
     <string name="download_photo_retry" msgid="1894223549069749239">"圖片過大，因此無法下載。您要以較低的解析度重試嗎？"</string>
