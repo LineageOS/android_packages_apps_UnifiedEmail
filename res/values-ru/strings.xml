@@ -88,8 +88,7 @@
     <string name="quoted_text" msgid="7250749398672037355">"Включить цитируемый текст"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Цитировать"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Ответить в письме"</string>
-    <!-- no translation found for formatted_email_address (7547733689030368784) -->
-    <skip />
+    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="8851050881674287386">"Б"</string>
     <string name="kilobytes" msgid="8506546136898321025">"КБ"</string>
     <string name="megabytes" msgid="1469217534120857347">"МБ"</string>
@@ -301,18 +300,18 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"В этом аккаунте не настроена автоматическая синхронизация."\n"Выберите "<b>"Настройки синхронизации"</b>", чтобы включить ее, или "<b>"Синхронизировать сейчас"</b>", чтобы синхронизировать почту один раз."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр."</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Настройки синхронизации"</string>
-    <string name="photo_view_default_title" msgid="305616940993932174">"Фотографии из сообщения"</string>
-    <string name="photo_view_load_error" msgid="1802859675974843136">"Не удалось загрузить фотографию."</string>
-    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"Видео сейчас недоступно. Обновите."</string>
-    <string name="photo_view_placeholder_image" msgid="465734985000555852">"Элемент сейчас недоступен. Обновите."</string>
+    <string name="photo_view_default_title" msgid="305616940993932174">"Фото из сообщения"</string>
+    <string name="photo_view_load_error" msgid="1802859675974843136">"Не удалось загрузить фотографию"</string>
+    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"Видео недоступно. Обновите экран."</string>
+    <string name="photo_view_placeholder_image" msgid="465734985000555852">"Файл недоступен. Обновите экран."</string>
     <string name="photo_network_error" msgid="6545183306958652345">"Фотография сейчас недоступна."</string>
     <string name="loading_photo" msgid="6784297653634402137">"Загрузка…"</string>
     <string name="post_operation_pending" msgid="1312168212880219407">"Отправка…"</string>
-    <string name="download_photo_retry" msgid="1894223549069749239">"Изображение слишком большое для загрузки. Загрузить его в меньшем разрешении?"</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"Изображение слишком большое. Загрузить его в меньшем разрешении?"</string>
     <string name="download_photo_error" msgid="7511376299526085797">"Не удалось сохранить фотографию на устройстве."</string>
     <string name="yes" msgid="7474216525286833848">"Да"</string>
     <string name="no" msgid="427548507197604096">"Нет"</string>
-    <string name="camera_photo_error" msgid="653424229752191252">"Не удается найти фотографию."</string>
+    <string name="camera_photo_error" msgid="653424229752191252">"Не удалось найти фотографию"</string>
     <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> из <xliff:g id="COUNT">%d</xliff:g>"</string>
     <string name="truncated_info" msgid="4901078975545890098">"…"</string>
     <string name="truncated_info_see_more" msgid="2068973974507128729">" Подробнее »"</string>
