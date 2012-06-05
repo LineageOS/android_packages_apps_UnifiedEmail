@@ -236,6 +236,9 @@
     <string name="saved">Saved,&#160;</string>
     <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=25]-->
     <string name="download_failed">Couldn\'t download.</string>
+    <!-- Displayed in the conversation view, as a header informing
+         the user that the following is the attachments. -->
+    <string name="attachments_header">Attachments</string>
 
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->

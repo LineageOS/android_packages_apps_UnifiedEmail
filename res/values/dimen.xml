@@ -103,4 +103,5 @@
       when the font size is scaled for accessibility purposes
     -->
     <dimen name="attachment_tile_shadowbox_height">48sp</dimen>
+    <dimen name="attachment_tile_min_size">120dp</dimen>
 </resources>

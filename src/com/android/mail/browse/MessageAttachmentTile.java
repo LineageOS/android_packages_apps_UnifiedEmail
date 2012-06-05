@@ -30,19 +30,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.photo.Intents;
@@ -52,7 +49,6 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
-import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
@@ -72,21 +68,10 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
     private ImageView mIcon;
     private ImageView.ScaleType mIconScaleType;
     private int mPhotoIndex;
-    private TextView mTitle;
-    private TextView mSubTitle;
-    private String mAttachmentSizeText;
-    private String mDisplayType;
     private Uri mAttachmentsListUri;
     private ProgressDialog mViewProgressDialog;
     private AttachmentCommandHandler mCommandHandler;
     private ProgressBar mProgress;
-    private Button mPreviewButton;
-    private Button mViewButton;
-    private Button mSaveButton;
-    private Button mInfoButton;
-    private Button mPlayButton;
-    private Button mInstallButton;
-    private Button mCancelButton;
 
     private ThumbnailLoadTask mThumbnailTask;
 
@@ -215,17 +200,6 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
                 attachment.contentType);
 
-        if (prevAttachment == null || TextUtils.equals(attachment.name, prevAttachment.name)) {
-            mTitle.setText(attachment.name);
-        }
-
-        if (prevAttachment == null || attachment.size != prevAttachment.size) {
-            mAttachmentSizeText = AttachmentUtils.convertToHumanReadableSize(getContext(),
-                    attachment.size);
-            mDisplayType = AttachmentUtils.getDisplayType(getContext(), attachment);
-            updateSubtitleText(null);
-        }
-
         final Uri imageUri = attachment.getImageUri();
         final Uri prevImageUri = (prevAttachment == null) ? null : prevAttachment.getImageUri();
         // begin loading a thumbnail if this is an image and either the thumbnail or the original
@@ -247,7 +221,6 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
             mProgress.setMax(attachment.size);
         }
 
-        updateActions();
         updateStatus();
     }
 
@@ -286,36 +259,14 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
             }
 
         }
-
-        if (mAttachment.state == AttachmentState.FAILED) {
-            mSubTitle.setText(getResources().getString(R.string.download_failed));
-        } else {
-            updateSubtitleText(mAttachment.isSavedToExternal() ?
-                    getResources().getString(R.string.saved) : null);
-        }
     }
 
     private void setProgressVisible(boolean visible) {
         if (visible) {
             mProgress.setVisibility(VISIBLE);
-            mSubTitle.setVisibility(INVISIBLE);
         } else {
             mProgress.setVisibility(GONE);
-            mSubTitle.setVisibility(VISIBLE);
         }
-    }
-
-    private void updateSubtitleText(String prefix) {
-        // TODO: make this a formatted resource when we have a UX design.
-        // not worth translation right now.
-        StringBuilder sb = new StringBuilder();
-        if (prefix != null) {
-            sb.append(prefix);
-        }
-        sb.append(mAttachmentSizeText);
-        sb.append(' ');
-        sb.append(mDisplayType);
-        mSubTitle.setText(sb.toString());
     }
 
     @Override
@@ -323,26 +274,9 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
         super.onFinishInflate();
 
         mIcon = (ImageView) findViewById(R.id.attachment_tile_image);
-        mTitle = (TextView) findViewById(R.id.attachment_tile_title);
-        mSubTitle = (TextView) findViewById(R.id.attachment_tile_subtitle);
         mProgress = (ProgressBar) findViewById(R.id.attachment_progress);
 
-//        mPreviewButton = (Button) findViewById(R.id.preview_attachment);
-//        mViewButton = (Button) findViewById(R.id.view_attachment);
-        mSaveButton = (Button) findViewById(R.id.attachment_tile_secondary_button);
-//        mInfoButton = (Button) findViewById(R.id.info_attachment);
-//        mPlayButton = (Button) findViewById(R.id.play_attachment);
-//        mInstallButton = (Button) findViewById(R.id.install_attachment);
-//        mCancelButton = (Button) findViewById(R.id.cancel_attachment);
-
         setOnClickListener(this);
-//        mPreviewButton.setOnClickListener(this);
-//        mViewButton.setOnClickListener(this);
-        mSaveButton.setOnClickListener(this);
-//        mInfoButton.setOnClickListener(this);
-//        mPlayButton.setOnClickListener(this);
-//        mInstallButton.setOnClickListener(this);
-//        mCancelButton.setOnClickListener(this);
 
         mIconScaleType = mIcon.getScaleType();
     }
@@ -368,7 +302,6 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
                 showAttachment(AttachmentDestination.CACHE);
                 break;
             case R.id.save_attachment:
-            case R.id.attachment_tile_secondary_button:
                 if (mAttachment.canSave()) {
                     startDownloadingAttachment(AttachmentDestination.EXTERNAL);
                 }
@@ -413,49 +346,6 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
         params.put(AttachmentColumns.STATE, AttachmentState.NOT_SAVED);
 
         mCommandHandler.sendCommand(params);
-    }
-
-    private void setButtonVisible(View button, boolean visible) {
-        if (button != null) {
-            button.setVisibility(visible ? VISIBLE : GONE);
-        }
-    }
-
-    /**
-     * Update all action buttons based on current downloading state.
-     */
-    private void updateActions() {
-        // To avoid visibility state transition bugs, every button's visibility should be touched
-        // once by this routine.
-
-        final boolean isDownloading = mAttachment.isDownloading();
-
-        setButtonVisible(mCancelButton, isDownloading);
-
-        final boolean canInstall = MimeType.isInstallable(mAttachment.contentType);
-        setButtonVisible(mInstallButton, canInstall && !isDownloading);
-
-        if (!canInstall) {
-
-            final boolean canPreview = (mAttachment.previewIntent != null);
-            final boolean canView = MimeType.isViewable(getContext(), mAttachment.contentType);
-            final boolean canPlay = MimeType.isPlayable(mAttachment.contentType);
-
-            setButtonVisible(mPreviewButton, canPreview);
-            setButtonVisible(mPlayButton, canView && canPlay && !isDownloading);
-            setButtonVisible(mViewButton, canView && !canPlay && !isDownloading);
-            setButtonVisible(mSaveButton, canView && mAttachment.canSave() && !isDownloading);
-            setButtonVisible(mInfoButton, !(canPreview || canView));
-
-        } else {
-
-            setButtonVisible(mPreviewButton, false);
-            setButtonVisible(mPlayButton, false);
-            setButtonVisible(mViewButton, false);
-            setButtonVisible(mSaveButton, false);
-            setButtonVisible(mInfoButton, false);
-
-        }
     }
 
     /**
