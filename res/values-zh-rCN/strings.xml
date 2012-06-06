@@ -303,11 +303,11 @@
     <string name="photo_view_default_title" msgid="305616940993932174">"邮件中的照片"</string>
     <string name="photo_view_load_error" msgid="1802859675974843136">"无法加载照片。"</string>
     <string name="photo_view_video_not_ready" msgid="8488887700991406631">"视频目前无法播放，请刷新。"</string>
-    <string name="photo_view_placeholder_image" msgid="465734985000555852">"此项目前无法显示，请刷新。"</string>
+    <string name="photo_view_placeholder_image" msgid="465734985000555852">"此内容目前无法显示，请刷新。"</string>
     <string name="photo_network_error" msgid="6545183306958652345">"暂时无法下载照片。"</string>
     <string name="loading_photo" msgid="6784297653634402137">"正在加载…"</string>
     <string name="post_operation_pending" msgid="1312168212880219407">"正在发送…"</string>
-    <string name="download_photo_retry" msgid="1894223549069749239">"此图片过大，无法下载。是否重新尝试下载分辨率较低的图片？"</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"此图片过大，无法下载。是否重新尝试下载分辨率较低的版本？"</string>
     <string name="download_photo_error" msgid="7511376299526085797">"照片无法保存到设备中。"</string>
     <string name="yes" msgid="7474216525286833848">"是"</string>
     <string name="no" msgid="427548507197604096">"否"</string>

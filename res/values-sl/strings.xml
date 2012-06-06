@@ -88,8 +88,7 @@
     <string name="quoted_text" msgid="7250749398672037355">"Vključi citirano besedilo"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Citirano besedilo"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Odgovori v prejetem"</string>
-    <!-- no translation found for formatted_email_address (7547733689030368784) -->
-    <skip />
+    <string name="formatted_email_address" msgid="7547733689030368784">"&lt;<xliff:g id="EMAIL">%1$s</xliff:g>&gt;"</string>
     <string name="bytes" msgid="8851050881674287386">"B"</string>
     <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
     <string name="megabytes" msgid="1469217534120857347">"MB"</string>
