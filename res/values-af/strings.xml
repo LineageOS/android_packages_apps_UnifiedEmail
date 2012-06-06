@@ -300,7 +300,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Hierdie rekening is nie opgestel om outomaties te sinkroniseer nie."\n"Raak "<b>"Sinkroniseer nou"</b>" om pos een keer te sinkroniseer, of "<b>"Verander sinkroniseer-instellings"</b>" om hierdie rekening op te stel om pos outomaties te sinkroniseer."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sinkroniseer nou"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Verander sinkroniseer-instellings"</string>
-    <string name="photo_view_default_title" msgid="305616940993932174">"Foto\'s van \'n boodskap"</string>
+    <string name="photo_view_default_title" msgid="305616940993932174">"Foto\'s uit boodskap"</string>
     <string name="photo_view_load_error" msgid="1802859675974843136">"Foto kon nie gelaai word nie."</string>
     <string name="photo_view_video_not_ready" msgid="8488887700991406631">"Video nie tans beskikbaar nie. Verfris asseblief."</string>
     <string name="photo_view_placeholder_image" msgid="465734985000555852">"Item nie tans beskikbaar nie. Verfris asseblief."</string>
@@ -322,7 +322,7 @@
   </plurals>
   <plurals name="num_hours_ago">
     <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> uur"</item>
-    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> uur"</item>
+    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> ure"</item>
   </plurals>
   <plurals name="num_days_ago">
     <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> dag"</item>
