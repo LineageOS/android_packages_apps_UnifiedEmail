@@ -115,6 +115,8 @@
     <string name="please_wait" msgid="8797634225088247121">"잠시 기다려 주세요..."</string>
     <string name="saved" msgid="6977782468220926548">"저장됨"</string>
     <string name="download_failed" msgid="7860650496473302012">"다운로드하지 못했습니다."</string>
+    <!-- no translation found for attachments_header (6459475590011460229) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"공유 방법"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"브라우저에서 열기"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"복사"</string>
@@ -312,7 +314,7 @@
     <string name="yes" msgid="7474216525286833848">"예"</string>
     <string name="no" msgid="427548507197604096">"아니요"</string>
     <string name="camera_photo_error" msgid="653424229752191252">"사진을 찾을 수 없음"</string>
-    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="COUNT">%d</xliff:g>장 중 <xliff:g id="CURRENT_POS">%d</xliff:g>"</string>
+    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g>/<xliff:g id="COUNT">%d</xliff:g>"</string>
     <string name="truncated_info" msgid="4901078975545890098">"..."</string>
     <string name="truncated_info_see_more" msgid="2068973974507128729">"더보기 »"</string>
     <string name="posted_just_now" msgid="7872790861965011674">"방금 전"</string>

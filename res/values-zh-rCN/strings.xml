@@ -115,6 +115,8 @@
     <string name="please_wait" msgid="8797634225088247121">"请稍候…"</string>
     <string name="saved" msgid="6977782468220926548">"已保存，"</string>
     <string name="download_failed" msgid="7860650496473302012">"无法下载。"</string>
+    <!-- no translation found for attachments_header (6459475590011460229) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"分享方式："</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"在浏览器中打开"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"复制"</string>
@@ -329,5 +331,5 @@
     <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> 天"</item>
   </plurals>
     <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"正在插入照片…"</string>
-    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"所选内容包含多个帐户，因此无法进行移动。"</string>
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"所选内容分属多个帐户，因此无法进行移动。"</string>
 </resources>

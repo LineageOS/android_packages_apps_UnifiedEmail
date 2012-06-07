@@ -115,6 +115,8 @@
     <string name="please_wait" msgid="8797634225088247121">"እባክህ ጠብቅ…"</string>
     <string name="saved" msgid="6977782468220926548">"ተቀምጧል፣"</string>
     <string name="download_failed" msgid="7860650496473302012">"ማውረድ አልተቻለም።"</string>
+    <!-- no translation found for attachments_header (6459475590011460229) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"በዚህ በኩል አጋራ -"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"በአሳሽ ውስጥ ክፈት"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"ቅዳ"</string>
