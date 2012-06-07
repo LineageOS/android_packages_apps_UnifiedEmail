@@ -115,6 +115,8 @@
     <string name="please_wait" msgid="8797634225088247121">"Aguarda…"</string>
     <string name="saved" msgid="6977782468220926548">"Guardado"</string>
     <string name="download_failed" msgid="7860650496473302012">"Error al descargar"</string>
+    <!-- no translation found for attachments_header (6459475590011460229) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Compartir mediante"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Abrir en el navegador"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Copiar"</string>

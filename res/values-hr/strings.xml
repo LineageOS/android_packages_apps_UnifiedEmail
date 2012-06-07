@@ -115,6 +115,8 @@
     <string name="please_wait" msgid="8797634225088247121">"Pričekajte…"</string>
     <string name="saved" msgid="6977782468220926548">"Spremljeno,"</string>
     <string name="download_failed" msgid="7860650496473302012">"Nije preuzeto."</string>
+    <!-- no translation found for attachments_header (6459475590011460229) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Dijeli putem"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Otvori u pregledniku"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopiraj"</string>
@@ -325,8 +327,8 @@
     <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> h"</item>
   </plurals>
   <plurals name="num_days_ago">
-    <item quantity="one" msgid="5538890823169916595">"Prije ovoliko dana: <xliff:g id="COUNT">%d</xliff:g>"</item>
-    <item quantity="other" msgid="2756574969735638578">"Prije ovoliko dana: <xliff:g id="COUNT">%d</xliff:g>"</item>
+    <item quantity="one" msgid="5538890823169916595">"Prije <xliff:g id="COUNT">%d</xliff:g> dana"</item>
+    <item quantity="other" msgid="2756574969735638578">"Prije <xliff:g id="COUNT">%d</xliff:g> dana"</item>
   </plurals>
     <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"Umetanje fotografije…"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Premještanje nije moguće jer odabir sadrži više računa."</string>

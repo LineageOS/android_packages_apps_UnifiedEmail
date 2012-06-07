@@ -115,6 +115,8 @@
     <string name="please_wait" msgid="8797634225088247121">"Aguarde..."</string>
     <string name="saved" msgid="6977782468220926548">"Guardado,"</string>
     <string name="download_failed" msgid="7860650496473302012">"Impossível transf."</string>
+    <!-- no translation found for attachments_header (6459475590011460229) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Partilhar através do"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Abrir no Navegador"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Copiar"</string>
@@ -329,5 +331,5 @@
     <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> dias"</item>
   </plurals>
     <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"A introduzir fotografia…"</string>
-    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Não é possível mover, porque a seleção contém várias contas."</string>
+    <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Não é possível mover porque a seleção contém várias contas."</string>
 </resources>

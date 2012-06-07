@@ -115,6 +115,8 @@
     <string name="please_wait" msgid="8797634225088247121">"Čakajte prosím..."</string>
     <string name="saved" msgid="6977782468220926548">"Uložené,"</string>
     <string name="download_failed" msgid="7860650496473302012">"Nepodarilo sa prevziať."</string>
+    <!-- no translation found for attachments_header (6459475590011460229) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Zdieľať prostredníctvom"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Otvoriť v prehliadači"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopírovať"</string>

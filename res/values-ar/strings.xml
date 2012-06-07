@@ -115,6 +115,8 @@
     <string name="please_wait" msgid="8797634225088247121">"الرجاء الانتظار…"</string>
     <string name="saved" msgid="6977782468220926548">"تم الحفظ"</string>
     <string name="download_failed" msgid="7860650496473302012">"تعذر التنزيل."</string>
+    <!-- no translation found for attachments_header (6459475590011460229) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"مشاركة عبر"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"فتح في المتصفح"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"نسخ"</string>
@@ -307,7 +309,7 @@
     <string name="photo_network_error" msgid="6545183306958652345">"الصورة ليست متاحة حاليًا."</string>
     <string name="loading_photo" msgid="6784297653634402137">"جارٍ التحميل…"</string>
     <string name="post_operation_pending" msgid="1312168212880219407">"جارٍ الإرسال…"</string>
-    <string name="download_photo_retry" msgid="1894223549069749239">"هذه الصورة كبيرة جدًا ولا يمكن تنزيلها، فهل تريد إعادة المحاولة باستخدام درجة دقة أقل؟"</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"هذه الصورة كبيرة جدًا ولا يمكن تنزيلها، فهل تريد إعادة المحاولة باستخدام درجة وضوح دقة أقل؟"</string>
     <string name="download_photo_error" msgid="7511376299526085797">"تعذر حفظ الصورة في الجهاز."</string>
     <string name="yes" msgid="7474216525286833848">"نعم"</string>
     <string name="no" msgid="427548507197604096">"لا"</string>

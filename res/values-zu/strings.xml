@@ -115,6 +115,8 @@
     <string name="please_wait" msgid="8797634225088247121">"Sicela ulinde..."</string>
     <string name="saved" msgid="6977782468220926548">"Kulondoloziwe,"</string>
     <string name="download_failed" msgid="7860650496473302012">"Ayikwazanga ukulanda."</string>
+    <!-- no translation found for attachments_header (6459475590011460229) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Abelana nge"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Vula kwisiphequluli"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopisha"</string>
@@ -228,7 +230,7 @@
     <string name="recent_folders" msgid="8240081561436891330">"Okwakamuva"</string>
     <string name="add_label" msgid="1638508840481944248">"Yengeza ilebula"</string>
     <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> koku-<xliff:g id="TOTAL">%2$s</xliff:g>"</string>
-    <string name="conversation_newer" msgid="7381341099165809801">"Okusha kunokunye"</string>
+    <string name="conversation_newer" msgid="7381341099165809801">"Okusha kakhulu"</string>
     <string name="conversation_older" msgid="6384287019562069353">"Kudala kakhulu"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Nweba imininigwane yomtholi"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Goqa imininingwane yomtholi"</string>
