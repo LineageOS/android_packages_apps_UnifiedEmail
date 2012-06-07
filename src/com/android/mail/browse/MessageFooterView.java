@@ -23,7 +23,9 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
@@ -39,11 +41,12 @@ import java.util.List;
 public class MessageFooterView extends LinearLayout implements DetachListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    private int mColumnCount;
-
     private MessageHeaderItem mMessageHeaderItem;
     private LoaderManager mLoaderManager;
     private AttachmentCursor mAttachmentsCursor;
+    private TextView mTitleText;
+    private View mTitleBar;
+    private AttachmentTileGrid mAttachmentGrid;
 
     /**
      * An easy way for the conversation view to disable immediately kicking off attachment loaders
@@ -59,9 +62,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     public MessageFooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        mColumnCount = context.getResources().getInteger(
-                R.integer.attachment_tile_column_count);
     }
 
     /**
@@ -77,6 +77,10 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        mTitleText = (TextView) findViewById(R.id.attachments_header_text);
+        mTitleBar = findViewById(R.id.attachments_header_bar);
+        mAttachmentGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
     }
 
     public void initialize(LoaderManager loaderManager) {
@@ -91,7 +95,9 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
          * we should just always render even if the matching header is collapsed.
          */
 
-        removeAllViewsInLayout();
+        mAttachmentGrid.removeAllViewsInLayout();
+        mTitleText.setVisibility(View.GONE);
+        mTitleBar.setVisibility(View.GONE);
 
         // kick off load of Attachment objects in background thread
         final Integer attachmentLoaderId = getAttachmentLoaderId();
@@ -102,7 +108,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         }
 
         // Do an initial render if initLoader didn't already do one
-        if (getChildCount() == 0) {
+        if (mAttachmentGrid.getChildCount() == 0) {
             renderAttachments();
         }
         setVisibility(mMessageHeaderItem.isExpanded() ? VISIBLE : GONE);
@@ -138,34 +144,12 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             return;
         }
 
-        int rowStartIndex = 0; // the index for the first attachment in the current row
-        final Context context = getContext();
-        final int attachmentListSize = attachments.size();
-        final int numRows = (attachmentListSize - 1)/mColumnCount + 1;
+        mTitleText.setVisibility(View.VISIBLE);
+        mTitleBar.setVisibility(View.VISIBLE);
+        mAttachmentGrid.setVisibility(View.VISIBLE);
 
-        for (int i = 0; i < numRows; i++) {
-            // Get the row view if it already exists.
-            AttachmentTileRow rowView = (AttachmentTileRow) getChildAt(i);
-
-            // If the row view does not exist, create it and add it to its parent.
-            if (rowView == null) {
-                rowView = new AttachmentTileRow(context,
-                        mMessageHeaderItem.message.attachmentListUri, mColumnCount);
-                addView(rowView);
-            }
-
-            // Get the sub-list of attachments for that row.
-            int rowEnd = rowStartIndex + mColumnCount;
-            if (rowEnd > attachmentListSize) {
-                rowEnd = attachmentListSize;
-            }
-            List<Attachment> sublist = attachments.subList(rowStartIndex, rowEnd);
-
-            // Setup the tiles in this row.
-            rowView.configureRow(sublist, i);
-
-            rowStartIndex += mColumnCount;
-        }
+        // Setup the tiles.
+        mAttachmentGrid.configureGrid(mMessageHeaderItem.message.attachmentListUri, attachments);
     }
 
     private Integer getAttachmentLoaderId() {

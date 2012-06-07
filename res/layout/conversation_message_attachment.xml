@@ -24,7 +24,7 @@
     android:orientation="vertical"
     android:divider="?android:attr/dividerHorizontal"
     android:showDividers="middle"
-    android:background="@android:color/black">
+    android:background="@drawable/attachment_bg_holo">
 
     <RelativeLayout
         android:id="@+id/attachment_tile_layout"
@@ -35,71 +35,16 @@
             android:id="@+id/attachment_tile_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter" />
+            android:scaleType="centerCrop" />
 
-        <RelativeLayout
+        <ProgressBar
+            android:id="@+id/attachment_progress"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/attachment_tile_shadowbox_height"
-            android:background="@color/attachment_tile_shadow_box_color"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:gravity="center_vertical"
-            android:paddingLeft="8dip">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/attachment_tile_secondary_button"
-                android:orientation="vertical"
-                android:gravity="center_vertical"
-                android:paddingRight="4dip">
-
-                <TextView
-                    android:id="@+id/attachment_tile_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:singleLine="true"
-                    android:fadingEdge="horizontal"
-                    android:fadingEdgeLength="3dip"
-                    android:ellipsize="marquee" />
-
-                <TextView
-                    android:id="@+id/attachment_tile_subtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/attachment_tile_subtitle_color"
-                    android:singleLine="true"
-                    android:paddingBottom="4dip"
-                    android:fadingEdge="horizontal"
-                    android:fadingEdgeLength="3dip"
-                    android:layout_marginTop="-3dip"
-                    android:ellipsize="marquee" />
-
-            </LinearLayout>
-
-            <Button
-                android:id="@id/attachment_tile_secondary_button"
-                android:background="?android:attr/selectableItemBackground"
-                android:layout_height="@dimen/attachment_tile_shadowbox_height"
-                android:layout_width="wrap_content"
-                android:drawableLeft="@drawable/ic_divider_dashed_holo_dark"
-                android:layout_alignParentRight="true"
-                android:text="@string/save_attachment"
-                android:textColor="@android:color/white" />
-
-            <ProgressBar
-                android:id="@+id/attachment_progress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:indeterminate="false"
-                android:visibility="gone" />
-
-        </RelativeLayout>
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:visibility="gone" />
 
         <View
             android:id="@+id/attachment_tile_push_state"
