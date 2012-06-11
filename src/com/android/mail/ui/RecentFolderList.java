@@ -91,10 +91,11 @@ public final class RecentFolderList {
 
         @Override
         protected Void doInBackground(Void... v) {
-            Uri uri = mAccount.recentFolderListUri;
+            final Uri uri = mAccount.recentFolderListUri;
+            final long now = System.currentTimeMillis();
             if (!Utils.isEmpty(uri)) {
                 ContentValues values = new ContentValues();
-                values.put(mFolder.uri.toString(), System.currentTimeMillis());
+                values.put(mFolder.uri.toString(), now);
                 // TODO: Remove when well tested
                 LogUtils.i(TAG, "Save: %s", mFolder.name);
                 mContext.getContentResolver().update(uri, values, null, null);
