@@ -320,7 +320,7 @@
     <string name="posted_just_now" msgid="7872790861965011674">"Sebentar tadi"</string>
   <plurals name="num_minutes_ago">
     <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> min"</item>
-    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> mins"</item>
+    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> min"</item>
   </plurals>
   <plurals name="num_hours_ago">
     <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> jam"</item>

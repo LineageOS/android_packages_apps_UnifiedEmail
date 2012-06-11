@@ -115,8 +115,7 @@
     <string name="please_wait" msgid="8797634225088247121">"Aguarde..."</string>
     <string name="saved" msgid="6977782468220926548">"Guardado,"</string>
     <string name="download_failed" msgid="7860650496473302012">"Impossível transf."</string>
-    <!-- no translation found for attachments_header (6459475590011460229) -->
-    <skip />
+    <string name="attachments_header" msgid="6459475590011460229">"Anexos"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Partilhar através do"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Abrir no Navegador"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Copiar"</string>
@@ -317,7 +316,7 @@
     <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> de <xliff:g id="COUNT">%d</xliff:g>"</string>
     <string name="truncated_info" msgid="4901078975545890098">"..."</string>
     <string name="truncated_info_see_more" msgid="2068973974507128729">" Ver mais »"</string>
-    <string name="posted_just_now" msgid="7872790861965011674">"Mesmo agora"</string>
+    <string name="posted_just_now" msgid="7872790861965011674">"Agora mesmo"</string>
   <plurals name="num_minutes_ago">
     <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> minuto"</item>
     <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> minutos"</item>
