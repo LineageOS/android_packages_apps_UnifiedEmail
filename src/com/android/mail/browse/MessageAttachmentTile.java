@@ -17,13 +17,8 @@
 
 package com.android.mail.browse;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
-import android.content.AsyncQueryHandler;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -37,20 +32,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu.OnMenuItemClickListener;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.android.mail.R;
 import com.android.mail.photo.Intents;
 import com.android.mail.photo.Intents.PhotoViewIntentBuilder;
 import com.android.mail.photo.util.ImageUtils;
 import com.android.mail.providers.Attachment;
-import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
-import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
 
 import java.io.IOException;
@@ -60,38 +51,20 @@ import java.io.IOException;
  * intents to act on an attachment.
  *
  */
-public class MessageAttachmentTile extends LinearLayout implements OnClickListener,
-        OnMenuItemClickListener, DialogInterface.OnCancelListener,
-        DialogInterface.OnDismissListener {
+public class MessageAttachmentTile extends RelativeLayout implements OnClickListener,
+        OnMenuItemClickListener, AttachmentViewInterface {
 
     private Attachment mAttachment;
     private ImageView mIcon;
     private ImageView.ScaleType mIconScaleType;
     private int mPhotoIndex;
     private Uri mAttachmentsListUri;
-    private ProgressDialog mViewProgressDialog;
-    private AttachmentCommandHandler mCommandHandler;
-    private ProgressBar mProgress;
+
+    private final AttachmentActionHandler mActionHandler;
 
     private ThumbnailLoadTask mThumbnailTask;
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
-
-    private class AttachmentCommandHandler extends AsyncQueryHandler {
-
-        public AttachmentCommandHandler() {
-            super(getContext().getContentResolver());
-        }
-
-        /**
-         * Asynchronously begin an update() on a ContentProvider.
-         *
-         */
-        public void sendCommand(ContentValues params) {
-            startUpdate(0, null, mAttachment.uri, params, null, null);
-        }
-
-    }
 
     private class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
 
@@ -163,18 +136,18 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
     }
 
     public MessageAttachmentTile(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public MessageAttachmentTile(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        mCommandHandler = new AttachmentCommandHandler();
+        mActionHandler = new AttachmentActionHandler(context, this);
     }
 
     public static MessageAttachmentTile inflate(LayoutInflater inflater, ViewGroup parent) {
         MessageAttachmentTile view = (MessageAttachmentTile) inflater.inflate(
-                R.layout.conversation_message_attachment, parent, false);
+                R.layout.conversation_message_attachment_tile, parent, false);
         return view;
     }
 
@@ -192,6 +165,7 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
 
         final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
+        mActionHandler.setAttachment(mAttachment);
         mAttachmentsListUri = attachmentsListUri;
         mPhotoIndex = index;
 
@@ -217,11 +191,7 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
             setThumbnailToDefault();
         }
 
-        if (mProgress != null) {
-            mProgress.setMax(attachment.size);
-        }
-
-        updateStatus();
+        mActionHandler.updateStatus();
     }
 
     private void setThumbnailToDefault() {
@@ -229,52 +199,13 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
         mIcon.setScaleType(ImageView.ScaleType.CENTER);
     }
 
-    /**
-     * Update progress-related views. Will also trigger a view intent if a progress dialog was
-     * previously brought up (by tapping 'View') and the download has now finished.
-     */
-    private void updateStatus() {
-        final boolean showProgress = mAttachment.size > 0 && mAttachment.downloadedSize > 0
-                && mAttachment.downloadedSize < mAttachment.size;
 
-        if (mViewProgressDialog != null && mViewProgressDialog.isShowing()) {
-            mViewProgressDialog.setProgress(mAttachment.downloadedSize);
-            mViewProgressDialog.setIndeterminate(!showProgress);
-
-            if (!mAttachment.isDownloading()) {
-                mViewProgressDialog.dismiss();
-            }
-
-            if (mAttachment.state == AttachmentState.SAVED) {
-                sendViewIntent();
-            }
-        } else {
-
-            if (mAttachment.isDownloading()) {
-                mProgress.setProgress(mAttachment.downloadedSize);
-                setProgressVisible(true);
-                mProgress.setIndeterminate(!showProgress);
-            } else {
-                setProgressVisible(false);
-            }
-
-        }
-    }
-
-    private void setProgressVisible(boolean visible) {
-        if (visible) {
-            mProgress.setVisibility(VISIBLE);
-        } else {
-            mProgress.setVisibility(GONE);
-        }
-    }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
         mIcon = (ImageView) findViewById(R.id.attachment_tile_image);
-        mProgress = (ProgressBar) findViewById(R.id.attachment_progress);
 
         setOnClickListener(this);
 
@@ -292,66 +223,12 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
     }
 
     private boolean onClick(int res, View v) {
-        switch (res) {
-            case R.id.preview_attachment:
-                getContext().startActivity(mAttachment.previewIntent);
-                break;
-            case R.id.view_attachment:
-            case R.id.play_attachment:
-            case R.id.attachment_tile:
-                showAttachment(AttachmentDestination.CACHE);
-                break;
-            case R.id.save_attachment:
-                if (mAttachment.canSave()) {
-                    startDownloadingAttachment(AttachmentDestination.EXTERNAL);
-                }
-                break;
-            case R.id.info_attachment:
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                int dialogMessage = MimeType.isBlocked(mAttachment.contentType)
-                        ? R.string.attachment_type_blocked : R.string.no_application_found;
-                builder.setTitle(R.string.more_info_attachment).setMessage(dialogMessage).show();
-                break;
-            case R.id.install_attachment:
-                showAttachment(AttachmentDestination.EXTERNAL);
-                break;
-            case R.id.cancel_attachment:
-                cancelAttachment();
-                break;
-            default:
-                break;
-        }
+        mActionHandler.showAttachment(AttachmentDestination.CACHE);
+
         return true;
     }
 
-    private void showAttachment(int destination) {
-        if (mAttachment.isPresentLocally()) {
-            sendViewIntent();
-        } else {
-            showDownloadingDialog();
-            startDownloadingAttachment(destination);
-        }
-    }
-
-    private void startDownloadingAttachment(int destination) {
-        final ContentValues params = new ContentValues(2);
-        params.put(AttachmentColumns.STATE, AttachmentState.DOWNLOADING);
-        params.put(AttachmentColumns.DESTINATION, destination);
-
-        mCommandHandler.sendCommand(params);
-    }
-
-    private void cancelAttachment() {
-        final ContentValues params = new ContentValues(1);
-        params.put(AttachmentColumns.STATE, AttachmentState.NOT_SAVED);
-
-        mCommandHandler.sendCommand(params);
-    }
-
-    /**
-     * View an attachment by an application on device.
-     */
-    private void sendViewIntent() {
+    public void viewAttachment() {
         if (ImageUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.contentType))) {
             final PhotoViewIntentBuilder builder =
                     Intents.newPhotoViewActivityIntentBuilder(getContext());
@@ -376,32 +253,9 @@ public class MessageAttachmentTile extends LinearLayout implements OnClickListen
         }
     }
 
-    /**
-     * Displays a loading dialog to be used for downloading attachments.
-     * Must be called on the UI thread.
-     */
-    private void showDownloadingDialog() {
-        mViewProgressDialog = new ProgressDialog(getContext());
-        mViewProgressDialog.setTitle(R.string.fetching_attachment);
-        mViewProgressDialog.setMessage(getResources().getString(R.string.please_wait));
-        mViewProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mViewProgressDialog.setMax(mAttachment.size);
-        mViewProgressDialog.setOnDismissListener(this);
-        mViewProgressDialog.setOnCancelListener(this);
-        mViewProgressDialog.show();
-
-        // The progress number format needs to be set after the dialog is shown.  See bug: 5149918
-        mViewProgressDialog.setProgressNumberFormat(null);
+    public void updateProgress(boolean showDeterminateProgress) {
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        mViewProgressDialog = null;
+    public void updateStatus() {
     }
-
-    @Override
-    public void onCancel(DialogInterface dialog) {
-        cancelAttachment();
-    }
-
 }

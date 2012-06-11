@@ -23,6 +23,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,11 +32,13 @@ import com.android.mail.R;
 import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.browse.ConversationContainer.DetachListener;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
+import com.android.mail.photo.util.ImageUtils;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessageFooterView extends LinearLayout implements DetachListener,
@@ -47,6 +50,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     private TextView mTitleText;
     private View mTitleBar;
     private AttachmentTileGrid mAttachmentGrid;
+    private LinearLayout mAttachmentBarList;
+    private final LayoutInflater mInflater;
 
     /**
      * An easy way for the conversation view to disable immediately kicking off attachment loaders
@@ -62,6 +67,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     public MessageFooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        mInflater = LayoutInflater.from(context);
     }
 
     /**
@@ -81,6 +88,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mTitleText = (TextView) findViewById(R.id.attachments_header_text);
         mTitleBar = findViewById(R.id.attachments_header_bar);
         mAttachmentGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
+        mAttachmentBarList = (LinearLayout) findViewById(R.id.attachment_bar_list);
     }
 
     public void initialize(LoaderManager loaderManager) {
@@ -96,8 +104,11 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
          */
 
         mAttachmentGrid.removeAllViewsInLayout();
+        mAttachmentBarList.removeAllViewsInLayout();
         mTitleText.setVisibility(View.GONE);
         mTitleBar.setVisibility(View.GONE);
+        mAttachmentGrid.setVisibility(View.GONE);
+        mAttachmentBarList.setVisibility(View.GONE);
 
         // kick off load of Attachment objects in background thread
         final Integer attachmentLoaderId = getAttachmentLoaderId();
@@ -108,7 +119,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         }
 
         // Do an initial render if initLoader didn't already do one
-        if (mAttachmentGrid.getChildCount() == 0) {
+        if (mAttachmentGrid.getChildCount() == 0 &&
+                mAttachmentBarList.getChildCount() == 0) {
             renderAttachments();
         }
         setVisibility(mMessageHeaderItem.isExpanded() ? VISIBLE : GONE);
@@ -144,12 +156,53 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
             return;
         }
 
+        // filter the attachments into tiled and non-tiled
+        final int maxSize = attachments.size();
+        List<Attachment> tiledAttachments = new ArrayList<Attachment>(maxSize);
+        List<Attachment> barAttachments = new ArrayList<Attachment>(maxSize);
+
+        for (Attachment attachment : attachments) {
+            if (isTiledAttachment(attachment)) {
+                tiledAttachments.add(attachment);
+            } else {
+                barAttachments.add(attachment);
+            }
+        }
+
         mTitleText.setVisibility(View.VISIBLE);
         mTitleBar.setVisibility(View.VISIBLE);
+
+        renderTiledAttachments(tiledAttachments);
+        renderBarAttachments(barAttachments);
+    }
+
+    private void renderTiledAttachments(List<Attachment> tiledAttachments) {
         mAttachmentGrid.setVisibility(View.VISIBLE);
 
         // Setup the tiles.
-        mAttachmentGrid.configureGrid(mMessageHeaderItem.message.attachmentListUri, attachments);
+        mAttachmentGrid.configureGrid(
+                mMessageHeaderItem.message.attachmentListUri, tiledAttachments);
+    }
+
+    private void renderBarAttachments(List<Attachment> barAttachments) {
+        mAttachmentBarList.setVisibility(View.VISIBLE);
+
+        for (Attachment attachment : barAttachments) {
+            MessageAttachmentBar barAttachmentView =
+                    (MessageAttachmentBar) mAttachmentBarList.findViewWithTag(attachment.uri);
+
+            if (barAttachmentView == null) {
+                barAttachmentView = MessageAttachmentBar.inflate(mInflater, this);
+                barAttachmentView.setTag(attachment.uri);
+                mAttachmentBarList.addView(barAttachmentView);
+            }
+
+            barAttachmentView.render(attachment);
+        }
+    }
+
+    private boolean isTiledAttachment(final Attachment attachment) {
+        return ImageUtils.isImageMimeType(attachment.contentType);
     }
 
     private Integer getAttachmentLoaderId() {
