@@ -115,8 +115,7 @@
     <string name="please_wait" msgid="8797634225088247121">"Vui lòng đợi…"</string>
     <string name="saved" msgid="6977782468220926548">"Đã lưu,"</string>
     <string name="download_failed" msgid="7860650496473302012">"Không thể tải xuống."</string>
-    <!-- no translation found for attachments_header (6459475590011460229) -->
-    <skip />
+    <string name="attachments_header" msgid="6459475590011460229">"Tệp đính kèm"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Chia sẻ qua"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Mở trong Trình duyệt"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Sao chép"</string>

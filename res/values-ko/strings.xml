@@ -115,8 +115,7 @@
     <string name="please_wait" msgid="8797634225088247121">"잠시 기다려 주세요..."</string>
     <string name="saved" msgid="6977782468220926548">"저장됨"</string>
     <string name="download_failed" msgid="7860650496473302012">"다운로드하지 못했습니다."</string>
-    <!-- no translation found for attachments_header (6459475590011460229) -->
-    <skip />
+    <string name="attachments_header" msgid="6459475590011460229">"첨부파일"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"공유 방법"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"브라우저에서 열기"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"복사"</string>
