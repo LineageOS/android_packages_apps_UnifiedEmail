@@ -398,5 +398,10 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
+    <style name="NotificationPrimaryText">
+        <item name="android:textColor">#cccccc</item>
+    </style>
 
+    <style name="NotificationSecondaryText">
+    </style>
 </resources>
