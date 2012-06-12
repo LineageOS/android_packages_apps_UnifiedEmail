@@ -38,8 +38,10 @@ import android.widget.RelativeLayout;
 import com.android.mail.R;
 import com.android.mail.photo.Intents;
 import com.android.mail.photo.Intents.PhotoViewIntentBuilder;
+import com.android.mail.photo.MailPhotoViewActivity;
 import com.android.mail.photo.util.ImageUtils;
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -231,9 +233,10 @@ public class MessageAttachmentTile extends RelativeLayout implements OnClickList
     public void viewAttachment() {
         if (ImageUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.contentType))) {
             final PhotoViewIntentBuilder builder =
-                    Intents.newPhotoViewActivityIntentBuilder(getContext());
-            builder.setAlbumName(mAttachment.name)
+                    Intents.newPhotoViewIntentBuilder(getContext(), MailPhotoViewActivity.class);
+            builder.setPhotoName(mAttachment.name)
                 .setPhotosUri(mAttachmentsListUri.toString())
+                .setProjection(UIProvider.ATTACHMENT_PROJECTION)
                 .setPhotoIndex(mPhotoIndex);
 
             getContext().startActivity(builder.build());

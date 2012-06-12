@@ -18,6 +18,7 @@
 package com.android.mail.photo.provider;
 
 import android.net.Uri;
+import android.provider.OpenableColumns;
 
 public final class PhotoContract {
     /** Columns for the view {@link #PHOTO_VIEW} */
@@ -27,6 +28,11 @@ public final class PhotoContract {
          * for this individual image (resulting cursor has one single row for this image).
          */
         public static final String URI = "uri";
+        /**
+         * This column is a {@link String} that can be queried for this
+         * individual image to return a displayable name.
+         */
+        public static final String NAME = OpenableColumns.DISPLAY_NAME;
         /**
          * This column is a {@link Uri} that points to the downloaded local file
          * This value is undefined in any other state.
@@ -43,13 +49,15 @@ public final class PhotoContract {
         /** Projection of the returned cursor */
         public final static String[] PROJECTION = {
             PhotoViewColumns.URI,
+            PhotoViewColumns.NAME,
             PhotoViewColumns.CONTENT_URI,
             PhotoViewColumns.CONTENT_TYPE,
         };
 
         public final static int INDEX_URI = 0;
-        public final static int INDEX_CONTENT_URI = 1;
-        public final static int INDEX_CONTENT_TYPE = 2;
+        public final static int INDEX_NAME = 1;
+        public final static int INDEX_CONTENT_URI = 2;
+        public final static int INDEX_CONTENT_TYPE = 3;
     }
 
     public static final class ContentTypeParameters {

@@ -25,7 +25,7 @@ import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 
-import com.android.mail.photo.provider.PhotoContract.PhotoQuery;
+import com.android.mail.photo.provider.PhotoContract;
 
 import java.util.HashMap;
 
@@ -179,7 +179,7 @@ public abstract class BaseCursorPagerAdapter extends BaseFragmentPagerAdapter {
         Cursor oldCursor = mCursor;
         mCursor = newCursor;
         if (newCursor != null) {
-            mRowIDColumn = PhotoQuery.INDEX_URI;
+            mRowIDColumn = newCursor.getColumnIndex(PhotoContract.PhotoViewColumns.URI);
             mDataValid = true;
         } else {
             mRowIDColumn = -1;
@@ -233,7 +233,8 @@ public abstract class BaseCursorPagerAdapter extends BaseFragmentPagerAdapter {
         mCursor = c;
         mDataValid = cursorPresent;
         mContext = context;
-        mRowIDColumn = cursorPresent ? PhotoQuery.INDEX_URI : -1;
+        mRowIDColumn = cursorPresent
+                ? mCursor.getColumnIndex(PhotoContract.PhotoViewColumns.URI) : -1;
     }
 
     /**

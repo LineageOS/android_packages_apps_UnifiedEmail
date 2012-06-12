@@ -27,9 +27,12 @@ import com.android.mail.photo.provider.PhotoContract;
  * Loader for a set of photo IDs.
  */
 public class PhotoPagerLoader extends PhotoCursorLoader {
+    private final String[] mProjection;
     public PhotoPagerLoader(
-            Context context, Uri photosUri, int pageHint) {
+            Context context, Uri photosUri, int pageHint, String[] projection) {
         super(context, photosUri, pageHint != LOAD_LIMIT_UNLIMITED, pageHint);
+
+        mProjection = projection != null ? projection : PhotoContract.PhotoQuery.PROJECTION;
     }
 
     @Override
@@ -39,7 +42,7 @@ public class PhotoPagerLoader extends PhotoCursorLoader {
         final Uri loaderUri = getLoaderUri().buildUpon().appendQueryParameter(
                 PhotoContract.ContentTypeParameters.CONTENT_TYPE, "image/").build();
         setUri(loaderUri);
-        setProjection(PhotoContract.PhotoQuery.PROJECTION);
+        setProjection(mProjection);
         returnCursor = super.esLoadInBackground();
 
         return returnCursor;

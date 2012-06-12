@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,86 +17,19 @@
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-<!--     <item
-        android:id="@+id/action_bar_progress_spinner"
-        android:actionLayout="@layout/action_bar_progress_spinner_layout"
-        android:background="@null"
-        android:selectableItemBackground="@null"
-        android:showAsAction="always"/>
-
+    <item android:id="@+id/menu_save"
+          android:title="@string/save_attachment"
+          android:showAsAction="always|withText" />
     <item
-        android:id="@+id/share_photo"
-        android:icon="@drawable/ic_menu_reshare"
-        android:showAsAction="always"
-        android:title="@string/menu_photo_share"
-        android:visibility="gone"/>
-
-    <item
-        android:id="@+id/plus1"
-        android:icon="@drawable/ic_menu_plus1"
-        android:showAsAction="always"
-        android:title="@string/menu_add_plus_one"/>
-
-    <item
-        android:id="@+id/remove_plus1"
-        android:icon="@drawable/ic_menu_remove_plus1"
-        android:showAsAction="always"
-        android:title="@string/menu_remove_plus_one"
-        android:visibility="gone"/>
-
-    <item
-        android:id="@+id/set_profile_photo"
-        android:icon="@drawable/ic_menu_set_as_profile"
+        android:id="@+id/menu_share"
         android:showAsAction="never"
-        android:title="@string/menu_set_profile_photo"/>
-
+        android:title="@string/menu_photo_share"/>
     <item
-        android:id="@+id/set_wallpaper_photo"
-        android:icon="@drawable/ic_menu_wallpaper"
+        android:id="@+id/menu_save_all"
         android:showAsAction="never"
-        android:title="@string/menu_set_wallpaper_photo"/>
-
+        android:title="@string/menu_photo_save_all"/>
     <item
-        android:id="@+id/remove_tag"
-        android:icon="@drawable/ic_menu_remove_tag"
+        android:id="@+id/menu_share_all"
         android:showAsAction="never"
-        android:title="@string/menu_remove_tag"
-        android:visibility="gone"/>
-
-    <item
-        android:id="@+id/refresh_photo"
-        android:icon="@drawable/ic_menu_refresh"
-        android:showAsAction="never"
-        android:title="@string/menu_refresh_photo"/>
-
-    <item
-        android:id="@+id/delete_photo"
-        android:icon="@drawable/ic_menu_delete"
-        android:showAsAction="never"
-        android:title="@string/menu_delete_photo"/>
-
-    <item
-        android:id="@+id/report_photo"
-        android:icon="@drawable/ic_menu_delete"
-        android:showAsAction="never"
-        android:title="@string/menu_report_photo"/>
-
-    <item
-        android:id="@+id/download_photo"
-        android:icon="@drawable/ic_menu_download"
-        android:showAsAction="never"
-        android:title="@string/menu_download_photo"/>
-
-    <item
-        android:id="@+id/feedback"
-        android:icon="@drawable/ic_menu_feedback"
-        android:showAsAction="never"
-        android:title="@string/home_menu_feedback"/>
-
-    <item
-        android:id="@+id/help"
-        android:icon="@drawable/ic_menu_help"
-        android:showAsAction="never"
-        android:title="@string/menu_home_help"/>
- -->
+        android:title="@string/menu_photo_share_all"/>
 </menu>

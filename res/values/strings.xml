@@ -237,8 +237,14 @@
     <!-- Displayed in the conversation view. Status of a failed attachment. [CHAR LIMIT=25]-->
     <string name="download_failed">Couldn\'t download.</string>
     <!-- Displayed in the conversation view, as a header informing
-         the user that the following is the attachments. -->
+         the user that the following is the attachments. [CHAR LIMIT=100] -->
     <string name="attachments_header">Attachments</string>
+    <!-- Photo view screen, button name. Save all attachments to sd card. [CHAR LIMIT=10] -->
+    <string name="menu_photo_save_all">Save all</string>
+    <!-- Photo view screen, button name. Share attachment. [CHAR LIMIT=10] -->
+    <string name="menu_photo_share">Share</string>
+    <!-- Photo view screen, button name. Share all attachments. [CHAR LIMIT=10] -->
+    <string name="menu_photo_share_all">Share all</string>
 
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->

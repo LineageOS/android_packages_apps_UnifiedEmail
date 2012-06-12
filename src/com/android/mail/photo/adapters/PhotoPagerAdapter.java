@@ -27,22 +27,21 @@ import com.android.mail.photo.Intents.PhotoViewIntentBuilder;
 import com.android.mail.photo.Pageable;
 import com.android.mail.photo.fragments.LoadingFragment;
 import com.android.mail.photo.fragments.PhotoViewFragment;
-import com.android.mail.photo.provider.PhotoContract.PhotoQuery;
+import com.android.mail.photo.provider.PhotoContract;
 
 /**
  * Pager adapter for the photo view
  */
 public class PhotoPagerAdapter extends BaseCursorPagerAdapter {
     final Long mForceLoadId;
-    /** Album name used if the photo doesn't have one. See b/5678229. */
-    private final String mDefaultAlbumName;
     private Pageable mPageable;
+    private int mContentUriIndex;
+    private int mPhotoNameIndex;
 
     public PhotoPagerAdapter(Context context, FragmentManager fm, Cursor c,
-            Long forceLoadId, String defaultAlbumName) {
+            Long forceLoadId) {
         super(context, fm, c);
         mForceLoadId = forceLoadId;
-        mDefaultAlbumName = defaultAlbumName;
     }
 
     /**
@@ -58,14 +57,15 @@ public class PhotoPagerAdapter extends BaseCursorPagerAdapter {
 
     @Override
     public Fragment getItem(Context context, Cursor cursor) {
-        final String photoUri = cursor.getString(PhotoQuery.INDEX_CONTENT_URI);
+        final String photoUri = cursor.getString(mContentUriIndex);
+        final String photoName = cursor.getString(mPhotoNameIndex);
 
         // create new PhotoViewFragment
         final PhotoViewIntentBuilder builder =
                 Intents.newPhotoViewFragmentIntentBuilder(mContext);
           builder
+            .setPhotoName(photoName)
             .setResolvedPhotoUri(photoUri)
-            .setAlbumName(mDefaultAlbumName)
             .setForceLoadId(mForceLoadId);
 
         return new PhotoViewFragment(builder.build(), cursor.getPosition());
@@ -90,5 +90,15 @@ public class PhotoPagerAdapter extends BaseCursorPagerAdapter {
      */
     public void setPageable(Pageable pageable) {
         mPageable = pageable;
+    }
+
+    @Override
+    public Cursor swapCursor(Cursor newCursor) {
+        mContentUriIndex =
+                newCursor.getColumnIndex(PhotoContract.PhotoViewColumns.CONTENT_URI);
+        mPhotoNameIndex =
+                newCursor.getColumnIndex(PhotoContract.PhotoViewColumns.NAME);
+
+        return super.swapCursor(newCursor);
     }
 }

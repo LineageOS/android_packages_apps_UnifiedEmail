@@ -28,21 +28,19 @@ import com.android.mail.photo.loaders.PhotoCursorLoader;
  * Build intents to start app activities
  */
 public class Intents {
-    // Logging
-    private static final String TAG = "Intents";
-
     // Intent extras
     public static final String EXTRA_PHOTO_INDEX = "photo_index";
     public static final String EXTRA_PHOTO_ID = "photo_id";
     public static final String EXTRA_PHOTOS_URI = "photos_uri";
     public static final String EXTRA_RESOLVED_PHOTO_URI = "resolved_photo_uri";
-    public static final String EXTRA_ALBUM_NAME = "album_name";
+    public static final String EXTRA_PHOTO_NAME = "photo_name";
     public static final String EXTRA_OWNER_ID = "owner_id";
     public static final String EXTRA_TAG = "tag";
     public static final String EXTRA_SHOW_PHOTO_ONLY = "show_photo_only";
     public static final String EXTRA_NOTIFICATION_ID = "notif_id";
     public static final String EXTRA_REFRESH = "refresh";
     public static final String EXTRA_PAGE_HINT = "page_hint";
+    public static final String EXTRA_PROJECTION = "projection";
 
     /**
      * Gets a photo view intent builder to display the photos from phone activity.
@@ -73,8 +71,8 @@ public class Intents {
     public static class PhotoViewIntentBuilder {
         private final Intent mIntent;
 
-        /** The name of the album being displayed */
-        private String mAlbumName;
+        /** The name of the photo being displayed */
+        private String mPhotoName;
         /** The ID of the photo to force load */
         private Long mForceLoadId;
         /** The ID of the notification */
@@ -89,14 +87,16 @@ public class Intents {
         private String mPhotosUri;
         /** The URL of the photo to display */
         private String mResolvedPhotoUri;
+        /** The projection for the query to use; optional */
+        private String[] mProjection;
 
         private PhotoViewIntentBuilder(Context context, Class<?> cls) {
             mIntent = new Intent(context, cls);
         }
 
-        /** Sets the album name */
-        public PhotoViewIntentBuilder setAlbumName(String albumName) {
-            mAlbumName = albumName;
+        /** Sets the photo name */
+        public PhotoViewIntentBuilder setPhotoName(String photoName) {
+            mPhotoName = photoName;
             return this;
         }
 
@@ -136,6 +136,12 @@ public class Intents {
             return this;
         }
 
+        /** Sets the query projection */
+        public PhotoViewIntentBuilder setProjection(String[] projection) {
+            mProjection = projection;
+            return this;
+        }
+
         /** Sets the resolved photo URI. This method is for the case
          *  where the URI given to {@link PhotoViewActivity} points directly
          *  to a single image and does not need to be resolved via a query
@@ -157,8 +163,8 @@ public class Intents {
 
             mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
-            if (mAlbumName != null) {
-                mIntent.putExtra(EXTRA_ALBUM_NAME, mAlbumName);
+            if (mPhotoName != null) {
+                mIntent.putExtra(EXTRA_PHOTO_NAME, mPhotoName);
             }
 
             if (mForceLoadId != null) {
@@ -189,6 +195,10 @@ public class Intents {
 
             if (mResolvedPhotoUri != null) {
                 mIntent.putExtra(EXTRA_RESOLVED_PHOTO_URI, mResolvedPhotoUri);
+            }
+
+            if (mProjection != null) {
+                mIntent.putExtra(EXTRA_PROJECTION, mProjection);
             }
 
             return mIntent;
