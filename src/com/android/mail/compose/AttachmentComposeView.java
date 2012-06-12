@@ -18,7 +18,7 @@ package com.android.mail.compose;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -58,7 +58,7 @@ class AttachmentComposeView extends LinearLayout {
     }
 
     public void addDeleteListener(OnClickListener clickListener) {
-        ImageView deleteButton = (ImageView) findViewById(R.id.remove_attachment);
+        ImageButton deleteButton = (ImageButton) findViewById(R.id.remove_attachment);
         deleteButton.setOnClickListener(clickListener);
     }
 
