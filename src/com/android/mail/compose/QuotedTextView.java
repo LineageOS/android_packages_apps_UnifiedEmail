@@ -111,7 +111,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     public void allowQuotedText(boolean allow) {
         View quotedTextRow = findViewById(R.id.quoted_text_row);
         if (quotedTextRow != null) {
-            quotedTextRow.setVisibility(allow? View.VISIBLE: View.GONE);
+            quotedTextRow.setVisibility(allow? View.VISIBLE: View.INVISIBLE);
         }
     }
 
