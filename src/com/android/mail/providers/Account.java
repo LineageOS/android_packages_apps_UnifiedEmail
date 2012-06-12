@@ -131,6 +131,10 @@ public class Account extends android.accounts.Account implements Parcelable {
      * The color used for this account in combined view (Email)
      */
     public final int color;
+    /**
+     * URI for default recent folders for this account, if any.
+     */
+    public final Uri defaultRecentFolderListUri;
 
     /**
      * Settings object for this account.
@@ -166,6 +170,8 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(UIProvider.AccountColumns.MIME_TYPE, mimeType);
             json.put(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI, recentFolderListUri);
             json.put(UIProvider.AccountColumns.COLOR, color);
+            json.put(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
+                    defaultRecentFolderListUri);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
@@ -248,6 +254,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         recentFolderListUri = getValidUri(
                 json.optString(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI));
         color = json.optInt(UIProvider.AccountColumns.COLOR, 0);
+        defaultRecentFolderListUri = getValidUri(
+                json.optString(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI));
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -279,9 +287,9 @@ public class Account extends android.accounts.Account implements Parcelable {
         mimeType = in.readString();
         recentFolderListUri = in.readParcelable(null);
         color = in.readInt();
+        defaultRecentFolderListUri = in.readParcelable(null);
         final String serializedSettings = in.readString();
         final Settings parcelSettings = Settings.newInstance(serializedSettings);
-
         if (parcelSettings != null) {
             settings = parcelSettings;
         } else {
@@ -321,10 +329,14 @@ public class Account extends android.accounts.Account implements Parcelable {
         final String compose = cursor.getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN);
         composeIntentUri = !TextUtils.isEmpty(compose) ? Uri.parse(compose) : null;
         mimeType = cursor.getString(UIProvider.ACCOUNT_MIME_TYPE_COLUMN);
-        final String recent = cursor.getString(UIProvider.ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN);
+        final String recent =
+                cursor.getString(UIProvider.ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN);
         recentFolderListUri = !TextUtils.isEmpty(recent) ? Uri.parse(recent) : null;
         color = cursor.getInt(UIProvider.ACCOUNT_COLOR_COLUMN);
-
+        final String defaultRecent =
+                cursor.getString(UIProvider.ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN);
+        defaultRecentFolderListUri =
+                !TextUtils.isEmpty(defaultRecent) ? Uri.parse(defaultRecent) : null;
         settings = new Settings(cursor);
     }
 
@@ -380,6 +392,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeString(mimeType);
         dest.writeParcelable(recentFolderListUri, 0);
         dest.writeInt(color);
+        dest.writeParcelable(defaultRecentFolderListUri, 0);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
         }
@@ -428,6 +441,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(recentFolderListUri);
         sb.append(",color=");
         sb.append(Integer.toHexString(color));
+        sb.append(",defaultRecentFoldersUri=");
+        sb.append(defaultRecentFolderListUri);
         sb.append(",settings=");
         sb.append(settings.serialize());
 
@@ -462,7 +477,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(composeIntentUri, other.composeIntentUri) &&
                 TextUtils.equals(mimeType, other.mimeType) &&
                 Objects.equal(recentFolderListUri, other.recentFolderListUri) &&
-                color == other.color;
+                color == other.color &&
+                Objects.equal(defaultRecentFolderListUri, other.defaultRecentFolderListUri);
     }
 
     @Override
@@ -471,13 +487,13 @@ public class Account extends android.accounts.Account implements Parcelable {
                 uri, folderListUri, searchUri, accountFromAddresses, saveDraftUri,
                 sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri,
                 helpIntentUri, sendFeedbackIntentUri, syncStatus, composeIntentUri, mimeType,
-                recentFolderListUri, color);
+                recentFolderListUri, color, defaultRecentFolderListUri);
     }
 
     @SuppressWarnings("hiding")
     public static final Creator<Account> CREATOR = new Creator<Account>() {
         @Override
-        public Account createFromParcel(Parcel source) {
+         public Account createFromParcel(Parcel source) {
             return new Account(source);
         }
 

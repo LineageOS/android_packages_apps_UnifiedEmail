@@ -36,6 +36,7 @@ import android.database.Cursor;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
@@ -73,6 +74,7 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -1313,7 +1315,7 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         switch (loader.getId()) {
             case LOADER_ACCOUNT_CURSOR:
-                // If the account list is not not null, and the account list cursor is empty,
+                // If the account list is not null, and the account list cursor is empty,
                 // we need to start the specified activity.
                 if (data != null && data.getCount() == 0) {
                     // If an empty cursor is returned, the MailAppProvider is indicating that
@@ -1397,6 +1399,23 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
                 break;
             case LOADER_RECENT_FOLDERS:
+                // No recent folders and we are running on a phone? Populate the default recents.
+                if (data != null && data.getCount() == 0 && !Utils.useTabletUI(mContext)) {
+                    final class PopulateDefault extends AsyncTask<Uri, Void, Void> {
+                        @Override
+                        protected Void doInBackground(Uri... uri) {
+                            // Asking for an update on the URI and ignore the result.
+                            final ContentResolver resolver = mContext.getContentResolver();
+                            resolver.update(uri[0], null, null, null);
+                            return null;
+                        }
+                    }
+                    final Uri uri = mAccount.defaultRecentFolderListUri;
+                    LogUtils.v(LOG_TAG, "Default recents at %s", uri);
+                    new PopulateDefault().execute(uri);
+                    break;
+                }
+                LogUtils.v(LOG_TAG, "Reading recent folders from the cursor.");
                 mRecentFolderList.loadFromUiProvider(data);
                 mActionBarView.requestRecentFoldersAndRedraw();
                 break;
