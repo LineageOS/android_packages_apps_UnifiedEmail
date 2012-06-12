@@ -21,9 +21,6 @@
     <integer name="conversation_list_header_mode">1</integer>
     <integer name="conversation_header_mode">1</integer>
 
-    <!-- Boolean value indicating whether hardware acceleration should be used. -->
-    <integer name="use_hardware_acceleration">1</integer>
-
     <!-- left/right conversations will auto-load if they have no more than this number of messages -->
     <integer name="max_auto_load_messages">20</integer>
 

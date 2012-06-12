@@ -24,9 +24,6 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.WindowManager;
-
-import com.android.mail.R;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -71,11 +68,6 @@ public abstract class AbstractMailActivity extends Activity
         }
 
         super.onCreate(savedInstanceState);
-
-        // Set the hardware acceleration flag in the Layout parameters based on the device.
-        final int flag = (getResources().getInteger(R.integer.use_hardware_acceleration) != 0) ?
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED : 0;
-        getWindow().setFlags(flag, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter != null) {
