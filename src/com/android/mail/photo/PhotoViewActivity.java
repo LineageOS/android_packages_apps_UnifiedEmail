@@ -27,7 +27,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -35,10 +34,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -102,13 +98,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
          * @return {@code true} if the touch should be intercepted.
          */
         public boolean onInterceptMoveRight(float origX, float origY);
-
-        /**
-         * Called when the action bar height is calculated.
-         *
-         * @param actionBarHeight The height of the action bar.
-         */
-        public void onActionBarHeightCalculated(int actionBarHeight);
     }
 
     private final static String STATE_ITEM_KEY =
@@ -158,11 +147,7 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
     private boolean mRestartLoader;
     /** Whether or not this activity is paused */
     private boolean mIsPaused = true;
-    /** The action bar height */
-    private int mActionBarHeight;
-    /** A layout listener to track when the action bar is laid out */
-    private ActionBarLayoutListener mActionBarLayoutListener;
-    // TODO(toddke) Find a better way to do this. We basically want the activity to display the
+    // TODO Find a better way to do this. We basically want the activity to display the
     // "loading..." progress until the fragment takes over and shows it's own "loading..."
     // progress [located in photo_header_view.xml]. We could potentially have all status displayed
     // by the activity, but, that gets tricky when it comes to screen rotation. For now, we
@@ -260,27 +245,18 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
     @Override
     protected void onResume() {
         super.onResume();
-//        if (isIntentAccountActive()) {
-//            createTitlebarButtons(R.menu.photo_view_menu);
-            setFullScreen(mFullScreen, false);
+        setFullScreen(mFullScreen, false);
 
-            mIsPaused = false;
-            if (mRestartLoader) {
-                mRestartLoader = false;
-                getSupportLoaderManager().restartLoader(LOADER_PHOTO_LIST, null, this);
-            }
-//        } else {
-//            finish();
-//        }
+        mIsPaused = false;
+        if (mRestartLoader) {
+            mRestartLoader = false;
+            getSupportLoaderManager().restartLoader(LOADER_PHOTO_LIST, null, this);
+        }
     }
 
     @Override
     protected void onPause() {
         mIsPaused = true;
-
-        if (mActionBarLayoutListener != null) {
-            clearListener();
-        }
 
         super.onPause();
     }
@@ -304,12 +280,8 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
         }
 
         // Set the progress view as new fragments are attached
-        final ProgressBar progressView;
-        if (Build.VERSION.SDK_INT < 11) {
-            progressView = (ProgressBar) findViewById(R.id.progress_spinner);
-        } else {
-            progressView = (ProgressBar) findViewById(R.id.action_bar_progress_spinner_view);
-        }
+        final ProgressBar progressView 
+                = (ProgressBar) findViewById(R.id.action_bar_progress_spinner_view);
 
         if (photoFragment != null && progressView != null) {
             photoFragment.onUpdateProgressView(progressView);
@@ -446,11 +418,8 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
                         }
                         mIsEmpty = false;
 
-                        // set the selected photo; if the index is invalid, default to '0'
+                        // set the selected photo
                         int itemIndex = mPhotoIndex;
-//                            if (itemIndex < 0 && mPhotoRef != null) {
-//                                itemIndex = getCursorPosition(data, mPhotoRef);
-//                            }
 
                         // Use an index of 0 if the index wasn't specified or couldn't be found
                         if (itemIndex < 0) {
@@ -548,17 +517,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
         if (mFullScreen) {
             actionBar.hide();
         } else {
-            // Workaround alert!
-            // Set a callback to listen for when the action bar is set, so
-            // that we can get its height and pass it along to all the
-            // adapters.
-            if (Build.VERSION.SDK_INT >= 11 && mActionBarHeight == 0) {
-                final ViewTreeObserver observer = mRootView.getViewTreeObserver();
-                mActionBarLayoutListener = new ActionBarLayoutListener();
-                observer.addOnGlobalLayoutListener(mActionBarLayoutListener);
-            }
-            // Workaround alert!
-
             actionBar.show();
         }
 
@@ -682,24 +640,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
     }
 
     /**
-     * @return The action bar height.
-     */
-    @Override
-    public int getActionBarHeight() {
-        return mActionBarHeight;
-    }
-
-    /**
-     * Clears the layout listener and removes any reference to it.
-     */
-    private void clearListener() {
-        if (mRootView != null) {
-            mRootView.getViewTreeObserver().removeGlobalOnLayoutListener(mActionBarLayoutListener);
-        }
-        mActionBarLayoutListener = null;
-    }
-
-    /**
      * Listener to handle dialog button clicks for the retry dialog.
      */
     class RetryDialogListener implements DialogInterface.OnClickListener {
@@ -730,27 +670,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
                 }
             }
             dialog.dismiss();
-        }
-    }
-
-    /**
-     * Layout listener whose sole purpose is to determine when the Action Bar is laid out.
-     */
-    class ActionBarLayoutListener implements ViewTreeObserver.OnGlobalLayoutListener {
-        @Override
-        public void onGlobalLayout() {
-            final ActionBar ab = getActionBar();
-            final int abHeight = ab.getHeight();
-            if (ab.isShowing() && abHeight > 0) {
-                mActionBarHeight = abHeight;
-
-                for (OnScreenListener listener : mScreenListeners) {
-                    listener.onActionBarHeightCalculated(abHeight);
-                }
-
-                // The action bar has been laid out; no need to listen to layout changes any more
-                clearListener();
-            }
         }
     }
 }
