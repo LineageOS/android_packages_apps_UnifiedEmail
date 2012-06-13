@@ -331,4 +331,8 @@
   </plurals>
     <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"ፎቶ በማስገባት ላይ…"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"ምርጫው ብዙ መለያዎችን ስለያዘ ማንቀሳቀስ አይቻልም።"</string>
+    <!-- no translation found for multiple_new_message_notification_item (9125239830562919898) -->
+    <skip />
+    <!-- no translation found for single_new_message_notification_big_text (291800374285445488) -->
+    <skip />
 </resources>

@@ -331,4 +331,8 @@
   </plurals>
     <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"사진 추가 중…"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"선택하신 메일에 여러 계정이 포함되어 있어 이동할 수 없습니다."</string>
+    <!-- no translation found for multiple_new_message_notification_item (9125239830562919898) -->
+    <skip />
+    <!-- no translation found for single_new_message_notification_big_text (291800374285445488) -->
+    <skip />
 </resources>
