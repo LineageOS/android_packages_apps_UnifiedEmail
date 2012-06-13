@@ -51,6 +51,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     private View mTitleBar;
     private AttachmentTileGrid mAttachmentGrid;
     private LinearLayout mAttachmentBarList;
+
     private final LayoutInflater mInflater;
 
     /**

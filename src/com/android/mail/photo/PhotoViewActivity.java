@@ -31,11 +31,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,12 +45,13 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.photo.PhotoViewPager.InterceptType;
 import com.android.mail.photo.PhotoViewPager.OnInterceptTouchListener;
-import com.android.mail.photo.adapters.PhotoPagerAdapter;
 import com.android.mail.photo.adapters.BaseFragmentPagerAdapter.OnFragmentPagerListener;
+import com.android.mail.photo.adapters.PhotoPagerAdapter;
 import com.android.mail.photo.fragments.PhotoViewFragment;
 import com.android.mail.photo.fragments.PhotoViewFragment.PhotoViewCallbacks;
 import com.android.mail.photo.loaders.PhotoCursorLoader;
 import com.android.mail.photo.loaders.PhotoPagerLoader;
+import com.android.mail.photo.provider.PhotoContract;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -59,7 +59,7 @@ import java.util.Set;
 /**
  * Activity to view the contents of an album.
  */
-public class PhotoViewActivity extends BaseFragmentActivity implements PhotoViewCallbacks,
+public class PhotoViewActivity extends FragmentActivity implements PhotoViewCallbacks,
         LoaderCallbacks<Cursor>, OnPageChangeListener, OnInterceptTouchListener,
         OnFragmentPagerListener {
 
@@ -111,26 +111,6 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
         public void onActionBarHeightCalculated(int actionBarHeight);
     }
 
-    /**
-     * Listener to be invoked for menu item events.
-     */
-    public static interface OnMenuItemListener {
-
-        /**
-         * Prepare the title bar buttons.
-         *
-         * @return {@code true} if the title bar buttons were processed. Otherwise, {@code false}.
-         */
-        public boolean onPrepareTitlebarButtons(Menu menu);
-
-        /**
-         * Signals an item in your options menu was selected.
-         *
-         * @return {@code true} if the item selection was consumed. Otherwise, {@code false}.
-         */
-        public boolean onOptionsItemSelected(MenuItem item);
-    }
-
     private final static String STATE_ITEM_KEY =
             "com.google.android.apps.plus.PhotoViewFragment.ITEM";
     private final static String STATE_FULLSCREEN_KEY =
@@ -152,10 +132,12 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
     private String mPhotosUri;
     /** The index of the currently viewed photo */
     private int mPhotoIndex;
+    /** The query projection to use; may be {@code null} */
+    private String[] mProjection;
     /** A hint for which cursor page the photo is located on */
     private int mPageHint = PhotoCursorLoader.LOAD_LIMIT_UNLIMITED;
-    /** The name of the album */
-    private String mAlbumName;
+    /** The name of the particular photo being viewed. */
+    private String mPhotoName;
     /** The total number of photos; only valid if {@link #mIsEmpty} is {@code false}. */
     private int mAlbumCount = ALBUM_COUNT_UNKNOWN;
     /** {@code true} if the view is empty. Otherwise, {@code false}. */
@@ -166,16 +148,12 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
     private PhotoViewPager mViewPager;
     /** Adapter to create pager views */
     private PhotoPagerAdapter mAdapter;
-    /** Whether or not the view is currently scrolling between photos */
-    private boolean mViewScrolling;
     /** Whether or not we're in "full screen" mode */
     private boolean mFullScreen;
     /** Whether or not we should only show the photo and no extra information */
     private boolean mShowPhotoOnly;
     /** The set of listeners wanting full screen state */
     private Set<OnScreenListener> mScreenListeners = new HashSet<OnScreenListener>();
-    /** The set of listeners wanting title bar state */
-    private Set<OnMenuItemListener> mMenuItemListeners = new HashSet<OnMenuItemListener>();
     /** When {@code true}, restart the loader when the activity becomes active */
     private boolean mRestartLoader;
     /** Whether or not this activity is paused */
@@ -223,15 +201,24 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
         }
 
         // album name; if not set, use a default name
-        if (mIntent.hasExtra(Intents.EXTRA_ALBUM_NAME)) {
-            mAlbumName = mIntent.getStringExtra(Intents.EXTRA_ALBUM_NAME);
+        if (mIntent.hasExtra(Intents.EXTRA_PHOTO_NAME)) {
+            mPhotoName = mIntent.getStringExtra(Intents.EXTRA_PHOTO_NAME);
         } else {
-            mAlbumName = getResources().getString(R.string.photo_view_default_title);
+            mPhotoName = getResources().getString(R.string.photo_view_default_title);
         }
 
         // uri of the photos to view; optional
         if (mIntent.hasExtra(Intents.EXTRA_PHOTOS_URI)) {
             mPhotosUri = mIntent.getStringExtra(Intents.EXTRA_PHOTOS_URI);
+        }
+
+        // projection for the query; optional
+        // I.f not set, the default projection is used.
+        // This projection must include the columns from the default projection.
+        if (mIntent.hasExtra(Intents.EXTRA_PROJECTION)) {
+            mProjection = mIntent.getStringArrayExtra(Intents.EXTRA_PROJECTION);
+        } else {
+            mProjection = null;
         }
 
         // the loader page hint
@@ -253,7 +240,7 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
                 : null;
 
         mAdapter = new PhotoPagerAdapter(this, getSupportFragmentManager(), null,
-                forceLoadId, mAlbumName);
+                forceLoadId);
         mAdapter.setFragmentPagerListener(this);
 
         mViewPager = (PhotoViewPager) findViewById(R.id.photo_view_pager);
@@ -264,13 +251,8 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
         // Kick off the loaders
         getSupportLoaderManager().initLoader(LOADER_PHOTO_LIST, null, this);
 
-        if (Build.VERSION.SDK_INT >= 11) {
-            final ActionBar actionBar = getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        } else {
-            showTitlebar(false, true);
-            createTitlebarButtons(R.menu.photo_view_menu);
-        }
+        final ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         updateView(mRootView);
     }
@@ -335,24 +317,6 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
     }
 
     @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        if (Build.VERSION.SDK_INT < 11) {
-            // On SDK >= 11, we cannot set the progress bar view here; the menu may not be
-            // inflated yet. We will set the progress view later, in #onCreateOptionsMenu().
-            final ProgressBar progressView =
-                    (ProgressBar) findViewById(R.id.progress_spinner);
-
-            if (progressView != null) {
-                for (OnScreenListener listener : mScreenListeners) {
-                    listener.onUpdateProgressView(progressView);
-                }
-            }
-        }
-    }
-
-    @Override
     protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
         super.onPrepareDialog(id, dialog, args);
         if (id == R.id.photo_view_pending_dialog) {
@@ -401,38 +365,6 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
     }
 
     @Override
-    protected void onPrepareTitlebarButtons(Menu menu) {
-        // Clear the menu items
-        for (int i = 0; i < menu.size(); i++) {
-            menu.getItem(i).setVisible(false);
-        }
-
-        // Let the fragments add back the ones it wants
-        for (OnMenuItemListener listener : mMenuItemListeners) {
-            if (listener.onPrepareTitlebarButtons(menu)) {
-                // First listener to claim the title bar, gets it
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void onTitlebarLabelClick() {
-        finish();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        for (OnMenuItemListener listener : mMenuItemListeners) {
-            if (listener.onOptionsItemSelected(item)) {
-                // First listener to claim the item selection, gets it
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void addScreenListener(OnScreenListener listener) {
         mScreenListeners.add(listener);
     }
@@ -440,16 +372,6 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
     @Override
     public void removeScreenListener(OnScreenListener listener) {
         mScreenListeners.remove(listener);
-    }
-
-    @Override
-    public void addMenuItemListener(OnMenuItemListener listener) {
-        mMenuItemListeners.add(listener);
-    }
-
-    @Override
-    public void removeMenuItemListener(OnMenuItemListener listener) {
-        mMenuItemListeners.remove(listener);
     }
 
     @Override
@@ -496,7 +418,7 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == LOADER_PHOTO_LIST) {
             mFragmentIsLoading = true;
-            return new PhotoPagerLoader(this, Uri.parse(mPhotosUri), mPageHint);
+            return new PhotoPagerLoader(this, Uri.parse(mPhotosUri), mPageHint, mProjection);
         }
         return null;
     }
@@ -510,6 +432,8 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
                 mFragmentIsLoading = false;
                 updateView(mRootView);
             } else {
+                mAlbumCount = data.getCount();
+
                 // Cannot do this directly; need to be out of the loader
                 new Handler().post(new Runnable() {
                     @Override
@@ -537,14 +461,9 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
                         mAdapter.swapCursor(data);
                         updateView(mRootView);
                         mViewPager.setCurrentItem(itemIndex, false);
+                        updateTitleAndSubtitle();
                     }
                 });
-            }
-            /** Loads the album name, if necessary */
-            final boolean needName = TextUtils.isEmpty(mAlbumName);
-            if (!needName) {
-                // At least show the album name if we have it
-                updateTitleAndSubtitle();
             }
         }
     }
@@ -559,7 +478,6 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
 
     @Override
     public void onPageSelected(int position) {
-        setFullScreen(mFullScreen || mViewScrolling, true);
         setViewActivated();
         updateTitleAndSubtitle();
         mPhotoIndex = position;
@@ -567,7 +485,6 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        mViewScrolling = (state != ViewPager.SCROLL_STATE_IDLE);
     }
 
     @Override
@@ -592,17 +509,6 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
             mFragmentIsLoading = false;
         }
         updateView(mRootView);
-    }
-
-    @Override
-    public void updateMenuItems() {
-        if (Build.VERSION.SDK_INT >= 11) {
-            // Invalidate the options menu
-            invalidateOptionsMenu();
-        } else {
-            // Set the title bar buttons
-            createTitlebarButtons(R.menu.photo_view_menu);
-        }
     }
 
     @Override
@@ -638,30 +544,22 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
         final boolean fullScreenChanged = (fullScreen != mFullScreen);
         mFullScreen = fullScreen;
 
-        if (Build.VERSION.SDK_INT < 11) {
-            if (mFullScreen) {
-                hideTitlebar(animate);
-            } else {
-                showTitlebar(animate, true);
-            }
+        ActionBar actionBar = getActionBar();
+        if (mFullScreen) {
+            actionBar.hide();
         } else {
-            ActionBar actionBar = getActionBar();
-            if (mFullScreen) {
-                actionBar.hide();
-            } else {
-                // Workaround alert!
-                // Set a callback to listen for when the action bar is set, so
-                // that we can get its height and pass it along to all the
-                // adapters.
-                if (Build.VERSION.SDK_INT >= 11 && mActionBarHeight == 0) {
-                    final ViewTreeObserver observer = mRootView.getViewTreeObserver();
-                    mActionBarLayoutListener = new ActionBarLayoutListener();
-                    observer.addOnGlobalLayoutListener(mActionBarLayoutListener);
-                }
-                // Workaround alert!
-
-                actionBar.show();
+            // Workaround alert!
+            // Set a callback to listen for when the action bar is set, so
+            // that we can get its height and pass it along to all the
+            // adapters.
+            if (Build.VERSION.SDK_INT >= 11 && mActionBarHeight == 0) {
+                final ViewTreeObserver observer = mRootView.getViewTreeObserver();
+                mActionBarLayoutListener = new ActionBarLayoutListener();
+                observer.addOnGlobalLayoutListener(mActionBarLayoutListener);
             }
+            // Workaround alert!
+
+            actionBar.show();
         }
 
         if (fullScreenChanged) {
@@ -700,38 +598,6 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
         }
     }
 
-//    /**
-//     * Returns the index of the given photo ID within the cursor data.
-//     * If the ID is not found, return {@code -1}.
-//     */
-//    private int getCursorPosition(Cursor data, MediaRef photoRef) {
-//        int cursorPosition = -1;
-//        final long photoId = photoRef.getPhotoId();
-//        final Uri localUri = photoRef.getLocalUri();
-//        final String localUrl = (localUri == null) ? null : localUri.toString();
-//
-//        data.moveToPosition(-1);
-//        // Prefer local photos over remote photos
-//        if (!TextUtils.isEmpty(localUrl)) {
-//            while (data.moveToNext()) {
-//                String cursorLocalUrl = data.getString(PhotoQuery.INDEX_URL);
-//                if (localUrl.equals(cursorLocalUrl)) {
-//                    cursorPosition = data.getPosition();
-//                    break;
-//                }
-//            }
-//        } else if (photoId != 0L) {
-//            while (data.moveToNext()) {
-//                long cursorPhotoId = data.getLong(PhotoQuery.INDEX_PHOTO_ID);
-//                if (photoId == cursorPhotoId) {
-//                    cursorPosition = data.getPosition();
-//                    break;
-//                }
-//            }
-//        }
-//        return cursorPosition;
-//    }
-
     /**
      * Display loading progress
      *
@@ -766,12 +632,19 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
     }
 
     /**
-     * Adjusts the activity title and subtitle to reflect the circle name and count.
+     * Adjusts the activity title and subtitle to reflect the photo name and count.
      */
-    private void updateTitleAndSubtitle() {
+    protected void updateTitleAndSubtitle() {
         final int position = mViewPager.getCurrentItem() + 1;
         final String subtitle;
         final boolean hasAlbumCount = mAlbumCount >= 0;
+
+        final Cursor cursor = getCursorAtProperPosition();
+
+        if (cursor != null) {
+            final int photoNameIndex = cursor.getColumnIndex(PhotoContract.PhotoViewColumns.NAME);
+            mPhotoName = cursor.getString(photoNameIndex);
+        }
 
         if (mIsEmpty || !hasAlbumCount || position <= 0) {
             subtitle = null;
@@ -779,16 +652,33 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
             subtitle = getResources().getString(R.string.photo_view_count, position, mAlbumCount);
         }
 
-        if (Build.VERSION.SDK_INT >= 11) {
-            final ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getActionBar();
 
-            actionBar.setTitle(mAlbumName);
-            actionBar.setSubtitle(subtitle);
-        } else {
-//            setTitlebarTitle(mAlbumName);
-//            setTitlebarSubtitle(subtitle);
-//            createTitlebarButtons(R.menu.photo_view_menu);
+        actionBar.setTitle(mPhotoName);
+        actionBar.setSubtitle(subtitle);
+    }
+
+    /**
+     * Utility method that will return the cursor that contains the data
+     * at the current position so that it refers to the current image on screen.
+     * @return the cursor at the current position or
+     * null if no cursor exists or if the {@link PhotoViewPager} is null.
+     */
+    public Cursor getCursorAtProperPosition() {
+        if (mViewPager == null) {
+            return null;
         }
+
+        final int position = mViewPager.getCurrentItem();
+        final Cursor cursor = mAdapter.getCursor();
+
+        if (cursor == null) {
+            return null;
+        }
+
+        cursor.moveToPosition(position);
+
+        return cursor;
     }
 
     /**
@@ -827,7 +717,10 @@ public class PhotoViewActivity extends BaseFragmentActivity implements PhotoView
                     final PhotoViewFragment fragment =
                             (PhotoViewFragment) getSupportFragmentManager().findFragmentByTag(mTag);
                     if (fragment != null) {
-                        fragment.downloadPhoto(PhotoViewActivity.this, false);
+                        // commented out because we removed that function
+                        // we may need to add it back eventually in a new manner
+                        // for now keeping it in
+//                        fragment.downloadPhoto(PhotoViewActivity.this, false);
                     }
                     break;
                 }

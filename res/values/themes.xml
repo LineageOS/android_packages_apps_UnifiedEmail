@@ -17,7 +17,7 @@
 -->
 
 <resources>
-    <style name="PhotoViewTheme" parent="android:Theme.Holo">
+    <style name="PhotoViewTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowActionBarOverlay">true</item>

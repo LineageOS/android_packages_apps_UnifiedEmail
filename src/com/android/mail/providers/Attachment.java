@@ -15,8 +15,6 @@
  */
 package com.android.mail.providers;
 
-import com.google.common.collect.Lists;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -28,12 +26,12 @@ import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.LogUtils;
+import com.google.common.collect.Lists;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -146,18 +144,19 @@ public class Attachment implements Parcelable {
             return;
         }
 
-        name = cursor.getString(UIProvider.ATTACHMENT_NAME_COLUMN);
-        size = cursor.getInt(UIProvider.ATTACHMENT_SIZE_COLUMN);
-        uri = Uri.parse(cursor.getString(UIProvider.ATTACHMENT_URI_COLUMN));
-        contentType = cursor.getString(UIProvider.ATTACHMENT_CONTENT_TYPE_COLUMN);
-        state = cursor.getInt(UIProvider.ATTACHMENT_STATE_COLUMN);
-        destination = cursor.getInt(UIProvider.ATTACHMENT_DESTINATION_COLUMN);
-        downloadedSize = cursor.getInt(UIProvider.ATTACHMENT_DOWNLOADED_SIZE_COLUMN);
-        contentUri = parseOptionalUri(cursor.getString(UIProvider.ATTACHMENT_CONTENT_URI_COLUMN));
+        name = cursor.getString(cursor.getColumnIndex(AttachmentColumns.NAME));
+        size = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.SIZE));
+        uri = Uri.parse(cursor.getString(cursor.getColumnIndex(AttachmentColumns.URI)));
+        contentType = cursor.getString(cursor.getColumnIndex(AttachmentColumns.CONTENT_TYPE));
+        state = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.STATE));
+        destination = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.DESTINATION));
+        downloadedSize = cursor.getInt(cursor.getColumnIndex(AttachmentColumns.DOWNLOADED_SIZE));
+        contentUri = parseOptionalUri(
+                cursor.getString(cursor.getColumnIndex(AttachmentColumns.CONTENT_URI)));
         thumbnailUri = parseOptionalUri(
-                cursor.getString(UIProvider.ATTACHMENT_THUMBNAIL_URI_COLUMN));
+                cursor.getString(cursor.getColumnIndex(AttachmentColumns.THUMBNAIL_URI)));
         previewIntent = getOptionalIntentFromBlob(
-                cursor.getBlob(UIProvider.ATTACHMENT_PREVIEW_INTENT_COLUMN));
+                cursor.getBlob(cursor.getColumnIndex(AttachmentColumns.PREVIEW_INTENT)));
 
         // TODO: ensure that local files attached to a draft have sane values, like SAVED/EXTERNAL
         // and that contentUri is populated

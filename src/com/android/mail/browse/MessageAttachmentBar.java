@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -59,7 +60,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
     private String mAttachmentSizeText;
     private String mDisplayType;
     private ProgressBar mProgress;
-    private ImageView mCancelButton;
+    private ImageButton mCancelButton;
     private PopupMenu mPopup;
     private ImageView mOverflowButton;
 
@@ -124,7 +125,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
         mSubTitle = (TextView) findViewById(R.id.attachment_subtitle);
         mProgress = (ProgressBar) findViewById(R.id.attachment_progress);
         mOverflowButton = (ImageView) findViewById(R.id.overflow);
-        mCancelButton = (ImageView) findViewById(R.id.cancel_attachment);
+        mCancelButton = (ImageButton) findViewById(R.id.cancel_attachment);
 
         setOnClickListener(this);
         mOverflowButton.setOnClickListener(this);

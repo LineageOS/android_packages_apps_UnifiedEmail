@@ -613,11 +613,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
     public void setFullScreen(boolean fullScreen, boolean animate) {
         if (fullScreen != mFullScreen) {
             mFullScreen = fullScreen;
-            if (!mFullScreen) {
-                mScaleRunnable.stop();
-                mTranslateRunnable.stop();
-                mRotateRunnable.stop();
-            }
             requestLayout();
             invalidate();
         }
