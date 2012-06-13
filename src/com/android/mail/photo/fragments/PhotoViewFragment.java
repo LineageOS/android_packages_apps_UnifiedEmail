@@ -48,7 +48,7 @@ import com.android.mail.photo.util.ImageUtils;
 import com.android.mail.photo.views.PhotoView;
 
 /**
- * Displays photo, comments and tags for a picasa photo id.
+ * Displays a photo.
  */
 public class PhotoViewFragment extends BaseFragment implements
         LoaderCallbacks<Bitmap>, OnClickListener, OnScreenListener {
@@ -98,11 +98,6 @@ public class PhotoViewFragment extends BaseFragment implements
          * A photo has been deleted.
          */
         public void onPhotoRemoved(long photoId);
-
-        /**
-         * Get the action bar height.
-         */
-        public int getActionBarHeight();
     }
 
     /**
@@ -269,7 +264,7 @@ public class PhotoViewFragment extends BaseFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        // Remove listeners
+        // Remove listener
         mCallback.removeScreenListener(this);
         resetPhotoView();
     }
@@ -333,7 +328,6 @@ public class PhotoViewFragment extends BaseFragment implements
                 updateView(view);
             }
             mForceLoadId = null;
-            //mAdapter.swapCursor(data);
             mIsPlaceHolder = false;
             if (Build.VERSION.SDK_INT >= 11 && mActionMode != null) {
                 // Invalidate the action mode menu
@@ -444,10 +438,6 @@ public class PhotoViewFragment extends BaseFragment implements
     }
 
     @Override
-    public void onActionBarHeightCalculated(int actionBarHeight) {
-    }
-
-    @Override
     protected boolean isEmpty() {
         final View view = getView();
         final boolean isViewAvailable =
@@ -507,8 +497,6 @@ public class PhotoViewFragment extends BaseFragment implements
 
     /**
      * Sets view visibility depending upon whether or not we're in "full screen" mode.
-     *
-     * @param animate If {@code true}, animate views in/out. Otherwise, snap views.
      */
     private void setViewVisibility() {
         final boolean fullScreen = mCallback.isFragmentFullScreen(this);
