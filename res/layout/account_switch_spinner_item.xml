@@ -39,7 +39,7 @@
         android:background="@drawable/spinner_ab_holo_light">
             <TextView
                 android:id="@+id/account_spinner_folder"
-                style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title.Inverse"
+                style="@style/AccountSpinnerAnchorTextPrimary"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:includeFontPadding="false"
@@ -47,8 +47,7 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/account_spinner_account_name"
-                style="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle.Inverse"
-                android:textColor="@color/actionbar_secondary"
+                style="@style/AccountSpinnerAnchorTextSecondary"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:includeFontPadding="false"

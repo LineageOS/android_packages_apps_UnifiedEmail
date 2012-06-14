@@ -27,7 +27,4 @@
 
     <!-- Whether to show single or 2 pane search results -->
     <bool name="show_two_pane_search_results">false</bool>
-
-    <!-- Whether to show conversation subject in conversation view -->
-    <bool name="show_conversation_subject">true</bool>
 </resources>

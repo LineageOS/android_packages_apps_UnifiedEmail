@@ -20,7 +20,6 @@ package com.android.mail.ui;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
-import com.android.mail.ui.FolderListFragment;
 
 /**
  * A controllable activity is an Activity that has a Controller attached. This activity must be
@@ -95,4 +94,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      * @return
      */
     ConversationUpdater getConversationUpdater();
+
+    SubjectDisplayChanger getSubjectDisplayChanger();
 }

@@ -222,11 +222,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void clearSubject() {
-        // TODO(viki): Auto-generated method stub
-    }
-
-    @Override
     public Account getCurrentAccount() {
         return mAccount;
     }
@@ -239,12 +234,6 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public String getHelpContext() {
         return "Mail";
-    }
-
-    @Override
-    public String getUnshownSubject(String subject) {
-        // Calculate how much of the subject is shown, and return the remaining.
-        return null;
     }
 
     @Override
@@ -309,14 +298,17 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     private void initializeActionBar() {
         final ActionBar actionBar = mActivity.getActionBar();
-        mActionBarView = (ActionBarView) LayoutInflater.from(mContext).inflate(
-                R.layout.actionbar_view, null);
-        if (actionBar != null && mActionBarView != null) {
-            // Why have a different variable for the same thing? We should apply
-            // the same actions
-            // on mActionBarView instead.
-            mActionBarView.initialize(mActivity, this, mViewMode, actionBar, mRecentFolderList);
+        if (actionBar == null) {
+            return;
         }
+
+        // be sure to inherit from the ActionBar theme when inflating
+        final LayoutInflater inflater = LayoutInflater.from(actionBar.getThemedContext());
+        mActionBarView = (ActionBarView) inflater.inflate(R.layout.actionbar_view, null);
+        // Why have a different variable for the same thing? We should apply
+        // the same actions
+        // on mActionBarView instead.
+        mActionBarView.initialize(mActivity, this, mViewMode, actionBar, mRecentFolderList);
     }
 
     /**
@@ -1036,9 +1028,8 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void setSubject(String subject) {
-        // Do something useful with the subject. This requires changing the
-        // conversation view's subject text.
+    public SubjectDisplayChanger getSubjectDisplayChanger() {
+        return mActionBarView;
     }
 
     /**

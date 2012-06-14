@@ -17,8 +17,10 @@
 
 package com.android.mail.browse;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 
 import com.android.mail.R;
@@ -26,8 +28,10 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.AbstractActivityController;
+import com.android.mail.ui.ActivityController;
 import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.ui.RestrictedActivity;
+import com.android.mail.ui.SubjectDisplayChanger;
 import com.android.mail.utils.LogUtils;
 
 /**
@@ -48,12 +52,13 @@ import com.android.mail.utils.LogUtils;
  * lifetime.
  *
  */
-public class ConversationPagerController {
+public class ConversationPagerController implements OnPageChangeListener {
 
     private ViewPager mPager;
     private ConversationPagerAdapter mPagerAdapter;
     private FragmentManager mFragmentManager;
     private ConversationListCallbacks mListController;
+    private SubjectDisplayChanger mSubjectDisplayChanger;
     private boolean mShown;
 
     private static final String LOG_TAG = new LogUtils().getLogTag();
@@ -73,10 +78,11 @@ public class ConversationPagerController {
     private static final boolean ENABLE_SINGLETON_INITIAL_LOAD = false;
 
     public ConversationPagerController(RestrictedActivity activity,
-            ConversationListCallbacks listController) {
+            ActivityController controller) {
         mFragmentManager = activity.getFragmentManager();
         mPager = (ViewPager) activity.findViewById(R.id.conversation_pane);
-        mListController = listController;
+        mListController = controller;
+        mSubjectDisplayChanger = controller.getSubjectDisplayChanger();
     }
 
     public void show(Account account, Folder folder, Conversation initialConversation) {
@@ -96,6 +102,8 @@ public class ConversationPagerController {
         mPagerAdapter.setListController(mListController);
         mPagerAdapter.setPager(mPager);
         LogUtils.d(LOG_TAG, "IN CPC.show, adapter=%s", mPagerAdapter);
+
+        mPager.setOnPageChangeListener(this);
 
         LogUtils.d(LOG_TAG, "init pager adapter, count=%d initial=%s", mPagerAdapter.getCount(),
                 initialConversation.subject);
@@ -119,8 +127,11 @@ public class ConversationPagerController {
         mShown = false;
         mPager.setVisibility(View.GONE);
 
+        mSubjectDisplayChanger.clearSubject();
+
         LogUtils.d(LOG_TAG, "IN CPC.hide, clearing adapter and unregistering list observer");
         mPager.setAdapter(null);
+        mPager.setOnPageChangeListener(null);
         cleanup();
     }
 
@@ -146,5 +157,23 @@ public class ConversationPagerController {
                     " switching to cursor mode to load other conversations");
             mPagerAdapter.setSingletonMode(false);
         }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        // no-op
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        final Fragment f = mPagerAdapter.getFragmentAt(position);
+        if (f != null) {
+            mPagerAdapter.setItemVisible(f, true);
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        // no-op
     }
 }
