@@ -117,6 +117,12 @@
     <string name="download_failed" msgid="7860650496473302012">"Tidak dapat memuat turun."</string>
     <!-- no translation found for attachments_header (6459475590011460229) -->
     <skip />
+    <!-- no translation found for menu_photo_save_all (4295226099481995348) -->
+    <skip />
+    <!-- no translation found for menu_photo_share (2214772815165829079) -->
+    <skip />
+    <!-- no translation found for menu_photo_share_all (4577299400844129078) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Kongsi melalui"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Buka dalam Penyemak Imbas"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Salin"</string>
