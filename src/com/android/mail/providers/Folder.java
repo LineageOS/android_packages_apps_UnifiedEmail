@@ -201,7 +201,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
      }
 
     public Folder(Cursor cursor) {
-        assert (cursor.getColumnCount() == NUMBER_MEMBERS);
         id = cursor.getInt(UIProvider.FOLDER_ID_COLUMN);
         uri = Uri.parse(cursor.getString(UIProvider.FOLDER_URI_COLUMN));
         name = cursor.getString(UIProvider.FOLDER_NAME_COLUMN);
