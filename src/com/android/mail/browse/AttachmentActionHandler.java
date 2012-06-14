@@ -1,16 +1,23 @@
 package com.android.mail.browse;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcelable;
 
 import com.android.mail.R;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentState;
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
+
+import java.util.ArrayList;
 
 public class AttachmentActionHandler implements DialogInterface.OnCancelListener,
         DialogInterface.OnDismissListener {
@@ -20,6 +27,8 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
     private final AttachmentCommandHandler mCommandHandler;
     private final AttachmentViewInterface mView;
     private final Context mContext;
+
+    private static final String LOG_TAG = new LogUtils().getLogTag();
 
     private class AttachmentCommandHandler extends AsyncQueryHandler {
 
@@ -122,7 +131,41 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
             mView.updateProgress(showProgress);
         }
 
-        // Call update status for the view so that it can do some specific things.
-        mView.updateStatus();
+        // Call on update status for the view so that it can do some specific things.
+        mView.onUpdateStatus();
+    }
+
+    public void shareAttachment() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
+        final Uri uri = Utils.normalizeUri(mAttachment.contentUri);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.setType(Utils.normalizeMimeType(mAttachment.contentType));
+
+        try {
+            mContext.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            // couldn't find activity for SEND intent
+            LogUtils.e(LOG_TAG, "Couldn't find Activity for intent", e);
+        }
+    }
+
+    public void shareAttachments(ArrayList<Parcelable> uris) {
+        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
+        intent.setType("image/*");
+        intent.putParcelableArrayListExtra(
+                Intent.EXTRA_STREAM, uris);
+
+        try {
+            mContext.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            // couldn't find activity for SEND_MULTIPLE intent
+            LogUtils.e(LOG_TAG, "Couldn't find Activity for intent", e);
+        }
     }
 }

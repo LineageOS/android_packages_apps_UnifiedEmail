@@ -253,7 +253,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
         setButtonVisible(mOverflowButton, !isDownloading && (canSave || canPreview));
     }
 
-    public void updateStatus() {
+    public void onUpdateStatus() {
         if (mAttachment.state == AttachmentState.FAILED) {
             mSubTitle.setText(getResources().getString(R.string.download_failed));
         } else {

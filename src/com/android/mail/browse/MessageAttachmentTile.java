@@ -259,6 +259,6 @@ public class MessageAttachmentTile extends RelativeLayout implements OnClickList
     public void updateProgress(boolean showDeterminateProgress) {
     }
 
-    public void updateStatus() {
+    public void onUpdateStatus() {
     }
 }
