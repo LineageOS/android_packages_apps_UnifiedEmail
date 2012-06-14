@@ -430,7 +430,7 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
                         mAdapter.swapCursor(data);
                         updateView(mRootView);
                         mViewPager.setCurrentItem(itemIndex, false);
-                        updateTitleAndSubtitle();
+                        updateActionBar();
                     }
                 });
             }
@@ -448,7 +448,7 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
     @Override
     public void onPageSelected(int position) {
         setViewActivated();
-        updateTitleAndSubtitle();
+        updateActionBar();
         mPhotoIndex = position;
     }
 
@@ -592,7 +592,7 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
     /**
      * Adjusts the activity title and subtitle to reflect the photo name and count.
      */
-    protected void updateTitleAndSubtitle() {
+    protected void updateActionBar() {
         final int position = mViewPager.getCurrentItem() + 1;
         final String subtitle;
         final boolean hasAlbumCount = mAlbumCount >= 0;

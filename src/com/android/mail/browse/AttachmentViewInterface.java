@@ -20,5 +20,5 @@ public interface AttachmentViewInterface {
      * Allows the view to do some view-specific status updating.
      * Called in {@link AttachmentActionHandler#updateStatus}.
      */
-    public void updateStatus();
+    public void onUpdateStatus();
 }
