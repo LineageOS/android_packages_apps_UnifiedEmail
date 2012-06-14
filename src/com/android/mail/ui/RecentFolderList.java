@@ -92,11 +92,11 @@ public final class RecentFolderList {
         @Override
         protected Void doInBackground(Void... v) {
             final Uri uri = mAccount.recentFolderListUri;
-            final long now = System.currentTimeMillis();
             if (!Utils.isEmpty(uri)) {
                 ContentValues values = new ContentValues();
-                values.put(mFolder.uri.toString(), now);
-                // TODO: Remove when well tested
+                // Only the folder URIs are provided. Providers are free to update their specific
+                // information, though most will probably write the current timestamp.
+                values.put(mFolder.uri.toString(), 0);
                 LogUtils.i(TAG, "Save: %s", mFolder.name);
                 mContext.getContentResolver().update(uri, values, null, null);
             }
@@ -133,12 +133,12 @@ public final class RecentFolderList {
         if (mAccount == null || c == null) {
             return;
         }
+        LogUtils.d(TAG, "Number of recents = %d", c.getCount());
         int i = 0;
         while (c.moveToNext()) {
-            Folder folder = new Folder(c);
+            final Folder folder = new Folder(c);
             mFolderCache.putElement(folder.uri.toString(), folder);
-            // TODO: Remove when well tested
-            LogUtils.i(TAG, "Account %s, Recent: %s", mAccount.name, folder.name);
+            LogUtils.v(TAG, "Account %s, Recent: %s", mAccount.name, folder.name);
             if (++i == (MAX_RECENT_FOLDERS + MAX_EXCLUDED_FOLDERS))
                 break;
         }

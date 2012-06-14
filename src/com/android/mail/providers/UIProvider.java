@@ -110,6 +110,7 @@ public class UIProvider {
             AccountColumns.MIME_TYPE,
             AccountColumns.RECENT_FOLDER_LIST_URI,
             AccountColumns.COLOR,
+            AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
             AccountColumns.SettingsColumns.SIGNATURE,
             AccountColumns.SettingsColumns.AUTO_ADVANCE,
             AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE,
@@ -143,18 +144,19 @@ public class UIProvider {
     public static final int ACCOUNT_MIME_TYPE_COLUMN = 17;
     public static final int ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN = 18;
     public static final int ACCOUNT_COLOR_COLUMN = 19;
+    public static final int ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN = 20;
 
-    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 20;
-    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 21;
-    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 22;
-    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 23;
-    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 24;
-    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 25;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 26;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 27;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 28;
-    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 29;
-    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 30;
+    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 21;
+    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 22;
+    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 23;
+    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 24;
+    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 25;
+    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 26;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 27;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 28;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 29;
+    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 30;
+    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 31;
 
 
     public static final class AccountCapabilities {
@@ -377,6 +379,10 @@ public class UIProvider {
          * URI for location of recent folders viewed on this account.
          */
         public static final String RECENT_FOLDER_LIST_URI = "recentFolderListUri";
+        /**
+         * URI for default recent folders for this account, if any.
+         */
+        public static final String DEFAULT_RECENT_FOLDER_LIST_URI = "defaultRecentFolderListUri";
         /**
          * Color used for this account (for Email/Combined view)
          */
@@ -654,6 +660,7 @@ public class UIProvider {
          * String with the content provider Uri used to request more items in the folder, or null.
          */
         public static final String LOAD_MORE_URI = "loadMoreUri";
+
         public FolderColumns() {}
     }
 
