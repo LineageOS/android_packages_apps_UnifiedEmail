@@ -245,6 +245,8 @@
     <string name="menu_photo_share">Share</string>
     <!-- Photo view screen, button name. Share all attachments. [CHAR LIMIT=10] -->
     <string name="menu_photo_share_all">Share all</string>
+    <!-- Displayed in the action bar as a subtitle. Save in progress. [CHAR LIMIT=15] -->
+    <string name="saving">Saving&#8230;</string>
 
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->

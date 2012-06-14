@@ -93,44 +93,7 @@ public abstract class PhotoCursorLoader extends BaseCursorLoader implements Page
             setSortOrder((sortOrder != null ? sortOrder : "") + " LIMIT 0, " + loadLimit);
         }
 
-        Cursor returnCursor = super.esLoadInBackground();
-
-        // commenting out the network request stuff
-//        int cursorCount = (returnCursor != null) ? returnCursor.getCount() : 0;
-//        boolean cursorFull = cursorCount == loadLimit;
-//        mHasMore = mPageable && (cursorFull /*|| isLoadingCirclePhotos()*/);
-//        mIsLoadingMore = (loadLimit != mLoadLimit);
-//
-//        // Either the database is empty or we only have a partial response; load more
-//        if (cursorCount == 0 || (!cursorFull && mHasMore)) {
-//            returnCursor.close();
-//            returnCursor = null;
-//        }
-//
-//        // If we don't have data to return, make network fetch and re-query
-//        if (returnCursor == null) {
-//            // adjust the loading offset
-//            mCircleOffset = cursorCount;
-//
-//            // issue network fetch
-//            doNetworkRequest();
-//
-//            // re-run the query
-//            returnCursor = super.esLoadInBackground();
-//
-//            cursorCount = (returnCursor != null) ? returnCursor.getCount() : 0;
-//            cursorFull = cursorCount == loadLimit;
-//            // If we didn't download anything new, disable paging
-//            mPageable = cursorCount != mCircleOffset;
-//            mHasMore = mPageable && (cursorFull /*|| isLoadingCirclePhotos()*/);
-//        }
-//
-//        // If we changed the sort order of the query, revert it
-//        if (changeSortOrder) {
-//            setSortOrder(origSortOrder);
-//        }
-
-        return returnCursor;
+        return super.esLoadInBackground();
     }
 
     @Override
