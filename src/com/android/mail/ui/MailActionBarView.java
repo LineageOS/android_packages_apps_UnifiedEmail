@@ -51,11 +51,12 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 /**
- * View to manage the various states of the Mail Action Bar
+ * View to manage the various states of the Mail Action Bar.
+ * <p>
+ * This also happens to be the custom view we supply to ActionBar.
  *
- * TODO(viki): Include ConversationSubjectDisplayer here as well.
  */
-public final class ActionBarView extends LinearLayout implements OnNavigationListener,
+public final class MailActionBarView extends LinearLayout implements OnNavigationListener,
         ViewMode.ModeChangeListener, OnQueryTextListener, OnSuggestionListener,
         MenuItem.OnActionExpandListener, SubjectDisplayChanger {
     private ActionBar mActionBar;
@@ -103,15 +104,15 @@ public final class ActionBarView extends LinearLayout implements OnNavigationLis
     private boolean mIgnoreFirstNavigation = true;
     private final boolean mShowConversationSubject;
 
-    public ActionBarView(Context context) {
+    public MailActionBarView(Context context) {
         this(context, null);
     }
 
-    public ActionBarView(Context context, AttributeSet attrs) {
+    public MailActionBarView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ActionBarView(Context context, AttributeSet attrs, int defStyle) {
+    public MailActionBarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         mShowConversationSubject = getResources().getBoolean(R.bool.show_conversation_subject);
