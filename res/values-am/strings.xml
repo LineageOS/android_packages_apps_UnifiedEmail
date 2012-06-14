@@ -116,6 +116,12 @@
     <string name="saved" msgid="6977782468220926548">"ተቀምጧል፣"</string>
     <string name="download_failed" msgid="7860650496473302012">"ማውረድ አልተቻለም።"</string>
     <string name="attachments_header" msgid="6459475590011460229">"ተያያዦች"</string>
+    <!-- no translation found for menu_photo_save_all (4295226099481995348) -->
+    <skip />
+    <!-- no translation found for menu_photo_share (2214772815165829079) -->
+    <skip />
+    <!-- no translation found for menu_photo_share_all (4577299400844129078) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"በዚህ በኩል አጋራ -"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"በአሳሽ ውስጥ ክፈት"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"ቅዳ"</string>
@@ -315,7 +321,7 @@
     <string name="camera_photo_error" msgid="653424229752191252">"ፎቶ ማግኘት አልተቻለም።"</string>
     <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> የ<xliff:g id="COUNT">%d</xliff:g>"</string>
     <string name="truncated_info" msgid="4901078975545890098">"..."</string>
-    <string name="truncated_info_see_more" msgid="2068973974507128729">" ተጨማሪ እይ »"</string>
+    <string name="truncated_info_see_more" msgid="2068973974507128729">" ተጨማሪ ተመልከት »"</string>
     <string name="posted_just_now" msgid="7872790861965011674">"ልክ አሁን"</string>
   <plurals name="num_minutes_ago">
     <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> ደቂቃ"</item>
