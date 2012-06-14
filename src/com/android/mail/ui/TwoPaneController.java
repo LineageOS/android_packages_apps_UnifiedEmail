@@ -201,7 +201,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void resetActionBarIcon() {
-        if (mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
+        if (mViewMode.isListMode()) {
             mActionBarView.removeBackButton();
         } else {
             mActionBarView.setBackButton();
@@ -361,6 +361,7 @@ public final class TwoPaneController extends AbstractActivityController {
         final FrameLayout.LayoutParams params;
         final ConversationListFragment convList = getConversationListFragment();
         switch (mode) {
+            case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.CONVERSATION_LIST:
                 params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
                 params.width = mLayout.computeConversationListWidth();
@@ -371,6 +372,7 @@ public final class TwoPaneController extends AbstractActivityController {
                         convList.getAnimatedAdapter(), mConversationListCursor);
                 }
                 break;
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
                 if (op.mBatch) {
                     // Show undo bar in the conversation list.

@@ -144,7 +144,7 @@ public final class OnePaneController extends AbstractActivityController {
         // When entering conversation list mode, hide and clean up any currently visible
         // conversation.
         // TODO: improve this transition
-        if (newMode == ViewMode.CONVERSATION_LIST) {
+        if (newMode == ViewMode.CONVERSATION_LIST || newMode == ViewMode.SEARCH_RESULTS_LIST) {
             mPagerController.hide();
         }
     }
@@ -316,7 +316,7 @@ public final class OnePaneController extends AbstractActivityController {
             }
         } else if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
-        } else if (mode == ViewMode.CONVERSATION_LIST && !inInbox(mAccount, mConvListContext)) {
+        } else if (mViewMode.isListMode() && !inInbox(mAccount, mConvListContext)) {
             if (mLastFolderListTransactionId != INVALID_ID) {
                 // If the user got here by navigating via the folder list, back
                 // should bring them back to the folder list.
@@ -398,7 +398,7 @@ public final class OnePaneController extends AbstractActivityController {
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
-        } else if ((!inInbox(mAccount, mConvListContext) && mode == ViewMode.CONVERSATION_LIST)
+        } else if ((!inInbox(mAccount, mConvListContext) && mViewMode.isListMode())
                 || mode == ViewMode.CONVERSATION
                 || mode == ViewMode.FOLDER_LIST
                 || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
@@ -448,10 +448,12 @@ public final class OnePaneController extends AbstractActivityController {
         if (op != null && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
             final int mode = mViewMode.getMode();
             switch (mode) {
+                case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 case ViewMode.CONVERSATION:
                     mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
                             null, null);
                     break;
+                case ViewMode.SEARCH_RESULTS_LIST:
                 case ViewMode.CONVERSATION_LIST:
                     final ConversationListFragment convList = getConversationListFragment();
                     if (convList != null) {

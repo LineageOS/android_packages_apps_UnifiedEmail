@@ -165,6 +165,13 @@ public class ViewMode {
     }
 
     /**
+     * Return whether the current mode is considered a list mode.
+     */
+    public boolean isListMode() {
+        return mMode == ViewMode.CONVERSATION_LIST || mMode == ViewMode.SEARCH_RESULTS_LIST;
+    }
+
+    /**
      * Restoring from a saved state restores only the mode. It does not restore the listeners of
      * this object.
      * @param inState
