@@ -119,7 +119,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     protected Account mAccount;
     private Folder mFolder;
-    protected ActionBarView mActionBarView;
+    protected MailActionBarView mActionBarView;
     protected final RestrictedActivity mActivity;
     protected final Context mContext;
     private final FragmentManager mFragmentManager;
@@ -304,7 +304,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         // be sure to inherit from the ActionBar theme when inflating
         final LayoutInflater inflater = LayoutInflater.from(actionBar.getThemedContext());
-        mActionBarView = (ActionBarView) inflater.inflate(R.layout.actionbar_view, null);
+        mActionBarView = (MailActionBarView) inflater.inflate(R.layout.actionbar_view, null);
         // Why have a different variable for the same thing? We should apply
         // the same actions
         // on mActionBarView instead.
