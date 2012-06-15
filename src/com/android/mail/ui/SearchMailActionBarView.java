@@ -17,8 +17,20 @@
 
 package com.android.mail.ui;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.SearchView;
+
+import com.android.mail.ConversationListContext;
+import com.android.mail.R;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 public class SearchMailActionBarView extends MailActionBarView {
 
@@ -32,5 +44,68 @@ public class SearchMailActionBarView extends MailActionBarView {
 
     public SearchMailActionBarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // We start out with every option enabled. Based on the current view, we disable actions
+        // that are possible.
+        super.onPrepareOptionsMenu(menu);
+        switch (getMode()) {
+            case ViewMode.SEARCH_RESULTS_LIST:
+                setStandardMode();
+                setPopulatedSearchView();
+                // Remove focus from the search action menu in search results mode so the IME and
+                // the suggestions don't get in the way.
+                MenuItem search = getSearch();
+                if (search != null) {
+                    SearchView searchWidget = (SearchView) search.getActionView();
+                    searchWidget.clearFocus();
+                }
+                break;
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                mActionBar.setDisplayHomeAsUpEnabled(true);
+                setStandardMode();
+                if (!showConversationSubject()) {
+                    setPopulatedSearchView();
+                }
+                break;
+        }
+        return false;
+    }
+
+
+    private void setPopulatedSearchView() {
+        MenuItem search = getSearch();
+        if (search != null) {
+            search.expandActionView();
+            String query = mActivity.getIntent().getStringExtra(
+                    ConversationListContext.EXTRA_SEARCH_QUERY);
+            SearchView searchWidget = (SearchView) search.getActionView();
+            if (!TextUtils.isEmpty(query)) {
+                searchWidget.setQuery(query, false);
+            }
+            searchWidget.clearFocus();
+        }
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+        super.onMenuItemActionCollapse(item);
+        // Work around b/6664203 by manually forcing this view to be VISIBLE
+        // upon ActionView collapse. DISPLAY_SHOW_CUSTOM will still control its final
+        // visibility.
+        int mode = getMode();
+        if (mode == ViewMode.SEARCH_RESULTS_LIST
+                || (Utils.showTwoPaneSearchResults(getContext())
+                        && mode == ViewMode.SEARCH_RESULTS_CONVERSATION)) {
+
+            // When the action menu is collapsed, we have performed a search,
+            // pop the search fragment.
+            mController.exitSearchMode();
+        }
+        // Have to return true here. Unlike other callbacks, the return value
+        // here is whether we want to suppress the action (rather than consume the action). We
+        // don't want to suppress the action.
+        return true;
     }
 }
