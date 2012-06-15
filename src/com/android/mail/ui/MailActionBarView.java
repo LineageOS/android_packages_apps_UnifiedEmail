@@ -59,9 +59,9 @@ import com.android.mail.utils.Utils;
 public class MailActionBarView extends LinearLayout implements OnNavigationListener,
         ViewMode.ModeChangeListener, OnQueryTextListener, OnSuggestionListener,
         MenuItem.OnActionExpandListener, SubjectDisplayChanger {
-    private ActionBar mActionBar;
-    private RestrictedActivity mActivity;
-    private ActivityController mController;
+    protected ActionBar mActionBar;
+    protected RestrictedActivity mActivity;
+    protected ActivityController mController;
     private View mFolderView;
     /**
      * The current mode of the ActionBar. This references constants in {@link ViewMode}
@@ -132,6 +132,20 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         if (mSearch != null) {
             mSearch.collapseActionView();
         }
+    }
+
+    /**
+     * Get the search menu item.
+     */
+    protected MenuItem getSearch() {
+        return mSearch;
+    }
+
+    /**
+     * Get whether to show the conversation subject in the action bar.
+     */
+    protected boolean showConversationSubject() {
+        return mShowConversationSubject;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -354,6 +368,10 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         mActivity.invalidateOptionsMenu();
     }
 
+    protected int getMode() {
+        return mMode;
+    }
+
     public boolean onPrepareOptionsMenu(Menu menu) {
         // We start out with every option enabled. Based on the current view, we disable actions
         // that are possible.
@@ -409,23 +427,6 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                     setStandardMode();
                 }
                 break;
-            case ViewMode.SEARCH_RESULTS_LIST:
-                setStandardMode();
-                setPopulatedSearchView();
-                // Remove focus from the search action menu in search results mode so the IME and
-                // the suggestions don't get in the way.
-                if (mSearch != null) {
-                    mSearchWidget = (SearchView) mSearch.getActionView();
-                    mSearchWidget.clearFocus();
-                }
-                break;
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-                mActionBar.setDisplayHomeAsUpEnabled(true);
-                setStandardMode();
-                if (!mShowConversationSubject) {
-                    setPopulatedSearchView();
-                }
-                break;
             case ViewMode.FOLDER_LIST:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE,
@@ -449,21 +450,9 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
     /**
      * Set the actionbar mode to standard mode: no list navigation.
      */
-    private void setStandardMode() {
+    protected void setStandardMode() {
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
-    }
-
-    private void setPopulatedSearchView() {
-        if (mSearch != null) {
-            mSearch.expandActionView();
-            String query = mActivity.getIntent().getStringExtra(
-                    ConversationListContext.EXTRA_SEARCH_QUERY);
-            if (!TextUtils.isEmpty(query)) {
-                mSearchWidget.setQuery(query, false);
-            }
-            mSearchWidget.clearFocus();
-        }
     }
 
     public void removeBackButton() {
@@ -584,14 +573,6 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         // upon ActionView collapse. DISPLAY_SHOW_CUSTOM will still control its final
         // visibility.
         setVisibility(VISIBLE);
-        if (mMode == ViewMode.SEARCH_RESULTS_LIST
-                || (Utils.showTwoPaneSearchResults(getContext())
-                        && mMode == ViewMode.SEARCH_RESULTS_CONVERSATION)) {
-
-            // When the action menu is collapsed, we have performed a search,
-            // pop the search fragment.
-            mController.exitSearchMode();
-        }
         // Have to return true here. Unlike other callbacks, the return value
         // here is whether we want to suppress the action (rather than consume the action). We
         // don't want to suppress the action.
