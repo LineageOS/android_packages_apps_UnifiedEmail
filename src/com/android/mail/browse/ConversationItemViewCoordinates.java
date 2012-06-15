@@ -134,10 +134,17 @@ public class ConversationItemViewCoordinates {
      * Returns the mode of the header view (Wide/Normal/Narrow).
      */
     public static int getMode(Context context, ViewMode viewMode) {
-        Resources res = context.getResources();
-        return viewMode.isListMode() ?
-                res.getInteger(R.integer.conversation_list_header_mode) :
-                res.getInteger(R.integer.conversation_header_mode);
+        final Resources res = context.getResources();
+        switch (viewMode.getMode()) {
+            case ViewMode.CONVERSATION_LIST:
+                return res.getInteger(R.integer.conversation_list_header_mode);
+
+            case ViewMode.SEARCH_RESULTS_LIST:
+                return res.getInteger(R.integer.conversation_list_search_header_mode);
+
+            default:
+                return res.getInteger(R.integer.conversation_header_mode);
+        }
     }
 
     /**
