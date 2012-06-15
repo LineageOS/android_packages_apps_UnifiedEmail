@@ -15,15 +15,6 @@
  */
 package com.android.mail.compose;
 
-import com.android.mail.R;
-import com.android.mail.providers.Account;
-import com.android.mail.providers.Attachment;
-import com.android.mail.providers.Message;
-import com.android.mail.providers.UIProvider;
-import com.android.mail.utils.LogUtils;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -35,8 +26,20 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.android.mail.R;
+import com.android.mail.providers.Account;
+import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Message;
+import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.AttachmentTile;
+import com.android.mail.ui.AttachmentTileGrid;
+import com.android.mail.utils.LogUtils;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -49,6 +52,8 @@ class AttachmentsView extends LinearLayout {
     private static final String LOG_TAG = new LogUtils().getLogTag();
     private ArrayList<Attachment> mAttachments;
     private AttachmentDeletedListener mChangeListener;
+    private AttachmentTileGrid mTileGrid;
+    private LinearLayout mAttachmentLayout;
 
     public AttachmentsView(Context context) {
         this(context, null);
@@ -57,6 +62,14 @@ class AttachmentsView extends LinearLayout {
     public AttachmentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mAttachments = Lists.newArrayList();
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        mTileGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
+        mAttachmentLayout = (LinearLayout) findViewById(R.id.attachment_bar_list);
     }
 
     /**
@@ -77,27 +90,42 @@ class AttachmentsView extends LinearLayout {
         }
         mAttachments.add(attachment);
 
-        final AttachmentComposeView attachmentView =
-            new AttachmentComposeView(getContext(), attachment);
+        // If we have an attachment that should be shown in a tiled look,
+        // set up the tile and add it to the tile grid.
+        if (AttachmentTile.isTiledAttachment(attachment)) {
+            final ComposeAttachmentTile attachmentTile =
+                    mTileGrid.addComposeTileFromAttachment(attachment);
+            attachmentTile.addDeleteListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteAttachment(attachmentTile, attachment);
+                }
+            });
+        // Otherwise, use the old bar look and add it to the new
+        // inner LinearLayout.
+        } else {
+            final AttachmentComposeView attachmentView =
+                new AttachmentComposeView(getContext(), attachment);
 
-        attachmentView.addDeleteListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteAttachment(attachmentView, attachment);
-            }
-        });
+            attachmentView.addDeleteListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteAttachment(attachmentView, attachment);
+                }
+            });
 
 
-        addView(attachmentView, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT));
+            mAttachmentLayout.addView(attachmentView, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT));
+        }
     }
 
     @VisibleForTesting
-    protected void deleteAttachment(final AttachmentComposeView attachmentView,
+    protected void deleteAttachment(final View attachmentView,
             final Attachment attachment) {
         mAttachments.remove(attachment);
-        removeView(attachmentView);
+        ((ViewGroup) attachmentView.getParent()).removeView(attachmentView);
         if (mChangeListener != null) {
             mChangeListener.onAttachmentDeleted();
         }
@@ -119,7 +147,8 @@ class AttachmentsView extends LinearLayout {
      */
     public void deleteAllAttachments() {
         mAttachments.clear();
-        removeAllViews();
+        mTileGrid.removeAllViews();
+        mAttachmentLayout.removeAllViews();
     }
 
     /**

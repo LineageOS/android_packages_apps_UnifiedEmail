@@ -38,7 +38,7 @@
         android:layout_marginBottom="2dip"
         android:background="@android:color/holo_blue_light"
         android:visibility="gone"/>
-    <com.android.mail.browse.AttachmentTileGrid
+    <com.android.mail.ui.AttachmentTileGrid
         android:id="@+id/attachment_tile_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

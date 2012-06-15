@@ -32,9 +32,10 @@ import com.android.mail.R;
 import com.android.mail.browse.AttachmentLoader.AttachmentCursor;
 import com.android.mail.browse.ConversationContainer.DetachListener;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
-import com.android.mail.photo.util.ImageUtils;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
+import com.android.mail.ui.AttachmentTile;
+import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
@@ -163,7 +164,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         List<Attachment> barAttachments = new ArrayList<Attachment>(maxSize);
 
         for (Attachment attachment : attachments) {
-            if (isTiledAttachment(attachment)) {
+            if (AttachmentTile.isTiledAttachment(attachment)) {
                 tiledAttachments.add(attachment);
             } else {
                 barAttachments.add(attachment);
@@ -200,10 +201,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
             barAttachmentView.render(attachment);
         }
-    }
-
-    private boolean isTiledAttachment(final Attachment attachment) {
-        return ImageUtils.isImageMimeType(attachment.contentType);
     }
 
     private Integer getAttachmentLoaderId() {

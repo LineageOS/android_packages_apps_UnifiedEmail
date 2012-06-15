@@ -33,7 +33,7 @@ import org.json.JSONException;
  * This view is used in the ComposeActivity to display an attachment along with its name/size
  * and a Remove button.
  */
-class AttachmentComposeView extends LinearLayout {
+class AttachmentComposeView extends LinearLayout implements AttachmentDeletionInterface {
     private final Attachment mAttachment;
     private final static String LOG_TAG = new LogUtils().getLogTag();
 
