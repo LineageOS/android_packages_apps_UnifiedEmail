@@ -17,4 +17,5 @@
 -->
 <resources>
     <integer name="conversation_list_header_mode">0</integer>
+    <integer name="conversation_list_search_header_mode">0</integer>
 </resources>

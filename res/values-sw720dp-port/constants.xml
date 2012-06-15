@@ -19,6 +19,12 @@
     <!-- Whether the list is collapsed in conversation view mode -->
     <bool name="list_collapsed">true</bool>
 
+    <!-- Search results in portrait mode on 10" tablets should still show wide conversation
+         list items.
+         Note: this this value should be set with the same qualifiers where
+         show_two_pane_search_results is set to false -->
+    <integer name="conversation_list_search_header_mode">0</integer>
+
     <!-- Whether to show single or 2 pane search results -->
     <bool name="show_two_pane_search_results">false</bool>
 </resources>
