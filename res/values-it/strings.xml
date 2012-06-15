@@ -119,6 +119,7 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Salva tutti"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Condividi"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Cond. tutti"</string>
+    <string name="saving" msgid="925514721138014677">"Salvataggio…"</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Condividi tramite"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Apri nel browser"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Copia"</string>
