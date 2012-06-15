@@ -304,7 +304,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
         // be sure to inherit from the ActionBar theme when inflating
         final LayoutInflater inflater = LayoutInflater.from(actionBar.getThemedContext());
-        mActionBarView = (MailActionBarView) inflater.inflate(R.layout.actionbar_view, null);
+        final boolean isSearch = mActivity.getIntent() != null
+                && Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction());
+        mActionBarView = (MailActionBarView) inflater.inflate(
+                isSearch ? R.layout.search_actionbar_view : R.layout.actionbar_view, null);
         // Why have a different variable for the same thing? We should apply
         // the same actions
         // on mActionBarView instead.
