@@ -56,7 +56,7 @@ import com.android.mail.utils.Utils;
  * This also happens to be the custom view we supply to ActionBar.
  *
  */
-public final class MailActionBarView extends LinearLayout implements OnNavigationListener,
+public class MailActionBarView extends LinearLayout implements OnNavigationListener,
         ViewMode.ModeChangeListener, OnQueryTextListener, OnSuggestionListener,
         MenuItem.OnActionExpandListener, SubjectDisplayChanger {
     private ActionBar mActionBar;
@@ -555,6 +555,7 @@ public final class MailActionBarView extends LinearLayout implements OnNavigatio
             // un-populated, leading to a crash. So claim that we have handled the event.
             return true;
         }
+        collapseSearch();
         final String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY));
         mController.onSearchRequested(query);
         return true;
@@ -579,15 +580,21 @@ public final class MailActionBarView extends LinearLayout implements OnNavigatio
 
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
-        // Work around b/6664203 by manually forcing this view to be VISIBLE upon ActionView
-        // collapse. DISPLAY_SHOW_CUSTOM will still control its final visibility.
+        // Work around b/6664203 by manually forcing this view to be VISIBLE
+        // upon ActionView collapse. DISPLAY_SHOW_CUSTOM will still control its final
+        // visibility.
         setVisibility(VISIBLE);
+        if (mMode == ViewMode.SEARCH_RESULTS_LIST
+                || (Utils.showTwoPaneSearchResults(getContext())
+                        && mMode == ViewMode.SEARCH_RESULTS_CONVERSATION)) {
 
-        // When the action menu is collapsed, we have performed a search, pop the search fragment.
-        mController.exitSearchMode();
-        // Have to return true here. Unlike other callbacks, the return value here is whether
-        // we want to suppress the action (rather than consume the action). We don't want to
-        // suppress the action.
+            // When the action menu is collapsed, we have performed a search,
+            // pop the search fragment.
+            mController.exitSearchMode();
+        }
+        // Have to return true here. Unlike other callbacks, the return value
+        // here is whether we want to suppress the action (rather than consume the action). We
+        // don't want to suppress the action.
         return true;
     }
 

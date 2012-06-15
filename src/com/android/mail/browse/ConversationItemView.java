@@ -969,7 +969,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     private void updateBackground(boolean isUnread) {
         if (isUnread) {
-            if (mTabletDevice && mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
+            if (mTabletDevice && mViewMode.isListMode()) {
                 if (mChecked) {
                     setBackgroundResource(R.drawable.list_conversation_wide_unread_selected_holo);
                 } else {
@@ -983,7 +983,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 }
             }
         } else {
-            if (mTabletDevice && mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
+            if (mTabletDevice && mViewMode.isListMode()) {
                 if (mChecked) {
                     setBackgroundResource(R.drawable.list_conversation_wide_read_selected_holo);
                 } else {
@@ -1294,9 +1294,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
      */
     public void toggleSelectionOrBeginDrag() {
         // If we are in one pane mode, or we are looking at conversations, drag
-        // and drop is
-        // meaningless. Toggle checkmark and return early.
-        if (!Utils.useTabletUI(mContext) || mViewMode.getMode() != ViewMode.CONVERSATION_LIST) {
+        // and drop is meaningless. Toggle checkmark and return early.
+        if (!Utils.useTabletUI(mContext)
+                || !mViewMode.isListMode()) {
             toggleCheckMark();
             return;
         }
