@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.mail.browse;
+package com.android.mail.ui;
 
 import android.content.Context;
 import android.net.Uri;
@@ -24,12 +24,14 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.mail.R;
+import com.android.mail.browse.MessageAttachmentTile;
+import com.android.mail.compose.ComposeAttachmentTile;
 import com.android.mail.providers.Attachment;
 
 import java.util.List;
 
 /**
- * Acts as a grid composed of {@link MessageAttachmentTile}s.
+ * Acts as a grid composed of {@link AttachmentTile}s.
  */
 public class AttachmentTileGrid extends FrameLayout {
     private LayoutInflater mInflater;
@@ -52,21 +54,31 @@ public class AttachmentTileGrid extends FrameLayout {
         // Adding tiles to grid and filling in attachment information
         int index = 0;
         for (Attachment attachment : list) {
-            addTileFromAttachment(attachment, index++);
+            addMessageTileFromAttachment(attachment, index++);
         }
     }
 
-    private void addTileFromAttachment(Attachment attachment, int index) {
-        final MessageAttachmentTile attachmentTile;
+    private void addMessageTileFromAttachment(Attachment attachment, int index) {
+        final AttachmentTile attachmentTile;
 
         if (getChildCount() <= index) {
             attachmentTile = MessageAttachmentTile.inflate(mInflater, this);
             addView(attachmentTile);
         } else {
-            attachmentTile = (MessageAttachmentTile) getChildAt(index);
+            attachmentTile = (AttachmentTile) getChildAt(index);
         }
 
         attachmentTile.render(attachment, mAttachmentsListUri, index);
+    }
+
+    public ComposeAttachmentTile addComposeTileFromAttachment(Attachment attachment) {
+        final ComposeAttachmentTile attachmentTile =
+                ComposeAttachmentTile.inflate(mInflater, this);
+
+        addView(attachmentTile);
+        attachmentTile.render(attachment, null, -1);
+
+        return attachmentTile;
     }
 
     @Override
