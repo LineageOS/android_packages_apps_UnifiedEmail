@@ -1507,7 +1507,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 case R.id.delete:
                     LogUtils.d(LOG_TAG, "Deleting");
                     mConversationListCursor.delete(mContext, mTarget);
-                    if (!mFolder.supportsCapability(FolderCapabilities.DELETE_ACTION_FINAL)) {
+                    if (mFolder.supportsCapability(FolderCapabilities.DELETE_ACTION_FINAL)) {
                         undoEnabled = false;
                     }
                     break;
