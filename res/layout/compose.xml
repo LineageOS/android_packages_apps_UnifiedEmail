@@ -64,8 +64,8 @@
                     android:layout_marginBottom="8dip" />
                 <LinearLayout
                     android:id="@+id/attachment_bar_list"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical" />
             </com.android.mail.compose.AttachmentsView>
             <!-- Body -->
