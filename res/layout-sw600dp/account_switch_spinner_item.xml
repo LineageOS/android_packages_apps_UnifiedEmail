@@ -33,14 +33,14 @@
         android:background="@drawable/spinner_ab_holo_light"
         android:layout_alignParentLeft="true">
         <TextView
-            android:id="@+id/account_spinner_folder"
+            android:id="@+id/account_spinner_first"
             style="@style/AccountSpinnerAnchorTextPrimary"
             android:singleLine="true"
             android:ellipsize="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
-            android:id="@+id/account_spinner_account_name"
+            android:id="@+id/account_spinner_second"
             style="@style/AccountSpinnerAnchorTextSecondary"
             android:singleLine="true"
             android:ellipsize="end"
