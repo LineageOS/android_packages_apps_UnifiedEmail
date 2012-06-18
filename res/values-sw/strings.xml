@@ -122,8 +122,7 @@
     <skip />
     <!-- no translation found for menu_photo_share_all (4577299400844129078) -->
     <skip />
-    <!-- no translation found for saving (925514721138014677) -->
-    <skip />
+    <string name="saving" msgid="925514721138014677">"Inahifadhi..."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Shiriki kupitia"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Fungua katika Kivinjari"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Nakili"</string>
@@ -316,8 +315,8 @@
     <string name="photo_network_error" msgid="6545183306958652345">"Picha haipatikani hivi sasa."</string>
     <string name="loading_photo" msgid="6784297653634402137">"Inapakia…"</string>
     <string name="post_operation_pending" msgid="1312168212880219407">"Inatuma..."</string>
-    <string name="download_photo_retry" msgid="1894223549069749239">"Taswira hii ni kubwa mno kupakuliwa, je, ungependa kujaribu tena katika msongo mdogo?"</string>
-    <string name="download_photo_error" msgid="7511376299526085797">"Picha haingeweza kuhifadhiwa kwenye kifaa."</string>
+    <string name="download_photo_retry" msgid="1894223549069749239">"Picha hii ni kubwa mno haiwezi kupakuliwa, je, ungependa kujaribu tena katika msongo mdogo?"</string>
+    <string name="download_photo_error" msgid="7511376299526085797">"Picha haikuweza kuhifadhiwa kwenye kifaa."</string>
     <string name="yes" msgid="7474216525286833848">"Ndiyo"</string>
     <string name="no" msgid="427548507197604096">"Hapana"</string>
     <string name="camera_photo_error" msgid="653424229752191252">"Haiwezi kupata picha."</string>
