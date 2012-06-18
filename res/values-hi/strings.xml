@@ -116,12 +116,9 @@
     <string name="saved" msgid="6977782468220926548">"सहेजा गया,"</string>
     <string name="download_failed" msgid="7860650496473302012">"डाउनलोड नहीं कर सका."</string>
     <string name="attachments_header" msgid="6459475590011460229">"अनुलग्नक"</string>
-    <!-- no translation found for menu_photo_save_all (4295226099481995348) -->
-    <skip />
-    <!-- no translation found for menu_photo_share (2214772815165829079) -->
-    <skip />
-    <!-- no translation found for menu_photo_share_all (4577299400844129078) -->
-    <skip />
+    <string name="menu_photo_save_all" msgid="4295226099481995348">"सभी सहेजें"</string>
+    <string name="menu_photo_share" msgid="2214772815165829079">"साझा करें"</string>
+    <string name="menu_photo_share_all" msgid="4577299400844129078">"सभी साझा करें"</string>
     <!-- no translation found for saving (925514721138014677) -->
     <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"इसके द्वारा साझा करें:"</string>
@@ -339,8 +336,6 @@
   </plurals>
     <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"फ़ोटो सम्‍मिलित कर रहा है…"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"चयन में एकाधिक खाते होने के कारण नहीं ले जाया जा सकता."</string>
-    <!-- no translation found for multiple_new_message_notification_item (9125239830562919898) -->
-    <skip />
-    <!-- no translation found for single_new_message_notification_big_text (291800374285445488) -->
-    <skip />
+    <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
 </resources>

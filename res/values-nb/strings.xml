@@ -119,8 +119,7 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Lagre alle"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Del"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Del alle"</string>
-    <!-- no translation found for saving (925514721138014677) -->
-    <skip />
+    <string name="saving" msgid="925514721138014677">"Lagrer ..."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Del på"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Åpne i nettleser"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopiér"</string>
