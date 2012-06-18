@@ -272,10 +272,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = mInflater.inflate(R.layout.account_switch_spinner_item, null);
-        ((TextView) convertView.findViewById(R.id.account_spinner_account_name))
-                .setText(getCurrentAccountName());
-        ((TextView) convertView.findViewById(R.id.account_spinner_folder))
-                .setText(getFolderLabel());
+        ((TextView) convertView.findViewById(R.id.account_spinner_first))
+            .setText(getFolderLabel());
+        ((TextView) convertView.findViewById(R.id.account_spinner_second))
+            .setText(getCurrentAccountName());
         populateUnreadCountView((TextView) convertView.findViewById(R.id.unread),
                 getFolderUnreadCount());
         return convertView;
@@ -301,7 +301,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        String textLabel = "";
+        // Shown in the first text view with big font.
+        String bigText = "";
+        // Shown in the second text view with smaller font.
+        String smallText = "";
         int color = 0;
         int unreadCount = 0;
         switch (getType(position)) {
@@ -316,22 +319,26 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 }
                 return convertView;
             case TYPE_ACCOUNT:
-                textLabel = getAccountFolder(position);
+                // TODO(viki): Get real Inbox or Priority Inbox using the URI. Remove ugly hack.
+                bigText = "Inbox";
+                smallText = getAccountFolder(position);
                 color = getAccountColor(position);
                 break;
             case TYPE_FOLDER:
                 final int offset = position - mNumAccounts - 1;
                 final Folder folder = mRecentFolderList.get(offset);
-                textLabel = folder.name;
+                bigText = folder.name;
                 unreadCount = folder.unreadCount;
                 break;
             case TYPE_ALL_FOLDERS:
-                textLabel = mContext.getResources().getString(R.string.show_all_folders);
+                bigText = mContext.getResources().getString(R.string.show_all_folders);
                 break;
         }
         convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
-        ((TextView) convertView.findViewById(R.id.account_spinner_accountname)).setText(textLabel);
-        View colorView = convertView.findViewById(R.id.account_spinner_color);
+        displayOrHide(convertView, R.id.account_spinner_first, bigText);
+        displayOrHide(convertView, R.id.account_spinner_second, smallText);
+
+        final View colorView = convertView.findViewById(R.id.account_spinner_color);
         if (color != 0) {
             colorView.setVisibility(View.VISIBLE);
             colorView.setBackgroundColor(color);
@@ -345,6 +352,21 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     }
 
+    /**
+     * Sets the text of the TextView to the given text, if it is non-empty. If the given
+     * text is empty, then the TextView is hidden (set to View.GONE).
+     * @param v
+     * @param resourceId
+     * @param toDisplay the given text
+     */
+    static private void displayOrHide(View v, int resourceId, String toDisplay) {
+        final TextView target = (TextView) v.findViewById(resourceId);
+        if (toDisplay.isEmpty()) {
+            target.setVisibility(View.GONE);
+            return;
+        }
+        target.setText(toDisplay);
+    }
 
     private void populateUnreadCountView(TextView unreadCountView, int unreadCount) {
         unreadCountView.setText(Utils.getUnreadCountString(mContext, unreadCount));
