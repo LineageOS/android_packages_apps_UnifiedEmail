@@ -52,27 +52,28 @@ public class SearchMailActionBarView extends MailActionBarView {
         super.onPrepareOptionsMenu(menu);
         switch (getMode()) {
             case ViewMode.SEARCH_RESULTS_LIST:
-                setStandardMode();
-                setPopulatedSearchView();
-                // Remove focus from the search action menu in search results mode so the IME and
-                // the suggestions don't get in the way.
-                MenuItem search = getSearch();
-                if (search != null) {
-                    SearchView searchWidget = (SearchView) search.getActionView();
-                    searchWidget.clearFocus();
-                }
-                break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
                 setStandardMode();
                 if (!showConversationSubject()) {
                     setPopulatedSearchView();
                 }
+                clearSearchFocus();
                 break;
         }
         return false;
     }
 
+
+    private void clearSearchFocus() {
+        // Remove focus from the search action menu in search results mode so
+        // the IME and the suggestions don't get in the way.
+        MenuItem search = getSearch();
+        if (search != null) {
+            SearchView searchWidget = (SearchView) search.getActionView();
+            searchWidget.clearFocus();
+        }
+    }
 
     private void setPopulatedSearchView() {
         MenuItem search = getSearch();

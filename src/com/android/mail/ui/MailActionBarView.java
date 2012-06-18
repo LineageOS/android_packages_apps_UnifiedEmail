@@ -145,7 +145,8 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      * Get whether to show the conversation subject in the action bar.
      */
     protected boolean showConversationSubject() {
-        return mShowConversationSubject;
+        return (mMode == ViewMode.SEARCH_RESULTS_CONVERSATION || mMode == ViewMode.CONVERSATION)
+                && mShowConversationSubject;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
