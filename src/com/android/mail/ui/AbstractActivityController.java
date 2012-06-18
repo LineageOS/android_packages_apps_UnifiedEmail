@@ -993,8 +993,11 @@ public abstract class AbstractActivityController implements ActivityController {
                 SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
                         mContext, authority, SuggestionsProvider.MODE);
                 suggestions.saveRecentQuery(query, null);
-
-                mViewMode.enterSearchResultsListMode();
+                if (Utils.showTwoPaneSearchResults(mActivity.getActivityContext())) {
+                    mViewMode.enterSearchResultsConversationMode();
+                } else {
+                    mViewMode.enterSearchResultsListMode();
+                }
                 setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                 mActivity.invalidateOptionsMenu();
                 restartOptionalLoader(LOADER_RECENT_FOLDERS);

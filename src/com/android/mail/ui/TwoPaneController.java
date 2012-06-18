@@ -58,7 +58,11 @@ public final class TwoPaneController extends AbstractActivityController {
     private void initializeConversationListFragment(boolean show) {
         if (show) {
             if (Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())) {
-                mViewMode.enterSearchResultsListMode();
+                if (Utils.showTwoPaneSearchResults(mActivity.getActivityContext())) {
+                    mViewMode.enterSearchResultsConversationMode();
+                } else {
+                    mViewMode.enterSearchResultsListMode();
+                }
             } else {
                 mViewMode.enterConversationListMode();
             }
