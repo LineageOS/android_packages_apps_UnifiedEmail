@@ -644,7 +644,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mCachedSettings.forceReplyFromDefault) {
             return getDefaultReplyFromAccount(account);
         } else {
-            // If we aren't explicityly told which account to look for, look at
+            // If we aren't explicitly told which account to look for, look at
             // all the message recipients and find one that matches
             // a custom from or account.
             List<String> allRecipients = new ArrayList<String>();
