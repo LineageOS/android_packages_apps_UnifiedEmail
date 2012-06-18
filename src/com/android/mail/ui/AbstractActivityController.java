@@ -613,7 +613,7 @@ public abstract class AbstractActivityController implements ActivityController {
         LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
         boolean handled = true;
         final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
-        final Settings settings = mAccount.settings;
+        final Settings settings = (mAccount == null) ? null : mAccount.settings;
         switch (id) {
             case R.id.archive: {
                 final boolean showDialog = (settings != null && settings.confirmArchive);
