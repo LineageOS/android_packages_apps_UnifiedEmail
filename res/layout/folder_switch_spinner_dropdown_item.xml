@@ -33,7 +33,7 @@
         android:layout_weight="1"
         android:maxLines="2"
         android:ellipsize="end"
-        style="@style/AccountSpinnerDropdownTextPrimary" />
+        style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title" />
 
     <TextView
         android:id="@+id/unread"

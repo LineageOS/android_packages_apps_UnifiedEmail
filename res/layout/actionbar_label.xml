@@ -37,7 +37,6 @@
     <TextView
         android:id="@+id/account"
         style="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle"
-        android:textColor="@color/actionbar_secondary"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false"
