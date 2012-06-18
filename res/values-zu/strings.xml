@@ -116,14 +116,10 @@
     <string name="saved" msgid="6977782468220926548">"Kulondoloziwe,"</string>
     <string name="download_failed" msgid="7860650496473302012">"Ayikwazanga ukulanda."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Okunamathiselwe"</string>
-    <!-- no translation found for menu_photo_save_all (4295226099481995348) -->
-    <skip />
-    <!-- no translation found for menu_photo_share (2214772815165829079) -->
-    <skip />
-    <!-- no translation found for menu_photo_share_all (4577299400844129078) -->
-    <skip />
-    <!-- no translation found for saving (925514721138014677) -->
-    <skip />
+    <string name="menu_photo_save_all" msgid="4295226099481995348">"Londoloza konke"</string>
+    <string name="menu_photo_share" msgid="2214772815165829079">"Abelana"</string>
+    <string name="menu_photo_share_all" msgid="4577299400844129078">"Abelana konke"</string>
+    <string name="saving" msgid="925514721138014677">"Iyalondoloza..."</string>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Abelana nge"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Vula kwisiphequluli"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopisha"</string>
@@ -339,8 +335,6 @@
   </plurals>
     <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"Ifaka isithombe…"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Ayikwazi ukugudluza ngoba ukukhetha kuqukethe ama-akhawunti amaningi."</string>
-    <!-- no translation found for multiple_new_message_notification_item (9125239830562919898) -->
-    <skip />
-    <!-- no translation found for single_new_message_notification_big_text (291800374285445488) -->
-    <skip />
+    <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
+    <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
 </resources>
