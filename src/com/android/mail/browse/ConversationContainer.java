@@ -314,7 +314,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         traceLayout("in positionOverlays, raw scale=%f, effective scale=%f", mWebView.getScale(),
                 mScale);
 
-        if (mOverlayBottoms == null) {
+        if (mOverlayBottoms == null || mOverlayAdapter == null) {
             return;
         }
 
@@ -474,9 +474,12 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
         mWebView.layout(0, 0, mWebView.getMeasuredWidth(), mWebView.getMeasuredHeight());
 
-        // being in a layout pass means overlay children may require measurement, so invalidate them
-        for (int i = 0, len = mOverlayAdapter.getCount(); i < len; i++) {
-            mOverlayAdapter.getItem(i).invalidateMeasurement();
+        if (mOverlayAdapter != null) {
+            // being in a layout pass means overlay children may require measurement,
+            // so invalidate them
+            for (int i = 0, len = mOverlayAdapter.getCount(); i < len; i++) {
+                mOverlayAdapter.getItem(i).invalidateMeasurement();
+            }
         }
 
         positionOverlays(0, mOffsetY);
