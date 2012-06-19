@@ -130,7 +130,8 @@ public final class TwoPaneController extends AbstractActivityController {
         mActivity.setContentView(R.layout.two_pane_activity);
         mLayout = (TwoPaneLayout) mActivity.findViewById(R.id.two_pane_activity);
         if (mLayout == null) {
-            LogUtils.d(LOG_TAG, "mLayout is null!");
+            // We need the layout for everything. Crash early if it is null.
+            LogUtils.wtf(LOG_TAG, "mLayout is null!");
         }
         mLayout.initializeLayout(mActivity.getApplicationContext(),
                 Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
@@ -145,7 +146,7 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        if (hasFocus && isConversationListVisible()) {
+        if (hasFocus && !mLayout.isConversationListCollapsed()) {
             // The conversation list is visible.
             Utils.setConversationCursorVisibility(mConversationListCursor, true);
         }
@@ -160,6 +161,7 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public void onFolderChanged(Folder folder) {
         super.onFolderChanged(folder);
+        exitCabMode();
         final FolderListFragment folderList = getFolderListFragment();
         if (folderList != null) {
             folderList.selectInitialFolder(folder);
@@ -207,16 +209,28 @@ public final class TwoPaneController extends AbstractActivityController {
             // Clear the wait fragment
             hideWaitForInitialization();
         }
+        // In conversation mode, if the conversation list is not visible, then the user cannot
+        // see the selected conversations. Disable the CAB mode while leaving the selected set
+        // untouched.
+        // Otherwise, the conversation list is guaranteed to be visible. Try to enable the CAB
+        // mode if any conversations are selected.
+        if (newMode == ViewMode.CONVERSATION){
+            enableOrDisableCab();
+        }
         resetActionBarIcon();
     }
 
     @Override
     public void onConversationVisibilityChanged(boolean visible) {
         super.onConversationVisibilityChanged(visible);
-
         if (!visible) {
             mPagerController.hide();
         }
+    }
+
+    @Override
+    public void onConversationListVisibilityChanged(boolean visible) {
+        super.onConversationListVisibilityChanged(visible);
     }
 
     @Override
@@ -225,6 +239,17 @@ public final class TwoPaneController extends AbstractActivityController {
             mActionBarView.removeBackButton();
         } else {
             mActionBarView.setBackButton();
+        }
+    }
+
+    /**
+     * Enable or disable the CAB mode based on the visibility of the conversation list fragment.
+     */
+    private final void enableOrDisableCab() {
+        if (mLayout.isConversationListCollapsed()) {
+            disableCabMode();
+        } else {
+            enableCabMode();
         }
     }
 
@@ -240,6 +265,12 @@ public final class TwoPaneController extends AbstractActivityController {
             onBackPressed();
             return;
         }
+        // If conversation list is not visible, then the user cannot see the CAB mode, so exit it.
+        // This is needed here (in addition to during viewmode changes) because orientation changes
+        // while viewing a conversation don't change the viewmode: the mode stays
+        // ViewMode.CONVERSATION and yet the conversation list goes in and out of visibility.
+        enableOrDisableCab();
+
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             mViewMode.enterSearchResultsConversationMode();

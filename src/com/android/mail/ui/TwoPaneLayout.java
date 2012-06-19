@@ -109,7 +109,9 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     private int mListBitmapLeft;
     /** Whether or not the conversation list can be collapsed all the way to hidden on the left.
      * This is used only in portrait view*/
-    private Boolean mListCollapsed;
+    private boolean mListCollapsed;
+    /** True if {@link #mListCollapsed} has been initialized, false otherwise. */
+    private boolean mIsListCollapsedValid = false;
     private LayoutListener mListener;
     private int mListLeft;
     private Paint mListPaint;
@@ -304,7 +306,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         if (mListener != null) {
             // Post the visibility change using a handler, so other views
             // will not be modified while we are performing a layout of the
-            // TriStateSplitLayout
+            // TwoPaneLayout
             final Handler handler = new Handler();
             handler.post(new Runnable() {
                 @Override
@@ -516,9 +518,9 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * @return Whether or not the conversation list is visible on screen.
      */
     public boolean isConversationListCollapsed() {
-        if (mListCollapsed == null) {
-            mListCollapsed = new Boolean(mContext.getResources()
-                    .getBoolean(R.bool.list_collapsed));
+        if (!mIsListCollapsedValid) {
+            mListCollapsed = mContext.getResources().getBoolean(R.bool.list_collapsed);
+            mIsListCollapsedValid = true;
         }
         return mListCollapsed;
     }
@@ -535,8 +537,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         // remaining space that is on the right, so avoid hard pixel values,
         // since this avoids manual re-computations when the parent container
         // size changes for any reason (e.g. orientation change).
-        mConversationListContainer.getLayoutParams().width =
-                ViewGroup.LayoutParams.MATCH_PARENT;
+        mConversationListContainer.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
         requestLayout();
         dispatchConversationListVisibilityChange();
         dispatchConversationVisibilityChanged(false);

@@ -593,7 +593,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public final boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(mActionBarView.getOptionsMenuId(), menu);
         mActionBarView.onCreateOptionsMenu(menu);
@@ -601,13 +601,13 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public final boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO(viki): Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public final boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
         LogUtils.d(LOG_TAG, "AbstractController.onOptionsItemSelected(%d) called.", id);
         boolean handled = true;
@@ -1017,7 +1017,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * triggering {@link ConversationSetObserver} callbacks as our selection set changes.
      *
      */
-    private void restoreSelectedConversations(Bundle savedState) {
+    private final void restoreSelectedConversations(Bundle savedState) {
         if (savedState == null) {
             mSelectedSet.clear();
             return;
@@ -1744,6 +1744,13 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mCabActionMenu != null) {
             mCabActionMenu.activate();
         }
+    }
+
+    /**
+     * Unselect conversations and exit CAB mode.
+     */
+    protected final void exitCabMode() {
+        mSelectedSet.clear();
     }
 
     @Override
