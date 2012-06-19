@@ -247,6 +247,14 @@
     <string name="menu_photo_share_all">Share all</string>
     <!-- Displayed in the action bar as a subtitle. Save in progress. [CHAR LIMIT=15] -->
     <string name="saving">Saving&#8230;</string>
+    <!-- Attachment Type Selector Adapter. This string is an option in the "Attach" dialog [CHAR LIMIT=20] -->
+    <string name="attach_image">Pictures</string>
+    <!-- Attachment Type Selector Adapter. This string is an option in the "Attach" dialog [CHAR LIMIT=20] -->
+    <string name="attach_take_photo">Capture picture</string>
+    <!-- Attachment Type Selector Adapter. This string is an option in the "Attach" dialog [CHAR LIMIT=20] -->
+    <string name="attach_video">Videos</string>
+    <!-- Attachment Type Selector Adapter. This string is an option in the "Attach" dialog [CHAR LIMIT=20] -->
+    <string name="attach_record_video">Capture video</string>
 
     <!-- Webview Context Menu Strings -->
     <!-- Title of dialog for choosing which activity to share a link with. [CHAR LIMIT=50]-->
