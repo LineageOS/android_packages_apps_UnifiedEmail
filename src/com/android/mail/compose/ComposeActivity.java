@@ -1366,7 +1366,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 showCcBccViews();
                 break;
             case R.id.add_attachment:
-                doAttach();
+                openAttachmentTypeSelectionDialog();
                 break;
         }
     }
@@ -1418,7 +1418,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         boolean handled = true;
         switch (id) {
             case R.id.add_attachment:
-                doAttach();
+                openAttachmentTypeSelectionDialog();
                 break;
             case R.id.add_cc_bcc:
                 showCcBccViews();
@@ -1586,6 +1586,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public ArrayList<SendOrSaveTask> mActiveTasks = Lists.newArrayList();
     private int mRequestId;
     private String mSignature;
+    private AttachmentTypeSelectorAdapter mAttachmentTypeSelectorAdapter;
 
     @VisibleForTesting
     public static class SendOrSaveMessage {
@@ -2124,16 +2125,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // TODO: store the request map in user preferences.
     }
 
-    public void doAttach() {
+    public void openAttachmentTypeSelectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.add_file_attachment);
+        builder.setAdapter(new AttachmentTypeSelectorAdapter(this),
+                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int position) {
+                doAttach(position);
+            }
+        });
+        builder.show();
+    }
+
+    private void doAttach(int position) {
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        if (android.provider.Settings.System.getInt(getContentResolver(),
-                UIProvider.getAttachmentTypeSetting(), 0) != 0) {
-            i.setType("*/*");
-        } else {
-            i.setType("image/*");
-        }
+        i.setType(AttachmentTypeSelectorAdapter.ITEMS.get(position).mMimeType);
         mAddingAttachment = true;
         startActivityForResult(Intent.createChooser(i, getText(R.string.select_attachment_type)),
                 RESULT_PICK_ATTACHMENT);
