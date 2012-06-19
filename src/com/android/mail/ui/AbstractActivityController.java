@@ -74,7 +74,6 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;

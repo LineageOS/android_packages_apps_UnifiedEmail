@@ -26,7 +26,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +37,6 @@ import android.widget.SearchView.OnSuggestionListener;
 import android.widget.Toast;
 
 import com.android.mail.AccountSpinnerAdapter;
-import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.SnippetTextView;
 import com.android.mail.providers.Account;
@@ -87,6 +85,10 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
     private MenuItem mFolderSettingsItem;
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
+    /**
+     * True if we are running on tablet.
+     */
+    private final boolean mIsOnTablet;
 
     public static final String LOG_TAG = new LogUtils().getLogTag();
 
@@ -114,8 +116,8 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
 
     public MailActionBarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
         mShowConversationSubject = getResources().getBoolean(R.bool.show_conversation_subject);
+        mIsOnTablet = Utils.useTabletUI(context);
     }
 
     @Override
@@ -367,6 +369,15 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         // Always update the options menu and redraw. This will read the new mode and redraw
         // the options menu.
         mActivity.invalidateOptionsMenu();
+        // If we are running on a tablet, we need to enable recent folders only in conversation
+        // view, and disable them everywhere else.
+        if (mIsOnTablet) {
+            if (mMode == ViewMode.CONVERSATION) {
+                mSpinner.enableRecentFolders();
+            } else {
+                mSpinner.disableRecentFolders();
+            }
+        }
     }
 
     protected int getMode() {

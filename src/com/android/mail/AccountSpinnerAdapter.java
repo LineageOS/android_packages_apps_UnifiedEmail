@@ -73,11 +73,16 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * Boolean indicating whether the "Show All Folders" items should be shown
      */
     private final boolean mShowAllFoldersItem;
+    /**
+     * Set to true to enable recent folders, false to disable.
+     */
+    private boolean mRecentFoldersVisible;
 
     /** The folder currently being viewed */
     private Folder mCurrentFolder;
     private Context mContext;
 
+    private static final int TYPE_DEAD_HEADER = -1;
     public static final int TYPE_ACCOUNT = 0;
     public static final int TYPE_HEADER = 1;
     public static final int TYPE_FOLDER = 2;
@@ -93,31 +98,41 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * {@link #TYPE_FOLDER}.
      */
     public int getType(int position) {
+        if (position == 0) {
+            return TYPE_DEAD_HEADER;
+        }
         // First the accounts
-        if (position < mNumAccounts) {
+        if (position <= mNumAccounts) {
             return TYPE_ACCOUNT;
         }
         // Then the header
-        if (position == mNumAccounts) {
+        if (position == mNumAccounts + 1) {
             return TYPE_HEADER;
         }
-        if (mShowAllFoldersItem) {
-            // The first few positions have accounts, and then the header.
-            final int offset = position - mNumAccounts - 1;
-            if (offset >= mRecentFolderList.size()) {
-                return TYPE_ALL_FOLDERS;
-            }
+        if (mShowAllFoldersItem && getRecentOffset(position) >= mRecentFolderList.size()) {
+            return TYPE_ALL_FOLDERS;
         }
         // Finally, the recent folders.
         return TYPE_FOLDER;
     }
 
     /**
+     * Given a position in the list, what offset does it correspond to in the Recent Folders
+     * list?
+     * @param position
+     * @return
+     */
+    private final int getRecentOffset(int position) {
+        return position - mNumAccounts - 2;
+    }
+
+    /**
      * Returns the position of the dead, unselectable element in the spinner.
      * @return
      */
-    public int getSpacerPosition() {
-        return mNumAccounts;
+    public final int getSpacerPosition() {
+        // Return the position of the dead header, which is always at the top.
+        return 0;
     }
 
     /**
@@ -208,14 +223,18 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // All the accounts, plus one header, plus recent folders, plus one if the
+        // If the recent folders are visible, then one header, recent folders, plus one if the
         // "show all folders" item should be shown
-        return mNumAccounts + 1 + mRecentFolderList.size() + (mShowAllFoldersItem ? 1 : 0);
+        final int numFolders = mRecentFoldersVisible ?
+                (1 + mRecentFolderList.size() + (mShowAllFoldersItem ? 1 : 0)) : 0;
+        return 1 + mNumAccounts + numFolders;
     }
 
     @Override
     public Object getItem(int position) {
         switch (getType(position)){
+            case TYPE_DEAD_HEADER:
+                return "dead header";
             case TYPE_ACCOUNT:
                 return getAccount(position);
             case TYPE_HEADER:
@@ -223,10 +242,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             case TYPE_ALL_FOLDERS:
                 return "show all folders";
             default:
-                // The first few positions have accounts, and then the header.
-                final int offset = position - mNumAccounts - 1;
                 // Return the folder at this location.
-                return mRecentFolderList.get(offset);
+                return mRecentFolderList.get(getRecentOffset(position));
         }
     }
 
@@ -283,8 +300,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        // Two views, and one header, and potentially one "show all folders" item
-        return 3 + (mShowAllFoldersItem ? 1 : 0);
+        // If recent folders are shown, then two views: Recent folders and a header, and potentially
+        // one "show all folders" item.
+        final int folderTypes = mRecentFoldersVisible ?  (2 + (mShowAllFoldersItem ? 1 : 0)) : 0;
+        // Accounts are the type of view always shown.
+        return 2 + folderTypes;
     }
 
     @Override
@@ -308,6 +328,15 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         int color = 0;
         int unreadCount = 0;
         switch (getType(position)) {
+            case TYPE_DEAD_HEADER:
+                convertView = mInflater.inflate(R.layout.empty, null);
+                return convertView;
+            case TYPE_ACCOUNT:
+                // TODO(viki): Get real Inbox or Priority Inbox using the URI. Remove ugly hack.
+                bigText = "Inbox";
+                smallText = getAccountFolder(position);
+                color = getAccountColor(position);
+                break;
             case TYPE_HEADER:
                 convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_header,
                         null);
@@ -318,15 +347,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                     accountLabel.setText(label);
                 }
                 return convertView;
-            case TYPE_ACCOUNT:
-                // TODO(viki): Get real Inbox or Priority Inbox using the URI. Remove ugly hack.
-                bigText = "Inbox";
-                smallText = getAccountFolder(position);
-                color = getAccountColor(position);
-                break;
             case TYPE_FOLDER:
-                final int offset = position - mNumAccounts - 1;
-                final Folder folder = mRecentFolderList.get(offset);
+                final Folder folder = mRecentFolderList.get(getRecentOffset(position));
                 bigText = folder.name;
                 unreadCount = folder.unreadCount;
                 break;
@@ -379,10 +401,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return the folder of the account at the given position.
      */
     private String getAccountFolder(int position) {
-        if (position >= mNumAccounts) {
+        if (position >= mNumAccounts + 1) {
             return "";
         }
-        return mAllAccounts[position].name;
+        return mAllAccounts[position - 1].name;
     }
 
     /**
@@ -391,10 +413,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return the folder of the account at the given position.
      */
     private int getAccountColor(int position) {
-        if (position >= mNumAccounts) {
+        if (position >= mNumAccounts + 1) {
             return 0;
         }
-        return mAllAccounts[position].color;
+        return mAllAccounts[position - 1].color;
     }
 
     /**
@@ -403,14 +425,15 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return the account at the given position.
      */
     private Account getAccount(int position) {
-        return mAllAccounts[position];
+        return mAllAccounts[position - 1];
     }
 
 
     @Override
     public boolean isEnabled(int position) {
         // Don't want the user selecting the header.
-        return (getType(position) != TYPE_HEADER);
+        final int type = getType(position);
+        return type != TYPE_DEAD_HEADER && type != TYPE_HEADER;
     }
 
     @Override
@@ -434,5 +457,25 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public void requestRecentFoldersAndRedraw() {
         mRecentFolderList = mRecentFolders.getRecentFolderList(mCurrentFolder);
         notifyDataSetChanged();
+    }
+
+    /**
+     * Disable recent folders. Can be enabled again with {@link #enableRecentFolders()}
+     */
+    public void disableRecentFolders() {
+        if (mRecentFoldersVisible) {
+            notifyDataSetChanged();
+            mRecentFoldersVisible = false;
+        }
+    }
+
+    /**
+     * Enable recent folders. Can be disabled again with {@link #disableRecentFolders()}
+     */
+    public void enableRecentFolders() {
+        if (!mRecentFoldersVisible) {
+            notifyDataSetChanged();
+            mRecentFoldersVisible = true;
+        }
     }
 }
