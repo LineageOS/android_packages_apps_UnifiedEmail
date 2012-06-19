@@ -120,6 +120,14 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"שתף"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"שתף הכל"</string>
     <string name="saving" msgid="925514721138014677">"שומר…"</string>
+    <!-- no translation found for attach_image (2884507610283710079) -->
+    <skip />
+    <!-- no translation found for attach_take_photo (8812258157282764334) -->
+    <skip />
+    <!-- no translation found for attach_video (548317207627289852) -->
+    <skip />
+    <!-- no translation found for attach_record_video (9187265820690571116) -->
+    <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"שתף באמצעות"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"פתח בדפדפן"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"העתק"</string>

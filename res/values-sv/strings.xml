@@ -119,7 +119,14 @@
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Spara alla"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Dela"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Dela alla"</string>
-    <!-- no translation found for saving (925514721138014677) -->
+    <string name="saving" msgid="925514721138014677">"Sparar ..."</string>
+    <!-- no translation found for attach_image (2884507610283710079) -->
+    <skip />
+    <!-- no translation found for attach_take_photo (8812258157282764334) -->
+    <skip />
+    <!-- no translation found for attach_video (548317207627289852) -->
+    <skip />
+    <!-- no translation found for attach_record_video (9187265820690571116) -->
     <skip />
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Dela via"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Öppna i webbläsaren"</string>
