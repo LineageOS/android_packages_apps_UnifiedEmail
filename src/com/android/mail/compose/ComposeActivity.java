@@ -152,7 +152,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      */
     public static final String EXTRA_FROM_EMAIL_TASK = "fromemail";
 
-    static final String EXTRA_ATTACHMENTS = "attachments";
+    public static final String EXTRA_ATTACHMENTS = "attachments";
 
     //  If this is a reply/forward then this extra will hold the original message
     private static final String EXTRA_IN_REFERENCE_TO_MESSAGE = "in-reference-to-message";
@@ -165,7 +165,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final int RESULT_PICK_ATTACHMENT = 1;
     private static final int RESULT_CREATE_ACCOUNT = 2;
     // TODO(mindyp) set mime-type for auto send?
-    private static final String AUTO_SEND_ACTION = "com.android.mail.action.AUTO_SEND";
+    public static final String AUTO_SEND_ACTION = "com.android.mail.action.AUTO_SEND";
 
     // Max size for attachments (5 megs). Will be overridden by account settings if found.
     // TODO(mindyp): read this from account settings?
@@ -276,27 +276,43 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         setContentView(R.layout.compose);
         findViews();
         Intent intent = getIntent();
-        Account account;
+        Account account = null;
         Message message;
         boolean showQuotedText = false;
 
         int action;
+        Object accountExtra = intent != null && intent.getExtras() != null ? intent.getExtras()
+                .get(Utils.EXTRA_ACCOUNT) : null;
+        final Account[] syncingAccounts = AccountUtils.getSyncingAccounts(this);
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_MESSAGE)) {
             action = savedInstanceState.getInt(EXTRA_ACTION, COMPOSE);
             account = savedInstanceState.getParcelable(Utils.EXTRA_ACCOUNT);
             message = (Message) savedInstanceState.getParcelable(EXTRA_MESSAGE);
             mRefMessage = (Message) savedInstanceState.getParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE);
         } else {
-            account = (Account)intent.getParcelableExtra(Utils.EXTRA_ACCOUNT);
+            if (accountExtra instanceof Account) {
+                account = (Account) intent.getExtras().get(Utils.EXTRA_ACCOUNT);
+            } else if (accountExtra instanceof String) {
+                // For backwards compatibility
+                String extraAccount = intent.getStringExtra(Utils.EXTRA_ACCOUNT);
+                if (syncingAccounts.length > 0) {
+                    if (!TextUtils.isEmpty(extraAccount)) {
+                        for (Account a : syncingAccounts) {
+                            if (a.name.equals(extraAccount)) {
+                                account = a;
+                            }
+                        }
+                    }
+                }
+            }
             action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
             // Initialize the message from the message in the intent
             message = (Message) intent.getParcelableExtra(ORIGINAL_DRAFT_MESSAGE);
             mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
         }
         if (account == null) {
-            final Account[] syncingAccounts = AccountUtils.getSyncingAccounts(this);
-            if (syncingAccounts.length > 0) {
-                account = syncingAccounts[0];
+            if (syncingAccounts != null && syncingAccounts.length > 0) {
+                    account = syncingAccounts[0];
             }
         }
 
@@ -517,7 +533,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private int getMode() {
         int mode = ComposeActivity.COMPOSE;
         ActionBar actionBar = getActionBar();
-        if (actionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST) {
+        if (actionBar != null
+                && actionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST) {
             mode = actionBar.getSelectedNavigationIndex();
         }
         return mode;
@@ -748,6 +765,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mFromSpinner = (FromAddressSpinner) findViewById(R.id.from_picker);
     }
 
+    protected TextView getBody() {
+        return mBodyView;
+    }
+
+    @VisibleForTesting
+    public Account getFromAccount() {
+        return mReplyFromAccount != null && mReplyFromAccount.account != null ?
+                mReplyFromAccount.account : mAccount;
+    }
+
     // Now that the message has been initialized from any existing draft or
     // ref message data, set up listeners for any changes that occur to the
     // message.
@@ -764,6 +791,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void initActionBar(int action) {
         mComposeMode = action;
         ActionBar actionBar = getActionBar();
+        if (actionBar == null) {
+            return;
+        }
         if (action == ComposeActivity.COMPOSE) {
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             actionBar.setTitle(R.string.compose);
@@ -1459,18 +1489,21 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         BaseInputConnection.removeComposingSpans(v.getEditableText());
     }
 
-    /*package*/ interface SendOrSaveCallback {
+    @VisibleForTesting
+    public interface SendOrSaveCallback {
         public void initializeSendOrSave(SendOrSaveTask sendOrSaveTask);
         public void notifyMessageIdAllocated(SendOrSaveMessage sendOrSaveMessage, Message message);
         public Message getMessage();
         public void sendOrSaveFinished(SendOrSaveTask sendOrSaveTask, boolean success);
     }
 
-    /*package*/ static class SendOrSaveTask implements Runnable {
+    @VisibleForTesting
+    public static class SendOrSaveTask implements Runnable {
         private final Context mContext;
-        private final SendOrSaveCallback mSendOrSaveCallback;
         @VisibleForTesting
-        final SendOrSaveMessage mSendOrSaveMessage;
+        public final SendOrSaveCallback mSendOrSaveCallback;
+        @VisibleForTesting
+        public final SendOrSaveMessage mSendOrSaveMessage;
 
         public SendOrSaveTask(Context context, SendOrSaveMessage message,
                 SendOrSaveCallback callback) {
@@ -1550,15 +1583,18 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // Array of the outstanding send or save tasks.  Access is synchronized
     // with the object itself
     /* package for testing */
-    ArrayList<SendOrSaveTask> mActiveTasks = Lists.newArrayList();
+    @VisibleForTesting
+    public ArrayList<SendOrSaveTask> mActiveTasks = Lists.newArrayList();
     private int mRequestId;
     private String mSignature;
 
-    /*package*/ static class SendOrSaveMessage {
+    @VisibleForTesting
+    public static class SendOrSaveMessage {
         final ReplyFromAccount mAccount;
         final ContentValues mValues;
         final String mRefMessageId;
-        final boolean mSave;
+        @VisibleForTesting
+        public final boolean mSave;
         final int mRequestId;
 
         public SendOrSaveMessage(ReplyFromAccount account, ContentValues values,
@@ -1734,7 +1770,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             final boolean orientationChanged) {
         String[] to, cc, bcc;
         Editable body = mBodyView.getEditableText();
-
         if (orientationChanged) {
             to = cc = bcc = new String[0];
         } else {
@@ -2444,5 +2479,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             // Do nothing.
         }
+    }
+
+    public static void registerTestSendOrSaveCallback(SendOrSaveCallback testCallback) {
+        if (sTestSendOrSaveCallback != null && testCallback != null) {
+            throw new IllegalStateException("Attempting to register more than one test callback");
+        }
+        sTestSendOrSaveCallback = testCallback;
     }
 }
