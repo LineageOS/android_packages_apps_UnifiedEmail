@@ -20,6 +20,14 @@
 }
 
 
+-keepclasseswithmembers class com.google.common.collect.ImmutableMap {
+  *** of(...);
+}
+
+-keepclasseswithmembers class com.google.common.collect.ImmutableList {
+  *** of(...);
+}
+
 -keepclasseswithmembers class com.google.common.collect.Sets {
   *** of(...);
 }
