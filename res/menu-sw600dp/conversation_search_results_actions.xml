@@ -29,14 +29,46 @@
         android:icon="@drawable/ic_menu_search_holo_light"
         android:actionLayout="@layout/mail_actionbar_searchview" />
 
-    <item android:id="@+id/show_all_folders"
-        android:title="@string/show_all_folders"
+    <item
+        android:id="@+id/delete"
+        android:title="@string/delete"
         android:showAsAction="ifRoom"
+        android:icon="@drawable/trash" />
+
+    <item
+        android:id="@+id/change_folder"
+        android:title="@string/menu_change_folders"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_folders_holo_light" />
+
+    <item android:id="@+id/inside_conversation_unread"
+        android:title="@string/mark_unread"
+        android:showAsAction="never"
+        android:icon="@drawable/ic_menu_mark_unread_holo_light" />
+
+    <item
+        android:id="@+id/mark_important"
+        android:showAsAction="never"
+        android:title="@string/mark_important" />
+
+    <item
+        android:id="@+id/mark_not_important"
+        android:showAsAction="never"
+        android:title="@string/mark_not_important" />
+
+    <item
+        android:id="@+id/mute"
+        android:title="@string/mute"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/report_spam"
+        android:title="@string/report_spam"
+        android:showAsAction="never"/>
 
     <item android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:icon="@drawable/ic_menu_refresh_holo_light"
         android:alphabeticShortcut="@string/trigger_refresh_char" />
 
@@ -46,14 +78,13 @@
 
     <item
         android:id="@+id/help_info_menu_item"
-        android:icon="@android:drawable/ic_menu_help"
         android:showAsAction="never"
+        android:icon="@android:drawable/ic_menu_help"
         android:title="@string/help_and_info" />
 
     <item
         android:id="@+id/feedback_menu_item"
-        android:icon="@android:drawable/ic_menu_send"
         android:showAsAction="never"
+        android:icon="@android:drawable/ic_menu_send"
         android:title="@string/feedback" />
-
 </menu>
