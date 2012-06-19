@@ -280,10 +280,10 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
             String ccAddresses = refMessage.cc;
             quotedText.append(String.format(resources.getString(R.string.cc_attribution),
                     Utils.cleanUpString(ccAddresses, true /* remove empty quotes */)));
+            quotedText.append(HEADER_SEPARATOR);
+            quotedText.append(htmlText);
+            quotedText.append(QUOTE_END);
         }
-        quotedText.append(HEADER_SEPARATOR);
-        quotedText.append(htmlText);
-        quotedText.append(QUOTE_END);
         setQuotedText(quotedText);
         allowQuotedText(allow);
         // If there is quoted text, we always allow respond inline, since this
