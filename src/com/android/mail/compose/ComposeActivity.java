@@ -279,12 +279,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Account account = null;
         Message message;
         boolean showQuotedText = false;
-
         int action;
         Object accountExtra = intent != null && intent.getExtras() != null ? intent.getExtras()
                 .get(Utils.EXTRA_ACCOUNT) : null;
         final Account[] syncingAccounts = AccountUtils.getSyncingAccounts(this);
-        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_MESSAGE)) {
+        if (hadSavedInstanceStateMessage(savedInstanceState)) {
             action = savedInstanceState.getInt(EXTRA_ACTION, COMPOSE);
             account = savedInstanceState.getParcelable(Utils.EXTRA_ACCOUNT);
             message = (Message) savedInstanceState.getParcelable(EXTRA_MESSAGE);
@@ -382,7 +381,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mQuotedTextView.setVisibility(View.GONE);
         }
         initRecipients();
-        initAttachmentsFromIntent(intent);
+        // Don't bother with the intent if we have procured a message from the
+        // intent already.
+        if (!hadSavedInstanceStateMessage(savedInstanceState)) {
+            initAttachmentsFromIntent(intent);
+        }
         initActionBar(action);
         initFromSpinner(savedInstanceState != null ? savedInstanceState : intent.getExtras(),
                 action);
@@ -390,6 +393,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         setFocus(action);
         updateHideOrShowCcBcc();
         updateHideOrShowQuotedText(showQuotedText);
+    }
+
+    private boolean hadSavedInstanceStateMessage(Bundle savedInstanceState) {
+        return savedInstanceState != null && savedInstanceState.containsKey(EXTRA_MESSAGE);
     }
 
     private void updateHideOrShowQuotedText(boolean showQuotedText) {
