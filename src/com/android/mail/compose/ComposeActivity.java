@@ -1670,7 +1670,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mRecipientErrorDialog = new AlertDialog.Builder(this).setMessage(message).setTitle(
                 R.string.recipient_error_dialog_title)
                 .setIconAttribute(android.R.attr.alertDialogIcon)
-                .setCancelable(false)
                 .setPositiveButton(
                         R.string.ok, new Dialog.OnClickListener() {
                             @Override
@@ -1869,7 +1868,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 .setTitle(R.string.confirm_send_title)
                 .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setPositiveButton(R.string.send, listener)
-                .setNegativeButton(R.string.cancel, this).setCancelable(false).show();
+                .setNegativeButton(R.string.cancel, this)
+                .show();
     }
 
     /**
