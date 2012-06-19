@@ -339,7 +339,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             showQuotedText = message.appendRefMessageContent;
         } else if (action == EDIT_DRAFT) {
             initFromDraftMessage(message);
-            showCcBcc(message);
+            boolean showBcc = !TextUtils.isEmpty(message.bcc);
+            boolean showCc = showBcc || !TextUtils.isEmpty(message.cc);
+            mCcBccView.show(false, showCc, showBcc);
             // Update the action to the draft type of the previous draft
             switch (message.draftType) {
                 case UIProvider.DraftType.REPLY:
@@ -361,7 +363,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } else if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
             if (mRefMessage != null) {
                 initFromRefMessage(action, mAccount.name);
-                showCcBcc(mRefMessage);
+                if (mRefMessage != null) {
+                    // CC field only gets populated when doing REPLY_ALL.
+                    // BCC never gets auto-populated, unless the user is editing
+                    // a draft with one.
+                    if (!TextUtils.isEmpty(mRefMessage.cc) && action == REPLY_ALL) {
+                        mCcBccView.show(false, true, false);
+                    }
+                }
+                updateHideOrShowCcBcc();
                 showQuotedText = true;
             }
         } else {
@@ -1121,17 +1131,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 mCcBccView.show(false, showCc, showBcc);
             }
         }
-    }
-
-    private void showCcBcc(Message refMessage) {
-        if (refMessage != null) {
-            boolean showCc = !TextUtils.isEmpty(refMessage.cc);
-            boolean showBcc = !TextUtils.isEmpty(refMessage.bcc);
-            if (showCc || showBcc) {
-                mCcBccView.show(false, showCc, showBcc);
-            }
-        }
-        updateHideOrShowCcBcc();
     }
 
     /**
@@ -2159,10 +2158,24 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         if (initialComposeMode != mComposeMode) {
             resetMessageForModeChange();
-            if (mRefMessage != null) {
+            if (mDraft == null && mRefMessage != null) {
                 initFromRefMessage(mComposeMode, mAccount.name);
             }
+            boolean showCc = false;
+            boolean showBcc = false;
+            if (mDraft != null) {
+                // Following desktop behavior, if the user has added a BCC
+                // field to a draft, we show it regardless of compose mode.
+                showBcc = !TextUtils.isEmpty(mDraft.bcc);
+                // Use the draft to determine what to populate.
+                // If the Bcc field is showing, show the Cc field whether it is populated or not.
+                showCc = showBcc || (!TextUtils.isEmpty(mDraft.cc) && mComposeMode == REPLY_ALL);
+            } else if (mRefMessage != null) {
+                showCc = mComposeMode == REPLY_ALL && !TextUtils.isEmpty(mRefMessage.cc);
+            }
+            mCcBccView.show(false, showCc, showBcc);
         }
+        updateHideOrShowCcBcc();
         return true;
     }
 
