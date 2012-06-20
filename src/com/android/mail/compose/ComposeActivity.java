@@ -1189,7 +1189,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // This is the email address of the current user, i.e. the one composing
         // the reply.
         final String accountEmail = Address.getEmailAddress(account).getAddress();
-        String fromAddress = refMessage.from;
+        String fromAddress = getAddress(refMessage.from);
         String[] sentToAddresses = Utils.splitCommaSeparatedString(refMessage.to);
         String replytoAddress = refMessage.replyTo;
         final Collection<String> toAddresses;
@@ -1200,7 +1200,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // already on the To list.
         if (action == ComposeActivity.REPLY) {
             toAddresses = initToRecipients(account, accountEmail, fromAddress, replytoAddress,
-                    new String[0]);
+                    sentToAddresses);
             addToAddresses(toAddresses);
         } else if (action == ComposeActivity.REPLY_ALL) {
             final Set<String> ccAddresses = Sets.newHashSet();
@@ -1212,6 +1212,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     Utils.splitCommaSeparatedString(refMessage.cc));
             addCcAddresses(ccAddresses, toAddresses);
         }
+    }
+
+    private String getAddress(String toParse) {
+        if (!TextUtils.isEmpty(toParse)) {
+            Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(toParse);
+            if (tokens.length > 0) {
+                return tokens[0].getAddress();
+            }
+        }
+        return "";
     }
 
     private void addToAddresses(Collection<String> addresses) {
@@ -1304,7 +1314,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (!TextUtils.isEmpty(replyToAddress)) {
             toAddresses.add(replyToAddress);
         } else {
-            toAddresses.add(senderAddress);
+            // TODO (mindyp): add check for custom from as well.
+            if (!TextUtils.equals(senderAddress, accountEmail)) {
+                toAddresses.add(senderAddress);
+            } else {
+                // This happens if the user replies to a message they originally
+                // wrote. In this case, "reply" really means "re-send," so we target the
+                // original recipients. This works as expected even if the user sent the
+                // original message to themselves.
+                toAddresses.addAll(Arrays.asList(inToAddresses));
+            }
         }
         return toAddresses;
     }
