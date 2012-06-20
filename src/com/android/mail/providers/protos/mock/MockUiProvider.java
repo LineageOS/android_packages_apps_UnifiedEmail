@@ -30,6 +30,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.ReplyFromAccount;
+import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AccountColumns.SettingsColumns;
@@ -336,6 +337,10 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.RECENT_FOLDER_LIST_URI,
                 Uri.parse(accountUri + "/recentFolderListUri"));
         accountMap.put(AccountColumns.MIME_TYPE, "account/mock");
+        accountMap.put(AccountColumns.COLOR, 0);
+        accountMap.put(AccountColumns.RECENT_FOLDER_LIST_URI, Uri.parse("http://www.google.com"));
+        accountMap.put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
+                Uri.parse("http://www.google.com"));
 
         // TODO: store the default inbox
         accountMap.put(SettingsColumns.DEFAULT_INBOX, null);
@@ -436,6 +441,23 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.COMPOSE_URI), 0);
         dest.writeString((String) accountInfo.get(AccountColumns.MIME_TYPE));
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.RECENT_FOLDER_LIST_URI), 0);
+        dest.writeInt((Integer) accountInfo.get(AccountColumns.COLOR));
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI),
+                0);
+        Parcel p = Parcel.obtain();
+        p.writeString("");
+        p.writeInt(1);
+        p.writeInt(1);
+        p.writeInt(1);
+        p.writeInt(1);
+        p.writeInt(1);
+        p.writeInt(1);
+        p.writeInt(1);
+        p.writeInt(1);
+        p.writeString("default");
+        p.writeInt(1);
+        p.setDataPosition(0);
+        dest.writeString(new Settings(p).serialize());
         dest.setDataPosition(0);
         final Account account = new Account(dest);
         MailAppProvider.addAccount(account, MOCK_ACCOUNTS_URI);

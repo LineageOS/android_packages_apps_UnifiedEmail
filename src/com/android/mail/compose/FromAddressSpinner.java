@@ -28,6 +28,7 @@ import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogUtils;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -105,7 +106,8 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
         initFromSpinner();
     }
 
-    private void initFromSpinner() {
+    @VisibleForTesting
+    protected void initFromSpinner() {
         // If there are not yet any accounts in the cached synced accounts
         // because this is the first time mail was opened, and it was opened
         // directly to the compose activity,don't bother populating the reply

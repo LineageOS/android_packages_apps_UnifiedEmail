@@ -17,6 +17,7 @@
 package com.android.mail.providers;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -25,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ReplyFromAccount implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -96,5 +98,18 @@ public class ReplyFromAccount implements Serializable {
             LogUtils.wtf(LOG_TAG, e, "Could not deserialize replyfromaccount");
         }
         return replyFromAccount;
+    }
+
+    /**
+     * Determine if this address is a custom from for the active account.
+     */
+    public static boolean isCustomFrom(String senderAddress,
+            List<ReplyFromAccount> replyFromAccounts) {
+        for (ReplyFromAccount account : replyFromAccounts) {
+            if (TextUtils.equals(account.address, senderAddress) && account.isCustomFrom) {
+                return true;
+            }
+        }
+        return false;
     }
 }

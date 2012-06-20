@@ -27,9 +27,12 @@ import android.text.util.Rfc822Tokenizer;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Message;
+import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.utils.AccountUtils;
+
+import org.json.JSONArray;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -266,6 +269,67 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 String[] cc = activity.getCcAddresses();
                 String[] bcc = activity.getBccAddresses();
                 assertEquals(to.length, 0);
+                assertEquals(cc.length, 0);
+                assertEquals(bcc.length, 0);
+            }
+        });
+    }
+
+    /**
+     * Test the cases where: The user is replying to a message they sent
+     */
+    public void testRecipientsRefMessageReplyToSelf() {
+        setAccount("account0@mockuiprovider.com");
+        final Message refMessage = getRefMessage();
+        refMessage.from = "account0@mockuiprovider.com";
+        refMessage.to = "someotheraccount@mockuiprovider.com";
+        final ComposeActivity activity = mActivity;
+        final Account account = mAccount;
+
+        mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
+                String[] to = activity.getToAddresses();
+                String[] cc = activity.getCcAddresses();
+                String[] bcc = activity.getBccAddresses();
+                assertEquals(to.length, 1);
+                assertTrue(to[0].contains(refMessage.to));
+                assertEquals(cc.length, 0);
+                assertEquals(bcc.length, 0);
+            }
+        });
+    }
+
+    /**
+     * Test the cases where:
+     * The user is replying to a message sent from one of their custom froms
+     */
+    public void testRecipientsRefMessageReplyToCustomFrom() {
+        setAccount("account0@mockuiprovider.com");
+        final Message refMessage = getRefMessage();
+        refMessage.from = "CUSTOMaccount0@mockuiprovider.com";
+        refMessage.to = "someotheraccount@mockuiprovider.com";
+        final ComposeActivity activity = mActivity;
+        final Account account = mAccount;
+        mActivity.mFromSpinner = new FromAddressSpinner(mActivity);
+        ReplyFromAccount a = new ReplyFromAccount(mAccount, mAccount.uri, refMessage.from,
+                refMessage.from, refMessage.from, true, true);
+        JSONArray array = new JSONArray();
+        array.put(a.serialize());
+        mAccount.accountFromAddresses = array.toString();
+        ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
+                mAccount.name, mAccount.name, mAccount.name, true, false);
+        mActivity.mFromSpinner.setCurrentAccount(currentAccount);
+        mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY, currentAccount.account);
+
+        mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
+                String[] to = activity.getToAddresses();
+                String[] cc = activity.getCcAddresses();
+                String[] bcc = activity.getBccAddresses();
+                assertEquals(to.length, 1);
+                assertTrue(to[0].contains(refMessage.to));
                 assertEquals(cc.length, 0);
                 assertEquals(bcc.length, 0);
             }
