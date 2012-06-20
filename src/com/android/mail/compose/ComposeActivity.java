@@ -98,7 +98,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
-        AttachmentDeletedListener, OnAccountChangedListener, OnFocusChangeListener {
+        AttachmentDeletedListener, OnAccountChangedListener {
     // Identifiers for which type of composition this is
     static final int COMPOSE = -1;
     static final int REPLY = 0;
@@ -278,7 +278,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.compose);
         findViews();
-        setFocusListeners();
         Intent intent = getIntent();
         Account account = null;
         Message message;
@@ -784,22 +783,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mFromStaticText = (TextView) findViewById(R.id.from_account_name);
         mFromSpinnerWrapper = findViewById(R.id.spinner_from_content);
         mFromSpinner = (FromAddressSpinner) findViewById(R.id.from_picker);
-    }
-
-    private void setFocusListeners() {
-        mTo.setOnFocusChangeListener(this);
-        mCc.setOnFocusChangeListener(this);
-        mBcc.setOnFocusChangeListener(this);
-        mSubject.setOnFocusChangeListener(this);
-        mQuotedTextView.setOnFocusChangeListener(this);
-        mBodyView.setOnFocusChangeListener(this);
-    }
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if (hasFocus) {
-            mAttachmentsView.collapseView();
-        }
     }
 
     protected TextView getBody() {

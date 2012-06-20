@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
@@ -41,10 +40,8 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.AttachmentBitmapHolder;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
-import com.android.mail.ui.ThumbnailLoadTask;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
@@ -56,7 +53,7 @@ import java.util.ArrayList;
 /*
  * View for displaying attachments in the compose screen.
  */
-class AttachmentsView extends LinearLayout implements AttachmentBitmapHolder, OnClickListener {
+class AttachmentsView extends LinearLayout implements OnClickListener {
     private static final String LOG_TAG = new LogUtils().getLogTag();
 
     private final Resources mResources;
@@ -67,10 +64,9 @@ class AttachmentsView extends LinearLayout implements AttachmentBitmapHolder, On
     private LinearLayout mAttachmentLayout;
     private GridLayout mCollapseLayout;
     private TextView mCollapseText;
-    private ImageView mCollapseImage;
+    private ImageView mCollapseCaret;
 
-    private ThumbnailLoadTask mThumbnailTask;
-    private Attachment mPreviewAttachment;
+    private boolean mIsExpanded;
 
     public AttachmentsView(Context context) {
         this(context, null);
@@ -90,7 +86,7 @@ class AttachmentsView extends LinearLayout implements AttachmentBitmapHolder, On
         mAttachmentLayout = (LinearLayout) findViewById(R.id.attachment_bar_list);
         mCollapseLayout = (GridLayout) findViewById(R.id.attachment_collapse_view);
         mCollapseText = (TextView) findViewById(R.id.attachment_collapse_text);
-        mCollapseImage = (ImageView) findViewById(R.id.attachment_collapse_preview_icon);
+        mCollapseCaret = (ImageView) findViewById(R.id.attachment_collapse_caret);
 
         mCollapseLayout.setOnClickListener(this);
     }
@@ -99,9 +95,20 @@ class AttachmentsView extends LinearLayout implements AttachmentBitmapHolder, On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.attachment_collapse_view:
-                expandView();
+                if (mIsExpanded) {
+                    collapseView();
+                } else {
+                    expandView();
+                }
                 break;
         }
+    }
+
+    public void expandView() {
+        mTileGrid.setVisibility(VISIBLE);
+        mAttachmentLayout.setVisibility(VISIBLE);
+        setupCollapsibleView(false);
+        mIsExpanded = true;
     }
 
     public void collapseView() {
@@ -110,36 +117,25 @@ class AttachmentsView extends LinearLayout implements AttachmentBitmapHolder, On
 
         // If there are some attachments, show the preview
         if (!mAttachments.isEmpty()) {
-            // setup text
-            final int numAttachments = mAttachments.size();
-            final String attachmentText = mResources.getQuantityString(
-                    R.plurals.number_of_attachments, numAttachments, numAttachments);
-            mCollapseText.setText(attachmentText);
-
-            // setup icon
-            final Attachment previousAttachment = mPreviewAttachment;
-            mPreviewAttachment = getFirstTiledAttachment();
-            ThumbnailLoadTask.setupThumbnailPreview(
-                    mThumbnailTask, this, mPreviewAttachment, previousAttachment);
-
+            setupCollapsibleView(true);
             mCollapseLayout.setVisibility(VISIBLE);
         }
+
+        mIsExpanded = false;
     }
 
-    private Attachment getFirstTiledAttachment() {
-        for (final Attachment attachment : mAttachments) {
-            if (AttachmentTile.isTiledAttachment(attachment)) {
-                return attachment;
-            }
+    private void setupCollapsibleView(boolean isCollapsed) {
+        // setup text
+        final int numAttachments = mAttachments.size();
+        final String attachmentText = mResources.getQuantityString(
+                R.plurals.number_of_attachments, numAttachments, numAttachments);
+        mCollapseText.setText(attachmentText);
+
+        if (isCollapsed) {
+            mCollapseCaret.setImageResource(R.drawable.ic_menu_expander_minimized_holo_light);
+        } else {
+            mCollapseCaret.setImageResource(R.drawable.ic_menu_expander_maximized_holo_light);
         }
-
-        return null;
-    }
-
-    public void expandView() {
-        mTileGrid.setVisibility(VISIBLE);
-        mAttachmentLayout.setVisibility(VISIBLE);
-        mCollapseLayout.setVisibility(GONE);
     }
 
     /**
@@ -157,9 +153,10 @@ class AttachmentsView extends LinearLayout implements AttachmentBitmapHolder, On
     public void addAttachment(final Attachment attachment) {
         if (!isShown()) {
             setVisibility(View.VISIBLE);
-            expandView();
         }
+
         mAttachments.add(attachment);
+        expandView();
 
         // If we have an attachment that should be shown in a tiled look,
         // set up the tile and add it to the tile grid.
@@ -203,6 +200,8 @@ class AttachmentsView extends LinearLayout implements AttachmentBitmapHolder, On
         if (mAttachments.size() == 0) {
             setVisibility(View.GONE);
             collapseView();
+        } else {
+            setupCollapsibleView(true);
         }
     }
 
@@ -457,30 +456,5 @@ class AttachmentsView extends LinearLayout implements AttachmentBitmapHolder, On
         public AttachmentFailureException(String detailMessage, Throwable throwable) {
             super(detailMessage, throwable);
         }
-    }
-
-    @Override
-    public int getThumbnailWidth() {
-        return mCollapseImage.getWidth();
-    }
-
-    @Override
-    public int getThumbnailHeight() {
-        return mCollapseImage.getHeight();
-    }
-
-    @Override
-    public void setThumbnail(Bitmap result) {
-        mCollapseImage.setImageBitmap(result);
-    }
-
-    @Override
-    public void setThumbnailToDefault() {
-        mCollapseImage.setImageResource(R.drawable.ic_menu_attachment_holo_light);
-    }
-
-    @Override
-    public ContentResolver getResolver() {
-        return getContext().getContentResolver();
     }
 }
