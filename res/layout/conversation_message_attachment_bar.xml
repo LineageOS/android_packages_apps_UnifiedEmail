@@ -33,7 +33,7 @@
         android:layout_rowSpan="3"
         android:scaleType="center"
         android:src="@drawable/ic_menu_attachment_holo_light"
-        android:background="#e5e5e5" />
+        android:background="@color/attachment_image_background_color" />
 
     <TextView
         android:id="@+id/attachment_title"

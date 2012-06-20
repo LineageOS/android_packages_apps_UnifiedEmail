@@ -17,12 +17,10 @@
 
 package com.android.mail.ui;
 
+import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,13 +31,11 @@ import com.android.mail.photo.util.ImageUtils;
 import com.android.mail.providers.Attachment;
 import com.android.mail.utils.LogUtils;
 
-import java.io.IOException;
-
 /**
  * Base class for attachment tiles that handles the work
  * of fetching and displaying the bitmaps for the tiles.
  */
-public class AttachmentTile extends RelativeLayout {
+public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHolder {
     protected Attachment mAttachment;
     private ImageView mIcon;
     private ImageView.ScaleType mIconScaleType;
@@ -93,99 +89,29 @@ public class AttachmentTile extends RelativeLayout {
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
                 attachment.contentType);
 
-        setupThumbnailPreview(attachment, prevAttachment);
+        ThumbnailLoadTask.setupThumbnailPreview(mThumbnailTask, this, attachment, prevAttachment);
     }
 
-    private void setupThumbnailPreview(Attachment attachment, final Attachment prevAttachment) {
-        final Uri imageUri = attachment.getImageUri();
-        final Uri prevImageUri = (prevAttachment == null) ? null : prevAttachment.getImageUri();
-        // begin loading a thumbnail if this is an image and either the thumbnail or the original
-        // content is ready (and different from any existing image)
-        if (imageUri != null && (prevImageUri == null || !imageUri.equals(prevImageUri))) {
-            // cancel/dispose any existing task and start a new one
-            if (mThumbnailTask != null) {
-                mThumbnailTask.cancel(true);
-            }
-            mThumbnailTask = new ThumbnailLoadTask(mIcon.getWidth(), mIcon.getHeight());
-            mThumbnailTask.execute(imageUri);
-        } else if (imageUri == null) {
-            // not an image, or no thumbnail exists. fall back to default.
-            // async image load must separately ensure the default appears upon load failure.
-            setThumbnailToDefault();
-        }
-    }
-
-    private void setThumbnailToDefault() {
+    public void setThumbnailToDefault() {
         mIcon.setImageResource(R.drawable.ic_menu_attachment_holo_light);
         mIcon.setScaleType(ImageView.ScaleType.CENTER);
     }
 
-    private class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
+    public void setThumbnail(Bitmap result) {
+        mIcon.setImageBitmap(result);
+        mIcon.setScaleType(mIconScaleType);
+    }
 
-        private final int mWidth;
-        private final int mHeight;
+    public int getThumbnailWidth() {
+        return mIcon.getWidth();
+    }
 
-        public ThumbnailLoadTask(int width, int height) {
-            mWidth = width;
-            mHeight = height;
-        }
+    public int getThumbnailHeight() {
+        return mIcon.getHeight();
+    }
 
-        @Override
-        protected Bitmap doInBackground(Uri... params) {
-            final Uri thumbnailUri = params[0];
-
-            AssetFileDescriptor fd = null;
-            Bitmap result = null;
-
-            try {
-                fd = getContext().getContentResolver().openAssetFileDescriptor(thumbnailUri, "r");
-                if (isCancelled() || fd == null) {
-                    return null;
-                }
-
-                final BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inJustDecodeBounds = true;
-
-                BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, opts);
-                if (isCancelled() || opts.outWidth == -1 || opts.outHeight == -1) {
-                    return null;
-                }
-
-                opts.inJustDecodeBounds = false;
-
-                LogUtils.d(LOG_TAG, "in background, src w/h=%d/%d dst w/h=%d/%d, divider=%d",
-                        opts.outWidth, opts.outHeight, mWidth, mHeight, opts.inSampleSize);
-
-                result = BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, opts);
-
-            } catch (Throwable t) {
-                LogUtils.e(LOG_TAG, t, "Unable to decode thumbnail %s", thumbnailUri);
-            } finally {
-                if (fd != null) {
-                    try {
-                        fd.close();
-                    } catch (IOException e) {
-                        LogUtils.e(LOG_TAG, e, "");
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            if (result == null) {
-                LogUtils.d(LOG_TAG, "back in UI thread, decode failed");
-                setThumbnailToDefault();
-                return;
-            }
-
-            LogUtils.d(LOG_TAG, "back in UI thread, decode success, w/h=%d/%d", result.getWidth(),
-                    result.getHeight());
-            mIcon.setImageBitmap(result);
-            mIcon.setScaleType(mIconScaleType);
-        }
-
+    @Override
+    public ContentResolver getResolver() {
+        return getContext().getContentResolver();
     }
 }
