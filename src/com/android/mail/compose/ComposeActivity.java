@@ -1065,7 +1065,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
     }
 
-    private void initAttachments(Message refMessage) {
+    @VisibleForTesting
+    protected void initAttachments(Message refMessage) {
         mAttachmentsView.addAttachments(mAccount, refMessage);
     }
 
@@ -2555,5 +2556,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             throw new IllegalStateException("Attempting to register more than one test callback");
         }
         sTestSendOrSaveCallback = testCallback;
+    }
+
+    @VisibleForTesting
+    protected ArrayList<Attachment> getAttachments() {
+        return mAttachmentsView.getAttachments();
     }
 }
