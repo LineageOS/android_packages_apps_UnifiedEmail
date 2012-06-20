@@ -117,8 +117,8 @@
     <string name="download_failed" msgid="7860650496473302012">"Prenos ni uspel."</string>
     <string name="attachments_header" msgid="6459475590011460229">"Priloge"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Shrani vse"</string>
-    <string name="menu_photo_share" msgid="2214772815165829079">"Deli z drugimi"</string>
-    <string name="menu_photo_share_all" msgid="4577299400844129078">"Deli vse z drugimi"</string>
+    <string name="menu_photo_share" msgid="2214772815165829079">"Deli"</string>
+    <string name="menu_photo_share_all" msgid="4577299400844129078">"Deli vse"</string>
     <string name="saving" msgid="925514721138014677">"Shranjevanje ..."</string>
     <!-- no translation found for attach_image (2884507610283710079) -->
     <skip />
