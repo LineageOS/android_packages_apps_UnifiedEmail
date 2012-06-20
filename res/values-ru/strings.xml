@@ -118,7 +118,7 @@
     <string name="attachments_header" msgid="6459475590011460229">"Прикрепленные файлы"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"Сохранить все"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"Поделиться"</string>
-    <string name="menu_photo_share_all" msgid="4577299400844129078">"Поделиться всеми"</string>
+    <string name="menu_photo_share_all" msgid="4577299400844129078">"Поделиться"</string>
     <string name="saving" msgid="925514721138014677">"Сохранение…"</string>
     <!-- no translation found for attach_image (2884507610283710079) -->
     <skip />
