@@ -302,7 +302,7 @@ public final class OnePaneController extends AbstractActivityController {
                 // the children of a single parent folder,
                 // back should display the parent folder's parent and siblings.
                 if (getFolder() != null && getFolder().parent != null) {
-                    onFolderSelected(getFolder().parent, true);
+                    onFolderSelected(getFolder().parent);
                 } else {
                     // If there was no parent, this must have been a top level
                     // folder, so just show the top level folder list.
@@ -360,7 +360,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onFolderSelected(Folder folder, boolean childView) {
+    public void onFolderSelected(Folder folder) {
         if (folder.hasChildren && !getFolderListFragment().showingHierarchy()) {
             setFolder(folder);
             // Replace this fragment with a new FolderListFragment

@@ -453,7 +453,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onFolderSelected(Folder folder, boolean childView) {
+    public void onFolderSelected(Folder folder) {
         onFolderChanged(folder);
     }
 

@@ -115,9 +115,8 @@ public class FolderItemView extends RelativeLayout {
         mFolder = folder;
         mDropHandler = dropHandler;
         mFolderTextView.setText(folder.name);
-        if (mFolder.hasChildren && showParentIcon) {
-            mFolderParentIcon.setVisibility(View.VISIBLE);
-        }
+        mFolderParentIcon.setVisibility(mFolder.hasChildren && showParentIcon ? View.VISIBLE
+                : View.GONE);
         final int count = getFolderItemCount();
         if (count > 0) {
             mUnreadCountTextView.setVisibility(View.VISIBLE);
