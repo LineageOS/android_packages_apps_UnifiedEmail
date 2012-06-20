@@ -66,6 +66,9 @@ public class UndoOperation {
             case R.id.mute:
                 resId = R.plurals.conversation_muted;
                 break;
+            case R.id.remove_star:
+                resId = R.plurals.conversation_unstarred;
+                break;
             default:
                 resId = -1;
                 break;

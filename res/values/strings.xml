@@ -362,7 +362,7 @@
         <item quantity="other">Starring <xliff:g id="count">%1$d</xliff:g> conversations.</item>
     </plurals>
 
-    <plurals name="conversation_unstarring">
+    <plurals name="conversation_unstarred">
         <item quantity="one">Unstarring <xliff:g id="count">%1$d</xliff:g> conversation.</item>
         <item quantity="other">Unstarring <xliff:g id="count">%1$d</xliff:g> conversations.</item>
     </plurals>
