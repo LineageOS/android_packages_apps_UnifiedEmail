@@ -17,10 +17,10 @@
 
 package com.android.mail.photo.adapters;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;

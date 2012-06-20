@@ -17,11 +17,11 @@
 
 package com.android.mail.photo.loaders;
 
+import android.content.AsyncTaskLoader;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.v4.content.AsyncTaskLoader;
 
 import com.android.mail.photo.fragments.PhotoViewFragment;
 import com.android.mail.photo.util.ImageUtils;

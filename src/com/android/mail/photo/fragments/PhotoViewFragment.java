@@ -18,30 +18,24 @@
 package com.android.mail.photo.fragments;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.Loader;
 import android.util.DisplayMetrics;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.mail.R;
 import com.android.mail.photo.Intents;
-import com.android.mail.photo.MultiChoiceActionModeStub;
 import com.android.mail.photo.PhotoViewActivity.OnScreenListener;
 import com.android.mail.photo.loaders.PhotoBitmapLoader;
 import com.android.mail.photo.util.ImageUtils;
@@ -50,7 +44,7 @@ import com.android.mail.photo.views.PhotoView;
 /**
  * Displays a photo.
  */
-public class PhotoViewFragment extends BaseFragment implements
+public class PhotoViewFragment extends Fragment implements
         LoaderCallbacks<Bitmap>, OnClickListener, OnScreenListener {
 
     /**
@@ -77,12 +71,6 @@ public class PhotoViewFragment extends BaseFragment implements
          * Otherwise, {@code false}.
          */
         public boolean isFragmentFullScreen(Fragment fragment);
-
-        /**
-         * Returns {@code true} if only the photo should be displayed. All ancillary
-         * information [eg album name, photo owner, comment counts, etc...] will be hidden.
-         */
-        public boolean isShowPhotoOnly();
 
         /**
          * Adds a full screen listener.
@@ -126,12 +114,6 @@ public class PhotoViewFragment extends BaseFragment implements
 
     private final static String STATE_INTENT_KEY =
             "com.android.mail.photo.fragments.PhotoViewFragment.INTENT";
-    private final static String STATE_FRAGMENT_ID_KEY =
-            "com.android.mail.photo.fragments.PhotoViewFragment.FRAGMENT_ID";
-    private final static String STATE_FORCE_LOAD_KEY =
-            "com.android.mail.photo.fragments.PhotoViewFragment.FORCE_LOAD";
-    private final static String STATE_DOWNLOADABLE_KEY =
-            "com.android.mail.photo.fragments.PhotoViewFragment.DOWNLOADABLE";
 
     // Loader IDs
     private final static int LOADER_ID_PHOTO = R.id.photo_view_photo_loader_id;
@@ -141,19 +123,9 @@ public class PhotoViewFragment extends BaseFragment implements
 
     /** The URL of a photo to display */
     private String mResolvedPhotoUri;
-    /** Whether or not this photo can be downloaded */
-    private Boolean mDownloadable;
     /** The intent we were launched with */
     private Intent mIntent;
     private PhotoViewCallbacks mCallback;
-    private ProgressBar mProgressBarView;
-    /** If {@code true}, we will load photo data from the network instead of the database */
-    private Long mForceLoadId;
-    /** The ID of this fragment. {@code -1} is a special value meaning no ID. */
-    private int mFragmentId = -1;
-    private MultiChoiceActionModeStub mActionMode;
-    /** Whether or not the photo is a place holder */
-    private boolean mIsPlaceHolder = true;
 
     private PhotoView mPhotoView;
 
@@ -163,10 +135,9 @@ public class PhotoViewFragment extends BaseFragment implements
     public PhotoViewFragment() {
     }
 
-    public PhotoViewFragment(Intent intent, int fragmentId) {
+    public PhotoViewFragment(Intent intent) {
         this();
         mIntent = intent;
-        mFragmentId = fragmentId;
     }
 
     @Override
@@ -213,17 +184,6 @@ public class PhotoViewFragment extends BaseFragment implements
 
         if (savedInstanceState != null) {
             mIntent = new Intent().putExtras(savedInstanceState.getBundle(STATE_INTENT_KEY));
-            mFragmentId = savedInstanceState.getInt(STATE_FRAGMENT_ID_KEY);
-            if (savedInstanceState.containsKey(STATE_FORCE_LOAD_KEY)) {
-                mForceLoadId = savedInstanceState.getLong(STATE_FORCE_LOAD_KEY);
-            }
-            if (savedInstanceState.containsKey(STATE_DOWNLOADABLE_KEY)) {
-                mDownloadable = savedInstanceState.getBoolean(STATE_DOWNLOADABLE_KEY);
-            }
-        } else {
-            if (mIntent.hasExtra(Intents.EXTRA_REFRESH)) {
-                mForceLoadId = mIntent.getLongExtra(Intents.EXTRA_REFRESH, 0L);
-            }
         }
 
         mResolvedPhotoUri = mIntent.getStringExtra(Intents.EXTRA_RESOLVED_PHOTO_URI);
@@ -234,17 +194,14 @@ public class PhotoViewFragment extends BaseFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        final View view = super.onCreateView(inflater, container, savedInstanceState,
-                R.layout.photo_fragment_view);
+        final View view = inflater.inflate(R.layout.photo_fragment_view, container, false);
 
         mPhotoView = (PhotoView) view.findViewById(R.id.photo_view);
 
-        mIsPlaceHolder = true;
         mPhotoView.setPhotoLoading(true);
 
         mPhotoView.setOnClickListener(this);
         mPhotoView.setFullScreen(mFullScreen, false);
-//        mPhotoView.setVideoBlob(videoData);
 
         // Don't call until we've setup the entire view
         setViewVisibility();
@@ -272,9 +229,6 @@ public class PhotoViewFragment extends BaseFragment implements
     @Override
     public void onDestroyView() {
         // Clean up views and other components
-        mProgressBarView = null;
-        mIsPlaceHolder = true;
-
         if (mPhotoView != null) {
             mPhotoView.clear();
             mPhotoView = null;
@@ -289,13 +243,6 @@ public class PhotoViewFragment extends BaseFragment implements
 
         if (mIntent != null) {
             outState.putParcelable(STATE_INTENT_KEY, mIntent.getExtras());
-            outState.putInt(STATE_FRAGMENT_ID_KEY, mFragmentId);
-            if (mForceLoadId != null) {
-                outState.putLong(STATE_FORCE_LOAD_KEY, mForceLoadId);
-            }
-            if (mDownloadable != null) {
-                outState.putBoolean(STATE_DOWNLOADABLE_KEY, mDownloadable);
-            }
         }
     }
 
@@ -325,14 +272,8 @@ public class PhotoViewFragment extends BaseFragment implements
             final View view = getView();
             if (view != null) {
                 bindPhoto(data);
-                updateView(view);
             }
-            mForceLoadId = null;
-            mIsPlaceHolder = false;
-            if (Build.VERSION.SDK_INT >= 11 && mActionMode != null) {
-                // Invalidate the action mode menu
-                mActionMode.invalidate();
-            }
+
             setViewVisibility();
         }
     }
@@ -437,15 +378,6 @@ public class PhotoViewFragment extends BaseFragment implements
         return (mPhotoView != null && mPhotoView.interceptMoveRight(origX, origY));
     }
 
-    @Override
-    protected boolean isEmpty() {
-        final View view = getView();
-        final boolean isViewAvailable =
-                (view != null && (view.findViewById(android.R.id.empty) != null));
-
-        return isViewAvailable && !isPhotoBound();
-    }
-
     /**
      * Returns {@code true} if a photo has been bound. Otherwise, returns {@code false}.
      */
@@ -486,13 +418,6 @@ public class PhotoViewFragment extends BaseFragment implements
      */
     @Override
     public void onUpdateProgressView(ProgressBar progressBarView) {
-        mProgressBarView = progressBarView;
-        updateSpinner(mProgressBarView);
-
-        final View myView = getView();
-        if (myView != null) {
-            updateView(myView);
-        }
     }
 
     /**
@@ -511,58 +436,5 @@ public class PhotoViewFragment extends BaseFragment implements
     public void setFullScreen(boolean fullScreen) {
         mFullScreen = fullScreen;
         mPhotoView.enableImageTransforms(true);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        if (!mCallback.isFragmentActive(this)) {
-            return false;
-        }
-
-        AdapterView.AdapterContextMenuInfo info;
-        try {
-            info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        } catch (ClassCastException e) {
-            return false;
-        }
-
-        // Ignore the header view long click
-        if (info.position == 0) {
-            return false;
-        }
-
-        return false;
-    }
-
-    /**
-     * Updates the view to show the correct content. If the view is null or does not contain
-     * the special id {@link android.R.id#empty}, performs no action.
-     */
-    private void updateView(View view) {
-        if (view == null || (view.findViewById(android.R.id.empty) == null)) {
-            return;
-        }
-
-        final boolean hasImage = isPhotoBound();
-        final boolean imageLoading = isPhotoLoading();
-
-        if (imageLoading) {
-            showEmptyViewProgress(view);
-        } else {
-            if (hasImage) {
-                showContent(view);
-            } else if (mIsPlaceHolder) {
-                setupEmptyView(view, R.string.photo_view_placeholder_image);
-                showEmptyView(view);
-            } else {
-                setupEmptyView(view, R.string.photo_network_error);
-                showEmptyView(view);
-            }
-        }
-        updateSpinner(mProgressBarView);
     }
 }
