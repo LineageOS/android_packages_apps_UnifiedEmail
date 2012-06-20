@@ -19,23 +19,22 @@ package com.android.mail.compose;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
-import android.provider.BaseColumns;
 import android.test.ActivityInstrumentationTestCase2;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.util.Rfc822Tokenizer;
 
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.utils.AccountUtils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class ComposeActivityTest extends ActivityInstrumentationTestCase2<ComposeActivity> {
@@ -336,6 +335,25 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         });
     }
 
+    private String createAttachmentsJson() {
+        Attachment attachment1 = new Attachment();
+        attachment1.contentUri = Uri.parse("www.google.com");
+        attachment1.contentType = "img/jpeg";
+        attachment1.name = "attachment1";
+        Attachment attachment2 = new Attachment();
+        attachment2.contentUri = Uri.parse("www.google.com");
+        attachment2.contentType = "img/jpeg";
+        attachment2.name = "attachment2";
+        JSONArray attachments = new JSONArray();
+        try {
+            attachments.put(attachment1.toJSON());
+            attachments.put(attachment2.toJSON());
+        } catch (JSONException e) {
+            assertTrue(false);
+        }
+        return attachments.toString();
+    }
+
     // First test: switch reply to reply all to fwd, 1 to recipient, 1 cc recipient.
     public void testChangeModes0() {
         setAccount("account0@mockuiprovider.com");
@@ -363,14 +381,14 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 assertTrue(activity.getCcAddresses()[0].contains(refMessage.cc));
                 assertEquals(activity.getBccAddresses().length, 0);
                 activity.onNavigationItemSelected(2, ComposeActivity.FORWARD);
-                assertEquals(to.length, 0);
-                assertEquals(cc.length, 0);
-                assertEquals(bcc.length, 0);
+                assertEquals(activity.getToAddresses().length, 0);
+                assertEquals(activity.getCcAddresses().length, 0);
+                assertEquals(activity.getBccAddresses().length, 0);
             }
         });
     }
 
-    // First test: switch reply to reply all to fwd, 2 to recipients, 1 cc recipient.
+    // Switch reply to reply all to fwd, 2 to recipients, 1 cc recipient.
     public void testChangeModes1() {
         setAccount("account0@mockuiprovider.com");
         final Message refMessage = getRefMessage();
@@ -401,14 +419,14 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                                 .contains("toaccount0@mockuiprovider.com"));
                 assertEquals(activity.getBccAddresses().length, 0);
                 activity.onNavigationItemSelected(2, ComposeActivity.FORWARD);
-                assertEquals(to.length, 0);
-                assertEquals(cc.length, 0);
-                assertEquals(bcc.length, 0);
+                assertEquals(activity.getToAddresses().length, 0);
+                assertEquals(activity.getCcAddresses().length, 0);
+                assertEquals(activity.getBccAddresses().length, 0);
             }
         });
     }
 
-    // First test: switch reply to reply all to fwd, 2 to recipients, 2 cc recipients.
+    // Switch reply to reply all to fwd, 2 to recipients, 2 cc recipients.
     public void testChangeModes2() {
         setAccount("account0@mockuiprovider.com");
         final Message refMessage = getRefMessage();
@@ -439,8 +457,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                         || activity.getCcAddresses()[1].contains("ccaccount2@mockuiprovider.com")
                         || activity.getCcAddresses()[2].contains("ccaccount2@mockuiprovider.com"));
                 assertTrue(activity.getCcAddresses()[0].contains("toaccount0@mockuiprovider.com")
-                        || activity.getCcAddresses()[1]
-                                .contains("toaccount0@mockuiprovider.com"));
+                        || activity.getCcAddresses()[1].contains("toaccount0@mockuiprovider.com")
+                        || activity.getCcAddresses()[2].contains("toaccount0@mockuiprovider.com"));
                 assertTrue(activity.getCcAddresses()[0].contains("toaccount0@mockuiprovider.com")
                         || activity.getCcAddresses()[1]
                                 .contains("toaccount0@mockuiprovider.com")
@@ -448,9 +466,31 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                                 .contains("toaccount0@mockuiprovider.com"));
                 assertEquals(activity.getBccAddresses().length, 0);
                 activity.onNavigationItemSelected(2, ComposeActivity.FORWARD);
-                assertEquals(to.length, 0);
-                assertEquals(cc.length, 0);
-                assertEquals(bcc.length, 0);
+                assertEquals(activity.getToAddresses().length, 0);
+                assertEquals(activity.getCcAddresses().length, 0);
+                assertEquals(activity.getBccAddresses().length, 0);
+            }
+        });
+    }
+
+    // Switch reply to reply all to fwd, 2 attachments.
+    public void testChangeModes3() {
+        setAccount("account0@mockuiprovider.com");
+        final Message refMessage = getRefMessage();
+        refMessage.hasAttachments = true;
+        refMessage.attachmentsJson = createAttachmentsJson();
+        final ComposeActivity activity = mActivity;
+        mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                activity.mRefMessage = refMessage;
+                activity.initAttachments(refMessage);
+                assertEquals(activity.getAttachments().size(), 2);
+                activity.onNavigationItemSelected(1, ComposeActivity.REPLY);
+                assertEquals(activity.getAttachments().size(), 0);
+                activity.onNavigationItemSelected(1, ComposeActivity.REPLY_ALL);
+                assertEquals(activity.getAttachments().size(), 0);
+                activity.onNavigationItemSelected(2, ComposeActivity.FORWARD);
+                assertEquals(activity.getAttachments().size(), 2);
             }
         });
     }
