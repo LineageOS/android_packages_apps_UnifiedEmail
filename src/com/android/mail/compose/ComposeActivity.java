@@ -202,7 +202,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private View mFromStatic;
     private TextView mFromStaticText;
     private View mFromSpinnerWrapper;
-    private FromAddressSpinner mFromSpinner;
+    @VisibleForTesting
+    protected FromAddressSpinner mFromSpinner;
     private boolean mAddingAttachment;
     private boolean mAttachmentsChanged;
     private boolean mTextChanged;
@@ -1332,14 +1333,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (!TextUtils.isEmpty(replyToAddress)) {
             toAddresses.add(replyToAddress);
         } else {
-            // TODO (mindyp): add check for custom from as well.
-            if (!TextUtils.equals(senderAddress, accountEmail)) {
+            if (!TextUtils.equals(senderAddress, accountEmail)
+                    && !ReplyFromAccount.isCustomFrom(senderAddress,
+                            mFromSpinner.getReplyFromAccounts())) {
                 toAddresses.add(senderAddress);
             } else {
                 // This happens if the user replies to a message they originally
-                // wrote. In this case, "reply" really means "re-send," so we target the
-                // original recipients. This works as expected even if the user sent the
-                // original message to themselves.
+                // wrote. In this case, "reply" really means "re-send," so we
+                // target the original recipients. This works as expected even
+                // if the user sent the original message to themselves.
                 toAddresses.addAll(Arrays.asList(inToAddresses));
             }
         }

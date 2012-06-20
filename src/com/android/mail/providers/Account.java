@@ -63,7 +63,7 @@ public class Account extends android.accounts.Account implements Parcelable {
     /**
      * The custom from addresses for this account or null if there are none.
      */
-    public final String accountFromAddresses;
+    public String accountFromAddresses;
 
     /**
      * The content provider uri that can be used to save (insert) new draft
