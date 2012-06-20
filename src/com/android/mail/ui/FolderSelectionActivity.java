@@ -264,8 +264,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public void onFolderSelected(Folder folder, boolean viewingChildren) {
-        if (!viewingChildren && folder.hasChildren) {
+    public void onFolderSelected(Folder folder) {
+        if (folder.hasChildren) {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
