@@ -115,6 +115,7 @@ public final class FolderListFragment extends ListFragment implements
             // Activity is finishing, just bail.
             return;
         }
+
         selectInitialFolder(mActivity.getCurrentFolder());
         getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
     }
@@ -164,13 +165,16 @@ public final class FolderListFragment extends ListFragment implements
         } else {
             folder = new Folder((Cursor) item);
         }
+        if (mParentFolder != null && folder.uri.equals(mParentFolder.uri)) {
+            return;
+        }
         // Since we may be looking at hierarchical views, if we can determine
         // the parent of the folder we have tapped, set it here.
         // If we are looking at the folder we are already viewing, don't update
         // its parent!
         folder.parent = folder.equals(mParentFolder) ? null : mParentFolder;
         // Go to the conversation list for this folder.
-        mListener.onFolderSelected(folder, mParentFolder != null);
+        mListener.onFolderSelected(folder);
     }
 
     @Override
@@ -268,7 +272,7 @@ public final class FolderListFragment extends ListFragment implements
                 folderItemView = (FolderItemView) LayoutInflater.from(
                         mActivity.getActivityContext()).inflate(resId, null);
             }
-            folderItemView.bind(folder, mDropHandler, false);
+            folderItemView.bind(folder, mDropHandler, !isParent);
             if (mSelectedFolder != null && folder.uri.equals(mSelectedFolder.uri)) {
                 getListView().setItemChecked(position, true);
             }
@@ -287,7 +291,7 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     public interface FolderListSelectionListener {
-        public void onFolderSelected(Folder folder, boolean viewingChildren);
+        public void onFolderSelected(Folder folder);
     }
 
     /**

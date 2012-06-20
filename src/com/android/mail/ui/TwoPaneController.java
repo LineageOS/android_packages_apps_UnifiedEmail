@@ -167,9 +167,9 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onFolderSelected(Folder folder, boolean childView) {
-        super.onFolderSelected(folder, childView);
-        if (!childView && folder.hasChildren) {
+    public void onFolderSelected(Folder folder) {
+        super.onFolderSelected(folder);
+        if (folder.hasChildren) {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
@@ -181,6 +181,22 @@ public final class TwoPaneController extends AbstractActivityController {
         final FolderListFragment folderList = getFolderListFragment();
         if (folderList != null) {
             folderList.selectInitialFolder(folder);
+        }
+    }
+
+    public void goUpFolderHierarchy(Folder current) {
+        Folder parent = current.parent;
+        if (parent.parent != null) {
+            super.onFolderSelected(parent);
+            createFolderListFragment(parent.parent, parent.parent.childFoldersListUri);
+            // Show the up affordance when digging into child folders.
+            mActionBarView.setBackButton();
+        } else {
+            onFolderSelected(parent);
+        }
+        final FolderListFragment folderList = getFolderListFragment();
+        if (folderList != null) {
+            folderList.selectInitialFolder(parent);
         }
     }
 
@@ -315,7 +331,6 @@ public final class TwoPaneController extends AbstractActivityController {
         // search results, exit
         // the mode.
         int mode = mViewMode.getMode();
-        FolderListFragment folderListFragment = getFolderListFragment();
         if (mode == ViewMode.SEARCH_RESULTS_LIST) {
             mActivity.finish();
         } else if (mode == ViewMode.CONVERSATION) {
@@ -328,7 +343,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 // If the user navigated via the left folders list into a child folder,
                 // back should take the user up to the parent folder's conversation list.
                 if (getFolder().parent != null) {
-                    onFolderSelected(getFolder().parent, true);
+                    goUpFolderHierarchy(getFolder());
                 } else  {
                     // Show inbox; we are at the top of the hierarchy we were
                     // showing, and it doesn't have a parent, so we must want to
