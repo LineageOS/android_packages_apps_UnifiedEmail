@@ -212,7 +212,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private MenuItem mSend;
     private AlertDialog mRecipientErrorDialog;
     private AlertDialog mSendConfirmDialog;
-    private Message mRefMessage;
+    @VisibleForTesting
+    protected Message mRefMessage;
     private long mDraftId = UIProvider.INVALID_MESSAGE_ID;
     private Message mDraft;
     private Object mDraftLock = new Object();
@@ -2233,7 +2234,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return true;
     }
 
-    private void resetMessageForModeChange() {
+    @VisibleForTesting
+    protected void resetMessageForModeChange() {
         // When switching between reply, reply all, forward,
         // follow the behavior of webview.
         // The contents of the following fields are cleared

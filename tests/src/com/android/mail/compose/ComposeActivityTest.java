@@ -335,4 +335,123 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
             }
         });
     }
+
+    // First test: switch reply to reply all to fwd, 1 to recipient, 1 cc recipient.
+    public void testChangeModes0() {
+        setAccount("account0@mockuiprovider.com");
+        final Message refMessage = getRefMessage();
+        refMessage.from = "fromaccount@mockuiprovider.com";
+        refMessage.to = "account0@mockuiprovider.com";
+        refMessage.cc = "ccaccount@mockuiprovider.com";
+        final ComposeActivity activity = mActivity;
+        final Account account = mAccount;
+        mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                activity.mRefMessage = refMessage;
+                activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
+                String[] to = activity.getToAddresses();
+                String[] cc = activity.getCcAddresses();
+                String[] bcc = activity.getBccAddresses();
+                assertEquals(to.length, 1);
+                assertTrue(to[0].contains(refMessage.from));
+                assertEquals(cc.length, 0);
+                assertEquals(bcc.length, 0);
+                activity.onNavigationItemSelected(1, ComposeActivity.REPLY_ALL);
+                assertEquals(activity.getToAddresses().length, 1);
+                assertTrue(activity.getToAddresses()[0].contains(refMessage.from));
+                assertEquals(activity.getCcAddresses().length, 1);
+                assertTrue(activity.getCcAddresses()[0].contains(refMessage.cc));
+                assertEquals(activity.getBccAddresses().length, 0);
+                activity.onNavigationItemSelected(2, ComposeActivity.FORWARD);
+                assertEquals(to.length, 0);
+                assertEquals(cc.length, 0);
+                assertEquals(bcc.length, 0);
+            }
+        });
+    }
+
+    // First test: switch reply to reply all to fwd, 2 to recipients, 1 cc recipient.
+    public void testChangeModes1() {
+        setAccount("account0@mockuiprovider.com");
+        final Message refMessage = getRefMessage();
+        refMessage.from = "fromaccount@mockuiprovider.com";
+        refMessage.to = "account0@mockuiprovider.com, toaccount0@mockuiprovider.com";
+        refMessage.cc = "ccaccount@mockuiprovider.com";
+        final ComposeActivity activity = mActivity;
+        final Account account = mAccount;
+        mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                activity.mRefMessage = refMessage;
+                activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
+                String[] to = activity.getToAddresses();
+                String[] cc = activity.getCcAddresses();
+                String[] bcc = activity.getBccAddresses();
+                assertEquals(to.length, 1);
+                assertTrue(to[0].contains(refMessage.from));
+                assertEquals(cc.length, 0);
+                assertEquals(bcc.length, 0);
+                activity.onNavigationItemSelected(1, ComposeActivity.REPLY_ALL);
+                assertEquals(activity.getToAddresses().length, 1);
+                assertTrue(activity.getToAddresses()[0].contains(refMessage.from));
+                assertEquals(activity.getCcAddresses().length, 2);
+                assertTrue(activity.getCcAddresses()[0].contains(refMessage.cc)
+                        || activity.getCcAddresses()[1].contains(refMessage.cc));
+                assertTrue(activity.getCcAddresses()[0].contains("toaccount0@mockuiprovider.com")
+                        || activity.getCcAddresses()[1]
+                                .contains("toaccount0@mockuiprovider.com"));
+                assertEquals(activity.getBccAddresses().length, 0);
+                activity.onNavigationItemSelected(2, ComposeActivity.FORWARD);
+                assertEquals(to.length, 0);
+                assertEquals(cc.length, 0);
+                assertEquals(bcc.length, 0);
+            }
+        });
+    }
+
+    // First test: switch reply to reply all to fwd, 2 to recipients, 2 cc recipients.
+    public void testChangeModes2() {
+        setAccount("account0@mockuiprovider.com");
+        final Message refMessage = getRefMessage();
+        refMessage.from = "fromaccount@mockuiprovider.com";
+        refMessage.to = "account0@mockuiprovider.com, toaccount0@mockuiprovider.com";
+        refMessage.cc = "ccaccount@mockuiprovider.com, ccaccount2@mockuiprovider.com";
+        final ComposeActivity activity = mActivity;
+        final Account account = mAccount;
+        mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                activity.mRefMessage = refMessage;
+                activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY);
+                String[] to = activity.getToAddresses();
+                String[] cc = activity.getCcAddresses();
+                String[] bcc = activity.getBccAddresses();
+                assertEquals(to.length, 1);
+                assertTrue(to[0].contains(refMessage.from));
+                assertEquals(cc.length, 0);
+                assertEquals(bcc.length, 0);
+                activity.onNavigationItemSelected(1, ComposeActivity.REPLY_ALL);
+                assertEquals(activity.getToAddresses().length, 1);
+                assertTrue(activity.getToAddresses()[0].contains(refMessage.from));
+                assertEquals(activity.getCcAddresses().length, 3);
+                assertTrue(activity.getCcAddresses()[0].contains("ccaccount@mockuiprovider.com")
+                        || activity.getCcAddresses()[1].contains("ccaccount@mockuiprovider.com")
+                        || activity.getCcAddresses()[2].contains("ccaccount@mockuiprovider.com"));
+                assertTrue(activity.getCcAddresses()[0].contains("ccaccount2@mockuiprovider.com")
+                        || activity.getCcAddresses()[1].contains("ccaccount2@mockuiprovider.com")
+                        || activity.getCcAddresses()[2].contains("ccaccount2@mockuiprovider.com"));
+                assertTrue(activity.getCcAddresses()[0].contains("toaccount0@mockuiprovider.com")
+                        || activity.getCcAddresses()[1]
+                                .contains("toaccount0@mockuiprovider.com"));
+                assertTrue(activity.getCcAddresses()[0].contains("toaccount0@mockuiprovider.com")
+                        || activity.getCcAddresses()[1]
+                                .contains("toaccount0@mockuiprovider.com")
+                        || activity.getCcAddresses()[2]
+                                .contains("toaccount0@mockuiprovider.com"));
+                assertEquals(activity.getBccAddresses().length, 0);
+                activity.onNavigationItemSelected(2, ComposeActivity.FORWARD);
+                assertEquals(to.length, 0);
+                assertEquals(cc.length, 0);
+                assertEquals(bcc.length, 0);
+            }
+        });
+    }
 }
