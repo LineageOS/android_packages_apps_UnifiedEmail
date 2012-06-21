@@ -20,19 +20,14 @@ package com.android.mail.photo;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
+import android.app.Fragment;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -45,7 +40,6 @@ import com.android.mail.photo.adapters.BaseFragmentPagerAdapter.OnFragmentPagerL
 import com.android.mail.photo.adapters.PhotoPagerAdapter;
 import com.android.mail.photo.fragments.PhotoViewFragment;
 import com.android.mail.photo.fragments.PhotoViewFragment.PhotoViewCallbacks;
-import com.android.mail.photo.loaders.PhotoCursorLoader;
 import com.android.mail.photo.loaders.PhotoPagerLoader;
 import com.android.mail.photo.provider.PhotoContract;
 
@@ -55,7 +49,7 @@ import java.util.Set;
 /**
  * Activity to view the contents of an album.
  */
-public class PhotoViewActivity extends FragmentActivity implements PhotoViewCallbacks,
+public class PhotoViewActivity extends Activity implements PhotoViewCallbacks,
         LoaderCallbacks<Cursor>, OnPageChangeListener, OnInterceptTouchListener,
         OnFragmentPagerListener {
 
@@ -109,8 +103,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
 
     /** Count used when the real photo count is unknown [but, may be determined] */
     public static final int ALBUM_COUNT_UNKNOWN = -1;
-    /** Count used when the real photo count can't be know [eg for a photo stream] */
-    public static final int ALBUM_COUNT_UNKNOWABLE = -2;
 
     /** Argument key for the dialog message */
     public static final String KEY_MESSAGE = "dialog_message";
@@ -123,8 +115,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
     private int mPhotoIndex;
     /** The query projection to use; may be {@code null} */
     private String[] mProjection;
-    /** A hint for which cursor page the photo is located on */
-    private int mPageHint = PhotoCursorLoader.LOAD_LIMIT_UNLIMITED;
     /** The name of the particular photo being viewed. */
     private String mPhotoName;
     /** The total number of photos; only valid if {@link #mIsEmpty} is {@code false}. */
@@ -139,8 +129,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
     private PhotoPagerAdapter mAdapter;
     /** Whether or not we're in "full screen" mode */
     private boolean mFullScreen;
-    /** Whether or not we should only show the photo and no extra information */
-    private boolean mShowPhotoOnly;
     /** The set of listeners wanting full screen state */
     private Set<OnScreenListener> mScreenListeners = new HashSet<OnScreenListener>();
     /** When {@code true}, restart the loader when the activity becomes active */
@@ -156,16 +144,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
     /** {@code true} if the fragment is loading. */
     private boolean mFragmentIsLoading;
 
-    /** Listener to handle dialog button clicks for the failed dialog. */
-    private DialogInterface.OnClickListener mFailedListener =
-            new DialogInterface.OnClickListener() {
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,14 +153,11 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
         sMemoryClass = mgr.getMemoryClass();
 
         Intent mIntent = getIntent();
-        mShowPhotoOnly = mIntent.getBooleanExtra(Intents.EXTRA_SHOW_PHOTO_ONLY, false);
 
         int currentItem = -1;
         if (savedInstanceState != null) {
             currentItem = savedInstanceState.getInt(STATE_ITEM_KEY, -1);
             mFullScreen = savedInstanceState.getBoolean(STATE_FULLSCREEN_KEY, false);
-        } else {
-            mFullScreen = mShowPhotoOnly;
         }
 
         // album name; if not set, use a default name
@@ -206,11 +181,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
             mProjection = null;
         }
 
-        // the loader page hint
-        if (mIntent.hasExtra(Intents.EXTRA_PAGE_HINT) && currentItem < 0) {
-            mPageHint = mIntent.getIntExtra(Intents.EXTRA_PAGE_HINT,
-                    PhotoCursorLoader.LOAD_LIMIT_UNLIMITED);
-        }
         // Set the current item from the intent if wasn't in the saved instance
         if (mIntent.hasExtra(Intents.EXTRA_PHOTO_INDEX) && currentItem < 0) {
             currentItem = mIntent.getIntExtra(Intents.EXTRA_PHOTO_INDEX, -1);
@@ -219,13 +189,9 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
 
         setContentView(R.layout.photo_activity_view);
         mRootView = findViewById(R.id.photo_activity_root_view);
-        // Create the adapter and add the view pager
-        final Long forceLoadId = (mIntent.hasExtra(Intents.EXTRA_REFRESH))
-                ? mIntent.getLongExtra(Intents.EXTRA_REFRESH, 0L)
-                : null;
 
-        mAdapter = new PhotoPagerAdapter(this, getSupportFragmentManager(), null,
-                forceLoadId);
+        // Create the adapter and add the view pager
+        mAdapter = new PhotoPagerAdapter(this, getFragmentManager(), null);
         mAdapter.setFragmentPagerListener(this);
 
         mViewPager = (PhotoViewPager) findViewById(R.id.photo_view_pager);
@@ -233,8 +199,8 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
         mViewPager.setOnPageChangeListener(this);
         mViewPager.setOnInterceptTouchListener(this);
 
-        // Kick off the loaders
-        getSupportLoaderManager().initLoader(LOADER_PHOTO_LIST, null, this);
+        // Kick off the loader
+        getLoaderManager().initLoader(LOADER_PHOTO_LIST, null, this);
 
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -250,7 +216,7 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
         mIsPaused = false;
         if (mRestartLoader) {
             mRestartLoader = false;
-            getSupportLoaderManager().restartLoader(LOADER_PHOTO_LIST, null, this);
+            getLoaderManager().restartLoader(LOADER_PHOTO_LIST, null, this);
         }
     }
 
@@ -264,7 +230,7 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
     @Override
     public void onBackPressed() {
         // If in full screen mode, toggle mode & eat the 'back'
-        if (mFullScreen && !mShowPhotoOnly) {
+        if (mFullScreen) {
             toggleFullScreen();
         } else {
             super.onBackPressed();
@@ -286,46 +252,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
         if (photoFragment != null && progressView != null) {
             photoFragment.onUpdateProgressView(progressView);
         }
-    }
-
-    @Override
-    protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
-        super.onPrepareDialog(id, dialog, args);
-        if (id == R.id.photo_view_pending_dialog) {
-            // Update the message each time this dialog is shown in order
-            // to ensure it matches the current operation.
-            if (dialog instanceof ProgressDialog) {
-                // This should always be true
-                final ProgressDialog pd = (ProgressDialog) dialog;
-                pd.setMessage(args.getString(KEY_MESSAGE));
-            }
-        }
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id, Bundle args) {
-        String tag = args.getString(Intents.EXTRA_TAG);
-        if (id == R.id.photo_view_pending_dialog) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage(args.getString(KEY_MESSAGE));
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setCancelable(false);
-            return progressDialog;
-        } else if (id == R.id.photo_view_download_full_failed_dialog) {
-            final RetryDialogListener retryListener = new RetryDialogListener(tag);
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.download_photo_retry)
-                    .setPositiveButton(R.string.yes, retryListener)
-                    .setNegativeButton(R.string.no, retryListener);
-            return builder.create();
-        } else if (id == R.id.photo_view_download_nonfull_failed_dialog) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.download_photo_error)
-                    .setNeutralButton(R.string.ok, mFailedListener);
-            return builder.create();
-        }
-
-        return null;
     }
 
     @Override
@@ -355,11 +281,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
     }
 
     @Override
-    public boolean isShowPhotoOnly() {
-        return mShowPhotoOnly;
-    }
-
-    @Override
     public void toggleFullScreen() {
         setFullScreen(!mFullScreen, true);
     }
@@ -383,14 +304,14 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
             return;
         }
 
-        getSupportLoaderManager().restartLoader(LOADER_PHOTO_LIST, null, this);
+        getLoaderManager().restartLoader(LOADER_PHOTO_LIST, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == LOADER_PHOTO_LIST) {
             mFragmentIsLoading = true;
-            return new PhotoPagerLoader(this, Uri.parse(mPhotosUri), mPageHint, mProjection);
+            return new PhotoPagerLoader(this, Uri.parse(mPhotosUri), mProjection);
         }
         return null;
     }
@@ -426,7 +347,6 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
                             itemIndex = 0;
                         }
 
-                        mAdapter.setPageable((Pageable) loader);
                         mAdapter.swapCursor(data);
                         updateView(mRootView);
                         mViewPager.setCurrentItem(itemIndex, false);
@@ -637,39 +557,5 @@ public class PhotoViewActivity extends FragmentActivity implements PhotoViewCall
         cursor.moveToPosition(position);
 
         return cursor;
-    }
-
-    /**
-     * Listener to handle dialog button clicks for the retry dialog.
-     */
-    class RetryDialogListener implements DialogInterface.OnClickListener {
-        /** The tag of the fragment this dialog is opened for */
-        final String mTag;
-
-        public RetryDialogListener(String tag) {
-            mTag = tag;
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE: {
-                    final PhotoViewFragment fragment =
-                            (PhotoViewFragment) getSupportFragmentManager().findFragmentByTag(mTag);
-                    if (fragment != null) {
-                        // commented out because we removed that function
-                        // we may need to add it back eventually in a new manner
-                        // for now keeping it in
-//                        fragment.downloadPhoto(PhotoViewActivity.this, false);
-                    }
-                    break;
-                }
-
-                case DialogInterface.BUTTON_NEGATIVE: {
-                    break;
-                }
-            }
-            dialog.dismiss();
-        }
     }
 }
