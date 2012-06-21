@@ -28,7 +28,6 @@ import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -64,31 +63,10 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
     private static boolean sInitialized;
 
     // Various dimensions
-    /** Right padding for overlay content */
-    private static int sPhotoOverlayRightPadding;
-    /** Bottom padding for overlay content */
-    private static int sPhotoOverlayBottomPadding;
-    /** Spacing between the comment count and the comment bitmap */
-    private static int sCommentCountLeftMargin;
-    /** Fixed width of the comment count text */
-    private static int sCommentCountTextWidth;
-    /** Spacing between the +1 count and the +1 bitmap */
-    private static int sPlusOneCountLeftMargin;
-    /** Fixed width of the +1 count text */
-    private static int sPlusOneCountTextWidth;
-    /** Space between the +1 icon and the comment icon */
-    private static int sPlusOneBottomMargin;
-    /** Temporary padding hack to left-align the +1 and comment icons */
-    private static int sPlusOneIconRightPaddingHack;
-    private static int sTagTextPadding;
     /** Width & height of the crop region */
     private static int sCropSize;
 
     // Bitmaps
-    /** Comment bitmap */
-    private static Bitmap sCommentBitmap;
-    /** +1 bitmap */
-    private static Bitmap sPlusOneBitmap;
     /** Video icon */
     private static Bitmap sVideoImage;
     /** Video icon */
@@ -98,23 +76,10 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
     private static boolean sHasMultitouchDistinct;
 
     // Paints
-    // ----------------------------------------------------------
-    // NOTE: Please register static TextPaints in TextPaintUtils!
-    // ----------------------------------------------------------
-    /** Paint for the comment count text */
-    private static TextPaint sCommentCountPaint;
-    /** Paint for the +1 count text */
-    private static TextPaint sPlusOneCountPaint;
-    private static Paint sTagPaint;
     /** Paint to partially dim the photo during crop */
     private static Paint sCropDimPaint;
     /** Paint to highlight the cropped portion of the photo */
     private static Paint sCropPaint;
-    private static TextPaint sTagTextPaint;
-    private static Paint sTagTextBackgroundPaint;
-    // ----------------------------------------------------------
-    // NOTE: Please register static TextPaints in TextPaintUtils!
-    // ----------------------------------------------------------
 
     // Colours
     /** The colour of the header background */
@@ -137,10 +102,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
     private boolean mHaveLayout;
     /** Whether or not the photo is full-screen */
     private boolean mFullScreen;
-    /** The number of comments */
-    private String mCommentText;
-    /** The number of +1's */
-    private String mPlusOneText;
     /** Whether or not this is a still image of a video */
     private byte[] mVideoBlob;
     /** Whether or not this is a still image of a video */
@@ -152,13 +113,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
     private Rect mCropRect = new Rect();
     /** Actual crop size; may differ from {@link #sCropSize} if the screen is smaller */
     private int mCropSize;
-
-    /** A tag shape to display on top of the image */
-    private RectF mTagShape;
-    /** The name of the tagged shape */
-    private CharSequence mTagName;
-    /** If {@code true}, display the tag shape & name */
-    private boolean mShowTagShape;
 
     /** Gesture detector */
     private GestureDetector mGestureDetector;
@@ -186,6 +140,8 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
     private boolean mPerformingScale;
     /** When {@code true}, prevents scale end gesture from falsely triggering a fling. */
     private boolean mFlingDebounce;
+    /** When {@code true}, prevents scale end gesture from falsely triggering a scroll. */
+    private boolean mScrollDebounce;
 
     // To support translation [i.e. panning]
     /** Runnable that can move the image */
@@ -210,8 +166,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
     private RectF mTranslateRect = new RectF();
     /** Array to store a copy of the matrix values */
     private float[] mValues = new float[9];
-    /** The background area of the tag text */
-    private RectF mTagNameBackground = new RectF();
 
     public PhotoView(Context context) {
         super(context);
@@ -300,7 +254,10 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (mTransformsEnabled && !mPerformingScale) {
-            translate(-distanceX, -distanceY);
+            if (!mScrollDebounce) {
+                translate(-distanceX, -distanceY);
+            }
+            mScrollDebounce = false;
         }
         return true;
     }
@@ -354,6 +311,7 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
         }
         mPerformingScale = false;
         mFlingDebounce = true;
+        mScrollDebounce = true;
     }
 
     @Override
@@ -488,55 +446,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
         return null;
     }
 
-//    /**
-//     * Sets the number of comments for this photo
-//     */
-//    public void setCommentCount(int commentCount) {
-//        if (commentCount <= 0) {
-//            return;
-//        }
-//
-//        if (commentCount > 99) {
-//            mCommentText = getResources().getString(R.string.ninety_nine_plus);
-//        } else {
-//            mCommentText = Integer.toString(commentCount);
-//        }
-//    }
-//
-//    /**
-//     * Sets the number of +1's for this photo
-//     */
-//    public void setPlusOneCount(int plusOneCount) {
-//        if (plusOneCount < 0) {
-//            return;
-//        }
-//
-//        if (plusOneCount == 0) {
-//            mPlusOneText = null;
-//        } else {
-//            if (plusOneCount > 99) {
-//                mPlusOneText = getResources().getString(R.string.ninety_nine_plus);
-//            } else {
-//                mPlusOneText = Integer.toString(plusOneCount);
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Sets video data if this item represents a video.
-//     */
-//    public void setVideoBlob(byte[] videoBlob) {
-//        mVideoBlob = videoBlob;
-//        if (videoBlob != null) {
-//            try {
-//                final VideoData proto = VideoData.parseFrom(videoBlob);
-//                final VideoStatus status = proto.getStatus();
-//                mVideoReady = (status == VideoStatus.FINAL || status == VideoStatus.READY);
-//            } catch (InvalidProtocolBufferException e) {
-//            }
-//        }
-//    }
-
     /**
      * Gets video data associated with this item. Returns {@code null} if this is not a video.
      */
@@ -556,32 +465,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
      */
     public boolean isVideoReady() {
         return mVideoBlob != null && mVideoReady;
-    }
-
-    /**
-     * Binds tag data to this view.
-     */
-    public void bindTagData(RectF rect, CharSequence name) {
-        mTagShape = rect;
-        mTagName = name;
-    }
-
-    /**
-     * Shows the tag shape / name
-     */
-    public void showTagShape() {
-        mShowTagShape = true;
-
-        invalidate();
-    }
-
-    /**
-     * Hides the tag shape / name
-     */
-    public void hideTagShape() {
-        mShowTagShape = false;
-
-        invalidate();
     }
 
     /**
@@ -724,19 +607,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
             if (mDrawMatrix != null) {
                 mDrawMatrix.mapRect(mTranslateRect);
             }
-            if (mShowTagShape && mTagShape != null) {
-                final float drawWidth = mTranslateRect.width();
-                final float drawHeight = mTranslateRect.height();
-
-                final float tagLeft = mTagShape.left * drawWidth + mTranslateRect.left;
-                final float tagTop = mTagShape.top * drawHeight + mTranslateRect.top;
-                final float tagRight = mTagShape.right * drawWidth + mTranslateRect.left;
-                final float tagBottom =  mTagShape.bottom * drawHeight + mTranslateRect.top;
-
-                canvas.drawRect(tagLeft, tagTop, tagRight, tagBottom, sTagPaint);
-
-                drawTagName(canvas, tagLeft, tagTop, tagRight, tagBottom);
-            }
 
             if (mAllowCrop) {
                 int previousSaveCount = canvas.getSaveCount();
@@ -752,44 +622,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
                 canvas.restoreToCount(previousSaveCount);
                 canvas.drawRect(mCropRect, sCropPaint);
             }
-        }
-
-        // draw comment/+1 count overlays; only if header is not visible
-        int yPos = getHeight() - sPhotoOverlayBottomPadding;
-
-        if (mFullScreen && mCommentText != null && !mAllowCrop) {
-            // Top align comment count and the comment bitmap
-            final int commentTextHeight =
-                    (int) (sCommentCountPaint.ascent() - sCommentCountPaint.descent());
-            final int commentHeight = Math.max(sCommentBitmap.getHeight(), commentTextHeight);
-
-            int xPos = getWidth() - sPhotoOverlayRightPadding - sCommentCountTextWidth;
-
-            yPos -= commentHeight;
-            canvas.drawText(mCommentText, xPos,
-                    yPos - sCommentCountPaint.ascent(), sCommentCountPaint);
-
-            xPos -= (sCommentCountLeftMargin + sCommentBitmap.getWidth());
-            canvas.drawBitmap(sCommentBitmap, xPos, yPos, null);
-
-            yPos -= sPlusOneBottomMargin;
-        }
-
-        if (mFullScreen && mPlusOneText != null && !mAllowCrop) {
-            // Top align comment count and the comment bitmap
-            final int plusOneTextHeight =
-                    (int) (sPlusOneCountPaint.ascent() - sPlusOneCountPaint.descent());
-            final int plusOneHeight = Math.max(sPlusOneBitmap.getHeight(), plusOneTextHeight);
-
-            int xPos = getWidth() - sPhotoOverlayRightPadding - sPlusOneCountTextWidth;
-
-            yPos -= plusOneHeight;
-            canvas.drawText(mPlusOneText, xPos,
-                    yPos - sPlusOneCountPaint.ascent(), sPlusOneCountPaint);
-
-            xPos -= (sPlusOneCountLeftMargin + sPlusOneBitmap.getWidth());
-            xPos -= sPlusOneIconRightPaddingHack;
-            canvas.drawBitmap(sPlusOneBitmap, xPos, yPos, null);
         }
     }
 
@@ -849,61 +681,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
         if (!mTransformsEnabled) {
             resetTransformations();
         }
-    }
-
-    /**
-     * Draws the tag name underneath & centered on the shape. If there isn't sufficient room
-     * below the photo, the text will be drawn above the shape. If there isn't sufficient room
-     * on either side to center the text, the text will be left/right aligned with the edge
-     * of the canvas.
-     */
-    private void drawTagName(Canvas canvas, float tagLeft, float tagTop, float tagRight,
-            float tagBottom) {
-        if (mTagName == null) {
-            return;
-        }
-
-        final float textPadding = 2f * sTagTextPadding;
-
-        float tagCenter = tagLeft + ((tagRight - tagLeft) / 2f);
-
-        float nameWidth = sTagTextPaint.measureText(mTagName, 0, mTagName.length());
-        float nameHeight = sTagTextPaint.descent() - sTagTextPaint.ascent();
-
-        float nameRectWidth = nameWidth + textPadding;
-        float nameRectHeight = nameHeight + textPadding;
-
-        // Calculate the bounding box for the background rectangle
-        float nameRectLeft = tagCenter - (nameRectWidth / 2f);
-        if (nameRectLeft < 0) {
-            // Ensure we don't draw off the side of the photo
-            nameRectLeft = 0;
-        }
-        float nameRectRight = nameRectLeft + nameRectWidth;
-        if (nameRectRight > getWidth()) {
-            nameRectRight = tagRight;
-            nameRectLeft = nameRectRight - nameRectWidth;
-        }
-
-        float nameRectTop = tagBottom;
-        float nameRectBottom = nameRectTop + nameRectHeight;
-
-        final int vheight = getHeight();
-        if (nameRectBottom > vheight) {
-            // Draw the text on top of the shape
-            nameRectBottom = tagTop;
-            nameRectTop = nameRectBottom - nameRectHeight;
-        }
-
-        // Calculate the bounding box for the text
-        float nameLeft = nameRectLeft + sTagTextPadding;
-        float nameTop = nameRectTop + sTagTextPadding;
-
-        mTagNameBackground.set(nameRectLeft, nameRectTop, nameRectRight, nameRectBottom);
-        // Draw the background:
-        canvas.drawRoundRect(mTagNameBackground, 3f, 3f, sTagTextBackgroundPaint);
-        canvas.drawText(mTagName, 0, mTagName.length(), nameLeft, nameTop - sTagTextPaint.ascent(),
-                sTagTextPaint);
     }
 
     /**
@@ -1179,40 +956,8 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
 
             Resources resources = context.getApplicationContext().getResources();
 
-            // Initialize bitmaps
-//            sCommentBitmap = ImageUtils.decodeResource(resources, R.drawable.ic_comment);
-//            sPlusOneBitmap = ImageUtils.decodeResource(resources, R.drawable.ic_plus_one);
-//            sVideoImage = ImageUtils.decodeResource(resources, R.drawable.video_overlay);
-//            sVideoNotReadyImage =
-//                    ImageUtils.decodeResource(resources, R.drawable.ic_loading_video);
-
             // Initialize colors
             sBackgroundColor = resources.getColor(R.color.photo_background_color);
-
-            // Initialize paint
-//            sPlusOneCountPaint = new TextPaint();
-//            sPlusOneCountPaint.setAntiAlias(true);
-//            sPlusOneCountPaint.setColor(resources.getColor(R.color.photo_info_plusone_count_color));
-//            sPlusOneCountPaint.setTextSize(resources.getDimension(
-//                    R.dimen.photo_info_plusone_text_size));
-//            TextPaintUtils.registerTextPaint(sPlusOneCountPaint,
-//                    R.dimen.photo_info_plusone_text_size);
-
-//            sCommentCountPaint = new TextPaint();
-//            sCommentCountPaint.setAntiAlias(true);
-//            sCommentCountPaint.setColor(resources.getColor(R.color.photo_info_comment_count_color));
-//            sCommentCountPaint.setTextSize(resources.getDimension(
-//                    R.dimen.photo_info_comment_text_size));
-//            TextPaintUtils.registerTextPaint(sCommentCountPaint,
-//                    R.dimen.photo_info_comment_text_size);
-
-//            sTagPaint = new Paint();
-//            sTagPaint.setAntiAlias(true);
-//            sTagPaint.setColor(resources.getColor(R.color.photo_tag_color));
-//            sTagPaint.setStyle(Style.STROKE);
-//            sTagPaint.setStrokeWidth(resources.getDimension(R.dimen.photo_tag_stroke_width));
-//            sTagPaint.setShadowLayer(resources.getDimension(R.dimen.photo_tag_shadow_radius),
-//                    0.0f, 0.0f, resources.getColor(R.color.photo_tag_shadow_color));
 
             sCropSize = resources.getDimensionPixelSize(R.dimen.photo_crop_width);
 
@@ -1226,39 +971,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
             sCropPaint.setColor(resources.getColor(R.color.photo_crop_highlight_color));
             sCropPaint.setStyle(Style.STROKE);
             sCropPaint.setStrokeWidth(resources.getDimension(R.dimen.photo_crop_stroke_width));
-
-//            sTagTextPaint = new TextPaint();
-//            sTagTextPaint.setAntiAlias(true);
-//            sTagTextPaint.setColor(resources.getColor(R.color.photo_tag_text_color));
-//            sTagTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
-//            sTagTextPaint.setTextSize(resources.getDimension(R.dimen.photo_tag_text_size));
-//            sTagTextPaint.setShadowLayer(0.0f, 0.0f, 0.0f, Color.BLACK);
-//            TextPaintUtils.registerTextPaint(sTagTextPaint, R.dimen.photo_tag_text_size);
-//
-//            sTagTextBackgroundPaint = new Paint();
-//            sTagTextBackgroundPaint.setColor(
-//                    resources.getColor(R.color.photo_tag_text_background_color));
-//            sTagTextBackgroundPaint.setStyle(Style.FILL);
-
-            // Initialize dimensions
-            sPhotoOverlayRightPadding = (int)resources.getDimension(
-                    R.dimen.photo_overlay_right_padding);
-            sPhotoOverlayBottomPadding = (int)resources.getDimension(
-                    R.dimen.photo_overlay_bottom_padding);
-//            sCommentCountLeftMargin = (int)resources.getDimension(
-//                    R.dimen.photo_info_comment_count_left_margin);
-//            sCommentCountTextWidth = (int)resources.getDimension(
-//                    R.dimen.photo_info_comment_count_text_width);
-//            sPlusOneCountLeftMargin = (int)resources.getDimension(
-//                    R.dimen.photo_info_plusone_count_left_margin);
-//            sPlusOneCountTextWidth = (int)resources.getDimension(
-//                    R.dimen.photo_info_plusone_count_text_width);
-//            sPlusOneBottomMargin = (int) resources.getDimension(
-//                    R.dimen.photo_info_plusone_bottom_margin);
-//            sPlusOneIconRightPaddingHack = (int) resources.getDimension(
-//                    R.dimen.photo_info_plusone_icon_right_padding_hack);
-//            sTagTextPadding = (int)resources.getDimension(
-//                    R.dimen.photo_tag_text_padding);
 
             sHasMultitouchDistinct = context.getPackageManager().hasSystemFeature(
                     PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
