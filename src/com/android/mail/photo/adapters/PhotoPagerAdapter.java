@@ -17,15 +17,13 @@
 
 package com.android.mail.photo.adapters;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 
 import com.android.mail.photo.Intents;
 import com.android.mail.photo.Intents.PhotoViewIntentBuilder;
-import com.android.mail.photo.Pageable;
-import com.android.mail.photo.fragments.LoadingFragment;
 import com.android.mail.photo.fragments.PhotoViewFragment;
 import com.android.mail.photo.provider.PhotoContract;
 
@@ -33,26 +31,11 @@ import com.android.mail.photo.provider.PhotoContract;
  * Pager adapter for the photo view
  */
 public class PhotoPagerAdapter extends BaseCursorPagerAdapter {
-    final Long mForceLoadId;
-    private Pageable mPageable;
     private int mContentUriIndex;
     private int mPhotoNameIndex;
 
-    public PhotoPagerAdapter(Context context, FragmentManager fm, Cursor c,
-            Long forceLoadId) {
+    public PhotoPagerAdapter(Context context, FragmentManager fm, Cursor c) {
         super(context, fm, c);
-        mForceLoadId = forceLoadId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getCount() {
-        if (mPageable != null && mPageable.hasMore()) {
-            return super.getCount() + 1;
-        }
-        return super.getCount();
     }
 
     @Override
@@ -65,31 +48,9 @@ public class PhotoPagerAdapter extends BaseCursorPagerAdapter {
                 Intents.newPhotoViewFragmentIntentBuilder(mContext);
           builder
             .setPhotoName(photoName)
-            .setResolvedPhotoUri(photoUri)
-            .setForceLoadId(mForceLoadId);
+            .setResolvedPhotoUri(photoUri);
 
-        return new PhotoViewFragment(builder.build(), cursor.getPosition());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Fragment getItem(int position) {
-        final Cursor cursor = isDataValid() ? getCursor() : null;
-        if (cursor != null && (cursor.isClosed() || position >= cursor.getCount())) {
-            // Show the "loading" fragment while more data is loaded
-            mPageable.loadMore();
-            return new LoadingFragment();
-        }
-        return super.getItem(position);
-    }
-
-    /**
-     * Sets the {@link Pageable}
-     */
-    public void setPageable(Pageable pageable) {
-        mPageable = pageable;
+        return new PhotoViewFragment(builder.build());
     }
 
     @Override
