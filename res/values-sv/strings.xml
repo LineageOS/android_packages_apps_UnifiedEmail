@@ -120,14 +120,12 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Dela"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Dela alla"</string>
     <string name="saving" msgid="925514721138014677">"Sparar ..."</string>
-    <!-- no translation found for attach_image (2884507610283710079) -->
+    <!-- no translation found for attach_image (3713654042212409705) -->
     <skip />
-    <!-- no translation found for attach_take_photo (8812258157282764334) -->
+    <!-- no translation found for attach_video (4996812138609677305) -->
     <skip />
-    <!-- no translation found for attach_video (548317207627289852) -->
-    <skip />
-    <!-- no translation found for attach_record_video (9187265820690571116) -->
-    <skip />
+    <!-- no translation found for number_of_attachments:one (6596149613229217650) -->
+    <!-- no translation found for number_of_attachments:other (4827833083675127409) -->
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Dela via"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Öppna i webbläsaren"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopiera"</string>
@@ -180,10 +178,8 @@
     <item quantity="one" msgid="8780588287902503608">"Stjärnmärker <xliff:g id="COUNT">%1$d</xliff:g> konversation."</item>
     <item quantity="other" msgid="44965256231544025">"Stjärnmärker <xliff:g id="COUNT">%1$d</xliff:g> konversationer."</item>
   </plurals>
-  <plurals name="conversation_unstarring">
-    <item quantity="one" msgid="9149763486272528029">"Tar bort stjärnmärkning från <xliff:g id="COUNT">%1$d</xliff:g> konversation."</item>
-    <item quantity="other" msgid="460057780793159215">"Tar bort stjärnmärkning från <xliff:g id="COUNT">%1$d</xliff:g> konversationer."</item>
-  </plurals>
+    <!-- no translation found for conversation_unstarred:one (8315328190288744398) -->
+    <!-- no translation found for conversation_unstarred:other (2222365088907519938) -->
   <plurals name="conversation_unknown_operation">
     <item quantity="one" msgid="235911194119829184">"<xliff:g id="COUNT">%1$d</xliff:g> konversation väntar på åtgärd."</item>
     <item quantity="other" msgid="850868849811019745">"<xliff:g id="COUNT">%1$d</xliff:g> konversationer väntar på åtgärd."</item>
