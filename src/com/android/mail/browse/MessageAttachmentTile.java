@@ -27,11 +27,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
+import com.android.ex.photo.Intents;
+import com.android.ex.photo.Intents.PhotoViewIntentBuilder;
+import com.android.ex.photo.util.ImageUtils;
 import com.android.mail.R;
-import com.android.mail.photo.Intents;
-import com.android.mail.photo.Intents.PhotoViewIntentBuilder;
 import com.android.mail.photo.MailPhotoViewActivity;
-import com.android.mail.photo.util.ImageUtils;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AttachmentDestination;

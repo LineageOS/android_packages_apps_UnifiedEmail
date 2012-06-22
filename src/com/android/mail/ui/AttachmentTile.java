@@ -26,8 +26,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.android.ex.photo.util.ImageUtils;
 import com.android.mail.R;
-import com.android.mail.photo.util.ImageUtils;
 import com.android.mail.providers.Attachment;
 import com.android.mail.utils.LogUtils;
 
