@@ -39,9 +39,9 @@
     <!-- Compose colors -->
     <color name="compose_label_text">#aaaaaa</color>
     <color name="quoted_text_color">#777777</color>
-    <string name="quoted_text_background_color_string" translatable="false">#ebebeb</string>
+    <string name="quoted_text_background_color_string" translatable="false">@android:color/white</string>
     <!-- Must match the quoted_text_background_color_string -->
-    <color name="compose_background_color">#ebebeb</color>
+    <color name="compose_background_color">@android:color/white</color>
     <string name="quoted_text_font_color_string" translatable="false">#777777</string>
 
     <color name="conv_header_add_label_text">@android:color/black</color>
