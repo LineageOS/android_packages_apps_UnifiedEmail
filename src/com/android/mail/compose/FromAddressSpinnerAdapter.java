@@ -80,7 +80,7 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
         ((TextView) fromEntry.findViewById(R.id.spinner_account_name)).setText(fromItem.name);
         if (fromItem.isCustomFrom) {
             ((TextView) fromEntry.findViewById(R.id.spinner_account_address))
-                    .setText(fromItem.address);
+                    .setText(formatAddress(fromItem.address));
         }
         return fromEntry;
     }
@@ -100,7 +100,7 @@ public class FromAddressSpinnerAdapter extends ArrayAdapter<ReplyFromAccount> {
         return fromEntry;
     }
 
-    private CharSequence formatAddress(String address) {
+    private static CharSequence formatAddress(String address) {
         if (TextUtils.isEmpty(address)) {
             return "";
         }
