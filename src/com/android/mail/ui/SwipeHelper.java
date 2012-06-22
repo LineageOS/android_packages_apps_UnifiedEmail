@@ -482,9 +482,6 @@ public class SwipeHelper {
                             dismissChild(mCurrView, childSwipedFastEnough ? velocity : 0f);
                         }
                     } else {
-                        // snappity
-                        mCallback.onDragCancelled(mCurrView);
-
                         if (mAssociatedViews != null && mAssociatedViews.size() > 1) {
                             for (SwipeableItemView v : mAssociatedViews) {
                                 snapChild(v, velocity);
@@ -492,6 +489,8 @@ public class SwipeHelper {
                         } else {
                             snapChild(mCurrView, velocity);
                         }
+                        // snappity
+                        mCallback.onDragCancelled(mCurrView);
                     }
                 }
                 break;
