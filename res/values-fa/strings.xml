@@ -120,12 +120,12 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"اشتراک‌گذاری"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"اشتراک‌گذاری همه"</string>
     <string name="saving" msgid="925514721138014677">"در حال ذخیره…"</string>
-    <!-- no translation found for attach_image (3713654042212409705) -->
-    <skip />
-    <!-- no translation found for attach_video (4996812138609677305) -->
-    <skip />
-    <!-- no translation found for number_of_attachments:one (6596149613229217650) -->
-    <!-- no translation found for number_of_attachments:other (4827833083675127409) -->
+    <string name="attach_image" msgid="3713654042212409705">"تصویر"</string>
+    <string name="attach_video" msgid="4996812138609677305">"ویدیو"</string>
+  <plurals name="number_of_attachments">
+    <item quantity="one" msgid="6596149613229217650">"%d پیوست"</item>
+    <item quantity="other" msgid="4827833083675127409">"%d پیوست‌"</item>
+  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"اشتراک‌گذاری از طریق"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"بازکردن در مرورگر"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"کپی"</string>
@@ -178,8 +178,10 @@
     <item quantity="one" msgid="8780588287902503608">"درحال ستاره‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
     <item quantity="other" msgid="44965256231544025">"درحال ستاره‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
   </plurals>
-    <!-- no translation found for conversation_unstarred:one (8315328190288744398) -->
-    <!-- no translation found for conversation_unstarred:other (2222365088907519938) -->
+  <plurals name="conversation_unstarred">
+    <item quantity="one" msgid="8315328190288744398">"درحال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
+    <item quantity="other" msgid="2222365088907519938">"درحال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
+  </plurals>
   <plurals name="conversation_unknown_operation">
     <item quantity="one" msgid="235911194119829184">"در انتظار عملیات در <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
     <item quantity="other" msgid="850868849811019745">"در انتظار عملیات در <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
