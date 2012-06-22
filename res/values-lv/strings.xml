@@ -120,12 +120,12 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Kopīgot"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Kopīg.visu"</string>
     <string name="saving" msgid="925514721138014677">"Notiek saglabāšana…"</string>
-    <!-- no translation found for attach_image (3713654042212409705) -->
-    <skip />
-    <!-- no translation found for attach_video (4996812138609677305) -->
-    <skip />
-    <!-- no translation found for number_of_attachments:one (6596149613229217650) -->
-    <!-- no translation found for number_of_attachments:other (4827833083675127409) -->
+    <string name="attach_image" msgid="3713654042212409705">"Attēls"</string>
+    <string name="attach_video" msgid="4996812138609677305">"Videoklips"</string>
+  <plurals name="number_of_attachments">
+    <item quantity="one" msgid="6596149613229217650">"%d pielikums"</item>
+    <item quantity="other" msgid="4827833083675127409">"%d pielikums(-i)"</item>
+  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Kopīgošanas veids"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Atvērt pārlūkprogrammā"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Kopēt"</string>
@@ -178,8 +178,10 @@
     <item quantity="one" msgid="8780588287902503608">"<xliff:g id="COUNT">%1$d</xliff:g> saruna tiek atzīmēta ar zvaigznīti."</item>
     <item quantity="other" msgid="44965256231544025">"<xliff:g id="COUNT">%1$d</xliff:g> saruna(-as) tiek atzīmēta(-as) ar zvaigznīti."</item>
   </plurals>
-    <!-- no translation found for conversation_unstarred:one (8315328190288744398) -->
-    <!-- no translation found for conversation_unstarred:other (2222365088907519938) -->
+  <plurals name="conversation_unstarred">
+    <item quantity="one" msgid="8315328190288744398">"Notiek zvaigznītes noņemšana no <xliff:g id="COUNT">%1$d</xliff:g> sarunas."</item>
+    <item quantity="other" msgid="2222365088907519938">"Notiek zvaigznītes noņemšana no <xliff:g id="COUNT">%1$d</xliff:g> sarunas(-ām)."</item>
+  </plurals>
   <plurals name="conversation_unknown_operation">
     <item quantity="one" msgid="235911194119829184">"Tiek gaidīta darbība saistībā ar <xliff:g id="COUNT">%1$d</xliff:g> sarunu."</item>
     <item quantity="other" msgid="850868849811019745">"Tiek gaidīta darbība saistībā ar <xliff:g id="COUNT">%1$d</xliff:g> sarunu(-ām)."</item>
