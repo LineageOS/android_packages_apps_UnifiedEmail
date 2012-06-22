@@ -43,7 +43,6 @@ import com.android.mail.photo.fragments.PhotoViewFragment.HorizontallyScrollable
 public class PhotoView extends View implements GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener,
         HorizontallyScrollable {
-
     /** Zoom animation duration; in milliseconds */
     private final static long ZOOM_ANIMATION_DURATION = 300L;
     /** Rotate animation duration; in milliseconds */
@@ -136,8 +135,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
     private float mMinScale;
     /** Maximum scale to limit scaling to, 0 means no limit. */
     private float mMaxScale;
-    /** When {@code true}, we're in the middle of a scaling. Otherwise, we're not. */
-    private boolean mPerformingScale;
     /** When {@code true}, prevents scale end gesture from falsely triggering a fling. */
     private boolean mFlingDebounce;
     /** When {@code true}, prevents scale end gesture from falsely triggering a scroll. */
@@ -199,7 +196,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
                 if (!mTranslateRunnable.mRunning) {
                     snap();
                 }
-                mPerformingScale = false;
                 break;
         }
 
@@ -253,7 +249,7 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (mTransformsEnabled && !mPerformingScale) {
+        if (mTransformsEnabled) {
             if (!mScrollDebounce) {
                 translate(-distanceX, -distanceY);
             }
@@ -273,7 +269,7 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        if (mTransformsEnabled && !mPerformingScale) {
+        if (mTransformsEnabled) {
             if (!mFlingDebounce) {
                 mTranslateRunnable.start(velocityX, velocityY);
             }
@@ -285,7 +281,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
         if (mTransformsEnabled) {
-            mPerformingScale = true;
             mIsDoubleTouch = false;
             float currentScale = getScale();
             float newScale = currentScale * detector.getScaleFactor();
@@ -309,7 +304,6 @@ public class PhotoView extends View implements GestureDetector.OnGestureListener
             mDoubleTapDebounce = true;
             resetTransformations();
         }
-        mPerformingScale = false;
         mFlingDebounce = true;
         mScrollDebounce = true;
     }
