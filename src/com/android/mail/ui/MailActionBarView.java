@@ -304,7 +304,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         if (mIgnoreFirstNavigation && position == 1 && mAccount != null) {
             // Ignore the first navigation item selected because it is the list initializing
             // We already have an account.
-            LogUtils.d(LOG_TAG, "ignoreFirstNavigation: Ignoring navigation to position 0."
+            LogUtils.d(LOG_TAG, "ignoreFirstNavigation: Ignoring navigation to position 1."
                     + " mAccount = %s", mAccount.uri);
             // All user taps are now valid: even a tap on the current account to take the user to
             // the default inbox.
