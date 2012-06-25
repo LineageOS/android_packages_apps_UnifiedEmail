@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.android.ex.photo.PhotoViewActivity;
 import com.android.mail.R;
 import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.providers.Attachment;

@@ -16,7 +16,10 @@ LOCAL_PATH:= $(call my-dir)
 
 # Include res dir from chips
 chips_dir := ../../../frameworks/ex/chips/res
-res_dirs := $(chips_dir) res
+
+#Include res dir from photoviewer
+photo_dir := ../../../frameworks/ex/photoviewer/res
+res_dirs := $(chips_dir) $(photo_dir) res
 
 ##################################################
 # Build APK
@@ -26,6 +29,7 @@ src_dirs := src unified_src
 LOCAL_PACKAGE_NAME := UnifiedEmail
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-common-chips
+LOCAL_STATIC_JAVA_LIBRARIES += android-common-photoviewer
 LOCAL_STATIC_JAVA_LIBRARIES += guava
 LOCAL_STATIC_JAVA_LIBRARIES += android-common
 LOCAL_STATIC_JAVA_LIBRARIES += com.android.emailcommon
@@ -38,7 +42,7 @@ LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs)) \
         $(call all-logtags-files-under, $(src_dirs))
 LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs)) $(LOCAL_PATH)/res
 LOCAL_AAPT_FLAGS := --auto-add-overlay
-LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips
+LOCAL_AAPT_FLAGS += --extra-packages com.android.ex.chips:com.android.ex.photo
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
