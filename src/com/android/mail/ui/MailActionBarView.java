@@ -41,6 +41,7 @@ import com.android.mail.R;
 import com.android.mail.browse.SnippetTextView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.SearchRecentSuggestionsProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
@@ -558,7 +559,27 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
             return true;
         }
         collapseSearch();
+        String queryText = mSearchWidget.getQuery().toString();
         String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY));
+        if (!TextUtils.isEmpty(queryText)) {
+            if (queryText
+                    .lastIndexOf(SearchRecentSuggestionsProvider.QUERY_TOKEN_SEPARATOR) != -1) {
+                queryText = queryText.substring(0, queryText
+                        .lastIndexOf(SearchRecentSuggestionsProvider.QUERY_TOKEN_SEPARATOR));
+            }
+            // Since we auto-complete on each token in a query, if the query the
+            // user typed up until the last token is a substring of the
+            // suggestion they click, make sure we don't double include the
+            // query text. For example:
+            // user types john, that matches john palo alto
+            // User types john p, that matches john john palo alto
+            // Remove the first john
+            if (!TextUtils.isEmpty(query) && query.contains(queryText)
+                    && queryText.length() < query.length()) {
+                int start = query.indexOf(queryText);
+                query = query.substring(0, start) + query.substring(start + queryText.length());
+            }
+        }
         mController.onSearchRequested(query);
         return true;
     }
