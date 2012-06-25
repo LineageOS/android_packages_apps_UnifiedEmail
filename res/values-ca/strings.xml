@@ -120,12 +120,12 @@
     <string name="menu_photo_share" msgid="2214772815165829079">"Comparteix"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"Comp. tot"</string>
     <string name="saving" msgid="925514721138014677">"S\'està desant…"</string>
-    <!-- no translation found for attach_image (3713654042212409705) -->
-    <skip />
-    <!-- no translation found for attach_video (4996812138609677305) -->
-    <skip />
-    <!-- no translation found for number_of_attachments:one (6596149613229217650) -->
-    <!-- no translation found for number_of_attachments:other (4827833083675127409) -->
+    <string name="attach_image" msgid="3713654042212409705">"Imatge"</string>
+    <string name="attach_video" msgid="4996812138609677305">"Vídeo"</string>
+  <plurals name="number_of_attachments">
+    <item quantity="one" msgid="6596149613229217650">"%d fitxer adjunt"</item>
+    <item quantity="other" msgid="4827833083675127409">"%d fitxers adjunts"</item>
+  </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"Compartició mitjançant"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"Obre al navegador"</string>
     <string name="contextmenu_copy" msgid="4604170699444153037">"Copia"</string>
@@ -178,8 +178,10 @@
     <item quantity="one" msgid="8780588287902503608">"S\'està destacant <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
     <item quantity="other" msgid="44965256231544025">"S\'estan destacant <xliff:g id="COUNT">%1$d</xliff:g> converses."</item>
   </plurals>
-    <!-- no translation found for conversation_unstarred:one (8315328190288744398) -->
-    <!-- no translation found for conversation_unstarred:other (2222365088907519938) -->
+  <plurals name="conversation_unstarred">
+    <item quantity="one" msgid="8315328190288744398">"S\'està anul·lant el destacament d\'<xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
+    <item quantity="other" msgid="2222365088907519938">"S\'està anul·lant el destacament de <xliff:g id="COUNT">%1$d</xliff:g> converses."</item>
+  </plurals>
   <plurals name="conversation_unknown_operation">
     <item quantity="one" msgid="235911194119829184">"S\'està esperant l\'operació en <xliff:g id="COUNT">%1$d</xliff:g> conversa."</item>
     <item quantity="other" msgid="850868849811019745">"S\'està esperant l\'operació en <xliff:g id="COUNT">%1$d</xliff:g> converses."</item>
@@ -198,7 +200,7 @@
   </plurals>
   <plurals name="conversation_moved_to_inbox">
     <item quantity="one" msgid="8031416635831380071">"Se n\'ha mogut &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a la bústia d\'entrada."</item>
-    <item quantity="other" msgid="395816799927580909">"Se n\'han mogut &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a la bústia d\'entrada."</item>
+    <item quantity="other" msgid="395816799927580909">"Se n\'han mogut &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a la safata d\'entrada."</item>
   </plurals>
   <plurals name="conversation_deleted">
     <item quantity="one" msgid="4398693029405479323">"Se n\'han suprimit &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
