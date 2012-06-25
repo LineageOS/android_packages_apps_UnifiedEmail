@@ -299,7 +299,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      * @param position the position selected in the drop down.
      */
     private boolean ignoreFirstNavigation(int position) {
-        if (mIgnoreFirstNavigation && position == 0 && mAccount != null) {
+        if (mIgnoreFirstNavigation && position == 1 && mAccount != null) {
             // Ignore the first navigation item selected because it is the list initializing
             // We already have an account.
             LogUtils.d(LOG_TAG, "ignoreFirstNavigation: Ignoring navigation to position 0."

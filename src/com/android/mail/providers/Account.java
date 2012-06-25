@@ -502,4 +502,24 @@ public class Account extends android.accounts.Account implements Parcelable {
             return new Account[size];
         }
     };
+
+    /**
+     * Find the position of the given needle in the given array of accounts.
+     * @param haystack the array of accounts to search
+     * @param needle the URI of account to find
+     * @return a position between 0 and haystack.length-1 if an account is found, -1 if not found.
+     */
+    public static int findPosition(Account[] haystack, Uri needle) {
+        if (haystack != null && haystack.length > 0 && needle != null) {
+            // Need to go through the list of current accounts, and fix the
+            // position.
+            for (int i = 0, size = haystack.length; i < size; ++i) {
+                if (haystack[i].uri.equals(needle)) {
+                    LogUtils.d(LOG_TAG, "findPositionOfAccount: Found needle at position %d", i);
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
 }
