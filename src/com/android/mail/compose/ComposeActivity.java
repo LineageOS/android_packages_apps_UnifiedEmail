@@ -1682,6 +1682,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @param wrongEmailsOut Emails addresses that were invalid.
      */
     public void checkInvalidEmails(String[] to, List<String> wrongEmailsOut) {
+        if (mValidator == null) {
+            return;
+        }
         for (String email : to) {
             if (!mValidator.isValid(email)) {
                 wrongEmailsOut.add(email);
