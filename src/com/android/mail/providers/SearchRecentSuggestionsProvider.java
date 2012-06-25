@@ -1,19 +1,19 @@
-/*******************************************************************************
- *      Copyright (C) 2012 Google Inc.
- *      Licensed to The Android Open Source Project.
+/*
+ * Copyright (C) 2012 Google Inc.
+ * Licensed to The Android Open Source Project.
  *
- *      Licensed under the Apache License, Version 2.0 (the "License");
- *      you may not use this file except in compliance with the License.
- *      You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *           http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- *      Unless required by applicable law or agreed to in writing, software
- *      distributed under the License is distributed on an "AS IS" BASIS,
- *      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *      See the License for the specific language governing permissions and
- *      limitations under the License.
- *******************************************************************************/
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.android.mail.providers;
 
@@ -30,22 +30,20 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.android.mail.R;
-import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 
-/**
- * Class to provide search suggestions and contacts suggestions inside search. This was based
- * on {@link android.content.SearchRecentSuggestionsProvider} with the twist that this looks up
- * contacts in addition to historical searches. Contacts need to be shown with one icon while
- * recent searches are shown with another.
- */
-public class SearchSuggestionsProvider extends ContentProvider {
-    private static final String TAG = "SuggestionsProvider";
+public class SearchRecentSuggestionsProvider extends ContentProvider {
+    /*
+     * String used to delimit different parts of a query.
+     */
+    public static final String QUERY_TOKEN_SEPARATOR = " ";
 
+    // client-provided configuration values
     private String mAuthority;
     private int mMode;
-    // General database configuration and tables
+
+    // general database configuration and tables
     private SQLiteOpenHelper mOpenHelper;
     private static final String sDatabaseName = "suggestions.db";
     private static final String sSuggestions = "suggestions";
@@ -58,18 +56,21 @@ public class SearchSuggestionsProvider extends ContentProvider {
     //
     // 1      original implementation with queries, and 1 or 2 display columns
     // 1->2   added UNIQUE constraint to display1 column
-    private static final int DATABASE_VERSION = 2 << 8;
+    private static final int DATABASE_VERSION = 2 * 256;
 
     /**
      * This mode bit configures the database to record recent queries.  <i>required</i>
      *
      * @see #setupSuggestions(String, int)
      */
-    protected static final int DATABASE_MODE_QUERIES = 1;
+    public static final int DATABASE_MODE_QUERIES = 1;
+
+    // Uri and query support
     private static final int URI_MATCH_SUGGEST = 1;
 
     private Uri mSuggestionsUri;
     private UriMatcher mUriMatcher;
+
     private String mSuggestSuggestionClause;
     private String[] mSuggestionProjection;
 
@@ -99,8 +100,6 @@ public class SearchSuggestionsProvider extends ContentProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            LogUtils.w(TAG, "Upgrading database from version %d to %d, "
-                    + "which will destroy all old data", oldVersion, newVersion);
             db.execSQL("DROP TABLE IF EXISTS suggestions");
             onCreate(db);
         }
@@ -124,10 +123,11 @@ public class SearchSuggestionsProvider extends ContentProvider {
             throw new IllegalArgumentException();
         }
 
+        // saved values
         mAuthority = new String(authority);
         mMode = mode;
 
-        // Derived values
+        // derived values
         mSuggestionsUri = Uri.parse("content://" + mAuthority + "/suggestions");
         mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         mUriMatcher.addURI(mAuthority, SearchManager.SUGGEST_URI_PATH_QUERY, URI_MATCH_SUGGEST);
@@ -137,14 +137,18 @@ public class SearchSuggestionsProvider extends ContentProvider {
                 + getContext().getPackageName() + "/" + R.drawable.ic_history_holo_light;
 
         mSuggestSuggestionClause = "display1 LIKE ?";
-        mSuggestionProjection = new String[] {
+        mSuggestionProjection = new String [] {
                 "_id",
-                        "display1 AS " + SearchManager.SUGGEST_COLUMN_TEXT_1,
-                        "query AS " + SearchManager.SUGGEST_COLUMN_QUERY,
-                        "'" + historicalIcon + "' AS " + SearchManager.SUGGEST_COLUMN_ICON_1
+                "display1 AS " + SearchManager.SUGGEST_COLUMN_TEXT_1,
+                "query AS " + SearchManager.SUGGEST_COLUMN_QUERY,
+                "'" + historicalIcon + "' AS " + SearchManager.SUGGEST_COLUMN_ICON_1
         };
     }
 
+    /**
+     * This method is provided for use by the ContentResolver.  Do not override, or directly
+     * call from your own code.
+     */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -165,6 +169,10 @@ public class SearchSuggestionsProvider extends ContentProvider {
         return count;
     }
 
+    /**
+     * This method is provided for use by the ContentResolver.  Do not override, or directly
+     * call from your own code.
+     */
     @Override
     public String getType(Uri uri) {
         if (mUriMatcher.match(uri) == URI_MATCH_SUGGEST) {
@@ -184,16 +192,21 @@ public class SearchSuggestionsProvider extends ContentProvider {
         throw new IllegalArgumentException("Unknown Uri");
     }
 
+    /**
+     * This method is provided for use by the ContentResolver.  Do not override, or directly
+     * call from your own code.
+     */
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final int length = uri.getPathSegments().size();
+
+        int length = uri.getPathSegments().size();
         if (length < 1) {
             throw new IllegalArgumentException("Unknown Uri");
         }
         // Note:  This table has on-conflict-replace semantics, so insert() may actually replace()
         long rowID = -1;
-        final String base = uri.getPathSegments().get(0);
+        String base = uri.getPathSegments().get(0);
         Uri newUri = null;
         if (base.equals(sSuggestions)) {
             if (length == 1) {
@@ -210,6 +223,10 @@ public class SearchSuggestionsProvider extends ContentProvider {
         return newUri;
     }
 
+    /**
+     * This method is provided for use by the ContentResolver.  Do not override, or directly
+     * call from your own code.
+     */
     @Override
     public boolean onCreate() {
         if (mAuthority == null || mMode == 0) {
@@ -224,7 +241,7 @@ public class SearchSuggestionsProvider extends ContentProvider {
     private ArrayList<String> mFullQueryTerms;
 
     /**
-     * Copy the projection, and change the query field alone.
+     *  Copy the projection, and change the query field alone.
      * @param selectionArgs
      * @return projection
      */
@@ -235,9 +252,9 @@ public class SearchSuggestionsProvider extends ContentProvider {
         if (fullSize > 0) {
             String realQuery = "'";
             for (int i = 0; i < fullSize; i++) {
-                realQuery += mFullQueryTerms.get(i);
-                if (i < fullSize - 1) {
-                    realQuery += " ";
+                realQuery+= mFullQueryTerms.get(i);
+                if (i < fullSize -1) {
+                    realQuery += QUERY_TOKEN_SEPARATOR;
                 }
             }
             queryAs = realQuery + " ' || query AS " + SearchManager.SUGGEST_COLUMN_QUERY;
@@ -261,6 +278,10 @@ public class SearchSuggestionsProvider extends ContentProvider {
         mFullQueryTerms = terms;
     }
 
+    /**
+     * This method is provided for use by the ContentResolver. Do not override,
+     * or directly call from your own code.
+     */
     // TODO: Confirm no injection attacks here, or rewrite.
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
@@ -275,8 +296,7 @@ public class SearchSuggestionsProvider extends ContentProvider {
             myArgs = null;
         } else {
             String like = "%" + selectionArgs[0] + "%";
-            myArgs = new String[] {
-            like };
+            myArgs = new String[] { like };
             suggestSelection = mSuggestSuggestionClause;
         }
         // Suggestions are always performed with the default sort order
