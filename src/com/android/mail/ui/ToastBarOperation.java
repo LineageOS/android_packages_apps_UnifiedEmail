@@ -18,34 +18,59 @@ package com.android.mail.ui;
 
 import com.android.mail.R;
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * A simple holder class that stores the information to undo the application of a folder.
  */
-public class UndoOperation {
+public class ToastBarOperation implements Parcelable {
+    public static final int UNDO = 0;
+    public static final int ERROR = 1;
     private final int mAction;
     private final int mCount;
     private final boolean mBatch;
+    private final int mType;
 
     /**
-     * Create an UndoOperation
+     * Create a ToastBarOperation
      *
-     * @param count Number of conversations this undo would be applied to.
+     * @param count Number of conversations this action would be applied to.
      * @param menuId res id identifying the menu item tapped; used to determine
      *            what action was performed
      */
-    public UndoOperation(int count, int menuId) {
+    public ToastBarOperation(int count, int menuId, int type) {
         mCount = count;
         mAction = menuId;
         mBatch = mCount > 1;
+        mType = type;
+    }
+
+    public int getType() {
+        return mType;
     }
 
     public boolean isBatchUndo() {
         return mBatch;
     }
 
+    public ToastBarOperation(Parcel in) {
+        mCount = in.readInt();
+        mAction = in.readInt();
+        mBatch = in.readInt() != 0;
+        mType = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mCount);
+        dest.writeInt(mAction);
+        dest.writeInt(mBatch ? 1 : 0);
+        dest.writeInt(mType);
+    }
+
     /**
-     * Get a string description of the undo operation that will be performed
+     * Get a string description of the operation that will be performed
      * when the user taps the undo bar.
      */
     public String getDescription(Context context) {
@@ -76,5 +101,10 @@ public class UndoOperation {
         final String desc = (resId == -1) ? "" :
                 String.format(context.getResources().getQuantityString(resId, mCount), mCount);
         return desc;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

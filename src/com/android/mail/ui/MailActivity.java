@@ -282,7 +282,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public void onUndoAvailable(UndoOperation undoOp) {
+    public void onUndoAvailable(ToastBarOperation undoOp) {
         mController.onUndoAvailable(undoOp);
     }
 
