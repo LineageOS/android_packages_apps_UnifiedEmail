@@ -41,10 +41,6 @@ import java.util.ArrayList;
 public class AccountSpinnerAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
     /**
-     * The position of the current account being viewed as an index into the mAccounts array.
-     */
-    private int mCurrentAccountPos = -1;
-    /**
      * The position of the current account being viewed.
      */
     private Account mCurrentAccount = null;
@@ -149,25 +145,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         mShowAllFoldersItem = showAllFolders;
     }
 
-    /**
-     * Find the position of the given needle in the given array of accounts.
-     * @param haystack the array of accounts to search
-     * @param needle the URI of account to find
-     * @return a position between 0 and haystack.length-1 if an account is found, -1 if not found.
-     */
-    private static int findPositionOfAccount(Account[] haystack, Uri needle) {
-        if (haystack != null && haystack.length > 0 && needle != null) {
-            // Need to go through the list of current accounts, and fix the
-            // position.
-            for (int i = 0, size = haystack.length; i < size; ++i) {
-                if (haystack[i].uri.equals(needle)) {
-                    LogUtils.d(LOG_TAG, "findPositionOfAccount: Found needle at position %d", i);
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
+
     /**
      * Set the accounts for this spinner.
      * @param accounts
@@ -177,8 +155,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         mAllAccounts = accounts;
         mNumAccounts = accounts.length;
         if (!isCurrentAccountInvalid()) {
-            mCurrentAccountPos = findPositionOfAccount(accounts, currentAccount);
-            LogUtils.d(LOG_TAG, "setAccountArray: mCurrentAccountPos = %d", mCurrentAccountPos);
+            final int pos = Account.findPosition(accounts, currentAccount);
+            LogUtils.d(LOG_TAG, "setAccountArray: mCurrentAccountPos = %d", pos);
         }
         notifyDataSetChanged();
     }
@@ -213,9 +191,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             return false;
         }
         mCurrentAccount = account;
-        mCurrentAccountPos = findPositionOfAccount(mAllAccounts, account.uri);
-        LogUtils.d(LOG_TAG, "setCurrentAccount: mCurrentAccountPos = %d", mCurrentAccountPos);
-        if (mCurrentAccountPos >= 0) {
+        final int pos = Account.findPosition(mAllAccounts, account.uri);
+        LogUtils.d(LOG_TAG, "setCurrentAccount: mCurrentAccountPos = %d", pos);
+        if (pos >= 0) {
             requestRecentFoldersAndRedraw();
         }
         return true;
@@ -270,7 +248,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     }
 
     private String getCurrentAccountName() {
-        if (isCurrentAccountInvalid() || mCurrentAccountPos == -1) {
+        if (isCurrentAccountInvalid()) {
             return "";
         }
         return mCurrentAccount.name;
