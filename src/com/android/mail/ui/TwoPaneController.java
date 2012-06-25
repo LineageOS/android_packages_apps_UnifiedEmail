@@ -186,7 +186,7 @@ public final class TwoPaneController extends AbstractActivityController {
         }
     }
 
-    public void goUpFolderHierarchy(Folder current) {
+    private void goUpFolderHierarchy(Folder current) {
         Folder parent = current.parent;
         if (parent.parent != null) {
             super.onFolderSelected(parent);
@@ -277,7 +277,7 @@ public final class TwoPaneController extends AbstractActivityController {
         } else {
             mViewMode.enterConversationMode();
         }
-        mPagerController.show(mAccount, getFolder(), conversation);
+        mPagerController.show(mAccount, mFolder, conversation);
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null) {
             LogUtils.d(LOG_TAG, "showConversation: Selecting position %d.", conversation.position);
@@ -373,8 +373,8 @@ public final class TwoPaneController extends AbstractActivityController {
             if (mode == ViewMode.CONVERSATION_LIST && getFolderListFragment().showingHierarchy()) {
                 // If the user navigated via the left folders list into a child folder,
                 // back should take the user up to the parent folder's conversation list.
-                if (getFolder().parent != null) {
-                    goUpFolderHierarchy(getFolder());
+                if (mFolder.parent != null) {
+                    goUpFolderHierarchy(mFolder);
                 } else  {
                     // Show inbox; we are at the top of the hierarchy we were
                     // showing, and it doesn't have a parent, so we must want to

@@ -117,7 +117,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
 
     protected Account mAccount;
-    private Folder mFolder;
+    protected Folder mFolder;
     protected MailActionBarView mActionBarView;
     protected final RestrictedActivity mActivity;
     protected final Context mContext;
