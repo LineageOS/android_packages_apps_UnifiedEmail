@@ -223,6 +223,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * Boolean indicating whether ComposeActivity was launched from a Gmail controlled view.
      */
     private boolean mLaunchedFromEmail = false;
+    private RecipientTextWatcher mToListener;
+    private RecipientTextWatcher mCcListener;
+    private RecipientTextWatcher mBccListener;
 
 
     /**
@@ -795,15 +798,34 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 mReplyFromAccount.account : mAccount;
     }
 
+    private void clearChangeListeners() {
+        mSubject.removeTextChangedListener(this);
+        mBodyView.removeTextChangedListener(this);
+        mTo.removeTextChangedListener(mToListener);
+        mCc.removeTextChangedListener(mCcListener);
+        mBcc.removeTextChangedListener(mBccListener);
+        mFromSpinner.setOnAccountChangedListener(null);
+        mAttachmentsView.setAttachmentChangesListener(null);
+    }
+
     // Now that the message has been initialized from any existing draft or
     // ref message data, set up listeners for any changes that occur to the
     // message.
     private void initChangeListeners() {
         mSubject.addTextChangedListener(this);
         mBodyView.addTextChangedListener(this);
-        mTo.addTextChangedListener(new RecipientTextWatcher(mTo, this));
-        mCc.addTextChangedListener(new RecipientTextWatcher(mCc, this));
-        mBcc.addTextChangedListener(new RecipientTextWatcher(mBcc, this));
+        if (mToListener == null) {
+            mToListener = new RecipientTextWatcher(mTo, this);
+        }
+        mTo.addTextChangedListener(mToListener);
+        if (mCcListener == null) {
+            mCcListener = new RecipientTextWatcher(mCc, this);
+        }
+        mCc.addTextChangedListener(mCcListener);
+        if (mBccListener == null) {
+            mBccListener = new RecipientTextWatcher(mBcc, this);
+        }
+        mBcc.addTextChangedListener(mBccListener);
         mFromSpinner.setOnAccountChangedListener(this);
         mAttachmentsView.setAttachmentChangesListener(this);
     }
@@ -2198,6 +2220,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } else if (position == ComposeActivity.FORWARD) {
             mComposeMode = ComposeActivity.FORWARD;
         }
+        clearChangeListeners();
         if (initialComposeMode != mComposeMode) {
             resetMessageForModeChange();
             if (mDraft == null && mRefMessage != null) {
@@ -2218,6 +2241,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mCcBccView.show(false, showCc, showBcc);
         }
         updateHideOrShowCcBcc();
+        initChangeListeners();
         return true;
     }
 
