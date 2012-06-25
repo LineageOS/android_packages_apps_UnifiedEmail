@@ -636,15 +636,6 @@
 
 
     <!-- Photo View strings -->
-    <!-- Default title for photo view  [CHAR LIMIT=40] -->
-    <string name="photo_view_default_title">Photos from message</string>
-
-    <!-- Toast message if there was a problem loading the photo view.  [CHAR LIMIT=80] -->
-    <string name="photo_view_load_error">Photo couldn\'t be loaded.</string>
-
-    <!-- Message displayed when trying to play a video that isn't ready [CHAR LIMIT=100] -->
-    <string name="photo_view_video_not_ready">Video not available at this time. Please refresh.</string>
-
         <!-- Message displayed when displaying a place holder image (for photos & videos) [CHAR LIMIT=60] -->
     <string name="photo_view_placeholder_image">Item not available at this time. Please refresh.</string>
 
