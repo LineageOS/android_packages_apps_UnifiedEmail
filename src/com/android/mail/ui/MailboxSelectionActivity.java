@@ -19,6 +19,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import android.app.ActionBar;
@@ -52,7 +53,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
 
     private static final String ACCOUNT = "name";
     private static final String[] COLUMN_NAMES = { ACCOUNT };
-    protected static final String LOG_TAG = new LogUtils().getLogTag();
+    protected static final String LOG_TAG = LogTag.getLogTag();
     private final int[] VIEW_IDS = { R.id.mailbox_name };
     private boolean mCreateShortcut = false;
     private boolean mConfigureWidget = false;

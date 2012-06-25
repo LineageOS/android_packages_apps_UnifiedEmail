@@ -27,6 +27,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.ReplyFromAccount;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.utils.AccountUtils;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -44,7 +45,7 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
     private ReplyFromAccount mAccount;
     private final List<ReplyFromAccount> mReplyFromAccounts = Lists.newArrayList();
     private OnAccountChangedListener mAccountChangedListener;
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public FromAddressSpinner(Context context) {
         this(context, null);

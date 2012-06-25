@@ -47,6 +47,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -92,7 +93,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      */
     private final boolean mIsOnTablet;
 
-    public static final String LOG_TAG = new LogUtils().getLogTag();
+    public static final String LOG_TAG = LogTag.getLogTag();
 
     private final Handler mHandler = new Handler();
     private final Runnable mInvalidateMenu = new Runnable() {

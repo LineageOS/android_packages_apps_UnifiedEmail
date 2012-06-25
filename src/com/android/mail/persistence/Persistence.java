@@ -16,6 +16,7 @@
 
 package com.android.mail.persistence;
 
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -31,7 +32,7 @@ import java.util.Set;
  * order to get/set these values.
  */
 public class Persistence {
-    public static final String TAG = new LogUtils().getLogTag();
+    public static final String TAG = LogTag.getLogTag();
 
     private static Persistence mInstance = null;
 

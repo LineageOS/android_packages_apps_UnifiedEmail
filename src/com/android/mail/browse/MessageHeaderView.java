@@ -50,6 +50,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
@@ -80,7 +81,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private static final String RECIPIENT_HEADING_DELIMITER = "   ";
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private MessageHeaderViewCallbacks mCallbacks;
 

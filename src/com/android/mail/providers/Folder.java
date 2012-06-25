@@ -28,6 +28,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import com.google.common.collect.ImmutableList;
@@ -153,7 +154,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
     /**
      * Used only for debugging.
      */
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     /** An immutable, empty conversation list */
     public static final Collection<Folder> EMPTY = Collections.emptyList();

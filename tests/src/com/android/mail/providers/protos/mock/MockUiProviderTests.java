@@ -17,6 +17,7 @@
 package com.android.mail.providers.protos.mock;
 
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import android.content.ContentResolver;
@@ -42,7 +43,7 @@ public class MockUiProviderTests extends AndroidTestCase {
 
     @Override
     public void setUp() {
-        mLogTag = new LogUtils().getLogTag();
+        mLogTag = LogTag.getLogTag();
     }
 
     @SmallTest

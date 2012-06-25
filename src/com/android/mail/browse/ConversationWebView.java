@@ -22,6 +22,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import java.util.Set;
@@ -38,7 +39,7 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
      */
     private boolean mHandlingTouch;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public ConversationWebView(Context c) {
         this(c, null);

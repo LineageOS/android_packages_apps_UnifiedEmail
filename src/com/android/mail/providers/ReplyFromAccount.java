@@ -19,6 +19,7 @@ package com.android.mail.providers;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -31,7 +32,7 @@ import java.util.List;
 public class ReplyFromAccount implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
     private static final String BASE_ACCOUNT_URI = "baseAccountUri";
     private static final String ADDRESS_STRING = "address";
     private static final String REPLY_TO = "replyTo";

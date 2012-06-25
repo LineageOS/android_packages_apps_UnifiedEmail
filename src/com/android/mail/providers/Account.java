@@ -23,6 +23,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.android.mail.providers.UIProvider.SyncStatus;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
@@ -141,7 +142,7 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public final Settings settings;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     /**
      * Return a serialized String for this account.

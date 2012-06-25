@@ -32,6 +32,7 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.ui.SwipeHelper.Callback;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class SwipeableListView extends ListView implements Callback{
     private SwipeHelper mSwipeHelper;
     private boolean mEnableSwipe = false;
 
-    public static final String LOG_TAG = new LogUtils().getLogTag();
+    public static final String LOG_TAG = LogTag.getLogTag();
 
     private ConversationSelectionSet mConvSelectionSet;
     private int mSwipeAction;

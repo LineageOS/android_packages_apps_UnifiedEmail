@@ -28,14 +28,6 @@ public class LogUtils {
     // "GMT" + "+" or "-" + 4 digits
     private static final Pattern DATE_CLEANUP_PATTERN_WRONG_TIMEZONE =
             Pattern.compile("GMT([-+]\\d{4})$");
-    private static String LOG_TAG = "UnifiedEmail";
-
-    /**
-     * Get the log tag to apply to logging.
-     */
-    public String getLogTag() {
-        return LOG_TAG;
-    }
 
     /**
      * Priority constant for the println method; use LogUtils.v.
@@ -89,23 +81,23 @@ public class LogUtils {
     /**
      * Returns a boolean indicating whether debug logging is enabled.
      */
-    protected static boolean isDebugLoggingEnabled() {
+    protected static boolean isDebugLoggingEnabled(String tag) {
         if (buildPreventsDebugLogging()) {
             return false;
         }
         if (sDebugLoggingEnabledForTests != null) {
             return sDebugLoggingEnabledForTests.booleanValue();
         }
-        return Log.isLoggable(LOG_TAG, Log.DEBUG);
+        return Log.isLoggable(tag, Log.DEBUG);
     }
 
     /**
      * Returns a String for the specified content provider uri.  This will do
      * sanitation of the uri to remove PII if debug logging is not enabled.
      */
-    public static String contentUriToString(Uri uri) {
+    public static String contentUriToString(String tag, Uri uri) {
 
-        if (isDebugLoggingEnabled()) {
+        if (isDebugLoggingEnabled(tag)) {
             // Debug logging has been enabled, so log the uri as is
             return uri.toString();
         } else {

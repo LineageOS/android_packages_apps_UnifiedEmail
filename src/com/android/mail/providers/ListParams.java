@@ -16,6 +16,7 @@
 
 package com.android.mail.providers;
 
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import android.os.Parcel;
@@ -30,7 +31,7 @@ public class ListParams implements Parcelable {
 
     public static final int NO_LIMIT = -1;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     // The maximum number of results to be created by this search
     public final int mLimit;

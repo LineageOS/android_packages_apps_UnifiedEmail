@@ -27,6 +27,7 @@ import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.Message;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class HtmlConversationTemplates {
     // working set size vs. estimation but is exact).
     private static final int BUFFER_SIZE_CHARS = 64 * 1024;
 
-    private static final String TAG = new LogUtils().getLogTag();
+    private static final String TAG = LogTag.getLogTag();
 
     /**
      * Pattern for HTML img tags with a "src" attribute where the value is an absolutely-specified

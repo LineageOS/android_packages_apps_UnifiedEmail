@@ -40,6 +40,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.MailboxSelectionActivity;
 import com.android.mail.utils.AccountUtils;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Sets;
@@ -56,7 +57,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
 
     private static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private static String createWidgetPreferenceValue(Account account, Folder folder) {
         return account.uri.toString() + ACCOUNT_FOLDER_PREFERENCE_SEPARATOR + folder.uri.toString();

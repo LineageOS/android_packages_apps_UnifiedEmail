@@ -36,6 +36,7 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
@@ -61,7 +62,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
      */
     private static boolean sEnableAttachmentLoaders = true;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public MessageFooterView(Context context) {
         this(context, null);

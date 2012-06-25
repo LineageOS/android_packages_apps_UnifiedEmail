@@ -103,7 +103,7 @@ public class Utils {
     private static final String SMART_LINK_APP_VERSION = "version";
     private static String sVersionCode = null;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public static boolean isRunningJellybeanOrLater() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;

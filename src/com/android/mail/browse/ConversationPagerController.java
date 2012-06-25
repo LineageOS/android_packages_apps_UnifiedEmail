@@ -32,6 +32,7 @@ import com.android.mail.ui.ActivityController;
 import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SubjectDisplayChanger;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 /**
@@ -61,7 +62,7 @@ public class ConversationPagerController implements OnPageChangeListener {
     private SubjectDisplayChanger mSubjectDisplayChanger;
     private boolean mShown;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     /**
      * Enables an optimization to the PagerAdapter that causes ViewPager to initially load just the

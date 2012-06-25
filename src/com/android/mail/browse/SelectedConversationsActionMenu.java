@@ -44,6 +44,7 @@ import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.FoldersSelectionDialog;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SwipeableListView;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
@@ -58,7 +59,7 @@ import java.util.Collection;
 public class SelectedConversationsActionMenu implements ActionMode.Callback,
         ConversationSetObserver {
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     /**
      * The set of conversations to display the menu for.

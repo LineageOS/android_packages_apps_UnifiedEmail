@@ -69,6 +69,7 @@ import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
@@ -189,7 +190,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private final ConversationListLoaderCallbacks mListCursorCallbacks =
             new ConversationListLoaderCallbacks();
 
-    protected static final String LOG_TAG = new LogUtils().getLogTag();
+    protected static final String LOG_TAG = LogTag.getLogTag();
     /** Constants used to differentiate between the types of loaders. */
     private static final int LOADER_ACCOUNT_CURSOR = 0;
     private static final int LOADER_FOLDER_CURSOR = 2;

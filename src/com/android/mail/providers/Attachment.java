@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
@@ -40,7 +41,7 @@ public class Attachment implements Parcelable {
     /** Extras are "<path>". */
     public static final int  LOCAL_FILE = 1;
 
-    public static final String LOG_TAG = new LogUtils().getLogTag();
+    public static final String LOG_TAG = LogTag.getLogTag();
 
     /**
      * Attachment file name. See {@link AttachmentColumns#NAME}.

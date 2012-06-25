@@ -45,6 +45,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -60,7 +61,7 @@ public final class ConversationListFragment extends ListFragment implements
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     // Key used to keep track of the scroll state of the list.
     private static final String LIST_STATE_KEY = "list-state";
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     // True if we are on a tablet device
     private static boolean mTabletDevice;

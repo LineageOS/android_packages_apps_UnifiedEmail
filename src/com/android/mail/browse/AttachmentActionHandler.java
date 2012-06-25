@@ -31,6 +31,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentState;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -45,7 +46,7 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
     private final AttachmentViewInterface mView;
     private final Context mContext;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private class AttachmentCommandHandler extends AsyncQueryHandler {
 

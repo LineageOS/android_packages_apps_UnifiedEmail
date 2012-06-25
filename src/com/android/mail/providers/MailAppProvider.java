@@ -35,6 +35,7 @@ import android.text.TextUtils;
 
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.protos.boot.AccountReceiver;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MatrixCursorWithExtra;
 import com.google.common.collect.ImmutableSet;
@@ -71,7 +72,7 @@ public abstract class MailAppProvider extends ContentProvider
      */
     public static final String ADD_ACCOUNT_RESULT_ACCOUNTS_EXTRA = "addAccountResultAccounts";
 
-    private final static String LOG_TAG = new LogUtils().getLogTag();
+    private final static String LOG_TAG = LogTag.getLogTag();
 
     private final Map<Uri, AccountCacheEntry> mAccountCache = Maps.newHashMap();
 
