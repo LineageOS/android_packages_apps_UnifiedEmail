@@ -65,6 +65,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
@@ -83,7 +84,7 @@ public final class ConversationViewFragment extends Fragment implements
         MessageHeaderViewCallbacks,
         SuperCollapsedBlock.OnClickListener {
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
 
     private static final int MESSAGE_LOADER_ID = 0;

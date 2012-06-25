@@ -20,6 +20,7 @@ import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.DefaultReplyBehavior;
 import com.android.mail.providers.UIProvider.MessageTextSize;
 import com.android.mail.providers.UIProvider.SnapHeaderValue;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -49,7 +50,7 @@ public class Settings implements Parcelable {
         public void onSettingsChanged(Settings updatedSettings);
     }
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     static final Settings EMPTY_SETTINGS = new Settings();
 

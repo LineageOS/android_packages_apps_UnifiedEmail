@@ -4,6 +4,7 @@ package com.android.mail.perf;
 
 import android.os.SystemClock;
 
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -15,7 +16,7 @@ import com.android.mail.utils.Utils;
 public class SimpleTimer {
 
     private static final boolean ENABLE_SIMPLE_TIMER = true;
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private final boolean mEnabled;
     private long mStartTime;

@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.ConversationListContext;
 
@@ -37,7 +38,7 @@ import android.text.TextUtils;
  * A simple {@code BroadcastReceiver} which supresses new e-mail notifications for a given folder.
  */
 public class SuppressNotificationReceiver extends BroadcastReceiver {
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private Context mContext;
     private AbstractActivityController mController;

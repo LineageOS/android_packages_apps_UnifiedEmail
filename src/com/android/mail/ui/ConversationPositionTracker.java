@@ -23,6 +23,7 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AutoAdvance;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import java.util.Collection;
@@ -33,7 +34,7 @@ import java.util.Collection;
  * is in a different position.
  */
 public class ConversationPositionTracker {
-    protected static final String LOG_TAG = new LogUtils().getLogTag();
+    protected static final String LOG_TAG = LogTag.getLogTag();
 
     /** Cursor into the conversations */
     private ConversationCursor mCursor = null;

@@ -36,6 +36,7 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.ui.AttachmentTile;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -52,7 +53,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
 
     private final AttachmentActionHandler mActionHandler;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public MessageAttachmentTile(Context context) {
         this(context, null);

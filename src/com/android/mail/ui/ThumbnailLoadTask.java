@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.android.mail.providers.Attachment;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ import java.io.IOException;
  * the {@link AttachmentBitmapHolder} interface.
  */
 public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private final AttachmentBitmapHolder mHolder;
     private final int mWidth;

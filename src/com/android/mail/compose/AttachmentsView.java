@@ -42,6 +42,7 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
@@ -54,7 +55,7 @@ import java.util.ArrayList;
  * View for displaying attachments in the compose screen.
  */
 class AttachmentsView extends LinearLayout implements OnClickListener {
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private final Resources mResources;
 

@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Handler;
 
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UiHandler {
     private final Handler mHandler = new Handler();
     private boolean mEnabled = true;
-    private final static String LOG_TAG = new LogUtils().getLogTag();
+    private final static String LOG_TAG = LogTag.getLogTag();
 
     /** Number of {@link Runnable} in the queue. */
     private AtomicInteger mCount = new AtomicInteger(0);

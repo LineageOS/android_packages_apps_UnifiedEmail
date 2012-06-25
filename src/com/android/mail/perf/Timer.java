@@ -2,12 +2,13 @@
 
 package com.android.mail.perf;
 
-import com.google.common.collect.Maps;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 
 import android.os.Debug;
 import android.os.SystemClock;
+
+import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -43,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class Timer {
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     // set this to false to compile out all timer calls
     public static final boolean ENABLE_TIMER = false;

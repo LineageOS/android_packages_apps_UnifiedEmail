@@ -38,6 +38,7 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 /**
@@ -45,7 +46,7 @@ import com.android.mail.utils.LogUtils;
  */
 public final class FolderListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor>, ViewMode.ModeChangeListener {
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     private ControllableActivity mActivity;
 

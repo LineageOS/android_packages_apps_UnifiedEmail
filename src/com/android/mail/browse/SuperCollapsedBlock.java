@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 /**
@@ -52,7 +53,7 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
     private TextView mCountView;
     private View mBackgroundView;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public SuperCollapsedBlock(Context context) {
         this(context, null);

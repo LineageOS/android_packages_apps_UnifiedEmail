@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.utils.LogTag;
 import com.google.common.collect.Sets;
 
 import android.content.Context;
@@ -35,7 +36,7 @@ import java.util.SortedSet;
  *
  */
 public class FolderDisplayer {
-    public static final String LOG_TAG = new LogUtils().getLogTag();
+    public static final String LOG_TAG = LogTag.getLogTag();
     protected Context mContext;
     protected final SortedSet<Folder> mFoldersSortedSet = Sets.newTreeSet();
 

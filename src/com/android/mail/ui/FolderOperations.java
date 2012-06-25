@@ -17,11 +17,12 @@
 
 package com.android.mail.ui;
 
+import com.android.mail.providers.Folder;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import com.android.mail.providers.Folder;
-import com.android.mail.utils.LogUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class FolderOperations {
      */
     private final Map<String, Operation> mOperations;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public FolderOperations() {
         mOperations = Maps.newHashMap();

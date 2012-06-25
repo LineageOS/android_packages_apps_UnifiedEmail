@@ -29,6 +29,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.RecentFolderList;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -84,7 +85,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public static final int TYPE_FOLDER = 2;
     public static final int TYPE_ALL_FOLDERS = 3;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
     /**
      * There can be three types of views: Accounts (test@android.com, fifi@example.com), folders
      * (Inbox, Outbox) or header and footer. This method returns the type of account at given

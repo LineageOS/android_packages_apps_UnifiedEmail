@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.android.mail.providers.Attachment;
 import com.android.mail.R;
 import com.android.mail.utils.AttachmentUtils;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import org.json.JSONException;
@@ -35,7 +36,7 @@ import org.json.JSONException;
  */
 class AttachmentComposeView extends LinearLayout implements AttachmentDeletionInterface {
     private final Attachment mAttachment;
-    private final static String LOG_TAG = new LogUtils().getLogTag();
+    private final static String LOG_TAG = LogTag.getLogTag();
 
     public AttachmentComposeView(Context c, Attachment attachment) {
         super(c);

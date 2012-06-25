@@ -19,7 +19,7 @@
 
 package org.apache.james.mime4j;
 
-import com.android.mail.utils.LoggingInputStream;
+import com.android.emailcommon.utility.LoggingInputStream;
 
 import org.apache.james.mime4j.decoder.Base64InputStream;
 import org.apache.james.mime4j.decoder.QuotedPrintableInputStream;

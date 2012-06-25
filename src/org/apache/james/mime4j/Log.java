@@ -16,13 +16,13 @@
 
 package org.apache.james.mime4j;
 
-import com.android.mail.utils.LogUtils;
+import com.android.emailcommon.Logging;
 
 /**
  * Empty stub for the apache logging library.
  */
 public class Log {
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = Logging.LOG_TAG;
 
     public Log(Class mClazz) {
     }

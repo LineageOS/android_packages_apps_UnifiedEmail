@@ -16,6 +16,7 @@
 package com.android.mail.providers;
 
 import com.android.common.Rfc822Validator;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
@@ -74,7 +75,7 @@ public class Address {
     private static final char LIST_DELIMITER_EMAIL = '\1';
     private static final char LIST_DELIMITER_PERSONAL = '\2';
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public Address(String name, String address) {
         setName(name);

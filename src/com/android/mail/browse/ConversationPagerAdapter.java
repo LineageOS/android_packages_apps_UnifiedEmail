@@ -35,6 +35,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.FragmentStatePagerAdapter2;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -75,7 +76,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
      */
     private ViewPager mPager;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public ConversationPagerAdapter(Resources res, FragmentManager fm, Account account,
             Folder folder, Conversation initialConversation) {

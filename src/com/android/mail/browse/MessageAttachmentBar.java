@@ -42,10 +42,10 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.AttachmentUtils;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MimeType;
 import com.android.mail.utils.Utils;
-
 /**
  * View for a single attachment in conversation view. Shows download status and allows launching
  * intents to act on an attachment.
@@ -66,7 +66,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
 
     private final AttachmentActionHandler mActionHandler;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public MessageAttachmentBar(Context context) {
         this(context, null);

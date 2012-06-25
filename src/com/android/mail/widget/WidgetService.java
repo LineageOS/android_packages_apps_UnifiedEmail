@@ -23,6 +23,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.utils.DelayedTaskHandler;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -68,7 +69,7 @@ public class WidgetService extends RemoteViewsService {
             implements RemoteViewsService.RemoteViewsFactory, OnLoadCompleteListener<Cursor> {
         private static final int MAX_CONVERSATIONS_COUNT = 25;
         private static final int MAX_SENDERS_LENGTH = 25;
-        private static final String LOG_TAG = new LogUtils().getLogTag();
+        private static final String LOG_TAG = LogTag.getLogTag();
 
         private final Context mContext;
         private final int mAppWidgetId;

@@ -19,6 +19,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 /**
@@ -27,7 +28,7 @@ import com.android.mail.utils.LogUtils;
  */
 public class EmptyService extends Service
 {
-    private static final String TAG = new LogUtils().getLogTag();
+    private static final String TAG = LogTag.getLogTag();
 
     @Override
     public void onCreate() {

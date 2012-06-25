@@ -35,6 +35,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     /**
      * Used only for debugging.
      */
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account, Settings settings, ViewMode viewMode,

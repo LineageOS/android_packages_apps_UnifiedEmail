@@ -41,6 +41,7 @@ import android.widget.RelativeLayout;
 
 import com.android.mail.R;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
@@ -73,7 +74,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * Scaling modifier for sAnimationSlideRightDuration.
      */
     private static final double SLIDE_DURATION_SCALE = 2.0 / 3.0;
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
     private static final TimeInterpolator sLeftInterpolator = new DecelerateInterpolator(2.25f);
     private static final TimeInterpolator sRightInterpolator = new DecelerateInterpolator(2.5f);
 

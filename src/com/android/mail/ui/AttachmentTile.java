@@ -29,6 +29,7 @@ import android.widget.RelativeLayout;
 import com.android.ex.photo.util.ImageUtils;
 import com.android.mail.R;
 import com.android.mail.providers.Attachment;
+import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
 /**
@@ -41,7 +42,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     private ImageView.ScaleType mIconScaleType;
     private ThumbnailLoadTask mThumbnailTask;
 
-    private static final String LOG_TAG = new LogUtils().getLogTag();
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     /**
      * Returns true if the attachment should be rendered as a tile.
