@@ -29,7 +29,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.mail.R;
-import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 
@@ -41,9 +40,7 @@ import java.util.ArrayList;
  * final String AUTHORITY = MailAppProvider.getInstance().getSuggestionAuthority()
  * It needs to be done after the MailAppProvider is constructed.
  */
-public class SuggestionsProvider extends SearchSuggestionsProvider {
-    private static final String LOG_TAG = new LogUtils().getLogTag();
-
+public class SuggestionsProvider extends SearchRecentSuggestionsProvider {
     /**
      * Mode used in the constructor of SuggestionsProvider.
      */
@@ -93,7 +90,8 @@ public class SuggestionsProvider extends SearchSuggestionsProvider {
         // Get the custom suggestions for email which are from, to, etc.
         if (query != null) {
             // Tokenize the query.
-            String[] tokens = TextUtils.split(query, " ");
+            String[] tokens = TextUtils.split(query,
+                    SearchRecentSuggestionsProvider.QUERY_TOKEN_SEPARATOR);
             // There are multiple tokens, so query on the last token only.
             if (tokens != null && tokens.length > 1) {
                 query = tokens[tokens.length - 1];
@@ -173,7 +171,7 @@ public class SuggestionsProvider extends SearchSuggestionsProvider {
         if (mFullQueryTerms != null) {
             synchronized (mTermsLock) {
                 for (int i = 0, size = mFullQueryTerms.size(); i < size; i++) {
-                    query.append(mFullQueryTerms.get(i)).append(" ");
+                    query.append(mFullQueryTerms.get(i)).append(QUERY_TOKEN_SEPARATOR);
                 }
             }
         }

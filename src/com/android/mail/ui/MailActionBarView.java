@@ -552,12 +552,13 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         final boolean haveValidQuery = (c != null) && c.moveToPosition(position);
         if (!haveValidQuery) {
             LogUtils.d(LOG_TAG, "onSuggestionClick: Couldn't get a search query");
-            // We haven't handled this query, but the default behavior will leave EXTRA_ACCOUNT
-            // un-populated, leading to a crash. So claim that we have handled the event.
+            // We haven't handled this query, but the default behavior will
+            // leave EXTRA_ACCOUNT un-populated, leading to a crash. So claim
+            // that we have handled the event.
             return true;
         }
         collapseSearch();
-        final String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY));
+        String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY));
         mController.onSearchRequested(query);
         return true;
     }
