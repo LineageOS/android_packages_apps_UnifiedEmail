@@ -456,8 +456,7 @@ public final class ConversationListFragment extends ListFragment implements
         mFooterView.updateStatus(mFolder);
         if (mFolder.isSyncInProgress()) {
             mListAdapter.showFooter();
-        } else if (!mFolder.isSyncInProgress()
-                && mFolder.lastSyncResult == UIProvider.LastSyncResult.SUCCESS) {
+        } else if (mFolder.lastSyncResult == UIProvider.LastSyncResult.SUCCESS) {
             // Check the status of the folder to see if we are done loading.
             updateSearchResultHeader(mFolder != null ? mFolder.totalCount : 0);
             if (mFolder.totalCount == 0) {
@@ -474,6 +473,8 @@ public final class ConversationListFragment extends ListFragment implements
                     }
                 }
             }
+        } else {
+            mListAdapter.showFooter();
         }
     }
 
