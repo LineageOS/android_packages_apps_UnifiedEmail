@@ -28,12 +28,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
@@ -70,6 +69,8 @@ public final class FolderListFragment extends ListFragment implements
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
     private static final String ARG_FOLDER_URI = "arg-folder-list-uri";
     private FolderItemView.DropHandler mDropHandler;
+
+    private FolderListFragmentCursorAdapter mCursorAdapter;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -117,6 +118,15 @@ public final class FolderListFragment extends ListFragment implements
             return;
         }
 
+        if (mParentFolder != null) {
+            mCursorAdapter = new HierarchicalFolderListAdapter(mActivity.getActivityContext(),
+                    null, mParentFolder);
+        } else {
+            mCursorAdapter = new FolderListAdapter(mActivity.getActivityContext(),
+                    R.layout.folder_item, null, null, null);
+        }
+        setListAdapter(mCursorAdapter);
+
         selectInitialFolder(mActivity.getCurrentFolder());
         getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
     }
@@ -137,12 +147,11 @@ public final class FolderListFragment extends ListFragment implements
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setEmptyView(null);
-        // Note - we manually save/restore the listview state.
-        mListView.setSaveEnabled(false);
 
         if (mParentFolder != null) {
             mSelectedFolder = mParentFolder;
         }
+
         return rootView;
     }
 
@@ -192,13 +201,7 @@ public final class FolderListFragment extends ListFragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mFolderListCursor = data;
-        if (mParentFolder != null) {
-            setListAdapter(new HierarchicalFolderListAdapter(mActivity.getActivityContext(),
-                    mFolderListCursor, mParentFolder));
-        } else {
-            setListAdapter(new FolderListAdapter(mActivity.getActivityContext(),
-                R.layout.folder_item, mFolderListCursor, null, null));
-        }
+        mCursorAdapter.setCursor(data);
     }
 
     @Override
@@ -206,7 +209,12 @@ public final class FolderListFragment extends ListFragment implements
         // Do nothing.
     }
 
-    private class FolderListAdapter extends SimpleCursorAdapter {
+    private interface FolderListFragmentCursorAdapter extends ListAdapter {
+        void setCursor(Cursor cursor);
+    }
+
+    private class FolderListAdapter extends SimpleCursorAdapter
+            implements FolderListFragmentCursorAdapter{
 
         public FolderListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
             super(context, layout, c, new String[0], new int[0], 0);
@@ -230,9 +238,15 @@ public final class FolderListFragment extends ListFragment implements
             Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.folder_box));
             return folderItemView;
         }
+
+        @Override
+        public void setCursor(Cursor cursor) {
+            super.changeCursor(cursor);
+        }
     }
 
-    private class HierarchicalFolderListAdapter extends ArrayAdapter<Folder> {
+    private class HierarchicalFolderListAdapter extends ArrayAdapter<Folder>
+            implements FolderListFragmentCursorAdapter{
 
         private static final int PARENT = 0;
         private static final int CHILD = 1;
@@ -242,12 +256,7 @@ public final class FolderListFragment extends ListFragment implements
             super(context, R.layout.folder_item);
             mParentUri = parentFolder.uri;
             add(parentFolder);
-            if (c != null && c.getCount() > 0) {
-                c.moveToFirst();
-                do {
-                    add(new Folder(c));
-                } while (c.moveToNext());
-            }
+            setCursor(c);
         }
 
         @Override
@@ -279,6 +288,17 @@ public final class FolderListFragment extends ListFragment implements
             }
             Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.folder_box));
             return folderItemView;
+        }
+
+        @Override
+        public void setCursor(Cursor cursor) {
+            clear();
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    add(new Folder(cursor));
+                } while (cursor.moveToNext());
+            }
         }
     }
 
