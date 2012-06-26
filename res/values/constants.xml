@@ -48,7 +48,9 @@
     <!-- We don't want the unread count to flicker too much in the action bar, when a lot of
     activity.  Throttle loader updates. -->
     <integer name="folder_item_refresh_delay_ms">500</integer>
-    <integer name="conversation_text_zoom_percent">87</integer>
+    <integer name="conversation_desired_font_size_px">14</integer>
+    <!-- matches 'font-size' style in template_conversation_upper.html -->
+    <integer name="conversation_unstyled_font_size_px">13</integer>
 
     <!-- Whether the list is collapsed in conversation view mode -->
     <bool name="list_collapsed">true</bool>
