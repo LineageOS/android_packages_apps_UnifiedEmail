@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
 
     private int mPhotoIndex;
     private Uri mAttachmentsListUri;
+    private View mTextContainer;
 
     private final AttachmentActionHandler mActionHandler;
 
@@ -91,6 +93,8 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        mTextContainer = findViewById(R.id.attachment_tile_text_container);
 
         setOnClickListener(this);
     }
@@ -136,5 +140,17 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
     }
 
     public void onUpdateStatus() {
+    }
+
+    @Override
+    public void setThumbnailToDefault() {
+        super.setThumbnailToDefault();
+        mTextContainer.setVisibility(VISIBLE);
+    }
+
+    @Override
+    public void setThumbnail(Bitmap result) {
+        super.setThumbnail(result);
+        mTextContainer.setVisibility(GONE);
     }
 }

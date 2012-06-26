@@ -21,8 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dip"
         android:orientation="horizontal"
-        android:background="?android:attr/selectableItemBackground"
-        android:rowCount="2"
+        android:background="@color/compose_attachment_title_background_color"
+        android:rowCount="1"
         android:columnCount="2"
         android:visibility="visible">
         <TextView
@@ -47,18 +47,20 @@
             android:layout_marginRight="8dip"
             android:src="@drawable/ic_menu_expander_minimized_holo_light"/>
         <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/message_details_header_bottom_border_height"
-            android:layout_row="1"
+            android:layout_width="0dip"
+            android:layout_height="0dip"
+            android:layout_gravity="fill"
+            android:background="?android:attr/selectableItemBackground"
+            android:layout_row="0"
             android:layout_column="0"
             android:layout_columnSpan="2"
-            android:background="@color/conv_subject_border"
             />
     </GridLayout>
     <com.android.mail.ui.AttachmentTileGrid
         android:id="@+id/attachment_tile_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dip"
         android:layout_marginBottom="8dip" />
     <LinearLayout
         android:id="@+id/attachment_bar_list"
