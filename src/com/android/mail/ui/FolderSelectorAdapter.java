@@ -89,6 +89,9 @@ public class FolderSelectorAdapter extends BaseAdapter {
     }
 
     protected void createFolderRows(Cursor folders, Set<String> initiallySelected) {
+        if (folders == null) {
+            return;
+        }
         folders.moveToFirst();
         do {
             final Folder folder = new Folder(folders);

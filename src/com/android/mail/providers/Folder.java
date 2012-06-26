@@ -140,6 +140,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
 
     /**
      * The possibly empty name of this folder with full hierarchy.
+     * The expected format is: parent/folder1/folder2/folder3/folder4
      */
     public String hierarchicalDesc;
 
