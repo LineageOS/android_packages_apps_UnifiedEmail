@@ -43,6 +43,7 @@
     <!-- Must match the quoted_text_background_color_string -->
     <color name="compose_background_color">@android:color/white</color>
     <string name="quoted_text_font_color_string" translatable="false">#777777</string>
+    <color name="compose_attachment_title_background_color">#CCCCCC</color>
 
     <color name="conv_header_add_label_text">@android:color/black</color>
     <color name="conv_header_add_label_background">#eeeeee</color>
