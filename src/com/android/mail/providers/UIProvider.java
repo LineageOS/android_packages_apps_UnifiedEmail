@@ -96,6 +96,7 @@ public class UIProvider {
             AccountColumns.URI,
             AccountColumns.CAPABILITIES,
             AccountColumns.FOLDER_LIST_URI,
+            AccountColumns.FULL_FOLDER_LIST_URI,
             AccountColumns.SEARCH_URI,
             AccountColumns.ACCOUNT_FROM_ADDRESSES,
             AccountColumns.SAVE_DRAFT_URI,
@@ -130,33 +131,34 @@ public class UIProvider {
     public static final int ACCOUNT_URI_COLUMN = 3;
     public static final int ACCOUNT_CAPABILITIES_COLUMN = 4;
     public static final int ACCOUNT_FOLDER_LIST_URI_COLUMN = 5;
-    public static final int ACCOUNT_SEARCH_URI_COLUMN = 6;
-    public static final int ACCOUNT_FROM_ADDRESSES_COLUMN = 7;
-    public static final int ACCOUNT_SAVE_DRAFT_URI_COLUMN = 8;
-    public static final int ACCOUNT_SEND_MESSAGE_URI_COLUMN = 9;
-    public static final int ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN = 10;
-    public static final int ACCOUNT_UNDO_URI_COLUMN = 11;
-    public static final int ACCOUNT_SETTINGS_INTENT_URI_COLUMN = 12;
-    public static final int ACCOUNT_SYNC_STATUS_COLUMN = 13;
-    public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 14;
-    public static final int ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN = 15;
-    public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 16;
-    public static final int ACCOUNT_MIME_TYPE_COLUMN = 17;
-    public static final int ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN = 18;
-    public static final int ACCOUNT_COLOR_COLUMN = 19;
-    public static final int ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN = 20;
+    public static final int ACCOUNT_FULL_FOLDER_LIST_URI_COLUMN = 6;
+    public static final int ACCOUNT_SEARCH_URI_COLUMN = 7;
+    public static final int ACCOUNT_FROM_ADDRESSES_COLUMN = 8;
+    public static final int ACCOUNT_SAVE_DRAFT_URI_COLUMN = 9;
+    public static final int ACCOUNT_SEND_MESSAGE_URI_COLUMN = 10;
+    public static final int ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN = 11;
+    public static final int ACCOUNT_UNDO_URI_COLUMN = 12;
+    public static final int ACCOUNT_SETTINGS_INTENT_URI_COLUMN = 13;
+    public static final int ACCOUNT_SYNC_STATUS_COLUMN = 14;
+    public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 15;
+    public static final int ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN = 16;
+    public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 17;
+    public static final int ACCOUNT_MIME_TYPE_COLUMN = 18;
+    public static final int ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN = 19;
+    public static final int ACCOUNT_COLOR_COLUMN = 20;
+    public static final int ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN = 21;
 
-    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 21;
-    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 22;
-    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 23;
-    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 24;
-    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 25;
-    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 26;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 27;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 28;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 29;
-    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 30;
-    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 31;
+    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 22;
+    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 23;
+    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 24;
+    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 25;
+    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 26;
+    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 27;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 28;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 29;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 30;
+    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 31;
+    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 32;
 
 
     public static final class AccountCapabilities {
@@ -288,6 +290,12 @@ public class UIProvider {
          * list of top level folders for this account.
          */
         public static final String FOLDER_LIST_URI = "folderListUri";
+
+        /**
+         * This string column contains the content provider uri to return the
+         * list of all folders for this account.
+         */
+        public static final String FULL_FOLDER_LIST_URI = "fullFolderListUri";
 
         /**
          * This string column contains the content provider uri that can be queried for search
