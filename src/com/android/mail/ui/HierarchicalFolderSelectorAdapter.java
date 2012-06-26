@@ -82,7 +82,7 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
                 folderName = splitHierarchy[0];
             }
             if (!TextUtils.isEmpty(directParentName)) {
-                int formatString = -1;
+                final int formatString;
                 if (length > 3) {
                     formatString = R.string.hierarchical_folder_parent_top_ellip;
                 } else {

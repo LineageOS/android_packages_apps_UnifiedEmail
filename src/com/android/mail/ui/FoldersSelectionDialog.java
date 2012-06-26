@@ -64,8 +64,9 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         mSingle = !account
                 .supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
         // TODO: (mindyp) make async
-        final Cursor foldersCursor = context.getContentResolver().query(account.folderListUri,
-                UIProvider.FOLDERS_PROJECTION, null, null, null);
+        final Cursor foldersCursor = context.getContentResolver().query(
+                account.fullFolderListUri != null ? account.fullFolderListUri
+                        : account.folderListUri, UIProvider.FOLDERS_PROJECTION, null, null, null);
         try {
             final HashSet<String> conversationFolders = new HashSet<String>();
             for (Conversation conversation: target) {
