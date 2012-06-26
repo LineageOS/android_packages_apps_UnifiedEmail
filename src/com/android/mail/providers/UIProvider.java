@@ -510,7 +510,8 @@ public class UIProvider {
         FolderColumns.ICON_RES_ID,
         FolderColumns.BG_COLOR,
         FolderColumns.FG_COLOR,
-        FolderColumns.LOAD_MORE_URI
+        FolderColumns.LOAD_MORE_URI,
+        FolderColumns.HIERARCHICAL_DESC
     };
 
     public static final int FOLDER_ID_COLUMN = 0;
@@ -531,6 +532,7 @@ public class UIProvider {
     public static final int FOLDER_BG_COLOR_COLUMN = 15;
     public static final int FOLDER_FG_COLOR_COLUMN = 16;
     public static final int FOLDER_LOAD_MORE_URI_COLUMN = 17;
+    public static final int FOLDER_HIERARCHICAL_DESC_COLUMN = 18;
 
     public static final class FolderType {
         public static final int DEFAULT = 0;
@@ -660,6 +662,12 @@ public class UIProvider {
          * String with the content provider Uri used to request more items in the folder, or null.
          */
         public static final String LOAD_MORE_URI = "loadMoreUri";
+
+        /**
+         * Possibly empty string that describes the full hierarchy of a folder
+         * along with its name.
+         */
+        public static final String HIERARCHICAL_DESC = "hierarchicalDesc";
 
         public FolderColumns() {}
     }
