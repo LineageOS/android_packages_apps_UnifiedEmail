@@ -76,7 +76,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     }
 
-    private List<FolderRow> mFolderRows = Lists.newArrayList();
+    protected List<FolderRow> mFolderRows = Lists.newArrayList();
     private LayoutInflater mInflater;
     private int mLayout;
 
@@ -85,21 +85,30 @@ public class FolderSelectorAdapter extends BaseAdapter {
             Set<String> initiallySelected, boolean single) {
         mInflater = LayoutInflater.from(context);
         mLayout = single? R.layout.single_folders_view : R.layout.multi_folders_view;
-        processLists(folders, initiallySelected);
+        createFolderRows(folders, initiallySelected);
     }
 
-    private void processLists(Cursor folders, Set<String> initiallySelected) {
+    protected void createFolderRows(Cursor folders, Set<String> initiallySelected) {
+        folders.moveToFirst();
         while (folders.moveToNext()) {
             final Folder folder = new Folder(folders);
-            // We only want to show the non-Trash folders that can accept moved messages
-            if (folder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES) &&
-                    folder.type != FolderType.TRASH) {
+            if (meetsRequirements(folder)) {
                 final FolderRow row =
                         new FolderRow(folder, initiallySelected.contains(folder.uri.toString()));
                 mFolderRows.add(row);
             }
         }
         Collections.sort(mFolderRows);
+    }
+
+    /**
+     * Return whether the supplied folder meets the requirements to be displayed
+     * in the folder list.
+     */
+    protected boolean meetsRequirements(Folder folder) {
+        // We only want to show the non-Trash folders that can accept moved messages
+        return folder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES) &&
+                folder.type != FolderType.TRASH;
     }
 
     @Override
@@ -128,7 +137,6 @@ public class FolderSelectorAdapter extends BaseAdapter {
             checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
             // Suppress the checkbox selection, and handle the toggling of the
             // folder on the parent list item's click handler.
-            checkBox.setClickable(false);
             checkBox.setClickable(false);
             view.setTag(R.id.checkbox, checkBox);
             colorBlock = view.findViewById(R.id.color_block);
