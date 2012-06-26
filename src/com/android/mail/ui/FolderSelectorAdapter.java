@@ -90,14 +90,14 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     protected void createFolderRows(Cursor folders, Set<String> initiallySelected) {
         folders.moveToFirst();
-        while (folders.moveToNext()) {
+        do {
             final Folder folder = new Folder(folders);
             if (meetsRequirements(folder)) {
                 final FolderRow row =
                         new FolderRow(folder, initiallySelected.contains(folder.uri.toString()));
                 mFolderRows.add(row);
             }
-        }
+        } while (folders.moveToNext());
         Collections.sort(mFolderRows);
     }
 
