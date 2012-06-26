@@ -85,9 +85,8 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
             mAdapter.addSection(headers[1],
                     new FolderSelectorAdapter(context, foldersCursor, conversationFolders,
                             mSingle));
-            mAdapter.addSection(headers[2],
-                    new FolderSelectorAdapter(context, foldersCursor, conversationFolders,
-                            mSingle));
+            mAdapter.addSection(headers[2], new HierarchicalFolderSelectorAdapter(context,
+                    foldersCursor, conversationFolders, mSingle));
             builder.setAdapter(mAdapter, this);
             // Pre-load existing conversation folders.
             if (foldersCursor.moveToFirst()) {

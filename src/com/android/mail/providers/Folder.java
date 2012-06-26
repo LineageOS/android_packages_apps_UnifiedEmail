@@ -139,6 +139,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public Uri loadMoreUri;
 
     /**
+     * The possibly empty name of this folder with full hierarchy.
+     */
+    public String hierarchicalDesc;
+
+    /**
      * Parent folder of this folder, or null if there is none. This is set as
      * part of the execution of the application and not obtained or stored via
      * the provider.
@@ -198,6 +203,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         bgColor = in.readString();
         fgColor = in.readString();
         loadMoreUri = in.readParcelable(null);
+        hierarchicalDesc = in.readString();
         parent = in.readParcelable(null);
      }
 
@@ -226,6 +232,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         fgColor = cursor.getString(UIProvider.FOLDER_FG_COLOR_COLUMN);
         String loadMore = cursor.getString(UIProvider.FOLDER_LOAD_MORE_URI_COLUMN);
         loadMoreUri = !TextUtils.isEmpty(loadMore) ? Uri.parse(loadMore) : null;
+        hierarchicalDesc = cursor.getString(UIProvider.FOLDER_HIERARCHICAL_DESC_COLUMN);
         parent = null;
     }
 
@@ -250,6 +257,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         dest.writeString(bgColor);
         dest.writeString(fgColor);
         dest.writeParcelable(loadMoreUri, 0);
+        dest.writeString(hierarchicalDesc);
         dest.writeParcelable(parent, 0);
     }
 
@@ -276,6 +284,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         out.append(bgColor == null ? "" : bgColor).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(fgColor == null? "" : fgColor).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(loadMoreUri).append(FOLDER_COMPONENT_SEPARATOR);
+        out.append(hierarchicalDesc).append(FOLDER_COMPONENT_SEPARATOR);
         out.append(""); //set parent to empty
         return out.toString();
     }
@@ -342,6 +351,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         fgColor = folderMembers[16];
         String loadMore = folderMembers[17];
         loadMoreUri = !TextUtils.isEmpty(loadMore) ? Uri.parse(loadMore) : null;
+        hierarchicalDesc = folderMembers[18];
         parent = null;
     }
 
