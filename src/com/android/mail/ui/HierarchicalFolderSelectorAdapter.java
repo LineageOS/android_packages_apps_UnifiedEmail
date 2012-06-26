@@ -26,14 +26,18 @@ import android.widget.CompoundButton;
 
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
+import com.google.common.annotations.VisibleForTesting;
 
 import java.util.Set;
 
 public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
 
+    private Context mContext;
+
     public HierarchicalFolderSelectorAdapter(Context context, Cursor folders,
             Set<String> initiallySelected, boolean single) {
         super(context, folders, initiallySelected, single);
+        mContext = context;
     }
 
     @Override
@@ -46,9 +50,53 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
         return view;
     }
 
-    // TODO: make this properly truncate a hierarchy string; write test cases to
-    // prove it works.
-    private String truncateHierarchy(String hierarchy) {
-        return hierarchy;
+    /**
+     * Truncation of a hierarchy works as follows:
+     * 1) If there is just a folder name, return that.
+     * 2) If there is a single parent and a folder name, return parent/folder.
+     * 3) If there is > 1 but < 3 ancestors, return ancestor/ancestor2/folder
+     * 4) If there are > 3 ancestors, return the top most ancestor, and direct parent
+     * of the folder, and the folder: ancestor/.../directParent/folder
+     */
+    @VisibleForTesting
+    protected String truncateHierarchy(String hierarchy) {
+        if (TextUtils.isEmpty(hierarchy)) {
+            return "";
+        }
+        String[] splitHierarchy = hierarchy.split("/");
+        // We want to keep the last part of the hierachy, as that is the name of the folder.
+        String folderName = null;
+        String topParentName = null;
+        String directParentName = null;
+        StringBuilder display = new StringBuilder();
+        if (splitHierarchy != null && splitHierarchy.length > 0) {
+            int length = splitHierarchy.length;
+            if (length > 2) {
+                topParentName = splitHierarchy[0];
+                directParentName = splitHierarchy[length - 2];
+                folderName = splitHierarchy[length - 1];
+            } else if (length > 1) {
+                topParentName = splitHierarchy[0];
+                folderName = splitHierarchy[length - 1];
+            } else {
+                folderName = splitHierarchy[0];
+            }
+            if (!TextUtils.isEmpty(directParentName)) {
+                int formatString = -1;
+                if (length > 3) {
+                    formatString = R.string.hierarchical_folder_parent_top_ellip;
+                } else {
+                    formatString = R.string.hierarchical_folder_parent_top;
+                }
+                display.append(mContext.getResources().getString(formatString, topParentName,
+                        directParentName, folderName));
+            } else if (!TextUtils.isEmpty(topParentName)) {
+                display.append(mContext.getResources().getString(R.string.hierarchical_folder_top,
+                        topParentName, directParentName, folderName));
+            } else {
+                display.append(folderName);
+            }
+        }
+        return display.toString();
     }
 }
