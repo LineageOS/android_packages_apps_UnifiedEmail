@@ -45,7 +45,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
     private ConversationUpdater mUpdater;
     private HashMap<Folder, Boolean> mCheckedState;
     private boolean mSingle = false;
-    private FolderSelectorAdapter mAdapter;
+    private SeparatedFolderListAdapter mAdapter;
     private final Collection<Conversation> mTarget;
     private boolean mBatch;
 
@@ -74,8 +74,20 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
                             conversation.folderList, ",")));
                 }
             }
-            mAdapter = new FolderSelectorAdapter(context, foldersCursor,
-                    conversationFolders, mSingle);
+            mAdapter = new SeparatedFolderListAdapter(context);
+            String[] headers = context.getResources()
+                    .getStringArray(R.array.moveto_folder_sections);
+            // Currently, the number of adapters are assumed to match the number of headers
+            // in the string array.
+            mAdapter.addSection(headers[0],
+                    new SystemFolderSelectorAdapter(context, foldersCursor, conversationFolders,
+                            mSingle));
+            mAdapter.addSection(headers[1],
+                    new FolderSelectorAdapter(context, foldersCursor, conversationFolders,
+                            mSingle));
+            mAdapter.addSection(headers[2],
+                    new FolderSelectorAdapter(context, foldersCursor, conversationFolders,
+                            mSingle));
             builder.setAdapter(mAdapter, this);
             // Pre-load existing conversation folders.
             if (foldersCursor.moveToFirst()) {
@@ -97,7 +109,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         mDialog.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               update(mAdapter.getItem(position));
+                update((FolderRow) mAdapter.getItem(position));
             }
         });
     }
@@ -120,7 +132,10 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
             // Clear any other checked items.
             mAdapter.getCount();
             for (int i = 0; i < mAdapter.getCount(); i++) {
-                mAdapter.getItem(i).setIsPresent(false);
+                Object item = mAdapter.getItem(i);
+                if (item instanceof FolderRow) {
+                   ((FolderRow)item).setIsPresent(false);
+                }
             }
             mCheckedState.clear();
         }
@@ -153,7 +168,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
 
     @Override
     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-        final FolderRow row = mAdapter.getItem(which);
+        final FolderRow row = (FolderRow) mAdapter.getItem(which);
         if (mSingle) {
             // Clear any other checked items.
             mCheckedState.clear();
