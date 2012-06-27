@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.android.mail.ui;
 
 import android.app.AlertDialog;
@@ -83,9 +84,8 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
             mAdapter.addSection(headers[0],
                     new SystemFolderSelectorAdapter(context, foldersCursor, conversationFolders,
                             mSingle));
-            mAdapter.addSection(headers[1],
-                    new FolderSelectorAdapter(context, foldersCursor, conversationFolders,
-                            mSingle));
+            // TODO(mindyp): we currently do not support frequently moved to
+            // folders, at headers[1]; need to define what that means.
             mAdapter.addSection(headers[2], new HierarchicalFolderSelectorAdapter(context,
                     foldersCursor, conversationFolders, mSingle));
             builder.setAdapter(mAdapter, this);
