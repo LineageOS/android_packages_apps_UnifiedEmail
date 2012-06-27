@@ -311,9 +311,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Automatische synchronisatie is niet ingesteld voor dit account."\n"Raak"<b>"Nu synchroniseren"</b>" aan om e-mail één keer te synchroniseren of raak "<b>"Synchronisatie-instellingen wijzigen"</b>" aan om automatische synchronisatie in te stellen voor dit account."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Nu synchr."</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Synchronisatie-inst. wijzigen"</string>
-    <string name="photo_view_default_title" msgid="305616940993932174">"Foto\'s uit bericht"</string>
-    <string name="photo_view_load_error" msgid="1802859675974843136">"Foto kan niet worden geladen."</string>
-    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"Video momenteel niet beschikbaar. Vernieuw de pagina."</string>
     <string name="photo_view_placeholder_image" msgid="465734985000555852">"Item nu niet beschikbaar. Vernieuw de pagina."</string>
     <string name="photo_network_error" msgid="6545183306958652345">"Foto is momenteel niet beschikbaar."</string>
     <string name="loading_photo" msgid="6784297653634402137">"Laden…"</string>
@@ -343,4 +340,13 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Verplaatsen is niet mogelijk. Selectie bevat meerdere accounts."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <!-- no translation found for moveto_folder_sections:0 (6984976603137892898) -->
+    <!-- no translation found for moveto_folder_sections:1 (6593672292311851204) -->
+    <!-- no translation found for moveto_folder_sections:2 (3584541772344786752) -->
+    <!-- no translation found for hierarchical_folder_parent_top (8516993040940594106) -->
+    <skip />
+    <!-- no translation found for hierarchical_folder_parent_top_ellip (5708343355115218065) -->
+    <skip />
+    <!-- no translation found for hierarchical_folder_top (8078899597225255282) -->
+    <skip />
 </resources>

@@ -123,8 +123,8 @@
     <string name="attach_image" msgid="3713654042212409705">"사진"</string>
     <string name="attach_video" msgid="4996812138609677305">"동영상"</string>
   <plurals name="number_of_attachments">
-    <item quantity="one" msgid="6596149613229217650">"%d개의 첨부파일"</item>
-    <item quantity="other" msgid="4827833083675127409">"%d개의 첨부파일"</item>
+    <item quantity="one" msgid="6596149613229217650">"첨부파일 %d개"</item>
+    <item quantity="other" msgid="4827833083675127409">"첨부파일 %d개"</item>
   </plurals>
     <string name="choosertitle_sharevia" msgid="6142681649048665134">"공유 방법"</string>
     <string name="contextmenu_openlink" msgid="2176176524824953775">"브라우저에서 열기"</string>
@@ -311,9 +311,6 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"이 계정은 자동으로 동기화되도록 설정되지 않았습니다."\n<b>"지금 동기화"</b>"를 터치하여 메일을 한 번 동기화하거나 "<b>"동기화 설정 변경"</b>"을 터치하여 이 계정이 메일을 자동으로 동기화하도록 설정하세요."</string>
     <string name="manual_sync" msgid="6743983544685622800">"지금 동기화"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"동기화 설정 변경"</string>
-    <string name="photo_view_default_title" msgid="305616940993932174">"메일의 사진"</string>
-    <string name="photo_view_load_error" msgid="1802859675974843136">"사진을 로드하지 못했습니다."</string>
-    <string name="photo_view_video_not_ready" msgid="8488887700991406631">"현재 동영상을 볼 수 없습니다. 새로고침하세요."</string>
     <string name="photo_view_placeholder_image" msgid="465734985000555852">"현재 사용할 수 없는 항목입니다. 새로고침하세요."</string>
     <string name="photo_network_error" msgid="6545183306958652345">"지금은 사진을 사용할 수 없습니다."</string>
     <string name="loading_photo" msgid="6784297653634402137">"로드 중…"</string>
@@ -343,4 +340,13 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"선택하신 메일에 여러 계정이 포함되어 있어 이동할 수 없습니다."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <!-- no translation found for moveto_folder_sections:0 (6984976603137892898) -->
+    <!-- no translation found for moveto_folder_sections:1 (6593672292311851204) -->
+    <!-- no translation found for moveto_folder_sections:2 (3584541772344786752) -->
+    <!-- no translation found for hierarchical_folder_parent_top (8516993040940594106) -->
+    <skip />
+    <!-- no translation found for hierarchical_folder_parent_top_ellip (5708343355115218065) -->
+    <skip />
+    <!-- no translation found for hierarchical_folder_top (8078899597225255282) -->
+    <skip />
 </resources>
