@@ -712,7 +712,7 @@ public abstract class AbstractActivityController implements ActivityController {
             if (mAsyncRefreshTask != null) {
                 mAsyncRefreshTask.cancel(true);
             }
-            mAsyncRefreshTask = new AsyncRefreshTask(mContext, mFolder);
+            mAsyncRefreshTask = new AsyncRefreshTask(mContext, mFolder.refreshUri);
             mAsyncRefreshTask.execute();
         }
     }
