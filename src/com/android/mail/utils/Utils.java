@@ -758,6 +758,10 @@ public class Utils {
      * Show the settings screen for the supplied account.
      */
     public static void showSettings(Context context, Account account) {
+        if (account == null) {
+            LogUtils.e(LOG_TAG, "Invalid attempt to show setting screen with null account");
+            return;
+        }
         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
         context.startActivity(settingsIntent);
     }
