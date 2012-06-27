@@ -109,7 +109,10 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         mDialog.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                update((FolderRow) mAdapter.getItem(position));
+                Object item = mAdapter.getItem(position);
+                if (item instanceof FolderRow) {
+                    update((FolderRow) item);
+                }
             }
         });
     }
