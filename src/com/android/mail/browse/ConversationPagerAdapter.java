@@ -103,6 +103,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
             // controller reference is around at least as long as the pager is active and has this
             // adapter.
             LogUtils.wtf(LOG_TAG, new Error(), "Pager adapter has an unexpected null cursor");
+            return null;
         }
 
         return mListController.getConversationListCursor();
@@ -123,6 +124,10 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
             c.position = 0;
         } else {
             final Cursor cursor = getCursor();
+            if (cursor == null) {
+                LogUtils.wtf(LOG_TAG, "unable to get ConversationCursor, pos=%d", position);
+                return null;
+            }
             if (!cursor.moveToPosition(position)) {
                 LogUtils.wtf(LOG_TAG, "unable to seek to ConversationCursor pos=%d (%s)", position,
                         cursor);
@@ -140,7 +145,14 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     @Override
     public int getCount() {
-        return (isSingletonMode()) ? 1 : getCursor().getCount();
+        if (isSingletonMode()) {
+            return 1;
+        }
+        final Cursor cursor = getCursor();
+        if (cursor == null) {
+            return 0;
+        }
+        return cursor.getCount();
     }
 
     @Override
@@ -231,6 +243,9 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         }
 
         final Cursor cursor = getCursor();
+        if (cursor == null) {
+            return POSITION_NONE;
+        }
 
         final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
 
