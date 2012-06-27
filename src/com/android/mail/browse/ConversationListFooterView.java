@@ -31,6 +31,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.LastSyncResult;
+import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.Utils;
 
 public class ConversationListFooterView extends LinearLayout implements View.OnClickListener {
@@ -39,7 +40,7 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
     private View mLoadMore;
     private View mRetry;
     private TextView mErrorText;
-    private FolderSyncTask mFolderSyncTask;
+    private AsyncRefreshTask mFolderSyncTask;
 
     public ConversationListFooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -78,7 +79,7 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
             if (mFolderSyncTask != null) {
                 mFolderSyncTask.cancel(true);
             }
-            mFolderSyncTask = new FolderSyncTask(uri);
+            mFolderSyncTask = new AsyncRefreshTask(getContext(), uri);
             mFolderSyncTask.execute();
         }
     }
@@ -113,19 +114,6 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
             mLoading.setVisibility(View.GONE);
             mNetworkError.setVisibility(View.GONE);
             mLoadMore.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private class FolderSyncTask extends AsyncTask<Void, Void, Void> {
-        Uri mUri;
-        public FolderSyncTask(Uri uri) {
-            mUri = uri;
-        }
-
-        @Override
-        public Void doInBackground(Void... params) {
-            getContext().getContentResolver().query(mUri, null, null, null, null);
-            return null;
         }
     }
 }

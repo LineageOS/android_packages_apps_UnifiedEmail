@@ -24,20 +24,19 @@ import android.os.AsyncTask;
 import com.android.mail.providers.Folder;
 
 public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
-    private Context mContext;
-    private Folder mFolder;
+    private final Context mContext;
+    private final Uri mRefreshUri;
 
 
-    public AsyncRefreshTask(Context context, Folder folder) {
+    public AsyncRefreshTask(Context context, Uri refreshUri) {
         mContext = context;
-        mFolder = folder;
+        mRefreshUri = refreshUri;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
-        Uri refreshUri = mFolder.refreshUri;
-        if (refreshUri != null) {
-            mContext.getContentResolver().query(refreshUri, null, null, null, null);
+        if (mRefreshUri != null) {
+            mContext.getContentResolver().query(mRefreshUri, null, null, null, null);
         }
         return null;
     }
