@@ -717,7 +717,7 @@
         <item>All Folders</item>
     </string-array>
 
-    <string translate="false" name="hierarchical_folder_parent_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215<xliff:g id="folderName">%3$s</xliff:g></string>
-    <string translate="false" name="hierarchical_folder_parent_top_ellip"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215\u2026\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215<xliff:g id="folderName">%3$s</xliff:g></string>
-    <string translate="false" name="hierarchical_folder_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215<xliff:g id="folderName">%3$s</xliff:g></string>
+    <string translate="false" name="hierarchical_folder_parent_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
+    <string translate="false" name="hierarchical_folder_parent_top_ellip"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215\u2026\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
+    <string translate="false" name="hierarchical_folder_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215</string>
 </resources>
