@@ -27,6 +27,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -466,16 +467,32 @@ public class Folder implements Parcelable, Comparable<Folder> {
     // Show black text on a transparent swatch for system folders, effectively hiding the
     // swatch (see bug 2431925).
     public static void setFolderBlockColor(Folder folder, View colorBlock) {
+        if (colorBlock == null) {
+            return;
+        }
         final boolean showBg = !TextUtils.isEmpty(folder.bgColor);
         final int backgroundColor = showBg ? Integer.parseInt(folder.bgColor) : 0;
-        if (folder.iconResId > 0) {
-            colorBlock.setBackgroundResource((int)folder.iconResId);
-        } else if (!showBg) {
+        if (!showBg) {
             colorBlock.setBackgroundDrawable(null);
+            colorBlock.setVisibility(View.GONE);
         } else {
             PaintDrawable paintDrawable = new PaintDrawable();
             paintDrawable.getPaint().setColor(backgroundColor);
             colorBlock.setBackgroundDrawable(paintDrawable);
+            colorBlock.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public static void setIcon(Folder folder, ImageView iconView) {
+        if (iconView == null) {
+            return;
+        }
+        final long icon = folder.iconResId;
+        if (icon > 0) {
+            iconView.setImageResource((int)icon);
+            iconView.setVisibility(View.VISIBLE);
+        } else {
+            iconView.setVisibility(View.GONE);
         }
     }
 

@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -235,7 +236,8 @@ public final class FolderListFragment extends ListFragment implements
             if (mSelectedFolder != null && folder.uri.equals(mSelectedFolder.uri)) {
                 getListView().setItemChecked(position, true);
             }
-            Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.folder_box));
+            Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.color_block));
+            Folder.setIcon(folder, (ImageView) folderItemView.findViewById(R.id.folder_box));
             return folderItemView;
         }
 

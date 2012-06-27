@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 
 import java.util.Collections;
 import java.util.List;
@@ -134,20 +135,17 @@ public class FolderSelectorAdapter extends BaseAdapter {
         View view = convertView;
         CompoundButton checkBox = null;
         View colorBlock;
+        ImageView iconView;
 
         if (view == null) {
             view = mInflater.inflate(mLayout, parent, false);
-            checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
-            // Suppress the checkbox selection, and handle the toggling of the
-            // folder on the parent list item's click handler.
-            checkBox.setClickable(false);
-            view.setTag(R.id.checkbox, checkBox);
-            colorBlock = view.findViewById(R.id.color_block);
-            view.setTag(R.id.color_block, colorBlock);
-        } else {
-            checkBox = (CompoundButton) view.getTag(R.id.checkbox);
-            colorBlock = (View) view.getTag(R.id.color_block);
         }
+        checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
+        // Suppress the checkbox selection, and handle the toggling of the
+        // folder on the parent list item's click handler.
+        checkBox.setClickable(false);
+        colorBlock = view.findViewById(R.id.color_block);
+        iconView = (ImageView) view.findViewById(R.id.folder_box);
 
         FolderRow row = getItem(position);
         Folder folder = row.getFolder();
@@ -155,6 +153,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
         checkBox.setChecked(row.isPresent());
 
         Folder.setFolderBlockColor(folder, colorBlock);
+        Folder.setIcon(folder, iconView);
         return view;
     }
 

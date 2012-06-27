@@ -44,7 +44,7 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
         Folder folder = getItem(position).getFolder();
-        CompoundButton checkBox = (CompoundButton) view.getTag(R.id.checkbox);
+        CompoundButton checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
         checkBox.setText(TextUtils.isEmpty(folder.hierarchicalDesc) ? folder.name
                 : truncateHierarchy(folder.hierarchicalDesc));
         return view;

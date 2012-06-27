@@ -33,10 +33,18 @@
         android:src="@drawable/folder_parent_icon" />
 
     <ImageView
-        android:id="@+id/folder_box"
+        android:id="@+id/color_block"
         style="@style/FolderItemIcon"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
+
+    <ImageView
+        android:id="@+id/folder_box"
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dip" />
 
     <TextView
         android:id="@+id/unread"
@@ -51,7 +59,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/unread"
+        android:layout_toRightOf="@id/folder_box"
+        android:layout_alignWithParentIfMissing="true"
         android:layout_marginLeft="@dimen/folder_list_item_left_margin"
         android:layout_marginTop="@dimen/folder_swatch_height"
         android:layout_marginBottom="@dimen/folder_swatch_height">
