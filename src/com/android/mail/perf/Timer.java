@@ -213,9 +213,6 @@ public class Timer {
 
     private static void dumpTimings(String tag, int numSubIterations,
             long cpuDurationNanos, long wallDurationMillis) {
-        // TODO(phamm): EventLogTags doens't work when building with SDK.
-//        EventLog.writeEvent(EventLogTags.GMAIL_PERF_END, tag,
-//                cpuDurationNanos / 1000000, wallDurationMillis, numSubIterations);
 
         if (LOG_PERFORMANCE_STATS) {
             LogUtils.d(LOG_TAG, "Perf %s wall: %d cpu: %d",
