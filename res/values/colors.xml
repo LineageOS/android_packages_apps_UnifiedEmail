@@ -16,17 +16,18 @@
      limitations under the License.
 -->
 <resources>
+    <color name="gray_text_color">#777777</color>
     <!-- Conversation List Item Colors -->
     <color name="default_text_color">#ff000000</color>
     <color name="subject_text_color_unread">#555555</color>
     <color name="snippet_text_color_unread">#555555</color>
     <color name="senders_text_color_unread">#333333</color>
-    <color name="subject_text_color_read">#777777</color>
-    <color name="snippet_text_color_read">#777777</color>
+    <color name="subject_text_color_read">@color/gray_text_color</color>
+    <color name="snippet_text_color_read">@color/gray_text_color</color>
     <color name="senders_text_color_read">#555555</color>
     <color name="date_text_color_unread">@color/senders_text_color_unread</color>
     <color name="date_text_color_read">@color/senders_text_color_read</color>
-    <color name="folder_list_heading_text_color">#777777</color>
+    <color name="folder_list_heading_text_color">@color/gray_text_color</color>
     <color name="subject_text_color">#333333</color>
     <color name="faded_conversation_header">#7f99d6eb</color>
     <color name="faded_activated_conversation_header">#7faccbf9</color>
@@ -38,11 +39,11 @@
 
     <!-- Compose colors -->
     <color name="compose_label_text">#aaaaaa</color>
-    <color name="quoted_text_color">#777777</color>
+    <color name="quoted_text_color">@color/gray_text_color</color>
     <string name="quoted_text_background_color_string" translatable="false">@android:color/white</string>
     <!-- Must match the quoted_text_background_color_string -->
     <color name="compose_background_color">@android:color/white</color>
-    <string name="quoted_text_font_color_string" translatable="false">#777777</string>
+    <string name="quoted_text_font_color_string" translatable="false">@color/gray_text_color</string>
     <color name="compose_attachment_title_background_color">#CCCCCC</color>
 
     <color name="conv_header_add_label_text">@android:color/black</color>
@@ -50,9 +51,9 @@
 
     <!-- Conversation message header colors -->
     <color name="conv_subject_border">#c0c0c0</color>
-    <color name="conv_header_text_light">#777777</color>
+    <color name="conv_header_text_light">@color/gray_text_color</color>
 
-    <color name="position_bar_background">#777777</color>
+    <color name="position_bar_background">@color/gray_text_color</color>
 
     <!-- Folder colors -->
     <color name="folder_disabled_drop_target_text_color">#999999</color>
@@ -64,5 +65,5 @@
     <color name="attachment_image_background_color">#E5E5E5</color>
 
     <!-- Color of the parent folders and dividers for hierarchical folder descriptions in the move to folder -->
-    <color name="hierarchical_folder_parent_color">#777777</color>
+    <color name="hierarchical_folder_parent_color">@color/gray_text_color</color>
 </resources>
