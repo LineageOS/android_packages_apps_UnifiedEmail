@@ -62,4 +62,7 @@
     <!--  Color of the subtitle message in the attachment tile -->
     <color name="attachment_tile_subtitle_color">#CCCCCC</color>
     <color name="attachment_image_background_color">#E5E5E5</color>
+
+    <!-- Color of the parent folders and dividers for hierarchical folder descriptions in the move to folder -->
+    <color name="hierarchical_folder_parent_color">#777777</color>
 </resources>

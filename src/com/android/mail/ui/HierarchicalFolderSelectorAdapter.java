@@ -19,10 +19,14 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
@@ -46,7 +50,7 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
         Folder folder = getItem(position).getFolder();
         CompoundButton checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
         checkBox.setText(TextUtils.isEmpty(folder.hierarchicalDesc) ? folder.name
-                : truncateHierarchy(folder.hierarchicalDesc));
+                : truncateHierarchy(folder.hierarchicalDesc), TextView.BufferType.SPANNABLE);
         return view;
     }
 
@@ -59,16 +63,17 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
      * of the folder, and the folder: ancestor/.../directParent/folder
      */
     @VisibleForTesting
-    protected String truncateHierarchy(String hierarchy) {
+    protected SpannableStringBuilder truncateHierarchy(String hierarchy) {
         if (TextUtils.isEmpty(hierarchy)) {
-            return "";
+            return null;
         }
         String[] splitHierarchy = hierarchy.split("/");
-        // We want to keep the last part of the hierachy, as that is the name of the folder.
+        // We want to keep the last part of the hierachy, as that is the name of
+        // the folder.
         String folderName = null;
         String topParentName = null;
         String directParentName = null;
-        StringBuilder display = new StringBuilder();
+        SpannableStringBuilder display = new SpannableStringBuilder();
         if (splitHierarchy != null && splitHierarchy.length > 0) {
             int length = splitHierarchy.length;
             if (length > 2) {
@@ -89,14 +94,15 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
                     formatString = R.string.hierarchical_folder_parent_top;
                 }
                 display.append(mContext.getResources().getString(formatString, topParentName,
-                        directParentName, folderName));
+                        directParentName));
             } else if (!TextUtils.isEmpty(topParentName)) {
                 display.append(mContext.getResources().getString(R.string.hierarchical_folder_top,
-                        topParentName, directParentName, folderName));
-            } else {
-                display.append(folderName);
+                        topParentName, directParentName));
             }
+            display.setSpan(new ForegroundColorSpan(R.color.hierarchical_folder_parent_color), 0,
+                    display.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            display.append(folderName);
         }
-        return display.toString();
+        return display;
     }
 }
