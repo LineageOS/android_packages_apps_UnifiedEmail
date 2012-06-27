@@ -56,7 +56,7 @@ function collapseQuotedText() {
     for (i = 0; i < elements.length; i++) {
         elidedElement = elements[i];
         toggleElement = document.createElement("div");
-        toggleElement.display = "mail-elided-text";
+        toggleElement.className = "mail-elided-text";
         toggleElement.innerHTML = MSG_SHOW_ELIDED;
         toggleElement.onclick = toggleQuotedText;
         elidedElement.parentNode.insertBefore(toggleElement, elidedElement);
