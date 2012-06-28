@@ -340,13 +340,12 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Impossibile spostare i messaggi perché la selezione contiene più account."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <!-- no translation found for moveto_folder_sections:0 (6984976603137892898) -->
-    <!-- no translation found for moveto_folder_sections:1 (6593672292311851204) -->
-    <!-- no translation found for moveto_folder_sections:2 (3584541772344786752) -->
-    <!-- no translation found for hierarchical_folder_parent_top (8516993040940594106) -->
-    <skip />
-    <!-- no translation found for hierarchical_folder_parent_top_ellip (5708343355115218065) -->
-    <skip />
-    <!-- no translation found for hierarchical_folder_top (8078899597225255282) -->
-    <skip />
+  <string-array name="moveto_folder_sections">
+    <item msgid="6984976603137892898">"Sistema"</item>
+    <item msgid="6593672292311851204">"Usate spesso"</item>
+    <item msgid="3584541772344786752">"Tutte le cartelle"</item>
+  </string-array>
+    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
+    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
+    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
 </resources>
