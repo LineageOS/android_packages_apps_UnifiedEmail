@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 
 public class LogUtils {
 
+    public static final String TAG = "UnifiedEmail";
+
     // "GMT" + "+" or "-" + 4 digits
     private static final Pattern DATE_CLEANUP_PATTERN_WRONG_TIMEZONE =
             Pattern.compile("GMT([-+]\\d{4})$");

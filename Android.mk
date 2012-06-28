@@ -32,7 +32,6 @@ LOCAL_STATIC_JAVA_LIBRARIES := android-common-chips
 LOCAL_STATIC_JAVA_LIBRARIES += android-common-photoviewer
 LOCAL_STATIC_JAVA_LIBRARIES += guava
 LOCAL_STATIC_JAVA_LIBRARIES += android-common
-LOCAL_STATIC_JAVA_LIBRARIES += com.android.emailcommon
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 
