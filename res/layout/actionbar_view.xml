@@ -25,7 +25,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <include layout="@layout/actionbar_label" />
+    <include layout="@layout/actionbar_folder" />
 
     <include layout="@layout/actionbar_subject" />
 

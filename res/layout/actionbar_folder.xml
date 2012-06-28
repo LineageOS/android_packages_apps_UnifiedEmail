@@ -18,7 +18,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/label_layout"
+    android:id="@+id/folder_layout"
     android:orientation="vertical"
     android:gravity="center_vertical"
     android:layout_height="match_parent"
@@ -26,14 +26,14 @@
     android:layout_marginLeft="4dip"
     android:visibility="gone" >
     <TextView
-        android:id="@+id/labels"
+        android:id="@+id/folders"
         style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/labels" />
+        android:text="@string/folders" />
     <TextView
         android:id="@+id/account"
         style="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle"
