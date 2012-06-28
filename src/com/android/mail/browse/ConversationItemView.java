@@ -752,6 +752,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         sPaint.setTextSize(mCoordinates.sendersFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
+        if (mSendersWidth < 0) {
+            mSendersWidth = 0;
+        }
         mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
                 mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
 
