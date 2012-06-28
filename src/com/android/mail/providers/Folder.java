@@ -492,7 +492,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
             iconView.setImageResource((int)icon);
             iconView.setVisibility(View.VISIBLE);
         } else {
-            iconView.setVisibility(View.GONE);
+            iconView.setVisibility(View.INVISIBLE);
         }
     }
 
