@@ -605,7 +605,7 @@
     <string name="search_results_loaded"><xliff:g id="searchCount">%1$d</xliff:g></string>
 
     <!-- Show in the actionbar -->
-    <string name="labels">Labels</string>
+    <string name="folders">Folders</string>
 
     <!-- Shown in conversation list footer when application cannot make a connection [CHAR LIMIT=20]-->
     <string name="network_error">No connection</string>

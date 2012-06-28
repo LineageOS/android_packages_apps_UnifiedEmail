@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
 import android.widget.Toast;
@@ -108,6 +109,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      */
     private boolean mIgnoreFirstNavigation = true;
     private final boolean mShowConversationSubject;
+    private TextView mFolderAccountName;
 
     public MailActionBarView(Context context) {
         this(context, null);
@@ -128,6 +130,8 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         super.onFinishInflate();
 
         mSubjectView = (SnippetTextView) findViewById(R.id.conversation_subject);
+        mFolderView = findViewById(R.id.folder_layout);
+        mFolderAccountName = (TextView) mFolderView.findViewById(R.id.account);
     }
 
     /**
@@ -288,6 +292,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         mAccount = account;
         mSpinner.setCurrentAccount(account);
         mSpinner.notifyDataSetChanged();
+        mFolderAccountName.setText(mAccount.name);
     }
 
     /**
@@ -444,10 +449,8 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                 break;
             case ViewMode.FOLDER_LIST:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
-                mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE,
-                        ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
                 setStandardMode();
-                mActionBar.setTitle(R.string.folder_list_title);
+                mFolderView.setVisibility(View.VISIBLE);
                 break;
         }
         return false;
