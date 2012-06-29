@@ -213,23 +213,22 @@ public abstract class FragmentStatePagerAdapter2 extends PagerAdapter {
 
     @Override
     public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-
         // update positions in mFragments
+        SparseArrayCompat<Fragment> newFragments =
+                new SparseArrayCompat<Fragment>(mFragments.size());
         for (int i=0; i<mFragments.size(); i++) {
             final int oldPos = mFragments.keyAt(i);
             final Fragment f = mFragments.valueAt(i);
             final int newPos = getItemPosition(f);
 
-            if (newPos >= 0 && newPos != oldPos) {
-                // move
-                mFragments.removeAt(i);
-                mFragments.put(newPos, f);
-            } else if (newPos == POSITION_NONE) {
-                // remove
-                mFragments.removeAt(i);
+            if (newPos != POSITION_NONE) {
+                final int pos = (newPos >= 0) ? newPos : oldPos;
+                newFragments.put(pos, f);
             }
         }
+        mFragments = newFragments;
+
+        super.notifyDataSetChanged();
     }
 
     public Fragment getFragmentAt(int position) {
