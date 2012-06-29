@@ -437,7 +437,7 @@ public final class TwoPaneController extends AbstractActivityController {
                 }
                 mUndoBarView.setLayoutParams(params);
                 mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                        convList.getAnimatedAdapter(), null);
+                        convList.getAnimatedAdapter(), mConversationListCursor);
                 break;
         }
     }
