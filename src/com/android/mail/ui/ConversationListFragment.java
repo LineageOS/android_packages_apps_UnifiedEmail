@@ -418,7 +418,8 @@ public final class ConversationListFragment extends ListFragment implements
      * @param position
      */
     protected final void setSelected(int position) {
-        getListView().setItemChecked(position, true);
+        mListView.setItemChecked(position, true);
+        mListView.smoothScrollToPosition(position);
     }
 
     private ConversationCursor getConversationListCursor() {
