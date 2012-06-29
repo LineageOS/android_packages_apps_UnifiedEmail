@@ -17,7 +17,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
 
     <FrameLayout
         android:id="@+id/content_pane"
@@ -27,12 +27,7 @@
     <include layout="@layout/conversation_pager" />
 
     <com.android.mail.ui.UndoBarView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:alpha="0"
         android:id="@+id/undo_view"
-        android:layout_gravity="bottom">
-            <include layout="@layout/undo_bar"/>
-    </com.android.mail.ui.UndoBarView>
+        style="@style/ToastBarStyle" />
+
 </FrameLayout>

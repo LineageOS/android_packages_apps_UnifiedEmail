@@ -97,4 +97,5 @@
     <dimen name="photo_overlay_right_padding">4dp</dimen>
     <dimen name="photo_overlay_bottom_padding">6dp</dimen>
     <dimen name="attachment_tile_min_size">120dp</dimen>
+    <dimen name="toast_bar_bottom_margin_in_conversation">24dip</dimen>
 </resources>

@@ -414,15 +414,17 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public void onUndoAvailable(UndoOperation op) {
         final int mode = mViewMode.getMode();
-        final FrameLayout.LayoutParams params;
+        final FrameLayout.LayoutParams params =
+                (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
         final ConversationListFragment convList = getConversationListFragment();
         switch (mode) {
             case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.CONVERSATION_LIST:
-                params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
-                params.width = mLayout.computeConversationListWidth();
+                params.width = mLayout.computeConversationListWidth()
+                        - params.leftMargin - params.rightMargin;
                 params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                 mUndoBarView.setLayoutParams(params);
+                mUndoBarView.setConversationMode(false);
                 if (convList != null) {
                     mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
                         convList.getAnimatedAdapter(), mConversationListCursor);
@@ -430,18 +432,21 @@ public final class TwoPaneController extends AbstractActivityController {
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
-                if (op.mBatch) {
+                if (op.isBatchUndo()) {
                     // Show undo bar in the conversation list.
-                    params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
                     params.gravity = Gravity.BOTTOM | Gravity.LEFT;
-                    params.width = mLayout.computeConversationListWidth();
+                    params.width = mLayout.computeConversationListWidth()
+                            - params.leftMargin - params.rightMargin;
+                    mUndoBarView.setLayoutParams(params);
+                    mUndoBarView.setConversationMode(false);
                 } else {
                     // Show undo bar in the conversation.
-                    params = (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
                     params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                    params.width = mLayout.getConversationView().getWidth();
+                    params.width = mLayout.getConversationView().getWidth()
+                            - params.leftMargin - params.rightMargin;
+                    mUndoBarView.setLayoutParams(params);
+                    mUndoBarView.setConversationMode(true);
                 }
-                mUndoBarView.setLayoutParams(params);
                 mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
                         convList.getAnimatedAdapter(), mConversationListCursor);
                 break;
