@@ -153,7 +153,6 @@
     <string name="sending" msgid="8214361929125649771">"Odosielanie..."</string>
     <string name="send_failed" msgid="750908595144529579">"Správa nebola odoslaná."</string>
     <string name="me" msgid="6480762904022198669">"ja"</string>
-    <string name="folders" msgid="3359679829905256429">"Priečinky"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Zobraziť všetky priečinky"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Odstrániť túto konverzáciu?"</item>
@@ -299,7 +298,7 @@
     <string name="search_hint" msgid="3625734263059221350">"Hľadať v pošte"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="labels" msgid="1519770547536283663">"Menovky"</string>
+    <string name="folders" msgid="3359679829905256429">"Priečinky"</string>
     <string name="network_error" msgid="2125579009654728299">"Bez pripojenia"</string>
     <string name="loading" msgid="2600808404156989255">"Prebieha načítavanie konverzácií..."</string>
     <string name="retry" msgid="4515885444824418022">"Skúsiť znovu"</string>
@@ -340,13 +339,12 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Presun nie je možné uskutočniť, pretože vybraté správy pochádzajú z rôznych účtov."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <!-- no translation found for moveto_folder_sections:0 (6984976603137892898) -->
-    <!-- no translation found for moveto_folder_sections:1 (6593672292311851204) -->
-    <!-- no translation found for moveto_folder_sections:2 (3584541772344786752) -->
-    <!-- no translation found for hierarchical_folder_parent_top (3304098729588424059) -->
-    <skip />
-    <!-- no translation found for hierarchical_folder_parent_top_ellip (4733427814906262914) -->
-    <skip />
-    <!-- no translation found for hierarchical_folder_top (7574690149481839837) -->
-    <skip />
+  <string-array name="moveto_folder_sections">
+    <item msgid="6984976603137892898">"Systém"</item>
+    <item msgid="6593672292311851204">"Často používané"</item>
+    <item msgid="3584541772344786752">"Všetky priečinky"</item>
+  </string-array>
+    <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
+    <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
+    <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
 </resources>

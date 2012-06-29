@@ -153,7 +153,6 @@
     <string name="sending" msgid="8214361929125649771">"Invio..."</string>
     <string name="send_failed" msgid="750908595144529579">"Messaggio non inviato."</string>
     <string name="me" msgid="6480762904022198669">"me"</string>
-    <string name="folders" msgid="3359679829905256429">"Cartelle"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Visualizza tutte le cartelle"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Eliminare questa conversazione?"</item>
@@ -299,7 +298,7 @@
     <string name="search_hint" msgid="3625734263059221350">"Cerca nella posta"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="labels" msgid="1519770547536283663">"Etichette"</string>
+    <string name="folders" msgid="3359679829905256429">"Cartelle"</string>
     <string name="network_error" msgid="2125579009654728299">"Nessuna connessione"</string>
     <string name="loading" msgid="2600808404156989255">"Caricamento conversazioni…"</string>
     <string name="retry" msgid="4515885444824418022">"Riprova"</string>
