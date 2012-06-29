@@ -455,18 +455,19 @@ public final class OnePaneController extends AbstractActivityController {
     public void onUndoAvailable(UndoOperation op) {
         if (op != null && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
             final int mode = mViewMode.getMode();
+            final ConversationListFragment convList = getConversationListFragment();
             switch (mode) {
                 case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 case ViewMode.CONVERSATION:
                     mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                            null, null);
+                            convList != null ? convList.getAnimatedAdapter() : null,
+                            mConversationListCursor);
                     break;
                 case ViewMode.SEARCH_RESULTS_LIST:
                 case ViewMode.CONVERSATION_LIST:
-                    final ConversationListFragment convList = getConversationListFragment();
                     if (convList != null) {
                         mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                            convList.getAnimatedAdapter(), mConversationListCursor);
+                                convList.getAnimatedAdapter(), mConversationListCursor);
                     }
                     break;
             }
