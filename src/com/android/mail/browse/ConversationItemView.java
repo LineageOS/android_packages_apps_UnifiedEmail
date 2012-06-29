@@ -493,7 +493,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         if (mHeader.isLayoutValid(mContext)) {
             // Relayout subject if font color has changed.
             if (fontChanged) {
-                createSubjectSpans(isUnread);
+                layoutSubjectSpans(isUnread);
                 layoutSubject();
             }
             pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
@@ -548,7 +548,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         startTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
 
         // Subject.
-        createSubjectSpans(isUnread);
+        layoutSubjectSpans(isUnread);
 
         mHeader.sendersDisplayText = new SpannableStringBuilder();
 
@@ -559,25 +559,34 @@ public class ConversationItemView extends View implements SwipeableItemView {
         pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
     }
 
-    private void createSubjectSpans(boolean isUnread) {
+    private void layoutSubjectSpans(boolean isUnread) {
+        if (showActivatedText()) {
+            mHeader.subjectTextActivated = createSubject(isUnread, true);
+        }
+        mHeader.subjectText = createSubject(isUnread, false);
+    }
+
+    private SpannableStringBuilder createSubject(boolean isUnread, boolean activated) {
         final String subject = filterTag(mHeader.conversation.subject);
         final String snippet = mHeader.conversation.snippet;
-        int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
-        int snippetColor = isUnread ? SNIPPET_TEXT_COLOR_UNREAD : SNIPPET_TEXT_COLOR_READ;
-        mHeader.subjectText = new SpannableStringBuilder((snippet != null) ?
-                mContext.getString(R.string.subject_and_snippet, subject, snippet) : subject);
+        int subjectColor = activated ? ACTIVATED_TEXT_COLOR : isUnread ? SUBJECT_TEXT_COLOR_UNREAD
+                : SUBJECT_TEXT_COLOR_READ;
+        int snippetColor = activated ? ACTIVATED_TEXT_COLOR : isUnread ? SNIPPET_TEXT_COLOR_UNREAD
+                : SNIPPET_TEXT_COLOR_READ;
+        SpannableStringBuilder subjectText = new SpannableStringBuilder(
+                (snippet != null) ? mContext.getString(R.string.subject_and_snippet, subject,
+                        snippet) : subject);
         if (isUnread) {
-            mHeader.subjectText.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
+            subjectText.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        int fontColor = getFontColor(subjectColor);
-        mHeader.subjectText.setSpan(new ForegroundColorSpan(fontColor), 0,
-                subject.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        fontColor = getFontColor(snippetColor);
+        subjectText.setSpan(new ForegroundColorSpan(subjectColor), 0, subject.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         if (snippet != null) {
-            mHeader.subjectText.setSpan(new ForegroundColorSpan(fontColor), subject.length() + 1,
-                    mHeader.subjectText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            subjectText.setSpan(new ForegroundColorSpan(snippetColor), subject.length() + 1,
+                    subjectText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+        return subjectText;
     }
 
     private int getFontColor(int defaultColor) {
@@ -585,16 +594,32 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 : defaultColor;
     }
 
+    private boolean showActivatedText() {
+        return mTabletDevice;
+    }
+
     private void layoutSubject() {
-        sPaint.setTextSize(mCoordinates.subjectFontSize);
-        sPaint.setColor(mHeader.fontColor);
-        mHeader.subjectLayout = new StaticLayout(mHeader.subjectText, sPaint,
-                mCoordinates.subjectWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
-        if (mCoordinates.subjectLineCount < mHeader.subjectLayout.getLineCount()) {
-            int end = mHeader.subjectLayout.getLineEnd(mCoordinates.subjectLineCount - 1);
-            mHeader.subjectLayout = new StaticLayout(mHeader.subjectText.subSequence(0, end),
-                    sPaint, mCoordinates.subjectWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
+        if (showActivatedText()) {
+            mHeader.subjectLayoutActivated =
+                    createSubjectLayout(true, mHeader.subjectTextActivated);
         }
+        mHeader.subjectLayout = createSubjectLayout(false, mHeader.subjectText);
+    }
+
+    private StaticLayout createSubjectLayout(boolean activated,
+            SpannableStringBuilder subjectText) {
+        sPaint.setTextSize(mCoordinates.subjectFontSize);
+        sPaint.setColor(activated ? ACTIVATED_TEXT_COLOR
+                : mHeader.unread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ);
+        StaticLayout subjectLayout = new StaticLayout(subjectText, sPaint,
+                mCoordinates.subjectWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
+        int lineCount = subjectLayout.getLineCount();
+        if (mCoordinates.subjectLineCount < lineCount) {
+            int end = subjectLayout.getLineEnd(mCoordinates.subjectLineCount - 1);
+            subjectLayout = new StaticLayout(subjectText.subSequence(0, end), sPaint,
+                    mCoordinates.subjectWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
+        }
+        return subjectLayout;
     }
 
     private boolean canFitFragment(int width, int line, int fixedWidth) {
@@ -875,9 +900,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Subject.
         sPaint.setTextSize(mCoordinates.subjectFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
-        sPaint.setColor(mHeader.fontColor);
         canvas.save();
-        if (mHeader.subjectLayout != null) {
+        if (isActivated() && showActivatedText()) {
+            if (mHeader.subjectLayoutActivated != null) {
+                canvas.translate(mCoordinates.subjectX, mCoordinates.subjectY
+                        + mHeader.subjectLayoutActivated.getTopPadding());
+                mHeader.subjectLayoutActivated.draw(canvas);
+            }
+        } else if (mHeader.subjectLayout != null) {
             canvas.translate(mCoordinates.subjectX,
                     mCoordinates.subjectY + mHeader.subjectLayout.getTopPadding());
             mHeader.subjectLayout.draw(canvas);

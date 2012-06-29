@@ -116,6 +116,10 @@ public class ConversationItemViewModel {
 
     public boolean isInvite;
 
+    public StaticLayout subjectLayoutActivated;
+
+    public SpannableStringBuilder subjectTextActivated;
+
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
      * null is returned. Note: this should only be called from the UI thread.
