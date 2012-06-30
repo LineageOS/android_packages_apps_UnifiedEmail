@@ -153,7 +153,6 @@
     <string name="sending" msgid="8214361929125649771">"שולח…"</string>
     <string name="send_failed" msgid="750908595144529579">"ההודעה לא נשלחה."</string>
     <string name="me" msgid="6480762904022198669">"אני"</string>
-    <string name="folders" msgid="3359679829905256429">"תיקיות"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"הצג את כל התיקיות"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"האם למחוק שיחה זו?"</item>
@@ -299,7 +298,7 @@
     <string name="search_hint" msgid="3625734263059221350">"חפש בדואר"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="labels" msgid="1519770547536283663">"תוויות"</string>
+    <string name="folders" msgid="3359679829905256429">"תיקיות"</string>
     <string name="network_error" msgid="2125579009654728299">"אין חיבור"</string>
     <string name="loading" msgid="2600808404156989255">"טוען שיחות…"</string>
     <string name="retry" msgid="4515885444824418022">"נסה שוב"</string>

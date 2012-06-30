@@ -153,7 +153,6 @@
     <string name="sending" msgid="8214361929125649771">"Inatuma…"</string>
     <string name="send_failed" msgid="750908595144529579">"Ujumbe haukutumwa."</string>
     <string name="me" msgid="6480762904022198669">"mimi"</string>
-    <string name="folders" msgid="3359679829905256429">"Folda"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"Onyesha folda zote"</string>
   <plurals name="confirm_delete_conversation">
     <item quantity="one" msgid="3731948757247905508">"Mazungumzo haya yafutwe?"</item>
@@ -299,7 +298,7 @@
     <string name="search_hint" msgid="3625734263059221350">"Tafuta barua pepe"</string>
     <!-- no translation found for search_results_loaded (7840075360438913721) -->
     <skip />
-    <string name="labels" msgid="1519770547536283663">"Lebo"</string>
+    <string name="folders" msgid="3359679829905256429">"Folda"</string>
     <string name="network_error" msgid="2125579009654728299">"Hakuna muunganisho"</string>
     <string name="loading" msgid="2600808404156989255">"Inapakia mazungumzo..."</string>
     <string name="retry" msgid="4515885444824418022">"Jaribu tena"</string>
