@@ -45,6 +45,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     private ConversationListCallbacks mListController;
     private final Bundle mCommonFragmentArgs;
     private final Conversation mInitialConversation;
+    private final Account mAccount;
+    private final Folder mFolder;
     /**
      * In singleton mode, this adapter ignores the cursor contents and size, and acts as if the
      * data set size is exactly size=1, with {@link #mInitialConversation} at position 0.
@@ -84,6 +86,13 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         mResources = res;
         mCommonFragmentArgs = ConversationViewFragment.makeBasicArgs(account, folder);
         mInitialConversation = initialConversation;
+        mAccount = account;
+        mFolder = folder;
+    }
+
+    public boolean matches(Account account, Folder folder) {
+        return mAccount != null && mFolder != null && mAccount.matches(account)
+                && mFolder.equals(folder);
     }
 
     public void setSingletonMode(boolean enabled) {
