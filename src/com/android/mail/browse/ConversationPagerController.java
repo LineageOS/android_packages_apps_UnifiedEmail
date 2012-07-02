@@ -89,10 +89,17 @@ public class ConversationPagerController implements OnPageChangeListener {
     public void show(Account account, Folder folder, Conversation initialConversation) {
         if (mShown) {
             LogUtils.d(LOG_TAG, "IN CPC.show, but already shown");
+            // optimize for the case where account+folder are the same, when we can just shift
+            // the existing pager to show the new conversation
+            if (mPagerAdapter != null && mPagerAdapter.matches(account, folder)) {
+                final int pos = mPagerAdapter.getConversationPosition(initialConversation);
+                if (pos >= 0) {
+                    mPager.setCurrentItem(pos);
+                    return;
+                }
+            }
+            // unable to shift, destroy existing state and fall through to normal startup
             cleanup();
-
-            // TODO: can optimize this case to shuffle the existing adapter to jump to a new
-            // position if the account+folder combo are the same, but the conversation is different
         }
 
         mPager.setVisibility(View.VISIBLE);

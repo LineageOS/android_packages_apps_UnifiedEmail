@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -389,11 +390,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
         if (o == null || !(o instanceof Folder)) {
             return false;
         }
-        final Uri otherUri = ((Folder) o).uri;
-        if (uri == null) {
-            return (otherUri == null);
-        }
-        return uri.equals(otherUri);
+        return Objects.equal(uri, ((Folder) o).uri);
     }
 
     @Override
