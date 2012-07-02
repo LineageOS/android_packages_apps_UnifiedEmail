@@ -25,7 +25,7 @@ import android.content.Context;
 public class UndoOperation {
     private final int mAction;
     private final int mCount;
-    public final boolean mBatch;
+    private final boolean mBatch;
 
     /**
      * Create an UndoOperation
@@ -35,13 +35,13 @@ public class UndoOperation {
      *            what action was performed
      */
     public UndoOperation(int count, int menuId) {
-        this(count, menuId, false);
+        mCount = count;
+        mAction = menuId;
+        mBatch = mCount > 1;
     }
 
-    public UndoOperation(int count, int action, boolean batch) {
-        mCount = count;
-        mAction = action;
-        mBatch = batch;
+    public boolean isBatchUndo() {
+        return mBatch;
     }
 
     /**

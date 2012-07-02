@@ -22,6 +22,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -459,6 +460,7 @@ public final class OnePaneController extends AbstractActivityController {
             switch (mode) {
                 case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 case ViewMode.CONVERSATION:
+                    mUndoBarView.setConversationMode(true);
                     mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
                             convList != null ? convList.getAnimatedAdapter() : null,
                             mConversationListCursor);
@@ -466,6 +468,7 @@ public final class OnePaneController extends AbstractActivityController {
                 case ViewMode.SEARCH_RESULTS_LIST:
                 case ViewMode.CONVERSATION_LIST:
                     if (convList != null) {
+                        mUndoBarView.setConversationMode(false);
                         mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
                                 convList.getAnimatedAdapter(), mConversationListCursor);
                     }

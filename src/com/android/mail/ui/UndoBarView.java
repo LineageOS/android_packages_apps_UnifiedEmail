@@ -18,13 +18,13 @@ package com.android.mail.ui;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.content.Context;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.text.Html;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -35,11 +35,9 @@ import com.google.common.collect.ImmutableSet;
 /**
  * A custom {@link View} that exposes an {@link UndoOperation} to the user.
  */
-public class UndoBarView extends FrameLayout {
+public class UndoBarView extends LinearLayout {
     /** The clickable view that has the 9-patch to handle focus */
     private View mUndoButtonView;
-    private long mStartShowTime = -1;
-    private static final long MIN_SHOW_TIME = 1500;
     public static final ImmutableSet<Integer> EXCLUDE_UNDO_OPS = ImmutableSet.of(R.id.unread,
             R.id.star);
 
@@ -48,17 +46,10 @@ public class UndoBarView extends FrameLayout {
 
     private OnUndoCancelListener mOnCancelListener;
 
-    private final Runnable mDelayedHide = new Runnable() {
-        @Override
-        public void run() {
-            internalHide(true);
-        }
-    };
-
-    private Handler mHandler;
     private boolean mHidden = false;
     private Animator mUndoShowAnimation;
     private Animator mUndoHideAnimation;
+    private final int mBottomMarginInConversation;
 
     public UndoBarView(Context context) {
         this(context, null);
@@ -70,7 +61,9 @@ public class UndoBarView extends FrameLayout {
 
     public UndoBarView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mHandler = new Handler();
+        mBottomMarginInConversation = context.getResources().getDimensionPixelSize(
+                R.dimen.toast_bar_bottom_margin_in_conversation);
+        LayoutInflater.from(context).inflate(R.layout.undo_row, this, true);
     }
 
     public void setOnCancelListener(UndoBarView.OnUndoCancelListener listener) {
@@ -83,6 +76,17 @@ public class UndoBarView extends FrameLayout {
 
         mUndoButtonView = findViewById(R.id.undo_button);
         mUndoDescriptionView = (TextView) findViewById(R.id.undo_descriptionview);
+    }
+
+    /**
+     * Tells the view that it will be appearing in the conversation pane
+     * and should adjust its layout parameters accordingly.
+     * @param isInConversationMode true if the view will be shown in the conversation view
+     */
+    public void setConversationMode(boolean isInConversationMode) {
+        final FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) getLayoutParams();
+        params.bottomMargin = isInConversationMode ? mBottomMarginInConversation : 0;
+        setLayoutParams(params);
     }
 
     /**
@@ -111,29 +115,12 @@ public class UndoBarView extends FrameLayout {
             }
         });
         mUndoDescriptionView.setText(Html.fromHtml(op.getDescription(context)));
-        mStartShowTime = SystemClock.uptimeMillis();
         mHidden = false;
         if (animate) {
             getUndoShowAnimation().start();
         } else {
             setVisibility(View.VISIBLE);
             setAlpha(1);
-        }
-    }
-
-    /**
-     * Hides the undo view and resets the state.
-     */
-    public void doHide() {
-        if (!mHidden) {
-            long now = SystemClock.uptimeMillis();
-            long diff = now - mStartShowTime;
-            if (diff >= MIN_SHOW_TIME) {
-                internalHide(true);
-            } else {
-                mHandler.postDelayed(mDelayedHide, MIN_SHOW_TIME - diff);
-            }
-            mHidden = true;
         }
     }
 

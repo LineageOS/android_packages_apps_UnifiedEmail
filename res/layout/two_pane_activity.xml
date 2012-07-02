@@ -82,12 +82,6 @@
         </FrameLayout>
     </com.android.mail.ui.TwoPaneLayout>
     <com.android.mail.ui.UndoBarView
-        android:layout_width="100dip"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:alpha="0"
         android:id="@+id/undo_view"
-        android:layout_gravity="bottom">
-        <include layout="@layout/undo_bar"/>
-    </com.android.mail.ui.UndoBarView>
+        style="@style/ToastBarStyle" />
 </FrameLayout>
