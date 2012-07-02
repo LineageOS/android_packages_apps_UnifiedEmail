@@ -476,7 +476,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mRecipientErrorDialog != null) {
             mRecipientErrorDialog.dismiss();
         }
-        saveIfNeeded();
+        // When the user exits the compose view, see if this draft needs saving.
+        if (isFinishing()) {
+            saveIfNeeded();
+        }
     }
 
     @Override
@@ -1762,8 +1765,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // It hasn't been sent AND
             // Some text has been added to the message OR
             // an attachment has been added or removed
-            return (mTextChanged || mAttachmentsChanged ||
-                    (mReplyFromChanged && !isBlank()));
+            // AND there is actually something in the draft to save.
+            return (mTextChanged || mAttachmentsChanged || mReplyFromChanged) 
+                    && !isBlank();
         }
     }
 
