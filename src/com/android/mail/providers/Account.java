@@ -506,6 +506,15 @@ public class Account extends android.accounts.Account implements Parcelable {
                         mimeType, recentFolderListUri, color, defaultRecentFolderListUri);
     }
 
+    /**
+     * Returns whether two Accounts match, as determined by their base URIs.
+     * <p>For a deep object comparison, use {@link #equals(Object)}.
+     *
+     */
+    public boolean matches(Account other) {
+        return other != null && Objects.equal(uri, other.uri);
+    }
+
     @SuppressWarnings("hiding")
     public static final Creator<Account> CREATOR = new Creator<Account>() {
         @Override
