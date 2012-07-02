@@ -73,6 +73,8 @@ public final class FolderListFragment extends ListFragment implements
 
     private FolderListFragmentCursorAdapter mCursorAdapter;
 
+    private View mEmptyView;
+
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      * @param listener
@@ -148,7 +150,7 @@ public final class FolderListFragment extends ListFragment implements
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setEmptyView(null);
-
+        mEmptyView = rootView.findViewById(R.id.empty_view);
         if (mParentFolder != null) {
             mSelectedFolder = mParentFolder;
         }
@@ -195,6 +197,8 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        mListView.setEmptyView(null);
+        mEmptyView.setVisibility(View.GONE);
         return new CursorLoader(mActivity.getActivityContext(), mFolderListUri,
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
     }
@@ -203,6 +207,10 @@ public final class FolderListFragment extends ListFragment implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mFolderListCursor = data;
         mCursorAdapter.setCursor(data);
+        if (data == null || data.getCount() == 0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+            mListView.setEmptyView(mEmptyView);
+        }
     }
 
     @Override
