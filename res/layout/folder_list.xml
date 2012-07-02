@@ -28,10 +28,23 @@
         android:drawSelectorOnTop="false"
         android:fadingEdge="none" />
 
-    <TextView android:id="@+id/empty_view"
-        android:visibility="gone"
+    <RelativeLayout
+        android:id="@+id/empty_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/folders_activity_instructions"/>
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:gravity="center_horizontal">
+        <ProgressBar android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/progress"
+            android:layout_centerVertical="true"
+            android:text="@string/wait_for_sync_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+    </RelativeLayout>
 
 </FrameLayout>
