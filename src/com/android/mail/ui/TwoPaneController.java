@@ -278,8 +278,14 @@ public final class TwoPaneController extends AbstractActivityController {
             mViewMode.enterConversationMode();
         }
         mPagerController.show(mAccount, mFolder, conversation);
+    }
+
+    @Override
+    public void setCurrentConversation(Conversation conversation) {
+        super.setCurrentConversation(conversation);
+
         final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
+        if (convList != null && conversation != null) {
             LogUtils.d(LOG_TAG, "showConversation: Selecting position %d.", conversation.position);
             convList.setSelected(conversation.position);
         }
