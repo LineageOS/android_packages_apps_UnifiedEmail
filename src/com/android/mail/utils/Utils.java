@@ -803,7 +803,7 @@ public class Utils {
      * Show the feedback screen for the supplied account.
      */
     public static void sendFeedback(Context context, Account account) {
-        if (account.sendFeedbackIntentUri != null) {
+        if (account != null && account.sendFeedbackIntentUri != null) {
             openUrl(context, account.sendFeedbackIntentUri);
         }
     }
