@@ -69,6 +69,7 @@ import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -182,7 +183,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * Action menu associated with the selected set.
      */
     SelectedConversationsActionMenu mCabActionMenu;
-    protected UndoBarView mUndoBarView;
+    protected ActionableToastBar mToastBar;
     protected ConversationPagerController mPagerController;
 
     // this is split out from the general loader dispatcher because its loader doesn't return a
@@ -206,6 +207,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private DestructiveAction mPendingDestruction;
     /** Indicates if a conversation view is visible. */
     private boolean mIsConversationVisible;
+    protected AsyncRefreshTask mFolderSyncTask;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -563,7 +565,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // possibility of timing-related bugs.
         mViewMode.addListener(this);
         mPagerController = new ConversationPagerController(mActivity, this);
-        mUndoBarView = (UndoBarView) mActivity.findViewById(R.id.undo_view);
+        mToastBar = (ActionableToastBar) mActivity.findViewById(R.id.toast_bar);
         attachActionBar();
 
         final Intent intent = mActivity.getIntent();
@@ -1808,16 +1810,10 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onUndoCancel() {
-        mUndoBarView.hide(false);
-    }
-
-
-    @Override
     public void onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (mUndoBarView != null && !mUndoBarView.isEventInUndo(event)) {
-                mUndoBarView.hide(true);
+            if (mToastBar != null && !mToastBar.isEventInToastBar(event)) {
+                mToastBar.hide(true);
             }
         }
     }
@@ -2022,5 +2018,56 @@ public abstract class AbstractActivityController implements ActivityController {
             return;
         }
         convList.requestListRefresh();
+    }
+
+    protected final ActionClickedListener getUndoClickedListener(
+            final AnimatedAdapter listAdapter) {
+        return new ActionClickedListener() {
+            @Override
+            public void onActionClicked() {
+                if (mAccount.undoUri != null) {
+                    // NOTE: We might want undo to return the messages affected, in which case
+                    // the resulting cursor might be interesting...
+                    // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate the set of
+                    // commands to undo
+                    if (mConversationListCursor != null) {
+                        mConversationListCursor.undo(
+                                mActivity.getActivityContext(), mAccount.undoUri);
+                    }
+                    if (listAdapter != null) {
+                        listAdapter.setUndo(true);
+                    }
+                }
+            }
+        };
+    }
+
+    protected final void showErrorToast(final Folder folder) {
+        mToastBar.setConversationMode(false);
+        mToastBar.show(
+                getRetryClickedListener(folder),
+                R.drawable.ic_email_network_error,
+                Utils.getSyncStatusText(mActivity.getActivityContext(),
+                        folder.lastSyncResult),
+                false, /* showActionIcon */
+                R.string.retry,
+                false); /* replaceVisibleToast */
+    }
+
+    private final ActionClickedListener getRetryClickedListener(final Folder folder) {
+        return new ActionClickedListener() {
+            @Override
+            public void onActionClicked() {
+                final Uri uri = folder.refreshUri;
+
+                if (uri != null) {
+                    if (mFolderSyncTask != null) {
+                        mFolderSyncTask.cancel(true);
+                    }
+                    mFolderSyncTask = new AsyncRefreshTask(mActivity.getActivityContext(), uri);
+                    mFolderSyncTask.execute();
+                }
+            }
+        };
     }
 }

@@ -18,7 +18,6 @@ package com.android.mail.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.appwidget.AppWidgetManager;
@@ -43,9 +42,6 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.android.mail.widget.WidgetProvider;
-import com.google.common.collect.Sets;
-
-import java.util.Set;
 
 /**
  * This activity displays the list of available folders for the current account.
@@ -292,11 +288,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public void onUndoCancel() {
-        // Do nothing.
-    }
-
-    @Override
     public void onUndoAvailable(UndoOperation undoOp) {
         // Do nothing.
     }
@@ -321,4 +312,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         return null;
     }
 
+    @Override
+    public ErrorListener getErrorListener() {
+        return null;
+    }
 }

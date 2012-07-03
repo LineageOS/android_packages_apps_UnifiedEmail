@@ -19,18 +19,15 @@ package com.android.mail.browse;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.ui.AsyncRefreshTask;
 import com.android.mail.utils.Utils;
 

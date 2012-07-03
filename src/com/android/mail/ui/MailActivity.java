@@ -282,11 +282,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public void onUndoCancel() {
-        mController.onUndoCancel();
-    }
-
-    @Override
     public void onUndoAvailable(UndoOperation undoOp) {
         mController.onUndoAvailable(undoOp);
     }
@@ -309,5 +304,10 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public SubjectDisplayChanger getSubjectDisplayChanger() {
         return mController.getSubjectDisplayChanger();
+    }
+
+    @Override
+    public ErrorListener getErrorListener() {
+        return mController;
     }
 }
