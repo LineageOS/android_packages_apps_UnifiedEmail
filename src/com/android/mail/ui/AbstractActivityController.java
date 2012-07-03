@@ -76,6 +76,8 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -960,7 +962,12 @@ public abstract class AbstractActivityController implements ActivityController {
 
             } else if (intent.hasExtra(Utils.EXTRA_FOLDER_STRING)) {
                 // Open the folder.
-                folder = new Folder(intent.getStringExtra(Utils.EXTRA_FOLDER_STRING));
+                try {
+                    folder = Folder
+                            .fromJSONString(intent.getStringExtra(Utils.EXTRA_FOLDER_STRING));
+                } catch (JSONException e) {
+                    LogUtils.wtf(LOG_TAG, e, "Unable to parse folder extra");
+                }
             }
             if (folder != null) {
                 onFolderChanged(folder);
