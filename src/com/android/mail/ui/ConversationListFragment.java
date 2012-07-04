@@ -112,6 +112,7 @@ public final class ConversationListFragment extends ListFragment implements
 
     private ConversationListFooterView mFooterView;
     private int mSwipeAction;
+    private ErrorListener mErrorListener;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -202,6 +203,7 @@ public final class ConversationListFragment extends ListFragment implements
         }
         mActivity = (ControllableActivity) activity;
         mCallbacks = mActivity.getListHandler();
+        mErrorListener = mActivity.getErrorListener();
 
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
                 getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
@@ -474,8 +476,9 @@ public final class ConversationListFragment extends ListFragment implements
                     }
                 }
             }
-        } else {
+        } else { // We have an error. Display it.
             mListAdapter.showFooter();
+            mErrorListener.onError(mFolder);
         }
     }
 

@@ -22,7 +22,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.FrameLayout;
+import android.text.Html;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -336,7 +336,7 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mActivity.finish();
         }
-        mUndoBarView.hide(false);
+        mToastBar.hide(false);
         return true;
     }
 
@@ -460,20 +460,43 @@ public final class OnePaneController extends AbstractActivityController {
             switch (mode) {
                 case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 case ViewMode.CONVERSATION:
-                    mUndoBarView.setConversationMode(true);
-                    mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                            convList != null ? convList.getAnimatedAdapter() : null,
-                            mConversationListCursor);
+                    mToastBar.setConversationMode(true);
+                    mToastBar.show(
+                            getUndoClickedListener(
+                                    convList != null ? convList.getAnimatedAdapter() : null),
+                            0,
+                            Html.fromHtml(op.getDescription(mActivity.getActivityContext())),
+                            true, /* showActionIcon */
+                            R.string.undo,
+                            true); /* replaceVisibleToast */
                     break;
                 case ViewMode.SEARCH_RESULTS_LIST:
                 case ViewMode.CONVERSATION_LIST:
                     if (convList != null) {
-                        mUndoBarView.setConversationMode(false);
-                        mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                                convList.getAnimatedAdapter(), mConversationListCursor);
+                        mToastBar.setConversationMode(false);
+                        mToastBar.show(
+                                getUndoClickedListener(convList.getAnimatedAdapter()),
+                                0,
+                                Html.fromHtml(op.getDescription(mActivity.getActivityContext())),
+                                true, /* showActionIcon */
+                                R.string.undo,
+                                true); /* replaceVisibleToast */
                     }
                     break;
             }
+        }
+    }
+
+    @Override
+    public void onError(final Folder folder) {
+        final int mode = mViewMode.getMode();
+        switch (mode) {
+            case ViewMode.SEARCH_RESULTS_LIST:
+            case ViewMode.CONVERSATION_LIST:
+                showErrorToast(folder);
+                break;
+            default:
+                break;
         }
     }
 }

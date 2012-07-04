@@ -34,7 +34,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.UndoBarView.OnUndoCancelListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -44,7 +43,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
-        android.animation.Animator.AnimatorListener, OnUndoCancelListener, Settings.ChangeListener {
+        android.animation.Animator.AnimatorListener, Settings.ChangeListener {
     private final static int TYPE_VIEW_CONVERSATION = 0;
     private final static int TYPE_VIEW_DELETING = 1;
     private final static int TYPE_VIEW_UNDOING = 2;
@@ -422,11 +421,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public void onAnimationRepeat(Animator animation) {
-    }
-
-    @Override
-    public void onUndoCancel() {
-        mLastDeletingItems.clear();
     }
 
     public void showFooter() {
