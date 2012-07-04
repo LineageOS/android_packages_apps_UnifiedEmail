@@ -81,7 +81,7 @@
 
         </FrameLayout>
     </com.android.mail.ui.TwoPaneLayout>
-    <com.android.mail.ui.UndoBarView
-        android:id="@+id/undo_view"
+    <com.android.mail.ui.ActionableToastBar
+        android:id="@+id/toast_bar"
         style="@style/ToastBarStyle" />
 </FrameLayout>

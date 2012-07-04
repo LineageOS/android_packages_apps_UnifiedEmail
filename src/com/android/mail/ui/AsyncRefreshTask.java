@@ -21,8 +21,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.android.mail.providers.Folder;
-
 public class AsyncRefreshTask extends AsyncTask<Void, Void, Void> {
     private final Context mContext;
     private final Uri mRefreshUri;

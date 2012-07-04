@@ -23,6 +23,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
@@ -353,7 +354,7 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public boolean onBackPressed() {
         // Clear any visible undo bars.
-        mUndoBarView.hide(false);
+        mToastBar.hide(false);
         popView(false);
         return true;
     }
@@ -415,7 +416,7 @@ public final class TwoPaneController extends AbstractActivityController {
     public void onUndoAvailable(UndoOperation op) {
         final int mode = mViewMode.getMode();
         final FrameLayout.LayoutParams params =
-                (FrameLayout.LayoutParams) mUndoBarView.getLayoutParams();
+                (FrameLayout.LayoutParams) mToastBar.getLayoutParams();
         final ConversationListFragment convList = getConversationListFragment();
         switch (mode) {
             case ViewMode.SEARCH_RESULTS_LIST:
@@ -423,11 +424,16 @@ public final class TwoPaneController extends AbstractActivityController {
                 params.width = mLayout.computeConversationListWidth()
                         - params.leftMargin - params.rightMargin;
                 params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                mUndoBarView.setLayoutParams(params);
-                mUndoBarView.setConversationMode(false);
+                mToastBar.setLayoutParams(params);
+                mToastBar.setConversationMode(false);
                 if (convList != null) {
-                    mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                        convList.getAnimatedAdapter(), mConversationListCursor);
+                    mToastBar.show(
+                            getUndoClickedListener(convList.getAnimatedAdapter()),
+                            0,
+                            Html.fromHtml(op.getDescription(mActivity.getActivityContext())),
+                            true, /* showActionIcon */
+                            R.string.undo,
+                            true); /* replaceVisibleToast */
                 }
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
@@ -437,19 +443,50 @@ public final class TwoPaneController extends AbstractActivityController {
                     params.gravity = Gravity.BOTTOM | Gravity.LEFT;
                     params.width = mLayout.computeConversationListWidth()
                             - params.leftMargin - params.rightMargin;
-                    mUndoBarView.setLayoutParams(params);
-                    mUndoBarView.setConversationMode(false);
+                    mToastBar.setLayoutParams(params);
+                    mToastBar.setConversationMode(false);
                 } else {
                     // Show undo bar in the conversation.
                     params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                     params.width = mLayout.getConversationView().getWidth()
                             - params.leftMargin - params.rightMargin;
-                    mUndoBarView.setLayoutParams(params);
-                    mUndoBarView.setConversationMode(true);
+                    mToastBar.setLayoutParams(params);
+                    mToastBar.setConversationMode(true);
                 }
-                mUndoBarView.show(true, mActivity.getActivityContext(), op, mAccount,
-                        convList.getAnimatedAdapter(), mConversationListCursor);
+                mToastBar.show(
+                        getUndoClickedListener(convList.getAnimatedAdapter()),
+                        0,
+                        Html.fromHtml(op.getDescription(mActivity.getActivityContext())),
+                        true, /* showActionIcon */
+                        R.string.undo,
+                        true); /* replaceVisibleToast */
                 break;
         }
+    }
+
+    @Override
+    public void onError(final Folder folder) {
+        final int mode = mViewMode.getMode();
+        final FrameLayout.LayoutParams params =
+                (FrameLayout.LayoutParams) mToastBar.getLayoutParams();
+        switch (mode) {
+            case ViewMode.SEARCH_RESULTS_LIST:
+            case ViewMode.CONVERSATION_LIST:
+                params.width = mLayout.computeConversationListWidth()
+                        - params.leftMargin - params.rightMargin;
+                params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+                mToastBar.setLayoutParams(params);
+                break;
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+            case ViewMode.CONVERSATION:
+                // Show error bar in the conversation list.
+                params.gravity = Gravity.BOTTOM | Gravity.LEFT;
+                params.width = mLayout.computeConversationListWidth()
+                        - params.leftMargin - params.rightMargin;
+                mToastBar.setLayoutParams(params);
+                break;
+        }
+
+        showErrorToast(folder);
     }
 }
