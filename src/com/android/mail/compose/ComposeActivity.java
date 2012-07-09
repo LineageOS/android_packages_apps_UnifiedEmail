@@ -68,6 +68,7 @@ import com.android.mail.compose.QuotedTextView.RespondInlineListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.MessageModification;
 import com.android.mail.providers.ReplyFromAccount;
@@ -1519,8 +1520,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Fire the main activity to ensure it launches the "top" screen of mail.
         // Since the main Activity is singleTask, it should revive that task if it was already
         // started.
+        Folder defaultInbox = new Folder();
+        defaultInbox.uri = mAccount.settings.defaultInbox;
         final Intent mailIntent =
-                Utils.createViewFolderIntent(mAccount.settings.defaultInbox, mAccount, null, false);
+                Utils.createViewFolderIntent(defaultInbox, mAccount, false);
 
         mailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
                 Intent.FLAG_ACTIVITY_TASK_ON_HOME);
