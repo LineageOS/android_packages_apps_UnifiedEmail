@@ -22,6 +22,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 
+import com.android.mail.R;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -29,6 +30,18 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public class ConversationWebView extends WebView implements ScrollNotifier {
+
+    // NARROW_COLUMNS reflow can trigger the document to change size, so notify interested parties.
+    public interface ContentSizeChangeListener {
+        void onHeightChange(int h);
+    }
+
+    private ContentSizeChangeListener mSizeChangeListener;
+
+    private int mCachedContentHeight;
+
+    private final int mViewportWidth;
+    private final float mDensity;
 
     private final Set<ScrollListener> mScrollListeners =
             new CopyOnWriteArraySet<ScrollListener>();
@@ -47,6 +60,9 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
 
     public ConversationWebView(Context c, AttributeSet attrs) {
         super(c, attrs);
+
+        mViewportWidth = getResources().getInteger(R.integer.conversation_webview_viewport_px);
+        mDensity = getResources().getDisplayMetrics().density;
     }
 
     @Override
@@ -59,12 +75,29 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
         mScrollListeners.remove(l);
     }
 
+    public void setContentSizeChangeListener(ContentSizeChangeListener l) {
+        mSizeChangeListener = l;
+    }
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
 
         for (ScrollListener listener : mScrollListeners) {
             listener.onNotifierScroll(l, t);
+        }
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+
+        if (mSizeChangeListener != null) {
+            final int contentHeight = getContentHeight();
+            if (contentHeight != mCachedContentHeight) {
+                mCachedContentHeight = contentHeight;
+                mSizeChangeListener.onHeightChange(contentHeight);
+            }
         }
     }
 
@@ -91,6 +124,30 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
 
     public boolean isHandlingTouch() {
         return mHandlingTouch;
+    }
+
+    public int getViewportWidth() {
+        return mViewportWidth;
+    }
+
+    /**
+     * Similar to {@link #getScale()}, except that it returns the initially expected scale, as
+     * determined by the ratio of actual screen pixels to logical HTML pixels.
+     * <p>This assumes that we are able to control the logical HTML viewport with a meta-viewport
+     * tag.
+     */
+    public float getInitialScale() {
+        // an HTML meta-viewport width of "device-width" and unspecified (medium) density means
+        // that the default scale is effectively the screen density.
+        return mDensity;
+    }
+
+    public int screenPxToWebPx(int screenPx) {
+        return (int) (screenPx / getInitialScale());
+    }
+
+    public int webPxToScreenPx(int webPx) {
+        return (int) (webPx * getInitialScale());
     }
 
 }

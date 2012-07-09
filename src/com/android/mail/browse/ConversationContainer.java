@@ -66,9 +66,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private ConversationWebView mWebView;
 
     /**
-     * Current document zoom scale per {@link WebView#getScale()}. It does not already account for
-     * display density, but by a happy coincidence, this makes the arithmetic for overlay placement
-     * easier.
+     * Current document zoom scale per {@link WebView#getScale()}. This is the ratio of actual
+     * screen pixels to logical WebView HTML pixels. We use it to convert from one to the other.
      */
     private float mScale;
     /**
@@ -126,8 +125,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      */
     private final SparseArray<OverlayView> mOverlayViews;
 
-    private final float mDensity;
-
     private int mWidthMeasureSpec;
 
     private boolean mDisableLayoutTracing;
@@ -165,9 +162,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         super(c, attrs);
 
         mOverlayViews = new SparseArray<OverlayView>();
-
-        mDensity = c.getResources().getDisplayMetrics().density;
-        mScale = mDensity;
 
         mTouchSlop = ViewConfiguration.get(c).getScaledTouchSlop();
 
@@ -304,12 +298,14 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         /*
          * The scale value that WebView reports is inaccurate when measured during WebView
          * initialization. This bug is present in ICS, so to work around it, we ignore all
-         * reported values and use the density (expected value) instead. Only when the user
-         * actually begins to touch the view (to, say, begin a zoom) do we begin to pay attention
-         * to WebView-reported scale values.
+         * reported values and use a calculated expected value from ConversationWebView instead.
+         * Only when the user actually begins to touch the view (to, say, begin a zoom) do we begin
+         * to pay attention to WebView-reported scale values.
          */
         if (mTouchInitialized) {
             mScale = mWebView.getScale();
+        } else if (mScale == 0) {
+            mScale = mWebView.getInitialScale();
         }
         traceLayout("in positionOverlays, raw scale=%f, effective scale=%f", mWebView.getScale(),
                 mScale);

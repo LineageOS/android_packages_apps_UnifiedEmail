@@ -63,7 +63,7 @@ function collapseQuotedText() {
     }
 }
 
-function shrinkWideMessages() {
+function normalizeMessageWidths() {
     var i;
     var elements = document.getElementsByClassName("mail-message-content");
     var messageElement;
@@ -71,21 +71,7 @@ function shrinkWideMessages() {
     var scale;
     for (i = 0; i < elements.length; i++) {
         messageElement = elements[i];
-        if (messageElement.scrollWidth > documentWidth) {
-            scale = documentWidth / messageElement.scrollWidth;
-
-            // TODO: 'zoom' is nice because it does a proper layout, but WebView seems to clamp the
-            // minimum 'zoom' level.
-            if (false) {
-                // TODO: this alternative works well in Chrome but doesn't work in WebView.
-                messageElement.style.webkitTransformOrigin = "left top";
-                messageElement.style.webkitTransform = "scale(" + scale + ")";
-                messageElement.style.height = (messageElement.offsetHeight * scale) + "px";
-                messageElement.style.overflowX = "visible";
-            } else {
-                messageElement.style.zoom = documentWidth / messageElement.scrollWidth;
-            }
-        }
+        messageElement.style.zoom = documentWidth / messageElement.scrollWidth;
     }
 }
 
@@ -129,6 +115,12 @@ function blockImage(imageElement) {
     }
 }
 
+function setWideViewport() {
+    var metaViewport = document.getElementById('meta-viewport');
+    metaViewport.setAttribute('content', 'width=' + WIDE_VIEWPORT_WIDTH);
+}
+
+// BEGIN Java->JavaScript handlers
 function measurePositions() {
     var overlayBottoms;
     var h;
@@ -149,7 +141,6 @@ function measurePositions() {
     window.mail.onWebContentGeometryChange(overlayBottoms);
 }
 
-// BEGIN Java->JavaScript handlers
 function unblockImages(messageDomId) {
     var i, images, imgCount, image, blockedSrc;
     var msg = document.getElementById(messageDomId);
@@ -217,6 +208,7 @@ function replaceSuperCollapsedBlock(startIndex) {
 
 collapseQuotedText();
 hideUnsafeImages();
-shrinkWideMessages();
+normalizeMessageWidths();
+//setWideViewport();
 measurePositions();
 
