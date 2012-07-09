@@ -99,19 +99,24 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
     }
 
     public void bind(MessageHeaderItem headerItem) {
+        // Resets the footer view. This step is only done if the
+        // attachmentsListUri changes so that we don't
+        // repeat the work of layout and measure when
+        // we're only updating the attachments.
+        if (mMessageHeaderItem != null &&
+                mMessageHeaderItem.message != null &&
+                mMessageHeaderItem.message.attachmentListUri != null &&
+                !mMessageHeaderItem.message.attachmentListUri.equals(
+                headerItem.message.attachmentListUri)) {
+            mAttachmentGrid.removeAllViewsInLayout();
+            mAttachmentBarList.removeAllViewsInLayout();
+            mTitleText.setVisibility(View.GONE);
+            mTitleBar.setVisibility(View.GONE);
+            mAttachmentGrid.setVisibility(View.GONE);
+            mAttachmentBarList.setVisibility(View.GONE);
+        }
+
         mMessageHeaderItem = headerItem;
-
-        /*
-         * Assuming ConversationContainer does not requesting adapter views for zero-height items,
-         * we should just always render even if the matching header is collapsed.
-         */
-
-        mAttachmentGrid.removeAllViewsInLayout();
-        mAttachmentBarList.removeAllViewsInLayout();
-        mTitleText.setVisibility(View.GONE);
-        mTitleBar.setVisibility(View.GONE);
-        mAttachmentGrid.setVisibility(View.GONE);
-        mAttachmentBarList.setVisibility(View.GONE);
 
         // kick off load of Attachment objects in background thread
         final Integer attachmentLoaderId = getAttachmentLoaderId();
