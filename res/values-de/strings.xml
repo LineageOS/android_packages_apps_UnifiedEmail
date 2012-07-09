@@ -341,7 +341,7 @@
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"System"</item>
-    <item msgid="6593672292311851204">"Häufig genutzte"</item>
+    <item msgid="6593672292311851204">"Häufig genutzt"</item>
     <item msgid="3584541772344786752">"Alle Ordner"</item>
   </string-array>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>

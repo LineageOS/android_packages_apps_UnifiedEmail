@@ -342,7 +342,7 @@
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"Sistema"</item>
     <item msgid="6593672292311851204">"Uso frecuente"</item>
-    <item msgid="3584541772344786752">"Todas las carpetas"</item>
+    <item msgid="3584541772344786752">"Carpetas"</item>
   </string-array>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
