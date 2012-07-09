@@ -27,6 +27,8 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
+import org.json.JSONException;
+
 import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -74,7 +76,7 @@ public class WidgetService extends RemoteViewsService {
         private final Context mContext;
         private final int mAppWidgetId;
         private final Account mAccount;
-        private final Folder mFolder;
+        private Folder mFolder;
         private final WidgetConversationViewBuilder mWidgetConversationViewBuilder;
         private Cursor mConversationCursor;
         private CursorLoader mFolderLoader;
@@ -91,7 +93,12 @@ public class WidgetService extends RemoteViewsService {
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             mAccount = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
-            mFolder = new Folder(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
+            try {
+                mFolder = Folder.fromJSONString(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
+            } catch (JSONException e) {
+                mFolder = null;
+                LogUtils.wtf(LOG_TAG, e, "unable to parse folder for widget");
+            }
             mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(context,
                     mAccount);
             mResolver = context.getContentResolver();
