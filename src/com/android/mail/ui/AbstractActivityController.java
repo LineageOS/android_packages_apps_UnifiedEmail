@@ -943,10 +943,8 @@ public abstract class AbstractActivityController implements ActivityController {
         boolean handled = false;
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
-                setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-            } else if (intent.hasExtra(Utils.EXTRA_ACCOUNT_STRING)) {
                 setAccount(Account.newinstance(intent
-                        .getStringExtra(Utils.EXTRA_ACCOUNT_STRING)));
+                        .getStringExtra(Utils.EXTRA_ACCOUNT)));
             }
             if (mAccount == null) {
                 return;
@@ -956,15 +954,9 @@ public abstract class AbstractActivityController implements ActivityController {
             Folder folder = null;
             if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
                 // Open the folder.
-                LogUtils.d(LOG_TAG, "SHOW THE FOLDER at %s",
-                        intent.getParcelableExtra(Utils.EXTRA_FOLDER));
-                folder = (Folder) intent.getParcelableExtra(Utils.EXTRA_FOLDER);
-
-            } else if (intent.hasExtra(Utils.EXTRA_FOLDER_STRING)) {
-                // Open the folder.
                 try {
                     folder = Folder
-                            .fromJSONString(intent.getStringExtra(Utils.EXTRA_FOLDER_STRING));
+                            .fromJSONString(intent.getStringExtra(Utils.EXTRA_FOLDER));
                 } catch (JSONException e) {
                     LogUtils.wtf(LOG_TAG, e, "Unable to parse folder extra");
                 }

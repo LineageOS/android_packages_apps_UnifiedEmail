@@ -81,13 +81,11 @@ public class Utils {
     public static String[] sSenderFragments = new String[8];
 
     public static final String EXTRA_ACCOUNT = "account";
-    public static final String EXTRA_ACCOUNT_STRING = "accountString";
     public static final String EXTRA_ACCOUNT_URI = "accountUri";
     public static final String EXTRA_FOLDER_URI = "folderUri";
     public static final String EXTRA_COMPOSE_URI = "composeUri";
     public static final String EXTRA_CONVERSATION = "conversationUri";
     public static final String EXTRA_FOLDER = "folder";
-    public static final String EXTRA_FOLDER_STRING = "folderString";
     /*
      * Notifies that changes happened. Certain UI components, e.g., widgets, can
      * register for this {@link Intent} and update accordingly. However, this
@@ -619,24 +617,10 @@ public class Utils {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
                 Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         intent.setDataAndType(conversation.uri, account.mimeType);
-        intent.putExtra(Utils.EXTRA_ACCOUNT, account);
-        intent.putExtra(Utils.EXTRA_FOLDER, folder);
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
+        intent.putExtra(Utils.EXTRA_FOLDER, folder.serialize());
         intent.putExtra(Utils.EXTRA_CONVERSATION, conversation);
         return intent;
-    }
-
-    /**
-     * Create an intent to open a folder.
-     *
-     * @param folder Folder to open.
-     * @param account
-     * @param pendingIntent If this will be used as a pending intent we need to
-     *            send strings not parcelables.
-     * @return
-     */
-    public static Intent createViewFolderIntent(Folder folder, Account account,
-            boolean pendingIntent) {
-        return createViewFolderIntent(folder.uri, account, folder, pendingIntent);
     }
 
     /**
@@ -649,22 +633,15 @@ public class Utils {
      *            send strings not parcelables.
      * @return
      */
-    public static Intent createViewFolderIntent(Uri folderUri, Account account, Folder folder,
+    public static Intent createViewFolderIntent(Folder folder, Account account,
             boolean pendingIntent) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        intent.setDataAndType(folderUri, account.mimeType);
-        if (pendingIntent) {
-            intent.putExtra(Utils.EXTRA_ACCOUNT_STRING, account.serialize());
-            if (folder != null) {
-                intent.putExtra(Utils.EXTRA_FOLDER_STRING, folder.serialize());
-            }
-        } else {
-            intent.putExtra(Utils.EXTRA_ACCOUNT, account);
-            if (folder != null) {
-                intent.putExtra(Utils.EXTRA_FOLDER, folder);
-            }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        intent.setDataAndType(folder.uri, account.mimeType);
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
+        if (folder != null) {
+            intent.putExtra(Utils.EXTRA_FOLDER, folder.serialize());
         }
         return intent;
     }
