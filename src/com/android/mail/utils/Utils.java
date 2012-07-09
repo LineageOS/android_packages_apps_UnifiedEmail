@@ -629,12 +629,9 @@ public class Utils {
      * @param folderUri Folder uri.
      * @param account
      * @param folder Folder to open.
-     * @param pendingIntent If this will be used as a pending intent we need to
-     *            send strings not parcelables.
      * @return
      */
-    public static Intent createViewFolderIntent(Folder folder, Account account,
-            boolean pendingIntent) {
+    public static Intent createViewFolderIntent(Folder folder, Account account) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_TASK_ON_HOME);

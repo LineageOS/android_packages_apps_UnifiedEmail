@@ -344,7 +344,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         remoteViews.setRemoteAdapter(R.id.conversation_list, intent);
         // Open mail app when click on header
-        final Intent mailIntent = Utils.createViewFolderIntent(folder, account, false);
+        final Intent mailIntent = Utils.createViewFolderIntent(folder, account);
         PendingIntent clickIntent = PendingIntent.getActivity(context, 0, mailIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.widget_header, clickIntent);

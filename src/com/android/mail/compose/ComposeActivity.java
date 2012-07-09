@@ -22,11 +22,14 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
@@ -100,7 +103,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
-        AttachmentDeletedListener, OnAccountChangedListener {
+        AttachmentDeletedListener, OnAccountChangedListener, LoaderManager.LoaderCallbacks<Cursor> {
     // Identifiers for which type of composition this is
     static final int COMPOSE = -1;
     static final int REPLY = 0;
@@ -109,7 +112,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     static final int EDIT_DRAFT = 3;
 
     // Integer extra holding one of the above compose action
-    private static final String EXTRA_ACTION = "action";
+    protected static final String EXTRA_ACTION = "action";
 
     private static final String EXTRA_SHOW_CC = "showCc";
     private static final String EXTRA_SHOW_BCC = "showBcc";
@@ -181,6 +184,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_FOCUS_SELECTION_START = "focusSelectionStart";
     private static final String EXTRA_FOCUS_SELECTION_END = null;
     private static final String EXTRA_MESSAGE = "extraMessage";
+    private static final int REFERENCE_MESSAGE_LOADER = 0;
 
     /**
      * A single thread for running tasks in the background.
@@ -344,7 +348,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
         }
 
-        if (message != null && action != EDIT_DRAFT) {
+        if (mRefMessageUri != null) {
+            // We have a referenced message that we must look up.
+            getLoaderManager().initLoader(REFERENCE_MESSAGE_LOADER, null, this);
+            return;
+        } else if (message != null && action != EDIT_DRAFT) {
             initFromDraftMessage(message);
             initQuotedTextFromRefMessage(mRefMessage, action);
             showCcBcc(savedInstanceState);
@@ -375,21 +383,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } else if ((action == REPLY || action == REPLY_ALL || action == FORWARD)) {
             if (mRefMessage != null) {
                 initFromRefMessage(action, mAccount.name);
-                if (mRefMessage != null) {
-                    // CC field only gets populated when doing REPLY_ALL.
-                    // BCC never gets auto-populated, unless the user is editing
-                    // a draft with one.
-                    if (!TextUtils.isEmpty(mRefMessage.cc) && action == REPLY_ALL) {
-                        mCcBccView.show(false, true, false);
-                    }
-                }
-                updateHideOrShowCcBcc();
                 showQuotedText = true;
             }
         } else {
             initFromExtras(intent);
         }
+        finishSetup(action, intent, savedInstanceState, showQuotedText);
+    }
 
+    private void finishSetup(int action, Intent intent, Bundle savedInstanceState,
+            boolean showQuotedText) {
         if (action == COMPOSE) {
             mQuotedTextView.setVisibility(View.GONE);
         }
@@ -873,6 +876,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initFromRefMessage(int action, String recipientAddress) {
+        setFieldsFromRefMessage(action, recipientAddress);
+        if (mRefMessage != null) {
+            // CC field only gets populated when doing REPLY_ALL.
+            // BCC never gets auto-populated, unless the user is editing
+            // a draft with one.
+            if (!TextUtils.isEmpty(mRefMessage.cc) && action == REPLY_ALL) {
+                mCcBccView.show(false, true, false);
+            }
+        }
+        updateHideOrShowCcBcc();
+    }
+
+    private void setFieldsFromRefMessage(int action, String recipientAddress) {
         setSubject(mRefMessage, action);
         // Setup recipients
         if (action == FORWARD) {
@@ -1528,7 +1544,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         Folder defaultInbox = new Folder();
         defaultInbox.uri = mAccount.settings.defaultInbox;
         final Intent mailIntent =
-                Utils.createViewFolderIntent(defaultInbox, mAccount, false);
+                Utils.createViewFolderIntent(defaultInbox, mAccount);
 
         mailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
                 Intent.FLAG_ACTIVITY_TASK_ON_HOME);
@@ -2236,7 +2252,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (initialComposeMode != mComposeMode) {
             resetMessageForModeChange();
             if (mDraft == null && mRefMessage != null) {
-                initFromRefMessage(mComposeMode, mAccount.name);
+                setFieldsFromRefMessage(mComposeMode, mAccount.name);
             }
             boolean showCc = false;
             boolean showBcc = false;
@@ -2583,5 +2599,44 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @VisibleForTesting
     protected ArrayList<Attachment> getAttachments() {
         return mAttachmentsView.getAttachments();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case REFERENCE_MESSAGE_LOADER:
+                return new CursorLoader(this, mRefMessageUri, UIProvider.MESSAGE_PROJECTION, null,
+                        null, null);
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data != null && data.moveToFirst()) {
+            mRefMessage = new Message(data);
+            // We set these based on EXTRA_TO.
+            mRefMessage.to = null;
+            mRefMessage.from = null;
+            Intent intent = getIntent();
+            int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
+            initFromRefMessage(action, mAccount.name);
+            finishSetup(action, intent, null, true);
+            if (action != FORWARD) {
+                String to = intent.getStringExtra(EXTRA_TO);
+                if (!TextUtils.isEmpty(to)) {
+                    clearChangeListeners();
+                    mTo.append(to);
+                    initChangeListeners();
+                }
+            }
+        } else {
+            finish();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> arg0) {
+        // Do nothing.
     }
 }
