@@ -312,6 +312,10 @@ public final class ConversationViewFragment extends Fragment implements
                 mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM)
                         && !mConversation.spam);
+        Utils.setMenuItemVisibility(menu, R.id.mark_not_spam,
+                mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
+                        && mFolder.supportsCapability(FolderCapabilities.MARK_NOT_SPAM)
+                        && mConversation.spam);
         Utils.setMenuItemVisibility(
                 menu,
                 R.id.mute,

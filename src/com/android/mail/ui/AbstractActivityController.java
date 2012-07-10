@@ -77,6 +77,7 @@ import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -648,6 +649,11 @@ public abstract class AbstractActivityController implements ActivityController {
                 break;
             case R.id.report_spam:
                 delete(target, getAction(R.id.report_spam, target));
+                break;
+            case R.id.mark_not_spam:
+                // Currently, since spam messages are only shown in list with other spam messages,
+                // marking a message not as spam is a destructive action
+                delete(target, getAction(R.id.mark_not_spam, target));
                 break;
             case R.id.inside_conversation_unread:
                 // TODO(viki): This is strange, and potentially incorrect. READ is an int column
@@ -1483,7 +1489,7 @@ public abstract class AbstractActivityController implements ActivityController {
          */
         private final int mAction;
         /** The action will act upon these conversations */
-        private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
+        private final Collection<Conversation> mTarget;
         /** Whether this destructive action has already been performed */
         private boolean mCompleted;
         /** Whether this is an action on the currently selected set. */
@@ -1498,7 +1504,7 @@ public abstract class AbstractActivityController implements ActivityController {
          */
         public ConversationAction(int action, Collection<Conversation> target, boolean isBatch) {
             mAction = action;
-            mTarget.addAll(target);
+            mTarget = ImmutableList.copyOf(target);
             mIsSelectedSet = isBatch;
         }
 
@@ -1552,6 +1558,10 @@ public abstract class AbstractActivityController implements ActivityController {
                 case R.id.report_spam:
                     LogUtils.d(LOG_TAG, "Reporting spam");
                     mConversationListCursor.reportSpam(mContext, mTarget);
+                    break;
+                case R.id.mark_not_spam:
+                    LogUtils.d(LOG_TAG, "Marking not spam");
+                    mConversationListCursor.reportNotSpam(mContext, mTarget);
                     break;
                 case R.id.remove_star:
                     LogUtils.d(LOG_TAG, "Removing star");
@@ -1980,7 +1990,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * to be animated away from the current folder.
      */
     private class FolderDestruction implements DestructiveAction {
-        private final Collection<Conversation> mTarget = new ArrayList<Conversation>();
+        private final Collection<Conversation> mTarget;
         private final ArrayList<Folder> mFolderList = new ArrayList<Folder>();
         private final boolean mIsDestructive;
         /** Whether this destructive action has already been performed */
@@ -1993,7 +2003,7 @@ public abstract class AbstractActivityController implements ActivityController {
          */
         private FolderDestruction(final Collection<Conversation> target,
                 final Collection<Folder> folders, boolean isDestructive, boolean isBatch) {
-            mTarget.addAll(target);
+            mTarget = ImmutableList.copyOf(target);
             mFolderList.addAll(folders);
             mIsDestructive = isDestructive;
             mIsSelectedSet = isBatch;
