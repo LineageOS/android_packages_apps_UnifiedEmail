@@ -159,6 +159,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     //  If this is a reply/forward then this extra will hold the original message
     private static final String EXTRA_IN_REFERENCE_TO_MESSAGE = "in-reference-to-message";
+    // If this is a reply/forward then this extra will hold a uri we must query
+    // to get the original message.
+    protected static final String EXTRA_IN_REFERENCE_TO_MESSAGE_URI = "in-reference-to-message-uri";
     // If this is an action to edit an existing draft messagge, this extra will hold the
     // draft message
     private static final String ORIGINAL_DRAFT_MESSAGE = "original-draft-message";
@@ -228,6 +231,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private RecipientTextWatcher mToListener;
     private RecipientTextWatcher mCcListener;
     private RecipientTextWatcher mBccListener;
+    private Uri mRefMessageUri;
 
 
     /**
@@ -316,6 +320,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Initialize the message from the message in the intent
             message = (Message) intent.getParcelableExtra(ORIGINAL_DRAFT_MESSAGE);
             mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
+            mRefMessageUri = (Uri) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI);
         }
         if (account == null) {
             if (syncingAccounts != null && syncingAccounts.length > 0) {
