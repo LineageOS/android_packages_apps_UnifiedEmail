@@ -156,6 +156,9 @@ public class Message implements Parcelable {
      * @see UIProvider.MessageColumns#EVENT_INTENT_URI
      */
     public Uri eventIntentUri;
+    public String spamWarningString;
+    public int spamWarningLevel;
+    public int spamLinkType;
 
     private transient String[] mToAddresses = null;
     private transient String[] mCcAddresses = null;
@@ -220,6 +223,9 @@ public class Message implements Parcelable {
         dest.writeString(attachmentsJson);
         dest.writeParcelable(accountUri, 0);
         dest.writeParcelable(eventIntentUri, 0);
+        dest.writeString(spamWarningString);
+        dest.writeInt(spamWarningLevel);
+        dest.writeInt(spamLinkType);
     }
 
     private Message(Parcel in) {
@@ -251,6 +257,9 @@ public class Message implements Parcelable {
         attachmentsJson = in.readString();
         accountUri = in.readParcelable(null);
         eventIntentUri = in.readParcelable(null);
+        spamWarningString = in.readString();
+        spamWarningLevel = in.readInt();
+        spamLinkType = in.readInt();
     }
 
     public Message() {
@@ -325,6 +334,10 @@ public class Message implements Parcelable {
             accountUri = !TextUtils.isEmpty(accountUriString) ? Uri.parse(accountUriString) : null;
             eventIntentUri =
                     Utils.getValidUri(cursor.getString(UIProvider.MESSAGE_EVENT_INTENT_COLUMN));
+            spamWarningString =
+                    cursor.getString(UIProvider.MESSAGE_SPAM_WARNING_STRING_ID_COLUMN);
+            spamWarningLevel = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LEVEL_COLUMN);
+            spamLinkType = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN);
         }
     }
 

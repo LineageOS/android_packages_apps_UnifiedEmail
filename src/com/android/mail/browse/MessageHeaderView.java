@@ -93,6 +93,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private ViewGroup mTitleContainerView;
     private ViewGroup mCollapsedDetailsView;
     private ViewGroup mExpandedDetailsView;
+    private SpamWarningView mSpamWarningView;
     private ViewGroup mImagePromptView;
     private MessageInviteView mInviteView;
     private View mBottomBorderView;
@@ -363,14 +364,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mIsDraft = mMessage.draftType != UIProvider.DraftType.NOT_A_DRAFT;
         mIsSending = isInOutbox();
 
-        updateChildVisibility();
-
-        if (mIsDraft || isInOutbox()) {
-            mSnippet = makeSnippet(mMessage.snippet);
-        } else {
-            mSnippet = mMessage.snippet;
-        }
-
         // If this was a sent message AND:
         // 1. the account has a custom from, the cursor will populate the
         // selected custom from as the fromAddress when a message is sent but
@@ -383,6 +376,14 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             from = mAccount.name;
         }
         mSender = getAddress(from);
+
+        updateChildVisibility();
+
+        if (mIsDraft || isInOutbox()) {
+            mSnippet = makeSnippet(mMessage.snippet);
+        } else {
+            mSnippet = mMessage.snippet;
+        }
 
         mSenderNameView.setText(getHeaderTitle());
         mSenderEmailView.setText(getHeaderSubtitle());
@@ -887,10 +888,16 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (vis == GONE) {
             hideCollapsedDetails();
             hideExpandedDetails();
+            hideSpamWarning();
             hideShowImagePrompt();
             hideInvite();
         } else {
             setMessageDetailsExpanded(mMessageHeaderItem.detailsExpanded);
+            if (mMessage.spamWarningString == null) {
+                hideSpamWarning();
+            } else {
+                showSpamWarning();
+            }
             if (mShowImagePrompt) {
                 showImagePrompt();
             } else {
@@ -963,6 +970,22 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             mImagePromptView = v;
         }
         mImagePromptView.setVisibility(VISIBLE);
+    }
+
+    private void hideSpamWarning() {
+        if (mSpamWarningView != null) {
+            mSpamWarningView.setVisibility(GONE);
+        }
+    }
+
+    private void showSpamWarning() {
+        if (mSpamWarningView == null) {
+            mSpamWarningView = (SpamWarningView)
+                    mInflater.inflate(R.layout.conversation_message_spam_warning, this, false);
+            addView(mSpamWarningView);
+        }
+
+        mSpamWarningView.showSpamWarning(mMessage, mSender);
     }
 
     private void handleShowImagePromptClick(View v) {
