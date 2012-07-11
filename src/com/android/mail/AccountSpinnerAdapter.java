@@ -94,7 +94,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return the type of account: one of {@link #TYPE_ACCOUNT}, {@link #TYPE_HEADER}, or
      * {@link #TYPE_FOLDER}.
      */
-    public int getType(int position) {
+    @Override
+    public int getItemViewType(int position) {
         if (position == 0) {
             return TYPE_DEAD_HEADER;
         }
@@ -211,7 +212,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        switch (getType(position)){
+        switch (getItemViewType(position)){
             case TYPE_DEAD_HEADER:
                 return "dead header";
             case TYPE_ACCOUNT:
@@ -267,7 +268,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     // always return what we believe that view is.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = mInflater.inflate(R.layout.account_switch_spinner_item, null);
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.account_switch_spinner_item, null);
+        }
         ((TextView) convertView.findViewById(R.id.account_spinner_first))
             .setText(getFolderLabel());
         ((TextView) convertView.findViewById(R.id.account_spinner_second))
@@ -306,7 +309,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         String smallText = "";
         int color = 0;
         int unreadCount = 0;
-        switch (getType(position)) {
+        switch (getItemViewType(position)) {
             case TYPE_DEAD_HEADER:
                 convertView = mInflater.inflate(R.layout.empty, null);
                 return convertView;
@@ -411,7 +414,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     @Override
     public boolean isEnabled(int position) {
         // Don't want the user selecting the header.
-        final int type = getType(position);
+        final int type = getItemViewType(position);
         return type != TYPE_DEAD_HEADER && type != TYPE_HEADER;
     }
 
