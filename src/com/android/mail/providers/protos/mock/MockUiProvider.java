@@ -341,6 +341,8 @@ public final class MockUiProvider extends ContentProvider {
         accountMap.put(AccountColumns.RECENT_FOLDER_LIST_URI, Uri.parse("http://www.google.com"));
         accountMap.put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
                 Uri.parse("http://www.google.com"));
+        accountMap.put(AccountColumns.MANUAL_SYNC_URI,
+                Uri.parse("http://www.google.com"));
 
         // TODO: store the default inbox
         accountMap.put(SettingsColumns.DEFAULT_INBOX, null);
@@ -443,6 +445,8 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.RECENT_FOLDER_LIST_URI), 0);
         dest.writeInt((Integer) accountInfo.get(AccountColumns.COLOR));
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI),
+                0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.MANUAL_SYNC_URI),
                 0);
         Parcel p = Parcel.obtain();
         p.writeString("");

@@ -146,6 +146,11 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public final Settings settings;
 
+    /**
+     * URI for forcing a manual sync of this account.
+     */
+    public final Uri manualSyncUri;
+
     private static final String LOG_TAG = LogTag.getLogTag();
 
     /**
@@ -177,6 +182,8 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(UIProvider.AccountColumns.COLOR, color);
             json.put(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
                     defaultRecentFolderListUri);
+            json.put(UIProvider.AccountColumns.MANUAL_SYNC_URI,
+                    manualSyncUri);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
@@ -212,16 +219,6 @@ public class Account extends android.accounts.Account implements Parcelable {
     }
 
     /**
-     * Parse a string (possibly null or empty) into a URI. If the string is null or empty, null
-     * is returned back. Otherwise an empty URI is returned.
-     * @param uri
-     * @return a valid URI, possibly {@link android.net.Uri#EMPTY}
-     */
-    private static Uri getValidUri(String uri) {
-        return Utils.getValidUri(uri);
-    }
-
-    /**
      * Construct a new Account instance from a previously serialized string. This calls
      * {@link android.accounts.Account#Account(String, String)} with name and type given as the
      * first two arguments.
@@ -240,29 +237,33 @@ public class Account extends android.accounts.Account implements Parcelable {
         providerVersion = json.getInt(UIProvider.AccountColumns.PROVIDER_VERSION);
         uri = Uri.parse(json.optString(UIProvider.AccountColumns.URI));
         capabilities = json.getInt(UIProvider.AccountColumns.CAPABILITIES);
-        folderListUri = getValidUri(json.optString(UIProvider.AccountColumns.FOLDER_LIST_URI));
-        fullFolderListUri = getValidUri(json
+        folderListUri = Utils
+                .getValidUri(json.optString(UIProvider.AccountColumns.FOLDER_LIST_URI));
+        fullFolderListUri = Utils.getValidUri(json
                 .optString(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI));
-        searchUri = getValidUri(json.optString(UIProvider.AccountColumns.SEARCH_URI));
+        searchUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SEARCH_URI));
         accountFromAddresses = UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES;
-        saveDraftUri = getValidUri(json.optString(UIProvider.AccountColumns.SAVE_DRAFT_URI));
-        sendMessageUri = getValidUri(json.optString(UIProvider.AccountColumns.SEND_MAIL_URI));
-        expungeMessageUri = getValidUri(json
+        saveDraftUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SAVE_DRAFT_URI));
+        sendMessageUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SEND_MAIL_URI));
+        expungeMessageUri = Utils.getValidUri(json
                 .optString(UIProvider.AccountColumns.EXPUNGE_MESSAGE_URI));
-        undoUri = getValidUri(json.optString(UIProvider.AccountColumns.UNDO_URI));
-        settingsIntentUri = getValidUri(json
+        undoUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.UNDO_URI));
+        settingsIntentUri = Utils.getValidUri(json
                 .optString(UIProvider.AccountColumns.SETTINGS_INTENT_URI));
-        helpIntentUri = getValidUri(json.optString(UIProvider.AccountColumns.HELP_INTENT_URI));
-        sendFeedbackIntentUri =
-                getValidUri(json.optString(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI));
+        helpIntentUri = Utils
+                .getValidUri(json.optString(UIProvider.AccountColumns.HELP_INTENT_URI));
+        sendFeedbackIntentUri = Utils.getValidUri(json
+                .optString(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI));
         syncStatus = json.optInt(UIProvider.AccountColumns.SYNC_STATUS);
-        composeIntentUri = getValidUri(json.optString(UIProvider.AccountColumns.COMPOSE_URI));
+        composeIntentUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.COMPOSE_URI));
         mimeType = json.optString(UIProvider.AccountColumns.MIME_TYPE);
-        recentFolderListUri = getValidUri(
-                json.optString(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI));
+        recentFolderListUri = Utils.getValidUri(json
+                .optString(UIProvider.AccountColumns.RECENT_FOLDER_LIST_URI));
         color = json.optInt(UIProvider.AccountColumns.COLOR, 0);
-        defaultRecentFolderListUri = getValidUri(
-                json.optString(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI));
+        defaultRecentFolderListUri = Utils.getValidUri(json
+                .optString(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI));
+        manualSyncUri = Utils
+                .getValidUri(json.optString(UIProvider.AccountColumns.MANUAL_SYNC_URI));
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -296,6 +297,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         recentFolderListUri = in.readParcelable(null);
         color = in.readInt();
         defaultRecentFolderListUri = in.readParcelable(null);
+        manualSyncUri = in.readParcelable(null);
         final String serializedSettings = in.readString();
         final Settings parcelSettings = Settings.newInstance(serializedSettings);
         if (parcelSettings != null) {
@@ -308,46 +310,38 @@ public class Account extends android.accounts.Account implements Parcelable {
 
     public Account(Cursor cursor) {
         super(cursor.getString(UIProvider.ACCOUNT_NAME_COLUMN), "unknown");
-        accountFromAddresses = cursor
-                .getString(UIProvider.ACCOUNT_FROM_ADDRESSES_COLUMN);
+        accountFromAddresses = cursor.getString(UIProvider.ACCOUNT_FROM_ADDRESSES_COLUMN);
         capabilities = cursor.getInt(UIProvider.ACCOUNT_CAPABILITIES_COLUMN);
         providerVersion = cursor.getInt(UIProvider.ACCOUNT_PROVIDER_VERISON_COLUMN);
         uri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_URI_COLUMN));
         folderListUri = Uri.parse(cursor.getString(UIProvider.ACCOUNT_FOLDER_LIST_URI_COLUMN));
-        final String fullFolderList = cursor
-                .getString(UIProvider.ACCOUNT_FULL_FOLDER_LIST_URI_COLUMN);
-        fullFolderListUri = !TextUtils.isEmpty(fullFolderList) ? Uri.parse(fullFolderList) : null;
-        final String search = cursor.getString(UIProvider.ACCOUNT_SEARCH_URI_COLUMN);
-        searchUri = !TextUtils.isEmpty(search) ? Uri.parse(search) : null;
-        final String saveDraft = cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN);
-        saveDraftUri = !TextUtils.isEmpty(saveDraft) ? Uri.parse(saveDraft) : null;
-        final String send = cursor.getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN);
-        sendMessageUri = !TextUtils.isEmpty(send) ? Uri.parse(send) : null;
-        final String expunge = cursor.getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN);
-        expungeMessageUri = !TextUtils.isEmpty(expunge) ? Uri.parse(expunge) : null;
-        final String undo = cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN);
-        undoUri = !TextUtils.isEmpty(undo) ? Uri.parse(undo) : null;
-        final String settingsUriString =
-                cursor.getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN);
-        settingsIntentUri =
-                !TextUtils.isEmpty(settingsUriString) ? Uri.parse(settingsUriString) : null;
-        final String help = cursor.getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN);
-        helpIntentUri = !TextUtils.isEmpty(help) ? Uri.parse(help) : null;
-        final String sendFeedback =
-                cursor.getString(UIProvider.ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN);
-        sendFeedbackIntentUri = !TextUtils.isEmpty(sendFeedback) ? Uri.parse(sendFeedback) : null;
+        fullFolderListUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_FULL_FOLDER_LIST_URI_COLUMN));
+        searchUri = Utils.getValidUri(cursor.getString(UIProvider.ACCOUNT_SEARCH_URI_COLUMN));
+        saveDraftUri = Utils
+                .getValidUri(cursor.getString(UIProvider.ACCOUNT_SAVE_DRAFT_URI_COLUMN));
+        sendMessageUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_SEND_MESSAGE_URI_COLUMN));
+        expungeMessageUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN));
+        undoUri = Utils.getValidUri(cursor.getString(UIProvider.ACCOUNT_UNDO_URI_COLUMN));
+        settingsIntentUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_SETTINGS_INTENT_URI_COLUMN));
+        helpIntentUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN));
+        sendFeedbackIntentUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN));
         syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
-        final String compose = cursor.getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN);
-        composeIntentUri = !TextUtils.isEmpty(compose) ? Uri.parse(compose) : null;
+        composeIntentUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN));
         mimeType = cursor.getString(UIProvider.ACCOUNT_MIME_TYPE_COLUMN);
-        final String recent =
-                cursor.getString(UIProvider.ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN);
-        recentFolderListUri = !TextUtils.isEmpty(recent) ? Uri.parse(recent) : null;
+        recentFolderListUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN));
         color = cursor.getInt(UIProvider.ACCOUNT_COLOR_COLUMN);
-        final String defaultRecent =
-                cursor.getString(UIProvider.ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN);
-        defaultRecentFolderListUri =
-                !TextUtils.isEmpty(defaultRecent) ? Uri.parse(defaultRecent) : null;
+        defaultRecentFolderListUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN));
+        manualSyncUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_MANUAL_SYNC_URI_COLUMN));
         settings = new Settings(cursor);
     }
 
