@@ -721,5 +721,5 @@
     <string translate="false" name="hierarchical_folder_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215</string>
 
     <string translate="false" name="compose_component_name">com.android.mail.compose.ComposeActivity</string>
-    <string translate="false" name="autosend_component_name">com.android.mail.compose.AutoSendActivity</string>
+    <string translate="false" name="autosend_component_name"></string>
 </resources>
