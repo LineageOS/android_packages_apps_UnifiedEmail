@@ -18,11 +18,12 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
@@ -86,11 +87,12 @@ public class WaitFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.manual_sync:
-               // mCallbacks.onStartSync(sCurrentAccount.name);
-                break;
             case R.id.change_sync_settings:
-               // mCallbacks.onStartSync(sCurrentAccount.name);
+                Intent intent = new Intent(Settings.ACTION_SYNC_SETTINGS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
+            case R.id.manual_sync:
                 break;
         }
     }
