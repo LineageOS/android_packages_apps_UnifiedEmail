@@ -399,6 +399,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(recentFolderListUri, 0);
         dest.writeInt(color);
         dest.writeParcelable(defaultRecentFolderListUri, 0);
+        dest.writeParcelable(manualSyncUri, 0);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
         }
