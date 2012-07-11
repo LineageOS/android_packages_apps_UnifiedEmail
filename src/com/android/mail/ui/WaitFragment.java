@@ -18,7 +18,11 @@
 package com.android.mail.ui;
 
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -29,11 +33,18 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.UIProvider.SyncStatus;
 
-public class WaitFragment extends Fragment implements View.OnClickListener {
+public class WaitFragment extends Fragment implements View.OnClickListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
     // Keys used to pass data to {@link WaitFragment}.
     private static final String ACCOUNT_KEY = "account";
 
+    private static final int MANUAL_SYNC_LOADER = 0;
+
     private Account mAccount;
+
+    private LayoutInflater mInflater;
+
+    private ViewGroup mContainer;
 
     public static WaitFragment newInstance(Account account) {
         WaitFragment fragment = new WaitFragment();
@@ -55,18 +66,26 @@ public class WaitFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mInflater = inflater;
+        mContainer = container;
+        return getContent();
+    }
+
+    private View getContent() {
         final View root;
 
+        // Clear any views in the container.
+        mContainer.removeAllViews();
         if ((mAccount.syncStatus & SyncStatus.MANUAL_SYNC_REQUIRED) ==
                 SyncStatus.MANUAL_SYNC_REQUIRED) {
             // A manual sync is required
-            root = inflater.inflate(R.layout.wait_for_manual_sync, container, false);
+            root = mInflater.inflate(R.layout.wait_for_manual_sync, mContainer, false);
 
             root.findViewById(R.id.manual_sync).setOnClickListener(this);
             root.findViewById(R.id.change_sync_settings).setOnClickListener(this);
 
         } else {
-            root = inflater.inflate(R.layout.wait_for_sync, container, false);
+            root = mInflater.inflate(R.layout.wait_for_sync, mContainer, false);
         }
 
         return root;
@@ -74,10 +93,7 @@ public class WaitFragment extends Fragment implements View.OnClickListener {
 
     void updateAccount(Account account) {
         mAccount = account;
-
-        // TODO: If this was a manual sync, and the account state has transitioned from
-        // "not initialized" & "manual sync required" to "sync in progress" & "manual sync required"
-        // the view should be changed to reflect this
+        getContent();
     }
 
     Account getAccount() {
@@ -93,7 +109,27 @@ public class WaitFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.manual_sync:
+                if (mAccount != null && mAccount.manualSyncUri != null) {
+                    getLoaderManager().initLoader(MANUAL_SYNC_LOADER, null, this);
+                }
                 break;
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+        // Tell the account to sync manually. As a side effect, updates will come into the
+        // controller for this fragment and update it as necessary.
+        return new CursorLoader(getActivity(), mAccount.manualSyncUri, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> arg0, Cursor arg1) {
+        // Do nothing.
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> arg0) {
+        // Do nothing.
     }
 }
