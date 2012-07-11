@@ -26,12 +26,15 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
@@ -40,6 +43,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
+import android.text.TextUtils;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -1359,9 +1363,12 @@ public abstract class AbstractActivityController implements ActivityController {
                         if (!updatedAccount.isAccountIntialized() && !inWaitingMode) {
                             // Transition to waiting mode
                             showWaitForInitialization();
-                        } else if (updatedAccount.isAccountIntialized() && inWaitingMode) {
-                            // Dismiss waiting mode
-                            hideWaitForInitialization();
+                        } else if (updatedAccount.isAccountIntialized()) {
+                            if (inWaitingMode) {
+                                // Dismiss waiting mode
+                                hideWaitForInitialization();
+                            }
+                            initializeShareIntents();
                         } else if (!updatedAccount.isAccountIntialized() && inWaitingMode) {
                             // Update the WaitFragment's account object
                             updateWaitMode();
@@ -1440,6 +1447,27 @@ public abstract class AbstractActivityController implements ActivityController {
                 mActivity.invalidateOptionsMenu();
                 mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
                 break;
+        }
+    }
+
+    private void initializeShareIntents() {
+        Resources res = mContext.getResources();
+        String composeName = res.getString(R.string.compose_component_name);
+        initializeComponent(composeName);
+        String autoSendName = res.getString(R.string.autosend_component_name);
+        initializeComponent(autoSendName);
+    }
+
+    private void initializeComponent(String name) {
+        if (!TextUtils.isEmpty(name)) {
+            PackageManager pm = mContext.getPackageManager();
+            ComponentName component = new ComponentName(mContext, name);
+            if (pm.getComponentEnabledSetting(component)
+                    != PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
+                pm.setComponentEnabledSetting(component,
+                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                        PackageManager.DONT_KILL_APP);
+            }
         }
     }
 
