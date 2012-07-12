@@ -173,34 +173,38 @@ public class UIProvider {
          */
         public static final int REPORT_SPAM = 0x0002;
         /**
+         * Whether the server allows reporting phishing back.
+         */
+        public static final int REPORT_PHISHING = 0x0004;
+        /**
          * Whether the server supports a concept of Archive: removing mail from the Inbox but
          * keeping it around.
          */
-        public static final int ARCHIVE = 0x0004;
+        public static final int ARCHIVE = 0x0008;
         /**
          * Whether the server will stop notifying on updates to this thread? This requires
          * THREADED_CONVERSATIONS to be true, otherwise it should be ignored.
          */
-        public static final int MUTE = 0x0008;
+        public static final int MUTE = 0x0010;
         /**
          * Whether the server supports searching over all messages. This requires SYNCABLE_FOLDERS
          * to be true, otherwise it should be ignored.
          */
-        public static final int SERVER_SEARCH = 0x0010;
+        public static final int SERVER_SEARCH = 0x0020;
         /**
          * Whether the server supports constraining search to a single folder. Requires
          * SYNCABLE_FOLDERS, otherwise it should be ignored.
          */
-        public static final int FOLDER_SERVER_SEARCH = 0x0020;
+        public static final int FOLDER_SERVER_SEARCH = 0x0040;
         /**
          * Whether the server sends us sanitized HTML (guaranteed to not contain malicious HTML).
          */
-        public static final int SANITIZED_HTML = 0x0040;
+        public static final int SANITIZED_HTML = 0x0080;
         /**
          * Whether the server allows synchronization of draft messages. This does NOT require
          * SYNCABLE_FOLDERS to be set.
          */
-        public static final int DRAFT_SYNCHRONIZATION = 0x0080;
+        public static final int DRAFT_SYNCHRONIZATION = 0x0100;
         /**
          * Does the server allow the user to compose mails (and reply) using addresses other than
          * their account name? For instance, GMail allows users to set FROM addresses that are
@@ -208,54 +212,54 @@ public class UIProvider {
          * FROM: address like user@android.com. If the user has enabled multiple FROM address, he
          * can compose (and reply) using either address.
          */
-        public static final int MULTIPLE_FROM_ADDRESSES = 0x0100;
+        public static final int MULTIPLE_FROM_ADDRESSES = 0x0200;
         /**
          * Whether the server allows the original message to be included in the reply by setting a
          * flag on the reply. If we can avoid including the entire previous message, we save on
          * bandwidth (replies are shorter).
          */
-        public static final int SMART_REPLY = 0x0200;
+        public static final int SMART_REPLY = 0x0400;
         /**
          * Does this account support searching locally, on the device? This requires the backend
          * storage to support a mechanism for searching.
          */
-        public static final int LOCAL_SEARCH = 0x0400;
+        public static final int LOCAL_SEARCH = 0x0800;
         /**
          * Whether the server supports a notion of threaded conversations: where replies to messages
          * are tagged to keep conversations grouped. This could be full threading (each message
          * lists its parent) or conversation-level threading (each message lists one conversation
          * which it belongs to)
          */
-        public static final int THREADED_CONVERSATIONS = 0x0800;
+        public static final int THREADED_CONVERSATIONS = 0x1000;
         /**
          * Whether the server supports allowing a conversation to be in multiple folders. (Or allows
          * multiple folders on a single conversation)
          */
-        public static final int MULTIPLE_FOLDERS_PER_CONV = 0x1000;
+        public static final int MULTIPLE_FOLDERS_PER_CONV = 0x2000;
         /**
          * Whether the provider supports undoing operations. If it doesn't, never show the undo bar.
          */
-        public static final int UNDO = 0x2000;
+        public static final int UNDO = 0x4000;
         /**
          * Whether the account provides help content.
          */
-        public static final int HELP_CONTENT = 0x4000;
+        public static final int HELP_CONTENT = 0x8000;
         /**
          * Whether the account provides a way to send feedback content.
          */
-        public static final int SEND_FEEDBACK = 0x8000;
+        public static final int SEND_FEEDBACK = 0x10000;
         /**
          * Whether the account provides a mechanism for marking conversations as important.
          */
-        public static final int MARK_IMPORTANT = 0x10000;
+        public static final int MARK_IMPORTANT = 0x20000;
         /**
          * Whether initial conversation queries should use a limit parameter
          */
-        public static final int INITIAL_CONVERSATION_LIMIT = 0x20000;
+        public static final int INITIAL_CONVERSATION_LIMIT = 0x40000;
         /**
          * Whether the account cannot be used for sending
          */
-        public static final int SENDING_UNAVAILABLE = 0x40000;
+        public static final int SENDING_UNAVAILABLE = 0x80000;
     }
 
     public static final class AccountColumns {
@@ -577,29 +581,35 @@ public class UIProvider {
         public static final int REPORT_SPAM = 0x0020;
 
         /**
+         * For accounts that support report spam, this will indicate that this folder supports
+         * the mark not functionality.
+         */
+        public static final int MARK_NOT_SPAM = 0x0040;
+
+        /**
          * For accounts that support mute, this will indicate if a mute is performed from within
          * this folder, the action is destructive.
          */
-        public static final int DESTRUCTIVE_MUTE = 0x0040;
+        public static final int DESTRUCTIVE_MUTE = 0x0080;
 
         /**
          * Indicates that a folder supports settings (sync lookback, etc.)
          */
-        public static final int SUPPORTS_SETTINGS = 0x0080;
+        public static final int SUPPORTS_SETTINGS = 0x0100;
         /**
          * All the messages in this folder are important.
          */
-        public static final int ONLY_IMPORTANT = 0x0100;
+        public static final int ONLY_IMPORTANT = 0x0200;
         /**
          * Deletions in this folder can't be undone (could include archive if desirable)
          */
-        public static final int DELETE_ACTION_FINAL = 0x0200;
+        public static final int DELETE_ACTION_FINAL = 0x0400;
         /**
          * This folder is virtual, i.e. contains conversations potentially pulled from other
          * folders, potentially even from different accounts.  Examples might be a "starred"
          * folder, or an "unread" folder (per account or provider-wide)
          */
-        public static final int IS_VIRTUAL = 0x400;
+        public static final int IS_VIRTUAL = 0x0800;
     }
 
     public static final class FolderColumns {
@@ -937,6 +947,11 @@ public class UIProvider {
          * Report spam operation
          */
         public static final String REPORT_SPAM = "report_spam";
+
+        /**
+         * Report not spam operation
+         */
+        public static final String REPORT_NOT_SPAM = "report_not_spam";
 
         private ConversationOperations() {
         }

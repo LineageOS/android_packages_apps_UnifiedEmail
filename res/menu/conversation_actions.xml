@@ -68,6 +68,12 @@
         android:id="@+id/report_spam"
         android:title="@string/report_spam"
         android:icon="@drawable/ic_spam_normal_holo_light" />
+    <!-- Depends on AccountCapabilities.REPORT_SPAM -->
+    <item
+        android:id="@+id/mark_not_spam"
+        android:title="@string/mark_not_spam"
+        android:icon="@drawable/ic_spam_normal_holo_light"
+        android:visible="false" />
 
     <!-- Always available -->
     <item android:id="@+id/settings"

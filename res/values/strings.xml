@@ -113,8 +113,10 @@
     <string name="remove_star">Remove star</string>
     <!-- Menu item: archive this conversation -->
     <string name="archive">Archive</string>
-    <!-- Menu item: report this conversation as spam -->
+    <!-- Menu item: report this conversation as spam [CHAR LIMIT = 30] -->
     <string name="report_spam">Report spam</string>
+    <!-- Menu item: report this conversation not as spam [CHAR LIMIT = 30] -->
+    <string name="mark_not_spam">Not spam</string>
     <!-- Menu item: delete this conversation -->
     <string name="delete">Delete</string>
     <!-- Menu item: next conversation -->

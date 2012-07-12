@@ -119,6 +119,12 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             case R.id.report_spam:
                 mUpdater.delete(mSelectionSet.values(), mUpdater.getBatchAction(R.id.report_spam));
                 break;
+            case R.id.mark_not_spam:
+                // Currently, since spam messages are only shown in list with other spam messages,
+                // marking a message not as spam is a destructive action
+                mUpdater.delete(mSelectionSet.values(),
+                        mUpdater.getBatchAction(R.id.mark_not_spam));
+                break;
             case R.id.read:
                 markConversationsRead(true);
                 break;
@@ -305,6 +311,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         boolean showStar = false;
         boolean showMarkUnread = false;
         boolean showMarkImportant = false;
+        boolean showMarkNotSpam = false;
 
         for (Conversation conversation : conversations) {
             if (!conversation.starred) {
@@ -316,7 +323,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             if (!conversation.isImportant()) {
                 showMarkImportant = true;
             }
-            if (showStar && showMarkUnread && showMarkImportant) {
+            if (conversation.spam) {
+                showMarkNotSpam = true;
+            }
+            if (showStar && showMarkUnread && showMarkImportant && showMarkNotSpam) {
                 break;
             }
         }
@@ -333,7 +343,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
         final MenuItem spam = menu.findItem(R.id.report_spam);
         spam.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM) &&
-                mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
+                mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM));
+        final MenuItem notSpam = menu.findItem(R.id.mark_not_spam);
+        notSpam.setVisible(showMarkNotSpam &&
+                mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM) &&
+                mFolder.supportsCapability(FolderCapabilities.MARK_NOT_SPAM));
         final MenuItem mute = menu.findItem(R.id.mute);
         mute.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.MUTE));
         final MenuItem markImportant = menu.findItem(R.id.mark_important);
