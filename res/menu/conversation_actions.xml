@@ -75,6 +75,12 @@
         android:icon="@drawable/ic_spam_normal_holo_light"
         android:visible="false" />
 
+    <!-- Depends on AccountCapabilities.REPORT_PHISHING -->
+    <item
+        android:id="@+id/report_phishing"
+        android:title="@string/report_phishing"
+        android:visible="false" />
+
     <!-- Always available -->
     <item android:id="@+id/settings"
         android:title="@string/menu_settings" />

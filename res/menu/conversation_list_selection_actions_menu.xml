@@ -84,13 +84,16 @@
     <item
         android:id="@+id/report_spam"
         android:title="@string/report_spam"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_spam_normal_holo_light" />
+        android:showAsAction="never" />
     <!-- Availability based on account -->
     <item
         android:id="@+id/mark_not_spam"
         android:title="@string/mark_not_spam"
-        android:showAsAction="never"
-        android:icon="@drawable/ic_spam_normal_holo_light" />
+        android:showAsAction="never" />
+    <!-- Availability based on account -->
+    <item
+        android:id="@+id/report_phishing"
+        android:title="@string/report_phishing"
+        android:showAsAction="never" />
 
 </menu>

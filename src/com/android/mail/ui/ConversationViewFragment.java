@@ -295,7 +295,7 @@ public final class ConversationViewFragment extends Fragment implements
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        boolean showMarkImportant = !mConversation.isImportant();
+        final boolean showMarkImportant = !mConversation.isImportant();
         Utils.setMenuItemVisibility(
                 menu,
                 R.id.mark_important,
@@ -321,6 +321,10 @@ public final class ConversationViewFragment extends Fragment implements
                 mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.MARK_NOT_SPAM)
                         && mConversation.spam);
+        Utils.setMenuItemVisibility(menu, R.id.report_phishing,
+                mAccount.supportsCapability(AccountCapabilities.REPORT_PHISHING) && mFolder != null
+                        && mFolder.supportsCapability(FolderCapabilities.REPORT_PHISHING)
+                        && !mConversation.phishing);
         Utils.setMenuItemVisibility(
                 menu,
                 R.id.mute,

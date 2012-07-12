@@ -112,6 +112,10 @@ public class Conversation implements Parcelable {
      */
     public boolean muted;
     /**
+     * @see UIProvider.ConversationColumns#PHISHING
+     */
+    public boolean phishing;
+    /**
      * @see UIProvider.ConversationColumns#COLOR
      */
     public int color;
@@ -162,6 +166,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(convFlags);
         dest.writeInt(personalLevel);
         dest.writeInt(spam ? 1 : 0);
+        dest.writeInt(phishing ? 1 : 0);
         dest.writeInt(muted ? 1 : 0);
         dest.writeInt(color);
         dest.writeParcelable(accountUri, 0);
@@ -187,6 +192,7 @@ public class Conversation implements Parcelable {
         convFlags = in.readInt();
         personalLevel = in.readInt();
         spam = in.readInt() != 0;
+        phishing = in.readInt() != 0;
         muted = in.readInt() != 0;
         color = in.readInt();
         accountUri = in.readParcelable(null);
@@ -242,6 +248,7 @@ public class Conversation implements Parcelable {
             convFlags = cursor.getInt(UIProvider.CONVERSATION_FLAGS_COLUMN);
             personalLevel = cursor.getInt(UIProvider.CONVERSATION_PERSONAL_LEVEL_COLUMN);
             spam = cursor.getInt(UIProvider.CONVERSATION_IS_SPAM_COLUMN) != 0;
+            phishing = cursor.getInt(UIProvider.CONVERSATION_IS_PHISHING_COLUMN) != 0;
             muted = cursor.getInt(UIProvider.CONVERSATION_MUTED_COLUMN) != 0;
             color = cursor.getInt(UIProvider.CONVERSATION_COLOR_COLUMN);
             String account = cursor.getString(UIProvider.CONVERSATION_ACCOUNT_URI_COLUMN);
@@ -258,7 +265,7 @@ public class Conversation implements Parcelable {
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
             boolean starred, String folderList, String rawFolders, int convFlags,
-            int personalLevel, boolean spam, boolean muted, Uri accountUri) {
+            int personalLevel, boolean spam, boolean phishing, boolean muted, Uri accountUri) {
 
         final Conversation conversation = new Conversation();
 
@@ -281,6 +288,7 @@ public class Conversation implements Parcelable {
         conversation.convFlags = convFlags;
         conversation.personalLevel = personalLevel;
         conversation.spam = spam;
+        conversation.phishing = phishing;
         conversation.muted = muted;
         conversation.color = 0;
         conversation.accountUri = accountUri;

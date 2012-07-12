@@ -1185,6 +1185,7 @@ public final class ConversationCursor implements Cursor {
         public static final int MUTE = 4;
         public static final int REPORT_SPAM = 5;
         public static final int REPORT_NOT_SPAM = 6;
+        public static final int REPORT_PHISHING = 7;
         public static final int MOSTLY_ARCHIVE = MOSTLY | ARCHIVE;
         public static final int MOSTLY_DELETE = MOSTLY | DELETE;
 
@@ -1305,6 +1306,14 @@ public final class ConversationCursor implements Cursor {
                     // Create an update operation that represents report spam
                     op = ContentProviderOperation.newUpdate(uri).withValue(
                             ConversationOperations.OPERATION_KEY, operation).build();
+                    break;
+                case REPORT_PHISHING:
+                    sProvider.deleteLocal(mUri, ConversationCursor.this);
+
+                    // Create an update operation that represents report spam
+                    op = ContentProviderOperation.newUpdate(uri).withValue(
+                            ConversationOperations.OPERATION_KEY,
+                            ConversationOperations.REPORT_PHISHING).build();
                     break;
                 default:
                     throw new UnsupportedOperationException(
@@ -1647,6 +1656,13 @@ public final class ConversationCursor implements Cursor {
      */
     public int reportNotSpam(Context context, Collection<Conversation> conversations) {
         return applyAction(context, conversations, ConversationOperation.REPORT_NOT_SPAM);
+    }
+
+    /**
+     * As above, for report phishing
+     */
+    public int reportPhishing(Context context, Collection<Conversation> conversations) {
+        return applyAction(context, conversations, ConversationOperation.REPORT_PHISHING);
     }
 
     /**

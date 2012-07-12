@@ -659,6 +659,9 @@ public abstract class AbstractActivityController implements ActivityController {
                 // marking a message not as spam is a destructive action
                 delete(target, getAction(R.id.mark_not_spam, target));
                 break;
+            case R.id.report_phishing:
+                delete(target, getAction(R.id.report_phishing, target));
+                break;
             case R.id.inside_conversation_unread:
                 // TODO(viki): This is strange, and potentially incorrect. READ is an int column
                 // in the provider.
@@ -1574,6 +1577,10 @@ public abstract class AbstractActivityController implements ActivityController {
                 case R.id.mark_not_spam:
                     LogUtils.d(LOG_TAG, "Marking not spam");
                     mConversationListCursor.reportNotSpam(mContext, mTarget);
+                    break;
+                case R.id.report_phishing:
+                    LogUtils.d(LOG_TAG, "Reporting phishing");
+                    mConversationListCursor.reportPhishing(mContext, mTarget);
                     break;
                 case R.id.remove_star:
                     LogUtils.d(LOG_TAG, "Removing star");
