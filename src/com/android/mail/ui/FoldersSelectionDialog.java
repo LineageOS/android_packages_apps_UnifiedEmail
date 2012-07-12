@@ -33,6 +33,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.FolderSelectorAdapter.FolderRow;
+import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,10 +66,12 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
         mSingle = !account
                 .supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
         // TODO: (mindyp) make async
-        final Cursor foldersCursor = context.getContentResolver().query(
-                account.fullFolderListUri != null ? account.fullFolderListUri
-                        : account.folderListUri, UIProvider.FOLDERS_PROJECTION, null, null, null);
+        Cursor foldersCursor = null;
         try {
+            foldersCursor = context.getContentResolver().query(
+                    !Utils.isEmpty(account.fullFolderListUri) ? account.fullFolderListUri
+                            : account.folderListUri, UIProvider.FOLDERS_PROJECTION, null, null,
+                    null);
             final HashSet<String> conversationFolders = new HashSet<String>();
             for (Conversation conversation: target) {
                 if (conversation != null && !TextUtils.isEmpty(conversation.folderList)) {
@@ -90,7 +93,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
                     foldersCursor, conversationFolders, mSingle));
             builder.setAdapter(mAdapter, this);
             // Pre-load existing conversation folders.
-            if (foldersCursor.moveToFirst()) {
+            if (foldersCursor != null && foldersCursor.moveToFirst()) {
                 do {
                     final String folderUri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
                     if (conversationFolders.contains(folderUri)) {
@@ -99,7 +102,9 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
                 } while (foldersCursor.moveToNext());
             }
         } finally {
-            foldersCursor.close();
+            if (foldersCursor != null) {
+                foldersCursor.close();
+            }
         }
         mDialog = builder.create();
     }
