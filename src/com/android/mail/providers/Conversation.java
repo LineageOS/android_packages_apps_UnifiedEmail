@@ -20,6 +20,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.google.common.collect.ImmutableList;
@@ -30,27 +31,93 @@ import java.util.Collections;
 public class Conversation implements Parcelable {
     public static final int NO_POSITION = -1;
 
+    /**
+     * @see BaseColumns#_ID
+     */
     public long id;
+    /**
+     * @see UIProvider.ConversationColumns#URI
+     */
     public Uri uri;
+    /**
+     * @see UIProvider.ConversationColumns#SUBJECT
+     */
     public String subject;
+    /**
+     * @see UIProvider.ConversationColumns#DATE_RECEIVED_MS
+     */
     public long dateMs;
+    /**
+     * @see UIProvider.ConversationColumns#SNIPPET
+     */
     public String snippet;
+    /**
+     * @see UIProvider.ConversationColumns#HAS_ATTACHMENTS
+     */
     public boolean hasAttachments;
+    /**
+     * @see UIProvider.ConversationColumns#MESSAGE_LIST_URI
+     */
     public Uri messageListUri;
+    /**
+     * @see UIProvider.ConversationColumns#SENDER_INFO
+     */
     public String senders;
+    /**
+     * @see UIProvider.ConversationColumns#NUM_MESSAGES
+     */
     public int numMessages;
+    /**
+     * @see UIProvider.ConversationColumns#NUM_DRAFTS
+     */
     public int numDrafts;
+    /**
+     * @see UIProvider.ConversationColumns#SENDING_STATE
+     */
     public int sendingState;
+    /**
+     * @see UIProvider.ConversationColumns#PRIORITY
+     */
     public int priority;
+    /**
+     * @see UIProvider.ConversationColumns#READ
+     */
     public boolean read;
+    /**
+     * @see UIProvider.ConversationColumns#STARRED
+     */
     public boolean starred;
+    /**
+     * @see UIProvider.ConversationColumns#FOLDER_LIST
+     */
     public String folderList;
+    /**
+     * @see UIProvider.ConversationColumns#RAW_FOLDERS
+     */
     public String rawFolders;
+    /**
+     * @see UIProvider.ConversationColumns#FLAGS
+     */
     public int convFlags;
+    /**
+     * @see UIProvider.ConversationColumns#PERSONAL_LEVEL
+     */
     public int personalLevel;
+    /**
+     * @see UIProvider.ConversationColumns#SPAM
+     */
     public boolean spam;
+    /**
+     * @see UIProvider.ConversationColumns#MUTED
+     */
     public boolean muted;
+    /**
+     * @see UIProvider.ConversationColumns#COLOR
+     */
     public int color;
+    /**
+     * @see UIProvider.ConversationColumns#ACCOUNT_URI
+     */
     public Uri accountUri;
 
     // Used within the UI to indicate the adapter position of this conversation

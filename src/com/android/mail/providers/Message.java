@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.android.mail.browse.MessageCursor;
@@ -35,35 +36,125 @@ import java.util.List;
 
 
 public class Message implements Parcelable {
+    /**
+     * @see BaseColumns#_ID
+     */
     public long id;
+    /**
+     * @see UIProvider.MessageColumns#SERVER_ID
+     */
     public long serverId;
+    /**
+     * @see UIProvider.MessageColumns#URI
+     */
     public Uri uri;
+    /**
+     * @see UIProvider.MessageColumns#CONVERSATION_ID
+     */
     public String conversationUri;
+    /**
+     * @see UIProvider.MessageColumns#SUBJECT
+     */
     public String subject;
+    /**
+     * @see UIProvider.MessageColumns#SNIPPET
+     */
     public String snippet;
+    /**
+     * @see UIProvider.MessageColumns#FROM
+     */
     public String from;
+    /**
+     * @see UIProvider.MessageColumns#TO
+     */
     public String to;
+    /**
+     * @see UIProvider.MessageColumns#CC
+     */
     public String cc;
+    /**
+     * @see UIProvider.MessageColumns#BCC
+     */
     public String bcc;
+    /**
+     * @see UIProvider.MessageColumns#REPLY_TO
+     */
     public String replyTo;
+    /**
+     * @see UIProvider.MessageColumns#DATE_RECEIVED_MS
+     */
     public long dateReceivedMs;
+    /**
+     * @see UIProvider.MessageColumns#BODY_HTML
+     */
     public String bodyHtml;
+    /**
+     * @see UIProvider.MessageColumns#BODY_TEXT
+     */
     public String bodyText;
+    /**
+     * @see UIProvider.MessageColumns#EMBEDS_EXTERNAL_RESOURCES
+     */
     public boolean embedsExternalResources;
+    /**
+     * @see UIProvider.MessageColumns#REF_MESSAGE_ID
+     */
     public String refMessageId;
+    /**
+     * @see UIProvider.MessageColumns#DRAFT_TYPE
+     */
     public int draftType;
+    /**
+     * @see UIProvider.MessageColumns#APPEND_REF_MESSAGE_CONTENT
+     */
     public boolean appendRefMessageContent;
+    /**
+     * @see UIProvider.MessageColumns#HAS_ATTACHMENTS
+     */
     public boolean hasAttachments;
+    /**
+     * @see UIProvider.MessageColumns#ATTACHMENT_LIST_URI
+     */
     public Uri attachmentListUri;
+    /**
+     * @see UIProvider.MessageColumns#MESSAGE_FLAGS
+     */
     public long messageFlags;
+    /**
+     * @see UIProvider.MessageColumns#SAVE_MESSAGE_URI
+     */
     public String saveUri;
+    /**
+     * @see UIProvider.MessageColumns#SEND_MESSAGE_URI
+     */
     public String sendUri;
+    /**
+     * @see UIProvider.MessageColumns#ALWAYS_SHOW_IMAGES
+     */
     public boolean alwaysShowImages;
+    /**
+     * @see UIProvider.MessageColumns#READ
+     */
     public boolean read;
+    /**
+     * @see UIProvider.MessageColumns#STARRED
+     */
     public boolean starred;
+    /**
+     * @see UIProvider.MessageColumns#QUOTE_START_POS
+     */
     public int quotedTextOffset;
+    /**
+     * @see UIProvider.MessageColumns#ATTACHMENTS
+     */
     public String attachmentsJson;
+    /**
+     * @see UIProvider.MessageColumns#MESSAGE_ACCOUNT_URI
+     */
     public Uri accountUri;
+    /**
+     * @see UIProvider.MessageColumns#EVENT_INTENT_URI
+     */
     public Uri eventIntentUri;
 
     private transient String[] mToAddresses = null;
