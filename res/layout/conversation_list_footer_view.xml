@@ -34,7 +34,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_email_network_error" />
+            android:src="@drawable/ic_alert_grey" />
 
         <TextView android:id="@+id/error_text"
             android:layout_width="0dip"

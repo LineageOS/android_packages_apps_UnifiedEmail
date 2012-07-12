@@ -2110,7 +2110,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mToastBar.setConversationMode(false);
         mToastBar.show(
                 getRetryClickedListener(folder),
-                R.drawable.ic_email_network_error,
+                R.drawable.ic_alert_white,
                 Utils.getSyncStatusText(mActivity.getActivityContext(),
                         folder.lastSyncResult),
                 false, /* showActionIcon */

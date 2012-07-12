@@ -67,14 +67,12 @@ public class SpamWarningView extends RelativeLayout implements OnClickListener {
         mSpamWarningText.setText(Html.fromHtml(String.format(
                 message.spamWarningString, senderAddress, senderDomain)));
 
-        // TODO - when we have updated assets, set them to the right value based
-        // upon the spam warning level
         if (message.spamWarningLevel == UIProvider.SpamWarningLevel.HIGH_WARNING) {
             mSpamWarningText.setTextColor(mHighWarningColor);
-            mSpamWarningIcon.setImageResource(R.drawable.ic_email_network_error);
+            mSpamWarningIcon.setImageResource(R.drawable.ic_alert_red);
         } else {
             mSpamWarningText.setTextColor(mLowWarningColor);
-            mSpamWarningIcon.setImageResource(R.drawable.ic_email_network_error);
+            mSpamWarningIcon.setImageResource(R.drawable.ic_alert_grey);
         }
 
         // Sets the link to the appropriate text
