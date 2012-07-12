@@ -149,8 +149,7 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
 
         // TODO: read 'show priority arrows' pref from settings
         final boolean importanceArrowsEnabled = true;
-        // TODO: read importance value from Conversation
-        if (importanceArrowsEnabled && true /* conv.isImportant */) {
+        if (importanceArrowsEnabled && conv.isImportant()) {
             sb.append('.');
             sb.setSpan(new PriorityIndicatorSpan(getContext(),
                     R.drawable.ic_email_caret_none_important_unread, mFoldersView.getPadding(), 0),

@@ -866,6 +866,10 @@ public class UIProvider {
          */
         public static final String RAW_FOLDERS = "rawFolders";
         public static final String FLAGS = "conversationFlags";
+        /**
+         * This int column indicates the personal level of a conversation per
+         * {@link ConversationPersonalLevel}.
+         */
         public static final String PERSONAL_LEVEL = "personalLevel";
 
         /**
