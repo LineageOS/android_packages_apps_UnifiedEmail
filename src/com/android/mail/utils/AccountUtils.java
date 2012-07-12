@@ -67,6 +67,7 @@ public class AccountUtils {
     }
 
     /**
+     * Synchronous method which returns registered accounts that are syncing.
      * @param context
      * @return
      */

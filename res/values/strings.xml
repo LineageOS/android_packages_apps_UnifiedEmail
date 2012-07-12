@@ -719,4 +719,7 @@
     <string translate="false" name="hierarchical_folder_parent_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
     <string translate="false" name="hierarchical_folder_parent_top_ellip"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215\u2026\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
     <string translate="false" name="hierarchical_folder_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215</string>
+
+    <string translate="false" name="compose_component_name">com.android.mail.compose.ComposeActivity</string>
+    <string translate="false" name="autosend_component_name">com.android.mail.compose.AutoSendActivity</string>
 </resources>
