@@ -82,7 +82,7 @@ public class AccountUtils {
             if (accountsCursor != null) {
                 while (accountsCursor.moveToNext()) {
                     account = new Account(accountsCursor);
-                    if ((account.syncStatus & SyncStatus.INITIAL_SYNC_NEEDED) == 0) {
+                    if (account.isAccountIntialized()) {
                         accounts.add(account);
                     }
                 }
