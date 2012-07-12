@@ -26,8 +26,8 @@ import android.text.TextUtils;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.utils.LogUtils;
 
+import java.util.List;
 import java.util.SortedSet;
 
 /**
@@ -59,7 +59,8 @@ public class FolderDisplayer {
     public void loadConversationFolders(String foldersString, Folder ignoreFolder) {
         mFoldersSortedSet.clear();
 
-        for (Folder f : Folder.forFoldersString(foldersString)) {
+        List<Folder> folders = Folder.forFoldersString(foldersString);
+        for (Folder f : folders) {
             // We will sometimes see folders that do not have names yet.
             if (TextUtils.isEmpty(f.name) || (ignoreFolder != null && ignoreFolder.equals(f))) {
                 continue;

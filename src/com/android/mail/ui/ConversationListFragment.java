@@ -213,6 +213,7 @@ public final class ConversationListFragment extends ListFragment implements
                 null);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
+        mListView.setConversationUpdater(mActivity.getConversationUpdater());
         mListView.setSelectionSet(mActivity.getSelectedSet());
         mListAdapter.hideFooter();
         mActivity.setViewModeListener(this);
@@ -282,9 +283,6 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setOnItemLongClickListener(this);
         mListView.enableSwipe(mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO));
-        mListView.setSwipeAction(mAccount
-                .supportsCapability(UIProvider.AccountCapabilities.ARCHIVE) ? R.id.archive
-                : R.id.delete);
         // Note - we manually save/restore the listview state.
         mListView.setSaveEnabled(false);
 
@@ -452,6 +450,7 @@ public final class ConversationListFragment extends ListFragment implements
 
     public void onFolderUpdated(Folder folder) {
         mFolder = folder;
+        setSwipeAction();
         if (mFolder == null) {
             return;
         }
@@ -480,6 +479,15 @@ public final class ConversationListFragment extends ListFragment implements
             mListAdapter.showFooter();
             mErrorListener.onError(mFolder);
         }
+    }
+
+    private void setSwipeAction() {
+        mListView.setSwipeAction(!mAccount
+                .supportsCapability(UIProvider.AccountCapabilities.ARCHIVE) ?
+                        R.id.delete :
+                            mFolder != null && mFolder.type == UIProvider.FolderType.INBOX ?
+                                    R.id.archive : R.id.change_folder);
+        mListView.setCurrentFolder(mFolder);
     }
 
     @Override

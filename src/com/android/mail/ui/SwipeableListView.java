@@ -21,6 +21,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,11 +33,18 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
+import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogTag;
+import com.google.common.base.Objects;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 public class SwipeableListView extends ListView implements Callback{
     private SwipeHelper mSwipeHelper;
@@ -45,6 +54,8 @@ public class SwipeableListView extends ListView implements Callback{
 
     private ConversationSelectionSet mConvSelectionSet;
     private int mSwipeAction;
+    private Folder mFolder;
+    private ConversationUpdater mConversationUpdater;
 
     public SwipeableListView(Context context) {
         this(context, null);
@@ -92,6 +103,14 @@ public class SwipeableListView extends ListView implements Callback{
 
     public void setSelectionSet(ConversationSelectionSet set) {
         mConvSelectionSet = set;
+    }
+
+    public void setCurrentFolder(Folder folder) {
+        mFolder = folder;
+    }
+
+    public void setConversationUpdater(ConversationUpdater updater) {
+        mConversationUpdater = updater;
     }
 
     @Override
@@ -168,9 +187,12 @@ public class SwipeableListView extends ListView implements Callback{
         if (conversationViews != null) {
             final ArrayList<Conversation> conversations = new ArrayList<Conversation>(
                     conversationViews.size());
+            Conversation conversation;
             for (ConversationItemView view : conversationViews) {
                 if (view.getConversation().id != target.getConversation().id) {
-                    conversations.add(view.getConversation());
+                    conversation = view.getConversation();
+                    conversation.localDeleteOnUpdate = true;
+                    conversations.add(conversation);
                 }
             }
             undoOp = new UndoOperation(
@@ -183,6 +205,14 @@ public class SwipeableListView extends ListView implements Callback{
                     switch (mSwipeAction) {
                         case R.id.archive:
                             cc.archive(context, conversations);
+                            break;
+                        case R.id.change_folder:
+                            Collection<Folder> folders = getFolders(conversations);
+                            cc.updateString(context, conversations,
+                                    ConversationColumns.FOLDER_LIST, Folder.getUriString(folders));
+                            cc.updateString(context, conversations,
+                                    ConversationColumns.RAW_FOLDERS,
+                                    Folder.getSerializedFolderString(mFolder, folders));
                             break;
                         case R.id.delete:
                             cc.delete(context, conversations);
@@ -198,6 +228,19 @@ public class SwipeableListView extends ListView implements Callback{
         }
     }
 
+    private Collection<Folder> getFolders(Collection<Conversation> conversations) {
+        ArrayList<Folder> folders = new ArrayList<Folder>();
+        for (Conversation conversation : conversations) {
+            folders.addAll(Folder.forFoldersString(conversation.rawFolders));
+        }
+        for (Folder folder : folders) {
+            if (Objects.equal(folder.uri, mFolder.uri)) {
+                folders.remove(folder);
+            }
+        }
+        return folders;
+    }
+
     private void handleLeaveBehind(ConversationItemView target, UndoOperation undoOp,
             Context context) {
         Conversation conv = target.getConversation();
@@ -205,6 +248,15 @@ public class SwipeableListView extends ListView implements Callback{
         adapter.setupLeaveBehind(conv, undoOp, conv.position);
         ConversationCursor cc = (ConversationCursor)adapter.getCursor();
         switch (mSwipeAction) {
+            case R.id.change_folder:
+                Collection<Conversation> convs = Conversation.listOf(conv);
+                Collection<Folder> folders = getFolders(convs);
+                cc.mostlyDestructiveUpdate(context, convs,
+                        ConversationColumns.FOLDER_LIST, Folder.getUriString(folders));
+                cc.mostlyDestructiveUpdate(context, convs,
+                        ConversationColumns.RAW_FOLDERS,
+                        Folder.getSerializedFolderString(mFolder, folders));
+                break;
             case R.id.archive:
                 cc.mostlyArchive(context, Conversation.listOf(conv));
                 break;

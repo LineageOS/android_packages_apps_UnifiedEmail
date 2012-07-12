@@ -78,9 +78,10 @@ public interface ConversationUpdater {
      * @param folders the folders to assign the conversations to.
      * @param target the conversations to act upon.
      * @param batch whether this is a batch operation
+     * @param showUndo whether to show the undo bar
      */
-    public void assignFolder(
-            Collection<Folder> folders, Collection<Conversation> target, boolean batch);
+    public void assignFolder(Collection<Folder> folders, Collection<Conversation> target,
+            boolean batch, boolean showUndo);
 
     /**
      * Refreshes the conversation list, if one exists.
