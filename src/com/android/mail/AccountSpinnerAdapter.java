@@ -94,8 +94,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @return the type of account: one of {@link #TYPE_ACCOUNT}, {@link #TYPE_HEADER}, or
      * {@link #TYPE_FOLDER}.
      */
-    @Override
-    public int getItemViewType(int position) {
+    public int getType(int position) {
         if (position == 0) {
             return TYPE_DEAD_HEADER;
         }
@@ -212,7 +211,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        switch (getItemViewType(position)){
+        switch (getType(position)){
             case TYPE_DEAD_HEADER:
                 return "dead header";
             case TYPE_ACCOUNT:
@@ -268,23 +267,20 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     // always return what we believe that view is.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = mInflater.inflate(R.layout.account_switch_spinner_item, null);
-        ((TextView) convertView.findViewById(R.id.account_spinner_first))
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
+        }
+        // Hide everything else.
+        View anchor = showAnchor(convertView);
+        // Show the anchor
+        anchor.findViewById(R.id.anchor).setVisibility(View.VISIBLE);
+        ((TextView) anchor.findViewById(R.id.account_spinner_first))
             .setText(getFolderLabel());
-        ((TextView) convertView.findViewById(R.id.account_spinner_second))
+        ((TextView) anchor.findViewById(R.id.account_spinner_second))
             .setText(getCurrentAccountName());
-        populateUnreadCountView((TextView) convertView.findViewById(R.id.unread),
+        populateUnreadCountView((TextView) anchor.findViewById(R.id.unread),
                 getFolderUnreadCount());
         return convertView;
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        // If recent folders are shown, then two views: Recent folders and a header, and potentially
-        // one "show all folders" item.
-        final int folderTypes = mRecentFoldersVisible ?  (2 + (mShowAllFoldersItem ? 1 : 0)) : 0;
-        // Accounts are the type of view always shown.
-        return 2 + folderTypes;
     }
 
     @Override
@@ -299,6 +295,23 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         return false;
     }
 
+    private View showAnchor(View convertView) {
+        convertView.findViewById(R.id.dropdown).setVisibility(View.GONE);
+        View anchor = convertView.findViewById(R.id.anchor);
+        anchor.setVisibility(View.VISIBLE);
+        return anchor;
+    }
+
+    private View showDropdown(View convertView) {
+        convertView.findViewById(R.id.anchor).setVisibility(View.GONE);
+        convertView.findViewById(R.id.empty).setVisibility(View.GONE);
+        convertView.findViewById(R.id.header).setVisibility(View.GONE);
+        convertView.findViewById(R.id.default_view).setVisibility(View.GONE);
+        View dropdown = convertView.findViewById(R.id.dropdown);
+        dropdown.setVisibility(View.VISIBLE);
+        return dropdown;
+    }
+
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         // Shown in the first text view with big font.
@@ -307,9 +320,14 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         String smallText = "";
         int color = 0;
         int unreadCount = 0;
-        switch (getItemViewType(position)) {
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
+        }
+        // Show dropdown portion.
+        View dropdown = showDropdown(convertView);
+        switch (getType(position)) {
             case TYPE_DEAD_HEADER:
-                convertView = mInflater.inflate(R.layout.empty, null);
+                dropdown.findViewById(R.id.empty).setVisibility(View.VISIBLE);
                 return convertView;
             case TYPE_ACCOUNT:
                 // TODO(viki): Get real Inbox or Priority Inbox using the URI. Remove ugly hack.
@@ -318,10 +336,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 color = getAccountColor(position);
                 break;
             case TYPE_HEADER:
-                convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_header,
-                        null);
+                dropdown.findViewById(R.id.header).setVisibility(View.VISIBLE);
                 final String label = getCurrentAccountName();
-                TextView accountLabel = ((TextView) convertView.findViewById(
+                TextView accountLabel = ((TextView) dropdown.findViewById(
                         R.id.account_spinner_header_account));
                 if (accountLabel != null) {
                     accountLabel.setText(label);
@@ -336,11 +353,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 bigText = mContext.getResources().getString(R.string.show_all_folders);
                 break;
         }
-        convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
-        displayOrHide(convertView, R.id.account_spinner_first, bigText);
-        displayOrHide(convertView, R.id.account_spinner_second, smallText);
+        dropdown.findViewById(R.id.default_view).setVisibility(View.VISIBLE);
+        displayOrHide(dropdown, R.id.account_spinner_first, bigText);
+        displayOrHide(dropdown, R.id.account_spinner_second, smallText);
 
-        final View colorView = convertView.findViewById(R.id.account_spinner_color);
+        final View colorView = dropdown.findViewById(R.id.account_spinner_color);
         if (color != 0) {
             colorView.setVisibility(View.VISIBLE);
             colorView.setBackgroundColor(color);
@@ -348,7 +365,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             colorView.setVisibility(View.INVISIBLE);
         }
         populateUnreadCountView(
-                (TextView) convertView.findViewById(R.id.account_spinner_unread_count),
+                (TextView) dropdown.findViewById(R.id.account_spinner_unread_count),
                 unreadCount);
         return convertView;
 
@@ -412,7 +429,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     @Override
     public boolean isEnabled(int position) {
         // Don't want the user selecting the header.
-        final int type = getItemViewType(position);
+        final int type = getType(position);
         return type != TYPE_DEAD_HEADER && type != TYPE_HEADER;
     }
 
