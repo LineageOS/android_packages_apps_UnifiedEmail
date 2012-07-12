@@ -25,7 +25,5 @@ import android.view.View;
 public interface SwipeableItemView {
     public View getView();
 
-    public boolean canSwipe();
-
     public void cancelTap();
 }

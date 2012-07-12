@@ -1474,7 +1474,8 @@ public abstract class AbstractActivityController implements ActivityController {
         if (!TextUtils.isEmpty(name)) {
             final PackageManager pm = mContext.getPackageManager();
             final ComponentName component = new ComponentName(mContext, name);
-            if (true) {
+            if (pm.getComponentEnabledSetting(component)
+                    != PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
                 mEnableShareIntents = new AsyncTask<String, Void, Void>() {
                     @Override
                     protected Void doInBackground(String... args) {
