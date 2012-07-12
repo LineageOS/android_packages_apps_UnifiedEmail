@@ -1229,8 +1229,7 @@ public class UIProvider {
          */
         public static final String MESSAGE_ACCOUNT_URI = "messageAccountUri";
         /**
-         * Uri of the account associated with this message. Except in the case
-         * of showing a combined view, this column is almost always empty.
+         * Intent Uri to launch when the user wants to view an event in their calendar, or null.
          */
         public static final String EVENT_INTENT_URI = "eventIntentUri";
         private MessageColumns() {}
