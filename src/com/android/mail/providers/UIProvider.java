@@ -967,6 +967,33 @@ public class UIProvider {
         private DraftType() {}
     }
 
+    /**
+     * Class for the enum values to determine whether this
+     * string should be displayed as a high priority warning
+     * or a low priority warning. The current design has
+     * high priority warnings in red while low priority warnings
+     * are grey.
+     */
+    public static final class SpamWarningLevel {
+        public static final int NO_WARNING = 0;
+        public static final int LOW_WARNING = 1;
+        public static final int HIGH_WARNING = 2;
+
+        private SpamWarningLevel() {}
+    }
+
+    /**
+     * Class for the enum values to determine which type
+     * of link to show in the spam warning.
+     */
+    public static final class SpamWarningLinkType {
+        public static final int NO_LINK = 0;
+        public static final int IGNORE_WARNING = 1;
+        public static final int REPORT_PHISHING = 2;
+
+        private SpamWarningLinkType() {}
+    }
+
     public static final String[] MESSAGE_PROJECTION = {
         BaseColumns._ID,
         MessageColumns.SERVER_ID,
@@ -999,7 +1026,10 @@ public class UIProvider {
         MessageColumns.ATTACHMENTS,
         MessageColumns.CUSTOM_FROM_ADDRESS,
         MessageColumns.MESSAGE_ACCOUNT_URI,
-        MessageColumns.EVENT_INTENT_URI
+        MessageColumns.EVENT_INTENT_URI,
+        MessageColumns.SPAM_WARNING_STRING,
+        MessageColumns.SPAM_WARNING_LEVEL,
+        MessageColumns.SPAM_WARNING_LINK_TYPE
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -1042,6 +1072,9 @@ public class UIProvider {
     public static final int MESSAGE_CUSTOM_FROM_ADDRESS_COLUMN = 29;
     public static final int MESSAGE_ACCOUNT_URI_COLUMN = 30;
     public static final int MESSAGE_EVENT_INTENT_COLUMN = 31;
+    public static final int MESSAGE_SPAM_WARNING_STRING_ID_COLUMN = 32;
+    public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 33;
+    public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 34;
 
 
     public static final class CursorStatus {
@@ -1232,6 +1265,24 @@ public class UIProvider {
          * Intent Uri to launch when the user wants to view an event in their calendar, or null.
          */
         public static final String EVENT_INTENT_URI = "eventIntentUri";
+        /**
+         * This string column contains the stringfor the spam
+         * warning of this message, or null if there is no spam warning for the message.
+         */
+        public static final String SPAM_WARNING_STRING = "spamWarningString";
+        /**
+         * This integer column contains the level of spam warning of this message,
+         * or zero (0) if this message does not have a warning level.
+         * See {@link SpamWarningLevel} for possible values.
+         */
+        public static final String SPAM_WARNING_LEVEL = "spamWarningLevel";
+        /**
+         * This integer column contains the type of link for the spam warning
+         * of this message, or zero (0) if this message does not have a link type.
+         * See {@link SpamWarningLinkType} for possible values.
+         */
+        public static final String SPAM_WARNING_LINK_TYPE = "spamWarningLinkType";
+
         private MessageColumns() {}
     }
 

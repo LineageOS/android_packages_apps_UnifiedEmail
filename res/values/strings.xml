@@ -711,6 +711,11 @@
     <!-- Format string used when displaying the big text of a notification that was triggered by a single new conversation. [CHAR LIMIT=120] -->
     <string name="single_new_message_notification_big_text"><xliff:g id="subject">%1$s</xliff:g>\n<xliff:g id="snippet">%2$s</xliff:g></string>
 
+    <!-- Displayed in a message subheading. Ignore the current spam warning. [CHAR LIMIT=30] -->
+    <string name="ignore_spam_warning">Ignore, I trust this message</string>
+    <!-- Displayed in a message subheading. Report the visible message as phishing. [CHAR LIMIT=30] -->
+    <string name="report_phishing">Report Phishing</string>
+
     <!-- The section headers for the move to folder dialog [CHAR LIMIT=15] -->
     <string-array name="moveto_folder_sections">
         <item>System</item>
