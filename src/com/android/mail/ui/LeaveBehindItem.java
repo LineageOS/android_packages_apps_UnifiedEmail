@@ -91,11 +91,6 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     }
 
     @Override
-    public boolean canSwipe() {
-        return true;
-    }
-
-    @Override
     public View getView() {
         return this;
     }

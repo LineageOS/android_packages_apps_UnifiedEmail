@@ -1309,12 +1309,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     @Override
-    public boolean canSwipe() {
-        return mSelectedConversationSet.isEmpty()
-                || (!mSelectedConversationSet.isEmpty() && isChecked());
-    }
-
-    @Override
     public View getView() {
         return this;
     }
