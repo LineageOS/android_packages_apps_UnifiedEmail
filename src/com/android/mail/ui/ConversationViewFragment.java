@@ -118,8 +118,6 @@ public final class ConversationViewFragment extends Fragment implements
 
     private MenuItem mChangeFoldersMenuItem;
 
-    private float mDensity;
-
     /**
      * Folder is used to help determine valid menu actions for this conversation.
      */
@@ -202,8 +200,6 @@ public final class ConversationViewFragment extends Fragment implements
                 getLoaderManager(), this, this, this, mAddressCache);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
-        mDensity = getResources().getDisplayMetrics().density;
-
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
 
         showConversation();
@@ -242,13 +238,22 @@ public final class ConversationViewFragment extends Fragment implements
                 return true;
             }
         });
+        mWebView.setContentSizeChangeListener(new ConversationWebView.ContentSizeChangeListener() {
+            @Override
+            public void onHeightChange(int h) {
+                // When WebKit says the DOM height has changed, re-measure bodies and re-position
+                // their headers.
+                // This is separate from the typical JavaScript DOM change listeners because
+                // cases like NARROW_COLUMNS text reflow do not trigger DOM events.
+                mWebView.loadUrl("javascript:measurePositions();");
+            }
+        });
 
         final WebSettings settings = mWebView.getSettings();
 
         settings.setJavaScriptEnabled(true);
         settings.setUseWideViewPort(true);
-
-        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        settings.setLoadWithOverviewMode(true);
 
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
@@ -472,9 +477,9 @@ public final class ConversationViewFragment extends Fragment implements
 
         // add a single conversation header item
         final int convHeaderPos = mAdapter.addConversationHeader(mConversation);
-        final int convHeaderDp = measureOverlayHeight(convHeaderPos);
+        final int convHeaderPx = measureOverlayHeight(convHeaderPos);
 
-        mTemplates.startConversation(convHeaderDp);
+        mTemplates.startConversation(mWebView.screenPxToWebPx(convHeaderPx));
 
         int collapsedStart = -1;
         Message prevCollapsedMsg = null;
@@ -521,13 +526,13 @@ public final class ConversationViewFragment extends Fragment implements
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
-        return mTemplates.endConversation(mBaseUri, 320);
+        return mTemplates.endConversation(mBaseUri, 320, mWebView.getViewportWidth());
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
         final int blockPos = mAdapter.addSuperCollapsedBlock(start, end);
-        final int blockDp = measureOverlayHeight(blockPos);
-        mTemplates.appendSuperCollapsedHtml(start, blockDp);
+        final int blockPx = measureOverlayHeight(blockPos);
+        mTemplates.appendSuperCollapsedHtml(start, mWebView.screenPxToWebPx(blockPx));
     }
 
     private void renderMessage(Message msg, boolean expanded, boolean safeForImages) {
@@ -539,11 +544,11 @@ public final class ConversationViewFragment extends Fragment implements
         // Measure item header and footer heights to allocate spacers in HTML
         // But since the views themselves don't exist yet, render each item temporarily into
         // a host view for measurement.
-        final int headerDp = measureOverlayHeight(headerPos);
-        final int footerDp = measureOverlayHeight(footerPos);
+        final int headerPx = measureOverlayHeight(headerPos);
+        final int footerPx = measureOverlayHeight(footerPos);
 
-        mTemplates.appendMessageHtml(msg, expanded, safeForImages, 1.0f, headerDp,
-                footerDp);
+        mTemplates.appendMessageHtml(msg, expanded, safeForImages, 1.0f,
+                mWebView.screenPxToWebPx(headerPx), mWebView.screenPxToWebPx(footerPx));
     }
 
     private String renderCollapsedHeaders(MessageCursor cursor,
@@ -559,11 +564,11 @@ public final class ConversationViewFragment extends Fragment implements
                     false /* expanded */);
             final MessageFooterItem footer = mAdapter.newMessageFooterItem(header);
 
-            final int headerDp = measureOverlayHeight(header);
-            final int footerDp = measureOverlayHeight(footer);
+            final int headerPx = measureOverlayHeight(header);
+            final int footerPx = measureOverlayHeight(footer);
 
             mTemplates.appendMessageHtml(msg, false /* expanded */, msg.alwaysShowImages, 1.0f,
-                    headerDp, footerDp);
+                    mWebView.screenPxToWebPx(headerPx), mWebView.screenPxToWebPx(footerPx));
             replacements.add(header);
             replacements.add(footer);
         }
@@ -587,7 +592,7 @@ public final class ConversationViewFragment extends Fragment implements
      * {@link ConversationOverlayItem} for later use in overlay positioning.
      *
      * @param convItem adapter item with data to render and measure
-     * @return height in dp of the rendered view
+     * @return height of the rendered view in screen px
      */
     private int measureOverlayHeight(ConversationOverlayItem convItem) {
         final int type = convItem.getType();
@@ -602,7 +607,7 @@ public final class ConversationViewFragment extends Fragment implements
         convItem.setHeight(heightPx);
         convItem.markMeasurementValid();
 
-        return (int) (heightPx / mDensity);
+        return heightPx;
     }
 
     private void onConversationSeen() {
@@ -661,10 +666,11 @@ public final class ConversationViewFragment extends Fragment implements
         mConversationContainer.invalidateSpacerGeometry();
 
         // update message HTML spacer height
-        LogUtils.i(LAYOUT_TAG, "setting HTML spacer h=%dpx", newSpacerHeightPx);
-        final int heightDp = (int) (newSpacerHeightPx / mDensity);
+        final int h = mWebView.screenPxToWebPx(newSpacerHeightPx);
+        LogUtils.i(LAYOUT_TAG, "setting HTML spacer h=%dwebPx (%dscreenPx)", h,
+                newSpacerHeightPx);
         mWebView.loadUrl(String.format("javascript:setMessageHeaderSpacerHeight('%s', %d);",
-                mTemplates.getMessageDomId(item.message), heightDp));
+                mTemplates.getMessageDomId(item.message), h));
     }
 
     @Override
@@ -672,11 +678,11 @@ public final class ConversationViewFragment extends Fragment implements
         mConversationContainer.invalidateSpacerGeometry();
 
         // show/hide the HTML message body and update the spacer height
-        LogUtils.i(LAYOUT_TAG, "setting HTML spacer expanded=%s h=%dpx", item.isExpanded(),
-                newSpacerHeightPx);
-        final int heightDp = (int) (newSpacerHeightPx / mDensity);
+        final int h = mWebView.screenPxToWebPx(newSpacerHeightPx);
+        LogUtils.i(LAYOUT_TAG, "setting HTML spacer expanded=%s h=%dwebPx (%dscreenPx)",
+                item.isExpanded(), h, newSpacerHeightPx);
         mWebView.loadUrl(String.format("javascript:setMessageBodyVisible('%s', %s, %d);",
-                mTemplates.getMessageDomId(item.message), item.isExpanded(), heightDp));
+                mTemplates.getMessageDomId(item.message), item.isExpanded(), h));
     }
 
     @Override

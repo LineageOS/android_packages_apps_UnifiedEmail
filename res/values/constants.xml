@@ -51,6 +51,7 @@
     <integer name="conversation_desired_font_size_px">14</integer>
     <!-- matches 'font-size' style in template_conversation_upper.html -->
     <integer name="conversation_unstyled_font_size_px">13</integer>
+    <integer name="conversation_webview_viewport_px">980</integer>
 
     <!-- Whether the list is collapsed in conversation view mode -->
     <bool name="list_collapsed">true</bool>
