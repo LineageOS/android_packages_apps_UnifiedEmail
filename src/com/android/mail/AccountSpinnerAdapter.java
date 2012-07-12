@@ -311,7 +311,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         int unreadCount = 0;
         switch (getItemViewType(position)) {
             case TYPE_DEAD_HEADER:
-                convertView = mInflater.inflate(R.layout.empty, null);
+                if (convertView == null) {
+                    convertView = mInflater.inflate(R.layout.empty, null);
+                }
                 return convertView;
             case TYPE_ACCOUNT:
                 // TODO(viki): Get real Inbox or Priority Inbox using the URI. Remove ugly hack.
@@ -320,8 +322,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 color = getAccountColor(position);
                 break;
             case TYPE_HEADER:
-                convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_header,
-                        null);
+                if (convertView == null) {
+                    convertView = mInflater.inflate(
+                            R.layout.account_switch_spinner_dropdown_header, null);
+                }
                 final String label = getCurrentAccountName();
                 TextView accountLabel = ((TextView) convertView.findViewById(
                         R.id.account_spinner_header_account));
@@ -338,7 +342,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 bigText = mContext.getResources().getString(R.string.show_all_folders);
                 break;
         }
-        convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
+        }
         displayOrHide(convertView, R.id.account_spinner_first, bigText);
         displayOrHide(convertView, R.id.account_spinner_second, smallText);
 
