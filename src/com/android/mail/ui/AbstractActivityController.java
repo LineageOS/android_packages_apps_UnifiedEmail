@@ -215,6 +215,10 @@ public abstract class AbstractActivityController implements ActivityController {
     /** Indicates if a conversation view is visible. */
     private boolean mIsConversationVisible;
     protected AsyncRefreshTask mFolderSyncTask;
+    // Task for setting any share intents for the account to enabled.
+    // This gets cancelled if the user kills the app before it finishes, and
+    // will just run the next time the user opens the app.
+    private AsyncTask<String, Void, Void> mEnableShareIntents;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -856,7 +860,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onStop() {
-        // TODO(viki): Auto-generated method stub
+        if (mEnableShareIntents != null) {
+            mEnableShareIntents.cancel(true);
+        }
     }
 
     @Override
@@ -1466,13 +1472,18 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private void initializeComponent(String name) {
         if (!TextUtils.isEmpty(name)) {
-            PackageManager pm = mContext.getPackageManager();
-            ComponentName component = new ComponentName(mContext, name);
-            if (pm.getComponentEnabledSetting(component)
-                    != PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
-                pm.setComponentEnabledSetting(component,
-                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                        PackageManager.DONT_KILL_APP);
+            final PackageManager pm = mContext.getPackageManager();
+            final ComponentName component = new ComponentName(mContext, name);
+            if (true) {
+                mEnableShareIntents = new AsyncTask<String, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(String... args) {
+                        pm.setComponentEnabledSetting(component,
+                                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                                PackageManager.DONT_KILL_APP);
+                        return null;
+                    }
+                }.execute(name);
             }
         }
     }
