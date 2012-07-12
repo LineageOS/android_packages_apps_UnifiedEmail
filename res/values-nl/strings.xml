@@ -57,6 +57,7 @@
     <string name="remove_star" msgid="4372327933122106128">"Ster verwijderen"</string>
     <string name="archive" msgid="847250094775910499">"Archiveren"</string>
     <string name="report_spam" msgid="6467567747975393907">"Spam melden"</string>
+    <string name="mark_not_spam" msgid="6618707017718234086">"Geen spam"</string>
     <string name="delete" msgid="844871204175957681">"Verwijderen"</string>
     <string name="next" msgid="4674401197968248302">"Ouder"</string>
     <string name="previous" msgid="309943944831349924">"Nieuwer"</string>
@@ -347,4 +348,6 @@
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
+    <string name="compose_component_name" msgid="1673799619444668402">"com.android.mail.compose.ComposeActivity"</string>
+    <string name="autosend_component_name" msgid="3204704549005619187"></string>
 </resources>
