@@ -332,7 +332,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
             return false;
         }
         LogUtils.d(LOG_TAG, "onNavigationItemSelected(%d, %d) called", position, id);
-        final int type = mSpinner.getItemViewType(position);
+        final int type = mSpinner.getType(position);
         switch (type) {
             case AccountSpinnerAdapter.TYPE_ACCOUNT:
                 // Get the capabilities associated with this account.
