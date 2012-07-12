@@ -73,7 +73,6 @@ public class SwipeHelper {
     private boolean mCanCurrViewBeDimissed;
     private float mDensityScale;
     private float mLastY;
-    private Collection<ConversationItemView> mAssociatedViews;
     private final float mScrollSlop;
     private float mInitialTouchPosY;
     private float mMinSwipe;
@@ -217,13 +216,11 @@ public class SwipeHelper {
                     float pos = ev.getX();
                     float delta = pos - mInitialTouchPosX;
                     if (Math.abs(delta) > mPagingTouchSlop) {
-                        if (mCurrView.canSwipe()) {
-                            mCallback.onBeginDrag(mCurrView.getView());
-                            mDragging = true;
-                            mInitialTouchPosX = ev.getX() - mCurrAnimView.getTranslationX();
-                            mInitialTouchPosY = ev.getY();
-                            mCurrView.cancelTap();
-                        }
+                        mCallback.onBeginDrag(mCurrView.getView());
+                        mDragging = true;
+                        mInitialTouchPosX = ev.getX() - mCurrAnimView.getTranslationX();
+                        mInitialTouchPosY = ev.getY();
+                        mCurrView.cancelTap();
                     }
                 }
                 mLastY = ev.getY();
@@ -237,14 +234,6 @@ public class SwipeHelper {
                 break;
         }
         return mDragging;
-    }
-
-    public void setAssociatedViews(Collection<ConversationItemView> associated) {
-        mAssociatedViews = associated;
-    }
-
-    public void clearAssociatedViews() {
-        mAssociatedViews = null;
     }
 
     /**
@@ -423,21 +412,9 @@ public class SwipeHelper {
                                     * (float) Math.sin((deltaX / size) * (Math.PI / 2));
                         }
                     }
-                    if (mAssociatedViews != null && mAssociatedViews.size() > 1) {
-                        for (View v : mAssociatedViews) {
-                            setTranslation(v, deltaX);
-                        }
-                    } else {
-                        setTranslation(mCurrAnimView, deltaX);
-                    }
+                    setTranslation(mCurrAnimView, deltaX);
                     if (FADE_OUT_DURING_SWIPE && mCanCurrViewBeDimissed) {
-                        if (mAssociatedViews != null && mAssociatedViews.size() > 1) {
-                            for (View v : mAssociatedViews) {
-                                v.setAlpha(getAlphaForOffset(mCurrAnimView));
-                            }
-                        } else {
-                            mCurrAnimView.setAlpha(getAlphaForOffset(mCurrAnimView));
-                        }
+                        mCurrAnimView.setAlpha(getAlphaForOffset(mCurrAnimView));
                     }
                     invalidateGlobalRegion(mCurrView.getView());
                 }
@@ -475,20 +452,9 @@ public class SwipeHelper {
                             && (childSwipedFastEnough || childSwipedFarEnough);
 
                     if (dismissChild) {
-                        if (mAssociatedViews != null && mAssociatedViews.size() > 1) {
-                            dismissChildren(mAssociatedViews, childSwipedFastEnough ?
-                                    velocity : 0f);
-                        } else {
-                            dismissChild(mCurrView, childSwipedFastEnough ? velocity : 0f);
-                        }
+                        dismissChild(mCurrView, childSwipedFastEnough ? velocity : 0f);
                     } else {
-                        if (mAssociatedViews != null && mAssociatedViews.size() > 1) {
-                            for (SwipeableItemView v : mAssociatedViews) {
-                                snapChild(v, velocity);
-                            }
-                        } else {
-                            snapChild(mCurrView, velocity);
-                        }
+                        snapChild(mCurrView, velocity);
                         // snappity
                         mCallback.onDragCancelled(mCurrView);
                     }

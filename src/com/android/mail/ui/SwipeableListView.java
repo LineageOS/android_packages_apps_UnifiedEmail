@@ -33,7 +33,6 @@ import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -207,15 +206,16 @@ public class SwipeableListView extends ListView implements Callback{
         ConversationCursor cc = (ConversationCursor)adapter.getCursor();
         switch (mSwipeAction) {
             case R.id.archive:
-                cc.mostlyArchive(context, Conversation.listOf(target.getConversation()));
+                cc.mostlyArchive(context, Conversation.listOf(conv));
                 break;
             case R.id.delete:
-                cc.mostlyDelete(context, Conversation.listOf(target.getConversation()));
+                cc.mostlyDelete(context, Conversation.listOf(conv));
                 break;
         }
         adapter.notifyDataSetChanged();
-        if (mConvSelectionSet != null && !mConvSelectionSet.isEmpty()) {
-            mConvSelectionSet.clear();
+        if (mConvSelectionSet != null && !mConvSelectionSet.isEmpty()
+                && mConvSelectionSet.contains(conv)) {
+            mConvSelectionSet.toggle(null, conv);
         }
     }
 
@@ -224,17 +224,10 @@ public class SwipeableListView extends ListView implements Callback{
         // We do this so the underlying ScrollView knows that it won't get
         // the chance to intercept events anymore
         requestDisallowInterceptTouchEvent(true);
-        // If there are selected conversations, we are dismissing an entire
-        // associated set.
-        // Otherwise, the SwipeHelper will just get rid of the single item it
-        // received touch events for.
-        mSwipeHelper.setAssociatedViews(mConvSelectionSet != null ? mConvSelectionSet.views()
-                : null);
     }
 
     @Override
     public void onDragCancelled(SwipeableItemView v) {
-        mSwipeHelper.setAssociatedViews(null);
     }
 
     /**
