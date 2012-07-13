@@ -213,7 +213,6 @@ public final class ConversationListFragment extends ListFragment implements
                 null);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
-        mListView.setConversationUpdater(mActivity.getConversationUpdater());
         mListView.setSelectionSet(mActivity.getSelectedSet());
         mListAdapter.hideFooter();
         mActivity.setViewModeListener(this);

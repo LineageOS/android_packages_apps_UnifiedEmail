@@ -1515,8 +1515,22 @@ public final class ConversationCursor implements Cursor {
      */
     public int updateString(Context context, Collection<Conversation> conversations,
             String columnName, String value) {
+        return updateStrings(context, conversations, new String[] {
+            columnName
+        }, new String[] {
+            value
+        });
+    }
+
+    /**
+     * Update a string columns for a group of conversations (see updateValues below)
+     */
+    public int updateStrings(Context context, Collection<Conversation> conversations,
+            String[] columnNames, String[] values) {
         ContentValues cv = new ContentValues();
-        cv.put(columnName, value);
+        for (int i = 0; i < columnNames.length; i++) {
+            cv.put(columnNames[i], values[i]);
+        }
         return updateValues(context, conversations, cv);
     }
 
@@ -1692,9 +1706,23 @@ public final class ConversationCursor implements Cursor {
      * As above, for mostly destructive updates
      */
     public int mostlyDestructiveUpdate(Context context, Collection<Conversation> conversations,
-            String columnName, String value) {
+            String column, String value) {
+        return mostlyDestructiveUpdate(context, conversations, new String[] {
+            column
+        }, new String[] {
+            value
+        });
+    }
+
+    /**
+     * As above, for mostly destructive updates.
+     */
+    public int mostlyDestructiveUpdate(Context context, Collection<Conversation> conversations,
+            String[] columnNames, String[] values) {
         ContentValues cv = new ContentValues();
-        cv.put(columnName, value);
+        for (int i = 0; i < columnNames.length; i++) {
+            cv.put(columnNames[i], values[i]);
+        }
         return apply(
                 context,
                 getOperationsForConversations(conversations,

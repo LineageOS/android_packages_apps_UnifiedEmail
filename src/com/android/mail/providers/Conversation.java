@@ -23,6 +23,7 @@ import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
+import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
@@ -220,6 +221,13 @@ public class Conversation implements Parcelable {
     };
 
     public static final Uri MOVE_CONVERSATIONS_URI = Uri.parse("content://moveconversations");
+
+    /**
+     * The columns that need to be updated to change the folders for a conversation.
+     */
+    public static final String[] UPDATE_FOLDER_COLUMNS = new String[] {
+            ConversationColumns.FOLDER_LIST, ConversationColumns.RAW_FOLDERS
+    };
 
     public Conversation(Cursor cursor) {
         if (cursor != null) {
