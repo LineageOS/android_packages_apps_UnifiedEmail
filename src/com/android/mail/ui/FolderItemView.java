@@ -118,8 +118,9 @@ public class FolderItemView extends RelativeLayout {
         mFolderParentIcon.setVisibility(mFolder.hasChildren && showParentIcon ? View.VISIBLE
                 : View.GONE);
         final int count = getFolderItemCount();
+        mUnreadCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
+
         if (count > 0) {
-            mUnreadCountTextView.setVisibility(View.VISIBLE);
             mUnreadCountTextView.setText(Utils.getUnreadCountString(getContext(), count));
         }
     }
