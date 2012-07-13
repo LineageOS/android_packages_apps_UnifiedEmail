@@ -116,7 +116,9 @@
     <!-- Menu item: report this conversation as spam [CHAR LIMIT = 30] -->
     <string name="report_spam">Report spam</string>
     <!-- Menu item: report this conversation not as spam [CHAR LIMIT = 30] -->
-    <string name="mark_not_spam">Not spam</string>
+    <string name="mark_not_spam">Report not spam</string>
+    <!-- Menu item: report this conversation as phishing [CHAR LIMIT = 30] -->
+    <string name="report_phishing">Report phishing</string>
     <!-- Menu item: delete this conversation -->
     <string name="delete">Delete</string>
     <!-- Menu item: next conversation -->
@@ -713,8 +715,6 @@
 
     <!-- Displayed in a message subheading. Ignore the current spam warning. [CHAR LIMIT=30] -->
     <string name="ignore_spam_warning">Ignore, I trust this message</string>
-    <!-- Displayed in a message subheading. Report the visible message as phishing. [CHAR LIMIT=30] -->
-    <string name="report_phishing">Report Phishing</string>
 
     <!-- The section headers for the move to folder dialog [CHAR LIMIT=15] -->
     <string-array name="moveto_folder_sections">

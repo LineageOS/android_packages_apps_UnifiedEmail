@@ -582,7 +582,7 @@ public class UIProvider {
 
         /**
          * For accounts that support report spam, this will indicate that this folder supports
-         * the mark not functionality.
+         * the mark not spam functionality.
          */
         public static final int MARK_NOT_SPAM = 0x0040;
 
@@ -610,6 +610,12 @@ public class UIProvider {
          * folder, or an "unread" folder (per account or provider-wide)
          */
         public static final int IS_VIRTUAL = 0x0800;
+
+        /**
+         * For accounts that support report phishing, this will indicate that this folder supports
+         * the report phishing functionality.
+         */
+        public static final int REPORT_PHISHING = 0x1000;
     }
 
     public static final class FolderColumns {
@@ -723,6 +729,7 @@ public class UIProvider {
         ConversationColumns.FLAGS,
         ConversationColumns.PERSONAL_LEVEL,
         ConversationColumns.SPAM,
+        ConversationColumns.PHISHING,
         ConversationColumns.MUTED,
         ConversationColumns.COLOR,
         ConversationColumns.ACCOUNT_URI
@@ -749,9 +756,10 @@ public class UIProvider {
     public static final int CONVERSATION_FLAGS_COLUMN = 16;
     public static final int CONVERSATION_PERSONAL_LEVEL_COLUMN = 17;
     public static final int CONVERSATION_IS_SPAM_COLUMN = 18;
-    public static final int CONVERSATION_MUTED_COLUMN = 19;
-    public static final int CONVERSATION_COLOR_COLUMN = 20;
-    public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 21;
+    public static final int CONVERSATION_IS_PHISHING_COLUMN = 19;
+    public static final int CONVERSATION_MUTED_COLUMN = 20;
+    public static final int CONVERSATION_COLOR_COLUMN = 21;
+    public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 22;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -777,6 +785,11 @@ public class UIProvider {
         public static final int REPLIED = 1<<2;
         public static final int FORWARDED = 1<<3;
         public static final int CALENDAR_INVITE = 1<<4;
+    }
+
+    public static final class ConversationPhishing {
+        public static final int NOT_PHISHING = 0;
+        public static final int PHISHING = 1;
     }
 
     /**
@@ -878,6 +891,11 @@ public class UIProvider {
         public static final String SPAM = "spam";
 
         /**
+         * This int column indicates whether the conversation is marked phishing.
+         */
+        public static final String PHISHING = "phishing";
+
+        /**
          * This int column indicates whether the conversation was muted.
          */
         public static final String MUTED = "muted";
@@ -956,6 +974,11 @@ public class UIProvider {
          * Report not spam operation
          */
         public static final String REPORT_NOT_SPAM = "report_not_spam";
+
+        /**
+         * Report phishing operation
+         */
+        public static final String REPORT_PHISHING = "report_phishing";
 
         private ConversationOperations() {
         }

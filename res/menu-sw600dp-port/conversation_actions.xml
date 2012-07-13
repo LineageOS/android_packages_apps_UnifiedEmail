@@ -64,6 +64,20 @@
         android:title="@string/report_spam"
         android:showAsAction="never"/>
 
+    <!-- Depends on AccountCapabilities.REPORT_SPAM -->
+    <item
+        android:id="@+id/mark_not_spam"
+        android:title="@string/mark_not_spam"
+        android:showAsAction="never"
+        android:visible="false" />
+
+    <!-- Depends on AccountCapabilities.REPORT_PHISHING -->
+    <item
+        android:id="@+id/report_phishing"
+        android:title="@string/report_phishing"
+        android:showAsAction="never"
+        android:visible="false" />
+
     <!-- Available for Folders with SUPPORTS_SETTINGS capability -->
     <item android:id="@+id/folder_options"
         android:title="@string/menu_folder_options"

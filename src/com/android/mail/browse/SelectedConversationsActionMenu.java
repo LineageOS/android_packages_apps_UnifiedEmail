@@ -125,6 +125,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 mUpdater.delete(mSelectionSet.values(),
                         mUpdater.getBatchAction(R.id.mark_not_spam));
                 break;
+            case R.id.report_phishing:
+                mUpdater.delete(mSelectionSet.values(),
+                        mUpdater.getBatchAction(R.id.report_phishing));
+                break;
             case R.id.read:
                 markConversationsRead(true);
                 break;
@@ -312,6 +316,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         boolean showMarkUnread = false;
         boolean showMarkImportant = false;
         boolean showMarkNotSpam = false;
+        boolean showMarkAsPhishing = false;
 
         for (Conversation conversation : conversations) {
             if (!conversation.starred) {
@@ -326,7 +331,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             if (conversation.spam) {
                 showMarkNotSpam = true;
             }
-            if (showStar && showMarkUnread && showMarkImportant && showMarkNotSpam) {
+            if (!conversation.phishing) {
+                showMarkAsPhishing = true;
+            }
+            if (showStar && showMarkUnread && showMarkImportant && showMarkNotSpam &&
+                    showMarkAsPhishing) {
                 break;
             }
         }
@@ -348,6 +357,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         notSpam.setVisible(showMarkNotSpam &&
                 mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM) &&
                 mFolder.supportsCapability(FolderCapabilities.MARK_NOT_SPAM));
+        final MenuItem phishing = menu.findItem(R.id.report_phishing);
+        phishing.setVisible(showMarkAsPhishing &&
+                mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_PHISHING) &&
+                mFolder.supportsCapability(FolderCapabilities.REPORT_PHISHING));
+
         final MenuItem mute = menu.findItem(R.id.mute);
         mute.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.MUTE));
         final MenuItem markImportant = menu.findItem(R.id.mark_important);
