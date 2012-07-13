@@ -2041,11 +2041,14 @@ public abstract class AbstractActivityController implements ActivityController {
                 UndoOperation undoOp = new UndoOperation(mTarget.size(), R.id.change_folder);
                 onUndoAvailable(undoOp);
             }
-            mConversationListCursor.updateString(mContext, mTarget,
-                    ConversationColumns.FOLDER_LIST, Folder.getUriString(mFolderList));
-            mConversationListCursor.updateString(mContext, mTarget,
-                    ConversationColumns.RAW_FOLDERS,
-                    Folder.getSerializedFolderString(mFolder, mFolderList));
+            mConversationListCursor.updateStrings(
+                    mContext,
+                    mTarget,
+                    Conversation.UPDATE_FOLDER_COLUMNS,
+                    new String[] {
+                            Folder.getUriString(mFolderList),
+                            Folder.getSerializedFolderString(mFolder, mFolderList)
+                    });
             refreshConversationList();
             if (mIsSelectedSet) {
                 mSelectedSet.clear();
