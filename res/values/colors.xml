@@ -67,5 +67,5 @@
     <!-- Color of the parent folders and dividers for hierarchical folder descriptions in the move to folder -->
     <color name="hierarchical_folder_parent_color">@color/gray_text_color</color>
 
-    <color name="high_spam_color">#FF4040</color>
+    <color name="high_spam_color">#CC0000</color>
 </resources>
