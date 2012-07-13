@@ -495,6 +495,8 @@
     <string name="show_messages_read">Previously read messages</string>
     <!-- Shown to display the date of the message [CHAR LIMIT=10] -->
     <string name="date_heading">Date:</string>
+    <!-- Shown to display the from address of the message [CHAR LIMIT=10] -->
+    <string name="from_heading">From:</string>
     <!-- Shown to display the reply to address of the message [CHAR LIMIT=20] -->
     <string name="replyto_heading">Reply-to:</string>
     <!-- Shown to display the recipient(s) of the message [CHAR LIMIT=10] -->
@@ -511,6 +513,8 @@
     <string name="always_show_images_toast">Pictures from this sender will be shown automatically.</string>
     <!-- Display format of an email recipient, displayed in expanded message details [CHAR LIMIT=10] -->
     <string name="address_display_format"><xliff:g id="name">%1$s</xliff:g> &lt;<xliff:g id="email">%2$s</xliff:g>&gt;</string>
+    <!-- Display format of an email sender if the message has a via domain set, displayed in expanded message details [CHAR LIMIT=15] -->
+    <string name="address_display_format_with_via_domain"><xliff:g id="name">%1$s</xliff:g> &lt;<xliff:g id="email">%2$s</xliff:g>&gt; via <xliff:g id="via_domain">%3$s</xliff:g></string>
     <!-- Displayed for one second after user saves message as draft [CHAR LIMIT=50]-->
     <string name="message_saved">Message saved as draft.</string>
     <!-- Displayed for one second while message is being sent [CHAR LIMIT=50]-->
@@ -715,6 +719,9 @@
 
     <!-- Displayed in a message subheading. Ignore the current spam warning. [CHAR LIMIT=30] -->
     <string name="ignore_spam_warning">Ignore, I trust this message</string>
+
+    <!-- Displayed in the message heading. Shown if the message was sent via another domain. [CHAR LIMIT=10] -->
+    <string name="via_domain">via <xliff:g id="viaDomain">%1$s</xliff:g></string>
 
     <!-- The section headers for the move to folder dialog [CHAR LIMIT=15] -->
     <string-array name="moveto_folder_sections">

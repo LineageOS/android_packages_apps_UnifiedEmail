@@ -40,6 +40,18 @@
                 style="@style/MessageDetailsValueStyle" />
         </TableRow>
         <TableRow
+            android:id="@+id/from_row"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/from_heading"
+                android:text="@string/from_heading"
+                style="@style/MessageDetailsHeadingStyle" />
+            <TextView
+                android:id="@+id/from_value"
+                android:autoLink="email"
+                style="@style/MessageDetailsValueSelectableStyle" />
+        </TableRow>
+        <TableRow
             android:id="@+id/replyto_row"
             android:visibility="gone">
             <TextView

@@ -110,6 +110,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     // temporary fields to reference raw data between initial render and details
     // expansion
+    private String[] mFrom;
     private String[] mTo;
     private String[] mCc;
     private String[] mBcc;
@@ -351,6 +352,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             headerItem.timestampShort = mTimestampShort;
         }
 
+        mFrom = mMessage.getFromAddresses();
         mTo = mMessage.getToAddresses();
         mCc = mMessage.getCcAddresses();
         mBcc = mMessage.getBccAddresses();
@@ -464,7 +466,16 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (mIsSending) {
             sub = null;
         } else {
-            sub = isExpanded() ? getSenderAddress(mSender) : mSnippet;
+            if (isExpanded()) {
+                if (mMessage.viaDomain != null) {
+                    sub = getResources().getString(
+                            R.string.via_domain, mMessage.viaDomain);
+                } else {
+                    sub = getSenderAddress(mSender);
+                }
+            } else {
+                sub = mSnippet;
+            }
         }
         return sub;
     }
@@ -588,7 +599,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         childView.setLayoutParams(mlp);
     }
 
-    private void renderEmailList(int rowRes, int valueRes, String[] emails) {
+    private void renderEmailList(int rowRes, int valueRes, String[] emails, boolean showViaDomain) {
         if (emails == null || emails.length == 0) {
             return;
         }
@@ -600,8 +611,16 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             if (name == null || name.length() == 0) {
                 formattedEmails[i] = addr;
             } else {
-                formattedEmails[i] = getResources().getString(R.string.address_display_format,
-                        name, addr);
+                // The one downside to having the showViaDomain here is that
+                // if the sender does not have a name, it will not show the via info
+                if (showViaDomain) {
+                    formattedEmails[i] = getResources().getString(
+                            R.string.address_display_format_with_via_domain,
+                            name, addr, mMessage.viaDomain);
+                } else {
+                    formattedEmails[i] = getResources().getString(R.string.address_display_format,
+                            name, addr);
+                }
             }
         }
         ((TextView) findViewById(valueRes)).setText(TextUtils.join("\n", formattedEmails));
@@ -1073,10 +1092,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 mMessageHeaderItem.timestampLong = mDateBuilder.formatLongDateTime(mTimestampMs);
             }
             ((TextView) findViewById(R.id.date_value)).setText(mMessageHeaderItem.timestampLong);
-            renderEmailList(R.id.replyto_row, R.id.replyto_value, mReplyTo);
-            renderEmailList(R.id.to_row, R.id.to_value, mTo);
-            renderEmailList(R.id.cc_row, R.id.cc_value, mCc);
-            renderEmailList(R.id.bcc_row, R.id.bcc_value, mBcc);
+            renderEmailList(R.id.replyto_row, R.id.replyto_value, mReplyTo, false);
+            if (mMessage.viaDomain != null) {
+                renderEmailList(R.id.from_row, R.id.from_value, mFrom, true);
+            }
+            renderEmailList(R.id.to_row, R.id.to_value, mTo, false);
+            renderEmailList(R.id.cc_row, R.id.cc_value, mCc, false);
+            renderEmailList(R.id.bcc_row, R.id.bcc_value, mBcc, false);
 
             mExpandedDetailsValid = true;
         }

@@ -156,10 +156,24 @@ public class Message implements Parcelable {
      * @see UIProvider.MessageColumns#EVENT_INTENT_URI
      */
     public Uri eventIntentUri;
+    /**
+     * @see UIProvider.MessageColumns#SPAM_WARNING_STRING
+     */
     public String spamWarningString;
+    /**
+     * @see UIProvider.MessageColumns#SPAM_WARNING_LEVEL
+     */
     public int spamWarningLevel;
+    /**
+     * @see UIProvider.MessageColumns#SPAM_WARNING_LINK_TYPE
+     */
     public int spamLinkType;
+    /**
+     * @see UIProvider.MessageColumns#VIA_DOMAIN
+     */
+    public String viaDomain;
 
+    private transient String[] mFromAddresses = null;
     private transient String[] mToAddresses = null;
     private transient String[] mCcAddresses = null;
     private transient String[] mBccAddresses = null;
@@ -226,6 +240,7 @@ public class Message implements Parcelable {
         dest.writeString(spamWarningString);
         dest.writeInt(spamWarningLevel);
         dest.writeInt(spamLinkType);
+        dest.writeString(viaDomain);
     }
 
     private Message(Parcel in) {
@@ -260,6 +275,7 @@ public class Message implements Parcelable {
         spamWarningString = in.readString();
         spamWarningLevel = in.readInt();
         spamLinkType = in.readInt();
+        viaDomain = in.readString();
     }
 
     public Message() {
@@ -338,6 +354,7 @@ public class Message implements Parcelable {
                     cursor.getString(UIProvider.MESSAGE_SPAM_WARNING_STRING_ID_COLUMN);
             spamWarningLevel = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LEVEL_COLUMN);
             spamLinkType = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN);
+            viaDomain = cursor.getString(UIProvider.MESSAGE_VIA_DOMAIN_COLUMN);
         }
     }
 
@@ -354,6 +371,13 @@ public class Message implements Parcelable {
     public boolean isFlaggedCalendarInvite() {
         return (messageFlags & UIProvider.MessageFlags.CALENDAR_INVITE) ==
                 UIProvider.MessageFlags.CALENDAR_INVITE;
+    }
+
+    public synchronized String[] getFromAddresses() {
+        if (mFromAddresses == null) {
+            mFromAddresses = Utils.splitCommaSeparatedString(from);
+        }
+        return mFromAddresses;
     }
 
     public synchronized String[] getToAddresses() {
