@@ -163,7 +163,7 @@ public class FoldersSelectionDialog implements OnClickListener, OnMultiChoiceCli
                     }
                 }
                 if (mUpdater != null) {
-                    mUpdater.assignFolder(folders, mTarget, mBatch);
+                    mUpdater.assignFolder(folders, mTarget, mBatch, true);
                 }
                 break;
             case DialogInterface.BUTTON_NEGATIVE:

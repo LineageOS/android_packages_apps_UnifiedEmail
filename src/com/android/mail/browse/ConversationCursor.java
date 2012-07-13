@@ -1188,6 +1188,7 @@ public final class ConversationCursor implements Cursor {
         public static final int REPORT_PHISHING = 7;
         public static final int MOSTLY_ARCHIVE = MOSTLY | ARCHIVE;
         public static final int MOSTLY_DELETE = MOSTLY | DELETE;
+        public static final int MOSTLY_DESTRUCTIVE_UPDATE = MOSTLY | UPDATE;
 
         private final int mType;
         private final Uri mUri;
@@ -1242,9 +1243,17 @@ public final class ConversationCursor implements Cursor {
                         sProvider.updateLocal(mUri, mValues, ConversationCursor.this);
                         mRecalibrateRequired = false;
                     }
-                    op = ContentProviderOperation.newUpdate(uri)
-                            .withValues(mValues)
-                            .build();
+                    if (!mMostlyDead) {
+                        op = ContentProviderOperation.newUpdate(uri)
+                                .withValues(mValues)
+                                .build();
+                    } else {
+                        sProvider.commitMostlyDead(mConversation, ConversationCursor.this);
+                    }
+                    break;
+                case MOSTLY_DESTRUCTIVE_UPDATE:
+                    sProvider.setMostlyDead(mConversation, ConversationCursor.this);
+                    op = ContentProviderOperation.newUpdate(uri).withValues(mValues).build();
                     break;
                 case INSERT:
                     sProvider.insertLocal(mUri, mValues);
@@ -1677,6 +1686,19 @@ public final class ConversationCursor implements Cursor {
      */
     public int mostlyDelete(Context context, Collection<Conversation> conversations) {
         return applyAction(context, conversations, ConversationOperation.MOSTLY_DELETE);
+    }
+
+    /**
+     * As above, for mostly destructive updates
+     */
+    public int mostlyDestructiveUpdate(Context context, Collection<Conversation> conversations,
+            String columnName, String value) {
+        ContentValues cv = new ContentValues();
+        cv.put(columnName, value);
+        return apply(
+                context,
+                getOperationsForConversations(conversations,
+                        ConversationOperation.MOSTLY_DESTRUCTIVE_UPDATE, cv));
     }
 
     /**

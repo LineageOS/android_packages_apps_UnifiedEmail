@@ -1635,8 +1635,8 @@ public abstract class AbstractActivityController implements ActivityController {
     // Called from the FolderSelectionDialog after a user is done selecting folders to assign the
     // conversations to.
     @Override
-    public final void assignFolder(
-            Collection<Folder> folders, Collection<Conversation> target, boolean batch) {
+    public final void assignFolder(Collection<Folder> folders, Collection<Conversation> target,
+            boolean batch, boolean showUndo) {
         // Actions are destructive only when the current folder can be assigned to (which is the
         // same as being able to un-assign a conversation from the folder) and when the list of
         // folders contains the current folder.
@@ -1650,7 +1650,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
         }
         final DestructiveAction folderChange = getFolderChange(target, folders, isDestructive,
-                batch);
+                batch, showUndo);
         // Update the UI elements depending no their visibility and availability
         // TODO(viki): Consolidate this into a single method requestDelete.
         if (isDestructive) {
@@ -1861,7 +1861,8 @@ public abstract class AbstractActivityController implements ActivityController {
         final Collection<Conversation> conversations = mSelectedSet.values();
         final Collection<Folder> dropTarget = Folder.listOf(folder);
         // Drag and drop is destructive: we remove conversations from the current folder.
-        final DestructiveAction action = getFolderChange(conversations, dropTarget, true, true);
+        final DestructiveAction action = getFolderChange(conversations, dropTarget, true, true,
+                true);
         delete(conversations, action);
     }
 
@@ -2015,17 +2016,20 @@ public abstract class AbstractActivityController implements ActivityController {
         /** Whether this destructive action has already been performed */
         private boolean mCompleted;
         private boolean mIsSelectedSet;
+        private boolean mShowUndo;
 
         /**
          * Create a new folder destruction object to act on the given conversations.
          * @param target
          */
         private FolderDestruction(final Collection<Conversation> target,
-                final Collection<Folder> folders, boolean isDestructive, boolean isBatch) {
+                final Collection<Folder> folders, boolean isDestructive, boolean isBatch,
+                boolean showUndo) {
             mTarget = ImmutableList.copyOf(target);
             mFolderList.addAll(folders);
             mIsDestructive = isDestructive;
             mIsSelectedSet = isBatch;
+            mShowUndo = showUndo;
         }
 
         @Override
@@ -2033,7 +2037,7 @@ public abstract class AbstractActivityController implements ActivityController {
             if (isPerformed()) {
                 return;
             }
-            if (mIsDestructive) {
+            if (mIsDestructive && mShowUndo) {
                 UndoOperation undoOp = new UndoOperation(mTarget.size(), R.id.change_folder);
                 onUndoAvailable(undoOp);
             }
@@ -2061,8 +2065,9 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     private final DestructiveAction getFolderChange(Collection<Conversation> target,
-            Collection<Folder> folders, boolean isDestructive, boolean isBatch){
-        final DestructiveAction da = new FolderDestruction(target, folders, isDestructive, isBatch);
+            Collection<Folder> folders, boolean isDestructive, boolean isBatch, boolean showUndo) {
+        final DestructiveAction da = new FolderDestruction(target, folders, isDestructive, isBatch,
+                showUndo);
         registerDestructiveAction(da);
         return da;
     }
