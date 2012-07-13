@@ -85,6 +85,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.TimerTask;
 
@@ -1635,21 +1636,21 @@ public abstract class AbstractActivityController implements ActivityController {
     // Called from the FolderSelectionDialog after a user is done selecting folders to assign the
     // conversations to.
     @Override
-    public final void assignFolder(Collection<Folder> folders, Collection<Conversation> target,
-            boolean batch, boolean showUndo) {
-        // Actions are destructive only when the current folder can be assigned to (which is the
-        // same as being able to un-assign a conversation from the folder) and when the list of
-        // folders contains the current folder.
-        final boolean isDestructive =
-                mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES) &&
-                !Folder.containerIncludes(folders, mFolder);
+    public final void assignFolder(Collection<FolderOperation> folderOps,
+            Collection<Conversation> target, boolean batch, boolean showUndo) {
+        // Actions are destructive only when the current folder can be assigned
+        // to (which is the same as being able to un-assign a conversation from the folder) and
+        // when the list of folders contains the current folder.
+        final boolean isDestructive = mFolder
+                .supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
+                && FolderOperation.isDestructive(folderOps, mFolder);
         LogUtils.d(LOG_TAG, "onFolderChangesCommit: isDestructive = %b", isDestructive);
         if (isDestructive) {
             for (final Conversation c : target) {
                 c.localDeleteOnUpdate = true;
             }
         }
-        final DestructiveAction folderChange = getFolderChange(target, folders, isDestructive,
+        final DestructiveAction folderChange = getFolderChange(target, folderOps, isDestructive,
                 batch, showUndo);
         // Update the UI elements depending no their visibility and availability
         // TODO(viki): Consolidate this into a single method requestDelete.
@@ -1859,8 +1860,10 @@ public abstract class AbstractActivityController implements ActivityController {
             return;
         }
         final Collection<Conversation> conversations = mSelectedSet.values();
-        final Collection<Folder> dropTarget = Folder.listOf(folder);
-        // Drag and drop is destructive: we remove conversations from the current folder.
+        final Collection<FolderOperation> dropTarget = FolderOperation.listOf(new FolderOperation(
+                folder, true));
+        // Drag and drop is destructive: we remove conversations from the
+        // current folder.
         final DestructiveAction action = getFolderChange(conversations, dropTarget, true, true,
                 true);
         delete(conversations, action);
@@ -2011,7 +2014,7 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     private class FolderDestruction implements DestructiveAction {
         private final Collection<Conversation> mTarget;
-        private final ArrayList<Folder> mFolderList = new ArrayList<Folder>();
+        private final ArrayList<FolderOperation> mFolderOps = new ArrayList<FolderOperation>();
         private final boolean mIsDestructive;
         /** Whether this destructive action has already been performed */
         private boolean mCompleted;
@@ -2023,10 +2026,10 @@ public abstract class AbstractActivityController implements ActivityController {
          * @param target
          */
         private FolderDestruction(final Collection<Conversation> target,
-                final Collection<Folder> folders, boolean isDestructive, boolean isBatch,
+                final Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
                 boolean showUndo) {
             mTarget = ImmutableList.copyOf(target);
-            mFolderList.addAll(folders);
+            mFolderOps.addAll(folders);
             mIsDestructive = isDestructive;
             mIsSelectedSet = isBatch;
             mShowUndo = showUndo;
@@ -2041,19 +2044,32 @@ public abstract class AbstractActivityController implements ActivityController {
                 UndoOperation undoOp = new UndoOperation(mTarget.size(), R.id.change_folder);
                 onUndoAvailable(undoOp);
             }
-            mConversationListCursor.updateStrings(
-                    mContext,
-                    mTarget,
-                    Conversation.UPDATE_FOLDER_COLUMNS,
-                    new String[] {
-                            Folder.getUriString(mFolderList),
-                            Folder.getSerializedFolderString(mFolder, mFolderList)
-                    });
+            // For each conversation, for each operation, add/ remove the
+            // appropriate folders.
+            for (Conversation target : mTarget) {
+                HashMap<Uri, Folder> targetFolders = Folder
+                        .hashMapForFoldersString(target.rawFolders);
+                for (FolderOperation op : mFolderOps) {
+                    if (op.mAdd) {
+                        targetFolders.put(op.mFolder.uri, op.mFolder);
+                    } else {
+                        targetFolders.remove(op.mFolder.uri);
+                    }
+                }
+                target.folderList = Folder.getUriString(targetFolders.values());
+                target.rawFolders = Folder.getSerializedFolderString(mFolder,
+                        targetFolders.values());
+                mConversationListCursor.updateStrings(mContext, Conversation.listOf(target),
+                        Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
+                                target.folderList, target.rawFolders
+                        });
+            }
             refreshConversationList();
             if (mIsSelectedSet) {
                 mSelectedSet.clear();
             }
         }
+
         /**
          * Returns true if this action has been performed, false otherwise.
          * @return
@@ -2068,7 +2084,8 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     private final DestructiveAction getFolderChange(Collection<Conversation> target,
-            Collection<Folder> folders, boolean isDestructive, boolean isBatch, boolean showUndo) {
+            Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
+            boolean showUndo) {
         final DestructiveAction da = new FolderDestruction(target, folders, isDestructive, isBatch,
                 showUndo);
         registerDestructiveAction(da);
