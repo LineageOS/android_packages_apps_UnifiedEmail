@@ -48,16 +48,18 @@
     <string name="confirm_send_message" msgid="3221546155385562874">"این پیام ارسال شود؟"</string>
     <string name="message_discarded" msgid="5079975378884765445">"پیام رد شد."</string>
     <string name="signature" msgid="7882698047321710252">\n\n"<xliff:g id="SIGNATURE">%s</xliff:g>"</string>
-    <string name="custom_from_account_label" msgid="5069652141632649722">"ارسال ایمیل بعنوان:"</string>
+    <string name="custom_from_account_label" msgid="5069652141632649722">"ارسال ایمیل به‌عنوان:"</string>
     <string name="send" msgid="8242003661397555986">"ارسال"</string>
-    <string name="mark_read" msgid="8438349154394313195">"علامت‌گذاری بعنوان خوانده‌شده"</string>
-    <string name="mark_unread" msgid="6231373939351125713">"علامت‌گذاری بعنوان خوانده‌نشده"</string>
+    <string name="mark_read" msgid="8438349154394313195">"علامت‌گذاری به‌عنوان خوانده‌شده"</string>
+    <string name="mark_unread" msgid="6231373939351125713">"علامت‌گذاری به‌عنوان خوانده‌نشده"</string>
     <string name="mute" msgid="1995954983688603977">"نادیده گرفتن"</string>
     <string name="add_star" msgid="2866003744391266498">"افزودن ستاره"</string>
     <string name="remove_star" msgid="4372327933122106128">"حذف ستاره"</string>
     <string name="archive" msgid="847250094775910499">"بایگانی"</string>
     <string name="report_spam" msgid="6467567747975393907">"گزارش هرزنامه"</string>
-    <!-- no translation found for mark_not_spam (6618707017718234086) -->
+    <!-- no translation found for mark_not_spam (694891665407228160) -->
+    <skip />
+    <!-- no translation found for report_phishing (5714205737453138338) -->
     <skip />
     <string name="delete" msgid="844871204175957681">"حذف"</string>
     <string name="next" msgid="4674401197968248302">"قدیمی‌تر"</string>
@@ -81,8 +83,8 @@
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> از <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
     <string name="newer" msgid="1007166236908596854">"جدیدتر"</string>
     <string name="older" msgid="6651690916337202936">"قدیمی‌تر"</string>
-    <string name="mark_important" msgid="6904096897104265870">"علامتگذاری بعنوان مهم"</string>
-    <string name="mark_not_important" msgid="4550967327747977068">"علامت‌گذاری بعنوان غیرمهم"</string>
+    <string name="mark_important" msgid="6904096897104265870">"علامتگذاری به‌عنوان مهم"</string>
+    <string name="mark_not_important" msgid="4550967327747977068">"علامت‌گذاری به‌عنوان غیرمهم"</string>
     <string name="add_cc_label" msgid="504861315425773180">"افزودن گیرنده کپی/گیرنده مخفی"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"افزودن گیرنده مخفی"</string>
     <string name="feedback" msgid="79365993169715049">"ارسال بازخورد"</string>
@@ -95,7 +97,7 @@
     <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
     <string name="megabytes" msgid="1469217534120857347">"MB"</string>
     <string name="attachment_image" msgid="3832985223906528449">"تصویری"</string>
-    <string name="attachment_video" msgid="7526134752988603154">"ویدیویی"</string>
+    <string name="attachment_video" msgid="7526134752988603154">"ویدئویی"</string>
     <string name="attachment_audio" msgid="135527133955622936">"صوتی"</string>
     <string name="attachment_text" msgid="5544874374971562759">"نوشتاری"</string>
     <string name="attachment_application_msword" msgid="2326909450865637910">"سند"</string>
@@ -123,7 +125,7 @@
     <string name="menu_photo_share_all" msgid="4577299400844129078">"اشتراک‌گذاری همه"</string>
     <string name="saving" msgid="925514721138014677">"در حال ذخیره…"</string>
     <string name="attach_image" msgid="3713654042212409705">"تصویر"</string>
-    <string name="attach_video" msgid="4996812138609677305">"ویدیو"</string>
+    <string name="attach_video" msgid="4996812138609677305">"ویدئو"</string>
   <plurals name="number_of_attachments">
     <item quantity="one" msgid="6596149613229217650">"%d پیوست"</item>
     <item quantity="other" msgid="4827833083675127409">"%d پیوست‌"</item>
@@ -152,7 +154,7 @@
     <item quantity="one" msgid="333591132893648383">"پیش‌نویس‌"</item>
     <item quantity="other" msgid="6961049507579977505">"پیش‌نویس‌ها"</item>
   </plurals>
-    <string name="sending" msgid="8214361929125649771">"درحال ارسال..."</string>
+    <string name="sending" msgid="8214361929125649771">"در حال ارسال..."</string>
     <string name="send_failed" msgid="750908595144529579">"پیام ارسال نشد."</string>
     <string name="me" msgid="6480762904022198669">"من"</string>
     <string name="show_all_folders" msgid="3281420732307737553">"نمایش همه پوشه‌ها"</string>
@@ -168,20 +170,20 @@
     <string name="no_conversations" msgid="35400008890372241">"مکالمه‌ای موجود نیست."</string>
     <string name="undo" msgid="6070869718469782251">"لغو"</string>
   <plurals name="conversation_marking_read">
-    <item quantity="one" msgid="394911867474214874">"درحال علامت‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه بعنوان خوانده‌شده."</item>
-    <item quantity="other" msgid="247178462544083532">"درحال علامت‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه بعنوان خوانده‌شده."</item>
+    <item quantity="one" msgid="394911867474214874">"در حال علامت‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه به‌عنوان خوانده‌شده."</item>
+    <item quantity="other" msgid="247178462544083532">"در حال علامت‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه به‌عنوان خوانده‌شده."</item>
   </plurals>
   <plurals name="conversation_marking_unread">
-    <item quantity="one" msgid="2959859634779672558">"درحال علامت‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه بعنوان خوانده‌نشده."</item>
-    <item quantity="other" msgid="6577233770583912846">"درحال علامت‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه بعنوان خوانده‌نشده."</item>
+    <item quantity="one" msgid="2959859634779672558">"در حال علامت‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه به‌عنوان خوانده‌نشده."</item>
+    <item quantity="other" msgid="6577233770583912846">"در حال علامت‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه به‌عنوان خوانده‌نشده."</item>
   </plurals>
   <plurals name="conversation_starring">
-    <item quantity="one" msgid="8780588287902503608">"درحال ستاره‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
-    <item quantity="other" msgid="44965256231544025">"درحال ستاره‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
+    <item quantity="one" msgid="8780588287902503608">"در حال ستاره‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
+    <item quantity="other" msgid="44965256231544025">"در حال ستاره‌گذاری <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
   </plurals>
   <plurals name="conversation_unstarred">
-    <item quantity="one" msgid="8315328190288744398">"درحال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
-    <item quantity="other" msgid="2222365088907519938">"درحال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
+    <item quantity="one" msgid="8315328190288744398">"در حال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
+    <item quantity="other" msgid="2222365088907519938">"در حال حذف ستاره <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
   </plurals>
   <plurals name="conversation_unknown_operation">
     <item quantity="one" msgid="235911194119829184">"در انتظار عملیات در <xliff:g id="COUNT">%1$d</xliff:g> مکالمه."</item>
@@ -216,12 +218,12 @@
     <item quantity="other" msgid="6160886583510022920">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به عنوان غیرمهم علامت‌گذاری شد."</item>
   </plurals>
   <plurals name="conversation_marked_read">
-    <item quantity="one" msgid="7853066345561670409">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بعنوان خوانده‌شده علامت‌گذاری شد."</item>
-    <item quantity="other" msgid="6554100868671029370">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بعنوان خوانده‌شده علامت‌گذاری شد."</item>
+    <item quantity="one" msgid="7853066345561670409">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان خوانده‌شده علامت‌گذاری شد."</item>
+    <item quantity="other" msgid="6554100868671029370">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان خوانده‌شده علامت‌گذاری شد."</item>
   </plurals>
   <plurals name="conversation_marked_unread">
-    <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بعنوان خوانده‌نشده علامت‌گذاری شد."</item>
-    <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد بعنوان خوانده‌نشده علامت‌گذاری شد."</item>
+    <item quantity="one" msgid="365581967734960166">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان خوانده‌نشده علامت‌گذاری شد."</item>
+    <item quantity="other" msgid="858491333253953462">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به‌عنوان خوانده‌نشده علامت‌گذاری شد."</item>
   </plurals>
   <plurals name="conversation_folder_changed">
     <item quantity="one" msgid="4930161390461457462">"پوشه تغییر کرد."</item>
@@ -236,7 +238,7 @@
     <string name="normalMode" msgid="4250277414924926730">"تنظیم حالت عادی"</string>
     <string name="searchResultMode" msgid="3564180712046711968">"حالت جستجوی نتیجه"</string>
     <string name="folderMode" msgid="553052020619895714">"تنظیم حالت پوشه"</string>
-    <string name="search_results_searching_header" msgid="3821361153909466819">"درحال جستجو..."</string>
+    <string name="search_results_searching_header" msgid="3821361153909466819">"در حال جستجو..."</string>
     <string name="recent_folders" msgid="8240081561436891330">"اخیر"</string>
     <string name="add_label" msgid="1638508840481944248">"افزودن برچسب"</string>
     <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> از <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
@@ -257,8 +259,8 @@
     <string name="always_show_images" msgid="5966408990164581801">"همیشه تصاویر از طرف این فرستنده نشان داده شود"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"تصاویر از طرف این فرستنده به طور خودکار نشان داده خواهد شد."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <string name="message_saved" msgid="7073947895562277576">"پیام بعنوان پیش‌نویس ذخیره شد."</string>
-    <string name="sending_message" msgid="1498583163419122128">"درحال ارسال پیام..."</string>
+    <string name="message_saved" msgid="7073947895562277576">"پیام به‌عنوان پیش‌نویس ذخیره شد."</string>
+    <string name="sending_message" msgid="1498583163419122128">"در حال ارسال پیام..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"آدرس <xliff:g id="WRONGEMAIL">%s</xliff:g> معتبر نیست."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ نمایش نوشتار نقل قول شده"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ پنهان کردن نوشتار نقل قول شده"</string>
@@ -287,7 +289,7 @@
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"همگام‌سازی پوشه"</string>
     <string name="widget_large_unread_count" msgid="5668393672379294516">"%d+"</string>
     <string name="view_more_conversations" msgid="3151067626309674344">"مشاهده مکالمات بیشتر"</string>
-    <string name="loading_conversation" msgid="489160038366067983">"درحال بارگیری..."</string>
+    <string name="loading_conversation" msgid="489160038366067983">"در حال بارگیری..."</string>
     <string name="activity_mailbox_selection" msgid="6876105223659297603">"انتخاب حساب"</string>
     <string name="activity_folder_selection" msgid="5161845867397316052">"انتخاب پوشه"</string>
     <string name="sync_all" msgid="1057043212338233359">"همگام‌سازی: همه"</string>
@@ -312,10 +314,10 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"این حساب برای همگام‌سازی به طور خودکار تنظیم نشده است."\n"برای یکبار همگام‌سازی نامه، "<b>"اکنون همگام‌سازی شود"</b>" را لمس کنید، یا برای تنظیم این حساب برای همگام‌سازی نامه به طور خودکار، "<b>"تنظیمات همگام‌سازی را تغییر دهید"</b>"."</string>
     <string name="manual_sync" msgid="6743983544685622800">"اکنون همگام‌سازی شود"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"تغییر تنظیمات همگام‌سازی"</string>
-    <string name="photo_view_placeholder_image" msgid="465734985000555852">"این مورد در حال حاضر در دسترس نیست. لطفا بازخوانی کنید."</string>
+    <string name="photo_view_placeholder_image" msgid="465734985000555852">"این مورد در حال حاضر در دسترس نیست. لطفاً بازخوانی کنید."</string>
     <string name="photo_network_error" msgid="6545183306958652345">"عکس در حال حاضر موجود نیست."</string>
-    <string name="loading_photo" msgid="6784297653634402137">"درحال بارگیری..."</string>
-    <string name="post_operation_pending" msgid="1312168212880219407">"درحال ارسال ..."</string>
+    <string name="loading_photo" msgid="6784297653634402137">"در حال بارگیری..."</string>
+    <string name="post_operation_pending" msgid="1312168212880219407">"در حال ارسال ..."</string>
     <string name="download_photo_retry" msgid="1894223549069749239">"این تصویر برای دانلود خیلی بزرگ است، آیا می‌خواهید با وضوح کمتر دوباره امتحان کنید؟"</string>
     <string name="download_photo_error" msgid="7511376299526085797">"ذخیره عکس در دستگاه امکانپذیر نیست."</string>
     <string name="yes" msgid="7474216525286833848">"بله"</string>
@@ -324,7 +326,7 @@
     <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> از <xliff:g id="COUNT">%d</xliff:g>"</string>
     <string name="truncated_info" msgid="4901078975545890098">"..."</string>
     <string name="truncated_info_see_more" msgid="2068973974507128729">" مشاهده موارد بیشتر »"</string>
-    <string name="posted_just_now" msgid="7872790861965011674">"هم اکنون"</string>
+    <string name="posted_just_now" msgid="7872790861965011674">"هم‌اکنون"</string>
   <plurals name="num_minutes_ago">
     <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> دقیقه"</item>
     <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> دقیقه"</item>
@@ -341,6 +343,8 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"امکان جابجایی وجود ندارد زیرا انتخاب شما شامل چندین حساب است."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <!-- no translation found for ignore_spam_warning (1554651881128904262) -->
+    <skip />
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"سیستم"</item>
     <item msgid="6593672292311851204">"اغلب استفاده می‌شود"</item>
@@ -349,7 +353,6 @@
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
-    <!-- no translation found for compose_component_name (1673799619444668402) -->
-    <skip />
+    <string name="compose_component_name" msgid="1673799619444668402">"com.android.mail.compose.ComposeActivity"</string>
     <string name="autosend_component_name" msgid="3204704549005619187"></string>
 </resources>

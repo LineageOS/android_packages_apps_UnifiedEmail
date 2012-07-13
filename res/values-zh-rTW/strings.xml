@@ -57,7 +57,9 @@
     <string name="remove_star" msgid="4372327933122106128">"移除星號"</string>
     <string name="archive" msgid="847250094775910499">"封存"</string>
     <string name="report_spam" msgid="6467567747975393907">"回報為垃圾郵件"</string>
-    <!-- no translation found for mark_not_spam (6618707017718234086) -->
+    <!-- no translation found for mark_not_spam (694891665407228160) -->
+    <skip />
+    <!-- no translation found for report_phishing (5714205737453138338) -->
     <skip />
     <string name="delete" msgid="844871204175957681">"刪除"</string>
     <string name="next" msgid="4674401197968248302">"較舊"</string>
@@ -341,6 +343,8 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"您已選取多個帳戶，因此無法移動。"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>" - <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <!-- no translation found for ignore_spam_warning (1554651881128904262) -->
+    <skip />
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"系統"</item>
     <item msgid="6593672292311851204">"經常使用"</item>
@@ -349,7 +353,6 @@
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>/<xliff:g id="PARENT_0">%2$s</xliff:g>/"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>/…/<xliff:g id="PARENT_0">%2$s</xliff:g>/"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>/"</string>
-    <!-- no translation found for compose_component_name (1673799619444668402) -->
-    <skip />
+    <string name="compose_component_name" msgid="1673799619444668402">"com.android.mail.compose.ComposeActivity"</string>
     <string name="autosend_component_name" msgid="3204704549005619187"></string>
 </resources>

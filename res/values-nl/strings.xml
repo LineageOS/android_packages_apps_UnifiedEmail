@@ -57,7 +57,10 @@
     <string name="remove_star" msgid="4372327933122106128">"Ster verwijderen"</string>
     <string name="archive" msgid="847250094775910499">"Archiveren"</string>
     <string name="report_spam" msgid="6467567747975393907">"Spam melden"</string>
-    <string name="mark_not_spam" msgid="6618707017718234086">"Geen spam"</string>
+    <!-- no translation found for mark_not_spam (694891665407228160) -->
+    <skip />
+    <!-- no translation found for report_phishing (5714205737453138338) -->
+    <skip />
     <string name="delete" msgid="844871204175957681">"Verwijderen"</string>
     <string name="next" msgid="4674401197968248302">"Ouder"</string>
     <string name="previous" msgid="309943944831349924">"Nieuwer"</string>
@@ -340,6 +343,8 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Verplaatsen is niet mogelijk. Selectie bevat meerdere accounts."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <!-- no translation found for ignore_spam_warning (1554651881128904262) -->
+    <skip />
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"Systeem"</item>
     <item msgid="6593672292311851204">"Veelgebruikt"</item>
