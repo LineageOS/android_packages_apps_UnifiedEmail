@@ -1056,7 +1056,8 @@ public class UIProvider {
         MessageColumns.EVENT_INTENT_URI,
         MessageColumns.SPAM_WARNING_STRING,
         MessageColumns.SPAM_WARNING_LEVEL,
-        MessageColumns.SPAM_WARNING_LINK_TYPE
+        MessageColumns.SPAM_WARNING_LINK_TYPE,
+        MessageColumns.VIA_DOMAIN
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -1102,7 +1103,7 @@ public class UIProvider {
     public static final int MESSAGE_SPAM_WARNING_STRING_ID_COLUMN = 32;
     public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 33;
     public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 34;
-
+    public static final int MESSAGE_VIA_DOMAIN_COLUMN = 35;
 
     public static final class CursorStatus {
         // The cursor is actively loading more data
@@ -1293,7 +1294,7 @@ public class UIProvider {
          */
         public static final String EVENT_INTENT_URI = "eventIntentUri";
         /**
-         * This string column contains the stringfor the spam
+         * This string column contains the string for the spam
          * warning of this message, or null if there is no spam warning for the message.
          */
         public static final String SPAM_WARNING_STRING = "spamWarningString";
@@ -1309,6 +1310,12 @@ public class UIProvider {
          * See {@link SpamWarningLinkType} for possible values.
          */
         public static final String SPAM_WARNING_LINK_TYPE = "spamWarningLinkType";
+        /**
+         * This string column contains the string for the via domain
+         * to be included if this message was sent via an alternate
+         * domain. This column should be null if no via domain exists.
+         */
+        public static final String VIA_DOMAIN = "viaDomain";
 
         private MessageColumns() {}
     }
