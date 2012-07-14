@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 
 import java.util.Collection;
@@ -80,7 +79,7 @@ public interface ConversationUpdater {
      * @param batch whether this is a batch operation
      * @param showUndo whether to show the undo bar
      */
-    public void assignFolder(Collection<Folder> folders, Collection<Conversation> target,
+    public void assignFolder(Collection<FolderOperation> folders, Collection<Conversation> target,
             boolean batch, boolean showUndo);
 
     /**

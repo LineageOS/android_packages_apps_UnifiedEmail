@@ -43,9 +43,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -261,8 +262,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return null;
     }
 
-    public static List<Folder> forFoldersString(String foldersString) {
-        final List<Folder> folders = Lists.newArrayList();
+    public static ArrayList<Folder> forFoldersString(String foldersString) {
+        final ArrayList<Folder> folders = Lists.newArrayList();
         if (foldersString == null) {
             return folders;
         }
@@ -270,6 +271,25 @@ public class Folder implements Parcelable, Comparable<Folder> {
             JSONArray array = new JSONArray(foldersString);
             for (int i = 0; i < array.length(); i++) {
                 folders.add(new Folder(array.getJSONObject(i)));
+            }
+        } catch (JSONException e) {
+            LogUtils.wtf(LOG_TAG, e, "Unable to create list of folders from serialzied jsonarray");
+        }
+        return folders;
+    }
+
+
+    public static HashMap<Uri, Folder> hashMapForFoldersString(String rawFolders) {
+        final HashMap<Uri, Folder> folders = new HashMap<Uri, Folder>();
+        if (TextUtils.isEmpty(rawFolders)) {
+            return folders;
+        }
+        try {
+            JSONArray array = new JSONArray(rawFolders);
+            Folder f;
+            for (int i = 0; i < array.length(); i++) {
+                f = new Folder(array.getJSONObject(i));
+                folders.put(f.uri, f);
             }
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Unable to create list of folders from serialzied jsonarray");
