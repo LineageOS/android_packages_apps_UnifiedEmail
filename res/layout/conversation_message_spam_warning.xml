@@ -49,7 +49,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:paddingRight="@dimen/message_details_header_padding_right"
-        android:textColor="@android:color/holo_blue_bright" />
+        android:textColor="@android:color/holo_blue_light" />
 
     <View
         android:layout_width="match_parent"
