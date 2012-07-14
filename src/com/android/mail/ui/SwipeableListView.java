@@ -21,6 +21,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,6 +40,7 @@ import com.google.common.base.Objects;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class SwipeableListView extends ListView implements Callback{
     private SwipeHelper mSwipeHelper;
@@ -184,27 +186,33 @@ public class SwipeableListView extends ListView implements Callback{
                     conversations.add(conversation);
                 }
             }
-            undoOp = new UndoOperation(
-                    conversationViews != null ? (conversations.size() + 1) : 1, mSwipeAction);
+            undoOp = new UndoOperation(conversationViews != null ? (conversations.size() + 1) : 1,
+                    mSwipeAction);
             handleLeaveBehind(target, undoOp, context);
             adapter.delete(conversations, new DestructiveAction() {
                 @Override
                 public void performAction() {
-                    ConversationCursor cc = (ConversationCursor)adapter.getCursor();
+                    ConversationCursor cc = (ConversationCursor) adapter.getCursor();
                     switch (mSwipeAction) {
                         case R.id.archive:
                             cc.archive(context, conversations);
                             break;
                         case R.id.change_folder:
-                            Collection<Folder> folders = getFolders(conversations);
-                            cc.updateStrings(
-                                    context,
-                                    conversations,
-                                    Conversation.UPDATE_FOLDER_COLUMNS,
-                                    new String[] {
-                                            Folder.getUriString(folders),
-                                            Folder.getSerializedFolderString(mFolder, folders)
-                                    });
+                            FolderOperation folderOp = new FolderOperation(mFolder, false);
+                            // For each conversation, for each operation, remove
+                            // the current folder.
+                            for (Conversation target : conversations) {
+                                HashMap<Uri, Folder> targetFolders = Folder
+                                        .hashMapForFoldersString(target.rawFolders);
+                                targetFolders.remove(folderOp.mFolder.uri);
+                                target.folderList = Folder.getUriString(targetFolders.values());
+                                target.rawFolders = Folder.getSerializedFolderString(mFolder,
+                                        targetFolders.values());
+                                cc.updateStrings(context, Conversation.listOf(target),
+                                        Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
+                                                target.folderList, target.rawFolders
+                                        });
+                            }
                             break;
                         case R.id.delete:
                             cc.delete(context, conversations);
@@ -241,15 +249,15 @@ public class SwipeableListView extends ListView implements Callback{
         ConversationCursor cc = (ConversationCursor)adapter.getCursor();
         switch (mSwipeAction) {
             case R.id.change_folder:
-                Collection<Conversation> convs = Conversation.listOf(conv);
-                Collection<Folder> folders = getFolders(convs);
-                cc.mostlyDestructiveUpdate(
-                        context,
-                        convs,
-                        Conversation.UPDATE_FOLDER_COLUMNS,
-                        new String[] {
-                                Folder.getUriString(folders),
-                                Folder.getSerializedFolderString(mFolder, folders)
+                FolderOperation folderOp = new FolderOperation(mFolder, false);
+                HashMap<Uri, Folder> targetFolders = Folder
+                        .hashMapForFoldersString(conv.rawFolders);
+                targetFolders.remove(folderOp.mFolder.uri);
+                conv.folderList = Folder.getUriString(targetFolders.values());
+                conv.rawFolders = Folder.getSerializedFolderString(mFolder, targetFolders.values());
+                cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv),
+                        Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
+                                conv.folderList, conv.rawFolders
                         });
                 break;
             case R.id.archive:
