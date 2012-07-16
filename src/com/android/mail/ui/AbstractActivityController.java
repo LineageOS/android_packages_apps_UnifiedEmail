@@ -51,6 +51,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.Toast;
@@ -116,6 +117,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_CONVERSATION = "saved-conversation";
     /** Tag for {@link #mSelectedSet} */
     private static final String SAVED_SELECTED_SET = "saved-selected-set";
+    private static final String SAVED_TOAST_BAR_OP = "saved-toast-bar-op";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
@@ -865,6 +867,14 @@ public abstract class AbstractActivityController implements ActivityController {
         if (!mSelectedSet.isEmpty()) {
             outState.putParcelable(SAVED_SELECTED_SET, mSelectedSet);
         }
+        if (mToastBar.getVisibility() == View.VISIBLE) {
+            outState.putParcelable(SAVED_TOAST_BAR_OP, mToastBar.getOperation());
+        }
+        ConversationListFragment convListFragment = getConversationListFragment();
+        if (convListFragment != null) {
+            ((AnimatedAdapter) convListFragment.getAnimatedAdapter())
+            .onSaveInstanceState(outState);
+        }
     }
 
     @Override
@@ -966,6 +976,20 @@ public abstract class AbstractActivityController implements ActivityController {
             showConversation(mCurrentConversation);
         }
 
+        if (savedState.containsKey(SAVED_TOAST_BAR_OP)) {
+            ToastBarOperation op = ((ToastBarOperation) savedState
+                    .getParcelable(SAVED_TOAST_BAR_OP));
+            if (op != null) {
+                if (op.getType() == ToastBarOperation.UNDO) {
+                    onUndoAvailable(op);
+                }
+            }
+        }
+        ConversationListFragment convListFragment = getConversationListFragment();
+        if (convListFragment != null) {
+            ((AnimatedAdapter) convListFragment.getAnimatedAdapter())
+                    .onRestoreInstanceState(savedState);
+        }
         /**
          * Restore the state of selected conversations. This needs to be done after the correct mode
          * is set and the action bar is fully initialized. If not, several key pieces of state
@@ -1614,7 +1638,8 @@ public abstract class AbstractActivityController implements ActivityController {
                     break;
             }
             if (undoEnabled) {
-                onUndoAvailable(new UndoOperation(mTarget.size(), mAction));
+                onUndoAvailable(new ToastBarOperation(mTarget.size(), mAction,
+                        ToastBarOperation.UNDO));
             }
             refreshConversationList();
             if (mIsSelectedSet) {
@@ -1919,7 +1944,6 @@ public abstract class AbstractActivityController implements ActivityController {
             mConversationListCursor.addListener(AbstractActivityController.this);
 
             mConversationListObservable.notifyChanged();
-
             // Register the AbstractActivityController as a listener to changes in
             // data in the cursor.
             final ConversationListFragment convList = getConversationListFragment();
@@ -2057,7 +2081,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 return;
             }
             if (mIsDestructive && mShowUndo) {
-                UndoOperation undoOp = new UndoOperation(mTarget.size(), R.id.change_folder);
+                ToastBarOperation undoOp = new ToastBarOperation(mTarget.size(),
+                        R.id.change_folder, ToastBarOperation.UNDO);
                 onUndoAvailable(undoOp);
             }
             // For each conversation, for each operation, add/ remove the

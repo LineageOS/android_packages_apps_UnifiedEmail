@@ -18,6 +18,7 @@ package com.android.mail.ui;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.content.Context;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -48,6 +49,7 @@ public class ActionableToastBar extends LinearLayout {
     private TextView mActionDescriptionView;
     /** The view that contains the text for the action button. */
     private TextView mActionText;
+    private ToastBarOperation mOperation;
 
     public ActionableToastBar(Context context) {
         this(context, null);
@@ -129,6 +131,19 @@ public class ActionableToastBar extends LinearLayout {
 
         mHidden = false;
         getShowAnimation().start();
+    }
+
+
+    public void show(ActionClickedListener listener, int descriptionIconResourceId,
+            Spanned descriptionText, boolean showActionIcon, int actionTextResource,
+            boolean replaceVisibleToast, ToastBarOperation op) {
+        mOperation = op;
+        show(listener, descriptionIconResourceId, descriptionText, showActionIcon,
+                actionTextResource, replaceVisibleToast);
+    }
+
+    public ToastBarOperation getOperation() {
+        return mOperation;
     }
 
     /**

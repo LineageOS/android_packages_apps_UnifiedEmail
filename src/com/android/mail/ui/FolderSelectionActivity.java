@@ -288,7 +288,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public void onUndoAvailable(UndoOperation undoOp) {
+    public void onUndoAvailable(ToastBarOperation undoOp) {
         // Do nothing.
     }
 

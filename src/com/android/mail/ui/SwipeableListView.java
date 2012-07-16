@@ -33,7 +33,6 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogTag;
 import com.google.common.base.Objects;
@@ -174,7 +173,7 @@ public class SwipeableListView extends ListView implements Callback{
             final Collection<ConversationItemView> conversationViews) {
         final Context context = getContext();
         final AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
-        final UndoOperation undoOp;
+        final ToastBarOperation undoOp;
         if (conversationViews != null) {
             final ArrayList<Conversation> conversations = new ArrayList<Conversation>(
                     conversationViews.size());
@@ -186,8 +185,8 @@ public class SwipeableListView extends ListView implements Callback{
                     conversations.add(conversation);
                 }
             }
-            undoOp = new UndoOperation(conversationViews != null ? (conversations.size() + 1) : 1,
-                    mSwipeAction);
+            undoOp = new ToastBarOperation(conversationViews != null ?
+                    (conversations.size() + 1) : 1, mSwipeAction, ToastBarOperation.UNDO);
             handleLeaveBehind(target, undoOp, context);
             adapter.delete(conversations, new DestructiveAction() {
                 @Override
@@ -221,27 +220,14 @@ public class SwipeableListView extends ListView implements Callback{
                 }
             });
         } else {
-            undoOp = new UndoOperation(1, mSwipeAction);
+            undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO);
             target.getConversation().position = target.getParent() != null ?
                     getPositionForView(target) : -1;
             handleLeaveBehind(target, undoOp, context);
         }
     }
 
-    private Collection<Folder> getFolders(Collection<Conversation> conversations) {
-        ArrayList<Folder> folders = new ArrayList<Folder>();
-        for (Conversation conversation : conversations) {
-            folders.addAll(Folder.forFoldersString(conversation.rawFolders));
-        }
-        for (Folder folder : folders) {
-            if (Objects.equal(folder.uri, mFolder.uri)) {
-                folders.remove(folder);
-            }
-        }
-        return folders;
-    }
-
-    private void handleLeaveBehind(ConversationItemView target, UndoOperation undoOp,
+    private void handleLeaveBehind(ConversationItemView target, ToastBarOperation undoOp,
             Context context) {
         Conversation conv = target.getConversation();
         final AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
