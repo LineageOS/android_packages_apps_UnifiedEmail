@@ -467,7 +467,7 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onError(final Folder folder) {
+    public void onError(final Folder folder, boolean replaceVisibleToast) {
         final int mode = mViewMode.getMode();
         final FrameLayout.LayoutParams params =
                 (FrameLayout.LayoutParams) mToastBar.getLayoutParams();
@@ -489,6 +489,6 @@ public final class TwoPaneController extends AbstractActivityController {
                 break;
         }
 
-        showErrorToast(folder);
+        showErrorToast(folder, replaceVisibleToast);
     }
 }

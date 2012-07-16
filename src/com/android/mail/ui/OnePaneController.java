@@ -488,12 +488,12 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onError(final Folder folder) {
+    public void onError(final Folder folder, boolean replaceVisibleToast) {
         final int mode = mViewMode.getMode();
         switch (mode) {
             case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.CONVERSATION_LIST:
-                showErrorToast(folder);
+                showErrorToast(folder, replaceVisibleToast);
                 break;
             default:
                 break;

@@ -982,6 +982,8 @@ public abstract class AbstractActivityController implements ActivityController {
             if (op != null) {
                 if (op.getType() == ToastBarOperation.UNDO) {
                     onUndoAvailable(op);
+                } else if (op.getType() == ToastBarOperation.ERROR) {
+                    onError(mFolder, true);
                 }
             }
         }
@@ -2164,7 +2166,7 @@ public abstract class AbstractActivityController implements ActivityController {
         };
     }
 
-    protected final void showErrorToast(final Folder folder) {
+    protected final void showErrorToast(final Folder folder, boolean replaceVisibleToast) {
         mToastBar.setConversationMode(false);
         mToastBar.show(
                 getRetryClickedListener(folder),
@@ -2173,7 +2175,8 @@ public abstract class AbstractActivityController implements ActivityController {
                         folder.lastSyncResult),
                 false, /* showActionIcon */
                 R.string.retry,
-                false); /* replaceVisibleToast */
+                replaceVisibleToast,
+                new ToastBarOperation(1, 0, ToastBarOperation.ERROR));
     }
 
     private final ActionClickedListener getRetryClickedListener(final Folder folder) {

@@ -23,5 +23,5 @@ import com.android.mail.providers.Folder;
  * Classes that want to be notified when a sync error occurs should implement this interface.
  */
 public interface ErrorListener {
-    public void onError(final Folder folder);
+    public void onError(final Folder folder, boolean replaceVisibleToast);
 }
