@@ -25,8 +25,6 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
 import com.android.mail.R;
-import com.android.mail.providers.Folder;
-import com.android.mail.ui.FolderSelectorAdapter.FolderRow;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

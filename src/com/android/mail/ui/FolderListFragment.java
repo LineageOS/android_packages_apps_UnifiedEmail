@@ -178,9 +178,6 @@ public final class FolderListFragment extends ListFragment implements
         } else {
             folder = new Folder((Cursor) item);
         }
-        if (mParentFolder != null && folder.uri.equals(mParentFolder.uri)) {
-            return;
-        }
         // Since we may be looking at hierarchical views, if we can determine
         // the parent of the folder we have tapped, set it here.
         // If we are looking at the folder we are already viewing, don't update

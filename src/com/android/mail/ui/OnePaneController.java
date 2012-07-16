@@ -373,7 +373,7 @@ public final class OnePaneController extends AbstractActivityController {
 
     @Override
     public void onFolderSelected(Folder folder) {
-        if (folder.hasChildren) {
+        if (folder.hasChildren && !folder.equals(getHierarchyFolder())) {
             setHierarchyFolder(folder);
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already
