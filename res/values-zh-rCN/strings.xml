@@ -251,6 +251,8 @@
     <string name="expand_read_messages" msgid="7458927270492299063">"展开已读邮件"</string>
     <string name="show_messages_read" msgid="9132147830566909631">"已读邮件"</string>
     <string name="date_heading" msgid="2414358582984879303">"日期："</string>
+    <!-- no translation found for from_heading (8950294114718418954) -->
+    <skip />
     <string name="replyto_heading" msgid="2081358811894701297">"回复："</string>
     <string name="to_heading" msgid="3219994961726691756">"收件人："</string>
     <string name="cc_heading" msgid="8116221732072085180">"抄送："</string>
@@ -259,6 +261,8 @@
     <string name="always_show_images" msgid="5966408990164581801">"总是显示来自此发件人的图片"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"系统会自动显示来自此发件人的图片。"</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
+    <!-- no translation found for address_display_format_with_via_domain (2292171199773526754) -->
+    <skip />
     <string name="message_saved" msgid="7073947895562277576">"邮件已另存为草稿。"</string>
     <string name="sending_message" msgid="1498583163419122128">"正在发送邮件..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"地址 <xliff:g id="WRONGEMAIL">%s</xliff:g> 无效。"</string>
@@ -344,6 +348,8 @@
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <!-- no translation found for ignore_spam_warning (1554651881128904262) -->
+    <skip />
+    <!-- no translation found for via_domain (380109230928079350) -->
     <skip />
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"系统"</item>

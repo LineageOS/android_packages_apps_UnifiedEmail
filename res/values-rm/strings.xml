@@ -353,6 +353,8 @@
     <skip />
     <!-- no translation found for date_heading (2414358582984879303) -->
     <skip />
+    <!-- no translation found for from_heading (8950294114718418954) -->
+    <skip />
     <!-- no translation found for replyto_heading (2081358811894701297) -->
     <skip />
     <!-- no translation found for to_heading (3219994961726691756) -->
@@ -368,6 +370,8 @@
     <!-- no translation found for always_show_images_toast (6218061921546973716) -->
     <skip />
     <!-- no translation found for address_display_format (7394762772703217683) -->
+    <skip />
+    <!-- no translation found for address_display_format_with_via_domain (2292171199773526754) -->
     <skip />
     <!-- no translation found for message_saved (7073947895562277576) -->
     <skip />
@@ -502,6 +506,8 @@
     <!-- no translation found for single_new_message_notification_big_text (291800374285445488) -->
     <skip />
     <!-- no translation found for ignore_spam_warning (1554651881128904262) -->
+    <skip />
+    <!-- no translation found for via_domain (380109230928079350) -->
     <skip />
     <!-- no translation found for moveto_folder_sections:0 (6984976603137892898) -->
     <!-- no translation found for moveto_folder_sections:1 (6593672292311851204) -->

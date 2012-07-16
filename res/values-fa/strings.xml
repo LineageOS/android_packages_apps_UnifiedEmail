@@ -119,7 +119,7 @@
     <string name="please_wait" msgid="8797634225088247121">"لطفاً منتظر بمانید…"</string>
     <string name="saved" msgid="6977782468220926548">"ذخیره شد،"</string>
     <string name="download_failed" msgid="7860650496473302012">"دانلود نشد."</string>
-    <string name="attachments_header" msgid="6459475590011460229">"پيوست‌ها"</string>
+    <string name="attachments_header" msgid="6459475590011460229">"پیوست‌ها"</string>
     <string name="menu_photo_save_all" msgid="4295226099481995348">"ذخیره همه"</string>
     <string name="menu_photo_share" msgid="2214772815165829079">"اشتراک‌گذاری"</string>
     <string name="menu_photo_share_all" msgid="4577299400844129078">"اشتراک‌گذاری همه"</string>
@@ -251,6 +251,8 @@
     <string name="expand_read_messages" msgid="7458927270492299063">"گسترش پیام‌های خوانده‌شده"</string>
     <string name="show_messages_read" msgid="9132147830566909631">"پیام‌های قبلاً خوانده‌شده"</string>
     <string name="date_heading" msgid="2414358582984879303">"تاریخ:"</string>
+    <!-- no translation found for from_heading (8950294114718418954) -->
+    <skip />
     <string name="replyto_heading" msgid="2081358811894701297">"پاسخ به:"</string>
     <string name="to_heading" msgid="3219994961726691756">"گیرنده:"</string>
     <string name="cc_heading" msgid="8116221732072085180">"Cc:"</string>
@@ -259,6 +261,8 @@
     <string name="always_show_images" msgid="5966408990164581801">"همیشه تصاویر از طرف این فرستنده نشان داده شود"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"تصاویر از طرف این فرستنده به طور خودکار نشان داده خواهد شد."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
+    <!-- no translation found for address_display_format_with_via_domain (2292171199773526754) -->
+    <skip />
     <string name="message_saved" msgid="7073947895562277576">"پیام به‌عنوان پیش‌نویس ذخیره شد."</string>
     <string name="sending_message" msgid="1498583163419122128">"در حال ارسال پیام..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"آدرس <xliff:g id="WRONGEMAIL">%s</xliff:g> معتبر نیست."</string>
@@ -344,6 +348,8 @@
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <!-- no translation found for ignore_spam_warning (1554651881128904262) -->
+    <skip />
+    <!-- no translation found for via_domain (380109230928079350) -->
     <skip />
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"سیستم"</item>

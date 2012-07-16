@@ -251,6 +251,8 @@
     <string name="expand_read_messages" msgid="7458927270492299063">"既読メールを表示"</string>
     <string name="show_messages_read" msgid="9132147830566909631">"既読メール:"</string>
     <string name="date_heading" msgid="2414358582984879303">"日付:"</string>
+    <!-- no translation found for from_heading (8950294114718418954) -->
+    <skip />
     <string name="replyto_heading" msgid="2081358811894701297">"返信先:"</string>
     <string name="to_heading" msgid="3219994961726691756">"To:"</string>
     <string name="cc_heading" msgid="8116221732072085180">"Cc:"</string>
@@ -259,6 +261,8 @@
     <string name="always_show_images" msgid="5966408990164581801">"この送信者からの画像を常に表示する"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"この送信者からの画像は自動的に表示されます。"</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
+    <!-- no translation found for address_display_format_with_via_domain (2292171199773526754) -->
+    <skip />
     <string name="message_saved" msgid="7073947895562277576">"メッセージを下書きとして保存しました。"</string>
     <string name="sending_message" msgid="1498583163419122128">"メールを送信中..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"アドレス<xliff:g id="WRONGEMAIL">%s</xliff:g>は無効です。"</string>
@@ -344,6 +348,8 @@
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <!-- no translation found for ignore_spam_warning (1554651881128904262) -->
+    <skip />
+    <!-- no translation found for via_domain (380109230928079350) -->
     <skip />
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"システム"</item>
