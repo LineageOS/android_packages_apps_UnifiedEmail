@@ -21,6 +21,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
         android.animation.Animator.AnimatorListener, Settings.ChangeListener {
+    private static final String LAST_DELETING_ITEMS = "last-deleting-items";
     private final static int TYPE_VIEW_CONVERSATION = 0;
     private final static int TYPE_VIEW_DELETING = 1;
     private final static int TYPE_VIEW_UNDOING = 2;
@@ -255,7 +257,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return !mLeaveBehindItems.isEmpty();
     }
 
-    public void setupLeaveBehind(Conversation target, UndoOperation undoOp, int deletedRow) {
+    public void setupLeaveBehind(Conversation target, ToastBarOperation undoOp, int deletedRow) {
         commitLeaveBehindItems();
         LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext).inflate(
                 R.layout.swipe_leavebehind, null);
@@ -456,5 +458,21 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public void onSettingsChanged(Settings updatedSettings) {
         mCachedSettings = updatedSettings;
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        int[] lastDeleting = new int[mLastDeletingItems.size()];
+        for (int i = 0; i < lastDeleting.length;i++) {
+            lastDeleting[i] = mLastDeletingItems.get(i);
+        }
+        outState.putIntArray(LAST_DELETING_ITEMS, lastDeleting);
+    }
+
+
+    public void onRestoreInstanceState(Bundle outState) {
+        int[] lastDeleting = outState.getIntArray(LAST_DELETING_ITEMS);
+        for (int i = 0; i < lastDeleting.length;i++) {
+            mLastDeletingItems.add(lastDeleting[i]);
+        }
     }
 }

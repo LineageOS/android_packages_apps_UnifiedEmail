@@ -21,5 +21,5 @@ package com.android.mail.ui;
  * Classes that can undo an operation should implement this interface.
  */
 public interface UndoListener {
-    public void onUndoAvailable(UndoOperation undoOp);
+    public void onUndoAvailable(ToastBarOperation undoOp);
 }

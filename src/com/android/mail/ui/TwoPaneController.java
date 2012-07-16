@@ -413,7 +413,7 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onUndoAvailable(UndoOperation op) {
+    public void onUndoAvailable(ToastBarOperation op) {
         final int mode = mViewMode.getMode();
         final FrameLayout.LayoutParams params =
                 (FrameLayout.LayoutParams) mToastBar.getLayoutParams();
@@ -433,7 +433,8 @@ public final class TwoPaneController extends AbstractActivityController {
                             Html.fromHtml(op.getDescription(mActivity.getActivityContext())),
                             true, /* showActionIcon */
                             R.string.undo,
-                            true); /* replaceVisibleToast */
+                            true,  /* replaceVisibleToast */
+                            op);
                 }
                 break;
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
@@ -459,7 +460,8 @@ public final class TwoPaneController extends AbstractActivityController {
                         Html.fromHtml(op.getDescription(mActivity.getActivityContext())),
                         true, /* showActionIcon */
                         R.string.undo,
-                        true); /* replaceVisibleToast */
+                        true,  /* replaceVisibleToast */
+                        op);
                 break;
         }
     }

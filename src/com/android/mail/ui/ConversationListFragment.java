@@ -505,7 +505,8 @@ public final class ConversationListFragment extends ListFragment implements
         if (!mActivity.getSelectedSet().isEmpty()) {
             mActivity.getSelectedSet().clear();
         }
-        mActivity.onUndoAvailable(new UndoOperation(conversations.size(), mSwipeAction));
+        mActivity.onUndoAvailable(new ToastBarOperation(conversations.size(), mSwipeAction,
+                ToastBarOperation.UNDO));
     }
 
     public void onCursorUpdated() {

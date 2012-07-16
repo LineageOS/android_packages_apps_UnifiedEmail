@@ -451,7 +451,7 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public void onUndoAvailable(UndoOperation op) {
+    public void onUndoAvailable(ToastBarOperation op) {
         if (op != null && mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
             final int mode = mViewMode.getMode();
             final ConversationListFragment convList = getConversationListFragment();
@@ -466,7 +466,8 @@ public final class OnePaneController extends AbstractActivityController {
                             Html.fromHtml(op.getDescription(mActivity.getActivityContext())),
                             true, /* showActionIcon */
                             R.string.undo,
-                            true); /* replaceVisibleToast */
+                            true,  /* replaceVisibleToast */
+                            op);
                     break;
                 case ViewMode.SEARCH_RESULTS_LIST:
                 case ViewMode.CONVERSATION_LIST:
@@ -478,7 +479,8 @@ public final class OnePaneController extends AbstractActivityController {
                                 Html.fromHtml(op.getDescription(mActivity.getActivityContext())),
                                 true, /* showActionIcon */
                                 R.string.undo,
-                                true); /* replaceVisibleToast */
+                                true,  /* replaceVisibleToast */
+                                op);
                     }
                     break;
             }

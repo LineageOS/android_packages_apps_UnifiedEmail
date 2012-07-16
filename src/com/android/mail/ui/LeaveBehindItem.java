@@ -35,7 +35,7 @@ import com.google.common.collect.ImmutableList;
 public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     SwipeableItemView {
 
-    private UndoOperation mUndoOp;
+    private ToastBarOperation mUndoOp;
     private Account mAccount;
     private AnimatedAdapter mAdapter;
     private Conversation mConversation;
@@ -73,7 +73,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         }
     }
 
-    public void bindOperations(Account account, AnimatedAdapter adapter, UndoOperation undoOp,
+    public void bindOperations(Account account, AnimatedAdapter adapter, ToastBarOperation undoOp,
             Conversation target) {
         mUndoOp = undoOp;
         mAccount = account;
