@@ -583,7 +583,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.conversationUri = null;
         message.subject = mSubject.getText().toString();
         message.snippet = null;
-        message.from = selectedReplyFromAccount != null ? selectedReplyFromAccount.name
+        message.from = selectedReplyFromAccount != null ? selectedReplyFromAccount.address
                 : mAccount != null ? mAccount.name : null;
         message.to = mTo.getText().toString();
         message.cc = mCc.getText().toString();
