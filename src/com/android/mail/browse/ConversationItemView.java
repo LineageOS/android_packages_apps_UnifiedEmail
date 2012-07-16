@@ -68,6 +68,8 @@ import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.ViewMode;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -82,6 +84,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static final String PERF_TAG_CALCULATE_SENDER_SUBJECT = "CCHV.sendersubj";
     private static final String PERF_TAG_CALCULATE_FOLDERS = "CCHV.folders";
     private static final String PERF_TAG_CALCULATE_COORDINATES = "CCHV.coordinates";
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     // Static bitmaps.
     private static Bitmap CHECKMARK_OFF;
@@ -1337,12 +1340,20 @@ public class ConversationItemView extends View implements SwipeableItemView {
         int count = mSelectedConversationSet.size();
         String description = Utils.formatPlural(mContext, R.plurals.move_conversation, count);
 
-        ClipData data = ClipData.newUri(mContext.getContentResolver(), description,
+        final ClipData data = ClipData.newUri(mContext.getContentResolver(), description,
                 Conversation.MOVE_CONVERSATIONS_URI);
         for (Conversation conversation : mSelectedConversationSet.values()) {
             data.addItem(new Item(String.valueOf(conversation.position)));
         }
-
+        // Protect against non-existent views: only happens for monkeys
+        final int width = this.getWidth();
+        final int height = this.getHeight();
+        final boolean isDimensionNegative = (width < 0) || (height < 0);
+        if (isDimensionNegative) {
+            LogUtils.e(LOG_TAG, "ConversationItemView: dimension is negative: "
+                        + "width=%d, height=%d", width, height);
+            return;
+        }
         // Start drag mode
         startDrag(data, new ShadowBuilder(this, count, mLastTouchX, mLastTouchY), null, 0);
     }
