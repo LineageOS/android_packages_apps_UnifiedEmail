@@ -476,7 +476,7 @@ public final class ConversationListFragment extends ListFragment implements
             }
         } else { // We have an error. Display it.
             mListAdapter.showFooter();
-            mErrorListener.onError(mFolder);
+            mErrorListener.onError(mFolder, false);
         }
     }
 

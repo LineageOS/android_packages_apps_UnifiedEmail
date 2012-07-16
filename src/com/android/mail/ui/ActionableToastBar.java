@@ -99,16 +99,18 @@ public class ActionableToastBar extends LinearLayout {
      * @param actionTextResource resource ID for the text to show in the action button
      * @param replaceVisibleToast if true, this toast should replace any currently visible toast.
      * Otherwise, skip showing this toast.
+     * @param op the operation that corresponds to the specific toast being shown
      */
-    public void show(final ActionClickedListener listener,
-            int descriptionIconResourceId,
-            CharSequence descriptionText,
-            boolean showActionIcon,
-            int actionTextResource,
-            boolean replaceVisibleToast) {
+    public void show(final ActionClickedListener listener, int descriptionIconResourceId,
+            CharSequence descriptionText, boolean showActionIcon, int actionTextResource,
+            boolean replaceVisibleToast, ToastBarOperation op) {
+
         if (!mHidden && !replaceVisibleToast) {
             return;
         }
+
+        mOperation = op;
+
         mActionButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View widget) {
@@ -131,15 +133,6 @@ public class ActionableToastBar extends LinearLayout {
 
         mHidden = false;
         getShowAnimation().start();
-    }
-
-
-    public void show(ActionClickedListener listener, int descriptionIconResourceId,
-            Spanned descriptionText, boolean showActionIcon, int actionTextResource,
-            boolean replaceVisibleToast, ToastBarOperation op) {
-        mOperation = op;
-        show(listener, descriptionIconResourceId, descriptionText, showActionIcon,
-                actionTextResource, replaceVisibleToast);
     }
 
     public ToastBarOperation getOperation() {
