@@ -84,7 +84,7 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
     /**
      * Get the folder currently being accessed by the activity.
      */
-    Folder getCurrentFolder();
+    Folder getHierarchyFolder();
 
     /**
      * Returns an object that can update conversation state. Holding a reference to the

@@ -251,7 +251,7 @@ public final class OnePaneController extends AbstractActivityController {
         }
         // Null out the currently selected folder; we have nothing selected the
         // first time the user enters the folder list
-        setFolder(null);
+        setHierarchyFolder(null);
         mViewMode.enterFolderListMode();
         enableCabMode();
         mLastFolderListTransactionId = replaceFragment(
@@ -320,11 +320,9 @@ public final class OnePaneController extends AbstractActivityController {
                     // If there was a parent folder, show the parent and
                     // siblings of the current folder for which we are viewing
                     // the conversation list.
-                    setFolder(mFolder.parent);
+                    setHierarchyFolder(mFolder.parent);
                 } else {
-                    // Otherwise, clear the selected folder and go back to whatever the last
-                    // folder list displayed was.
-                    setFolder(null);
+                    setHierarchyFolder(null);
                 }
                 mActivity.getFragmentManager().popBackStack(mLastFolderListTransactionId, 0);
             } else {
@@ -376,7 +374,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onFolderSelected(Folder folder) {
         if (folder.hasChildren) {
-            setFolder(folder);
+            setHierarchyFolder(folder);
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already
             // looking at the child view for this folder.

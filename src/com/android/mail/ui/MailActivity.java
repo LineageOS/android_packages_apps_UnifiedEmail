@@ -292,8 +292,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public Folder getCurrentFolder() {
-        return mController.getFolder();
+    public Folder getHierarchyFolder() {
+        return mController.getHierarchyFolder();
     }
 
     @Override

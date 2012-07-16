@@ -130,7 +130,7 @@ public final class FolderListFragment extends ListFragment implements
         }
         setListAdapter(mCursorAdapter);
 
-        selectInitialFolder(mActivity.getCurrentFolder());
+        selectInitialFolder(mActivity.getHierarchyFolder());
         getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
     }
 

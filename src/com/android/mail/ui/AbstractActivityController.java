@@ -220,6 +220,7 @@ public abstract class AbstractActivityController implements ActivityController {
     // This gets cancelled if the user kills the app before it finishes, and
     // will just run the next time the user opens the app.
     private AsyncTask<String, Void, Void> mEnableShareIntents;
+    private Folder mFolderListFolder;
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -491,6 +492,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /** Set the current folder */
     private void updateFolder(Folder folder) {
         // Start watching folder for sync status.
+        boolean wasNull = mFolder == null;
         if (folder != null && !folder.equals(mFolder)) {
             LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
             final LoaderManager lm = mActivity.getLoaderManager();
@@ -505,9 +507,18 @@ public abstract class AbstractActivityController implements ActivityController {
             // If there was not already an instance of the loader, init it.
             if (lm.getLoader(LOADER_FOLDER_CURSOR) == null) {
                 lm.initLoader(LOADER_FOLDER_CURSOR, null, this);
-                lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
             } else {
                 lm.restartLoader(LOADER_FOLDER_CURSOR, null, this);
+            }
+            // In this case, we are starting from no folder, which would occur
+            // the first time the app was launched or on orientation changes.
+            // We want to attach to an existing loader, if available.
+            if (wasNull || lm.getLoader(LOADER_CONVERSATION_LIST) == null) {
+                lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
+            } else {
+                // However, if there was an existing folder AND we have changed
+                // folders, we want to restart the loader to get the information
+                // for the newly selected folder
                 lm.restartLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
             }
         } else if (folder == null) {
@@ -527,8 +538,13 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public Folder getFolder() {
-        return mFolder;
+    public Folder getHierarchyFolder() {
+        return mFolderListFolder;
+    }
+
+    @Override
+    public void setHierarchyFolder(Folder folder) {
+        mFolderListFolder = folder;
     }
 
     @Override
