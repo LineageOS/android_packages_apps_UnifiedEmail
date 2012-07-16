@@ -302,7 +302,7 @@ public final class OnePaneController extends AbstractActivityController {
                 // If we are showing the folder list and the user is exploring
                 // the children of a single parent folder,
                 // back should display the parent folder's parent and siblings.
-                goUpFolderHierarchy(mFolder);
+                goUpFolderHierarchy(getHierarchyFolder());
             } else {
                 // We are at the topmost list of folders; just go back to
                 // whatever conv list we were viewing before.
@@ -341,7 +341,7 @@ public final class OnePaneController extends AbstractActivityController {
     private void goUpFolderHierarchy(Folder current) {
         Folder top = current.parent;
         if (top != null) {
-            setFolder(top);
+            setHierarchyFolder(top);
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
