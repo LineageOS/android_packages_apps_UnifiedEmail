@@ -261,11 +261,12 @@ public final class FolderListFragment extends ListFragment implements
         private static final int PARENT = 0;
         private static final int CHILD = 1;
         private final Uri mParentUri;
+        private final Folder mParent;
 
         public HierarchicalFolderListAdapter(Context context, Cursor c, Folder parentFolder) {
             super(context, R.layout.folder_item);
+            mParent = parentFolder;
             mParentUri = parentFolder.uri;
-            add(parentFolder);
             setCursor(c);
         }
 
@@ -276,7 +277,7 @@ public final class FolderListFragment extends ListFragment implements
         }
 
         public int getItemViewType(int position) {
-            Folder f = this.getItem(position);
+            Folder f = getItem(position);
             return f.uri.equals(mParentUri) ? PARENT : CHILD;
         }
 
@@ -303,9 +304,15 @@ public final class FolderListFragment extends ListFragment implements
         @Override
         public void setCursor(Cursor cursor) {
             clear();
+            if (mParent != null) {
+                add(mParent);
+            }
             if (cursor != null && cursor.getCount() > 0) {
                 cursor.moveToFirst();
+                Folder f;
                 do {
+                    f = new Folder(cursor);
+                    f.parent = mParent;
                     add(new Folder(cursor));
                 } while (cursor.moveToNext());
             }
