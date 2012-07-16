@@ -470,9 +470,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
 
     public void onRestoreInstanceState(Bundle outState) {
-        int[] lastDeleting = outState.getIntArray(LAST_DELETING_ITEMS);
-        for (int i = 0; i < lastDeleting.length;i++) {
-            mLastDeletingItems.add(lastDeleting[i]);
+        if (outState.containsKey(LAST_DELETING_ITEMS)) {
+            final int[] lastDeleting = outState.getIntArray(LAST_DELETING_ITEMS);
+            for (int i = 0; i < lastDeleting.length;i++) {
+                mLastDeletingItems.add(lastDeleting[i]);
+            }
         }
     }
 }
