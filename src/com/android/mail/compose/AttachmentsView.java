@@ -29,6 +29,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -110,6 +111,12 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
         mAttachmentLayout.setVisibility(VISIBLE);
         setupCollapsibleView(false);
         mIsExpanded = true;
+
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(getWindowToken(), 0);
+        }
     }
 
     public void collapseView() {
