@@ -292,7 +292,12 @@ public interface ActivityController extends LayoutListener,
     /**
      * Return the folder currently being viewed by the activity.
      */
-    public Folder getFolder();
+    public Folder getHierarchyFolder();
+
+    /**
+     * Set the folder currently selected in the folder selection hierarchy fragments.
+     */
+    void setHierarchyFolder(Folder folder);
 
     /**
      * @return a {@link SubjectDisplayChanger}, or null

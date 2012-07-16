@@ -298,7 +298,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public Folder getCurrentFolder() {
+    public Folder getHierarchyFolder() {
         return null;
     }
 
