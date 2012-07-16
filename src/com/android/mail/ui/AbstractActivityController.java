@@ -456,7 +456,8 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onFolderChanged(Folder folder) {
-        if (folder != null && !folder.equals(mFolder)) {
+        if (folder != null && !folder.equals(mFolder)
+                || (mViewMode.getMode() != ViewMode.CONVERSATION_LIST)) {
             updateFolder(folder);
             mConvListContext = ConversationListContext.forFolder(mContext, mAccount, mFolder);
             showConversationList(mConvListContext);
