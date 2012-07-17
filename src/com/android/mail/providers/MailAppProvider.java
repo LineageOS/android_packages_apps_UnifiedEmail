@@ -273,6 +273,9 @@ public abstract class MailAppProvider extends ContentProvider
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT)) {
                     builder.add(Integer.valueOf(account.settings.forceReplyFromDefault ? 1 : 0));
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE)) {
+                    builder.add(account.settings.maxAttachmentSize);
                 } else {
                     throw new IllegalStateException("Column not found: " + column);
                 }
