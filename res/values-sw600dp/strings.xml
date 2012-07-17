@@ -20,6 +20,6 @@
     <string name="add_cc_label">+ Cc/Bcc</string>
     <!-- Compose screen, button: add bcc fields [CHAR LIMIT=20]-->
     <string name="add_bcc_label">+ Bcc</string>
-    <!-- Menu item: options for this label. [CHAR LIMIT = 30] -->
-    <string name="menu_label_options">Manage labels</string>
+    <!-- Menu item: manages the folders for this account. [CHAR LIMIT = 30] -->
+    <string name="menu_manage_folders">Manage folders</string>
 </resources>
