@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
@@ -58,6 +59,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final Account mAccount;
     private final LoaderManager mLoaderManager;
     private final MessageHeaderViewCallbacks mMessageCallbacks;
+    private final ContactInfoSource mContactInfoSource;
     private ConversationViewHeaderCallbacks mConversationCallbacks;
     private OnClickListener mSuperCollapsedListener;
     private Map<String, Address> mAddressCache;
@@ -100,7 +102,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         @Override
-        public void bindView(View v) {
+        public void bindView(View v, boolean measureOnly) {
             // There is only one conversation header, so the work is done once in createView.
         }
 
@@ -141,13 +143,14 @@ public class ConversationViewAdapter extends BaseAdapter {
                     R.layout.conversation_message_header, parent, false);
             v.initialize(mDateBuilder, mAccount, mAddressCache);
             v.setCallbacks(mMessageCallbacks);
+            v.setContactInfoSource(mContactInfoSource);
             return v;
         }
 
         @Override
-        public void bindView(View v) {
+        public void bindView(View v, boolean measureOnly) {
             final MessageHeaderView header = (MessageHeaderView) v;
-            header.bind(this, mDefaultReplyAll);
+            header.bind(this, mDefaultReplyAll, measureOnly);
         }
 
         @Override
@@ -191,9 +194,9 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         @Override
-        public void bindView(View v) {
+        public void bindView(View v, boolean measureOnly) {
             final MessageFooterView attachmentsView = (MessageFooterView) v;
-            attachmentsView.bind(headerItem);
+            attachmentsView.bind(headerItem, measureOnly);
         }
 
         @Override
@@ -236,7 +239,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
 
         @Override
-        public void bindView(View v) {
+        public void bindView(View v, boolean measureOnly) {
             final SuperCollapsedBlock scb = (SuperCollapsedBlock) v;
             scb.bind(this);
         }
@@ -257,6 +260,7 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public ConversationViewAdapter(Context context, Account account, LoaderManager loaderManager,
             MessageHeaderViewCallbacks messageCallbacks,
+            ContactInfoSource contactInfoSource,
             ConversationViewHeaderCallbacks convCallbacks,
             SuperCollapsedBlock.OnClickListener scbListener, Map<String, Address> addressCache) {
         mContext = context;
@@ -264,6 +268,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         mAccount = account;
         mLoaderManager = loaderManager;
         mMessageCallbacks = messageCallbacks;
+        mContactInfoSource = contactInfoSource;
         mConversationCallbacks = convCallbacks;
         mSuperCollapsedListener = scbListener;
         mAddressCache = addressCache;
@@ -303,10 +308,11 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return getView(getItem(position), convertView, parent);
+        return getView(getItem(position), convertView, parent, false /* measureOnly */);
     }
 
-    public View getView(ConversationOverlayItem item, View convertView, ViewGroup parent) {
+    public View getView(ConversationOverlayItem item, View convertView, ViewGroup parent,
+            boolean measureOnly) {
         final View v;
 
         if (convertView == null) {
@@ -314,7 +320,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         } else {
             v = convertView;
         }
-        item.bindView(v);
+        item.bindView(v, measureOnly);
 
         return v;
     }

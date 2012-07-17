@@ -26,6 +26,8 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.DataSetObservable;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,7 +44,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.android.mail.ContactInfo;
+import com.android.mail.ContactInfoSource;
 import com.android.mail.R;
+import com.android.mail.SenderInfoLoader;
 import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
@@ -52,7 +57,6 @@ import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MessageCursor;
-import com.android.mail.browse.MessageFooterView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.providers.Account;
@@ -68,18 +72,20 @@ import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
  * The conversation view UI component.
  */
 public final class ConversationViewFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor>,
         ConversationViewHeader.ConversationViewHeaderCallbacks,
         MessageHeaderViewCallbacks,
         SuperCollapsedBlock.OnClickListener {
@@ -88,6 +94,7 @@ public final class ConversationViewFragment extends Fragment implements
     public static final String LAYOUT_TAG = "ConvLayout";
 
     private static final int MESSAGE_LOADER_ID = 0;
+    private static final int CONTACT_LOADER_ID = 1;
 
     private ControllableActivity mActivity;
 
@@ -138,6 +145,9 @@ public final class ConversationViewFragment extends Fragment implements
     private int  mMaxAutoLoadMessages;
 
     private boolean mDeferredConversationLoad;
+
+    private final MessageLoaderCallbacks mMessageLoaderCallbacks = new MessageLoaderCallbacks();
+    private final ContactLoaderCallbacks mContactLoaderCallbacks = new ContactLoaderCallbacks();
 
     private static final String ARG_ACCOUNT = "account";
     public static final String ARG_CONVERSATION = "conversation";
@@ -197,7 +207,7 @@ public final class ConversationViewFragment extends Fragment implements
         mTemplates = new HtmlConversationTemplates(mContext);
 
         mAdapter = new ConversationViewAdapter(mActivity.getActivityContext(), mAccount,
-                getLoaderManager(), this, this, this, mAddressCache);
+                getLoaderManager(), this, mContactLoaderCallbacks, this, this, mAddressCache);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
@@ -373,51 +383,11 @@ public final class ConversationViewFragment extends Fragment implements
         LogUtils.v(LOG_TAG,
                 "Fragment is short or user-visible, immediately rendering conversation: %s",
                 mConversation.uri);
-        getLoaderManager().initLoader(MESSAGE_LOADER_ID, Bundle.EMPTY, this);
+        getLoaderManager().initLoader(MESSAGE_LOADER_ID, Bundle.EMPTY, mMessageLoaderCallbacks);
     }
 
     public Conversation getConversation() {
         return mConversation;
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new MessageLoader(mContext, mConversation.messageListUri,
-                mActivity.getListHandler());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        MessageCursor messageCursor = (MessageCursor) data;
-
-        // ignore truly duplicate results
-        // this can happen when restoring after rotation
-        if (mCursor == messageCursor) {
-            return;
-        }
-
-        // TODO: handle Gmail loading states (like LOADING and ERROR)
-        if (messageCursor.getCount() == 0) {
-            if (mCursor != null) {
-                // TODO: need to exit this view- conversation may have been deleted, or for
-                // whatever reason is now invalid
-            } else {
-                // ignore zero-sized cursors during initial load
-            }
-            return;
-        }
-
-        // TODO: if this is not user-visible, delay render until user-visible fragment is done.
-        // This is needed in addition to the showConversation() delay to speed up rotation and
-        // restoration.
-
-        renderConversation(messageCursor);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mCursor = null;
-        // TODO: null out all Message.mMessageCursor references
     }
 
     private void renderConversation(MessageCursor messageCursor) {
@@ -472,10 +442,6 @@ public final class ConversationViewFragment extends Fragment implements
 
         mAdapter.clear();
 
-        // We don't need to kick off attachment loaders during this first measurement phase,
-        // so disable them temporarily.
-        MessageFooterView.enableAttachmentLoaders(false);
-
         // N.B. the units of height for spacers are actually dp and not px because WebView assumes
         // a pixel is an mdpi pixel, unless you set device-dpi.
 
@@ -524,9 +490,6 @@ public final class ConversationViewFragment extends Fragment implements
 
             renderMessage(msg, expanded, safeForImages);
         }
-
-        // Re-enable attachment loaders
-        MessageFooterView.enableAttachmentLoaders(true);
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
@@ -587,7 +550,7 @@ public final class ConversationViewFragment extends Fragment implements
     }
 
     /**
-     * Measure the height of an adapter view by rendering and adapter item into a temporary
+     * Measure the height of an adapter view by rendering an adapter item into a temporary
      * host view, and asking the view to immediately measure itself. This method will reuse
      * a previous adapter view from {@link ConversationContainer}'s scrap views if one was generated
      * earlier.
@@ -602,7 +565,8 @@ public final class ConversationViewFragment extends Fragment implements
         final int type = convItem.getType();
 
         final View convertView = mConversationContainer.getScrapView(type);
-        final View hostView = mAdapter.getView(convItem, convertView, mConversationContainer);
+        final View hostView = mAdapter.getView(convItem, convertView, mConversationContainer,
+                true /* measureOnly */);
         if (convertView == null) {
             mConversationContainer.addScrapView(type, hostView);
         }
@@ -766,6 +730,14 @@ public final class ConversationViewFragment extends Fragment implements
             if (mUserVisible) {
                 onConversationSeen();
             }
+
+            final Set<String> emailAddresses = Sets.newHashSet();
+            for (Address addr : mAddressCache.values()) {
+                emailAddresses.add(addr.getAddress());
+            }
+            mContactLoaderCallbacks.setSenders(emailAddresses);
+            getLoaderManager().restartLoader(CONTACT_LOADER_ID, Bundle.EMPTY,
+                    mContactLoaderCallbacks);
         }
 
         @Override
@@ -838,6 +810,102 @@ public final class ConversationViewFragment extends Fragment implements
                 LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.getTempMessageBodies");
                 return "";
             }
+        }
+
+    }
+
+    private class MessageLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            return new MessageLoader(mContext, mConversation.messageListUri,
+                    mActivity.getListHandler());
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            MessageCursor messageCursor = (MessageCursor) data;
+
+            // ignore truly duplicate results
+            // this can happen when restoring after rotation
+            if (mCursor == messageCursor) {
+                return;
+            }
+
+            // TODO: handle Gmail loading states (like LOADING and ERROR)
+            if (messageCursor.getCount() == 0) {
+                if (mCursor != null) {
+                    // TODO: need to exit this view- conversation may have been deleted, or for
+                    // whatever reason is now invalid
+                } else {
+                    // ignore zero-sized cursors during initial load
+                }
+                return;
+            }
+
+            // TODO: if this is not user-visible, delay render until user-visible fragment is done.
+            // This is needed in addition to the showConversation() delay to speed up rotation and
+            // restoration.
+
+            renderConversation(messageCursor);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+            mCursor = null;
+            // TODO: null out all Message.mMessageCursor references
+        }
+
+    }
+
+    /**
+     * Inner class to to asynchronously load contact data for all senders in the conversation,
+     * and notify observers when the data is ready.
+     *
+     */
+    private class ContactLoaderCallbacks implements ContactInfoSource,
+            LoaderManager.LoaderCallbacks<ImmutableMap<String, ContactInfo>> {
+
+        private Set<String> mSenders;
+        private ImmutableMap<String, ContactInfo> mContactInfoMap;
+        private DataSetObservable mObservable = new DataSetObservable();
+
+        public void setSenders(Set<String> emailAddresses) {
+            mSenders = emailAddresses;
+        }
+
+        @Override
+        public Loader<ImmutableMap<String, ContactInfo>> onCreateLoader(int id, Bundle args) {
+            return new SenderInfoLoader(mContext, mSenders);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<ImmutableMap<String, ContactInfo>> loader,
+                ImmutableMap<String, ContactInfo> data) {
+            mContactInfoMap = data;
+            mObservable.notifyChanged();
+        }
+
+        @Override
+        public void onLoaderReset(Loader<ImmutableMap<String, ContactInfo>> loader) {
+        }
+
+        @Override
+        public ContactInfo getContactInfo(String email) {
+            if (mContactInfoMap == null) {
+                return null;
+            }
+            return mContactInfoMap.get(email);
+        }
+
+        @Override
+        public void registerObserver(DataSetObserver observer) {
+            mObservable.registerObserver(observer);
+        }
+
+        @Override
+        public void unregisterObserver(DataSetObserver observer) {
+            mObservable.unregisterObserver(observer);
         }
 
     }

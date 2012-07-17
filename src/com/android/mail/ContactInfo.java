@@ -17,17 +17,22 @@
 
 package com.android.mail;
 
-import android.database.DataSetObserver;
-/**
- * Views that are interested in looking up ContactInfo objects should bind themselves to a
- * ContactInfoSource.
- *
- */
-public interface ContactInfoSource {
+import android.graphics.Bitmap;
+import android.net.Uri;
 
-    ContactInfo getContactInfo(String email);
+public class ContactInfo {
+    public final Uri contactUri;
+    public final Integer status;
+    public final Bitmap photo;
 
-    void registerObserver(DataSetObserver observer);
-    void unregisterObserver(DataSetObserver observer);
+    public ContactInfo(Uri contactUri, Integer status, Bitmap photo) {
+        this.contactUri = contactUri;
+        this.status = status;
+        this.photo = photo;
+    }
 
+    @Override
+    public String toString() {
+        return "{status=" + status + " photo=" + photo + "}";
+    }
 }
