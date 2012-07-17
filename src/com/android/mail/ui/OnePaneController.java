@@ -374,6 +374,7 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void onFolderSelected(Folder folder) {
         if (folder.hasChildren && !folder.equals(getHierarchyFolder())) {
+            mViewMode.enterFolderListMode();
             setHierarchyFolder(folder);
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already
