@@ -15,17 +15,18 @@
  */
 package com.android.mail.utils;
 
-import android.text.TextUtils;
-import android.webkit.MimeTypeMap;
-import com.google.common.collect.ImmutableSet;
+import com.android.mail.utils.LogTag;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,8 @@ import java.util.Set;
  * Utilities for working with different content types within Mail.
  */
 public class MimeType {
+    private static final String LOG_TAG = LogTag.getLogTag();
+
     public static final String ANDROID_ARCHIVE = "application/vnd.android.package-archive";
     private static final String TEXT_PLAIN = "text/plain";
     @VisibleForTesting
@@ -73,23 +76,28 @@ public class MimeType {
     /**
      * Returns whether or not an attachment of the specified type is viewable.
      */
-    public static boolean isViewable(Context context, String contentType) {
+    public static boolean isViewable(Context context, Uri contentUri, String contentType) {
         // The provider returns a contentType of "null" instead of null, when the
         // content type is not known.  Changing the provider to return null,
         // breaks other areas that will need to be fixed in a later CL.
         // Bug 2922948 has been written up to track this
         if (contentType == null || contentType.length() == 0 ||
                 NULL_ATTACHMENT_CONTENT_TYPE.equals(contentType)) {
+            LogUtils.d(LOG_TAG, "Attachment with null content type. '%s", contentUri);
             return false;
         }
 
         if (isBlocked(contentType)) {
+            LogUtils.d(LOG_TAG, "content type '%s' is blocked. '%s", contentType, contentUri);
             return false;
         }
 
-        Intent mimetypeIntent = new Intent(Intent.ACTION_VIEW);
+        final Intent mimetypeIntent = new Intent(Intent.ACTION_VIEW);
+        mimetypeIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
-        Utils.setIntentTypeAndNormalize(mimetypeIntent, contentType);
+        Utils.setIntentDataAndTypeAndNormalize(mimetypeIntent, contentUri, contentType);
+
         PackageManager manager;
         // We need to catch the exception to make CanvasConversationHeaderView
         // test pass.  Bug: http://b/issue?id=3470653.
@@ -98,8 +106,8 @@ public class MimeType {
         } catch (UnsupportedOperationException e) {
             return false;
         }
-        List<ResolveInfo> list = manager.queryIntentActivities(mimetypeIntent,
-            PackageManager.MATCH_DEFAULT_ONLY);
+        final List<ResolveInfo> list = manager.queryIntentActivities(mimetypeIntent,
+                PackageManager.MATCH_DEFAULT_ONLY);
         return list.size() > 0;
     }
 
