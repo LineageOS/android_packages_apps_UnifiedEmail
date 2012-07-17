@@ -126,7 +126,7 @@ public class Settings implements Parcelable {
     }
 
     private Settings(JSONObject json) throws JSONException {
-        signature = (String) json.optString(AccountColumns.SettingsColumns.SIGNATURE);
+        signature = json.optString(AccountColumns.SettingsColumns.SIGNATURE);
 
         autoAdvance = json.optInt(AccountColumns.SettingsColumns.AUTO_ADVANCE);
         messageTextSize = json.optInt(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE);
@@ -201,7 +201,7 @@ public class Settings implements Parcelable {
             json = new JSONObject(serializedSettings);
             return new Settings(json);
         } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Could not create an settings from this input: \"%s\"",
+            LogUtils.e(LOG_TAG, e, "Could not create an settings from this input: \"%s\"",
                     serializedSettings);
             return null;
         }
@@ -223,7 +223,7 @@ public class Settings implements Parcelable {
         try {
             return new Settings(json);
         } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Could not create an settings from this input: \"%s\"",
+            LogUtils.e(LOG_TAG, e, "Could not create an settings from this input: \"%s\"",
                     json.toString());
             return null;
         }

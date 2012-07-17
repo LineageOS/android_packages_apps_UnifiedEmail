@@ -586,8 +586,12 @@ public abstract class MailAppProvider extends ContentProvider
             mAccount = Account.newinstance(cacheEntryMembers[0]);
             if (mAccount == null) {
                 throw new IllegalArgumentException("AccountCacheEntry de-serializing failed. "
-                        + "Account object couldn not be created by the serialized string"
+                        + "Account object could not be created from the serialized string: "
                         + serializedString);
+            }
+            if (mAccount.settings == Settings.EMPTY_SETTINGS) {
+                throw new IllegalArgumentException("AccountCacheEntry de-serializing failed. "
+                        + "Settings could not be created from the string: " + serializedString);
             }
             mAccountsQueryUri = !TextUtils.isEmpty(cacheEntryMembers[1]) ?
                     Uri.parse(cacheEntryMembers[1]) : null;
