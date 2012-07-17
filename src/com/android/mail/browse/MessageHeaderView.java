@@ -18,6 +18,7 @@ package com.android.mail.browse;
 
 import android.content.AsyncQueryHandler;
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.provider.ContactsContract;
@@ -39,10 +40,10 @@ import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.mail.ContactInfo;
 import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
-import com.android.mail.SenderInfoLoader.ContactInfo;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
@@ -60,7 +61,7 @@ import java.io.StringReader;
 import java.util.Map;
 
 public class MessageHeaderView extends LinearLayout implements OnClickListener,
-        OnMenuItemClickListener, HeaderBlock {
+        OnMenuItemClickListener, HeaderBlock, ConversationContainer.DetachListener {
 
     /**
      * Cap very long recipient lists during summary construction for efficiency.
@@ -174,6 +175,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private final LayoutInflater mInflater;
 
     private AsyncQueryHandler mQueryHandler;
+
+    private final DataSetObserver mContactInfoObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            updateContactInfo();
+        }
+    };
 
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
@@ -296,6 +304,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return other != null && mMessage != null && mMessage.equals(other.mMessage);
     }
 
+    @Override
+    public void onDetachedFromParent() {
+        unbind();
+    }
+
     /**
      * Headers that are unbound will not match any rendered header (matches()
      * will return false). Unbinding is not guaranteed to *hide* the view's old
@@ -305,6 +318,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     public void unbind() {
         mMessageHeaderItem = null;
         mMessage = null;
+
+        mContactInfoSource.unregisterObserver(mContactInfoObserver);
     }
 
     public void renderUpperHeaderFrom(MessageHeaderView other) {
@@ -332,7 +347,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mAddressCache = addressCache;
     }
 
-    public void bind(MessageHeaderItem headerItem, boolean defaultReplyAll) {
+    public void bind(MessageHeaderItem headerItem, boolean defaultReplyAll,
+            boolean measureOnly) {
         Timer t = new Timer();
         t.start(HEADER_RENDER_TAG);
 
@@ -398,7 +414,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mStarView.setContentDescription(getResources().getString(
                 mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
 
-        updateContactInfo();
+        if (!measureOnly) {
+            updateContactInfo();
+            mContactInfoSource.registerObserver(mContactInfoObserver);
+        }
 
         t.pause(HEADER_RENDER_TAG);
     }

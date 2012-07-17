@@ -42,10 +42,14 @@ public abstract class ConversationOverlayItem {
      */
     public abstract View createView(Context context, LayoutInflater inflater,
             ViewGroup parent);
+
     /**
      * @see CursorAdapter#bindView(View, Context, android.database.Cursor)
+     * @param v a view to bind to
+     * @param measureOnly true iff we are binding this view only to measure its height (so items
+     * know they can cut certain corners that do not affect a view's height)
      */
-    public abstract void bindView(View v);
+    public abstract void bindView(View v, boolean measureOnly);
     /**
      * Returns true if this overlay view is meant to be positioned right on top of the overlay
      * below. This special positioning allows {@link ConversationContainer} to stack overlays

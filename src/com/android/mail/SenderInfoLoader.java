@@ -20,8 +20,10 @@ package com.android.mail;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
+import android.content.AsyncTaskLoader;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,29 +40,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Simple class to synchronously look up presence, contact URI, and photo data for a set of email
+ * A {@link Loader} to look up presence, contact URI, and photo data for a set of email
  * addresses.
  *
  */
-// TODO: turn this into an AsyncTaskLoader to handle refreshing data
-public class SenderInfoLoader {
-
-    public static class ContactInfo {
-        public final Uri contactUri;
-        public final Integer status;
-        public final Bitmap photo;
-
-        public ContactInfo(Uri contactUri, Integer status, Bitmap photo) {
-            this.contactUri = contactUri;
-            this.status = status;
-            this.photo = photo;
-        }
-
-        @Override
-        public String toString() {
-            return "{status=" + status + " photo=" + photo + "}";
-        }
-    }
+public class SenderInfoLoader extends AsyncTaskLoader<ImmutableMap<String, ContactInfo>> {
 
     private static final String[] DATA_COLS = new String[] {
         Email._ID,                  // 0
@@ -84,19 +68,25 @@ public class SenderInfoLoader {
      */
     static final int MAX_QUERY_PARAMS = 75;
 
-    private Set<String> mSenders;
-    private Context mContext;
+    private final Set<String> mSenders;
 
     public SenderInfoLoader(Context context, Set<String> senders) {
-        mContext = context;
+        super(context);
         mSenders = senders;
     }
 
-    private Context getContext() {
-        return mContext;
+    @Override
+    protected void onStartLoading() {
+        forceLoad();
     }
 
-    public ImmutableMap<String, ContactInfo> load() {
+    @Override
+    protected void onStopLoading() {
+        cancelLoad();
+    }
+
+    @Override
+    public ImmutableMap<String, ContactInfo> loadInBackground() {
         if (mSenders == null || mSenders.isEmpty()) {
             return null;
         }

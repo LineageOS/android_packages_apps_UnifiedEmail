@@ -56,12 +56,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     private final LayoutInflater mInflater;
 
-    /**
-     * An easy way for the conversation view to disable immediately kicking off attachment loaders
-     * when measuring overlays during the initial render.
-     */
-    private static boolean sEnableAttachmentLoaders = true;
-
     private static final String LOG_TAG = LogTag.getLogTag();
 
     public MessageFooterView(Context context) {
@@ -72,16 +66,6 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         super(context, attrs);
 
         mInflater = LayoutInflater.from(context);
-    }
-
-    /**
-     * Utility method that can be used to temporarily disable attachment loaders in all
-     * {@link MessageFooterView}s.
-     *
-     * @param enabled true to enable loaders
-     */
-    public static void enableAttachmentLoaders(boolean enabled) {
-        sEnableAttachmentLoaders = enabled;
     }
 
     @Override
@@ -98,7 +82,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mLoaderManager = loaderManager;
     }
 
-    public void bind(MessageHeaderItem headerItem) {
+    public void bind(MessageHeaderItem headerItem, boolean measureOnly) {
         // Resets the footer view. This step is only done if the
         // attachmentsListUri changes so that we don't
         // repeat the work of layout and measure when
@@ -119,8 +103,9 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mMessageHeaderItem = headerItem;
 
         // kick off load of Attachment objects in background thread
+        // but don't do any Loader work if we're only measuring
         final Integer attachmentLoaderId = getAttachmentLoaderId();
-        if (sEnableAttachmentLoaders && attachmentLoaderId != null) {
+        if (!measureOnly && attachmentLoaderId != null) {
             LogUtils.i(LOG_TAG, "binding footer view, calling initLoader for message %d",
                     attachmentLoaderId);
             mLoaderManager.initLoader(attachmentLoaderId, Bundle.EMPTY, this);
