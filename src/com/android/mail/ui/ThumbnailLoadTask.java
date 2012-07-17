@@ -42,9 +42,11 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
     private final int mHeight;
 
     public static void setupThumbnailPreview(
-            ThumbnailLoadTask task, AttachmentBitmapHolder holder,
-            Attachment attachment, final Attachment prevAttachment) {
-        if (attachment == null) {
+            ThumbnailLoadTask task, final AttachmentBitmapHolder holder,
+            final Attachment attachment, final Attachment prevAttachment) {
+        final int width = holder.getThumbnailWidth();
+        final int height = holder.getThumbnailHeight();
+        if (attachment == null || width == 0 || height == 0) {
             holder.setThumbnailToDefault();
             return;
         }
@@ -58,8 +60,9 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             if (task != null) {
                 task.cancel(true);
             }
+
             task = new ThumbnailLoadTask(
-                    holder, holder.getThumbnailWidth(), holder.getThumbnailHeight());
+                    holder, width, height);
             task.execute(imageUri);
         } else if (imageUri == null) {
             // not an image, or no thumbnail exists. fall back to default.
@@ -96,6 +99,12 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             }
 
             opts.inJustDecodeBounds = false;
+            // Shrink both X and Y (but do not over-shrink)
+            // and pick the least affected dimension to ensure the thumbnail is fillable
+            // (i.e. ScaleType.CENTER_CROP)
+            final int wDivider = Math.max(opts.outWidth / mWidth, 1);
+            final int hDivider = Math.max(opts.outHeight / mHeight, 1);
+            opts.inSampleSize = Math.min(wDivider, hDivider);
 
             LogUtils.d(LOG_TAG, "in background, src w/h=%d/%d dst w/h=%d/%d, divider=%d",
                     opts.outWidth, opts.outHeight, mWidth, mHeight, opts.inSampleSize);
