@@ -225,6 +225,8 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
         mAttachments.clear();
         mTileGrid.removeAllViews();
         mAttachmentLayout.removeAllViews();
+        setVisibility(GONE);
+        collapseView();
     }
 
     /**
