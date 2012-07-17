@@ -79,6 +79,13 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
         mIconScaleType = mIcon.getScaleType();
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+
+        ThumbnailLoadTask.setupThumbnailPreview(mThumbnailTask, this, mAttachment, null);
+    }
+
     /**
      * Render or update an attachment's view. This happens immediately upon instantiation, and
      * repeatedly as status updates stream in, so only properties with new or changed values will
