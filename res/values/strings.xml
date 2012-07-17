@@ -140,7 +140,7 @@
     <!-- Menu item: change the folders for this conversation. -->
     <string name="menu_change_folders">Change folders</string>
     <!-- Menu item: manages the folders for this account. [CHAR LIMIT = 30] -->
-    <string name="menu_manage_folders">Manage folders</string>
+    <string name="menu_manage_folders">Folder settings</string>
     <!-- Title for the Folder list screen. [CHAR LIMIT = 30] -->
     <string name="folder_list_title">Folders</string>
     <!-- action bar sub title for manage folder mode. [CHAR LIMIT = 30] -->

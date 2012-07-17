@@ -1553,19 +1553,21 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void doSend() {
+        clearImeText();
         sendOrSaveWithSanityChecks(false, true, false);
     }
 
     private void doSave(boolean showToast) {
         // Clear the IME composing suggestions from the body and subject before saving.
-        clearImeText(mBodyView);
-        clearImeText(mSubject);
+        clearImeText();
         sendOrSaveWithSanityChecks(true, showToast, false);
     }
 
-    private void clearImeText(TextView v) {
-        v.clearComposingText();
-        BaseInputConnection.removeComposingSpans(v.getEditableText());
+    private void clearImeText() {
+        mBodyView.clearComposingText();
+        BaseInputConnection.removeComposingSpans(mBodyView.getEditableText());
+        mSubject.clearComposingText();
+        BaseInputConnection.removeComposingSpans(mSubject.getEditableText());
     }
 
     @VisibleForTesting
