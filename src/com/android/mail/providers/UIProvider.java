@@ -123,7 +123,8 @@ public class UIProvider {
             AccountColumns.SettingsColumns.CONFIRM_ARCHIVE,
             AccountColumns.SettingsColumns.CONFIRM_SEND,
             AccountColumns.SettingsColumns.DEFAULT_INBOX,
-            AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT
+            AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
+            AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -161,7 +162,7 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 31;
     public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 32;
     public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 33;
-
+    public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 34;
 
     public static final class AccountCapabilities {
         /**
@@ -471,7 +472,11 @@ public class UIProvider {
              * Integer column containing a non zero value if replies should always be sent from
              * a default address instead of a recipient.
              */
-            public static String FORCE_REPLY_FROM_DEFAULT = "force_reply_from_default";
+            public static final String FORCE_REPLY_FROM_DEFAULT = "force_reply_from_default";
+            /**
+             * Integer column containing the max attachment size in kb.
+             */
+            public static final String MAX_ATTACHMENT_SIZE = "max_attachment_size";
         }
     }
 
@@ -1502,11 +1507,6 @@ public class UIProvider {
         public static final String PREVIEW_INTENT = "previewIntent";
 
         private AttachmentColumns() {}
-    }
-
-    public static int getMailMaxAttachmentSize(String account) {
-        // TODO: query the account to see what the max attachment size is?
-        return 5 * 1024 * 1024;
     }
 
     public static String getAttachmentTypeSetting() {

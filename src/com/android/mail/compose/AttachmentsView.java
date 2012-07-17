@@ -25,7 +25,6 @@ import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -34,13 +33,11 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Message;
-import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.utils.LogTag;
@@ -250,28 +247,6 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
     }
 
     /**
-     * When an attachment is too large to be added to a message, show a toast.
-     * This method also updates the position of the toast so that it is shown
-     * clearly above they keyboard if it happens to be open.
-     */
-    private void showAttachmentTooBigToast() {
-        showErrorToast(R.string.too_large_to_attach);
-    }
-
-    private void showGenericAttachmentError() {
-        showErrorToast(R.string.generic_attachment_problem);
-    }
-
-    private void showErrorToast(int resId) {
-        Toast t = Toast.makeText(getContext(), resId,
-                Toast.LENGTH_LONG);
-        t.setText(resId);
-        t.setGravity(Gravity.CENTER_HORIZONTAL, 0,
-                getResources().getDimensionPixelSize(R.dimen.attachment_toast_yoffset));
-        t.show();
-    }
-
-    /**
      * Generate an {@link Attachment} object for a given local content URI. Attempts to populate
      * the {@link Attachment#name}, {@link Attachment#size}, and {@link Attachment#contentType}
      * fields using a {@link ContentResolver}.
@@ -285,8 +260,7 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
         final ContentResolver contentResolver = getContext().getContentResolver();
         String contentType = contentResolver.getType(contentUri);
         if (contentUri == null || TextUtils.isEmpty(contentUri.getPath())) {
-            showGenericAttachmentError();
-            throw new AttachmentFailureException("Attachment too large to attach");
+            throw new AttachmentFailureException("Failed to create local attachment");
         }
 
         if (contentType == null) contentType = "";
@@ -345,11 +319,6 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
                 if (metadataCursor != null) metadataCursor.close();
             }
         } catch (SecurityException e) {
-            // We received a security exception when attempting to add an
-            // attachment.  Warn the user.
-            // TODO(pwestbro): determine if we need more specific text in the toast.
-            Toast.makeText(getContext(),
-                    R.string.generic_attachment_problem, Toast.LENGTH_LONG).show();
             throw new AttachmentFailureException("Security Exception from attachment uri", e);
         }
 
@@ -384,16 +353,13 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
      */
     public long addAttachment(Account account, Attachment attachment)
             throws AttachmentFailureException {
-        int maxSize = UIProvider.getMailMaxAttachmentSize(account.name);
+        int maxSize = account.settings.getMaxAttachmentSize();
 
         // Error getting the size or the size was too big.
-        // FIXME: exceptions should not be used to direct control flow
         if (attachment.size == -1 || attachment.size > maxSize) {
-            showAttachmentTooBigToast();
             throw new AttachmentFailureException("Attachment too large to attach");
         } else if ((getTotalAttachmentsSize()
                 + attachment.size) > maxSize) {
-            showAttachmentTooBigToast();
             throw new AttachmentFailureException("Attachment too large to attach");
         } else {
             addAttachment(attachment);
@@ -403,16 +369,11 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
     }
 
 
-    public void addAttachments(Account account, Message refMessage) {
+    public void addAttachments(Account account, Message refMessage)
+            throws AttachmentFailureException {
         if (refMessage.hasAttachments) {
-            try {
-                for (Attachment a : refMessage.getAttachments()) {
-                    addAttachment(account, a);
-                }
-            } catch (AttachmentFailureException e) {
-                // A toast has already been shown to the user, no need to do
-                // anything.
-                LogUtils.e(LOG_TAG, e, "Error adding attachment");
+            for (Attachment a : refMessage.getAttachments()) {
+                addAttachment(account, a);
             }
         }
     }

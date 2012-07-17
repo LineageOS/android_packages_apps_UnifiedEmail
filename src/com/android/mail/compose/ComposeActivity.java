@@ -45,6 +45,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -176,9 +177,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // TODO(mindyp) set mime-type for auto send?
     public static final String AUTO_SEND_ACTION = "com.android.mail.action.AUTO_SEND";
 
-    // Max size for attachments (5 megs). Will be overridden by account settings if found.
-    // TODO(mindyp): read this from account settings?
-    private static final int DEFAULT_MAX_ATTACHMENT_SIZE = 25 * 1024 * 1024;
     private static final String EXTRA_SELECTED_REPLY_FROM_ACCOUNT = "replyFromAccount";
     private static final String EXTRA_REQUEST_ID = "requestId";
     private static final String EXTRA_FOCUS_SELECTION_START = "focusSelectionStart";
@@ -1097,7 +1095,29 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     protected void initAttachments(Message refMessage) {
-        mAttachmentsView.addAttachments(mAccount, refMessage);
+        try {
+            mAttachmentsView.addAttachments(mAccount, refMessage);
+        } catch (AttachmentFailureException e) {
+            LogUtils.e(LOG_TAG, e, "Error adding attachment");
+            showAttachmentTooBigToast();
+        }
+    }
+
+    /**
+     * When an attachment is too large to be added to a message, show a toast.
+     * This method also updates the position of the toast so that it is shown
+     * clearly above they keyboard if it happens to be open.
+     */
+    private void showAttachmentTooBigToast() {
+        showErrorToast(R.string.too_large_to_attach);
+    }
+
+    private void showErrorToast(int resId) {
+        Toast t = Toast.makeText(this, resId, Toast.LENGTH_LONG);
+        t.setText(resId);
+        t.setGravity(Gravity.CENTER_HORIZONTAL, 0,
+                getResources().getDimensionPixelSize(R.dimen.attachment_toast_yoffset));
+        t.show();
     }
 
     private void initAttachmentsFromIntent(Intent intent) {
@@ -1116,9 +1136,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     try {
                         size =  mAttachmentsView.addAttachment(mAccount, uri);
                     } catch (AttachmentFailureException e) {
-                        // A toast has already been shown to the user,
-                        // just break out of the loop.
                         LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                        showAttachmentTooBigToast();
                     }
                     totalSize += size;
                 }
@@ -1129,9 +1148,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 try {
                     size =  mAttachmentsView.addAttachment(mAccount, uri);
                 } catch (AttachmentFailureException e) {
-                    // A toast has already been shown to the user, so just
-                    // exit.
                     LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                    showAttachmentTooBigToast();
                 }
                 totalSize += size;
             }
@@ -1144,9 +1162,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     try {
                         size = mAttachmentsView.addAttachment(mAccount, (Uri) uri);
                     } catch (AttachmentFailureException e) {
-                        // A toast has already been shown to the user,
-                        // just break out of the loop.
                         LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                        showAttachmentTooBigToast();
                     }
                     totalSize += size;
                 }
@@ -1206,9 +1223,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         try {
             addAttachmentAndUpdateView(mAttachmentsView.generateLocalAttachment(contentUri));
         } catch (AttachmentFailureException e) {
-            // A toast has already been shown to the user, no need to do
-            // anything.
             LogUtils.e(LOG_TAG, e, "Error adding attachment");
+            showErrorToast(R.string.generic_attachment_problem);
         }
     }
 
@@ -1220,9 +1236,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 updateSaveUi();
             }
         } catch (AttachmentFailureException e) {
-            // A toast has already been shown to the user, no need to do
-            // anything.
             LogUtils.e(LOG_TAG, e, "Error adding attachment");
+            showAttachmentTooBigToast();
         }
     }
 

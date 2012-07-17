@@ -16,6 +16,7 @@
 
 package com.android.mail.providers;
 
+import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.DefaultReplyBehavior;
 import com.android.mail.providers.UIProvider.MessageTextSize;
@@ -54,6 +55,10 @@ public class Settings implements Parcelable {
 
     static final Settings EMPTY_SETTINGS = new Settings();
 
+    // Max size for attachments (5 megs). Will be overridden by an account
+    // setting, if found.
+    private static final int DEFAULT_MAX_ATTACHMENT_SIZE = 5 * 1024 * 1024;
+
     public final String signature;
     /**
      * Auto advance setting for this account.
@@ -70,6 +75,7 @@ public class Settings implements Parcelable {
     public final boolean confirmSend;
     public final Uri defaultInbox;
     public final boolean forceReplyFromDefault;
+    public final int maxAttachmentSize;
 
     private Settings() {
         signature = null;
@@ -83,6 +89,7 @@ public class Settings implements Parcelable {
         confirmSend = false;
         defaultInbox = null;
         forceReplyFromDefault = false;
+        maxAttachmentSize = 0;
     }
 
     public Settings(Parcel inParcel) {
@@ -98,6 +105,7 @@ public class Settings implements Parcelable {
         final String inbox = inParcel.readString();
         defaultInbox = !TextUtils.isEmpty(inbox) ? Uri.parse(inbox) : null;
         forceReplyFromDefault = inParcel.readInt() != 0;
+        maxAttachmentSize = inParcel.readInt();
     }
 
     public Settings(Cursor cursor) {
@@ -114,23 +122,25 @@ public class Settings implements Parcelable {
         defaultInbox = !TextUtils.isEmpty(inbox) ? Uri.parse(inbox) : null;
         forceReplyFromDefault = cursor.getInt(
                 UIProvider.ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN) != 0;
+        maxAttachmentSize = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN);
     }
 
     private Settings(JSONObject json) throws JSONException {
-        signature = (String) json.optString(UIProvider.AccountColumns.SettingsColumns.SIGNATURE);
+        signature = (String) json.optString(AccountColumns.SettingsColumns.SIGNATURE);
 
-        autoAdvance = json.optInt(UIProvider.AccountColumns.SettingsColumns.AUTO_ADVANCE);
-        messageTextSize = json.optInt(UIProvider.AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE);
-        snapHeaders = json.optInt(UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS);
-        replyBehavior = json.optInt(UIProvider.AccountColumns.SettingsColumns.REPLY_BEHAVIOR);
-        hideCheckboxes = json.optBoolean(UIProvider.AccountColumns.SettingsColumns.HIDE_CHECKBOXES);
-        confirmDelete = json.optBoolean(UIProvider.AccountColumns.SettingsColumns.CONFIRM_DELETE);
-        confirmArchive = json.optBoolean(UIProvider.AccountColumns.SettingsColumns.CONFIRM_ARCHIVE);
-        confirmSend = json.optBoolean(UIProvider.AccountColumns.SettingsColumns.CONFIRM_SEND);
+        autoAdvance = json.optInt(AccountColumns.SettingsColumns.AUTO_ADVANCE);
+        messageTextSize = json.optInt(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE);
+        snapHeaders = json.optInt(AccountColumns.SettingsColumns.SNAP_HEADERS);
+        replyBehavior = json.optInt(AccountColumns.SettingsColumns.REPLY_BEHAVIOR);
+        hideCheckboxes = json.optBoolean(AccountColumns.SettingsColumns.HIDE_CHECKBOXES);
+        confirmDelete = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_DELETE);
+        confirmArchive = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE);
+        confirmSend = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_SEND);
         defaultInbox = getValidUri(
-                json.optString(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX));
+                json.optString(AccountColumns.SettingsColumns.DEFAULT_INBOX));
         forceReplyFromDefault =
-                json.optBoolean(UIProvider.AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT);
+                json.optBoolean(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT);
+        maxAttachmentSize = json.getInt(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE);
     }
 
     /**
@@ -157,18 +167,20 @@ public class Settings implements Parcelable {
     public synchronized JSONObject toJSON() {
         final JSONObject json = new JSONObject();
         try {
-            json.put(UIProvider.AccountColumns.SettingsColumns.SIGNATURE, signature);
-            json.put(UIProvider.AccountColumns.SettingsColumns.AUTO_ADVANCE, autoAdvance);
-            json.put(UIProvider.AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, messageTextSize);
-            json.put(UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS, snapHeaders);
-            json.put(UIProvider.AccountColumns.SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
-            json.put(UIProvider.AccountColumns.SettingsColumns.HIDE_CHECKBOXES, hideCheckboxes);
-            json.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_DELETE, confirmDelete);
-            json.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, confirmArchive);
-            json.put(UIProvider.AccountColumns.SettingsColumns.CONFIRM_SEND, confirmSend);
-            json.put(UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX, defaultInbox);
-            json.put(UIProvider.AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
+            json.put(AccountColumns.SettingsColumns.SIGNATURE, signature);
+            json.put(AccountColumns.SettingsColumns.AUTO_ADVANCE, autoAdvance);
+            json.put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, messageTextSize);
+            json.put(AccountColumns.SettingsColumns.SNAP_HEADERS, snapHeaders);
+            json.put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR, replyBehavior);
+            json.put(AccountColumns.SettingsColumns.HIDE_CHECKBOXES, hideCheckboxes);
+            json.put(AccountColumns.SettingsColumns.CONFIRM_DELETE, confirmDelete);
+            json.put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, confirmArchive);
+            json.put(AccountColumns.SettingsColumns.CONFIRM_SEND, confirmSend);
+            json.put(AccountColumns.SettingsColumns.DEFAULT_INBOX, defaultInbox);
+            json.put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
                     forceReplyFromDefault);
+            json.put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
+                    maxAttachmentSize);
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not serialize settings");
         }
@@ -217,57 +229,6 @@ public class Settings implements Parcelable {
         }
     }
 
-
-
-    /**
-     * Integer column contaning the user's specified snap header preference.  This value
-     * will be one of the values in {@link UIProvider.SnapHeaderValue}
-     */
-    public static final String SNAP_HEADERS = "snap_headers";
-
-    /**
-     * Integer column containing the user's specified default reply behavior.  This value will
-     * be one of the values in {@link UIProvider.DefaultReplyBehavior}
-     */
-    public static final String REPLY_BEHAVIOR = "reply_behavior";
-
-    /**
-     * Integer column containing the user's specified checkbox preference. A
-     * non zero value means to hide checkboxes.
-     */
-    public static final String HIDE_CHECKBOXES = "hide_checkboxes";
-
-    /**
-     * Integer column containing the user's specified confirm delete preference value.
-     * A non zero value indicates that the user has indicated that a confirmation should
-     * be shown when a delete action is performed.
-     */
-    public static final String CONFIRM_DELETE = "confirm_delete";
-
-    /**
-     * Integer column containing the user's specified confirm archive preference value.
-     * A non zero value indicates that the user has indicated that a confirmation should
-     * be shown when an archive action is performed.
-     */
-    public static final String CONFIRM_ARCHIVE = "confirm_archive";
-
-    /**
-     * Integer column containing the user's specified confirm send preference value.
-     * A non zero value indicates that the user has indicated that a confirmation should
-     * be shown when a send action is performed.
-     */
-    public static final String CONFIRM_SEND = "confirm_send";
-    /**
-     * String folder containing the serialized default inbox folder for an account.
-     */
-    public static final String DEFAULT_INBOX = "default_inbox";
-    /**
-     * Integer column containing a non zero value if replies should always be sent from
-     * a default address instead of a recipient.
-     */
-    public static String FORCE_REPLY_FROM_DEFAULT = "force_reply_from_default";
-
-
     @Override
     public int describeContents() {
         return 0;
@@ -286,6 +247,7 @@ public class Settings implements Parcelable {
         dest.writeInt(confirmSend? 1 : 0);
         dest.writeString(defaultInbox.toString());
         dest.writeInt(forceReplyFromDefault ? 1 : 0);
+        dest.writeInt(maxAttachmentSize);
     }
 
     /**
@@ -331,4 +293,11 @@ public class Settings implements Parcelable {
             return new Settings[size];
         }
     };
+
+    /**
+     *  Get the maximum size in KB for attachments.
+     */
+    public int getMaxAttachmentSize() {
+        return maxAttachmentSize <= 0 ? DEFAULT_MAX_ATTACHMENT_SIZE : maxAttachmentSize;
+    }
 }
