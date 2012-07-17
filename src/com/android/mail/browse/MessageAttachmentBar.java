@@ -193,8 +193,9 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
                 }
                 // If we can view or play with an on-device app,
                 // view or play.
-                else if (MimeType.isViewable(getContext(), mAttachment.contentType)
-                        || MimeType.isPlayable(mAttachment.contentType)) {
+                else if (MimeType.isPlayable(mAttachment.contentType)
+                        || MimeType.isViewable(getContext(), mAttachment.contentUri,
+                                mAttachment.contentType)) {
                     mActionHandler.showAttachment(AttachmentDestination.CACHE);
                 }
                 // If we can only preview the attachment, preview.
