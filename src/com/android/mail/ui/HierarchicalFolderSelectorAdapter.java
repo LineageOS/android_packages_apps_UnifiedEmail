@@ -39,15 +39,18 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
     private Context mContext;
 
     public HierarchicalFolderSelectorAdapter(Context context, Cursor folders,
-            Set<String> initiallySelected, boolean single) {
-        super(context, folders, initiallySelected, single);
+            Set<String> initiallySelected, boolean single, String header) {
+        super(context, folders, initiallySelected, single, header);
         mContext = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
-        Folder folder = getItem(position).getFolder();
+        if (position == 0 && hasHeader()) {
+            return view;
+        }
+        Folder folder = ((FolderRow) getItem(position)).getFolder();
         CompoundButton checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
         checkBox.setText(TextUtils.isEmpty(folder.hierarchicalDesc) ? folder.name
                 : truncateHierarchy(folder.hierarchicalDesc), TextView.BufferType.SPANNABLE);

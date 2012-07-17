@@ -28,8 +28,8 @@ import java.util.Set;
 public final class SystemFolderSelectorAdapter extends FolderSelectorAdapter {
 
     public SystemFolderSelectorAdapter(Context context, Cursor folders,
-            Set<String> initiallySelected, boolean single) {
-        super(context, folders, initiallySelected, single);
+            Set<String> initiallySelected, boolean single, String header) {
+        super(context, folders, initiallySelected, single, header);
     }
 
     /**
