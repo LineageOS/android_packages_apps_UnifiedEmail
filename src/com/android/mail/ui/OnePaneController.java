@@ -23,6 +23,7 @@ import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
@@ -32,6 +33,8 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
+
+import org.json.JSONException;
 
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
@@ -77,6 +80,22 @@ public final class OnePaneController extends AbstractActivityController {
                     INVALID_ID);
             mLastConversationTransactionId = inState.getInt(CONVERSATION_TRANSACTION_KEY,
                     INVALID_ID);
+
+            // Enter folder list mode.
+            if (inState.containsKey(SAVED_HIERARCHICAL_FOLDER)) {
+                try {
+                    String folderString = inState.getString(SAVED_HIERARCHICAL_FOLDER);
+                    if (!TextUtils.isEmpty(folderString)) {
+                        Folder folder = Folder.fromJSONString(inState
+                                .getString(SAVED_HIERARCHICAL_FOLDER));
+                        onFolderSelected(folder);
+                    } else {
+                        showFolderList();
+                    }
+                } catch (JSONException e) {
+                    LogUtils.wtf(LOG_TAG, e, "Unable to parse hierarchical folder extra");
+                }
+            }
         }
     }
 
@@ -89,6 +108,11 @@ public final class OnePaneController extends AbstractActivityController {
                 mLastInboxConversationListTransactionId);
         outState.putInt(CONVERSATION_LIST_TRANSACTION_KEY, mLastConversationListTransactionId);
         outState.putInt(CONVERSATION_TRANSACTION_KEY, mLastConversationTransactionId);
+        if (mViewMode.getMode() == ViewMode.FOLDER_LIST) {
+            Folder hierarchyFolder = getHierarchyFolder();
+            outState.putString(SAVED_HIERARCHICAL_FOLDER,
+                    hierarchyFolder != null ? hierarchyFolder.serialize() : null);
+        }
     }
 
     @Override

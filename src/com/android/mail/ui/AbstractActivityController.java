@@ -118,7 +118,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /** Tag for {@link #mSelectedSet} */
     private static final String SAVED_SELECTED_SET = "saved-selected-set";
     private static final String SAVED_TOAST_BAR_OP = "saved-toast-bar-op";
-    private static final String SAVED_HIERARCHICAL_FOLDER = "saved-hierarchical-folder";
+    protected static final String SAVED_HIERARCHICAL_FOLDER = "saved-hierarchical-folder";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
@@ -872,11 +872,6 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         if (mToastBar.getVisibility() == View.VISIBLE) {
             outState.putParcelable(SAVED_TOAST_BAR_OP, mToastBar.getOperation());
-        }
-        if (mode == ViewMode.FOLDER_LIST) {
-            Folder hierarchyFolder = getHierarchyFolder();
-            outState.putString(SAVED_HIERARCHICAL_FOLDER,
-                    hierarchyFolder != null ? hierarchyFolder.serialize() : null);
         }
         ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {

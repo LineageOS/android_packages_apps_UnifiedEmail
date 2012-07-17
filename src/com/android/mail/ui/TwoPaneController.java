@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
@@ -34,6 +35,8 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+
+import org.json.JSONException;
 
 /**
  * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
@@ -98,6 +101,7 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     private void createFolderListFragment(Folder parent, Uri uri) {
+        setHierarchyFolder(parent);
         FolderListFragment folderListFragment = FolderListFragment.newInstance(parent, uri);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -171,35 +175,28 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void onFolderSelected(Folder folder) {
-        super.onFolderSelected(folder);
-        if (folder.hasChildren) {
+        if (folder.hasChildren && !folder.equals(getHierarchyFolder())) {
             // Replace this fragment with a new FolderListFragment
             // showing this folder's children if we are not already looking
             // at the child view for this folder.
             createFolderListFragment(folder, folder.childFoldersListUri);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
-            return;
-        }
-        final FolderListFragment folderList = getFolderListFragment();
-        if (folderList != null) {
-            folderList.selectInitialFolder(folder);
+            super.onFolderSelected(folder);
+        } else {
+            setHierarchyFolder(folder);
+            super.onFolderSelected(folder);
         }
     }
 
     private void goUpFolderHierarchy(Folder current) {
         Folder parent = current.parent;
         if (parent.parent != null) {
-            super.onFolderSelected(parent);
             createFolderListFragment(parent.parent, parent.parent.childFoldersListUri);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
         } else {
             onFolderSelected(parent);
-        }
-        final FolderListFragment folderList = getFolderListFragment();
-        if (folderList != null) {
-            folderList.selectInitialFolder(parent);
         }
     }
 
@@ -380,8 +377,9 @@ public final class TwoPaneController extends AbstractActivityController {
             if (mode == ViewMode.CONVERSATION_LIST && getFolderListFragment().showingHierarchy()) {
                 // If the user navigated via the left folders list into a child folder,
                 // back should take the user up to the parent folder's conversation list.
-                if (mFolder.parent != null) {
-                    goUpFolderHierarchy(mFolder);
+                Folder hierarchyFolder = getHierarchyFolder();
+                if (hierarchyFolder.parent != null) {
+                    goUpFolderHierarchy(hierarchyFolder);
                 } else  {
                     // Show inbox; we are at the top of the hierarchy we were
                     // showing, and it doesn't have a parent, so we must want to
@@ -394,6 +392,37 @@ public final class TwoPaneController extends AbstractActivityController {
                 mActivity.finish();
             }
         }
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+        if (inState.containsKey(SAVED_HIERARCHICAL_FOLDER)) {
+            try {
+                String folderString = inState.getString(SAVED_HIERARCHICAL_FOLDER);
+                if (!TextUtils.isEmpty(folderString)) {
+                    Folder folder = Folder.fromJSONString(inState
+                            .getString(SAVED_HIERARCHICAL_FOLDER));
+                    mViewMode.enterConversationListMode();
+                    if (folder.hasChildren) {
+                        onFolderSelected(folder);
+                    } else if (folder.parent != null) {
+                        onFolderSelected(folder.parent);
+                        setHierarchyFolder(folder);
+                    }
+                }
+            } catch (JSONException e) {
+                LogUtils.wtf(LOG_TAG, e, "Unable to parse hierarchical folder extra");
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Folder hierarchyFolder = getHierarchyFolder();
+        outState.putString(SAVED_HIERARCHICAL_FOLDER,
+                hierarchyFolder != null ? hierarchyFolder.serialize() : null);
     }
 
     @Override
