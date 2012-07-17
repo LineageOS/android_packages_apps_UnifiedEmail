@@ -57,10 +57,8 @@
     <string name="remove_star" msgid="4372327933122106128">"Eliminaţi steaua"</string>
     <string name="archive" msgid="847250094775910499">"Arhivaţi"</string>
     <string name="report_spam" msgid="6467567747975393907">"Raportaţi ca spam"</string>
-    <!-- no translation found for mark_not_spam (694891665407228160) -->
-    <skip />
-    <!-- no translation found for report_phishing (5714205737453138338) -->
-    <skip />
+    <string name="mark_not_spam" msgid="694891665407228160">"Raportaţi ca „Nu este spam”"</string>
+    <string name="report_phishing" msgid="5714205737453138338">"Raportaţi phishing"</string>
     <string name="delete" msgid="844871204175957681">"Ştergeţi"</string>
     <string name="next" msgid="4674401197968248302">"Mai vechi"</string>
     <string name="previous" msgid="309943944831349924">"Mai noi"</string>
@@ -251,8 +249,7 @@
     <string name="expand_read_messages" msgid="7458927270492299063">"Extindeţi mesajele citite"</string>
     <string name="show_messages_read" msgid="9132147830566909631">"Mesaje citite anterior"</string>
     <string name="date_heading" msgid="2414358582984879303">"Dată:"</string>
-    <!-- no translation found for from_heading (8950294114718418954) -->
-    <skip />
+    <string name="from_heading" msgid="8950294114718418954">"De la:"</string>
     <string name="replyto_heading" msgid="2081358811894701297">"Răsp. la:"</string>
     <string name="to_heading" msgid="3219994961726691756">"Către:"</string>
     <string name="cc_heading" msgid="8116221732072085180">"Cc:"</string>
@@ -261,8 +258,7 @@
     <string name="always_show_images" msgid="5966408990164581801">"Afişaţi întot. imag. de la acest exped."</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Imaginile de la acest expeditor vor fi afişate în mod automat."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <!-- no translation found for address_display_format_with_via_domain (2292171199773526754) -->
-    <skip />
+    <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; prin <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Mesaj salvat ca mesaj nefinalizat."</string>
     <string name="sending_message" msgid="1498583163419122128">"Se trimite mesajul..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Adresa <xliff:g id="WRONGEMAIL">%s</xliff:g> este nevalidă."</string>
@@ -347,10 +343,8 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Nu se poate muta, deoarece selecţia conţine mai multe conturi."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <!-- no translation found for ignore_spam_warning (1554651881128904262) -->
-    <skip />
-    <!-- no translation found for via_domain (380109230928079350) -->
-    <skip />
+    <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignor, am încredere în mesaj"</string>
+    <string name="via_domain" msgid="380109230928079350">"prin <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"Sistem"</item>
     <item msgid="6593672292311851204">"Utilizate des"</item>
