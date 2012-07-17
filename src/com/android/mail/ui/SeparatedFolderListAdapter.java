@@ -21,40 +21,32 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
-import com.android.mail.R;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class SeparatedFolderListAdapter extends BaseAdapter {
 
-    public final Map<String, FolderSelectorAdapter> sections =
-            new LinkedHashMap<String, FolderSelectorAdapter>();
-    public final ArrayAdapter<String> headers;
+    public final ArrayList<FolderSelectorAdapter> sections =
+            new ArrayList<FolderSelectorAdapter>();
     public final static int TYPE_SECTION_HEADER = 0;
+    public final static int TYPE_ITEM = 1;
 
     public SeparatedFolderListAdapter(Context context) {
-        headers = new ArrayAdapter<String>(context, R.layout.folder_header);
     }
 
-    public void addSection(String section, FolderSelectorAdapter adapter) {
-        headers.add(section);
-        sections.put(section, adapter);
+    public void addSection(FolderSelectorAdapter adapter) {
+        sections.add(adapter);
     }
 
+    @Override
     public Object getItem(int position) {
-        for (Object section : this.sections.keySet()) {
-            FolderSelectorAdapter adapter = sections.get(section);
-            int size = adapter.getCount() + 1;
+        for (FolderSelectorAdapter adapter : this.sections) {
+            int size = adapter.getCount();
 
             // check if position inside this section
-            if (position == 0)
-                return section;
-            if (position < size)
-                return adapter.getItem(position - 1);
+            if (position == 0 || position < size)
+                return adapter.getItem(position);
 
             // otherwise jump into next section
             position -= size;
@@ -62,33 +54,34 @@ public class SeparatedFolderListAdapter extends BaseAdapter {
         return null;
     }
 
+    @Override
     public int getCount() {
         // total together all sections, plus one for each section header
         int total = 0;
-        for (Adapter adapter : this.sections.values())
-            total += adapter.getCount() + 1;
+        for (FolderSelectorAdapter adapter : this.sections) {
+            total += adapter.getCount();
+        }
         return total;
     }
 
+    @Override
     public int getViewTypeCount() {
         // assume that headers count as one, then total all sections
-        int total = 1;
-        for (Adapter adapter : this.sections.values())
+        int total = 0;
+        for (Adapter adapter : this.sections)
             total += adapter.getViewTypeCount();
         return total;
     }
 
+    @Override
     public int getItemViewType(int position) {
-        int type = 1;
-        for (Object section : this.sections.keySet()) {
-            Adapter adapter = sections.get(section);
-            int size = adapter.getCount() + 1;
-
+        int type = 0;
+        for (FolderSelectorAdapter adapter : this.sections) {
+            int size = adapter.getCount();
             // check if position inside this section
-            if (position == 0)
-                return TYPE_SECTION_HEADER;
-            if (position < size)
-                return type + adapter.getItemViewType(position - 1);
+            if (position == 0 || position < size) {
+                return type + adapter.getItemViewType(position);
+            }
 
             // otherwise jump into next section
             position -= size;
@@ -97,30 +90,25 @@ public class SeparatedFolderListAdapter extends BaseAdapter {
         return -1;
     }
 
-    public boolean areAllItemsSelectable() {
+    @Override
+    public boolean areAllItemsEnabled() {
         return false;
     }
 
+    @Override
     public boolean isEnabled(int position) {
         return (getItemViewType(position) != TYPE_SECTION_HEADER);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        int sectionnum = 0;
-        for (Object section : this.sections.keySet()) {
-            Adapter adapter = sections.get(section);
-            int size = adapter.getCount() + 1;
-
-            // check if position inside this section
-            if (position == 0)
-                return headers.getView(sectionnum, convertView, parent);
-            if (position < size)
-                return adapter.getView(position - 1, convertView, parent);
-
+        for (FolderSelectorAdapter adapter : this.sections) {
+            int size = adapter.getCount();
+            if (position == 0 || position < size) {
+                return adapter.getView(position, convertView, parent);
+            }
             // otherwise jump into next section
             position -= size;
-            sectionnum++;
         }
         return null;
     }

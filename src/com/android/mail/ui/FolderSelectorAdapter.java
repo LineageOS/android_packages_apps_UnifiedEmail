@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.Collections;
 import java.util.List;
@@ -80,12 +81,14 @@ public class FolderSelectorAdapter extends BaseAdapter {
     protected List<FolderRow> mFolderRows = Lists.newArrayList();
     private LayoutInflater mInflater;
     private int mLayout;
+    private final String mHeader;
 
 
     public FolderSelectorAdapter(Context context, Cursor folders,
-            Set<String> initiallySelected, boolean single) {
+            Set<String> initiallySelected, boolean single, String header) {
         mInflater = LayoutInflater.from(context);
         mLayout = single? R.layout.single_folders_view : R.layout.multi_folders_view;
+        mHeader = header;
         createFolderRows(folders, initiallySelected);
     }
 
@@ -117,21 +120,51 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mFolderRows.size();
+        return mFolderRows.size() + (hasHeader() ? 1 : 0);
     }
 
     @Override
-    public FolderRow getItem(int position) {
-        return mFolderRows.get(position);
+    public Object getItem(int position) {
+        if (position == 0 && hasHeader()) {
+            return mHeader;
+        }
+        return mFolderRows.get(correctPosition(position));
     }
 
     @Override
     public long getItemId(int position) {
+        if (hasHeader() && position == 0) {
+            return -1;
+        }
         return position;
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (hasHeader() && position == 0) {
+            return SeparatedFolderListAdapter.TYPE_SECTION_HEADER;
+        } else {
+            return SeparatedFolderListAdapter.TYPE_ITEM;
+        }
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        // check if position inside this section
+        if (position == 0 && hasHeader()) {
+            TextView view = (TextView) convertView;
+            // Inflate the header view.
+            if (view == null) {
+                view = (TextView) mInflater.inflate(R.layout.folder_header, parent, false);
+            }
+            view.setText(mHeader);
+            return view;
+        }
         View view = convertView;
         CompoundButton checkBox = null;
         View colorBlock;
@@ -147,7 +180,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
         colorBlock = view.findViewById(R.id.color_block);
         iconView = (ImageView) view.findViewById(R.id.folder_box);
 
-        FolderRow row = getItem(position);
+        FolderRow row = (FolderRow) getItem(position);
         Folder folder = row.getFolder();
         checkBox.setText(folder.name);
         checkBox.setChecked(row.isPresent());
@@ -155,6 +188,22 @@ public class FolderSelectorAdapter extends BaseAdapter {
         Folder.setFolderBlockColor(folder, colorBlock);
         Folder.setIcon(folder, iconView);
         return view;
+    }
+
+    public boolean hasHeader() {
+        return mHeader != null;
+    }
+
+    /**
+     * Since this adapter may contain 2 types of data, make sure that we offset
+     * the position being asked for correctly.
+     */
+    public int correctPosition(int position) {
+        return hasHeader() ? position-1 : position;
+    }
+
+    public String getHeader() {
+        return mHeader;
     }
 
 }

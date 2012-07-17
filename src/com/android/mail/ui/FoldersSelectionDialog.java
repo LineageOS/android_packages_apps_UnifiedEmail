@@ -84,13 +84,12 @@ public class FoldersSelectionDialog implements OnClickListener {
                     .getStringArray(R.array.moveto_folder_sections);
             // Currently, the number of adapters are assumed to match the number of headers
             // in the string array.
-            mAdapter.addSection(headers[0],
-                    new SystemFolderSelectorAdapter(context, foldersCursor, conversationFolders,
-                            mSingle));
+            mAdapter.addSection(new SystemFolderSelectorAdapter(context, foldersCursor,
+                    conversationFolders, mSingle, null));
             // TODO(mindyp): we currently do not support frequently moved to
             // folders, at headers[1]; need to define what that means.
-            mAdapter.addSection(headers[2], new HierarchicalFolderSelectorAdapter(context,
-                    foldersCursor, conversationFolders, mSingle));
+            mAdapter.addSection(new HierarchicalFolderSelectorAdapter(context,
+                    foldersCursor, conversationFolders, mSingle, headers[2]));
             builder.setAdapter(mAdapter, this);
             // Pre-load existing conversation folders.
             if (foldersCursor != null && foldersCursor.moveToFirst()) {
