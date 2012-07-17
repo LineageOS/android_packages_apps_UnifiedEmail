@@ -249,9 +249,11 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
         final boolean isDownloading = mAttachment.isDownloading();
         final boolean canSave = mAttachment.canSave();
         final boolean canPreview = (mAttachment.previewIntent != null);
+        final boolean isInstallable = MimeType.isInstallable(mAttachment.contentType);
 
         setButtonVisible(mCancelButton, isDownloading);
-        setButtonVisible(mOverflowButton, !isDownloading && (canSave || canPreview));
+        setButtonVisible(mOverflowButton, !isDownloading && !isInstallable &&
+                (canSave || canPreview));
     }
 
     public void onUpdateStatus() {
