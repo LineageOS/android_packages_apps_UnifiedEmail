@@ -530,10 +530,10 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         String queryText = mSearchWidget.getQuery().toString();
         String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY));
         if (!TextUtils.isEmpty(queryText)) {
-            if (queryText
-                    .lastIndexOf(SearchRecentSuggestionsProvider.QUERY_TOKEN_SEPARATOR) != -1) {
-                queryText = queryText.substring(0, queryText
-                        .lastIndexOf(SearchRecentSuggestionsProvider.QUERY_TOKEN_SEPARATOR));
+            final int queryTokenIndex = queryText
+                    .lastIndexOf(SearchRecentSuggestionsProvider.QUERY_TOKEN_SEPARATOR);
+            if (queryTokenIndex > -1) {
+                queryText = queryText.substring(0, queryTokenIndex);
             }
             // Since we auto-complete on each token in a query, if the query the
             // user typed up until the last token is a substring of the
@@ -542,7 +542,8 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
             // user types john, that matches john palo alto
             // User types john p, that matches john john palo alto
             // Remove the first john
-            if (!TextUtils.isEmpty(query) && query.contains(queryText)
+            // Only do this if we have multiple query tokens.
+            if (queryTokenIndex > -1 && !TextUtils.isEmpty(query) && query.contains(queryText)
                     && queryText.length() < query.length()) {
                 int start = query.indexOf(queryText);
                 query = query.substring(0, start) + query.substring(start + queryText.length());
