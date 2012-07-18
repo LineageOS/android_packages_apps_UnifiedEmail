@@ -231,6 +231,9 @@ public class SwipeableListView extends ListView implements Callback{
             Context context) {
         Conversation conv = target.getConversation();
         final AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
+        if (adapter == null) {
+            return;
+        }
         adapter.setupLeaveBehind(conv, undoOp, conv.position);
         ConversationCursor cc = (ConversationCursor)adapter.getCursor();
         switch (mSwipeAction) {
