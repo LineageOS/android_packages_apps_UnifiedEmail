@@ -20,5 +20,6 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="add_cc_label" msgid="6156834609108442458">"+ Cc/Bcc"</string>
     <string name="add_bcc_label" msgid="7648769906379235693">"+ Bcc"</string>
-    <string name="menu_label_options" msgid="501791283402303675">"Quản lý nhãn"</string>
+    <!-- no translation found for menu_manage_folders (7574962882483466700) -->
+    <skip />
 </resources>

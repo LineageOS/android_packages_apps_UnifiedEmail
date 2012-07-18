@@ -69,7 +69,7 @@
     <string name="forward" msgid="6822914459902983767">"Lähetä edelleen"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Viestin kirjoitus"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Vaihda kansiota"</string>
-    <string name="menu_manage_folders" msgid="7499103037978814445">"Kansioiden hallinta"</string>
+    <string name="menu_manage_folders" msgid="6755623004628177492">"Kansion asetukset"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Kansiot"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Synkronoi ja ilmoita"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Kansion asetukset..."</string>
