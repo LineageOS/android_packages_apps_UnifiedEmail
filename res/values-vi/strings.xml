@@ -69,7 +69,8 @@
     <string name="forward" msgid="6822914459902983767">"Chuyển tiếp"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Soạn thư"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Thay đổi thư mục"</string>
-    <string name="menu_manage_folders" msgid="7499103037978814445">"Quản lý thư mục"</string>
+    <!-- no translation found for menu_manage_folders (6755623004628177492) -->
+    <skip />
     <string name="folder_list_title" msgid="4276644062440415214">"Thư mục"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Đồng bộ hóa và thông báo"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Cài đặt thư mục"</string>

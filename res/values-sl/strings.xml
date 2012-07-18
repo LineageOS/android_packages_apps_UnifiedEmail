@@ -57,7 +57,7 @@
     <string name="remove_star" msgid="4372327933122106128">"Odstrani zvezdico"</string>
     <string name="archive" msgid="847250094775910499">"Arhiviraj"</string>
     <string name="report_spam" msgid="6467567747975393907">"Prijavite neželeno vsebino"</string>
-    <string name="mark_not_spam" msgid="694891665407228160">"Poročilo ni vsiljena pošta"</string>
+    <string name="mark_not_spam" msgid="694891665407228160">"Ni vsiljena pošta"</string>
     <string name="report_phishing" msgid="5714205737453138338">"Prijavi lažno predstavljanje"</string>
     <string name="delete" msgid="844871204175957681">"Izbriši"</string>
     <string name="next" msgid="4674401197968248302">"Starejše"</string>
@@ -69,7 +69,7 @@
     <string name="forward" msgid="6822914459902983767">"Posreduj"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Novo"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Spremenite mape"</string>
-    <string name="menu_manage_folders" msgid="7499103037978814445">"Upravljanje map"</string>
+    <string name="menu_manage_folders" msgid="6755623004628177492">"Nastavitve mape"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Mape"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sinhronizacija in obveščanje"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Nastavitve mape"</string>

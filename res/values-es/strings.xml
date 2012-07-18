@@ -20,7 +20,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="to" msgid="4392614766835725698">"Para"</string>
     <string name="cc" msgid="7017720927911078193">"CC"</string>
-    <string name="bcc" msgid="3098643138241111579">"CCO"</string>
+    <string name="bcc" msgid="3098643138241111579">"Cco"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Asunto"</string>
     <string name="body_hint" msgid="4279864165439577668">"Redactar correo"</string>
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
@@ -69,7 +69,7 @@
     <string name="forward" msgid="6822914459902983767">"Reenviar"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Redactar"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Cambiar carpetas"</string>
-    <string name="menu_manage_folders" msgid="7499103037978814445">"Administrar carpetas"</string>
+    <string name="menu_manage_folders" msgid="6755623004628177492">"Ajustes de carpeta"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Carpetas"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sincronizar y notificar"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Ajustes de carpeta"</string>
@@ -83,8 +83,8 @@
     <string name="older" msgid="6651690916337202936">"Anterior"</string>
     <string name="mark_important" msgid="6904096897104265870">"Marcar como importante"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"Marcar como no importante"</string>
-    <string name="add_cc_label" msgid="504861315425773180">"Añadir CC/CCO"</string>
-    <string name="add_bcc_label" msgid="7432027645493843336">"Añadir CCO"</string>
+    <string name="add_cc_label" msgid="504861315425773180">"Añadir Cc/Cco"</string>
+    <string name="add_bcc_label" msgid="7432027645493843336">"Añadir Cco"</string>
     <string name="feedback" msgid="79365993169715049">"Enviar comentarios"</string>
     <string name="help_and_info" msgid="7873089811705257882">"Ayuda"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Incluir texto citado"</string>
@@ -253,7 +253,7 @@
     <string name="replyto_heading" msgid="2081358811894701297">"Responder a:"</string>
     <string name="to_heading" msgid="3219994961726691756">"Para:"</string>
     <string name="cc_heading" msgid="8116221732072085180">"CC:"</string>
-    <string name="bcc_heading" msgid="5528824453033598299">"CCO:"</string>
+    <string name="bcc_heading" msgid="5528824453033598299">"Cco:"</string>
     <string name="show_images" msgid="1875700481186331432">"Mostrar imágenes"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Mostrar siempre imágenes de este remitente"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Las imágenes de este remitente se mostrarán automáticamente."</string>

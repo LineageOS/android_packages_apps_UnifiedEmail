@@ -69,7 +69,7 @@
     <string name="forward" msgid="6822914459902983767">"Reenvia"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Redacta"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Canvia les carpetes"</string>
-    <string name="menu_manage_folders" msgid="7499103037978814445">"Gestiona les carpetes"</string>
+    <string name="menu_manage_folders" msgid="6755623004628177492">"Configuració de la carpeta"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Carpetes"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sincronitza i notifica"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Configuració de la carpeta"</string>
