@@ -69,7 +69,7 @@
     <string name="forward" msgid="6822914459902983767">"Edasta"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Koosta"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Muuda kaustu"</string>
-    <string name="menu_manage_folders" msgid="7499103037978814445">"Halda kaustu"</string>
+    <string name="menu_manage_folders" msgid="6755623004628177492">"Kausta seaded"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Kaustad"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Sünkroonimine ja teavitamine"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Kausta seaded"</string>

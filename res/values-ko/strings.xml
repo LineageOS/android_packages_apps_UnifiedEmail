@@ -69,7 +69,8 @@
     <string name="forward" msgid="6822914459902983767">"전달"</string>
     <string name="menu_compose" msgid="6274193058224230645">"편지쓰기"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"폴더 변경"</string>
-    <string name="menu_manage_folders" msgid="7499103037978814445">"폴더 관리"</string>
+    <!-- no translation found for menu_manage_folders (6755623004628177492) -->
+    <skip />
     <string name="folder_list_title" msgid="4276644062440415214">"폴더"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"동기화 및 알림"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"폴더 설정"</string>
