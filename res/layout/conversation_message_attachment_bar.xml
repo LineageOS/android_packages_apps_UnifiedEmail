@@ -20,90 +20,87 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dip"
-    android:rowCount="3"
+    android:background="@drawable/attachment_bg_holo"
     android:columnCount="3"
-    android:background="@drawable/attachment_bg_holo">
+    android:minHeight="48dip"
+    android:rowCount="3" >
 
     <ImageView
         android:id="@+id/attachment_icon"
         android:layout_width="48dip"
-        android:layout_height="48dip"
         android:layout_column="0"
+        android:layout_gravity="fill_vertical"
         android:layout_row="0"
         android:layout_rowSpan="3"
+        android:background="@color/attachment_image_background_color"
         android:scaleType="center"
-        android:src="@drawable/ic_menu_attachment_holo_light"
-        android:background="@color/attachment_image_background_color" />
+        android:src="@drawable/ic_menu_attachment_holo_light" />
 
     <TextView
         android:id="@+id/attachment_title"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
+        android:layout_column="1"
         android:layout_gravity="fill_horizontal"
         android:layout_marginLeft="8dip"
-        android:layout_column="1"
         android:layout_row="0"
-        android:singleLine="true"
-        android:ellipsize="end" />
+        android:ellipsize="end"
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/attachment_subtitle"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
+        android:layout_column="1"
         android:layout_gravity="fill_horizontal"
         android:layout_marginLeft="8dip"
-        android:layout_column="1"
         android:layout_row="1"
-        android:singleLine="true"
-        android:ellipsize="end" />
+        android:ellipsize="end"
+        android:singleLine="true" />
 
     <ProgressBar
         android:id="@+id/attachment_progress"
-        android:layout_height="0dip"
-        android:layout_gravity="fill"
-        android:layout_column="1"
-        android:layout_row="2"
-        android:layout_columnSpan="2"
         style="?android:attr/progressBarStyleHorizontal"
-        android:indeterminate="false"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_gravity="fill_horizontal"
+        android:layout_row="2"
+        android:indeterminate="true"
         android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/overflow"
+        style="@android:style/Widget.Holo.Light.ActionButton.Overflow"
         android:layout_width="48dip"
-        android:layout_height="match_parent"
         android:layout_column="2"
+        android:layout_gravity="fill_vertical"
         android:layout_row="0"
         android:layout_rowSpan="3"
-        android:visibility="gone"
-        style="@android:style/Widget.Holo.Light.ActionButton.Overflow" />
+        android:visibility="gone" />
 
     <ImageButton
         android:id="@+id/cancel_attachment"
-        android:src="@drawable/ic_cancel_holo_light"
         android:layout_width="48dip"
-        android:layout_height="48dip"
-        android:paddingTop="12dip"
-        android:paddingRight="12dip"
-        android:paddingBottom="12dip"
-        android:paddingLeft="12dip"
         android:layout_column="2"
+        android:layout_gravity="fill_vertical"
         android:layout_row="0"
         android:layout_rowSpan="3"
-        android:clickable="true"
         android:background="?android:attr/selectableItemBackground"
-        android:visibility="gone"/>
+        android:clickable="true"
+        android:scaleType="center"
+        android:src="@drawable/ic_cancel_holo_light"
+        android:visibility="gone" />
 
     <View
         android:id="@+id/attachment_push_state"
         android:layout_width="0dip"
         android:layout_height="0dip"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
         android:layout_gravity="fill"
         android:layout_row="0"
-        android:layout_column="0"
         android:layout_rowSpan="3"
-        android:layout_columnSpan="2"
-        android:focusable="true"
-        android:background="?android:attr/selectableItemBackground" />
+        android:background="?android:attr/selectableItemBackground"
+        android:focusable="true" />
 
 </com.android.mail.browse.MessageAttachmentBar>
