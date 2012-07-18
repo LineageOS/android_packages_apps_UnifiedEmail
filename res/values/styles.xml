@@ -63,6 +63,7 @@
 
     <style name="RecipientComposeFieldLayout" parent="@style/ComposeFieldLayout">
         <item name="android:orientation">vertical</item>
+        <item name="android:paddingTop">0dip</item>
     </style>
 
     <style name="ComposeBodyStyle">
