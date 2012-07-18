@@ -719,6 +719,12 @@ public final class ConversationViewFragment extends Fragment implements
 
         @Override
         public void onPageFinished(WebView view, String url) {
+            if (!mViewsCreated) {
+                LogUtils.i(LOG_TAG, "ignoring CVF.onPageFinished, fragment=%s",
+                        ConversationViewFragment.this);
+                return;
+            }
+
             LogUtils.i(LOG_TAG, "IN CVF.onPageFinished, url=%s fragment=%s", url,
                     ConversationViewFragment.this);
 
