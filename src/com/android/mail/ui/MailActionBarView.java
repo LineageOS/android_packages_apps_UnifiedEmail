@@ -324,14 +324,12 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         // Always update the options menu and redraw. This will read the new mode and redraw
         // the options menu.
         mActivity.invalidateOptionsMenu();
-        // If we are running on a tablet, we need to enable recent folders only in conversation
-        // view, and disable them everywhere else.
-        if (mIsOnTablet) {
-            if (mMode == ViewMode.CONVERSATION) {
-                mSpinner.enableRecentFolders();
-            } else {
-                mSpinner.disableRecentFolders();
-            }
+        // Check if we are either on a phone, or in Conversation mode on tablet. For these, the
+        // recent folders is enabled.
+        if (!mIsOnTablet || mMode == ViewMode.CONVERSATION) {
+            mSpinner.enableRecentFolders();
+        } else {
+            mSpinner.disableRecentFolders();
         }
     }
 
