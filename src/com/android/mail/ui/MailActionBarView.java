@@ -230,33 +230,13 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         mActionBar.setListNavigationCallbacks(mSpinner, this);
     }
 
+    /**
+     * Sets the array of accounts to the value provided here.
+     * @param accounts
+     */
     public void setAccounts(Account[] accounts) {
         final Account currentAccount = mController.getCurrentAccount();
         mSpinner.setAccountArray(accounts);
-
-        int position;
-        for (position = 0; position < accounts.length; position++) {
-            if (accounts[position].uri.equals(currentAccount.uri)) {
-                break;
-            }
-        }
-        if (position >= accounts.length) {
-            position = 0;
-            LogUtils.w(LOG_TAG, "IN actionbarview setAccounts, account not found, using first.");
-        }
-        final Uri defaultInbox = Settings.getDefaultInboxUri(mAccount.settings);
-        final boolean viewingDefaultInbox =
-                (mFolder == null || mAccount == null || mAccount.settings == null) ? false :
-                    mFolder.uri.equals(defaultInbox);
-        final boolean accountInSpinner = (position >= 0);
-        if (accountInSpinner && viewingDefaultInbox) {
-            // This position corresponds to current account and default Inbox.  Select it.
-            setSelectedPosition(position);
-        } else {
-            // Set the selected position to a dead spacer. The user is either viewing a different
-            // folder, or the account is missing from the spinner.
-            setSelectedPosition(mSpinner.getSpacerPosition());
-        }
     }
 
     /**
@@ -277,10 +257,6 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      * folder that is currently being displayed.
      */
     public void setFolder(Folder folder) {
-        // Change the currently selected item to an element which is a spacer: valid but not useful
-        // This allows us to receive a tap on the account name when the user taps on it, and we can
-        // take the user to the default inbox.
-        setSelectedPosition(mSpinner.getSpacerPosition());
         mSpinner.setCurrentFolder(folder);
         mSpinner.notifyDataSetChanged();
         mFolder = folder;
@@ -297,45 +273,15 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         mFolderAccountName.setText(mAccount.name);
     }
 
-    /**
-     * Returns true if this list navigation event is erroneous and should be ignored.
-     *
-     *  Rationale: When a spinner is brought up for the first time, and it has never been brought up
-     * before, it shows the 0th element. This is fine in most cases, since the navigation mode has
-     * to select something. However, if we already have an account: for example if we went from the
-     * widget to Conversation view, and the spinner never got a chance to initialize, it needs to
-     * ignore this first navigation. If the spinner has ever been shown, then we will allow
-     * subsequent calls to onNavigationItemSelected.
-     * @param position the position selected in the drop down.
-     */
-    private boolean ignoreFirstNavigation(int position) {
-        if (mIgnoreFirstNavigation && position == 1 && mAccount != null) {
-            // Ignore the first navigation item selected because it is the list initializing
-            // We already have an account.
-            LogUtils.d(LOG_TAG, "ignoreFirstNavigation: Ignoring navigation to position 1."
-                    + " mAccount = %s", mAccount.uri);
-            // All user taps are now valid: even a tap on the current account to take the user to
-            // the default inbox.
-            mIgnoreFirstNavigation = false;
-            setSelectedPosition(mSpinner.getSpacerPosition());
-            // Yes, we want to ignore this navigation. It is not a user-initiated navigation.
-            return true;
-        }
-        // Spinner was correctly initialized and is receiving a valid first tap.  All subsequent
-        // taps are user events.
-        mIgnoreFirstNavigation = false;
-        // No, we don't want to ignore this navigation.
-        return false;
-    }
-
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
-        if (ignoreFirstNavigation(position)) {
-            return false;
-        }
         LogUtils.d(LOG_TAG, "onNavigationItemSelected(%d, %d) called", position, id);
         final int type = mSpinner.getType(position);
         switch (type) {
+            case AccountSpinnerAdapter.TYPE_DEAD_HEADER:
+                // Automatic selections
+                LogUtils.d(LOG_TAG, "Got a tap on the dead header");
+                break;
             case AccountSpinnerAdapter.TYPE_ACCOUNT:
                 // Get the capabilities associated with this account.
                 final Account account = (Account) mSpinner.getItem(position);
@@ -357,13 +303,12 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                 mController.onFolderChanged((Folder) folder);
                 break;
             case AccountSpinnerAdapter.TYPE_ALL_FOLDERS:
-                // Change the currently selected item to an element which is a spacer: valid
-                // but not useful. This allows us to receive subsequent taps on the
-                // "show all folders" menu item.
-                setSelectedPosition(mSpinner.getSpacerPosition());
                 mController.showFolderList();
                 break;
         }
+        // Change the currently selected item to an element which is a spacer: valid
+        // but not useful. This allows us to receive subsequent taps on all menu items.
+        setSelectedPosition(mSpinner.getSpacerPosition());
         return false;
     }
 
