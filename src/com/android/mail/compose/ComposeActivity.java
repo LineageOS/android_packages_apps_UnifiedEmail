@@ -921,18 +921,26 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Set the body
         CharSequence quotedText = null;
         if (!TextUtils.isEmpty(message.bodyHtml)) {
-            CharSequence htmlText = Html.fromHtml(message.bodyHtml);
+            CharSequence htmlText = "";
             if (quotedTextIndex > -1) {
-                htmlText = htmlText.subSequence(0, quotedTextIndex);
-                quotedText = message.bodyHtml.subSequence(quotedTextIndex,
-                        message.bodyHtml.length());
+                // Find the offset in the htmltext of the actual quoted text and strip it out.
+                quotedTextIndex = QuotedTextView.findQuotedTextIndex(message.bodyHtml);
+                if (quotedTextIndex > -1) {
+                    htmlText = Html.fromHtml(message.bodyHtml.substring(0, quotedTextIndex));
+                    quotedText = message.bodyHtml.subSequence(quotedTextIndex,
+                            message.bodyHtml.length());
+                }
             }
             mBodyView.setText(htmlText);
         } else {
-            CharSequence bodyText = quotedTextIndex > -1 ?
-                    message.bodyText.substring(0, quotedTextIndex) : message.bodyText;
+            final String body = message.bodyText;
+            final CharSequence bodyText = !TextUtils.isEmpty(body) ?
+                    (quotedTextIndex > -1 ?
+                            message.bodyText.substring(0, quotedTextIndex) : message.bodyText)
+                            : "";
             if (quotedTextIndex > -1) {
-                quotedText = message.bodyText.substring(quotedTextIndex);
+                quotedText = !TextUtils.isEmpty(body) ? message.bodyText.substring(quotedTextIndex)
+                        : null;
             }
             mBodyView.setText(bodyText);
         }

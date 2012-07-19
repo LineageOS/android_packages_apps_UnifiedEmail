@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -32,9 +33,6 @@ import android.widget.LinearLayout;
 import com.android.mail.R;
 import com.android.mail.providers.Message;
 import com.android.mail.utils.Utils;
-import com.google.android.common.html.parser.HtmlDocument;
-import com.google.android.common.html.parser.HtmlParser;
-import com.google.android.common.html.parser.HtmlTreeBuilder;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -85,6 +83,8 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
 
         mQuotedTextWebView = (WebView) findViewById(R.id.quoted_text_web_view);
         Utils.restrictWebView(mQuotedTextWebView);
+        WebSettings settings = mQuotedTextWebView.getSettings();
+        settings.setBlockNetworkLoads(true);
 
         mShowHideCheckBox = (CheckBox) findViewById(R.id.hide_quoted_text);
         mShowHideCheckBox.setChecked(true);
@@ -330,5 +330,17 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     public static int getQuotedTextOffset(String text) {
         return text.indexOf(QuotedTextView.HEADER_SEPARATOR)
                 + QuotedTextView.HEADER_SEPARATOR_LENGTH;
+    }
+
+    /**
+     * Find the index of where the entire block of quoted text, quotes, divs,
+     * attribution and all, begins.
+     */
+    public static int findQuotedTextIndex(CharSequence htmlText) {
+        if (TextUtils.isEmpty(htmlText)) {
+            return -1;
+        }
+        String textString = htmlText.toString();
+        return textString.indexOf(QUOTE_BEGIN);
     }
 }
