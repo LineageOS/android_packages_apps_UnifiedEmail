@@ -60,6 +60,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     private ViewMode mViewMode;
 
+    private ToastBarOperation mPendingToastOp;
+
     public MailActivity() {
         super();
     }
@@ -309,5 +311,15 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public ErrorListener getErrorListener() {
         return mController;
+    }
+
+    @Override
+    public void setPendingToastOperation(ToastBarOperation op) {
+        mPendingToastOp = op;
+    }
+
+    @Override
+    public ToastBarOperation getPendingToastOperation() {
+        return mPendingToastOp;
     }
 }

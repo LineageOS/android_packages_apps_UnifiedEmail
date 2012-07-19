@@ -238,6 +238,12 @@ public final class ConversationListFragment extends ListFragment implements
 
         // Show list and start loading list.
         showList();
+        ToastBarOperation pendingOp = mActivity.getPendingToastOperation();
+        if (pendingOp != null) {
+            // Clear the pending operation
+            mActivity.setPendingToastOperation(null);
+            mActivity.onUndoAvailable(pendingOp);
+        }
     }
 
     public AnimatedAdapter getAnimatedAdapter() {
