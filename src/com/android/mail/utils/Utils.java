@@ -651,11 +651,13 @@ public class Utils {
      * when they requested help.
      */
     public static void showHelp(Context context, Account account, String fromWhere) {
-        if (account == null || account.helpIntentUri == null) {
+        final String urlString = (account != null && account.helpIntentUri != null) ?
+                account.helpIntentUri.toString() : null;
+        if (TextUtils.isEmpty(urlString) ) {
             LogUtils.e(LOG_TAG, "unable to show help for account: %s", account);
             return;
         }
-        final Uri uri = addParamsToUrl(context, account.helpIntentUri.toString());
+        final Uri uri = addParamsToUrl(context, urlString);
         Uri.Builder builder = uri.buildUpon();
         // Add the activity specific information parameter.
         if (fromWhere != null) {
