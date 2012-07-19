@@ -27,13 +27,11 @@ import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.android.mail.R;
-import com.android.mail.compose.ComposeActivity;
 import com.android.mail.persistence.Persistence;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
@@ -45,6 +43,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
+import org.json.JSONException;
 
 import java.util.Set;
 
@@ -55,25 +54,13 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     public static final String EXTRA_UPDATE_ALL_WIDGETS = "update-all-widgets";
     public static final String WIDGET_ACCOUNT_PREFIX = "widget-account-";
 
-    private static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
+    static final String ACCOUNT_FOLDER_PREFERENCE_SEPARATOR = " ";
+
+
+    protected static final String ACTION_UPDATE_WIDGET = "com.android.mail.ACTION_UPDATE_WIDGET";
+    protected static final String EXTRA_WIDGET_ID = "widgetId";
 
     private static final String LOG_TAG = LogTag.getLogTag();
-
-    private static String createWidgetPreferenceValue(Account account, Folder folder) {
-        return account.uri.toString() + ACCOUNT_FOLDER_PREFERENCE_SEPARATOR + folder.uri.toString();
-
-    }
-
-    /**
-     * Persists the information about the specified widget.
-     */
-    static void saveWidgetInformation(Context context, int appWidgetId, Account account,
-            Folder folder) {
-        Editor editor = Persistence.getPreferences(context).edit();
-        editor.putString(WidgetProvider.WIDGET_ACCOUNT_PREFIX + appWidgetId,
-                BaseWidgetProvider.createWidgetPreferenceValue(account, folder));
-        editor.apply();
-    }
 
     /**
      * Remove preferences when deleting widget
@@ -81,6 +68,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
+
         // TODO: (mindyp) save widget information.
         Editor editor = Persistence.getPreferences(context).edit();
         for (int i = 0; i < appWidgetIds.length; ++i) {
@@ -108,7 +96,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
      * @return the account/mailbox string pairs
      */
     static public String[][] getWidgetInfo(Context context, int[] widgetIds) {
-        String[][] widgetInfo = new String[widgetIds.length][2];
+        final String[][] widgetInfo = new String[widgetIds.length][2];
         for (int i = 0; i < widgetIds.length; i++) {
             // Retrieve the persisted information for this widget from
             // preferences.
@@ -131,8 +119,23 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
         LogUtils.d(LOG_TAG, "BaseWidgetProvider.onReceive: %s", intent);
 
-        // Receive notification for a certain account.
-        if (Utils.ACTION_NOTIFY_DATASET_CHANGED.equals(intent.getAction())) {
+        final String action = intent.getAction();
+        if (ACTION_UPDATE_WIDGET.equals(action)) {
+            final int widgetId = intent.getIntExtra(EXTRA_WIDGET_ID, -1);
+            final Account account = Account.newinstance(intent.getStringExtra(EXTRA_ACCOUNT));
+            Folder folder;
+
+            try {
+                folder = Folder.fromJSONString(intent.getStringExtra(EXTRA_FOLDER));
+            } catch (JSONException e) {
+                folder = null;
+                LogUtils.wtf(LOG_TAG, e, "unable to parse folder for widget");
+            }
+            if (widgetId != -1 && account != null && folder != null) {
+                updateWidgetInternal(context, widgetId, account, folder);
+            }
+        } else if (Utils.ACTION_NOTIFY_DATASET_CHANGED.equals(action)) {
+            // Receive notification for a certain account.
             final Bundle extras = intent.getExtras();
             final Uri accountUri = (Uri)extras.getParcelable(Utils.EXTRA_ACCOUNT_URI);
             final Uri folderUri = (Uri)extras.getParcelable(Utils.EXTRA_FOLDER_URI);
@@ -142,7 +145,6 @@ public class BaseWidgetProvider extends AppWidgetProvider {
                 return;
             }
             final Set<Integer> widgetsToUpdate = Sets.newHashSet();
-
             for (int id : getCurrentWidgetIds(context)) {
                 // Retrieve the persisted information for this widget from
                 // preferences.
@@ -185,7 +187,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         ContentResolver resolver = context.getContentResolver();
         for (int i = 0; i < appWidgetIds.length; ++i) {
             // Get the account for this widget from preference
-            String accountFolder = Persistence.getPreferences(context).getString(
+            final String accountFolder = Persistence.getPreferences(context).getString(
                     WIDGET_ACCOUNT_PREFIX + appWidgetIds[i], null);
             String accountUri = null;
             String folderUri = null;
@@ -242,38 +244,27 @@ public class BaseWidgetProvider extends AppWidgetProvider {
                     }
                 }
             }
-            updateWidget(context, appWidgetIds[i], account, folder);
+            updateWidgetInternal(context, appWidgetIds[i], account, folder);
         }
-    }
-
-    protected static boolean isAccountValid(Context context, Account account) {
-        if (account != null) {
-            Account[] accounts = AccountUtils.getSyncingAccounts(context);
-            for (Account existing : accounts) {
-                if (account != null && existing != null && account.uri.equals(existing.uri)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns true if this widget id has been configured and saved.
-     */
-    public static boolean isWidgetConfigured(Context context, int appWidgetId, Account account,
-            Folder folder) {
-        if (isAccountValid(context, account)) {
-            return Persistence.getPreferences(context).getString(
-                    WIDGET_ACCOUNT_PREFIX + appWidgetId, null) != null;
-        }
-        return false;
     }
 
     /**
      * Update the widget appWidgetId with the given account and folder
      */
-    public static void updateWidget(Context context, int appWidgetId, Account account, Folder folder) {
+    public static void updateWidget(Context context, int appWidgetId, Account account,
+                Folder folder) {
+        final Intent updateWidgetIntent = new Intent(ACTION_UPDATE_WIDGET);
+
+        updateWidgetIntent.setType(account.mimeType);
+        updateWidgetIntent.putExtra(EXTRA_WIDGET_ID, appWidgetId);
+        updateWidgetIntent.putExtra(EXTRA_ACCOUNT, account.serialize());
+        updateWidgetIntent.putExtra(EXTRA_FOLDER, folder.serialize());
+
+        context.sendBroadcast(updateWidgetIntent);
+    }
+
+    protected void updateWidgetInternal(Context context, int appWidgetId, Account account,
+                Folder folder) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
         final boolean isAccountValid = isAccountValid(context, account);
 
@@ -302,76 +293,22 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, remoteViews);
     }
 
-    /**
-     * Modifies the remoteView for the given account and folder.
-     */
-    static void configureValidAccountWidget(Context context, RemoteViews remoteViews,
-            int appWidgetId, Account account, Folder folder, String folderDisplayName) {
-        BaseWidgetProvider.configureValidAccountWidget(context, remoteViews, appWidgetId, account,
+    protected boolean isAccountValid(Context context, Account account) {
+        if (account != null) {
+            Account[] accounts = AccountUtils.getSyncingAccounts(context);
+            for (Account existing : accounts) {
+                if (account != null && existing != null && account.uri.equals(existing.uri)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected void configureValidAccountWidget(Context context, RemoteViews remoteViews,
+                int appWidgetId, Account account, Folder folder, String folderDisplayName) {
+        WidgetService.configureValidAccountWidget(context, remoteViews, appWidgetId, account,
                 folder, folderDisplayName, WidgetService.class);
     }
 
-    /**
-     * Modifies the remoteView for the given account and folder.
-     */
-    static void configureValidAccountWidget(Context context, RemoteViews remoteViews,
-            int appWidgetId, Account account, Folder folder, String folderDisplayName,
-            Class<?> widgetService) {
-        remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
-        remoteViews.setTextViewText(R.id.widget_folder, folderDisplayName);
-        remoteViews.setViewVisibility(R.id.widget_account, View.VISIBLE);
-        remoteViews.setTextViewText(R.id.widget_account, account.name);
-        remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
-        remoteViews.setViewVisibility(R.id.widget_compose, View.VISIBLE);
-        remoteViews.setViewVisibility(R.id.conversation_list, View.VISIBLE);
-        remoteViews.setViewVisibility(R.id.widget_folder_not_synced, View.GONE);
-
-        BaseWidgetProvider.configureValidWidgetIntents(context, remoteViews, appWidgetId, account,
-                folder, folderDisplayName, widgetService);
-    }
-
-    public static void configureValidWidgetIntents(Context context, RemoteViews remoteViews,
-            int appWidgetId, Account account, Folder folder, String folderDisplayName,
-            Class<?> serviceClass) {
-        remoteViews.setViewVisibility(R.id.widget_configuration, View.GONE);
-
-
-        // Launch an intent to avoid ANRs
-        final Intent intent = new Intent(context, serviceClass);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        intent.putExtra(EXTRA_ACCOUNT, account.serialize());
-        intent.putExtra(EXTRA_FOLDER, folder.serialize());
-        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-        remoteViews.setRemoteAdapter(R.id.conversation_list, intent);
-        // Open mail app when click on header
-        final Intent mailIntent = Utils.createViewFolderIntent(folder, account);
-        PendingIntent clickIntent = PendingIntent.getActivity(context, 0, mailIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.widget_header, clickIntent);
-
-        // On click intent for Compose
-        final Intent composeIntent = new Intent();
-        composeIntent.setAction(Intent.ACTION_SEND);
-        composeIntent.putExtra(Utils.EXTRA_ACCOUNT, account);
-        composeIntent.setData(account.composeIntentUri);
-        composeIntent.putExtra(ComposeActivity.EXTRA_FROM_EMAIL_TASK, true);
-        if (account.composeIntentUri != null) {
-            composeIntent.putExtra(Utils.EXTRA_COMPOSE_URI, account.composeIntentUri);
-        }
-
-        // Build a task stack that forces the conversation list on the stack before the compose
-        // activity.
-        final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        clickIntent = taskStackBuilder.addNextIntent(mailIntent)
-                .addNextIntent(composeIntent)
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.widget_compose, clickIntent);
-
-        // On click intent for Conversation
-        final Intent conversationIntent = new Intent();
-        conversationIntent.setAction(Intent.ACTION_VIEW);
-        clickIntent = PendingIntent.getActivity(context, 0, conversationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setPendingIntentTemplate(R.id.conversation_list, clickIntent);
-    }
 }
