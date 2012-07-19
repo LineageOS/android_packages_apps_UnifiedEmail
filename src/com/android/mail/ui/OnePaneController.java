@@ -506,6 +506,8 @@ public final class OnePaneController extends AbstractActivityController {
                                 R.string.undo,
                                 true,  /* replaceVisibleToast */
                                 op);
+                    } else {
+                        mActivity.setPendingToastOperation(op);
                     }
                     break;
             }

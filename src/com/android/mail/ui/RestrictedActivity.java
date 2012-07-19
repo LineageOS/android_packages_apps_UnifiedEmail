@@ -195,4 +195,8 @@ public interface RestrictedActivity {
      * @see Activity#onOptionsItemSelected(MenuItem)
      */
     boolean onOptionsItemSelected(MenuItem item);
+
+    void setPendingToastOperation(ToastBarOperation op);
+
+    ToastBarOperation getPendingToastOperation();
 }
