@@ -19,7 +19,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="to" msgid="4392614766835725698">"Para"</string>
-    <string name="cc" msgid="7017720927911078193">"CC"</string>
+    <string name="cc" msgid="7017720927911078193">"Cc"</string>
     <string name="bcc" msgid="3098643138241111579">"Cco"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Asunto"</string>
     <string name="body_hint" msgid="4279864165439577668">"Redactar correo"</string>
@@ -252,7 +252,7 @@
     <string name="from_heading" msgid="8950294114718418954">"De:"</string>
     <string name="replyto_heading" msgid="2081358811894701297">"Responder a:"</string>
     <string name="to_heading" msgid="3219994961726691756">"Para:"</string>
-    <string name="cc_heading" msgid="8116221732072085180">"CC:"</string>
+    <string name="cc_heading" msgid="8116221732072085180">"Cc:"</string>
     <string name="bcc_heading" msgid="5528824453033598299">"Cco:"</string>
     <string name="show_images" msgid="1875700481186331432">"Mostrar imágenes"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Mostrar siempre imágenes de este remitente"</string>

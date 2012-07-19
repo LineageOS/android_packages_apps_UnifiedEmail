@@ -69,8 +69,7 @@
     <string name="forward" msgid="6822914459902983767">"Kirim semula"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Karang"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Tukar folder"</string>
-    <!-- no translation found for menu_manage_folders (6755623004628177492) -->
-    <skip />
+    <string name="menu_manage_folders" msgid="6755623004628177492">"Tetapan folder"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Folder"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Segerakkan &amp; beritahu"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Tetapan folder"</string>

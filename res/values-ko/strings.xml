@@ -69,8 +69,7 @@
     <string name="forward" msgid="6822914459902983767">"전달"</string>
     <string name="menu_compose" msgid="6274193058224230645">"편지쓰기"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"폴더 변경"</string>
-    <!-- no translation found for menu_manage_folders (6755623004628177492) -->
-    <skip />
+    <string name="menu_manage_folders" msgid="6755623004628177492">"폴더 설정"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"폴더"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"동기화 및 알림"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"폴더 설정"</string>
@@ -344,7 +343,7 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"선택하신 메일에 여러 계정이 포함되어 있어 이동할 수 없습니다."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <string name="ignore_spam_warning" msgid="1554651881128904262">"무시함. 신뢰할 수 있는 메일"</string>
+    <string name="ignore_spam_warning" msgid="1554651881128904262">"신뢰할 수 있는 메일입니다."</string>
     <string name="via_domain" msgid="380109230928079350">"<xliff:g id="VIADOMAIN">%1$s</xliff:g> 경유"</string>
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"시스템"</item>
