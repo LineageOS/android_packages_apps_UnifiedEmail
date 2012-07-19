@@ -25,7 +25,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -46,7 +45,6 @@ import com.android.mail.browse.SnippetTextView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.SearchRecentSuggestionsProvider;
-import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.LastSyncResult;
@@ -105,11 +103,6 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
             mActivity.invalidateOptionsMenu();
         }
     };
-    /**
-     * Whether the first navigation event should be ignored. The {@link #ignoreFirstNavigation(int)}
-     * method talks about why this is required.
-     */
-    private boolean mIgnoreFirstNavigation = true;
     private final boolean mShowConversationSubject;
     private TextView mFolderAccountName;
 

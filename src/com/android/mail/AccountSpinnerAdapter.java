@@ -335,21 +335,27 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
         }
         // Show dropdown portion.
-        View dropdown = showDropdown(convertView);
+        final View dropdown = showDropdown(convertView);
         switch (getType(position)) {
             case TYPE_DEAD_HEADER:
                 dropdown.findViewById(R.id.empty).setVisibility(View.VISIBLE);
                 return convertView;
             case TYPE_ACCOUNT:
-                // TODO(viki): Get real Inbox or Priority Inbox using the URI. Remove ugly hack.
-                bigText = "Inbox";
-                smallText = getAccountFolder(position);
-                color = getAccountColor(position);
+                final Account account = getAccount(position);
+                if (account == null) {
+                    bigText = "";
+                    smallText = "";
+                    color = 0;
+                } else {
+                    bigText = account.settings.defaultInboxName;
+                    smallText = account.name;
+                    color = account.color;
+                }
                 break;
             case TYPE_HEADER:
                 dropdown.findViewById(R.id.header).setVisibility(View.VISIBLE);
                 final String label = getCurrentAccountName();
-                TextView accountLabel = ((TextView) dropdown.findViewById(
+                final TextView accountLabel = ((TextView) dropdown.findViewById(
                         R.id.account_spinner_header_account));
                 if (accountLabel != null) {
                     accountLabel.setText(label);
@@ -404,35 +410,14 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     }
 
     /**
-     * Returns the name of the folder at the given position in the spinner.
-     * @param position
-     * @return the folder of the account at the given position.
-     */
-    private String getAccountFolder(int position) {
-        if (position >= mNumAccounts + 1) {
-            return "";
-        }
-        return mAllAccounts[position - 1].name;
-    }
-
-    /**
-     * Returns the color of the account (or zero, if none).
-     * @param position
-     * @return the folder of the account at the given position.
-     */
-    private int getAccountColor(int position) {
-        if (position >= mNumAccounts + 1) {
-            return 0;
-        }
-        return mAllAccounts[position - 1].color;
-    }
-
-    /**
      * Returns the account given position in the spinner.
      * @param position
      * @return the account at the given position.
      */
     private Account getAccount(int position) {
+        if (position >= mNumAccounts + 1) {
+            return null;
+        }
         return mAllAccounts[position - 1];
     }
 

@@ -29,7 +29,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,6 +73,15 @@ public class Settings implements Parcelable {
     public final boolean confirmArchive;
     public final boolean confirmSend;
     public final Uri defaultInbox;
+    /**
+     * The name of the default inbox: "Inbox" or "Priority Inbox", internationalized...
+     */
+    public final String defaultInboxName;
+    // If you find the need for more default Inbox information: ID or capabilities, then
+    // ask viki to replace the above two members with a single JSON object representing the default
+    // folder.  That should make all the information about the folder available without an
+    // explosion in the number of members.
+
     public final boolean forceReplyFromDefault;
     public final int maxAttachmentSize;
 
@@ -87,7 +95,8 @@ public class Settings implements Parcelable {
         confirmDelete = false;
         confirmArchive = false;
         confirmSend = false;
-        defaultInbox = null;
+        defaultInbox = Uri.EMPTY;
+        defaultInboxName = "";
         forceReplyFromDefault = false;
         maxAttachmentSize = 0;
     }
@@ -102,8 +111,8 @@ public class Settings implements Parcelable {
         confirmDelete = inParcel.readInt() != 0;
         confirmArchive = inParcel.readInt() != 0;
         confirmSend = inParcel.readInt() != 0;
-        final String inbox = inParcel.readString();
-        defaultInbox = !TextUtils.isEmpty(inbox) ? Uri.parse(inbox) : null;
+        defaultInbox = Utils.getValidUri(inParcel.readString());
+        defaultInboxName = inParcel.readString();
         forceReplyFromDefault = inParcel.readInt() != 0;
         maxAttachmentSize = inParcel.readInt();
     }
@@ -118,8 +127,9 @@ public class Settings implements Parcelable {
         confirmDelete = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN) != 0;
         confirmArchive = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN) != 0;
         confirmSend = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN) != 0;
-        final String inbox = cursor.getString(UIProvider.ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN);
-        defaultInbox = !TextUtils.isEmpty(inbox) ? Uri.parse(inbox) : null;
+        defaultInbox = Utils.getValidUri(
+                cursor.getString(UIProvider.ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN));
+        defaultInboxName = cursor.getString(UIProvider.ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN);
         forceReplyFromDefault = cursor.getInt(
                 UIProvider.ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN) != 0;
         maxAttachmentSize = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN);
@@ -136,21 +146,12 @@ public class Settings implements Parcelable {
         confirmDelete = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_DELETE);
         confirmArchive = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE);
         confirmSend = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_SEND);
-        defaultInbox = getValidUri(
+        defaultInbox = Utils.getValidUri(
                 json.optString(AccountColumns.SettingsColumns.DEFAULT_INBOX));
+        defaultInboxName = json.optString(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME);
         forceReplyFromDefault =
                 json.optBoolean(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT);
         maxAttachmentSize = json.getInt(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE);
-    }
-
-    /**
-     * Parse a string (possibly null or empty) into a URI. If the string is null or empty, null
-     * is returned back. Otherwise an empty URI is returned.
-     * @param uri
-     * @return a valid URI, possibly {@link android.net.Uri#EMPTY}
-     */
-    private static Uri getValidUri(String uri) {
-        return Utils.getValidUri(uri);
     }
 
     /**
@@ -177,6 +178,7 @@ public class Settings implements Parcelable {
             json.put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, confirmArchive);
             json.put(AccountColumns.SettingsColumns.CONFIRM_SEND, confirmSend);
             json.put(AccountColumns.SettingsColumns.DEFAULT_INBOX, defaultInbox);
+            json.put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, defaultInboxName);
             json.put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
                     forceReplyFromDefault);
             json.put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
@@ -246,6 +248,7 @@ public class Settings implements Parcelable {
         dest.writeInt(confirmArchive? 1 : 0);
         dest.writeInt(confirmSend? 1 : 0);
         dest.writeString(defaultInbox.toString());
+        dest.writeString(defaultInboxName);
         dest.writeInt(forceReplyFromDefault ? 1 : 0);
         dest.writeInt(maxAttachmentSize);
     }
