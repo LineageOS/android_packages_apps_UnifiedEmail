@@ -19,6 +19,7 @@ package com.android.mail;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -397,7 +398,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     static private void displayOrHide(View v, int resourceId, String toDisplay) {
         final TextView target = (TextView) v.findViewById(resourceId);
-        if (toDisplay.isEmpty()) {
+        if (TextUtils.isEmpty(toDisplay)) {
             target.setVisibility(View.GONE);
             return;
         }
