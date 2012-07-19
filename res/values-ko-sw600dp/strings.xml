@@ -20,6 +20,5 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="add_cc_label" msgid="6156834609108442458">"+ 참조/숨은참조"</string>
     <string name="add_bcc_label" msgid="7648769906379235693">"+ 숨은참조"</string>
-    <!-- no translation found for menu_manage_folders (7574962882483466700) -->
-    <skip />
+    <string name="menu_manage_folders" msgid="7574962882483466700">"폴더 관리"</string>
 </resources>

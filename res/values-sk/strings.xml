@@ -69,8 +69,7 @@
     <string name="forward" msgid="6822914459902983767">"Poslať ďalej"</string>
     <string name="menu_compose" msgid="6274193058224230645">"Napísať správu"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"Zmeniť priečinky"</string>
-    <!-- no translation found for menu_manage_folders (6755623004628177492) -->
-    <skip />
+    <string name="menu_manage_folders" msgid="6755623004628177492">"Nastavenia priečinka"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"Priečinky"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"Synchronizovať a upozorniť"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"Nastavenia priečinka"</string>
