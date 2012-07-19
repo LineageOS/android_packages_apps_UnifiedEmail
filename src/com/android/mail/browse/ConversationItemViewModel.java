@@ -33,7 +33,6 @@ import android.util.Pair;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.ConversationPersonalLevel;
 
 import java.util.ArrayList;
 
