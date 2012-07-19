@@ -316,4 +316,14 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public ErrorListener getErrorListener() {
         return null;
     }
+
+    @Override
+    public void setPendingToastOperation(ToastBarOperation op) {
+        // Do nothing.
+    }
+
+    @Override
+    public ToastBarOperation getPendingToastOperation() {
+        return null;
+    }
 }
