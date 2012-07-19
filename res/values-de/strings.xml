@@ -343,7 +343,7 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Verschieben nicht möglich, da mehrere Konten ausgewählt wurden."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignorieren und dieser E-Mail vertrauen"</string>
+    <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignorieren, dieser E-Mail vertrauen"</string>
     <string name="via_domain" msgid="380109230928079350">"über <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"System"</item>

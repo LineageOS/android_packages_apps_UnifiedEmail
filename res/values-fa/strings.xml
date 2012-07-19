@@ -69,8 +69,7 @@
     <string name="forward" msgid="6822914459902983767">"باز ارسال"</string>
     <string name="menu_compose" msgid="6274193058224230645">"نوشتن نامه"</string>
     <string name="menu_change_folders" msgid="1542713666608888717">"تغییر پوشه‌ها"</string>
-    <!-- no translation found for menu_manage_folders (6755623004628177492) -->
-    <skip />
+    <string name="menu_manage_folders" msgid="6755623004628177492">"تنظیمات پوشه"</string>
     <string name="folder_list_title" msgid="4276644062440415214">"پوشه‌ها"</string>
     <string name="manage_folders_subtitle" msgid="7702199674083260433">"همگام‌سازی و اعلان"</string>
     <string name="menu_folder_options" msgid="8897520487430647932">"تنظیمات پوشه"</string>
@@ -104,7 +103,7 @@
     <string name="attachment_application_vnd_ms_excel" msgid="5861224590731578901">"صفحه گسترده"</string>
     <string name="attachment_application_pdf" msgid="6922990425001131901">"PDF"</string>
     <string name="attachment_unknown" msgid="6005445955982153931">"فایل <xliff:g id="ATTACHMENTEXTENSION">%s</xliff:g>"</string>
-    <string name="preview_attachment" msgid="6934911143603455393">"پيش‌نمايش"</string>
+    <string name="preview_attachment" msgid="6934911143603455393">"پیش‌نمایش"</string>
     <string name="view_attachment" msgid="8744325060392671944">"مشاهده"</string>
     <string name="save_attachment" msgid="5360128849867863132">"ذخیره"</string>
     <string name="info_attachment" msgid="607849900865956536">"اطلاعات"</string>
@@ -312,7 +311,7 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"در انتظار همگام‌سازی"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"ایمیل شما به زودی نمایش داده می‌شود."</string>
     <string name="not_synced_title" msgid="794279749170198599">"حساب همگام نشد"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"این حساب برای همگام‌سازی به طور خودکار تنظیم نشده است."\n"برای یکبار همگام‌سازی نامه، "<b>"اکنون همگام‌سازی شود"</b>" را لمس کنید، یا برای تنظیم این حساب برای همگام‌سازی نامه به طور خودکار، "<b>"تنظیمات همگام‌سازی را تغییر دهید"</b>"."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"این حساب برای همگام‌سازی به طور خودکار تنظیم نشده است."\n"برای یک بار همگام‌سازی نامه، "<b>"اکنون همگام‌سازی شود"</b>" را لمس کنید، یا برای تنظیم این حساب برای همگام‌سازی نامه به طور خودکار، "<b>"تنظیمات همگام‌سازی را تغییر دهید"</b>"."</string>
     <string name="manual_sync" msgid="6743983544685622800">"اکنون همگام‌سازی شود"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"تغییر تنظیمات همگام‌سازی"</string>
     <string name="photo_view_placeholder_image" msgid="465734985000555852">"این مورد در حال حاضر در دسترس نیست. لطفاً بازخوانی کنید."</string>
