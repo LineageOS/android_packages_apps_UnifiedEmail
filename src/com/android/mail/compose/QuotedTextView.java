@@ -281,7 +281,9 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
             quotedText.append(String.format(resources.getString(R.string.cc_attribution),
                     Utils.cleanUpString(ccAddresses, true /* remove empty quotes */)));
             quotedText.append(HEADER_SEPARATOR);
+            quotedText.append(BLOCKQUOTE_BEGIN);
             quotedText.append(htmlText);
+            quotedText.append(BLOCKQUOTE_END);
             quotedText.append(QUOTE_END);
         }
         setQuotedText(quotedText);
@@ -326,6 +328,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     }
 
     public static int getQuotedTextOffset(String text) {
-        return text.indexOf(QuotedTextView.QUOTE_BEGIN);
+        return text.indexOf(QuotedTextView.HEADER_SEPARATOR)
+                + QuotedTextView.HEADER_SEPARATOR_LENGTH;
     }
 }
