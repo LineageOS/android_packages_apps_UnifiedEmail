@@ -160,7 +160,7 @@ public class ConversationPagerController implements OnPageChangeListener {
     public void onConversationSeen(Conversation conv) {
         // take the adapter out of singleton mode to begin loading the
         // other non-visible conversations
-        if (mPagerAdapter.isSingletonMode()) {
+        if (mPagerAdapter != null && mPagerAdapter.isSingletonMode()) {
             LogUtils.d(LOG_TAG, "IN pager adapter, finished loading primary conversation," +
                     " switching to cursor mode to load other conversations");
             mPagerAdapter.setSingletonMode(false);
