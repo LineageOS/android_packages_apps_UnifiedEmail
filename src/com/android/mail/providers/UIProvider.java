@@ -123,6 +123,7 @@ public class UIProvider {
             AccountColumns.SettingsColumns.CONFIRM_ARCHIVE,
             AccountColumns.SettingsColumns.CONFIRM_SEND,
             AccountColumns.SettingsColumns.DEFAULT_INBOX,
+            AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME,
             AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
             AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE
     };
@@ -161,8 +162,9 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 30;
     public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 31;
     public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 32;
-    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 33;
-    public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 34;
+    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN = 33;
+    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 34;
+    public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 35;
 
     public static final class AccountCapabilities {
         /**
@@ -468,6 +470,10 @@ public class UIProvider {
              * String folder containing the serialized default inbox folder for an account.
              */
             public static final String DEFAULT_INBOX = "default_inbox";
+            /**
+             * String containing the name of the default Inbox for this account
+             */
+            public static final String DEFAULT_INBOX_NAME = "default_inbox_name";
             /**
              * Integer column containing a non zero value if replies should always be sent from
              * a default address instead of a recipient.
