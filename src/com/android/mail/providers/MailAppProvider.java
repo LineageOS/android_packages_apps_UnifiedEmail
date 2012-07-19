@@ -268,6 +268,9 @@ public abstract class MailAppProvider extends ContentProvider
                         UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX)) {
                     builder.add(account.settings.defaultInbox);
                 } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME)) {
+                    builder.add(account.settings.defaultInboxName);
+                } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.SettingsColumns.SNAP_HEADERS)) {
                     builder.add(Integer.valueOf(account.settings.snapHeaders));
                 } else if (TextUtils.equals(column,

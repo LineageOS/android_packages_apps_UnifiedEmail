@@ -140,7 +140,6 @@ public class Account extends android.accounts.Account implements Parcelable {
      * URI for default recent folders for this account, if any.
      */
     public final Uri defaultRecentFolderListUri;
-
     /**
      * Settings object for this account.
      */
