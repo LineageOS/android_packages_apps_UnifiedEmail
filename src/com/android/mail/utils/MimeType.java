@@ -96,7 +96,11 @@ public class MimeType {
         mimetypeIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
-        Utils.setIntentDataAndTypeAndNormalize(mimetypeIntent, contentUri, contentType);
+        if (contentUri != null) {
+            Utils.setIntentDataAndTypeAndNormalize(mimetypeIntent, contentUri, contentType);
+        } else {
+            Utils.setIntentTypeAndNormalize(mimetypeIntent, contentType);
+        }
 
         PackageManager manager;
         // We need to catch the exception to make CanvasConversationHeaderView
