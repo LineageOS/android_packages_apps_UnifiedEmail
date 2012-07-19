@@ -79,7 +79,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     private Folder mCurrentFolder;
     private Context mContext;
 
-    private static final int TYPE_DEAD_HEADER = -1;
+    public static final int TYPE_DEAD_HEADER = -1;
     public static final int TYPE_ACCOUNT = 0;
     public static final int TYPE_HEADER = 1;
     public static final int TYPE_FOLDER = 2;
@@ -228,8 +228,19 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        // We use the position as the ID
-        return position;
+        final int type = getType(position);
+        switch (type) {
+            case TYPE_DEAD_HEADER:
+                // Fall-through
+            case TYPE_HEADER:
+                // Fall-through
+            case TYPE_ALL_FOLDERS:
+                return type;
+            case TYPE_ACCOUNT:
+                return getAccount(position).uri.hashCode();
+            default:
+                return mRecentFolderList.get(getRecentOffset(position)).uri.hashCode();
+        }
     }
 
     private String getFolderLabel() {
@@ -285,8 +296,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public boolean hasStableIds() {
-        // The account manager could add new accounts, so don't claim that the IDs are stable.
-        return false;
+        // The ID is the hash of the URI of the object.
+        return true;
     }
 
     @Override
@@ -430,7 +441,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public boolean isEnabled(int position) {
         // Don't want the user selecting the header.
         final int type = getType(position);
-        return type != TYPE_DEAD_HEADER && type != TYPE_HEADER;
+        return type != TYPE_HEADER;
     }
 
     @Override
