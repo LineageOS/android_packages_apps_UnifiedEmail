@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MessageInfo {
+    public static String SENDER_LIST_TOKEN_ELIDED = " .. ";
     private static final String MESSAGE_READ = "msg_read";
     private static final String MESSAGE_STARRED = "msg_starred";
     private static final String MESSAGE_SENDER = "msg_sender";

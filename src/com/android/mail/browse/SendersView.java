@@ -36,6 +36,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
+import com.android.mail.providers.MessageInfo;
 import com.android.mail.utils.Utils;
 
 import java.util.regex.Pattern;
@@ -102,9 +103,18 @@ public class SendersView extends TextView {
     private void format(ConversationItemViewModel header, ConversationInfo conversationInfo) {
         SpannableString[] displays = new SpannableString[conversationInfo.messageCount];
         String display;
+        boolean isElided;
+        String sender;
         for (int i = 0; i < conversationInfo.messageCount; i++) {
-            display = parseSender(conversationInfo.messageInfos.get(i).sender);
-            if (i < conversationInfo.messageCount - 1) {
+            sender = conversationInfo.messageInfos.get(i).sender;
+            isElided = TextUtils.equals(sender, MessageInfo.SENDER_LIST_TOKEN_ELIDED);
+            if (!isElided) {
+                display = parseSender(sender);
+            } else {
+                display = sender;
+            }
+            if (i < conversationInfo.messageCount - 1 && !isElided
+                    && !isNextElided(conversationInfo, i)) {
                 display = display.concat(", ");
             }
             displays[i] = new SpannableString(display);
@@ -114,6 +124,12 @@ public class SendersView extends TextView {
             }
         }
         header.styledSenders = displays;
+    }
+
+    private boolean isNextElided(ConversationInfo conversationInfo, int i) {
+        return (i+1 < conversationInfo.messageCount
+                && conversationInfo.messageInfos.get(i+1).sender
+                        .equals(MessageInfo.SENDER_LIST_TOKEN_ELIDED));
     }
 
     private StyleSpan getUnreadStyleSpan() {
@@ -133,7 +149,7 @@ public class SendersView extends TextView {
             }
             return name;
         }
-        return "";
+        return sender;
     }
 
     private void formatDefault(ConversationItemViewModel header, String sendersString) {
