@@ -253,6 +253,11 @@ public class BaseWidgetProvider extends AppWidgetProvider {
      */
     public static void updateWidget(Context context, int appWidgetId, Account account,
                 Folder folder) {
+        if (account == null || folder == null) {
+            LogUtils.e(LOG_TAG,
+                    "Missing account or folder.  account: %s folder %s", account, folder);
+            return;
+        }
         final Intent updateWidgetIntent = new Intent(ACTION_UPDATE_WIDGET);
 
         updateWidgetIntent.setType(account.mimeType);
