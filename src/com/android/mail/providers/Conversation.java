@@ -24,7 +24,11 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.android.mail.providers.UIProvider.ConversationColumns;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableList;
+
+import org.json.JSONException;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -63,6 +67,7 @@ public class Conversation implements Parcelable {
     /**
      * @see UIProvider.ConversationColumns#SENDER_INFO
      */
+    @Deprecated
     public String senders;
     /**
      * @see UIProvider.ConversationColumns#NUM_MESSAGES
@@ -124,18 +129,23 @@ public class Conversation implements Parcelable {
      * @see UIProvider.ConversationColumns#ACCOUNT_URI
      */
     public Uri accountUri;
+    /**
+     * @see UIProvider.ConversationColumns#CONVERSATION_INFO
+     */
+    public ConversationInfo conversationInfo;
 
     // Used within the UI to indicate the adapter position of this conversation
     public transient int position;
-    // Used within the UI to indicate that a Conversation should be removed from the
-    // ConversationCursor when executing an update, e.g. the the Conversation is no longer
-    // in the ConversationList for the current folder, that is it's now in some other folder(s)
+    // Used within the UI to indicate that a Conversation should be removed from
+    // the ConversationCursor when executing an update, e.g. the the
+    // Conversation is no longer in the ConversationList for the current folder,
+    // that is it's now in some other folder(s)
     public transient boolean localDeleteOnUpdate;
 
     // Constituents of convFlags below
-    // Flag indicating that the item has been deleted, but will continue being shown in the list
-    // Delete/Archive of a mostly-dead item will NOT propagate the delete/archive, but WILL remove
-    // the item from the cursor
+    // Flag indicating that the item has been deleted, but will continue being
+    // shown in the list Delete/Archive of a mostly-dead item will NOT propagate
+    // the delete/archive, but WILL remove the item from the cursor
     public static final int FLAG_MOSTLY_DEAD = 1 << 0;
 
     /** An immutable, empty conversation list */
@@ -223,11 +233,14 @@ public class Conversation implements Parcelable {
     public static final Uri MOVE_CONVERSATIONS_URI = Uri.parse("content://moveconversations");
 
     /**
-     * The columns that need to be updated to change the folders for a conversation.
+     * The columns that need to be updated to change the folders for a
+     * conversation.
      */
     public static final String[] UPDATE_FOLDER_COLUMNS = new String[] {
             ConversationColumns.FOLDER_LIST, ConversationColumns.RAW_FOLDERS
     };
+
+    private static final String LOG_TAG = LogTag.getLogTag();
 
     public Conversation(Cursor cursor) {
         if (cursor != null) {
@@ -241,10 +254,8 @@ public class Conversation implements Parcelable {
             }
             snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
             hasAttachments = cursor.getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) != 0;
-            String messageList = cursor
-                    .getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN);
+            String messageList = cursor.getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN);
             messageListUri = !TextUtils.isEmpty(messageList) ? Uri.parse(messageList) : null;
-            senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
             numMessages = cursor.getInt(UIProvider.CONVERSATION_NUM_MESSAGES_COLUMN);
             numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
             sendingState = cursor.getInt(UIProvider.CONVERSATION_SENDING_STATE_COLUMN);
@@ -263,6 +274,14 @@ public class Conversation implements Parcelable {
             accountUri = !TextUtils.isEmpty(account) ? Uri.parse(account) : null;
             position = NO_POSITION;
             localDeleteOnUpdate = false;
+            senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
+            try {
+                conversationInfo = ConversationInfo.fromString(cursor
+                        .getString(UIProvider.CONVERSATION_INFO_COLUMN));
+            } catch (JSONException e) {
+                LogUtils.w(LOG_TAG, e,
+                        "Unable to instantiate ConversationInfo. Try to continue anyway");
+            }
         }
     }
 
@@ -306,7 +325,7 @@ public class Conversation implements Parcelable {
     @Override
     public boolean equals(Object o) {
         if (o instanceof Conversation) {
-            Conversation conv = (Conversation)o;
+            Conversation conv = (Conversation) o;
             return conv.uri.equals(uri);
         }
         return false;
@@ -332,9 +351,10 @@ public class Conversation implements Parcelable {
     }
 
     /**
-     * Returns true if the URI of the conversation specified as the needle was found in the
-     * collection of conversations specified as the haystack. False otherwise. This method is safe
-     * to call with nullarguments.
+     * Returns true if the URI of the conversation specified as the needle was
+     * found in the collection of conversations specified as the haystack. False
+     * otherwise. This method is safe to call with nullarguments.
+     *
      * @param haystack
      * @param needle
      * @return true if the needle was found in the haystack, false otherwise.
@@ -358,8 +378,9 @@ public class Conversation implements Parcelable {
     }
 
     /**
-     * Returns a collection of a single conversation. This method always returns a valid collection
-     * even if the input conversation is null.
+     * Returns a collection of a single conversation. This method always returns
+     * a valid collection even if the input conversation is null.
+     *
      * @param in a conversation, possibly null.
      * @return a collection of the conversation.
      */
@@ -370,6 +391,7 @@ public class Conversation implements Parcelable {
 
     /**
      * Create a human-readable string of all the conversations
+     *
      * @param collection Any collection of conversations
      * @return string with a human readable representation of the conversations.
      */
@@ -378,7 +400,8 @@ public class Conversation implements Parcelable {
         int count = 0;
         for (final Conversation c : collection) {
             count++;
-            // Indent the conversations to make them easy to read in debug output.
+            // Indent the conversations to make them easy to read in debug
+            // output.
             out.append("      " + count + ": " + c.toString() + "\n");
         }
         return out.toString();

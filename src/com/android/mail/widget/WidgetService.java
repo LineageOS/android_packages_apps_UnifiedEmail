@@ -321,8 +321,9 @@ public class WidgetService extends RemoteViewsService {
                 }
 
                 Conversation conversation = new Conversation(mConversationCursor);
-                SendersView.SendersInfo sendersInfo = new SendersView.SendersInfo(
-                        conversation.senders);
+                String senders = conversation.conversationInfo != null ?
+                        conversation.conversationInfo.sendersInfo : conversation.senders;
+                SendersView.SendersInfo sendersInfo = new SendersView.SendersInfo(senders);
                 mSenderFormatVersion = sendersInfo.version;
                 String sendersString = sendersInfo.text;
                 // Split the senders and status from the instructions.
