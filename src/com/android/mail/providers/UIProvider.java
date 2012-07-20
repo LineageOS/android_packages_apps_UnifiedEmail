@@ -726,7 +726,7 @@ public class UIProvider {
         ConversationColumns.MESSAGE_LIST_URI,
         ConversationColumns.SUBJECT,
         ConversationColumns.SNIPPET,
-        ConversationColumns.SENDER_INFO,
+        ConversationColumns.CONVERSATION_INFO,
         ConversationColumns.DATE_RECEIVED_MS,
         ConversationColumns.HAS_ATTACHMENTS,
         ConversationColumns.NUM_MESSAGES,
@@ -743,7 +743,8 @@ public class UIProvider {
         ConversationColumns.PHISHING,
         ConversationColumns.MUTED,
         ConversationColumns.COLOR,
-        ConversationColumns.ACCOUNT_URI
+        ConversationColumns.ACCOUNT_URI,
+        ConversationColumns.SENDER_INFO
     };
 
     // These column indexes only work when the caller uses the
@@ -753,7 +754,7 @@ public class UIProvider {
     public static final int CONVERSATION_MESSAGE_LIST_URI_COLUMN = 2;
     public static final int CONVERSATION_SUBJECT_COLUMN = 3;
     public static final int CONVERSATION_SNIPPET_COLUMN = 4;
-    public static final int CONVERSATION_SENDER_INFO_COLUMN = 5;
+    public static final int CONVERSATION_INFO_COLUMN = 5;
     public static final int CONVERSATION_DATE_RECEIVED_MS_COLUMN = 6;
     public static final int CONVERSATION_HAS_ATTACHMENTS_COLUMN = 7;
     public static final int CONVERSATION_NUM_MESSAGES_COLUMN = 8;
@@ -771,6 +772,7 @@ public class UIProvider {
     public static final int CONVERSATION_MUTED_COLUMN = 20;
     public static final int CONVERSATION_COLOR_COLUMN = 21;
     public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 22;
+    public static final int CONVERSATION_SENDER_INFO_COLUMN = 23;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -825,10 +827,14 @@ public class UIProvider {
          */
         public static final String SNIPPET = "snippet";
         /**
-         * This string column contains the sender info string for a
-         * conversation.
+         * @deprecated
          */
         public static final String SENDER_INFO = "senderInfo";
+        /**
+         * This string column contains the string representation of the
+         * ConversationInfo JSON object for a conversation.
+         */
+        public static final String CONVERSATION_INFO = "conversationInfo";
         /**
          * This long column contains the time in ms of the latest update to a
          * conversation.
