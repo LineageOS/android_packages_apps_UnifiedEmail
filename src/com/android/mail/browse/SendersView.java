@@ -20,7 +20,9 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
@@ -34,7 +36,6 @@ import com.android.mail.R;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
-import com.android.mail.providers.MessageInfo;
 import com.android.mail.utils.Utils;
 
 import java.util.regex.Pattern;
@@ -49,6 +50,7 @@ public class SendersView extends TextView {
     private ForegroundColorSpan sLightTextStyle;
     private int DRAFT_TEXT_COLOR;
     private int LIGHT_TEXT_COLOR;
+    private StyleSpan sUnreadStyleSpan;
 
     public SendersView(Context context) {
         this(context, null);
@@ -98,11 +100,27 @@ public class SendersView extends TextView {
     }
 
     private void format(ConversationItemViewModel header, ConversationInfo conversationInfo) {
-        String[] senders = new String[conversationInfo.messageCount];
-        for (int i = 0; i < senders.length; i++) {
-            senders[i] = parseSender(conversationInfo.messageInfos.get(i).sender);
+        SpannableString[] displays = new SpannableString[conversationInfo.messageCount];
+        String display;
+        for (int i = 0; i < conversationInfo.messageCount; i++) {
+            display = parseSender(conversationInfo.messageInfos.get(i).sender);
+            if (i < conversationInfo.messageCount - 1) {
+                display = display.concat(", ");
+            }
+            displays[i] = new SpannableString(display);
+            if (!conversationInfo.messageInfos.get(i).read) {
+                displays[i].setSpan(getUnreadStyleSpan(), 0, displays[i].length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
         }
-        generateSenderFragments(header, senders);
+        header.styledSenders = displays;
+    }
+
+    private StyleSpan getUnreadStyleSpan() {
+        if (sUnreadStyleSpan == null) {
+            sUnreadStyleSpan = new StyleSpan(Typeface.BOLD);
+        }
+        return sUnreadStyleSpan;
     }
 
     private String parseSender(String sender) {
