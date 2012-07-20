@@ -166,6 +166,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private int mLastTouchX;
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
+    private static CharSequence sDraftSingularString;
+    private static CharSequence sDraftPluralString;
+    private static ForegroundColorSpan sDraftsStyleSpan;
     private static Bitmap MORE_FOLDERS;
 
     static {
@@ -708,12 +711,12 @@ public class ConversationItemView extends View implements SwipeableItemView {
         if (!ConversationItemViewCoordinates.displaySendersInline(mMode)) {
             sendersY += totalWidth <= mSendersWidth ? mCoordinates.sendersLineHeight / 2 : 0;
         }
-        totalWidth = ellipse(fixedWidth, sendersY);
         if (mHeader.styledSenders != null) {
             totalWidth = ellipsizeStyledSenders(fixedWidth, sendersY);
             mHeader.sendersDisplayLayout = new StaticLayout(mHeader.styledSendersString, sPaint,
                     mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
         } else {
+            totalWidth = ellipsize(fixedWidth, sendersY);
             mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
                     mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
         }
@@ -727,6 +730,53 @@ public class ConversationItemView extends View implements SwipeableItemView {
         pauseTimer(PERF_TAG_CALCULATE_COORDINATES);
     }
 
+    // The rules for displaying message info are as follows:
+    // 1) Any DRAFT text is always preceded by ", "
+    // 2) Any COUNT of messages > 1 is always preceded by " "
+    // 3) If there is a COUNT > 1, it is always displayed before DRAFT text
+    private SpannableStringBuilder createMessageInfo() {
+        SpannableStringBuilder messageInfo = new SpannableStringBuilder();
+        if (mHeader.conversation.conversationInfo != null) {
+            int count = mHeader.conversation.conversationInfo.messageCount;
+            int draftCount = mHeader.conversation.conversationInfo.draftCount;
+            if (count > 0 || draftCount <= 0) {
+                messageInfo.append(" ");
+            }
+            if (count > 0) {
+                messageInfo.append(count + "");
+            }
+            if (draftCount > 0) {
+                getDraftResources();
+                // TODO: turn ", " into a resource
+                messageInfo.append(", ");
+                SpannableStringBuilder draftString = new SpannableStringBuilder();
+                if (draftCount == 1) {
+                    draftString.append(sDraftSingularString);
+                } else {
+                    // TODO: turn () into a resource.
+                    draftString.append(sDraftPluralString + " (" + draftCount + ")");
+                }
+                draftString.setSpan(CharacterStyle.wrap(sDraftsStyleSpan), 0, draftString.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                messageInfo.append(draftString);
+            }
+        }
+        return messageInfo;
+    }
+
+    private void getDraftResources() {
+        Resources res = getContext().getResources();
+        if (sDraftSingularString == null) {
+            sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
+            sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
+            sDraftsStyleSpan = new ForegroundColorSpan(res.getColor(R.color.drafts));
+        }
+    }
+
+    // The rules for displaying ellipsized senders are as follows:
+    // 1) If there is message info (either a COUNT or DRAFT info to display), it MUST be shown
+    // 2) If senders do not fit, ellipsize the last one that does fit, and stop
+    // appending new senders
     private int ellipsizeStyledSenders(int fixedWidth, int sendersY) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         int totalWidth = 0;
@@ -734,7 +784,16 @@ public class ConversationItemView extends View implements SwipeableItemView {
         boolean ellipsize = false;
         String ellipsizedText;
         int width;
+        SpannableStringBuilder messageInfoString = createMessageInfo();
+        // Paint the message info string to see if we lose space.
+        float messageInfoWidth = sPaint.measureText(messageInfoString.toString());
+        totalWidth += messageInfoWidth;
+
         for (SpannableString sender : mHeader.styledSenders) {
+            // No more width available, we'll only show fixed fragments.
+            if (ellipsize) {
+                break;
+            }
             // New line and ellipsize text if needed.
             ellipsizedText = null;
             width = (int) sPaint.measureText(sender.toString());
@@ -758,7 +817,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
                         ellipsize = true;
                     }
                 }
-
                 if (ellipsize) {
                     width = mSendersWidth - totalWidth;
                     // No more new line, we have to reserve width for fixed
@@ -781,11 +839,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
             }
             builder.append(fragmentDisplayText);
         }
+        if (messageInfoString.length() > 0) {
+            builder.append(messageInfoString);
+        }
         mHeader.styledSendersString = builder;
         return totalWidth;
     }
 
-    private int ellipse(int fixedWidth, int sendersY) {
+    private int ellipsize(int fixedWidth, int sendersY) {
         int totalWidth = 0;
         int currentLine = 1;
         boolean ellipsize = false;

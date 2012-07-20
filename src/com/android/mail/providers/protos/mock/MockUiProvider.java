@@ -109,15 +109,19 @@ public final class MockUiProvider extends ContentProvider {
                         createFolderDetailsMap(11, "zeroChild1", 0, 0)));
 
         Map<String, Object> conv0 = createConversationDetailsMap("zeroConv0".hashCode(),
-                "zeroConv0", 1);
+                "zeroConv0", 1, 1, 0);
         builder.put(conv0.get(ConversationColumns.URI).toString(),
                 ImmutableList.of(conv0));
         Map<String, Object> conv1 = createConversationDetailsMap("zeroConv1".hashCode(),
-                "zeroConv1", 1);
+                "zeroConv1", 1, 5, 1);
         builder.put(conv1.get(ConversationColumns.URI).toString(),
                 ImmutableList.of(conv1));
+        Map<String, Object> conv2 = createConversationDetailsMap("zeroConv2".hashCode(),
+                "zeroConv2", 1, 5, 2);
+        builder.put(conv2.get(ConversationColumns.URI).toString(),
+                ImmutableList.of(conv2));
         builder.put(folderDetailsMap0.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
-                ImmutableList.of(conv0, conv1));
+                ImmutableList.of(conv0, conv1, conv2));
 
         Map<String, Object> message0 = createMessageDetailsMap("zeroConv0".hashCode(), "zeroConv0",
                 1, false);
@@ -151,33 +155,33 @@ public final class MockUiProvider extends ContentProvider {
         builder.put(accountDetailsMap1.get(AccountColumns.FOLDER_LIST_URI).toString(),
                 ImmutableList.of(folderDetailsMap2, folderDetailsMap3));
 
-        Map<String, Object> conv2 = createConversationDetailsMap("zeroConv2".hashCode(),
-                "zeroConv2", 0);
-        builder.put(conv2.get(ConversationColumns.URI).toString(),
-                ImmutableList.of(conv2));
         Map<String, Object> conv3 = createConversationDetailsMap("zeroConv3".hashCode(),
-                "zeroConv3", 0);
+                "zeroConv3", 0, 1, 0);
         builder.put(conv3.get(ConversationColumns.URI).toString(),
                 ImmutableList.of(conv3));
+        Map<String, Object> conv4 = createConversationDetailsMap("zeroConv4".hashCode(),
+                "zeroConv4", 0, 1, 0);
+        builder.put(conv4.get(ConversationColumns.URI).toString(),
+                ImmutableList.of(conv4));
         builder.put(folderDetailsMap2.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
-                ImmutableList.of(conv2, conv3));
+                ImmutableList.of(conv3, conv4));
 
-        Map<String, Object> message2 = createMessageDetailsMap("zeroConv2".hashCode(), "zeroConv2",
+        Map<String, Object> message2 = createMessageDetailsMap("zeroConv3".hashCode(), "zeroConv3",
                 0, true);
         builder.put(message2.get(MessageColumns.URI).toString(), ImmutableList.of(message2));
-        builder.put(conv2.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
+        builder.put(conv3.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message2));
-        Map<String, Object> message3 = createMessageDetailsMap("zeroConv3".hashCode(), "zeroConv3",
+        Map<String, Object> message3 = createMessageDetailsMap("zeroConv4".hashCode(), "zeroConv4",
                 0, true);
         builder.put(message3.get(MessageColumns.URI).toString(), ImmutableList.of(message3));
-        builder.put(conv3.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
+        builder.put(conv4.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message3));
 
         MOCK_QUERY_RESULTS = builder.build();
     }
 
     private static Map<String, Object> createConversationDetailsMap(int conversationId,
-            String subject, int hasAttachments) {
+            String subject, int hasAttachments, int messageCount, int draftCount) {
         final String conversationUri = "content://" + AUTHORITY + "/conversation/" + conversationId;
         Map<String, Object> conversationMap = Maps.newHashMap();
         conversationMap.put(BaseColumns._ID, Long.valueOf(conversationId));
@@ -194,7 +198,8 @@ public final class MockUiProvider extends ContentProvider {
         conversationMap.put(ConversationColumns.SENDING_STATE, 1);
         conversationMap.put(ConversationColumns.READ, 0);
         conversationMap.put(ConversationColumns.STARRED, 0);
-        conversationMap.put(ConversationColumns.CONVERSATION_INFO, generateConversationInfo());
+        conversationMap.put(ConversationColumns.CONVERSATION_INFO,
+                generateConversationInfo(messageCount, draftCount));
         Folder[] folders = new Folder[3];
         StringBuilder foldersString = new StringBuilder();
         for (int i = 0; i < folders.length; i++) {
@@ -226,12 +231,19 @@ public final class MockUiProvider extends ContentProvider {
         return conversationMap;
     }
 
-    private static String generateConversationInfo() {
-        ConversationInfo info = new ConversationInfo(2, 0, "first", "firstUnread", "last", null);
-        MessageInfo msg1 = new MessageInfo(true, false, "Test1 <testsender@test.com.");
-        MessageInfo msg2 = new MessageInfo(false, false, "Test2 <testsender2@test.com>");
-        info.addMessage(msg1);
-        info.addMessage(msg2);
+    private static String generateConversationInfo(int messageCount, int draftCount) {
+        ConversationInfo info = new ConversationInfo(messageCount, draftCount, "first",
+                "firstUnread", "last", null);
+        for (int i = 0; i < messageCount; i++) {
+            if (i % 2 == 0) {
+                info.addMessage(new MessageInfo(false, false, i + "Test <testsender@test.com>"));
+            } else if (i % 3 == 0) {
+                info.addMessage(new MessageInfo(true, false, i + "sender@test.com"));
+            } else {
+                info.addMessage(new MessageInfo(false, false,
+                        MessageInfo.SENDER_LIST_TOKEN_ELIDED));
+            }
+        }
         try {
             return ConversationInfo.toString(info);
         } catch (JSONException e) {
