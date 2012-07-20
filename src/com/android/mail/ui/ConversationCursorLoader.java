@@ -61,7 +61,7 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
         if (DEBUG) {
             Log.d(TAG, "Loaders: ");
             for (ConversationCursorLoader loader: sLoaders) {
-                Log.d(TAG, " >> " + loader.mName + " (" + mUri + ")");
+                Log.d(TAG, " >> " + loader.mName + " (" + loader.mUri + ")");
             }
         }
     }
