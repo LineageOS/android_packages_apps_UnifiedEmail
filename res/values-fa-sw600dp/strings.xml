@@ -18,7 +18,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="add_cc_label" msgid="6156834609108442458">"+ گیرنده کپی/گیرنده مخفی"</string>
+    <string name="add_cc_label" msgid="6156834609108442458">"+ گیرندهٔ کپی/گیرنده مخفی"</string>
     <string name="add_bcc_label" msgid="7648769906379235693">"+ گیرنده مخفی"</string>
     <string name="menu_manage_folders" msgid="7574962882483466700">"مدیریت پوشه‌ها"</string>
 </resources>
