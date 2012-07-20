@@ -17,6 +17,10 @@
 
 package com.android.mail.browse;
 
+import com.android.mail.providers.Attachment;
+
+import java.util.List;
+
 public interface AttachmentViewInterface {
 
     /**
@@ -38,4 +42,9 @@ public interface AttachmentViewInterface {
      * Called in {@link AttachmentActionHandler#updateStatus}.
      */
     public void onUpdateStatus();
+
+    /**
+     * Returns the list of attachments of which this view is a part.
+     */
+    public List<Attachment> getAttachments();
 }

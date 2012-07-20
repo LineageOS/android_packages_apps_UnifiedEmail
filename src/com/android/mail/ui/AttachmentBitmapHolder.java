@@ -30,4 +30,5 @@ public interface AttachmentBitmapHolder {
     public void setThumbnail(Bitmap result);
     public void setThumbnailToDefault();
     public ContentResolver getResolver();
+    public boolean bitmapSetToDefault();
 }

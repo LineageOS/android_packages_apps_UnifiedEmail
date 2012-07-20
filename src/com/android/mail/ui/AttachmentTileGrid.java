@@ -38,6 +38,7 @@ public class AttachmentTileGrid extends FrameLayout {
     private Uri mAttachmentsListUri;
     private final int mTileMinSize;
     private int mColumnCount;
+    private List<Attachment> mAttachments;
 
     public AttachmentTileGrid(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -51,6 +52,7 @@ public class AttachmentTileGrid extends FrameLayout {
      */
     public void configureGrid(Uri attachmentsListUri, List<Attachment> list) {
         mAttachmentsListUri = attachmentsListUri;
+        mAttachments = list;
         // Adding tiles to grid and filling in attachment information
         int index = 0;
         for (Attachment attachment : list) {
@@ -177,5 +179,9 @@ public class AttachmentTileGrid extends FrameLayout {
         // Accessibility Manager needs to find alternative content description to speak.
         // Here, we ignore the default behavior, since we don't want to let the manager speak
         // a contact name for the tile next to the INVISIBLE tile.
+    }
+
+    public List<Attachment> getAttachments() {
+        return mAttachments;
     }
 }
