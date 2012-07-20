@@ -467,7 +467,7 @@ public class UIProvider {
              */
             public static final String CONFIRM_SEND = "confirm_send";
             /**
-             * String folder containing the serialized default inbox folder for an account.
+             * String containing the URI for the default inbox for this account.
              */
             public static final String DEFAULT_INBOX = "default_inbox";
             /**

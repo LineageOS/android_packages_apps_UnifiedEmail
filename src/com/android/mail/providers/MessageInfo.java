@@ -36,6 +36,7 @@ public class MessageInfo {
     public static JSONObject toJSON(MessageInfo info) throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put(MESSAGE_READ, info.read);
+        obj.put(MESSAGE_STARRED, info.starred);
         obj.put(MESSAGE_SENDER, info.sender);
         return obj;
     }

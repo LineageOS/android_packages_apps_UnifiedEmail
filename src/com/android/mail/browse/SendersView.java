@@ -33,6 +33,8 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.ConversationInfo;
+import com.android.mail.providers.MessageInfo;
 import com.android.mail.utils.Utils;
 
 import java.util.regex.Pattern;
@@ -77,17 +79,43 @@ public class SendersView extends TextView {
         Conversation conversation = header.conversation;
         String sendersInfo = conversation.conversationInfo != null ?
                 conversation.conversationInfo.sendersInfo : header.conversation.senders;
-        SendersInfo info = new SendersInfo(sendersInfo);
-        mFormatVersion = info.version;
-        switch (mFormatVersion) {
-            case MERGED_FORMATTING:
-                formatMerged(header, info.text, isUnread, mode);
-                break;
-            case DEFAULT_FORMATTING:
-            default:
-                formatDefault(header, info.text);
-                break;
+        if (!TextUtils.isEmpty(sendersInfo)) {
+            SendersInfo info = new SendersInfo(sendersInfo);
+            mFormatVersion = info.version;
+            switch (mFormatVersion) {
+                case MERGED_FORMATTING:
+                    formatMerged(header, info.text, isUnread, mode);
+                    break;
+                case DEFAULT_FORMATTING:
+                default:
+                    formatDefault(header, info.text);
+                    break;
+            }
+        } else {
+            // We have the properly formatted conversationinfo. Parse and display!
+            format(header, conversation.conversationInfo);
         }
+    }
+
+    private void format(ConversationItemViewModel header, ConversationInfo conversationInfo) {
+        String[] senders = new String[conversationInfo.messageCount];
+        for (int i = 0; i < senders.length; i++) {
+            senders[i] = parseSender(conversationInfo.messageInfos.get(i).sender);
+        }
+        generateSenderFragments(header, senders);
+    }
+
+    private String parseSender(String sender) {
+        Rfc822Token[] senderTokens = Rfc822Tokenizer.tokenize(sender);
+        String name;
+        if (senderTokens != null && senderTokens.length > 0) {
+            name = senderTokens[0].getName();
+            if (TextUtils.isEmpty(name)) {
+                name = senderTokens[0].getAddress();
+            }
+            return name;
+        }
+        return "";
     }
 
     private void formatDefault(ConversationItemViewModel header, String sendersString) {
@@ -105,7 +133,11 @@ public class SendersView extends TextView {
                 namesOnly[i] = display;
             }
         }
-        header.sendersText = TextUtils.join(Address.ADDRESS_DELIMETER + " ", namesOnly);
+        generateSenderFragments(header, namesOnly);
+    }
+
+    private void generateSenderFragments(ConversationItemViewModel header, String[] names) {
+        header.sendersText = TextUtils.join(Address.ADDRESS_DELIMETER + " ", names);
         header.addSenderFragment(0, header.sendersText.length(), sNormalTextStyle, true);
     }
 

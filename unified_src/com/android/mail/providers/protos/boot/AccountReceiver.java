@@ -15,21 +15,12 @@
  */
 package com.android.mail.providers.protos.boot;
 
-import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.protos.mock.MockUiProvider;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 
 public class AccountReceiver extends BroadcastReceiver {
-
-    private static final Uri GMAIL_ACCOUNTS_URI =
-            Uri.parse("content://com.android.gmail.ui/accounts");
-
-    private static final Uri EMAIL_ACCOUNTS_URI =
-            Uri.parse("content://com.android.email.provider/uiaccts");
-
     /**
      * Intent used to notify interested parties that the Mail provider has been created.
      */
@@ -39,8 +30,5 @@ public class AccountReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         MockUiProvider.initializeMockProvider();
-
-        MailAppProvider.addAccountsForUriAsync(GMAIL_ACCOUNTS_URI);
-        MailAppProvider.addAccountsForUriAsync(EMAIL_ACCOUNTS_URI);
     }
 }
