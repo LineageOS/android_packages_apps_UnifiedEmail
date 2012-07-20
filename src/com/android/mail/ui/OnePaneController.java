@@ -322,11 +322,12 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean onBackPressed() {
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.FOLDER_LIST) {
-            if (getFolderListFragment().showingHierarchy() && mFolder != null) {
+            Folder hierarchyFolder = getHierarchyFolder();
+            if (getFolderListFragment().showingHierarchy() && hierarchyFolder != null) {
                 // If we are showing the folder list and the user is exploring
                 // the children of a single parent folder,
                 // back should display the parent folder's parent and siblings.
-                goUpFolderHierarchy(getHierarchyFolder());
+                goUpFolderHierarchy(hierarchyFolder);
             } else {
                 // We are at the topmost list of folders; just go back to
                 // whatever conv list we were viewing before.
@@ -340,14 +341,6 @@ public final class OnePaneController extends AbstractActivityController {
                 // If the user got here by navigating via the folder list, back
                 // should bring them back to the folder list.
                 mViewMode.enterFolderListMode();
-                if (mFolder != null && mFolder.parent != null) {
-                    // If there was a parent folder, show the parent and
-                    // siblings of the current folder for which we are viewing
-                    // the conversation list.
-                    setHierarchyFolder(mFolder.parent);
-                } else {
-                    setHierarchyFolder(null);
-                }
                 mActivity.getFragmentManager().popBackStack(mLastFolderListTransactionId, 0);
             } else {
                 mLastFolderListTransactionId = INVALID_ID;
