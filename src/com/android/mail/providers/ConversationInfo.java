@@ -89,4 +89,10 @@ public class ConversationInfo {
         }
         return fromJSON(new JSONObject(inString));
     }
+
+    public void markRead(boolean read) {
+        for (MessageInfo msg : messageInfos) {
+            msg.markRead(read);
+        }
+    }
 }

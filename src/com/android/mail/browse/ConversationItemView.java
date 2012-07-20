@@ -558,6 +558,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         layoutSubjectSpans(isUnread);
 
         mHeader.sendersDisplayText = new SpannableStringBuilder();
+        mHeader.styledSendersString = new SpannableStringBuilder();
 
         // Parse senders fragments.
         mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode);
@@ -782,7 +783,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         int totalWidth = 0;
         int currentLine = 1;
         boolean ellipsize = false;
-        String ellipsizedText;
+        SpannableString ellipsizedText;
         int width;
         SpannableStringBuilder messageInfoString = createMessageInfo();
         // Paint the message info string to see if we lose space.
@@ -796,6 +797,11 @@ public class ConversationItemView extends View implements SwipeableItemView {
             }
             // New line and ellipsize text if needed.
             ellipsizedText = null;
+            CharacterStyle[] spans = sender.getSpans(0, sender.length(), CharacterStyle.class);
+            // There is only 1 character style span.
+            if (spans.length > 0) {
+                spans[0].updateDrawState(sPaint);
+            }
             width = (int) sPaint.measureText(sender.toString());
             if (!canFitFragment(totalWidth + width, currentLine, fixedWidth)) {
                 // The text is too long, new line won't help. We have to
@@ -824,9 +830,13 @@ public class ConversationItemView extends View implements SwipeableItemView {
                     if (currentLine == mCoordinates.sendersLineCount) {
                         width -= fixedWidth;
                     }
-                    ellipsizedText = TextUtils.ellipsize(sender, sPaint, width, TruncateAt.END)
-                            .toString();
-                    width = (int) sPaint.measureText(ellipsizedText);
+                    CharSequence ellipsizedSender = TextUtils.ellipsize(sender, sPaint, width,
+                            TruncateAt.END);
+                    ellipsizedText = new SpannableString(ellipsizedSender);
+                    if (spans.length > 0) {
+                        ellipsizedText.setSpan(CharacterStyle.wrap(spans[0]), 0, 0, 0);
+                    }
+                    width = (int) sPaint.measureText(ellipsizedText.toString());
                 }
             }
             totalWidth += width;

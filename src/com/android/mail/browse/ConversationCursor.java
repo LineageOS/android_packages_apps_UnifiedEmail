@@ -1558,7 +1558,7 @@ public final class ConversationCursor implements Cursor {
      * @param value the new value
      * @return the sequence number of the operation (for undo)
      */
-    private int updateValues(Context context, Collection<Conversation> conversations,
+    public int updateValues(Context context, Collection<Conversation> conversations,
             ContentValues values) {
         return apply(context,
                 getOperationsForConversations(conversations, ConversationOperation.UPDATE, values));

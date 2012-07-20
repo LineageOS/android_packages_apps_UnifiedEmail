@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -30,8 +31,10 @@ import android.widget.Toast;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
+import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
@@ -48,6 +51,8 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -254,10 +259,26 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      * marked unread.
      */
     private void markConversationsRead(boolean read) {
-        final Collection<Conversation> target = mSelectionSet.values();
-        mUpdater.updateConversation(target, ConversationColumns.READ, read);
+        final Collection<Conversation> targets = mSelectionSet.values();
+        ContentValues values;
+        ConversationInfo info;
+        for (Conversation target : targets) {
+            values = new ContentValues();
+            values.put(ConversationColumns.READ, read);
+            info = target.conversationInfo;
+            if (info != null) {
+                try {
+                    info.markRead(read);
+                    values.put(ConversationColumns.CONVERSATION_INFO,
+                            ConversationInfo.toString(info));
+                } catch (JSONException e) {
+                    LogUtils.e(LOG_TAG, e, "Error updating conversation info");
+                }
+            }
+            mUpdater.updateConversation(Conversation.listOf(target), values);
+        }
         // Update the conversations in the selection too.
-        for (final Conversation c : target) {
+        for (final Conversation c : targets) {
             c.read = read;
         }
         updateSelection();

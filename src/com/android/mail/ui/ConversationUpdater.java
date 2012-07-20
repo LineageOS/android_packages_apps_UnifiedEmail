@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.content.ContentValues;
+
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 
@@ -55,6 +57,16 @@ public interface ConversationUpdater {
      * @param value
      */
     void updateConversation(Collection <Conversation> target, String columnName, boolean value);
+
+    /**
+     * Modify the given conversation by changing the columns provided here to
+     * contain the values provided. Column names are listed in
+     * {@link UIProvider.ConversationColumns}, for example
+     * {@link UIProvider.ConversationColumns#HAS_ATTACHMENTS}
+     * @param target
+     * @param values
+     */
+    void updateConversation(Collection <Conversation> target, ContentValues values);
 
     /**
      * Requests the removal of the current conversation with the specified destructive action.
