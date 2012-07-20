@@ -39,6 +39,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Layout.Alignment;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -707,7 +708,85 @@ public class ConversationItemView extends View implements SwipeableItemView {
         if (!ConversationItemViewCoordinates.displaySendersInline(mMode)) {
             sendersY += totalWidth <= mSendersWidth ? mCoordinates.sendersLineHeight / 2 : 0;
         }
-        totalWidth = 0;
+        totalWidth = ellipse(fixedWidth, sendersY);
+        if (mHeader.styledSenders != null) {
+            totalWidth = ellipsizeStyledSenders(fixedWidth, sendersY);
+            mHeader.sendersDisplayLayout = new StaticLayout(mHeader.styledSendersString, sPaint,
+                    mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
+        } else {
+            mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
+                    mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
+        }
+
+        sPaint.setTextSize(mCoordinates.sendersFontSize);
+        sPaint.setTypeface(Typeface.DEFAULT);
+        if (mSendersWidth < 0) {
+            mSendersWidth = 0;
+        }
+
+        pauseTimer(PERF_TAG_CALCULATE_COORDINATES);
+    }
+
+    private int ellipsizeStyledSenders(int fixedWidth, int sendersY) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        int totalWidth = 0;
+        int currentLine = 1;
+        boolean ellipsize = false;
+        String ellipsizedText;
+        int width;
+        for (SpannableString sender : mHeader.styledSenders) {
+            // New line and ellipsize text if needed.
+            ellipsizedText = null;
+            width = (int) sPaint.measureText(sender.toString());
+            if (!canFitFragment(totalWidth + width, currentLine, fixedWidth)) {
+                // The text is too long, new line won't help. We have to
+                // ellipsize text.
+                if (totalWidth == 0) {
+                    ellipsize = true;
+                } else {
+                    // New line.
+                    if (currentLine < mCoordinates.sendersLineCount) {
+                        currentLine++;
+                        sendersY += mCoordinates.sendersLineHeight;
+                        totalWidth = 0;
+                        // The text is still too long, we have to ellipsize
+                        // text.
+                        if (totalWidth + width > mSendersWidth) {
+                            ellipsize = true;
+                        }
+                    } else {
+                        ellipsize = true;
+                    }
+                }
+
+                if (ellipsize) {
+                    width = mSendersWidth - totalWidth;
+                    // No more new line, we have to reserve width for fixed
+                    // fragments.
+                    if (currentLine == mCoordinates.sendersLineCount) {
+                        width -= fixedWidth;
+                    }
+                    ellipsizedText = TextUtils.ellipsize(sender, sPaint, width, TruncateAt.END)
+                            .toString();
+                    width = (int) sPaint.measureText(ellipsizedText);
+                }
+            }
+            totalWidth += width;
+
+            final CharSequence fragmentDisplayText;
+            if (ellipsizedText != null) {
+                fragmentDisplayText = ellipsizedText;
+            } else {
+                fragmentDisplayText = sender;
+            }
+            builder.append(fragmentDisplayText);
+        }
+        mHeader.styledSendersString = builder;
+        return totalWidth;
+    }
+
+    private int ellipse(int fixedWidth, int sendersY) {
+        int totalWidth = 0;
         int currentLine = 1;
         boolean ellipsize = false;
         for (SenderFragment senderFragment : mHeader.senderFragments) {
@@ -777,16 +856,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             mHeader.sendersDisplayText.setSpan(senderFragment.style, spanStart,
                     mHeader.sendersDisplayText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-
-        sPaint.setTextSize(mCoordinates.sendersFontSize);
-        sPaint.setTypeface(Typeface.DEFAULT);
-        if (mSendersWidth < 0) {
-            mSendersWidth = 0;
-        }
-        mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
-                mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
-
-        pauseTimer(PERF_TAG_CALCULATE_COORDINATES);
+        return totalWidth;
     }
 
     /**

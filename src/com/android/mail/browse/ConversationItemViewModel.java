@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.StaticLayout;
 import android.text.TextUtils;
@@ -118,6 +119,10 @@ public class ConversationItemViewModel {
     public StaticLayout subjectLayoutActivated;
 
     public SpannableStringBuilder subjectTextActivated;
+
+    public SpannableString[] styledSenders;
+
+    public SpannableStringBuilder styledSendersString;
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
