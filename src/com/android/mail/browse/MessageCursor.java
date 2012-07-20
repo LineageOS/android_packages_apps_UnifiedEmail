@@ -19,10 +19,12 @@ package com.android.mail.browse;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.os.Parcelable;
 
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.ConversationListCallbacks;
+import com.android.mail.ui.ConversationUpdater;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
@@ -33,19 +35,54 @@ import java.util.Map;
  */
 public class MessageCursor extends CursorWrapper {
 
-    private final Map<Long, Message> mCache = Maps.newHashMap();
-    private final ConversationListCallbacks mListController;
+    private final Map<Long, ConversationMessage> mCache = Maps.newHashMap();
+    private final Conversation mConversation;
+    private final ConversationUpdater mListController;
 
-    public MessageCursor(Cursor inner, ConversationListCallbacks listController) {
+    /**
+     * A message created as part of a conversation view. Sometimes, like during star/unstar, it's
+     * handy to have the owning {@link MessageCursor} and {@link Conversation} for context.
+     *
+     * <p>(N.B. This is a {@link Parcelable}, so try not to add non-transient fields here.
+     * Parcelable state belongs either in {@link Message} or {@link MessageViewState}. The
+     * assumption is that this class never needs the state of its extra context saved.)
+     */
+    public static class ConversationMessage extends Message {
+
+        public final transient Conversation conversation;
+
+        private final transient MessageCursor mOwningCursor;
+        private final transient ConversationUpdater mListController;
+
+        public ConversationMessage(MessageCursor cursor, Conversation conv,
+                ConversationUpdater listController) {
+            super(cursor);
+            conversation = conv;
+            mOwningCursor = cursor;
+            mListController = listController;
+        }
+
+        public boolean isConversationStarred() {
+            return mOwningCursor.isConversationStarred();
+        }
+
+        public void star(boolean newStarred) {
+            mListController.starMessage(this, newStarred);
+        }
+
+    }
+
+    public MessageCursor(Cursor inner, Conversation conv, ConversationUpdater listController) {
         super(inner);
+        mConversation = conv;
         mListController = listController;
     }
 
-    public Message getMessage() {
+    public ConversationMessage getMessage() {
         final long id = getWrappedCursor().getLong(UIProvider.MESSAGE_ID_COLUMN);
-        Message m = mCache.get(id);
+        ConversationMessage m = mCache.get(id);
         if (m == null) {
-            m = new Message(this, mListController);
+            m = new ConversationMessage(this, mConversation, mListController);
             mCache.put(id, m);
         }
         return m;

@@ -18,16 +18,21 @@
 package com.android.mail.ui;
 
 import android.content.ContentValues;
+import android.net.Uri;
 
+import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.UIProvider;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Classes that can update conversations implement this interface.
  */
-public interface ConversationUpdater {
+public interface ConversationUpdater extends ConversationListCallbacks {
     /**
      * Modify the given conversation by changing the column provided here to contain the value
      * provided. Column names are listed in {@link UIProvider.ConversationColumns}, for example
@@ -74,6 +79,32 @@ public interface ConversationUpdater {
      * @param action to perform after the UI has been updated to remove the conversations
      */
     void delete(final Collection<Conversation> target, final DestructiveAction action);
+
+    /**
+     * Mark a number of conversations as read or unread.
+     *
+     */
+    void markConversationsRead(Collection<Conversation> targets, boolean read);
+
+    /**
+     * Mark a single conversation unread, either entirely or for just a subset of the messages in a
+     * conversation.
+     *
+     * @param conv conversation to mark unread
+     * @param unreadMessageUris URIs for the subset of the conversation's messages to mark unread,
+     * or null/empty set to mark the entire conversation unread.
+     * @param originalConversationInfo the original unread state of the {@link ConversationInfo}
+     * that {@link ConversationCursor} will temporarily use until the commit is complete.
+     */
+    void markConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
+            String originalConversationInfo);
+
+    /**
+     * Star a single message within a conversation. This method requires a
+     * {@link ConversationMessage} to propagate the change to the owning {@link Conversation}.
+     *
+     */
+    void starMessage(ConversationMessage msg, boolean starred);
 
     /**
      * Get a destructive action for selected conversations. The action corresponds to Menu item

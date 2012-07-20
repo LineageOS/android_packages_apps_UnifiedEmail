@@ -45,6 +45,7 @@ import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
+import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
 import com.android.mail.providers.Account;
@@ -167,7 +168,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private PopupMenu mPopup;
 
     private MessageHeaderItem mMessageHeaderItem;
-    private Message mMessage;
+    private ConversationMessage mMessage;
 
     private boolean mCollapsedDetailsValid;
     private boolean mExpandedDetailsValid;
@@ -831,8 +832,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             case R.id.star: {
                 final boolean newValue = !v.isSelected();
                 v.setSelected(newValue);
-                mMessage.star(newValue, getQueryHandler(), 0 /* token */, null /* cookie */);
-                // TODO: propagate the change to the entry in conversation list
+                mMessage.star(newValue);
                 break;
             }
             case R.id.edit_draft:

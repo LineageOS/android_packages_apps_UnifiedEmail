@@ -25,10 +25,7 @@ import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
-import com.android.mail.browse.MessageCursor;
 import com.android.mail.providers.UIProvider.MessageColumns;
-import com.android.mail.ui.AbstractActivityController;
-import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.utils.Utils;
 
 import java.util.Collections;
@@ -181,10 +178,6 @@ public class Message implements Parcelable {
 
     private transient List<Attachment> mAttachments = null;
 
-    // While viewing a list of messages, points to the cursor that contains it
-    private transient MessageCursor mOwningCursor = null;
-    private transient ConversationListCallbacks mListController = null;
-
     @Override
     public int describeContents() {
         return 0;
@@ -300,13 +293,6 @@ public class Message implements Parcelable {
         }
 
     };
-
-    public Message(MessageCursor cursor, ConversationListCallbacks listController) {
-        this(cursor);
-        // Only set message cursor if appropriate
-        mOwningCursor = cursor;
-        mListController = listController;
-    }
 
     public Message(Cursor cursor) {
         if (cursor != null) {
@@ -440,35 +426,10 @@ public class Message implements Parcelable {
      * @param cookie (optional) cookie to pass to the handler
      */
     public void markAlwaysShowImages(AsyncQueryHandler handler, int token, Object cookie) {
+        alwaysShowImages = true;
+
         final ContentValues values = new ContentValues(1);
         values.put(UIProvider.MessageColumns.ALWAYS_SHOW_IMAGES, 1);
-
-        handler.startUpdate(token, cookie, uri, values, null, null);
-    }
-
-    /**
-     * Helper method to command a provider to star/unstar this message.
-     *
-     * @param starred whether to star or unstar the message
-     * @param handler a caller-provided handler to run the query on
-     * @param token (optional) token to identify the command to the handler
-     * @param cookie (optional) cookie to pass to the handler
-     */
-    public void star(boolean starred, AsyncQueryHandler handler, int token, Object cookie) {
-        this.starred = starred;
-        // If we're unstarring, we need to find out if the conversation is still starred
-        if (mListController != null) {
-            boolean conversationStarred = starred;
-                if (!starred) {
-                    conversationStarred = mOwningCursor.isConversationStarred();
-                }
-                // Update the conversation cursor so that changes are reflected simultaneously
-                mListController.sendConversationUriStarred(
-                        AbstractActivityController.TAG_CONVERSATION_LIST, conversationUri,
-                        conversationStarred, true /*local*/);
-        }
-        final ContentValues values = new ContentValues(1);
-        values.put(UIProvider.MessageColumns.STARRED, starred ? 1 : 0);
 
         handler.startUpdate(token, cookie, uri, values, null, null);
     }

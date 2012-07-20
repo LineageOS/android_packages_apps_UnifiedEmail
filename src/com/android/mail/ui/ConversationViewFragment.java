@@ -57,6 +57,7 @@ import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MessageCursor;
+import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.providers.Account;
@@ -68,6 +69,7 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -77,6 +79,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -146,12 +149,19 @@ public final class ConversationViewFragment extends Fragment implements
 
     private boolean mDeferredConversationLoad;
 
+    /**
+     * Parcelable state of the conversation view. Can safely be used without null checking any time
+     * after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     */
+    private ConversationViewState mViewState;
+
     private final MessageLoaderCallbacks mMessageLoaderCallbacks = new MessageLoaderCallbacks();
     private final ContactLoaderCallbacks mContactLoaderCallbacks = new ContactLoaderCallbacks();
 
     private static final String ARG_ACCOUNT = "account";
     public static final String ARG_CONVERSATION = "conversation";
     private static final String ARG_FOLDER = "folder";
+    private static final String BUNDLE_VIEW_STATE = "viewstate";
 
     private static final boolean DEBUG_DUMP_CONVERSATION_HTML = false;
 
@@ -233,6 +243,13 @@ public final class ConversationViewFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
+
+        if (savedInstanceState != null) {
+            mViewState = savedInstanceState.getParcelable(BUNDLE_VIEW_STATE);
+        } else {
+            mViewState = new ConversationViewState();
+        }
+
         View rootView = inflater.inflate(R.layout.conversation_view, container, false);
         mConversationContainer = (ConversationContainer) rootView
                 .findViewById(R.id.conversation_container);
@@ -285,6 +302,13 @@ public final class ConversationViewFragment extends Fragment implements
         mViewsCreated = true;
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mViewState != null) {
+            outState.putParcelable(BUNDLE_VIEW_STATE, mViewState);
+        }
     }
 
     @Override
@@ -341,6 +365,33 @@ public final class ConversationViewFragment extends Fragment implements
                 mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)
                         && !mConversation.muted);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean handled = false;
+
+        switch (item.getItemId()) {
+            case R.id.inside_conversation_unread:
+                markUnread();
+                handled = true;
+                break;
+        }
+
+        return handled;
+    }
+
+    private void markUnread() {
+        // Ignore unsafe calls made after a fragment is detached from an activity
+        final ControllableActivity activity = (ControllableActivity) getActivity();
+        if (activity == null) {
+            LogUtils.w(LOG_TAG, "ignoring markUnread for conv=%s", mConversation.id);
+            return;
+        }
+
+        final String info = (mViewState == null) ? null : mViewState.getConversationInfo();
+        activity.getConversationUpdater().markConversationMessagesUnread(mConversation,
+                mViewState.getUnreadMessageUris(), info);
     }
 
     /**
@@ -452,19 +503,29 @@ public final class ConversationViewFragment extends Fragment implements
         mTemplates.startConversation(mWebView.screenPxToWebPx(convHeaderPx));
 
         int collapsedStart = -1;
-        Message prevCollapsedMsg = null;
+        ConversationMessage prevCollapsedMsg = null;
         boolean prevSafeForImages = false;
 
         while (messageCursor.moveToPosition(++pos)) {
-            final Message msg = messageCursor.getMessage();
+            final ConversationMessage msg = messageCursor.getMessage();
 
             // TODO: save/restore 'show pics' state
             final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
             allowNetworkImages |= safeForImages;
 
-            final boolean expanded = !msg.read || msg.starred || messageCursor.isLast();
+            final Boolean savedExpanded = mViewState.getExpandedState(msg);
+            final boolean expanded;
+            if (savedExpanded != null) {
+                expanded = savedExpanded;
+            } else {
+                expanded = !msg.read || msg.starred || messageCursor.isLast();
+            }
 
-            if (!expanded) {
+            // save off "read" state from the cursor
+            // later, the view may not match the cursor (e.g. conversation marked read on open)
+            mViewState.setReadState(msg, msg.read);
+
+            if (savedExpanded == null && !expanded) {
                 // contribute to a super-collapsed block that will be emitted just before the next
                 // expanded header
                 if (collapsedStart < 0) {
@@ -502,7 +563,8 @@ public final class ConversationViewFragment extends Fragment implements
         mTemplates.appendSuperCollapsedHtml(start, mWebView.screenPxToWebPx(blockPx));
     }
 
-    private void renderMessage(Message msg, boolean expanded, boolean safeForImages) {
+    private void renderMessage(ConversationMessage msg, boolean expanded,
+            boolean safeForImages) {
         final int headerPos = mAdapter.addMessageHeader(msg, expanded);
         final MessageHeaderItem headerItem = (MessageHeaderItem) mAdapter.getItem(headerPos);
 
@@ -526,7 +588,7 @@ public final class ConversationViewFragment extends Fragment implements
 
         for (int i = blockToReplace.getStart(), end = blockToReplace.getEnd(); i <= end; i++) {
             cursor.moveToPosition(i);
-            final Message msg = cursor.getMessage();
+            final ConversationMessage msg = cursor.getMessage();
             final MessageHeaderItem header = mAdapter.newMessageHeaderItem(msg,
                     false /* expanded */);
             final MessageFooterItem footer = mAdapter.newMessageFooterItem(header);
@@ -538,6 +600,8 @@ public final class ConversationViewFragment extends Fragment implements
                     mWebView.screenPxToWebPx(headerPx), mWebView.screenPxToWebPx(footerPx));
             replacements.add(header);
             replacements.add(footer);
+
+            mViewState.setExpandedState(msg, false);
         }
 
         mAdapter.replaceSuperCollapsedBlock(blockToReplace, replacements);
@@ -588,10 +652,10 @@ public final class ConversationViewFragment extends Fragment implements
 
         // mark as read upon open
         if (!mConversation.read) {
-            activity.getListHandler().sendConversationRead(
-                    AbstractActivityController.TAG_CONVERSATION_LIST, mConversation, true,
-                    false /*local*/);
+            mViewState.setInfoForConversation(mConversation);
             mConversation.read = true;
+            activity.getConversationUpdater().markConversationsRead(Arrays.asList(mConversation),
+                    true /* read */);
         }
 
         activity.onConversationSeen(mConversation);
@@ -651,6 +715,8 @@ public final class ConversationViewFragment extends Fragment implements
                 item.isExpanded(), h, newSpacerHeightPx);
         mWebView.loadUrl(String.format("javascript:setMessageBodyVisible('%s', %s, %d);",
                 mTemplates.getMessageDomId(item.message), item.isExpanded(), h));
+
+        mViewState.setExpandedState(item.message, item.isExpanded());
     }
 
     @Override
@@ -672,16 +738,18 @@ public final class ConversationViewFragment extends Fragment implements
 
     private static class MessageLoader extends CursorLoader {
         private boolean mDeliveredFirstResults = false;
-        private final ConversationListCallbacks mListController;
+        private final Conversation mConversation;
+        private final ConversationUpdater mListController;
 
-        public MessageLoader(Context c, Uri uri, ConversationListCallbacks listController) {
-            super(c, uri, UIProvider.MESSAGE_PROJECTION, null, null, null);
-            mListController = listController;
+        public MessageLoader(Context c, Conversation conv, ConversationUpdater updater) {
+            super(c, conv.messageListUri, UIProvider.MESSAGE_PROJECTION, null, null, null);
+            mConversation = conv;
+            mListController = updater;
         }
 
         @Override
         public Cursor loadInBackground() {
-            return new MessageCursor(super.loadInBackground(), mListController);
+            return new MessageCursor(super.loadInBackground(), mConversation, mListController);
         }
 
         @Override
@@ -824,8 +892,7 @@ public final class ConversationViewFragment extends Fragment implements
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return new MessageLoader(mContext, mConversation.messageListUri,
-                    mActivity.getListHandler());
+            return new MessageLoader(mContext, mConversation, mActivity.getConversationUpdater());
         }
 
         @Override
