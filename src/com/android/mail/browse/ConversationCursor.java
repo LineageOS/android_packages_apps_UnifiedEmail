@@ -1102,13 +1102,13 @@ public final class ConversationCursor implements Cursor {
                 }
             }
 
-            // Notify listeners that data has changed
-            conversationCursor.notifyDataChanged();
-
             // Recalibrate cursor position if required
             if (recalibrateRequired) {
                 conversationCursor.recalibratePosition();
             }
+
+            // Notify listeners that data has changed
+            conversationCursor.notifyDataChanged();
 
             // Send changes to underlying provider
             for (String authority: batchMap.keySet()) {
