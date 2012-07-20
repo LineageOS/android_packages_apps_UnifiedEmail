@@ -19,8 +19,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="to" msgid="4392614766835725698">"گیرنده"</string>
-    <string name="cc" msgid="7017720927911078193">"گیرنده کپی"</string>
-    <string name="bcc" msgid="3098643138241111579">"گیرنده کپی مخفی"</string>
+    <string name="cc" msgid="7017720927911078193">"گیرندهٔ کپی"</string>
+    <string name="bcc" msgid="3098643138241111579">"گیرندهٔ کپی مخفی"</string>
     <string name="subject_hint" msgid="7253964583324677128">"موضوع"</string>
     <string name="body_hint" msgid="4279864165439577668">"نوشتن ایمیل"</string>
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
@@ -83,7 +83,7 @@
     <string name="older" msgid="6651690916337202936">"قدیمی‌تر"</string>
     <string name="mark_important" msgid="6904096897104265870">"علامتگذاری به‌عنوان مهم"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"علامت‌گذاری به‌عنوان غیرمهم"</string>
-    <string name="add_cc_label" msgid="504861315425773180">"افزودن گیرنده کپی/گیرنده مخفی"</string>
+    <string name="add_cc_label" msgid="504861315425773180">"افزودن گیرندهٔ کپی/گیرنده مخفی"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"افزودن گیرنده مخفی"</string>
     <string name="feedback" msgid="79365993169715049">"ارسال بازخورد"</string>
     <string name="help_and_info" msgid="7873089811705257882">"راهنمایی"</string>
@@ -343,7 +343,7 @@
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"امکان جابجایی وجود ندارد زیرا انتخاب شما شامل چندین حساب است."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
-    <string name="ignore_spam_warning" msgid="1554651881128904262">"نادیده گرفتن،به پیام اعتماد دارم"</string>
+    <string name="ignore_spam_warning" msgid="1554651881128904262">"نادیده بگیر، پیام مطمئن است"</string>
     <string name="via_domain" msgid="380109230928079350">"از طریق <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"سیستم"</item>
