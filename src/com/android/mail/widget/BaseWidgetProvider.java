@@ -212,20 +212,7 @@ public class BaseWidgetProvider extends AppWidgetProvider {
             // Lookup the account by URI.
             Account account = null;
             if (!TextUtils.isEmpty(accountUri)) {
-                Cursor accountCursor = null;
-                try {
-                    accountCursor = resolver.query(Uri.parse(accountUri),
-                            UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-                    if (accountCursor != null) {
-                        if (accountCursor.moveToFirst()) {
-                            account = new Account(accountCursor);
-                        }
-                    }
-                } finally {
-                    if (accountCursor != null) {
-                        accountCursor.close();
-                    }
-                }
+                account = getAccountObject(context, accountUri);
             }
             Folder folder = null;
             if (!TextUtils.isEmpty(folderUri)) {
@@ -246,6 +233,26 @@ public class BaseWidgetProvider extends AppWidgetProvider {
             }
             updateWidgetInternal(context, appWidgetIds[i], account, folder);
         }
+    }
+
+    protected Account getAccountObject(Context context, String accountUri) {
+        final ContentResolver resolver = context.getContentResolver();
+        Account account = null;
+        Cursor accountCursor = null;
+        try {
+            accountCursor = resolver.query(Uri.parse(accountUri),
+                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+            if (accountCursor != null) {
+                if (accountCursor.moveToFirst()) {
+                    account = new Account(accountCursor);
+                }
+            }
+        } finally {
+            if (accountCursor != null) {
+                accountCursor.close();
+            }
+        }
+        return account;
     }
 
     /**
