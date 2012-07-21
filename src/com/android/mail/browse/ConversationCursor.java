@@ -724,7 +724,11 @@ public final class ConversationCursor implements Cursor {
     public boolean moveToNext() {
         while (true) {
             boolean ret = mUnderlyingCursor.moveToNext();
-            if (!ret) return false;
+            if (!ret) {
+                // Make sure we're still in sync (mPosition++ should also work)
+                mPosition = mUnderlyingCursor.getPosition();
+                return false;
+            }
             if (getCachedValue(DELETED_COLUMN_INDEX) instanceof Integer) continue;
             mPosition++;
             return true;
@@ -738,7 +742,11 @@ public final class ConversationCursor implements Cursor {
     public boolean moveToPrevious() {
         while (true) {
             boolean ret = mUnderlyingCursor.moveToPrevious();
-            if (!ret) return false;
+            if (!ret) {
+                // Make sure we're before the first position
+                mPosition = -1;
+                return false;
+            }
             if (getCachedValue(DELETED_COLUMN_INDEX) instanceof Integer) continue;
             mPosition--;
             return true;
