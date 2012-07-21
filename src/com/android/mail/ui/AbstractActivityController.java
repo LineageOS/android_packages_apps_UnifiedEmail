@@ -1003,22 +1003,6 @@ public abstract class AbstractActivityController implements ActivityController {
          * @param savedState
          */
         restoreSelectedConversations(savedState);
-
-        // Enter folder list mode.
-        if (savedState.containsKey(SAVED_HIERARCHICAL_FOLDER)) {
-            try {
-                String folderString = savedState.getString(SAVED_HIERARCHICAL_FOLDER);
-                if (!TextUtils.isEmpty(folderString)) {
-                    Folder folder = Folder.fromJSONString(savedState
-                            .getString(SAVED_HIERARCHICAL_FOLDER));
-                    onFolderSelected(folder);
-                } else {
-                    showFolderList();
-                }
-            } catch (JSONException e) {
-                LogUtils.wtf(LOG_TAG, e, "Unable to parse hierarchical folder extra");
-            }
-        }
     }
 
     private void handleIntent(Intent intent) {
