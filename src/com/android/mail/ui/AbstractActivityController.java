@@ -28,6 +28,7 @@ import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -730,6 +731,12 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
+    public void updateConversation(Collection<Conversation> target, ContentValues values) {
+        mConversationListCursor.updateValues(mContext, target, values);
+        refreshConversationList();
+    }
+
+    @Override
     public void updateConversation(Collection <Conversation> target, String columnName,
             boolean value) {
         mConversationListCursor.updateBoolean(mContext, target, columnName, value);
@@ -737,7 +744,8 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void updateConversation(Collection <Conversation> target, String columnName, int value) {
+    public void updateConversation(Collection <Conversation> target, String columnName,
+            int value) {
         mConversationListCursor.updateInt(mContext, target, columnName, value);
         refreshConversationList();
     }
@@ -1899,7 +1907,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Handles dropping conversations to a label.
+     * Handles dropping conversations to a folder.
      */
     @Override
     public void handleDrop(DragEvent event, final Folder folder) {

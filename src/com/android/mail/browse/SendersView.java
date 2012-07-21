@@ -52,6 +52,7 @@ public class SendersView extends TextView {
     private int DRAFT_TEXT_COLOR;
     private int LIGHT_TEXT_COLOR;
     private StyleSpan sUnreadStyleSpan;
+    private StyleSpan sReadStyleSpan;
 
     public SendersView(Context context) {
         this(context, null);
@@ -82,7 +83,12 @@ public class SendersView extends TextView {
         Conversation conversation = header.conversation;
         String sendersInfo = conversation.conversationInfo != null ?
                 conversation.conversationInfo.sendersInfo : header.conversation.senders;
-        if (!TextUtils.isEmpty(sendersInfo)) {
+        if (conversation.conversationInfo != null
+                && TextUtils.isEmpty(conversation.conversationInfo.sendersInfo)) {
+            // We have the properly formatted conversationinfo. Parse and
+            // display!
+            format(header, conversation.conversationInfo);
+        } else if (!TextUtils.isEmpty(sendersInfo)) {
             SendersInfo info = new SendersInfo(sendersInfo);
             mFormatVersion = info.version;
             switch (mFormatVersion) {
@@ -94,9 +100,6 @@ public class SendersView extends TextView {
                     formatDefault(header, info.text);
                     break;
             }
-        } else {
-            // We have the properly formatted conversationinfo. Parse and display!
-            format(header, conversation.conversationInfo);
         }
     }
 
@@ -119,8 +122,9 @@ public class SendersView extends TextView {
             }
             displays[i] = new SpannableString(display);
             if (!conversationInfo.messageInfos.get(i).read) {
-                displays[i].setSpan(getUnreadStyleSpan(), 0, displays[i].length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                displays[i].setSpan(getUnreadStyleSpan(), 0, displays[i].length(), 0);
+            } else {
+                displays[i].setSpan(getReadStyleSpan(), 0, displays[i].length(), 0);
             }
         }
         header.styledSenders = displays;
@@ -132,11 +136,18 @@ public class SendersView extends TextView {
                         .equals(MessageInfo.SENDER_LIST_TOKEN_ELIDED));
     }
 
-    private StyleSpan getUnreadStyleSpan() {
+    private CharacterStyle getUnreadStyleSpan() {
         if (sUnreadStyleSpan == null) {
             sUnreadStyleSpan = new StyleSpan(Typeface.BOLD);
         }
-        return sUnreadStyleSpan;
+        return CharacterStyle.wrap(sUnreadStyleSpan);
+    }
+
+    private CharacterStyle getReadStyleSpan() {
+        if (sReadStyleSpan == null) {
+            sReadStyleSpan = new StyleSpan(Typeface.NORMAL);
+        }
+        return CharacterStyle.wrap(sReadStyleSpan);
     }
 
     private String parseSender(String sender) {

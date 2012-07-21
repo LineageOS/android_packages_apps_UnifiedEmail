@@ -24,14 +24,18 @@ public class MessageInfo {
     private static final String MESSAGE_READ = "msg_read";
     private static final String MESSAGE_STARRED = "msg_starred";
     private static final String MESSAGE_SENDER = "msg_sender";
-    public final boolean read;
-    public final boolean starred;
+    public boolean read;
+    public boolean starred;
     public final String sender;
 
     public MessageInfo(boolean isRead, boolean isStarred, String senderString) {
         read = isRead;
         starred = isStarred;
         sender = senderString;
+    }
+
+    public void markRead(boolean isRead) {
+        read = isRead;
     }
 
     public static JSONObject toJSON(MessageInfo info) throws JSONException {
