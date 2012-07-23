@@ -205,8 +205,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public int getCount() {
         // If the recent folders are visible, then one header, recent folders, plus one if the
         // "show all folders" item should be shown
-        final int numFolders = mRecentFoldersVisible ?
-                (1 + mRecentFolderList.size() + (mShowAllFoldersItem ? 1 : 0)) : 0;
+        final int numRecents = mRecentFolderList.size();
+        final int numFolders = (mRecentFoldersVisible && numRecents > 0) ?
+                (1 + numRecents + (mShowAllFoldersItem ? 1 : 0)) : 0;
         return 1 + mNumAccounts + numFolders;
     }
 
