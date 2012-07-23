@@ -57,7 +57,7 @@
     <string name="remove_star" msgid="4372327933122106128">"删除星标"</string>
     <string name="archive" msgid="847250094775910499">"归档"</string>
     <string name="report_spam" msgid="6467567747975393907">"举报垃圾邮件"</string>
-    <string name="mark_not_spam" msgid="694891665407228160">"报为非垃圾邮件"</string>
+    <string name="mark_not_spam" msgid="694891665407228160">"这不是垃圾邮件"</string>
     <string name="report_phishing" msgid="5714205737453138338">"举报网上诱骗行为"</string>
     <string name="delete" msgid="844871204175957681">"删除"</string>
     <string name="next" msgid="4674401197968248302">"更早"</string>
@@ -249,7 +249,7 @@
     <string name="expand_read_messages" msgid="7458927270492299063">"展开已读邮件"</string>
     <string name="show_messages_read" msgid="9132147830566909631">"已读邮件"</string>
     <string name="date_heading" msgid="2414358582984879303">"日期："</string>
-    <string name="from_heading" msgid="8950294114718418954">"From:"</string>
+    <string name="from_heading" msgid="8950294114718418954">"发件人："</string>
     <string name="replyto_heading" msgid="2081358811894701297">"回复："</string>
     <string name="to_heading" msgid="3219994961726691756">"收件人："</string>
     <string name="cc_heading" msgid="8116221732072085180">"抄送："</string>

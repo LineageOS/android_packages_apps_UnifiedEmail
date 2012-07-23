@@ -58,7 +58,7 @@
     <string name="archive" msgid="847250094775910499">"Archivar"</string>
     <string name="report_spam" msgid="6467567747975393907">"Notificar spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Informar que no es spam"</string>
-    <string name="report_phishing" msgid="5714205737453138338">"Denunciar suplantación de identidad"</string>
+    <string name="report_phishing" msgid="5714205737453138338">"Denunciar suplant. identidad"</string>
     <string name="delete" msgid="844871204175957681">"Eliminar"</string>
     <string name="next" msgid="4674401197968248302">"Más antiguo"</string>
     <string name="previous" msgid="309943944831349924">"Más reciente"</string>
@@ -258,7 +258,7 @@
     <string name="always_show_images" msgid="5966408990164581801">"Mostrar siempre las imágenes de este remitente"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Las imágenes de este remitente se mostrarán automáticamente."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; vía <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
+    <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; por <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Mensaje guardado como borrador"</string>
     <string name="sending_message" msgid="1498583163419122128">"Enviando mensaje…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"La dirección <xliff:g id="WRONGEMAIL">%s</xliff:g> no es válida."</string>
@@ -344,7 +344,7 @@
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
     <string name="ignore_spam_warning" msgid="1554651881128904262">"Ignorar; confío en este mensaje."</string>
-    <string name="via_domain" msgid="380109230928079350">"vía <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
+    <string name="via_domain" msgid="380109230928079350">"por <xliff:g id="VIADOMAIN">%1$s</xliff:g>"</string>
   <string-array name="moveto_folder_sections">
     <item msgid="6984976603137892898">"Sistema"</item>
     <item msgid="6593672292311851204">"Uso frecuente"</item>
