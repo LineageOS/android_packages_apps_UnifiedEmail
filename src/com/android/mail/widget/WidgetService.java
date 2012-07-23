@@ -39,6 +39,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.Loader.OnLoadCompleteListener;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Looper;
@@ -182,6 +183,10 @@ public class WidgetService extends RemoteViewsService {
             implements RemoteViewsService.RemoteViewsFactory, OnLoadCompleteListener<Cursor> {
         private static final int MAX_CONVERSATIONS_COUNT = 25;
         private static final int MAX_SENDERS_LENGTH = 25;
+
+        private static final int FOLDER_LOADER_ID = 0;
+        private static final int CONVERSATION_CURSOR_LOADER_ID = 1;
+
         private static final String LOG_TAG = LogTag.getLogTag();
 
         private final Context mContext;
@@ -189,6 +194,7 @@ public class WidgetService extends RemoteViewsService {
         private final Account mAccount;
         private Folder mFolder;
         private final WidgetConversationViewBuilder mWidgetConversationViewBuilder;
+        private CursorLoader mConversationCursorLoader;
         private Cursor mConversationCursor;
         private CursorLoader mFolderLoader;
         private FolderUpdateHandler mFolderUpdateHandler;
@@ -237,14 +243,19 @@ public class WidgetService extends RemoteViewsService {
                     .appendQueryParameter(ConversationListQueryParameters.USE_NETWORK,
                             Boolean.FALSE.toString()).build();
 
-            mConversationCursor = mResolver.query(widgetConversationQueryUri,
+            final Resources res = mContext.getResources();
+            mConversationCursorLoader = new CursorLoader(mContext, widgetConversationQueryUri,
                     UIProvider.CONVERSATION_PROJECTION, null, null, null);
+            mConversationCursorLoader.registerListener(CONVERSATION_CURSOR_LOADER_ID, this);
+            mConversationCursorLoader.setUpdateThrottle(
+                    res.getInteger(R.integer.widget_refresh_delay_ms));
+            mConversationCursorLoader.startLoading();
 
             mFolderLoader = new CursorLoader(mContext, mFolder.uri, UIProvider.FOLDERS_PROJECTION,
                     null, null, null);
-            mFolderLoader.registerListener(0, this);
-            mFolderUpdateHandler = new FolderUpdateHandler(mContext.getResources().getInteger(
-                    R.integer.widget_folder_refresh_delay_ms));
+            mFolderLoader.registerListener(FOLDER_LOADER_ID, this);
+            mFolderUpdateHandler = new FolderUpdateHandler(
+                    res.getInteger(R.integer.widget_folder_refresh_delay_ms));
             mFolderUpdateHandler.scheduleTask();
 
         }
@@ -252,24 +263,34 @@ public class WidgetService extends RemoteViewsService {
         @Override
         public void onDestroy() {
             synchronized (sWidgetLock) {
-                if (mConversationCursor != null && !mConversationCursor.isClosed()) {
-                    mConversationCursor.close();
-                    mConversationCursor = null;
+                if (mConversationCursorLoader != null) {
+                    mConversationCursorLoader.reset();
+                    mConversationCursorLoader.unregisterListener(this);
+                    mConversationCursorLoader = null;
                 }
+
+                // The Loader should close the cursor, so just unset the reference
+                // to it here.
+                mConversationCursor = null;
             }
 
             if (mFolderLoader != null) {
                 mFolderLoader.reset();
+                mFolderLoader.unregisterListener(this);
                 mFolderLoader = null;
             }
         }
 
         @Override
         public void onDataSetChanged() {
-            synchronized (sWidgetLock) {
-                // TODO: use loader manager.
-                mConversationCursor.requery();
-            }
+            // We are not using this as signal to requery the cursor.  The query will be started
+            // in the following ways:
+            // 1) The Service is started and the loader is started in onCreate()
+            //       This will happen when the service is not running, and
+            //       AppWidgetManager#notifyAppWidgetViewDataChanged() is called
+            // 2) The service is running, with a previously created loader.  The loader is watching
+            //    for updates from the existing cursor.  If one is seen, the loader will load a new
+            //    cursor in the background.
             mFolderUpdateHandler.scheduleTask();
         }
 
@@ -282,8 +303,9 @@ public class WidgetService extends RemoteViewsService {
         public int getCount() {
             synchronized (sWidgetLock) {
                 final int count = getConversationCount();
-                mShouldShowViewMore = count < mConversationCursor.getCount()
-                        || count < mFolderCount;
+                final int cursorCount = mConversationCursor != null ?
+                        mConversationCursor.getCount() : 0;
+                mShouldShowViewMore = count < cursorCount || count < mFolderCount;
                 return count + (mShouldShowViewMore ? 1 : 0);
             }
         }
@@ -296,7 +318,9 @@ public class WidgetService extends RemoteViewsService {
          */
         private int getConversationCount() {
             synchronized (sWidgetLock) {
-                return Math.min(mConversationCursor.getCount(), MAX_CONVERSATIONS_COUNT);
+                final int cursorCount = mConversationCursor != null ?
+                        mConversationCursor.getCount() : 0;
+                return Math.min(cursorCount, MAX_CONVERSATIONS_COUNT);
             }
         }
 
@@ -394,31 +418,42 @@ public class WidgetService extends RemoteViewsService {
             if (!data.moveToFirst()) {
                 return;
             }
-            final int unreadCount = data.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
-            final String folderName = data.getString(UIProvider.FOLDER_NAME_COLUMN);
-            mFolderCount = data.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
+            final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
 
-            RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.widget);
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+            if (loader == mFolderLoader) {
+                final int unreadCount = data.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
+                final String folderName = data.getString(UIProvider.FOLDER_NAME_COLUMN);
+                mFolderCount = data.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
 
-            if (!mFolderInformationShown && !TextUtils.isEmpty(folderName)) {
-                // We want to do a full update to the widget at least once, as the widget
-                // manager doesn't cache the state of the remote views when doing a partial
-                // widget update. This causes the folder name to be shown as blank if the state
-                // of the widget is restored.
-                mService.configureValidAccountWidget(
-                        mContext, remoteViews, mAppWidgetId, mAccount, mFolder, folderName);
-                appWidgetManager.updateAppWidget(mAppWidgetId, remoteViews);
-                mFolderInformationShown = true;
+                final RemoteViews remoteViews =
+                        new RemoteViews(mContext.getPackageName(), R.layout.widget);
+
+                if (!mFolderInformationShown && !TextUtils.isEmpty(folderName)) {
+                    // We want to do a full update to the widget at least once, as the widget
+                    // manager doesn't cache the state of the remote views when doing a partial
+                    // widget update. This causes the folder name to be shown as blank if the state
+                    // of the widget is restored.
+                    mService.configureValidAccountWidget(
+                            mContext, remoteViews, mAppWidgetId, mAccount, mFolder, folderName);
+                    appWidgetManager.updateAppWidget(mAppWidgetId, remoteViews);
+                    mFolderInformationShown = true;
+                }
+
+                remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
+                remoteViews.setTextViewText(R.id.widget_folder, folderName);
+                remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
+                remoteViews.setTextViewText(
+                        R.id.widget_unread_count, Utils.getUnreadCountString(mContext, unreadCount));
+
+                appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, remoteViews);
+            } else if (loader == mConversationCursorLoader) {
+                // We want to cache the new cursor
+                synchronized (sWidgetLock) {
+                    mConversationCursor = data;
+                }
+                appWidgetManager.notifyAppWidgetViewDataChanged(
+                        mAppWidgetId, R.id.conversation_list);
             }
-
-            remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
-            remoteViews.setTextViewText(R.id.widget_folder, folderName);
-            remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
-            remoteViews.setTextViewText(
-                    R.id.widget_unread_count, Utils.getUnreadCountString(mContext, unreadCount));
-
-            appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, remoteViews);
         }
 
         /**
