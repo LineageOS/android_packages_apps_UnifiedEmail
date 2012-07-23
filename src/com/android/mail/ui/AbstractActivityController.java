@@ -652,6 +652,8 @@ public abstract class AbstractActivityController implements ActivityController {
         boolean handled = true;
         final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
         final Settings settings = (mAccount == null) ? null : mAccount.settings;
+        // The user is choosing a new action; commit whatever they had been doing before.
+        commitDestructiveActions();
         switch (id) {
             case R.id.archive: {
                 final boolean showDialog = (settings != null && settings.confirmArchive);
@@ -688,10 +690,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 delete(target, getAction(R.id.report_phishing, target));
                 break;
             case R.id.inside_conversation_unread:
-                // TODO(viki): This is strange, and potentially incorrect. READ is an int column
-                // in the provider.
                 updateConversation(Conversation.listOf(mCurrentConversation),
-                        ConversationColumns.READ, false);
+                        ConversationColumns.READ, 0);
                 mViewMode.enterConversationListMode();
                 break;
             case android.R.id.home:
@@ -846,7 +846,6 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onPause() {
         isLoaderInitialized = false;
         enableNotifications();
-        commitLeaveBehindItems();
     }
 
     @Override
@@ -927,6 +926,9 @@ public abstract class AbstractActivityController implements ActivityController {
         // controllers do
         // this themselves?
 
+        // Commit any destructive undoable actions the user may have performed.
+        commitDestructiveActions();
+
         // We don't want to invalidate the options menu when switching to
         // conversation
         // mode, as it will happen when the conversation finishes loading.
@@ -935,10 +937,10 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
-    protected void commitLeaveBehindItems() {
-        ConversationListFragment fragment = getConversationListFragment();
+    private void commitDestructiveActions() {
+        ConversationListFragment fragment = this.getConversationListFragment();
         if (fragment != null) {
-            fragment.commitLeaveBehindItems();
+            fragment.commitDestructiveActions();
         }
     }
 
@@ -1850,6 +1852,8 @@ public abstract class AbstractActivityController implements ActivityController {
      * Disable the Contextual Action Bar (CAB). The selected set is not changed.
      */
     protected void disableCabMode() {
+        // Commit any previous destructive actions when entering/ exiting CAB mode.
+        commitDestructiveActions();
         if (mCabActionMenu != null) {
             mCabActionMenu.deactivate();
         }
@@ -1859,6 +1863,8 @@ public abstract class AbstractActivityController implements ActivityController {
      * Re-enable the CAB menu if required. The selection set is not changed.
      */
     protected void enableCabMode() {
+        // Commit any previous destructive actions when entering/ exiting CAB mode.
+        commitDestructiveActions();
         if (mCabActionMenu != null) {
             mCabActionMenu.activate();
         }
