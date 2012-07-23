@@ -182,6 +182,11 @@ public class Conversation implements Parcelable {
         dest.writeInt(muted ? 1 : 0);
         dest.writeInt(color);
         dest.writeParcelable(accountUri, 0);
+        try {
+            dest.writeString(ConversationInfo.toString(conversationInfo));
+        } catch (JSONException e) {
+            LogUtils.d(LOG_TAG, e, "Error adding conversationinfo to parcel");
+        }
     }
 
     private Conversation(Parcel in) {
@@ -210,6 +215,11 @@ public class Conversation implements Parcelable {
         accountUri = in.readParcelable(null);
         position = NO_POSITION;
         localDeleteOnUpdate = false;
+        try {
+            conversationInfo = ConversationInfo.fromString(in.readString());
+        } catch (JSONException e) {
+            LogUtils.d(LOG_TAG, e, "Error retrieving conversation info from parcel");
+        }
     }
 
     @Override
