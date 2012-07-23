@@ -74,6 +74,9 @@ public class ConversationInfo {
     }
 
     public static String toString(ConversationInfo info) throws JSONException {
+        if (info == null) {
+            return null;
+        }
         return toJSON(info).toString();
     }
 
