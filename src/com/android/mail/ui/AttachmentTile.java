@@ -47,6 +47,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     private TextView mSubtitle;
     private String mAttachmentSizeText;
     private String mDisplayType;
+    private boolean mDefaultThumbnailSet;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -66,6 +67,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
 
     public AttachmentTile(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mDefaultThumbnailSet = true;
     }
 
     @Override
@@ -104,7 +106,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
                 attachment.contentType);
 
-        if (prevAttachment == null || TextUtils.equals(attachment.name, prevAttachment.name)) {
+        if (prevAttachment == null || !TextUtils.equals(attachment.name, prevAttachment.name)) {
             mTitle.setText(attachment.name);
         }
 
@@ -130,10 +132,12 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
 
     public void setThumbnailToDefault() {
         mIcon.setImageResource(R.drawable.ic_attach_picture_holo_light);
+        mDefaultThumbnailSet = true;
     }
 
     public void setThumbnail(Bitmap result) {
         mIcon.setImageBitmap(result);
+        mDefaultThumbnailSet = false;
     }
 
     public int getThumbnailWidth() {
@@ -147,5 +151,10 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     @Override
     public ContentResolver getResolver() {
         return getContext().getContentResolver();
+    }
+
+    @Override
+    public boolean bitmapSetToDefault() {
+        return mDefaultThumbnailSet;
     }
 }

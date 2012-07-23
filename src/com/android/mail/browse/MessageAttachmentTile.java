@@ -35,11 +35,13 @@ import com.android.mail.R;
 import com.android.mail.photo.MailPhotoViewActivity;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.ui.AttachmentTile;
+import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+
+import java.util.List;
 
 /**
  * View for a single attachment in conversation view. Shows download status and allows launching
@@ -105,7 +107,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
     }
 
     private boolean onClick(int res, View v) {
-        mActionHandler.showAttachment(AttachmentDestination.CACHE);
+        mActionHandler.showAndDownloadAttachments();
 
         return true;
     }
@@ -152,5 +154,10 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
     public void setThumbnail(Bitmap result) {
         super.setThumbnail(result);
         mTextContainer.setVisibility(GONE);
+    }
+
+    @Override
+    public List<Attachment> getAttachments() {
+        return ((AttachmentTileGrid) getParent()).getAttachments();
     }
 }

@@ -46,16 +46,20 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             final Attachment attachment, final Attachment prevAttachment) {
         final int width = holder.getThumbnailWidth();
         final int height = holder.getThumbnailHeight();
-        if (attachment == null || width == 0 || height == 0) {
+        if (attachment == null || width == 0 || height == 0 || !attachment.isImage()) {
             holder.setThumbnailToDefault();
             return;
         }
 
-        final Uri imageUri = attachment.getImageUri();
-        final Uri prevImageUri = (prevAttachment == null) ? null : prevAttachment.getImageUri();
+        final Uri thumbnailUri = attachment.thumbnailUri;
+        final Uri contentUri = attachment.contentUri;
+        final Uri uri = (prevAttachment == null) ? null : prevAttachment.uri;
+        final Uri prevUri = (prevAttachment == null) ? null : prevAttachment.uri;
         // begin loading a thumbnail if this is an image and either the thumbnail or the original
         // content is ready (and different from any existing image)
-        if (imageUri != null && (prevImageUri == null || !imageUri.equals(prevImageUri))) {
+        if ((thumbnailUri != null || contentUri != null)
+                && (holder.bitmapSetToDefault() ||
+                prevUri == null || !uri.equals(prevUri))) {
             // cancel/dispose any existing task and start a new one
             if (task != null) {
                 task.cancel(true);
@@ -63,8 +67,8 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
 
             task = new ThumbnailLoadTask(
                     holder, width, height);
-            task.execute(imageUri);
-        } else if (imageUri == null) {
+            task.execute(thumbnailUri, contentUri);
+        } else if (thumbnailUri == null && contentUri == null) {
             // not an image, or no thumbnail exists. fall back to default.
             // async image load must separately ensure the default appears upon load failure.
             holder.setThumbnailToDefault();
@@ -79,8 +83,15 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(Uri... params) {
-        final Uri thumbnailUri = params[0];
+        Bitmap result = loadBitmap(params[0]);
+        if (result == null) {
+            result = loadBitmap(params[1]);
+        }
 
+        return result;
+    }
+
+    private Bitmap loadBitmap(final Uri thumbnailUri) {
         AssetFileDescriptor fd = null;
         Bitmap result = null;
 

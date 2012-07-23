@@ -30,12 +30,14 @@ import android.os.Parcelable;
 import com.android.mail.R;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
+import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AttachmentActionHandler implements DialogInterface.OnCancelListener,
         DialogInterface.OnDismissListener {
@@ -83,12 +85,28 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
         }
     }
 
+    public void showAndDownloadAttachments() {
+        final List<Attachment> attachments = mView.getAttachments();
+
+        for (final Attachment attachment : attachments) {
+            if (!attachment.isPresentLocally()) {
+                startDownloadingAttachment(attachment, AttachmentDestination.CACHE);
+            }
+        }
+
+        mView.viewAttachment();
+    }
+
     public void startDownloadingAttachment(int destination) {
+        startDownloadingAttachment(mAttachment, destination);
+    }
+
+    private void startDownloadingAttachment(Attachment attachment, int destination) {
         final ContentValues params = new ContentValues(2);
         params.put(AttachmentColumns.STATE, AttachmentState.DOWNLOADING);
         params.put(AttachmentColumns.DESTINATION, destination);
 
-        mCommandHandler.sendCommand(mAttachment.uri, params);
+        mCommandHandler.sendCommand(attachment.uri, params);
     }
 
     public void cancelAttachment() {
@@ -131,8 +149,7 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
      * previously brought up (by tapping 'View') and the download has now finished.
      */
     public void updateStatus() {
-        final boolean showProgress = mAttachment.size > 0 && mAttachment.downloadedSize > 0
-                && mAttachment.downloadedSize < mAttachment.size;
+        final boolean showProgress = mAttachment.shouldShowProgress();
 
         if (mViewProgressDialog != null && mViewProgressDialog.isShowing()) {
             mViewProgressDialog.setProgress(mAttachment.downloadedSize);
