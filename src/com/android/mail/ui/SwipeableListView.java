@@ -35,13 +35,12 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogTag;
-import com.google.common.base.Objects;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class SwipeableListView extends ListView implements Callback{
+public class SwipeableListView extends ListView implements Callback {
     private SwipeHelper mSwipeHelper;
     private boolean mEnableSwipe = false;
 
@@ -159,6 +158,15 @@ public class SwipeableListView extends ListView implements Callback{
         dismissChildren((ConversationItemView) v, null);
         } else if (view instanceof LeaveBehindItem) {
             ((LeaveBehindItem)view).commit();
+        }
+    }
+
+    // Call this whenever a new action is taken; this forces a commit of any
+    // existing destructive actions.
+    public void commitDestructiveActions() {
+        final AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
+        if (adapter != null) {
+            adapter.commitLeaveBehindItems();
         }
     }
 
@@ -296,5 +304,12 @@ public class SwipeableListView extends ListView implements Callback{
 
     public interface SwipeCompleteListener {
         public void onSwipeComplete(Collection<Conversation> conversations);
+    }
+
+    @Override
+    public boolean performItemClick(View view, int pos, long id) {
+        // Commit any existing destructive actions when the user selects a conversation to view.
+        commitDestructiveActions();
+        return super.performItemClick(view, pos, id);
     }
 }

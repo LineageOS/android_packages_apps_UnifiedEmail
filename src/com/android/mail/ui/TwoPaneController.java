@@ -326,16 +326,12 @@ public final class TwoPaneController extends AbstractActivityController {
     public boolean onUpPressed() {
         int mode = mViewMode.getMode();
         if (mode == ViewMode.CONVERSATION) {
-            if (mLayout.isConversationListCollapsed()) {
-                commitLeaveBehindItems();
-            }
             mActivity.onBackPressed();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             if (mLayout.isConversationListCollapsed()
                     || (mConvListContext.isSearchResult() && !Utils
                             .showTwoPaneSearchResults
                                 (mActivity.getApplicationContext()))) {
-                commitLeaveBehindItems();
                 onBackPressed();
             } else {
                 mActivity.finish();
