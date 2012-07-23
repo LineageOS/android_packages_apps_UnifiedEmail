@@ -19,6 +19,9 @@ package com.android.mail.ui;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.ActionMode;
@@ -35,6 +38,9 @@ import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.Utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * This is the root activity container that holds the left navigation fragment
  * (usually a list of folders), and the main content fragment (either a
@@ -46,6 +52,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     // TODO(viki) This class lacks: Sync Window Upgrade dialog
 
     private static final boolean STRICT_MODE = true;
+    private NfcAdapter mNfcAdapter; // final after onCreate
+    private NdefMessage mForegroundNdef;
 
     /**
      * The activity controller to which we delegate most Activity lifecycle events.
@@ -61,6 +69,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     private ViewMode mViewMode;
 
     private ToastBarOperation mPendingToastOp;
+    private static MailActivity sForegroundInstance;
 
     public MailActivity() {
         super();
@@ -135,6 +144,53 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         if (savedState == null && intent.getAction() != null) {
             mLaunchedCleanly = true;
         }
+        setupNfc();
+    }
+
+    private void setupNfc() {
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+    }
+
+    /**
+     * Sets an NDEF message to be shared with "zero-clicks" using NFC. The message
+     * will be available as long as the current activity is in the foreground.
+     */
+    public static void setForegroundNdef(NdefMessage ndef) {
+        MailActivity foreground = sForegroundInstance;
+        if (foreground != null && foreground.mNfcAdapter != null) {
+            synchronized (foreground) {
+                foreground.mForegroundNdef = ndef;
+                if (sForegroundInstance != null) {
+                    if (ndef != null) {
+                        sForegroundInstance.mNfcAdapter.enableForegroundNdefPush(
+                                sForegroundInstance, ndef);
+                    } else {
+                        sForegroundInstance.mNfcAdapter.disableForegroundNdefPush(
+                                sForegroundInstance);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns an NDEF message with a single mailto URI record
+     * for the given email address.
+     */
+    public static NdefMessage getMailtoNdef(String account) {
+        byte[] accountBytes;
+        try {
+            accountBytes = URLEncoder.encode(account, "UTF-8").getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            accountBytes = account.getBytes();
+        }
+        byte prefix = 0x06; // mailto:
+        byte[] recordBytes = new byte[accountBytes.length + 1];
+        recordBytes[0] = prefix;
+        System.arraycopy(accountBytes, 0, recordBytes, 1, accountBytes.length);
+        NdefRecord mailto = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_URI,
+                new byte[0], recordBytes);
+        return new NdefMessage(new NdefRecord[] { mailto });
     }
 
     @Override
@@ -169,7 +225,12 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void onPause() {
         super.onPause();
         mController.onPause();
-        //        mSyncWindowUpgradeReceiver.disable();
+        synchronized (this) {
+            if (mNfcAdapter != null && mForegroundNdef != null) {
+                mNfcAdapter.disableForegroundNdefPush(this);
+            }
+            sForegroundInstance = null;
+        }
     }
 
     @Override
@@ -187,6 +248,12 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void onResume() {
         super.onResume();
         mController.onResume();
+        synchronized (this) {
+            sForegroundInstance = this;
+            if (mNfcAdapter != null && mForegroundNdef != null) {
+                mNfcAdapter.enableForegroundNdefPush(this, mForegroundNdef);
+            }
+        }
     }
 
     @Override
