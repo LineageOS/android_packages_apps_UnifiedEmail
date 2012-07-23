@@ -51,8 +51,9 @@ public class SendersView extends TextView {
     private ForegroundColorSpan sLightTextStyle;
     private int DRAFT_TEXT_COLOR;
     private int LIGHT_TEXT_COLOR;
-    private StyleSpan sUnreadStyleSpan;
-    private StyleSpan sReadStyleSpan;
+    private static StyleSpan sUnreadStyleSpan;
+    private static StyleSpan sReadStyleSpan;
+    private static String sMeString;
 
     public SendersView(Context context) {
         this(context, null);
@@ -84,7 +85,7 @@ public class SendersView extends TextView {
         String sendersInfo = conversation.conversationInfo != null ?
                 conversation.conversationInfo.sendersInfo : header.conversation.senders;
         if (conversation.conversationInfo != null
-                && TextUtils.isEmpty(conversation.conversationInfo.sendersInfo)) {
+                && !TextUtils.isEmpty(conversation.conversationInfo.sendersInfo)) {
             // We have the properly formatted conversationinfo. Parse and
             // display!
             format(header, conversation.conversationInfo);
@@ -110,6 +111,9 @@ public class SendersView extends TextView {
         String sender;
         for (int i = 0; i < conversationInfo.messageCount; i++) {
             sender = conversationInfo.messageInfos.get(i).sender;
+            if (TextUtils.isEmpty(sender)) {
+                sender = getMe();
+            }
             isElided = TextUtils.equals(sender, MessageInfo.SENDER_LIST_TOKEN_ELIDED);
             if (!isElided) {
                 display = parseSender(sender);
@@ -131,8 +135,9 @@ public class SendersView extends TextView {
     }
 
     private boolean isNextElided(ConversationInfo conversationInfo, int i) {
-        return (i+1 < conversationInfo.messageCount
-                && conversationInfo.messageInfos.get(i+1).sender
+        int next = i+1;
+        return (next < conversationInfo.messageCount
+                && conversationInfo.messageInfos.get(next).sender
                         .equals(MessageInfo.SENDER_LIST_TOKEN_ELIDED));
     }
 
@@ -148,6 +153,13 @@ public class SendersView extends TextView {
             sReadStyleSpan = new StyleSpan(Typeface.NORMAL);
         }
         return CharacterStyle.wrap(sReadStyleSpan);
+    }
+
+    private String getMe() {
+        if (sMeString == null) {
+            sMeString = getContext().getResources().getString(R.string.me);
+        }
+        return sMeString;
     }
 
     private String parseSender(String sender) {
