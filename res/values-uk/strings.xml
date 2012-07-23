@@ -57,7 +57,7 @@
     <string name="remove_star" msgid="4372327933122106128">"Видалити зірочку"</string>
     <string name="archive" msgid="847250094775910499">"Архів"</string>
     <string name="report_spam" msgid="6467567747975393907">"Повідомити про спам"</string>
-    <string name="mark_not_spam" msgid="694891665407228160">"Повідомити, що це не спам"</string>
+    <string name="mark_not_spam" msgid="694891665407228160">"Позначити, що це не спам"</string>
     <string name="report_phishing" msgid="5714205737453138338">"Повідомити про фішинг"</string>
     <string name="delete" msgid="844871204175957681">"Видалити"</string>
     <string name="next" msgid="4674401197968248302">"Старіша"</string>
