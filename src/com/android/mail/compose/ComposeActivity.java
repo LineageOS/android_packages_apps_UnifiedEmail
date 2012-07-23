@@ -81,6 +81,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.DraftType;
+import com.android.mail.ui.MailActivity;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -404,6 +405,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                         account = a;
                     }
                 }
+            } else {
+                account = syncingAccounts[0];
             }
         }
         return account;
@@ -640,6 +643,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mAccount = account;
             mCachedSettings = mAccount.settings;
             appendSignature();
+        }
+        if (mAccount != null) {
+            MailActivity.setForegroundNdef(MailActivity.getMailtoNdef(mAccount.name));
         }
     }
 

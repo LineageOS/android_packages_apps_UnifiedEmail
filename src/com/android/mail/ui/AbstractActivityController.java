@@ -385,6 +385,9 @@ public abstract class AbstractActivityController implements ActivityController {
         LogUtils.d(LOG_TAG, "onAccountChanged (%s) called.", account.uri);
         final boolean accountChanged = (mAccount == null) || !account.uri.equals(mAccount.uri);
         if (accountChanged) {
+            if (account != null) {
+                MailActivity.setForegroundNdef(MailActivity.getMailtoNdef(account.name));
+            }
             switchAccount(account);
             return;
         }
