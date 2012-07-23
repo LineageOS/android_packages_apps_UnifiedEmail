@@ -743,7 +743,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             if (count > 0 || draftCount <= 0) {
                 messageInfo.append(" ");
             }
-            if (count > 0) {
+            if (count > 1) {
                 messageInfo.append(count + "");
             }
             if (draftCount > 0) {
