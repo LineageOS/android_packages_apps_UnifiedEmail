@@ -47,6 +47,9 @@ public class ConversationInfo {
         messageCount = count;
         draftCount = draft;
         messageInfos = new ArrayList<MessageInfo>();
+        firstSnippet = first;
+        firstUnreadSnippet = firstUnread;
+        lastSnippet = last;
         sendersInfo = senders;
     }
 
@@ -59,6 +62,9 @@ public class ConversationInfo {
         obj.put(CONV_MESSAGE_COUNT, info.messageCount);
         obj.put(CONV_DRAFT_COUNT, info.draftCount);
         obj.put(CONV_SENDERS_DEPRECATED, info.sendersInfo);
+        obj.put(CONV_FIRST_SNIPPET, info.firstSnippet);
+        obj.put(CONV_FIRST_UNREAD_SNIPPET, info.firstUnreadSnippet);
+        obj.put(CONV_LAST_SNIPPET, info.lastSnippet);
         JSONArray array = new JSONArray();
         for (MessageInfo msgInfo : info.messageInfos) {
             array.put(MessageInfo.toJSON(msgInfo));
@@ -93,6 +99,11 @@ public class ConversationInfo {
     public void markRead(boolean read) {
         for (MessageInfo msg : messageInfos) {
             msg.markRead(read);
+        }
+        if (read) {
+            firstSnippet = lastSnippet;
+        } else {
+            firstSnippet = firstUnreadSnippet;
         }
     }
 }
