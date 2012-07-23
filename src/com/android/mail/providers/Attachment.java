@@ -260,19 +260,9 @@ public class Attachment implements Parcelable {
                 !isSavedToExternal();
     }
 
-    /**
-     * If this attachment is an image, returns a Uri pointing to the image that can be used as a
-     * thumbnail. If the provider supports dedicated thumbnails, it will be relatively small, but
-     * if not, the image may be arbitrarily large. Client code must handle this efficiently. For
-     * non-image attachments, this method will return null. This method may also return null if the
-     * attachment is not yet downloaded.
-     */
-    public Uri getImageUri() {
-        if (!isImage()) {
-            return null;
-        }
-
-        return (thumbnailUri != null) ? thumbnailUri : contentUri;
+    public boolean shouldShowProgress() {
+        return state == AttachmentState.DOWNLOADING
+                && size > 0 && downloadedSize > 0 && downloadedSize < size;
     }
 
     // Methods to support JSON [de-]serialization of Attachment data
@@ -339,5 +329,4 @@ public class Attachment implements Parcelable {
         }
         return results;
     }
-
 }

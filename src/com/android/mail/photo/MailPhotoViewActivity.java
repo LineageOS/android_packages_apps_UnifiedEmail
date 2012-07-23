@@ -7,12 +7,15 @@ import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
 
 import com.android.ex.photo.PhotoViewActivity;
 import com.android.mail.R;
 import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
+import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.Utils;
 
@@ -28,6 +31,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_PROGRESS);
         super.onCreate(savedInstanceState);
 
         mActionHandler = new AttachmentActionHandler(this, null);
@@ -54,7 +58,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
 
     /**
      * Updates the action items to tweak their visibility in case
-     * there is functionality thati is not relevant (eg, the Save
+     * there is functionality that is not relevant (eg, the Save
      * button should not appear if the photo has already been saved).
      */
     private void updateActionItems() {
@@ -101,16 +105,37 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         final Attachment attachment = getCurrentAttachment();
         final boolean isDownloading = attachment.isDownloading();
         final boolean isSavedToExternal = attachment.isSavedToExternal();
+        final boolean showProgress = attachment.shouldShowProgress();
 
         final ActionBar actionBar = getActionBar();
         String subtitle =
                 AttachmentUtils.convertToHumanReadableSize(this, attachment.size);
 
-        if (isSavedToExternal) {
-            subtitle = getResources().getString(R.string.saved) + " " + subtitle;
-            actionBar.setSubtitle(subtitle);
-        } else if (isDownloading) {
-            actionBar.setSubtitle(R.string.saving);
+        // update the progress
+        if (isDownloading) {
+            final double progress = (double) attachment.downloadedSize / attachment.size;
+            setProgress((int) (progress * 10000));
+            setProgressBarVisibility(true);
+            setProgressBarIndeterminate(!showProgress);
+        } else {
+            setProgressBarVisibility(false);
+        }
+
+        // update the status
+        // There are 4 states
+        //      1. Download failed
+        //      2. Saved, Attachment Size
+        //      3. Saving...
+        //      4. Attachment Size
+        if (attachment.state == AttachmentState.FAILED) {
+            actionBar.setSubtitle(getResources().getString(R.string.download_failed));
+            setEmptyViewVisibility(View.GONE);
+        } else if (isSavedToExternal) {
+            actionBar.setSubtitle(
+                    getResources().getString(R.string.saved) + " " + subtitle);
+        } else if (isDownloading &&
+                attachment.destination == AttachmentDestination.EXTERNAL) {
+                actionBar.setSubtitle(R.string.saving);
         } else {
             actionBar.setSubtitle(subtitle);
         }
