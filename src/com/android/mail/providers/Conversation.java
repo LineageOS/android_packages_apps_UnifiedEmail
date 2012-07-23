@@ -394,7 +394,8 @@ public class Conversation implements Parcelable {
      * conversation info or the original deprecated snippet string.
      */
     public String getSnippet() {
-        return conversationInfo != null ? conversationInfo.firstSnippet : snippet;
+        return conversationInfo != null && !TextUtils.isEmpty(conversationInfo.firstSnippet) ?
+                conversationInfo.firstSnippet : snippet;
     }
 
     /**
