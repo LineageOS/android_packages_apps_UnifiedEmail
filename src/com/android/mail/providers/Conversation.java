@@ -55,6 +55,7 @@ public class Conversation implements Parcelable {
     /**
      * @see UIProvider.ConversationColumns#SNIPPET
      */
+    @Deprecated
     public String snippet;
     /**
      * @see UIProvider.ConversationColumns#HAS_ATTACHMENTS
@@ -386,6 +387,14 @@ public class Conversation implements Parcelable {
     public static Collection<Conversation> listOf(Conversation in) {
         final Collection<Conversation> target = (in == null) ? EMPTY : ImmutableList.of(in);
         return target;
+    }
+
+    /**
+     * Get the snippet for this conversation. Masks that it may come from
+     * conversation info or the original deprecated snippet string.
+     */
+    public String getSnippet() {
+        return conversationInfo != null ? conversationInfo.firstSnippet : snippet;
     }
 
     /**

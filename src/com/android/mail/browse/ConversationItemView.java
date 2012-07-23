@@ -576,7 +576,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     private SpannableStringBuilder createSubject(boolean isUnread, boolean activated) {
         final String subject = filterTag(mHeader.conversation.subject);
-        final String snippet = mHeader.conversation.snippet;
+        final String snippet = mHeader.conversation.getSnippet();
         int subjectColor = activated ? ACTIVATED_TEXT_COLOR : isUnread ? SUBJECT_TEXT_COLOR_UNREAD
                 : SUBJECT_TEXT_COLOR_READ;
         int snippetColor = activated ? ACTIVATED_TEXT_COLOR : isUnread ? SNIPPET_TEXT_COLOR_UNREAD

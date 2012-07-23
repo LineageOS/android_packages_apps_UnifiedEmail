@@ -298,6 +298,6 @@ public class ConversationItemViewModel {
      */
     public CharSequence getContentDescription(Context context) {
         return context.getString(R.string.content_description, conversation.subject,
-                conversation.snippet);
+                conversation.getSnippet());
     }
 }
