@@ -64,6 +64,7 @@ public abstract class MailAppProvider extends ContentProvider
     private static final String SHARED_PREFERENCES_NAME = "MailAppProvider";
     private static final String ACCOUNT_LIST_KEY = "accountList";
     private static final String LAST_VIEWED_ACCOUNT_KEY = "lastViewedAccount";
+    private static final String LAST_SENT_FROM_ACCOUNT_KEY = "lastSendFromAccount";
 
     /**
      * Extra used in the result from the activity launched by the intent specified
@@ -420,6 +421,24 @@ public abstract class MailAppProvider extends ContentProvider
     public void setLastViewedAccount(String accountUriStr) {
         final SharedPreferences.Editor editor = getPreferences().edit();
         editor.putString(LAST_VIEWED_ACCOUNT_KEY, accountUriStr);
+        editor.apply();
+    }
+
+    /**
+     * Returns the {@link Account#uri} (in String form) of the last account the
+     * user compose a message from.
+     */
+    public String getLastSentFromAccount() {
+        return getPreferences().getString(LAST_SENT_FROM_ACCOUNT_KEY, null);
+    }
+
+    /**
+     * Persists the {@link Account#uri} (in String form) of the last account the
+     * user compose a message from.
+     */
+    public void setLastSentFromAccount(String accountUriStr) {
+        final SharedPreferences.Editor editor = getPreferences().edit();
+        editor.putString(LAST_SENT_FROM_ACCOUNT_KEY, accountUriStr);
         editor.apply();
     }
 

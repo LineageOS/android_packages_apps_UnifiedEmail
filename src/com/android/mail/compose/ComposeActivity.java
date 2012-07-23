@@ -73,6 +73,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.MessageModification;
 import com.android.mail.providers.ReplyFromAccount;
@@ -183,6 +184,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_FOCUS_SELECTION_END = null;
     private static final String EXTRA_MESSAGE = "extraMessage";
     private static final int REFERENCE_MESSAGE_LOADER = 0;
+    private static final String EXTRA_SELECTED_ACCOUNT = "selectedAccount";
 
     /**
      * A single thread for running tasks in the background.
@@ -290,44 +292,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         setContentView(R.layout.compose);
         findViews();
         Intent intent = getIntent();
-        Account account = null;
         Message message;
         boolean showQuotedText = false;
         int action;
-        Object accountExtra = intent != null && intent.getExtras() != null ? intent.getExtras()
-                .get(Utils.EXTRA_ACCOUNT) : null;
-        final Account[] syncingAccounts = AccountUtils.getSyncingAccounts(this);
+        // Check for any of the possibly supplied accounts.;
+        Account account = null;
         if (hadSavedInstanceStateMessage(savedInstanceState)) {
             action = savedInstanceState.getInt(EXTRA_ACTION, COMPOSE);
             account = savedInstanceState.getParcelable(Utils.EXTRA_ACCOUNT);
             message = (Message) savedInstanceState.getParcelable(EXTRA_MESSAGE);
             mRefMessage = (Message) savedInstanceState.getParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE);
         } else {
-            if (accountExtra instanceof Account) {
-                account = (Account) intent.getExtras().get(Utils.EXTRA_ACCOUNT);
-            } else if (accountExtra instanceof String) {
-                // For backwards compatibility
-                String extraAccount = intent.getStringExtra(Utils.EXTRA_ACCOUNT);
-                if (syncingAccounts.length > 0) {
-                    if (!TextUtils.isEmpty(extraAccount)) {
-                        for (Account a : syncingAccounts) {
-                            if (a.name.equals(extraAccount)) {
-                                account = a;
-                            }
-                        }
-                    }
-                }
-            }
+            account = obtainAccount(intent);
             action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
             // Initialize the message from the message in the intent
             message = (Message) intent.getParcelableExtra(ORIGINAL_DRAFT_MESSAGE);
             mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
             mRefMessageUri = (Uri) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI);
-        }
-        if (account == null) {
-            if (syncingAccounts != null && syncingAccounts.length > 0) {
-                    account = syncingAccounts[0];
-            }
         }
 
         setAccount(account);
@@ -387,6 +368,45 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             initFromExtras(intent);
         }
         finishSetup(action, intent, savedInstanceState, showQuotedText);
+    }
+
+    private Account obtainAccount(Intent intent) {
+        Account account = null;
+        Object accountExtra = null;
+        if (intent != null && intent.getExtras() != null) {
+            accountExtra = intent.getExtras().get(Utils.EXTRA_ACCOUNT);
+            if (accountExtra instanceof Account) {
+                return (Account) accountExtra;
+            }
+            accountExtra = intent.getStringExtra(EXTRA_SELECTED_ACCOUNT);
+        }
+        if (account == null) {
+            final String lastAccountUri = MailAppProvider.getInstance().getLastSentFromAccount();
+            if (!TextUtils.isEmpty(lastAccountUri)) {
+                accountExtra = Uri.parse(lastAccountUri);
+            }
+        }
+        final Account[] syncingAccounts = AccountUtils.getSyncingAccounts(this);
+        if (syncingAccounts.length > 0) {
+            if (accountExtra instanceof String && !TextUtils.isEmpty((String) accountExtra)) {
+                // For backwards compatibility, we need to check account
+                // names.
+                for (Account a : syncingAccounts) {
+                    if (a.name.equals(accountExtra)) {
+                        account = a;
+                    }
+                }
+            } else if (accountExtra instanceof Uri) {
+                // The uri of the last viewed account is what is stored in
+                // the current code base.
+                for (Account a : syncingAccounts) {
+                    if (a.uri.equals(accountExtra)) {
+                        account = a;
+                    }
+                }
+            }
+        }
+        return account;
     }
 
     private void finishSetup(int action, Intent intent, Bundle savedInstanceState,
@@ -2151,6 +2171,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
             @Override
             public void sendOrSaveFinished(SendOrSaveTask task, boolean success) {
+                // Update the last sent from account.
+                if (mAccount != null) {
+                    MailAppProvider.getInstance().setLastSentFromAccount(mAccount.uri.toString());
+                }
                 if (success) {
                     // Successfully sent or saved so reset change markers
                     discardChanges();
