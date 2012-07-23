@@ -113,7 +113,7 @@ public abstract class MailAppProvider extends ContentProvider
     protected abstract Intent getNoAccountsIntent(Context context);
 
     /**
-     * The cursor returned from a call to {@link android.content.ContentResolver#query() with this
+     * The cursor returned from a call to {@link android.content.ContentResolver#query()} with this
      * uri will return a cursor that with columns that are a subset of the columns specified
      * in {@link UIProvider.ConversationColumns}
      * The cursor returned by this query can return a {@link android.os.Bundle}
