@@ -27,6 +27,7 @@ import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.ComponentName;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -61,10 +62,12 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationPagerController;
+import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.compose.ComposeActivity;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
@@ -76,6 +79,7 @@ import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
+import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -87,6 +91,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TimerTask;
@@ -275,7 +280,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Get the conversation list fragment for this activity. If the conversation list fragment
      * is not attached, this method returns null
-     * @return
+     *
      */
     protected ConversationListFragment getConversationListFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION_LIST);
@@ -288,7 +293,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Get the conversation view fragment for this activity. If the conversation view fragment
      * is not attached, this method returns null
-     * @return
+     *
      */
     protected ConversationViewFragment getConversationViewFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION);
@@ -301,7 +306,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Returns the folder list fragment attached with this activity. If no such fragment is attached
      * this method returns null.
-     * @return
+     *
      */
     protected FolderListFragment getFolderListFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_FOLDER_LIST);
@@ -353,7 +358,6 @@ public abstract class AbstractActivityController implements ActivityController {
      * Different layouts will have their own notion on the visibility of
      * fragments, so this method needs to be overriden.
      *
-     * @return
      */
     protected abstract boolean isConversationListVisible();
 
@@ -689,11 +693,6 @@ public abstract class AbstractActivityController implements ActivityController {
             case R.id.report_phishing:
                 delete(target, getAction(R.id.report_phishing, target));
                 break;
-            case R.id.inside_conversation_unread:
-                updateConversation(Conversation.listOf(mCurrentConversation),
-                        ConversationColumns.READ, 0);
-                mViewMode.enterConversationListMode();
-                break;
             case android.R.id.home:
                 onUpPressed();
                 break;
@@ -758,6 +757,104 @@ public abstract class AbstractActivityController implements ActivityController {
             String value) {
         mConversationListCursor.updateString(mContext, target, columnName, value);
         refreshConversationList();
+    }
+
+    @Override
+    public void markConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
+            String originalConversationInfo) {
+        // locally mark conversation unread (the provider is supposed to propagate message unread
+        // to conversation unread)
+        conv.read = false;
+
+        // mark the entire conversation unread if no messages are specified
+        if (unreadMessageUris == null || unreadMessageUris.isEmpty()) {
+            markConversationsRead(Collections.singletonList(conv), false /* read */);
+        } else {
+
+            mConversationListCursor.setConversationColumn(conv.uri.toString(),
+                    ConversationColumns.READ, 0);
+
+            // locally update conversation's conversationInfo JSON to revert to original version
+            mConversationListCursor.setConversationColumn(conv.uri.toString(),
+                    ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
+
+            // applyBatch with each CPO as an UPDATE op on each affected message uri
+            final ArrayList<ContentProviderOperation> ops = Lists.newArrayList();
+            String authority = null;
+            for (Uri messageUri : unreadMessageUris) {
+                if (authority == null) {
+                    authority = messageUri.getAuthority();
+                }
+                ops.add(ContentProviderOperation.newUpdate(messageUri)
+                        .withValue(UIProvider.MessageColumns.READ, 0)
+                        .build());
+            }
+
+            new ContentProviderTask() {
+                @Override
+                protected void onPostExecute(Result result) {
+                    // TODO: handle errors?
+                }
+            }.run(mResolver, authority, ops);
+
+        }
+
+        mViewMode.enterConversationListMode();
+    }
+
+    @Override
+    public void markConversationsRead(Collection<Conversation> targets, boolean read) {
+        ContentValues values;
+        ConversationInfo info;
+        for (Conversation target : targets) {
+            values = new ContentValues();
+            values.put(ConversationColumns.READ, read);
+            info = target.conversationInfo;
+            if (info != null) {
+                try {
+                    info.markRead(read);
+                    values.put(ConversationColumns.CONVERSATION_INFO,
+                            ConversationInfo.toString(info));
+                } catch (JSONException e) {
+                    LogUtils.e(LOG_TAG, e, "Error updating conversation info");
+                }
+            }
+            updateConversation(Conversation.listOf(target), values);
+        }
+        // Update the conversations in the selection too.
+        for (final Conversation c : targets) {
+            c.read = read;
+        }
+    }
+
+    @Override
+    public void starMessage(ConversationMessage msg, boolean starred) {
+        if (msg.starred == starred) {
+            return;
+        }
+
+        msg.starred = starred;
+
+        // locally propagate the change to the owning conversation
+        // (figure the provider will properly propagate the change when it commits it)
+        //
+        // when unstarring, only propagate the change if this was the only message starred
+        final boolean conversationStarred = starred || msg.isConversationStarred();
+        if (conversationStarred != msg.conversation.starred) {
+            msg.conversation.starred = conversationStarred;
+            mConversationListCursor.setConversationColumn(msg.conversationUri,
+                    ConversationColumns.STARRED, conversationStarred);
+        }
+
+        final ContentValues values = new ContentValues(1);
+        values.put(UIProvider.MessageColumns.STARRED, starred ? 1 : 0);
+
+        new ContentProviderTask.UpdateTask() {
+            @Override
+            protected void onPostExecute(Result result) {
+                // TODO: handle errors?
+            }
+        }.run(mResolver, msg.uri, values, null /* selection*/, null /* selectionArgs */);
     }
 
     private void requestFolderRefresh() {
@@ -885,7 +982,7 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
-            ((AnimatedAdapter) convListFragment.getAnimatedAdapter())
+            convListFragment.getAnimatedAdapter()
             .onSaveInstanceState(outState);
         }
     }
@@ -1006,7 +1103,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
-            ((AnimatedAdapter) convListFragment.getAnimatedAdapter())
+            convListFragment.getAnimatedAdapter()
                     .onRestoreInstanceState(savedState);
         }
         /**
@@ -1154,7 +1251,7 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Returns true if we are waiting for the account to sync, and cannot show any folders or
      * conversation for the current account yet.
-     * @return
+     *
      */
     public boolean inWaitMode() {
         final FragmentManager manager = mActivity.getFragmentManager();
@@ -1668,7 +1765,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         /**
          * Returns true if this action has been performed, false otherwise.
-         * @return
+         *
          */
         private synchronized boolean isPerformed() {
             if (mCompleted) {
@@ -2003,39 +2100,6 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
-    @Override
-    public void sendConversationRead(String toFragment, Conversation conversation, boolean state,
-            boolean local) {
-        if (toFragment.equals(TAG_CONVERSATION_LIST)) {
-            if (mConversationListCursor != null) {
-                if (local) {
-                    mConversationListCursor.setConversationColumn(conversation.uri.toString(), ConversationColumns.READ,
-                            state);
-                } else {
-                    mConversationListCursor.markRead(mContext, state, conversation);
-                }
-            }
-        } else if (toFragment.equals(TAG_CONVERSATION)) {
-            // TODO Handle setting read in conversation view
-        }
-    }
-
-    @Override
-    public void sendConversationUriStarred(String toFragment, String conversationUri,
-            boolean state, boolean local) {
-        if (toFragment.equals(TAG_CONVERSATION_LIST)) {
-            if (mConversationListCursor != null) {
-                if (local) {
-                    mConversationListCursor.setConversationColumn(conversationUri, ConversationColumns.STARRED, state);
-                } else {
-                    mConversationListCursor.updateBoolean(mContext, conversationUri, ConversationColumns.STARRED, state);
-                }
-            }
-        } else if (toFragment.equals(TAG_CONVERSATION)) {
-            // TODO Handle setting starred in conversation view
-        }
-    }
-
     /**
      * Destroy the pending {@link DestructiveAction} till now and assign the given action as the
      * next destructive action..
@@ -2136,7 +2200,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         /**
          * Returns true if this action has been performed, false otherwise.
-         * @return
+         *
          */
         private synchronized boolean isPerformed() {
             if (mCompleted) {

@@ -28,12 +28,12 @@ import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
+import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock.OnClickListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.google.common.collect.Lists;
 
@@ -114,7 +114,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     }
 
     public class MessageHeaderItem extends ConversationOverlayItem {
-        public final Message message;
+        public final ConversationMessage message;
 
         // view state variables
         private boolean mExpanded;
@@ -125,7 +125,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public CharSequence timestampLong;
         public CharSequence recipientSummaryText;
 
-        private MessageHeaderItem(Message message, boolean expanded) {
+        private MessageHeaderItem(ConversationMessage message, boolean expanded) {
             this.message = message;
             mExpanded = expanded;
 
@@ -341,7 +341,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         return addItem(new ConversationHeaderItem(conv));
     }
 
-    public int addMessageHeader(Message msg, boolean expanded) {
+    public int addMessageHeader(ConversationMessage msg, boolean expanded) {
         return addItem(new MessageHeaderItem(msg, expanded));
     }
 
@@ -349,7 +349,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         return addItem(new MessageFooterItem(headerItem));
     }
 
-    public MessageHeaderItem newMessageHeaderItem(Message message, boolean expanded) {
+    public MessageHeaderItem newMessageHeaderItem(ConversationMessage message, boolean expanded) {
         return new MessageHeaderItem(message, expanded);
     }
 

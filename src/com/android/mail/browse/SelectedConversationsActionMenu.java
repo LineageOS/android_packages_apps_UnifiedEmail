@@ -262,27 +262,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      */
     private void markConversationsRead(boolean read) {
         final Collection<Conversation> targets = mSelectionSet.values();
-        ContentValues values;
-        ConversationInfo info;
-        for (Conversation target : targets) {
-            values = new ContentValues();
-            values.put(ConversationColumns.READ, read);
-            info = target.conversationInfo;
-            if (info != null) {
-                try {
-                    info.markRead(read);
-                    values.put(ConversationColumns.CONVERSATION_INFO,
-                            ConversationInfo.toString(info));
-                } catch (JSONException e) {
-                    LogUtils.e(LOG_TAG, e, "Error updating conversation info");
-                }
-            }
-            mUpdater.updateConversation(Conversation.listOf(target), values);
-        }
-        // Update the conversations in the selection too.
-        for (final Conversation c : targets) {
-            c.read = read;
-        }
+        mUpdater.markConversationsRead(targets, read);
         updateSelection();
     }
 
