@@ -227,4 +227,12 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
 
         return new Attachment(cursor);
     }
+
+    // Overriding so that if the download fails, we
+    // do not keep showing the circular progress bar
+    public void setEmptyViewVisibility(int visibility) {
+        if (getCurrentAttachment().state != AttachmentState.FAILED) {
+            super.setEmptyViewVisibility(visibility);
+        }
+    }
 }
