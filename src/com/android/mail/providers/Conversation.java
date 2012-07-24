@@ -302,7 +302,8 @@ public class Conversation implements Parcelable {
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
             boolean starred, String folderList, String rawFolders, int convFlags,
-            int personalLevel, boolean spam, boolean phishing, boolean muted, Uri accountUri) {
+            int personalLevel, boolean spam, boolean phishing, boolean muted, Uri accountUri,
+            ConversationInfo conversationInfo) {
 
         final Conversation conversation = new Conversation();
 
@@ -329,6 +330,7 @@ public class Conversation implements Parcelable {
         conversation.muted = muted;
         conversation.color = 0;
         conversation.accountUri = accountUri;
+        conversation.conversationInfo = conversationInfo;
         return conversation;
     }
 
