@@ -236,12 +236,18 @@ public class WidgetService extends RemoteViewsService {
 
             // We want to limit the query result to 25 and don't want these queries to cause network
             // traffic
+            // We also want this cursor to receive notifications on all changes.  Any change that
+            // the user made locally, the default policy of the UI provider is to not send
+            // notifications for.  But in this case, since the widget is not using the
+            // ConversationCursor instance that the UI is using, the widget would not be updated.
             final Uri.Builder builder = mFolder.conversationListUri.buildUpon();
             final String maxConversations = Integer.toString(MAX_CONVERSATIONS_COUNT);
             final Uri widgetConversationQueryUri = builder
                     .appendQueryParameter(ConversationListQueryParameters.LIMIT, maxConversations)
                     .appendQueryParameter(ConversationListQueryParameters.USE_NETWORK,
-                            Boolean.FALSE.toString()).build();
+                            Boolean.FALSE.toString())
+                    .appendQueryParameter(ConversationListQueryParameters.ALL_NOTIFICATIONS,
+                            Boolean.TRUE.toString()).build();
 
             final Resources res = mContext.getResources();
             mConversationCursorLoader = new CursorLoader(mContext, widgetConversationQueryUri,
@@ -442,8 +448,8 @@ public class WidgetService extends RemoteViewsService {
                 remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
                 remoteViews.setTextViewText(R.id.widget_folder, folderName);
                 remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
-                remoteViews.setTextViewText(
-                        R.id.widget_unread_count, Utils.getUnreadCountString(mContext, unreadCount));
+                remoteViews.setTextViewText(R.id.widget_unread_count,
+                        Utils.getUnreadCountString(mContext, unreadCount));
 
                 appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, remoteViews);
             } else if (loader == mConversationCursorLoader) {
