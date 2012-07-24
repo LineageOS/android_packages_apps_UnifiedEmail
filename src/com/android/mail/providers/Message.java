@@ -48,7 +48,7 @@ public class Message implements Parcelable {
     /**
      * @see UIProvider.MessageColumns#CONVERSATION_ID
      */
-    public String conversationUri;
+    public Uri conversationUri;
     /**
      * @see UIProvider.MessageColumns#SUBJECT
      */
@@ -205,7 +205,7 @@ public class Message implements Parcelable {
         dest.writeLong(id);
         dest.writeLong(serverId);
         dest.writeParcelable(uri, 0);
-        dest.writeString(conversationUri);
+        dest.writeParcelable(conversationUri, 0);
         dest.writeString(subject);
         dest.writeString(snippet);
         dest.writeString(from);
@@ -240,7 +240,7 @@ public class Message implements Parcelable {
         id = in.readLong();
         serverId = in.readLong();
         uri = in.readParcelable(null);
-        conversationUri = in.readString();
+        conversationUri = in.readParcelable(null);
         subject = in.readString();
         snippet = in.readString();
         from = in.readString();
@@ -298,9 +298,10 @@ public class Message implements Parcelable {
         if (cursor != null) {
             id = cursor.getLong(UIProvider.MESSAGE_ID_COLUMN);
             serverId = cursor.getLong(UIProvider.MESSAGE_SERVER_ID_COLUMN);
-            String message = cursor.getString(UIProvider.MESSAGE_URI_COLUMN);
-            uri = !TextUtils.isEmpty(message) ? Uri.parse(message) : null;
-            conversationUri = cursor.getString(UIProvider.MESSAGE_CONVERSATION_URI_COLUMN);
+            final String messageUriStr = cursor.getString(UIProvider.MESSAGE_URI_COLUMN);
+            uri = !TextUtils.isEmpty(messageUriStr) ? Uri.parse(messageUriStr) : null;
+            final String convUriStr = cursor.getString(UIProvider.MESSAGE_CONVERSATION_URI_COLUMN);
+            conversationUri = !TextUtils.isEmpty(convUriStr) ? Uri.parse(convUriStr) : null;
             subject = cursor.getString(UIProvider.MESSAGE_SUBJECT_COLUMN);
             snippet = cursor.getString(UIProvider.MESSAGE_SNIPPET_COLUMN);
             from = cursor.getString(UIProvider.MESSAGE_FROM_COLUMN);

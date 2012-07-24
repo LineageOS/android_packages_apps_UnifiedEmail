@@ -441,9 +441,10 @@ public final class ConversationCursor implements Cursor {
         return Uri.decode(underlyingUri.toString());
     }
 
-    public void setConversationColumn(String uriString, String columnName, Object value) {
+    public void setConversationColumn(Uri conversationUri, String columnName, Object value) {
+        final String uriStr = uriStringFromCachingUri(conversationUri);
         synchronized (mCacheMapLock) {
-            cacheValue(uriString, columnName, value);
+            cacheValue(uriStr, columnName, value);
         }
         notifyDataChanged();
     }
