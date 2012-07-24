@@ -54,6 +54,7 @@ public class SwipeHelper {
     private int MAX_ESCAPE_ANIMATION_DURATION = 400; // ms
     private int MAX_DISMISS_VELOCITY = 2000; // dp/sec
     private static final int SNAP_ANIM_LEN = SLOW_ANIMATIONS ? 1000 : 1; // ms
+    private static final int DISMISS_ANIMATION_DURATION = 500;
 
     public static float ALPHA_FADE_START = 0f; // fraction of thumbnail width
                                                  // where fade starts
@@ -268,23 +269,12 @@ public class SwipeHelper {
         anim.start();
     }
 
-    private void dismissChildren(final Collection<ConversationItemView> views, float velocity) {
-        AnimatorListenerAdapter listener = new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mCallback.onChildrenDismissed(mCurrView, views);
-                mCurrView.getView().setLayerType(View.LAYER_TYPE_NONE, null);
-            }
-        };
-        dismissChildren(views, velocity, listener);
-    }
-
     private void dismissChildren(final Collection<ConversationItemView> views, float velocity,
             AnimatorListenerAdapter listener) {
         final View animView = mCurrView.getView();
         final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(mCurrView);
         float newPos = determinePos(animView, velocity);
-        int duration = determineDuration(animView, newPos, velocity);
+        int duration = DISMISS_ANIMATION_DURATION;
         ArrayList<Animator> animations = new ArrayList<Animator>();
         ObjectAnimator anim;
         for (final ConversationItemView view : views) {

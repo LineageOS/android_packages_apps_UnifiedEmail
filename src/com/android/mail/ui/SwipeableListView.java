@@ -94,6 +94,10 @@ public class SwipeableListView extends ListView implements Callback {
         mSwipeAction = action;
     }
 
+    public int getSwipeAction() {
+        return mSwipeAction;
+    }
+
     public void setSelectionSet(ConversationSelectionSet set) {
         mConvSelectionSet = set;
     }
@@ -285,14 +289,16 @@ public class SwipeableListView extends ListView implements Callback {
     /**
      * Archive items using the swipe away animation before shrinking them away.
      */
-    public void archiveItems(ArrayList<ConversationItemView> views,
+    public void destroyItems(ArrayList<ConversationItemView> views,
             final DestructiveAction listener) {
         if (views == null || views.size() == 0) {
             return;
         }
         final ArrayList<Conversation> conversations = new ArrayList<Conversation>();
         for (ConversationItemView view : views) {
-            conversations.add(view.getConversation());
+            Conversation conv = view.getConversation();
+            conv.position = view.getParent() != null ? getPositionForView(view) : -1;
+            conversations.add(conv);
         }
         mSwipeHelper.dismissChildren(views.get(0), views, new AnimatorListenerAdapter() {
             @Override
