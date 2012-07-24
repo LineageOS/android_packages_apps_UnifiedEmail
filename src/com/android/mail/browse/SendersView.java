@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -112,6 +113,8 @@ public class SendersView extends TextView {
             sender = conversationInfo.messageInfos.get(i).sender;
             if (TextUtils.isEmpty(sender)) {
                 sender = getMe();
+            } else {
+                sender = Html.fromHtml(sender).toString();
             }
             isElided = TextUtils.equals(sender, MessageInfo.SENDER_LIST_TOKEN_ELIDED);
             if (!isElided) {
