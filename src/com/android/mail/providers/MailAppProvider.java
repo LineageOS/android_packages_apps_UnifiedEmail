@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 
 
 /**
- * The Account Cache provider allows email providers to register "accounts" and the UI has a single
+ * The Mail App provider allows email providers to register "accounts" and the UI has a single
  * place to query for the list of accounts.
  *
  * During development this will allow new account types to be added, and allow them to be shown in
@@ -130,7 +130,7 @@ public abstract class MailAppProvider extends ContentProvider
     }
 
     /** Default constructor */
-    public MailAppProvider() {
+    protected MailAppProvider() {
         sInstance = this;
     }
 

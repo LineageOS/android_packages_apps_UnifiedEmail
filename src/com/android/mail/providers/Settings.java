@@ -16,6 +16,8 @@
 
 package com.android.mail.providers;
 
+import com.google.common.base.Objects;
+
 import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.DefaultReplyBehavior;
@@ -30,10 +32,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 /**
  * Model to hold Settings for an account.
@@ -92,6 +94,9 @@ public class Settings implements Parcelable {
     public final boolean forceReplyFromDefault;
     public final int maxAttachmentSize;
     public final int swipe;
+
+    /** Cached value of hashCode */
+    private int mHashCode;
 
     private Settings() {
         signature = null;
@@ -323,5 +328,48 @@ public class Settings implements Parcelable {
      */
     public int getMaxAttachmentSize() {
         return maxAttachmentSize <= 0 ? DEFAULT_MAX_ATTACHMENT_SIZE : maxAttachmentSize;
+    }
+
+    @Override
+    public boolean equals(final Object aThat) {
+        LogUtils.d(LOG_TAG, "Settings.equals(%s)", aThat);
+        if (this == aThat) {
+            return true;
+        }
+        if ((aThat == null) || (aThat.getClass() != this.getClass())) {
+            return false;
+        }
+        final Settings that = (Settings) aThat;
+        return (TextUtils.equals(signature, that.signature)
+                && autoAdvance == that.autoAdvance
+                && messageTextSize == that.messageTextSize
+                && replyBehavior == that.replyBehavior
+                && hideCheckboxes == that.hideCheckboxes
+                && confirmDelete == that.confirmDelete
+                && confirmArchive == that.confirmArchive
+                && confirmSend == that.confirmSend
+                && Objects.equal(defaultInbox, that.defaultInbox)
+                // Not checking default Inbox name, since is is identical to the URI check above.
+                && forceReplyFromDefault == that.forceReplyFromDefault
+                && maxAttachmentSize == that.maxAttachmentSize);
+    }
+
+    @Override
+    public int hashCode() {
+        if (mHashCode == 0) {
+            mHashCode = calculateHashCode();
+        }
+        return mHashCode;
+    }
+
+    /**
+     * Returns the hash code for this object.
+     * @return
+     */
+    private final int calculateHashCode() {
+        return super.hashCode()
+                ^ Objects.hashCode(signature, autoAdvance, messageTextSize, replyBehavior,
+                        hideCheckboxes, confirmDelete, confirmArchive, confirmSend,
+                        defaultInbox, forceReplyFromDefault, maxAttachmentSize);
     }
 }
