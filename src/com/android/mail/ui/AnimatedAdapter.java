@@ -30,6 +30,7 @@ import android.widget.SimpleCursorAdapter;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
+import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -123,16 +124,17 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        ConversationItemView view = new ConversationItemView(context, mSelectedAccount.name);
+        SwipeableConversationItemView view = new SwipeableConversationItemView(context,
+                mSelectedAccount.name);
         return view;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        if (! (view instanceof ConversationItemView)) {
+        if (! (view instanceof SwipeableConversationItemView)) {
             return;
         }
-        ((ConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
+        ((SwipeableConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
                         mSwipeEnabled, this);
     }
@@ -249,6 +251,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             if (convertView.getTranslationX() != 0) {
                 convertView.setTranslationX(0);
             }
+            if (convertView instanceof SwipeableConversationItemView) {
+                ((SwipeableConversationItemView)convertView).reset();
+            }
         }
         return super.getView(position, convertView, parent);
     }
@@ -317,8 +322,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         conversation.position = position;
         // The undo animation consists of fading in the conversation that
         // had been destroyed.
-        final ConversationItemView convView = (ConversationItemView) super.getView(position, null,
-                parent);
+        final SwipeableConversationItemView convView = (SwipeableConversationItemView) super
+                .getView(position, null, parent);
+        convView.setBackgroundVisibility(View.GONE);
         convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false, mSwipeEnabled,
                 this);
