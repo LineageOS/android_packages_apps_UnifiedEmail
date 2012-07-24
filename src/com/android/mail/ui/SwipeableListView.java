@@ -164,7 +164,7 @@ public class SwipeableListView extends ListView implements Callback {
     // Call this whenever a new action is taken; this forces a commit of any
     // existing destructive actions.
     public void commitDestructiveActions() {
-        final AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
+        final AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter != null) {
             adapter.commitLeaveBehindItems();
         }
@@ -180,7 +180,7 @@ public class SwipeableListView extends ListView implements Callback {
     private void dismissChildren(final ConversationItemView target,
             final Collection<ConversationItemView> conversationViews) {
         final Context context = getContext();
-        final AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
+        final AnimatedAdapter adapter = getAnimatedAdapter();
         final ToastBarOperation undoOp;
         if (conversationViews != null) {
             final ArrayList<Conversation> conversations = new ArrayList<Conversation>(
@@ -238,7 +238,7 @@ public class SwipeableListView extends ListView implements Callback {
     private void handleLeaveBehind(ConversationItemView target, ToastBarOperation undoOp,
             Context context) {
         Conversation conv = target.getConversation();
-        final AnimatedAdapter adapter = ((AnimatedAdapter) getAdapter());
+        final AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter == null) {
             return;
         }
@@ -297,9 +297,16 @@ public class SwipeableListView extends ListView implements Callback {
         mSwipeHelper.dismissChildren(views.get(0), views, new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                ((AnimatedAdapter) getAdapter()).delete(conversations, listener);
+                AnimatedAdapter adapter = getAnimatedAdapter();
+                if (adapter != null) {
+                    adapter.delete(conversations, listener);
+                }
             }
         });
+    }
+
+    private AnimatedAdapter getAnimatedAdapter() {
+        return (AnimatedAdapter) getAdapter();
     }
 
     public interface SwipeCompleteListener {
