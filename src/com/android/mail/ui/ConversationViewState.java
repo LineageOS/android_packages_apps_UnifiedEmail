@@ -23,9 +23,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Message;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import org.json.JSONException;
 
 import java.util.Map;
 import java.util.Set;
@@ -84,8 +87,8 @@ class ConversationViewState implements Parcelable {
         return mConversationInfo;
     }
 
-    public void setInfoForConversation(Conversation conv) {
-        mConversationInfo = conv.conversationInfo.toString();
+    public void setInfoForConversation(Conversation conv) throws JSONException {
+        mConversationInfo = ConversationInfo.toString(conv.conversationInfo);
     }
 
     /**
