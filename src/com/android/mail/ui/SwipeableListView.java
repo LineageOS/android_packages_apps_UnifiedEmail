@@ -31,6 +31,7 @@ import android.widget.ListView;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
+import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.SwipeHelper.Callback;
@@ -143,6 +144,9 @@ public class SwipeableListView extends ListView implements Callback {
                 continue;
             }
             if (touchY >= slidingChild.getTop() && touchY <= slidingChild.getBottom()) {
+                if (slidingChild instanceof SwipeableConversationItemView) {
+                    return ((SwipeableConversationItemView) slidingChild).getSwipeableItemView();
+                }
                 return slidingChild;
             }
         }
@@ -280,6 +284,14 @@ public class SwipeableListView extends ListView implements Callback {
         // We do this so the underlying ScrollView knows that it won't get
         // the chance to intercept events anymore
         requestDisallowInterceptTouchEvent(true);
+        SwipeableConversationItemView view = null;
+        if (v instanceof ConversationItemView) {
+            view = (SwipeableConversationItemView)v.getParent();
+        }
+        if (view != null) {
+            view.addBackground(getContext(), getSwipeActionText());
+            view.setBackgroundVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -324,5 +336,20 @@ public class SwipeableListView extends ListView implements Callback {
         // Commit any existing destructive actions when the user selects a conversation to view.
         commitDestructiveActions();
         return super.performItemClick(view, pos, id);
+    }
+
+    /**
+     * Get the text resource corresponding to the result of a swipe.
+     */
+    public int getSwipeActionText() {
+        switch (mSwipeAction) {
+            case R.id.archive:
+                return R.string.archive;
+            case R.id.delete:
+                return R.string.delete;
+            case R.id.change_folder:
+                return R.string.remove_label;
+        }
+        return -1;
     }
 }

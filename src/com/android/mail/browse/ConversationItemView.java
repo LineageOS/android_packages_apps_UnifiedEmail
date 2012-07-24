@@ -1192,7 +1192,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             mChecked = !mChecked;
             Conversation conv = mHeader.conversation;
             // Set the list position of this item in the conversation
-            ListView listView = (ListView) getParent();
+            ListView listView = getListView();
             conv.position = mChecked && listView != null ? listView.getPositionForView(this)
                     : Conversation.NO_POSITION;
             if (mSelectedConversationSet != null) {
@@ -1296,7 +1296,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                         toggleStar();
                         handled = true;
                     } else {
-                        ListView list = (ListView) getParent();
+                        ListView list = getListView();
                         if (!isChecked() && list != null) {
                             int pos = list.getPositionForView(this);
                             list.performItemClick(this, pos, mHeader.conversation.id);
@@ -1317,6 +1317,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
 
         return handled;
+    }
+
+    private ListView getListView() {
+        return ((SwipeableConversationItemView) getParent()).getListView();
     }
 
     private boolean onTouchEventNoSwipe(MotionEvent event) {

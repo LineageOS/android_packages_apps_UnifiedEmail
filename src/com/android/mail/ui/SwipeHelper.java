@@ -58,9 +58,9 @@ public class SwipeHelper {
 
     public static float ALPHA_FADE_START = 0f; // fraction of thumbnail width
                                                  // where fade starts
-    static final float ALPHA_FADE_END = 0.5f; // fraction of thumbnail width
+    static final float ALPHA_FADE_END = 0.7f; // fraction of thumbnail width
                                               // beyond which alpha->0
-    private float mMinAlpha = 0f;
+    private float mMinAlpha = 0.5f;
 
     private float mPagingTouchSlop;
     private Callback mCallback;
