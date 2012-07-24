@@ -111,6 +111,8 @@
     <string name="add_star">Add star</string>
     <!-- Menu item: remove the star from this conversation -->
     <string name="remove_star">Remove star</string>
+    <!-- Remove the folder from this conversation [CHAR LIMIT = 30]-->
+    <string name="remove_folder">Remove folder</string>
     <!-- Menu item: archive this conversation -->
     <string name="archive">Archive</string>
     <!-- Menu item: report this conversation as spam [CHAR LIMIT = 30] -->

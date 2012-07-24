@@ -348,7 +348,7 @@ public class SwipeableListView extends ListView implements Callback {
             case R.id.delete:
                 return R.string.delete;
             case R.id.change_folder:
-                return R.string.remove_label;
+                return R.string.remove_folder;
         }
         return -1;
     }
