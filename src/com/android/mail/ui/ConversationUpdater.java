@@ -115,6 +115,16 @@ public interface ConversationUpdater extends ConversationListCallbacks {
     public DestructiveAction getBatchAction(int action);
 
     /**
+     * Get a destructive action for selected conversations. The action
+     * corresponds to Menu item identifiers, for example R.id.unread, or
+     * R.id.delete. but is not automatically added to the pending actions list.
+     * The caller must explicitly call performAction.
+     * @param action
+     * @return
+     */
+    public DestructiveAction getDeferredBatchAction(int action);
+
+    /**
      * Assign the target conversations to the given folders, and remove them from all other
      * folders that they might be assigned to.
      * @param folders the folders to assign the conversations to.

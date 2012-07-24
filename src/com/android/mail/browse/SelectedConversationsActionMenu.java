@@ -219,36 +219,36 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         }
     }
 
-    private void performDestructiveAction(final int id) {
-        final DestructiveAction action = mUpdater.getBatchAction(id);
+    private void performDestructiveAction(final int action) {
+        final DestructiveAction destructiveAction = mUpdater.getDeferredBatchAction(action);
         final Settings settings = mActivity.getSettings();
         final Collection<Conversation> conversations = mSelectionSet.values();
         final boolean showDialog = (settings != null
-                && (id == R.id.delete) ? settings.confirmDelete : settings.confirmArchive);
+                && (action == R.id.delete) ? settings.confirmDelete : settings.confirmArchive);
         if (showDialog) {
-            int resId = id == R.id.delete ? R.plurals.confirm_delete_conversation
+            int resId = action == R.id.delete ? R.plurals.confirm_delete_conversation
                     : R.plurals.confirm_archive_conversation;
             CharSequence message = Utils.formatPlural(mContext, resId, conversations.size());
             new AlertDialog.Builder(mContext).setMessage(message)
                     .setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            destroy(id, conversations, action);
+                            destroy(action, conversations, destructiveAction);
                         }
                     }).setNegativeButton(R.string.cancel, null).create().show();
         } else {
-            destroy(id, conversations, action);
+            destroy(action, conversations, destructiveAction);
         }
     }
 
-    private void destroy(int id, final Collection<Conversation> conversations,
+    private void destroy(int action, final Collection<Conversation> conversations,
             final DestructiveAction listener) {
-        if (id == R.id.archive) {
+        if (mListView.getSwipeAction() == action) {
             ArrayList<ConversationItemView> views = new ArrayList<ConversationItemView>();
             for (ConversationItemView view : mSelectionSet.views()) {
                 views.add(view);
             }
-            mListView.archiveItems(views, listener);
+            mListView.destroyItems(views, listener);
         } else {
             mUpdater.delete(conversations, listener);
         }

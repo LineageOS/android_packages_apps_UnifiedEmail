@@ -898,10 +898,10 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void delete(final Collection<Conversation> target, final DestructiveAction action) {
         // The conversation list handles deletion if it exists.
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
+        final ConversationListFragment convListFragment = getConversationListFragment();
+        if (convListFragment != null) {
             LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
-            convList.requestDelete(target, action);
+            convListFragment.requestDelete(target, action);
             return;
         }
         // Update the conversation fragment if the current conversation is deleted.
@@ -1654,7 +1654,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * clients should only require {@link DestructiveAction}s, not specific implementations of the.
      * Only the controllers should know what kind of destructive actions are being created.
      */
-    private class ConversationAction implements DestructiveAction {
+    public class ConversationAction implements DestructiveAction {
         /**
          * The action to be performed. This is specified as the resource ID of the menu item
          * corresponding to this action: R.id.delete, R.id.report_spam, etc.
@@ -2131,6 +2131,12 @@ public abstract class AbstractActivityController implements ActivityController {
     public final DestructiveAction getBatchAction(int action) {
         final DestructiveAction da = new ConversationAction(action, mSelectedSet.values(), true);
         registerDestructiveAction(da);
+        return da;
+    }
+
+    @Override
+    public final DestructiveAction getDeferredBatchAction(int action) {
+        final DestructiveAction da = new ConversationAction(action, mSelectedSet.values(), true);
         return da;
     }
 
