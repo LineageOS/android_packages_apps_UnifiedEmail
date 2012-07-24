@@ -512,6 +512,12 @@ public class UIProvider {
          */
         public static final String USE_NETWORK = "use_network";
 
+        /**
+         * Parameter used to allow the caller to indicate desire to receive all notifications.
+         * (Including ones for user initiated actions)
+         */
+        public static final String ALL_NOTIFICATIONS = "all_notifications";
+
         private ConversationListQueryParameters() {}
     }
 
