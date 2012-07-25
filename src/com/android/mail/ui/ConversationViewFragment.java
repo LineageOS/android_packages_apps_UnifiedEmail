@@ -152,6 +152,13 @@ public final class ConversationViewFragment extends Fragment implements
     private boolean mDeferredConversationLoad;
 
     /**
+     * Handles a deferred 'mark read' operation, necessary when the conversation view has finished
+     * loading before the conversation cursor. Normally null unless this situation occurs.
+     * When finally able to 'mark read', this observer will also be unregistered and cleaned up.
+     */
+    private MarkReadObserver mMarkReadObserver;
+
+    /**
      * Parcelable state of the conversation view. Can safely be used without null checking any time
      * after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      */
@@ -318,6 +325,11 @@ public final class ConversationViewFragment extends Fragment implements
         super.onDestroyView();
         mConversationContainer.setOverlayAdapter(null);
         mAdapter = null;
+        if (mMarkReadObserver != null) {
+            mActivity.getConversationUpdater().unregisterConversationListObserver(
+                    mMarkReadObserver);
+            mMarkReadObserver = null;
+        }
         mViewsCreated = false;
     }
 
@@ -656,9 +668,20 @@ public final class ConversationViewFragment extends Fragment implements
         if (!mConversation.read) {
             try {
                 mViewState.setInfoForConversation(mConversation);
-                mConversation.read = true;
-                activity.getConversationUpdater().markConversationsRead(
-                        Arrays.asList(mConversation), true /* read */);
+
+                final ConversationUpdater listController = activity.getConversationUpdater();
+                // The conversation cursor may not have finished loading by now (when launched via
+                // notification), so watch for when it finishes and mark it read then.
+                if (listController.getConversationListCursor() == null) {
+                    LogUtils.i(LOG_TAG, "deferring conv mark read on open for id=%d",
+                            mConversation.id);
+                    mMarkReadObserver = new MarkReadObserver(listController);
+                    listController.registerConversationListObserver(mMarkReadObserver);
+                } else {
+                    listController.markConversationsRead(Arrays.asList(mConversation),
+                            true /* read */);
+                }
+
             } catch (JSONException e) {
                 LogUtils.w(LOG_TAG, e, "bad ConversationInfo, unable to mark conversation read");
             }
@@ -987,6 +1010,29 @@ public final class ConversationViewFragment extends Fragment implements
             mObservable.unregisterObserver(observer);
         }
 
+    }
+
+    private class MarkReadObserver extends DataSetObserver {
+
+        private final ConversationUpdater mListController;
+
+        private MarkReadObserver(ConversationUpdater listController) {
+            mListController = listController;
+        }
+
+        @Override
+        public void onChanged() {
+            if (mListController.getConversationListCursor() == null) {
+                // nothing yet, keep watching
+                return;
+            }
+            // done loading, safe to mark read now
+            mListController.unregisterConversationListObserver(this);
+            mMarkReadObserver = null;
+            LogUtils.i(LOG_TAG, "running deferred conv mark read on open, id=%d", mConversation.id);
+            mListController.markConversationsRead(Arrays.asList(mConversation),
+                    true /* read */);
+        }
     }
 
 }
