@@ -580,7 +580,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         if (mDisableLayoutTracing) {
             return;
         }
-        LogUtils.i(TAG, msg, params);
+        LogUtils.d(TAG, msg, params);
     }
 
     private class AdapterObserver extends DataSetObserver {
