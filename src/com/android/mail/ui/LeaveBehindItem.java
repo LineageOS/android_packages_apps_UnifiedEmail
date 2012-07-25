@@ -22,7 +22,6 @@ import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,13 +31,12 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.google.common.collect.ImmutableList;
 
-public class LeaveBehindItem extends LinearLayout implements OnClickListener,
+public class LeaveBehindItem extends AnimatingItemView implements OnClickListener,
     SwipeableItemView {
 
     private ToastBarOperation mUndoOp;
     private Account mAccount;
     private AnimatedAdapter mAdapter;
-    private Conversation mConversation;
     private ConversationCursor mConversationCursor;
 
     public LeaveBehindItem(Context context) {
@@ -65,7 +63,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate
                     // the set of
                     // commands to undo
-                    mAdapter.clearLeaveBehind(mConversation);
+                    mAdapter.clearLeaveBehind(getData());
                     mAdapter.setUndo(true);
                     mConversationCursor.undo(getContext(), mAccount.undoUri);
                 }
@@ -79,15 +77,20 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         mAccount = account;
         mAdapter = adapter;
         mConversationCursor = (ConversationCursor)adapter.getCursor();
-        mConversation = target;
+        setData(target);
         ((TextView) findViewById(R.id.undo_descriptionview)).setText(Html.fromHtml(mUndoOp
                 .getDescription(getContext())));
         ((RelativeLayout) findViewById(R.id.undo_button)).setOnClickListener(this);
     }
 
     public void commit() {
-        mConversationCursor.delete(getContext(), ImmutableList.of(mConversation));
-        mAdapter.clearLeaveBehind(mConversation);
+        Conversation conv = getData();
+        mConversationCursor.delete(getContext(), ImmutableList.of(conv));
+        mAdapter.clearLeaveBehind(conv);
+    }
+
+    public long getConversationId() {
+        return getData().id;
     }
 
     @Override
