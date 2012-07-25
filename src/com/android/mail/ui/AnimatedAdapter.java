@@ -113,7 +113,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     public void setUndo(boolean undo) {
-        if (undo) {
+        if (undo && !mLastDeletingItems.isEmpty()) {
             mUndoingItems.addAll(mLastDeletingItems);
             mLastDeletingItems.clear();
             // Start animation
@@ -279,6 +279,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 item.commit();
             }
             mLeaveBehindItems.clear();
+        }
+        if (!mLastDeletingItems.isEmpty()) {
+            mLastDeletingItems.clear();
         }
         notifyDataSetChanged();
     }
