@@ -372,6 +372,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false, mSwipeEnabled,
                 this);
+        convView.addBackground(mContext, mListView.getSwipeActionText());
+        convView.setBackgroundVisibility(View.VISIBLE);
         convView.startUndoAnimation(mViewMode, this);
         return convView;
     }

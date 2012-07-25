@@ -109,6 +109,22 @@ public class ToastBarOperation implements Parcelable {
         return desc;
     }
 
+    public String getSingularDescription(Context context) {
+        int resId = -1;
+        switch (mAction) {
+            case R.id.delete:
+                resId = R.string.deleted;
+                break;
+            case R.id.archive:
+                resId = R.string.archived;
+                break;
+            case R.id.change_folder:
+                resId = R.string.folder_removed;
+                break;
+        }
+        return(resId == -1) ? "" : context.getString(resId);
+    }
+
     @Override
     public int describeContents() {
         return 0;
