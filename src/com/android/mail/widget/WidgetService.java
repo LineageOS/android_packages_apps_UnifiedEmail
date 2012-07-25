@@ -421,12 +421,13 @@ public class WidgetService extends RemoteViewsService {
 
         @Override
         public void onLoadComplete(Loader<Cursor> loader, Cursor data) {
-            if (!data.moveToFirst()) {
-                return;
-            }
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
 
             if (loader == mFolderLoader) {
+                if (!isDataValid(data)) {
+                    return;
+                }
+
                 final int unreadCount = data.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
                 final String folderName = data.getString(UIProvider.FOLDER_NAME_COLUMN);
                 mFolderCount = data.getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
@@ -453,13 +454,26 @@ public class WidgetService extends RemoteViewsService {
 
                 appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, remoteViews);
             } else if (loader == mConversationCursorLoader) {
+
                 // We want to cache the new cursor
                 synchronized (sWidgetLock) {
-                    mConversationCursor = data;
+                    if (!isDataValid(data)) {
+                        mConversationCursor = null;
+                    } else {
+                        mConversationCursor = data;
+                    }
                 }
                 appWidgetManager.notifyAppWidgetViewDataChanged(
                         mAppWidgetId, R.id.conversation_list);
             }
+        }
+
+        /**
+         * Returns a boolean indicating whether this cursor has valid data.
+         * Note: This seeks to the first position in the cursor
+         */
+        private boolean isDataValid(Cursor cursor) {
+            return cursor != null && !cursor.isClosed() && cursor.moveToFirst();
         }
 
         /**
