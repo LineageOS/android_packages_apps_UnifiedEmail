@@ -149,6 +149,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private SuppressNotificationReceiver mNewEmailReceiver = null;
 
     protected Handler mHandler = new Handler();
+
     /**
      * The current mode of the application. All changes in mode are initiated by
      * the activity controller. View mode changes are propagated to classes that
@@ -390,7 +391,13 @@ public abstract class AbstractActivityController implements ActivityController {
         final boolean accountChanged = (mAccount == null) || !account.uri.equals(mAccount.uri);
         if (accountChanged) {
             if (account != null) {
-                MailActivity.setForegroundNdef(MailActivity.getMailtoNdef(account.name));
+                final String accountName = account.name;
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        MailActivity.setForegroundNdef(MailActivity.getMailtoNdef(accountName));
+                    }
+                });
             }
             switchAccount(account);
             return;
