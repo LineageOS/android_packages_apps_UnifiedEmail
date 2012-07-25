@@ -220,6 +220,11 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
     }
 
     public void viewAttachment() {
+        if (mAttachment.contentUri == null) {
+            LogUtils.e(LOG_TAG, "viewAttachment with null content uri");
+            return;
+        }
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
@@ -229,7 +234,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
             getContext().startActivity(intent);
         } catch (ActivityNotFoundException e) {
             // couldn't find activity for View intent
-            LogUtils.e(LOG_TAG, "Coun't find Activity for intent", e);
+            LogUtils.e(LOG_TAG, e, "Couldn't find Activity for intent");
         }
     }
 
