@@ -82,6 +82,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private Settings mCachedSettings;
     private boolean mSwipeEnabled;
     private HashMap<Long, LeaveBehindItem> mLeaveBehindItems = new HashMap<Long, LeaveBehindItem>();
+    private HashMap<Long, LeaveBehindItem> mFadeLeaveBehindItems =
+            new HashMap<Long, LeaveBehindItem>();
 
     /**
      * Used only for debugging.
@@ -163,7 +165,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (mShowFooter && position == super.getCount()) {
             return TYPE_VIEW_FOOTER;
         }
-        if (isPositionLeaveBehind(position)) {
+        if (isPositionLeaveBehind(position) || isPositionFadeLeaveBehind(position)) {
             return TYPE_VIEW_LEAVEBEHIND;
         }
         return TYPE_VIEW_CONVERSATION;
@@ -235,6 +237,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         } else if (isPositionDeleting(position)) {
             return getDeletingView(position, convertView, parent);
         }
+        if (hasFadeLeaveBehinds()) {
+            Conversation conv = new Conversation((ConversationCursor) getItem(position));
+            if(isPositionFadeLeaveBehind(conv)) {
+                LeaveBehindItem fade  = getFadeLeaveBehindItem(position, conv);
+                fade.startAnimation(mViewMode, this);
+                return fade;
+            }
+        }
         if (hasLeaveBehinds()) {
             Conversation conv = new Conversation((ConversationCursor) getItem(position));
             if(isPositionLeaveBehind(conv)) {
@@ -262,8 +272,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return !mLeaveBehindItems.isEmpty();
     }
 
+    private boolean hasFadeLeaveBehinds() {
+        return !mFadeLeaveBehindItems.isEmpty();
+    }
+
     public void setupLeaveBehind(Conversation target, ToastBarOperation undoOp, int deletedRow) {
-        commitLeaveBehindItems();
+        fadeOutLeaveBehindItems();
         LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext).inflate(
                 R.layout.swipe_leavebehind, null);
         leaveBehind.bindOperations(mSelectedAccount, this, undoOp,
@@ -272,11 +286,19 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mLastDeletingItems.add(deletedRow);
     }
 
-    public void commitLeaveBehindItems() {
+    public void fadeOutLeaveBehindItems() {
         // Remove any previously existing leave behinds.
+        final int startPosition = mListView.getFirstVisiblePosition();
+        final int endPosition = mListView.getLastVisiblePosition();
+
         if (!mLeaveBehindItems.isEmpty()) {
-            for (LeaveBehindItem item : mLeaveBehindItems.values()) {
-                item.commit();
+            for (Long id : mLeaveBehindItems.keySet()) {
+                // If the item is visible, fade it out. Otherwise, just remove
+                // it.
+                Conversation conv = mLeaveBehindItems.get(id).getData();
+                if (conv.position >= startPosition && conv.position <= endPosition) {
+                    mFadeLeaveBehindItems.put(id, mLeaveBehindItems.get(id));
+                }
             }
             mLeaveBehindItems.clear();
         }
@@ -286,8 +308,30 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         notifyDataSetChanged();
     }
 
+    public void commitLeaveBehindItems() {
+        // Remove any previously existing leave behinds.
+        if (!mLeaveBehindItems.isEmpty()) {
+            for (LeaveBehindItem item : mLeaveBehindItems.values()) {
+                item.commit();
+            }
+            for (LeaveBehindItem item : mFadeLeaveBehindItems.values()) {
+                item.commit();
+            }
+            mLeaveBehindItems.clear();
+            mFadeLeaveBehindItems.clear();
+        }
+        if (!mLastDeletingItems.isEmpty()) {
+            mLastDeletingItems.clear();
+        }
+        notifyDataSetChanged();
+    }
+
     private LeaveBehindItem getLeaveBehindItem(int position, Conversation target) {
         return mLeaveBehindItems.get(target.id);
+    }
+
+    private LeaveBehindItem getFadeLeaveBehindItem(int position, Conversation target) {
+        return mFadeLeaveBehindItems.get(target.id);
     }
 
     @Override
@@ -316,7 +360,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         conversation.position = position;
         // Destroying a conversation just shows a blank shrinking item.
         final AnimatingItemView view = new AnimatingItemView(mContext);
-        view.startAnimation(conversation, mViewMode, this);
+        view.setData(conversation);
+        view.startAnimation(mViewMode, this);
         return view;
     }
 
@@ -355,12 +400,25 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return mLeaveBehindItems.containsKey(conv.id) && conv.isMostlyDead();
     }
 
+    private boolean isPositionFadeLeaveBehind(Conversation conv) {
+        return mFadeLeaveBehindItems.containsKey(conv.id) && conv.isMostlyDead();
+    }
+
     private boolean isPositionLeaveBehind(int position) {
         if (hasLeaveBehinds()) {
             Object item = getItem(position);
             if (item instanceof ConversationCursor) {
-                Conversation conv = new Conversation((ConversationCursor) item);
-                return mLeaveBehindItems.containsKey(conv.id) && conv.isMostlyDead();
+                return isPositionLeaveBehind(new Conversation((ConversationCursor) item));
+            }
+        }
+        return false;
+    }
+
+    private boolean isPositionFadeLeaveBehind(int position) {
+        if (hasFadeLeaveBehinds()) {
+            Object item = getItem(position);
+            if (item instanceof ConversationCursor) {
+                return isPositionFadeLeaveBehind(new Conversation((ConversationCursor) item));
             }
         }
         return false;
@@ -390,7 +448,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        if (!mUndoingItems.isEmpty()) {
+        if (hasFadeLeaveBehinds()) {
+            Object obj = ((ObjectAnimator) animation).getTarget();
+            if (obj instanceof LeaveBehindItem) {
+                LeaveBehindItem objItem = (LeaveBehindItem)obj;
+                mFadeLeaveBehindItems.remove(objItem.getConversationId());
+                objItem.commit();
+            }
+        } else if (!mUndoingItems.isEmpty()) {
             // See if we have received all the animations we expected; if
             // so, call the listener and reset it.
             final int position = ((ConversationItemView) ((ObjectAnimator) animation).getTarget())

@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.util.AttributeSet;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
@@ -31,9 +32,13 @@ public class AnimatingItemView extends LinearLayout {
         super(context);
     }
 
+    public AnimatingItemView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
     private Conversation mData;
     private ObjectAnimator mAnimator;
-    private int mAnimatedHeight;
+    private int mAnimatedHeight = -1;
 
     /**
      * Start the animation on an animating view.
@@ -42,8 +47,7 @@ public class AnimatingItemView extends LinearLayout {
      * @param undo true if an operation is being undone. We animate the item away during delete.
      * Undoing populates the item.
      */
-    public void startAnimation(Conversation item, ViewMode viewMode, AnimatorListener listener) {
-        mData = item;
+    public void startAnimation(ViewMode viewMode, AnimatorListener listener) {
         int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(), viewMode);
         setMinimumHeight(minHeight);
         final int start = minHeight;
@@ -57,13 +61,21 @@ public class AnimatingItemView extends LinearLayout {
         mAnimator.start();
     }
 
+    public void setData(Conversation conversation) {
+        mData = conversation;
+    }
+
     public Conversation getData() {
         return mData;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
+        if (mAnimatedHeight != -1) {
+            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
         return;
     }
 

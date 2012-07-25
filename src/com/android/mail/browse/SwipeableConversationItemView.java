@@ -44,10 +44,13 @@ public class SwipeableConversationItemView extends FrameLayout {
     }
 
     public void addBackground(Context context, int textRes) {
-        mBackground = (TextView) LayoutInflater.from(context).inflate(R.layout.background, null,
-                true);
+        mBackground = (TextView) findViewById(R.id.background);
+        if (mBackground == null) {
+            mBackground = (TextView) LayoutInflater.from(context).inflate(R.layout.background,
+                    null, true);
+            addView(mBackground, 0);
+        }
         mBackground.setText(textRes);
-        addView(mBackground, 0);
     }
 
     public void setBackgroundVisibility(int visibility) {
