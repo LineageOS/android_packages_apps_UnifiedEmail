@@ -16,6 +16,13 @@
 
 package com.android.mail.widget;
 
+import android.content.Context;
+
 public class WidgetProvider extends BaseWidgetProvider {
     public static final String PROVIDER_NAME = "com.android.mail.widget.WidgetProvider";
+
+    @Override
+    protected void migrateLegacyWidgetInformation(Context context, int widgetId) {
+        // Do nothing, as there is no migration for UnifiedEmail
+    }
 }

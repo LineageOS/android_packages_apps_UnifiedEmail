@@ -23,6 +23,7 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
@@ -47,7 +48,7 @@ import org.json.JSONException;
 
 import java.util.Set;
 
-public class BaseWidgetProvider extends AppWidgetProvider {
+public abstract class BaseWidgetProvider extends AppWidgetProvider {
     public static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_FOLDER = "folder";
     public static final String EXTRA_UNREAD = "unread";
@@ -116,6 +117,9 @@ public class BaseWidgetProvider extends AppWidgetProvider {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
+        // We want to migrate any legacy Email widget information to the new format
+        migrateAllLegacyWidgetInformation(context);
+
         super.onReceive(context, intent);
         LogUtils.d(LOG_TAG, "BaseWidgetProvider.onReceive: %s", intent);
 
@@ -182,6 +186,8 @@ public class BaseWidgetProvider extends AppWidgetProvider {
      */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        migrateLegacyWidgets(context, appWidgetIds);
+
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         // Update each of the widgets with a remote adapter
         ContentResolver resolver = context.getContentResolver();
@@ -322,5 +328,30 @@ public class BaseWidgetProvider extends AppWidgetProvider {
         WidgetService.configureValidAccountWidget(context, remoteViews, appWidgetId, account,
                 folder, folderDisplayName, WidgetService.class);
     }
+
+    private boolean isWidgetConfigured(Context context, int widgetId) {
+        final SharedPreferences pref = Persistence.getPreferences(context);
+        return pref.getString(WIDGET_ACCOUNT_PREFIX + widgetId, null) != null;
+    }
+
+    private final void migrateAllLegacyWidgetInformation(Context context) {
+        final int[] currentWidgetIds = getCurrentWidgetIds(context);
+        migrateLegacyWidgets(context, currentWidgetIds);
+    }
+
+    private final void migrateLegacyWidgets(Context context, int[] widgetIds) {
+        for (int widgetId : widgetIds) {
+            // We only want to bother to attempt to upgrade a widget if we don't already
+            // have information about.
+            if (!isWidgetConfigured(context, widgetId)) {
+                migrateLegacyWidgetInformation(context, widgetId);
+            }
+        }
+    }
+
+    /**
+     * Abstract method allowing extending classes to perform widget migration
+     */
+    protected abstract void migrateLegacyWidgetInformation(Context context, int widgetId);
 
 }
