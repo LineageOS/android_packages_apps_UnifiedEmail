@@ -55,6 +55,8 @@
     <string name="mute" msgid="1995954983688603977">"İleti Dizisini Yoksay"</string>
     <string name="add_star" msgid="2866003744391266498">"Yıldız ekle"</string>
     <string name="remove_star" msgid="4372327933122106128">"Yıldızı kaldır"</string>
+    <!-- no translation found for remove_folder (7297603912332340861) -->
+    <skip />
     <string name="archive" msgid="847250094775910499">"Arşiv"</string>
     <string name="report_spam" msgid="6467567747975393907">"Spam bildir"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Spam olmadığını bildir"</string>

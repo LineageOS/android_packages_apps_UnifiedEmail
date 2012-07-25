@@ -55,6 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"ድምፀ-ከል አድርግ"</string>
     <string name="add_star" msgid="2866003744391266498">"ኮከብ አክል"</string>
     <string name="remove_star" msgid="4372327933122106128">"ኮከብን አስወግድ"</string>
+    <string name="remove_folder" msgid="7297603912332340861">"አቃፊ አስወግድ"</string>
     <string name="archive" msgid="847250094775910499">"ማኅደር"</string>
     <string name="report_spam" msgid="6467567747975393907">"አይፈለጌ መልዕክቶችን ሪፖርት አድርግ"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"አይፈለጌ መልዕክት አለመሆኑን ሪፖርት አድርግ"</string>

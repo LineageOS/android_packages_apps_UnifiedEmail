@@ -55,6 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Disattiva"</string>
     <string name="add_star" msgid="2866003744391266498">"Aggiungi a Speciali"</string>
     <string name="remove_star" msgid="4372327933122106128">"Rimuovi da Speciali"</string>
+    <string name="remove_folder" msgid="7297603912332340861">"Rimuovi cartella"</string>
     <string name="archive" msgid="847250094775910499">"Archivia"</string>
     <string name="report_spam" msgid="6467567747975393907">"Segnala come spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Segnala come non spam"</string>
