@@ -178,7 +178,6 @@ public abstract class AbstractActivityController implements ActivityController {
                     count, mObservers.size());
         }
     };
-    protected boolean mConversationListenerAdded = false;
 
     private boolean mIsConversationListScrolling = false;
     private long mConversationListRefreshTime = 0;
@@ -208,6 +207,8 @@ public abstract class AbstractActivityController implements ActivityController {
     // basic Cursor
     private final ConversationListLoaderCallbacks mListCursorCallbacks =
             new ConversationListLoaderCallbacks();
+
+    private final DataSetObservable mFolderObservable = new DataSetObservable();
 
     protected static final String LOG_TAG = LogTag.getLogTag();
     /** Constants used to differentiate between the types of loaders. */
@@ -554,6 +555,11 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     public void setFolder(Folder folder) {
         mFolder = folder;
+    }
+
+    @Override
+    public Folder getFolder() {
+        return mFolder;
     }
 
     @Override
@@ -1377,6 +1383,16 @@ public abstract class AbstractActivityController implements ActivityController {
         mConversationListObservable.unregisterObserver(observer);
     }
 
+    @Override
+    public void registerFolderObserver(DataSetObserver observer) {
+        mFolderObservable.registerObserver(observer);
+    }
+
+    @Override
+    public void unregisterFolderObserver(DataSetObserver observer) {
+        mFolderObservable.unregisterObserver(observer);
+    }
+
     private boolean accountsUpdated(Cursor accountCursor) {
         // Check to see if the current account hasn't been set, or the account cursor is empty
         if (mAccount == null || !accountCursor.moveToFirst()) {
@@ -1562,7 +1578,7 @@ public abstract class AbstractActivityController implements ActivityController {
             case LOADER_FOLDER_CURSOR:
                 // Check status of the cursor.
                 if (data != null && data.moveToFirst()) {
-                    Folder folder = new Folder(data);
+                    final Folder folder = new Folder(data);
                     if (folder.isSyncInProgress()) {
                         mActionBarView.onRefreshStarted();
                     } else {
@@ -1575,6 +1591,10 @@ public abstract class AbstractActivityController implements ActivityController {
                         convList.onFolderUpdated(folder);
                     }
                     LogUtils.d(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
+
+                    mFolder = folder;
+                    mFolderObservable.notifyChanged();
+
                 } else {
                     LogUtils.d(LOG_TAG, "Unable to get the folder %s",
                             mFolder != null ? mAccount.name : "");

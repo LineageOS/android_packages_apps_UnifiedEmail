@@ -29,7 +29,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.AbstractActivityController;
 import com.android.mail.ui.ActivityController;
-import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SubjectDisplayChanger;
 import com.android.mail.utils.LogTag;
@@ -58,7 +57,7 @@ public class ConversationPagerController implements OnPageChangeListener {
     private ViewPager mPager;
     private ConversationPagerAdapter mPagerAdapter;
     private FragmentManager mFragmentManager;
-    private ConversationListCallbacks mListController;
+    private ActivityController mActivityController;
     private SubjectDisplayChanger mSubjectDisplayChanger;
     private boolean mShown;
 
@@ -82,7 +81,7 @@ public class ConversationPagerController implements OnPageChangeListener {
             ActivityController controller) {
         mFragmentManager = activity.getFragmentManager();
         mPager = (ViewPager) activity.findViewById(R.id.conversation_pane);
-        mListController = controller;
+        mActivityController = controller;
         mSubjectDisplayChanger = controller.getSubjectDisplayChanger();
     }
 
@@ -107,7 +106,7 @@ public class ConversationPagerController implements OnPageChangeListener {
         mPagerAdapter = new ConversationPagerAdapter(mPager.getResources(), mFragmentManager,
                 account, folder, initialConversation);
         mPagerAdapter.setSingletonMode(ENABLE_SINGLETON_INITIAL_LOAD);
-        mPagerAdapter.setListController(mListController);
+        mPagerAdapter.setActivityController(mActivityController);
         mPagerAdapter.setPager(mPager);
         LogUtils.d(LOG_TAG, "IN CPC.show, adapter=%s", mPagerAdapter);
 
@@ -151,7 +150,7 @@ public class ConversationPagerController implements OnPageChangeListener {
     private void cleanup() {
         if (mPagerAdapter != null) {
             // stop observing the conversation list
-            mPagerAdapter.setListController(null);
+            mPagerAdapter.setActivityController(null);
             mPagerAdapter.setPager(null);
             mPagerAdapter = null;
         }
