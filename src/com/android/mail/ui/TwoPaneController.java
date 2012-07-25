@@ -260,6 +260,7 @@ public final class TwoPaneController extends AbstractActivityController {
         if (conversation == null) {
             // This is a request to remove the conversation view and show the conversation list
             // fragment instead.
+            mPagerController.stopListening();
             onBackPressed();
             return;
         }
@@ -329,9 +330,8 @@ public final class TwoPaneController extends AbstractActivityController {
             mActivity.onBackPressed();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             if (mLayout.isConversationListCollapsed()
-                    || (mConvListContext.isSearchResult() && !Utils
-                            .showTwoPaneSearchResults
-                                (mActivity.getApplicationContext()))) {
+                    || (mConvListContext.isSearchResult() && !Utils.
+                            showTwoPaneSearchResults(mActivity.getApplicationContext()))) {
                 onBackPressed();
             } else {
                 mActivity.finish();
