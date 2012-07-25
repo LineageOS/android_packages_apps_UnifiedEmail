@@ -1581,7 +1581,7 @@ public class UIProvider {
         /** No swipe */
         public static final int DISABLED = 2;
         /** Default is delete */
-        public static final int DEFAULT = DELETE;
+        public static final int DEFAULT = ARCHIVE;
     }
 
     public static final class SnapHeaderValue {
