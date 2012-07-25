@@ -32,7 +32,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.ui.ConversationListCallbacks;
+import com.android.mail.ui.ActivityController;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.FragmentStatePagerAdapter2;
 import com.android.mail.utils.LogTag;
@@ -42,7 +42,8 @@ import com.android.mail.utils.Utils;
 public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     private final DataSetObserver mListObserver = new ListObserver();
-    private ConversationListCallbacks mListController;
+    private final DataSetObserver mFolderObserver = new FolderObserver();
+    private ActivityController mController;
     private final Bundle mCommonFragmentArgs;
     private final Conversation mInitialConversation;
     private final Account mAccount;
@@ -107,15 +108,15 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     }
 
     private Cursor getCursor() {
-        if (mListController == null) {
+        if (mController == null) {
             // Should never happen. It's the pager controller's responsibility to ensure the list
             // controller reference is around at least as long as the pager is active and has this
             // adapter.
-            LogUtils.wtf(LOG_TAG, new Error(), "Pager adapter has an unexpected null cursor");
+            LogUtils.wtf(LOG_TAG, new Error(), "Pager adapter has an unexpected null controller");
             return null;
         }
 
-        return mListController.getConversationListCursor();
+        return mController.getConversationListCursor();
     }
 
     @Override
@@ -187,7 +188,14 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         final int currentPosition = mPager.getCurrentItem();
 
         if (position == currentPosition) {
-            title = mResources.getString(R.string.conversation_count, position + 1, getCount());
+            int total = getCount();
+            if (mController != null) {
+                final Folder f = mController.getFolder();
+                if (f != null && f.totalCount > total) {
+                    total = f.totalCount;
+                }
+            }
+            title = mResources.getString(R.string.conversation_count, position + 1, total);
         } else {
             title = mResources.getString(position > currentPosition ?
                     R.string.conversation_newer : R.string.conversation_older);
@@ -234,10 +242,10 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         final ConversationViewFragment fragment = (ConversationViewFragment) item;
         fragment.setExtraUserVisibleHint(visible);
 
-        if (visible && mListController != null) {
+        if (visible && mController != null) {
             final Conversation c = fragment.getConversation();
             LogUtils.d(LOG_TAG, "pager adapter setting current conv: %s (%s)", c.subject, item);
-            mListController.setCurrentConversation(c);
+            mController.setCurrentConversation(c);
         }
     }
 
@@ -281,18 +289,28 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         mPager = pager;
     }
 
-    public void setListController(ConversationListCallbacks listController) {
-        if (mListController != null) {
-            mListController.unregisterConversationListObserver(mListObserver);
+    public void setActivityController(ActivityController controller) {
+        if (mController != null) {
+            mController.unregisterConversationListObserver(mListObserver);
+            mController.unregisterConversationListObserver(mFolderObserver);
         }
-        mListController = listController;
-        if (mListController != null) {
-            mListController.registerConversationListObserver(mListObserver);
+        mController = controller;
+        if (mController != null) {
+            mController.registerConversationListObserver(mListObserver);
+            mController.registerConversationListObserver(mFolderObserver);
 
             notifyDataSetChanged();
         } else {
             // We're being torn down; do not notify.
             // Let the pager controller manage pager lifecycle.
+        }
+    }
+
+    // update the pager title strip as the Folder's conversation count changes
+    private class FolderObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            notifyDataSetChanged();
         }
     }
 
