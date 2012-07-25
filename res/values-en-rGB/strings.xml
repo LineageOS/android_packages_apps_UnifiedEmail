@@ -55,6 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Mute"</string>
     <string name="add_star" msgid="2866003744391266498">"Add star"</string>
     <string name="remove_star" msgid="4372327933122106128">"Remove star"</string>
+    <string name="remove_folder" msgid="7297603912332340861">"Remove folder"</string>
     <string name="archive" msgid="847250094775910499">"Archive"</string>
     <string name="report_spam" msgid="6467567747975393907">"Report spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Report not spam"</string>

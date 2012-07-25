@@ -55,6 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Σίγαση"</string>
     <string name="add_star" msgid="2866003744391266498">"Επισήμανση με αστέρι"</string>
     <string name="remove_star" msgid="4372327933122106128">"Κατάργηση αστεριού"</string>
+    <string name="remove_folder" msgid="7297603912332340861">"Κατάργηση φακέλου"</string>
     <string name="archive" msgid="847250094775910499">"Αρχειοθέτηση"</string>
     <string name="report_spam" msgid="6467567747975393907">"Αναφορά ως ανεπιθύμητης"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Αναφορά μη ανεπιθύμητου"</string>

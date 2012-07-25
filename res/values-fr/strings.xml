@@ -55,6 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Ignorer"</string>
     <string name="add_star" msgid="2866003744391266498">"Activer le suivi"</string>
     <string name="remove_star" msgid="4372327933122106128">"Désactiver le suivi"</string>
+    <string name="remove_folder" msgid="7297603912332340861">"Supprimer le dossier"</string>
     <string name="archive" msgid="847250094775910499">"Archiver"</string>
     <string name="report_spam" msgid="6467567747975393907">"Signaler comme spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Non-spam"</string>

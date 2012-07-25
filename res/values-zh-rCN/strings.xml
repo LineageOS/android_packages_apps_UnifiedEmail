@@ -55,6 +55,8 @@
     <string name="mute" msgid="1995954983688603977">"忽略"</string>
     <string name="add_star" msgid="2866003744391266498">"加注星标"</string>
     <string name="remove_star" msgid="4372327933122106128">"删除星标"</string>
+    <!-- no translation found for remove_folder (7297603912332340861) -->
+    <skip />
     <string name="archive" msgid="847250094775910499">"归档"</string>
     <string name="report_spam" msgid="6467567747975393907">"举报垃圾邮件"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"这不是垃圾邮件"</string>
