@@ -394,6 +394,13 @@
         <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as spam.</item>
     </plurals>
 
+    <plurals name="conversation_phished">
+        <!-- Displayed while reporting one conversation as phishing -->
+        <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as phishing.</item>
+        <!-- Displayed while reporting several conversations as phishing -->
+        <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> reported as phishing.</item>
+    </plurals>
+
     <plurals name="conversation_archived">
         <!-- Displayed while archiving one conversation -->
         <item quantity="one">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> archived.</item>

@@ -94,6 +94,9 @@ public class ToastBarOperation implements Parcelable {
             case R.id.remove_star:
                 resId = R.plurals.conversation_unstarred;
                 break;
+            case R.id.report_phishing:
+                resId = R.plurals.conversation_phished;
+                break;
             default:
                 resId = -1;
                 break;
