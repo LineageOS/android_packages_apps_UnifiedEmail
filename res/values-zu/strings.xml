@@ -55,6 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Thulisa"</string>
     <string name="add_star" msgid="2866003744391266498">"Engeza inkanyezi"</string>
     <string name="remove_star" msgid="4372327933122106128">"Susa inkanyezi"</string>
+    <string name="remove_folder" msgid="7297603912332340861">"Susa ifolda"</string>
     <string name="archive" msgid="847250094775910499">"Ingobo yomlando"</string>
     <string name="report_spam" msgid="6467567747975393907">"Bika ugaxekile"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Bika ugaxekile"</string>
