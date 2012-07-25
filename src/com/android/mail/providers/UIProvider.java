@@ -125,7 +125,8 @@ public class UIProvider {
             AccountColumns.SettingsColumns.DEFAULT_INBOX,
             AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME,
             AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
-            AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE
+            AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
+            AccountColumns.SettingsColumns.SWIPE
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -165,6 +166,7 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN = 33;
     public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 34;
     public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 35;
+    public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 36;
 
     public static final class AccountCapabilities {
         /**
@@ -483,6 +485,10 @@ public class UIProvider {
              * Integer column containing the max attachment size in kb.
              */
             public static final String MAX_ATTACHMENT_SIZE = "max_attachment_size";
+            /**
+             * Integer column containing a value matching one of the constants from {@link Swipe}
+             */
+            public static final String SWIPE = "swipe";
         }
     }
 
@@ -1562,6 +1568,20 @@ public class UIProvider {
         public static final int NEWER = 2;
         /** Go back to conversation list*/
         public static final int LIST = 3;
+    }
+
+    /**
+     * Settings for what swipe should do.
+     */
+    public static final class Swipe {
+        /** Archive or remove label, if available. */
+        public static final int ARCHIVE = 0;
+        /** Delete */
+        public static final int DELETE = 1;
+        /** No swipe */
+        public static final int DISABLED = 2;
+        /** Default is archive */
+        public static final int DEFAULT = ARCHIVE;
     }
 
     public static final class SnapHeaderValue {
