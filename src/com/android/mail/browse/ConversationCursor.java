@@ -60,7 +60,7 @@ import java.util.List;
 public final class ConversationCursor implements Cursor {
     private static final String TAG = "ConversationCursor";
 
-    private static final boolean DEBUG = true;  // STOPSHIP Set to false before shipping
+    private static final boolean DEBUG = false;  // Set to false before shipping
     // A deleted row is indicated by the presence of DELETED_COLUMN in the cache map
     private static final String DELETED_COLUMN = "__deleted__";
     // An row cached during a requery is indicated by the presence of REQUERY_COLUMN in the map
