@@ -337,7 +337,7 @@ public class WidgetService extends RemoteViewsService {
         public RemoteViews getViewAt(int position) {
             synchronized (sWidgetLock) {
                 // "View more conversations" view.
-                if (mConversationCursor == null
+                if (mConversationCursor == null || mConversationCursor.isClosed()
                         || (mShouldShowViewMore && position >= getConversationCount())) {
                     return getViewMoreConversationsView();
                 }
