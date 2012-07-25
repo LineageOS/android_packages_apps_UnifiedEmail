@@ -165,7 +165,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (mShowFooter && position == super.getCount()) {
             return TYPE_VIEW_FOOTER;
         }
-        if (isPositionLeaveBehind(position) || isPositionFadeLeaveBehind(position)) {
+        if (isPositionTypeLeaveBehind(position)) {
             return TYPE_VIEW_LEAVEBEHIND;
         }
         return TYPE_VIEW_CONVERSATION;
@@ -404,21 +404,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return mFadeLeaveBehindItems.containsKey(conv.id) && conv.isMostlyDead();
     }
 
-    private boolean isPositionLeaveBehind(int position) {
+    private boolean isPositionTypeLeaveBehind(int position) {
         if (hasLeaveBehinds()) {
             Object item = getItem(position);
             if (item instanceof ConversationCursor) {
-                return isPositionLeaveBehind(new Conversation((ConversationCursor) item));
-            }
-        }
-        return false;
-    }
-
-    private boolean isPositionFadeLeaveBehind(int position) {
-        if (hasFadeLeaveBehinds()) {
-            Object item = getItem(position);
-            if (item instanceof ConversationCursor) {
-                return isPositionFadeLeaveBehind(new Conversation((ConversationCursor) item));
+                Conversation conv = new Conversation((ConversationCursor) item);
+                return isPositionLeaveBehind(conv) || isPositionFadeLeaveBehind(conv);
             }
         }
         return false;
