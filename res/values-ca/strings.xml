@@ -55,6 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Silencia"</string>
     <string name="add_star" msgid="2866003744391266498">"Destaca"</string>
     <string name="remove_star" msgid="4372327933122106128">"No destaquis"</string>
+    <string name="remove_folder" msgid="7297603912332340861">"Elimina la carpeta"</string>
     <string name="archive" msgid="847250094775910499">"Arxiva"</string>
     <string name="report_spam" msgid="6467567747975393907">"Informa de correu brossa"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Indica que no és correu brossa"</string>
