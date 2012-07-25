@@ -46,7 +46,8 @@ import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
         android.animation.Animator.AnimatorListener, Settings.ChangeListener {
-    private static final String LAST_DELETING_ITEMS = "last-deleting-items";
+    private static final String LAST_DELETING_ITEMS = "last_deleting_items";
+    private static final String LEAVE_BEHIND_ITEM = "leave_behind_item";
     private final static int TYPE_VIEW_CONVERSATION = 0;
     private final static int TYPE_VIEW_DELETING = 1;
     private final static int TYPE_VIEW_UNDOING = 2;
@@ -81,9 +82,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final SwipeableListView mListView;
     private Settings mCachedSettings;
     private boolean mSwipeEnabled;
-    private HashMap<Long, LeaveBehindItem> mLeaveBehindItems = new HashMap<Long, LeaveBehindItem>();
-    private HashMap<Long, LeaveBehindItem> mFadeLeaveBehindItems =
-            new HashMap<Long, LeaveBehindItem>();
+    private LeaveBehindItem mFadeLeaveBehindItem;
+    private LeaveBehindItem mLeaveBehindItem;
 
     /**
      * Used only for debugging.
@@ -248,7 +248,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (hasLeaveBehinds()) {
             Conversation conv = new Conversation((ConversationCursor) getItem(position));
             if(isPositionLeaveBehind(conv)) {
-                return getLeaveBehindItem(position, conv);
+                return getLeaveBehindItem(conv);
             }
         }
         // TODO: do this in the swipe helper?
@@ -269,38 +269,37 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     private boolean hasLeaveBehinds() {
-        return !mLeaveBehindItems.isEmpty();
+        return mLeaveBehindItem != null;
     }
 
     private boolean hasFadeLeaveBehinds() {
-        return !mFadeLeaveBehindItems.isEmpty();
+        return mFadeLeaveBehindItem != null;
     }
 
-    public void setupLeaveBehind(Conversation target, ToastBarOperation undoOp, int deletedRow) {
+    public LeaveBehindItem setupLeaveBehind(Conversation target, ToastBarOperation undoOp,
+            int deletedRow) {
         fadeOutLeaveBehindItems();
         LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext).inflate(
                 R.layout.swipe_leavebehind, null);
-        leaveBehind.bindOperations(mSelectedAccount, this, undoOp,
-                target);
-        mLeaveBehindItems.put(target.id, leaveBehind);
+        leaveBehind.bindOperations(deletedRow, mSelectedAccount, this, undoOp, target);
+        mLeaveBehindItem = leaveBehind;
         mLastDeletingItems.add(deletedRow);
+        return leaveBehind;
     }
 
     public void fadeOutLeaveBehindItems() {
-        // Remove any previously existing leave behinds.
+        // Remove any previously existing leave behind item.
         final int startPosition = mListView.getFirstVisiblePosition();
         final int endPosition = mListView.getLastVisiblePosition();
 
-        if (!mLeaveBehindItems.isEmpty()) {
-            for (Long id : mLeaveBehindItems.keySet()) {
-                // If the item is visible, fade it out. Otherwise, just remove
-                // it.
-                Conversation conv = mLeaveBehindItems.get(id).getData();
-                if (conv.position >= startPosition && conv.position <= endPosition) {
-                    mFadeLeaveBehindItems.put(id, mLeaveBehindItems.get(id));
-                }
+        if (hasLeaveBehinds()) {
+            // If the item is visible, fade it out. Otherwise, just remove
+            // it.
+            Conversation conv = mLeaveBehindItem.getData();
+            if (conv.position >= startPosition && conv.position <= endPosition) {
+                mFadeLeaveBehindItem = mLeaveBehindItem;
             }
-            mLeaveBehindItems.clear();
+            clearLeaveBehind(conv.id);
         }
         if (!mLastDeletingItems.isEmpty()) {
             mLastDeletingItems.clear();
@@ -310,28 +309,25 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     public void commitLeaveBehindItems() {
         // Remove any previously existing leave behinds.
-        if (!mLeaveBehindItems.isEmpty()) {
-            for (LeaveBehindItem item : mLeaveBehindItems.values()) {
-                item.commit();
-            }
-            for (LeaveBehindItem item : mFadeLeaveBehindItems.values()) {
-                item.commit();
-            }
-            mLeaveBehindItems.clear();
-            mFadeLeaveBehindItems.clear();
+        if (hasLeaveBehinds()) {
+            mLeaveBehindItem.commit();
         }
+        if (hasFadeLeaveBehinds()) {
+            mFadeLeaveBehindItem.commit();
+        }
+
         if (!mLastDeletingItems.isEmpty()) {
             mLastDeletingItems.clear();
         }
         notifyDataSetChanged();
     }
 
-    private LeaveBehindItem getLeaveBehindItem(int position, Conversation target) {
-        return mLeaveBehindItems.get(target.id);
+    private LeaveBehindItem getLeaveBehindItem(Conversation target) {
+        return mLeaveBehindItem;
     }
 
     private LeaveBehindItem getFadeLeaveBehindItem(int position, Conversation target) {
-        return mFadeLeaveBehindItems.get(target.id);
+        return mFadeLeaveBehindItem;
     }
 
     @Override
@@ -397,11 +393,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     private boolean isPositionLeaveBehind(Conversation conv) {
-        return mLeaveBehindItems.containsKey(conv.id) && conv.isMostlyDead();
+        return hasLeaveBehinds()
+                && mLeaveBehindItem.getConversationId() == conv.id
+                && conv.isMostlyDead();
     }
 
     private boolean isPositionFadeLeaveBehind(Conversation conv) {
-        return mFadeLeaveBehindItems.containsKey(conv.id) && conv.isMostlyDead();
+        return hasFadeLeaveBehinds()
+                && mFadeLeaveBehindItem.getConversationId() == conv.id
+                && conv.isMostlyDead();
     }
 
     private boolean isPositionTypeLeaveBehind(int position) {
@@ -443,7 +443,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             Object obj = ((ObjectAnimator) animation).getTarget();
             if (obj instanceof LeaveBehindItem) {
                 LeaveBehindItem objItem = (LeaveBehindItem)obj;
-                mFadeLeaveBehindItems.remove(objItem.getConversationId());
+                clearLeaveBehind(objItem.getConversationId());
                 objItem.commit();
             }
         } else if (!mUndoingItems.isEmpty()) {
@@ -512,9 +512,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         mFolder = folder;
     }
 
-    public void clearLeaveBehind(Conversation item) {
-        mLeaveBehindItems.remove(item.id);
-        notifyDataSetChanged();
+    public void clearLeaveBehind(long itemId) {
+        if (hasLeaveBehinds() && mLeaveBehindItem.getConversationId() == itemId) {
+            mLeaveBehindItem = null;
+        } else if (hasFadeLeaveBehinds() && mFadeLeaveBehindItem.getConversationId() == itemId) {
+            mFadeLeaveBehindItem = null;
+        } else {
+            LogUtils.d(LOG_TAG, "Trying to clear a non-existant leave behind");
+        }
     }
 
     /**
@@ -527,12 +532,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     public void onSaveInstanceState(Bundle outState) {
         int[] lastDeleting = new int[mLastDeletingItems.size()];
-        for (int i = 0; i < lastDeleting.length;i++) {
+        for (int i = 0; i < lastDeleting.length; i++) {
             lastDeleting[i] = mLastDeletingItems.get(i);
         }
         outState.putIntArray(LAST_DELETING_ITEMS, lastDeleting);
+        if (hasLeaveBehinds()) {
+            outState.putParcelable(LEAVE_BEHIND_ITEM, mLeaveBehindItem.getLeaveBehindData());
+        }
     }
-
 
     public void onRestoreInstanceState(Bundle outState) {
         if (outState.containsKey(LAST_DELETING_ITEMS)) {
@@ -540,6 +547,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             for (int i = 0; i < lastDeleting.length;i++) {
                 mLastDeletingItems.add(lastDeleting[i]);
             }
+        }
+        if (outState.containsKey(LEAVE_BEHIND_ITEM)) {
+            LeaveBehindItem.LeaveBehindData left = outState.getParcelable(LEAVE_BEHIND_ITEM);
+            LeaveBehindItem item = setupLeaveBehind(left.data, left.op, left.data.position);
+            mLeaveBehindItem = item;
         }
     }
 }

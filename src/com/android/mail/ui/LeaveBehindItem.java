@@ -18,6 +18,9 @@
 package com.android.mail.ui;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
@@ -63,7 +66,7 @@ public class LeaveBehindItem extends AnimatingItemView implements OnClickListene
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate
                     // the set of
                     // commands to undo
-                    mAdapter.clearLeaveBehind(getData());
+                    mAdapter.clearLeaveBehind(getConversationId());
                     mAdapter.setUndo(true);
                     mConversationCursor.undo(getContext(), mAccount.undoUri);
                 }
@@ -71,12 +74,12 @@ public class LeaveBehindItem extends AnimatingItemView implements OnClickListene
         }
     }
 
-    public void bindOperations(Account account, AnimatedAdapter adapter, ToastBarOperation undoOp,
-            Conversation target) {
+    public void bindOperations(int position, Account account, AnimatedAdapter adapter,
+            ToastBarOperation undoOp, Conversation target) {
         mUndoOp = undoOp;
         mAccount = account;
         mAdapter = adapter;
-        mConversationCursor = (ConversationCursor)adapter.getCursor();
+        mConversationCursor = (ConversationCursor) adapter.getCursor();
         setData(target);
         ((TextView) findViewById(R.id.undo_descriptionview)).setText(Html.fromHtml(mUndoOp
                 .getDescription(getContext())));
@@ -86,7 +89,8 @@ public class LeaveBehindItem extends AnimatingItemView implements OnClickListene
     public void commit() {
         Conversation conv = getData();
         mConversationCursor.delete(getContext(), ImmutableList.of(conv));
-        mAdapter.clearLeaveBehind(conv);
+        mAdapter.clearLeaveBehind(conv.id);
+        mAdapter.notifyDataSetChanged();
     }
 
     public long getConversationId() {
@@ -101,5 +105,49 @@ public class LeaveBehindItem extends AnimatingItemView implements OnClickListene
     @Override
     public void cancelTap() {
         // Do nothing.
+    }
+
+    public LeaveBehindData getLeaveBehindData() {
+        return new LeaveBehindData(getData(), mUndoOp);
+    }
+
+    public class LeaveBehindData implements Parcelable {
+        ToastBarOperation op;
+        Conversation data;
+
+        public LeaveBehindData(Conversation conv, ToastBarOperation undoOp) {;
+            op = undoOp;
+            data = conv;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel arg, int flags) {
+            arg.writeParcelable(op, 0);
+            arg.writeParcelable(data, 0);
+        }
+
+        private LeaveBehindData(Parcel arg) {
+            this((Conversation) arg.readParcelable(null),
+                    (ToastBarOperation) arg.readParcelable(null));
+        }
+
+        public final Creator<LeaveBehindData> CREATOR = new Creator<LeaveBehindData>() {
+
+            @Override
+            public LeaveBehindData createFromParcel(Parcel source) {
+                return new LeaveBehindData(source);
+            }
+
+            @Override
+            public LeaveBehindData[] newArray(int size) {
+                return new LeaveBehindData[size];
+            }
+
+        };
     }
 }
