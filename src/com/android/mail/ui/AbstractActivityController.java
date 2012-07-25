@@ -771,11 +771,10 @@ public abstract class AbstractActivityController implements ActivityController {
             markConversationsRead(Collections.singletonList(conv), false /* read */);
         } else {
 
-            mConversationListCursor.setConversationColumn(conv.uri.toString(),
-                    ConversationColumns.READ, 0);
+            mConversationListCursor.setConversationColumn(conv.uri, ConversationColumns.READ, 0);
 
             // locally update conversation's conversationInfo JSON to revert to original version
-            mConversationListCursor.setConversationColumn(conv.uri.toString(),
+            mConversationListCursor.setConversationColumn(conv.uri,
                     ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
 
             // applyBatch with each CPO as an UPDATE op on each affected message uri
@@ -796,7 +795,6 @@ public abstract class AbstractActivityController implements ActivityController {
                     // TODO: handle errors?
                 }
             }.run(mResolver, authority, ops);
-
         }
 
         mViewMode.enterConversationListMode();
@@ -842,7 +840,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final boolean conversationStarred = starred || msg.isConversationStarred();
         if (conversationStarred != msg.conversation.starred) {
             msg.conversation.starred = conversationStarred;
-            mConversationListCursor.setConversationColumn(msg.conversationUri,
+            mConversationListCursor.setConversationColumn(msg.conversation.uri,
                     ConversationColumns.STARRED, conversationStarred);
         }
 
