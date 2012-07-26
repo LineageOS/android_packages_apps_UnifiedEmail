@@ -406,9 +406,14 @@ public final class ConversationViewFragment extends Fragment implements
             return;
         }
 
-        final String info = (mViewState == null) ? null : mViewState.getConversationInfo();
+        if (mViewState == null) {
+            LogUtils.i(LOG_TAG, "ignoring markUnread for conv with no view state (%d)",
+                    mConversation.id);
+            return;
+        }
+
         activity.getConversationUpdater().markConversationMessagesUnread(mConversation,
-                mViewState.getUnreadMessageUris(), info);
+                mViewState.getUnreadMessageUris(), mViewState.getConversationInfo());
     }
 
     /**
