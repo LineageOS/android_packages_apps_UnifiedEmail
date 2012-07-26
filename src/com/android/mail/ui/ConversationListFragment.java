@@ -173,6 +173,9 @@ public final class ConversationListFragment extends ListFragment implements
      * Show the header if the current conversation list is showing search results.
      */
     private void updateSearchResultHeader(int count) {
+        if (mActivity == null) {
+            return;
+        }
         // Only show the header if the context is for a search result
         final Resources res = getResources();
         final boolean showHeader = isSearchResult();
@@ -326,6 +329,10 @@ public final class ConversationListFragment extends ListFragment implements
         if (!mActivity.isChangingConfigurations()) {
             mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
         }
+        if (mFolderObserver != null) {
+            mActivity.unregisterFolderObserver(mFolderObserver);
+            mFolderObserver = null;
+        }
         super.onDestroyView();
     }
 
@@ -391,9 +398,6 @@ public final class ConversationListFragment extends ListFragment implements
     public void onStop() {
         super.onStop();
         mHandler.removeCallbacks(mUpdateTimestampsRunnable);
-        if (mFolderObserver != null) {
-            mActivity.unregisterFolderObserver(mFolderObserver);
-        }
     }
 
     @Override
