@@ -329,17 +329,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public Folder getFolder() {
+    public FolderController getFolderController() {
         return null;
-    }
-
-    @Override
-    public void registerFolderObserver(DataSetObserver observer) {
-        // Do nothing.
-    }
-
-    @Override
-    public void unregisterFolderObserver(DataSetObserver observer) {
-        // DO nothing.
     }
 }

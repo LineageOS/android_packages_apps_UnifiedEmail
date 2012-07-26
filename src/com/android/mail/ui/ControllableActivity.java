@@ -17,8 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.database.DataSetObserver;
-
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -86,11 +84,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
     /**
      * Get the folder currently being accessed by the activity.
      */
-    Folder getFolder();
-
-    /**
-     * Get the folder currently being accessed by the activity.
-     */
     Folder getHierarchyFolder();
 
     /**
@@ -105,6 +98,5 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
 
     ErrorListener getErrorListener();
 
-    void registerFolderObserver(DataSetObserver folderObserver);
-    void unregisterFolderObserver(DataSetObserver folderObserver);
+    FolderController getFolderController();
 }
