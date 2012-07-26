@@ -265,6 +265,10 @@ public class Attachment implements Parcelable {
                 && size > 0 && downloadedSize > 0 && downloadedSize < size;
     }
 
+    public boolean downloadFailed() {
+        return state == AttachmentState.FAILED;
+    }
+
     // Methods to support JSON [de-]serialization of Attachment data
     // TODO: add support for origin/originExtras (and possibly partId?) or fold those fields into
     // other fields so Compose View can use JSON objects

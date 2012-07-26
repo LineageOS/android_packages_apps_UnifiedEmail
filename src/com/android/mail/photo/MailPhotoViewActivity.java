@@ -18,16 +18,22 @@ import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Derives from {@link PhotoViewActivity} to allow customization
  * to the {@link ActionBar} from the default implementation.
  */
 public class MailPhotoViewActivity extends PhotoViewActivity {
+    private MenuItem mRetryItem;
     private MenuItem mSaveItem;
+    private MenuItem mShareItem;
+    private MenuItem mShareAllItem;
     private AttachmentActionHandler mActionHandler;
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +48,12 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         MenuInflater inflater = getMenuInflater();
 
         inflater.inflate(R.menu.photo_view_menu, menu);
+        mMenu = menu;
 
-        mSaveItem = menu.findItem(R.id.menu_save);
-
-        // Turn off the functionality that only works on JellyBean.
-        menu.findItem(R.id.menu_share)
-                .setVisible(Utils.isRunningJellybeanOrLater());
-        menu.findItem(R.id.menu_share_all)
-                .setVisible(Utils.isRunningJellybeanOrLater());
+        mSaveItem = mMenu.findItem(R.id.menu_save);
+        mRetryItem = mMenu.findItem(R.id.menu_retry);
+        mShareItem = mMenu.findItem(R.id.menu_share);
+        mShareAllItem = mMenu.findItem(R.id.menu_share_all);
 
         updateActionItems();
 
@@ -62,12 +66,39 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      * button should not appear if the photo has already been saved).
      */
     private void updateActionItems() {
+        final boolean runningJellyBeanOrLater = Utils.isRunningJellybeanOrLater();
         final Attachment attachment = getCurrentAttachment();
+
         if (attachment != null) {
             final boolean isDownloading = attachment.isDownloading();
             final boolean isSavedToExternal = attachment.isSavedToExternal();
             final boolean canSave = attachment.canSave();
+            final boolean isPresentLocally = attachment.isPresentLocally();
+
+            mMenu.setGroupVisible(R.id.photo_view_menu_group, isPresentLocally);
+
             mSaveItem.setVisible(!isDownloading && canSave && !isSavedToExternal);
+            mRetryItem.setVisible(attachment.downloadFailed());
+        } else {
+            mMenu.setGroupVisible(R.id.photo_view_menu_group, false);
+            return;
+        }
+
+        // all attachments must be present to be able to share all
+        List<Attachment> attachments = getAllAttachments();
+        if (attachments != null) {
+            for (final Attachment a : attachments) {
+                if (!a.isPresentLocally()) {
+                    mShareAllItem.setVisible(false);
+                    break;
+                }
+            }
+        }
+
+        // Turn off the functionality that only works on JellyBean.
+        if (!runningJellyBeanOrLater) {
+            mShareItem.setVisible(false);
+            mShareAllItem.setVisible(false);
         }
     }
 
@@ -89,6 +120,9 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
                 return true;
             case R.id.menu_share_all: // share all of the photos
                 shareAllAttachments();
+                return true;
+            case R.id.menu_retry:
+                downloadAttachment();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -127,7 +161,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         //      2. Saved, Attachment Size
         //      3. Saving...
         //      4. Attachment Size
-        if (attachment.state == AttachmentState.FAILED) {
+        if (attachment.downloadFailed()) {
             actionBar.setSubtitle(getResources().getString(R.string.download_failed));
             setEmptyViewVisibility(View.GONE);
         } else if (isSavedToExternal) {
@@ -148,6 +182,17 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      */
     private void saveAttachment() {
         saveAttachment(getCurrentAttachment());
+    }
+
+    /**
+     * Downloads the attachment.
+     */
+    private void downloadAttachment() {
+        final Attachment attachment = getCurrentAttachment();
+        if (attachment != null && attachment.canSave()) {
+            mActionHandler.setAttachment(attachment);
+            mActionHandler.startDownloadingAttachment(AttachmentDestination.CACHE);
+        }
     }
 
     /**
@@ -234,5 +279,20 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         if (getCurrentAttachment().state != AttachmentState.FAILED) {
             super.setEmptyViewVisibility(visibility);
         }
+    }
+
+    private List<Attachment> getAllAttachments() {
+        final Cursor cursor = getCursor();
+
+        if (cursor == null || cursor.isClosed() || !cursor.moveToFirst()) {
+            return null;
+        }
+
+        List<Attachment> list = Lists.newArrayList();
+        do {
+            list.add(new Attachment(cursor));
+        } while (cursor.moveToNext());
+
+        return list;
     }
 }
