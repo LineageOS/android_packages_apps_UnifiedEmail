@@ -20,7 +20,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="4dip"
     android:layout_marginRight="4dip"
-    android:background="@android:color/black"
+    android:background="@color/leaveBehindBackground"
     android:clickable="true"
     android:gravity="center_vertical"
     android:minHeight="@dimen/conversation_item_height"
