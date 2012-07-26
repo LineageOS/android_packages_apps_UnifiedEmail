@@ -365,7 +365,7 @@ public class Conversation implements Parcelable {
     /**
      * Returns true if the URI of the conversation specified as the needle was
      * found in the collection of conversations specified as the haystack. False
-     * otherwise. This method is safe to call with nullarguments.
+     * otherwise. This method is safe to call with null arguments.
      *
      * @param haystack
      * @param needle
