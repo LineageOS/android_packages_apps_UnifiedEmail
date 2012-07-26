@@ -17,7 +17,9 @@
 
 package com.android.mail.browse;
 
+import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ClipData;
 import android.content.ClipData.Item;
@@ -160,6 +162,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private int mLastTouchX;
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
+    private int mAnimatedHeight = -1;
     private static int sUndoAnimationOffset;
     private static CharSequence sDraftSingularString;
     private static CharSequence sDraftPluralString;
@@ -1333,24 +1336,62 @@ public class ConversationItemView extends View implements SwipeableItemView {
     /**
      * Grow the height of the item and fade it in when bringing a conversation
      * back from a destructive action.
-     *
      * @param listener
      */
-    public void startUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
+    public void startSwipeUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
         final int start = sUndoAnimationOffset;
         final int end = 0;
-        ObjectAnimator undoAnimator = ObjectAnimator.ofFloat(this, "translationX" , start, end);
+        ObjectAnimator undoAnimator = ObjectAnimator.ofFloat(this, "translationX", start, end);
         undoAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
         undoAnimator.addListener(listener);
         undoAnimator.setDuration(sUndoAnimationDuration);
         undoAnimator.start();
     }
 
+    /**
+     * Grow the height of the item and fade it in when bringing a conversation
+     * back from a destructive action.
+     * @param listener
+     */
+    public void startUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
+        int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext, viewMode);
+        setMinimumHeight(minHeight);
+        final int start = 0;
+        final int end = minHeight;
+        ObjectAnimator undoAnimator = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
+        Animator fadeAnimator = ObjectAnimator.ofFloat(this, "itemAlpha", 0, 1.0f);
+        mAnimatedHeight = start;
+        undoAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
+        undoAnimator.addListener(listener);
+        undoAnimator.setDuration(sUndoAnimationDuration);
+        AnimatorSet transitionSet = new AnimatorSet();
+        transitionSet.playTogether(undoAnimator, fadeAnimator);
+        transitionSet.start();
+    }
+
+    // Used by animator
+    @SuppressWarnings("unused")
+    public void setItemAlpha(float alpha) {
+        setAlpha(alpha);
+        invalidate();
+    }
+
+    // Used by animator
+    @SuppressWarnings("unused")
+    public void setAnimatedHeight(int height) {
+        mAnimatedHeight = height;
+        requestLayout();
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int height = measureHeight(heightMeasureSpec,
-                ConversationItemViewCoordinates.getMode(mContext, mViewMode));
-        setMeasuredDimension(widthMeasureSpec, height);
+        if (mAnimatedHeight == -1) {
+            int height = measureHeight(heightMeasureSpec,
+                    ConversationItemViewCoordinates.getMode(mContext, mViewMode));
+            setMeasuredDimension(widthMeasureSpec, height);
+        } else {
+            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
+        }
     }
 
     /**
