@@ -60,6 +60,7 @@ import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock;
+import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
@@ -230,6 +231,8 @@ public final class ConversationViewFragment extends Fragment implements
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
+
+        mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(activity));
 
         showConversation();
     }

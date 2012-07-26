@@ -36,6 +36,8 @@ import android.view.View.OnCreateContextMenuListener;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import com.android.mail.R;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -45,15 +47,12 @@ import java.nio.charset.Charset;
  * <p>Handles display and behavior of the context menu for known actionable content in WebViews.
  * Requires an Activity to bind to for Context resolution and to start other activites.</p>
  * <br>
- * <p>Activity/Fragment clients must forward the 'onContextItemSelected' method.</p>
- * <br>
  * Dependencies:
  * <ul>
  * <li>res/menu/webview_context_menu.xml</li>
- * <li>res/values/webview_context_menu_strings.xml</li>
  * </ul>
  */
-public abstract class WebViewContextMenu implements OnCreateContextMenuListener,
+public class WebViewContextMenu implements OnCreateContextMenuListener,
         MenuItem.OnMenuItemClickListener {
 
     private Activity mActivity;
@@ -80,7 +79,7 @@ public abstract class WebViewContextMenu implements OnCreateContextMenuListener,
     }
 
     public WebViewContextMenu(Activity host) {
-        this.mActivity = host;
+        mActivity = host;
     }
 
     // For our copy menu items.
@@ -140,8 +139,8 @@ public abstract class WebViewContextMenu implements OnCreateContextMenuListener,
         clipboard.setPrimaryClip(ClipData.newPlainText(null, text));
     }
 
-    public void onCreateContextMenu(ContextMenu menu, View v,
-            ContextMenuInfo info) {
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo info) {
         // FIXME: This is copied over almost directly from BrowserActivity.
         // Would like to find a way to combine the two (Bug 1251210).
 
@@ -263,13 +262,6 @@ public abstract class WebViewContextMenu implements OnCreateContextMenuListener,
 
             case WebView.HitTestResult.SRC_ANCHOR_TYPE:
             case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
-                // FIXME: Make this look like the normal menu header
-                // We cannot use the normal menu header because we need to
-                // edit the ContextMenu after it has been created.
-                final TextView titleView = (TextView) LayoutInflater.from(mActivity)
-                        .inflate(getTitleViewLayoutResId(MenuType.SHARE_LINK_MENU), null);
-                menu.setHeaderView(titleView);
-
                 menu.findItem(getMenuResIdForMenuType(MenuType.SHARE_LINK_MENU)).setVisible(
                         showShareLinkMenuItem());
 
@@ -277,7 +269,7 @@ public abstract class WebViewContextMenu implements OnCreateContextMenuListener,
                 // SRC_ANCHOR_TYPE or the url would be specified in the extra.  We don't need to
                 // call requestFocusNodeHref().  If we wanted to handle UNKNOWN HitTestResults, we
                 // would.  With this knowledge, we can just set the title
-                titleView.setText(extra);
+                menu.setHeaderTitle(extra);
 
                 menu.findItem(getMenuResIdForMenuType(MenuType.COPY_LINK_MENU)).
                         setOnMenuItemClickListener(new Copy(extra));
@@ -306,44 +298,115 @@ public abstract class WebViewContextMenu implements OnCreateContextMenuListener,
      * @param menuResId resource id of the menu
      * @return MenuType for the specified menu resource id
      */
-    abstract protected MenuType getMenuTypeFromResId(int menuResId);
+    protected MenuType getMenuTypeFromResId(int menuResId) {
+        switch(menuResId) {
+            case R.id.open_context_menu_id:
+                return MenuType.OPEN_MENU;
+            case R.id.copy_link_context_menu_id:
+                return MenuType.COPY_LINK_MENU;
+            case R.id.share_link_context_menu_id:
+                return MenuType.SHARE_LINK_MENU;
+            case R.id.dial_context_menu_id:
+                return MenuType.DIAL_MENU;
+            case R.id.sms_context_menu_id:
+                return MenuType.SMS_MENU;
+            case R.id.add_contact_context_menu_id:
+                return MenuType.ADD_CONTACT_MENU;
+            case R.id.copy_phone_context_menu_id:
+                return MenuType.COPY_PHONE_MENU;
+            case R.id.email_context_menu_id:
+                return MenuType.EMAIL_CONTACT_MENU;
+            case R.id.copy_mail_context_menu_id:
+                return MenuType.COPY_MAIL_MENU;
+            case R.id.map_context_menu_id:
+                return MenuType.MAP_MENU;
+            case R.id.copy_geo_context_menu_id:
+                return MenuType.COPY_GEO_MENU;
+            default:
+                throw new IllegalStateException("Unexpected resource id");
+        }
+    }
 
     /**
      * Returns the menu resource id for the specified menu type
      * @param menuType type of the specified menu
      * @return menu resource id
      */
-    abstract protected int getMenuResIdForMenuType(MenuType menuType);
+    protected int getMenuResIdForMenuType(MenuType menuType) {
+        switch(menuType) {
+            case OPEN_MENU:
+                return R.id.open_context_menu_id;
+            case COPY_LINK_MENU:
+                return R.id.copy_link_context_menu_id;
+            case SHARE_LINK_MENU:
+                return R.id.share_link_context_menu_id;
+            case DIAL_MENU:
+                return R.id.dial_context_menu_id;
+            case SMS_MENU:
+                return R.id.sms_context_menu_id;
+            case ADD_CONTACT_MENU:
+                return R.id.add_contact_context_menu_id;
+            case COPY_PHONE_MENU:
+                return R.id.copy_phone_context_menu_id;
+            case EMAIL_CONTACT_MENU:
+                return R.id.email_context_menu_id;
+            case COPY_MAIL_MENU:
+                return R.id.copy_mail_context_menu_id;
+            case MAP_MENU:
+                return R.id.map_context_menu_id;
+            case COPY_GEO_MENU:
+                return R.id.copy_geo_context_menu_id;
+            default:
+                throw new IllegalStateException("Unexpected MenuType");
+        }
+    }
 
     /**
      * Returns the resource id of the string to be used when showing a chooser for a menu
      * @param menuType type of the specified menu
      * @return string resource id
      */
-    abstract protected int getChooserTitleStringResIdForMenuType(MenuType menuType);
-
-    /**
-     * Returns the resource id of the layout to be used for the title of the specified menu
-     * @param menuType type of the specified menu
-     * @return layout resource id
-     */
-    abstract protected int getTitleViewLayoutResId(MenuType menuType);
+    protected int getChooserTitleStringResIdForMenuType(MenuType menuType) {
+        switch(menuType) {
+            case SHARE_LINK_MENU:
+                return R.string.choosertitle_sharevia;
+            default:
+                throw new IllegalStateException("Unexpected MenuType");
+        }
+    }
 
     /**
      * Returns the menu group resource id for the specified menu group type.
      * @param menuGroupType menu group type
      * @return menu group resource id
      */
-    abstract protected int getMenuGroupResId(MenuGroupType menuGroupType);
+    protected int getMenuGroupResId(MenuGroupType menuGroupType) {
+        switch (menuGroupType) {
+            case PHONE_GROUP:
+                return R.id.PHONE_MENU;
+            case EMAIL_GROUP:
+                return R.id.EMAIL_MENU;
+            case GEO_GROUP:
+                return R.id.GEO_MENU;
+            case ANCHOR_GROUP:
+                return R.id.ANCHOR_MENU;
+            default:
+                throw new IllegalStateException("Unexpected MenuGroupType");
+        }
+    }
 
     /**
      * Returns the resource id for the web view context menu
      */
-    abstract protected int getMenuResourceId();
+    protected int getMenuResourceId() {
+        return R.menu.webview_context_menu;
+    }
 
 
     /**
      * Called when a menu item is not handled by the context menu.
      */
-    abstract protected boolean onMenuItemSelected(MenuItem menuItem);
+    protected boolean onMenuItemSelected(MenuItem menuItem) {
+        return mActivity.onOptionsItemSelected(menuItem);
+    }
 }
