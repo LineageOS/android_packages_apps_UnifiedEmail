@@ -327,6 +327,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
+    public FolderController getFolderController() {
+        return mController;
+    }
+
+    @Override
     public Settings getSettings() {
         return mController.getSettings();
     }
@@ -389,20 +394,5 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public ToastBarOperation getPendingToastOperation() {
         return mPendingToastOp;
-    }
-
-    @Override
-    public Folder getFolder() {
-        return mController.getFolder();
-    }
-
-    @Override
-    public void registerFolderObserver(DataSetObserver observer) {
-        mController.registerFolderObserver(observer);
-    }
-
-    @Override
-    public void unregisterFolderObserver(DataSetObserver observer) {
-        mController.unregisterFolderObserver(observer);
     }
 }

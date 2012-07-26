@@ -128,7 +128,7 @@ public final class ConversationListFragment extends ListFragment implements
     private class FolderObserver extends DataSetObserver {
         @Override
         public void onChanged() {
-            onFolderUpdated(mActivity.getFolder());
+            onFolderUpdated(mActivity.getFolderController().getFolder());
         }
     }
 
@@ -233,7 +233,7 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setSelectionSet(mActivity.getSelectedSet());
         mListAdapter.hideFooter();
         mFolderObserver = new FolderObserver();
-        mActivity.registerFolderObserver(mFolderObserver);
+        mActivity.getFolderController().registerFolderObserver(mFolderObserver);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         initializeUiForFirstDisplay();
         configureSearchResultHeader();
@@ -330,7 +330,7 @@ public final class ConversationListFragment extends ListFragment implements
             mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
         }
         if (mFolderObserver != null) {
-            mActivity.unregisterFolderObserver(mFolderObserver);
+            mActivity.getFolderController().unregisterFolderObserver(mFolderObserver);
             mFolderObserver = null;
         }
         super.onDestroyView();
@@ -421,7 +421,7 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private void showList() {
         mListView.setEmptyView(null);
-        onFolderUpdated(mActivity.getFolder());
+        onFolderUpdated(mActivity.getFolderController().getFolder());
     }
 
     /**
