@@ -296,6 +296,13 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public void onDragCancelled(SwipeableItemView v) {
+        SwipeableConversationItemView view = null;
+        if (v instanceof ConversationItemView) {
+            view = (SwipeableConversationItemView)((View)v).getParent();
+        }
+        if (view != null) {
+            view.removeBackground();
+        }
     }
 
     /**
