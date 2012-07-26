@@ -84,6 +84,11 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
     /**
      * Get the folder currently being accessed by the activity.
      */
+    Folder getFolder();
+
+    /**
+     * Get the folder currently being accessed by the activity.
+     */
     Folder getHierarchyFolder();
 
     /**
