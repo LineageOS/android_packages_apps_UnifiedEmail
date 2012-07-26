@@ -905,7 +905,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // CC field only gets populated when doing REPLY_ALL.
             // BCC never gets auto-populated, unless the user is editing
             // a draft with one.
-            if (!TextUtils.isEmpty(mRefMessage.cc) && action == REPLY_ALL) {
+            if (!TextUtils.isEmpty(mCc.getText()) && action == REPLY_ALL) {
                 mCcBccView.show(false, true, false);
             }
         }
