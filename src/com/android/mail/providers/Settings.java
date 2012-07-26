@@ -21,6 +21,7 @@ import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.DefaultReplyBehavior;
 import com.android.mail.providers.UIProvider.MessageTextSize;
 import com.android.mail.providers.UIProvider.SnapHeaderValue;
+import com.android.mail.providers.UIProvider.Swipe;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -58,6 +59,12 @@ public class Settings implements Parcelable {
     // setting, if found.
     private static final int DEFAULT_MAX_ATTACHMENT_SIZE = 5 * 1024 * 1024;
 
+    public static final int SWIPE_SETTING_ARCHIVE = 0;
+    public static final int SWIPE_SETTING_DELETE = 1;
+    public static final int SWIPE_SETTING_DISABLED = 2;
+
+    private static final int DEFAULT = SWIPE_SETTING_ARCHIVE;
+
     public final String signature;
     /**
      * Auto advance setting for this account.
@@ -84,6 +91,7 @@ public class Settings implements Parcelable {
 
     public final boolean forceReplyFromDefault;
     public final int maxAttachmentSize;
+    public final int swipe;
 
     private Settings() {
         signature = null;
@@ -99,6 +107,7 @@ public class Settings implements Parcelable {
         defaultInboxName = "";
         forceReplyFromDefault = false;
         maxAttachmentSize = 0;
+        swipe = DEFAULT;
     }
 
     public Settings(Parcel inParcel) {
@@ -115,6 +124,7 @@ public class Settings implements Parcelable {
         defaultInboxName = inParcel.readString();
         forceReplyFromDefault = inParcel.readInt() != 0;
         maxAttachmentSize = inParcel.readInt();
+        swipe = inParcel.readInt();
     }
 
     public Settings(Cursor cursor) {
@@ -133,6 +143,7 @@ public class Settings implements Parcelable {
         forceReplyFromDefault = cursor.getInt(
                 UIProvider.ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN) != 0;
         maxAttachmentSize = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN);
+        swipe = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_SWIPE_COLUMN);
     }
 
     private Settings(JSONObject json) throws JSONException {
@@ -152,6 +163,7 @@ public class Settings implements Parcelable {
         forceReplyFromDefault =
                 json.optBoolean(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT);
         maxAttachmentSize = json.getInt(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE);
+        swipe = json.optInt(AccountColumns.SettingsColumns.SWIPE);
     }
 
     /**
@@ -183,6 +195,7 @@ public class Settings implements Parcelable {
                     forceReplyFromDefault);
             json.put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
                     maxAttachmentSize);
+            json.put(AccountColumns.SettingsColumns.SWIPE, swipe);
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not serialize settings");
         }
@@ -251,6 +264,7 @@ public class Settings implements Parcelable {
         dest.writeString(defaultInboxName);
         dest.writeInt(forceReplyFromDefault ? 1 : 0);
         dest.writeInt(maxAttachmentSize);
+        dest.writeInt(swipe);
     }
 
     /**
@@ -282,7 +296,14 @@ public class Settings implements Parcelable {
         return autoAdvance;
     }
 
-
+    /**
+     * Return the swipe setting for the settings provided. It is safe to pass this method
+     * a null object. It always returns a valid {@link Swipe} setting.
+     * @return the auto advance setting, a constant from {@link Swipe}
+     */
+    public static int getSwipeSetting(Settings settings) {
+        return settings != null ? settings.swipe : Swipe.DEFAULT;
+    }
 
     @SuppressWarnings("hiding")
     public static final Creator<Settings> CREATOR = new Creator<Settings>() {

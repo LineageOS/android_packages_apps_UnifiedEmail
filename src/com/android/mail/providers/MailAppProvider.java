@@ -280,6 +280,9 @@ public abstract class MailAppProvider extends ContentProvider
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE)) {
                     builder.add(account.settings.maxAttachmentSize);
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.SettingsColumns.SWIPE)) {
+                    builder.add(account.settings.swipe);
                 } else {
                     throw new IllegalStateException("Column not found: " + column);
                 }
@@ -470,8 +473,6 @@ public abstract class MailAppProvider extends ContentProvider
     }
 
     private void cacheAccountList() {
-        final SharedPreferences preference = getPreferences();
-
         final Set<AccountCacheEntry> accountList;
         synchronized (mAccountCache) {
             accountList = ImmutableSet.copyOf(mAccountCache.values());
