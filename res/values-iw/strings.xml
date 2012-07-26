@@ -55,7 +55,8 @@
     <string name="mute" msgid="1995954983688603977">"השתק"</string>
     <string name="add_star" msgid="2866003744391266498">"הוסף כוכב"</string>
     <string name="remove_star" msgid="4372327933122106128">"הסר כוכב"</string>
-    <string name="remove_folder" msgid="7297603912332340861">"הסר תיקיה"</string>
+    <!-- no translation found for remove_folder (6098805949226229827) -->
+    <skip />
     <string name="archive" msgid="847250094775910499">"העבר לארכיון"</string>
     <string name="report_spam" msgid="6467567747975393907">"דווח על ספאם"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"דווח שפריט זה אינו דואר זבל"</string>
@@ -196,6 +197,14 @@
     <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחה כספאם."</item>
     <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו כספאם."</item>
   </plurals>
+  <plurals name="conversation_not_spam">
+    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו שאינן דואר זבל."</item>
+    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו שאינן דואר זבל."</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו כהתחזות."</item>
+    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; דווחו כהתחזות."</item>
+  </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; הועברה לארכיון."</item>
     <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; הועברו לארכיון."</item>
@@ -208,6 +217,10 @@
     <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; נמחקה."</item>
     <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; נמחקו."</item>
   </plurals>
+    <string name="deleted" msgid="2757349161107268029">"נמחקה"</string>
+    <string name="archived" msgid="7533995360704366325">"הועברה לארכיון"</string>
+    <!-- no translation found for folder_removed (858015177285651764) -->
+    <skip />
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; סומנה כחשובה."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; סומנו כחשובות."</item>
