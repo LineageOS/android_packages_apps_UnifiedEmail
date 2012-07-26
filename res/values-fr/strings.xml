@@ -55,7 +55,8 @@
     <string name="mute" msgid="1995954983688603977">"Ignorer"</string>
     <string name="add_star" msgid="2866003744391266498">"Activer le suivi"</string>
     <string name="remove_star" msgid="4372327933122106128">"Désactiver le suivi"</string>
-    <string name="remove_folder" msgid="7297603912332340861">"Supprimer le dossier"</string>
+    <!-- no translation found for remove_folder (6098805949226229827) -->
+    <skip />
     <string name="archive" msgid="847250094775910499">"Archiver"</string>
     <string name="report_spam" msgid="6467567747975393907">"Signaler comme spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Non-spam"</string>
@@ -196,6 +197,14 @@
     <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation marquée comme spam."</item>
     <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversations marquées comme spam."</item>
   </plurals>
+  <plurals name="conversation_not_spam">
+    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation signalée comme n\'étant pas du spam"</item>
+    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversations signalées comme n\'étant pas du spam"</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation signalée comme étant du phishing"</item>
+    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversations signalées comme étant du phishing"</item>
+  </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation archivée."</item>
     <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversations archivées."</item>
@@ -208,6 +217,10 @@
     <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation supprimée."</item>
     <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversations supprimées."</item>
   </plurals>
+    <string name="deleted" msgid="2757349161107268029">"Supprimée."</string>
+    <string name="archived" msgid="7533995360704366325">"Archivée."</string>
+    <!-- no translation found for folder_removed (858015177285651764) -->
+    <skip />
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation marquée comme importante."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversations marquées comme importantes."</item>
