@@ -180,7 +180,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     /**
      * Deletes the selected conversations from the conversation list view. These conversations
      * <b>must</b> have their {@link Conversation#position} set to the position of these
-     * conversations among the list. . This will only remove the
+     * conversations among the list. This will only remove the
      * element from the list. The job of deleting the actual element is left to the the listener.
      * This listener will be called when the animations are complete and is required to
      * delete the conversation.
@@ -205,7 +205,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * @param deletedRows the position in the list view to be deleted.
      * @param action the destructive action that modifies the database.
      */
-    public void delete(ArrayList<Integer> deletedRows, DestructiveAction action) {
+    private void delete(ArrayList<Integer> deletedRows, DestructiveAction action) {
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
 

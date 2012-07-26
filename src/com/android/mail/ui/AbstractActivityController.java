@@ -130,8 +130,6 @@ public abstract class AbstractActivityController implements ActivityController {
     protected static final String TAG_WAIT = "wait-fragment";
     /** Tag used when loading a conversation list fragment. */
     public static final String TAG_CONVERSATION_LIST = "tag-conversation-list";
-    /** Tag used when loading a conversation fragment. */
-    public static final String TAG_CONVERSATION = "tag-conversation";
     /** Tag used when loading a folder list fragment. */
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
 
@@ -288,19 +286,6 @@ public abstract class AbstractActivityController implements ActivityController {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION_LIST);
         if (isValidFragment(fragment)) {
             return (ConversationListFragment) fragment;
-        }
-        return null;
-    }
-
-    /**
-     * Get the conversation view fragment for this activity. If the conversation view fragment
-     * is not attached, this method returns null
-     *
-     */
-    protected ConversationViewFragment getConversationViewFragment() {
-        final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION);
-        if (isValidFragment(fragment)) {
-            return (ConversationViewFragment) fragment;
         }
         return null;
     }
@@ -815,12 +800,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void markConversationsRead(Collection<Conversation> targets, boolean read) {
-        ContentValues values;
-        ConversationInfo info;
         for (Conversation target : targets) {
-            values = new ContentValues();
+            final ContentValues values = new ContentValues();
             values.put(ConversationColumns.READ, read);
-            info = target.conversationInfo;
+            final ConversationInfo info = target.conversationInfo;
             if (info != null) {
                 try {
                     info.markRead(read);
@@ -908,21 +891,26 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void delete(final Collection<Conversation> target, final DestructiveAction action) {
-        // The conversation list handles deletion if it exists.
-        final ConversationListFragment convListFragment = getConversationListFragment();
-        if (convListFragment != null) {
-            LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
-            convListFragment.requestDelete(target, action);
-            return;
-        }
+        // Order of events is critical! The Conversation View Fragment must be notified
+        // of the next conversation with showConversation(next) *before* the conversation list
+        // fragment has a chance to delete the conversation, animating it away.
+
         // Update the conversation fragment if the current conversation is deleted.
-        if (getConversationViewFragment() != null &&
-                !Conversation.contains(target, mCurrentConversation)) {
+        final boolean currentConversationInView = (mViewMode.getMode() == ViewMode.CONVERSATION)
+                && Conversation.contains(target, mCurrentConversation);
+        if (currentConversationInView) {
             final Conversation next = mTracker.getNextConversation(
                     Settings.getAutoAdvanceSetting(mAccount.settings), target,
                     mCurrentConversation);
             LogUtils.d(LOG_TAG, "requestDelete: showing %s next.", next);
             showConversation(next);
+        }
+        // The conversation list deletes and performs the action if it exists.
+        final ConversationListFragment convListFragment = getConversationListFragment();
+        if (convListFragment != null) {
+            LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
+            convListFragment.requestDelete(target, action);
+            return;
         }
         // No visible UI element handled it on our behalf. Perform the action ourself.
         action.performAction();
@@ -1096,7 +1084,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 // in the list
                 conversation.position = 0;
             }
-            setCurrentConversation(conversation);
             showConversation(mCurrentConversation);
         }
 
@@ -1164,7 +1151,6 @@ public abstract class AbstractActivityController implements ActivityController {
                     // in the list
                     conversation.position = 0;
                 }
-                setCurrentConversation(conversation);
                 showConversation(mCurrentConversation);
                 handled = true;
             }
@@ -1714,7 +1700,6 @@ public abstract class AbstractActivityController implements ActivityController {
             if (isPerformed()) {
                 return;
             }
-            // Certain actions force a return to list.
             boolean undoEnabled = mAccount.supportsCapability(AccountCapabilities.UNDO);
 
             // Are we destroying the currently shown conversation? Show the next one.
@@ -1722,13 +1707,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 LogUtils.d(LOG_TAG, "ConversationAction.performAction(): mIsConversationVisible=%b"
                         + "\nmTarget=%s\nCurrent=%s", mIsConversationVisible,
                         Conversation.toString(mTarget), mCurrentConversation);
-            }
-            if (mIsConversationVisible && Conversation.contains(mTarget, mCurrentConversation)) {
-                int advance = Settings.getAutoAdvanceSetting(mAccount.settings);
-                final Conversation next = advance == AutoAdvance.LIST ? null : mTracker
-                        .getNextConversation(advance, mTarget, mCurrentConversation);
-                LogUtils.d(LOG_TAG, "Next conversation is: %s", next);
-                showConversation(next);
             }
 
             switch (mAction) {
