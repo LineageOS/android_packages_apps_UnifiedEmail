@@ -326,4 +326,9 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public ToastBarOperation getPendingToastOperation() {
         return null;
     }
+
+    @Override
+    public Folder getFolder() {
+        return null;
+    }
 }

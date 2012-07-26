@@ -389,4 +389,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public ToastBarOperation getPendingToastOperation() {
         return mPendingToastOp;
     }
+
+    @Override
+    public Folder getFolder() {
+        return mController.getFolder();
+    }
 }

@@ -350,7 +350,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
             name = o.getString(FolderColumns.NAME);
             hasChildren = o.getBoolean(FolderColumns.HAS_CHILDREN);
             capabilities = o.getInt(FolderColumns.CAPABILITIES);
-            syncStatus = o.getInt(FolderColumns.SYNC_WINDOW);
+            syncWindow = o.getInt(FolderColumns.SYNC_WINDOW);
             conversationListUri = getValidUri(o.optString(FolderColumns.CONVERSATION_LIST_URI));
             childFoldersListUri = getValidUri(o.optString(FolderColumns.CHILD_FOLDERS_LIST_URI));
             unreadCount = o.getInt(FolderColumns.UNREAD_COUNT);
