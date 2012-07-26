@@ -43,6 +43,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.Swipe;
 import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
@@ -486,11 +487,21 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     private void setSwipeAction() {
-        mListView.setSwipeAction(!mAccount
-                .supportsCapability(UIProvider.AccountCapabilities.ARCHIVE) ?
-                        R.id.delete :
-                            mFolder != null && mFolder.type == UIProvider.FolderType.INBOX ?
-                                    R.id.archive : R.id.change_folder);
+        int swipeSetting = Settings.getSwipeSetting(mAccount.settings);
+        if (swipeSetting == Swipe.DISABLED
+                || !mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
+            mListView.enableSwipe(false);
+        } else {
+            int action;
+            if (swipeSetting == Swipe.ARCHIVE
+                    && mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE)) {
+                action = mFolder != null && mFolder.type == UIProvider.FolderType.INBOX ?
+                        R.id.archive : R.id.change_folder;
+            } else {
+                action = R.id.delete;
+            }
+            mListView.setSwipeAction(action);
+        }
         mListView.setCurrentFolder(mFolder);
     }
 
