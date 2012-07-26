@@ -764,16 +764,21 @@ public abstract class AbstractActivityController implements ActivityController {
         // to conversation unread)
         conv.read = false;
 
-        // mark the entire conversation unread if no messages are specified
-        if (unreadMessageUris == null || unreadMessageUris.isEmpty()) {
+        // only do a granular 'mark unread' if a subset of messages are unread
+        final int unreadCount = (unreadMessageUris == null) ? 0 : unreadMessageUris.size();
+        final boolean subsetIsUnread = (conv.numMessages > 1 && unreadCount > 0
+                && unreadCount < conv.numMessages);
+
+        if (!subsetIsUnread) {
             markConversationsRead(Collections.singletonList(conv), false /* read */);
         } else {
-
             mConversationListCursor.setConversationColumn(conv.uri, ConversationColumns.READ, 0);
 
             // locally update conversation's conversationInfo JSON to revert to original version
-            mConversationListCursor.setConversationColumn(conv.uri,
-                    ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
+            if (originalConversationInfo != null) {
+                mConversationListCursor.setConversationColumn(conv.uri,
+                        ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
+            }
 
             // applyBatch with each CPO as an UPDATE op on each affected message uri
             final ArrayList<ContentProviderOperation> ops = Lists.newArrayList();
