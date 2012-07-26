@@ -55,7 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Ignorovať"</string>
     <string name="add_star" msgid="2866003744391266498">"Pridať hviezdičku"</string>
     <string name="remove_star" msgid="4372327933122106128">"Odstrániť hviezdičku"</string>
-    <!-- no translation found for remove_folder (7297603912332340861) -->
+    <!-- no translation found for remove_folder (6098805949226229827) -->
     <skip />
     <string name="archive" msgid="847250094775910499">"Archivovať"</string>
     <string name="report_spam" msgid="6467567747975393907">"Nahlásiť spam"</string>
@@ -197,6 +197,10 @@
     <item quantity="one" msgid="3060864972122279220">"Konverzácie boli nahlásené ako spam (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
     <item quantity="other" msgid="5071459475389411227">"Konverzácie boli nahlásené ako spam (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
   </plurals>
+    <!-- no translation found for conversation_not_spam:one (7361303622131552596) -->
+    <!-- no translation found for conversation_not_spam:other (2250720080221922267) -->
+    <!-- no translation found for conversation_phished:one (5386916574432049235) -->
+    <!-- no translation found for conversation_phished:other (3678624994662639442) -->
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"Konverzácie boli archivované (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
     <item quantity="other" msgid="3012054504370916482">"Konverzácie boli archivované (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)"</item>
@@ -209,6 +213,12 @@
     <item quantity="one" msgid="4398693029405479323">"Konverzácie boli odstránené (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
     <item quantity="other" msgid="8630099095360065837">"Konverzácie boli odstránené (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
   </plurals>
+    <!-- no translation found for deleted (2757349161107268029) -->
+    <skip />
+    <!-- no translation found for archived (7533995360704366325) -->
+    <skip />
+    <!-- no translation found for folder_removed (858015177285651764) -->
+    <skip />
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"Konverzácie boli označené ako dôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
     <item quantity="other" msgid="709648106181749594">"Konverzácie boli označené ako dôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
