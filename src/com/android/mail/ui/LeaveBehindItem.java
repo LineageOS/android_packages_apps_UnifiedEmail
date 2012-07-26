@@ -64,8 +64,7 @@ public class LeaveBehindItem extends AnimatingItemView implements OnClickListene
                     // in which case
                     // the resulting cursor might be interesting...
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate
-                    // the set of
-                    // commands to undo
+                    // the set of commands to undo
                     mAdapter.clearLeaveBehind(getConversationId());
                     mAdapter.setUndo(true);
                     mConversationCursor.undo(getContext(), mAccount.undoUri);
@@ -82,7 +81,7 @@ public class LeaveBehindItem extends AnimatingItemView implements OnClickListene
         mConversationCursor = (ConversationCursor) adapter.getCursor();
         setData(target);
         ((TextView) findViewById(R.id.undo_descriptionview)).setText(Html.fromHtml(mUndoOp
-                .getDescription(getContext())));
+                .getSingularDescription(getContext())));
         ((RelativeLayout) findViewById(R.id.undo_button)).setOnClickListener(this);
     }
 

@@ -25,5 +25,5 @@
         android:singleLine="true"
         android:text="@string/no_conversations"
         android:textColor="@android:color/white"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:background="@android:color/black" />
+        android:background="@android:color/black"
+        android:textSize="16sp" />

@@ -428,6 +428,12 @@
         <!-- Displayed while deleting multiple conversations -->
         <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> deleted.</item>
     </plurals>
+    <!-- Displayed when swiping away a single conversation to delete it [CHAR LIMIT=80] -->
+    <string name="deleted">Deleted</string>
+    <!-- Displayed when swiping away a single conversation to archive it [CHAR LIMIT=80] -->
+    <string name="archived">Archived</string>
+    <!-- Displayed when swiping away a single conversation to remove the currently displayed folder [CHAR LIMIT=80] -->
+    <string name="folder_removed">Folder removed</string>
 
     <plurals name="conversation_marked_important">
         <!-- Displayed while marking a single conversation as important. [CHAR LIMIT=80] -->

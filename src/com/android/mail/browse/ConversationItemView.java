@@ -17,9 +17,7 @@
 
 package com.android.mail.browse;
 
-import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ClipData;
 import android.content.ClipData.Item;
@@ -107,8 +105,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     // Static colors.
     private static int DEFAULT_TEXT_COLOR;
     private static int ACTIVATED_TEXT_COLOR;
-    private static int LIGHT_TEXT_COLOR;
-    private static int DRAFT_TEXT_COLOR;
     private static int SUBJECT_TEXT_COLOR_READ;
     private static int SUBJECT_TEXT_COLOR_UNREAD;
     private static int SNIPPET_TEXT_COLOR_READ;
@@ -122,7 +118,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static int sDateBackgroundHeight;
     private static int sStandardScaledDimen;
     private static int sUndoAnimationDuration;
-    private static CharacterStyle sLightTextStyle;
     protected static CharacterStyle sNormalTextStyle;
 
     // Static paints.
@@ -158,7 +153,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private ConversationSelectionSet mSelectedConversationSet;
     private Folder mDisplayedFolder;
     private boolean mPriorityMarkersEnabled;
-    private int mAnimatedHeight = -1;
     private boolean mCheckboxesEnabled;
     private CheckForTap mPendingCheckForTap;
     private CheckForLongPress mPendingCheckForLongPress;
@@ -166,6 +160,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private int mLastTouchX;
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
+    private static int sUndoAnimationOffset;
     private static CharSequence sDraftSingularString;
     private static CharSequence sDraftPluralString;
     private static ForegroundColorSpan sDraftsStyleSpan;
@@ -348,8 +343,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
             // Initialize colors.
             DEFAULT_TEXT_COLOR = res.getColor(R.color.default_text_color);
             ACTIVATED_TEXT_COLOR = res.getColor(android.R.color.white);
-            LIGHT_TEXT_COLOR = res.getColor(R.color.light_text_color);
-            DRAFT_TEXT_COLOR = res.getColor(R.color.drafts);
             SUBJECT_TEXT_COLOR_READ = res.getColor(R.color.subject_text_color_read);
             SUBJECT_TEXT_COLOR_UNREAD = res.getColor(R.color.subject_text_color_unread);
             SNIPPET_TEXT_COLOR_READ = res.getColor(R.color.snippet_text_color_read);
@@ -364,10 +357,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
             sDateBackgroundHeight = res.getDimensionPixelSize(R.dimen.date_background_height);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
             sUndoAnimationDuration = res.getInteger(R.integer.undo_animation_duration);
-
+            sUndoAnimationOffset = res.getDimensionPixelOffset(R.dimen.undo_animation_offset);
             // Initialize static color.
             sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
-            sLightTextStyle = new ForegroundColorSpan(LIGHT_TEXT_COLOR);
         }
     }
 
@@ -950,71 +942,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mAnimatedHeight == -1) {
-            int width = measureWidth(widthMeasureSpec);
-            int height = measureHeight(heightMeasureSpec,
-                    ConversationItemViewCoordinates.getMode(mContext, mViewMode));
-            setMeasuredDimension(width, height);
-        } else {
-            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
-        }
-    }
-
-    /**
-     * Determine the width of this view.
-     *
-     * @param measureSpec A measureSpec packed into an int
-     * @return The width of the view, honoring constraints from measureSpec
-     */
-    private int measureWidth(int measureSpec) {
-        int result = 0;
-        int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize = MeasureSpec.getSize(measureSpec);
-
-        if (specMode == MeasureSpec.EXACTLY) {
-            // We were told how big to be
-            result = specSize;
-        } else {
-            // Measure the text
-            result = mViewWidth;
-            if (specMode == MeasureSpec.AT_MOST) {
-                // Respect AT_MOST value if that was what is called for by
-                // measureSpec
-                result = Math.min(result, specSize);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Determine the height of this view.
-     *
-     * @param measureSpec A measureSpec packed into an int
-     * @param mode The current mode of this view
-     * @return The height of the view, honoring constraints from measureSpec
-     */
-    private int measureHeight(int measureSpec, int mode) {
-        int result = 0;
-        int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize = MeasureSpec.getSize(measureSpec);
-
-        if (specMode == MeasureSpec.EXACTLY) {
-            // We were told how big to be
-            result = specSize;
-        } else {
-            // Measure the text
-            result = ConversationItemViewCoordinates.getHeight(mContext, mode);
-            if (specMode == MeasureSpec.AT_MOST) {
-                // Respect AT_MOST value if that was what is called for by
-                // measureSpec
-                result = Math.min(result, specSize);
-            }
-        }
-        return result;
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
         // Check mark.
         if (mHeader.checkboxVisible) {
@@ -1410,33 +1337,46 @@ public class ConversationItemView extends View implements SwipeableItemView {
      * @param listener
      */
     public void startUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
-        int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext, viewMode);
-        setMinimumHeight(minHeight);
-        final int start = 0;
-        final int end = minHeight;
-        ObjectAnimator undoAnimator = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
-        Animator fadeAnimator = ObjectAnimator.ofFloat(this, "itemAlpha", 0, 1.0f);
-        mAnimatedHeight = start;
+        final int start = sUndoAnimationOffset;
+        final int end = 0;
+        ObjectAnimator undoAnimator = ObjectAnimator.ofFloat(this, "translationX" , start, end);
         undoAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
         undoAnimator.addListener(listener);
         undoAnimator.setDuration(sUndoAnimationDuration);
-        AnimatorSet transitionSet = new AnimatorSet();
-        transitionSet.playTogether(undoAnimator, fadeAnimator);
-        transitionSet.start();
+        undoAnimator.start();
     }
 
-    // Used by animator
-    @SuppressWarnings("unused")
-    public void setItemAlpha(float alpha) {
-        setAlpha(alpha);
-        invalidate();
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int height = measureHeight(heightMeasureSpec,
+                ConversationItemViewCoordinates.getMode(mContext, mViewMode));
+        setMeasuredDimension(widthMeasureSpec, height);
     }
 
-    // Used by animator
-    @SuppressWarnings("unused")
-    public void setAnimatedHeight(int height) {
-        mAnimatedHeight = height;
-        requestLayout();
+    /**
+     * Determine the height of this view.
+     * @param measureSpec A measureSpec packed into an int
+     * @param mode The current mode of this view
+     * @return The height of the view, honoring constraints from measureSpec
+     */
+    private int measureHeight(int measureSpec, int mode) {
+        int result = 0;
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+
+        if (specMode == MeasureSpec.EXACTLY) {
+            // We were told how big to be
+            result = specSize;
+        } else {
+            // Measure the text
+            result = ConversationItemViewCoordinates.getHeight(mContext, mode);
+            if (specMode == MeasureSpec.AT_MOST) {
+                // Respect AT_MOST value if that was what is called for by
+                // measureSpec
+                result = Math.min(result, specSize);
+            }
+        }
+        return result;
     }
 
     /**
