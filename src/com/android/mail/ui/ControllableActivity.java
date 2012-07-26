@@ -17,6 +17,8 @@
 
 package com.android.mail.ui;
 
+import android.database.DataSetObserver;
+
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -102,4 +104,7 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
     SubjectDisplayChanger getSubjectDisplayChanger();
 
     ErrorListener getErrorListener();
+
+    void registerFolderObserver(DataSetObserver folderObserver);
+    void unregisterFolderObserver(DataSetObserver folderObserver);
 }

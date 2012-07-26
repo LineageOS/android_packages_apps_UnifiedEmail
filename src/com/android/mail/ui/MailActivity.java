@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -393,5 +394,15 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public Folder getFolder() {
         return mController.getFolder();
+    }
+
+    @Override
+    public void registerFolderObserver(DataSetObserver observer) {
+        mController.registerFolderObserver(observer);
+    }
+
+    @Override
+    public void unregisterFolderObserver(DataSetObserver observer) {
+        mController.unregisterFolderObserver(observer);
     }
 }

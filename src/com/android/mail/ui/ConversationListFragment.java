@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -114,12 +115,21 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationListFooterView mFooterView;
     private int mSwipeAction;
     private ErrorListener mErrorListener;
+    private DataSetObserver mFolderObserver = new FolderObserver();
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
     public ConversationListFragment() {
         super();
+    }
+
+    // update the pager title strip as the Folder's conversation count changes
+    private class FolderObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            onFolderUpdated(mActivity.getFolder());
+        }
     }
 
     /**
@@ -205,20 +215,21 @@ public final class ConversationListFragment extends ListFragment implements
         mActivity = (ControllableActivity) activity;
         mCallbacks = mActivity.getListHandler();
         mErrorListener = mActivity.getErrorListener();
-
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
                 getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
                 mActivity.getSettings(), mActivity.getViewMode(), mListView);
         // Start off with the current state of the folder being viewed.
-        onFolderUpdated(mActivity.getFolder());
         mFooterView = (ConversationListFooterView) LayoutInflater.from(
                 mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
                 null);
+        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
+                getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
+                mActivity.getSettings(), mActivity.getViewMode(), mListView);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         mListView.setSelectionSet(mActivity.getSelectedSet());
         mListAdapter.hideFooter();
-        mActivity.setViewModeListener(this);
+        mActivity.registerFolderObserver(mFolderObserver);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         initializeUiForFirstDisplay();
         configureSearchResultHeader();
@@ -379,6 +390,7 @@ public final class ConversationListFragment extends ListFragment implements
     public void onStop() {
         super.onStop();
         mHandler.removeCallbacks(mUpdateTimestampsRunnable);
+        mActivity.unregisterFolderObserver(mFolderObserver);
     }
 
     @Override
@@ -402,7 +414,7 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private void showList() {
         mListView.setEmptyView(null);
-        onFolderUpdated(mViewContext.folder);
+        onFolderUpdated(mActivity.getFolder());
     }
 
     /**
