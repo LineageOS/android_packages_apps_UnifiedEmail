@@ -1305,7 +1305,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         } else if (action == ComposeActivity.REPLY_ALL) {
             final Set<String> ccAddresses = Sets.newHashSet();
             toAddresses = initToRecipients(account, accountEmail, fromAddress, replytoAddress,
-                    new String[0]);
+                    sentToAddresses);
             addToAddresses(toAddresses);
             addRecipients(accountEmail, ccAddresses, sentToAddresses);
             addRecipients(accountEmail, ccAddresses,
