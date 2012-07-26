@@ -115,7 +115,7 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationListFooterView mFooterView;
     private int mSwipeAction;
     private ErrorListener mErrorListener;
-    private DataSetObserver mFolderObserver = new FolderObserver();
+    private DataSetObserver mFolderObserver;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -229,6 +229,7 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setAdapter(mListAdapter);
         mListView.setSelectionSet(mActivity.getSelectedSet());
         mListAdapter.hideFooter();
+        mFolderObserver = new FolderObserver();
         mActivity.registerFolderObserver(mFolderObserver);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         initializeUiForFirstDisplay();
@@ -390,7 +391,9 @@ public final class ConversationListFragment extends ListFragment implements
     public void onStop() {
         super.onStop();
         mHandler.removeCallbacks(mUpdateTimestampsRunnable);
-        mActivity.unregisterFolderObserver(mFolderObserver);
+        if (mFolderObserver != null) {
+            mActivity.unregisterFolderObserver(mFolderObserver);
+        }
     }
 
     @Override
