@@ -102,4 +102,14 @@ public class SwipeableConversationItemView extends FrameLayout {
         }
 
     }
+
+    /**
+     * Remove an added background. Helps to keep a smaller hierarchy of existing views.
+     */
+    public void removeBackground() {
+        if (mBackground != null) {
+            removeView(mBackground);
+        }
+        mBackground = null;
+    }
 }
