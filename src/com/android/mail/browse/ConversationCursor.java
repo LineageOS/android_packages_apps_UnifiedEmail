@@ -38,7 +38,6 @@ import android.os.RemoteException;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.utils.LogUtils;
@@ -118,16 +117,6 @@ public final class ConversationCursor implements Cursor {
 
     // The current position of the cursor
     private int mPosition = -1;
-
-    /**
-     * Allow UI elements to subscribe to changes that other UI elements might make to this data.
-     * This short circuits the usual DB round-trip needed for data to propagate across disparate
-     * UI elements.
-     * <p>
-     * A UI element that receives a notification on this channel should just update its existing
-     * view, and should not trigger a full refresh.
-     */
-    private final DataSetObservable mDataSetObservable = new DataSetObservable();
 
     // The number of cached deletions from this cursor (used to quickly generate an accurate count)
     private int mDeletedCount = 0;
@@ -1213,28 +1202,16 @@ public final class ConversationCursor implements Cursor {
         // Whether this item is already mostly dead
         private final boolean mMostlyDead;
 
-        /**
-         * Set to true to immediately notify any {@link DataSetObserver}s watching the global
-         * {@link ConversationCursor} upon applying the change to the data cache. You would not
-         * want to do this if a change you make is being handled specially, like an animated delete.
-         *
-         * TODO: move this to the application Controller, or whoever has a canonical reference
-         * to a {@link ConversationCursor} to notify on.
-         */
-        private final boolean mAutoNotify;
-
         public ConversationOperation(int type, Conversation conv) {
-            this(type, conv, null, false /* autoNotify */);
+            this(type, conv, null);
         }
 
-        public ConversationOperation(int type, Conversation conv, ContentValues values,
-                boolean autoNotify) {
+        public ConversationOperation(int type, Conversation conv, ContentValues values) {
             mType = type;
             mUri = conv.uri;
             mConversation = conv;
             mValues = values;
             mLocalDeleteOnUpdate = conv.localDeleteOnUpdate;
-            mAutoNotify = autoNotify;
             mMostlyDead = conv.isMostlyDead();
         }
 
@@ -1336,14 +1313,6 @@ public final class ConversationCursor implements Cursor {
                 default:
                     throw new UnsupportedOperationException(
                             "No such ConversationOperation type: " + mType);
-            }
-
-            // FIXME: this is a hack to notify conversation list of changes from conversation view.
-            // The proper way to do this is to have the Controller handle the 'mark read' action.
-            // It has a reference to this ConversationCursor so it can notify without using global
-            // magic.
-            if (mAutoNotify) {
-                notifyDataSetChanged();
             }
 
             return op;
@@ -1452,16 +1421,12 @@ public final class ConversationCursor implements Cursor {
 
     @Override
     public void registerDataSetObserver(DataSetObserver observer) {
-        mDataSetObservable.registerObserver(observer);
+        // Nope. We use ConversationListener to accomplish this.
     }
 
     @Override
     public void unregisterDataSetObserver(DataSetObserver observer) {
-        mDataSetObservable.unregisterObserver(observer);
-    }
-
-    public void notifyDataSetChanged() {
-        mDataSetObservable.notifyChanged();
+        // See above.
     }
 
     @Override
@@ -1553,10 +1518,9 @@ public final class ConversationCursor implements Cursor {
     /**
      * Update a boolean column for a group of conversations, immediately in the UI and in a single
      * transaction in the underlying provider
-     * @param conversations a collection of conversations
      * @param context the caller's context
-     * @param columnName the column to update
-     * @param value the new value
+     * @param conversations a collection of conversations
+     * @param values the data to update
      * @return the sequence number of the operation (for undo)
      */
     public int updateValues(Context context, Collection<Conversation> conversations,
@@ -1566,16 +1530,10 @@ public final class ConversationCursor implements Cursor {
     }
 
     private ArrayList<ConversationOperation> getOperationsForConversations(
-            Collection<Conversation> conversations, int op, ContentValues values) {
-        return getOperationsForConversations(conversations, op, values, false /* autoNotify */);
-    }
-
-    private ArrayList<ConversationOperation> getOperationsForConversations(
-            Collection<Conversation> conversations, int type, ContentValues values,
-            boolean autoNotify) {
+            Collection<Conversation> conversations, int type, ContentValues values) {
         final ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
-            ConversationOperation op = new ConversationOperation(type, conv, values, autoNotify);
+            ConversationOperation op = new ConversationOperation(type, conv, values);
             ops.add(op);
         }
         return ops;
@@ -1612,23 +1570,6 @@ public final class ConversationCursor implements Cursor {
         ArrayList<Conversation> conversations = new ArrayList<Conversation>();
         conversations.add(conversation);
         return delete(context, conversations);
-    }
-
-    /**
-     * Mark a single conversation read/unread.
-     * @param context the caller's context
-     * @param read true for read, false for unread
-     * @return the sequence number of the operation (for undo)
-     */
-    public int markRead(Context context, boolean read, Conversation conversation) {
-        ContentValues values = new ContentValues();
-        values.put(ConversationColumns.READ, read);
-        ArrayList<Conversation> conversations = new ArrayList<Conversation>();
-        conversations.add(conversation);
-        return apply(
-                context,
-                getOperationsForConversations(conversations, ConversationOperation.UPDATE,
-                        values, true /* autoNotify */));
     }
 
     // Convenience methods

@@ -41,7 +41,6 @@ import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
@@ -93,11 +92,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
             ConversationSelectionSet batch, Account account, Settings settings, ViewMode viewMode,
             SwipeableListView listView) {
-        // Use FLAG_REGISTER_CONTENT_OBSERVER to ensure special
-        // ConversationCursor notifications (triggered by UI actions) cause any
-        // connected ListView to redraw.
-        super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null,
-                FLAG_REGISTER_CONTENT_OBSERVER);
+        super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
         mSelectedAccount = account;
