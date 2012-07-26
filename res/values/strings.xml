@@ -112,7 +112,7 @@
     <!-- Menu item: remove the star from this conversation -->
     <string name="remove_star">Remove star</string>
     <!-- Remove the folder from this conversation [CHAR LIMIT = 30]-->
-    <string name="remove_folder">Remove folder</string>
+    <string name="remove_folder">Remove from folder</string>
     <!-- Menu item: archive this conversation -->
     <string name="archive">Archive</string>
     <!-- Menu item: report this conversation as spam [CHAR LIMIT = 30] -->
@@ -433,7 +433,7 @@
     <!-- Displayed when swiping away a single conversation to archive it [CHAR LIMIT=80] -->
     <string name="archived">Archived</string>
     <!-- Displayed when swiping away a single conversation to remove the currently displayed folder [CHAR LIMIT=80] -->
-    <string name="folder_removed">Folder removed</string>
+    <string name="folder_removed">Removed from folder</string>
 
     <plurals name="conversation_marked_important">
         <!-- Displayed while marking a single conversation as important. [CHAR LIMIT=80] -->
