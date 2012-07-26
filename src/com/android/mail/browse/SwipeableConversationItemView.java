@@ -90,7 +90,16 @@ public class SwipeableConversationItemView extends FrameLayout {
                 animatedAdapter);
     }
 
-    public void startUndoAnimation(ViewMode viewMode, AnimatedAdapter listener) {
-        mConversationItemView.startUndoAnimation(viewMode, listener);
+    public void startUndoAnimation(int actionText, ViewMode viewMode, AnimatedAdapter listener,
+            boolean swipe) {
+        if (swipe) {
+            addBackground(getContext(), actionText);
+            setBackgroundVisibility(View.VISIBLE);
+            mConversationItemView.startSwipeUndoAnimation(viewMode, listener);
+        } else {
+            setBackgroundVisibility(View.GONE);
+            mConversationItemView.startUndoAnimation(viewMode, listener);
+        }
+
     }
 }

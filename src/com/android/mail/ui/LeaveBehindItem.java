@@ -61,12 +61,11 @@ public class LeaveBehindItem extends AnimatingItemView implements OnClickListene
             case R.id.undo_button:
                 if (mAccount.undoUri != null) {
                     // NOTE: We might want undo to return the messages affected,
-                    // in which case
-                    // the resulting cursor might be interesting...
+                    // in which case the resulting cursor might be interesting...
                     // TODO: Use UIProvider.SEQUENCE_QUERY_PARAMETER to indicate
                     // the set of commands to undo
                     mAdapter.clearLeaveBehind(getConversationId());
-                    mAdapter.setUndo(true);
+                    mAdapter.setSwipeUndo(true);
                     mConversationCursor.undo(getContext(), mAccount.undoUri);
                 }
                 break;
