@@ -31,7 +31,6 @@ public class ConversationInfo {
     private static final String CONV_FIRST_UNREAD_SNIPPET = "conv_first_unread";
     private static final String CONV_LAST_SNIPPET = "conv_last";
     private static final String CONV_FIRST_SNIPPET = "conv_first";
-    private static final String CONV_SENDERS_DEPRECATED = "conv_senders";
 
     final public ArrayList<MessageInfo> messageInfos;
     final public int messageCount;
@@ -39,18 +38,14 @@ public class ConversationInfo {
     public String firstSnippet;
     public String firstUnreadSnippet;
     public String lastSnippet;
-    @Deprecated
-    public String sendersInfo;
 
-    public ConversationInfo(int count, int draft, String first, String firstUnread, String last,
-            String senders) {
+    public ConversationInfo(int count, int draft, String first, String firstUnread, String last) {
         messageCount = count;
         draftCount = draft;
         messageInfos = new ArrayList<MessageInfo>();
         firstSnippet = first;
         firstUnreadSnippet = firstUnread;
         lastSnippet = last;
-        sendersInfo = senders;
     }
 
     public void addMessage(MessageInfo info) {
@@ -61,7 +56,6 @@ public class ConversationInfo {
         JSONObject obj = new JSONObject();
         obj.put(CONV_MESSAGE_COUNT, info.messageCount);
         obj.put(CONV_DRAFT_COUNT, info.draftCount);
-        obj.put(CONV_SENDERS_DEPRECATED, info.sendersInfo);
         obj.put(CONV_FIRST_SNIPPET, info.firstSnippet);
         obj.put(CONV_FIRST_UNREAD_SNIPPET, info.firstUnreadSnippet);
         obj.put(CONV_LAST_SNIPPET, info.lastSnippet);
@@ -83,8 +77,7 @@ public class ConversationInfo {
     public static ConversationInfo fromJSON(JSONObject obj) throws JSONException {
         ConversationInfo info = new ConversationInfo(obj.getInt(CONV_MESSAGE_COUNT),
                 obj.getInt(CONV_DRAFT_COUNT), obj.optString(CONV_FIRST_SNIPPET),
-                obj.optString(CONV_FIRST_UNREAD_SNIPPET), obj.optString(CONV_LAST_SNIPPET),
-                obj.optString(CONV_SENDERS_DEPRECATED));
+                obj.optString(CONV_FIRST_UNREAD_SNIPPET), obj.optString(CONV_LAST_SNIPPET));
         JSONArray array = new JSONArray(obj.getString(CONV_MESSAGES));
         for (int i = 0; i < array.length(); i++) {
             info.addMessage(MessageInfo.fromJSON(array.getJSONObject(i)));
@@ -108,5 +101,11 @@ public class ConversationInfo {
         } else {
             firstSnippet = firstUnreadSnippet;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return messageCount ^ draftCount ^ firstSnippet.hashCode() ^ lastSnippet.hashCode()
+                ^ firstUnreadSnippet.hashCode() ^ messageInfos.hashCode();
     }
 }

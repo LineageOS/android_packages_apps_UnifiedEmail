@@ -167,6 +167,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
     private int mAnimatedHeight = -1;
+    private String mAccount;
     private static int sUndoAnimationOffset;
     private static CharSequence sDraftSingularString;
     private static CharSequence sDraftPluralString;
@@ -315,7 +316,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         super(context);
         mContext = context.getApplicationContext();
         mTabletDevice = Utils.useTabletUI(mContext);
-
+        mAccount = account;
         Resources res = mContext.getResources();
 
         if (CHECKMARK_OFF == null) {
@@ -374,15 +375,15 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set, Folder folder,
             boolean checkboxesDisabled, boolean swipeEnabled, AnimatedAdapter adapter) {
-        bind(ConversationItemViewModel.forCursor(cursor), viewMode, set, folder,
+        bind(ConversationItemViewModel.forCursor(mAccount, cursor), viewMode, set, folder,
                 checkboxesDisabled, swipeEnabled, adapter);
     }
 
     public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
             Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
             AnimatedAdapter adapter) {
-        bind(ConversationItemViewModel.forConversation(conversation), viewMode, set, folder,
-                checkboxesDisabled, swipeEnabled, adapter);
+        bind(ConversationItemViewModel.forConversation(mAccount, conversation), viewMode, set,
+                folder, checkboxesDisabled, swipeEnabled, adapter);
     }
 
     private void bind(ConversationItemViewModel header, ViewMode viewMode,
@@ -562,7 +563,12 @@ public class ConversationItemView extends View implements SwipeableItemView {
         mHeader.styledSendersString = new SpannableStringBuilder();
 
         // Parse senders fragments.
-        mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode);
+        if (mHeader.conversation.conversationInfo != null) {
+            mHeader.styledSenders = SendersView.format(getContext(),
+                    mHeader.conversation.conversationInfo);
+        } else {
+            mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode);
+        }
 
         pauseTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
         pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
