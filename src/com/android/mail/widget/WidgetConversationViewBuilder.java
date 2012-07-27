@@ -20,9 +20,8 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderDisplayer;
-import com.android.mail.widget.WidgetConversationViewBuilder.WidgetFolderDisplayer;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -73,7 +72,7 @@ public class WidgetConversationViewBuilder {
          * Load Conversation Labels
          */
         @Override
-        public void loadConversationFolders(String rawFolders, Folder ignoreFolder) {
+        public void loadConversationFolders(ArrayList<Folder> rawFolders, Folder ignoreFolder) {
             super.loadConversationFolders(rawFolders, ignoreFolder);
         }
 
@@ -158,8 +157,8 @@ public class WidgetConversationViewBuilder {
      * Return the full View
      */
     public RemoteViews getStyledView(CharSequence senders, CharSequence status, CharSequence date,
-            CharSequence subject, CharSequence snippet, String folders, boolean hasAttachments,
-            boolean read, Folder currentFolder) {
+            CharSequence subject, CharSequence snippet, ArrayList<Folder> folders,
+            boolean hasAttachments, boolean read, Folder currentFolder) {
 
         final boolean isUnread = !read;
 

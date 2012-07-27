@@ -33,6 +33,7 @@ import android.util.Pair;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ public class ConversationItemViewModel {
 
     public ConversationItemView.ConversationItemFolderDisplayer folderDisplayer;
 
-    public String rawFolders;
+    public ArrayList<Folder> rawFolders;
 
     public int personalLevel;
 
@@ -154,7 +155,7 @@ public class ConversationItemViewModel {
             header.conversation = conv;
             header.starred = conv.starred;
             header.unread = !conv.read;
-            header.rawFolders = conv.rawFolders;
+            header.rawFolders = conv.getRawFolders();
             header.personalLevel = conv.personalLevel;
             header.priority = conv.priority;
             header.hasBeenForwarded =

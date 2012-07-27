@@ -262,27 +262,17 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return null;
     }
 
-    public static ArrayList<Folder> forDisplay(Folder ignoreFolder, String foldersString) {
-        final ArrayList<Folder> folders = Lists.newArrayList();
-        if (foldersString == null) {
-            return folders;
-        }
-        try {
-            JSONArray array = new JSONArray(foldersString);
-            Folder folder;
-            for (int i = 0; i < array.length(); i++) {
-                folder = new Folder(array.getJSONObject(i));
-                if (TextUtils.isEmpty(folder.name)
-                        || (ignoreFolder != null && ignoreFolder.equals(folder))
-                        || Folder.isProviderFolder(folder)) {
-                    continue;
-                }
-                folders.add(folder);
+    public static ArrayList<Folder> forDisplay(Folder ignoreFolder, ArrayList<Folder> folders) {
+        ArrayList<Folder> displayFolders = new ArrayList<Folder>();
+        for (Folder folder : folders) {
+            if (TextUtils.isEmpty(folder.name)
+                    || (ignoreFolder != null && ignoreFolder.equals(folder))
+                    || Folder.isProviderFolder(folder)) {
+                continue;
             }
-        } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Unable to create list of folders from serialzied jsonarray");
+            displayFolders.add(folder);
         }
-        return folders;
+        return displayFolders;
     }
 
     public static HashMap<Uri, Folder> hashMapForFolders(ArrayList<Folder> rawFolders) {

@@ -26,6 +26,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 
+import java.util.ArrayList;
 import java.util.SortedSet;
 
 /**
@@ -54,9 +55,9 @@ public class FolderDisplayer {
      * @param foldersString string containing serialized folders to display.
      * @param ignoreFolder (optional) folder to omit from the displayed set
      */
-    public void loadConversationFolders(String foldersString, Folder ignoreFolder) {
+    public void loadConversationFolders(ArrayList<Folder> folders, Folder ignoreFolder) {
         mFoldersSortedSet.clear();
-        mFoldersSortedSet.addAll(Folder.forDisplay(ignoreFolder, foldersString));
+        mFoldersSortedSet.addAll(Folder.forDisplay(ignoreFolder, folders));
     }
 
 }

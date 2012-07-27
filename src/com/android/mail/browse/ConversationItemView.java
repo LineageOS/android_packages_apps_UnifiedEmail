@@ -74,6 +74,8 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.ArrayList;
+
 public class ConversationItemView extends View implements SwipeableItemView {
     // Timer.
     private static int sLayoutCount = 0;
@@ -189,7 +191,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
 
         @Override
-        public void loadConversationFolders(String rawFolders, Folder ignoreFolder) {
+        public void loadConversationFolders(ArrayList<Folder> rawFolders, Folder ignoreFolder) {
             super.loadConversationFolders(rawFolders, ignoreFolder);
 
             mFoldersCount = mFoldersSortedSet.size();
