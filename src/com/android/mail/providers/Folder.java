@@ -285,21 +285,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return folders;
     }
 
-
-    public static HashMap<Uri, Folder> hashMapForFoldersString(String rawFolders) {
+    public static HashMap<Uri, Folder> hashMapForFolders(ArrayList<Folder> rawFolders) {
         final HashMap<Uri, Folder> folders = new HashMap<Uri, Folder>();
-        if (TextUtils.isEmpty(rawFolders)) {
-            return folders;
-        }
-        try {
-            JSONArray array = new JSONArray(rawFolders);
-            Folder f;
-            for (int i = 0; i < array.length(); i++) {
-                f = new Folder(array.getJSONObject(i));
-                folders.put(f.uri, f);
-            }
-        } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Unable to create list of folders from serialzied jsonarray");
+        for (Folder f : rawFolders) {
+            folders.put(f.uri, f);
         }
         return folders;
     }

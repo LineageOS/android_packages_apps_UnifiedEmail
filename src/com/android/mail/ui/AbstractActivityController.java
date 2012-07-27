@@ -2190,13 +2190,7 @@ public abstract class AbstractActivityController implements ActivityController {
             // appropriate folders.
             for (Conversation target : mTarget) {
                 HashMap<Uri, Folder> targetFolders = Folder
-                        .hashMapForFoldersString(target.rawFolders);
-                // Raw folders never contains the folder we are currently in,
-                // since it is used for display purposes. Make sure if we know
-                // what the current folder is, that we add it.
-                if (mFolder != null) {
-                    targetFolders.put(mFolder.uri, mFolder);
-                }
+                        .hashMapForFolders(target.getRawFolders());
                 for (FolderOperation op : mFolderOps) {
                     if (op.mAdd) {
                         targetFolders.put(op.mFolder.uri, op.mFolder);

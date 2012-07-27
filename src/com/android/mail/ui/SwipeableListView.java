@@ -178,7 +178,8 @@ public class SwipeableListView extends ListView implements Callback {
     }
 
     @Override
-    public void onChildrenDismissed(SwipeableItemView target, Collection<ConversationItemView> views) {
+    public void onChildrenDismissed(SwipeableItemView target,
+            Collection<ConversationItemView> views) {
         assert (target instanceof ConversationItemView);
         dismissChildren((ConversationItemView) target.getView(), views);
     }
@@ -216,7 +217,7 @@ public class SwipeableListView extends ListView implements Callback {
                             // the current folder.
                             for (Conversation target : conversations) {
                                 HashMap<Uri, Folder> targetFolders = Folder
-                                        .hashMapForFoldersString(target.rawFolders);
+                                        .hashMapForFolders(target.getRawFolders());
                                 targetFolders.remove(folderOp.mFolder.uri);
                                 target.rawFolders = Folder.getSerializedFolderString(targetFolders
                                         .values());
@@ -232,8 +233,8 @@ public class SwipeableListView extends ListView implements Callback {
             });
         } else {
             undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO);
-            target.getConversation().position = target.getParent() != null ? getPositionForView(target)
-                    : -1;
+            target.getConversation().position = target.getParent() != null ?
+                    getPositionForView(target) : -1;
             handleLeaveBehind(target, undoOp, context);
         }
     }
@@ -251,7 +252,7 @@ public class SwipeableListView extends ListView implements Callback {
             case R.id.change_folder:
                 FolderOperation folderOp = new FolderOperation(mFolder, false);
                 HashMap<Uri, Folder> targetFolders = Folder
-                        .hashMapForFoldersString(conv.rawFolders);
+                        .hashMapForFolders(conv.getRawFolders());
                 targetFolders.remove(folderOp.mFolder.uri);
                 conv.rawFolders = Folder.getSerializedFolderString(targetFolders.values());
                 cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv),
@@ -300,7 +301,8 @@ public class SwipeableListView extends ListView implements Callback {
     /**
      * Archive items using the swipe away animation before shrinking them away.
      */
-    public void destroyItems(ArrayList<ConversationItemView> views, final DestructiveAction listener) {
+    public void destroyItems(ArrayList<ConversationItemView> views,
+            final DestructiveAction listener) {
         if (views == null || views.size() == 0) {
             return;
         }
