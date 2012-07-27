@@ -36,7 +36,6 @@ import com.android.mail.utils.LogUtils;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.json.JSONArray;
