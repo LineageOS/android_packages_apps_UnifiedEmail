@@ -73,10 +73,11 @@ public class FoldersSelectionDialog implements OnClickListener {
                             : account.folderListUri, UIProvider.FOLDERS_PROJECTION, null, null,
                     null);
             final HashSet<String> conversationFolders = new HashSet<String>();
-            for (Conversation conversation: target) {
-                if (conversation != null && !TextUtils.isEmpty(conversation.folderList)) {
-                    conversationFolders.addAll(Arrays.asList(TextUtils.split(
-                            conversation.folderList, ",")));
+            for (Conversation conversation : target) {
+                if (conversation != null && !TextUtils.isEmpty(conversation.rawFolders)) {
+                    // Parse the raw folders and get all the uris.
+                    conversationFolders.addAll(Arrays.asList(Folder
+                            .getUriArray(conversation.getRawFolders())));
                 }
             }
             mAdapter = new SeparatedFolderListAdapter(context);

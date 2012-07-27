@@ -21,13 +21,11 @@ import com.android.mail.utils.LogTag;
 import com.google.common.collect.Sets;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 
-import java.util.List;
 import java.util.SortedSet;
 
 /**
@@ -58,18 +56,7 @@ public class FolderDisplayer {
      */
     public void loadConversationFolders(String foldersString, Folder ignoreFolder) {
         mFoldersSortedSet.clear();
-
-        List<Folder> folders = Folder.forFoldersString(foldersString);
-        for (Folder f : folders) {
-            // We will sometimes see folders that do not have names yet.
-            if (TextUtils.isEmpty(f.name) || (ignoreFolder != null && ignoreFolder.equals(f))) {
-                continue;
-            }
-
-            // TODO: maybe do additional processing for system folder names here
-
-            mFoldersSortedSet.add(f);
-        }
+        mFoldersSortedSet.addAll(Folder.forDisplay(ignoreFolder, foldersString));
     }
 
 }
