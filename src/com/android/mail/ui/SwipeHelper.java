@@ -365,6 +365,7 @@ public class SwipeHelper {
             @Override
             public void onAnimationEnd(Animator animation) {
                 animView.setAlpha(1.0f);
+                mCallback.onDragCancelled(mCurrView);
             }
             @Override
             public void onAnimationCancel(Animator animation) {
@@ -461,8 +462,6 @@ public class SwipeHelper {
                         dismissChild(mCurrView, childSwipedFastEnough ? velocity : 0f);
                     } else {
                         snapChild(mCurrView, velocity);
-                        // snappity
-                        mCallback.onDragCancelled(mCurrView);
                     }
                 }
                 break;
