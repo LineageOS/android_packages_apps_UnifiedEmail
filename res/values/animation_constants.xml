@@ -25,4 +25,15 @@
     <integer name="dialog_animationDefaultDur">220</integer>
     <integer name="dialog_animationShortDur">150</integer>
     <integer name="undo_animation_duration">500</integer>
+
+    <!-- Swipe constants -->
+    <integer name="swipe_escape_velocity">100</integer>
+    <integer name="escape_animation_duration">200</integer>
+    <integer name="max_escape_animation_duration">400</integer>
+    <integer name="max_dismiss_velocity">2000</integer>
+    <integer name="snap_animation_duration">500</integer>
+    <integer name="dismiss_animation_duration">500</integer>
+    <dimen name="min_swipe">10dip</dimen>
+    <dimen name="min_vert">10dip</dimen>
+    <dimen name="min_lock">20dip</dimen>
 </resources>

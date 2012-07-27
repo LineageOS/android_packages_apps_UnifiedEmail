@@ -23,6 +23,8 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -30,6 +32,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
+import com.android.mail.R;
 import com.android.mail.browse.ConversationItemView;
 
 import java.util.ArrayList;
@@ -38,7 +41,6 @@ import java.util.Collection;
 public class SwipeHelper {
     static final String TAG = "com.android.systemui.SwipeHelper";
     private static final boolean DEBUG_INVALIDATE = false;
-    private static final boolean SLOW_ANIMATIONS = false; // DEBUG;
     private static final boolean CONSTRAIN_SWIPE = true;
     private static final boolean FADE_OUT_DURING_SWIPE = true;
     private static final boolean DISMISS_IF_SWIPED_FAR_ENOUGH = true;
@@ -49,12 +51,16 @@ public class SwipeHelper {
 
     private static LinearInterpolator sLinearInterpolator = new LinearInterpolator();
 
-    private float SWIPE_ESCAPE_VELOCITY = 100f; // dp/sec
-    private int DEFAULT_ESCAPE_ANIMATION_DURATION = 200; // ms
-    private int MAX_ESCAPE_ANIMATION_DURATION = 400; // ms
-    private int MAX_DISMISS_VELOCITY = 2000; // dp/sec
-    private static final int SNAP_ANIM_LEN = SLOW_ANIMATIONS ? 1000 : 1; // ms
-    private static final int DISMISS_ANIMATION_DURATION = 500;
+    private static int SWIPE_ESCAPE_VELOCITY = -1;
+    private static int DEFAULT_ESCAPE_ANIMATION_DURATION;
+    private static int MAX_ESCAPE_ANIMATION_DURATION;
+    private static int MAX_DISMISS_VELOCITY;
+    private static int SNAP_ANIM_LEN;
+    private static int DISMISS_ANIMATION_DURATION;
+    private static float MIN_SWIPE;
+    private static float MIN_VERT;
+    private static float MIN_LOCK;
+    private static float SCROLL_SLOP;
 
     public static float ALPHA_FADE_START = 0f; // fraction of thumbnail width
                                                  // where fade starts
@@ -75,23 +81,28 @@ public class SwipeHelper {
     private boolean mCanCurrViewBeDimissed;
     private float mDensityScale;
     private float mLastY;
-    private final float mScrollSlop;
     private float mInitialTouchPosY;
-    private float mMinSwipe;
-    private float mMinVert;
-    private float mMinLock;
 
-    public SwipeHelper(int swipeDirection, Callback callback, float densityScale,
-            float pagingTouchSlop, float scrollSlop, float minSwipe, float minVert, float minLock) {
+    public SwipeHelper(Context context, int swipeDirection, Callback callback, float densityScale,
+            float pagingTouchSlop) {
         mCallback = callback;
         mSwipeDirection = swipeDirection;
         mVelocityTracker = VelocityTracker.obtain();
         mDensityScale = densityScale;
         mPagingTouchSlop = pagingTouchSlop;
-        mScrollSlop = scrollSlop;
-        mMinSwipe = minSwipe;
-        mMinVert = minVert;
-        mMinLock = minLock;
+        if (SWIPE_ESCAPE_VELOCITY == -1) {
+            Resources res = context.getResources();
+            SWIPE_ESCAPE_VELOCITY = res.getInteger(R.integer.swipe_escape_velocity);
+            DEFAULT_ESCAPE_ANIMATION_DURATION = res.getInteger(R.integer.escape_animation_duration);
+            MAX_ESCAPE_ANIMATION_DURATION = res.getInteger(R.integer.max_escape_animation_duration);
+            MAX_DISMISS_VELOCITY = res.getInteger(R.integer.max_dismiss_velocity);
+            SNAP_ANIM_LEN = res.getInteger(R.integer.snap_animation_duration);
+            DISMISS_ANIMATION_DURATION = res.getInteger(R.integer.dismiss_animation_duration);
+            SCROLL_SLOP = res.getInteger(R.integer.swipeScrollSlop);
+            MIN_SWIPE = res.getDimension(R.dimen.min_swipe);
+            MIN_VERT = res.getDimension(R.dimen.min_vert);
+            MIN_LOCK = res.getDimension(R.dimen.min_lock);
+        }
     }
 
     public void setDensityScale(float densityScale) {
@@ -211,7 +222,7 @@ public class SwipeHelper {
                         float currX = ev.getX();
                         float deltaY = Math.abs(currY - mInitialTouchPosY);
                         float deltaX = Math.abs(currX - mInitialTouchPosX);
-                        if (deltaY > mScrollSlop && deltaY > (FACTOR * deltaX)) {
+                        if (deltaY > SCROLL_SLOP && deltaY > (FACTOR * deltaX)) {
                             mLastY = ev.getY();
                             mCurrView.cancelTap();
                             return false;
@@ -385,11 +396,11 @@ public class SwipeHelper {
                     // If the user has gone vertical and not gone horizontalish AT
                     // LEAST minBeforeLock, switch to scroll. Otherwise, cancel
                     // the swipe.
-                    if (!mDragging && deltaY > mMinVert && (Math.abs(deltaX)) < mMinLock
+                    if (!mDragging && deltaY > MIN_VERT && (Math.abs(deltaX)) < MIN_LOCK
                             && deltaY > (FACTOR * Math.abs(deltaX))) {
                         return false;
                     }
-                    float minDistance = mMinSwipe;
+                    float minDistance = MIN_SWIPE;
                     if (Math.abs(deltaX) < minDistance) {
                         // Don't start the drag until at least X distance has
                         // occurred.
