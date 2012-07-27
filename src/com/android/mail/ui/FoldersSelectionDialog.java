@@ -51,7 +51,8 @@ public class FoldersSelectionDialog implements OnClickListener {
     private HashMap<Uri, FolderOperation> mOperations;
 
     public FoldersSelectionDialog(final Context context, Account account,
-            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch) {
+            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
+            Folder currentFolder) {
         mUpdater = updater;
         mTarget = target;
         mBatch = isBatch;
@@ -76,8 +77,12 @@ public class FoldersSelectionDialog implements OnClickListener {
             for (Conversation conversation : target) {
                 if (conversation != null && !TextUtils.isEmpty(conversation.rawFolders)) {
                     // Parse the raw folders and get all the uris.
-                    conversationFolders.addAll(Arrays.asList(Folder
-                            .getUriArray(conversation.getRawFolders())));
+                    conversationFolders.addAll(Arrays.asList(Folder.getUriArray(conversation
+                            .getRawFolders())));
+                } else {
+                    // There are no folders for this conversation, so it must
+                    // belong to the folder we are currently looking at.
+                    conversationFolders.add(currentFolder.uri.toString());
                 }
             }
             mAdapter = new SeparatedFolderListAdapter(context);
