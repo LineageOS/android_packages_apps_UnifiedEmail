@@ -69,13 +69,13 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderWatcher;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
-import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
@@ -217,6 +217,16 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final int LOADER_ACCOUNT_INBOX = 5;
     private static final int LOADER_SEARCH = 6;
     private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 7;
+    /**
+     * Guaranteed to be the last loader ID used by the activity. Loaders are owned by Activity or
+     * fragments, and within an activity, loader IDs need to be unique. A hack to ensure that the
+     * {@link FolderWatcher} can create its folder loaders without clashing with the IDs of those
+     * of the {@link AbstractActivityController}. Currently, the {@link FolderWatcher} is the only
+     * other class that uses this activity's LoaderManager. If another class needs activity-level
+     * loaders, consider consolidating the loaders in a central location: a UI-less fragment
+     * perhaps.
+     */
+    public static final int LAST_LOADER_ID = 100;
 
     private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
 
@@ -319,9 +329,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 && Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction());
         mActionBarView = (MailActionBarView) inflater.inflate(
                 isSearch ? R.layout.search_actionbar_view : R.layout.actionbar_view, null);
-        // Why have a different variable for the same thing? We should apply
-        // the same actions
-        // on mActionBarView instead.
         mActionBarView.initialize(mActivity, this, mViewMode, actionBar, mRecentFolderList);
     }
 
@@ -500,7 +507,7 @@ public abstract class AbstractActivityController implements ActivityController {
             LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
             final LoaderManager lm = mActivity.getLoaderManager();
             mActionBarView.setRefreshInProgress(false);
-            setFolder(folder);
+            mFolder = folder;
             mActionBarView.setFolder(mFolder);
 
             // Only when we switch from one folder to another do we want to restart the
@@ -527,17 +534,6 @@ public abstract class AbstractActivityController implements ActivityController {
         } else if (folder == null) {
             LogUtils.wtf(LOG_TAG, "Folder in setFolder is null");
         }
-    }
-
-    /**
-     * Set the folder that is used for all current operations, including what
-     * conversation list to show (if applicable), what item to select in the
-     * FolderListFragment.
-     *
-     * @param folder
-     */
-    public void setFolder(Folder folder) {
-        mFolder = folder;
     }
 
     @Override

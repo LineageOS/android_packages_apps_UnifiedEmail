@@ -28,8 +28,10 @@ import android.widget.TextView;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderWatcher;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.RecentFolderList;
+import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -54,11 +56,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * Array of all the accounts on the device.
      */
     private Account[] mAllAccounts = new Account[0];
-
     /**
-     *  The name of the account is the 2nd column in {@link UIProvider#ACCOUNTS_PROJECTION}
+     * The name of the account is the 2nd column in {@link UIProvider#ACCOUNTS_PROJECTION}
      */
-    static final int NAME_COLUMN = 2;
+    private static final int NAME_COLUMN = 2;
     /**
      * An object that provides a collection of recent folders, per account.
      */
@@ -78,15 +79,23 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     /** The folder currently being viewed */
     private Folder mCurrentFolder;
-    private Context mContext;
+    private final Context mContext;
+    /** Maintains the most fresh default inbox folder for each account.  Used for unread counts. */
+    private final FolderWatcher mFolderWatcher;
 
+    /** Type indicating a dead, non-clickable view that is not shown to the user. */
     public static final int TYPE_DEAD_HEADER = -1;
+    /** Type indicating an account (user@example.com). */
     public static final int TYPE_ACCOUNT = 0;
+    /** Type indicating a view that separates the account list from the recent folder list. */
     public static final int TYPE_HEADER = 1;
+    /** Type indicating a view containing a recent folder (Sent, Outbox). */
     public static final int TYPE_FOLDER = 2;
+    /** Type indicating the "Show All Folders" view. */
     public static final int TYPE_ALL_FOLDERS = 3;
 
     private static final String LOG_TAG = LogTag.getLogTag();
+
     /**
      * There can be three types of views: Accounts (test@android.com, fifi@example.com), folders
      * (Inbox, Outbox) or header and footer. This method returns the type of account at given
@@ -139,12 +148,15 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @param recentFolders
      * @param showAllFolders
      */
-    public AccountSpinnerAdapter(Context context, RecentFolderList recentFolders,
-            boolean showAllFolders) {
+    public AccountSpinnerAdapter(RestrictedActivity activity, Context context,
+            RecentFolderList recentFolders, boolean showAllFolders) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mRecentFolders = recentFolders;
         mShowAllFoldersItem = showAllFolders;
+        // Owned by the AccountSpinnerAdapter since nobody else needed it. Move to controller if
+        // required.
+        mFolderWatcher = new FolderWatcher(activity);
     }
 
 
@@ -159,6 +171,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         if (!isCurrentAccountInvalid()) {
             final int pos = Account.findPosition(accounts, currentAccount);
             LogUtils.d(LOG_TAG, "setAccountArray: mCurrentAccountPos = %d", pos);
+        }
+        // Go through all the accounts and add the default inbox to our watcher.
+        for (int i=0; i < mNumAccounts; i++) {
+            final Uri uri = mAllAccounts[i].settings.defaultInbox;
+            mFolderWatcher.startWatching(uri);
         }
         notifyDataSetChanged();
     }
@@ -348,10 +365,13 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                     bigText = "";
                     smallText = "";
                     color = 0;
+                    unreadCount = 0;
                 } else {
                     bigText = account.settings.defaultInboxName;
                     smallText = account.name;
                     color = account.color;
+                    final Folder inbox = mFolderWatcher.get(account.settings.defaultInbox);
+                    unreadCount = (inbox != null) ? inbox.unreadCount : 0;
                 }
                 break;
             case TYPE_HEADER:
