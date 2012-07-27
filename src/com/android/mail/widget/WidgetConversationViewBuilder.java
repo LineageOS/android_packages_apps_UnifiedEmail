@@ -51,6 +51,8 @@ public class WidgetConversationViewBuilder {
     private static int DATE_TEXT_COLOR_UNREAD;
     private static int DRAFT_TEXT_COLOR;
 
+    private static String SENDERS_SPLIT_TOKEN;
+
     // Static bitmap
     private static Bitmap ATTACHMENT;
 
@@ -135,6 +137,8 @@ public class WidgetConversationViewBuilder {
         DATE_TEXT_COLOR_UNREAD = res.getColor(R.color.date_text_color_unread);
         DRAFT_TEXT_COLOR = res.getColor(R.color.drafts);
 
+        SENDERS_SPLIT_TOKEN = res.getString(R.string.senders_split_token);
+
         // Initialize Bitmap
         ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
     }
@@ -172,7 +176,7 @@ public class WidgetConversationViewBuilder {
 
             if (senders.length() > 0) {
                 // TODO(pwestbro) sender formatting should use resources.  Bug 5354473
-                builder.append(addStyle(", ", SENDERS_FONT_SIZE,
+                builder.append(addStyle(SENDERS_SPLIT_TOKEN, SENDERS_FONT_SIZE,
                         isUnread ? SENDERS_TEXT_COLOR_UNREAD : SENDERS_TEXT_COLOR_READ));
             }
 

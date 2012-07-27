@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 public class SendersView extends TextView {
     public static final int DEFAULT_FORMATTING = 0;
     public static final int MERGED_FORMATTING = 1;
+    private static String SENDERS_SPLIT_TOKEN;
     public static String SENDERS_VERSION_SEPARATOR = "^**^";
     CharacterStyle sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
     public static Pattern SENDERS_VERSION_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
@@ -69,6 +70,7 @@ public class SendersView extends TextView {
         LIGHT_TEXT_COLOR = res.getColor(R.color.light_text_color);
         DRAFT_TEXT_COLOR = res.getColor(R.color.drafts);
         sLightTextStyle = new ForegroundColorSpan(LIGHT_TEXT_COLOR);
+        SENDERS_SPLIT_TOKEN = res.getString(R.string.senders_split_token);
     }
 
     public Typeface getTypeface(boolean isUnread) {
@@ -124,7 +126,7 @@ public class SendersView extends TextView {
             }
             if (i < conversationInfo.messageCount - 1 && !isElided
                     && !isNextElided(conversationInfo, i)) {
-                display = display.concat(", ");
+                display = display.concat(SENDERS_SPLIT_TOKEN);
             }
             displays[i] = new SpannableString(display);
             if (!conversationInfo.messageInfos.get(i).read) {
@@ -240,7 +242,7 @@ public class SendersView extends TextView {
         }
         if (statusBuilder.length() > 0) {
             if (header.sendersText.length() > 0) {
-                header.sendersText = header.sendersText.concat(", ");
+                header.sendersText = header.sendersText.concat(SENDERS_SPLIT_TOKEN);
 
                 // Extend the last fragment to include the comma.
                 int lastIndex = header.senderFragments.size() - 1;
