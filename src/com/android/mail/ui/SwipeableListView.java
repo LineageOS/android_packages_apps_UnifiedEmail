@@ -115,8 +115,7 @@ public class SwipeableListView extends ListView implements Callback {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mEnableSwipe) {
-            return mSwipeHelper.onInterceptTouchEvent(ev)
-                    || super.onInterceptTouchEvent(ev);
+            return mSwipeHelper.onInterceptTouchEvent(ev) || super.onInterceptTouchEvent(ev);
         } else {
             return super.onInterceptTouchEvent(ev);
         }
@@ -163,9 +162,9 @@ public class SwipeableListView extends ListView implements Callback {
     public void onChildDismissed(SwipeableItemView v) {
         View view = v.getView();
         if (view instanceof ConversationItemView) {
-        dismissChildren((ConversationItemView) v, null);
+            dismissChildren((ConversationItemView) v, null);
         } else if (view instanceof LeaveBehindItem) {
-            ((LeaveBehindItem)view).commit();
+            ((LeaveBehindItem) view).commit();
         }
     }
 
@@ -179,9 +178,8 @@ public class SwipeableListView extends ListView implements Callback {
     }
 
     @Override
-    public void onChildrenDismissed(SwipeableItemView target,
-            Collection<ConversationItemView> views) {
-        assert(target instanceof ConversationItemView);
+    public void onChildrenDismissed(SwipeableItemView target, Collection<ConversationItemView> views) {
+        assert (target instanceof ConversationItemView);
         dismissChildren((ConversationItemView) target.getView(), views);
     }
 
@@ -201,8 +199,8 @@ public class SwipeableListView extends ListView implements Callback {
                     conversations.add(conversation);
                 }
             }
-            undoOp = new ToastBarOperation(conversationViews != null ?
-                    (conversations.size() + 1) : 1, mSwipeAction, ToastBarOperation.UNDO);
+            undoOp = new ToastBarOperation(conversationViews != null ? (conversations.size() + 1)
+                    : 1, mSwipeAction, ToastBarOperation.UNDO);
             handleLeaveBehind(target, undoOp, context);
             adapter.delete(conversations, new DestructiveAction() {
                 @Override
@@ -220,13 +218,10 @@ public class SwipeableListView extends ListView implements Callback {
                                 HashMap<Uri, Folder> targetFolders = Folder
                                         .hashMapForFoldersString(target.rawFolders);
                                 targetFolders.remove(folderOp.mFolder.uri);
-                                target.folderList = Folder.getUriString(targetFolders.values());
-                                target.rawFolders = Folder.getSerializedFolderString(mFolder,
-                                        targetFolders.values());
-                                cc.updateStrings(context, Conversation.listOf(target),
-                                        Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
-                                                target.folderList, target.rawFolders
-                                        });
+                                target.rawFolders = Folder.getSerializedFolderString(targetFolders
+                                        .values());
+                                cc.updateString(context, Conversation.listOf(target),
+                                        Conversation.UPDATE_FOLDER_COLUMN, target.rawFolders);
                             }
                             break;
                         case R.id.delete:
@@ -237,8 +232,8 @@ public class SwipeableListView extends ListView implements Callback {
             });
         } else {
             undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO);
-            target.getConversation().position = target.getParent() != null ?
-                    getPositionForView(target) : -1;
+            target.getConversation().position = target.getParent() != null ? getPositionForView(target)
+                    : -1;
             handleLeaveBehind(target, undoOp, context);
         }
     }
@@ -251,19 +246,16 @@ public class SwipeableListView extends ListView implements Callback {
             return;
         }
         adapter.setupLeaveBehind(conv, undoOp, conv.position);
-        ConversationCursor cc = (ConversationCursor)adapter.getCursor();
+        ConversationCursor cc = (ConversationCursor) adapter.getCursor();
         switch (mSwipeAction) {
             case R.id.change_folder:
                 FolderOperation folderOp = new FolderOperation(mFolder, false);
                 HashMap<Uri, Folder> targetFolders = Folder
                         .hashMapForFoldersString(conv.rawFolders);
                 targetFolders.remove(folderOp.mFolder.uri);
-                conv.folderList = Folder.getUriString(targetFolders.values());
-                conv.rawFolders = Folder.getSerializedFolderString(mFolder, targetFolders.values());
+                conv.rawFolders = Folder.getSerializedFolderString(targetFolders.values());
                 cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv),
-                        Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
-                                conv.folderList, conv.rawFolders
-                        });
+                        Conversation.UPDATE_FOLDER_COLUMN, conv.rawFolders);
                 break;
             case R.id.archive:
                 cc.mostlyArchive(context, Conversation.listOf(conv));
@@ -286,7 +278,7 @@ public class SwipeableListView extends ListView implements Callback {
         requestDisallowInterceptTouchEvent(true);
         SwipeableConversationItemView view = null;
         if (v instanceof ConversationItemView) {
-            view = (SwipeableConversationItemView)v.getParent();
+            view = (SwipeableConversationItemView) v.getParent();
         }
         if (view != null) {
             view.addBackground(getContext(), getSwipeActionText());
@@ -298,7 +290,7 @@ public class SwipeableListView extends ListView implements Callback {
     public void onDragCancelled(SwipeableItemView v) {
         SwipeableConversationItemView view = null;
         if (v instanceof ConversationItemView) {
-            view = (SwipeableConversationItemView)((View)v).getParent();
+            view = (SwipeableConversationItemView) ((View) v).getParent();
         }
         if (view != null) {
             view.removeBackground();
@@ -308,8 +300,7 @@ public class SwipeableListView extends ListView implements Callback {
     /**
      * Archive items using the swipe away animation before shrinking them away.
      */
-    public void destroyItems(ArrayList<ConversationItemView> views,
-            final DestructiveAction listener) {
+    public void destroyItems(ArrayList<ConversationItemView> views, final DestructiveAction listener) {
         if (views == null || views.size() == 0) {
             return;
         }
@@ -340,7 +331,8 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public boolean performItemClick(View view, int pos, long id) {
-        // Commit any existing destructive actions when the user selects a conversation to view.
+        // Commit any existing destructive actions when the user selects a
+        // conversation to view.
         commitDestructiveActions();
         return super.performItemClick(view, pos, id);
     }

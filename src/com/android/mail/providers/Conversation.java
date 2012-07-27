@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -95,10 +96,6 @@ public class Conversation implements Parcelable {
      */
     public boolean starred;
     /**
-     * @see UIProvider.ConversationColumns#FOLDER_LIST
-     */
-    public String folderList;
-    /**
      * @see UIProvider.ConversationColumns#RAW_FOLDERS
      */
     public String rawFolders;
@@ -143,6 +140,8 @@ public class Conversation implements Parcelable {
     // that is it's now in some other folder(s)
     public transient boolean localDeleteOnUpdate;
 
+    private ArrayList<Folder> cachedRawFolders;
+
     // Constituents of convFlags below
     // Flag indicating that the item has been deleted, but will continue being
     // shown in the list Delete/Archive of a mostly-dead item will NOT propagate
@@ -173,7 +172,6 @@ public class Conversation implements Parcelable {
         dest.writeInt(priority);
         dest.writeByte(read ? (byte) 1 : 0);
         dest.writeByte(starred ? (byte) 1 : 0);
-        dest.writeString(folderList);
         dest.writeString(rawFolders);
         dest.writeInt(convFlags);
         dest.writeInt(personalLevel);
@@ -204,7 +202,6 @@ public class Conversation implements Parcelable {
         priority = in.readInt();
         read = (in.readByte() != 0);
         starred = (in.readByte() != 0);
-        folderList = in.readString();
         rawFolders = in.readString();
         convFlags = in.readInt();
         personalLevel = in.readInt();
@@ -244,11 +241,9 @@ public class Conversation implements Parcelable {
     public static final Uri MOVE_CONVERSATIONS_URI = Uri.parse("content://moveconversations");
 
     /**
-     * The columns that need to be updated to change the read state of a conversation.
+     * The column that needs to be updated to change the read state of a conversation.
      */
-    public static final String[] UPDATE_FOLDER_COLUMNS = new String[] {
-            ConversationColumns.FOLDER_LIST, ConversationColumns.RAW_FOLDERS
-    };
+    public static final String UPDATE_FOLDER_COLUMN = ConversationColumns.RAW_FOLDERS;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -272,7 +267,6 @@ public class Conversation implements Parcelable {
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) != 0;
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) != 0;
-            folderList = cursor.getString(UIProvider.CONVERSATION_FOLDER_LIST_COLUMN);
             rawFolders = cursor.getString(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN);
             convFlags = cursor.getInt(UIProvider.CONVERSATION_FLAGS_COLUMN);
             personalLevel = cursor.getInt(UIProvider.CONVERSATION_PERSONAL_LEVEL_COLUMN);
@@ -301,7 +295,7 @@ public class Conversation implements Parcelable {
     public static Conversation create(long id, Uri uri, String subject, long dateMs,
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
-            boolean starred, String folderList, String rawFolders, int convFlags,
+            boolean starred, String rawFolders, int convFlags,
             int personalLevel, boolean spam, boolean phishing, boolean muted, Uri accountUri,
             ConversationInfo conversationInfo) {
 
@@ -321,7 +315,6 @@ public class Conversation implements Parcelable {
         conversation.priority = priority;
         conversation.read = read;
         conversation.starred = starred;
-        conversation.folderList = folderList;
         conversation.rawFolders = rawFolders;
         conversation.convFlags = convFlags;
         conversation.personalLevel = personalLevel;
@@ -332,6 +325,14 @@ public class Conversation implements Parcelable {
         conversation.accountUri = accountUri;
         conversation.conversationInfo = conversationInfo;
         return conversation;
+    }
+
+    public ArrayList<Folder> getRawFolders() {
+        if (cachedRawFolders == null) {
+            // Create cached folders.
+            cachedRawFolders = Folder.getFoldersArray(rawFolders);
+        }
+        return cachedRawFolders;
     }
 
     @Override

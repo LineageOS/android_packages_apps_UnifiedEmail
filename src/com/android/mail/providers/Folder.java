@@ -262,15 +262,22 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return null;
     }
 
-    public static ArrayList<Folder> forFoldersString(String foldersString) {
+    public static ArrayList<Folder> forDisplay(Folder ignoreFolder, String foldersString) {
         final ArrayList<Folder> folders = Lists.newArrayList();
         if (foldersString == null) {
             return folders;
         }
         try {
             JSONArray array = new JSONArray(foldersString);
+            Folder folder;
             for (int i = 0; i < array.length(); i++) {
-                folders.add(new Folder(array.getJSONObject(i)));
+                folder = new Folder(array.getJSONObject(i));
+                if (TextUtils.isEmpty(folder.name)
+                        || (ignoreFolder != null && ignoreFolder.equals(folder))
+                        || Folder.isProviderFolder(folder)) {
+                    continue;
+                }
+                folders.add(folder);
             }
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Unable to create list of folders from serialzied jsonarray");
@@ -536,17 +543,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return TextUtils.isEmpty(fgColor) ? defaultColor : Integer.parseInt(fgColor);
     }
 
-    public static String getSerializedFolderString(Folder currentFolder,
-            Collection<Folder> folders) {
+    public static String getSerializedFolderString(Collection<Folder> folders) {
         final JSONArray folderList = new JSONArray();
         for (Folder folderEntry : folders) {
-            // If the current folder is a system folder, and the folder entry has the same type
-            // as that system defined folder, don't show it.
-            if (!folderEntry.uri.equals(currentFolder.uri)
-                    && Folder.isProviderFolder(currentFolder)
-                    && folderEntry.type != currentFolder.type) {
-                folderList.put(folderEntry.toJSON());
-            }
+            folderList.put(folderEntry.toJSON());
         }
         return folderList.toString();
     }
@@ -568,6 +568,37 @@ public class Folder implements Parcelable, Comparable<Folder> {
             uris.append(f.uri.toString());
         }
         return uris.toString();
+    }
+
+
+    /**
+     * Get an array of folders from a rawFolders string.
+     */
+    public static ArrayList<Folder> getFoldersArray(String rawFolders) {
+        JSONArray folderList;
+        ArrayList<Folder> folders = new ArrayList<Folder>();
+        try {
+            folderList = new JSONArray(rawFolders);
+            for (int i = 0; i < folderList.length(); i++) {
+                folders.add(new Folder(folderList.getJSONObject(i)));
+            }
+        } catch (JSONException e) {
+            LogUtils.d(LOG_TAG, e, "Error parsing raw folders");
+        }
+        return folders;
+    }
+
+    /**
+     * Get just the uri's from an arraylist of folders.
+     */
+    public final static String[] getUriArray(ArrayList<Folder> folders) {
+        String[] folderUris = new String[folders.size()];
+        int i = 0;
+        for (Folder folder : folders) {
+            folderUris[i] = folder.uri.toString();
+            i++;
+        }
+        return folderUris;
     }
 
     /**
