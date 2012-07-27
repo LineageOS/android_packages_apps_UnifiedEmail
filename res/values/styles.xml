@@ -378,12 +378,20 @@
         <item name="android:background">@null</item>
     </style>
 
+    <style name="PlainActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:displayOptions"></item>
+    </style>
+
     <style name="ListViewWhiteCustom" parent="@android:style/Widget.Holo.Light.ListView">
     </style>
 
     <style name="UnifiedEmailTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionDropDownStyle">@style/PlainSpinnerDropdown</item>
         <item name="android:listViewWhiteStyle">@android:style/Widget.Holo.Light.ListView</item>
+    </style>
+
+    <style name="PlainUnifiedEmailTheme" parent="@style/UnifiedEmailTheme">
+        <item name="android:actionBarStyle">@style/PlainActionBarStyle</item>
     </style>
 
     <style name="WaitFragmentTitle" parent="@android:style/Widget.Holo.TextView">
@@ -410,4 +418,5 @@
         <item name="android:alpha">0</item>
         <item name="android:clickable">true</item>
     </style>
+
 </resources>
