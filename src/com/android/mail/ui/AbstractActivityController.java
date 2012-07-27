@@ -2204,13 +2204,9 @@ public abstract class AbstractActivityController implements ActivityController {
                         targetFolders.remove(op.mFolder.uri);
                     }
                 }
-                target.folderList = Folder.getUriString(targetFolders.values());
-                target.rawFolders = Folder.getSerializedFolderString(mFolder,
-                        targetFolders.values());
-                mConversationListCursor.updateStrings(mContext, Conversation.listOf(target),
-                        Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
-                                target.folderList, target.rawFolders
-                        });
+                target.rawFolders = Folder.getSerializedFolderString(targetFolders.values());
+                mConversationListCursor.updateString(mContext, Conversation.listOf(target),
+                        Conversation.UPDATE_FOLDER_COLUMN, target.rawFolders);
             }
             refreshConversationList();
             if (mIsSelectedSet) {
