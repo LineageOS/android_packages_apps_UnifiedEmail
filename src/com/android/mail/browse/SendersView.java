@@ -38,7 +38,11 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.utils.Utils;
+import com.google.common.annotations.VisibleForTesting;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.regex.Pattern;
 
 public class SendersView extends TextView {
@@ -90,7 +94,7 @@ public class SendersView extends TextView {
                 && !TextUtils.isEmpty(conversation.conversationInfo.sendersInfo)) {
             // We have the properly formatted conversationinfo. Parse and
             // display!
-            format(header, conversation.conversationInfo);
+            header.styledSenders = format(getContext(), conversation.conversationInfo);
         } else if (!TextUtils.isEmpty(sendersInfo)) {
             SendersInfo info = new SendersInfo(sendersInfo);
             mFormatVersion = info.version;
@@ -106,67 +110,58 @@ public class SendersView extends TextView {
         }
     }
 
-    private void format(ConversationItemViewModel header, ConversationInfo conversationInfo) {
-        SpannableString[] displays = new SpannableString[conversationInfo.messageCount];
+    @VisibleForTesting
+    protected static SpannableString[] format(Context context, ConversationInfo conversationInfo) {
+        HashMap<String, Integer> displayHash = new HashMap<String, Integer>();
+        ArrayList<SpannableString> displays = new ArrayList<SpannableString>();
         String display;
-        boolean isElided;
+        SpannableString spannableDisplay;
         String sender;
+        CharacterStyle style;
+        MessageInfo currentMessage;
         for (int i = 0; i < conversationInfo.messageCount; i++) {
-            sender = conversationInfo.messageInfos.get(i).sender;
+            currentMessage = conversationInfo.messageInfos.get(i);
+            sender = currentMessage.sender;
             if (TextUtils.isEmpty(sender)) {
-                sender = getMe();
+                sender = getMe(context);
             } else {
                 sender = Html.fromHtml(sender).toString();
             }
-            isElided = TextUtils.equals(sender, MessageInfo.SENDER_LIST_TOKEN_ELIDED);
-            if (!isElided) {
-                display = parseSender(sender);
-            } else {
-                display = sender;
+            display = parseSender(sender);
+            spannableDisplay = new SpannableString(display);
+            style = !currentMessage.read ? getUnreadStyleSpan() : getReadStyleSpan();
+            spannableDisplay.setSpan(style, 0, spannableDisplay.length(), 0);
+            if (displayHash.containsKey(display)) {
+                displays.remove(displayHash.get(display).intValue());
             }
-            if (i < conversationInfo.messageCount - 1 && !isElided
-                    && !isNextElided(conversationInfo, i)) {
-                display = display.concat(SENDERS_SPLIT_TOKEN);
-            }
-            displays[i] = new SpannableString(display);
-            if (!conversationInfo.messageInfos.get(i).read) {
-                displays[i].setSpan(getUnreadStyleSpan(), 0, displays[i].length(), 0);
-            } else {
-                displays[i].setSpan(getReadStyleSpan(), 0, displays[i].length(), 0);
-            }
+            displayHash.put(display, i);
+            displays.add(spannableDisplay);
         }
-        header.styledSenders = displays;
+        return displays.toArray(new SpannableString[displays.size()]);
     }
 
-    private boolean isNextElided(ConversationInfo conversationInfo, int i) {
-        int next = i+1;
-        return (next < conversationInfo.messageCount
-                && conversationInfo.messageInfos.get(next).sender
-                        .equals(MessageInfo.SENDER_LIST_TOKEN_ELIDED));
-    }
-
-    private CharacterStyle getUnreadStyleSpan() {
+    private static CharacterStyle getUnreadStyleSpan() {
         if (sUnreadStyleSpan == null) {
             sUnreadStyleSpan = new StyleSpan(Typeface.BOLD);
         }
         return CharacterStyle.wrap(sUnreadStyleSpan);
     }
 
-    private CharacterStyle getReadStyleSpan() {
+    private static CharacterStyle getReadStyleSpan() {
         if (sReadStyleSpan == null) {
             sReadStyleSpan = new StyleSpan(Typeface.NORMAL);
         }
         return CharacterStyle.wrap(sReadStyleSpan);
     }
 
-    private String getMe() {
+    private static String getMe(Context context) {
         if (sMeString == null) {
-            sMeString = getContext().getResources().getString(R.string.me);
+            sMeString = context.getResources().getString(R.string.me);
         }
         return sMeString;
     }
 
-    private String parseSender(String sender) {
+    private static String parseSender(String sender) {
         Rfc822Token[] senderTokens = Rfc822Tokenizer.tokenize(sender);
         String name;
         if (senderTokens != null && senderTokens.length > 0) {

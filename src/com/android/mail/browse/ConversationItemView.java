@@ -831,12 +831,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
                     if (currentLine == mCoordinates.sendersLineCount) {
                         width -= fixedWidth;
                     }
-                    CharSequence ellipsizedSender = TextUtils.ellipsize(sender, sPaint, width,
-                            TruncateAt.END);
-                    ellipsizedText = new SpannableString(ellipsizedSender);
-                    if (spans.length > 0) {
-                        ellipsizedText.setSpan(CharacterStyle.wrap(spans[0]), 0, 0, 0);
-                    }
+                    ellipsizedText = copyStyles(spans,
+                            TextUtils.ellipsize(sender, sPaint, width, TruncateAt.END));
                     width = (int) sPaint.measureText(ellipsizedText.toString());
                 }
             }
@@ -846,7 +842,12 @@ public class ConversationItemView extends View implements SwipeableItemView {
             if (ellipsizedText != null) {
                 fragmentDisplayText = ellipsizedText;
             } else {
-                fragmentDisplayText = sender;
+                // Prepend the dividing token, unless this is the first sender.
+                if (builder.length() > 0) {
+                    fragmentDisplayText = copyStyles(spans, SENDERS_SPLIT_TOKEN + sender);
+                } else {
+                    fragmentDisplayText = sender;
+                }
             }
             builder.append(fragmentDisplayText);
         }
@@ -855,6 +856,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
         mHeader.styledSendersString = builder;
         return totalWidth;
+    }
+
+    private SpannableString copyStyles(CharacterStyle[] spans, CharSequence newText) {
+        SpannableString s = new SpannableString(newText);
+        if (spans != null && spans.length > 0) {
+            s.setSpan(spans[0], 0, s.length(), 0);
+        }
+        return s;
     }
 
     private int ellipsize(int fixedWidth, int sendersY) {
