@@ -1089,7 +1089,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 // in the list
                 conversation.position = 0;
             }
-            showConversation(mCurrentConversation);
+            showConversation(conversation);
         }
 
         if (savedState.containsKey(SAVED_TOAST_BAR_OP)) {
