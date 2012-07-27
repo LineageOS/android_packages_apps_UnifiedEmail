@@ -36,6 +36,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -296,6 +297,33 @@ public class SwipeableListView extends ListView implements Callback {
         if (view != null) {
             view.removeBackground();
         }
+    }
+
+    /**
+     * Get the position within the adapter's data set for the view, where view is a an adapter item
+     * or a descendant of an adapter item.
+     *
+     * @param view an adapter item, or a descendant of an adapter item. This must be visible in this
+     *        AdapterView at the time of the call.
+     * @return the position within the adapter's data set of the view, or {@link #INVALID_POSITION}
+     *         if the view does not correspond to a list item (or it is not currently visible).
+     */
+    @Override
+    public int getPositionForView(View view) {
+        View listItem = view;
+        View v = null;
+        try {
+            while (!(v = (View) listItem.getParent()).equals(this)) {
+                listItem = v;
+            }
+        } catch (ClassCastException e) {
+            // We made it up to the window without find this list view
+            return INVALID_POSITION;
+        } catch (NullPointerException e) {
+            LogUtils.e(LOG_TAG, e, "WHAT HAS NO PARENT " + (v != null ? v.getClass() : null));
+            return INVALID_POSITION;
+        }
+        return super.getPositionForView(view);
     }
 
     /**
