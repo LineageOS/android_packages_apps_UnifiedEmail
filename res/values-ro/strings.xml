@@ -197,10 +197,14 @@
     <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost raportată ca spam."</item>
     <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost raportate ca spam."</item>
   </plurals>
-    <!-- no translation found for conversation_not_spam:one (7361303622131552596) -->
-    <!-- no translation found for conversation_not_spam:other (2250720080221922267) -->
-    <!-- no translation found for conversation_phished:one (5386916574432049235) -->
-    <!-- no translation found for conversation_phished:other (3678624994662639442) -->
+  <plurals name="conversation_not_spam">
+    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost raportată că nu este spam."</item>
+    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost raportate că nu sunt spam."</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost raportată ca phishing."</item>
+    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost raportate ca phishing."</item>
+  </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost arhivată."</item>
     <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost arhivate."</item>
@@ -213,10 +217,8 @@
     <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost ştearsă."</item>
     <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost şterse."</item>
   </plurals>
-    <!-- no translation found for deleted (2757349161107268029) -->
-    <skip />
-    <!-- no translation found for archived (7533995360704366325) -->
-    <skip />
+    <string name="deleted" msgid="2757349161107268029">"Ştearsă"</string>
+    <string name="archived" msgid="7533995360704366325">"Arhivată"</string>
     <!-- no translation found for folder_removed (858015177285651764) -->
     <skip />
   <plurals name="conversation_marked_important">
