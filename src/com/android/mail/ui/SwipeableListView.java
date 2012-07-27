@@ -308,6 +308,7 @@ public class SwipeableListView extends ListView implements Callback {
      * @return the position within the adapter's data set of the view, or {@link #INVALID_POSITION}
      *         if the view does not correspond to a list item (or it is not currently visible).
      */
+    // TODO(mindyp): remove this override once I fix b/6884047
     @Override
     public int getPositionForView(View view) {
         View listItem = view;
