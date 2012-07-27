@@ -330,7 +330,11 @@ public class Conversation implements Parcelable {
     public ArrayList<Folder> getRawFolders() {
         if (cachedRawFolders == null) {
             // Create cached folders.
-            cachedRawFolders = Folder.getFoldersArray(rawFolders);
+            if (!TextUtils.isEmpty(rawFolders)) {
+                cachedRawFolders = Folder.getFoldersArray(rawFolders);
+            } else {
+                return new ArrayList<Folder>();
+            }
         }
         return cachedRawFolders;
     }
