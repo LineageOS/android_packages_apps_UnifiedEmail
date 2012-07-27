@@ -60,6 +60,7 @@ public class SwipeHelper {
                                                  // where fade starts
     static final float ALPHA_FADE_END = 0.7f; // fraction of thumbnail width
                                               // beyond which alpha->0
+    private static final float FACTOR = 1.2f;
     private float mMinAlpha = 0.5f;
 
     private float mPagingTouchSlop;
@@ -207,7 +208,10 @@ public class SwipeHelper {
                     // Check the movement direction.
                     if (mLastY >= 0) {
                         float currY = ev.getY();
-                        if (Math.abs(currY - mLastY) > mScrollSlop) {
+                        float currX = ev.getX();
+                        float deltaY = Math.abs(currY - mInitialTouchPosY);
+                        float deltaX = Math.abs(currX - mInitialTouchPosX);
+                        if (deltaY > mScrollSlop && deltaY > (FACTOR * deltaX)) {
                             mLastY = ev.getY();
                             mCurrView.cancelTap();
                             return false;
@@ -378,10 +382,11 @@ public class SwipeHelper {
                 if (mCurrView != null) {
                     float deltaX = ev.getX() - mInitialTouchPosX;
                     float deltaY = Math.abs(ev.getY() - mInitialTouchPosY);
-                    // If the user has gone vertical and not gone horizontal AT
+                    // If the user has gone vertical and not gone horizontalish AT
                     // LEAST minBeforeLock, switch to scroll. Otherwise, cancel
                     // the swipe.
-                    if (deltaY > mMinVert && (Math.abs(deltaX)) < mMinLock) {
+                    if (deltaY > mMinVert && (Math.abs(deltaX)) < mMinLock
+                            && deltaY > (FACTOR * Math.abs(deltaX))) {
                         return false;
                     }
                     float minDistance = mMinSwipe;
