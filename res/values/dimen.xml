@@ -84,9 +84,6 @@
     <dimen name="widget_margin_bottom">22dip</dimen>
     <dimen name="conversation_item_height">70sp</dimen>
     <dimen name="conversation_item_height_wide">64sp</dimen>
-    <dimen name="min_swipe">10dip</dimen>
-    <dimen name="min_vert">10dip</dimen>
-    <dimen name="min_lock">20dip</dimen>
     <dimen name="search_view_width">400dip</dimen>
     <dimen name="titlebar_height">48dip</dimen>
     <dimen name="titlebar_icon_size">40dip</dimen>

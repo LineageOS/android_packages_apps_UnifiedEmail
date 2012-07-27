@@ -64,12 +64,8 @@ public class SwipeableListView extends ListView implements Callback {
         super(context, attrs, defStyle);
         float densityScale = getResources().getDisplayMetrics().density;
         float pagingTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
-        float scrollSlop = context.getResources().getInteger(R.integer.swipeScrollSlop);
-        float minSwipe = context.getResources().getDimension(R.dimen.min_swipe);
-        float minVert = context.getResources().getDimension(R.dimen.min_vert);
-        float minLock = context.getResources().getDimension(R.dimen.min_lock);
-        mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, densityScale, pagingTouchSlop,
-                scrollSlop, minSwipe, minVert, minLock);
+        mSwipeHelper = new SwipeHelper(context, SwipeHelper.X, this, densityScale,
+                pagingTouchSlop);
     }
 
     @Override
