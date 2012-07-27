@@ -55,8 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Ignorar"</string>
     <string name="add_star" msgid="2866003744391266498">"Adicionar estrela"</string>
     <string name="remove_star" msgid="4372327933122106128">"Remover estrela"</string>
-    <!-- no translation found for remove_folder (6098805949226229827) -->
-    <skip />
+    <string name="remove_folder" msgid="6098805949226229827">"Remover da pasta"</string>
     <string name="archive" msgid="847250094775910499">"Arquivar"</string>
     <string name="report_spam" msgid="6467567747975393907">"Denunciar spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Informar que não é spam"</string>
@@ -219,8 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Eliminada"</string>
     <string name="archived" msgid="7533995360704366325">"Arquivada"</string>
-    <!-- no translation found for folder_removed (858015177285651764) -->
-    <skip />
+    <string name="folder_removed" msgid="858015177285651764">"Removida da pasta"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; marcada como importante."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; marcadas como importantes."</item>
