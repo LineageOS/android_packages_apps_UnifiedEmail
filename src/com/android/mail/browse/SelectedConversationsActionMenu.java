@@ -173,7 +173,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 }
                 if (!cantMove) {
                     new FoldersSelectionDialog(mContext, acct, mUpdater,
-                            mSelectionSet.values(), true).show();
+                            mSelectionSet.values(), true, mFolder).show();
                 }
                 break;
             case R.id.mark_important:

@@ -721,7 +721,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 break;
             case R.id.change_folder:
                 new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                        Conversation.listOf(mCurrentConversation), false).show();
+                        Conversation.listOf(mCurrentConversation), false, mFolder).show();
                 break;
             default:
                 handled = false;
