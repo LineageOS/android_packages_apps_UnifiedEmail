@@ -106,6 +106,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
     private static Bitmap STATE_CALENDAR_INVITE;
 
+    private static String SENDERS_SPLIT_TOKEN;
+
     // Static colors.
     private static int DEFAULT_TEXT_COLOR;
     private static int ACTIVATED_TEXT_COLOR;
@@ -168,6 +170,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static int sUndoAnimationOffset;
     private static CharSequence sDraftSingularString;
     private static CharSequence sDraftPluralString;
+    private static String sDraftCountFormatString;
     private static ForegroundColorSpan sDraftsStyleSpan;
     private static Bitmap MORE_FOLDERS;
 
@@ -365,6 +368,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             sUndoAnimationOffset = res.getDimensionPixelOffset(R.dimen.undo_animation_offset);
             // Initialize static color.
             sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
+            SENDERS_SPLIT_TOKEN = res.getString(R.string.senders_split_token);
         }
     }
 
@@ -745,14 +749,13 @@ public class ConversationItemView extends View implements SwipeableItemView {
             }
             if (draftCount > 0) {
                 getDraftResources();
-                // TODO: turn ", " into a resource
-                messageInfo.append(", ");
+                messageInfo.append(SENDERS_SPLIT_TOKEN);
                 SpannableStringBuilder draftString = new SpannableStringBuilder();
                 if (draftCount == 1) {
                     draftString.append(sDraftSingularString);
                 } else {
-                    // TODO: turn () into a resource.
-                    draftString.append(sDraftPluralString + " (" + draftCount + ")");
+                    draftString.append(sDraftPluralString
+                            + String.format(sDraftCountFormatString, draftCount));
                 }
                 draftString.setSpan(CharacterStyle.wrap(sDraftsStyleSpan), 0, draftString.length(),
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -767,6 +770,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         if (sDraftSingularString == null) {
             sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
             sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
+            sDraftCountFormatString = res.getString(R.string.draft_count_format);
             sDraftsStyleSpan = new ForegroundColorSpan(res.getColor(R.color.drafts));
         }
     }

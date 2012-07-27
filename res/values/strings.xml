@@ -758,4 +758,8 @@
 
     <string translate="false" name="compose_component_name">com.android.mail.compose.ComposeActivity</string>
     <string translate="false" name="autosend_component_name"></string>
+
+    <!-- Token used as a divider between senders -->
+    <string translatable="false" name="senders_split_token">,\u00A0</string>
+    <string translatable="false" name="draft_count_format">\u00A0(<xliff:g id="count">%1$s</xliff:g>)</string>
 </resources>
