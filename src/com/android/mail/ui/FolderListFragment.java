@@ -45,13 +45,10 @@ import com.android.mail.utils.LogUtils;
  * The folder list UI component.
  */
 public final class FolderListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Cursor>, ViewMode.ModeChangeListener {
+        LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = LogTag.getLogTag();
 
     private ControllableActivity mActivity;
-
-    // Control state.
-    private Cursor mFolderListCursor;
 
     // The internal view objects.
     private ListView mListView;
@@ -77,7 +74,6 @@ public final class FolderListFragment extends ListFragment implements
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
-     * @param listener
      */
     public FolderListFragment() {
         super();
@@ -88,8 +84,8 @@ public final class FolderListFragment extends ListFragment implements
      * to display conversation list context.
      */
     public static FolderListFragment newInstance(Folder parentFolder, Uri folderUri) {
-        FolderListFragment fragment = new FolderListFragment();
-        Bundle args = new Bundle();
+        final FolderListFragment fragment = new FolderListFragment();
+        final Bundle args = new Bundle();
         if (parentFolder != null) {
             args.putParcelable(ARG_PARENT_FOLDER, parentFolder);
         }
@@ -135,11 +131,6 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     @Override
-    public void onCreate(Bundle savedState) {
-        super.onCreate(savedState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         final Bundle args = getArguments();
@@ -170,7 +161,11 @@ public final class FolderListFragment extends ListFragment implements
         viewFolder(position);
     }
 
-    public void viewFolder(int position) {
+    /**
+     * Display the conversation list from the folder at the position given.
+     * @param position
+     */
+    private void viewFolder(int position) {
         Object item = getListAdapter().getItem(position);
         Folder folder;
         if (item instanceof Folder) {
@@ -188,11 +183,6 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         mListView.setEmptyView(null);
         mEmptyView.setVisibility(View.GONE);
@@ -202,7 +192,6 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mFolderListCursor = data;
         mCursorAdapter.setCursor(data);
         if (data == null || data.getCount() == 0) {
             mEmptyView.setVisibility(View.VISIBLE);
@@ -273,6 +262,7 @@ public final class FolderListFragment extends ListFragment implements
             return 2;
         }
 
+        @Override
         public int getItemViewType(int position) {
             Folder f = getItem(position);
             return f.uri.equals(mParentUri) ? PARENT : CHILD;
@@ -314,11 +304,6 @@ public final class FolderListFragment extends ListFragment implements
                 } while (cursor.moveToNext());
             }
         }
-    }
-
-    @Override
-    public void onViewModeChanged(int newMode) {
-        // Listen on mode changes, when we move to Folder list mode, change accordingly.
     }
 
     public void selectInitialFolder(Folder folder) {
