@@ -206,7 +206,7 @@ public class SwipeHelper {
             case MotionEvent.ACTION_MOVE:
                 if (mCurrView != null) {
                     // Check the movement direction.
-                    if (mLastY >= 0) {
+                    if (mLastY >= 0 && !mDragging) {
                         float currY = ev.getY();
                         float currX = ev.getX();
                         float deltaY = Math.abs(currY - mInitialTouchPosY);
@@ -385,7 +385,7 @@ public class SwipeHelper {
                     // If the user has gone vertical and not gone horizontalish AT
                     // LEAST minBeforeLock, switch to scroll. Otherwise, cancel
                     // the swipe.
-                    if (deltaY > mMinVert && (Math.abs(deltaX)) < mMinLock
+                    if (!mDragging && deltaY > mMinVert && (Math.abs(deltaX)) < mMinLock
                             && deltaY > (FACTOR * Math.abs(deltaX))) {
                         return false;
                     }
