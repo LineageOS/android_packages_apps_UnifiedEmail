@@ -340,7 +340,9 @@ public class Settings implements Parcelable {
             return false;
         }
         final Settings that = (Settings) aThat;
-        return (TextUtils.equals(signature, that.signature)
+        // If both signatures are null or empty, we want to treat them as equals
+        return (((TextUtils.isEmpty(signature) && TextUtils.isEmpty(that.signature)) ||
+                    TextUtils.equals(signature, that.signature))
                 && autoAdvance == that.autoAdvance
                 && messageTextSize == that.messageTextSize
                 && replyBehavior == that.replyBehavior
