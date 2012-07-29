@@ -142,13 +142,13 @@ public class ConversationItemViewModel {
         }
     }
 
-    static ConversationItemViewModel forCursor(Cursor cursor) {
-        return forConversation(new Conversation(cursor));
+    static ConversationItemViewModel forCursor(String account, Cursor cursor) {
+        return forConversation(account, new Conversation(cursor));
     }
 
-
-    static ConversationItemViewModel forConversation(Conversation conv) {
-        ConversationItemViewModel header = new ConversationItemViewModel();
+    static ConversationItemViewModel forConversation(String account, Conversation conv) {
+        ConversationItemViewModel header = ConversationItemViewModel.forConversationId(account,
+                conv.id);
         if (conv != null) {
             header.faded = false;
             header.checkboxVisible = true;
@@ -221,29 +221,32 @@ public class ConversationItemViewModel {
     /**
      * Returns the hashcode to compare if the data in the header is valid.
      */
-    private static int getHashCode(Context context, String dateText, String fromSnippetInstructions) {
+    private static int getHashCode(Context context, String dateText, Object convInfo) {
         if (dateText == null) {
             return -1;
         }
-        if (TextUtils.isEmpty(fromSnippetInstructions)) {
-            fromSnippetInstructions = "fromSnippetInstructions";
-        }
-        return fromSnippetInstructions.hashCode() ^ dateText.hashCode();
+        return convInfo.hashCode() ^ dateText.hashCode();
     }
 
     /**
-     * Returns the layout hashcode to compare to see if thet layout state has changed.
+     * Returns the layout hashcode to compare to see if the layout state has changed.
      */
     private int getLayoutHashCode() {
-        return mDataHashCode ^ viewWidth ^ standardScaledDimen ^
-                Boolean.valueOf(checkboxVisible).hashCode();
+        return mDataHashCode ^ viewWidth ^ standardScaledDimen
+                ^ Boolean.valueOf(checkboxVisible).hashCode();
+    }
+
+    private Object getConvInfo() {
+        return conversation.conversationInfo != null ?
+                conversation.conversationInfo :
+                    TextUtils.isEmpty(fromSnippetInstructions) ? "fromSnippet" : "";
     }
 
     /**
      * Marks this header as having valid data and layout.
      */
     void validate(Context context) {
-        mDataHashCode = getHashCode(context, dateText, fromSnippetInstructions);
+        mDataHashCode = getHashCode(context, dateText, getConvInfo());
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -251,7 +254,7 @@ public class ConversationItemViewModel {
      * Returns if the data in this model is valid.
      */
     boolean isDataValid(Context context) {
-        return mDataHashCode == getHashCode(context, dateText, fromSnippetInstructions);
+        return mDataHashCode == getHashCode(context, dateText, getConvInfo());
     }
 
     /**

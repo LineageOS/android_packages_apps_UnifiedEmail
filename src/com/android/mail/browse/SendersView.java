@@ -42,7 +42,6 @@ import com.google.common.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.regex.Pattern;
 
 public class SendersView extends TextView {
@@ -83,35 +82,24 @@ public class SendersView extends TextView {
     }
 
     public void formatSenders(ConversationItemViewModel header, boolean isUnread, int mode) {
-        if (TextUtils.isEmpty(header.conversation.senders)
-                && header.conversation.conversationInfo == null) {
+        if (TextUtils.isEmpty(header.conversation.senders)) {
             return;
         }
-        Conversation conversation = header.conversation;
-        String sendersInfo = conversation.conversationInfo != null ?
-                conversation.conversationInfo.sendersInfo : header.conversation.senders;
-        if (conversation.conversationInfo != null
-                && !TextUtils.isEmpty(conversation.conversationInfo.sendersInfo)) {
-            // We have the properly formatted conversationinfo. Parse and
-            // display!
-            header.styledSenders = format(getContext(), conversation.conversationInfo);
-        } else if (!TextUtils.isEmpty(sendersInfo)) {
-            SendersInfo info = new SendersInfo(sendersInfo);
-            mFormatVersion = info.version;
-            switch (mFormatVersion) {
-                case MERGED_FORMATTING:
-                    formatMerged(header, info.text, isUnread, mode);
-                    break;
-                case DEFAULT_FORMATTING:
-                default:
-                    formatDefault(header, info.text);
-                    break;
-            }
+        SendersInfo info = new SendersInfo(header.conversation.senders);
+        mFormatVersion = info.version;
+        switch (mFormatVersion) {
+            case MERGED_FORMATTING:
+                formatMerged(header, info.text, isUnread, mode);
+                break;
+            case DEFAULT_FORMATTING:
+            default:
+                formatDefault(header, info.text);
+                break;
         }
     }
 
     @VisibleForTesting
-    protected static SpannableString[] format(Context context, ConversationInfo conversationInfo) {
+    public static SpannableString[] format(Context context, ConversationInfo conversationInfo) {
         HashMap<String, Integer> displayHash = new HashMap<String, Integer>();
         ArrayList<SpannableString> displays = new ArrayList<SpannableString>();
         String display;
