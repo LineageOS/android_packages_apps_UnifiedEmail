@@ -28,8 +28,7 @@ public class SendersFormattingTests extends AndroidTestCase {
     private static ConversationInfo createConversationInfo(int count) {
         int draftCount = 5;
         String first = "snippet", firstUnread = first, last = first;
-        String senders = "senders";
-        return new ConversationInfo(count, draftCount, first, firstUnread, last, senders);
+        return new ConversationInfo(count, draftCount, first, firstUnread, last);
     }
 
     public void testMe() {
