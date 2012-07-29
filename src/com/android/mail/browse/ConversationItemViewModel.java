@@ -226,6 +226,9 @@ public class ConversationItemViewModel {
         if (dateText == null) {
             return -1;
         }
+        if (TextUtils.isEmpty(rawFolders)) {
+            rawFolders = "";
+        }
         return convInfo.hashCode() ^ dateText.hashCode() ^ rawFolders.hashCode();
     }
 
