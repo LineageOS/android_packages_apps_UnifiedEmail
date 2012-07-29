@@ -1029,8 +1029,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Date background: shown when there is an attachment or a visible
         // folder.
         if (!isActivated()
-                && (mHeader.conversation.hasAttachments
-                        ||mHeader.folderDisplayer.hasVisibleFolders())
+                && (mHeader.conversation.hasAttachments ||
+                        (mHeader.folderDisplayer != null
+                            && mHeader.folderDisplayer.hasVisibleFolders()))
                 && ConversationItemViewCoordinates.showAttachmentBackground(mMode)) {
             int leftOffset = (mHeader.conversation.hasAttachments ? mPaperclipX : mDateX)
                     - DATE_BACKGROUND_PADDING_LEFT;
