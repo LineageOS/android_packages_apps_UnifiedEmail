@@ -158,10 +158,12 @@ public class SwipeableListView extends ListView implements Callback {
     @Override
     public void onChildDismissed(SwipeableItemView v) {
         View view = v.getView();
-        if (view instanceof ConversationItemView) {
-            dismissChildren((ConversationItemView) v, null);
-        } else if (view instanceof LeaveBehindItem) {
-            ((LeaveBehindItem) view).commit();
+        if (view != null) {
+            if (view instanceof ConversationItemView) {
+                dismissChildren((ConversationItemView) view, null);
+            } else if (view instanceof LeaveBehindItem) {
+                ((LeaveBehindItem) view).commit();
+            }
         }
     }
 
