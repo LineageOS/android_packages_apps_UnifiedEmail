@@ -221,11 +221,12 @@ public class ConversationItemViewModel {
     /**
      * Returns the hashcode to compare if the data in the header is valid.
      */
-    private static int getHashCode(Context context, String dateText, Object convInfo) {
+    private static int getHashCode(Context context, String dateText, Object convInfo,
+            String rawFolders) {
         if (dateText == null) {
             return -1;
         }
-        return convInfo.hashCode() ^ dateText.hashCode();
+        return convInfo.hashCode() ^ dateText.hashCode() ^ rawFolders.hashCode();
     }
 
     /**
@@ -239,14 +240,14 @@ public class ConversationItemViewModel {
     private Object getConvInfo() {
         return conversation.conversationInfo != null ?
                 conversation.conversationInfo :
-                    TextUtils.isEmpty(fromSnippetInstructions) ? "fromSnippet" : "";
+                    TextUtils.isEmpty(fromSnippetInstructions) ? "" : fromSnippetInstructions;
     }
 
     /**
      * Marks this header as having valid data and layout.
      */
     void validate(Context context) {
-        mDataHashCode = getHashCode(context, dateText, getConvInfo());
+        mDataHashCode = getHashCode(context, dateText, getConvInfo(), conversation.rawFolders);
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -254,7 +255,8 @@ public class ConversationItemViewModel {
      * Returns if the data in this model is valid.
      */
     boolean isDataValid(Context context) {
-        return mDataHashCode == getHashCode(context, dateText, getConvInfo());
+        return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
+                conversation.rawFolders);
     }
 
     /**
