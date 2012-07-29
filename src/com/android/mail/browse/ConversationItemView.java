@@ -168,6 +168,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private AnimatedAdapter mAdapter;
     private int mAnimatedHeight = -1;
     private String mAccount;
+    private Bitmap sDateBackgroundAttachment;
+    private Bitmap sDateBackgroundNoAttachment;
     private static int sUndoAnimationOffset;
     private static CharSequence sDraftSingularString;
     private static CharSequence sDraftPluralString;
@@ -1027,16 +1029,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Date background: shown when there is an attachment or a visible
         // folder.
         if (!isActivated()
-                && mHeader.conversation.hasAttachments
+                && (mHeader.conversation.hasAttachments
+                        ||mHeader.folderDisplayer.hasVisibleFolders())
                 && ConversationItemViewCoordinates.showAttachmentBackground(mMode)) {
-            mHeader.dateBackground = DATE_BACKGROUND;
             int leftOffset = (mHeader.conversation.hasAttachments ? mPaperclipX : mDateX)
                     - DATE_BACKGROUND_PADDING_LEFT;
             int top = mCoordinates.showFolders ? mCoordinates.foldersY : mCoordinates.dateY;
-            Rect src = new Rect(0, 0, mHeader.dateBackground.getWidth(), mHeader.dateBackground
-                    .getHeight());
-            Rect dst = new Rect(leftOffset, top, mViewWidth, top + sDateBackgroundHeight);
-            canvas.drawBitmap(mHeader.dateBackground, src, dst, sPaint);
+            mHeader.dateBackground = getDateBackground(mHeader.conversation.hasAttachments);
+            canvas.drawBitmap(mHeader.dateBackground, leftOffset, top, sPaint);
         } else {
             mHeader.dateBackground = null;
         }
@@ -1089,6 +1089,23 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         // Star.
         canvas.drawBitmap(mHeader.starBitmap, mCoordinates.starX, mCoordinates.starY, sPaint);
+    }
+
+    private Bitmap getDateBackground(boolean hasAttachments) {
+        int leftOffset = (hasAttachments ? mPaperclipX : mDateX) - DATE_BACKGROUND_PADDING_LEFT;
+        if (hasAttachments) {
+            if (sDateBackgroundAttachment == null) {
+                sDateBackgroundAttachment = Bitmap.createScaledBitmap(DATE_BACKGROUND, mViewWidth
+                        - leftOffset, sDateBackgroundHeight, false);
+            }
+            return sDateBackgroundAttachment;
+        } else {
+            if (sDateBackgroundNoAttachment == null) {
+                sDateBackgroundNoAttachment = Bitmap.createScaledBitmap(DATE_BACKGROUND, mViewWidth
+                        - leftOffset, sDateBackgroundHeight, false);
+            }
+            return sDateBackgroundNoAttachment;
+        }
     }
 
     private void drawText(Canvas canvas, CharSequence s, int x, int y, TextPaint paint) {

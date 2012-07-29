@@ -82,10 +82,11 @@ public class SendersView extends TextView {
     }
 
     public void formatSenders(ConversationItemViewModel header, boolean isUnread, int mode) {
-        if (TextUtils.isEmpty(header.conversation.senders)) {
+        String senders = header.conversation.senders;
+        if (TextUtils.isEmpty(senders)) {
             return;
         }
-        SendersInfo info = new SendersInfo(header.conversation.senders);
+        SendersInfo info = new SendersInfo(senders);
         mFormatVersion = info.version;
         switch (mFormatVersion) {
             case MERGED_FORMATTING:
