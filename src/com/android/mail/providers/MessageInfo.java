@@ -58,4 +58,9 @@ public class MessageInfo {
     public static MessageInfo fromString(String inString) throws JSONException {
         return fromJSON(new JSONObject(inString));
     }
+
+    @Override
+    public int hashCode() {
+        return (read ? 1 : 0) ^ (starred ? 1 : 0) ^ sender.hashCode();
+    }
 }

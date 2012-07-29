@@ -233,7 +233,7 @@ public final class MockUiProvider extends ContentProvider {
 
     private static String generateConversationInfo(int messageCount, int draftCount) {
         ConversationInfo info = new ConversationInfo(messageCount, draftCount, "first",
-                "firstUnread", "last", null);
+                "firstUnread", "last");
         for (int i = 0; i < messageCount; i++) {
             if (i % 2 == 0) {
                 info.addMessage(new MessageInfo(false, false, i + "Test <testsender@test.com>"));
