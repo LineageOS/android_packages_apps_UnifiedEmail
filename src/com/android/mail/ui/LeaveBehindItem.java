@@ -86,9 +86,13 @@ public class LeaveBehindItem extends AnimatingItemView implements OnClickListene
 
     public void commit() {
         Conversation conv = getData();
-        mConversationCursor.delete(getContext(), ImmutableList.of(conv));
-        mAdapter.clearLeaveBehind(conv.id);
-        mAdapter.notifyDataSetChanged();
+        if (mConversationCursor != null) {
+            mConversationCursor.delete(getContext(), ImmutableList.of(conv));
+        }
+        if (mAdapter != null) {
+            mAdapter.clearLeaveBehind(conv.id);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     public long getConversationId() {
