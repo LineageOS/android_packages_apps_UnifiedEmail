@@ -55,8 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"略過"</string>
     <string name="add_star" msgid="2866003744391266498">"加上星號"</string>
     <string name="remove_star" msgid="4372327933122106128">"移除星號"</string>
-    <!-- no translation found for remove_folder (7297603912332340861) -->
-    <skip />
+    <string name="remove_folder" msgid="7297603912332340861">"移除資料夾"</string>
     <string name="archive" msgid="847250094775910499">"封存"</string>
     <string name="report_spam" msgid="6467567747975393907">"回報為垃圾郵件"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"回報非垃圾郵件"</string>
@@ -197,6 +196,14 @@
     <item quantity="one" msgid="3060864972122279220">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組回報為垃圾郵件。"</item>
     <item quantity="other" msgid="5071459475389411227">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組回報為垃圾郵件。"</item>
   </plurals>
+  <plurals name="conversation_not_spam">
+    <item quantity="one" msgid="7361303622131552596">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組回報為非垃圾郵件。"</item>
+    <item quantity="other" msgid="2250720080221922267">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組回報為非垃圾郵件。"</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="one" msgid="5386916574432049235">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組回報為詐騙郵件。"</item>
+    <item quantity="other" msgid="3678624994662639442">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組回報為詐騙郵件。"</item>
+  </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"已封存 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組。"</item>
     <item quantity="other" msgid="3012054504370916482">"已封存 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組。"</item>
@@ -209,6 +216,9 @@
     <item quantity="one" msgid="4398693029405479323">"已刪除 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組。"</item>
     <item quantity="other" msgid="8630099095360065837">"已刪除 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組。"</item>
   </plurals>
+    <string name="deleted" msgid="2757349161107268029">"已刪除"</string>
+    <string name="archived" msgid="7533995360704366325">"已封存"</string>
+    <string name="folder_removed" msgid="4055635707202229814">"已移除資料夾"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組標示為重要。"</item>
     <item quantity="other" msgid="709648106181749594">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組標示為重要。"</item>

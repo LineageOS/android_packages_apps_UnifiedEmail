@@ -295,12 +295,22 @@
     <!-- no translation found for conversation_muted:other (1941193356069303587) -->
     <!-- no translation found for conversation_spammed:one (3060864972122279220) -->
     <!-- no translation found for conversation_spammed:other (5071459475389411227) -->
+    <!-- no translation found for conversation_not_spam:one (7361303622131552596) -->
+    <!-- no translation found for conversation_not_spam:other (2250720080221922267) -->
+    <!-- no translation found for conversation_phished:one (5386916574432049235) -->
+    <!-- no translation found for conversation_phished:other (3678624994662639442) -->
     <!-- no translation found for conversation_archived:one (5457612502965117672) -->
     <!-- no translation found for conversation_archived:other (3012054504370916482) -->
     <!-- no translation found for conversation_moved_to_inbox:one (8031416635831380071) -->
     <!-- no translation found for conversation_moved_to_inbox:other (395816799927580909) -->
     <!-- no translation found for conversation_deleted:one (4398693029405479323) -->
     <!-- no translation found for conversation_deleted:other (8630099095360065837) -->
+    <!-- no translation found for deleted (2757349161107268029) -->
+    <skip />
+    <!-- no translation found for archived (7533995360704366325) -->
+    <skip />
+    <!-- no translation found for folder_removed (4055635707202229814) -->
+    <skip />
     <!-- no translation found for conversation_marked_important:one (2335171317119674993) -->
     <!-- no translation found for conversation_marked_important:other (709648106181749594) -->
     <!-- no translation found for conversation_marked_not_important:one (63750576337670941) -->

@@ -196,6 +196,14 @@
     <item quantity="one" msgid="3060864972122279220">"Pranešta kaip apie šlamštą: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="5071459475389411227">"Pranešta kaip apie šlamštą: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
+  <plurals name="conversation_not_spam">
+    <item quantity="one" msgid="7361303622131552596">"Apie &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; pokalb. pranešta kaip apie šlamštą."</item>
+    <item quantity="other" msgid="2250720080221922267">"Apie &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; pokalb. pranešta kaip apie šlamštą."</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="one" msgid="5386916574432049235">"Apie &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; pokalb. pranešta kaip apie sukčiavimą."</item>
+    <item quantity="other" msgid="3678624994662639442">"Apie &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; pokalb. pranešta kaip apie sukčiavimą."</item>
+  </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"Suarchyvuota: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="3012054504370916482">"Suarchyvuota: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
@@ -208,6 +216,9 @@
     <item quantity="one" msgid="4398693029405479323">"Ištrinta: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="8630099095360065837">"Ištrinta: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
+    <string name="deleted" msgid="2757349161107268029">"Ištrinta"</string>
+    <string name="archived" msgid="7533995360704366325">"Archyvuota"</string>
+    <string name="folder_removed" msgid="4055635707202229814">"Aplankas pašalintas"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"Pažymėta kaip svarbūs: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="709648106181749594">"Pažymėta kaip svarbūs: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
