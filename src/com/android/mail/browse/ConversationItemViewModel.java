@@ -250,7 +250,8 @@ public class ConversationItemViewModel {
      * Marks this header as having valid data and layout.
      */
     void validate(Context context) {
-        mDataHashCode = getHashCode(context, dateText, getConvInfo(), conversation.rawFolders);
+        mDataHashCode = getHashCode(context, dateText, getConvInfo(),
+                conversation.getRawFoldersString());
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -259,7 +260,7 @@ public class ConversationItemViewModel {
      */
     boolean isDataValid(Context context) {
         return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
-                conversation.rawFolders);
+                conversation.getRawFoldersString());
     }
 
     /**

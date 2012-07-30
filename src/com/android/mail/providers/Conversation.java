@@ -98,7 +98,7 @@ public class Conversation implements Parcelable {
     /**
      * @see UIProvider.ConversationColumns#RAW_FOLDERS
      */
-    public String rawFolders;
+    private String rawFolders;
     /**
      * @see UIProvider.ConversationColumns#FLAGS
      */
@@ -141,6 +141,7 @@ public class Conversation implements Parcelable {
     public transient boolean localDeleteOnUpdate;
 
     private ArrayList<Folder> cachedRawFolders;
+    private ArrayList<Folder> cachedDisplayableFolders;
 
     // Constituents of convFlags below
     // Flag indicating that the item has been deleted, but will continue being
@@ -339,6 +340,36 @@ public class Conversation implements Parcelable {
         return cachedRawFolders;
     }
 
+    public void setRawFolders(String raw) {
+        clearCachedFolders();
+        rawFolders = raw;
+    }
+
+    public String getRawFoldersString() {
+        return rawFolders;
+    }
+
+    private void clearCachedFolders() {
+        cachedRawFolders = null;
+        cachedDisplayableFolders = null;
+    }
+
+    public ArrayList<Folder> getRawFoldersForDisplay(Folder ignoreFolder) {
+        ArrayList<Folder> folders = getRawFolders();
+        if (cachedDisplayableFolders == null) {
+            cachedDisplayableFolders = new ArrayList<Folder>();
+            for (Folder folder : folders) {
+                if (TextUtils.isEmpty(folder.name)
+                        || (ignoreFolder != null && ignoreFolder.equals(folder))
+                        || Folder.isProviderFolder(folder)) {
+                    continue;
+                }
+                cachedDisplayableFolders.add(folder);
+            }
+        }
+        return cachedDisplayableFolders;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof Conversation) {
@@ -413,6 +444,10 @@ public class Conversation implements Parcelable {
     public String getSnippet() {
         return conversationInfo != null && !TextUtils.isEmpty(conversationInfo.firstSnippet) ?
                 conversationInfo.firstSnippet : snippet;
+    }
+
+    public String getSenders() {
+        return conversationInfo != null ? conversationInfo.firstSnippet : senders;
     }
 
     /**

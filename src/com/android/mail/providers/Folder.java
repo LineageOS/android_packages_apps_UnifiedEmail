@@ -261,19 +261,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return null;
     }
 
-    public static ArrayList<Folder> forDisplay(Folder ignoreFolder, ArrayList<Folder> folders) {
-        ArrayList<Folder> displayFolders = new ArrayList<Folder>();
-        for (Folder folder : folders) {
-            if (TextUtils.isEmpty(folder.name)
-                    || (ignoreFolder != null && ignoreFolder.equals(folder))
-                    || Folder.isProviderFolder(folder)) {
-                continue;
-            }
-            displayFolders.add(folder);
-        }
-        return displayFolders;
-    }
-
     public static HashMap<Uri, Folder> hashMapForFolders(ArrayList<Folder> rawFolders) {
         final HashMap<Uri, Folder> folders = new HashMap<Uri, Folder>();
         for (Folder f : rawFolders) {
