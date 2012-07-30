@@ -426,6 +426,9 @@ public class Folder implements Parcelable, Comparable<Folder> {
         }
         Folder f = new Folder();
         String[] split = TextUtils.split(inString, SPLITTER_REGEX);
+        if (split.length < 20) {
+            return null;
+        }
         f.id = Integer.parseInt(split[0]);
         f.uri = Folder.getValidUri(split[1]);
         f.name = split[2];
