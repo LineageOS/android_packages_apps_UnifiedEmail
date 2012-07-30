@@ -1453,7 +1453,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         // Don't duplicate the prefix
-        if (subject.toLowerCase().startsWith(prefix.toLowerCase())) {
+        if (!TextUtils.isEmpty(subject)
+                && subject.toLowerCase().startsWith(prefix.toLowerCase())) {
             correctedSubject = subject;
         } else {
             correctedSubject = String
