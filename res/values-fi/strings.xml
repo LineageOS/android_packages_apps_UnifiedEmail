@@ -55,8 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Ohita"</string>
     <string name="add_star" msgid="2866003744391266498">"Lisää tähti"</string>
     <string name="remove_star" msgid="4372327933122106128">"Poista tähti"</string>
-    <!-- no translation found for remove_folder (7297603912332340861) -->
-    <skip />
+    <string name="remove_folder" msgid="7297603912332340861">"Poista kansio"</string>
     <string name="archive" msgid="847250094775910499">"Arkisto"</string>
     <string name="report_spam" msgid="6467567747975393907">"Ilmoita roskapostista"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Merkitse ei-roskapostiksi"</string>
@@ -197,6 +196,14 @@
     <item quantity="one" msgid="3060864972122279220">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty roskapostiksi."</item>
     <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty roskapostiksi."</item>
   </plurals>
+  <plurals name="conversation_not_spam">
+    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty muuksi kuin roskapostiksi."</item>
+    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty muuksi kuin roskapostiksi."</item>
+  </plurals>
+  <plurals name="conversation_phished">
+    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty tietojenkalasteluksi."</item>
+    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty tietojenkalasteluksi."</item>
+  </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arkistoitu."</item>
     <item quantity="other" msgid="3012054504370916482">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arkistoitu."</item>
@@ -209,6 +216,9 @@
     <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; poistettu."</item>
     <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; poistettu."</item>
   </plurals>
+    <string name="deleted" msgid="2757349161107268029">"Poistettu"</string>
+    <string name="archived" msgid="7533995360704366325">"Arkistoitu"</string>
+    <string name="folder_removed" msgid="4055635707202229814">"Kansio poistettu"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty tärkeäksi."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; merkitty tärkeiksi."</item>
