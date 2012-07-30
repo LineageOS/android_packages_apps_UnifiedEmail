@@ -55,8 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Спиране"</string>
     <string name="add_star" msgid="2866003744391266498">"Добавяне на звезда"</string>
     <string name="remove_star" msgid="4372327933122106128">"Премахване на звездата"</string>
-    <!-- no translation found for remove_folder (6098805949226229827) -->
-    <skip />
+    <string name="remove_folder" msgid="6098805949226229827">"Премахване от папката"</string>
     <string name="archive" msgid="847250094775910499">"Архив"</string>
     <string name="report_spam" msgid="6467567747975393907">"Подаване на сигнал за спам"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Подаване на сигнал „Не е спам“"</string>
@@ -219,8 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Изтрита"</string>
     <string name="archived" msgid="7533995360704366325">"Архивирана"</string>
-    <!-- no translation found for folder_removed (858015177285651764) -->
-    <skip />
+    <string name="folder_removed" msgid="858015177285651764">"Премахната от папката"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"Означихте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; като важна."</item>
     <item quantity="other" msgid="709648106181749594">"Означихте &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; като важни."</item>
