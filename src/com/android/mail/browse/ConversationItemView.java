@@ -17,7 +17,9 @@
 
 package com.android.mail.browse;
 
+import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ClipData;
 import android.content.ClipData.Item;
@@ -72,6 +74,8 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.ArrayList;
+
 public class ConversationItemView extends View implements SwipeableItemView {
     // Timer.
     private static int sLayoutCount = 0;
@@ -101,6 +105,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static Bitmap STATE_FORWARDED;
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
     private static Bitmap STATE_CALENDAR_INVITE;
+
+    private static String SENDERS_SPLIT_TOKEN;
 
     // Static colors.
     private static int DEFAULT_TEXT_COLOR;
@@ -160,9 +166,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private int mLastTouchX;
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
+    private int mAnimatedHeight = -1;
+    private String mAccount;
+    private Bitmap sDateBackgroundAttachment;
+    private Bitmap sDateBackgroundNoAttachment;
     private static int sUndoAnimationOffset;
     private static CharSequence sDraftSingularString;
     private static CharSequence sDraftPluralString;
+    private static String sDraftCountFormatString;
     private static ForegroundColorSpan sDraftsStyleSpan;
     private static Bitmap MORE_FOLDERS;
 
@@ -186,8 +197,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
 
         @Override
-        public void loadConversationFolders(String rawFolders, Folder ignoreFolder) {
-            super.loadConversationFolders(rawFolders, ignoreFolder);
+        public void loadConversationFolders(Conversation conv, Folder ignoreFolder) {
+            super.loadConversationFolders(conv, ignoreFolder);
 
             mFoldersCount = mFoldersSortedSet.size();
             mHasMoreFolders = mFoldersCount > MAX_DISPLAYED_FOLDERS_COUNT;
@@ -307,7 +318,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         super(context);
         mContext = context.getApplicationContext();
         mTabletDevice = Utils.useTabletUI(mContext);
-
+        mAccount = account;
         Resources res = mContext.getResources();
 
         if (CHECKMARK_OFF == null) {
@@ -360,20 +371,21 @@ public class ConversationItemView extends View implements SwipeableItemView {
             sUndoAnimationOffset = res.getDimensionPixelOffset(R.dimen.undo_animation_offset);
             // Initialize static color.
             sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
+            SENDERS_SPLIT_TOKEN = res.getString(R.string.senders_split_token);
         }
     }
 
     public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set, Folder folder,
             boolean checkboxesDisabled, boolean swipeEnabled, AnimatedAdapter adapter) {
-        bind(ConversationItemViewModel.forCursor(cursor), viewMode, set, folder,
+        bind(ConversationItemViewModel.forCursor(mAccount, cursor), viewMode, set, folder,
                 checkboxesDisabled, swipeEnabled, adapter);
     }
 
     public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
             Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
             AnimatedAdapter adapter) {
-        bind(ConversationItemViewModel.forConversation(conversation), viewMode, set, folder,
-                checkboxesDisabled, swipeEnabled, adapter);
+        bind(ConversationItemViewModel.forConversation(mAccount, conversation), viewMode, set,
+                folder, checkboxesDisabled, swipeEnabled, adapter);
     }
 
     private void bind(ConversationItemViewModel header, ViewMode viewMode,
@@ -504,7 +516,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Initialize folder displayer.
         if (mCoordinates.showFolders) {
             mHeader.folderDisplayer = new ConversationItemFolderDisplayer(mContext);
-            mHeader.folderDisplayer.loadConversationFolders(mHeader.rawFolders, mDisplayedFolder);
+            mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation, mDisplayedFolder);
         }
 
         pauseTimer(PERF_TAG_CALCULATE_FOLDERS);
@@ -512,7 +524,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Star.
         mHeader.starBitmap = mHeader.starred ? STAR_ON : STAR_OFF;
 
-        // Date.
         mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
                 mHeader.conversation.dateMs).toString();
 
@@ -553,7 +564,12 @@ public class ConversationItemView extends View implements SwipeableItemView {
         mHeader.styledSendersString = new SpannableStringBuilder();
 
         // Parse senders fragments.
-        mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode);
+        if (mHeader.conversation.conversationInfo != null) {
+            mHeader.styledSenders = SendersView.format(getContext(),
+                    mHeader.conversation.conversationInfo);
+        } else {
+            mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode);
+        }
 
         pauseTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
         pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
@@ -740,14 +756,13 @@ public class ConversationItemView extends View implements SwipeableItemView {
             }
             if (draftCount > 0) {
                 getDraftResources();
-                // TODO: turn ", " into a resource
-                messageInfo.append(", ");
+                messageInfo.append(SENDERS_SPLIT_TOKEN);
                 SpannableStringBuilder draftString = new SpannableStringBuilder();
                 if (draftCount == 1) {
                     draftString.append(sDraftSingularString);
                 } else {
-                    // TODO: turn () into a resource.
-                    draftString.append(sDraftPluralString + " (" + draftCount + ")");
+                    draftString.append(sDraftPluralString
+                            + String.format(sDraftCountFormatString, draftCount));
                 }
                 draftString.setSpan(CharacterStyle.wrap(sDraftsStyleSpan), 0, draftString.length(),
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -762,6 +777,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         if (sDraftSingularString == null) {
             sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
             sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
+            sDraftCountFormatString = res.getString(R.string.draft_count_format);
             sDraftsStyleSpan = new ForegroundColorSpan(res.getColor(R.color.drafts));
         }
     }
@@ -822,12 +838,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
                     if (currentLine == mCoordinates.sendersLineCount) {
                         width -= fixedWidth;
                     }
-                    CharSequence ellipsizedSender = TextUtils.ellipsize(sender, sPaint, width,
-                            TruncateAt.END);
-                    ellipsizedText = new SpannableString(ellipsizedSender);
-                    if (spans.length > 0) {
-                        ellipsizedText.setSpan(CharacterStyle.wrap(spans[0]), 0, 0, 0);
-                    }
+                    ellipsizedText = copyStyles(spans,
+                            TextUtils.ellipsize(sender, sPaint, width, TruncateAt.END));
                     width = (int) sPaint.measureText(ellipsizedText.toString());
                 }
             }
@@ -837,7 +849,12 @@ public class ConversationItemView extends View implements SwipeableItemView {
             if (ellipsizedText != null) {
                 fragmentDisplayText = ellipsizedText;
             } else {
-                fragmentDisplayText = sender;
+                // Prepend the dividing token, unless this is the first sender.
+                if (builder.length() > 0) {
+                    fragmentDisplayText = copyStyles(spans, SENDERS_SPLIT_TOKEN + sender);
+                } else {
+                    fragmentDisplayText = sender;
+                }
             }
             builder.append(fragmentDisplayText);
         }
@@ -846,6 +863,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
         mHeader.styledSendersString = builder;
         return totalWidth;
+    }
+
+    private SpannableString copyStyles(CharacterStyle[] spans, CharSequence newText) {
+        SpannableString s = new SpannableString(newText);
+        if (spans != null && spans.length > 0) {
+            s.setSpan(spans[0], 0, s.length(), 0);
+        }
+        return s;
     }
 
     private int ellipsize(int fixedWidth, int sendersY) {
@@ -1003,16 +1028,15 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Date background: shown when there is an attachment or a visible
         // folder.
         if (!isActivated()
-                && mHeader.conversation.hasAttachments
+                && (mHeader.conversation.hasAttachments ||
+                        (mHeader.folderDisplayer != null
+                            && mHeader.folderDisplayer.hasVisibleFolders()))
                 && ConversationItemViewCoordinates.showAttachmentBackground(mMode)) {
-            mHeader.dateBackground = DATE_BACKGROUND;
             int leftOffset = (mHeader.conversation.hasAttachments ? mPaperclipX : mDateX)
                     - DATE_BACKGROUND_PADDING_LEFT;
             int top = mCoordinates.showFolders ? mCoordinates.foldersY : mCoordinates.dateY;
-            Rect src = new Rect(0, 0, mHeader.dateBackground.getWidth(), mHeader.dateBackground
-                    .getHeight());
-            Rect dst = new Rect(leftOffset, top, mViewWidth, top + sDateBackgroundHeight);
-            canvas.drawBitmap(mHeader.dateBackground, src, dst, sPaint);
+            mHeader.dateBackground = getDateBackground(mHeader.conversation.hasAttachments);
+            canvas.drawBitmap(mHeader.dateBackground, leftOffset, top, sPaint);
         } else {
             mHeader.dateBackground = null;
         }
@@ -1065,6 +1089,23 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         // Star.
         canvas.drawBitmap(mHeader.starBitmap, mCoordinates.starX, mCoordinates.starY, sPaint);
+    }
+
+    private Bitmap getDateBackground(boolean hasAttachments) {
+        int leftOffset = (hasAttachments ? mPaperclipX : mDateX) - DATE_BACKGROUND_PADDING_LEFT;
+        if (hasAttachments) {
+            if (sDateBackgroundAttachment == null) {
+                sDateBackgroundAttachment = Bitmap.createScaledBitmap(DATE_BACKGROUND, mViewWidth
+                        - leftOffset, sDateBackgroundHeight, false);
+            }
+            return sDateBackgroundAttachment;
+        } else {
+            if (sDateBackgroundNoAttachment == null) {
+                sDateBackgroundNoAttachment = Bitmap.createScaledBitmap(DATE_BACKGROUND, mViewWidth
+                        - leftOffset, sDateBackgroundHeight, false);
+            }
+            return sDateBackgroundNoAttachment;
+        }
     }
 
     private void drawText(Canvas canvas, CharSequence s, int x, int y, TextPaint paint) {
@@ -1333,24 +1374,62 @@ public class ConversationItemView extends View implements SwipeableItemView {
     /**
      * Grow the height of the item and fade it in when bringing a conversation
      * back from a destructive action.
-     *
      * @param listener
      */
-    public void startUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
+    public void startSwipeUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
         final int start = sUndoAnimationOffset;
         final int end = 0;
-        ObjectAnimator undoAnimator = ObjectAnimator.ofFloat(this, "translationX" , start, end);
+        ObjectAnimator undoAnimator = ObjectAnimator.ofFloat(this, "translationX", start, end);
         undoAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
         undoAnimator.addListener(listener);
         undoAnimator.setDuration(sUndoAnimationDuration);
         undoAnimator.start();
     }
 
+    /**
+     * Grow the height of the item and fade it in when bringing a conversation
+     * back from a destructive action.
+     * @param listener
+     */
+    public void startUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
+        int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext, viewMode);
+        setMinimumHeight(minHeight);
+        final int start = 0;
+        final int end = minHeight;
+        ObjectAnimator undoAnimator = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
+        Animator fadeAnimator = ObjectAnimator.ofFloat(this, "itemAlpha", 0, 1.0f);
+        mAnimatedHeight = start;
+        undoAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
+        undoAnimator.addListener(listener);
+        undoAnimator.setDuration(sUndoAnimationDuration);
+        AnimatorSet transitionSet = new AnimatorSet();
+        transitionSet.playTogether(undoAnimator, fadeAnimator);
+        transitionSet.start();
+    }
+
+    // Used by animator
+    @SuppressWarnings("unused")
+    public void setItemAlpha(float alpha) {
+        setAlpha(alpha);
+        invalidate();
+    }
+
+    // Used by animator
+    @SuppressWarnings("unused")
+    public void setAnimatedHeight(int height) {
+        mAnimatedHeight = height;
+        requestLayout();
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int height = measureHeight(heightMeasureSpec,
-                ConversationItemViewCoordinates.getMode(mContext, mViewMode));
-        setMeasuredDimension(widthMeasureSpec, height);
+        if (mAnimatedHeight == -1) {
+            int height = measureHeight(heightMeasureSpec,
+                    ConversationItemViewCoordinates.getMode(mContext, mViewMode));
+            setMeasuredDimension(widthMeasureSpec, height);
+        } else {
+            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
+        }
     }
 
     /**

@@ -55,7 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Ignorer"</string>
     <string name="add_star" msgid="2866003744391266498">"Legg til stjerne"</string>
     <string name="remove_star" msgid="4372327933122106128">"Fjern stjerne"</string>
-    <string name="remove_folder" msgid="7297603912332340861">"Fjern mappen"</string>
+    <string name="remove_folder" msgid="6098805949226229827">"Fjern fra mappen"</string>
     <string name="archive" msgid="847250094775910499">"Arkivér"</string>
     <string name="report_spam" msgid="6467567747975393907">"Rapportér nettsøppel"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Rapportér som ikke nettsøppel"</string>
@@ -218,7 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Slettet"</string>
     <string name="archived" msgid="7533995360704366325">"Arkivert"</string>
-    <string name="folder_removed" msgid="4055635707202229814">"Mappen er fjernet"</string>
+    <string name="folder_removed" msgid="858015177285651764">"Fjernet fra mappen"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som viktig."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; er merket som viktige."</item>

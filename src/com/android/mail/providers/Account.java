@@ -487,7 +487,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 TextUtils.equals(mimeType, other.mimeType) &&
                 Objects.equal(recentFolderListUri, other.recentFolderListUri) &&
                 color == other.color &&
-                Objects.equal(defaultRecentFolderListUri, other.defaultRecentFolderListUri);
+                Objects.equal(defaultRecentFolderListUri, other.defaultRecentFolderListUri) &&
+                Objects.equal(settings, other.settings);
     }
 
     @Override

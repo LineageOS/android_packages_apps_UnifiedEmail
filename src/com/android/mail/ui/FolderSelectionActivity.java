@@ -24,6 +24,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.DragEvent;
@@ -324,6 +325,11 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     @Override
     public ToastBarOperation getPendingToastOperation() {
+        return null;
+    }
+
+    @Override
+    public FolderController getFolderController() {
         return null;
     }
 }

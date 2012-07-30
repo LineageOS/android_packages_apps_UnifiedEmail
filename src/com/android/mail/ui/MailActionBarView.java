@@ -213,7 +213,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         mActivity = activity;
         // We don't want to include the "Show all folders" menu item on tablet devices
         final boolean showAllFolders = !Utils.useTabletUI(getContext());
-        mSpinner = new AccountSpinnerAdapter(getContext(), recentFolders, showAllFolders);
+        mSpinner = new AccountSpinnerAdapter(activity, getContext(), recentFolders, showAllFolders);
     }
 
     /**

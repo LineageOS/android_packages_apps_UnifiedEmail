@@ -33,6 +33,7 @@ import android.util.Pair;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ public class ConversationItemViewModel {
 
     public ConversationItemView.ConversationItemFolderDisplayer folderDisplayer;
 
-    public String rawFolders;
+    public ArrayList<Folder> rawFolders;
 
     public int personalLevel;
 
@@ -141,20 +142,20 @@ public class ConversationItemViewModel {
         }
     }
 
-    static ConversationItemViewModel forCursor(Cursor cursor) {
-        return forConversation(new Conversation(cursor));
+    static ConversationItemViewModel forCursor(String account, Cursor cursor) {
+        return forConversation(account, new Conversation(cursor));
     }
 
-
-    static ConversationItemViewModel forConversation(Conversation conv) {
-        ConversationItemViewModel header = new ConversationItemViewModel();
+    static ConversationItemViewModel forConversation(String account, Conversation conv) {
+        ConversationItemViewModel header = ConversationItemViewModel.forConversationId(account,
+                conv.id);
         if (conv != null) {
             header.faded = false;
             header.checkboxVisible = true;
             header.conversation = conv;
             header.starred = conv.starred;
             header.unread = !conv.read;
-            header.rawFolders = conv.rawFolders;
+            header.rawFolders = conv.getRawFolders();
             header.personalLevel = conv.personalLevel;
             header.priority = conv.priority;
             header.hasBeenForwarded =
@@ -220,29 +221,37 @@ public class ConversationItemViewModel {
     /**
      * Returns the hashcode to compare if the data in the header is valid.
      */
-    private static int getHashCode(Context context, String dateText, String fromSnippetInstructions) {
+    private static int getHashCode(Context context, String dateText, Object convInfo,
+            String rawFolders) {
         if (dateText == null) {
             return -1;
         }
-        if (TextUtils.isEmpty(fromSnippetInstructions)) {
-            fromSnippetInstructions = "fromSnippetInstructions";
+        if (TextUtils.isEmpty(rawFolders)) {
+            rawFolders = "";
         }
-        return fromSnippetInstructions.hashCode() ^ dateText.hashCode();
+        return convInfo.hashCode() ^ dateText.hashCode() ^ rawFolders.hashCode();
     }
 
     /**
-     * Returns the layout hashcode to compare to see if thet layout state has changed.
+     * Returns the layout hashcode to compare to see if the layout state has changed.
      */
     private int getLayoutHashCode() {
-        return mDataHashCode ^ viewWidth ^ standardScaledDimen ^
-                Boolean.valueOf(checkboxVisible).hashCode();
+        return mDataHashCode ^ viewWidth ^ standardScaledDimen
+                ^ Boolean.valueOf(checkboxVisible).hashCode();
+    }
+
+    private Object getConvInfo() {
+        return conversation.conversationInfo != null ?
+                conversation.conversationInfo :
+                    TextUtils.isEmpty(fromSnippetInstructions) ? "" : fromSnippetInstructions;
     }
 
     /**
      * Marks this header as having valid data and layout.
      */
     void validate(Context context) {
-        mDataHashCode = getHashCode(context, dateText, fromSnippetInstructions);
+        mDataHashCode = getHashCode(context, dateText, getConvInfo(),
+                conversation.getRawFoldersString());
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -250,7 +259,8 @@ public class ConversationItemViewModel {
      * Returns if the data in this model is valid.
      */
     boolean isDataValid(Context context) {
-        return mDataHashCode == getHashCode(context, dateText, fromSnippetInstructions);
+        return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
+                conversation.getRawFoldersString());
     }
 
     /**

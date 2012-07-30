@@ -24,12 +24,9 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableList;
 
-import org.json.JSONException;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -95,13 +92,9 @@ public class Conversation implements Parcelable {
      */
     public boolean starred;
     /**
-     * @see UIProvider.ConversationColumns#FOLDER_LIST
-     */
-    public String folderList;
-    /**
      * @see UIProvider.ConversationColumns#RAW_FOLDERS
      */
-    public String rawFolders;
+    private String rawFolders;
     /**
      * @see UIProvider.ConversationColumns#FLAGS
      */
@@ -143,6 +136,9 @@ public class Conversation implements Parcelable {
     // that is it's now in some other folder(s)
     public transient boolean localDeleteOnUpdate;
 
+    private ArrayList<Folder> cachedRawFolders;
+    private ArrayList<Folder> cachedDisplayableFolders;
+
     // Constituents of convFlags below
     // Flag indicating that the item has been deleted, but will continue being
     // shown in the list Delete/Archive of a mostly-dead item will NOT propagate
@@ -173,7 +169,6 @@ public class Conversation implements Parcelable {
         dest.writeInt(priority);
         dest.writeByte(read ? (byte) 1 : 0);
         dest.writeByte(starred ? (byte) 1 : 0);
-        dest.writeString(folderList);
         dest.writeString(rawFolders);
         dest.writeInt(convFlags);
         dest.writeInt(personalLevel);
@@ -182,11 +177,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(muted ? 1 : 0);
         dest.writeInt(color);
         dest.writeParcelable(accountUri, 0);
-        try {
-            dest.writeString(ConversationInfo.toString(conversationInfo));
-        } catch (JSONException e) {
-            LogUtils.d(LOG_TAG, e, "Error adding conversationinfo to parcel");
-        }
+        dest.writeString(ConversationInfo.toString(conversationInfo));
     }
 
     private Conversation(Parcel in) {
@@ -204,7 +195,6 @@ public class Conversation implements Parcelable {
         priority = in.readInt();
         read = (in.readByte() != 0);
         starred = (in.readByte() != 0);
-        folderList = in.readString();
         rawFolders = in.readString();
         convFlags = in.readInt();
         personalLevel = in.readInt();
@@ -215,11 +205,7 @@ public class Conversation implements Parcelable {
         accountUri = in.readParcelable(null);
         position = NO_POSITION;
         localDeleteOnUpdate = false;
-        try {
-            conversationInfo = ConversationInfo.fromString(in.readString());
-        } catch (JSONException e) {
-            LogUtils.d(LOG_TAG, e, "Error retrieving conversation info from parcel");
-        }
+        conversationInfo = ConversationInfo.fromString(in.readString());
     }
 
     @Override
@@ -244,13 +230,9 @@ public class Conversation implements Parcelable {
     public static final Uri MOVE_CONVERSATIONS_URI = Uri.parse("content://moveconversations");
 
     /**
-     * The columns that need to be updated to change the read state of a conversation.
+     * The column that needs to be updated to change the read state of a conversation.
      */
-    public static final String[] UPDATE_FOLDER_COLUMNS = new String[] {
-            ConversationColumns.FOLDER_LIST, ConversationColumns.RAW_FOLDERS
-    };
-
-    private static final String LOG_TAG = LogTag.getLogTag();
+    public static final String UPDATE_FOLDER_COLUMN = ConversationColumns.RAW_FOLDERS;
 
     public Conversation(Cursor cursor) {
         if (cursor != null) {
@@ -272,7 +254,6 @@ public class Conversation implements Parcelable {
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) != 0;
             starred = cursor.getInt(UIProvider.CONVERSATION_STARRED_COLUMN) != 0;
-            folderList = cursor.getString(UIProvider.CONVERSATION_FOLDER_LIST_COLUMN);
             rawFolders = cursor.getString(UIProvider.CONVERSATION_RAW_FOLDERS_COLUMN);
             convFlags = cursor.getInt(UIProvider.CONVERSATION_FLAGS_COLUMN);
             personalLevel = cursor.getInt(UIProvider.CONVERSATION_PERSONAL_LEVEL_COLUMN);
@@ -285,13 +266,8 @@ public class Conversation implements Parcelable {
             position = NO_POSITION;
             localDeleteOnUpdate = false;
             senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
-            try {
-                conversationInfo = ConversationInfo.fromString(cursor
-                        .getString(UIProvider.CONVERSATION_INFO_COLUMN));
-            } catch (JSONException e) {
-                LogUtils.w(LOG_TAG, e,
-                        "Unable to instantiate ConversationInfo. Try to continue anyway");
-            }
+            conversationInfo = ConversationInfo.fromString(cursor
+                    .getString(UIProvider.CONVERSATION_INFO_COLUMN));
         }
     }
 
@@ -301,7 +277,7 @@ public class Conversation implements Parcelable {
     public static Conversation create(long id, Uri uri, String subject, long dateMs,
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
-            boolean starred, String folderList, String rawFolders, int convFlags,
+            boolean starred, String rawFolders, int convFlags,
             int personalLevel, boolean spam, boolean phishing, boolean muted, Uri accountUri,
             ConversationInfo conversationInfo) {
 
@@ -321,7 +297,6 @@ public class Conversation implements Parcelable {
         conversation.priority = priority;
         conversation.read = read;
         conversation.starred = starred;
-        conversation.folderList = folderList;
         conversation.rawFolders = rawFolders;
         conversation.convFlags = convFlags;
         conversation.personalLevel = personalLevel;
@@ -332,6 +307,48 @@ public class Conversation implements Parcelable {
         conversation.accountUri = accountUri;
         conversation.conversationInfo = conversationInfo;
         return conversation;
+    }
+
+    public ArrayList<Folder> getRawFolders() {
+        if (cachedRawFolders == null) {
+            // Create cached folders.
+            if (!TextUtils.isEmpty(rawFolders)) {
+                cachedRawFolders = Folder.getFoldersArray(rawFolders);
+            } else {
+                return new ArrayList<Folder>();
+            }
+        }
+        return cachedRawFolders;
+    }
+
+    public void setRawFolders(String raw) {
+        clearCachedFolders();
+        rawFolders = raw;
+    }
+
+    public String getRawFoldersString() {
+        return rawFolders;
+    }
+
+    private void clearCachedFolders() {
+        cachedRawFolders = null;
+        cachedDisplayableFolders = null;
+    }
+
+    public ArrayList<Folder> getRawFoldersForDisplay(Folder ignoreFolder) {
+        ArrayList<Folder> folders = getRawFolders();
+        if (cachedDisplayableFolders == null) {
+            cachedDisplayableFolders = new ArrayList<Folder>();
+            for (Folder folder : folders) {
+                if (TextUtils.isEmpty(folder.name)
+                        || (ignoreFolder != null && ignoreFolder.equals(folder))
+                        || Folder.isProviderFolder(folder)) {
+                    continue;
+                }
+                cachedDisplayableFolders.add(folder);
+            }
+        }
+        return cachedDisplayableFolders;
     }
 
     @Override
@@ -365,7 +382,7 @@ public class Conversation implements Parcelable {
     /**
      * Returns true if the URI of the conversation specified as the needle was
      * found in the collection of conversations specified as the haystack. False
-     * otherwise. This method is safe to call with nullarguments.
+     * otherwise. This method is safe to call with null arguments.
      *
      * @param haystack
      * @param needle
@@ -408,6 +425,10 @@ public class Conversation implements Parcelable {
     public String getSnippet() {
         return conversationInfo != null && !TextUtils.isEmpty(conversationInfo.firstSnippet) ?
                 conversationInfo.firstSnippet : snippet;
+    }
+
+    public String getSenders() {
+        return conversationInfo != null ? conversationInfo.firstSnippet : senders;
     }
 
     /**

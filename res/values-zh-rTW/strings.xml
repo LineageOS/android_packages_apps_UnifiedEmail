@@ -55,7 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"略過"</string>
     <string name="add_star" msgid="2866003744391266498">"加上星號"</string>
     <string name="remove_star" msgid="4372327933122106128">"移除星號"</string>
-    <string name="remove_folder" msgid="7297603912332340861">"移除資料夾"</string>
+    <string name="remove_folder" msgid="6098805949226229827">"從資料夾中移除"</string>
     <string name="archive" msgid="847250094775910499">"封存"</string>
     <string name="report_spam" msgid="6467567747975393907">"回報為垃圾郵件"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"回報非垃圾郵件"</string>
@@ -218,7 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"已刪除"</string>
     <string name="archived" msgid="7533995360704366325">"已封存"</string>
-    <string name="folder_removed" msgid="4055635707202229814">"已移除資料夾"</string>
+    <string name="folder_removed" msgid="858015177285651764">"已從資料夾中移除"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組標示為重要。"</item>
     <item quantity="other" msgid="709648106181749594">"已將 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 個會話群組標示為重要。"</item>

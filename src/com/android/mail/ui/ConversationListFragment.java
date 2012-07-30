@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -114,12 +115,21 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationListFooterView mFooterView;
     private int mSwipeAction;
     private ErrorListener mErrorListener;
+    private DataSetObserver mFolderObserver;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
      */
     public ConversationListFragment() {
         super();
+    }
+
+    // update the pager title strip as the Folder's conversation count changes
+    private class FolderObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            onFolderUpdated(mActivity.getFolderController().getFolder());
+        }
     }
 
     /**
@@ -163,6 +173,9 @@ public final class ConversationListFragment extends ListFragment implements
      * Show the header if the current conversation list is showing search results.
      */
     private void updateSearchResultHeader(int count) {
+        if (mActivity == null) {
+            return;
+        }
         // Only show the header if the context is for a search result
         final Resources res = getResources();
         final boolean showHeader = isSearchResult();
@@ -205,18 +218,22 @@ public final class ConversationListFragment extends ListFragment implements
         mActivity = (ControllableActivity) activity;
         mCallbacks = mActivity.getListHandler();
         mErrorListener = mActivity.getErrorListener();
-
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
                 getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
                 mActivity.getSettings(), mActivity.getViewMode(), mListView);
+        // Start off with the current state of the folder being viewed.
         mFooterView = (ConversationListFooterView) LayoutInflater.from(
                 mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
                 null);
+        mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
+                getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
+                mActivity.getSettings(), mActivity.getViewMode(), mListView);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         mListView.setSelectionSet(mActivity.getSelectedSet());
         mListAdapter.hideFooter();
-        mActivity.setViewModeListener(this);
+        mFolderObserver = new FolderObserver();
+        mActivity.getFolderController().registerFolderObserver(mFolderObserver);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         initializeUiForFirstDisplay();
         configureSearchResultHeader();
@@ -312,6 +329,10 @@ public final class ConversationListFragment extends ListFragment implements
         if (!mActivity.isChangingConfigurations()) {
             mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
         }
+        if (mFolderObserver != null) {
+            mActivity.getFolderController().unregisterFolderObserver(mFolderObserver);
+            mFolderObserver = null;
+        }
         super.onDestroyView();
     }
 
@@ -400,7 +421,7 @@ public final class ConversationListFragment extends ListFragment implements
      */
     private void showList() {
         mListView.setEmptyView(null);
-        onFolderUpdated(mViewContext.folder);
+        onFolderUpdated(mActivity.getFolderController().getFolder());
     }
 
     /**

@@ -24,7 +24,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.provider.BaseColumns;
 import android.text.Html;
-import android.text.TextUtils;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.ConversationInfo;
@@ -49,7 +48,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -222,7 +220,7 @@ public final class MockUiProvider extends ContentProvider {
 
         }
         for (int i = 0; i < folders.length; i++) {
-            foldersString.append(folders[i].serialize());
+            foldersString.append(Folder.toString(folders[i]));
             if (i < folders.length - 1) {
                 foldersString.append(",");
             }
@@ -233,7 +231,7 @@ public final class MockUiProvider extends ContentProvider {
 
     private static String generateConversationInfo(int messageCount, int draftCount) {
         ConversationInfo info = new ConversationInfo(messageCount, draftCount, "first",
-                "firstUnread", "last", null);
+                "firstUnread", "last");
         for (int i = 0; i < messageCount; i++) {
             if (i % 2 == 0) {
                 info.addMessage(new MessageInfo(false, false, i + "Test <testsender@test.com>"));
@@ -244,11 +242,7 @@ public final class MockUiProvider extends ContentProvider {
                         MessageInfo.SENDER_LIST_TOKEN_ELIDED));
             }
         }
-        try {
-            return ConversationInfo.toString(info);
-        } catch (JSONException e) {
-            return null;
-        }
+        return ConversationInfo.toString(info);
     }
 
     private static Map<String, Object> createMessageDetailsMap(int messageId, String subject,

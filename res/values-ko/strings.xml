@@ -55,7 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"숨기기"</string>
     <string name="add_star" msgid="2866003744391266498">"별표 표시"</string>
     <string name="remove_star" msgid="4372327933122106128">"별표 제거"</string>
-    <string name="remove_folder" msgid="7297603912332340861">"폴더 삭제"</string>
+    <string name="remove_folder" msgid="6098805949226229827">"폴더에서 삭제"</string>
     <string name="archive" msgid="847250094775910499">"보관처리"</string>
     <string name="report_spam" msgid="6467567747975393907">"스팸 신고"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"스팸 해제"</string>
@@ -218,7 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"삭제됨"</string>
     <string name="archived" msgid="7533995360704366325">"보관됨"</string>
-    <string name="folder_removed" msgid="4055635707202229814">"폴더 삭제됨"</string>
+    <string name="folder_removed" msgid="858015177285651764">"폴더에서 삭제됨"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 중요 메일로 표시"</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 중요 메일로 표시"</item>

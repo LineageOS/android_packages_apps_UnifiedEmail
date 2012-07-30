@@ -55,7 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Скрыть"</string>
     <string name="add_star" msgid="2866003744391266498">"Пометить"</string>
     <string name="remove_star" msgid="4372327933122106128">"Удалить пометку"</string>
-    <string name="remove_folder" msgid="7297603912332340861">"Удалить папку"</string>
+    <string name="remove_folder" msgid="6098805949226229827">"Удалить из папки"</string>
     <string name="archive" msgid="847250094775910499">"В архив"</string>
     <string name="report_spam" msgid="6467567747975393907">"Сообщить о спаме"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Не спам"</string>
@@ -218,7 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Удалено"</string>
     <string name="archived" msgid="7533995360704366325">"Отправлено в архив"</string>
-    <string name="folder_removed" msgid="4055635707202229814">"Папка удалена"</string>
+    <string name="folder_removed" msgid="858015177285651764">"Удалено"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"Цепочек, помеченных как важные: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="709648106181749594">"Цепочек, помеченных как важные: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>

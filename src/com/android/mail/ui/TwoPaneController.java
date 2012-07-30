@@ -36,8 +36,6 @@ import com.android.mail.providers.Folder;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
-import org.json.JSONException;
-
 /**
  * Controller for two-pane Mail activity. Two Pane is used for tablets, where screen real estate
  * abounds.
@@ -260,6 +258,7 @@ public final class TwoPaneController extends AbstractActivityController {
         if (conversation == null) {
             // This is a request to remove the conversation view and show the conversation list
             // fragment instead.
+            mPagerController.stopListening();
             onBackPressed();
             return;
         }
@@ -329,9 +328,8 @@ public final class TwoPaneController extends AbstractActivityController {
             mActivity.onBackPressed();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             if (mLayout.isConversationListCollapsed()
-                    || (mConvListContext.isSearchResult() && !Utils
-                            .showTwoPaneSearchResults
-                                (mActivity.getApplicationContext()))) {
+                    || (mConvListContext.isSearchResult() && !Utils.
+                            showTwoPaneSearchResults(mActivity.getApplicationContext()))) {
                 onBackPressed();
             } else {
                 mActivity.finish();
@@ -394,21 +392,16 @@ public final class TwoPaneController extends AbstractActivityController {
     public void onRestoreInstanceState(Bundle inState) {
         super.onRestoreInstanceState(inState);
         if (inState.containsKey(SAVED_HIERARCHICAL_FOLDER)) {
-            try {
-                String folderString = inState.getString(SAVED_HIERARCHICAL_FOLDER);
-                if (!TextUtils.isEmpty(folderString)) {
-                    Folder folder = Folder.fromJSONString(inState
-                            .getString(SAVED_HIERARCHICAL_FOLDER));
-                    mViewMode.enterConversationListMode();
-                    if (folder.hasChildren) {
-                        onFolderSelected(folder);
-                    } else if (folder.parent != null) {
-                        onFolderSelected(folder.parent);
-                        setHierarchyFolder(folder);
-                    }
+            String folderString = inState.getString(SAVED_HIERARCHICAL_FOLDER);
+            if (!TextUtils.isEmpty(folderString)) {
+                Folder folder = Folder.fromString(inState.getString(SAVED_HIERARCHICAL_FOLDER));
+                mViewMode.enterConversationListMode();
+                if (folder.hasChildren) {
+                    onFolderSelected(folder);
+                } else if (folder.parent != null) {
+                    onFolderSelected(folder.parent);
+                    setHierarchyFolder(folder);
                 }
-            } catch (JSONException e) {
-                LogUtils.wtf(LOG_TAG, e, "Unable to parse hierarchical folder extra");
             }
         }
     }
@@ -418,7 +411,7 @@ public final class TwoPaneController extends AbstractActivityController {
         super.onSaveInstanceState(outState);
         Folder hierarchyFolder = getHierarchyFolder();
         outState.putString(SAVED_HIERARCHICAL_FOLDER,
-                hierarchyFolder != null ? hierarchyFolder.serialize() : null);
+                hierarchyFolder != null ? Folder.toString(hierarchyFolder) : null);
     }
 
     @Override

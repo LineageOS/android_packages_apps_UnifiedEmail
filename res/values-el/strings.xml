@@ -55,7 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Σίγαση"</string>
     <string name="add_star" msgid="2866003744391266498">"Επισήμανση με αστέρι"</string>
     <string name="remove_star" msgid="4372327933122106128">"Κατάργηση αστεριού"</string>
-    <string name="remove_folder" msgid="7297603912332340861">"Κατάργηση φακέλου"</string>
+    <string name="remove_folder" msgid="6098805949226229827">"Κατάργηση από τον φάκελο"</string>
     <string name="archive" msgid="847250094775910499">"Αρχειοθέτηση"</string>
     <string name="report_spam" msgid="6467567747975393907">"Αναφορά ως ανεπιθύμητης"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Αναφορά μη ανεπιθύμητου"</string>
@@ -218,7 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Διαγράφηκε"</string>
     <string name="archived" msgid="7533995360704366325">"Αρχειοθετήθηκε"</string>
-    <string name="folder_removed" msgid="4055635707202229814">"Ο φάκελος έχει καταργηθεί"</string>
+    <string name="folder_removed" msgid="858015177285651764">"Καταργήθηκε από τον φάκελο"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; επισημάνθηκε ως σημαντική."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; επισημάνθηκαν ως σημαντικές."</item>
