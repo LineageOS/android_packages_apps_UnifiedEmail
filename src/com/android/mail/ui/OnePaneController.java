@@ -322,8 +322,10 @@ public final class OnePaneController extends AbstractActivityController {
     public boolean onBackPressed() {
         final int mode = mViewMode.getMode();
         if (mode == ViewMode.FOLDER_LIST) {
-            Folder hierarchyFolder = getHierarchyFolder();
-            if (getFolderListFragment().showingHierarchy() && hierarchyFolder != null) {
+            final Folder hierarchyFolder = getHierarchyFolder();
+            final FolderListFragment folderListFragment = getFolderListFragment();
+            if (folderListFragment != null &&
+                    folderListFragment.showingHierarchy() && hierarchyFolder != null) {
                 // If we are showing the folder list and the user is exploring
                 // the children of a single parent folder,
                 // back should display the parent folder's parent and siblings.
