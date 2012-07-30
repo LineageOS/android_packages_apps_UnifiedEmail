@@ -220,7 +220,7 @@ public final class MockUiProvider extends ContentProvider {
 
         }
         for (int i = 0; i < folders.length; i++) {
-            foldersString.append(folders[i].serialize());
+            foldersString.append(Folder.toString(folders[i]));
             if (i < folders.length - 1) {
                 foldersString.append(",");
             }

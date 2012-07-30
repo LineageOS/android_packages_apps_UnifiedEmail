@@ -34,8 +34,6 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogUtils;
 
-import org.json.JSONException;
-
 /**
  * Controller for one-pane Mail activity. One Pane is used for phones, where screen real estate is
  * limited. This controller also does the layout, since the layout is simpler in the one pane case.
@@ -83,17 +81,13 @@ public final class OnePaneController extends AbstractActivityController {
 
             // Enter folder list mode.
             if (inState.containsKey(SAVED_HIERARCHICAL_FOLDER)) {
-                try {
-                    String folderString = inState.getString(SAVED_HIERARCHICAL_FOLDER);
-                    if (!TextUtils.isEmpty(folderString)) {
-                        Folder folder = Folder.fromJSONString(inState
-                                .getString(SAVED_HIERARCHICAL_FOLDER));
-                        onFolderSelected(folder);
-                    } else {
-                        showFolderList();
-                    }
-                } catch (JSONException e) {
-                    LogUtils.wtf(LOG_TAG, e, "Unable to parse hierarchical folder extra");
+                String folderString = inState.getString(SAVED_HIERARCHICAL_FOLDER);
+                if (!TextUtils.isEmpty(folderString)) {
+                    Folder folder = Folder.fromString(inState
+                            .getString(SAVED_HIERARCHICAL_FOLDER));
+                    onFolderSelected(folder);
+                } else {
+                    showFolderList();
                 }
             }
         }
@@ -111,7 +105,7 @@ public final class OnePaneController extends AbstractActivityController {
         if (mViewMode.getMode() == ViewMode.FOLDER_LIST) {
             Folder hierarchyFolder = getHierarchyFolder();
             outState.putString(SAVED_HIERARCHICAL_FOLDER,
-                    hierarchyFolder != null ? hierarchyFolder.serialize() : null);
+                    hierarchyFolder != null ? Folder.toString(hierarchyFolder) : null);
         }
     }
 

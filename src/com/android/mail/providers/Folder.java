@@ -25,28 +25,20 @@ import android.net.Uri;
 import android.net.Uri.Builder;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.android.mail.providers.UIProvider.FolderColumns;
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * A folder is a collection of conversations, and perhaps other folders.
@@ -157,16 +149,13 @@ public class Folder implements Parcelable, Comparable<Folder> {
      */
     public Folder parent;
 
-    /**
-     * Used only for debugging.
-     */
-    private static final String LOG_TAG = LogTag.getLogTag();
-
     /** An immutable, empty conversation list */
     public static final Collection<Folder> EMPTY = Collections.emptyList();
 
-    private static final String FOLDER_PARENT = "folderParent";
-
+    public static String SPLITTER = "^*^";
+    private static Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
+    public static final String FOLDERS_SPLIT = "^**^";
+    private static Pattern FOLDERS_SPLIT_REGEX = Pattern.compile("\\^\\*\\*\\^");
 
     public Folder(Parcel in) {
         id = in.readInt();
@@ -269,82 +258,6 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return folders;
     }
 
-    /**
-     * Return a serialized String for this account.
-     */
-    public synchronized String serialize() {
-        return toJSON().toString();
-    }
-
-    public synchronized JSONObject toJSON() {
-        JSONObject json = new JSONObject();
-        try {
-            json.put(BaseColumns._ID, id);
-            json.put(FolderColumns.URI, uri);
-            json.put(FolderColumns.NAME, name);
-            json.put(FolderColumns.HAS_CHILDREN, hasChildren);
-            json.put(FolderColumns.CAPABILITIES, capabilities);
-            json.put(FolderColumns.SYNC_WINDOW, syncWindow);
-            json.putOpt(FolderColumns.CONVERSATION_LIST_URI, conversationListUri);
-            json.putOpt(FolderColumns.CHILD_FOLDERS_LIST_URI, childFoldersListUri);
-            json.put(FolderColumns.UNREAD_COUNT, unreadCount);
-            json.put(FolderColumns.TOTAL_COUNT, totalCount);
-            json.putOpt(FolderColumns.REFRESH_URI, refreshUri);
-            json.put(FolderColumns.SYNC_STATUS, syncStatus);
-            json.put(FolderColumns.LAST_SYNC_RESULT, lastSyncResult);
-            json.put(FolderColumns.TYPE, type);
-            json.putOpt(FolderColumns.ICON_RES_ID, iconResId);
-            json.putOpt(FolderColumns.BG_COLOR, bgColor);
-            json.putOpt(FolderColumns.FG_COLOR, fgColor);
-            json.putOpt(FolderColumns.LOAD_MORE_URI, loadMoreUri);
-            json.putOpt(FolderColumns.HIERARCHICAL_DESC, hierarchicalDesc);
-            if (parent != null) {
-                json.put(FOLDER_PARENT, parent.toJSON());
-            }
-        } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Could not serialize account with name %s", name);
-        }
-        return json;
-    }
-
-    /**
-     * Create a new folder from a string representation of JSON.
-     * @throws JSONException
-     */
-    public static Folder fromJSONString(String in) throws JSONException {
-        return new Folder(new JSONObject(in));
-    }
-
-    public Folder(JSONObject o) {
-        try {
-            id = o.getInt(BaseColumns._ID);
-            uri = getValidUri(o.getString(FolderColumns.URI));
-            name = o.getString(FolderColumns.NAME);
-            hasChildren = o.getBoolean(FolderColumns.HAS_CHILDREN);
-            capabilities = o.getInt(FolderColumns.CAPABILITIES);
-            syncWindow = o.getInt(FolderColumns.SYNC_WINDOW);
-            conversationListUri = getValidUri(o.optString(FolderColumns.CONVERSATION_LIST_URI));
-            childFoldersListUri = getValidUri(o.optString(FolderColumns.CHILD_FOLDERS_LIST_URI));
-            unreadCount = o.getInt(FolderColumns.UNREAD_COUNT);
-            totalCount = o.getInt(FolderColumns.TOTAL_COUNT);
-            refreshUri = getValidUri(o.optString(FolderColumns.REFRESH_URI));
-            syncStatus = o.getInt(FolderColumns.SYNC_STATUS);
-            lastSyncResult = o.getInt(FolderColumns.LAST_SYNC_RESULT);
-            type = o.getInt(FolderColumns.TYPE);
-            iconResId = o.optInt(FolderColumns.ICON_RES_ID);
-            bgColor = o.optString(FolderColumns.BG_COLOR);
-            fgColor = o.optString(FolderColumns.FG_COLOR);
-            loadMoreUri = getValidUri(o.optString(FolderColumns.LOAD_MORE_URI));
-            hierarchicalDesc = o.optString(FolderColumns.HIERARCHICAL_DESC);
-            JSONObject folderParent = o.optJSONObject(FOLDER_PARENT);
-            if (folderParent != null) {
-                parent = new Folder(folderParent);
-            }
-        } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Unable to parse folder from jsonobject");
-        }
-    }
-
     private static Uri getValidUri(String uri) {
         if (TextUtils.isEmpty(uri)) {
             return null;
@@ -403,24 +316,16 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * @param serializedFolder A string obtained from {@link #serialize(Map)}
      * @return a Map of folder name to folder.
      */
-    public static Map<String, Folder> parseFoldersFromString(String serializedFolder) {
-        LogUtils.d(LOG_TAG, "folder query result: %s", serializedFolder);
-
-        Map<String, Folder> folderMap = Maps.newHashMap();
-        if (serializedFolder == null || serializedFolder == "") {
-            return folderMap;
+    public static Map<String, Folder> parseFoldersFromString(String serializedFoldersString) {
+        if (TextUtils.isEmpty(serializedFoldersString)) {
+            return null;
         }
-        JSONArray folderPieces;
-        try {
-            folderPieces = new JSONArray(serializedFolder);
-            for (int i = 0, n = folderPieces.length(); i < n; i++) {
-                Folder folder = new Folder(folderPieces.getJSONObject(i));
-                if (folder.name != FOLDER_UNINITIALIZED) {
-                    folderMap.put(folder.name, folder);
-                }
+        Map<String, Folder> folderMap = Maps.newHashMap();
+        ArrayList<Folder> folders = Folder.getFoldersArray(serializedFoldersString);
+        for (Folder folder : folders) {
+            if (folder.name != FOLDER_UNINITIALIZED) {
+                folderMap.put(folder.name, folder);
             }
-        } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, e, "Unable to parse foldermap from serialized jsonarray");
         }
         return folderMap;
     }
@@ -441,14 +346,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * @return a string containing a serialized output of folder maps.
      */
     public static String serialize(Map<String, Folder> folderMap) {
-        Collection<Folder> folderCollection = folderMap.values();
-        Folder[] folderList = folderCollection.toArray(new Folder[]{} );
-        int numFolders = folderList.length;
-        JSONArray result = new JSONArray();
-        for (int i = 0; i < numFolders; i++) {
-          result.put(folderList[i].toJSON());
-        }
-        return result.toString();
+        return getSerializedFolderString(folderMap.values());
     }
 
     public boolean supportsCapability(int capability) {
@@ -509,11 +407,94 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     public static String getSerializedFolderString(Collection<Folder> folders) {
-        final JSONArray folderList = new JSONArray();
+        final StringBuilder folderList = new StringBuilder();
+        int i = 0;
         for (Folder folderEntry : folders) {
-            folderList.put(folderEntry.toJSON());
+            folderList.append(Folder.toString(folderEntry));
+            if (i < folders.size()) {
+                folderList.append(FOLDERS_SPLIT);
+            }
+            i++;
         }
         return folderList.toString();
+    }
+
+
+    public static Folder fromString(String inString) {
+        if (TextUtils.isEmpty(inString)) {
+            return null;
+        }
+        Folder f = new Folder();
+        String[] split = TextUtils.split(inString, SPLITTER_REGEX);
+        f.id = Integer.parseInt(split[0]);
+        f.uri = Folder.getValidUri(split[1]);
+        f.name = split[2];
+        f.hasChildren = Integer.parseInt(split[3]) != 0;
+        f.capabilities = Integer.parseInt(split[4]);
+        f.syncWindow = Integer.parseInt(split[5]);
+        f.conversationListUri = getValidUri(split[6]);
+        f.childFoldersListUri = getValidUri(split[7]);
+        f.unreadCount = Integer.parseInt(split[8]);
+        f.totalCount = Integer.parseInt(split[9]);
+        f.refreshUri = getValidUri(split[10]);
+        f.syncStatus = Integer.parseInt(split[11]);
+        f.lastSyncResult = Integer.parseInt(split[12]);
+        f.type = Integer.parseInt(split[13]);
+        f.iconResId = Integer.parseInt(split[14]);
+        f.bgColor = split[15];
+        f.fgColor = split[16];
+        f.loadMoreUri = getValidUri(split[17]);
+        f.hierarchicalDesc = split[18];
+        f.parent = Folder.fromString(split[19]);
+        return f;
+    }
+
+    public static String toString(Folder folderEntry) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(folderEntry.id);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.uri);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.name);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.hasChildren ? 1 : 0);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.capabilities);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.syncWindow);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.conversationListUri);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.childFoldersListUri);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.unreadCount);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.totalCount);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.refreshUri);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.syncStatus);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.lastSyncResult);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.type);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.iconResId);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.bgColor);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.fgColor);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.loadMoreUri);
+        builder.append(SPLITTER);
+        builder.append(folderEntry.hierarchicalDesc);
+        builder.append(SPLITTER);
+        if (folderEntry.parent != null) {
+            builder.append(Folder.toString(folderEntry.parent));
+        } else {
+            builder.append("");
+        }
+        return builder.toString();
     }
 
     /**
@@ -540,15 +521,13 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Get an array of folders from a rawFolders string.
      */
     public static ArrayList<Folder> getFoldersArray(String rawFolders) {
-        JSONArray folderList;
+        if (TextUtils.isEmpty(rawFolders)) {
+            return null;
+        }
         ArrayList<Folder> folders = new ArrayList<Folder>();
-        try {
-            folderList = new JSONArray(rawFolders);
-            for (int i = 0; i < folderList.length(); i++) {
-                folders.add(new Folder(folderList.getJSONObject(i)));
-            }
-        } catch (JSONException e) {
-            LogUtils.d(LOG_TAG, e, "Error parsing raw folders");
+        String[] split = TextUtils.split(rawFolders, FOLDERS_SPLIT_REGEX);
+        for (String folder : split) {
+            folders.add(Folder.fromString(folder));
         }
         return folders;
     }

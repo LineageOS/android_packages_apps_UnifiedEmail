@@ -87,8 +87,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -768,7 +766,7 @@ public abstract class AbstractActivityController implements ActivityController {
         } else {
             mConversationListCursor.setConversationColumn(conv.uri, ConversationColumns.READ, 0);
 
-            // locally update conversation's conversationInfo JSON to revert to original version
+            // locally update conversation's conversationInfo to revert to original version
             if (originalConversationInfo != null) {
                 mConversationListCursor.setConversationColumn(conv.uri,
                         ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
@@ -1122,12 +1120,7 @@ public abstract class AbstractActivityController implements ActivityController {
             Folder folder = null;
             if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
                 // Open the folder.
-                try {
-                    folder = Folder
-                            .fromJSONString(intent.getStringExtra(Utils.EXTRA_FOLDER));
-                } catch (JSONException e) {
-                    LogUtils.wtf(LOG_TAG, e, "Unable to parse folder extra");
-                }
+                folder = Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER));
             }
             if (folder != null) {
                 onFolderChanged(folder);
