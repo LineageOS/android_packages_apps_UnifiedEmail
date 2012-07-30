@@ -808,13 +808,8 @@ public abstract class AbstractActivityController implements ActivityController {
             values.put(ConversationColumns.READ, read);
             final ConversationInfo info = target.conversationInfo;
             if (info != null) {
-                try {
-                    info.markRead(read);
-                    values.put(ConversationColumns.CONVERSATION_INFO,
-                            ConversationInfo.toString(info));
-                } catch (JSONException e) {
-                    LogUtils.e(LOG_TAG, e, "Error updating conversation info");
-                }
+                info.markRead(read);
+                values.put(ConversationColumns.CONVERSATION_INFO, ConversationInfo.toString(info));
             }
             updateConversation(Conversation.listOf(target), values);
         }
