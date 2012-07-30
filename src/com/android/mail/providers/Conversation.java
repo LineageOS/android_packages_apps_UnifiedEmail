@@ -24,11 +24,7 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableList;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -181,11 +177,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(muted ? 1 : 0);
         dest.writeInt(color);
         dest.writeParcelable(accountUri, 0);
-        try {
-            dest.writeString(ConversationInfo.toString(conversationInfo));
-        } catch (JSONException e) {
-            LogUtils.d(LOG_TAG, e, "Error adding conversationinfo to parcel");
-        }
+        dest.writeString(ConversationInfo.toString(conversationInfo));
     }
 
     private Conversation(Parcel in) {
@@ -213,11 +205,7 @@ public class Conversation implements Parcelable {
         accountUri = in.readParcelable(null);
         position = NO_POSITION;
         localDeleteOnUpdate = false;
-        try {
-            conversationInfo = ConversationInfo.fromString(in.readString());
-        } catch (JSONException e) {
-            LogUtils.d(LOG_TAG, e, "Error retrieving conversation info from parcel");
-        }
+        conversationInfo = ConversationInfo.fromString(in.readString());
     }
 
     @Override
@@ -245,8 +233,6 @@ public class Conversation implements Parcelable {
      * The column that needs to be updated to change the read state of a conversation.
      */
     public static final String UPDATE_FOLDER_COLUMN = ConversationColumns.RAW_FOLDERS;
-
-    private static final String LOG_TAG = LogTag.getLogTag();
 
     public Conversation(Cursor cursor) {
         if (cursor != null) {
@@ -280,13 +266,8 @@ public class Conversation implements Parcelable {
             position = NO_POSITION;
             localDeleteOnUpdate = false;
             senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
-            try {
-                conversationInfo = ConversationInfo.fromString(cursor
-                        .getString(UIProvider.CONVERSATION_INFO_COLUMN));
-            } catch (JSONException e) {
-                LogUtils.w(LOG_TAG, e,
-                        "Unable to instantiate ConversationInfo. Try to continue anyway");
-            }
+            conversationInfo = ConversationInfo.fromString(cursor
+                    .getString(UIProvider.CONVERSATION_INFO_COLUMN));
         }
     }
 

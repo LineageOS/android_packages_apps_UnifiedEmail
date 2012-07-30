@@ -108,7 +108,7 @@ public class SendersView extends TextView {
         String sender;
         CharacterStyle style;
         MessageInfo currentMessage;
-        for (int i = 0; i < conversationInfo.messageCount; i++) {
+        for (int i = 0; i < conversationInfo.messageInfos.size(); i++) {
             currentMessage = conversationInfo.messageInfos.get(i);
             sender = currentMessage.sender;
             if (TextUtils.isEmpty(sender)) {
