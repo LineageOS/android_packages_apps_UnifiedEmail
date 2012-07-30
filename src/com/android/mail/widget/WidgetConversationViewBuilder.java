@@ -18,6 +18,7 @@ package com.android.mail.widget;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderDisplayer;
 
@@ -74,8 +75,8 @@ public class WidgetConversationViewBuilder {
          * Load Conversation Labels
          */
         @Override
-        public void loadConversationFolders(ArrayList<Folder> rawFolders, Folder ignoreFolder) {
-            super.loadConversationFolders(rawFolders, ignoreFolder);
+        public void loadConversationFolders(Conversation conv, Folder ignoreFolder) {
+            super.loadConversationFolders(conv, ignoreFolder);
         }
 
         private int getFolderViewId(int position) {
@@ -160,11 +161,14 @@ public class WidgetConversationViewBuilder {
     /*
      * Return the full View
      */
-    public RemoteViews getStyledView(CharSequence senders, CharSequence status, CharSequence date,
-            CharSequence subject, CharSequence snippet, ArrayList<Folder> folders,
-            boolean hasAttachments, boolean read, Folder currentFolder) {
+    public RemoteViews getStyledView(CharSequence status, CharSequence date,
+            Conversation conversation, Folder currentFolder) {
 
-        final boolean isUnread = !read;
+        final boolean isUnread = !conversation.read;
+        String senders = conversation.getSenders();
+        String subject = conversation.subject;
+        String snippet = conversation.getSnippet();
+        boolean hasAttachments = conversation.hasAttachments;
 
         // Add style to senders
         CharSequence styledSenders = addStyle(senders, SENDERS_FONT_SIZE,
@@ -227,7 +231,7 @@ public class WidgetConversationViewBuilder {
         }
         if (mContext.getResources().getBoolean(R.bool.display_folder_colors_in_widget)) {
             mFolderDisplayer = new WidgetFolderDisplayer(mContext);
-            mFolderDisplayer.loadConversationFolders(folders, currentFolder);
+            mFolderDisplayer.loadConversationFolders(conversation, currentFolder);
             mFolderDisplayer.displayFolders(remoteViews);
         }
 

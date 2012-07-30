@@ -218,10 +218,11 @@ public class SwipeableListView extends ListView implements Callback {
                                 HashMap<Uri, Folder> targetFolders = Folder
                                         .hashMapForFolders(target.getRawFolders());
                                 targetFolders.remove(folderOp.mFolder.uri);
-                                target.rawFolders = Folder.getSerializedFolderString(targetFolders
-                                        .values());
+                                target.setRawFolders(Folder.getSerializedFolderString(targetFolders
+                                        .values()));
                                 cc.updateString(context, Conversation.listOf(target),
-                                        Conversation.UPDATE_FOLDER_COLUMN, target.rawFolders);
+                                        Conversation.UPDATE_FOLDER_COLUMN,
+                                        target.getRawFoldersString());
                             }
                             break;
                         case R.id.delete:
@@ -253,9 +254,9 @@ public class SwipeableListView extends ListView implements Callback {
                 HashMap<Uri, Folder> targetFolders = Folder
                         .hashMapForFolders(conv.getRawFolders());
                 targetFolders.remove(folderOp.mFolder.uri);
-                conv.rawFolders = Folder.getSerializedFolderString(targetFolders.values());
+                conv.setRawFolders(Folder.getSerializedFolderString(targetFolders.values()));
                 cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv),
-                        Conversation.UPDATE_FOLDER_COLUMN, conv.rawFolders);
+                        Conversation.UPDATE_FOLDER_COLUMN, conv.getRawFoldersString());
                 break;
             case R.id.archive:
                 cc.mostlyArchive(context, Conversation.listOf(conv));

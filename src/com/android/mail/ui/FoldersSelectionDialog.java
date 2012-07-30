@@ -35,6 +35,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.FolderSelectorAdapter.FolderRow;
 import com.android.mail.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,10 +76,10 @@ public class FoldersSelectionDialog implements OnClickListener {
                     null);
             final HashSet<String> conversationFolders = new HashSet<String>();
             for (Conversation conversation : target) {
-                if (conversation != null && !TextUtils.isEmpty(conversation.rawFolders)) {
+                ArrayList<Folder> rawFolders = conversation.getRawFolders();
+                if (conversation != null && rawFolders != null && rawFolders.size() > 0) {
                     // Parse the raw folders and get all the uris.
-                    conversationFolders.addAll(Arrays.asList(Folder.getUriArray(conversation
-                            .getRawFolders())));
+                    conversationFolders.addAll(Arrays.asList(Folder.getUriArray(rawFolders)));
                 } else {
                     // There are no folders for this conversation, so it must
                     // belong to the folder we are currently looking at.
