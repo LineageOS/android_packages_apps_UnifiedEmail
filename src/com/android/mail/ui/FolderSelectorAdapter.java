@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * An adapter for translating a {@link FolderList} to a set of selectable views to be used for
+ * An adapter for translating a cursor of {@link Folder} to a set of selectable views to be used for
  * applying folders to one or more conversations.
  */
 public class FolderSelectorAdapter extends BaseAdapter {
