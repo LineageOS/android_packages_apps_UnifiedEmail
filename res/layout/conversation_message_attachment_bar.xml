@@ -46,7 +46,9 @@
         android:layout_marginRight="8dip"
         android:layout_row="0"
         android:ellipsize="end"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textSize="14sp"
+        android:textColor="#333333" />
 
     <TextView
         android:id="@+id/attachment_subtitle"
@@ -57,7 +59,9 @@
         android:layout_marginRight="8dip"
         android:layout_row="1"
         android:ellipsize="end"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:textColor="#aaaaaa" />
 
     <ProgressBar
         android:id="@+id/attachment_progress"
