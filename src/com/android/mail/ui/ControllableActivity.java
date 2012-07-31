@@ -97,4 +97,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
     SubjectDisplayChanger getSubjectDisplayChanger();
 
     ErrorListener getErrorListener();
+
+    FolderController getFolderController();
 }

@@ -183,4 +183,12 @@ public class ConversationPagerController implements OnPageChangeListener {
     public void onPageScrollStateChanged(int state) {
         // no-op
     }
+
+    /**
+     * Stops listening to changes to the adapter. This must be followed immediately by
+     * {@link #hide()}.
+     */
+    public void stopListening() {
+        mPagerAdapter.setActivityController(null);
+    }
 }

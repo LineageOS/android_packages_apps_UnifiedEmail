@@ -21,9 +21,8 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderDisplayer;
-import com.android.mail.widget.WidgetConversationViewBuilder.WidgetFolderDisplayer;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -53,6 +52,8 @@ public class WidgetConversationViewBuilder {
     private static int DATE_TEXT_COLOR_UNREAD;
     private static int DRAFT_TEXT_COLOR;
 
+    private static String SENDERS_SPLIT_TOKEN;
+
     // Static bitmap
     private static Bitmap ATTACHMENT;
 
@@ -74,16 +75,8 @@ public class WidgetConversationViewBuilder {
          * Load Conversation Labels
          */
         @Override
-<<<<<<< HEAD
-        public void loadConversationFolders(String rawFolders, Folder ignoreFolder) {
-            super.loadConversationFolders(rawFolders, ignoreFolder);
-||||||| merged common ancestors
-        public void loadConversationFolders(ArrayList<Folder> rawFolders, Folder ignoreFolder) {
-            super.loadConversationFolders(rawFolders, ignoreFolder);
-=======
         public void loadConversationFolders(Conversation conv, Folder ignoreFolder) {
             super.loadConversationFolders(conv, ignoreFolder);
->>>>>>> abb78177
         }
 
         private int getFolderViewId(int position) {
@@ -145,6 +138,8 @@ public class WidgetConversationViewBuilder {
         DATE_TEXT_COLOR_UNREAD = res.getColor(R.color.date_text_color_unread);
         DRAFT_TEXT_COLOR = res.getColor(R.color.drafts);
 
+        SENDERS_SPLIT_TOKEN = res.getString(R.string.senders_split_token);
+
         // Initialize Bitmap
         ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
     }
@@ -166,18 +161,8 @@ public class WidgetConversationViewBuilder {
     /*
      * Return the full View
      */
-<<<<<<< HEAD
-    public RemoteViews getStyledView(CharSequence senders, CharSequence status, CharSequence date,
-            CharSequence subject, CharSequence snippet, String folders, boolean hasAttachments,
-            boolean read, Folder currentFolder) {
-||||||| merged common ancestors
-    public RemoteViews getStyledView(CharSequence senders, CharSequence status, CharSequence date,
-            CharSequence subject, CharSequence snippet, ArrayList<Folder> folders,
-            boolean hasAttachments, boolean read, Folder currentFolder) {
-=======
     public RemoteViews getStyledView(CharSequence status, CharSequence date,
             Conversation conversation, Folder currentFolder) {
->>>>>>> abb78177
 
         final boolean isUnread = !conversation.read;
         String senders = conversation.getSenders();
@@ -195,7 +180,7 @@ public class WidgetConversationViewBuilder {
 
             if (senders.length() > 0) {
                 // TODO(pwestbro) sender formatting should use resources.  Bug 5354473
-                builder.append(addStyle(", ", SENDERS_FONT_SIZE,
+                builder.append(addStyle(SENDERS_SPLIT_TOKEN, SENDERS_FONT_SIZE,
                         isUnread ? SENDERS_TEXT_COLOR_UNREAD : SENDERS_TEXT_COLOR_READ));
             }
 

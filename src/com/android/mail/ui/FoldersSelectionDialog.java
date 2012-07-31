@@ -66,7 +66,8 @@ public class FoldersSelectionDialog implements OnClickListener {
      * @param currentFolder the current folder that the {@link FolderListFragment} is showing
      */
     public FoldersSelectionDialog(final Context context, Account account,
-            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch) {
+            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
+            Folder currentFolder) {
         mUpdater = updater;
         mTarget = target;
         mBatch = isBatch;
@@ -78,78 +79,6 @@ public class FoldersSelectionDialog implements OnClickListener {
         builder.setNegativeButton(R.string.cancel, this);
         mSingle = !account
                 .supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV);
-<<<<<<< HEAD
-        // TODO: (mindyp) make async
-        Cursor foldersCursor = null;
-        try {
-            foldersCursor = context.getContentResolver().query(
-                    !Utils.isEmpty(account.fullFolderListUri) ? account.fullFolderListUri
-                            : account.folderListUri, UIProvider.FOLDERS_PROJECTION, null, null,
-                    null);
-            final HashSet<String> conversationFolders = new HashSet<String>();
-            for (Conversation conversation: target) {
-                if (conversation != null && !TextUtils.isEmpty(conversation.folderList)) {
-                    conversationFolders.addAll(Arrays.asList(TextUtils.split(
-                            conversation.folderList, ",")));
-                }
-            }
-            mAdapter = new SeparatedFolderListAdapter(context);
-            String[] headers = context.getResources()
-                    .getStringArray(R.array.moveto_folder_sections);
-            // Currently, the number of adapters are assumed to match the number of headers
-            // in the string array.
-            mAdapter.addSection(new SystemFolderSelectorAdapter(context, foldersCursor,
-                    conversationFolders, mSingle, null));
-            // TODO(mindyp): we currently do not support frequently moved to
-            // folders, at headers[1]; need to define what that means.
-            mAdapter.addSection(new HierarchicalFolderSelectorAdapter(context,
-                    foldersCursor, conversationFolders, mSingle, headers[2]));
-            builder.setAdapter(mAdapter, this);
-            // Pre-load existing conversation folders.
-            if (foldersCursor != null && foldersCursor.moveToFirst()) {
-                do {
-                    final String folderUri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
-                    if (conversationFolders.contains(folderUri)) {
-                        mCheckedState.put(new Folder(foldersCursor), true);
-||||||| merged common ancestors
-        // TODO: (mindyp) make async
-        Cursor foldersCursor = null;
-        try {
-            foldersCursor = context.getContentResolver().query(
-                    !Utils.isEmpty(account.fullFolderListUri) ? account.fullFolderListUri
-                            : account.folderListUri, UIProvider.FOLDERS_PROJECTION, null, null,
-                    null);
-            final HashSet<String> conversationFolders = new HashSet<String>();
-            for (Conversation conversation : target) {
-                if (conversation != null && !TextUtils.isEmpty(conversation.rawFolders)) {
-                    // Parse the raw folders and get all the uris.
-                    conversationFolders.addAll(Arrays.asList(Folder.getUriArray(conversation
-                            .getRawFolders())));
-                } else {
-                    // There are no folders for this conversation, so it must
-                    // belong to the folder we are currently looking at.
-                    conversationFolders.add(currentFolder.uri.toString());
-                }
-            }
-            mAdapter = new SeparatedFolderListAdapter(context);
-            String[] headers = context.getResources()
-                    .getStringArray(R.array.moveto_folder_sections);
-            // Currently, the number of adapters are assumed to match the number of headers
-            // in the string array.
-            mAdapter.addSection(new SystemFolderSelectorAdapter(context, foldersCursor,
-                    conversationFolders, mSingle, null));
-            // TODO(mindyp): we currently do not support frequently moved to
-            // folders, at headers[1]; need to define what that means.
-            mAdapter.addSection(new HierarchicalFolderSelectorAdapter(context,
-                    foldersCursor, conversationFolders, mSingle, headers[2]));
-            builder.setAdapter(mAdapter, this);
-            // Pre-load existing conversation folders.
-            if (foldersCursor != null && foldersCursor.moveToFirst()) {
-                do {
-                    final String folderUri = foldersCursor.getString(UIProvider.FOLDER_URI_COLUMN);
-                    if (conversationFolders.contains(folderUri)) {
-                        mCheckedState.put(new Folder(foldersCursor), true);
-=======
         mAdapter = new SeparatedFolderListAdapter(context);
         mRunner = new QueryRunner(context, account, builder, currentFolder);
     }
@@ -191,7 +120,6 @@ public class FoldersSelectionDialog implements OnClickListener {
                         // There are no folders for this conversation, so it must
                         // belong to the folder we are currently looking at.
                         checked.add(mCurrentFolder.uri.toString());
->>>>>>> abb78177
                     }
                 }
                 final String[] headers = mContext.getResources()

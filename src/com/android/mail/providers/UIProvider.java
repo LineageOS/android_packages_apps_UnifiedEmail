@@ -747,7 +747,6 @@ public class UIProvider {
         ConversationColumns.PRIORITY,
         ConversationColumns.READ,
         ConversationColumns.STARRED,
-        ConversationColumns.FOLDER_LIST,
         ConversationColumns.RAW_FOLDERS,
         ConversationColumns.FLAGS,
         ConversationColumns.PERSONAL_LEVEL,
@@ -775,16 +774,15 @@ public class UIProvider {
     public static final int CONVERSATION_PRIORITY_COLUMN = 11;
     public static final int CONVERSATION_READ_COLUMN = 12;
     public static final int CONVERSATION_STARRED_COLUMN = 13;
-    public static final int CONVERSATION_FOLDER_LIST_COLUMN = 14;
-    public static final int CONVERSATION_RAW_FOLDERS_COLUMN = 15;
-    public static final int CONVERSATION_FLAGS_COLUMN = 16;
-    public static final int CONVERSATION_PERSONAL_LEVEL_COLUMN = 17;
-    public static final int CONVERSATION_IS_SPAM_COLUMN = 18;
-    public static final int CONVERSATION_IS_PHISHING_COLUMN = 19;
-    public static final int CONVERSATION_MUTED_COLUMN = 20;
-    public static final int CONVERSATION_COLOR_COLUMN = 21;
-    public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 22;
-    public static final int CONVERSATION_SENDER_INFO_COLUMN = 23;
+    public static final int CONVERSATION_RAW_FOLDERS_COLUMN = 14;
+    public static final int CONVERSATION_FLAGS_COLUMN = 15;
+    public static final int CONVERSATION_PERSONAL_LEVEL_COLUMN = 16;
+    public static final int CONVERSATION_IS_SPAM_COLUMN = 17;
+    public static final int CONVERSATION_IS_PHISHING_COLUMN = 18;
+    public static final int CONVERSATION_MUTED_COLUMN = 19;
+    public static final int CONVERSATION_COLOR_COLUMN = 20;
+    public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 21;
+    public static final int CONVERSATION_SENDER_INFO_COLUMN = 22;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -895,16 +893,12 @@ public class UIProvider {
         public static String STARRED = "starred";
 
         /**
-         * This string column contains a csv of all folder uris associated with this
-         * conversation
-         */
-        public static final String FOLDER_LIST = "folderList";
-
-        /**
          * This string column contains a serialized list of all folders
          * separated by a Folder.FOLDER_SEPARATOR that are associated with this
          * conversation. The folders should be only those that the provider
-         * wants to have displayed.
+         * wants to have displayed, so rawFolders will ALWAYS intentionally
+         * exclude the folder currently being viewed. Ideally, only ever use
+         * this for rendering the folder list for a conversation.
          */
         public static final String RAW_FOLDERS = "rawFolders";
         public static final String FLAGS = "conversationFlags";

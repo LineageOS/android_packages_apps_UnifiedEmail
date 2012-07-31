@@ -60,6 +60,7 @@ import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock;
+import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
@@ -230,6 +231,8 @@ public final class ConversationViewFragment extends Fragment implements
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
+
+        mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(activity));
 
         showConversation();
     }
@@ -403,9 +406,14 @@ public final class ConversationViewFragment extends Fragment implements
             return;
         }
 
-        final String info = (mViewState == null) ? null : mViewState.getConversationInfo();
+        if (mViewState == null) {
+            LogUtils.i(LOG_TAG, "ignoring markUnread for conv with no view state (%d)",
+                    mConversation.id);
+            return;
+        }
+
         activity.getConversationUpdater().markConversationMessagesUnread(mConversation,
-                mViewState.getUnreadMessageUris(), info);
+                mViewState.getUnreadMessageUris(), mViewState.getConversationInfo());
     }
 
     /**
@@ -816,8 +824,10 @@ public final class ConversationViewFragment extends Fragment implements
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            if (!mViewsCreated) {
-                LogUtils.i(LOG_TAG, "ignoring CVF.onPageFinished, fragment=%s",
+            // Ignore unsafe calls made after a fragment is detached from an activity
+            final ControllableActivity activity = (ControllableActivity) getActivity();
+            if (activity == null || !mViewsCreated) {
+                LogUtils.i(LOG_TAG, "ignoring CVF.onPageFinished, url=%s fragment=%s", url,
                         ConversationViewFragment.this);
                 return;
             }

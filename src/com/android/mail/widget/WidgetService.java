@@ -21,6 +21,7 @@ import com.android.mail.compose.ComposeActivity;
 import com.android.mail.persistence.Persistence;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
@@ -44,9 +45,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Looper;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.TextUtils.TruncateAt;
 import android.text.format.DateUtils;
+import android.text.style.CharacterStyle;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -199,9 +205,9 @@ public class WidgetService extends RemoteViewsService {
         private int mFolderCount;
         private boolean mShouldShowViewMore;
         private boolean mFolderInformationShown = false;
-        private ContentResolver mResolver;
         private WidgetService mService;
         private int mSenderFormatVersion;
+        private String mSendersSplitToken;
 
         public MailFactory(Context context, Intent intent, WidgetService service) {
             mContext = context;
@@ -211,7 +217,6 @@ public class WidgetService extends RemoteViewsService {
             mFolder = Folder.fromString(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
             mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(context,
                     mAccount);
-            mResolver = context.getContentResolver();
             mService = service;
         }
 
@@ -249,7 +254,7 @@ public class WidgetService extends RemoteViewsService {
             mConversationCursorLoader.setUpdateThrottle(
                     res.getInteger(R.integer.widget_refresh_delay_ms));
             mConversationCursorLoader.startLoading();
-
+            mSendersSplitToken = res.getString(R.string.senders_split_token);
             mFolderLoader = new CursorLoader(mContext, mFolder.uri, UIProvider.FOLDERS_PROJECTION,
                     null, null, null);
             mFolderLoader.registerListener(FOLDER_LOADER_ID, this);
@@ -336,46 +341,40 @@ public class WidgetService extends RemoteViewsService {
                 }
 
                 if (!mConversationCursor.moveToPosition(position)) {
-                    // If we ever fail to move to a position, return the "View More conversations"
+                    // If we ever fail to move to a position, return the
+                    // "View More conversations"
                     // view.
-                    LogUtils.e(LOG_TAG,
-                            "Failed to move to position %d in the cursor.", position);
+                    LogUtils.e(LOG_TAG, "Failed to move to position %d in the cursor.", position);
                     return getViewMoreConversationsView();
                 }
 
                 Conversation conversation = new Conversation(mConversationCursor);
-                String senders = conversation.conversationInfo != null ?
-                        conversation.conversationInfo.sendersInfo : conversation.senders;
-                SendersView.SendersInfo sendersInfo = new SendersView.SendersInfo(senders);
-                mSenderFormatVersion = sendersInfo.version;
-                String sendersString = sendersInfo.text;
                 // Split the senders and status from the instructions.
                 SpannableStringBuilder senderBuilder = new SpannableStringBuilder();
                 SpannableStringBuilder statusBuilder = new SpannableStringBuilder();
 
-                if (mSenderFormatVersion == SendersView.MERGED_FORMATTING) {
-                    Utils.getStyledSenderSnippet(mContext, sendersString, senderBuilder,
-                            statusBuilder, MAX_SENDERS_LENGTH, false, false, false);
+                if (conversation.conversationInfo != null) {
+                    senderBuilder = ellipsizeStyledSenders(conversation.conversationInfo,
+                            MAX_SENDERS_LENGTH,
+                            SendersView.format(mContext, conversation.conversationInfo));
                 } else {
-                    senderBuilder.append(sendersString);
+                    SendersView.SendersInfo sendersInfo = new SendersView.SendersInfo(
+                            conversation.senders);
+                    mSenderFormatVersion = sendersInfo.version;
+                    if (mSenderFormatVersion == SendersView.MERGED_FORMATTING) {
+                        Utils.getStyledSenderSnippet(mContext, sendersInfo.text, senderBuilder,
+                                statusBuilder, MAX_SENDERS_LENGTH, false, false, false);
+                    } else {
+                        senderBuilder.append(sendersInfo.text);
+                    }
                 }
                 // Get styled date.
-                CharSequence date = DateUtils.getRelativeTimeSpanString(
-                        mContext, conversation.dateMs);
+                CharSequence date = DateUtils.getRelativeTimeSpanString(mContext,
+                        conversation.dateMs);
 
                 // Load up our remote view.
                 RemoteViews remoteViews = mWidgetConversationViewBuilder.getStyledView(
-<<<<<<< HEAD
-                        senderBuilder, statusBuilder, date, filterTag(conversation.subject),
-                        conversation.snippet, conversation.rawFolders, conversation.hasAttachments,
-                        conversation.read, mFolder);
-||||||| merged common ancestors
-                        senderBuilder, statusBuilder, date, filterTag(conversation.subject),
-                        conversation.snippet, conversation.getRawFolders(),
-                        conversation.hasAttachments, conversation.read, mFolder);
-=======
                         statusBuilder, date, conversation, mFolder);
->>>>>>> abb78177
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation,
@@ -383,6 +382,79 @@ public class WidgetService extends RemoteViewsService {
 
                 return remoteViews;
             }
+        }
+
+        private SpannableStringBuilder ellipsizeStyledSenders(ConversationInfo info, int maxChars,
+                SpannableString[] styledSenders) {
+            SpannableStringBuilder builder = new SpannableStringBuilder();
+            int totalChars = 0;
+            boolean ellipsize = false;
+            SpannableString ellipsizedText;
+            int width;
+            SpannableStringBuilder messageInfoString = createMessageInfo(info);
+            // Paint the message info string to see if we lose space.
+            int messageInfoChars = messageInfoString.length();
+            totalChars += messageInfoChars;
+
+            for (SpannableString sender : styledSenders) {
+                // No more width available, we'll only show fixed fragments.
+                if (ellipsize) {
+                    break;
+                }
+                // New line and ellipsize text if needed.
+                ellipsizedText = null;
+                CharacterStyle[] spans = sender.getSpans(0, sender.length(), CharacterStyle.class);
+                width = sender.length();
+                if (totalChars + width > maxChars) {
+                    ellipsize = true;
+                }
+                if (ellipsize) {
+                    ellipsizedText = copyStyles(spans,
+                            TextUtils.ellipsize(sender, new TextPaint(), width, TruncateAt.END));
+                    width = ellipsizedText.length();
+                }
+                totalChars += width;
+
+                final CharSequence fragmentDisplayText;
+                if (ellipsizedText != null) {
+                    fragmentDisplayText = ellipsizedText;
+                } else {
+                    // Prepend the dividing token, unless this is the first
+                    // sender.
+                    if (builder.length() > 0) {
+                        fragmentDisplayText = copyStyles(spans, mSendersSplitToken + sender);
+                    } else {
+                        fragmentDisplayText = sender;
+                    }
+                }
+                builder.append(fragmentDisplayText);
+            }
+            if (messageInfoString.length() > 0) {
+                builder.append(messageInfoString);
+            }
+            return builder;
+        }
+
+        private SpannableString copyStyles(CharacterStyle[] spans, CharSequence newText) {
+            SpannableString s = new SpannableString(newText);
+            if (spans != null && spans.length > 0) {
+                s.setSpan(spans[0], 0, s.length(), 0);
+            }
+            return s;
+        }
+
+        private SpannableStringBuilder createMessageInfo(ConversationInfo conversationInfo) {
+            SpannableStringBuilder messageInfo = new SpannableStringBuilder();
+            if (conversationInfo != null) {
+                int count = conversationInfo.messageCount;
+                if (count > 0) {
+                    messageInfo.append(" ");
+                }
+                if (count > 1) {
+                    messageInfo.append(count + "");
+                }
+            }
+            return messageInfo;
         }
 
         /**

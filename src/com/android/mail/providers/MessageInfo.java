@@ -55,4 +55,9 @@ public class MessageInfo {
         String senders = split[2];
         return new MessageInfo(read != 0, starred != 0, senders);
     }
+
+    @Override
+    public int hashCode() {
+        return (read ? 1 : 0) ^ (starred ? 1 : 0) ^ sender.hashCode();
+    }
 }

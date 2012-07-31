@@ -36,6 +36,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,12 +64,8 @@ public class SwipeableListView extends ListView implements Callback {
         super(context, attrs, defStyle);
         float densityScale = getResources().getDisplayMetrics().density;
         float pagingTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
-        float scrollSlop = context.getResources().getInteger(R.integer.swipeScrollSlop);
-        float minSwipe = context.getResources().getDimension(R.dimen.min_swipe);
-        float minVert = context.getResources().getDimension(R.dimen.min_vert);
-        float minLock = context.getResources().getDimension(R.dimen.min_lock);
-        mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, densityScale, pagingTouchSlop,
-                scrollSlop, minSwipe, minVert, minLock);
+        mSwipeHelper = new SwipeHelper(context, SwipeHelper.X, this, densityScale,
+                pagingTouchSlop);
     }
 
     @Override
@@ -115,8 +112,7 @@ public class SwipeableListView extends ListView implements Callback {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mEnableSwipe) {
-            return mSwipeHelper.onInterceptTouchEvent(ev)
-                    || super.onInterceptTouchEvent(ev);
+            return mSwipeHelper.onInterceptTouchEvent(ev) || super.onInterceptTouchEvent(ev);
         } else {
             return super.onInterceptTouchEvent(ev);
         }
@@ -162,10 +158,12 @@ public class SwipeableListView extends ListView implements Callback {
     @Override
     public void onChildDismissed(SwipeableItemView v) {
         View view = v.getView();
-        if (view instanceof ConversationItemView) {
-        dismissChildren((ConversationItemView) v, null);
-        } else if (view instanceof LeaveBehindItem) {
-            ((LeaveBehindItem)view).commit();
+        if (view != null) {
+            if (view instanceof ConversationItemView) {
+                dismissChildren((ConversationItemView) view, null);
+            } else if (view instanceof LeaveBehindItem) {
+                ((LeaveBehindItem) view).commit();
+            }
         }
     }
 
@@ -181,7 +179,7 @@ public class SwipeableListView extends ListView implements Callback {
     @Override
     public void onChildrenDismissed(SwipeableItemView target,
             Collection<ConversationItemView> views) {
-        assert(target instanceof ConversationItemView);
+        assert (target instanceof ConversationItemView);
         dismissChildren((ConversationItemView) target.getView(), views);
     }
 
@@ -201,8 +199,8 @@ public class SwipeableListView extends ListView implements Callback {
                     conversations.add(conversation);
                 }
             }
-            undoOp = new ToastBarOperation(conversationViews != null ?
-                    (conversations.size() + 1) : 1, mSwipeAction, ToastBarOperation.UNDO);
+            undoOp = new ToastBarOperation(conversationViews != null ? (conversations.size() + 1)
+                    : 1, mSwipeAction, ToastBarOperation.UNDO);
             handleLeaveBehind(target, undoOp, context);
             adapter.delete(conversations, new DestructiveAction() {
                 @Override
@@ -218,28 +216,13 @@ public class SwipeableListView extends ListView implements Callback {
                             // the current folder.
                             for (Conversation target : conversations) {
                                 HashMap<Uri, Folder> targetFolders = Folder
-                                        .hashMapForFoldersString(target.rawFolders);
+                                        .hashMapForFolders(target.getRawFolders());
                                 targetFolders.remove(folderOp.mFolder.uri);
-<<<<<<< HEAD
-                                target.folderList = Folder.getUriString(targetFolders.values());
-                                target.rawFolders = Folder.getSerializedFolderString(mFolder,
-                                        targetFolders.values());
-                                cc.updateStrings(context, Conversation.listOf(target),
-                                        Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
-                                                target.folderList, target.rawFolders
-                                        });
-||||||| merged common ancestors
-                                target.rawFolders = Folder.getSerializedFolderString(targetFolders
-                                        .values());
-                                cc.updateString(context, Conversation.listOf(target),
-                                        Conversation.UPDATE_FOLDER_COLUMN, target.rawFolders);
-=======
                                 target.setRawFolders(Folder.getSerializedFolderString(targetFolders
                                         .values()));
                                 cc.updateString(context, Conversation.listOf(target),
                                         Conversation.UPDATE_FOLDER_COLUMN,
                                         target.getRawFoldersString());
->>>>>>> abb78177
                             }
                             break;
                         case R.id.delete:
@@ -264,31 +247,16 @@ public class SwipeableListView extends ListView implements Callback {
             return;
         }
         adapter.setupLeaveBehind(conv, undoOp, conv.position);
-        ConversationCursor cc = (ConversationCursor)adapter.getCursor();
+        ConversationCursor cc = (ConversationCursor) adapter.getCursor();
         switch (mSwipeAction) {
             case R.id.change_folder:
                 FolderOperation folderOp = new FolderOperation(mFolder, false);
                 HashMap<Uri, Folder> targetFolders = Folder
-                        .hashMapForFoldersString(conv.rawFolders);
+                        .hashMapForFolders(conv.getRawFolders());
                 targetFolders.remove(folderOp.mFolder.uri);
-<<<<<<< HEAD
-                conv.folderList = Folder.getUriString(targetFolders.values());
-                conv.rawFolders = Folder.getSerializedFolderString(mFolder, targetFolders.values());
-||||||| merged common ancestors
-                conv.rawFolders = Folder.getSerializedFolderString(targetFolders.values());
-=======
                 conv.setRawFolders(Folder.getSerializedFolderString(targetFolders.values()));
->>>>>>> abb78177
                 cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv),
-<<<<<<< HEAD
-                        Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
-                                conv.folderList, conv.rawFolders
-                        });
-||||||| merged common ancestors
-                        Conversation.UPDATE_FOLDER_COLUMN, conv.rawFolders);
-=======
                         Conversation.UPDATE_FOLDER_COLUMN, conv.getRawFoldersString());
->>>>>>> abb78177
                 break;
             case R.id.archive:
                 cc.mostlyArchive(context, Conversation.listOf(conv));
@@ -311,7 +279,7 @@ public class SwipeableListView extends ListView implements Callback {
         requestDisallowInterceptTouchEvent(true);
         SwipeableConversationItemView view = null;
         if (v instanceof ConversationItemView) {
-            view = (SwipeableConversationItemView)v.getParent();
+            view = (SwipeableConversationItemView) v.getParent();
         }
         if (view != null) {
             view.addBackground(getContext(), getSwipeActionText());
@@ -321,6 +289,41 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public void onDragCancelled(SwipeableItemView v) {
+        SwipeableConversationItemView view = null;
+        if (v instanceof ConversationItemView) {
+            view = (SwipeableConversationItemView) ((View) v).getParent();
+        }
+        if (view != null) {
+            view.removeBackground();
+        }
+    }
+
+    /**
+     * Get the position within the adapter's data set for the view, where view is a an adapter item
+     * or a descendant of an adapter item.
+     *
+     * @param view an adapter item, or a descendant of an adapter item. This must be visible in this
+     *        AdapterView at the time of the call.
+     * @return the position within the adapter's data set of the view, or {@link #INVALID_POSITION}
+     *         if the view does not correspond to a list item (or it is not currently visible).
+     */
+    // TODO(mindyp): remove this override once I fix b/6884047
+    @Override
+    public int getPositionForView(View view) {
+        View listItem = view;
+        View v = null;
+        try {
+            while (!(v = (View) listItem.getParent()).equals(this)) {
+                listItem = v;
+            }
+        } catch (ClassCastException e) {
+            // We made it up to the window without find this list view
+            return INVALID_POSITION;
+        } catch (NullPointerException e) {
+            LogUtils.e(LOG_TAG, e, "WHAT HAS NO PARENT " + (v != null ? v.getClass() : null));
+            return INVALID_POSITION;
+        }
+        return super.getPositionForView(view);
     }
 
     /**
@@ -358,7 +361,8 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public boolean performItemClick(View view, int pos, long id) {
-        // Commit any existing destructive actions when the user selects a conversation to view.
+        // Commit any existing destructive actions when the user selects a
+        // conversation to view.
         commitDestructiveActions();
         return super.performItemClick(view, pos, id);
     }

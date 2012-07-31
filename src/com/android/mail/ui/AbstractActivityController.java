@@ -128,8 +128,6 @@ public abstract class AbstractActivityController implements ActivityController {
     protected static final String TAG_WAIT = "wait-fragment";
     /** Tag used when loading a conversation list fragment. */
     public static final String TAG_CONVERSATION_LIST = "tag-conversation-list";
-    /** Tag used when loading a conversation fragment. */
-    public static final String TAG_CONVERSATION = "tag-conversation";
     /** Tag used when loading a folder list fragment. */
     protected static final String TAG_FOLDER_LIST = "tag-folder-list";
 
@@ -301,19 +299,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Get the conversation view fragment for this activity. If the conversation view fragment
-     * is not attached, this method returns null
-     *
-     */
-    protected ConversationViewFragment getConversationViewFragment() {
-        final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION);
-        if (isValidFragment(fragment)) {
-            return (ConversationViewFragment) fragment;
-        }
-        return null;
-    }
-
-    /**
      * Returns the folder list fragment attached with this activity. If no such fragment is attached
      * this method returns null.
      *
@@ -379,7 +364,7 @@ public abstract class AbstractActivityController implements ActivityController {
         LogUtils.d(LOG_TAG, "AbstractActivityController.switchAccount(): mAccount = %s",
                 mAccount.uri);
         cancelRefreshTask();
-        onSettingsChanged(mAccount.settings);
+        updateSettings();
         mActionBarView.setAccount(mAccount);
         loadAccountInbox();
 
@@ -393,8 +378,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onAccountChanged(Account account) {
-        LogUtils.d(LOG_TAG, "onAccountChanged (%s) called.", account.uri);
-        final boolean accountChanged = (mAccount == null) || !account.uri.equals(mAccount.uri);
+        LogUtils.d(LOG_TAG, "onAccountChanged (%s) called.", account);
+        // Is the account or account settings different from the existing account?
+        final boolean accountChanged = (mAccount == null) || !account.uri.equals(mAccount.uri)
+                || !account.settings.equals(mAccount.settings);
         if (accountChanged) {
             if (account != null) {
                 final String accountName = account.name;
@@ -406,12 +393,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 });
             }
             switchAccount(account);
-            return;
-        }
-        // Current account is the same as the new account, but the settings might be different.
-        if (!account.settings.equals(mAccount.settings)){
-            onSettingsChanged(account.settings);
-            return;
         }
     }
 
@@ -419,12 +400,13 @@ public abstract class AbstractActivityController implements ActivityController {
      * Changes the settings for the current account. The new settings are provided as a parameter.
      * @param settings
      */
-    public void onSettingsChanged(Settings settings) {
-        dispatchSettingsChange(settings);
+    public void updateSettings() {
+        notifySettingsChanged();
         resetActionBarIcon();
         mActivity.invalidateOptionsMenu();
         // If the user was viewing the default Inbox here, and the new setting contains a different
-        // default Inbox, we don't want to load a different folder here.
+        // default Inbox, we don't want to load a different folder here. So do not change the
+        // current folder.
     }
 
     @Override
@@ -452,7 +434,8 @@ public abstract class AbstractActivityController implements ActivityController {
     /**
      * Method that lets the settings listeners know when the settings got changed.
      */
-    private void dispatchSettingsChange(Settings updatedSettings) {
+    private void notifySettingsChanged() {
+        final Settings updatedSettings = mAccount.settings;
         // Copy the list of current listeners so that
         final ArrayList<Settings.ChangeListener> allListeners =
                 new ArrayList<Settings.ChangeListener>(mSettingsListeners);
@@ -730,7 +713,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 break;
             case R.id.change_folder:
                 new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                        Conversation.listOf(mCurrentConversation), false).show();
+                        Conversation.listOf(mCurrentConversation), false, mFolder).show();
                 break;
             default:
                 handled = false;
@@ -773,30 +756,21 @@ public abstract class AbstractActivityController implements ActivityController {
         // to conversation unread)
         conv.read = false;
 
-        // mark the entire conversation unread if no messages are specified
-        if (unreadMessageUris == null || unreadMessageUris.isEmpty()) {
+        // only do a granular 'mark unread' if a subset of messages are unread
+        final int unreadCount = (unreadMessageUris == null) ? 0 : unreadMessageUris.size();
+        final boolean subsetIsUnread = (conv.numMessages > 1 && unreadCount > 0
+                && unreadCount < conv.numMessages);
+
+        if (!subsetIsUnread) {
             markConversationsRead(Collections.singletonList(conv), false /* read */);
         } else {
-
             mConversationListCursor.setConversationColumn(conv.uri, ConversationColumns.READ, 0);
 
-<<<<<<< HEAD
-            // locally update conversation's conversationInfo JSON to revert to original version
-            mConversationListCursor.setConversationColumn(conv.uri,
-                    ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
-||||||| merged common ancestors
-            // locally update conversation's conversationInfo JSON to revert to original version
-            if (originalConversationInfo != null) {
-                mConversationListCursor.setConversationColumn(conv.uri,
-                        ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
-            }
-=======
             // locally update conversation's conversationInfo to revert to original version
             if (originalConversationInfo != null) {
                 mConversationListCursor.setConversationColumn(conv.uri,
                         ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
             }
->>>>>>> abb78177
 
             // applyBatch with each CPO as an UPDATE op on each affected message uri
             final ArrayList<ContentProviderOperation> ops = Lists.newArrayList();
@@ -818,17 +792,19 @@ public abstract class AbstractActivityController implements ActivityController {
             }.run(mResolver, authority, ops);
         }
 
-        mViewMode.enterConversationListMode();
+        // apply auto-advance logic (with an empty destruction target since nothing is going away)
+        final Conversation next = mTracker.getNextConversation(
+                Settings.getAutoAdvanceSetting(mAccount.settings), null /* target */, conv);
+        LogUtils.d(LOG_TAG, "mark messages unread: showing %s next.", next);
+        showConversation(next);
     }
 
     @Override
     public void markConversationsRead(Collection<Conversation> targets, boolean read) {
-        ContentValues values;
-        ConversationInfo info;
         for (Conversation target : targets) {
-            values = new ContentValues();
+            final ContentValues values = new ContentValues();
             values.put(ConversationColumns.READ, read);
-            info = target.conversationInfo;
+            final ConversationInfo info = target.conversationInfo;
             if (info != null) {
                 info.markRead(read);
                 values.put(ConversationColumns.CONVERSATION_INFO, ConversationInfo.toString(info));
@@ -911,21 +887,26 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void delete(final Collection<Conversation> target, final DestructiveAction action) {
-        // The conversation list handles deletion if it exists.
-        final ConversationListFragment convListFragment = getConversationListFragment();
-        if (convListFragment != null) {
-            LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
-            convListFragment.requestDelete(target, action);
-            return;
-        }
+        // Order of events is critical! The Conversation View Fragment must be notified
+        // of the next conversation with showConversation(next) *before* the conversation list
+        // fragment has a chance to delete the conversation, animating it away.
+
         // Update the conversation fragment if the current conversation is deleted.
-        if (getConversationViewFragment() != null &&
-                !Conversation.contains(target, mCurrentConversation)) {
+        final boolean currentConversationInView = (mViewMode.getMode() == ViewMode.CONVERSATION)
+                && Conversation.contains(target, mCurrentConversation);
+        if (currentConversationInView) {
             final Conversation next = mTracker.getNextConversation(
                     Settings.getAutoAdvanceSetting(mAccount.settings), target,
                     mCurrentConversation);
             LogUtils.d(LOG_TAG, "requestDelete: showing %s next.", next);
             showConversation(next);
+        }
+        // The conversation list deletes and performs the action if it exists.
+        final ConversationListFragment convListFragment = getConversationListFragment();
+        if (convListFragment != null) {
+            LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
+            convListFragment.requestDelete(target, action);
+            return;
         }
         // No visible UI element handled it on our behalf. Perform the action ourself.
         action.performAction();
@@ -1077,7 +1058,7 @@ public abstract class AbstractActivityController implements ActivityController {
             LogUtils.w(LOG_TAG, new Error(), "AAC ignoring account with null settings.");
             return;
         }
-        dispatchSettingsChange(mAccount.settings);
+        notifySettingsChanged();
     }
 
     /**
@@ -1099,8 +1080,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 // in the list
                 conversation.position = 0;
             }
-            setCurrentConversation(conversation);
-            showConversation(mCurrentConversation);
+            showConversation(conversation);
         }
 
         if (savedState.containsKey(SAVED_TOAST_BAR_OP)) {
@@ -1162,8 +1142,7 @@ public abstract class AbstractActivityController implements ActivityController {
                     // in the list
                     conversation.position = 0;
                 }
-                setCurrentConversation(conversation);
-                showConversation(mCurrentConversation);
+                showConversation(conversation);
                 handled = true;
             }
 
@@ -1391,6 +1370,12 @@ public abstract class AbstractActivityController implements ActivityController {
         mFolderObservable.unregisterObserver(observer);
     }
 
+    /**
+     * Returns true if the number of accounts is different, or if the current account has been
+     * removed from the device
+     * @param accountCursor
+     * @return
+     */
     private boolean accountsUpdated(Cursor accountCursor) {
         // Check to see if the current account hasn't been set, or the account cursor is empty
         if (mAccount == null || !accountCursor.moveToFirst()) {
@@ -1412,7 +1397,7 @@ public abstract class AbstractActivityController implements ActivityController {
             if (!foundCurrentAccount && mAccount.uri.equals(accountUri)) {
                 foundCurrentAccount = true;
             }
-
+            // Is there a new account that we do not know about?
             if (!mCurrentAccountUris.contains(accountUri)) {
                 return true;
             }
@@ -1423,56 +1408,69 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Update the accounts on the device. This currently loads the first account
-     * in the list.
+     * Updates accounts for the app. If the current account is missing, the first
+     * account in the list is set to the current account (we <em>have</em> to choose something).
      *
-     * @param loader
      * @param accounts cursor into the AccountCache
      * @return true if the update was successful, false otherwise
      */
-    private boolean updateAccounts(Loader<Cursor> loader, Cursor accounts) {
+    private boolean updateAccounts(Cursor accounts) {
         if (accounts == null || !accounts.moveToFirst()) {
             return false;
         }
 
         final Account[] allAccounts = Account.getAllAccounts(accounts);
+        // A match for the current account's URI in the list of accounts.
+        Account currentFromList = null;
 
         // Save the uris for the accounts
         mCurrentAccountUris.clear();
         for (Account account : allAccounts) {
+            LogUtils.d(LOG_TAG, "updateAccounts(%s)", account);
             mCurrentAccountUris.add(account.uri);
+            if (mAccount != null && account.uri.equals(mAccount.uri)) {
+                currentFromList = account;
+            }
         }
 
-        // 1. current account is already set and is in allAccounts -> no-op
+        // 1. current account is already set and is in allAccounts:
+        //    1a. It has changed -> load the updated account.
+        //    2b. It is unchanged -> no-op
         // 2. current account is set and is not in allAccounts -> pick first (acct was deleted?)
-        // 3. saved pref has an account -> pick that one
+        // 3. saved preference has an account -> pick that one
         // 4. otherwise just pick first
 
-        Account newAccount = null;
-
-        if (mAccount != null) {
-            if (!mCurrentAccountUris.contains(mAccount.uri)) {
-                newAccount = allAccounts[0];
-            } else {
-                newAccount = mAccount;
+        boolean accountChanged = false;
+        /// Assume case 4, initialize to first account, and see if we can find anything better.
+        Account newAccount = allAccounts[0];
+        if (currentFromList != null) {
+            // Case 1: Current account exists but has changed
+            if (!currentFromList.equals(mAccount)) {
+                newAccount = currentFromList;
+                accountChanged = true;
             }
+            // Case 1b: else, current account is unchanged: nothing to do.
         } else {
-            final String lastAccountUri = MailAppProvider.getInstance().getLastViewedAccount();
-            if (lastAccountUri != null) {
-                for (int i = 0; i < allAccounts.length; i++) {
-                    final Account acct = allAccounts[i];
-                    if (lastAccountUri.equals(acct.uri.toString())) {
-                        newAccount = acct;
-                        break;
+            // Case 2: Current account is not in allAccounts, the account needs to change.
+            accountChanged = true;
+            if (mAccount == null) {
+                // Case 3: Check for last viewed account, and check if it exists in the list.
+                final String lastAccountUri = MailAppProvider.getInstance().getLastViewedAccount();
+                if (lastAccountUri != null) {
+                    for (final Account account : allAccounts) {
+                        if (lastAccountUri.equals(account.uri.toString())) {
+                            newAccount = account;
+                            break;
+                        }
                     }
                 }
             }
-            if (newAccount == null) {
-                newAccount = allAccounts[0];
-            }
         }
-
-        onAccountChanged(newAccount);
+        if (accountChanged) {
+            onAccountChanged(newAccount);
+        }
+        // Whether we have updated the current account or not, we need to update the list of
+        // accounts in the ActionBar.
         mActionBarView.setAccounts(allAccounts);
         return (allAccounts.length > 0);
     }
@@ -1531,14 +1529,14 @@ public abstract class AbstractActivityController implements ActivityController {
                 } else {
                     final boolean accountListUpdated = accountsUpdated(data);
                     if (!isLoaderInitialized || accountListUpdated) {
-                        isLoaderInitialized = updateAccounts(loader, data);
+                        isLoaderInitialized = updateAccounts(data);
                     }
                 }
                 break;
             case LOADER_ACCOUNT_UPDATE_CURSOR:
                 // We have gotten an update for current account.
 
-                // Make sure that this is an update for what is the current account
+                // Make sure that this is an update for the current account
                 if (data != null && data.moveToFirst()) {
                     final Account updatedAccount = new Account(data);
 
@@ -1547,7 +1545,7 @@ public abstract class AbstractActivityController implements ActivityController {
                         mAccount = updatedAccount;
                         LogUtils.d(LOG_TAG, "AbstractActivityController.onLoadFinished(): "
                                 + "mAccount = %s", mAccount.uri);
-                        dispatchSettingsChange(mAccount.settings);
+                        notifySettingsChanged();
 
                         // Got an update for the current account
                         final boolean inWaitingMode = inWaitMode();
@@ -1712,7 +1710,6 @@ public abstract class AbstractActivityController implements ActivityController {
             if (isPerformed()) {
                 return;
             }
-            // Certain actions force a return to list.
             boolean undoEnabled = mAccount.supportsCapability(AccountCapabilities.UNDO);
 
             // Are we destroying the currently shown conversation? Show the next one.
@@ -1720,13 +1717,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 LogUtils.d(LOG_TAG, "ConversationAction.performAction(): mIsConversationVisible=%b"
                         + "\nmTarget=%s\nCurrent=%s", mIsConversationVisible,
                         Conversation.toString(mTarget), mCurrentConversation);
-            }
-            if (mIsConversationVisible && Conversation.contains(mTarget, mCurrentConversation)) {
-                int advance = Settings.getAutoAdvanceSetting(mAccount.settings);
-                final Conversation next = advance == AutoAdvance.LIST ? null : mTracker
-                        .getNextConversation(advance, mTarget, mCurrentConversation);
-                LogUtils.d(LOG_TAG, "Next conversation is: %s", next);
-                showConversation(next);
             }
 
             switch (mAction) {
@@ -2205,7 +2195,7 @@ public abstract class AbstractActivityController implements ActivityController {
             // appropriate folders.
             for (Conversation target : mTarget) {
                 HashMap<Uri, Folder> targetFolders = Folder
-                        .hashMapForFoldersString(target.rawFolders);
+                        .hashMapForFolders(target.getRawFolders());
                 for (FolderOperation op : mFolderOps) {
                     if (op.mAdd) {
                         targetFolders.put(op.mFolder.uri, op.mFolder);
@@ -2213,23 +2203,9 @@ public abstract class AbstractActivityController implements ActivityController {
                         targetFolders.remove(op.mFolder.uri);
                     }
                 }
-<<<<<<< HEAD
-                target.folderList = Folder.getUriString(targetFolders.values());
-                target.rawFolders = Folder.getSerializedFolderString(mFolder,
-                        targetFolders.values());
-                mConversationListCursor.updateStrings(mContext, Conversation.listOf(target),
-                        Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
-                                target.folderList, target.rawFolders
-                        });
-||||||| merged common ancestors
-                target.rawFolders = Folder.getSerializedFolderString(targetFolders.values());
-                mConversationListCursor.updateString(mContext, Conversation.listOf(target),
-                        Conversation.UPDATE_FOLDER_COLUMN, target.rawFolders);
-=======
                 target.setRawFolders(Folder.getSerializedFolderString(targetFolders.values()));
                 mConversationListCursor.updateString(mContext, Conversation.listOf(target),
                         Conversation.UPDATE_FOLDER_COLUMN, target.getRawFoldersString());
->>>>>>> abb78177
             }
             refreshConversationList();
             if (mIsSelectedSet) {

@@ -18,7 +18,6 @@
 package com.android.mail.browse;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -31,10 +30,8 @@ import android.widget.Toast;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
-import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
@@ -51,8 +48,6 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -178,7 +173,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 }
                 if (!cantMove) {
                     new FoldersSelectionDialog(mContext, acct, mUpdater,
-                            mSelectionSet.values(), true).show();
+                            mSelectionSet.values(), true, mFolder).show();
                 }
                 break;
             case R.id.mark_important:

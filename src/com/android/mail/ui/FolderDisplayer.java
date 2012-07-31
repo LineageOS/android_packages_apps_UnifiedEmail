@@ -21,18 +21,11 @@ import com.android.mail.utils.LogTag;
 import com.google.common.collect.Sets;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 
-<<<<<<< HEAD
-import java.util.List;
-||||||| merged common ancestors
-import java.util.ArrayList;
-=======
->>>>>>> abb78177
 import java.util.SortedSet;
 
 /**
@@ -61,32 +54,9 @@ public class FolderDisplayer {
      * @param foldersString string containing serialized folders to display.
      * @param ignoreFolder (optional) folder to omit from the displayed set
      */
-<<<<<<< HEAD
-    public void loadConversationFolders(String foldersString, Folder ignoreFolder) {
-||||||| merged common ancestors
-    public void loadConversationFolders(ArrayList<Folder> folders, Folder ignoreFolder) {
-=======
     public void loadConversationFolders(Conversation conv, Folder ignoreFolder) {
->>>>>>> abb78177
         mFoldersSortedSet.clear();
-<<<<<<< HEAD
-
-        List<Folder> folders = Folder.forFoldersString(foldersString);
-        for (Folder f : folders) {
-            // We will sometimes see folders that do not have names yet.
-            if (TextUtils.isEmpty(f.name) || (ignoreFolder != null && ignoreFolder.equals(f))) {
-                continue;
-            }
-
-            // TODO: maybe do additional processing for system folder names here
-
-            mFoldersSortedSet.add(f);
-        }
-||||||| merged common ancestors
-        mFoldersSortedSet.addAll(Folder.forDisplay(ignoreFolder, folders));
-=======
         mFoldersSortedSet.addAll(conv.getRawFoldersForDisplay(ignoreFolder));
->>>>>>> abb78177
     }
 
 }

@@ -109,10 +109,11 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     private Cursor getCursor() {
         if (mController == null) {
-            // Should never happen. It's the pager controller's responsibility to ensure the list
-            // controller reference is around at least as long as the pager is active and has this
-            // adapter.
-            LogUtils.wtf(LOG_TAG, new Error(), "Pager adapter has an unexpected null controller");
+            // Happens when someone calls setActivityController(null) on us. This is done in
+            // ConversationPagerController.stopListening() to indicate that the Conversation View
+            // is going away *very* soon.
+            LogUtils.d(LOG_TAG, "Pager adapter has a null controller. If the conversation view"
+                    + " is going away, this is fine.  Otherwise, the state is inconsistent");
             return null;
         }
 

@@ -22,29 +22,12 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class ConversationInfo {
-<<<<<<< HEAD
-    private static final String CONV_MESSAGE_COUNT = "conv_msg_count";
-    private static final String CONV_DRAFT_COUNT = "conv_draft_count";
-    private static final String CONV_MESSAGES = "conv_msgs";
-    private static final String CONV_FIRST_UNREAD_SNIPPET = "conv_first_unread";
-    private static final String CONV_LAST_SNIPPET = "conv_last";
-    private static final String CONV_FIRST_SNIPPET = "conv_first";
-    private static final String CONV_SENDERS_DEPRECATED = "conv_senders";
-||||||| merged common ancestors
-    private static final String CONV_MESSAGE_COUNT = "conv_msg_count";
-    private static final String CONV_DRAFT_COUNT = "conv_draft_count";
-    private static final String CONV_MESSAGES = "conv_msgs";
-    private static final String CONV_FIRST_UNREAD_SNIPPET = "conv_first_unread";
-    private static final String CONV_LAST_SNIPPET = "conv_last";
-    private static final String CONV_FIRST_SNIPPET = "conv_first";
-=======
     public static String SPLITTER = "^*^";
     private static Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
     private static final String MESSAGE_CONV_SPLIT = "^**^";
     private static Pattern MESSAGE_CONV_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\^");
     private static final String MESSAGE_SPLIT = "^***^";
     private static Pattern MESSAGE_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\*\\^");
->>>>>>> abb78177
 
     final public ArrayList<MessageInfo> messageInfos;
     final public int messageCount;
@@ -52,62 +35,21 @@ public class ConversationInfo {
     public String firstSnippet;
     public String firstUnreadSnippet;
     public String lastSnippet;
-    @Deprecated
-    public String sendersInfo;
 
-    public ConversationInfo(int count, int draft, String first, String firstUnread, String last,
-            String senders) {
+    public ConversationInfo(int count, int draft, String first, String firstUnread, String last) {
         messageCount = count;
         draftCount = draft;
         messageInfos = new ArrayList<MessageInfo>();
         firstSnippet = first;
         firstUnreadSnippet = firstUnread;
         lastSnippet = last;
-        sendersInfo = senders;
     }
 
     public void addMessage(MessageInfo info) {
         messageInfos.add(info);
     }
 
-<<<<<<< HEAD
-    public static JSONObject toJSON(ConversationInfo info) throws JSONException {
-        JSONObject obj = new JSONObject();
-        obj.put(CONV_MESSAGE_COUNT, info.messageCount);
-        obj.put(CONV_DRAFT_COUNT, info.draftCount);
-        obj.put(CONV_SENDERS_DEPRECATED, info.sendersInfo);
-        obj.put(CONV_FIRST_SNIPPET, info.firstSnippet);
-        obj.put(CONV_FIRST_UNREAD_SNIPPET, info.firstUnreadSnippet);
-        obj.put(CONV_LAST_SNIPPET, info.lastSnippet);
-        JSONArray array = new JSONArray();
-        for (MessageInfo msgInfo : info.messageInfos) {
-            array.put(MessageInfo.toJSON(msgInfo));
-        }
-        obj.put(CONV_MESSAGES, array.toString());
-        return obj;
-    }
-
-    public static String toString(ConversationInfo info) throws JSONException {
-||||||| merged common ancestors
-    public static JSONObject toJSON(ConversationInfo info) throws JSONException {
-        JSONObject obj = new JSONObject();
-        obj.put(CONV_MESSAGE_COUNT, info.messageCount);
-        obj.put(CONV_DRAFT_COUNT, info.draftCount);
-        obj.put(CONV_FIRST_SNIPPET, info.firstSnippet);
-        obj.put(CONV_FIRST_UNREAD_SNIPPET, info.firstUnreadSnippet);
-        obj.put(CONV_LAST_SNIPPET, info.lastSnippet);
-        JSONArray array = new JSONArray();
-        for (MessageInfo msgInfo : info.messageInfos) {
-            array.put(MessageInfo.toJSON(msgInfo));
-        }
-        obj.put(CONV_MESSAGES, array.toString());
-        return obj;
-    }
-
-    public static String toString(ConversationInfo info) throws JSONException {
-=======
     public static String toString(ConversationInfo info) {
->>>>>>> abb78177
         if (info == null) {
             return null;
         }
@@ -126,24 +68,6 @@ public class ConversationInfo {
         return builder.toString();
     }
 
-<<<<<<< HEAD
-    public static ConversationInfo fromJSON(JSONObject obj) throws JSONException {
-        ConversationInfo info = new ConversationInfo(obj.getInt(CONV_MESSAGE_COUNT),
-                obj.getInt(CONV_DRAFT_COUNT), obj.optString(CONV_FIRST_SNIPPET),
-                obj.optString(CONV_FIRST_UNREAD_SNIPPET), obj.optString(CONV_LAST_SNIPPET),
-                obj.optString(CONV_SENDERS_DEPRECATED));
-        JSONArray array = new JSONArray(obj.getString(CONV_MESSAGES));
-        for (int i = 0; i < array.length(); i++) {
-            info.addMessage(MessageInfo.fromJSON(array.getJSONObject(i)));
-||||||| merged common ancestors
-    public static ConversationInfo fromJSON(JSONObject obj) throws JSONException {
-        ConversationInfo info = new ConversationInfo(obj.getInt(CONV_MESSAGE_COUNT),
-                obj.getInt(CONV_DRAFT_COUNT), obj.optString(CONV_FIRST_SNIPPET),
-                obj.optString(CONV_FIRST_UNREAD_SNIPPET), obj.optString(CONV_LAST_SNIPPET));
-        JSONArray array = new JSONArray(obj.getString(CONV_MESSAGES));
-        for (int i = 0; i < array.length(); i++) {
-            info.addMessage(MessageInfo.fromJSON(array.getJSONObject(i)));
-=======
     private static String getMessageInfoString(ConversationInfo info) {
         // Create a string of all the messge infos
         StringBuilder builder = new StringBuilder();
@@ -154,7 +78,6 @@ public class ConversationInfo {
                 builder.append(MESSAGE_SPLIT);
             }
             i++;
->>>>>>> abb78177
         }
         return builder.toString();
     }
@@ -200,5 +123,11 @@ public class ConversationInfo {
         } else {
             firstSnippet = firstUnreadSnippet;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return messageCount ^ draftCount ^ firstSnippet.hashCode() ^ lastSnippet.hashCode()
+                ^ firstUnreadSnippet.hashCode() ^ messageInfos.hashCode();
     }
 }
