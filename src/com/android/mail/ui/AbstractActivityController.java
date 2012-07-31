@@ -794,7 +794,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
         // apply auto-advance logic (with an empty destruction target since nothing is going away)
         final Conversation next = mTracker.getNextConversation(
-                Settings.getAutoAdvanceSetting(mAccount.settings), null /* target */, conv);
+                Settings.getAutoAdvanceSetting(mAccount.settings), null /* target */);
         LogUtils.d(LOG_TAG, "mark messages unread: showing %s next.", next);
         showConversation(next);
     }
@@ -896,8 +896,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 && Conversation.contains(target, mCurrentConversation);
         if (currentConversationInView) {
             final Conversation next = mTracker.getNextConversation(
-                    Settings.getAutoAdvanceSetting(mAccount.settings), target,
-                    mCurrentConversation);
+                    Settings.getAutoAdvanceSetting(mAccount.settings), target);
             LogUtils.d(LOG_TAG, "requestDelete: showing %s next.", next);
             showConversation(next);
         }
