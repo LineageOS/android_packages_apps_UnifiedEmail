@@ -217,7 +217,7 @@ public class ConversationItemViewModel {
      * Returns the hashcode to compare if the data in the header is valid.
      */
     private static int getHashCode(Context context, String dateText, Object convInfo,
-            String rawFolders, boolean starred) {
+            String rawFolders, boolean starred, boolean read) {
         if (dateText == null) {
             return -1;
         }
@@ -225,7 +225,7 @@ public class ConversationItemViewModel {
             rawFolders = "";
         }
         return convInfo.hashCode() ^ dateText.hashCode() ^ rawFolders.hashCode()
-                ^ (starred ? 1 : 0);
+                ^ (starred ? 1 : 0) ^ (read ? 1 : 0);
     }
 
     /**
@@ -247,7 +247,7 @@ public class ConversationItemViewModel {
      */
     void validate(Context context) {
         mDataHashCode = getHashCode(context, dateText, getConvInfo(),
-                conversation.getRawFoldersString(), conversation.starred);
+                conversation.getRawFoldersString(), conversation.starred, conversation.read);
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -256,7 +256,7 @@ public class ConversationItemViewModel {
      */
     boolean isDataValid(Context context) {
         return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
-                conversation.getRawFoldersString(), conversation.starred);
+                conversation.getRawFoldersString(), conversation.starred, conversation.read);
     }
 
     /**
