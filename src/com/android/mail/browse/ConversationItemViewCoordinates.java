@@ -41,7 +41,7 @@ import com.android.mail.ui.ViewMode;
 public class ConversationItemViewCoordinates {
     // Modes.
     private static final int WIDE_MODE = 0;
-    private static final int NORMAL_MODE = 1;
+    static final int NORMAL_MODE = 1;
 
     // Static threshold.
     private static int TOTAL_FOLDER_WIDTH = -1;

@@ -234,12 +234,13 @@ public final class MockUiProvider extends ContentProvider {
                 "firstUnread", "last");
         for (int i = 0; i < messageCount; i++) {
             if (i % 2 == 0) {
-                info.addMessage(new MessageInfo(false, false, i + "Test <testsender@test.com>"));
-            } else if (i % 3 == 0) {
-                info.addMessage(new MessageInfo(true, false, i + "sender@test.com"));
-            } else {
                 info.addMessage(new MessageInfo(false, false,
-                        MessageInfo.SENDER_LIST_TOKEN_ELIDED));
+                        i + "Test <testsender@test.com>", -1));
+            } else if (i % 3 == 0) {
+                info.addMessage(new MessageInfo(true, false, i + "sender@test.com", -1));
+            } else {
+                info.addMessage(new MessageInfo(false, false, MessageInfo.SENDER_LIST_TOKEN_ELIDED,
+                        -1));
             }
         }
         return ConversationInfo.toString(info);
