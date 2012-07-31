@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Browser;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +44,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import com.android.mail.ContactInfo;
 import com.android.mail.ContactInfoSource;
@@ -113,6 +115,8 @@ public final class ConversationViewFragment extends Fragment implements
 
     private ConversationWebView mWebView;
 
+    private View mNewMessageBar;
+
     private HtmlConversationTemplates mTemplates;
 
     private String mBaseUri;
@@ -125,6 +129,7 @@ public final class ConversationViewFragment extends Fragment implements
 
     private ConversationViewAdapter mAdapter;
     private MessageCursor mCursor;
+    private MessageCursor mPendingCursor;
 
     private boolean mViewsCreated;
 
@@ -173,6 +178,7 @@ public final class ConversationViewFragment extends Fragment implements
     private static final String BUNDLE_VIEW_STATE = "viewstate";
 
     private static final boolean DEBUG_DUMP_CONVERSATION_HTML = false;
+    private static final boolean DISABLE_OFFSCREEN_LOADING = false;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -264,6 +270,15 @@ public final class ConversationViewFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.conversation_view, container, false);
         mConversationContainer = (ConversationContainer) rootView
                 .findViewById(R.id.conversation_container);
+
+        mNewMessageBar = mConversationContainer.findViewById(R.id.new_message_notification_bar);
+        mNewMessageBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNewMessageBarClick();
+            }
+        });
+
         mWebView = (ConversationWebView) mConversationContainer.findViewById(R.id.webview);
 
         mWebView.addJavascriptInterface(mJsBridge, "mail");
@@ -445,7 +460,9 @@ public final class ConversationViewFragment extends Fragment implements
      * a folder. This will initiate a data load, and hence must be called on the UI thread.
      */
     private void showConversation() {
-        if (!mUserVisible && mConversation.getNumMessages() > mMaxAutoLoadMessages) {
+        final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING
+                || (mConversation.getNumMessages() > mMaxAutoLoadMessages);
+        if (!mUserVisible && disableOffscreenLoading) {
             LogUtils.v(LOG_TAG, "Fragment not user-visible, not showing conversation: %s",
                     mConversation.uri);
             mDeferredConversationLoad = true;
@@ -513,6 +530,11 @@ public final class ConversationViewFragment extends Fragment implements
 
         mAdapter.clear();
 
+        // re-evaluate the message parts of the view state, since the messages may have changed
+        // since the previous render
+        final ConversationViewState prevState = mViewState;
+        mViewState = new ConversationViewState(prevState);
+
         // N.B. the units of height for spacers are actually dp and not px because WebView assumes
         // a pixel is an mdpi pixel, unless you set device-dpi.
 
@@ -533,10 +555,11 @@ public final class ConversationViewFragment extends Fragment implements
             final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
             allowNetworkImages |= safeForImages;
 
-            final Boolean savedExpanded = mViewState.getExpandedState(msg);
+            final Boolean savedExpanded = prevState.getExpandedState(msg);
             final boolean expanded;
             if (savedExpanded != null) {
                 expanded = savedExpanded;
+                mViewState.setExpandedState(msg, expanded);
             } else {
                 expanded = !msg.read || msg.starred || messageCursor.isLast();
             }
@@ -772,6 +795,20 @@ public final class ConversationViewFragment extends Fragment implements
         mWebView.loadUrl("javascript:replaceSuperCollapsedBlock(" + item.getStart() + ")");
     }
 
+    private void showNewMessageNotification(NewMessagesInfo info) {
+        final TextView descriptionView = (TextView) mNewMessageBar.findViewById(
+                R.id.new_message_description);
+        descriptionView.setText(info.getNotificationText());
+        mNewMessageBar.setVisibility(View.VISIBLE);
+    }
+
+    private void onNewMessageBarClick() {
+        mNewMessageBar.setVisibility(View.GONE);
+
+        renderConversation(mPendingCursor);
+        mPendingCursor = null;
+    }
+
     private static class MessageLoader extends CursorLoader {
         private boolean mDeliveredFirstResults = false;
         private final Conversation mConversation;
@@ -819,6 +856,16 @@ public final class ConversationViewFragment extends Fragment implements
         return ints;
     }
 
+    @Override
+    public String toString() {
+        // log extra info at DEBUG level or finer
+        final String s = super.toString();
+        if (!LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG) || mConversation == null) {
+            return s;
+        }
+        return "(" + s + " subj=" + mConversation.subject + ")";
+    }
+
     private class ConversationWebViewClient extends WebViewClient {
 
         @Override
@@ -831,8 +878,8 @@ public final class ConversationViewFragment extends Fragment implements
                 return;
             }
 
-            LogUtils.i(LOG_TAG, "IN CVF.onPageFinished, url=%s fragment=%s", url,
-                    ConversationViewFragment.this);
+            LogUtils.i(LOG_TAG, "IN CVF.onPageFinished, url=%s fragment=%s act=%s", url,
+                    ConversationViewFragment.this, getActivity());
 
             super.onPageFinished(view, url);
 
@@ -926,6 +973,32 @@ public final class ConversationViewFragment extends Fragment implements
 
     }
 
+    private class NewMessagesInfo {
+        int count;
+        String senderAddress;
+
+        /**
+         * Return the display text for the new message notification overlay. It will be formatted
+         * appropriately for a single new message vs. multiple new messages.
+         *
+         * @return display text
+         */
+        public String getNotificationText() {
+            final Object param;
+            if (count > 1) {
+                param = count;
+            } else {
+                Address addr = mAddressCache.get(senderAddress);
+                if (addr == null) {
+                    addr = Address.getEmailAddress(senderAddress);
+                    mAddressCache.put(senderAddress, addr);
+                }
+                param = TextUtils.isEmpty(addr.getName()) ? addr.getAddress() : addr.getName();
+            }
+            return getResources().getQuantityString(R.plurals.new_incoming_messages, count, param);
+        }
+    }
+
     private class MessageLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
         @Override
@@ -943,28 +1016,76 @@ public final class ConversationViewFragment extends Fragment implements
                 return;
             }
 
-            // TODO: handle Gmail loading states (like LOADING and ERROR)
-            if (messageCursor.getCount() == 0) {
-                if (mCursor != null) {
-                    // TODO: need to exit this view- conversation may have been deleted, or for
-                    // whatever reason is now invalid
-                } else {
-                    // ignore zero-sized cursors during initial load
-                }
+            if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
+                LogUtils.d(LOG_TAG, "LOADED CONVERSATION= %s", messageCursor.getDebugDump());
+            }
+
+            // ignore cursors that are still loading results
+            if (!messageCursor.isLoaded()) {
                 return;
             }
+
+            // TODO: handle ERROR status
+
+            if (messageCursor.getCount() == 0 && mCursor != null) {
+                // TODO: need to exit this view- conversation may have been deleted, or for
+                // whatever reason is now invalid (e.g. discard single draft)
+                return;
+            }
+
+            if (mCursor != null) {
+                final NewMessagesInfo info = getNewIncomingMessagesInfo(messageCursor);
+
+                if (info.count > 0) {
+                    // don't immediately render new incoming messages from other senders
+                    // (to avoid a new message from losing the user's focus)
+                    //
+                    // hold the new cursor as pending for later render
+                    mPendingCursor = messageCursor;
+                    LogUtils.i(LOG_TAG,
+                            "conversation updated, holding cursor for new incoming message");
+
+                    showNewMessageNotification(info);
+
+                    return;
+                }
+            }
+
+            if (mCursor == null) {
+                LogUtils.i(LOG_TAG, "existing cursor is null, rendering from scratch");
+            } else {
+                // re-render?
+                // or render just those messages that changed?
+                LogUtils.i(LOG_TAG,
+                        "conversation updated, but not due to incoming message. rendering.");
+            }
+            renderConversation(messageCursor);
 
             // TODO: if this is not user-visible, delay render until user-visible fragment is done.
             // This is needed in addition to the showConversation() delay to speed up rotation and
             // restoration.
-
-            renderConversation(messageCursor);
         }
 
         @Override
         public void onLoaderReset(Loader<Cursor> loader) {
             mCursor = null;
             // TODO: null out all Message.mMessageCursor references
+        }
+
+        private NewMessagesInfo getNewIncomingMessagesInfo(MessageCursor newCursor) {
+            final NewMessagesInfo info = new NewMessagesInfo();
+
+            int pos = -1;
+            while (newCursor.moveToPosition(++pos)) {
+                final Message m = newCursor.getMessage();
+                if (!mViewState.contains(m)) {
+                    LogUtils.i(LOG_TAG, "conversation diff: found new msg: %s", m.uri);
+                    // TODO: distinguish ours from theirs
+                    info.count++;
+                    info.senderAddress = m.from;
+                }
+            }
+            return info;
         }
 
     }
