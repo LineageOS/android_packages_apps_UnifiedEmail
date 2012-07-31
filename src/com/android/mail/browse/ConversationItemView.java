@@ -74,8 +74,6 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
-import java.util.ArrayList;
-
 public class ConversationItemView extends View implements SwipeableItemView {
     // Timer.
     private static int sLayoutCount = 0;
@@ -800,45 +798,33 @@ public class ConversationItemView extends View implements SwipeableItemView {
             if (ellipsize) {
                 break;
             }
-            // New line and ellipsize text if needed.
-            ellipsizedText = null;
             CharacterStyle[] spans = sender.getSpans(0, sender.length(), CharacterStyle.class);
             // There is only 1 character style span.
             if (spans.length > 0) {
                 spans[0].updateDrawState(sPaint);
             }
+            // If there are already senders present in this string, we need to
+            // make sure we prepend the dividing token
+            if (builder.length() > 0) {
+                sender = copyStyles(spans, SENDERS_SPLIT_TOKEN + sender);
+            }
+            // Measure the width of the current sender and make sure we have space
             width = (int) sPaint.measureText(sender.toString());
             if (!canFitFragment(totalWidth + width, currentLine, fixedWidth)) {
                 // The text is too long, new line won't help. We have to
                 // ellipsize text.
-                if (totalWidth == 0) {
-                    ellipsize = true;
-                } else {
-                    // New line.
-                    if (currentLine < mCoordinates.sendersLineCount) {
-                        currentLine++;
-                        sendersY += mCoordinates.sendersLineHeight;
-                        totalWidth = 0;
-                        // The text is still too long, we have to ellipsize
-                        // text.
-                        if (totalWidth + width > mSendersWidth) {
-                            ellipsize = true;
-                        }
-                    } else {
-                        ellipsize = true;
-                    }
+                ellipsize = true;
+                width = mSendersWidth - totalWidth;
+                // No more new line, we have to reserve width for fixed
+                // fragments.
+                if (currentLine == mCoordinates.sendersLineCount) {
+                    width -= fixedWidth;
                 }
-                if (ellipsize) {
-                    width = mSendersWidth - totalWidth;
-                    // No more new line, we have to reserve width for fixed
-                    // fragments.
-                    if (currentLine == mCoordinates.sendersLineCount) {
-                        width -= fixedWidth;
-                    }
-                    ellipsizedText = copyStyles(spans,
-                            TextUtils.ellipsize(sender, sPaint, width, TruncateAt.END));
-                    width = (int) sPaint.measureText(ellipsizedText.toString());
-                }
+                ellipsizedText = copyStyles(spans,
+                        TextUtils.ellipsize(sender, sPaint, width, TruncateAt.END));
+                width = (int) sPaint.measureText(ellipsizedText.toString());
+            } else {
+                ellipsizedText = null;
             }
             totalWidth += width;
 
@@ -846,12 +832,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             if (ellipsizedText != null) {
                 fragmentDisplayText = ellipsizedText;
             } else {
-                // Prepend the dividing token, unless this is the first sender.
-                if (builder.length() > 0) {
-                    fragmentDisplayText = copyStyles(spans, SENDERS_SPLIT_TOKEN + sender);
-                } else {
-                    fragmentDisplayText = sender;
-                }
+                fragmentDisplayText = sender;
             }
             builder.append(fragmentDisplayText);
         }
