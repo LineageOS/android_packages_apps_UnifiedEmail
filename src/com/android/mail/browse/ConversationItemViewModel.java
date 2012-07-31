@@ -56,12 +56,8 @@ public class ConversationItemViewModel {
     private int mDataHashCode;
     private int mLayoutHashCode;
 
-    // Star
-    boolean starred;
     // Unread
     boolean unread;
-
-    Bitmap starBitmap;
 
     // Date
     String dateText;
@@ -153,7 +149,6 @@ public class ConversationItemViewModel {
             header.faded = false;
             header.checkboxVisible = true;
             header.conversation = conv;
-            header.starred = conv.starred;
             header.unread = !conv.read;
             header.rawFolders = conv.getRawFolders();
             header.personalLevel = conv.personalLevel;
@@ -222,14 +217,15 @@ public class ConversationItemViewModel {
      * Returns the hashcode to compare if the data in the header is valid.
      */
     private static int getHashCode(Context context, String dateText, Object convInfo,
-            String rawFolders) {
+            String rawFolders, boolean starred) {
         if (dateText == null) {
             return -1;
         }
         if (TextUtils.isEmpty(rawFolders)) {
             rawFolders = "";
         }
-        return convInfo.hashCode() ^ dateText.hashCode() ^ rawFolders.hashCode();
+        return convInfo.hashCode() ^ dateText.hashCode() ^ rawFolders.hashCode()
+                ^ (starred ? 1 : 0);
     }
 
     /**
@@ -251,7 +247,7 @@ public class ConversationItemViewModel {
      */
     void validate(Context context) {
         mDataHashCode = getHashCode(context, dateText, getConvInfo(),
-                conversation.getRawFoldersString());
+                conversation.getRawFoldersString(), conversation.starred);
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -260,7 +256,7 @@ public class ConversationItemViewModel {
      */
     boolean isDataValid(Context context) {
         return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
-                conversation.getRawFoldersString());
+                conversation.getRawFoldersString(), conversation.starred);
     }
 
     /**
