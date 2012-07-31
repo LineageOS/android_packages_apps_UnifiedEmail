@@ -230,7 +230,8 @@ public class Conversation implements Parcelable {
     public static final Uri MOVE_CONVERSATIONS_URI = Uri.parse("content://moveconversations");
 
     /**
-     * The column that needs to be updated to change the read state of a conversation.
+     * The column that needs to be updated to change the read state of a
+     * conversation.
      */
     public static final String UPDATE_FOLDER_COLUMN = ConversationColumns.RAW_FOLDERS;
 
@@ -277,9 +278,8 @@ public class Conversation implements Parcelable {
     public static Conversation create(long id, Uri uri, String subject, long dateMs,
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
-            boolean starred, String rawFolders, int convFlags,
-            int personalLevel, boolean spam, boolean phishing, boolean muted, Uri accountUri,
-            ConversationInfo conversationInfo) {
+            boolean starred, String rawFolders, int convFlags, int personalLevel, boolean spam,
+            boolean phishing, boolean muted, Uri accountUri, ConversationInfo conversationInfo) {
 
         final Conversation conversation = new Conversation();
 
@@ -382,7 +382,7 @@ public class Conversation implements Parcelable {
      * Returns true if the URI of the conversation specified as the needle was
      * found in the collection of conversations specified as the haystack. False
      * otherwise. This method is safe to call with null arguments.
-     *
+     * 
      * @param haystack
      * @param needle
      * @return true if the needle was found in the haystack, false otherwise.
@@ -408,7 +408,7 @@ public class Conversation implements Parcelable {
     /**
      * Returns a collection of a single conversation. This method always returns
      * a valid collection even if the input conversation is null.
-     *
+     * 
      * @param in a conversation, possibly null.
      * @return a collection of the conversation.
      */
@@ -432,7 +432,6 @@ public class Conversation implements Parcelable {
 
     /**
      * Create a human-readable string of all the conversations
-     *
      * @param collection Any collection of conversations
      * @return string with a human readable representation of the conversations.
      */
