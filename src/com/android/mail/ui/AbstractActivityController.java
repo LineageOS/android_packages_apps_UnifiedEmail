@@ -83,6 +83,7 @@ import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -1543,11 +1544,18 @@ public abstract class AbstractActivityController implements ActivityController {
                     final Account updatedAccount = new Account(data);
 
                     if (updatedAccount.uri.equals(mAccount.uri)) {
+                        // Keep a reference to the previous settings object
+                        final Settings previousSettings = mAccount.settings;
+
                         // Update the controller's reference to the current account
                         mAccount = updatedAccount;
                         LogUtils.d(LOG_TAG, "AbstractActivityController.onLoadFinished(): "
                                 + "mAccount = %s", mAccount.uri);
-                        notifySettingsChanged();
+
+                        // Only notify about a settings change if something differs
+                        if (!Objects.equal(mAccount.settings, previousSettings)) {
+                            notifySettingsChanged();
+                        }
 
                         // Got an update for the current account
                         final boolean inWaitingMode = inWaitMode();
