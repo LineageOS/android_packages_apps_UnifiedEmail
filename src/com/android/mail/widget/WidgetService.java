@@ -206,7 +206,6 @@ public class WidgetService extends RemoteViewsService {
         private boolean mShouldShowViewMore;
         private boolean mFolderInformationShown = false;
         private WidgetService mService;
-        private int mSenderFormatVersion;
         private String mSendersSplitToken;
 
         public MailFactory(Context context, Intent intent, WidgetService service) {
@@ -355,8 +354,8 @@ public class WidgetService extends RemoteViewsService {
 
                 if (conversation.conversationInfo != null) {
                     senderBuilder = ellipsizeStyledSenders(conversation.conversationInfo,
-                            MAX_SENDERS_LENGTH,
-                            SendersView.format(mContext, conversation.conversationInfo));
+                            MAX_SENDERS_LENGTH, SendersView.format(mContext,
+                                    conversation.conversationInfo, "", MAX_SENDERS_LENGTH));
                 } else {
                     senderBuilder.append(conversation.senders);
                 }
@@ -366,7 +365,7 @@ public class WidgetService extends RemoteViewsService {
 
                 // Load up our remote view.
                 RemoteViews remoteViews = mWidgetConversationViewBuilder.getStyledView(
-                        statusBuilder, date, conversation, mFolder);
+                        statusBuilder, date, conversation, mFolder, senderBuilder);
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation,
@@ -387,7 +386,7 @@ public class WidgetService extends RemoteViewsService {
             // Paint the message info string to see if we lose space.
             int messageInfoChars = messageInfoString.length();
             totalChars += messageInfoChars;
-
+            SpannableString prevSender = null;
             for (SpannableString sender : styledSenders) {
                 // No more width available, we'll only show fixed fragments.
                 if (ellipsize) {
@@ -396,6 +395,17 @@ public class WidgetService extends RemoteViewsService {
                 // New line and ellipsize text if needed.
                 ellipsizedText = null;
                 CharacterStyle[] spans = sender.getSpans(0, sender.length(), CharacterStyle.class);
+                if (SendersView.sElidedString.equals(sender.toString())) {
+                    prevSender = sender;
+                    sender = copyStyles(spans, " "+ sender + " ");
+                } else if (builder.length() > 0
+                        && (prevSender == null || !SendersView.sElidedString.equals(prevSender
+                                .toString()))) {
+                    prevSender = sender;
+                    sender = copyStyles(spans, mSendersSplitToken + sender);
+                } else {
+                    prevSender = sender;
+                }
                 width = sender.length();
                 if (totalChars + width > maxChars) {
                     ellipsize = true;
@@ -413,11 +423,7 @@ public class WidgetService extends RemoteViewsService {
                 } else {
                     // Prepend the dividing token, unless this is the first
                     // sender.
-                    if (builder.length() > 0) {
-                        fragmentDisplayText = copyStyles(spans, mSendersSplitToken + sender);
-                    } else {
-                        fragmentDisplayText = sender;
-                    }
+                    fragmentDisplayText = sender;
                 }
                 builder.append(fragmentDisplayText);
             }
