@@ -756,6 +756,10 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void markConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
             String originalConversationInfo) {
+        // The only caller of this method is the conversation view, from where marking unread should
+        // *always* take you back to list mode.
+        showConversation(null);
+
         // locally mark conversation unread (the provider is supposed to propagate message unread
         // to conversation unread)
         conv.read = false;
@@ -766,7 +770,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 && unreadCount < conv.numMessages);
 
         if (!subsetIsUnread) {
-            markConversationsRead(Collections.singletonList(conv), false /* read */);
+            markConversationsRead(Collections.singletonList(conv), false /* read */,
+                    false /* showNext */);
         } else {
             mConversationListCursor.setConversationColumn(conv.uri, ConversationColumns.READ, 0);
 
@@ -795,13 +800,20 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
             }.run(mResolver, authority, ops);
         }
-        // The only caller of this method is the conversation view, from where marking unread should
-        // *always* take you back to list mode.
-        showConversation(null);
     }
 
     @Override
     public void markConversationsRead(Collection<Conversation> targets, boolean read) {
+        markConversationsRead(targets, read, true /* showNext */);
+    }
+
+    private void markConversationsRead(Collection<Conversation> targets, boolean read,
+            boolean showNext) {
+        // auto-advance if requested and the current conversation is being marked unread
+        if (showNext && !read) {
+            showNextConversation(targets);
+        }
+
         for (Conversation target : targets) {
             final ContentValues values = new ContentValues();
             values.put(ConversationColumns.READ, read);
@@ -815,6 +827,25 @@ public abstract class AbstractActivityController implements ActivityController {
         // Update the conversations in the selection too.
         for (final Conversation c : targets) {
             c.read = read;
+        }
+    }
+
+    /**
+     * Auto-advance to a different conversation if the currently visible conversation in
+     * conversation mode is affected (deleted, marked unread, etc.).
+     *
+     * <p>Does nothing if outside of conversation mode.
+     *
+     * @param target the set of conversations being deleted/marked unread
+     */
+    private void showNextConversation(Collection<Conversation> target) {
+        final boolean currentConversationInView = (mViewMode.getMode() == ViewMode.CONVERSATION)
+                && Conversation.contains(target, mCurrentConversation);
+        if (currentConversationInView) {
+            final Conversation next = mTracker.getNextConversation(
+                    Settings.getAutoAdvanceSetting(mAccount.settings), target);
+            LogUtils.d(LOG_TAG, "showNextConversation: showing %s next.", next);
+            showConversation(next);
         }
     }
 
@@ -893,14 +924,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // fragment has a chance to delete the conversation, animating it away.
 
         // Update the conversation fragment if the current conversation is deleted.
-        final boolean currentConversationInView = (mViewMode.getMode() == ViewMode.CONVERSATION)
-                && Conversation.contains(target, mCurrentConversation);
-        if (currentConversationInView) {
-            final Conversation next = mTracker.getNextConversation(
-                    Settings.getAutoAdvanceSetting(mAccount.settings), target);
-            LogUtils.d(LOG_TAG, "requestDelete: showing %s next.", next);
-            showConversation(next);
-        }
+        showNextConversation(target);
         // The conversation list deletes and performs the action if it exists.
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
