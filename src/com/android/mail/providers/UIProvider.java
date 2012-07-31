@@ -126,7 +126,8 @@ public class UIProvider {
             AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME,
             AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
             AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
-            AccountColumns.SettingsColumns.SWIPE
+            AccountColumns.SettingsColumns.SWIPE,
+            AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -167,6 +168,7 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 34;
     public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 35;
     public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 36;
+    public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 37;
 
     public static final class AccountCapabilities {
         /**
@@ -489,6 +491,10 @@ public class UIProvider {
              * Integer column containing a value matching one of the constants from {@link Swipe}
              */
             public static final String SWIPE = "swipe";
+            /**
+             * Boolean column containing whether priority inbox arrows are enabled.
+             */
+            public static final String PRIORITY_ARROWS_ENABLED = "priority_inbox_arrows_enabled";
         }
     }
 
