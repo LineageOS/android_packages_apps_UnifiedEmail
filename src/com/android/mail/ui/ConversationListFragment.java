@@ -514,7 +514,7 @@ public final class ConversationListFragment extends ListFragment implements
             mListView.enableSwipe(false);
         } else {
             int action;
-            if (swipeSetting == Swipe.ARCHIVE
+            if (!isSearchResult() && swipeSetting == Swipe.ARCHIVE
                     && mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE)) {
                 action = mFolder != null && mFolder.type == UIProvider.FolderType.INBOX ?
                         R.id.archive : R.id.change_folder;
