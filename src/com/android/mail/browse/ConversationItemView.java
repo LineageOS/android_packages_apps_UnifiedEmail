@@ -105,6 +105,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static Bitmap STATE_CALENDAR_INVITE;
 
     private static String SENDERS_SPLIT_TOKEN;
+    private static String ELIDED_PADDING_TOKEN;
 
     // Static colors.
     private static int DEFAULT_TEXT_COLOR;
@@ -169,10 +170,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private Bitmap sDateBackgroundAttachment;
     private Bitmap sDateBackgroundNoAttachment;
     private static int sUndoAnimationOffset;
-    private static CharSequence sDraftSingularString;
-    private static CharSequence sDraftPluralString;
-    private static String sDraftCountFormatString;
-    private static ForegroundColorSpan sDraftsStyleSpan;
     private static Bitmap MORE_FOLDERS;
 
     static {
@@ -370,6 +367,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             // Initialize static color.
             sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
             SENDERS_SPLIT_TOKEN = res.getString(R.string.senders_split_token);
+            ELIDED_PADDING_TOKEN = res.getString(R.string.elided_padding_token);
         }
     }
 
@@ -560,8 +558,16 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         // Parse senders fragments.
         if (mHeader.conversation.conversationInfo != null) {
-            mHeader.styledSenders = SendersView.format(getContext(),
+            Context context = getContext();
+            mHeader.messageInfoString = SendersView.createMessageInfo(context,
                     mHeader.conversation.conversationInfo);
+            int maxChars = ConversationItemViewCoordinates.getSubjectLength(context,
+                    ConversationItemViewCoordinates.getMode(context, mViewMode),
+                    mHeader.folderDisplayer != null && mHeader.folderDisplayer.mFoldersCount > 0,
+                    mHeader.conversation.hasAttachments);
+            mHeader.styledSenders = SendersView.format(context,
+                    mHeader.conversation.conversationInfo, mHeader.messageInfoString.toString(),
+                    maxChars);
         } else {
             mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode);
         }
@@ -734,49 +740,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
         pauseTimer(PERF_TAG_CALCULATE_COORDINATES);
     }
 
-    // The rules for displaying message info are as follows:
-    // 1) Any DRAFT text is always preceded by ", "
-    // 2) Any COUNT of messages > 1 is always preceded by " "
-    // 3) If there is a COUNT > 1, it is always displayed before DRAFT text
-    private SpannableStringBuilder createMessageInfo() {
-        SpannableStringBuilder messageInfo = new SpannableStringBuilder();
-        if (mHeader.conversation.conversationInfo != null) {
-            int count = mHeader.conversation.conversationInfo.messageCount;
-            int draftCount = mHeader.conversation.conversationInfo.draftCount;
-            if (count > 0 || draftCount <= 0) {
-                messageInfo.append(" ");
-            }
-            if (count > 1) {
-                messageInfo.append(count + "");
-            }
-            if (draftCount > 0) {
-                getDraftResources();
-                messageInfo.append(SENDERS_SPLIT_TOKEN);
-                SpannableStringBuilder draftString = new SpannableStringBuilder();
-                if (draftCount == 1) {
-                    draftString.append(sDraftSingularString);
-                } else {
-                    draftString.append(sDraftPluralString
-                            + String.format(sDraftCountFormatString, draftCount));
-                }
-                draftString.setSpan(CharacterStyle.wrap(sDraftsStyleSpan), 0, draftString.length(),
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                messageInfo.append(draftString);
-            }
-        }
-        return messageInfo;
-    }
-
-    private void getDraftResources() {
-        Resources res = getContext().getResources();
-        if (sDraftSingularString == null) {
-            sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
-            sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
-            sDraftCountFormatString = res.getString(R.string.draft_count_format);
-            sDraftsStyleSpan = new ForegroundColorSpan(res.getColor(R.color.drafts));
-        }
-    }
-
     // The rules for displaying ellipsized senders are as follows:
     // 1) If there is message info (either a COUNT or DRAFT info to display), it MUST be shown
     // 2) If senders do not fit, ellipsize the last one that does fit, and stop
@@ -788,11 +751,11 @@ public class ConversationItemView extends View implements SwipeableItemView {
         boolean ellipsize = false;
         SpannableString ellipsizedText;
         int width;
-        SpannableStringBuilder messageInfoString = createMessageInfo();
+        SpannableStringBuilder messageInfoString = mHeader.messageInfoString;
         // Paint the message info string to see if we lose space.
         float messageInfoWidth = sPaint.measureText(messageInfoString.toString());
         totalWidth += messageInfoWidth;
-
+        SpannableString prevSender = null;
         for (SpannableString sender : mHeader.styledSenders) {
             // No more width available, we'll only show fixed fragments.
             if (ellipsize) {
@@ -805,8 +768,16 @@ public class ConversationItemView extends View implements SwipeableItemView {
             }
             // If there are already senders present in this string, we need to
             // make sure we prepend the dividing token
-            if (builder.length() > 0) {
+            if (SendersView.sElidedString.equals(sender.toString())) {
+                prevSender = sender;
+                sender = copyStyles(spans, ELIDED_PADDING_TOKEN + sender + ELIDED_PADDING_TOKEN);
+            } else if (builder.length() > 0
+                    && (prevSender == null || !SendersView.sElidedString.equals(prevSender
+                            .toString()))) {
+                prevSender = sender;
                 sender = copyStyles(spans, SENDERS_SPLIT_TOKEN + sender);
+            } else {
+                prevSender = sender;
             }
             // Measure the width of the current sender and make sure we have space
             width = (int) sPaint.measureText(sender.toString());
