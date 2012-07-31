@@ -40,6 +40,6 @@ public final class SystemFolderSelectorAdapter extends FolderSelectorAdapter {
     protected boolean meetsRequirements(Folder folder) {
         // We only want to show system folders.
         return folder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
-                && Folder.isProviderFolder(folder);
+                && folder.isProviderFolder();
     }
 }

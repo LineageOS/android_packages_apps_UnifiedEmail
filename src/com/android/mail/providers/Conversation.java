@@ -380,9 +380,8 @@ public class Conversation implements Parcelable {
         if (cachedDisplayableFolders == null) {
             cachedDisplayableFolders = new ArrayList<Folder>();
             for (Folder folder : folders) {
-                if (TextUtils.isEmpty(folder.name)
-                        || (ignoreFolder != null && ignoreFolder.equals(folder))
-                        || Folder.isProviderFolder(folder)) {
+                // skip the ignoreFolder
+                if (ignoreFolder != null && ignoreFolder.equals(folder)) {
                     continue;
                 }
                 cachedDisplayableFolders.add(folder);

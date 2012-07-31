@@ -153,10 +153,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
     /** An immutable, empty conversation list */
     public static final Collection<Folder> EMPTY = Collections.emptyList();
 
-    public static String SPLITTER = "^*^";
-    private static Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
+    public static final String SPLITTER = "^*^";
+    private static final Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
     public static final String FOLDERS_SPLIT = "^**^";
-    private static Pattern FOLDERS_SPLIT_REGEX = Pattern.compile("\\^\\*\\*\\^");
+    private static final Pattern FOLDERS_SPLIT_REGEX = Pattern.compile("\\^\\*\\*\\^");
 
     public Folder(Parcel in) {
         id = in.readInt();
@@ -591,14 +591,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
     /**
      * Return if the type of the folder matches a provider defined folder.
      */
-    public static boolean isProviderFolder(Folder folder) {
-        int type = folder.type;
-        return type == UIProvider.FolderType.INBOX ||
-               type == UIProvider.FolderType.DRAFT ||
-               type == UIProvider.FolderType.OUTBOX ||
-               type == UIProvider.FolderType.SENT ||
-               type == UIProvider.FolderType.TRASH ||
-               type == UIProvider.FolderType.SPAM;
+    public boolean isProviderFolder() {
+        return type != UIProvider.FolderType.DEFAULT;
     }
 
     public int getBackgroundColor(int defaultColor) {
