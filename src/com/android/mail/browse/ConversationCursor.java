@@ -777,16 +777,21 @@ public final class ConversationCursor implements Cursor {
             throw new IllegalStateException(
                     "moveToPosition() on disabled cursor: " + mName + "(" + qUri + ")");
         }
-        if (pos == mPosition) return true;
-        if (pos > mPosition) {
+        // Handle the "move to first" case before anything else; moveToPosition(0) in an empty
+        // SQLiteCursor moves the position to 0 when returning false, which we will mirror.
+        // But we don't want to return true on a subsequent "move to first", which we would if we
+        // check pos vs mPosition first
+        if (pos == 0) {
+            return moveToFirst();
+        } else if (pos == mPosition) {
+            return true;
+        } else if (pos > mPosition) {
             while (pos > mPosition) {
                 if (!moveToNext()) {
                     return false;
                 }
             }
             return true;
-        } else if (pos == 0) {
-            return moveToFirst();
         } else {
             while (pos < mPosition) {
                 if (!moveToPrevious()) {
