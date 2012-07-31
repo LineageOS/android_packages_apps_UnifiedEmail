@@ -286,19 +286,4 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
 
         return list;
     }
-
-    private List<Attachment> getAllAttachments() {
-        final Cursor cursor = getCursor();
-
-        if (cursor == null || cursor.isClosed() || !cursor.moveToFirst()) {
-            return null;
-        }
-
-        List<Attachment> list = Lists.newArrayList();
-        do {
-            list.add(new Attachment(cursor));
-        } while (cursor.moveToNext());
-
-        return list;
-    }
 }

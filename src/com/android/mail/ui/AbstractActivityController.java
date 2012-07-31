@@ -792,7 +792,11 @@ public abstract class AbstractActivityController implements ActivityController {
             }.run(mResolver, authority, ops);
         }
 
-        mViewMode.enterConversationListMode();
+        // apply auto-advance logic (with an empty destruction target since nothing is going away)
+        final Conversation next = mTracker.getNextConversation(
+                Settings.getAutoAdvanceSetting(mAccount.settings), null /* target */, conv);
+        LogUtils.d(LOG_TAG, "mark messages unread: showing %s next.", next);
+        showConversation(next);
     }
 
     @Override

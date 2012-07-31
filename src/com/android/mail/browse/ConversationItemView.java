@@ -521,9 +521,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         pauseTimer(PERF_TAG_CALCULATE_FOLDERS);
 
-        // Star.
-        mHeader.starBitmap = mHeader.starred ? STAR_ON : STAR_OFF;
-
         mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
                 mHeader.conversation.dateMs).toString();
 
@@ -1088,7 +1085,11 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
 
         // Star.
-        canvas.drawBitmap(mHeader.starBitmap, mCoordinates.starX, mCoordinates.starY, sPaint);
+        canvas.drawBitmap(getStarBitmap(), mCoordinates.starX, mCoordinates.starY, sPaint);
+    }
+
+    private Bitmap getStarBitmap() {
+        return mHeader.conversation.starred ? STAR_ON : STAR_OFF;
     }
 
     private Bitmap getDateBackground(boolean hasAttachments) {
@@ -1187,14 +1188,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
      * Toggle the star on this view and update the conversation.
      */
     public void toggleStar() {
-        mHeader.starred = !mHeader.starred;
-        mHeader.starBitmap = mHeader.starred ? STAR_ON : STAR_OFF;
+        mHeader.conversation.starred = !mHeader.conversation.starred;
+        Bitmap starBitmap = getStarBitmap();
         postInvalidate(mCoordinates.starX, mCoordinates.starY, mCoordinates.starX
-                + mHeader.starBitmap.getWidth(),
-                mCoordinates.starY + mHeader.starBitmap.getHeight());
+                + starBitmap.getWidth(),
+                mCoordinates.starY + starBitmap.getHeight());
         ConversationCursor cursor = (ConversationCursor)mAdapter.getCursor();
         cursor.updateBoolean(mContext, mHeader.conversation, ConversationColumns.STARRED,
-                mHeader.starred);
+                mHeader.conversation.starred);
     }
 
     private boolean isTouchInCheckmark(float x, float y) {
