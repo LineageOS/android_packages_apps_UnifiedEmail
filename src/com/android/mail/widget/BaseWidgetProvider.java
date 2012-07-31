@@ -44,7 +44,6 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
-import org.json.JSONException;
 
 import java.util.Set;
 
@@ -127,14 +126,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         if (ACTION_UPDATE_WIDGET.equals(action)) {
             final int widgetId = intent.getIntExtra(EXTRA_WIDGET_ID, -1);
             final Account account = Account.newinstance(intent.getStringExtra(EXTRA_ACCOUNT));
-            Folder folder;
-
-            try {
-                folder = Folder.fromJSONString(intent.getStringExtra(EXTRA_FOLDER));
-            } catch (JSONException e) {
-                folder = null;
-                LogUtils.wtf(LOG_TAG, e, "unable to parse folder for widget");
-            }
+            Folder folder = Folder.fromString(intent.getStringExtra(EXTRA_FOLDER));
             if (widgetId != -1 && account != null && folder != null) {
                 updateWidgetInternal(context, widgetId, account, folder);
             }
@@ -276,7 +268,7 @@ public abstract class BaseWidgetProvider extends AppWidgetProvider {
         updateWidgetIntent.setType(account.mimeType);
         updateWidgetIntent.putExtra(EXTRA_WIDGET_ID, appWidgetId);
         updateWidgetIntent.putExtra(EXTRA_ACCOUNT, account.serialize());
-        updateWidgetIntent.putExtra(EXTRA_FOLDER, folder.serialize());
+        updateWidgetIntent.putExtra(EXTRA_FOLDER, Folder.toString(folder));
 
         context.sendBroadcast(updateWidgetIntent);
     }

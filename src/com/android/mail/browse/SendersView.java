@@ -109,8 +109,22 @@ public class SendersView extends TextView {
         String display;
         boolean isElided;
         String sender;
+<<<<<<< HEAD
         for (int i = 0; i < conversationInfo.messageCount; i++) {
             sender = conversationInfo.messageInfos.get(i).sender;
+||||||| merged common ancestors
+        CharacterStyle style;
+        MessageInfo currentMessage;
+        for (int i = 0; i < conversationInfo.messageCount; i++) {
+            currentMessage = conversationInfo.messageInfos.get(i);
+            sender = currentMessage.sender;
+=======
+        CharacterStyle style;
+        MessageInfo currentMessage;
+        for (int i = 0; i < conversationInfo.messageInfos.size(); i++) {
+            currentMessage = conversationInfo.messageInfos.get(i);
+            sender = currentMessage.sender;
+>>>>>>> abb78177
             if (TextUtils.isEmpty(sender)) {
                 sender = getMe();
             } else {

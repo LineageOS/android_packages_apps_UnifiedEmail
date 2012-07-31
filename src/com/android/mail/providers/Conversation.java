@@ -24,12 +24,18 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.android.mail.providers.UIProvider.ConversationColumns;
-import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 import com.google.common.collect.ImmutableList;
 
+<<<<<<< HEAD
 import org.json.JSONException;
 
+||||||| merged common ancestors
+import org.json.JSONException;
+
+import java.util.ArrayList;
+=======
+import java.util.ArrayList;
+>>>>>>> abb78177
 import java.util.Collection;
 import java.util.Collections;
 
@@ -101,7 +107,7 @@ public class Conversation implements Parcelable {
     /**
      * @see UIProvider.ConversationColumns#RAW_FOLDERS
      */
-    public String rawFolders;
+    private String rawFolders;
     /**
      * @see UIProvider.ConversationColumns#FLAGS
      */
@@ -143,6 +149,15 @@ public class Conversation implements Parcelable {
     // that is it's now in some other folder(s)
     public transient boolean localDeleteOnUpdate;
 
+<<<<<<< HEAD
+||||||| merged common ancestors
+    private ArrayList<Folder> cachedRawFolders;
+
+=======
+    private ArrayList<Folder> cachedRawFolders;
+    private ArrayList<Folder> cachedDisplayableFolders;
+
+>>>>>>> abb78177
     // Constituents of convFlags below
     // Flag indicating that the item has been deleted, but will continue being
     // shown in the list Delete/Archive of a mostly-dead item will NOT propagate
@@ -182,11 +197,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(muted ? 1 : 0);
         dest.writeInt(color);
         dest.writeParcelable(accountUri, 0);
-        try {
-            dest.writeString(ConversationInfo.toString(conversationInfo));
-        } catch (JSONException e) {
-            LogUtils.d(LOG_TAG, e, "Error adding conversationinfo to parcel");
-        }
+        dest.writeString(ConversationInfo.toString(conversationInfo));
     }
 
     private Conversation(Parcel in) {
@@ -215,11 +226,7 @@ public class Conversation implements Parcelable {
         accountUri = in.readParcelable(null);
         position = NO_POSITION;
         localDeleteOnUpdate = false;
-        try {
-            conversationInfo = ConversationInfo.fromString(in.readString());
-        } catch (JSONException e) {
-            LogUtils.d(LOG_TAG, e, "Error retrieving conversation info from parcel");
-        }
+        conversationInfo = ConversationInfo.fromString(in.readString());
     }
 
     @Override
@@ -249,8 +256,6 @@ public class Conversation implements Parcelable {
     public static final String[] UPDATE_FOLDER_COLUMNS = new String[] {
             ConversationColumns.FOLDER_LIST, ConversationColumns.RAW_FOLDERS
     };
-
-    private static final String LOG_TAG = LogTag.getLogTag();
 
     public Conversation(Cursor cursor) {
         if (cursor != null) {
@@ -285,13 +290,8 @@ public class Conversation implements Parcelable {
             position = NO_POSITION;
             localDeleteOnUpdate = false;
             senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
-            try {
-                conversationInfo = ConversationInfo.fromString(cursor
-                        .getString(UIProvider.CONVERSATION_INFO_COLUMN));
-            } catch (JSONException e) {
-                LogUtils.w(LOG_TAG, e,
-                        "Unable to instantiate ConversationInfo. Try to continue anyway");
-            }
+            conversationInfo = ConversationInfo.fromString(cursor
+                    .getString(UIProvider.CONVERSATION_INFO_COLUMN));
         }
     }
 
@@ -334,6 +334,64 @@ public class Conversation implements Parcelable {
         return conversation;
     }
 
+<<<<<<< HEAD
+||||||| merged common ancestors
+    public ArrayList<Folder> getRawFolders() {
+        if (cachedRawFolders == null) {
+            // Create cached folders.
+            if (!TextUtils.isEmpty(rawFolders)) {
+                cachedRawFolders = Folder.getFoldersArray(rawFolders);
+            } else {
+                return new ArrayList<Folder>();
+            }
+        }
+        return cachedRawFolders;
+    }
+
+=======
+    public ArrayList<Folder> getRawFolders() {
+        if (cachedRawFolders == null) {
+            // Create cached folders.
+            if (!TextUtils.isEmpty(rawFolders)) {
+                cachedRawFolders = Folder.getFoldersArray(rawFolders);
+            } else {
+                return new ArrayList<Folder>();
+            }
+        }
+        return cachedRawFolders;
+    }
+
+    public void setRawFolders(String raw) {
+        clearCachedFolders();
+        rawFolders = raw;
+    }
+
+    public String getRawFoldersString() {
+        return rawFolders;
+    }
+
+    private void clearCachedFolders() {
+        cachedRawFolders = null;
+        cachedDisplayableFolders = null;
+    }
+
+    public ArrayList<Folder> getRawFoldersForDisplay(Folder ignoreFolder) {
+        ArrayList<Folder> folders = getRawFolders();
+        if (cachedDisplayableFolders == null) {
+            cachedDisplayableFolders = new ArrayList<Folder>();
+            for (Folder folder : folders) {
+                if (TextUtils.isEmpty(folder.name)
+                        || (ignoreFolder != null && ignoreFolder.equals(folder))
+                        || Folder.isProviderFolder(folder)) {
+                    continue;
+                }
+                cachedDisplayableFolders.add(folder);
+            }
+        }
+        return cachedDisplayableFolders;
+    }
+
+>>>>>>> abb78177
     @Override
     public boolean equals(Object o) {
         if (o instanceof Conversation) {
@@ -408,6 +466,10 @@ public class Conversation implements Parcelable {
     public String getSnippet() {
         return conversationInfo != null && !TextUtils.isEmpty(conversationInfo.firstSnippet) ?
                 conversationInfo.firstSnippet : snippet;
+    }
+
+    public String getSenders() {
+        return conversationInfo != null ? conversationInfo.firstSnippet : senders;
     }
 
     /**

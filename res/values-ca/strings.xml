@@ -55,7 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Silencia"</string>
     <string name="add_star" msgid="2866003744391266498">"Destaca"</string>
     <string name="remove_star" msgid="4372327933122106128">"No destaquis"</string>
-    <string name="remove_folder" msgid="7297603912332340861">"Elimina la carpeta"</string>
+    <string name="remove_folder" msgid="6098805949226229827">"Elimina de la carpeta"</string>
     <string name="archive" msgid="847250094775910499">"Arxiva"</string>
     <string name="report_spam" msgid="6467567747975393907">"Informa de correu brossa"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Indica que no és correu brossa"</string>
@@ -218,7 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Suprimida"</string>
     <string name="archived" msgid="7533995360704366325">"Arxivat"</string>
-    <string name="folder_removed" msgid="4055635707202229814">"Carpeta eliminada"</string>
+    <string name="folder_removed" msgid="858015177285651764">"S\'ha eliminat de la carpeta"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"Se n\'ha marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a important."</item>
     <item quantity="other" msgid="709648106181749594">"Se n\'han marcat &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; com a importants."</item>

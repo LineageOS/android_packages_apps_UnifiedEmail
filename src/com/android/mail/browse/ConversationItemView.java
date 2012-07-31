@@ -186,8 +186,16 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
 
         @Override
+<<<<<<< HEAD
         public void loadConversationFolders(String rawFolders, Folder ignoreFolder) {
             super.loadConversationFolders(rawFolders, ignoreFolder);
+||||||| merged common ancestors
+        public void loadConversationFolders(ArrayList<Folder> rawFolders, Folder ignoreFolder) {
+            super.loadConversationFolders(rawFolders, ignoreFolder);
+=======
+        public void loadConversationFolders(Conversation conv, Folder ignoreFolder) {
+            super.loadConversationFolders(conv, ignoreFolder);
+>>>>>>> abb78177
 
             mFoldersCount = mFoldersSortedSet.size();
             mHasMoreFolders = mFoldersCount > MAX_DISPLAYED_FOLDERS_COUNT;
@@ -504,7 +512,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Initialize folder displayer.
         if (mCoordinates.showFolders) {
             mHeader.folderDisplayer = new ConversationItemFolderDisplayer(mContext);
-            mHeader.folderDisplayer.loadConversationFolders(mHeader.rawFolders, mDisplayedFolder);
+            mHeader.folderDisplayer.loadConversationFolders(mHeader.conversation, mDisplayedFolder);
         }
 
         pauseTimer(PERF_TAG_CALCULATE_FOLDERS);
@@ -512,7 +520,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Star.
         mHeader.starBitmap = mHeader.starred ? STAR_ON : STAR_OFF;
 
-        // Date.
         mHeader.dateText = DateUtils.getRelativeTimeSpanString(mContext,
                 mHeader.conversation.dateMs).toString();
 

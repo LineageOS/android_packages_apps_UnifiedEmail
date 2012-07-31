@@ -51,8 +51,6 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import org.json.JSONException;
-
 public class WidgetService extends RemoteViewsService {
     /**
      * Lock to avoid race condition between widgets.
@@ -100,7 +98,7 @@ public class WidgetService extends RemoteViewsService {
         final Intent intent = new Intent(context, serviceClass);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.putExtra(BaseWidgetProvider.EXTRA_ACCOUNT, account.serialize());
-        intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER, folder.serialize());
+        intent.putExtra(BaseWidgetProvider.EXTRA_FOLDER, Folder.toString(folder));
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         remoteViews.setRemoteAdapter(R.id.conversation_list, intent);
         // Open mail app when click on header
@@ -210,12 +208,7 @@ public class WidgetService extends RemoteViewsService {
             mAppWidgetId = intent.getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             mAccount = Account.newinstance(intent.getStringExtra(WidgetProvider.EXTRA_ACCOUNT));
-            try {
-                mFolder = Folder.fromJSONString(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
-            } catch (JSONException e) {
-                mFolder = null;
-                LogUtils.wtf(LOG_TAG, e, "unable to parse folder for widget");
-            }
+            mFolder = Folder.fromString(intent.getStringExtra(WidgetProvider.EXTRA_FOLDER));
             mWidgetConversationViewBuilder = new WidgetConversationViewBuilder(context,
                     mAccount);
             mResolver = context.getContentResolver();
@@ -372,9 +365,17 @@ public class WidgetService extends RemoteViewsService {
 
                 // Load up our remote view.
                 RemoteViews remoteViews = mWidgetConversationViewBuilder.getStyledView(
+<<<<<<< HEAD
                         senderBuilder, statusBuilder, date, filterTag(conversation.subject),
                         conversation.snippet, conversation.rawFolders, conversation.hasAttachments,
                         conversation.read, mFolder);
+||||||| merged common ancestors
+                        senderBuilder, statusBuilder, date, filterTag(conversation.subject),
+                        conversation.snippet, conversation.getRawFolders(),
+                        conversation.hasAttachments, conversation.read, mFolder);
+=======
+                        statusBuilder, date, conversation, mFolder);
+>>>>>>> abb78177
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation,

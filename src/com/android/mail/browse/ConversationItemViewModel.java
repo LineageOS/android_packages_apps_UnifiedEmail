@@ -242,7 +242,14 @@ public class ConversationItemViewModel {
      * Marks this header as having valid data and layout.
      */
     void validate(Context context) {
+<<<<<<< HEAD
         mDataHashCode = getHashCode(context, dateText, fromSnippetInstructions);
+||||||| merged common ancestors
+        mDataHashCode = getHashCode(context, dateText, getConvInfo(), conversation.rawFolders);
+=======
+        mDataHashCode = getHashCode(context, dateText, getConvInfo(),
+                conversation.getRawFoldersString());
+>>>>>>> abb78177
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -250,7 +257,15 @@ public class ConversationItemViewModel {
      * Returns if the data in this model is valid.
      */
     boolean isDataValid(Context context) {
+<<<<<<< HEAD
         return mDataHashCode == getHashCode(context, dateText, fromSnippetInstructions);
+||||||| merged common ancestors
+        return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
+                conversation.rawFolders);
+=======
+        return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
+                conversation.getRawFoldersString());
+>>>>>>> abb78177
     }
 
     /**

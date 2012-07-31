@@ -16,17 +16,17 @@
 
 package com.android.mail.providers;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.text.TextUtils;
+
+import java.util.regex.Pattern;
 
 public class MessageInfo {
     public static String SENDER_LIST_TOKEN_ELIDED = " .. ";
-    private static final String MESSAGE_READ = "msg_read";
-    private static final String MESSAGE_STARRED = "msg_starred";
-    private static final String MESSAGE_SENDER = "msg_sender";
     public boolean read;
     public boolean starred;
     public final String sender;
+    public static String MSG_DIVIDER = "^****^";
+    private static Pattern MSG_DIVIDER_REGEX = Pattern.compile("\\^\\*\\*\\*\\*\\^");
 
     public MessageInfo(boolean isRead, boolean isStarred, String senderString) {
         read = isRead;
@@ -38,24 +38,21 @@ public class MessageInfo {
         read = isRead;
     }
 
-    public static JSONObject toJSON(MessageInfo info) throws JSONException {
-        JSONObject obj = new JSONObject();
-        obj.put(MESSAGE_READ, info.read);
-        obj.put(MESSAGE_STARRED, info.starred);
-        obj.put(MESSAGE_SENDER, info.sender);
-        return obj;
+    public static String toString(MessageInfo info) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(info.read ? 1 : 0);
+        builder.append(MSG_DIVIDER);
+        builder.append(info.starred ? 1 : 0);
+        builder.append(MSG_DIVIDER);
+        builder.append(info.sender);
+        return builder.toString();
     }
 
-    public static String toString(MessageInfo info) throws JSONException {
-        return toJSON(info).toString();
-    }
-
-    public static MessageInfo fromJSON(JSONObject obj) throws JSONException {
-        return new MessageInfo(obj.getBoolean(MESSAGE_READ), obj.getBoolean(MESSAGE_STARRED),
-                obj.getString(MESSAGE_SENDER));
-    }
-
-    public static MessageInfo fromString(String inString) throws JSONException {
-        return fromJSON(new JSONObject(inString));
+    public static MessageInfo fromString(String inString) {
+        String[] split = TextUtils.split(inString, MSG_DIVIDER_REGEX);
+        int read = Integer.parseInt(split[0]);
+        int starred = Integer.parseInt(split[1]);
+        String senders = split[2];
+        return new MessageInfo(read != 0, starred != 0, senders);
     }
 }

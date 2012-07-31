@@ -220,6 +220,7 @@ public class SwipeableListView extends ListView implements Callback {
                                 HashMap<Uri, Folder> targetFolders = Folder
                                         .hashMapForFoldersString(target.rawFolders);
                                 targetFolders.remove(folderOp.mFolder.uri);
+<<<<<<< HEAD
                                 target.folderList = Folder.getUriString(targetFolders.values());
                                 target.rawFolders = Folder.getSerializedFolderString(mFolder,
                                         targetFolders.values());
@@ -227,6 +228,18 @@ public class SwipeableListView extends ListView implements Callback {
                                         Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
                                                 target.folderList, target.rawFolders
                                         });
+||||||| merged common ancestors
+                                target.rawFolders = Folder.getSerializedFolderString(targetFolders
+                                        .values());
+                                cc.updateString(context, Conversation.listOf(target),
+                                        Conversation.UPDATE_FOLDER_COLUMN, target.rawFolders);
+=======
+                                target.setRawFolders(Folder.getSerializedFolderString(targetFolders
+                                        .values()));
+                                cc.updateString(context, Conversation.listOf(target),
+                                        Conversation.UPDATE_FOLDER_COLUMN,
+                                        target.getRawFoldersString());
+>>>>>>> abb78177
                             }
                             break;
                         case R.id.delete:
@@ -258,12 +271,24 @@ public class SwipeableListView extends ListView implements Callback {
                 HashMap<Uri, Folder> targetFolders = Folder
                         .hashMapForFoldersString(conv.rawFolders);
                 targetFolders.remove(folderOp.mFolder.uri);
+<<<<<<< HEAD
                 conv.folderList = Folder.getUriString(targetFolders.values());
                 conv.rawFolders = Folder.getSerializedFolderString(mFolder, targetFolders.values());
+||||||| merged common ancestors
+                conv.rawFolders = Folder.getSerializedFolderString(targetFolders.values());
+=======
+                conv.setRawFolders(Folder.getSerializedFolderString(targetFolders.values()));
+>>>>>>> abb78177
                 cc.mostlyDestructiveUpdate(context, Conversation.listOf(conv),
+<<<<<<< HEAD
                         Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
                                 conv.folderList, conv.rawFolders
                         });
+||||||| merged common ancestors
+                        Conversation.UPDATE_FOLDER_COLUMN, conv.rawFolders);
+=======
+                        Conversation.UPDATE_FOLDER_COLUMN, conv.getRawFoldersString());
+>>>>>>> abb78177
                 break;
             case R.id.archive:
                 cc.mostlyArchive(context, Conversation.listOf(conv));

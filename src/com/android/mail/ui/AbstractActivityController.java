@@ -69,13 +69,13 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.FolderWatcher;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
-import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
@@ -86,8 +86,6 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -219,6 +217,16 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final int LOADER_ACCOUNT_INBOX = 5;
     private static final int LOADER_SEARCH = 6;
     private static final int LOADER_ACCOUNT_UPDATE_CURSOR = 7;
+    /**
+     * Guaranteed to be the last loader ID used by the activity. Loaders are owned by Activity or
+     * fragments, and within an activity, loader IDs need to be unique. A hack to ensure that the
+     * {@link FolderWatcher} can create its folder loaders without clashing with the IDs of those
+     * of the {@link AbstractActivityController}. Currently, the {@link FolderWatcher} is the only
+     * other class that uses this activity's LoaderManager. If another class needs activity-level
+     * loaders, consider consolidating the loaders in a central location: a UI-less fragment
+     * perhaps.
+     */
+    public static final int LAST_LOADER_ID = 100;
 
     private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
 
@@ -334,9 +342,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 && Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction());
         mActionBarView = (MailActionBarView) inflater.inflate(
                 isSearch ? R.layout.search_actionbar_view : R.layout.actionbar_view, null);
-        // Why have a different variable for the same thing? We should apply
-        // the same actions
-        // on mActionBarView instead.
         mActionBarView.initialize(mActivity, this, mViewMode, actionBar, mRecentFolderList);
     }
 
@@ -517,7 +522,7 @@ public abstract class AbstractActivityController implements ActivityController {
             LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
             final LoaderManager lm = mActivity.getLoaderManager();
             mActionBarView.setRefreshInProgress(false);
-            setFolder(folder);
+            mFolder = folder;
             mActionBarView.setFolder(mFolder);
 
             // Only when we switch from one folder to another do we want to restart the
@@ -544,17 +549,6 @@ public abstract class AbstractActivityController implements ActivityController {
         } else if (folder == null) {
             LogUtils.wtf(LOG_TAG, "Folder in setFolder is null");
         }
-    }
-
-    /**
-     * Set the folder that is used for all current operations, including what
-     * conversation list to show (if applicable), what item to select in the
-     * FolderListFragment.
-     *
-     * @param folder
-     */
-    public void setFolder(Folder folder) {
-        mFolder = folder;
     }
 
     @Override
@@ -786,9 +780,23 @@ public abstract class AbstractActivityController implements ActivityController {
 
             mConversationListCursor.setConversationColumn(conv.uri, ConversationColumns.READ, 0);
 
+<<<<<<< HEAD
             // locally update conversation's conversationInfo JSON to revert to original version
             mConversationListCursor.setConversationColumn(conv.uri,
                     ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
+||||||| merged common ancestors
+            // locally update conversation's conversationInfo JSON to revert to original version
+            if (originalConversationInfo != null) {
+                mConversationListCursor.setConversationColumn(conv.uri,
+                        ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
+            }
+=======
+            // locally update conversation's conversationInfo to revert to original version
+            if (originalConversationInfo != null) {
+                mConversationListCursor.setConversationColumn(conv.uri,
+                        ConversationColumns.CONVERSATION_INFO, originalConversationInfo);
+            }
+>>>>>>> abb78177
 
             // applyBatch with each CPO as an UPDATE op on each affected message uri
             final ArrayList<ContentProviderOperation> ops = Lists.newArrayList();
@@ -822,13 +830,8 @@ public abstract class AbstractActivityController implements ActivityController {
             values.put(ConversationColumns.READ, read);
             info = target.conversationInfo;
             if (info != null) {
-                try {
-                    info.markRead(read);
-                    values.put(ConversationColumns.CONVERSATION_INFO,
-                            ConversationInfo.toString(info));
-                } catch (JSONException e) {
-                    LogUtils.e(LOG_TAG, e, "Error updating conversation info");
-                }
+                info.markRead(read);
+                values.put(ConversationColumns.CONVERSATION_INFO, ConversationInfo.toString(info));
             }
             updateConversation(Conversation.listOf(target), values);
         }
@@ -1141,12 +1144,7 @@ public abstract class AbstractActivityController implements ActivityController {
             Folder folder = null;
             if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
                 // Open the folder.
-                try {
-                    folder = Folder
-                            .fromJSONString(intent.getStringExtra(Utils.EXTRA_FOLDER));
-                } catch (JSONException e) {
-                    LogUtils.wtf(LOG_TAG, e, "Unable to parse folder extra");
-                }
+                folder = Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER));
             }
             if (folder != null) {
                 onFolderChanged(folder);
@@ -2215,6 +2213,7 @@ public abstract class AbstractActivityController implements ActivityController {
                         targetFolders.remove(op.mFolder.uri);
                     }
                 }
+<<<<<<< HEAD
                 target.folderList = Folder.getUriString(targetFolders.values());
                 target.rawFolders = Folder.getSerializedFolderString(mFolder,
                         targetFolders.values());
@@ -2222,6 +2221,15 @@ public abstract class AbstractActivityController implements ActivityController {
                         Conversation.UPDATE_FOLDER_COLUMNS, new String[] {
                                 target.folderList, target.rawFolders
                         });
+||||||| merged common ancestors
+                target.rawFolders = Folder.getSerializedFolderString(targetFolders.values());
+                mConversationListCursor.updateString(mContext, Conversation.listOf(target),
+                        Conversation.UPDATE_FOLDER_COLUMN, target.rawFolders);
+=======
+                target.setRawFolders(Folder.getSerializedFolderString(targetFolders.values()));
+                mConversationListCursor.updateString(mContext, Conversation.listOf(target),
+                        Conversation.UPDATE_FOLDER_COLUMN, target.getRawFoldersString());
+>>>>>>> abb78177
             }
             refreshConversationList();
             if (mIsSelectedSet) {
