@@ -129,7 +129,6 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         //      4. Attachment Size
         if (attachment.state == AttachmentState.FAILED) {
             actionBar.setSubtitle(getResources().getString(R.string.download_failed));
-            setEmptyViewVisibility(View.GONE);
         } else if (isSavedToExternal) {
             actionBar.setSubtitle(
                     getResources().getString(R.string.saved) + " " + subtitle);
@@ -228,11 +227,18 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         return new Attachment(cursor);
     }
 
-    // Overriding so that if the download fails, we
-    // do not keep showing the circular progress bar
-    public void setEmptyViewVisibility(int visibility) {
-        if (getCurrentAttachment().state != AttachmentState.FAILED) {
-            super.setEmptyViewVisibility(visibility);
+    private List<Attachment> getAllAttachments() {
+        final Cursor cursor = getCursor();
+
+        if (cursor == null || cursor.isClosed() || !cursor.moveToFirst()) {
+            return null;
         }
+
+        List<Attachment> list = Lists.newArrayList();
+        do {
+            list.add(new Attachment(cursor));
+        } while (cursor.moveToNext());
+
+        return list;
     }
 }
