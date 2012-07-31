@@ -358,15 +358,7 @@ public class WidgetService extends RemoteViewsService {
                             MAX_SENDERS_LENGTH,
                             SendersView.format(mContext, conversation.conversationInfo));
                 } else {
-                    SendersView.SendersInfo sendersInfo = new SendersView.SendersInfo(
-                            conversation.senders);
-                    mSenderFormatVersion = sendersInfo.version;
-                    if (mSenderFormatVersion == SendersView.MERGED_FORMATTING) {
-                        Utils.getStyledSenderSnippet(mContext, sendersInfo.text, senderBuilder,
-                                statusBuilder, MAX_SENDERS_LENGTH, false, false, false);
-                    } else {
-                        senderBuilder.append(sendersInfo.text);
-                    }
+                    senderBuilder.append(conversation.senders);
                 }
                 // Get styled date.
                 CharSequence date = DateUtils.getRelativeTimeSpanString(mContext,
