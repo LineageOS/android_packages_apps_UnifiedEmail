@@ -781,8 +781,12 @@ public class Folder implements Parcelable, Comparable<Folder> {
         }
         ArrayList<Folder> folders = new ArrayList<Folder>();
         String[] split = TextUtils.split(rawFolders, FOLDERS_SPLIT_REGEX);
+        Folder f;
         for (String folder : split) {
-            folders.add(Folder.fromString(folder));
+            f = Folder.fromString(folder);
+            if (f != null) {
+                folders.add(f);
+            }
         }
         return folders;
     }
@@ -791,6 +795,9 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Get just the uri's from an arraylist of folders.
      */
     public final static String[] getUriArray(ArrayList<Folder> folders) {
+        if (folders == null || folders.size() == 0) {
+            return new String[0];
+        }
         String[] folderUris = new String[folders.size()];
         int i = 0;
         for (Folder folder : folders) {
