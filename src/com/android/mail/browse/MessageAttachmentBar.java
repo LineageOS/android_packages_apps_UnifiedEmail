@@ -102,7 +102,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
                 attachment.contentType);
 
-        if (prevAttachment == null || TextUtils.equals(attachment.name, prevAttachment.name)) {
+        if (prevAttachment == null || !TextUtils.equals(attachment.name, prevAttachment.name)) {
             mTitle.setText(attachment.name);
         }
 
@@ -275,20 +275,10 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
     public void updateProgress(boolean showProgress) {
         if (mAttachment.isDownloading()) {
             mProgress.setProgress(mAttachment.downloadedSize);
-            setProgressVisible(true);
             mProgress.setIndeterminate(!showProgress);
-        } else {
-            setProgressVisible(false);
-        }
-    }
-
-    private void setProgressVisible(boolean visible) {
-        if (visible) {
             mProgress.setVisibility(VISIBLE);
-            mSubTitle.setVisibility(INVISIBLE);
         } else {
             mProgress.setVisibility(INVISIBLE);
-            mSubTitle.setVisibility(VISIBLE);
         }
     }
 
