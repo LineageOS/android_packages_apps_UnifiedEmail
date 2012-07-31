@@ -335,6 +335,48 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         });
     }
 
+    /**
+     * Test the cases where:
+     * The user is replying to a message sent from one of their custom froms
+     */
+    public void testRecipientsRefMessageReplyAllCustomFrom() {
+        setAccount("account0@mockuiprovider.com");
+        final Message refMessage = getRefMessage();
+        final String customFrom = "CUSTOMaccount0@mockuiprovider.com";
+        refMessage.from = "senderaccount@mockuiprovider.com";
+        refMessage.to = "someotheraccount@mockuiprovider.com, "
+                + "someotheraccount2@mockuiprovider.com, someotheraccount3@mockuiprovider.com, "
+                + customFrom;
+        final ComposeActivity activity = mActivity;
+        final Account account = mAccount;
+        mActivity.mFromSpinner = new FromAddressSpinner(mActivity);
+        ReplyFromAccount a = new ReplyFromAccount(mAccount, mAccount.uri, customFrom,
+                refMessage.from, refMessage.from, true, true);
+        JSONArray array = new JSONArray();
+        array.put(a.serialize());
+        mAccount.accountFromAddresses = array.toString();
+        ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
+                mAccount.name, mAccount.name, mAccount.name, true, false);
+        mActivity.mFromSpinner.setCurrentAccount(currentAccount);
+        mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
+                currentAccount.account);
+        mActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
+                String[] to = activity.getToAddresses();
+                String[] cc = activity.getCcAddresses();
+                String[] bcc = activity.getBccAddresses();
+                String toAsString = TextUtils.join(",", to);
+                String ccAsString = TextUtils.join(",", cc);
+                String bccAsString = TextUtils.join(",", bcc);
+                assertEquals(to.length, 1);
+                assertFalse(toAsString.contains(customFrom));
+                assertFalse(ccAsString.contains(customFrom));
+                assertFalse(bccAsString.contains(customFrom));
+            }
+        });
+    }
+
     private String createAttachmentsJson() {
         Attachment attachment1 = new Attachment();
         attachment1.contentUri = Uri.parse("www.google.com");
