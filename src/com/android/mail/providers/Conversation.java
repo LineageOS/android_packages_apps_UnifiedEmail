@@ -426,10 +426,6 @@ public class Conversation implements Parcelable {
                 conversationInfo.firstSnippet : snippet;
     }
 
-    public String getSenders() {
-        return conversationInfo != null ? conversationInfo.firstSnippet : senders;
-    }
-
     /**
      * Create a human-readable string of all the conversations
      * @param collection Any collection of conversations
