@@ -755,7 +755,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void markConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
-            String originalConversationInfo, boolean forceAdvance, int advance) {
+            String originalConversationInfo) {
         // locally mark conversation unread (the provider is supposed to propagate message unread
         // to conversation unread)
         conv.read = false;
@@ -795,13 +795,9 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
             }.run(mResolver, authority, ops);
         }
-
-        final int autoAdvance = forceAdvance ? advance :
-            Settings.getAutoAdvanceSetting(mAccount.settings);
-        // Apply auto-advance logic (with an empty destruction target since nothing is going away)
-        final Conversation next = mTracker.getNextConversation(autoAdvance, null /* target */);
-        LogUtils.d(LOG_TAG, "mark messages unread: showing %s next.", next);
-        showConversation(next);
+        // The only caller of this method is the conversation view, from where marking unread should
+        // *always* take you back to list mode.
+        showConversation(null);
     }
 
     @Override
