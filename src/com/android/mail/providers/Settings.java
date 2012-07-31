@@ -94,6 +94,8 @@ public class Settings implements Parcelable {
     public final boolean forceReplyFromDefault;
     public final int maxAttachmentSize;
     public final int swipe;
+    /** True if arrows on the priority inbox are enabled. */
+    public final boolean priorityArrowsEnabled;
 
     /** Cached value of hashCode */
     private int mHashCode;
@@ -113,6 +115,7 @@ public class Settings implements Parcelable {
         forceReplyFromDefault = false;
         maxAttachmentSize = 0;
         swipe = DEFAULT;
+        priorityArrowsEnabled = false;
     }
 
     public Settings(Parcel inParcel) {
@@ -130,6 +133,7 @@ public class Settings implements Parcelable {
         forceReplyFromDefault = inParcel.readInt() != 0;
         maxAttachmentSize = inParcel.readInt();
         swipe = inParcel.readInt();
+        priorityArrowsEnabled = inParcel.readInt() != 0;
     }
 
     public Settings(Cursor cursor) {
@@ -149,6 +153,8 @@ public class Settings implements Parcelable {
                 UIProvider.ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN) != 0;
         maxAttachmentSize = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN);
         swipe = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_SWIPE_COLUMN);
+        priorityArrowsEnabled =
+                cursor.getInt(UIProvider.ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN) != 0;
     }
 
     private Settings(JSONObject json) throws JSONException {
@@ -169,6 +175,8 @@ public class Settings implements Parcelable {
                 json.optBoolean(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT);
         maxAttachmentSize = json.getInt(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE);
         swipe = json.optInt(AccountColumns.SettingsColumns.SWIPE);
+        priorityArrowsEnabled =
+                json.optBoolean(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED);
     }
 
     /**
@@ -201,6 +209,7 @@ public class Settings implements Parcelable {
             json.put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
                     maxAttachmentSize);
             json.put(AccountColumns.SettingsColumns.SWIPE, swipe);
+            json.put(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED, priorityArrowsEnabled);
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not serialize settings");
         }
@@ -230,10 +239,10 @@ public class Settings implements Parcelable {
 
     /**
      * Create a new instance of an Settings object using a JSONObject  instance created previously
-     * using {@link #toJSON(). This returns null if the serialized instance was invalid or does
+     * using {@link #toJSON()}. This returns null if the serialized instance was invalid or does
      * not represent a valid account object.
      *
-     * @param serializedAccount
+     * @param json
      * @return
      */
     public static Settings newInstance(JSONObject json) {
@@ -270,6 +279,7 @@ public class Settings implements Parcelable {
         dest.writeInt(forceReplyFromDefault ? 1 : 0);
         dest.writeInt(maxAttachmentSize);
         dest.writeInt(swipe);
+        dest.writeInt(priorityArrowsEnabled ? 1 : 0);
     }
 
     /**
@@ -353,7 +363,9 @@ public class Settings implements Parcelable {
                 && Objects.equal(defaultInbox, that.defaultInbox)
                 // Not checking default Inbox name, since is is identical to the URI check above.
                 && forceReplyFromDefault == that.forceReplyFromDefault
-                && maxAttachmentSize == that.maxAttachmentSize);
+                && maxAttachmentSize == that.maxAttachmentSize
+                && swipe == that.swipe
+                && priorityArrowsEnabled == that.priorityArrowsEnabled);
     }
 
     @Override
@@ -372,6 +384,7 @@ public class Settings implements Parcelable {
         return super.hashCode()
                 ^ Objects.hashCode(signature, autoAdvance, messageTextSize, replyBehavior,
                         hideCheckboxes, confirmDelete, confirmArchive, confirmSend,
-                        defaultInbox, forceReplyFromDefault, maxAttachmentSize);
+                        defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
+                        priorityArrowsEnabled);
     }
 }
