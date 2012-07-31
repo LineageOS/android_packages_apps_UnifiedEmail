@@ -552,11 +552,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     /**
+     * Callback invoked when settings for the current account have been changed.
      * @param updatedSettings
      */
     @Override
     public void onSettingsChanged(Settings updatedSettings) {
         mCachedSettings = updatedSettings;
+        notifyDataSetChanged();
     }
 
     public void onSaveInstanceState(Bundle outState) {
