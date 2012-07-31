@@ -44,6 +44,8 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.Swipe;
 import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -288,7 +290,7 @@ public final class ConversationListFragment extends ListFragment implements
         mViewContext = ConversationListContext.forBundle(args.getBundle(CONVERSATION_LIST_KEY));
         mAccount = mViewContext.account;
         // TODO(mindyp): do we want this as a setting?
-        mSwipeAction = mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE) ?
+        mSwipeAction = mAccount.supportsCapability(AccountCapabilities.ARCHIVE) ?
                 R.id.archive : R.id.delete;
         if (savedState != null) {
             mListSavedState = savedState.getParcelable(LIST_STATE_KEY);
@@ -305,7 +307,7 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setOnItemLongClickListener(this);
-        mListView.enableSwipe(mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO));
+        mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         // Note - we manually save/restore the listview state.
         mListView.setSaveEnabled(false);
 
@@ -510,16 +512,33 @@ public final class ConversationListFragment extends ListFragment implements
     private void setSwipeAction() {
         int swipeSetting = Settings.getSwipeSetting(mAccount.settings);
         if (swipeSetting == Swipe.DISABLED
-                || !mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO)) {
+                || !mAccount.supportsCapability(AccountCapabilities.UNDO)) {
             mListView.enableSwipe(false);
         } else {
             int action;
-            if (!isSearchResult() && swipeSetting == Swipe.ARCHIVE
-                    && mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE)) {
-                action = mFolder != null && mFolder.type == UIProvider.FolderType.INBOX ?
-                        R.id.archive : R.id.change_folder;
-            } else {
+            if (isSearchResult()) {
                 action = R.id.delete;
+            } else if (mFolder == null) {
+                action = R.id.change_folder;
+            } else {
+                // We have enough information to respect user settings.
+                switch (swipeSetting) {
+                    case Swipe.ARCHIVE:
+                        if (mAccount.supportsCapability(AccountCapabilities.ARCHIVE)) {
+                            if (mFolder.supportsCapability(FolderCapabilities.ARCHIVE)) {
+                                action = R.id.archive;
+                                break;
+                            } else if (mFolder.supportsCapability
+                                    (FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)) {
+                                action = R.id.change_folder;
+                                break;
+                            }
+                        }
+                    case Swipe.DELETE:
+                    default:
+                        action = R.id.delete;
+                        break;
+                }
             }
             mListView.setSwipeAction(action);
         }
