@@ -355,9 +355,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * Switch the current account to the one provided as an argument to the method.
-     * @param account
+     * @param account new account
+     * @param shouldReloadInbox whether the default inbox should be reloaded.
      */
-    private void switchAccount(Account account){
+    private void switchAccount(Account account, boolean shouldReloadInbox){
         // Current account is different from the new account, restart loaders and show
         // the account Inbox.
         mAccount = account;
@@ -366,8 +367,9 @@ public abstract class AbstractActivityController implements ActivityController {
         cancelRefreshTask();
         updateSettings();
         mActionBarView.setAccount(mAccount);
-        loadAccountInbox();
-
+        if (shouldReloadInbox) {
+            loadAccountInbox();
+        }
         mRecentFolderList.setCurrentAccount(account);
         restartOptionalLoader(LOADER_RECENT_FOLDERS);
         mActivity.invalidateOptionsMenu();
@@ -380,9 +382,10 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onAccountChanged(Account account) {
         LogUtils.d(LOG_TAG, "onAccountChanged (%s) called.", account);
         // Is the account or account settings different from the existing account?
-        final boolean accountChanged = (mAccount == null) || !account.uri.equals(mAccount.uri)
-                || !account.settings.equals(mAccount.settings);
-        if (accountChanged) {
+        final boolean firstLoad = mAccount == null;
+        final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
+        final boolean settingsChanged = firstLoad || !account.settings.equals(mAccount.settings);
+        if (accountChanged || settingsChanged) {
             if (account != null) {
                 final String accountName = account.name;
                 mHandler.post(new Runnable() {
@@ -392,7 +395,7 @@ public abstract class AbstractActivityController implements ActivityController {
                     }
                 });
             }
-            switchAccount(account);
+            switchAccount(account, accountChanged);
         }
     }
 
