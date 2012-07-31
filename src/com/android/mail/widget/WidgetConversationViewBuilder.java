@@ -162,16 +162,15 @@ public class WidgetConversationViewBuilder {
      * Return the full View
      */
     public RemoteViews getStyledView(CharSequence status, CharSequence date,
-            Conversation conversation, Folder currentFolder) {
+            Conversation conversation, Folder currentFolder, SpannableStringBuilder senders) {
 
         final boolean isUnread = !conversation.read;
-        String senders = conversation.getSenders();
         String subject = conversation.subject;
         String snippet = conversation.getSnippet();
         boolean hasAttachments = conversation.hasAttachments;
 
         // Add style to senders
-        CharSequence styledSenders = addStyle(senders, SENDERS_FONT_SIZE,
+        CharSequence styledSenders = addStyle(senders.toString(), SENDERS_FONT_SIZE,
                 isUnread ? SENDERS_TEXT_COLOR_UNREAD : SENDERS_TEXT_COLOR_READ);
 
         // Add the status indicator
@@ -184,7 +183,8 @@ public class WidgetConversationViewBuilder {
                         isUnread ? SENDERS_TEXT_COLOR_UNREAD : SENDERS_TEXT_COLOR_READ));
             }
 
-            final CharSequence styledStatus = addStyle(status, SENDERS_FONT_SIZE, DRAFT_TEXT_COLOR);
+            final CharSequence styledStatus = addStyle(status, SENDERS_FONT_SIZE,
+                    DRAFT_TEXT_COLOR);
             styledSenders = builder.append(styledStatus);
         }
 

@@ -27,11 +27,13 @@ public class MessageInfo {
     public final String sender;
     public static String MSG_DIVIDER = "^****^";
     private static Pattern MSG_DIVIDER_REGEX = Pattern.compile("\\^\\*\\*\\*\\*\\^");
+    public int priority;
 
-    public MessageInfo(boolean isRead, boolean isStarred, String senderString) {
+    public MessageInfo(boolean isRead, boolean isStarred, String senderString, int p) {
         read = isRead;
         starred = isStarred;
         sender = senderString;
+        priority = p;
     }
 
     public void markRead(boolean isRead) {
@@ -45,6 +47,8 @@ public class MessageInfo {
         builder.append(info.starred ? 1 : 0);
         builder.append(MSG_DIVIDER);
         builder.append(info.sender);
+        builder.append(MSG_DIVIDER);
+        builder.append(info.priority);
         return builder.toString();
     }
 
@@ -53,7 +57,8 @@ public class MessageInfo {
         int read = Integer.parseInt(split[0]);
         int starred = Integer.parseInt(split[1]);
         String senders = split[2];
-        return new MessageInfo(read != 0, starred != 0, senders);
+        int priority = Integer.parseInt(split[3]);
+        return new MessageInfo(read != 0, starred != 0, senders, priority);
     }
 
     @Override

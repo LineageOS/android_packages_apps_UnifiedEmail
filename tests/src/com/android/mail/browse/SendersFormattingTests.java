@@ -35,25 +35,25 @@ public class SendersFormattingTests extends AndroidTestCase {
         // Blank sender == from "me"
         ConversationInfo conv = createConversationInfo(1);
         boolean read = false, starred = false;
-        MessageInfo info = new MessageInfo(read, starred, null);
+        MessageInfo info = new MessageInfo(read, starred, null, -1);
         conv.addMessage(info);
-        SpannableString[] strings = SendersView.format(getContext(), conv);
+        SpannableString[] strings = SendersView.format(getContext(), conv, "", 100);
         assertEquals(strings.length, 1);
         assertEquals(strings[0].toString(), "me");
 
         ConversationInfo conv2 = createConversationInfo(1);
-        MessageInfo info2 = new MessageInfo(read, starred, "");
+        MessageInfo info2 = new MessageInfo(read, starred, "", -1);
         conv2.addMessage(info2);
-        strings = SendersView.format(getContext(), conv);
+        strings = SendersView.format(getContext(), conv, "", 100);
         assertEquals(strings.length, 1);
         assertEquals(strings[0].toString(), "me");
 
         ConversationInfo conv3 = createConversationInfo(2);
-        MessageInfo info3 = new MessageInfo(read, starred, "");
+        MessageInfo info3 = new MessageInfo(read, starred, "", -1);
         conv3.addMessage(info3);
-        MessageInfo info4 = new MessageInfo(read, starred, "");
+        MessageInfo info4 = new MessageInfo(read, starred, "", -1);
         conv3.addMessage(info4);
-        strings = SendersView.format(getContext(), conv);
+        strings = SendersView.format(getContext(), conv, "", 100);
         assertEquals(strings.length, 1);
         assertEquals(strings[0].toString(), "me");
     }
@@ -63,24 +63,12 @@ public class SendersFormattingTests extends AndroidTestCase {
         ConversationInfo conv = createConversationInfo(2);
         boolean read = false, starred = false;
         String sender = "sender@sender.com";
-        MessageInfo info = new MessageInfo(read, starred, sender);
+        MessageInfo info = new MessageInfo(read, starred, sender, -1);
         conv.addMessage(info);
-        MessageInfo info2 = new MessageInfo(read, starred, sender);
+        MessageInfo info2 = new MessageInfo(read, starred, sender, -1);
         conv.addMessage(info2);
-        SpannableString[] strings = SendersView.format(getContext(), conv);
+        SpannableString[] strings = SendersView.format(getContext(), conv, "", 100);
         assertEquals(strings.length, 1);
         assertEquals(strings[0].toString(), sender);
-
-        // Test that the 2nd instance of the duped sender shows and not the first.
-        ConversationInfo conv2 = createConversationInfo(3);
-        String sender2 = "sender2@sender.com";
-        conv2.addMessage(info);
-        MessageInfo info3 = new MessageInfo(read, starred, sender2);
-        conv2.addMessage(info3);
-        conv2.addMessage(info2);
-        strings = SendersView.format(getContext(), conv2);
-        assertEquals(strings.length, 2);
-        assertEquals(strings[0].toString(), sender2);
-        assertEquals(strings[1].toString(), sender);
     }
 }
