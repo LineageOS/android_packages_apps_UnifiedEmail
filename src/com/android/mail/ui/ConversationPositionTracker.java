@@ -55,6 +55,7 @@ public class ConversationPositionTracker {
      * Constructs a position tracker that doesn't point to any specific conversation.
      */
     public ConversationPositionTracker() {
+        // Do nothing.
     }
 
     /** Move cursor to a specific position and return the conversation there */
@@ -80,7 +81,7 @@ public class ConversationPositionTracker {
      * @return the {@link Conversation} of the newer conversation by one position. If no such
      * conversation exists, this method returns null.
      */
-    public Conversation getNewer(Collection<Conversation> victims, Conversation current) {
+    private Conversation getNewer(Collection<Conversation> victims) {
         int pos = calculatePosition();
         if (!isDataLoaded() || pos < 0) {
             return null;
@@ -102,7 +103,7 @@ public class ConversationPositionTracker {
      * @return the {@link Conversation} of the older conversation by one spot. If no such
      * conversation exists, this method returns null.
      */
-    public Conversation getOlder(Collection<Conversation> victims, Conversation current) {
+    private Conversation getOlder(Collection<Conversation> victims) {
         int pos = calculatePosition();
         if (!isDataLoaded() || pos < 0) {
             return null;
@@ -219,14 +220,15 @@ public class ConversationPositionTracker {
      * returns null.
      * @param autoAdvance the auto advance preference for the user as an
      * {@link Settings#autoAdvance} value.
+     * @param mTarget conversations to overlook while finding the next conversation. (These are
+     * usually the conversations to be deleted.)
      * @return
      */
-    public Conversation getNextConversation(int autoAdvance, Collection<Conversation> mTarget,
-            Conversation current) {
+    public Conversation getNextConversation(int autoAdvance, Collection<Conversation> mTarget) {
         final boolean getNewer = autoAdvance == AutoAdvance.NEWER;
         final boolean getOlder = autoAdvance == AutoAdvance.OLDER;
-        final Conversation next = getNewer ? getNewer(mTarget, current) :
-            (getOlder ? getOlder(mTarget, current) : null);
+        final Conversation next = getNewer ? getNewer(mTarget) :
+            (getOlder ? getOlder(mTarget) : null);
         LogUtils.d(LOG_TAG, "ConversationPositionTracker.getNextConversation: " +
                 "getNewer = %b, getOlder = %b, Next conversation is %s",
                 getNewer, getOlder, next);
