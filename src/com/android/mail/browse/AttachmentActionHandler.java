@@ -43,6 +43,7 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
         DialogInterface.OnDismissListener {
     private ProgressDialog mViewProgressDialog;
     private Attachment mAttachment;
+    private boolean mDialogClosed;
 
     private final AttachmentCommandHandler mCommandHandler;
     private final AttachmentViewInterface mView;
@@ -70,6 +71,7 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
         mCommandHandler = new AttachmentCommandHandler(context);
         mView = view;
         mContext = context;
+        mDialogClosed = false;
     }
 
     public void setAttachment(Attachment attachment) {
@@ -137,6 +139,7 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
     @Override
     public void onDismiss(DialogInterface dialog) {
         mViewProgressDialog = null;
+        mDialogClosed = true;
     }
 
     @Override
@@ -151,7 +154,7 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
     public void updateStatus() {
         final boolean showProgress = mAttachment.shouldShowProgress();
 
-        if (mViewProgressDialog != null && mViewProgressDialog.isShowing()) {
+        if (isProgressDialogVisible()) {
             mViewProgressDialog.setProgress(mAttachment.downloadedSize);
             mViewProgressDialog.setIndeterminate(!showProgress);
 
@@ -168,6 +171,10 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
 
         // Call on update status for the view so that it can do some specific things.
         mView.onUpdateStatus();
+    }
+
+    public boolean isProgressDialogVisible() {
+        return mViewProgressDialog != null && mViewProgressDialog.isShowing();
     }
 
     public void shareAttachment() {
@@ -202,5 +209,20 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
             // couldn't find activity for SEND_MULTIPLE intent
             LogUtils.e(LOG_TAG, "Couldn't find Activity for intent", e);
         }
+    }
+
+    /**
+     * Returns true if this is the first time this method has been called after
+     * the progress dialog was closed. Necessary to prevent a brief flicker where the
+     * cancel button would appear after closing the progress dialog. Subsequent
+     * calls to this method will return false until the progress dialog is
+     * opened again.
+     * @return true if this is the first time this method has been called
+     * since a progress dialog was visible. false otherwise.
+     */
+    public boolean dialogJustClosed() {
+        final boolean closed = mDialogClosed;
+        mDialogClosed = false;
+        return closed;
     }
 }

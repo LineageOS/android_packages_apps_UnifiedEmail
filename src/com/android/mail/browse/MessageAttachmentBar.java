@@ -250,6 +250,11 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
      * Update all actions based on current downloading state.
      */
     private void updateActions() {
+        // If the progress dialog is visible, skip any of the updating
+        if (mActionHandler.isProgressDialogVisible() || mActionHandler.dialogJustClosed()) {
+            return;
+        }
+
         // To avoid visibility state transition bugs, every button's visibility should be touched
         // once by this routine.
 
