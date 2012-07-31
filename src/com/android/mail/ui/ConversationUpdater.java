@@ -25,6 +25,7 @@ import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AutoAdvance;
 
 import java.util.Collection;
 import java.util.Set;
@@ -95,9 +96,13 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * or null/empty set to mark the entire conversation unread.
      * @param originalConversationInfo the original unread state of the {@link ConversationInfo}
      * that {@link ConversationCursor} will temporarily use until the commit is complete.
+     * @param forceAutoAdvance set to true if the auto advance behavior is specified in the next
+     * variable.
+     * @param autoadvance the {@link AutoAdvance} value: one of {@link AutoAdvance#LIST},
+     * {@link AutoAdvance#NEWER}, or {@link AutoAdvance#OLDER}.
      */
     void markConversationMessagesUnread(Conversation conv, Set<Uri> unreadMessageUris,
-            String originalConversationInfo);
+            String originalConversationInfo, boolean forceAutoAdvance, int autoadvance);
 
     /**
      * Star a single message within a conversation. This method requires a
