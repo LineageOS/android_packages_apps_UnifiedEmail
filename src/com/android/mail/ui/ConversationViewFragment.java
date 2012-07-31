@@ -70,6 +70,7 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogTag;
@@ -411,9 +412,13 @@ public final class ConversationViewFragment extends Fragment implements
                     mConversation.id);
             return;
         }
-
+        // From inside the conversation view, marking unread should *always* take you back to
+        // list mode.
+        final int backToList = AutoAdvance.LIST;
+        final boolean forceAutoAdvance = true;
         activity.getConversationUpdater().markConversationMessagesUnread(mConversation,
-                mViewState.getUnreadMessageUris(), mViewState.getConversationInfo());
+                mViewState.getUnreadMessageUris(), mViewState.getConversationInfo(),
+                forceAutoAdvance, backToList);
     }
 
     /**
