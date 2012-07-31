@@ -1414,9 +1414,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (!TextUtils.isEmpty(replyToAddress)) {
             toAddresses.add(replyToAddress);
         } else {
-            if (!TextUtils.equals(senderAddress, accountEmail)
-                    && !ReplyFromAccount.isCustomFrom(senderAddress,
-                            mFromSpinner.getReplyFromAccounts())) {
+            if (!recipientMatchesThisAccount(account, senderAddress)) {
                 toAddresses.add(senderAddress);
             } else {
                 // This happens if the user replies to a message they originally
@@ -1429,15 +1427,29 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         return toAddresses;
     }
 
-    private static void addRecipients(String account, Set<String> recipients, String[] addresses) {
+    private void addRecipients(String accountAddress, Set<String> recipients, String[] addresses) {
         for (String email : addresses) {
-            // Do not add this account, or any of the custom froms, to the list
-            // of recipients.
+            // Do not add this account, or any of its custom from addresses, to
+            // the list of recipients.
             final String recipientAddress = Address.getEmailAddress(email).getAddress();
-            if (!account.equalsIgnoreCase(recipientAddress)) {
+            if (!recipientMatchesThisAccount(accountAddress, recipientAddress)) {
                 recipients.add(email.replace("\"\"", ""));
             }
         }
+    }
+
+    /**
+     * A recipient matches this account if it has the same address as the
+     * currently selected account OR one of the custom from addresses associated
+     * with the currently selected account.
+     * @param accountAddress currently selected account
+     * @param recipientAddress address we are comparing with the currently selected account
+     * @return
+     */
+    protected boolean recipientMatchesThisAccount(String accountAddress, String recipientAddress) {
+        return accountAddress.equalsIgnoreCase(recipientAddress)
+                || ReplyFromAccount.isCustomFrom(recipientAddress,
+                        mFromSpinner.getReplyFromAccounts());
     }
 
     private void setSubject(Message refMessage, int action) {
