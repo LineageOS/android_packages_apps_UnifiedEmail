@@ -160,30 +160,22 @@ public class WidgetConversationViewBuilder {
      * Return the full View
      */
     public RemoteViews getStyledView(CharSequence status, CharSequence date,
-            Conversation conversation, Folder currentFolder, SpannableStringBuilder senders) {
+            Conversation conversation, Folder currentFolder, SpannableStringBuilder senders,
+            String subject) {
 
         final boolean isUnread = !conversation.read;
-        String subject = conversation.subject;
         String snippet = conversation.getSnippet();
         boolean hasAttachments = conversation.hasAttachments;
 
-        // Add style to senders
-        CharSequence styledSenders = addStyle(senders.toString(), SENDERS_FONT_SIZE,
-                isUnread ? SENDERS_TEXT_COLOR_UNREAD : SENDERS_TEXT_COLOR_READ);
-
         // Add the status indicator
         if (status.length() > 0) {
-            final SpannableStringBuilder builder = new SpannableStringBuilder(styledSenders);
-
             if (senders.length() > 0) {
-                // TODO(pwestbro) sender formatting should use resources.  Bug 5354473
-                builder.append(addStyle(SENDERS_SPLIT_TOKEN, SENDERS_FONT_SIZE,
+                senders.append(addStyle(SENDERS_SPLIT_TOKEN, SENDERS_FONT_SIZE,
                         isUnread ? SENDERS_TEXT_COLOR_UNREAD : SENDERS_TEXT_COLOR_READ));
             }
 
-            final CharSequence styledStatus = addStyle(status, SENDERS_FONT_SIZE,
-                    DRAFT_TEXT_COLOR);
-            styledSenders = builder.append(styledStatus);
+            final CharSequence styledStatus = addStyle(status, SENDERS_FONT_SIZE, DRAFT_TEXT_COLOR);
+            senders.append(styledStatus);
         }
 
         // Add style to date
@@ -210,7 +202,7 @@ public class WidgetConversationViewBuilder {
         // Inflate and fill out the remote view
         RemoteViews remoteViews = new RemoteViews(
                 mContext.getPackageName(), R.layout.widget_conversation);
-        remoteViews.setTextViewText(R.id.widget_senders, styledSenders);
+        remoteViews.setTextViewText(R.id.widget_senders, senders);
         remoteViews.setTextViewText(R.id.widget_date, styledDate);
         remoteViews.setTextViewText(R.id.widget_subject, styledSubject);
         if (paperclipBitmap != null) {
