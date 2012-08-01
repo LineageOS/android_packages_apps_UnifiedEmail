@@ -2094,7 +2094,7 @@ public abstract class AbstractActivityController implements ActivityController {
         @Override
         public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
             Loader<ConversationCursor> result = new ConversationCursorLoader((Activity) mActivity,
-                    mAccount, mFolder.conversationListUri, mFolder.name);
+                    mAccount, mFolder.conversationListUri, mFolder.name, mListCursorCallbacks);
             return result;
         }
 

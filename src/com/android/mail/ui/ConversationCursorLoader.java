@@ -18,6 +18,8 @@
 package com.android.mail.ui;
 
 import android.app.Activity;
+import android.app.LoaderManager;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.AsyncTaskLoader;
 import android.net.Uri;
 import android.util.Log;
@@ -40,13 +42,16 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
     private boolean mRetain = false;
     private boolean mRetained = false;
     private final String mName;
+    private final LoaderCallbacks<ConversationCursor> mCallbacks;
 
     private static final ArrayList<ConversationCursorLoader> sLoaders =
             new ArrayList<ConversationCursorLoader>();
 
-    public ConversationCursorLoader(Activity activity, Account account, Uri uri, String name) {
+    public ConversationCursorLoader(Activity activity, Account account, Uri uri, String name,
+            LoaderCallbacks<ConversationCursor> callbacks) {
         super(activity);
         mActivity = activity;
+        mCallbacks = callbacks;
         mUri = uri;
         mName = name;
         mInitialConversationLimit =
@@ -90,6 +95,9 @@ public class ConversationCursorLoader extends AsyncTaskLoader<ConversationCursor
             if (DEBUG) {
                 Log.d(TAG, "Reset loader/disable cursor: " + mName);
             }
+            // Make sure we clean up references
+            mCallbacks.onLoaderReset(this);
+            // Mark the cursor as disabled
             mConversationCursor.disable();
             mClosed = true;
             sLoaders.remove(this);
