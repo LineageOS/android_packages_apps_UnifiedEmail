@@ -25,8 +25,7 @@
     <color name="subject_text_color_read">@color/gray_text_color</color>
     <color name="snippet_text_color_read">@color/gray_text_color</color>
     <color name="senders_text_color_read">#555555</color>
-    <color name="date_text_color_unread">@color/senders_text_color_unread</color>
-    <color name="date_text_color_read">@color/senders_text_color_read</color>
+    <color name="date_text_color">@color/senders_text_color_unread</color>
     <color name="folder_list_heading_text_color">@color/gray_text_color</color>
     <color name="subject_text_color">#333333</color>
     <color name="faded_conversation_header">#7f99d6eb</color>
