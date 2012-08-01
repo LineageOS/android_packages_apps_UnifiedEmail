@@ -104,26 +104,24 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static Bitmap STATE_REPLIED_AND_FORWARDED;
     private static Bitmap STATE_CALENDAR_INVITE;
 
-    private static String SENDERS_SPLIT_TOKEN;
-    private static String ELIDED_PADDING_TOKEN;
+    private static String sSendersSplitToken;
+    private static String sElidedPaddingToken;
 
     // Static colors.
-    private static int DEFAULT_TEXT_COLOR;
-    private static int ACTIVATED_TEXT_COLOR;
-    private static int SUBJECT_TEXT_COLOR_READ;
-    private static int SUBJECT_TEXT_COLOR_UNREAD;
-    private static int SNIPPET_TEXT_COLOR_READ;
-    private static int SNIPPET_TEXT_COLOR_UNREAD;
-    private static int SENDERS_TEXT_COLOR_READ;
-    private static int SENDERS_TEXT_COLOR_UNREAD;
-    private static int DATE_TEXT_COLOR_READ;
-    private static int DATE_TEXT_COLOR_UNREAD;
-    private static int DATE_BACKGROUND_PADDING_LEFT;
-    private static int TOUCH_SLOP;
+    private static int sDefaultTextColor;
+    private static int sActivatedTextColor;
+    private static int sSubjectTextColorRead;
+    private static int sSubjectTextColorUnead;
+    private static int sSnippetTextColorRead;
+    private static int sSnippetTextColorUnread;
+    private static int sSendersTextColorRead;
+    private static int sSendersTextColorUnread;
+    private static int sDateTextColor;
+    private static int sDateBackgroundPaddingLeft;
+    private static int sTouchSlop;
     private static int sDateBackgroundHeight;
     private static int sStandardScaledDimen;
     private static int sUndoAnimationDuration;
-    protected static CharacterStyle sNormalTextStyle;
 
     // Static paints.
     private static TextPaint sPaint = new TextPaint();
@@ -347,27 +345,25 @@ public class ConversationItemView extends View implements SwipeableItemView {
                     BitmapFactory.decodeResource(res, R.drawable.ic_badge_invite_holo_light);
 
             // Initialize colors.
-            DEFAULT_TEXT_COLOR = res.getColor(R.color.default_text_color);
-            ACTIVATED_TEXT_COLOR = res.getColor(android.R.color.white);
-            SUBJECT_TEXT_COLOR_READ = res.getColor(R.color.subject_text_color_read);
-            SUBJECT_TEXT_COLOR_UNREAD = res.getColor(R.color.subject_text_color_unread);
-            SNIPPET_TEXT_COLOR_READ = res.getColor(R.color.snippet_text_color_read);
-            SNIPPET_TEXT_COLOR_UNREAD = res.getColor(R.color.snippet_text_color_unread);
-            SENDERS_TEXT_COLOR_READ = res.getColor(R.color.senders_text_color_read);
-            SENDERS_TEXT_COLOR_UNREAD = res.getColor(R.color.senders_text_color_unread);
-            DATE_TEXT_COLOR_READ = res.getColor(R.color.date_text_color_read);
-            DATE_TEXT_COLOR_UNREAD = res.getColor(R.color.date_text_color_unread);
-            DATE_BACKGROUND_PADDING_LEFT = res
+            sDefaultTextColor = res.getColor(R.color.default_text_color);
+            sActivatedTextColor = res.getColor(android.R.color.white);
+            sSubjectTextColorRead = res.getColor(R.color.subject_text_color_read);
+            sSubjectTextColorUnead = res.getColor(R.color.subject_text_color_unread);
+            sSnippetTextColorRead = res.getColor(R.color.snippet_text_color_read);
+            sSnippetTextColorUnread = res.getColor(R.color.snippet_text_color_unread);
+            sSendersTextColorRead = res.getColor(R.color.senders_text_color_read);
+            sSendersTextColorUnread = res.getColor(R.color.senders_text_color_unread);
+            sDateTextColor = res.getColor(R.color.date_text_color);
+            sDateBackgroundPaddingLeft = res
                     .getDimensionPixelSize(R.dimen.date_background_padding_left);
-            TOUCH_SLOP = res.getDimensionPixelSize(R.dimen.touch_slop);
+            sTouchSlop = res.getDimensionPixelSize(R.dimen.touch_slop);
             sDateBackgroundHeight = res.getDimensionPixelSize(R.dimen.date_background_height);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
             sUndoAnimationDuration = res.getInteger(R.integer.undo_animation_duration);
             sUndoAnimationOffset = res.getDimensionPixelOffset(R.dimen.undo_animation_offset);
             // Initialize static color.
-            sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
-            SENDERS_SPLIT_TOKEN = res.getString(R.string.senders_split_token);
-            ELIDED_PADDING_TOKEN = res.getString(R.string.elided_padding_token);
+            sSendersSplitToken = res.getString(R.string.senders_split_token);
+            sElidedPaddingToken = res.getString(R.string.elided_padding_token);
         }
     }
 
@@ -480,7 +476,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             mChecked = mSelectedConversationSet.contains(mHeader.conversation);
         }
         // Update font color.
-        int fontColor = getFontColor(DEFAULT_TEXT_COLOR);
+        int fontColor = getFontColor(sDefaultTextColor);
         boolean fontChanged = false;
         if (mHeader.fontColor != fontColor) {
             fontChanged = true;
@@ -586,10 +582,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private SpannableStringBuilder createSubject(boolean isUnread, boolean activated) {
         final String subject = filterTag(mHeader.conversation.subject);
         final String snippet = mHeader.conversation.getSnippet();
-        int subjectColor = activated ? ACTIVATED_TEXT_COLOR : isUnread ? SUBJECT_TEXT_COLOR_UNREAD
-                : SUBJECT_TEXT_COLOR_READ;
-        int snippetColor = activated ? ACTIVATED_TEXT_COLOR : isUnread ? SNIPPET_TEXT_COLOR_UNREAD
-                : SNIPPET_TEXT_COLOR_READ;
+        int subjectColor = activated ? sActivatedTextColor : isUnread ? sSubjectTextColorUnead
+                : sSubjectTextColorRead;
+        int snippetColor = activated ? sActivatedTextColor : isUnread ? sSnippetTextColorUnread
+                : sSnippetTextColorRead;
         SpannableStringBuilder subjectText = new SpannableStringBuilder(
                 (snippet != null) ? mContext.getString(R.string.subject_and_snippet, subject,
                         snippet) : subject);
@@ -607,7 +603,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     private int getFontColor(int defaultColor) {
-        return isActivated() && mTabletDevice ? ACTIVATED_TEXT_COLOR
+        return isActivated() && mTabletDevice ? sActivatedTextColor
                 : defaultColor;
     }
 
@@ -626,8 +622,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private StaticLayout createSubjectLayout(boolean activated,
             SpannableStringBuilder subjectText) {
         sPaint.setTextSize(mCoordinates.subjectFontSize);
-        sPaint.setColor(activated ? ACTIVATED_TEXT_COLOR
-                : mHeader.unread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ);
+        sPaint.setColor(activated ? sActivatedTextColor
+                : mHeader.unread ? sSubjectTextColorUnead : sSubjectTextColorRead);
         StaticLayout subjectLayout = new StaticLayout(subjectText, sPaint,
                 mCoordinates.subjectWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
         int lineCount = subjectLayout.getLineCount();
@@ -698,34 +694,35 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Layout subject.
         layoutSubject();
 
-        // First pass to calculate width of each fragment.
-        int totalWidth = 0;
-        int fixedWidth = 0;
-        sPaint.setTextSize(mCoordinates.sendersFontSize);
-        sPaint.setTypeface(Typeface.DEFAULT);
-        for (SenderFragment senderFragment : mHeader.senderFragments) {
-            CharacterStyle style = senderFragment.style;
-            int start = senderFragment.start;
-            int end = senderFragment.end;
-            style.updateDrawState(sPaint);
-            senderFragment.width = (int) sPaint.measureText(mHeader.sendersText, start, end);
-            boolean isFixed = senderFragment.isFixed;
-            if (isFixed) {
-                fixedWidth += senderFragment.width;
-            }
-            totalWidth += senderFragment.width;
-        }
-
         // Second pass to layout each fragment.
         int sendersY = mCoordinates.sendersY - mCoordinates.sendersAscent;
-        if (!ConversationItemViewCoordinates.displaySendersInline(mMode)) {
-            sendersY += totalWidth <= mSendersWidth ? mCoordinates.sendersLineHeight / 2 : 0;
-        }
+
         if (mHeader.styledSenders != null) {
-            totalWidth = ellipsizeStyledSenders(fixedWidth, sendersY);
+            ellipsizeStyledSenders();
             mHeader.sendersDisplayLayout = new StaticLayout(mHeader.styledSendersString, sPaint,
                     mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
         } else {
+            // First pass to calculate width of each fragment.
+            int totalWidth = 0;
+            int fixedWidth = 0;
+            sPaint.setTextSize(mCoordinates.sendersFontSize);
+            sPaint.setTypeface(Typeface.DEFAULT);
+            for (SenderFragment senderFragment : mHeader.senderFragments) {
+                CharacterStyle style = senderFragment.style;
+                int start = senderFragment.start;
+                int end = senderFragment.end;
+                style.updateDrawState(sPaint);
+                senderFragment.width = (int) sPaint.measureText(mHeader.sendersText, start, end);
+                boolean isFixed = senderFragment.isFixed;
+                if (isFixed) {
+                    fixedWidth += senderFragment.width;
+                }
+                totalWidth += senderFragment.width;
+            }
+
+            if (!ConversationItemViewCoordinates.displaySendersInline(mMode)) {
+                sendersY += totalWidth <= mSendersWidth ? mCoordinates.sendersLineHeight / 2 : 0;
+            }
             totalWidth = ellipsize(fixedWidth, sendersY);
             mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
                     mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
@@ -744,7 +741,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     // 1) If there is message info (either a COUNT or DRAFT info to display), it MUST be shown
     // 2) If senders do not fit, ellipsize the last one that does fit, and stop
     // appending new senders
-    private int ellipsizeStyledSenders(int fixedWidth, int sendersY) {
+    private int ellipsizeStyledSenders() {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         int totalWidth = 0;
         int currentLine = 1;
@@ -770,27 +767,22 @@ public class ConversationItemView extends View implements SwipeableItemView {
             // make sure we prepend the dividing token
             if (SendersView.sElidedString.equals(sender.toString())) {
                 prevSender = sender;
-                sender = copyStyles(spans, ELIDED_PADDING_TOKEN + sender + ELIDED_PADDING_TOKEN);
+                sender = copyStyles(spans, sElidedPaddingToken + sender + sElidedPaddingToken);
             } else if (builder.length() > 0
                     && (prevSender == null || !SendersView.sElidedString.equals(prevSender
                             .toString()))) {
                 prevSender = sender;
-                sender = copyStyles(spans, SENDERS_SPLIT_TOKEN + sender);
+                sender = copyStyles(spans, sSendersSplitToken + sender);
             } else {
                 prevSender = sender;
             }
             // Measure the width of the current sender and make sure we have space
             width = (int) sPaint.measureText(sender.toString());
-            if (!canFitFragment(totalWidth + width, currentLine, fixedWidth)) {
+            if (width + totalWidth > mSendersWidth) {
                 // The text is too long, new line won't help. We have to
                 // ellipsize text.
                 ellipsize = true;
                 width = mSendersWidth - totalWidth;
-                // No more new line, we have to reserve width for fixed
-                // fragments.
-                if (currentLine == mCoordinates.sendersLineCount) {
-                    width -= fixedWidth;
-                }
                 ellipsizedText = copyStyles(spans,
                         TextUtils.ellipsize(sender, sPaint, width, TruncateAt.END));
                 width = (int) sPaint.measureText(ellipsizedText.toString());
@@ -931,11 +923,17 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         // Senders.
         boolean isUnread = mHeader.unread;
-        sPaint.setTextSize(mCoordinates.sendersFontSize);
-        sPaint.setTypeface(mCoordinates.sendersView.getTypeface(isUnread));
-        int sendersColor = getFontColor(isUnread ? SENDERS_TEXT_COLOR_UNREAD
-                : SENDERS_TEXT_COLOR_READ);
-        sPaint.setColor(sendersColor);
+        // Old style senders; apply text colors/ sizes/ styling.
+        if (mHeader.styledSendersString == null) {
+            sPaint.setTextSize(mCoordinates.sendersFontSize);
+            sPaint.setTypeface(mCoordinates.sendersView.getTypeface(isUnread));
+            int sendersColor = getFontColor(isUnread ? sSendersTextColorUnread
+                    : sSendersTextColorRead);
+            sPaint.setColor(sendersColor);
+        } else {
+            // New style: we just need the font size.
+            sPaint.setTextSize(mCoordinates.sendersFontSize);
+        }
         canvas.save();
         canvas.translate(mCoordinates.sendersX,
                 mCoordinates.sendersY + mHeader.sendersDisplayLayout.getTopPadding());
@@ -982,7 +980,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                             && mHeader.folderDisplayer.hasVisibleFolders()))
                 && ConversationItemViewCoordinates.showAttachmentBackground(mMode)) {
             int leftOffset = (mHeader.conversation.hasAttachments ? mPaperclipX : mDateX)
-                    - DATE_BACKGROUND_PADDING_LEFT;
+                    - sDateBackgroundPaddingLeft;
             int top = mCoordinates.showFolders ? mCoordinates.foldersY : mCoordinates.dateY;
             mHeader.dateBackground = getDateBackground(mHeader.conversation.hasAttachments);
             canvas.drawBitmap(mHeader.dateBackground, leftOffset, top, sPaint);
@@ -1010,7 +1008,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Date.
         sPaint.setTextSize(mCoordinates.dateFontSize);
         sPaint.setTypeface(Typeface.DEFAULT);
-        sPaint.setColor(isUnread ? DATE_TEXT_COLOR_UNREAD : DATE_TEXT_COLOR_READ);
+        sPaint.setColor(sDateTextColor);
         drawText(canvas, mHeader.dateText, mDateX, mCoordinates.dateY - mCoordinates.dateAscent,
                 sPaint);
 
@@ -1045,7 +1043,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     private Bitmap getDateBackground(boolean hasAttachments) {
-        int leftOffset = (hasAttachments ? mPaperclipX : mDateX) - DATE_BACKGROUND_PADDING_LEFT;
+        int leftOffset = (hasAttachments ? mPaperclipX : mDateX) - sDateBackgroundPaddingLeft;
         if (hasAttachments) {
             if (sDateBackgroundAttachment == null) {
                 sDateBackgroundAttachment = Bitmap.createScaledBitmap(DATE_BACKGROUND, mViewWidth
@@ -1152,12 +1150,12 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     private boolean isTouchInCheckmark(float x, float y) {
         // Everything before senders and include a touch slop.
-        return mHeader.checkboxVisible && x < mCoordinates.sendersX + TOUCH_SLOP;
+        return mHeader.checkboxVisible && x < mCoordinates.sendersX + sTouchSlop;
     }
 
     private boolean isTouchInStar(float x, float y) {
         // Everything after the star and include a touch slop.
-        return x > mCoordinates.starX - TOUCH_SLOP;
+        return x > mCoordinates.starX - sTouchSlop;
     }
 
     /**
