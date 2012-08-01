@@ -53,6 +53,7 @@ import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
+import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -207,6 +208,9 @@ public class WidgetService extends RemoteViewsService {
         private boolean mFolderInformationShown = false;
         private WidgetService mService;
         private String mSendersSplitToken;
+        private String mElidedPaddingToken;
+        private TextAppearanceSpan mUnreadStyle;
+        private TextAppearanceSpan mReadStyle;
 
         public MailFactory(Context context, Intent intent, WidgetService service) {
             mContext = context;
@@ -254,6 +258,7 @@ public class WidgetService extends RemoteViewsService {
                     res.getInteger(R.integer.widget_refresh_delay_ms));
             mConversationCursorLoader.startLoading();
             mSendersSplitToken = res.getString(R.string.senders_split_token);
+            mElidedPaddingToken = res.getString(R.string.elided_padding_token);
             mFolderLoader = new CursorLoader(mContext, mFolder.uri, UIProvider.FOLDERS_PROJECTION,
                     null, null, null);
             mFolderLoader.registerListener(FOLDER_LOADER_ID, this);
@@ -358,6 +363,8 @@ public class WidgetService extends RemoteViewsService {
                                     conversation.conversationInfo, "", MAX_SENDERS_LENGTH));
                 } else {
                     senderBuilder.append(conversation.senders);
+                    senderBuilder.setSpan(conversation.read ? getReadStyle() : getUnreadStyle(), 0,
+                            senderBuilder.length(), 0);
                 }
                 // Get styled date.
                 CharSequence date = DateUtils.getRelativeTimeSpanString(mContext,
@@ -365,7 +372,8 @@ public class WidgetService extends RemoteViewsService {
 
                 // Load up our remote view.
                 RemoteViews remoteViews = mWidgetConversationViewBuilder.getStyledView(
-                        statusBuilder, date, conversation, mFolder, senderBuilder);
+                        statusBuilder, date, conversation, mFolder, senderBuilder,
+                        filterTag(conversation.subject));
 
                 // On click intent.
                 remoteViews.setOnClickFillInIntent(R.id.widget_conversation,
@@ -375,6 +383,21 @@ public class WidgetService extends RemoteViewsService {
             }
         }
 
+        private CharacterStyle getUnreadStyle() {
+            if (mUnreadStyle == null) {
+                mUnreadStyle = new TextAppearanceSpan(mContext,
+                        R.style.SendersUnreadTextAppearance);
+            }
+            return CharacterStyle.wrap(mUnreadStyle);
+        }
+
+        private CharacterStyle getReadStyle() {
+            if (mReadStyle == null) {
+                mReadStyle = new TextAppearanceSpan(mContext, R.style.SendersReadTextAppearance);
+            }
+            return CharacterStyle.wrap(mReadStyle);
+        }
+
         private SpannableStringBuilder ellipsizeStyledSenders(ConversationInfo info, int maxChars,
                 SpannableString[] styledSenders) {
             SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -382,10 +405,6 @@ public class WidgetService extends RemoteViewsService {
             boolean ellipsize = false;
             SpannableString ellipsizedText;
             int width;
-            SpannableStringBuilder messageInfoString = createMessageInfo(info);
-            // Paint the message info string to see if we lose space.
-            int messageInfoChars = messageInfoString.length();
-            totalChars += messageInfoChars;
             SpannableString prevSender = null;
             for (SpannableString sender : styledSenders) {
                 // No more width available, we'll only show fixed fragments.
@@ -397,7 +416,7 @@ public class WidgetService extends RemoteViewsService {
                 CharacterStyle[] spans = sender.getSpans(0, sender.length(), CharacterStyle.class);
                 if (SendersView.sElidedString.equals(sender.toString())) {
                     prevSender = sender;
-                    sender = copyStyles(spans, " "+ sender + " ");
+                    sender = copyStyles(spans, mElidedPaddingToken + sender + mElidedPaddingToken);
                 } else if (builder.length() > 0
                         && (prevSender == null || !SendersView.sElidedString.equals(prevSender
                                 .toString()))) {
@@ -427,9 +446,6 @@ public class WidgetService extends RemoteViewsService {
                 }
                 builder.append(fragmentDisplayText);
             }
-            if (messageInfoString.length() > 0) {
-                builder.append(messageInfoString);
-            }
             return builder;
         }
 
@@ -439,20 +455,6 @@ public class WidgetService extends RemoteViewsService {
                 s.setSpan(spans[0], 0, s.length(), 0);
             }
             return s;
-        }
-
-        private SpannableStringBuilder createMessageInfo(ConversationInfo conversationInfo) {
-            SpannableStringBuilder messageInfo = new SpannableStringBuilder();
-            if (conversationInfo != null) {
-                int count = conversationInfo.messageCount;
-                if (count > 0) {
-                    messageInfo.append(" ");
-                }
-                if (count > 1) {
-                    messageInfo.append(count + "");
-                }
-            }
-            return messageInfo;
         }
 
         /**
