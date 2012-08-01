@@ -26,8 +26,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
+import android.text.style.TextAppearanceSpan;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 import android.util.AttributeSet;
@@ -50,16 +49,15 @@ public class SendersView extends TextView {
     public static final int MERGED_FORMATTING = 1;
     private static String sSendersSplitToken;
     public static String SENDERS_VERSION_SEPARATOR = "^**^";
-    CharacterStyle sNormalTextStyle = new StyleSpan(Typeface.NORMAL);
     public static Pattern SENDERS_VERSION_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
     private static CharSequence sDraftSingularString;
     private static CharSequence sDraftPluralString;
     private static String sDraftCountFormatString;
-    private static ForegroundColorSpan sDraftsStyleSpan;
-    private static StyleSpan sUnreadStyleSpan;
-    private static StyleSpan sReadStyleSpan;
+    private static CharacterStyle sMessageInfoStyleSpan;
+    private static CharacterStyle sDraftsStyleSpan;
+    private static CharacterStyle sUnreadStyleSpan;
+    private static CharacterStyle sReadStyleSpan;
     private static String sMeString;
-    private static CharacterStyle style;
     public static CharSequence sElidedString;
     private static Map<Integer, Integer> sPriorityToLength;
 
@@ -95,13 +93,19 @@ public class SendersView extends TextView {
             sDraftSingularString = res.getQuantityText(R.plurals.draft, 1);
             sDraftPluralString = res.getQuantityText(R.plurals.draft, 2);
             sDraftCountFormatString = res.getString(R.string.draft_count_format);
-            sDraftsStyleSpan = new ForegroundColorSpan(res.getColor(R.color.drafts));
+            sMessageInfoStyleSpan = new TextAppearanceSpan(context,
+                    R.style.MessageInfoTextAppearance);
+            sDraftsStyleSpan = new TextAppearanceSpan(context, R.style.DraftTextAppearance);
+            sUnreadStyleSpan = new TextAppearanceSpan(context,
+                    R.style.SendersUnreadTextAppearance);
+            sReadStyleSpan = new TextAppearanceSpan(context, R.style.SendersReadTextAppearance);
         }
     }
 
     public static SpannableStringBuilder createMessageInfo(Context context,
             ConversationInfo conversationInfo) {
         SpannableStringBuilder messageInfo = new SpannableStringBuilder();
+        getSenderResources(context);
         if (conversationInfo != null) {
             int count = conversationInfo.messageCount;
             int draftCount = conversationInfo.draftCount;
@@ -111,6 +115,8 @@ public class SendersView extends TextView {
             if (count > 1) {
                 messageInfo.append(count + "");
             }
+            messageInfo.setSpan(CharacterStyle.wrap(sMessageInfoStyleSpan), 0,
+                    messageInfo.length(), 0);
             if (draftCount > 0) {
                 messageInfo.append(sSendersSplitToken);
                 SpannableStringBuilder draftString = new SpannableStringBuilder();
@@ -182,6 +188,7 @@ public class SendersView extends TextView {
         ArrayList<SpannableString> senders = new ArrayList<SpannableString>();
         SpannableString spannableDisplay;
         String nameString;
+        CharacterStyle style;
         boolean appendedElided = false;
         Map<String, Integer> displayHash = Maps.newHashMap();
         for (int i = 0; i < conversationInfo.messageInfos.size(); i++) {
@@ -197,15 +204,15 @@ public class SendersView extends TextView {
                         Math.max(nameString.length() - numCharsToRemovePerWord, 0));
             }
             final int priority = currentMessage.priority;
+            style = !currentMessage.read ? getUnreadStyleSpan() : getReadStyleSpan();
             if (priority <= maxPriorityToInclude) {
                 spannableDisplay = new SpannableString(nameString);
-                style = !currentMessage.read ? getUnreadStyleSpan() : getReadStyleSpan();
                 spannableDisplay.setSpan(style, 0, spannableDisplay.length(), 0);
-                if (displayHash.containsKey(currentMessage.sender)) {
-                    senders.remove(displayHash.get(currentMessage.sender).intValue());
+                // Don't duplicate senders; leave the first instance.
+                if (!displayHash.containsKey(currentMessage.sender)) {
+                    displayHash.put(currentMessage.sender, i);
+                    senders.add(spannableDisplay);
                 }
-                displayHash.put(currentMessage.sender, i);
-                senders.add(spannableDisplay);
             } else {
                 if (!appendedElided) {
                     spannableDisplay = new SpannableString(sElidedString);
@@ -219,16 +226,10 @@ public class SendersView extends TextView {
     }
 
     private static CharacterStyle getUnreadStyleSpan() {
-        if (sUnreadStyleSpan == null) {
-            sUnreadStyleSpan = new StyleSpan(Typeface.BOLD);
-        }
         return CharacterStyle.wrap(sUnreadStyleSpan);
     }
 
     private static CharacterStyle getReadStyleSpan() {
-        if (sReadStyleSpan == null) {
-            sReadStyleSpan = new StyleSpan(Typeface.NORMAL);
-        }
         return CharacterStyle.wrap(sReadStyleSpan);
     }
 
@@ -237,19 +238,6 @@ public class SendersView extends TextView {
             sMeString = context.getResources().getString(R.string.me);
         }
         return sMeString;
-    }
-
-    private static String parseSender(String sender) {
-        Rfc822Token[] senderTokens = Rfc822Tokenizer.tokenize(sender);
-        String name;
-        if (senderTokens != null && senderTokens.length > 0) {
-            name = senderTokens[0].getName();
-            if (TextUtils.isEmpty(name)) {
-                name = senderTokens[0].getAddress();
-            }
-            return name;
-        }
-        return sender;
     }
 
     private void formatDefault(ConversationItemViewModel header, String sendersString) {
