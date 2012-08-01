@@ -197,12 +197,12 @@
     <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; meilivestlusest teatatakse kui rämpspostist."</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="7361303622131552596">"Teatati, et &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; vestlus ei olnud rämpspost."</item>
-    <item quantity="other" msgid="2250720080221922267">"Teatati, et &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; vestlust ei olnud rämpspost."</item>
+    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; vestlus märgiti mitte-rämpspostiks."</item>
+    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; vestlust märgiti mitte-rämpspostiks."</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="5386916574432049235">"Teatati, et &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; vestlus olid seotud andmepüügiga."</item>
-    <item quantity="other" msgid="3678624994662639442">"Teatati, et &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; vestlust olid seotud andmepüügiga."</item>
+    <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; vestlus märgiti andmepüügiga seotuks."</item>
+    <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; vestlust märgiti andmepüügiga seotuks."</item>
   </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; arhiveeriti."</item>
