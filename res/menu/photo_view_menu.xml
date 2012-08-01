@@ -19,21 +19,17 @@
 
     <group android:id="@+id/photo_view_menu_group" >
         <item
-            android:id="@+id/menu_retry"
-            android:showAsAction="always|withText"
-            android:title="@string/retry"/>
-        <item
             android:id="@+id/menu_save"
-            android:showAsAction="always|withText"
-            android:title="@string/save_attachment"/>
-        <item
-            android:id="@+id/menu_share"
             android:showAsAction="never"
-            android:title="@string/menu_photo_share"/>
+            android:title="@string/save_attachment"/>
         <item
             android:id="@+id/menu_save_all"
             android:showAsAction="never"
             android:title="@string/menu_photo_save_all"/>
+        <item
+            android:id="@+id/menu_share"
+            android:showAsAction="never"
+            android:title="@string/menu_photo_share"/>
         <item
             android:id="@+id/menu_share_all"
             android:showAsAction="never"
