@@ -241,7 +241,7 @@ public final class ConversationViewFragment extends Fragment implements
         LogUtils.d(LOG_TAG, "onCreate in ConversationViewFragment (this=%s)", this);
         super.onCreate(savedState);
 
-        Bundle args = getArguments();
+        final Bundle args = getArguments();
         mAccount = args.getParcelable(ARG_ACCOUNT);
         mConversation = args.getParcelable(ARG_CONVERSATION);
         mFolder = args.getParcelable(ARG_FOLDER);
@@ -1041,6 +1041,11 @@ public final class ConversationViewFragment extends Fragment implements
             mListController.markConversationsRead(Arrays.asList(mConversation),
                     true /* read */);
         }
+    }
+
+    @Override
+    public Settings getSettings() {
+        return mAccount.settings;
     }
 
 }

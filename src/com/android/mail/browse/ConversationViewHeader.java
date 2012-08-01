@@ -34,6 +34,7 @@ import com.android.mail.R;
 import com.android.mail.browse.FolderSpan.FolderSpanDimensions;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.Settings;
 import com.android.mail.ui.FolderDisplayer;
 
 /**
@@ -66,9 +67,13 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
          * @return the remainder of text that didn't fit
          */
         String getSubjectRemainder(String subject);
+        /**
+         * Returns the {@link Settings} object associated with the current account.
+         * @return
+         */
+        Settings getSettings();
     }
 
-    private String mSubject;
     private TextView mSubjectView;
     private FolderSpanTextView mFoldersView;
     private ConversationViewHeaderCallbacks mCallbacks;
@@ -82,7 +87,6 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
 
     public ConversationViewHeader(Context context, AttributeSet attrs) {
         super(context, attrs);
-
     }
 
     @Override
@@ -115,7 +119,7 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
     }
 
     private static int getTotalMeasuredChildWidth(View child) {
-        LayoutParams p = (LayoutParams) child.getLayoutParams();
+        final LayoutParams p = (LayoutParams) child.getLayoutParams();
         return child.getMeasuredWidth() + p.leftMargin + p.rightMargin;
     }
 
@@ -124,7 +128,6 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
     }
 
     public void setSubject(final String subject, boolean notify) {
-        mSubject = subject;
         String subjectToShow = subject;
         if (mCallbacks != null && mCallbacks.getSubjectRemainder(subject) == null) {
             subjectToShow = null;
@@ -140,16 +143,10 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         }
     }
 
-    public String getSubject() {
-        return mSubject;
-    }
-
     public void setFolders(Conversation conv, boolean notify) {
         SpannableStringBuilder sb = new SpannableStringBuilder();
-
-        // TODO: read 'show priority arrows' pref from settings
-        final boolean importanceArrowsEnabled = true;
-        if (importanceArrowsEnabled && conv.isImportant()) {
+        final Settings settings = mCallbacks.getSettings();
+        if (settings.priorityArrowsEnabled && conv.isImportant()) {
             sb.append('.');
             sb.setSpan(new PriorityIndicatorSpan(getContext(),
                     R.drawable.ic_email_caret_none_important_unread, mFoldersView.getPadding(), 0),
@@ -209,7 +206,7 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
             }
 
             if (mFoldersSortedSet.isEmpty()) {
-                Folder addLabel = new Folder();
+                final Folder addLabel = new Folder();
                 final Resources r = mContext.getResources();
                 addLabel.name = r.getString(R.string.add_label);
                 addLabel.bgColor = ""
