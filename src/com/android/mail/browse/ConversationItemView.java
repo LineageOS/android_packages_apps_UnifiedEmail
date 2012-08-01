@@ -165,8 +165,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private AnimatedAdapter mAdapter;
     private int mAnimatedHeight = -1;
     private String mAccount;
-    private Bitmap sDateBackgroundAttachment;
-    private Bitmap sDateBackgroundNoAttachment;
+    private static Bitmap sDateBackgroundAttachment;
+    private static Bitmap sDateBackgroundNoAttachment;
     private static int sUndoAnimationOffset;
     private static Bitmap MORE_FOLDERS;
 
