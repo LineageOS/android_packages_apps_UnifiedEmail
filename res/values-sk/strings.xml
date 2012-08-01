@@ -197,8 +197,8 @@
     <item quantity="other" msgid="5071459475389411227">"Konverzácie boli nahlásené ako spam (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="7361303622131552596">"Počet konverzácií, ktoré neboli nahlásené ako spam: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
-    <item quantity="other" msgid="2250720080221922267">"Počet konverzácií, ktoré neboli nahlásené ako spam: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
+    <item quantity="one" msgid="7361303622131552596">"Počet konverzácií, ktoré boli nahlásené ako Nie je to spam: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
+    <item quantity="other" msgid="2250720080221922267">"Počet konverzácií, ktoré boli nahlásené ako Nie je to spam: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
   </plurals>
   <plurals name="conversation_phished">
     <item quantity="one" msgid="5386916574432049235">"Počet konverzácií nahlásených ako phishing: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;"</item>
