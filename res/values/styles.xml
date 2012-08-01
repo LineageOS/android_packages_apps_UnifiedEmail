@@ -420,4 +420,23 @@
         <item name="android:clickable">true</item>
     </style>
 
+    <style name="MessageInfoTextAppearance" parent="@android:attr/textAppearanceMedium">
+        <item name="android:textSize">@dimen/senders_font_size</item>
+        <item name="android:textColor">@color/message_info_text_color</item>
+    </style>
+
+    <style name="DraftTextAppearance" parent="@style/MessageInfoTextAppearance">
+        <item name="android:textColor">@color/drafts</item>
+    </style>
+
+    <style name="SendersReadTextAppearance" parent="@style/MessageInfoTextAppearance">
+        <item name="android:textColor">@color/senders_text_color_read</item>
+        <item name="android:textSize">@dimen/senders_font_size</item>
+    </style>
+
+    <style name="SendersUnreadTextAppearance" parent="@style/SendersReadTextAppearance">
+        <item name="android:textColor">@color/senders_text_color_unread</item>
+        <item name="android:textSize">@dimen/senders_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>
