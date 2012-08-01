@@ -77,12 +77,13 @@ public class SendersView extends TextView {
         return isUnread ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT;
     }
 
-    public void formatSenders(ConversationItemViewModel header, boolean isUnread, int mode) {
+    public void formatSenders(ConversationItemViewModel header, boolean isUnread, int mode,
+            Context context) {
         String senders = header.conversation.senders;
         if (TextUtils.isEmpty(senders)) {
             return;
         }
-        formatDefault(header, senders);
+        formatDefault(header, senders, context);
     }
 
     private static void getSenderResources(Context context) {
@@ -240,7 +241,9 @@ public class SendersView extends TextView {
         return sMeString;
     }
 
-    private void formatDefault(ConversationItemViewModel header, String sendersString) {
+    private void formatDefault(ConversationItemViewModel header,
+            String sendersString, Context context) {
+        getSenderResources(context);
         String[] senders = TextUtils.split(sendersString, Address.ADDRESS_DELIMETER);
         String[] namesOnly = new String[senders.length];
         Rfc822Token[] senderTokens;

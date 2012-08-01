@@ -563,7 +563,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                     mHeader.conversation.conversationInfo, mHeader.messageInfoString.toString(),
                     maxChars);
         } else {
-            mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode);
+            mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode, getContext());
         }
 
         pauseTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
