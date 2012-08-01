@@ -245,7 +245,6 @@ public class Conversation implements Parcelable {
             if (subject == null) {
                 subject = "";
             }
-            snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
             hasAttachments = cursor.getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) != 0;
             String messageList = cursor.getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN);
             messageListUri = !TextUtils.isEmpty(messageList) ? Uri.parse(messageList) : null;
@@ -266,9 +265,12 @@ public class Conversation implements Parcelable {
             accountUri = !TextUtils.isEmpty(account) ? Uri.parse(account) : null;
             position = NO_POSITION;
             localDeleteOnUpdate = false;
-            senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
             conversationInfo = ConversationInfo.fromString(cursor
                     .getString(UIProvider.CONVERSATION_INFO_COLUMN));
+            if (conversationInfo == null) {
+                snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
+                senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
+            }
         }
     }
 
