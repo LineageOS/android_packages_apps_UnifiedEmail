@@ -244,6 +244,8 @@ public class SendersView extends TextView {
     private void formatDefault(ConversationItemViewModel header,
             String sendersString, Context context) {
         getSenderResources(context);
+        // Clear any existing sender fragments; we must re-make all of them.
+        header.senderFragments.clear();
         String[] senders = TextUtils.split(sendersString, Address.ADDRESS_DELIMETER);
         String[] namesOnly = new String[senders.length];
         Rfc822Token[] senderTokens;
