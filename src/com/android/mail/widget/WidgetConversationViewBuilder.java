@@ -48,8 +48,7 @@ public class WidgetConversationViewBuilder {
     private static int SUBJECT_TEXT_COLOR_UNREAD;
     private static int SENDERS_TEXT_COLOR_READ;
     private static int SENDERS_TEXT_COLOR_UNREAD;
-    private static int DATE_TEXT_COLOR_READ;
-    private static int DATE_TEXT_COLOR_UNREAD;
+    private static int DATE_TEXT_COLOR;
     private static int DRAFT_TEXT_COLOR;
 
     private static String SENDERS_SPLIT_TOKEN;
@@ -134,8 +133,7 @@ public class WidgetConversationViewBuilder {
         SUBJECT_TEXT_COLOR_UNREAD = res.getColor(R.color.subject_text_color_unread);
         SENDERS_TEXT_COLOR_READ = res.getColor(R.color.senders_text_color_read);
         SENDERS_TEXT_COLOR_UNREAD = res.getColor(R.color.senders_text_color_unread);
-        DATE_TEXT_COLOR_READ = res.getColor(R.color.date_text_color_read);
-        DATE_TEXT_COLOR_UNREAD = res.getColor(R.color.date_text_color_unread);
+        DATE_TEXT_COLOR = res.getColor(R.color.date_text_color);
         DRAFT_TEXT_COLOR = res.getColor(R.color.drafts);
 
         SENDERS_SPLIT_TOKEN = res.getString(R.string.senders_split_token);
@@ -189,8 +187,7 @@ public class WidgetConversationViewBuilder {
         }
 
         // Add style to date
-        CharSequence styledDate = addStyle(date, DATE_FONT_SIZE, isUnread ? DATE_TEXT_COLOR_UNREAD
-                : DATE_TEXT_COLOR_READ);
+        CharSequence styledDate = addStyle(date, DATE_FONT_SIZE, DATE_TEXT_COLOR);
 
         // Add style to subject
         int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
