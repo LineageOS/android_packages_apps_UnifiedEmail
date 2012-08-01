@@ -368,27 +368,29 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set, Folder folder,
-            boolean checkboxesDisabled, boolean swipeEnabled, AnimatedAdapter adapter) {
+            boolean checkboxesDisabled, boolean swipeEnabled, boolean priorityArrowEnabled,
+            AnimatedAdapter adapter) {
         bind(ConversationItemViewModel.forCursor(mAccount, cursor), viewMode, set, folder,
-                checkboxesDisabled, swipeEnabled, adapter);
+                checkboxesDisabled, swipeEnabled, priorityArrowEnabled, adapter);
     }
 
     public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
             Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
-            AnimatedAdapter adapter) {
+            boolean priorityArrowEnabled, AnimatedAdapter adapter) {
         bind(ConversationItemViewModel.forConversation(mAccount, conversation), viewMode, set,
-                folder, checkboxesDisabled, swipeEnabled, adapter);
+                folder, checkboxesDisabled, swipeEnabled, priorityArrowEnabled, adapter);
     }
 
     private void bind(ConversationItemViewModel header, ViewMode viewMode,
             ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
-            boolean swipeEnabled, AnimatedAdapter adapter) {
+            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
         mViewMode = viewMode;
         mHeader = header;
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         mCheckboxesEnabled = !checkboxesDisabled;
         mSwipeEnabled = swipeEnabled;
+        mPriorityMarkersEnabled = priorityArrowEnabled;
         mAdapter = adapter;
         setContentDescription(mHeader.getContentDescription(mContext));
         requestLayout();
@@ -524,14 +526,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Personal level.
         mHeader.personalLevelBitmap = null;
         if (mCoordinates.showPersonalLevel) {
-            int personalLevel = mHeader.personalLevel;
+            final int personalLevel = mHeader.personalLevel;
             final boolean isImportant =
                     mHeader.priority == UIProvider.ConversationPriority.IMPORTANT;
-            // TODO(mindyp): get whether importance indicators are enabled
-            // mPriorityMarkersEnabled =
-            // persistence.getPriorityInboxArrowsEnabled(mContext, mAccount);
-            mPriorityMarkersEnabled = true;
-            boolean useImportantMarkers = isImportant && mPriorityMarkersEnabled;
+            final boolean useImportantMarkers = isImportant && mPriorityMarkersEnabled;
 
             if (personalLevel == UIProvider.ConversationPersonalLevel.ONLY_TO_ME) {
                 mHeader.personalLevelBitmap = useImportantMarkers ? IMPORTANT_ONLY_TO_ME
