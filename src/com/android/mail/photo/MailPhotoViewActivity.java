@@ -28,8 +28,8 @@ import java.util.List;
  * to the {@link ActionBar} from the default implementation.
  */
 public class MailPhotoViewActivity extends PhotoViewActivity {
-    private MenuItem mRetryItem;
     private MenuItem mSaveItem;
+    private MenuItem mSaveAllItem;
     private MenuItem mShareItem;
     private MenuItem mShareAllItem;
     private AttachmentActionHandler mActionHandler;
@@ -51,7 +51,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         mMenu = menu;
 
         mSaveItem = mMenu.findItem(R.id.menu_save);
-        mRetryItem = mMenu.findItem(R.id.menu_retry);
+        mSaveAllItem = mMenu.findItem(R.id.menu_save_all);
         mShareItem = mMenu.findItem(R.id.menu_share);
         mShareAllItem = mMenu.findItem(R.id.menu_share_all);
 
@@ -70,29 +70,35 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         final Attachment attachment = getCurrentAttachment();
 
         if (attachment != null) {
-            final boolean isDownloading = attachment.isDownloading();
-            final boolean isSavedToExternal = attachment.isSavedToExternal();
-            final boolean canSave = attachment.canSave();
-            final boolean isPresentLocally = attachment.isPresentLocally();
-
-            mMenu.setGroupVisible(R.id.photo_view_menu_group, isPresentLocally);
-
-            mSaveItem.setVisible(!isDownloading && canSave && !isSavedToExternal);
-            mRetryItem.setVisible(attachment.downloadFailed());
+            mSaveItem.setEnabled(!attachment.isDownloading()
+                    && attachment.canSave() && !attachment.isSavedToExternal());
+            mShareItem.setEnabled(attachment.isPresentLocally());
         } else {
-            mMenu.setGroupVisible(R.id.photo_view_menu_group, false);
+            mMenu.setGroupEnabled(R.id.photo_view_menu_group, false);
             return;
         }
 
-        // all attachments must be present to be able to share all
         List<Attachment> attachments = getAllAttachments();
         if (attachments != null) {
+            boolean enabled = false;
             for (final Attachment a : attachments) {
-                if (!a.isPresentLocally()) {
-                    mShareAllItem.setVisible(false);
+                // If one attachment can be saved, enable save all
+                if (!a.isDownloading() && a.canSave() && !a.isSavedToExternal()) {
+                    enabled = true;
                     break;
                 }
             }
+            mSaveAllItem.setEnabled(enabled);
+
+            // all attachments must be present to be able to share all
+            enabled = true;
+            for (final Attachment a : attachments) {
+                if (!a.isPresentLocally()) {
+                    enabled = false;
+                    break;
+                }
+            }
+            mShareAllItem.setEnabled(enabled);
         }
 
         // Turn off the functionality that only works on JellyBean.
@@ -120,9 +126,6 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
                 return true;
             case R.id.menu_share_all: // share all of the photos
                 shareAllAttachments();
-                return true;
-            case R.id.menu_retry:
-                downloadAttachment();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -173,6 +176,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             actionBar.setSubtitle(subtitle);
         }
 
+        // TODO check download failed to show the retry view
         updateActionItems();
     }
 
