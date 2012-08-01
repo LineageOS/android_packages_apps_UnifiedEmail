@@ -106,6 +106,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     private static String sSendersSplitToken;
     private static String sElidedPaddingToken;
+    private static String sEllipsis;
 
     // Static colors.
     private static int sDefaultTextColor;
@@ -364,6 +365,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             // Initialize static color.
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
+            sEllipsis = res.getString(R.string.ellipsis);
         }
     }
 
@@ -741,10 +743,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
     // appending new senders
     private int ellipsizeStyledSenders() {
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        int totalWidth = 0;
+        float totalWidth = 0;
         boolean ellipsize = false;
         SpannableString ellipsizedText;
-        int width;
+        float width;
         SpannableStringBuilder messageInfoString = mHeader.messageInfoString;
         if (messageInfoString.length() > 0) {
             CharacterStyle[] spans = messageInfoString.getSpans(0, messageInfoString.length(),
@@ -788,7 +790,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 // The text is too long, new line won't help. We have to
                 // ellipsize text.
                 ellipsize = true;
-                width = mSendersWidth - totalWidth;
+                width = mSendersWidth - totalWidth - getEllipsisWidth(); // ellipsis width?
                 ellipsizedText = copyStyles(spans,
                         TextUtils.ellipsize(sender, sPaint, width, TruncateAt.END));
                 width = (int) sPaint.measureText(ellipsizedText.toString());
@@ -809,7 +811,11 @@ public class ConversationItemView extends View implements SwipeableItemView {
             builder.append(messageInfoString);
         }
         mHeader.styledSendersString = builder;
-        return totalWidth;
+        return (int)totalWidth;
+    }
+
+    private float getEllipsisWidth() {
+        return sPaint.measureText(sEllipsis);
     }
 
     private SpannableString copyStyles(CharacterStyle[] spans, CharSequence newText) {
