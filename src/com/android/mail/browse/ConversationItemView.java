@@ -922,7 +922,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Senders.
         boolean isUnread = mHeader.unread;
         // Old style senders; apply text colors/ sizes/ styling.
-        if (mHeader.styledSendersString == null) {
+        if (mHeader.senderFragments.size() > 0) {
             sPaint.setTextSize(mCoordinates.sendersFontSize);
             sPaint.setTypeface(mCoordinates.sendersView.getTypeface(isUnread));
             int sendersColor = getFontColor(isUnread ? sSendersTextColorUnread
