@@ -930,9 +930,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
             int sendersColor = getFontColor(isUnread ? sSendersTextColorUnread
                     : sSendersTextColorRead);
             sPaint.setColor(sendersColor);
-        } else {
-            // New style: we just need the font size.
-            sPaint.setTextSize(mCoordinates.sendersFontSize);
         }
         canvas.save();
         canvas.translate(mCoordinates.sendersX,
