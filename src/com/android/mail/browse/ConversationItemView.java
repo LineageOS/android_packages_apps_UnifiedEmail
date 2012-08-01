@@ -742,14 +742,22 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private int ellipsizeStyledSenders() {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         int totalWidth = 0;
-        int currentLine = 1;
         boolean ellipsize = false;
         SpannableString ellipsizedText;
         int width;
         SpannableStringBuilder messageInfoString = mHeader.messageInfoString;
-        // Paint the message info string to see if we lose space.
-        float messageInfoWidth = sPaint.measureText(messageInfoString.toString());
-        totalWidth += messageInfoWidth;
+        if (messageInfoString.length() > 0) {
+            CharacterStyle[] spans = messageInfoString.getSpans(0, messageInfoString.length(),
+                    CharacterStyle.class);
+            // There is only 1 character style span; make sure we apply all the
+            // styles to the paint object before measuring.
+            if (spans.length > 0) {
+                spans[0].updateDrawState(sPaint);
+            }
+            // Paint the message info string to see if we lose space.
+            float messageInfoWidth = sPaint.measureText(messageInfoString.toString());
+            totalWidth += messageInfoWidth;
+        }
         SpannableString prevSender = null;
         for (SpannableString sender : mHeader.styledSenders) {
             // No more width available, we'll only show fixed fragments.

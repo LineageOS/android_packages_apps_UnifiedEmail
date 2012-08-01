@@ -767,4 +767,6 @@
     <string translatable="false" name="senders_elided">..</string>
     <!-- Token used to space out elided senders that are not visible -->
     <string translatable="false" name="elided_padding_token">\u00A0</string>
+    <!-- Token used to space out message count, draft text, and senders -->
+    <string translatable="false" name="message_count_spacer">\u00A0\u00A0</string>
 </resources>
