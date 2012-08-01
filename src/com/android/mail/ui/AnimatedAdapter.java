@@ -52,12 +52,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final static int TYPE_VIEW_UNDOING = 2;
     private final static int TYPE_VIEW_FOOTER = 3;
     private final static int TYPE_VIEW_LEAVEBEHIND = 4;
-    private HashSet<Integer> mDeletingItems = new HashSet<Integer>();
-    private HashSet<Integer> mUndoingItems = new HashSet<Integer>();
-    private HashSet<Integer> mSwipeUndoingItems = new HashSet<Integer>();
-    private Account mSelectedAccount;
-    private Context mContext;
-    private ConversationSelectionSet mBatchConversations;
+    private final HashSet<Integer> mDeletingItems = new HashSet<Integer>();
+    private final HashSet<Integer> mUndoingItems = new HashSet<Integer>();
+    private final HashSet<Integer> mSwipeUndoingItems = new HashSet<Integer>();
+    /** The current account */
+    private final Account mAccount;
+    private final Context mContext;
+    private final ConversationSelectionSet mBatchConversations;
     /**
      * The next action to perform. Do not read or write this. All accesses should
      * be in {@link #performAndSetNextAction(DestructiveAction)} which commits the
@@ -74,17 +75,18 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
     };
 
-    private ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
+    private final ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
     private ViewMode mViewMode;
     private View mFooter;
     private boolean mShowFooter;
     private Folder mFolder;
     private final SwipeableListView mListView;
     private Settings mCachedSettings;
-    private boolean mSwipeEnabled;
+    private final boolean mSwipeEnabled;
     private LeaveBehindItem mFadeLeaveBehindItem;
     private LeaveBehindItem mLeaveBehindItem;
-
+    /** True if priority inbox markers are enabled, false otherwise. */
+    private final boolean mPriorityMarkersEnabled;
     /**
      * Used only for debugging.
      */
@@ -96,12 +98,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
-        mSelectedAccount = account;
+        mAccount = account;
         mViewMode = viewMode;
         mShowFooter = false;
         mListView = listView;
         mCachedSettings = settings;
         mSwipeEnabled = account.supportsCapability(UIProvider.AccountCapabilities.UNDO);
+        mPriorityMarkersEnabled = account.settings.priorityArrowsEnabled;
     }
 
     @Override
@@ -133,7 +136,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         SwipeableConversationItemView view = new SwipeableConversationItemView(context,
-                mSelectedAccount.name);
+                mAccount.name);
         return view;
     }
 
@@ -144,7 +147,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
         ((SwipeableConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
-                        mSwipeEnabled, this);
+                        mSwipeEnabled, mPriorityMarkersEnabled, this);
     }
 
     @Override
@@ -291,7 +294,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         fadeOutLeaveBehindItems();
         LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext).inflate(
                 R.layout.swipe_leavebehind, null);
-        leaveBehind.bindOperations(deletedRow, mSelectedAccount, this, undoOp, target);
+        leaveBehind.bindOperations(deletedRow, mAccount, this, undoOp, target);
         mLeaveBehindItem = leaveBehind;
         mLastDeletingItems.add(deletedRow);
         return leaveBehind;
@@ -381,7 +384,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 .getView(position, null, parent);
         convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false, mSwipeEnabled,
-                this);
+                mPriorityMarkersEnabled, this);
         convView.startUndoAnimation(mListView.getSwipeActionText(), mViewMode, this, swipe);
         return convView;
     }

@@ -79,15 +79,16 @@ public class SwipeableConversationItemView extends FrameLayout {
 
     public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
             Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
-            AnimatedAdapter animatedAdapter) {
+            boolean priorityArrowsEnabled, AnimatedAdapter animatedAdapter) {
         mConversationItemView.bind(conversation, viewMode, set, folder, checkboxesDisabled,
-                swipeEnabled, animatedAdapter);
+                swipeEnabled, priorityArrowsEnabled, animatedAdapter);
     }
 
     public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set, Folder folder,
-            boolean checkboxesDisabled, boolean swipeEnabled, AnimatedAdapter animatedAdapter) {
+            boolean checkboxesDisabled, boolean swipeEnabled, boolean priorityArrowsEnabled,
+            AnimatedAdapter animatedAdapter) {
         mConversationItemView.bind(cursor, viewMode, set, folder, checkboxesDisabled, swipeEnabled,
-                animatedAdapter);
+                priorityArrowsEnabled, animatedAdapter);
     }
 
     public void startUndoAnimation(int actionText, ViewMode viewMode, AnimatedAdapter listener,
