@@ -201,8 +201,8 @@
     <item quantity="other" msgid="2250720080221922267">"Okungu-&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; kubikwe njengokungayena ugaxekile."</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="5386916574432049235">"Okungu-&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; kubikwe njengokuyengako."</item>
-    <item quantity="other" msgid="3678624994662639442">"Okungu-&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; kubikwe njengokuyengako."</item>
+    <item quantity="one" msgid="5386916574432049235">"Okungu-&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; kubikwe njengokuyengayo."</item>
+    <item quantity="other" msgid="3678624994662639442">"Okungu-&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; kubikwe njengokuyengayo."</item>
   </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; kufakwe kungobo yomlando"</item>

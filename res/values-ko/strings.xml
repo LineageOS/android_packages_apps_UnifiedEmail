@@ -197,8 +197,8 @@
     <item quantity="other" msgid="5071459475389411227">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 스팸으로 신고"</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개가 스팸이 아님을 보고"</item>
-    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개가 스팸이 아님을 보고"</item>
+    <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개가 스팸이 아님을 신고"</item>
+    <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개가 스팸이 아님을 신고"</item>
   </plurals>
   <plurals name="conversation_phished">
     <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;개를 피싱 메일로 신고"</item>

@@ -216,8 +216,8 @@
     <item quantity="one" msgid="4398693029405479323">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation supprimée."</item>
     <item quantity="other" msgid="8630099095360065837">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversations supprimées."</item>
   </plurals>
-    <string name="deleted" msgid="2757349161107268029">"Supprimée."</string>
-    <string name="archived" msgid="7533995360704366325">"Archivée."</string>
+    <string name="deleted" msgid="2757349161107268029">"Supprimé."</string>
+    <string name="archived" msgid="7533995360704366325">"Archivé."</string>
     <string name="folder_removed" msgid="858015177285651764">"Suprimée du dossier."</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversation marquée comme importante."</item>
