@@ -58,6 +58,7 @@ public class SendersView extends TextView {
     private static CharacterStyle sUnreadStyleSpan;
     private static CharacterStyle sReadStyleSpan;
     private static String sMeString;
+    private static String sMessageCountSpacerString;
     public static CharSequence sElidedString;
     private static Map<Integer, Integer> sPriorityToLength;
 
@@ -100,6 +101,7 @@ public class SendersView extends TextView {
             sUnreadStyleSpan = new TextAppearanceSpan(context,
                     R.style.SendersUnreadTextAppearance);
             sReadStyleSpan = new TextAppearanceSpan(context, R.style.SendersReadTextAppearance);
+            sMessageCountSpacerString = res.getString(R.string.message_count_spacer);
         }
     }
 
@@ -111,7 +113,7 @@ public class SendersView extends TextView {
             int count = conversationInfo.messageCount;
             int draftCount = conversationInfo.draftCount;
             if (count > 0 || draftCount <= 0) {
-                messageInfo.append(" ");
+                messageInfo.append(sMessageCountSpacerString);
             }
             if (count > 1) {
                 messageInfo.append(count + "");
