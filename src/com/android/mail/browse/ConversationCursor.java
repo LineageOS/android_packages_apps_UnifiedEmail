@@ -182,7 +182,7 @@ public final class ConversationCursor implements Cursor {
      */
     public void pause() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[Paused: " + mName + "]");
+            LogUtils.i(TAG, "[Paused: %s]", mName);
         }
         mPaused = true;
     }
@@ -192,7 +192,7 @@ public final class ConversationCursor implements Cursor {
      */
     public void resume() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[Resumed: " + mName + "]");
+            LogUtils.i(TAG, "[Resumed: %s]", mName);
         }
         mPaused = false;
         checkNotifyUI();
@@ -206,8 +206,8 @@ public final class ConversationCursor implements Cursor {
                 notifyRefreshReady();
             }
         } else {
-            LogUtils.i(TAG, "[checkNotifyUI: " + (mPaused ? "Paused " : "") +
-                    (mDeferSync ? "Defer" : ""));
+            LogUtils.i(TAG, "[checkNotifyUI: %s%s",
+                    (mPaused ? "Paused " : ""), (mDeferSync ? "Defer" : ""));
         }
     }
 
@@ -223,7 +223,7 @@ public final class ConversationCursor implements Cursor {
         @Override
         protected Void doInBackground(Void... params) {
             if (DEBUG) {
-                LogUtils.i(TAG, "[Start refresh of " + mName + ": %d]", hashCode());
+                LogUtils.i(TAG, "[Start refresh of %s: %d]", mName, hashCode());
             }
             // Get new data
             mCursor = doQuery(false);
@@ -238,7 +238,7 @@ public final class ConversationCursor implements Cursor {
                 mRequeryCursor.getCount();
                 mRefreshReady = true;
                 if (DEBUG) {
-                    LogUtils.i(TAG, "[Query done " + mName + ": %d]", hashCode());
+                    LogUtils.i(TAG, "[Query done %s: %d]", mName, hashCode());
                 }
                 if (!mDeferSync && !mPaused) {
                     notifyRefreshReady();
@@ -558,7 +558,7 @@ public final class ConversationCursor implements Cursor {
      */
     private void notifyRefreshRequired() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[Notify " + mName + ": onRefreshRequired()]");
+            LogUtils.i(TAG, "[Notify %s: onRefreshRequired()]", mName);
         }
         if (!mDeferSync) {
             synchronized(mListeners) {
@@ -574,8 +574,8 @@ public final class ConversationCursor implements Cursor {
      */
     private void notifyRefreshReady() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[Notify " + mName + ": onRefreshReady(), " + mListeners.size() +
-                    " listeners]");
+            LogUtils.i(TAG, "[Notify %s: onRefreshReady(), %d listeners]",
+                    mName, mListeners.size());
         }
         synchronized(mListeners) {
             for (ConversationListener listener: mListeners) {
@@ -589,7 +589,7 @@ public final class ConversationCursor implements Cursor {
      */
     private void notifyDataChanged() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[Notify " + mName + ": onDataSetChanged()]");
+            LogUtils.i(TAG, "[Notify %s: onDataSetChanged()]", mName);
         }
         synchronized(mListeners) {
             for (ConversationListener listener: mListeners) {
@@ -606,13 +606,13 @@ public final class ConversationCursor implements Cursor {
             // This can happen during an animated deletion, if the UI isn't keeping track, or
             // if a new query intervened (i.e. user changed folders)
             if (DEBUG) {
-                LogUtils.i(TAG, "[sync() " + mName + "; no requery cursor]");
+                LogUtils.i(TAG, "[sync() %s; no requery cursor]", mName);
             }
             return;
         }
         synchronized(mCacheMapLock) {
             if (DEBUG) {
-                LogUtils.i(TAG, "[sync() " + mName+ "]");
+                LogUtils.i(TAG, "[sync() %s]", mName);
             }
             resetCursor(mRequeryCursor);
             mRequeryCursor = null;
@@ -635,7 +635,7 @@ public final class ConversationCursor implements Cursor {
      */
     public void cancelRefresh() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[cancelRefresh() " + mName + "]");
+            LogUtils.i(TAG, "[cancelRefresh() %s]", mName);
         }
         synchronized(mCacheMapLock) {
             if (mRefreshTask != null) {
@@ -668,13 +668,13 @@ public final class ConversationCursor implements Cursor {
      */
     public boolean refresh() {
         if (DEBUG) {
-            LogUtils.i(TAG, "[refresh() " + mName + "]");
+            LogUtils.i(TAG, "[refresh() %s]", mName);
         }
         synchronized(mCacheMapLock) {
             if (mRefreshTask != null) {
                 if (DEBUG) {
-                    LogUtils.i(TAG, "[refresh() " + mName + " returning; already running %d]",
-                            mRefreshTask.hashCode());
+                    LogUtils.i(TAG, "[refresh() %s returning; already running %d]",
+                            mName, mRefreshTask.hashCode());
                 }
                 return false;
             }
