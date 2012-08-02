@@ -93,7 +93,8 @@
             android:layout_toLeftOf="@id/widget_attachment_and_date"
             android:layout_marginTop="6sp"
             android:paddingRight="16dip"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:ellipsize="end" />
         <TextView
             android:id="@+id/widget_subject"
             android:layout_width="match_parent"
