@@ -257,7 +257,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      */
     private void markConversationsRead(boolean read) {
         final Collection<Conversation> targets = mSelectionSet.values();
-        mUpdater.markConversationsRead(targets, read);
+        // The conversations are marked read but not viewed.
+        mUpdater.markConversationsRead(targets, read, false);
         updateSelection();
     }
 

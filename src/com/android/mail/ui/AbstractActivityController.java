@@ -771,8 +771,9 @@ public abstract class AbstractActivityController implements ActivityController {
                 && unreadCount < numMessages);
 
         if (!subsetIsUnread) {
-            markConversationsRead(Collections.singletonList(conv), false /* read */,
-                    false /* showNext */);
+            // Conversations are neither marked read, nor viewed, and we don't want to show
+            // the next conversation.
+            markConversationsRead(Collections.singletonList(conv), false, false, false);
         } else {
             mConversationListCursor.setConversationColumn(conv.uri, ConversationColumns.READ, 0);
 
@@ -804,12 +805,14 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void markConversationsRead(Collection<Conversation> targets, boolean read) {
-        markConversationsRead(targets, read, true /* showNext */);
+    public void markConversationsRead(Collection<Conversation> targets, boolean read,
+            boolean viewed) {
+        // We want to show the next conversation if we are marking unread.
+        markConversationsRead(targets, read, viewed, true);
     }
 
     private void markConversationsRead(Collection<Conversation> targets, boolean read,
-            boolean showNext) {
+            boolean markViewed, boolean showNext) {
         // auto-advance if requested and the current conversation is being marked unread
         if (showNext && !read) {
             showNextConversation(targets);
@@ -818,6 +821,9 @@ public abstract class AbstractActivityController implements ActivityController {
         for (Conversation target : targets) {
             final ContentValues values = new ContentValues();
             values.put(ConversationColumns.READ, read);
+            if (markViewed) {
+                values.put(ConversationColumns.VIEWED, true);
+            }
             final ConversationInfo info = target.conversationInfo;
             if (info != null) {
                 info.markRead(read);
