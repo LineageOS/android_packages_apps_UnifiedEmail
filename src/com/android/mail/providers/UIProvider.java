@@ -789,6 +789,7 @@ public class UIProvider {
     public static final int CONVERSATION_COLOR_COLUMN = 20;
     public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 21;
     public static final int CONVERSATION_SENDER_INFO_COLUMN = 22;
+    public static final int CONVERSATION_VIEWED_COLUMN = 23;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -892,7 +893,6 @@ public class UIProvider {
          * This int column indicates whether the conversation has been read
          */
         public static String READ = "read";
-
         /**
          * This int column indicates whether the conversation has been starred
          */
@@ -938,6 +938,13 @@ public class UIProvider {
          * This String column contains the Uri for this conversation's account
          */
         public static final String ACCOUNT_URI = "accountUri";
+        /**
+         * This int column indicates whether the conversation was displayed on the UI and the
+         * user got a chance to read it. The UI does not read this value, it is meant only to
+         * write the status back to the provider. As a result, it is not available in the
+         * {@link Conversation} object.
+         */
+        public static String VIEWED = "viewed";
 
         private ConversationColumns() {
         }
