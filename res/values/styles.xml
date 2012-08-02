@@ -429,6 +429,10 @@
         <item name="android:textColor">@color/drafts</item>
     </style>
 
+    <style name="SendingTextAppearance" parent="@style/MessageInfoTextAppearance">
+        <item name="android:textColor">@color/drafts</item>
+    </style>
+
     <style name="SendersReadTextAppearance" parent="@style/MessageInfoTextAppearance">
         <item name="android:textColor">@color/senders_text_color_read</item>
         <item name="android:textSize">@dimen/senders_font_size</item>
