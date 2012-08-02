@@ -352,6 +352,31 @@ public final class ConversationListFragment extends ListFragment implements
         super.onDestroyView();
     }
 
+    /**
+     * There are three binary variables, which determine what we do with a message.
+     * checkbEnabled: Whether check boxes are enabled or not (forced true on tablet)
+     * cabModeOn: Whether CAB mode is currently on or not.
+     * pressType: long or short tap
+     * (There is a third possibility: phone or tablet, but they have <em>identical</em> behavior)
+     * The matrix of possibilities is:
+     * Long tap:
+     * Always toggle selection of conversation. If CAB mode is not started, then start it.
+     * <pre>
+     *              | Checkboxes | No Checkboxes
+     *    ----------+------------+---------------
+     *    CAB mode  |   Select   |     Select
+     *    List mode |   Select   |     Select
+     *
+     * Short tap:
+     *              | Checkboxes | No Checkboxes
+     *    ----------+------------+---------------
+     *    CAB mode  |    Peek    |     Select
+     *    List mode |    Peek    |      Peek
+     * </pre>
+     * Reference: http://b/issue?id=6392199
+     * <p>
+     * {@inheritDoc}
+     */
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         // Ignore anything that is not a conversation item. Could be a footer.
@@ -359,17 +384,12 @@ public final class ConversationListFragment extends ListFragment implements
             return true;
         }
         // Long click is for adding conversations to a selection. Add conversation here.
-
-        // TODO(viki): True for now. We need to look at settings and perform a different action if
-        // check boxes are not visible.
-        final boolean isCheckBoxVisible = true;
-        if (isCheckBoxVisible && mTabletDevice && mIsCabMode) {
+        if (!mAccount.settings.hideCheckboxes && mIsCabMode) {
             viewConversation(position);
             return true;
         }
         assert (view instanceof ConversationItemView);
-        ConversationItemView item = (ConversationItemView) view;
-        item.getConversation();
+        final ConversationItemView item = (ConversationItemView) view;
         // TODO(mindyp) handle drag mode, long press.
         // Handle drag mode if allowed, otherwise toggle selection.
         //        if (!mViewMode.getMode() == ViewMode.CONVERSATION_LIST || !mTabletDevice) {
