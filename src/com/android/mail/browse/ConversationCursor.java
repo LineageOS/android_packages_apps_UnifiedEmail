@@ -128,7 +128,7 @@ public final class ConversationCursor implements Cursor {
     private void setCursor(Wrapper cursor) {
         // If we have an existing underlying cursor, make sure it's closed
         if (mUnderlyingCursor != null) {
-            mUnderlyingCursor.close();
+            close();
         }
         mColumnNames = cursor.getColumnNames();
         mRefreshRequired = false;
