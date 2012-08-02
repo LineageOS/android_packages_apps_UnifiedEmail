@@ -118,6 +118,7 @@ public final class ConversationListFragment extends ListFragment implements
     private int mSwipeAction;
     private ErrorListener mErrorListener;
     private DataSetObserver mFolderObserver;
+    private DataSetObserver mConversationListStatusObserver;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -131,6 +132,14 @@ public final class ConversationListFragment extends ListFragment implements
         @Override
         public void onChanged() {
             onFolderUpdated(mActivity.getFolderController().getFolder());
+        }
+    }
+
+    private class ConversationListStatusObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            // update footer
+            onConversationListStatusUpdated();
         }
     }
 
@@ -233,6 +242,9 @@ public final class ConversationListFragment extends ListFragment implements
         mListAdapter.hideFooter();
         mFolderObserver = new FolderObserver();
         mActivity.getFolderController().registerFolderObserver(mFolderObserver);
+        mConversationListStatusObserver = new ConversationListStatusObserver();
+        mActivity.getConversationUpdater().registerConversationListObserver(
+                mConversationListStatusObserver);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         initializeUiForFirstDisplay();
         configureSearchResultHeader();
@@ -331,6 +343,11 @@ public final class ConversationListFragment extends ListFragment implements
         if (mFolderObserver != null) {
             mActivity.getFolderController().unregisterFolderObserver(mFolderObserver);
             mFolderObserver = null;
+        }
+        if (mConversationListStatusObserver != null) {
+            mActivity.getConversationUpdater().unregisterConversationListObserver(
+                    mConversationListStatusObserver);
+            mConversationListStatusObserver = null;
         }
         super.onDestroyView();
     }
@@ -480,29 +497,25 @@ public final class ConversationListFragment extends ListFragment implements
             return;
         }
         mListAdapter.setFolder(mFolder);
-        mFooterView.updateStatus(mFolder);
-        if (mFolder.isSyncInProgress()) {
-            mListAdapter.showFooter();
-        } else if (mFolder.lastSyncResult == UIProvider.LastSyncResult.SUCCESS) {
+        mFooterView.setFolder(mFolder);
+        if (mFolder.lastSyncResult != UIProvider.LastSyncResult.SUCCESS) {
+            mErrorListener.onError(mFolder, false);
+        }
+    }
+
+    public void onConversationListStatusUpdated() {
+        ConversationCursor cursor = getConversationListCursor();
+        boolean showFooter = mFooterView.updateStatus(cursor);
+        Bundle extras = cursor.getExtras();
+        int error = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
+                extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
+                : UIProvider.LastSyncResult.SUCCESS;
+        if (error != UIProvider.LastSyncResult.SUCCESS) {
             // Check the status of the folder to see if we are done loading.
             updateSearchResultHeader(mFolder != null ? mFolder.totalCount : 0);
-            if (mFolder.totalCount == 0) {
-                mListView.setEmptyView(mEmptyView);
-            } else {
-                if (folder.loadMoreUri == null) {
-                    mListAdapter.hideFooter();
-                } else {
-                    if ((mListAdapter.getCursor() != null) &&
-                            (folder.totalCount > mListAdapter.getCount())) {
-                        mListAdapter.showFooter();
-                    } else {
-                        mListAdapter.hideFooter();
-                    }
-                }
-            }
-        } else { // We have an error. Display it.
+        }
+        if (showFooter) {
             mListAdapter.showFooter();
-            mErrorListener.onError(mFolder, false);
         }
     }
 

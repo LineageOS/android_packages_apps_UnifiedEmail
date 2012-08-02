@@ -54,6 +54,13 @@ public class UIProvider {
         public static final int INITIAL_SYNC_NEEDED = 1<<4;
         // Manual sync is required
         public static final int MANUAL_SYNC_REQUIRED = 1<<5;
+
+        public static boolean isSyncInProgress(int syncStatus) {
+            return 0 != (syncStatus & (BACKGROUND_SYNC |
+                    USER_REFRESH |
+                    USER_QUERY |
+                    USER_MORE_RESULTS));
+        }
     }
 
     /**

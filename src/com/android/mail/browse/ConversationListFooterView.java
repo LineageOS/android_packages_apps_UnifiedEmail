@@ -19,6 +19,7 @@ package com.android.mail.browse;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -38,6 +39,8 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
     private View mRetry;
     private TextView mErrorText;
     private AsyncRefreshTask mFolderSyncTask;
+    private Folder mFolder;
+    private Uri mLoadMoreUri;
 
     public ConversationListFooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -81,36 +84,47 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
         }
     }
 
+    public void setFolder(Folder folder) {
+        mFolder = folder;
+        mRetry.setTag(mFolder);
+        mLoadMore.setTag(mFolder);
+        mLoadMoreUri = folder.loadMoreUri;
+    }
+
     /**
      * Update the view to reflect the new folder status.
      */
-    public void updateStatus(final Folder folder) {
-        if (folder == null) {
-            return;
+    public boolean updateStatus(final ConversationCursor cursor) {
+        if (cursor == null) {
+            return false;
         }
-        mRetry.setTag(folder);
-        mLoadMore.setTag(folder);
-        if (folder.isSyncInProgress()) {
+        boolean showFooter = true;
+        Bundle extras = cursor.getExtras();
+        int status = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
+        int error = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
+                extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
+                : UIProvider.LastSyncResult.SUCCESS;
+        if (UIProvider.SyncStatus.isSyncInProgress(status)) {
             mLoading.setVisibility(View.VISIBLE);
             mNetworkError.setVisibility(View.GONE);
             mLoadMore.setVisibility(View.GONE);
-        } else if (folder.lastSyncResult != UIProvider.LastSyncResult.SUCCESS) {
+        } else if (error != UIProvider.LastSyncResult.SUCCESS) {
             mNetworkError.setVisibility(View.VISIBLE);
-            CharSequence error = Utils.getSyncStatusText(getContext(), folder.lastSyncResult);
-            if (!TextUtils.isEmpty(error)) {
-                mErrorText.setText(error);
-            }
+            mErrorText.setText(Utils.getSyncStatusText(getContext(), error));
             mLoading.setVisibility(View.GONE);
             mLoadMore.setVisibility(View.GONE);
             // Only show the "Retry" button for I/O errors; it won't help for
             // internal errors.
             mRetry.setVisibility(
-                    folder.lastSyncResult == UIProvider.LastSyncResult.CONNECTION_ERROR ?
+                    error == UIProvider.LastSyncResult.CONNECTION_ERROR ?
                     View.VISIBLE : View.GONE);
-        } else if (folder.loadMoreUri != null) {
+        } else if (mLoadMoreUri != null) {
             mLoading.setVisibility(View.GONE);
             mNetworkError.setVisibility(View.GONE);
             mLoadMore.setVisibility(View.VISIBLE);
+        } else {
+            showFooter = false;
         }
+        return showFooter;
     }
 }
