@@ -401,18 +401,12 @@ public class WidgetService extends RemoteViewsService {
         private SpannableStringBuilder ellipsizeStyledSenders(ConversationInfo info, int maxChars,
                 SpannableString[] styledSenders) {
             SpannableStringBuilder builder = new SpannableStringBuilder();
-            int totalChars = 0;
             boolean ellipsize = false;
-            SpannableString ellipsizedText;
-            int width;
             SpannableString prevSender = null;
             for (SpannableString sender : styledSenders) {
-                // No more width available, we'll only show fixed fragments.
                 if (ellipsize) {
                     break;
                 }
-                // New line and ellipsize text if needed.
-                ellipsizedText = null;
                 CharacterStyle[] spans = sender.getSpans(0, sender.length(), CharacterStyle.class);
                 if (SendersView.sElidedString.equals(sender.toString())) {
                     prevSender = sender;
@@ -425,26 +419,7 @@ public class WidgetService extends RemoteViewsService {
                 } else {
                     prevSender = sender;
                 }
-                width = sender.length();
-                if (totalChars + width > maxChars) {
-                    ellipsize = true;
-                }
-                if (ellipsize) {
-                    ellipsizedText = copyStyles(spans,
-                            TextUtils.ellipsize(sender, new TextPaint(), width, TruncateAt.END));
-                    width = ellipsizedText.length();
-                }
-                totalChars += width;
-
-                final CharSequence fragmentDisplayText;
-                if (ellipsizedText != null) {
-                    fragmentDisplayText = ellipsizedText;
-                } else {
-                    // Prepend the dividing token, unless this is the first
-                    // sender.
-                    fragmentDisplayText = sender;
-                }
-                builder.append(fragmentDisplayText);
+                builder.append(sender);
             }
             return builder;
         }
