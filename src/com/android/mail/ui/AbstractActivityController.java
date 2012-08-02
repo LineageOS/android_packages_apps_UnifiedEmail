@@ -508,7 +508,6 @@ public abstract class AbstractActivityController implements ActivityController {
         if (folder != null && !folder.equals(mFolder)) {
             LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
             final LoaderManager lm = mActivity.getLoaderManager();
-            mActionBarView.setRefreshInProgress(false);
             mFolder = folder;
             mActionBarView.setFolder(mFolder);
 
@@ -978,11 +977,6 @@ public abstract class AbstractActivityController implements ActivityController {
         // The SupressNotificationReceiver will block the broadcast if we're looking at the folder
         // that the notification was received for.
         disableNotifications();
-
-        if (mActionBarView != null) {
-            mActionBarView.onResume();
-        }
-
     }
 
     @Override
@@ -1035,6 +1029,7 @@ public abstract class AbstractActivityController implements ActivityController {
     public void onDestroy() {
         // unregister the ViewPager's observer on the conversation cursor
         mPagerController.onDestroy();
+        mActionBarView.onDestroy();
     }
 
     /**
@@ -1613,17 +1608,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 // Check status of the cursor.
                 if (data != null && data.moveToFirst()) {
                     final Folder folder = new Folder(data);
-                    if (folder.isSyncInProgress()) {
-                        mActionBarView.onRefreshStarted();
-                    } else {
-                        // Stop the spinner here.
-                        mActionBarView.onRefreshStopped(folder.lastSyncResult);
-                    }
-                    mActionBarView.onFolderUpdated(folder);
-                    final ConversationListFragment convList = getConversationListFragment();
-                    if (convList != null) {
-                        convList.onFolderUpdated(folder);
-                    }
                     LogUtils.d(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
 
                     mFolder = folder;
