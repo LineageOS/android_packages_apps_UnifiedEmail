@@ -334,10 +334,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Returns a boolean indicating whether network activity (sync) is occuring for this folder.
      */
     public boolean isSyncInProgress() {
-        return 0 != (syncStatus & (UIProvider.SyncStatus.BACKGROUND_SYNC |
-                UIProvider.SyncStatus.USER_REFRESH |
-                UIProvider.SyncStatus.USER_QUERY |
-                UIProvider.SyncStatus.USER_MORE_RESULTS));
+        return UIProvider.SyncStatus.isSyncInProgress(syncStatus);
     }
 
     /**
