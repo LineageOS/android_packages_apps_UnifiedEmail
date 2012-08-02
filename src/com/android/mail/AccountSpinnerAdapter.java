@@ -29,7 +29,6 @@ import android.widget.TextView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
-import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.RecentFolderList;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.utils.LogTag;
@@ -56,10 +55,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * Array of all the accounts on the device.
      */
     private Account[] mAllAccounts = new Account[0];
-    /**
-     * The name of the account is the 2nd column in {@link UIProvider#ACCOUNTS_PROJECTION}
-     */
-    private static final int NAME_COLUMN = 2;
     /**
      * An object that provides a collection of recent folders, per account.
      */
@@ -292,25 +287,17 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         return mCurrentAccount.uri;
     }
 
-    // This call renders the view that will be shown in the header.
-    // Since we are tracking the current folder/ account, just
-    // always return what we believe that view is.
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
+    public View getView(int position, View view, ViewGroup parent) {
+        if (view == null) {
+            view = mInflater.inflate(R.layout.account_switch_spinner_item, null);
         }
-        // Hide everything else.
-        View anchor = showAnchor(convertView);
-        // Show the anchor
-        anchor.findViewById(R.id.anchor).setVisibility(View.VISIBLE);
-        ((TextView) anchor.findViewById(R.id.account_spinner_first))
-            .setText(getFolderLabel());
-        ((TextView) anchor.findViewById(R.id.account_spinner_second))
-            .setText(getCurrentAccountName());
-        populateUnreadCountView((TextView) anchor.findViewById(R.id.unread),
+        ((TextView) view.findViewById(R.id.account_spinner_first)).setText(getFolderLabel());
+        ((TextView) view.findViewById(R.id.account_spinner_second))
+                .setText(getCurrentAccountName());
+        populateUnreadCountView((TextView) view.findViewById(R.id.unread),
                 getFolderUnreadCount());
-        return convertView;
+        return view;
     }
 
     @Override
@@ -325,41 +312,31 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         return false;
     }
 
-    private View showAnchor(View convertView) {
-        convertView.findViewById(R.id.dropdown).setVisibility(View.GONE);
-        View anchor = convertView.findViewById(R.id.anchor);
-        anchor.setVisibility(View.VISIBLE);
-        return anchor;
-    }
-
-    private View showDropdown(View convertView) {
-        convertView.findViewById(R.id.anchor).setVisibility(View.GONE);
-        convertView.findViewById(R.id.empty).setVisibility(View.GONE);
-        convertView.findViewById(R.id.header).setVisibility(View.GONE);
-        convertView.findViewById(R.id.default_view).setVisibility(View.GONE);
-        View dropdown = convertView.findViewById(R.id.dropdown);
-        dropdown.setVisibility(View.VISIBLE);
-        return dropdown;
-    }
-
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+    public View getDropDownView(int position, View view, ViewGroup parent) {
         // Shown in the first text view with big font.
         String bigText = "";
         // Shown in the second text view with smaller font.
         String smallText = "";
         int color = 0;
         int unreadCount = 0;
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
-        }
-        // Show dropdown portion.
-        final View dropdown = showDropdown(convertView);
+        // Do not use view recycling in getDropDownView!!!
+        //
+        // We cannot use view recycling here: view should always be instantiated. The reason is that
+        // spinners cannot deal with different view types. They expect every view to be identical.
+        // The previous implementation used a single view, which was a union of all the different
+        // views we would show in a dropdown, but that led to an increase in the number of views
+        // for the dropdown window. The account spinner dropdown is a separate window, and when the
+        // dropdown is dismissed, all the views are removed. Tapping on the account spinner creates
+        // a new popup window, and all the views need to be recreated from scratch.  Since all the
+        // views are recreated, it should be reasonable to instantiate a view for each dropdown
+        // element as opposed to recycling them.
         switch (getType(position)) {
             case TYPE_DEAD_HEADER:
-                dropdown.findViewById(R.id.empty).setVisibility(View.VISIBLE);
-                return convertView;
+                view = mInflater.inflate(R.layout.empty, null);
+                return view;
             case TYPE_ACCOUNT:
+                view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
                 final Account account = getAccount(position);
                 if (account == null) {
                     bigText = "";
@@ -375,28 +352,24 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 }
                 break;
             case TYPE_HEADER:
-                dropdown.findViewById(R.id.header).setVisibility(View.VISIBLE);
-                final String label = getCurrentAccountName();
-                final TextView accountLabel = ((TextView) dropdown.findViewById(
-                        R.id.account_spinner_header_account));
-                if (accountLabel != null) {
-                    accountLabel.setText(label);
-                }
-                return convertView;
+                view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_header, null);
+                ((TextView) view.findViewById(R.id.account_spinner_header_account))
+                        .setText(getCurrentAccountName());
+                return view;
             case TYPE_FOLDER:
+                view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
                 final Folder folder = mRecentFolderList.get(getRecentOffset(position));
                 bigText = folder.name;
                 unreadCount = folder.unreadCount;
                 break;
             case TYPE_ALL_FOLDERS:
-                bigText = mContext.getResources().getString(R.string.show_all_folders);
-                break;
+                view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_footer, null);
+                return view;
         }
-        dropdown.findViewById(R.id.default_view).setVisibility(View.VISIBLE);
-        displayOrHide(dropdown, R.id.account_spinner_first, bigText);
-        displayOrHide(dropdown, R.id.account_spinner_second, smallText);
+        displayOrHide(view, R.id.account_spinner_first, bigText);
+        displayOrHide(view, R.id.account_spinner_second, smallText);
 
-        final View colorView = dropdown.findViewById(R.id.account_spinner_color);
+        final View colorView = view.findViewById(R.id.account_spinner_color);
         if (color != 0) {
             colorView.setVisibility(View.VISIBLE);
             colorView.setBackgroundColor(color);
@@ -404,9 +377,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             colorView.setVisibility(View.INVISIBLE);
         }
         populateUnreadCountView(
-                (TextView) dropdown.findViewById(R.id.account_spinner_unread_count),
+                (TextView) view.findViewById(R.id.account_spinner_unread_count),
                 unreadCount);
-        return convertView;
+        return view;
 
     }
 
