@@ -1947,17 +1947,18 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        boolean isScrolling = (scrollState != OnScrollListener.SCROLL_STATE_IDLE);
-        if (!isScrolling) {
-            if (mConversationListCursor.isRefreshRequired()) {
-                LogUtils.d(LOG_TAG, "Stop scrolling: refresh");
-                mConversationListCursor.refresh();
-            } else if (mConversationListCursor.isRefreshReady()) {
+        mIsConversationListScrolling = (scrollState != OnScrollListener.SCROLL_STATE_IDLE);
+        if (!mIsConversationListScrolling) {
+            if (mConversationListCursor.isRefreshReady()) {
                 LogUtils.d(LOG_TAG, "Stop scrolling: try sync");
                 onRefreshReady();
             }
+
+            if (mConversationListCursor.isRefreshRequired()) {
+                LogUtils.d(LOG_TAG, "Stop scrolling: refresh");
+                mConversationListCursor.refresh();
+            }
         }
-        mIsConversationListScrolling = isScrolling;
     }
 
     @Override
