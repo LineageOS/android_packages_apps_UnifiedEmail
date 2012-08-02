@@ -80,11 +80,8 @@ public final class ConversationListFragment extends ListFragment implements
 
     // Control state.
     private ConversationListCallbacks mCallbacks;
-    private View mEmptyView;
 
     private final Handler mHandler = new Handler();
-    // True if the view is in CAB (Contextual Action Bar: some conversations are selected) mode
-    private boolean mIsCabMode;
     // List save state.
     private Parcelable mListSavedState;
 
@@ -119,6 +116,8 @@ public final class ConversationListFragment extends ListFragment implements
     private ErrorListener mErrorListener;
     private DataSetObserver mFolderObserver;
     private DataSetObserver mConversationListStatusObserver;
+
+    private ConversationSelectionSet mSelectedSet;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -238,7 +237,8 @@ public final class ConversationListFragment extends ListFragment implements
                 mActivity.getSettings(), mActivity.getViewMode(), mListView);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
-        mListView.setSelectionSet(mActivity.getSelectedSet());
+        mSelectedSet = mActivity.getSelectedSet();
+        mListView.setSelectionSet(mSelectedSet);
         mListAdapter.hideFooter();
         mFolderObserver = new FolderObserver();
         mActivity.getFolderController().registerFolderObserver(mFolderObserver);
@@ -311,7 +311,6 @@ public final class ConversationListFragment extends ListFragment implements
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
-        mEmptyView = rootView.findViewById(R.id.empty_view);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -359,7 +358,7 @@ public final class ConversationListFragment extends ListFragment implements
      * pressType: long or short tap
      * (There is a third possibility: phone or tablet, but they have <em>identical</em> behavior)
      * The matrix of possibilities is:
-     * Long tap:
+     * <p>Long tap:
      * Always toggle selection of conversation. If CAB mode is not started, then start it.
      * <pre>
      *              | Checkboxes | No Checkboxes
@@ -367,11 +366,6 @@ public final class ConversationListFragment extends ListFragment implements
      *    CAB mode  |   Select   |     Select
      *    List mode |   Select   |     Select
      *
-     * Short tap:
-     *              | Checkboxes | No Checkboxes
-     *    ----------+------------+---------------
-     *    CAB mode  |    Peek    |     Select
-     *    List mode |    Peek    |      Peek
      * </pre>
      * Reference: http://b/issue?id=6392199
      * <p>
@@ -383,32 +377,34 @@ public final class ConversationListFragment extends ListFragment implements
         if (!(view instanceof ConversationItemView)) {
             return true;
         }
-        // Long click is for adding conversations to a selection. Add conversation here.
-        if (!mAccount.settings.hideCheckboxes && mIsCabMode) {
-            viewConversation(position);
-            return true;
-        }
-        assert (view instanceof ConversationItemView);
-        final ConversationItemView item = (ConversationItemView) view;
-        // TODO(mindyp) handle drag mode, long press.
-        // Handle drag mode if allowed, otherwise toggle selection.
-        //        if (!mViewMode.getMode() == ViewMode.CONVERSATION_LIST || !mTabletDevice) {
-        // Add this conversation to the selected set.
-        // final Conversation conversation  = item.getConversation();
-        // mSelectedSet.toggle(conversation);
-        item.toggleCheckMark();
-        // Verify that the checkbox is in sync with the selection set.
-        // assert (item.isSelected() == mSelectedSet.contains(conversation));
+        ((ConversationItemView) view).toggleCheckMark();
         return true;
     }
 
+    /**
+     * See the comment for {@link #onItemLongClick(AdapterView, View, int, long)}.
+     * <p>Short tap behavior:
+     * <pre>
+     *              | Checkboxes | No Checkboxes
+     *    ----------+------------+---------------
+     *    CAB mode  |    Peek    |     Select
+     *    List mode |    Peek    |      Peek
+     * </pre>
+     * Reference: http://b/issue?id=6392199
+     * <p>
+     * {@inheritDoc}
+     */
     @Override
     public void onListItemClick(ListView l, View view, int position, long id) {
         // Ignore anything that is not a conversation item. Could be a footer.
         if (!(view instanceof ConversationItemView)) {
             return;
         }
-        viewConversation(position);
+        if (mAccount.settings.hideCheckboxes && !mSelectedSet.isEmpty()) {
+            ((ConversationItemView) view).toggleCheckMark();
+        } else {
+            viewConversation(position);
+        }
     }
 
     @Override
