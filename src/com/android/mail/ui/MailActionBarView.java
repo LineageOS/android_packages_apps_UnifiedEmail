@@ -25,6 +25,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -105,6 +106,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
     };
     private final boolean mShowConversationSubject;
     private TextView mFolderAccountName;
+    private DataSetObserver mFolderObserver;
 
     public MailActionBarView(Context context) {
         this(context, null);
@@ -118,6 +120,14 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         super(context, attrs, defStyle);
         mShowConversationSubject = getResources().getBoolean(R.bool.show_conversation_subject);
         mIsOnTablet = Utils.useTabletUI(context);
+    }
+
+    // update the pager title strip as the Folder's conversation count changes
+    private class FolderObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            onFolderUpdated(mController.getFolder());
+        }
     }
 
     @Override
@@ -211,6 +221,8 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         mActionBar = actionBar;
         mController = callback;
         mActivity = activity;
+        mFolderObserver = new FolderObserver();
+        mController.registerFolderObserver(mFolderObserver);
         // We don't want to include the "Show all folders" menu item on tablet devices
         final boolean showAllFolders = !Utils.useTabletUI(getContext());
         mSpinner = new AccountSpinnerAdapter(activity, getContext(), recentFolders, showAllFolders);
@@ -250,6 +262,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      * folder that is currently being displayed.
      */
     public void setFolder(Folder folder) {
+        setRefreshInProgress(false);
         mSpinner.setCurrentFolder(folder);
         mSpinner.notifyDataSetChanged();
         mFolder = folder;
@@ -305,10 +318,11 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         return false;
     }
 
-    public void onPause() {
-    }
-
-    public void onResume() {
+    public void onDestroy() {
+        if (mFolderObserver != null) {
+            mController.unregisterFolderObserver(mFolderObserver);
+            mFolderObserver = null;
+        }
     }
 
     @Override
@@ -459,11 +473,10 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        // TODO Auto-generated method stub
         return false;
     }
 
-    public boolean setRefreshInProgress(boolean inProgress) {
+    private boolean setRefreshInProgress(boolean inProgress) {
         if (inProgress != mRefreshInProgress) {
             mRefreshInProgress = inProgress;
             if (mSearch == null || !mSearch.isActionViewExpanded()) {
@@ -474,11 +487,11 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         return false;
     }
 
-    public void onRefreshStarted() {
+    private void onRefreshStarted() {
         setRefreshInProgress(true);
     }
 
-    public void onRefreshStopped(int status) {
+    private void onRefreshStopped(int status) {
         if (setRefreshInProgress(false)) {
             switch (status) {
                 case LastSyncResult.SUCCESS:
@@ -549,6 +562,13 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      */
     public void onFolderUpdated(Folder folder) {
         mSpinner.onFolderUpdated(folder);
+        int status = folder.syncStatus;
+        if (folder.isSyncInProgress()) {
+            onRefreshStarted();
+        } else {
+            // Stop the spinner here.
+            onRefreshStopped(folder.lastSyncResult);
+        }
     }
 
     @Override
