@@ -1160,6 +1160,10 @@ public class UIProvider {
 
         // The cursor is loaded, and there will be no more data
         public static final int COMPLETE =     1 << 3;
+
+        public static boolean isWaitingForResults(int cursorStatus) {
+            return 0 != (cursorStatus & LOADING);
+        }
     }
 
 
