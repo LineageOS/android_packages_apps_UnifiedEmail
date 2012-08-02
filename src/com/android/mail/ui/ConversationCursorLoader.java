@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.AsyncTaskLoader;
 import android.net.Uri;
