@@ -525,7 +525,7 @@ public final class ConversationListFragment extends ListFragment implements
 
     public void onConversationListStatusUpdated() {
         ConversationCursor cursor = getConversationListCursor();
-        boolean showFooter = mFooterView.updateStatus(cursor);
+        final boolean showFooter = mFooterView.updateStatus(cursor);
         Bundle extras = cursor.getExtras();
         int error = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
                 extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
@@ -534,9 +534,7 @@ public final class ConversationListFragment extends ListFragment implements
             // Check the status of the folder to see if we are done loading.
             updateSearchResultHeader(mFolder != null ? mFolder.totalCount : 0);
         }
-        if (showFooter) {
-            mListAdapter.showFooter();
-        }
+        mListAdapter.setFooterVisibility(showFooter);
     }
 
     private void setSwipeAction() {
