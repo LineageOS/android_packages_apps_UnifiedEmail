@@ -70,11 +70,11 @@ public class Conversation implements Parcelable {
     /**
      * @see UIProvider.ConversationColumns#NUM_MESSAGES
      */
-    public int numMessages;
+    private int numMessages;
     /**
      * @see UIProvider.ConversationColumns#NUM_DRAFTS
      */
-    public int numDrafts;
+    private int numDrafts;
     /**
      * @see UIProvider.ConversationColumns#SENDING_STATE
      */
@@ -248,8 +248,6 @@ public class Conversation implements Parcelable {
             hasAttachments = cursor.getInt(UIProvider.CONVERSATION_HAS_ATTACHMENTS_COLUMN) != 0;
             String messageList = cursor.getString(UIProvider.CONVERSATION_MESSAGE_LIST_URI_COLUMN);
             messageListUri = !TextUtils.isEmpty(messageList) ? Uri.parse(messageList) : null;
-            numMessages = cursor.getInt(UIProvider.CONVERSATION_NUM_MESSAGES_COLUMN);
-            numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
             sendingState = cursor.getInt(UIProvider.CONVERSATION_SENDING_STATE_COLUMN);
             priority = cursor.getInt(UIProvider.CONVERSATION_PRIORITY_COLUMN);
             read = cursor.getInt(UIProvider.CONVERSATION_READ_COLUMN) != 0;
@@ -270,6 +268,8 @@ public class Conversation implements Parcelable {
             if (conversationInfo == null) {
                 snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
                 senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
+                numMessages = cursor.getInt(UIProvider.CONVERSATION_NUM_MESSAGES_COLUMN);
+                numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
             }
         }
     }
@@ -426,6 +426,20 @@ public class Conversation implements Parcelable {
     public String getSnippet() {
         return conversationInfo != null && !TextUtils.isEmpty(conversationInfo.firstSnippet) ?
                 conversationInfo.firstSnippet : snippet;
+    }
+
+    /**
+     * Get the number of messages for this conversation.
+     */
+    public int getNumMessages() {
+        return conversationInfo != null ? conversationInfo.messageCount : numMessages;
+    }
+
+    /**
+     * Get the number of drafts for this conversation.
+     */
+    public int numDrafts() {
+        return conversationInfo != null ? conversationInfo.draftCount : numDrafts;
     }
 
     /**
