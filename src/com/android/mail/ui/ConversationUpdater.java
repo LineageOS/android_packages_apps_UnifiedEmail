@@ -82,9 +82,12 @@ public interface ConversationUpdater extends ConversationListCallbacks {
 
     /**
      * Mark a number of conversations as read or unread.
-     *
+     * @param targets the conversations to act upon
+     * @param read true if the conversations are marked read, false if they are marked unread.
+     * @param viewed whether the conversations are marked viewed as well. This indicates that the
+     * conversations are shown on the UI.
      */
-    void markConversationsRead(Collection<Conversation> targets, boolean read);
+    void markConversationsRead(Collection<Conversation> targets, boolean read, boolean viewed);
 
     /**
      * Mark a single conversation unread, either entirely or for just a subset of the messages in a
