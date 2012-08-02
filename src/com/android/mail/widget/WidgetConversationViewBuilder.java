@@ -167,17 +167,6 @@ public class WidgetConversationViewBuilder {
         String snippet = conversation.getSnippet();
         boolean hasAttachments = conversation.hasAttachments;
 
-        // Add the status indicator
-        if (status.length() > 0) {
-            if (senders.length() > 0) {
-                senders.append(addStyle(SENDERS_SPLIT_TOKEN, SENDERS_FONT_SIZE,
-                        isUnread ? SENDERS_TEXT_COLOR_UNREAD : SENDERS_TEXT_COLOR_READ));
-            }
-
-            final CharSequence styledStatus = addStyle(status, SENDERS_FONT_SIZE, DRAFT_TEXT_COLOR);
-            senders.append(styledStatus);
-        }
-
         // Add style to date
         CharSequence styledDate = addStyle(date, DATE_FONT_SIZE, DATE_TEXT_COLOR);
 
