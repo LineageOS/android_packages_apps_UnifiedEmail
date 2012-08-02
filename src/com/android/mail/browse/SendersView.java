@@ -47,6 +47,7 @@ import java.util.regex.Pattern;
 public class SendersView extends TextView {
     public static final int DEFAULT_FORMATTING = 0;
     public static final int MERGED_FORMATTING = 1;
+    private static final Integer DOES_NOT_EXIST = -5;
     private static String sSendersSplitToken;
     public static String SENDERS_VERSION_SEPARATOR = "^**^";
     public static Pattern SENDERS_VERSION_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
@@ -210,10 +211,21 @@ public class SendersView extends TextView {
             style = !currentMessage.read ? getUnreadStyleSpan() : getReadStyleSpan();
             if (priority <= maxPriorityToInclude) {
                 spannableDisplay = new SpannableString(nameString);
-                spannableDisplay.setSpan(style, 0, spannableDisplay.length(), 0);
-                // Don't duplicate senders; leave the first instance.
-                if (!displayHash.containsKey(currentMessage.sender)) {
+                // Don't duplicate senders; leave the first instance, unless the
+                // current instance is also unread.
+                int oldPos = displayHash.containsKey(currentMessage.sender) ? displayHash
+                        .get(currentMessage.sender) : DOES_NOT_EXIST;
+                // If this sender doesn't exist OR the current message is
+                // unread, add the sender.
+                if (oldPos == DOES_NOT_EXIST || !currentMessage.read) {
+                    // If the sender entry already existed, and is right next to the
+                    // current sender, remove the old entry.
+                    if (oldPos != DOES_NOT_EXIST && i > 0 && oldPos == i - 1) {
+                        // Remove the old one!
+                        senders.remove(oldPos);
+                    }
                     displayHash.put(currentMessage.sender, i);
+                    spannableDisplay.setSpan(style, 0, spannableDisplay.length(), 0);
                     senders.add(spannableDisplay);
                 }
             } else {
