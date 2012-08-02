@@ -555,8 +555,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Parse senders fragments.
         if (mHeader.conversation.conversationInfo != null) {
             Context context = getContext();
-            mHeader.messageInfoString = SendersView.createMessageInfo(context,
-                    mHeader.conversation.conversationInfo);
+            mHeader.messageInfoString = SendersView
+                    .createMessageInfo(context, mHeader.conversation);
             int maxChars = ConversationItemViewCoordinates.getSubjectLength(context,
                     ConversationItemViewCoordinates.getMode(context, mViewMode),
                     mHeader.folderDisplayer != null && mHeader.folderDisplayer.mFoldersCount > 0,

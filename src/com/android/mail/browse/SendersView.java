@@ -34,8 +34,10 @@ import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Address;
+import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.MessageInfo;
+import com.android.mail.providers.UIProvider;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 
@@ -53,9 +55,11 @@ public class SendersView extends TextView {
     public static Pattern SENDERS_VERSION_SEPARATOR_PATTERN = Pattern.compile("\\^\\*\\*\\^");
     private static CharSequence sDraftSingularString;
     private static CharSequence sDraftPluralString;
+    private static CharSequence sSendingString;
     private static String sDraftCountFormatString;
     private static CharacterStyle sMessageInfoStyleSpan;
     private static CharacterStyle sDraftsStyleSpan;
+    private static CharacterStyle sSendingStyleSpan;
     private static CharacterStyle sUnreadStyleSpan;
     private static CharacterStyle sReadStyleSpan;
     private static String sMeString;
@@ -101,13 +105,17 @@ public class SendersView extends TextView {
             sDraftsStyleSpan = new TextAppearanceSpan(context, R.style.DraftTextAppearance);
             sUnreadStyleSpan = new TextAppearanceSpan(context,
                     R.style.SendersUnreadTextAppearance);
+            sSendingStyleSpan = new TextAppearanceSpan(context, R.style.SendingTextAppearance);
             sReadStyleSpan = new TextAppearanceSpan(context, R.style.SendersReadTextAppearance);
             sMessageCountSpacerString = res.getString(R.string.message_count_spacer);
+            sSendingString = res.getString(R.string.sending);
         }
     }
 
     public static SpannableStringBuilder createMessageInfo(Context context,
-            ConversationInfo conversationInfo) {
+            Conversation conv) {
+        ConversationInfo conversationInfo = conv.conversationInfo;
+        int sendingStatus = conv.sendingState;
         SpannableStringBuilder messageInfo = new SpannableStringBuilder();
         getSenderResources(context);
         if (conversationInfo != null) {
@@ -133,6 +141,15 @@ public class SendersView extends TextView {
                 draftString.setSpan(CharacterStyle.wrap(sDraftsStyleSpan), 0, draftString.length(),
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 messageInfo.append(draftString);
+            }
+            if (sendingStatus == UIProvider.ConversationSendingState.SENDING) {
+                if (count > 0 ||draftCount > 0) {
+                    messageInfo.append(sSendersSplitToken);
+                }
+                SpannableStringBuilder sending = new SpannableStringBuilder();
+                sending.append(sSendingString);
+                sending.setSpan(sSendingStyleSpan, 0, sending.length(), 0);
+                messageInfo.append(sending);
             }
         }
         return messageInfo;
