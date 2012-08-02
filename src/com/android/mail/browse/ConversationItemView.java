@@ -1225,7 +1225,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                         handled = true;
                     } else {
                         ListView list = getListView();
-                        if (!isChecked() && list != null) {
+                        if (list != null) {
                             int pos = list.getPositionForView(this);
                             list.performItemClick(this, pos, mHeader.conversation.id);
                         }
@@ -1239,12 +1239,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 break;
         }
 
-        if (!handled) {
-            // Let View try to handle it as well.
-            handled = super.onTouchEvent(event);
-        }
-
-        return handled;
+        // Let View try to handle it as well.
+        return handled || super.onTouchEvent(event);
     }
 
     private ListView getListView() {
@@ -1291,12 +1287,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 break;
         }
 
-        if (!handled) {
-            // Let View try to handle it as well.
-            handled = super.onTouchEvent(event);
-        }
-
-        return handled;
+        // Let View try to handle it as well.
+        return handled || super.onTouchEvent(event);
     }
 
     /**
@@ -1447,6 +1439,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
      * (phone, and portrait mode on tablet), toggle selection.
      */
     private void handleLongClick() {
+        mDownEvent = false;
         // If we are in one pane mode, or we are looking at conversations, drag and drop is
         // meaningless. Allow the list's long click handler to do the right thing.
         if (!Utils.useTabletUI(mContext) || !mViewMode.isListMode()) {
