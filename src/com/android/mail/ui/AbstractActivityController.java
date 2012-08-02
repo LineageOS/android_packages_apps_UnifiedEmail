@@ -766,8 +766,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
         // only do a granular 'mark unread' if a subset of messages are unread
         final int unreadCount = (unreadMessageUris == null) ? 0 : unreadMessageUris.size();
-        final boolean subsetIsUnread = (conv.numMessages > 1 && unreadCount > 0
-                && unreadCount < conv.numMessages);
+        final int numMessages = conv.getNumMessages();
+        final boolean subsetIsUnread = (numMessages > 1 && unreadCount > 0
+                && unreadCount < numMessages);
 
         if (!subsetIsUnread) {
             markConversationsRead(Collections.singletonList(conv), false /* read */,
