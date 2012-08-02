@@ -523,15 +523,16 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     public void showFooter() {
-        if (!mShowFooter) {
-            mShowFooter = true;
-            notifyDataSetChanged();
-        }
+        setFooterVisibility(true);
     }
 
     public void hideFooter() {
-        if (mShowFooter) {
-            mShowFooter = false;
+        setFooterVisibility(false);
+    }
+
+    public void setFooterVisibility(boolean show) {
+        if (mShowFooter != show) {
+            mShowFooter = show;
             notifyDataSetChanged();
         }
     }

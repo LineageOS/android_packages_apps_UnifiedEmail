@@ -20,7 +20,6 @@ package com.android.mail.browse;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -99,12 +98,12 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
             return false;
         }
         boolean showFooter = true;
-        Bundle extras = cursor.getExtras();
-        int status = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
-        int error = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
+        final Bundle extras = cursor.getExtras();
+        final int cursorStatus = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
+        final int error = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
                 extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
                 : UIProvider.LastSyncResult.SUCCESS;
-        if (UIProvider.SyncStatus.isSyncInProgress(status)) {
+        if (UIProvider.CursorStatus.isWaitingForResults(cursorStatus)) {
             mLoading.setVisibility(View.VISIBLE);
             mNetworkError.setVisibility(View.GONE);
             mLoadMore.setVisibility(View.GONE);
