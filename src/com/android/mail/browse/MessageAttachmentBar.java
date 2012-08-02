@@ -67,6 +67,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
     private ImageView mOverflowButton;
 
     private final AttachmentActionHandler mActionHandler;
+    private boolean mSaveClicked;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -97,6 +98,11 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
         mAttachment = attachment;
         mActionHandler.setAttachment(mAttachment);
 
+        // reset mSaveClicked if we are not currently downloading
+        // So if the download fails or the download completes, we stop
+        // showing progress, etc
+        mSaveClicked = !attachment.isDownloading() ? false : mSaveClicked;
+
         LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
                 " contentUri=%s MIME=%s", attachment.name, attachment.state,
                 attachment.destination, attachment.downloadedSize, attachment.contentUri,
@@ -112,8 +118,6 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
             mDisplayType = AttachmentUtils.getDisplayType(getContext(), attachment);
             updateSubtitleText(null);
         }
-
-        mProgress.setMax(attachment.size);
 
         updateActions();
         mActionHandler.updateStatus();
@@ -153,10 +157,12 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
             case R.id.save_attachment:
                 if (mAttachment.canSave()) {
                     mActionHandler.startDownloadingAttachment(AttachmentDestination.EXTERNAL);
+                    mSaveClicked = true;
                 }
                 break;
             case R.id.cancel_attachment:
                 mActionHandler.cancelAttachment();
+                mSaveClicked = false;
                 break;
             case R.id.overflow: {
                 final boolean canSave = mAttachment.canSave() && !mAttachment.isDownloading();
@@ -263,9 +269,9 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
         final boolean canPreview = (mAttachment.previewIntent != null);
         final boolean isInstallable = MimeType.isInstallable(mAttachment.contentType);
 
-        setButtonVisible(mCancelButton, isDownloading);
+        setButtonVisible(mCancelButton, isDownloading && mSaveClicked);
         setButtonVisible(mOverflowButton, !isDownloading && !isInstallable &&
-                (canSave || canPreview));
+                (canSave || canPreview) && !mSaveClicked);
     }
 
     public void onUpdateStatus() {
@@ -278,7 +284,8 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
     }
 
     public void updateProgress(boolean showProgress) {
-        if (mAttachment.isDownloading()) {
+        if (mAttachment.isDownloading() && mSaveClicked) {
+            mProgress.setMax(mAttachment.size);
             mProgress.setProgress(mAttachment.downloadedSize);
             mProgress.setIndeterminate(!showProgress);
             mProgress.setVisibility(VISIBLE);
