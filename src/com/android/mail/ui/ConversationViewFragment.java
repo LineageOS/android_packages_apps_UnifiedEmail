@@ -445,7 +445,7 @@ public final class ConversationViewFragment extends Fragment implements
      * a folder. This will initiate a data load, and hence must be called on the UI thread.
      */
     private void showConversation() {
-        if (!mUserVisible && mConversation.numMessages > mMaxAutoLoadMessages) {
+        if (!mUserVisible && mConversation.getNumMessages() > mMaxAutoLoadMessages) {
             LogUtils.v(LOG_TAG, "Fragment not user-visible, not showing conversation: %s",
                     mConversation.uri);
             mDeferredConversationLoad = true;
