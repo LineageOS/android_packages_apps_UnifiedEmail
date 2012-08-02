@@ -122,17 +122,20 @@ public class FoldersSelectionDialog implements OnClickListener {
                         checked.add(mCurrentFolder.uri.toString());
                     }
                 }
-                final String[] headers = mContext.getResources()
-                        .getStringArray(R.array.moveto_folder_sections);
-                // Currently, the number of adapters are assumed to match the number of headers
-                // in the string array.
-                mAdapter.addSection(new SystemFolderSelectorAdapter(mContext, foldersCursor,
-                        checked, mSingle, null));
+                // TODO(mindyp) : bring this back in UR8 when Email providers
+                // will have divided folder sections.
+                /* final String[] headers = mContext.getResources()
+                 .getStringArray(R.array.moveto_folder_sections);
+                 // Currently, the number of adapters are assumed to match the
+                 // number of headers in the string array.
+                 mAdapter.addSection(new SystemFolderSelectorAdapter(mContext,
+                 foldersCursor, checked, mSingle, null));
 
                 // TODO(mindyp): we currently do not support frequently moved to
-                // folders, at headers[1]; need to define what that means.
-                mAdapter.addSection(new HierarchicalFolderSelectorAdapter(mContext, foldersCursor,
-                        checked, mSingle, headers[2]));
+                // folders, at headers[1]; need to define what that means.*/
+                mAdapter.addSection(new AddableFolderSelectorAdapter(mContext,
+                        AddableFolderSelectorAdapter.filterFolders(foldersCursor), checked,
+                        mSingle, null));
                 mBuilder.setAdapter(mAdapter, FoldersSelectionDialog.this);
             } finally {
                 if (foldersCursor != null) {
