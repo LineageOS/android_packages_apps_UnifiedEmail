@@ -1326,7 +1326,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private class CheckForLongPress implements Runnable {
         @Override
         public void run() {
-            ConversationItemView.this.toggleSelectionOrBeginDrag();
+            handleLongClick();
             performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         }
     }
@@ -1446,22 +1446,25 @@ public class ConversationItemView extends View implements SwipeableItemView {
      * when viewing conversations (tablet), toggle selection. In one pane mode
      * (phone, and portrait mode on tablet), toggle selection.
      */
-    public void toggleSelectionOrBeginDrag() {
-        // If we are in one pane mode, or we are looking at conversations, drag
-        // and drop is meaningless. Toggle checkmark and return early.
-        if (!Utils.useTabletUI(mContext)
-                || !mViewMode.isListMode()) {
-            toggleCheckMark();
-            return;
+    private void handleLongClick() {
+        // If we are in one pane mode, or we are looking at conversations, drag and drop is
+        // meaningless. Allow the list's long click handler to do the right thing.
+        if (!Utils.useTabletUI(mContext) || !mViewMode.isListMode()) {
+            performLongClick();
+        } else {
+            beginDragMode();
         }
+    }
 
-        // Begin drag mode. Keep the conversation selected (NOT toggle
-        // selection) and start drag.
+    /**
+     * Begin drag mode. Keep the conversation selected (NOT toggle selection) and start drag.
+     */
+    private void beginDragMode() {
         selectConversation();
 
         // Clip data has form: [conversations_uri, conversationId1,
         // maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]
-        int count = mSelectedConversationSet.size();
+        final int count = mSelectedConversationSet.size();
         String description = Utils.formatPlural(mContext, R.plurals.move_conversation, count);
 
         final ClipData data = ClipData.newUri(mContext.getContentResolver(), description,
