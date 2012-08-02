@@ -1172,13 +1172,13 @@ public class UIProvider {
          * This integer column contains the staus of the message cursor.  The value will be
          * one defined in {@link CursorStatus}.
          */
-        public static final String EXTRA_STATUS = "status";
+        public static final String EXTRA_STATUS = "cursor_status";
 
         /**
          * Used for finding the cause of an error.
          * TODO: define these values
          */
-        public static final String EXTRA_ERROR = "error";
+        public static final String EXTRA_ERROR = "cursor_error";
 
     }
 
