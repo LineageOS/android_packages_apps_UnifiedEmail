@@ -17,7 +17,11 @@
 
 package com.android.mail.browse;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.text.Html;
@@ -46,7 +50,7 @@ import java.util.Map;
 
 import java.util.regex.Pattern;
 
-public class SendersView extends TextView {
+public class SendersView {
     public static final int DEFAULT_FORMATTING = 0;
     public static final int MERGED_FORMATTING = 1;
     private static final Integer DOES_NOT_EXIST = -5;
@@ -66,33 +70,24 @@ public class SendersView extends TextView {
     private static String sMessageCountSpacerString;
     public static CharSequence sElidedString;
     private static Map<Integer, Integer> sPriorityToLength;
+    private static BroadcastReceiver sConfigurationChangedReceiver;
 
-    public SendersView(Context context) {
-        this(context, null);
-    }
-
-    public SendersView(Context context, AttributeSet attrs) {
-        this(context, attrs, -1);
-    }
-
-    public SendersView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    public Typeface getTypeface(boolean isUnread) {
+    public static Typeface getTypeface(boolean isUnread) {
         return isUnread ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT;
     }
 
-    public void formatSenders(ConversationItemViewModel header, boolean isUnread, int mode,
-            Context context) {
-        String senders = header.conversation.senders;
-        if (TextUtils.isEmpty(senders)) {
-            return;
-        }
-        formatDefault(header, senders, context);
-    }
-
     private static void getSenderResources(Context context) {
+        if (sConfigurationChangedReceiver == null) {
+            sConfigurationChangedReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    sDraftSingularString = null;
+                    getSenderResources(context);
+                }
+            };
+            context.registerReceiver(sConfigurationChangedReceiver, new IntentFilter(
+                    Intent.ACTION_CONFIGURATION_CHANGED));
+        }
         if (sDraftSingularString == null) {
             Resources res = context.getResources();
             sSendersSplitToken = res.getString(R.string.senders_split_token);
@@ -272,8 +267,8 @@ public class SendersView extends TextView {
         return sMeString;
     }
 
-    private void formatDefault(ConversationItemViewModel header,
-            String sendersString, Context context) {
+    private static void formatDefault(ConversationItemViewModel header, String sendersString,
+            Context context) {
         getSenderResources(context);
         // Clear any existing sender fragments; we must re-make all of them.
         header.senderFragments.clear();
@@ -294,8 +289,12 @@ public class SendersView extends TextView {
         generateSenderFragments(header, namesOnly);
     }
 
-    private void generateSenderFragments(ConversationItemViewModel header, String[] names) {
+    private static void generateSenderFragments(ConversationItemViewModel header, String[] names) {
         header.sendersText = TextUtils.join(Address.ADDRESS_DELIMETER + " ", names);
         header.addSenderFragment(0, header.sendersText.length(), getReadStyleSpan(), true);
+    }
+
+    public static void formatSenders(ConversationItemViewModel header, Context context) {
+        formatDefault(header, header.conversation.senders, context);
     }
 }
