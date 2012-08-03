@@ -565,7 +565,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                     mHeader.conversation.conversationInfo, mHeader.messageInfoString.toString(),
                     maxChars);
         } else {
-            mCoordinates.sendersView.formatSenders(mHeader, isUnread, mMode, getContext());
+            SendersView.formatSenders(mHeader, getContext());
         }
 
         pauseTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
@@ -938,7 +938,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Old style senders; apply text colors/ sizes/ styling.
         if (mHeader.senderFragments.size() > 0) {
             sPaint.setTextSize(mCoordinates.sendersFontSize);
-            sPaint.setTypeface(mCoordinates.sendersView.getTypeface(isUnread));
+            sPaint.setTypeface(SendersView.getTypeface(isUnread));
             int sendersColor = getFontColor(isUnread ? sSendersTextColorUnread
                     : sSendersTextColorRead);
             sPaint.setColor(sendersColor);
