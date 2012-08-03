@@ -30,13 +30,21 @@
         android:layout_marginLeft="4dp"
         style="@style/UnreadCountActionBar" />
 
-    <LinearLayout
+    <!-- This spacer is here just to soak up horizontal space. -->
+    <!-- If this is omitted, the spinner triangle is too far from the text. -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical"
-        android:layout_toLeftOf="@id/unread"
-        android:background="@drawable/spinner_ab_holo_light">
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/unread">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:background="@drawable/spinner_ab_holo_light">
+
             <TextView
                 android:id="@+id/account_spinner_first"
                 style="@style/AccountSpinnerAnchorTextPrimary"
@@ -54,5 +62,8 @@
                 android:layout_marginRight="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
-    </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
 </RelativeLayout>
