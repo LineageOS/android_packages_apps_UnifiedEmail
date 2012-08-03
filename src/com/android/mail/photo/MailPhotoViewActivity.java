@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2012 Google Inc.
+ * Licensed to The Android Open Source Project.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.android.mail.photo;
 
 import android.app.ActionBar;
@@ -9,13 +26,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.ex.photo.PhotoViewActivity;
+import com.android.ex.photo.fragments.PhotoViewFragment;
+import com.android.ex.photo.views.ProgressBarWrapper;
 import com.android.mail.R;
 import com.android.mail.browse.AttachmentActionHandler;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
-import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
@@ -69,7 +89,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         final boolean runningJellyBeanOrLater = Utils.isRunningJellybeanOrLater();
         final Attachment attachment = getCurrentAttachment();
 
-        if (attachment != null) {
+        if (attachment != null && mSaveItem != null && mShareItem != null) {
             mSaveItem.setEnabled(!attachment.isDownloading()
                     && attachment.canSave() && !attachment.isSavedToExternal());
             mShareItem.setEnabled(attachment.isPresentLocally());
@@ -136,48 +156,73 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      * Adjusts the activity title and subtitle to reflect the image name and size.
      */
     @Override
-    protected void updateActionBar() {
-        super.updateActionBar();
+    protected void updateActionBar(PhotoViewFragment fragment) {
+        super.updateActionBar(fragment);
 
         final Attachment attachment = getCurrentAttachment();
-        final boolean isDownloading = attachment.isDownloading();
-        final boolean isSavedToExternal = attachment.isSavedToExternal();
-        final boolean showProgress = attachment.shouldShowProgress();
 
         final ActionBar actionBar = getActionBar();
         String subtitle =
                 AttachmentUtils.convertToHumanReadableSize(this, attachment.size);
 
-        // update the progress
-        if (isDownloading) {
-            final double progress = (double) attachment.downloadedSize / attachment.size;
-            setProgress((int) (progress * 10000));
-            setProgressBarVisibility(true);
-            setProgressBarIndeterminate(!showProgress);
-        } else {
-            setProgressBarVisibility(false);
-        }
 
         // update the status
-        // There are 4 states
-        //      1. Download failed
-        //      2. Saved, Attachment Size
-        //      3. Saving...
-        //      4. Attachment Size
-        if (attachment.downloadFailed()) {
-            actionBar.setSubtitle(getResources().getString(R.string.download_failed));
-        } else if (isSavedToExternal) {
+        // There are 3 states
+        //      1. Saved, Attachment Size
+        //      2. Saving...
+        //      3. Default, Attachment Size
+        if (attachment.isSavedToExternal()) {
             actionBar.setSubtitle(
                     getResources().getString(R.string.saved) + " " + subtitle);
-        } else if (isDownloading &&
+        } else if (attachment.isDownloading() &&
                 attachment.destination == AttachmentDestination.EXTERNAL) {
                 actionBar.setSubtitle(R.string.saving);
         } else {
             actionBar.setSubtitle(subtitle);
         }
 
-        // TODO check download failed to show the retry view
         updateActionItems();
+        updateProgressAndEmptyViews(fragment, attachment);
+    }
+
+    /**
+     * Updates the empty views of the fragment based upon the current
+     * state of the attachment.
+     * @param fragment the current fragment
+     * @param attachment the current {@link Attachment}
+     */
+    private void updateProgressAndEmptyViews(
+            PhotoViewFragment fragment, final Attachment attachment) {
+        final ProgressBarWrapper progressBar = fragment.getPhotoProgressBar();
+        final TextView emptyText = fragment.getEmptyText();
+        final ImageView retryButton = fragment.getRetryButton();
+
+        // update the progress
+        if (attachment.shouldShowProgress()) {
+            progressBar.setMax(attachment.size);
+            progressBar.setProgress(attachment.downloadedSize);
+            progressBar.setIndeterminate(false);
+        } else {
+            progressBar.setIndeterminate(true);
+        }
+
+        // If the download failed, show the empty text and retry button
+        if (attachment.downloadFailed()) {
+            emptyText.setText(R.string.photo_load_failed);
+            emptyText.setVisibility(View.VISIBLE);
+            retryButton.setVisibility(View.VISIBLE);
+            retryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    downloadAttachment();
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+            });
+            progressBar.setVisibility(View.GONE);
+        } else {
+            emptyText.setVisibility(View.GONE);
+            retryButton.setVisibility(View.GONE);
+        }
     }
 
     /**
