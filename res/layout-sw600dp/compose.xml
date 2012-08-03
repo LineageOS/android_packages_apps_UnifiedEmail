@@ -39,7 +39,8 @@
             <LinearLayout android:id="@+id/content"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true">
 
                 <!--  For the to, cc, bcc, and subject -->
                 <LinearLayout android:id="@+id/wrapper"
@@ -64,8 +65,9 @@
                 android:layout_width="match_parent"
                 android:orientation="vertical"
                 android:layout_marginTop="8dip"
-                android:paddingTop="2dip"
                 android:layout_marginRight="@dimen/compose_area_right_padding"
+                android:animateLayoutChanges="true"
+                android:paddingTop="2dip"
                 android:paddingBottom="0dip"
                 android:paddingLeft="0dip"
                 android:visibility="gone" >
