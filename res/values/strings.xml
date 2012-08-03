@@ -770,4 +770,6 @@
     <!-- Token used to space out message count, draft text, and senders -->
     <string translatable="false" name="message_count_spacer">\u00A0\u00A0</string>
     <string translatable="false" name="ellipsis">\u2026</string>
+
+    <string translatable="false" name="quote_begin">&lt;div class=\"quote\"&gt;</string>
 </resources>
