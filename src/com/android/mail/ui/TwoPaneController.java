@@ -368,10 +368,14 @@ public final class TwoPaneController extends AbstractActivityController {
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             mViewMode.enterSearchResultsListMode();
         } else {
-            if (mode == ViewMode.CONVERSATION_LIST && getFolderListFragment().showingHierarchy()) {
+            // The Folder List fragment can be null for monkeys where we get a back before the
+            // folder list has had a chance to initialize.
+            final FolderListFragment folderList = getFolderListFragment();
+            if (mode == ViewMode.CONVERSATION_LIST && folderList != null
+                    && folderList.showingHierarchy()) {
                 // If the user navigated via the left folders list into a child folder,
                 // back should take the user up to the parent folder's conversation list.
-                Folder hierarchyFolder = getHierarchyFolder();
+                final Folder hierarchyFolder = getHierarchyFolder();
                 if (hierarchyFolder.parent != null) {
                     goUpFolderHierarchy(hierarchyFolder);
                 } else  {
