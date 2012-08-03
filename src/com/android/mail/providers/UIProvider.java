@@ -800,8 +800,9 @@ public class UIProvider {
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
-        public static final int SENDING = 1;
-        public static final int SENT = 2;
+        public static final int QUEUED = 1;
+        public static final int SENDING = 2;
+        public static final int SENT = 3;
         public static final int SEND_ERROR = -1;
     }
 
