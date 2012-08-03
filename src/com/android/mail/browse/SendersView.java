@@ -138,7 +138,9 @@ public class SendersView {
                 messageInfo.append(draftString);
             }
             if (sendingStatus == UIProvider.ConversationSendingState.SENDING) {
-                if (count > 0 ||draftCount > 0) {
+                // If we are showing a message count or any draft text, prepend
+                // the sending state text with a comma.
+                if (count > 1 ||draftCount > 0) {
                     messageInfo.append(sSendersSplitToken);
                 }
                 SpannableStringBuilder sending = new SpannableStringBuilder();
