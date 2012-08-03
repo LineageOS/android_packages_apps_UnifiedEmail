@@ -663,69 +663,8 @@
     <!-- Displayed at the bottom of the screen during the initial sync. If pressed will open sync setting screen for accounts. [CHAR LIMIT=30]  -->
     <string name="change_sync_settings">Change sync settings</string>
 
-
-    <!-- Photo View strings -->
-        <!-- Message displayed when displaying a place holder image (for photos & videos) [CHAR LIMIT=60] -->
-    <string name="photo_view_placeholder_image">Item not available at this time. Please refresh.</string>
-
-    <!-- Text shown when a photo fails to download. -->
-    <string name="photo_network_error">Photo isn\'t available right now.</string>
-
-    <!-- Status message displayed while a list's content is loading -->
-    <string name="loading_photo">Loading&#8230;</string>
-
-    <!-- Displayed in a progress dialog while a network operation (create post, delete post, ...) is pending -->
-    <string name="post_operation_pending">Sending&#8230;</string>
-
-    <!-- Displayed in a dialog when prompting the user to retry a failed photo downloaded. -->
-    <string name="download_photo_retry">This image is too large to download, would you like
-        to retry at smaller resolution?</string>
-
-    <!-- Displayed in a dialog when a photo can't be downloaded. -->
-    <string name="download_photo_error">The photo couldn\'t be saved to the device.</string>
-
-    <!-- Positive button text -->
-    <string name="yes">Yes</string>
-
-    <!-- Negative button text -->
-    <string name="no">No</string>
-
-    <!-- Displayed in a toast if the photo taken from the camera was not found. -->
-    <string name="camera_photo_error">Can\'t find photo.</string>
-
-    <!-- Photo view sub-title for current photo position [CHAR LIMIT=10] -->
-    <string name="photo_view_count"><xliff:g id="current_pos">%d</xliff:g> of <xliff:g id="count">%d</xliff:g></string>
-
-    <!-- [EmSea] Indication that comment or post has been truncated (Unicode ellipses may not work here.) -->
-    <string name="truncated_info">... </string>
-    <string name="truncated_info_see_more">&#xa0;See more &#187;</string>
-
-    <!-- A post or comment was posted very recently -->
-    <string name="posted_just_now">Just now</string>
-
-    <!-- Abbreviated message to express that something occurred some number of minutes in the past (e.g., 5 minutes ago). -->
-    <plurals name="num_minutes_ago">
-        <item quantity="one"><xliff:g id="count">%d</xliff:g> min</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> mins</item>
-    </plurals>
-
-    <!-- Abbreviated message to express that something occurred some number of hours in the past (e.g., 5 hours ago). -->
-    <plurals name="num_hours_ago">
-        <item quantity="one"><xliff:g id="count">%d</xliff:g> hour</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> hours</item>
-    </plurals>
-
-    <!-- Abbreviated message to express that something occurred some number of days in the past (e.g., 5 days ago). -->
-    <plurals name="num_days_ago">
-        <item quantity="one"><xliff:g id="count">%d</xliff:g> day</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> days</item>
-    </plurals>
-
-    <!-- Dialog message when inserting a camera photo into the database. -->
-    <string name="dialog_inserting_camera_photo">Inserting photo&#8230;</string>
-
-    <!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->
-    <string name="image_file_name_format" translatable="false">"'IMG'_yyyyMMdd_HHmmss"</string>
+    <!-- Displayed when we could not load a photo in the photo viewer. [CHAR LIMIT=30] -->
+    <string name="photo_load_failed">Couldn\'t load image</string>
 
     <!--  The move message / change labels action can't be taken because the selected messages
         come from different accounts -->
