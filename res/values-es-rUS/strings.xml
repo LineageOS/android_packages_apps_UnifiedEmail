@@ -197,12 +197,12 @@
     <item quantity="other" msgid="5071459475389411227">"Se detectaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; como spam."</item>
   </plurals>
   <plurals name="conversation_not_spam">
-    <item quantity="one" msgid="7361303622131552596">"Se informó &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como deseada."</item>
-    <item quantity="other" msgid="2250720080221922267">"Se informaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como deseadas."</item>
+    <item quantity="one" msgid="7361303622131552596">"Se marcó &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como deseada."</item>
+    <item quantity="other" msgid="2250720080221922267">"Se marcaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como deseadas."</item>
   </plurals>
   <plurals name="conversation_phished">
-    <item quantity="one" msgid="5386916574432049235">"Se informó &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como phishing."</item>
-    <item quantity="other" msgid="3678624994662639442">"Se informaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como phishing."</item>
+    <item quantity="one" msgid="5386916574432049235">"Se marcó &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversación como suplantación de identidad."</item>
+    <item quantity="other" msgid="3678624994662639442">"Se marcaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como suplantación de identidad."</item>
   </plurals>
   <plurals name="conversation_archived">
     <item quantity="one" msgid="5457612502965117672">"Se archivaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
