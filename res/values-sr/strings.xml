@@ -218,7 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Избрисано"</string>
     <string name="archived" msgid="7533995360704366325">"Архивирано"</string>
-    <string name="folder_removed" msgid="858015177285651764">"Уклоњено из директоријума"</string>
+    <string name="folder_removed" msgid="858015177285651764">"Уклоњено је из директоријума"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; преписка је означена као важна."</item>
     <item quantity="other" msgid="709648106181749594">"Преписке (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;) су означене као важне."</item>
