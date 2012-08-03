@@ -35,6 +35,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
@@ -281,7 +282,9 @@ public final class ConversationCursor implements Cursor {
         long time = System.currentTimeMillis();
 
         Wrapper result = new Wrapper(sResolver.query(uri, qProjection, null, null, null), uri);
-        if (DEBUG) {
+        if (result.getWrappedCursor() == null) {
+            Log.w(TAG, "doQuery returning null cursor, uri: " + uri);
+        } else if (DEBUG) {
             time = System.currentTimeMillis() - time;
             LogUtils.i(TAG, "ConversationCursor query: %s, %dms, %d results",
                     uri, time, result.getCount());
