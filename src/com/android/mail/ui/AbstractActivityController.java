@@ -1146,6 +1146,13 @@ public abstract class AbstractActivityController implements ActivityController {
                 return;
             }
             mActivity.invalidateOptionsMenu();
+            final boolean isConversationMode = intent.hasExtra(Utils.EXTRA_CONVERSATION);
+            // TODO(viki): Allow the controller to set the mode instead of a mode transition.
+            if (isConversationMode) {
+                mViewMode.enterConversationMode();
+            } else {
+                mViewMode.enterConversationListMode();
+            }
 
             Folder folder = null;
             if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
@@ -1157,7 +1164,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 handled = true;
             }
 
-            if (intent.hasExtra(Utils.EXTRA_CONVERSATION)) {
+            if (isConversationMode) {
                 // Open the conversation.
                 LogUtils.d(LOG_TAG, "SHOW THE CONVERSATION at %s",
                         intent.getParcelableExtra(Utils.EXTRA_CONVERSATION));
