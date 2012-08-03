@@ -51,8 +51,6 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     private static final String BLOCKQUOTE_BEGIN = "<blockquote class=\"quote\" style=\""
             + "margin:0 0 0 .8ex;" + "border-left:1px #ccc solid;" + "padding-left:1ex\">";
     private static final String BLOCKQUOTE_END = "</blockquote>";
-    // HTML tags used to quote replies & forwards
-    /* package for testing */static final String QUOTE_BEGIN = "<div class=\"quote\">";
     private static final String QUOTE_END = "</div>";
 
     // Separates the attribution headers (Subject, To, etc) from the body in
@@ -67,6 +65,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     private boolean mIncludeText = true;
     private Button mRespondInlineButton;
     private RespondInlineListener mRespondInlineListener;
+    private static String sQuoteBegin;
 
     public QuotedTextView(Context context) {
         this(context, null);
@@ -89,6 +88,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         mShowHideCheckBox = (CheckBox) findViewById(R.id.hide_quoted_text);
         mShowHideCheckBox.setChecked(true);
         mShowHideCheckBox.setOnClickListener(this);
+        sQuoteBegin = context.getResources().getString(R.string.quote_begin);
         findViewById(R.id.hide_quoted_text_label).setOnClickListener(this);
 
 
@@ -256,7 +256,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         Date date = new Date(refMessage.dateReceivedMs);
         Resources resources = getContext().getResources();
         if (action == ComposeActivity.REPLY || action == ComposeActivity.REPLY_ALL) {
-            quotedText.append(QUOTE_BEGIN);
+            quotedText.append(sQuoteBegin);
             quotedText
                     .append(String.format(
                             resources.getString(R.string.reply_attribution),
@@ -269,7 +269,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
             quotedText.append(BLOCKQUOTE_END);
             quotedText.append(QUOTE_END);
         } else if (action == ComposeActivity.FORWARD) {
-            quotedText.append(QUOTE_BEGIN);
+            quotedText.append(sQuoteBegin);
             quotedText
                     .append(String.format(resources.getString(R.string.forward_attribution), Utils
                             .cleanUpString(refMessage.from,
@@ -323,7 +323,7 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
     }
 
     public static boolean containsQuotedText(String text) {
-        int pos = text.indexOf(QuotedTextView.QUOTE_BEGIN);
+        int pos = text.indexOf(sQuoteBegin);
         return pos >= 0;
     }
 
@@ -341,6 +341,6 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
             return -1;
         }
         String textString = htmlText.toString();
-        return textString.indexOf(QUOTE_BEGIN);
+        return textString.indexOf(sQuoteBegin);
     }
 }
