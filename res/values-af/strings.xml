@@ -55,7 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Demp"</string>
     <string name="add_star" msgid="2866003744391266498">"Voeg ster by"</string>
     <string name="remove_star" msgid="4372327933122106128">"Verwyder ster"</string>
-    <string name="remove_folder" msgid="6098805949226229827">"Uit die vouer verwyder"</string>
+    <string name="remove_folder" msgid="6098805949226229827">"Verwyder uit die vouer"</string>
     <string name="archive" msgid="847250094775910499">"Argiveer"</string>
     <string name="report_spam" msgid="6467567747975393907">"Gee strooipos aan"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Rapporteer as nie strooipos nie"</string>
