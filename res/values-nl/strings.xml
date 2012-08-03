@@ -52,7 +52,7 @@
     <string name="send" msgid="8242003661397555986">"Verzenden"</string>
     <string name="mark_read" msgid="8438349154394313195">"Markeren als gelezen"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Markeren als ongelezen"</string>
-    <string name="mute" msgid="1995954983688603977">"Dempen"</string>
+    <string name="mute" msgid="1995954983688603977">"Negeren"</string>
     <string name="add_star" msgid="2866003744391266498">"Ster toevoegen"</string>
     <string name="remove_star" msgid="4372327933122106128">"Ster verwijderen"</string>
     <string name="remove_folder" msgid="6098805949226229827">"Verwijderen uit map"</string>
