@@ -56,6 +56,7 @@ public class MimeStreamParser {
     private LinkedList<BodyDescriptor> bodyDescriptors = new LinkedList<BodyDescriptor>();
     private ContentHandler handler = null;
     private boolean raw = false;
+    private boolean prematureEof = false;
 
     static {
         fieldChars = new BitSet();
@@ -150,6 +151,7 @@ public class MimeStreamParser {
                 parseBodyPart(tempIs);
                 tempIs.consume();
                 if (tempIs.parentEOF()) {
+                    prematureEof = true;
 //                    if (log.isWarnEnabled()) {
 //                        log.warn("Line " + rootStream.getLineNumber()
 //                                + ": Body part ended prematurely. "
@@ -198,6 +200,10 @@ public class MimeStreamParser {
             parseEntity(is);
             handler.endMessage();
         }
+    }
+
+    public boolean getPrematureEof() {
+        return prematureEof;
     }
 
     private void parseBodyPart(InputStream is) throws IOException {
