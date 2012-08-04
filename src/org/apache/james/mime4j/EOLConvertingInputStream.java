@@ -38,11 +38,20 @@ public class EOLConvertingInputStream extends InputStream {
     public static final int CONVERT_LF   = 2;
     /** Converts single '\r' and '\n' to '\r\n' */
     public static final int CONVERT_BOTH = 3;
-    
+
     private PushbackInputStream in = null;
     private int previous = 0;
     private int flags = CONVERT_BOTH;
-    
+    private int size = 0;
+    private int pos = 0;
+    private int nextTenPctPos;
+    private int tenPctSize;
+    private Callback callback;
+
+    public interface Callback {
+        public void report(int bytesRead);
+    }
+
     /**
      * Creates a new <code>EOLConvertingInputStream</code>
      * instance converting bytes in the given <code>InputStream</code>.
@@ -50,22 +59,25 @@ public class EOLConvertingInputStream extends InputStream {
      * 
      * @param in the <code>InputStream</code> to read from.
      */
-    public EOLConvertingInputStream(InputStream in) {
-        this(in, CONVERT_BOTH);
+    public EOLConvertingInputStream(InputStream _in) {
+        super();
+        in = new PushbackInputStream(_in, 2);
     }
+
     /**
      * Creates a new <code>EOLConvertingInputStream</code>
      * instance converting bytes in the given <code>InputStream</code>.
      * 
-     * @param in the <code>InputStream</code> to read from.
-     * @param flags one of <code>CONVERT_CR</code>, <code>CONVERT_LF</code> or
-     *        <code>CONVERT_BOTH</code>.
+     * @param _in the <code>InputStream</code> to read from.
+     * @param _size the size of the input stream (need not be exact)
+     * @param _callback a callback reporting when each 10% of stream's size is reached
      */
-    public EOLConvertingInputStream(InputStream in, int flags) {
-        super();
-        
-        this.in = new PushbackInputStream(in, 2);
-        this.flags = flags;
+    public EOLConvertingInputStream(InputStream _in, int _size, Callback _callback) {
+        this(_in);
+        size = _size;
+        tenPctSize = size / 10;
+        nextTenPctPos = tenPctSize;
+        callback = _callback;
     }
 
     /**
@@ -77,27 +89,46 @@ public class EOLConvertingInputStream extends InputStream {
         in.close();
     }
     
+    private int readByte() throws IOException {
+        int b = in.read();
+        if (b != -1) {
+            if (callback != null && pos++ == nextTenPctPos) {
+                nextTenPctPos += tenPctSize;
+                if (callback != null) {
+                    callback.report(pos);
+                }
+            }
+        }
+        return b;
+    }
+
+    private void unreadByte(int c) throws IOException {
+        in.unread(c);
+        pos--;
+    }
+
     /**
      * @see java.io.InputStream#read()
      */
     public int read() throws IOException {
-        int b = in.read();
+        int b = readByte();
         
         if (b == -1) {
+            pos = size;
             return -1;
         }
         
         if ((flags & CONVERT_CR) != 0 && b == '\r') {
-            int c = in.read();
+            int c = readByte();
             if (c != -1) {
-                in.unread(c);
+                unreadByte(c);
             }
             if (c != '\n') {
-                in.unread('\n');
+                unreadByte('\n');
             }
         } else if ((flags & CONVERT_LF) != 0 && b == '\n' && previous != '\r') {
             b = '\r';
-            in.unread('\n');
+            unreadByte('\n');
         }
         
         previous = b;
