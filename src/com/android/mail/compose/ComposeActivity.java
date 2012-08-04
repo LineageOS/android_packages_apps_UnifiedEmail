@@ -2519,7 +2519,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (mDraftId != UIProvider.INVALID_MESSAGE_ID) {
                 ContentValues values = new ContentValues();
                 values.put(BaseColumns._ID, mDraftId);
-                if (mAccount.expungeMessageUri != null) {
+                if (!mAccount.expungeMessageUri.equals(Uri.EMPTY)) {
                     getContentResolver().update(mAccount.expungeMessageUri, values, null, null);
                 } else {
                     getContentResolver().delete(mDraft.uri, null, null);
