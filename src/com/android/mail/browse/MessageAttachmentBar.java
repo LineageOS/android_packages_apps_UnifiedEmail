@@ -201,8 +201,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
                 }
                 // If we can view or play with an on-device app,
                 // view or play.
-                else if (MimeType.isPlayable(mAttachment.contentType)
-                        || MimeType.isViewable(getContext(), mAttachment.contentUri,
+                else if (MimeType.isViewable(getContext(), mAttachment.contentUri,
                                 mAttachment.contentType)) {
                     mActionHandler.showAttachment(AttachmentDestination.CACHE);
                 }
@@ -265,13 +264,15 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
         // once by this routine.
 
         final boolean isDownloading = mAttachment.isDownloading();
-        final boolean canSave = mAttachment.canSave();
-        final boolean canPreview = (mAttachment.previewIntent != null);
+        final boolean canSave = mAttachment.canSave() &&
+                MimeType.isViewable(getContext(),
+                        mAttachment.contentUri, mAttachment.contentType);
+        final boolean canPreview = mAttachment.previewIntent != null;
         final boolean isInstallable = MimeType.isInstallable(mAttachment.contentType);
 
         setButtonVisible(mCancelButton, isDownloading && mSaveClicked);
-        setButtonVisible(mOverflowButton, !isDownloading && !isInstallable &&
-                (canSave || canPreview) && !mSaveClicked);
+        setButtonVisible(mOverflowButton, !isDownloading && !mSaveClicked
+                && !isInstallable && (canSave || canPreview));
     }
 
     public void onUpdateStatus() {
