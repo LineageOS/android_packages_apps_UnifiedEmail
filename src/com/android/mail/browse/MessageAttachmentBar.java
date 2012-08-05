@@ -166,7 +166,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
                 break;
             case R.id.overflow: {
                 final boolean canSave = mAttachment.canSave() && !mAttachment.isDownloading();
-                final boolean canPreview = (mAttachment.previewIntent != null);
+                final boolean canPreview = (mAttachment.previewIntentUri != null);
 
                 // If no overflow items are visible, just bail out.
                 // We shouldn't be able to get here anyhow since the overflow
@@ -206,7 +206,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
                     mActionHandler.showAttachment(AttachmentDestination.CACHE);
                 }
                 // If we can only preview the attachment, preview.
-                else if (mAttachment.previewIntent != null) {
+                else if (mAttachment.previewIntentUri != null) {
                     previewAttachment();
                 }
                 // Otherwise, if we cannot do anything, show the info dialog.
@@ -244,7 +244,11 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
     }
 
     private void previewAttachment() {
-        getContext().startActivity(mAttachment.previewIntent);
+        if (mAttachment.previewIntentUri != null) {
+            final Intent previewIntent =
+                    new Intent(Intent.ACTION_VIEW, mAttachment.previewIntentUri);
+            getContext().startActivity(previewIntent);
+        }
     }
 
     private void setButtonVisible(View button, boolean visible) {
@@ -267,7 +271,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
         final boolean canSave = mAttachment.canSave() &&
                 MimeType.isViewable(getContext(),
                         mAttachment.contentUri, mAttachment.contentType);
-        final boolean canPreview = mAttachment.previewIntent != null;
+        final boolean canPreview = mAttachment.previewIntentUri != null;
         final boolean isInstallable = MimeType.isInstallable(mAttachment.contentType);
 
         setButtonVisible(mCancelButton, isDownloading && mSaveClicked);

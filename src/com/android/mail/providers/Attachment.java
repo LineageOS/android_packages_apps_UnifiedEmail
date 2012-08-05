@@ -15,7 +15,6 @@
  */
 package com.android.mail.providers;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
@@ -97,9 +96,9 @@ public class Attachment implements Parcelable {
     /**
      * Might be null.
      *
-     * @see AttachmentColumns#PREVIEW_INTENT
+     * @see AttachmentColumns# PREVIEW_INTENT_URI
      */
-    public Intent previewIntent;
+    public Uri previewIntentUri;
 
     /**
      * Part id of the attachment.
@@ -130,7 +129,7 @@ public class Attachment implements Parcelable {
         downloadedSize = in.readInt();
         contentUri = in.readParcelable(null);
         thumbnailUri = in.readParcelable(null);
-        previewIntent = in.readParcelable(null);
+        previewIntentUri = in.readParcelable(null);
         partId = in.readString();
         origin = in.readInt();
         originExtras = in.readString();
@@ -155,8 +154,8 @@ public class Attachment implements Parcelable {
                 cursor.getString(cursor.getColumnIndex(AttachmentColumns.CONTENT_URI)));
         thumbnailUri = parseOptionalUri(
                 cursor.getString(cursor.getColumnIndex(AttachmentColumns.THUMBNAIL_URI)));
-        previewIntent = getOptionalIntentFromBlob(
-                cursor.getBlob(cursor.getColumnIndex(AttachmentColumns.PREVIEW_INTENT)));
+        previewIntentUri = parseOptionalUri(
+                cursor.getString(cursor.getColumnIndex(AttachmentColumns.PREVIEW_INTENT_URI)));
 
         // TODO: ensure that local files attached to a draft have sane values, like SAVED/EXTERNAL
         // and that contentUri is populated
@@ -190,17 +189,6 @@ public class Attachment implements Parcelable {
                 originExtras == null ? "" : originExtras, ""));
     }
 
-    private static Intent getOptionalIntentFromBlob(byte[] blob) {
-        if (blob == null) {
-            return null;
-        }
-        final Parcel intentParcel = Parcel.obtain();
-        intentParcel.unmarshall(blob, 0, blob.length);
-        final Intent intent = new Intent();
-        intent.readFromParcel(intentParcel);
-        return intent;
-    }
-
     private static Uri parseOptionalUri(String uriString) {
         return uriString == null ? null : Uri.parse(uriString);
     }
@@ -221,7 +209,7 @@ public class Attachment implements Parcelable {
         dest.writeInt(downloadedSize);
         dest.writeParcelable(contentUri, flags);
         dest.writeParcelable(thumbnailUri, flags);
-        dest.writeParcelable(previewIntent, flags);
+        dest.writeParcelable(previewIntentUri, flags);
         dest.writeString(partId);
         dest.writeInt(origin);
         dest.writeString(originExtras);
