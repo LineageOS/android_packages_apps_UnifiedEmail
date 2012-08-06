@@ -326,32 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"ይህ መለያ በራስ-ሰር እንዲመሳሰል አልተዋቀረም።"\n"መልዕክት አንዴ ለማመሳሰል "<b>"አሁን አመሳስል"</b>"ን ንካ፣ ወይም ደግሞ ይሄ መለያ መልዕክት በራስ-ሰር እንዲያመሳስል ለማዋቀር "<b>"የማመሳሰል ቅንብሮችን ቀይር"</b>"።"</string>
     <string name="manual_sync" msgid="6743983544685622800">"አሁን አመሳስል"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"የማመሳሰል ቅንብሮችን ቀይር"</string>
-    <string name="photo_view_placeholder_image" msgid="465734985000555852">"ንጥል በዚህ ጊዜ አይገኝም። እባክህ አድስ።"</string>
-    <string name="photo_network_error" msgid="6545183306958652345">"ፎቶ አሁን አይገኝም።"</string>
-    <string name="loading_photo" msgid="6784297653634402137">"በመጫን ላይ…"</string>
-    <string name="post_operation_pending" msgid="1312168212880219407">"በመላክ ላይ…"</string>
-    <string name="download_photo_retry" msgid="1894223549069749239">"ይህ ምስል እንዳይወርድ በጣም ትልቅ ነው፣ ባነሰ ጥራት መሞከር ትፈልጋለህ?"</string>
-    <string name="download_photo_error" msgid="7511376299526085797">"ፎቶውን መሣሪያው ላይ ማስቀመጥ አልተቻለም።"</string>
-    <string name="yes" msgid="7474216525286833848">"አዎ"</string>
-    <string name="no" msgid="427548507197604096">"የለም"</string>
-    <string name="camera_photo_error" msgid="653424229752191252">"ፎቶ ማግኘት አልተቻለም።"</string>
-    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> የ<xliff:g id="COUNT">%d</xliff:g>"</string>
-    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
-    <string name="truncated_info_see_more" msgid="2068973974507128729">" ተጨማሪ ተመልከት »"</string>
-    <string name="posted_just_now" msgid="7872790861965011674">"ልክ አሁን"</string>
-  <plurals name="num_minutes_ago">
-    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> ደቂቃ"</item>
-    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> ደቂቃዎች"</item>
-  </plurals>
-  <plurals name="num_hours_ago">
-    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> ሰዓት"</item>
-    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> ሰዓታት"</item>
-  </plurals>
-  <plurals name="num_days_ago">
-    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> ቀን"</item>
-    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> ቀናት"</item>
-  </plurals>
-    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"ፎቶ በማስገባት ላይ…"</string>
+    <string name="photo_load_failed" msgid="8811324070219403896">"ምስል መጫን አልተቻለም"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"ምርጫው ብዙ መለያዎችን ስለያዘ ማንቀሳቀስ አይቻልም።"</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>

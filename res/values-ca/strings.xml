@@ -326,32 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Aquest compte no està configurat per sincronitzar automàticament."\n"Toca "<b>"Sincronitza ara"</b>" per sincronitzar el correu una vegada o bé "<b>"Canvia la configuració de sincronització"</b>" per configurar aquest compte per sincronitzar el correu de manera automàtica."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincron. ara"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Canvia config. sincronització"</string>
-    <string name="photo_view_placeholder_image" msgid="465734985000555852">"L\'element no està disponible en aquest moment. Actualitza."</string>
-    <string name="photo_network_error" msgid="6545183306958652345">"En aquests moments la foto no està disponible."</string>
-    <string name="loading_photo" msgid="6784297653634402137">"S\'està carregant…"</string>
-    <string name="post_operation_pending" msgid="1312168212880219407">"S\'està enviant…"</string>
-    <string name="download_photo_retry" msgid="1894223549069749239">"Aquesta imatge és massa gran per baixar-la. Vols tornar-ho a provar amb menys resolució?"</string>
-    <string name="download_photo_error" msgid="7511376299526085797">"La foto no s\'ha pogut desar al dispositiu."</string>
-    <string name="yes" msgid="7474216525286833848">"Sí"</string>
-    <string name="no" msgid="427548507197604096">"No"</string>
-    <string name="camera_photo_error" msgid="653424229752191252">"No trobem la foto."</string>
-    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> de <xliff:g id="COUNT">%d</xliff:g>"</string>
-    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
-    <string name="truncated_info_see_more" msgid="2068973974507128729">" Mostra\'n més »"</string>
-    <string name="posted_just_now" msgid="7872790861965011674">"Ara mateix"</string>
-  <plurals name="num_minutes_ago">
-    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> min"</item>
-    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> min"</item>
-  </plurals>
-  <plurals name="num_hours_ago">
-    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> hora"</item>
-    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> hores"</item>
-  </plurals>
-  <plurals name="num_days_ago">
-    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> dia"</item>
-    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> dies"</item>
-  </plurals>
-    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"La foto s\'està inserint…"</string>
+    <string name="photo_load_failed" msgid="8811324070219403896">"No s\'ha pogut carr. la imatge"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"No es pot moure perquè la selecció conté diversos comptes."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
