@@ -326,32 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Гэты ўліковы запіс не наладжаны на аўтаматычную сінхранізацыю."\n"Дакраніцеся да кнопкі "<b>"Сінхранаваць зараз"</b>", каб адзін раз сінхранiзаваць пошту, або да кнопкі "<b>"Змена параметраў сінхранізацыі"</b>", каб наладзіць аўтаматычную сінхранізацыю пошты ў гэтым уліковым запісе."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Сінхранаваць зараз"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Змена параметраў сінхранізацыі"</string>
-    <string name="photo_view_placeholder_image" msgid="465734985000555852">"Зараз элемент недаступны. Абнавіце старонку."</string>
-    <string name="photo_network_error" msgid="6545183306958652345">"Зараз фатаграфія недаступная."</string>
-    <string name="loading_photo" msgid="6784297653634402137">"Загрузка..."</string>
-    <string name="post_operation_pending" msgid="1312168212880219407">"Адпраўка..."</string>
-    <string name="download_photo_retry" msgid="1894223549069749239">"Гэта выява занадта вялікая для спампоўкі. Паўтарыць спробу ў меншым разрозненнi?"</string>
-    <string name="download_photo_error" msgid="7511376299526085797">"Фатаграфію нельга захаваць на прыладу."</string>
-    <string name="yes" msgid="7474216525286833848">"Так"</string>
-    <string name="no" msgid="427548507197604096">"Не"</string>
-    <string name="camera_photo_error" msgid="653424229752191252">"Не атрымалася знайсці фатаграфію."</string>
-    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> з <xliff:g id="COUNT">%d</xliff:g>"</string>
-    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
-    <string name="truncated_info_see_more" msgid="2068973974507128729">" Дадатковая інфармацыя »"</string>
-    <string name="posted_just_now" msgid="7872790861965011674">"Зараз"</string>
-  <plurals name="num_minutes_ago">
-    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> хв. таму"</item>
-    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> хв. таму"</item>
-  </plurals>
-  <plurals name="num_hours_ago">
-    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> гадз. таму"</item>
-    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> гадз. таму"</item>
-  </plurals>
-  <plurals name="num_days_ago">
-    <item quantity="one" msgid="5538890823169916595">"Дзён таму: <xliff:g id="COUNT">%d</xliff:g>"</item>
-    <item quantity="other" msgid="2756574969735638578">"Дзён таму: <xliff:g id="COUNT">%d</xliff:g>"</item>
-  </plurals>
-    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"Устаўка фота..."</string>
+    <string name="photo_load_failed" msgid="8811324070219403896">"Не атрымалася загрузіць малюнак"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Немагчыма працягваць, таму што выбар змяшчае некалькі ўліковых запісаў."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
