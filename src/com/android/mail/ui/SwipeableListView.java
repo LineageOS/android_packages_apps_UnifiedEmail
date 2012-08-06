@@ -361,10 +361,11 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public boolean performItemClick(View view, int pos, long id) {
+        boolean handled = super.performItemClick(view, pos, id);
         // Commit any existing destructive actions when the user selects a
         // conversation to view.
         commitDestructiveActions();
-        return super.performItemClick(view, pos, id);
+        return handled;
     }
 
     /**
