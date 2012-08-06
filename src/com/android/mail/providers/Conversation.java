@@ -33,6 +33,8 @@ import java.util.Collections;
 public class Conversation implements Parcelable {
     public static final int NO_POSITION = -1;
 
+    private static final String EMPTY_STRING = "";
+
     /**
      * @see BaseColumns#_ID
      */
@@ -188,7 +190,7 @@ public class Conversation implements Parcelable {
         snippet = in.readString();
         hasAttachments = (in.readByte() != 0);
         messageListUri = in.readParcelable(null);
-        senders = in.readString();
+        senders = emptyIfNull(in.readString());
         numMessages = in.readInt();
         numDrafts = in.readInt();
         sendingState = in.readInt();
@@ -267,7 +269,7 @@ public class Conversation implements Parcelable {
                     .getString(UIProvider.CONVERSATION_INFO_COLUMN));
             if (conversationInfo == null) {
                 snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
-                senders = cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN);
+                senders = emptyIfNull(cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN));
                 numMessages = cursor.getInt(UIProvider.CONVERSATION_NUM_MESSAGES_COLUMN);
                 numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
             }
@@ -292,7 +294,7 @@ public class Conversation implements Parcelable {
         conversation.snippet = snippet;
         conversation.hasAttachments = hasAttachment;
         conversation.messageListUri = messageListUri;
-        conversation.senders = senders;
+        conversation.senders = emptyIfNull(senders);
         conversation.numMessages = numMessages;
         conversation.numDrafts = numDrafts;
         conversation.sendingState = sendingState;
@@ -457,5 +459,12 @@ public class Conversation implements Parcelable {
             out.append("      " + count + ": " + c.toString() + "\n");
         }
         return out.toString();
+    }
+
+    /**
+     * Returns an empty string if the specified string is null
+     */
+    private static String emptyIfNull(String in) {
+        return in != null ? in : EMPTY_STRING;
     }
 }
