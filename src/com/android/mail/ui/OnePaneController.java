@@ -339,7 +339,6 @@ public final class OnePaneController extends AbstractActivityController {
                 mViewMode.enterFolderListMode();
                 mActivity.getFragmentManager().popBackStack(mLastFolderListTransactionId, 0);
             } else {
-                mLastFolderListTransactionId = INVALID_ID;
                 transitionToInbox();
             }
         } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
