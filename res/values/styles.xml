@@ -152,6 +152,13 @@
         <item name="android:textColor">#bbbbbb</item>
         <!-- Use dp rather than sp for size since starts large and must not get too large -->
         <item name="android:textSize">36dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_vertical|right</item>
+        <item name="android:onClick">doNothingClickHandler</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
     </style>
 
     <!-- No change in the default case. -->
@@ -442,5 +449,9 @@
         <item name="android:textColor">@color/senders_text_color_unread</item>
         <item name="android:textSize">@dimen/senders_font_size</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AccountSpinnerStyle">
+        <item name="android:layout_width">wrap_content</item>
     </style>
 </resources>
