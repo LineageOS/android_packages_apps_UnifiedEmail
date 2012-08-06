@@ -31,6 +31,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -394,5 +395,16 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public ToastBarOperation getPendingToastOperation() {
         return mPendingToastOp;
+    }
+
+    /**
+     * Sole purpose of this method is to stop clicks where we don't want them in
+     * the action bar. This can be hooked as a listener to view with
+     * android:onClick.
+     *
+     * @param v
+     */
+    public void doNothingClickHandler(View v) {
+        // Do nothing.
     }
 }
