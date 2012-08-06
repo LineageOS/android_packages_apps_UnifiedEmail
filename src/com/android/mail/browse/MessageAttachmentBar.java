@@ -166,7 +166,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
                 break;
             case R.id.overflow: {
                 final boolean canSave = mAttachment.canSave() && !mAttachment.isDownloading();
-                final boolean canPreview = (mAttachment.previewIntentUri != null);
+                final boolean canPreview = mAttachment.canPreview();
 
                 // If no overflow items are visible, just bail out.
                 // We shouldn't be able to get here anyhow since the overflow
@@ -206,7 +206,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
                     mActionHandler.showAttachment(AttachmentDestination.CACHE);
                 }
                 // If we can only preview the attachment, preview.
-                else if (mAttachment.previewIntentUri != null) {
+                else if (mAttachment.canPreview()) {
                     previewAttachment();
                 }
                 // Otherwise, if we cannot do anything, show the info dialog.
@@ -244,7 +244,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
     }
 
     private void previewAttachment() {
-        if (mAttachment.previewIntentUri != null) {
+        if (mAttachment.canPreview()) {
             final Intent previewIntent =
                     new Intent(Intent.ACTION_VIEW, mAttachment.previewIntentUri);
             getContext().startActivity(previewIntent);
@@ -271,7 +271,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
         final boolean canSave = mAttachment.canSave() &&
                 MimeType.isViewable(getContext(),
                         mAttachment.contentUri, mAttachment.contentType);
-        final boolean canPreview = mAttachment.previewIntentUri != null;
+        final boolean canPreview = mAttachment.canPreview();
         final boolean isInstallable = MimeType.isInstallable(mAttachment.contentType);
 
         setButtonVisible(mCancelButton, isDownloading && mSaveClicked);
