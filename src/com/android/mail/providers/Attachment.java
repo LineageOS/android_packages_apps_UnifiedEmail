@@ -257,6 +257,10 @@ public class Attachment implements Parcelable {
         return state == AttachmentState.FAILED;
     }
 
+    public boolean canPreview() {
+        return previewIntentUri != null;
+    }
+
     // Methods to support JSON [de-]serialization of Attachment data
     // TODO: add support for origin/originExtras (and possibly partId?) or fold those fields into
     // other fields so Compose View can use JSON objects
