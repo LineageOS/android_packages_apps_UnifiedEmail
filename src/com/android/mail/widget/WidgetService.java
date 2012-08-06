@@ -64,6 +64,8 @@ public class WidgetService extends RemoteViewsService {
      */
     private static Object sWidgetLock = new Object();
 
+    private static final String LOG_TAG = LogTag.getLogTag();
+
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new MailFactory(getApplicationContext(), intent, this);
@@ -83,9 +85,24 @@ public class WidgetService extends RemoteViewsService {
             int appWidgetId, Account account, Folder folder, String folderDisplayName,
             Class<?> widgetService) {
         remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
-        remoteViews.setTextViewText(R.id.widget_folder, folderDisplayName);
+
+        // If the folder or account name are empty, we don't want to overwrite the valid data that
+        // had been saved previously.  Since the launcher will save the state of the remote views
+        // we should rely on the fact that valid data has been saved.  But we should still log this,
+        // as it shouldn't happen
+        if (TextUtils.isEmpty(folderDisplayName) || TextUtils.isEmpty(account.name)) {
+            LogUtils.e(LOG_TAG, new Error(),
+                    "Empty folder or account name.  account: %s, folder: %s",
+                    account.name, folderDisplayName);
+        }
+        if (!TextUtils.isEmpty(folderDisplayName)) {
+            remoteViews.setTextViewText(R.id.widget_folder, folderDisplayName);
+        }
         remoteViews.setViewVisibility(R.id.widget_account, View.VISIBLE);
-        remoteViews.setTextViewText(R.id.widget_account, account.name);
+
+        if (!TextUtils.isEmpty(account.name)) {
+            remoteViews.setTextViewText(R.id.widget_account, account.name);
+        }
         remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.widget_compose, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.conversation_list, View.VISIBLE);
@@ -192,8 +209,6 @@ public class WidgetService extends RemoteViewsService {
         private static final int FOLDER_LOADER_ID = 0;
         private static final int CONVERSATION_CURSOR_LOADER_ID = 1;
 
-        private static final String LOG_TAG = LogTag.getLogTag();
-
         private final Context mContext;
         private final int mAppWidgetId;
         private final Account mAccount;
@@ -234,6 +249,8 @@ public class WidgetService extends RemoteViewsService {
             if (!mService.isWidgetConfigured(mContext, mAppWidgetId, mAccount, mFolder)) {
                 BaseWidgetProvider.updateWidget(mContext, mAppWidgetId, mAccount, mFolder);
             }
+
+            mFolderInformationShown = false;
 
             // We want to limit the query result to 25 and don't want these queries to cause network
             // traffic
@@ -483,7 +500,8 @@ public class WidgetService extends RemoteViewsService {
                 final RemoteViews remoteViews =
                         new RemoteViews(mContext.getPackageName(), R.layout.widget);
 
-                if (!mFolderInformationShown && !TextUtils.isEmpty(folderName)) {
+                if (!mFolderInformationShown && !TextUtils.isEmpty(folderName) &&
+                        !TextUtils.isEmpty(mAccount.name)) {
                     // We want to do a full update to the widget at least once, as the widget
                     // manager doesn't cache the state of the remote views when doing a partial
                     // widget update. This causes the folder name to be shown as blank if the state
@@ -494,8 +512,13 @@ public class WidgetService extends RemoteViewsService {
                     mFolderInformationShown = true;
                 }
 
-                remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
-                remoteViews.setTextViewText(R.id.widget_folder, folderName);
+                // There is no reason to overwrite a valid non-null folder name with an empty string
+                if (!TextUtils.isEmpty(folderName)) {
+                    remoteViews.setViewVisibility(R.id.widget_folder, View.VISIBLE);
+                    remoteViews.setTextViewText(R.id.widget_folder, folderName);
+                } else {
+                    LogUtils.e(LOG_TAG, "Empty folder name");
+                }
                 remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
                 remoteViews.setTextViewText(R.id.widget_unread_count,
                         Utils.getUnreadCountString(mContext, unreadCount));
