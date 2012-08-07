@@ -158,14 +158,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private Folder mDisplayedFolder;
     private boolean mPriorityMarkersEnabled;
     private boolean mCheckboxesEnabled;
-    private CheckForTap mPendingCheckForTap;
-    private CheckForLongPress mPendingCheckForLongPress;
+    private HandleLongPress mPendingCheckForLongPress;
     private boolean mSwipeEnabled;
     private int mLastTouchX;
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
     private int mAnimatedHeight = -1;
     private String mAccount;
+    private Runnable mListItemClick;
     private static Bitmap sDateBackgroundAttachment;
     private static Bitmap sDateBackgroundNoAttachment;
     private static int sUndoAnimationOffset;
@@ -313,6 +313,17 @@ public class ConversationItemView extends View implements SwipeableItemView {
         mContext = context.getApplicationContext();
         mTabletDevice = Utils.useTabletUI(mContext);
         mAccount = account;
+        final View item = this;
+        mListItemClick = new Runnable() {
+            @Override
+            public void run() {
+                ListView list = getListView();
+                if (list != null) {
+                    int pos = list.getPositionForView(item);
+                    list.performItemClick(item, pos, mHeader.conversation.id);
+                }
+            }
+        };
         Resources res = mContext.getResources();
 
         if (CHECKMARK_OFF == null) {
@@ -1172,7 +1183,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
      */
     @Override
     public void cancelTap() {
-        removeCallbacks(mPendingCheckForTap);
+        setPressed(false);
         removeCallbacks(mPendingCheckForLongPress);
     }
 
@@ -1181,33 +1192,27 @@ public class ConversationItemView extends View implements SwipeableItemView {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        mLastTouchX = (int) event.getX();
-        mLastTouchY = (int) event.getY();
+        int x = mLastTouchX = (int) event.getX();
+        int y = mLastTouchY = (int) event.getY();
         if (!mSwipeEnabled) {
             return onTouchEventNoSwipe(event);
         }
         boolean handled = true;
 
-        int x = mLastTouchX;
-        int y = mLastTouchY;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mDownEvent = true;
+                // This checks for long press. The actual tap is handled on "up".
+                checkForLongPress();
                 // In order to allow the down event and subsequent move events
                 // to bubble to the swipe handler, we need to return that all
                 // down events are handled.
                 handled = true;
-                // TODO (mindyp) Debounce
-                if (mPendingCheckForTap == null) {
-                    mPendingCheckForTap = new CheckForTap();
-                }
-                postDelayed(mPendingCheckForTap, ViewConfiguration.getTapTimeout());
                 break;
             case MotionEvent.ACTION_CANCEL:
                 mDownEvent = false;
                 break;
             case MotionEvent.ACTION_UP:
-                cancelTap();
                 if (mDownEvent) {
                     // ConversationItemView gets the first chance to handle up
                     // events if there was a down event and there was no move
@@ -1215,6 +1220,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                     // received the down event, and then an up event in the
                     // same location (+/- slop). Treat this as a click on the
                     // view or on a specific part of the view.
+                    cancelTap();
                     if (isTouchInCheckmark(x, y)) {
                         // Touch on the check mark
                         toggleCheckMark();
@@ -1224,11 +1230,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
                         toggleStar();
                         handled = true;
                     } else {
-                        ListView list = getListView();
-                        if (list != null) {
-                            int pos = list.getPositionForView(this);
-                            list.performItemClick(this, pos, mHeader.conversation.id);
-                        }
+                        setPressed(true);
+                        // Put the list item click in the queue so we can show
+                        // the user tap feedback first.
+                        postDelayed(mListItemClick, 0);
                     }
                     handled = true;
                 } else {
@@ -1299,25 +1304,23 @@ public class ConversationItemView extends View implements SwipeableItemView {
         return true;
     }
 
-    final class CheckForTap implements Runnable {
-        @Override
-        public void run() {
-            // refreshDrawableState();
-            final int longPressTimeout = ViewConfiguration.getLongPressTimeout();
-            final boolean longClickable = isLongClickable();
+    public void checkForLongPress() {
+        // refreshDrawableState();
+        final int longPressTimeout = ViewConfiguration.getLongPressTimeout();
+        final boolean longClickable = isLongClickable();
 
-            if (longClickable) {
-                if (mPendingCheckForLongPress == null) {
-                    mPendingCheckForLongPress = new CheckForLongPress();
-                }
-                postDelayed(mPendingCheckForLongPress, longPressTimeout);
+        if (longClickable) {
+            if (mPendingCheckForLongPress == null) {
+                mPendingCheckForLongPress = new HandleLongPress();
             }
+            postDelayed(mPendingCheckForLongPress, longPressTimeout);
         }
     }
 
-    private class CheckForLongPress implements Runnable {
+    private class HandleLongPress implements Runnable {
         @Override
         public void run() {
+            setPressed(false);
             handleLongClick();
             performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         }
