@@ -318,7 +318,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         String bigText = "";
         // Shown in the second text view with smaller font.
         String smallText = "";
-        int color = 0;
         int unreadCount = 0;
         // Do not use view recycling in getDropDownView!!!
         //
@@ -338,15 +337,22 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             case TYPE_ACCOUNT:
                 view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
                 final Account account = getAccount(position);
+                View colorView = view.findViewById(R.id.account_spinner_color);
                 if (account == null) {
                     bigText = "";
                     smallText = "";
-                    color = 0;
                     unreadCount = 0;
+                    colorView.setVisibility(View.INVISIBLE);
                 } else {
                     bigText = account.settings.defaultInboxName;
                     smallText = account.name;
-                    color = account.color;
+                    final int color = account.color;
+                    if (color != 0) {
+                        colorView.setVisibility(View.VISIBLE);
+                        colorView.setBackgroundColor(color);
+                    } else {
+                        colorView.setVisibility(View.INVISIBLE);
+                    }
                     final Folder inbox = mFolderWatcher.get(account.settings.defaultInbox);
                     unreadCount = (inbox != null) ? inbox.unreadCount : 0;
                 }
@@ -357,10 +363,13 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                         .setText(getCurrentAccountName());
                 return view;
             case TYPE_FOLDER:
-                view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
+                view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_folder, null);
                 final Folder folder = mRecentFolderList.get(getRecentOffset(position));
+                colorView = view.findViewById(R.id.account_spinner_color);
                 bigText = folder.name;
                 unreadCount = folder.unreadCount;
+                Folder.setFolderBlockColor(folder, colorView);
+                colorView.setVisibility(View.VISIBLE);
                 break;
             case TYPE_ALL_FOLDERS:
                 view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_footer, null);
@@ -368,14 +377,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         }
         displayOrHide(view, R.id.account_spinner_first, bigText);
         displayOrHide(view, R.id.account_spinner_second, smallText);
-
-        final View colorView = view.findViewById(R.id.account_spinner_color);
-        if (color != 0) {
-            colorView.setVisibility(View.VISIBLE);
-            colorView.setBackgroundColor(color);
-        } else {
-            colorView.setVisibility(View.INVISIBLE);
-        }
         populateUnreadCountView(
                 (TextView) view.findViewById(R.id.account_spinner_unread_count),
                 unreadCount);
