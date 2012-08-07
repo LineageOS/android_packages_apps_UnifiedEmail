@@ -19,11 +19,14 @@ package com.android.mail.browse;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.CursorExtraKeys;
+import com.android.mail.providers.UIProvider.CursorStatus;
 import com.android.mail.ui.ConversationUpdater;
 import com.google.common.collect.Maps;
 
@@ -38,6 +41,8 @@ public class MessageCursor extends CursorWrapper {
     private final Map<Long, ConversationMessage> mCache = Maps.newHashMap();
     private final Conversation mConversation;
     private final ConversationUpdater mListController;
+
+    private Integer mStatus;
 
     /**
      * A message created as part of a conversation view. Sometimes, like during star/unstar, it's
@@ -98,6 +103,37 @@ public class MessageCursor extends CursorWrapper {
             }
         }
         return false;
+    }
+
+    public int getStatus() {
+        if (mStatus != null) {
+            return mStatus;
+        }
+
+        mStatus = CursorStatus.LOADED;
+        final Bundle extras = getExtras();
+        if (extras != null && extras.containsKey(CursorExtraKeys.EXTRA_STATUS)) {
+            mStatus = extras.getInt(CursorExtraKeys.EXTRA_STATUS);
+        }
+        return mStatus;
+    }
+
+    public boolean isLoaded() {
+        return getStatus() >= CursorStatus.LOADED || getCount() > 0; // FIXME: remove count hack
+    }
+
+    public String getDebugDump() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("conv subj='%s' status=%d messages:\n",
+                mConversation.subject, getStatus()));
+        int pos = -1;
+        while (moveToPosition(++pos)) {
+            final Message m = getMessage();
+            sb.append(String.format(
+                    "[Message #%d uri=%s id=%d serverId=%d, from='%s' draftType=%d isSending=%s]\n",
+                    pos, m.uri, m.id, m.serverId, m.from, m.draftType, m.isSending));
+        }
+        return sb.toString();
     }
 
 }

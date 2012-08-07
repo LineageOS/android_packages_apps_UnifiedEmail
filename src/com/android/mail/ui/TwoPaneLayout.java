@@ -99,7 +99,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     private View mConversationListContainer;
 
     private View mConversationView;
-    private View mConversationViewOverlay;
     /** Left position of each fragment. */
     private int mFoldersLeft;
     private View mFoldersView;
@@ -485,7 +484,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         mConversationListContainer = findViewById(R.id.conversation_column_container);
         mListView = findViewById(R.id.conversation_list);
         mConversationView = findViewById(R.id.conversation_pane_container);
-        mConversationViewOverlay = findViewById(R.id.conversation_overlay);
 
         sAnimationSlideLeftDuration = res.getInteger(R.integer.activity_slide_left_duration);
         sAnimationSlideRightDuration = res.getInteger(R.integer.activity_slide_right_duration);
@@ -531,7 +529,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      */
     private void onFinishEnteringConversationListMode() {
         mConversationView.setVisibility(View.GONE);
-        mConversationViewOverlay.setVisibility(View.GONE);
         mFoldersView.setVisibility(View.VISIBLE);
 
         // Once animations settle, the conversation list always takes up the
