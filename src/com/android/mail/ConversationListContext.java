@@ -108,11 +108,12 @@ public class ConversationListContext {
     }
 
     /**
-     * Returns true if the current list is showing search results
-     * @return true if list is showing search results. False otherwise
+     * Returns true if the provided context represents search results.
+     * @param in
+     * @return true the context represents search results. False otherwise
      */
-    public boolean isSearchResult() {
-        return !TextUtils.isEmpty(searchQuery);
+    public static final boolean isSearchResult(ConversationListContext in) {
+        return in != null && !TextUtils.isEmpty(in.searchQuery);
     }
 
     /**
