@@ -773,6 +773,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
         SpannableString prevSender = null;
         for (SpannableString sender : mHeader.styledSenders) {
+            // There may be null sender strings if there were dupes we had to remove.
+            if (sender == null) {
+                continue;
+            }
             // No more width available, we'll only show fixed fragments.
             if (ellipsize) {
                 break;
