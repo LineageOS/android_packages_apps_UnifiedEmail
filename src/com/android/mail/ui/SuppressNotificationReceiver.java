@@ -124,7 +124,7 @@ public class SuppressNotificationReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (listContext.isSearchResult()) {
+        if (ConversationListContext.isSearchResult(listContext)) {
             // The user is looking at a search result, don't suppress notifications.
             return;
         }

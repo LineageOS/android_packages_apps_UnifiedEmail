@@ -163,7 +163,7 @@ public final class ConversationListFragment extends ListFragment implements
         }
         // Only show the header if the context is for a search result
         final Resources res = getResources();
-        final boolean showHeader = isSearchResult();
+        final boolean showHeader = ConversationListContext.isSearchResult(mViewContext);
         // TODO(viki): This code contains intimate understanding of the view. Much of this logic
         // needs to reside in a separate class that handles the text view in isolation. Then,
         // that logic can be reused in other fragments.
@@ -188,7 +188,7 @@ public final class ConversationListFragment extends ListFragment implements
         }
         // Only show the header if the context is for a search result
         final Resources res = getResources();
-        final boolean showHeader = isSearchResult();
+        final boolean showHeader = ConversationListContext.isSearchResult(mViewContext);
         if (showHeader) {
             mSearchStatusTextView.setText(res.getString(R.string.search_results_header));
             mSearchResultCountTextView
@@ -206,10 +206,6 @@ public final class ConversationListFragment extends ListFragment implements
         mSearchStatusTextView = (TextView) mActivity.findViewById(R.id.search_status_text_view);
         mSearchResultCountTextView = (TextView) mActivity.findViewById(
                 R.id.search_result_count_view);
-    }
-
-    private boolean isSearchResult() {
-        return mViewContext != null && mViewContext.isSearchResult();
     }
 
     @Override
@@ -540,7 +536,7 @@ public final class ConversationListFragment extends ListFragment implements
             mListView.enableSwipe(false);
         } else {
             int action;
-            if (isSearchResult()) {
+            if (ConversationListContext.isSearchResult(mViewContext)) {
                 action = R.id.delete;
             } else if (mFolder == null) {
                 action = R.id.change_folder;
