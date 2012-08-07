@@ -768,7 +768,8 @@ public class UIProvider {
         ConversationColumns.MUTED,
         ConversationColumns.COLOR,
         ConversationColumns.ACCOUNT_URI,
-        ConversationColumns.SENDER_INFO
+        ConversationColumns.SENDER_INFO,
+        ConversationColumns.CONVERSATION_BASE_URI
     };
 
     // These column indexes only work when the caller uses the
@@ -796,7 +797,8 @@ public class UIProvider {
     public static final int CONVERSATION_COLOR_COLUMN = 20;
     public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 21;
     public static final int CONVERSATION_SENDER_INFO_COLUMN = 22;
-    public static final int CONVERSATION_VIEWED_COLUMN = 23;
+    public static final int CONVERSATION_BASE_URI_COLUMN = 23;
+    public static final int CONVERSATION_VIEWED_COLUMN = 24;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -953,6 +955,12 @@ public class UIProvider {
          * {@link Conversation} object.
          */
         public static String VIEWED = "viewed";
+
+        /**
+         * This String column contains the base uri for this conversation.  This uri can be used
+         * when handling relative urls in the message content
+         */
+        public static final String CONVERSATION_BASE_URI = "conversationBaseUri";
 
         private ConversationColumns() {
         }

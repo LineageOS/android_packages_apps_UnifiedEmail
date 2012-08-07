@@ -89,6 +89,7 @@ function hideUnsafeImages() {
         images = body.getElementsByTagName("img");
         for (j = 0, imgCount = images.length; j < imgCount; j++) {
             image = images[j];
+            rewriteRelativeImageSrc(image);
             attachImageLoadListener(image);
             // TODO: handle inline image attachments for all supported protocols
             if (!showImages) {
@@ -97,6 +98,24 @@ function hideUnsafeImages() {
         }
     }
 }
+
+/**
+ * Changes relative paths to absolute path by pre-pending the account uri
+ * @param {Element} imgElement Image for which the src path will be updated.
+ */
+function rewriteRelativeImageSrc(imgElement) {
+    var src = imgElement.src;
+    if (src.indexOf(ACCOUNT_URI) == 0) {
+        var questionPos = src.indexOf('?');
+        if (ACCOUNT_URI.indexOf('content://') == 0 && questionPos != -1) {
+            // For some reason, when webview makes a content provider openFile call the query
+            // parameters are removed.  Instead, replace the '?' with '/'
+            src = src.substring(0, questionPos) + "/" + src.substring(questionPos + 1);
+            imgElement.src = src;
+        }
+    }
+};
+
 
 function attachImageLoadListener(imageElement) {
     // Reset the src attribute to the empty string because onload will only fire if the src
@@ -109,7 +128,8 @@ function attachImageLoadListener(imageElement) {
 
 function blockImage(imageElement) {
     var src = imageElement.src;
-    if (src.indexOf("http://") == 0 || src.indexOf("https://") == 0) {
+    if (src.indexOf("http://") == 0 || src.indexOf("https://") == 0 ||
+            src.indexOf("content://") == 0) {
         imageElement.setAttribute(BLOCKED_SRC_ATTR, src);
         imageElement.src = "data:";
     }
