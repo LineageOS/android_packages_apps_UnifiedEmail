@@ -116,7 +116,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         if (ImageUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.contentType))) {
             final PhotoViewIntentBuilder builder =
                     Intents.newPhotoViewIntentBuilder(getContext(), MailPhotoViewActivity.class);
-            builder.setPhotoName(mAttachment.name)
+            builder
                 .setPhotosUri(mAttachmentsListUri.toString())
                 .setProjection(UIProvider.ATTACHMENT_PROJECTION)
                 .setPhotoIndex(mPhotoIndex);
