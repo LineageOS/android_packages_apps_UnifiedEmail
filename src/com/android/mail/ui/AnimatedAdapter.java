@@ -239,6 +239,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (mShowFooter && position == super.getCount()) {
+            if (mFooter == null) {
+                LogUtils.e(LOG_TAG,  "Adding null view to list in place of footer");
+            }
             return mFooter;
         }
         if (isPositionUndoing(position)) {
@@ -261,7 +264,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (hasLeaveBehinds()) {
             Conversation conv = new Conversation((ConversationCursor) getItem(position));
             if(isPositionLeaveBehind(conv)) {
-                return getLeaveBehindItem(conv);
+                View v = getLeaveBehindItem(conv);
+                if (v == null) {
+                    LogUtils.e(LOG_TAG,  "Adding null view to list in place of footer");
+                }
+                return v;
             }
         }
         // TODO: do this in the swipe helper?
@@ -278,7 +285,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 ((SwipeableConversationItemView)convertView).reset();
             }
         }
-        return super.getView(position, convertView, parent);
+        View v = super.getView(position, convertView, parent);
+        if (v == null) {
+            LogUtils.e(LOG_TAG,  "Adding null view to list in place of footer");
+        }
+        return v;
     }
 
     private boolean hasLeaveBehinds() {
@@ -460,18 +471,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        if (hasFadeLeaveBehinds()) {
-            Object obj = ((ObjectAnimator) animation).getTarget();
-            if (obj instanceof LeaveBehindItem) {
+        Object obj = ((ObjectAnimator) animation).getTarget();
+        if (hasFadeLeaveBehinds() && obj instanceof LeaveBehindItem) {
                 LeaveBehindItem objItem = (LeaveBehindItem)obj;
                 clearLeaveBehind(objItem.getConversationId());
                 objItem.commit();
-            }
-        } else if (hasUndoingItems()) {
+        } else if (hasUndoingItems() && obj instanceof ConversationItemView) {
             // See if we have received all the animations we expected; if
             // so, call the listener and reset it.
-            final int position = ((ConversationItemView) ((ObjectAnimator) animation).getTarget())
-                    .getPosition();
+            final int position = ((ConversationItemView) obj).getPosition();
             if (isPositionUndoingSwipe(position)) {
                 mSwipeUndoingItems.remove(position);
                 if (mSwipeUndoingItems.isEmpty()) {
@@ -483,11 +491,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                     performAndSetNextAction(null);
                 }
             }
-        } else if (!mDeletingItems.isEmpty()) {
+        } else if (!mDeletingItems.isEmpty() && obj instanceof AnimatingItemView) {
             // See if we have received all the animations we expected; if
             // so, call the listener and reset it.
-            final AnimatingItemView target = ((AnimatingItemView) ((ObjectAnimator) animation)
-                    .getTarget());
+            final AnimatingItemView target = (AnimatingItemView) obj;
             final int position = target.getData().position;
             mDeletingItems.remove(position);
             if (mDeletingItems.isEmpty()) {
