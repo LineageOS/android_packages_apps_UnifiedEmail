@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import android.content.Context;
@@ -226,8 +227,7 @@ public class ConversationItemViewModel {
         if (TextUtils.isEmpty(rawFolders)) {
             rawFolders = "";
         }
-        return convInfo.hashCode() ^ dateText.hashCode() ^ rawFolders.hashCode()
-                ^ (starred ? 1 : 0) ^ (read ? 1 : 0);
+        return Objects.hashCode(convInfo, dateText, rawFolders, starred, read);
     }
 
     /**
