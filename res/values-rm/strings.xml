@@ -477,39 +477,7 @@
     <skip />
     <!-- no translation found for change_sync_settings (5514293926214426577) -->
     <skip />
-    <!-- no translation found for photo_view_placeholder_image (465734985000555852) -->
-    <skip />
-    <!-- no translation found for photo_network_error (6545183306958652345) -->
-    <skip />
-    <!-- no translation found for loading_photo (6784297653634402137) -->
-    <skip />
-    <!-- no translation found for post_operation_pending (1312168212880219407) -->
-    <skip />
-    <!-- no translation found for download_photo_retry (1894223549069749239) -->
-    <skip />
-    <!-- no translation found for download_photo_error (7511376299526085797) -->
-    <skip />
-    <!-- no translation found for yes (7474216525286833848) -->
-    <skip />
-    <!-- no translation found for no (427548507197604096) -->
-    <skip />
-    <!-- no translation found for camera_photo_error (653424229752191252) -->
-    <skip />
-    <!-- no translation found for photo_view_count (1568865177363028519) -->
-    <skip />
-    <!-- no translation found for truncated_info (4901078975545890098) -->
-    <skip />
-    <!-- no translation found for truncated_info_see_more (2068973974507128729) -->
-    <skip />
-    <!-- no translation found for posted_just_now (7872790861965011674) -->
-    <skip />
-    <!-- no translation found for num_minutes_ago:one (4750191148321568233) -->
-    <!-- no translation found for num_minutes_ago:other (4976118461634588647) -->
-    <!-- no translation found for num_hours_ago:one (2178354472031148118) -->
-    <!-- no translation found for num_hours_ago:other (1470820825143524326) -->
-    <!-- no translation found for num_days_ago:one (5538890823169916595) -->
-    <!-- no translation found for num_days_ago:other (2756574969735638578) -->
-    <!-- no translation found for dialog_inserting_camera_photo (2711654208680211224) -->
+    <!-- no translation found for photo_load_failed (8811324070219403896) -->
     <skip />
     <!-- no translation found for cant_move_or_change_labels (7997792014816166601) -->
     <skip />
