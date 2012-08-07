@@ -236,7 +236,7 @@ public class SendersView {
                     // current sender, remove the old entry.
                     if (oldPos != DOES_NOT_EXIST && i > 0 && oldPos == i - 1) {
                         // Remove the old one!
-                        senders.remove(oldPos);
+                        senders.set(oldPos, null);
                     }
                     displayHash.put(currentMessage.sender, i);
                     spannableDisplay.setSpan(style, 0, spannableDisplay.length(), 0);
