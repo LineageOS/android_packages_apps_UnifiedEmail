@@ -16,6 +16,7 @@
 
 package com.android.mail.compose;
 
+import android.animation.LayoutTransition;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
@@ -52,7 +53,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.BaseInputConnection;
 import android.widget.ArrayAdapter;
@@ -799,6 +799,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void findViews() {
+        LayoutTransition transition =
+                ((ViewGroup) findViewById(R.id.content)).getLayoutTransition();
+        transition.enableTransitionType(LayoutTransition.CHANGING);
+        long delay = transition.getDuration(LayoutTransition.DISAPPEARING);
+        transition.setStartDelay(LayoutTransition.CHANGING, delay);
+
         mCcBccButton = (Button) findViewById(R.id.add_cc_bcc);
         if (mCcBccButton != null) {
             mCcBccButton.setOnClickListener(this);
