@@ -326,8 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"La synchronisation automatique n\'est pas configurée pour ce compte."\n"Appuyez sur "<b>"Synchroniser"</b>" pour une synchronisation ponctuelle de la messagerie ou sur "<b>"Modifier les paramètres"</b>" pour activer la synchronisation automatique."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Synchroniser"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Modifier paramètres synchro"</string>
-    <!-- no translation found for photo_load_failed (8811324070219403896) -->
-    <skip />
+    <string name="photo_load_failed" msgid="8811324070219403896">"Impossible de charger l\'image."</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Impossible de déplacer les messages, car la sélection comprend plusieurs comptes."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
