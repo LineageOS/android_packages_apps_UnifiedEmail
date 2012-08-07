@@ -94,7 +94,9 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
                     && attachment.canSave() && !attachment.isSavedToExternal());
             mShareItem.setEnabled(attachment.isPresentLocally());
         } else {
-            mMenu.setGroupEnabled(R.id.photo_view_menu_group, false);
+            if (mMenu != null) {
+                mMenu.setGroupEnabled(R.id.photo_view_menu_group, false);
+            }
             return;
         }
 
