@@ -22,7 +22,5 @@
           android:drawable="@drawable/list_focused_holo" />
     <item android:state_selected="true"
           android:drawable="@drawable/list_selected_holo" />
-    <item android:state_activated="true"
-          android:drawable="@drawable/list_selected_holo" />
     <item android:drawable="@drawable/list_read_holo" />
 </selector>
