@@ -333,7 +333,7 @@ public final class TwoPaneController extends AbstractActivityController {
             mActivity.onBackPressed();
         } else if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
             if (mLayout.isConversationListCollapsed()
-                    || (mConvListContext.isSearchResult() && !Utils.
+                    || (ConversationListContext.isSearchResult(mConvListContext) && !Utils.
                             showTwoPaneSearchResults(mActivity.getApplicationContext()))) {
                 onBackPressed();
             } else {

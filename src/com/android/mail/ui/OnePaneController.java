@@ -135,7 +135,8 @@ public final class OnePaneController extends AbstractActivityController {
             return false;
         }
         final Uri inboxUri = Settings.getDefaultInboxUri(account.settings);
-        return !context.isSearchResult() && context.folder.uri.equals(inboxUri);
+        return !ConversationListContext.isSearchResult(context)
+                && context.folder.uri.equals(inboxUri);
     }
 
     @Override
@@ -174,7 +175,7 @@ public final class OnePaneController extends AbstractActivityController {
         enableCabMode();
         // TODO(viki): Check if the account has been changed since the previous
         // time.
-        if (listContext != null && listContext.isSearchResult()) {
+        if (ConversationListContext.isSearchResult(listContext)) {
             mViewMode.enterSearchResultsListMode();
         } else {
             mViewMode.enterConversationListMode();
@@ -219,7 +220,7 @@ public final class OnePaneController extends AbstractActivityController {
             return;
         }
         disableCabMode();
-        if (mConvListContext != null && mConvListContext.isSearchResult()) {
+        if (ConversationListContext.isSearchResult(mConvListContext)) {
             mViewMode.enterSearchResultsConversationMode();
         } else {
             mViewMode.enterConversationMode();
