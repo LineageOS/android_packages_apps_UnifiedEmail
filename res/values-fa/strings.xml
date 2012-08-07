@@ -326,32 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"این حساب برای همگام‌سازی به طور خودکار تنظیم نشده است."\n"برای یک بار همگام‌سازی نامه، "<b>"اکنون همگام‌سازی شود"</b>" را لمس کنید، یا برای تنظیم این حساب برای همگام‌سازی نامه به طور خودکار، "<b>"تنظیمات همگام‌سازی را تغییر دهید"</b>"."</string>
     <string name="manual_sync" msgid="6743983544685622800">"اکنون همگام‌سازی شود"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"تغییر تنظیمات همگام‌سازی"</string>
-    <string name="photo_view_placeholder_image" msgid="465734985000555852">"این مورد در حال حاضر در دسترس نیست. لطفاً بازخوانی کنید."</string>
-    <string name="photo_network_error" msgid="6545183306958652345">"عکس در حال حاضر موجود نیست."</string>
-    <string name="loading_photo" msgid="6784297653634402137">"در حال بارگیری..."</string>
-    <string name="post_operation_pending" msgid="1312168212880219407">"در حال ارسال ..."</string>
-    <string name="download_photo_retry" msgid="1894223549069749239">"این تصویر برای دانلود خیلی بزرگ است، آیا می‌خواهید با وضوح کمتر دوباره امتحان کنید؟"</string>
-    <string name="download_photo_error" msgid="7511376299526085797">"ذخیره عکس در دستگاه امکانپذیر نیست."</string>
-    <string name="yes" msgid="7474216525286833848">"بله"</string>
-    <string name="no" msgid="427548507197604096">"خیر"</string>
-    <string name="camera_photo_error" msgid="653424229752191252">"عکس یافت نمی‌شود."</string>
-    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> از <xliff:g id="COUNT">%d</xliff:g>"</string>
-    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
-    <string name="truncated_info_see_more" msgid="2068973974507128729">" مشاهده موارد بیشتر »"</string>
-    <string name="posted_just_now" msgid="7872790861965011674">"هم‌اکنون"</string>
-  <plurals name="num_minutes_ago">
-    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> دقیقه"</item>
-    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> دقیقه"</item>
-  </plurals>
-  <plurals name="num_hours_ago">
-    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> ساعت"</item>
-    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> ساعت"</item>
-  </plurals>
-  <plurals name="num_days_ago">
-    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> روز"</item>
-    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> روز"</item>
-  </plurals>
-    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"در حال درج عکس…"</string>
+    <string name="photo_load_failed" msgid="8811324070219403896">"تصویر بارگیری نمی‌شود"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"امکان جابجایی وجود ندارد زیرا انتخاب شما شامل چندین حساب است."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
