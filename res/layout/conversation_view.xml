@@ -21,12 +21,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- base WebView layer -->
     <com.android.mail.browse.ConversationWebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- overlay views go here -->
+    <!-- scrolling overlay views go here -->
 
-    <!-- TODO: scroll indicators view goes on top of all other layers (or the parent draws it) -->
+    <!-- topmost layer for floating views (e.g. snap header, New Message bar) -->
+    <!-- ConversationContainer draws this child on the very top, above all scrolling views -->
+    <FrameLayout
+        android:id="@+id/conversation_topmost_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/new_message_notification_bar" />
+
+        <!-- TODO: scroll indicators go on top of all other layers (or the parent draws it) -->
+    </FrameLayout>
+
 </com.android.mail.browse.ConversationContainer>

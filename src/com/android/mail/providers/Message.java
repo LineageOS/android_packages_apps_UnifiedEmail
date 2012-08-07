@@ -169,6 +169,10 @@ public class Message implements Parcelable {
      * @see UIProvider.MessageColumns#VIA_DOMAIN
      */
     public String viaDomain;
+    /**
+     * @see UIProvider.MessageColumns#IS_SENDING
+     */
+    public boolean isSending;
 
     private transient String[] mFromAddresses = null;
     private transient String[] mToAddresses = null;
@@ -234,6 +238,7 @@ public class Message implements Parcelable {
         dest.writeInt(spamWarningLevel);
         dest.writeInt(spamLinkType);
         dest.writeString(viaDomain);
+        dest.writeInt(isSending ? 1 : 0);
     }
 
     private Message(Parcel in) {
@@ -269,6 +274,7 @@ public class Message implements Parcelable {
         spamWarningLevel = in.readInt();
         spamLinkType = in.readInt();
         viaDomain = in.readString();
+        isSending = in.readInt() != 0;
     }
 
     public Message() {
@@ -342,6 +348,7 @@ public class Message implements Parcelable {
             spamWarningLevel = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LEVEL_COLUMN);
             spamLinkType = cursor.getInt(UIProvider.MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN);
             viaDomain = cursor.getString(UIProvider.MESSAGE_VIA_DOMAIN_COLUMN);
+            isSending = cursor.getInt(UIProvider.MESSAGE_IS_SENDING_COLUMN) != 0;
         }
     }
 

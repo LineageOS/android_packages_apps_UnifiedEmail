@@ -47,6 +47,13 @@ class ConversationViewState implements Parcelable {
 
     public ConversationViewState() {}
 
+    /**
+     * Copy constructor that will copy overall conversation state, but NOT individual message state.
+     */
+    public ConversationViewState(ConversationViewState other) {
+        mConversationInfo = other.mConversationInfo;
+    }
+
     public boolean isUnread(Message m) {
         final MessageViewState mvs = mMessageViewStates.get(m.uri);
         return (mvs != null && !mvs.read);
@@ -105,6 +112,10 @@ class ConversationViewState implements Parcelable {
             }
         }
         return result;
+    }
+
+    public boolean contains(Message m) {
+        return mMessageViewStates.containsKey(m.uri);
     }
 
     @Override

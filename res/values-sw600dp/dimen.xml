@@ -41,6 +41,7 @@
     <dimen name="message_header_action_button_width">56dip</dimen>
     <dimen name="message_header_title_container_margin_right">0dip</dimen>
     <dimen name="super_collapsed_height">32sp</dimen>
+    <dimen name="new_message_notification_margin_side">32dp</dimen>
     <dimen name="compose_scrollview_width">800dip</dimen>
     <dimen name="compose_area_left_padding">100dip</dimen>
     <dimen name="compose_area_right_padding">100dip</dimen>
