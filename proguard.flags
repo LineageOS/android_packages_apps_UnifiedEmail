@@ -57,3 +57,7 @@
   *** setAnimatedHeight(...);
   *** setItemAlpha(...);
 }
+
+-keepclasseswithmembers class com.android.mail.ui.MailActivity {
+  *** doNothingClickHandler(...);
+}
