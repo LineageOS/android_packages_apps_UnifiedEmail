@@ -374,7 +374,7 @@ public final class OnePaneController extends AbstractActivityController {
         if (mInbox == null) {
             loadAccountInbox();
         } else {
-            ConversationListContext listContext = ConversationListContext.forFolder(mContext,
+            ConversationListContext listContext = ConversationListContext.forFolder(
                     mAccount, mInbox);
             // Set the correct context for what the conversation view will be
             // now.
@@ -445,7 +445,7 @@ public final class OnePaneController extends AbstractActivityController {
             onFolderChanged(mInbox);
         } else {
             // TODO: revisit if this block is necessary
-            final ConversationListContext listContext = ConversationListContext.forFolder(mContext,
+            final ConversationListContext listContext = ConversationListContext.forFolder(
                     mAccount, mInbox);
             // Set the correct context for what the conversation view will be now.
             onFolderChanged(mInbox);

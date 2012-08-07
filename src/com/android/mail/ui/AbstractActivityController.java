@@ -468,7 +468,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (folder != null && !folder.equals(mFolder)
                 || (mViewMode.getMode() != ViewMode.CONVERSATION_LIST)) {
             updateFolder(folder);
-            mConvListContext = ConversationListContext.forFolder(mContext, mAccount, mFolder);
+            mConvListContext = ConversationListContext.forFolder(mAccount, mFolder);
             showConversationList(mConvListContext);
 
             // Add the folder that we were viewing to the recent folders list.
