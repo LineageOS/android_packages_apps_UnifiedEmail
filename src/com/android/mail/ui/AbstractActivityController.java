@@ -124,6 +124,8 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_SELECTED_SET = "saved-selected-set";
     private static final String SAVED_TOAST_BAR_OP = "saved-toast-bar-op";
     protected static final String SAVED_HIERARCHICAL_FOLDER = "saved-hierarchical-folder";
+    /** Tag for {@link ConversationListContext#searchQuery} */
+    private static final String SAVED_QUERY = "saved-query";
 
     /** Tag  used when loading a wait fragment */
     protected static final String TAG_WAIT = "wait-fragment";
@@ -465,10 +467,23 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onFolderChanged(Folder folder) {
+        changeFolder(folder, null);
+    }
+
+    /**
+     * Changes the folder to the value provided here. This causes the view mode to change.
+     * @param folder the folder to change to
+     * @param query if non-null, this represents the search string that the folder represents.
+     */
+    private void changeFolder(Folder folder, String query) {
         if (folder != null && !folder.equals(mFolder)
                 || (mViewMode.getMode() != ViewMode.CONVERSATION_LIST)) {
             updateFolder(folder);
-            mConvListContext = ConversationListContext.forFolder(mAccount, mFolder);
+            if (query != null) {
+                mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder, query);
+            } else {
+                mConvListContext = ConversationListContext.forFolder(mAccount, mFolder);
+            }
             showConversationList(mConvListContext);
 
             // Add the folder that we were viewing to the recent folders list.
@@ -612,8 +627,12 @@ public abstract class AbstractActivityController implements ActivityController {
                 mActivity.invalidateOptionsMenu();
             }
             if (savedState.containsKey(SAVED_FOLDER)) {
-                // Open the folder.
-                onFolderChanged((Folder) savedState.getParcelable(SAVED_FOLDER));
+                final Folder folder = (Folder) savedState.getParcelable(SAVED_FOLDER);
+                if (savedState.containsKey(SAVED_QUERY)) {
+                    changeFolder(folder, savedState.getString(SAVED_QUERY));
+                } else {
+                    onFolderChanged(folder);
+                }
             }
         } else if (intent != null) {
             handleIntent(intent);
@@ -987,6 +1006,10 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         if (mFolder != null) {
             outState.putParcelable(SAVED_FOLDER, mFolder);
+        }
+        // If this is a search activity, let's store the search query term as well.
+        if (ConversationListContext.isSearchResult(mConvListContext)) {
+            outState.putString(SAVED_QUERY, mConvListContext.searchQuery);
         }
         int mode = mViewMode.getMode();
         if (mCurrentConversation != null
