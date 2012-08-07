@@ -1101,7 +1101,8 @@ public class UIProvider {
         MessageColumns.SPAM_WARNING_STRING,
         MessageColumns.SPAM_WARNING_LEVEL,
         MessageColumns.SPAM_WARNING_LINK_TYPE,
-        MessageColumns.VIA_DOMAIN
+        MessageColumns.VIA_DOMAIN,
+        MessageColumns.IS_SENDING
     };
 
     /** Separates attachment info parts in strings in a message. */
@@ -1148,6 +1149,7 @@ public class UIProvider {
     public static final int MESSAGE_SPAM_WARNING_LEVEL_COLUMN = 33;
     public static final int MESSAGE_SPAM_WARNING_LINK_TYPE_COLUMN = 34;
     public static final int MESSAGE_VIA_DOMAIN_COLUMN = 35;
+    public static final int MESSAGE_IS_SENDING_COLUMN = 36;
 
     public static final class CursorStatus {
         // The cursor is actively loading more data
@@ -1194,9 +1196,9 @@ public class UIProvider {
 
 
     public static final class MessageFlags {
-        public static final int REPLIED =       1 << 2;
-        public static final int FORWARDED =     1 << 3;
-        public static final int CALENDAR_INVITE =     1 << 4;
+        public static final int REPLIED =           1 << 2;
+        public static final int FORWARDED =         1 << 3;
+        public static final int CALENDAR_INVITE =   1 << 4;
     }
 
     public static final class MessageColumns {
@@ -1364,6 +1366,11 @@ public class UIProvider {
          * domain. This column should be null if no via domain exists.
          */
         public static final String VIA_DOMAIN = "viaDomain";
+        /**
+         * This boolean column indicates whether the message is an outgoing message in the process
+         * of being sent (will be zero for incoming messages and messages that are already sent).
+         */
+        public static final String IS_SENDING = "isSending";
 
         private MessageColumns() {}
     }

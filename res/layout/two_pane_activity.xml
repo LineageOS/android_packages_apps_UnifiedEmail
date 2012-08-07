@@ -60,24 +60,8 @@
             android:background="@android:color/white"
             android:layout_alignParentRight="true">
 
+            <!-- TODO: combine this pager with its container -->
             <include layout="@layout/conversation_pager" />
-
-            <View
-                android:id="@+id/conversation_overlay"
-                android:background="@android:color/transparent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/conversation_error"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/no_conversations"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:visibility="gone"
-                android:background="@android:color/white"/>
 
         </FrameLayout>
     </com.android.mail.ui.TwoPaneLayout>

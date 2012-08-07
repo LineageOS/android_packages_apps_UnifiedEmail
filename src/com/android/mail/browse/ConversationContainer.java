@@ -35,6 +35,9 @@ import com.android.mail.browse.ScrollNotifier.ScrollListener;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.DequeMap;
 import com.android.mail.utils.LogUtils;
+import com.google.common.collect.Lists;
+
+import java.util.List;
 
 /**
  * A specialized ViewGroup container for conversation view. It is designed to contain a single
@@ -61,9 +64,20 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private static final String TAG = ConversationViewFragment.LAYOUT_TAG;
 
+    private static final int[] BOTTOM_LAYER_VIEW_IDS = {
+        R.id.webview
+    };
+
+    private static final int[] TOP_LAYER_VIEW_IDS = {
+        R.id.conversation_topmost_overlay
+    };
+    private static final int TOP_LAYER_COUNT = TOP_LAYER_VIEW_IDS.length;
+
     private ConversationViewAdapter mOverlayAdapter;
     private int[] mOverlayBottoms;
     private ConversationWebView mWebView;
+
+    private final List<View> mNonScrollingChildren = Lists.newArrayList();
 
     /**
      * Current document zoom scale per {@link WebView#getScale()}. This is the ratio of actual
@@ -178,6 +192,13 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
         mWebView = (ConversationWebView) findViewById(R.id.webview);
         mWebView.addScrollListener(this);
+
+        for (int id : BOTTOM_LAYER_VIEW_IDS) {
+            mNonScrollingChildren.add(findViewById(id));
+        }
+        for (int id : TOP_LAYER_VIEW_IDS) {
+            mNonScrollingChildren.add(findViewById(id));
+        }
     }
 
     public void setOverlayAdapter(ConversationViewAdapter a) {
@@ -378,15 +399,13 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
      * Copied/stolen from {@link ListView}.
      */
     private void measureOverlayView(View child) {
-        ViewGroup.LayoutParams p = child.getLayoutParams();
+        MarginLayoutParams p = (MarginLayoutParams) child.getLayoutParams();
         if (p == null) {
-            p = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            p = (MarginLayoutParams) generateDefaultLayoutParams();
         }
 
         int childWidthSpec = ViewGroup.getChildMeasureSpec(mWidthMeasureSpec,
-                getPaddingLeft() + getPaddingRight(), p.width);
+                getPaddingLeft() + getPaddingRight() + p.leftMargin + p.rightMargin, p.width);
         int lpHeight = p.height;
         int childHeightSpec;
         if (lpHeight > 0) {
@@ -455,8 +474,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
                     MeasureSpec.toString(heightMeasureSpec));
         }
 
-        if (mWebView.getVisibility() != GONE) {
-            measureChild(mWebView, widthMeasureSpec, heightMeasureSpec);
+        for (View nonScrollingChild : mNonScrollingChildren) {
+            if (nonScrollingChild.getVisibility() != GONE) {
+                measureChildWithMargins(nonScrollingChild, widthMeasureSpec, 0 /* widthUsed */,
+                        heightMeasureSpec, 0 /* heightUsed */);
+            }
         }
         mWidthMeasureSpec = widthMeasureSpec;
 
@@ -468,7 +490,19 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         LogUtils.d(TAG, "*** IN header container onLayout");
 
-        mWebView.layout(0, 0, mWebView.getMeasuredWidth(), mWebView.getMeasuredHeight());
+        for (View nonScrollingChild : mNonScrollingChildren) {
+            if (nonScrollingChild.getVisibility() != GONE) {
+                final int w = nonScrollingChild.getMeasuredWidth();
+                final int h = nonScrollingChild.getMeasuredHeight();
+
+                final MarginLayoutParams lp =
+                        (MarginLayoutParams) nonScrollingChild.getLayoutParams();
+
+                final int childLeft = lp.leftMargin;
+                final int childTop = lp.topMargin;
+                nonScrollingChild.layout(childLeft, childTop, childLeft + w, childTop + h);
+            }
+        }
 
         if (mOverlayAdapter != null) {
             // being in a layout pass means overlay children may require measurement,
@@ -479,6 +513,26 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
 
         positionOverlays(0, mOffsetY);
+    }
+
+    @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new MarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+    }
+
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new MarginLayoutParams(getContext(), attrs);
+    }
+
+    @Override
+    protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        return new MarginLayoutParams(p);
+    }
+
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return p instanceof MarginLayoutParams;
     }
 
     private int getOverlayBottom(int spacerIndex) {
@@ -528,7 +582,11 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private void layoutOverlay(View child, int childTop, int childBottom) {
         final int top = childTop - mOffsetY;
         final int bottom = childBottom - mOffsetY;
-        child.layout(0, top, child.getMeasuredWidth(), bottom);
+
+        final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
+        final int childLeft = getPaddingLeft() + lp.leftMargin;
+
+        child.layout(childLeft, top, childLeft + child.getMeasuredWidth(), bottom);
     }
 
     private View addOverlayView(int adapterIndex) {
@@ -538,15 +596,17 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         View view = mOverlayAdapter.getView(adapterIndex, convertView, this);
         mOverlayViews.put(adapterIndex, new OverlayView(view, itemType));
 
+        final int index = getChildCount() - TOP_LAYER_COUNT;
+
         // Only re-attach if the view had previously been added to a view hierarchy.
         // Since external components can contribute to the scrap heap (addScrapView), we can't
         // assume scrap views had already been attached.
         if (view.getRootView() != view) {
             LogUtils.d(TAG, "want to REUSE scrolled-in view: index=%d obj=%s", adapterIndex, view);
-            attachViewToParent(view, -1, view.getLayoutParams());
+            attachViewToParent(view, index, view.getLayoutParams());
         } else {
             LogUtils.d(TAG, "want to CREATE scrolled-in view: index=%d obj=%s", adapterIndex, view);
-            addViewInLayout(view, -1, view.getLayoutParams(),
+            addViewInLayout(view, index, view.getLayoutParams(),
                     true /* preventRequestLayout */);
         }
 
@@ -565,7 +625,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         mOverlayBottoms = null;
     }
 
-    // TODO: add margin support for children that want it (e.g. tablet headers?)
     public void onGeometryChange(int[] overlayBottoms) {
         traceLayout("*** got overlay spacer bottoms:");
         for (int offsetY : overlayBottoms) {
