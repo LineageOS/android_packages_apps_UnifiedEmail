@@ -270,7 +270,7 @@
     <string name="always_show_images" msgid="5966408990164581801">"Всегда открывать картинки с этого адреса"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Картинки, отправленные с этого адреса, будут всегда показываться."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; из <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
+    <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; из домена <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Черновик сообщения сохранен."</string>
     <string name="sending_message" msgid="1498583163419122128">"Отправка сообщения…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Недействительный адрес: <xliff:g id="WRONGEMAIL">%s</xliff:g>."</string>
@@ -326,8 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"В этом аккаунте не настроена автоматическая синхронизация."\n"Выберите "<b>"Настройки синхронизации"</b>", чтобы включить ее, или "<b>"Синхронизировать сейчас"</b>", чтобы синхронизировать почту один раз."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Синхр."</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Настройки синхронизации"</string>
-    <!-- no translation found for photo_load_failed (8811324070219403896) -->
-    <skip />
+    <string name="photo_load_failed" msgid="8811324070219403896">"Не удалось загрузить фото"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Не удалось переместить сообщения, так как они находятся в разных аккаунтах."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>": <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>

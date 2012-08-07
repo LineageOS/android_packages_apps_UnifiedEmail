@@ -326,8 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Šajā kontā nav iestatīta automātiskā sinhronizācija."\n"Pieskarieties vienumam "<b>"Sinhronizēt tūlīt"</b>", lai vienreiz sinhronizētu pastu, vai vienumam "<b>"Mainīt sinhronizācijas iestatījumus"</b>", lai šajā kontā iestatītu automātisku pasta sinhronizāciju."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sinhr. tūlīt"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Mainīt sinhronizācijas iestat."</string>
-    <!-- no translation found for photo_load_failed (8811324070219403896) -->
-    <skip />
+    <string name="photo_load_failed" msgid="8811324070219403896">"Nevarēja ielādēt attēlu."</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Nevar pārvietot, jo ir atlasīti ziņojumi no vairākiem kontiem."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>

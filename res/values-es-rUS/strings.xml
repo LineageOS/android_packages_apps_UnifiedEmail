@@ -326,8 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Esta cuenta no está configurada para sincronizar el correo automáticamente."\n"Toca "<b>"Sincronizar ahora"</b>" para sincronizar el correo una vez o "<b>"Cambiar la configuración de sincronización"</b>" para que esta cuenta sincronice el correo automáticamente."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincr. ahora"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Cambiar conf. de sinc."</string>
-    <!-- no translation found for photo_load_failed (8811324070219403896) -->
-    <skip />
+    <string name="photo_load_failed" msgid="8811324070219403896">"No se pudo cargar la imagen."</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"No se puede mover porque la selección contiene varias cuentas."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
