@@ -81,8 +81,7 @@ public class ConversationListContext {
      * @param folder
      * @return
      */
-    public static ConversationListContext forFolder(Context context, Account account,
-            Folder folder) {
+    public static ConversationListContext forFolder(Account account, Folder folder) {
         return new ConversationListContext(account, null, folder);
     }
 
