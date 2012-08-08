@@ -65,6 +65,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.ui.AnimatedAdapter;
+import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
@@ -150,7 +151,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private final Context mContext;
 
     public ConversationItemViewModel mHeader;
-    private ViewMode mViewMode;
     private boolean mDownEvent;
     private boolean mChecked = false;
     private static int sFadedActivatedColor = -1;
@@ -166,6 +166,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private int mAnimatedHeight = -1;
     private String mAccount;
     private Runnable mListItemClick;
+    private ControllableActivity mActivity;
     private static Bitmap sDateBackgroundAttachment;
     private static Bitmap sDateBackgroundNoAttachment;
     private static int sUndoAnimationOffset;
@@ -380,25 +381,25 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
     }
 
-    public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set, Folder folder,
-            boolean checkboxesDisabled, boolean swipeEnabled, boolean priorityArrowEnabled,
-            AnimatedAdapter adapter) {
-        bind(ConversationItemViewModel.forCursor(mAccount, cursor), viewMode, set, folder,
+    public void bind(Cursor cursor, ControllableActivity activity, ConversationSelectionSet set,
+            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
+            boolean priorityArrowEnabled, AnimatedAdapter adapter) {
+        bind(ConversationItemViewModel.forCursor(mAccount, cursor), activity, set, folder,
                 checkboxesDisabled, swipeEnabled, priorityArrowEnabled, adapter);
     }
 
-    public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
-            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
-            boolean priorityArrowEnabled, AnimatedAdapter adapter) {
-        bind(ConversationItemViewModel.forConversation(mAccount, conversation), viewMode, set,
+    public void bind(Conversation conversation, ControllableActivity activity,
+            ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
+            boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
+        bind(ConversationItemViewModel.forConversation(mAccount, conversation), activity, set,
                 folder, checkboxesDisabled, swipeEnabled, priorityArrowEnabled, adapter);
     }
 
-    private void bind(ConversationItemViewModel header, ViewMode viewMode,
+    private void bind(ConversationItemViewModel header, ControllableActivity activity,
             ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
             boolean swipeEnabled, boolean priorityArrowEnabled, AnimatedAdapter adapter) {
-        mViewMode = viewMode;
         mHeader = header;
+        mActivity = activity;
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         mCheckboxesEnabled = !checkboxesDisabled;
@@ -447,7 +448,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         if (width != mViewWidth) {
             mViewWidth = width;
             if (!mTesting) {
-                mMode = ConversationItemViewCoordinates.getMode(mContext, mViewMode);
+                mMode = ConversationItemViewCoordinates.getMode(mContext, mActivity.getViewMode());
             }
         }
         mHeader.viewWidth = mViewWidth;
@@ -569,7 +570,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             mHeader.messageInfoString = SendersView
                     .createMessageInfo(context, mHeader.conversation);
             int maxChars = ConversationItemViewCoordinates.getSubjectLength(context,
-                    ConversationItemViewCoordinates.getMode(context, mViewMode),
+                    ConversationItemViewCoordinates.getMode(context, mActivity.getViewMode()),
                     mHeader.folderDisplayer != null && mHeader.folderDisplayer.mFoldersCount > 0,
                     mHeader.conversation.hasAttachments);
             mHeader.styledSenders = SendersView.format(context,
@@ -1088,8 +1089,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     private void updateBackground(boolean isUnread) {
+        ViewMode viewMode = mActivity.getViewMode();
         if (isUnread) {
-            if (mTabletDevice && mViewMode.isListMode()) {
+            if (mTabletDevice && viewMode.isListMode()) {
                 if (mChecked) {
                     setBackgroundResource(R.drawable.list_conversation_wide_unread_selected_holo);
                 } else {
@@ -1103,7 +1105,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 }
             }
         } else {
-            if (mTabletDevice && mViewMode.isListMode()) {
+            if (mTabletDevice && viewMode.isListMode()) {
                 if (mChecked) {
                     setBackgroundResource(R.drawable.list_conversation_wide_read_selected_holo);
                 } else {
@@ -1234,7 +1236,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                         toggleStar();
                         handled = true;
                     } else {
-                        setPressed(true);
+                        setActivated(true);
                         // Put the list item click in the queue so we can show
                         // the user tap feedback first.
                         postDelayed(mListItemClick, 0);
@@ -1384,7 +1386,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (mAnimatedHeight == -1) {
             int height = measureHeight(heightMeasureSpec,
-                    ConversationItemViewCoordinates.getMode(mContext, mViewMode));
+                    ConversationItemViewCoordinates.getMode(mContext, mActivity.getViewMode()));
             setMeasuredDimension(widthMeasureSpec, height);
         } else {
             setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
@@ -1449,7 +1451,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         mDownEvent = false;
         // If we are in one pane mode, or we are looking at conversations, drag and drop is
         // meaningless. Allow the list's long click handler to do the right thing.
-        if (!Utils.useTabletUI(mContext) || !mViewMode.isListMode()) {
+        if (!Utils.useTabletUI(mContext) || !mActivity.getViewMode().isListMode()) {
             performLongClick();
         } else {
             beginDragMode();

@@ -230,7 +230,7 @@ public final class ConversationListFragment extends ListFragment implements
                 null);
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
                 getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
-                mActivity.getSettings(), mActivity.getViewMode(), mListView);
+                mActivity.getSettings(), mActivity, mListView);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         mSelectedSet = mActivity.getSelectedSet();
