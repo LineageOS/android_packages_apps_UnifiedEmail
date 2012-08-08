@@ -326,32 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Esta cuenta no está configurada para sincronizar el correo automáticamente."\n"Toca "<b>"Sincronizar ahora"</b>" para sincronizar el correo una vez o "<b>"Cambiar la configuración de sincronización"</b>" para que esta cuenta sincronice el correo automáticamente."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sincr. ahora"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Cambiar conf. de sinc."</string>
-    <string name="photo_view_placeholder_image" msgid="465734985000555852">"Elemento no disponible. Actualiza la página."</string>
-    <string name="photo_network_error" msgid="6545183306958652345">"La foto no está disponible en este momento."</string>
-    <string name="loading_photo" msgid="6784297653634402137">"Cargando…"</string>
-    <string name="post_operation_pending" msgid="1312168212880219407">"Enviando…"</string>
-    <string name="download_photo_retry" msgid="1894223549069749239">"Esta imagen es demasiado grande para descargarla. ¿Quieres descargarla con una resolución menor?"</string>
-    <string name="download_photo_error" msgid="7511376299526085797">"No se pudo guardar la foto en el dispositivo."</string>
-    <string name="yes" msgid="7474216525286833848">"Sí"</string>
-    <string name="no" msgid="427548507197604096">"No"</string>
-    <string name="camera_photo_error" msgid="653424229752191252">"No se encontró la foto."</string>
-    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> de <xliff:g id="COUNT">%d</xliff:g>"</string>
-    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
-    <string name="truncated_info_see_more" msgid="2068973974507128729">" Ver más »"</string>
-    <string name="posted_just_now" msgid="7872790861965011674">"Ahora"</string>
-  <plurals name="num_minutes_ago">
-    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> minuto"</item>
-    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> minutos"</item>
-  </plurals>
-  <plurals name="num_hours_ago">
-    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> hora"</item>
-    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> horas"</item>
-  </plurals>
-  <plurals name="num_days_ago">
-    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> día"</item>
-    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> días"</item>
-  </plurals>
-    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"Insertando foto…"</string>
+    <string name="photo_load_failed" msgid="8811324070219403896">"No se pudo cargar la imagen."</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"No se puede mover porque la selección contiene varias cuentas."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>

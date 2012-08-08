@@ -326,32 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Bu hesap otomatik olarak senkronize edilecek şekilde yapılandırılmadı."\n"Postayı bir kez senkronize etmek için "<b>"Şimdi Senk Et"</b>"\'e veya bu hesabı postayı otomatik olarak senkronize edilecek şekilde ayarlamak için "<b>"Senk Ayarlarını Değiştir"</b>"\'e dokunun."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Şimdi senk et"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Senk ayarlarını değiştir"</string>
-    <string name="photo_view_placeholder_image" msgid="465734985000555852">"Öğe şu anda kullanılamıyor. Lütfen yenileyin."</string>
-    <string name="photo_network_error" msgid="6545183306958652345">"Fotoğraf şu anda kullanılamaz."</string>
-    <string name="loading_photo" msgid="6784297653634402137">"Yükleniyor…"</string>
-    <string name="post_operation_pending" msgid="1312168212880219407">"Gönderiliyor…"</string>
-    <string name="download_photo_retry" msgid="1894223549069749239">"Bu resim indirilemeyecek kadar büyük. Daha düşük çözünürlükte hazırlanmış bir kopyasını indirmek ister misiniz?"</string>
-    <string name="download_photo_error" msgid="7511376299526085797">"Fotoğraf cihaza kaydedilemedi."</string>
-    <string name="yes" msgid="7474216525286833848">"Evet"</string>
-    <string name="no" msgid="427548507197604096">"Hayır"</string>
-    <string name="camera_photo_error" msgid="653424229752191252">"Fotoğraf bulunamıyor."</string>
-    <string name="photo_view_count" msgid="1568865177363028519">"<xliff:g id="CURRENT_POS">%d</xliff:g> / <xliff:g id="COUNT">%d</xliff:g>"</string>
-    <string name="truncated_info" msgid="4901078975545890098">"..."</string>
-    <string name="truncated_info_see_more" msgid="2068973974507128729">" Devamı »"</string>
-    <string name="posted_just_now" msgid="7872790861965011674">"Az önce"</string>
-  <plurals name="num_minutes_ago">
-    <item quantity="one" msgid="4750191148321568233">"<xliff:g id="COUNT">%d</xliff:g> dk."</item>
-    <item quantity="other" msgid="4976118461634588647">"<xliff:g id="COUNT">%d</xliff:g> dk."</item>
-  </plurals>
-  <plurals name="num_hours_ago">
-    <item quantity="one" msgid="2178354472031148118">"<xliff:g id="COUNT">%d</xliff:g> saat"</item>
-    <item quantity="other" msgid="1470820825143524326">"<xliff:g id="COUNT">%d</xliff:g> saat"</item>
-  </plurals>
-  <plurals name="num_days_ago">
-    <item quantity="one" msgid="5538890823169916595">"<xliff:g id="COUNT">%d</xliff:g> gün"</item>
-    <item quantity="other" msgid="2756574969735638578">"<xliff:g id="COUNT">%d</xliff:g> gün"</item>
-  </plurals>
-    <string name="dialog_inserting_camera_photo" msgid="2711654208680211224">"Fotoğraf ekleniyor..."</string>
+    <string name="photo_load_failed" msgid="8811324070219403896">"Resim yüklenemedi"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Seçim birden fazla hesap içerdiğinden taşınamıyor."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
