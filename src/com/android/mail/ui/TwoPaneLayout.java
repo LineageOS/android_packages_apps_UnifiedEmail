@@ -94,6 +94,8 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     private boolean mAnimatingFade;
 
     private Context mContext;
+    private AbstractActivityController mController;
+
     private int mConversationLeft;
 
     private View mConversationListContainer;
@@ -163,6 +165,13 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
             mAnimatingFade = false;
             mOutstandingAnimator = null;
             destroyBitmaps();
+
+            if (mController.isDestroyed()) {
+                // quit early if the hosting activity was destroyed before the animation finished
+                LogUtils.i(LOG_TAG, "IN TPL.onAnimationEnd, activity destroyed->quitting early");
+                return;
+            }
+
             // Now close the animation depending on the type of animator selected.
             switch (listener_type) {
                 case CONVERSATION_LIST:
@@ -463,16 +472,14 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
                 .leftMargin;
     }
 
-    public void initializeLayout(Context context) {
-        initializeLayout(context, false);
-    }
-
     /**
      * Initializes the layout with a specific context.
      */
     @VisibleForTesting
-    public void initializeLayout(Context context, boolean isSearchResult) {
+    public void initializeLayout(Context context, AbstractActivityController controller,
+            boolean isSearchResult) {
         mContext = context;
+        mController = controller;
         mIsSearchResult = isSearchResult;
 
         Resources res = getResources();

@@ -136,7 +136,7 @@ public final class TwoPaneController extends AbstractActivityController {
             // We need the layout for everything. Crash early if it is null.
             LogUtils.wtf(LOG_TAG, "mLayout is null!");
         }
-        mLayout.initializeLayout(mActivity.getApplicationContext(),
+        mLayout.initializeLayout(mActivity.getApplicationContext(), this,
                 Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
 
         // The tablet layout needs to refer to mode changes.
