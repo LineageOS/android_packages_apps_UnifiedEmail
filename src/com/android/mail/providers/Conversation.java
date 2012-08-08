@@ -129,6 +129,10 @@ public class Conversation implements Parcelable {
      * @see UIProvider.ConversationColumns#CONVERSATION_INFO
      */
     public ConversationInfo conversationInfo;
+    /**
+     * @see UIProvider.ConversationColumns#CONVERSATION_INFO
+     */
+    public Uri conversationBaseUri;
 
     // Used within the UI to indicate the adapter position of this conversation
     public transient int position;
@@ -180,6 +184,7 @@ public class Conversation implements Parcelable {
         dest.writeInt(color);
         dest.writeParcelable(accountUri, 0);
         dest.writeString(ConversationInfo.toString(conversationInfo));
+        dest.writeParcelable(conversationBaseUri, 0);
     }
 
     private Conversation(Parcel in) {
@@ -208,6 +213,7 @@ public class Conversation implements Parcelable {
         position = NO_POSITION;
         localDeleteOnUpdate = false;
         conversationInfo = ConversationInfo.fromString(in.readString());
+        conversationBaseUri = in.readParcelable(null);
     }
 
     @Override
@@ -267,6 +273,10 @@ public class Conversation implements Parcelable {
             localDeleteOnUpdate = false;
             conversationInfo = ConversationInfo.fromString(cursor
                     .getString(UIProvider.CONVERSATION_INFO_COLUMN));
+            final String conversationBase =
+                    cursor.getString(UIProvider.CONVERSATION_BASE_URI_COLUMN);
+            conversationBaseUri = !TextUtils.isEmpty(conversationBase) ?
+                    Uri.parse(conversationBase) : null;
             if (conversationInfo == null) {
                 snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
                 senders = emptyIfNull(cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN));
@@ -283,7 +293,8 @@ public class Conversation implements Parcelable {
             String snippet, boolean hasAttachment, Uri messageListUri, String senders,
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
             boolean starred, String rawFolders, int convFlags, int personalLevel, boolean spam,
-            boolean phishing, boolean muted, Uri accountUri, ConversationInfo conversationInfo) {
+            boolean phishing, boolean muted, Uri accountUri, ConversationInfo conversationInfo,
+            Uri conversationBase) {
 
         final Conversation conversation = new Conversation();
 
@@ -310,6 +321,7 @@ public class Conversation implements Parcelable {
         conversation.color = 0;
         conversation.accountUri = accountUri;
         conversation.conversationInfo = conversationInfo;
+        conversation.conversationBaseUri = conversationBase;
         return conversation;
     }
 
