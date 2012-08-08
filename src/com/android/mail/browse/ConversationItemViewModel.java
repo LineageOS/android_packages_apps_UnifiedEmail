@@ -234,8 +234,7 @@ public class ConversationItemViewModel {
      * Returns the layout hashcode to compare to see if the layout state has changed.
      */
     private int getLayoutHashCode() {
-        return mDataHashCode ^ viewWidth ^ standardScaledDimen
-                ^ Boolean.valueOf(checkboxVisible).hashCode();
+        return Objects.hashCode(mDataHashCode, viewWidth, standardScaledDimen, checkboxVisible);
     }
 
     private Object getConvInfo() {
