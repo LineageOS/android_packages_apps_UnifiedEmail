@@ -326,8 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Ši paskyra nenustatyta automatiškai sinchronizuoti."\n"Jei norite vieną kartą sinchronizuoti paštą, palieskite "<b>"Sinch. dabar"</b>" arba palieskite "<b>"Keisti sinchronizavimo nustat."</b>", kad nustatytumėte šią paskyrą automatiškai sinchronizuoti paštą."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Sinch. dabar"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Keisti sinchronizavimo nustat."</string>
-    <!-- no translation found for photo_load_failed (8811324070219403896) -->
-    <skip />
+    <string name="photo_load_failed" msgid="8811324070219403896">"Nepavyko įkelti vaizdo"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Negalima perkelti, nes pasirinktos kelios paskyros."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
