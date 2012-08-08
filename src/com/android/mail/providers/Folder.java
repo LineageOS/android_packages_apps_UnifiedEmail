@@ -591,6 +591,13 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
+     * Returns a boolean indicating whether this Folder object has been initialized
+     */
+    public boolean isInitialized() {
+        return name != FOLDER_UNINITIALIZED;
+    }
+
+    /**
      * Returns a collection of a single folder. This method always returns a valid collection
      * even if the input folder is null.
      * @param in a folder, possibly null.
