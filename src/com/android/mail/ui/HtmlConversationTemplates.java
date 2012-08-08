@@ -187,13 +187,15 @@ public class HtmlConversationTemplates {
         mInProgress = true;
     }
 
-    public String endConversation(String baseUri, int viewWidth, int viewportWidth) {
+    public String endConversation(String docBaseUri, String conversationBaseUri, int viewWidth,
+            int viewportWidth) {
         if (!mInProgress) {
             throw new IllegalStateException("must call startConversation first");
         }
 
         append(sConversationLower, mContext.getString(R.string.hide_elided),
-                mContext.getString(R.string.show_elided), baseUri, viewWidth, viewportWidth);
+                mContext.getString(R.string.show_elided), docBaseUri, conversationBaseUri,
+                viewWidth, viewportWidth);
 
         mInProgress = false;
 

@@ -29,6 +29,7 @@ import android.database.Cursor;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Browser;
@@ -40,6 +41,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -240,6 +243,13 @@ public final class ConversationViewFragment extends Fragment implements
         mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(activity));
 
         showConversation();
+
+        if (mConversation.conversationBaseUri != null &&
+                !TextUtils.isEmpty(mConversation.conversationCookie)) {
+            // Set the cookie for this base url
+            new SetCookieTask(mConversation.conversationBaseUri.toString(),
+                    mConversation.conversationCookie).execute();
+        }
     }
 
     @Override
@@ -251,10 +261,9 @@ public final class ConversationViewFragment extends Fragment implements
         mAccount = args.getParcelable(ARG_ACCOUNT);
         mConversation = args.getParcelable(ARG_CONVERSATION);
         mFolder = args.getParcelable(ARG_FOLDER);
-        // If the provider has specified a base uri to be used, use that one.
-        mBaseUri = mConversation.conversationBaseUri != null ?
-                mConversation.conversationBaseUri.toString() :
-                "x-thread://" + mAccount.name + "/" + mConversation.id;
+        // Since the uri specified in the conversation base uri may not be unique, we specify a
+        // base uri that us guaranteed to be unique for this conversation.
+        mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
 
         // Not really, we just want to get a crack to store a reference to the change_folder item
         setHasOptionsMenu(true);
@@ -600,7 +609,11 @@ public final class ConversationViewFragment extends Fragment implements
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
 
-        return mTemplates.endConversation(mBaseUri, 320, mWebView.getViewportWidth());
+        // If the conversation has specified a base uri, use it here, use mBaseUri
+        final String conversationBaseUri = mConversation.conversationBaseUri != null ?
+                mConversation.conversationBaseUri.toString() : mBaseUri;
+        return mTemplates.endConversation(mBaseUri, conversationBaseUri, 320,
+                mWebView.getViewportWidth());
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
@@ -1172,4 +1185,22 @@ public final class ConversationViewFragment extends Fragment implements
         return mAccount.settings;
     }
 
+    private class SetCookieTask extends AsyncTask<Void, Void, Void> {
+        final String mUri;
+        final String mCookie;
+
+        SetCookieTask(String uri, String cookie) {
+            mUri = uri;
+            mCookie = cookie;
+        }
+
+        @Override
+        public Void doInBackground(Void... args) {
+            final CookieSyncManager csm =
+                CookieSyncManager.createInstance(mContext);
+            CookieManager.getInstance().setCookie(mUri, mCookie);
+            csm.sync();
+            return null;
+        }
+    }
 }
