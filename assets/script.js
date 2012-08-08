@@ -105,14 +105,12 @@ function hideUnsafeImages() {
  */
 function rewriteRelativeImageSrc(imgElement) {
     var src = imgElement.src;
-    if (src.indexOf(ACCOUNT_URI) == 0) {
-        var questionPos = src.indexOf('?');
-        if (ACCOUNT_URI.indexOf('content://') == 0 && questionPos != -1) {
-            // For some reason, when webview makes a content provider openFile call the query
-            // parameters are removed.  Instead, replace the '?' with '/'
-            src = src.substring(0, questionPos) + "/" + src.substring(questionPos + 1);
-            imgElement.src = src;
-        }
+
+    // DOC_BASE_URI will always be a unique x-thread:// uri for this particular conversation
+    if (src.indexOf(DOC_BASE_URI) == 0 && (DOC_BASE_URI != CONVERSATION_BASE_URI)) {
+        // The conversation specifies a different base uri than the document
+        src = CONVERSATION_BASE_URI + src.substring(DOC_BASE_URI.length);
+        imgElement.src = src;
     }
 };
 
