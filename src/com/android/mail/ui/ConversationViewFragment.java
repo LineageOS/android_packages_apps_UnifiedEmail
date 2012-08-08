@@ -463,8 +463,8 @@ public final class ConversationViewFragment extends Fragment implements
      * a folder. This will initiate a data load, and hence must be called on the UI thread.
      */
     private void showConversation() {
-        final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING
-                || (mConversation.getNumMessages() > mMaxAutoLoadMessages);
+        final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING ||
+                (mConversation.isRemote || mConversation.getNumMessages() > mMaxAutoLoadMessages);
         if (!mUserVisible && disableOffscreenLoading) {
             LogUtils.v(LOG_TAG, "Fragment not user-visible, not showing conversation: %s",
                     mConversation.uri);
@@ -1163,7 +1163,7 @@ public final class ConversationViewFragment extends Fragment implements
             mMarkReadObserver = null;
             LogUtils.i(LOG_TAG, "running deferred conv mark read on open, id=%d", mConversation.id);
             mListController.markConversationsRead(Arrays.asList(mConversation),
-                    true /* viewed */, true /* read */);
+                    true /* read */, true /* viewed */);
         }
     }
 

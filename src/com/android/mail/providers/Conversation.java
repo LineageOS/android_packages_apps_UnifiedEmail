@@ -133,6 +133,10 @@ public class Conversation implements Parcelable {
      * @see UIProvider.ConversationColumns#CONVERSATION_INFO
      */
     public Uri conversationBaseUri;
+    /**
+     * @see UIProvider.ConversationColumns#REMOTE
+     */
+    public boolean isRemote;
 
     // Used within the UI to indicate the adapter position of this conversation
     public transient int position;
@@ -166,15 +170,15 @@ public class Conversation implements Parcelable {
         dest.writeString(subject);
         dest.writeLong(dateMs);
         dest.writeString(snippet);
-        dest.writeByte(hasAttachments ? (byte) 1 : 0);
+        dest.writeInt(hasAttachments ? 1 : 0);
         dest.writeParcelable(messageListUri, 0);
         dest.writeString(senders);
         dest.writeInt(numMessages);
         dest.writeInt(numDrafts);
         dest.writeInt(sendingState);
         dest.writeInt(priority);
-        dest.writeByte(read ? (byte) 1 : 0);
-        dest.writeByte(starred ? (byte) 1 : 0);
+        dest.writeInt(read ? 1 : 0);
+        dest.writeInt(starred ? 1 : 0);
         dest.writeString(rawFolders);
         dest.writeInt(convFlags);
         dest.writeInt(personalLevel);
@@ -185,6 +189,7 @@ public class Conversation implements Parcelable {
         dest.writeParcelable(accountUri, 0);
         dest.writeString(ConversationInfo.toString(conversationInfo));
         dest.writeParcelable(conversationBaseUri, 0);
+        dest.writeInt(isRemote ? 1 : 0);
     }
 
     private Conversation(Parcel in) {
@@ -193,15 +198,15 @@ public class Conversation implements Parcelable {
         subject = in.readString();
         dateMs = in.readLong();
         snippet = in.readString();
-        hasAttachments = (in.readByte() != 0);
+        hasAttachments = (in.readInt() != 0);
         messageListUri = in.readParcelable(null);
         senders = emptyIfNull(in.readString());
         numMessages = in.readInt();
         numDrafts = in.readInt();
         sendingState = in.readInt();
         priority = in.readInt();
-        read = (in.readByte() != 0);
-        starred = (in.readByte() != 0);
+        read = (in.readInt() != 0);
+        starred = (in.readInt() != 0);
         rawFolders = in.readString();
         convFlags = in.readInt();
         personalLevel = in.readInt();
@@ -214,6 +219,7 @@ public class Conversation implements Parcelable {
         localDeleteOnUpdate = false;
         conversationInfo = ConversationInfo.fromString(in.readString());
         conversationBaseUri = in.readParcelable(null);
+        isRemote = in.readInt() != 0;
     }
 
     @Override
@@ -283,6 +289,7 @@ public class Conversation implements Parcelable {
                 numMessages = cursor.getInt(UIProvider.CONVERSATION_NUM_MESSAGES_COLUMN);
                 numDrafts = cursor.getInt(UIProvider.CONVERSATION_NUM_DRAFTS_COLUMN);
             }
+            isRemote = cursor.getInt(UIProvider.CONVERSATION_REMOTE_COLUMN) != 0;
         }
     }
 
@@ -294,7 +301,7 @@ public class Conversation implements Parcelable {
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
             boolean starred, String rawFolders, int convFlags, int personalLevel, boolean spam,
             boolean phishing, boolean muted, Uri accountUri, ConversationInfo conversationInfo,
-            Uri conversationBase) {
+            Uri conversationBase, boolean isRemote) {
 
         final Conversation conversation = new Conversation();
 
@@ -322,6 +329,7 @@ public class Conversation implements Parcelable {
         conversation.accountUri = accountUri;
         conversation.conversationInfo = conversationInfo;
         conversation.conversationBaseUri = conversationBase;
+        conversation.isRemote = isRemote;
         return conversation;
     }
 
@@ -398,7 +406,7 @@ public class Conversation implements Parcelable {
      * Returns true if the URI of the conversation specified as the needle was
      * found in the collection of conversations specified as the haystack. False
      * otherwise. This method is safe to call with null arguments.
-     * 
+     *
      * @param haystack
      * @param needle
      * @return true if the needle was found in the haystack, false otherwise.
@@ -424,7 +432,7 @@ public class Conversation implements Parcelable {
     /**
      * Returns a collection of a single conversation. This method always returns
      * a valid collection even if the input conversation is null.
-     * 
+     *
      * @param in a conversation, possibly null.
      * @return a collection of the conversation.
      */
