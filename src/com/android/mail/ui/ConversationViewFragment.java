@@ -251,7 +251,10 @@ public final class ConversationViewFragment extends Fragment implements
         mAccount = args.getParcelable(ARG_ACCOUNT);
         mConversation = args.getParcelable(ARG_CONVERSATION);
         mFolder = args.getParcelable(ARG_FOLDER);
-        mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
+        // If the provider has specified a base uri to be used, use that one.
+        mBaseUri = mConversation.conversationBaseUri != null ?
+                mConversation.conversationBaseUri.toString() :
+                "x-thread://" + mAccount.name + "/" + mConversation.id;
 
         // Not really, we just want to get a crack to store a reference to the change_folder item
         setHasOptionsMenu(true);

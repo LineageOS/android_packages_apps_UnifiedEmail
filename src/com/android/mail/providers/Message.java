@@ -30,9 +30,18 @@ import com.android.mail.utils.Utils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 public class Message implements Parcelable {
+    /**
+     * Regex pattern used to look for any inline images in message bodies, including Gmail-hosted
+     * relative-URL images, Gmail emoticons, and any external inline images (although we usually
+     * count on the server to detect external images).
+     */
+    private static Pattern INLINE_IMAGE_PATTERN = Pattern.compile("<img\\s+[^>]*src=",
+            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+
     /**
      * @see BaseColumns#_ID
      */
@@ -422,7 +431,12 @@ public class Message implements Parcelable {
      * @return true if a "Show Pictures" button should appear.
      */
     public boolean shouldShowImagePrompt() {
-        return embedsExternalResources && !alwaysShowImages;
+        return !alwaysShowImages && embedsExternalResources();
+    }
+
+    private boolean embedsExternalResources() {
+        return embedsExternalResources ||
+                (!TextUtils.isEmpty(bodyHtml) && INLINE_IMAGE_PATTERN.matcher(bodyHtml).find());
     }
 
     /**
