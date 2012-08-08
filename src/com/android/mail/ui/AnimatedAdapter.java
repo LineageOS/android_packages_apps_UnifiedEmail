@@ -76,7 +76,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     };
 
     private final ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
-    private ViewMode mViewMode;
     private View mFooter;
     private boolean mShowFooter;
     private Folder mFolder;
@@ -87,19 +86,20 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private LeaveBehindItem mLeaveBehindItem;
     /** True if priority inbox markers are enabled, false otherwise. */
     private final boolean mPriorityMarkersEnabled;
+    private ControllableActivity mActivity;
     /**
      * Used only for debugging.
      */
     private static final String LOG_TAG = LogTag.getLogTag();
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
-            ConversationSelectionSet batch, Account account, Settings settings, ViewMode viewMode,
-            SwipeableListView listView) {
+            ConversationSelectionSet batch, Account account, Settings settings,
+            ControllableActivity activity, SwipeableListView listView) {
         super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
         mAccount = account;
-        mViewMode = viewMode;
+        mActivity = activity;
         mShowFooter = false;
         mListView = listView;
         mCachedSettings = settings;
@@ -145,7 +145,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (! (view instanceof SwipeableConversationItemView)) {
             return;
         }
-        ((SwipeableConversationItemView) view).bind(cursor, mViewMode, mBatchConversations, mFolder,
+        ((SwipeableConversationItemView) view).bind(cursor, mActivity, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
                         mSwipeEnabled, mPriorityMarkersEnabled, this);
     }
@@ -257,7 +257,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             Conversation conv = new Conversation((ConversationCursor) getItem(position));
             if(isPositionFadeLeaveBehind(conv)) {
                 LeaveBehindItem fade  = getFadeLeaveBehindItem(position, conv);
-                fade.startAnimation(mViewMode, this);
+                fade.startAnimation(mActivity.getViewMode(), this);
                 return fade;
             }
         }
@@ -381,7 +381,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         // Destroying a conversation just shows a blank shrinking item.
         final AnimatingItemView view = new AnimatingItemView(mContext);
         view.setData(conversation);
-        view.startAnimation(mViewMode, this);
+        view.startAnimation(mActivity.getViewMode(), this);
         return view;
     }
 
@@ -393,10 +393,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         // had been destroyed.
         final SwipeableConversationItemView convView = (SwipeableConversationItemView) super
                 .getView(position, null, parent);
-        convView.bind(conversation, mViewMode, mBatchConversations, mFolder,
+        convView.bind(conversation, mActivity, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false, mSwipeEnabled,
                 mPriorityMarkersEnabled, this);
-        convView.startUndoAnimation(mListView.getSwipeActionText(), mViewMode, this, swipe);
+        convView.startUndoAnimation(mListView.getSwipeActionText(), mActivity.getViewMode(), this,
+                swipe);
         return convView;
     }
 

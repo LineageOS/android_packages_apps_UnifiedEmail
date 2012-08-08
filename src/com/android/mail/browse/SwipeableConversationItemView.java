@@ -29,6 +29,7 @@ import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.AnimatedAdapter;
+import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ViewMode;
 
@@ -77,17 +78,17 @@ public class SwipeableConversationItemView extends FrameLayout {
         return mConversationItemView;
     }
 
-    public void bind(Conversation conversation, ViewMode viewMode, ConversationSelectionSet set,
-            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
-            boolean priorityArrowsEnabled, AnimatedAdapter animatedAdapter) {
-        mConversationItemView.bind(conversation, viewMode, set, folder, checkboxesDisabled,
+    public void bind(Conversation conversation, ControllableActivity activity,
+            ConversationSelectionSet set, Folder folder, boolean checkboxesDisabled,
+            boolean swipeEnabled, boolean priorityArrowsEnabled, AnimatedAdapter animatedAdapter) {
+        mConversationItemView.bind(conversation, activity, set, folder, checkboxesDisabled,
                 swipeEnabled, priorityArrowsEnabled, animatedAdapter);
     }
 
-    public void bind(Cursor cursor, ViewMode viewMode, ConversationSelectionSet set, Folder folder,
-            boolean checkboxesDisabled, boolean swipeEnabled, boolean priorityArrowsEnabled,
-            AnimatedAdapter animatedAdapter) {
-        mConversationItemView.bind(cursor, viewMode, set, folder, checkboxesDisabled, swipeEnabled,
+    public void bind(Cursor cursor, ControllableActivity activity, ConversationSelectionSet set,
+            Folder folder, boolean checkboxesDisabled, boolean swipeEnabled,
+            boolean priorityArrowsEnabled, AnimatedAdapter animatedAdapter) {
+        mConversationItemView.bind(cursor, activity, set, folder, checkboxesDisabled, swipeEnabled,
                 priorityArrowsEnabled, animatedAdapter);
     }
 
