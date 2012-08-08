@@ -769,7 +769,8 @@ public class UIProvider {
         ConversationColumns.COLOR,
         ConversationColumns.ACCOUNT_URI,
         ConversationColumns.SENDER_INFO,
-        ConversationColumns.CONVERSATION_BASE_URI
+        ConversationColumns.CONVERSATION_BASE_URI,
+        ConversationColumns.REMOTE
     };
 
     // These column indexes only work when the caller uses the
@@ -798,7 +799,7 @@ public class UIProvider {
     public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 21;
     public static final int CONVERSATION_SENDER_INFO_COLUMN = 22;
     public static final int CONVERSATION_BASE_URI_COLUMN = 23;
-    public static final int CONVERSATION_VIEWED_COLUMN = 24;
+    public static final int CONVERSATION_REMOTE_COLUMN = 24;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -949,12 +950,17 @@ public class UIProvider {
          */
         public static final String ACCOUNT_URI = "accountUri";
         /**
+         * This int column indicates whether a conversation is remote (non-local), and would require
+         * a network fetch to load.
+         */
+        public static final String REMOTE = "remote";
+        /**
          * This int column indicates whether the conversation was displayed on the UI and the
          * user got a chance to read it. The UI does not read this value, it is meant only to
          * write the status back to the provider. As a result, it is not available in the
          * {@link Conversation} object.
          */
-        public static String VIEWED = "viewed";
+        public static final String VIEWED = "viewed";
 
         /**
          * This String column contains the base uri for this conversation.  This uri can be used
