@@ -17,8 +17,6 @@
 
 package com.android.mail.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -320,7 +318,8 @@ public class SwipeableListView extends ListView implements Callback {
             // We made it up to the window without find this list view
             return INVALID_POSITION;
         } catch (NullPointerException e) {
-            LogUtils.e(LOG_TAG, e, "WHAT HAS NO PARENT " + (v != null ? v.getClass() : null));
+            LogUtils.e(LOG_TAG, e, "WHAT HAS NO PARENT "
+                    + (listItem != null ? listItem.getClass() : null));
             return INVALID_POSITION;
         }
         return super.getPositionForView(view);
@@ -329,26 +328,23 @@ public class SwipeableListView extends ListView implements Callback {
     /**
      * Archive items using the swipe away animation before shrinking them away.
      */
-    public void destroyItems(ArrayList<ConversationItemView> views,
+    public void destroyItems(final ArrayList<ConversationItemView> views,
             final DestructiveAction listener) {
         if (views == null || views.size() == 0) {
             return;
         }
+        // Need to find the items in the LIST!
         final ArrayList<Conversation> conversations = new ArrayList<Conversation>();
         for (ConversationItemView view : views) {
             Conversation conv = view.getConversation();
-            conv.position = view.getParent() != null ? getPositionForView(view) : -1;
+            conv.position = conv.position == -1 && view.getParent() != null ?
+                    getPositionForView(view) : conv.position;
             conversations.add(conv);
         }
-        mSwipeHelper.dismissChildren(views.get(0), views, new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                AnimatedAdapter adapter = getAnimatedAdapter();
-                if (adapter != null) {
-                    adapter.delete(conversations, listener);
-                }
-            }
-        });
+        AnimatedAdapter adapter = getAnimatedAdapter();
+        if (adapter != null) {
+            adapter.delete(conversations, listener);
+        }
     }
 
     private AnimatedAdapter getAnimatedAdapter() {
