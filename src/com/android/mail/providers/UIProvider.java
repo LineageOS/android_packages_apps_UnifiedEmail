@@ -770,6 +770,7 @@ public class UIProvider {
         ConversationColumns.ACCOUNT_URI,
         ConversationColumns.SENDER_INFO,
         ConversationColumns.CONVERSATION_BASE_URI,
+        ConversationColumns.CONVERSATION_COOKIE,
         ConversationColumns.REMOTE
     };
 
@@ -799,7 +800,8 @@ public class UIProvider {
     public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 21;
     public static final int CONVERSATION_SENDER_INFO_COLUMN = 22;
     public static final int CONVERSATION_BASE_URI_COLUMN = 23;
-    public static final int CONVERSATION_REMOTE_COLUMN = 24;
+    public static final int CONVERSATION_COOKIE_COLUMN = 24;
+    public static final int CONVERSATION_REMOTE_COLUMN = 25;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -961,12 +963,17 @@ public class UIProvider {
          * {@link Conversation} object.
          */
         public static final String VIEWED = "viewed";
-
         /**
          * This String column contains the base uri for this conversation.  This uri can be used
          * when handling relative urls in the message content
          */
         public static final String CONVERSATION_BASE_URI = "conversationBaseUri";
+        /**
+         * This String column contains the cookie needed for accessing inline content.  The cookie
+         * specified here will be set on the uri specified in the {@link CONVERSATION_BASE_URI}
+         * column.
+         */
+        public static final String CONVERSATION_COOKIE = "conversationCookie";
 
         private ConversationColumns() {
         }
