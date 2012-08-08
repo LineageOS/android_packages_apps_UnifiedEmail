@@ -33,7 +33,6 @@ import com.android.mail.utils.Utils;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -45,12 +44,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Looper;
 import android.support.v4.app.TaskStackBuilder;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.TextUtils.TruncateAt;
 import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
@@ -418,11 +414,11 @@ public class WidgetService extends RemoteViewsService {
         private SpannableStringBuilder ellipsizeStyledSenders(ConversationInfo info, int maxChars,
                 SpannableString[] styledSenders) {
             SpannableStringBuilder builder = new SpannableStringBuilder();
-            boolean ellipsize = false;
             SpannableString prevSender = null;
             for (SpannableString sender : styledSenders) {
-                if (ellipsize) {
-                    break;
+                if (sender == null) {
+                    LogUtils.e(LOG_TAG, "null sender while iterating over styledSenders");
+                    continue;
                 }
                 CharacterStyle[] spans = sender.getSpans(0, sender.length(), CharacterStyle.class);
                 if (SendersView.sElidedString.equals(sender.toString())) {

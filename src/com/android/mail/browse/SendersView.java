@@ -21,7 +21,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.text.Html;
@@ -33,8 +32,6 @@ import android.text.style.CharacterStyle;
 import android.text.style.TextAppearanceSpan;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
-import android.util.AttributeSet;
-import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Address;
