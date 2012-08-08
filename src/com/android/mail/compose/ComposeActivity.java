@@ -799,18 +799,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void findViews() {
-        LayoutTransition transition =
-                ((ViewGroup) findViewById(R.id.content)).getLayoutTransition();
-        transition.enableTransitionType(LayoutTransition.CHANGING);
-        long delay = transition.getDuration(LayoutTransition.DISAPPEARING);
-        transition.setStartDelay(LayoutTransition.CHANGING, delay);
-
         mCcBccButton = (Button) findViewById(R.id.add_cc_bcc);
         if (mCcBccButton != null) {
             mCcBccButton.setOnClickListener(this);
         }
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
+        LayoutTransition transition =
+                ((ViewGroup) findViewById(R.id.content)).getLayoutTransition();
+        mAttachmentsView.setComposeLayoutTransition(transition);
         mAttachmentsButton = (ImageView) findViewById(R.id.add_attachment);
         if (mAttachmentsButton != null) {
             mAttachmentsButton.setOnClickListener(this);
