@@ -254,6 +254,10 @@
     <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="TOTAL">%2$s</xliff:g> में से <xliff:g id="COUNT">%1$s</xliff:g>"</string>
     <string name="conversation_newer" msgid="7381341099165809801">"नए"</string>
     <string name="conversation_older" msgid="6384287019562069353">"पुराने"</string>
+    <!-- no translation found for new_incoming_messages:one (8778057959289554701) -->
+    <!-- no translation found for new_incoming_messages:other (6738671955116853198) -->
+    <!-- no translation found for show (7114006150083237343) -->
+    <skip />
     <string name="expand_recipient_details" msgid="2266544827446346880">"प्राप्तकर्ता जानकारी विस्तृत करें"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"प्राप्तकर्ता जानकारी संक्षिप्त करें"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"<xliff:g id="NAME">%1$s</xliff:g> की संपर्क जानकारी दिखाएं"</string>
