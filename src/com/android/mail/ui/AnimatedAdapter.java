@@ -271,19 +271,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 return v;
             }
         }
-        // TODO: do this in the swipe helper?
-        // If this view gets recycled, we need to reset things set by the
-        // animation.
-        if (convertView != null) {
-            if (convertView.getAlpha() < 1) {
-                convertView.setAlpha(1);
-            }
-            if (convertView.getTranslationX() != 0) {
-                convertView.setTranslationX(0);
-            }
-            if (convertView instanceof SwipeableConversationItemView) {
-                ((SwipeableConversationItemView)convertView).reset();
-            }
+        if (!(convertView instanceof SwipeableConversationItemView)) {
+            convertView = null;
+        } else if (convertView != null) {
+            ((SwipeableConversationItemView) convertView).reset();
         }
         View v = super.getView(position, convertView, parent);
         if (v == null) {
