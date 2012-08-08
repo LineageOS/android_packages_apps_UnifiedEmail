@@ -522,7 +522,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private void updateFolder(Folder folder) {
         // Start watching folder for sync status.
         boolean wasNull = mFolder == null;
-        if (folder != null && !folder.equals(mFolder)) {
+        if (folder != null && !folder.equals(mFolder) && folder.isInitialized()) {
             LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
             final LoaderManager lm = mActivity.getLoaderManager();
             mFolder = folder;
@@ -549,6 +549,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 // for the newly selected folder
                 lm.restartLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
             }
+        } else if (!folder.isInitialized()) {
+            LogUtils.e(LOG_TAG, new Error(), "Uninitialized Folder in setFolder");
         } else if (folder == null) {
             LogUtils.wtf(LOG_TAG, "Folder in setFolder is null");
         }
