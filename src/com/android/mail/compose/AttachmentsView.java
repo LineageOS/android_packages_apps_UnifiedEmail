@@ -15,6 +15,8 @@
  */
 package com.android.mail.compose;
 
+import android.animation.LayoutTransition;
+import android.animation.LayoutTransition.TransitionListener;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -52,7 +54,7 @@ import java.util.ArrayList;
 /*
  * View for displaying attachments in the compose screen.
  */
-class AttachmentsView extends LinearLayout implements OnClickListener {
+class AttachmentsView extends LinearLayout implements OnClickListener, TransitionListener {
     private static final String LOG_TAG = LogTag.getLogTag();
 
     private final Resources mResources;
@@ -64,8 +66,10 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
     private GridLayout mCollapseLayout;
     private TextView mCollapseText;
     private ImageView mCollapseCaret;
+    private LayoutTransition mComposeLayoutTransition;
 
     private boolean mIsExpanded;
+    private long mChangingDelay;
 
     public AttachmentsView(Context context) {
         this(context, null);
@@ -96,9 +100,13 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
             case R.id.attachment_collapse_view:
                 if (mIsExpanded) {
                     collapseView();
+                    mComposeLayoutTransition.setStartDelay(
+                            LayoutTransition.CHANGING, mChangingDelay);
                 } else {
                     expandView();
+                    mComposeLayoutTransition.setStartDelay(LayoutTransition.CHANGING, 0l);
                 }
+                mComposeLayoutTransition.enableTransitionType(LayoutTransition.CHANGING);
                 break;
         }
     }
@@ -197,6 +205,14 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
     @VisibleForTesting
     protected void deleteAttachment(final View attachmentView,
             final Attachment attachment) {
+        mComposeLayoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        mComposeLayoutTransition.setStartDelay(
+                LayoutTransition.CHANGING, mChangingDelay);
+        final LayoutTransition transition = getLayoutTransition();
+        transition.enableTransitionType(LayoutTransition.CHANGING);
+        transition.setStartDelay(LayoutTransition.CHANGING, mChangingDelay);
+        transition.addTransitionListener(this);
+
         mAttachments.remove(attachment);
         ((ViewGroup) attachmentView.getParent()).removeView(attachmentView);
         if (mChangeListener != null) {
@@ -208,6 +224,26 @@ class AttachmentsView extends LinearLayout implements OnClickListener {
         } else {
             setupCollapsibleView(true);
         }
+    }
+
+    public void setComposeLayoutTransition(LayoutTransition transition) {
+        mComposeLayoutTransition = transition;
+        mComposeLayoutTransition.addTransitionListener(this);
+        mChangingDelay =
+                mComposeLayoutTransition.getDuration(LayoutTransition.DISAPPEARING);
+    }
+
+    @Override
+    public void startTransition(LayoutTransition transition, ViewGroup container, View view,
+            int transitionType) {
+        /* Do nothing */
+    }
+
+    @Override
+    public void endTransition(LayoutTransition transition, ViewGroup container, View view,
+            int transitionType) {
+        transition.disableTransitionType(LayoutTransition.CHANGING);
+        transition.setStartDelay(LayoutTransition.CHANGING, 0l);
     }
 
     /**
