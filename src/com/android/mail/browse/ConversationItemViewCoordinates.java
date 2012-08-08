@@ -439,7 +439,7 @@ public class ConversationItemViewCoordinates {
     public static int getMinHeight(Context context, ViewMode viewMode) {
         int mode = ConversationItemViewCoordinates.getMode(context, viewMode);
         return context.getResources().getDimensionPixelSize(
-                mode == WIDE_MODE ? R.dimen.conversation_item_height
-                        : R.dimen.conversation_item_height_wide);
+                mode == WIDE_MODE ?
+                        R.dimen.conversation_item_height_wide : R.dimen.conversation_item_height);
     }
 }
