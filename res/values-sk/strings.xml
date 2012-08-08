@@ -326,8 +326,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Tento účet nie je nastavený na automatickú synchronizáciu."\n"Ak chcete synchronizovať e-maily jednorazovo, dotknite sa položky "<b>"Synchronizovať"</b>". Ak chcete nastaviť, aby účet synchronizoval e-maily automaticky, dotknite sa položky "<b>"Zmeniť nastavenia synchronizácie"</b>"."</string>
     <string name="manual_sync" msgid="6743983544685622800">"Synchroniz."</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Zmeniť nastav. synchronizácie"</string>
-    <!-- no translation found for photo_load_failed (8811324070219403896) -->
-    <skip />
+    <string name="photo_load_failed" msgid="8811324070219403896">"Obrázok sa nepodarilo načítať"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Presun nie je možné uskutočniť, pretože vybraté správy pochádzajú z rôznych účtov."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
