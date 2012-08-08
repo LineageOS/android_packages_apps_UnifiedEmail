@@ -159,6 +159,8 @@ public abstract class AbstractActivityController implements ActivityController {
     protected boolean isLoaderInitialized = false;
     private AsyncRefreshTask mAsyncRefreshTask;
 
+    private boolean mDestroyed;
+
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected ConversationCursor mConversationListCursor;
     private final DataSetObservable mConversationListObservable = new DataSetObservable() {
@@ -1053,6 +1055,8 @@ public abstract class AbstractActivityController implements ActivityController {
         // unregister the ViewPager's observer on the conversation cursor
         mPagerController.onDestroy();
         mActionBarView.onDestroy();
+
+        mDestroyed = true;
     }
 
     /**
@@ -1076,6 +1080,10 @@ public abstract class AbstractActivityController implements ActivityController {
         if (newMode != ViewMode.CONVERSATION) {
             mActivity.invalidateOptionsMenu();
         }
+    }
+
+    public boolean isDestroyed() {
+        return mDestroyed;
     }
 
     private void commitDestructiveActions() {
