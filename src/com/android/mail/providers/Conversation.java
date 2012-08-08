@@ -130,9 +130,13 @@ public class Conversation implements Parcelable {
      */
     public ConversationInfo conversationInfo;
     /**
-     * @see UIProvider.ConversationColumns#CONVERSATION_INFO
+     * @see UIProvider.ConversationColumns#CONVERSATION_BASE_URI
      */
     public Uri conversationBaseUri;
+    /**
+     * @see UIProvider.ConversationColumns#CONVERSATION_COOKIE
+     */
+    public String conversationCookie;
     /**
      * @see UIProvider.ConversationColumns#REMOTE
      */
@@ -189,6 +193,7 @@ public class Conversation implements Parcelable {
         dest.writeParcelable(accountUri, 0);
         dest.writeString(ConversationInfo.toString(conversationInfo));
         dest.writeParcelable(conversationBaseUri, 0);
+        dest.writeString(conversationCookie);
         dest.writeInt(isRemote ? 1 : 0);
     }
 
@@ -219,6 +224,7 @@ public class Conversation implements Parcelable {
         localDeleteOnUpdate = false;
         conversationInfo = ConversationInfo.fromString(in.readString());
         conversationBaseUri = in.readParcelable(null);
+        conversationCookie = in.readString();
         isRemote = in.readInt() != 0;
     }
 
@@ -283,6 +289,7 @@ public class Conversation implements Parcelable {
                     cursor.getString(UIProvider.CONVERSATION_BASE_URI_COLUMN);
             conversationBaseUri = !TextUtils.isEmpty(conversationBase) ?
                     Uri.parse(conversationBase) : null;
+            conversationCookie = cursor.getString(UIProvider.CONVERSATION_COOKIE_COLUMN);
             if (conversationInfo == null) {
                 snippet = cursor.getString(UIProvider.CONVERSATION_SNIPPET_COLUMN);
                 senders = emptyIfNull(cursor.getString(UIProvider.CONVERSATION_SENDER_INFO_COLUMN));
@@ -301,7 +308,7 @@ public class Conversation implements Parcelable {
             int numMessages, int numDrafts, int sendingState, int priority, boolean read,
             boolean starred, String rawFolders, int convFlags, int personalLevel, boolean spam,
             boolean phishing, boolean muted, Uri accountUri, ConversationInfo conversationInfo,
-            Uri conversationBase, boolean isRemote) {
+            Uri conversationBase, String conversationCookie, boolean isRemote) {
 
         final Conversation conversation = new Conversation();
 
@@ -329,6 +336,7 @@ public class Conversation implements Parcelable {
         conversation.accountUri = accountUri;
         conversation.conversationInfo = conversationInfo;
         conversation.conversationBaseUri = conversationBase;
+        conversation.conversationCookie = conversationCookie;
         conversation.isRemote = isRemote;
         return conversation;
     }
