@@ -22,8 +22,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderDisplayer;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -39,19 +37,13 @@ import android.widget.RemoteViews;
 
 public class WidgetConversationViewBuilder {
     // Static font sizes
-    private static int SENDERS_FONT_SIZE;
     private static int DATE_FONT_SIZE;
     private static int SUBJECT_FONT_SIZE;
 
     // Static colors
     private static int SUBJECT_TEXT_COLOR_READ;
     private static int SUBJECT_TEXT_COLOR_UNREAD;
-    private static int SENDERS_TEXT_COLOR_READ;
-    private static int SENDERS_TEXT_COLOR_UNREAD;
     private static int DATE_TEXT_COLOR;
-    private static int DRAFT_TEXT_COLOR;
-
-    private static String SENDERS_SPLIT_TOKEN;
 
     // Static bitmap
     private static Bitmap ATTACHMENT;
@@ -124,19 +116,13 @@ public class WidgetConversationViewBuilder {
         Resources res = context.getResources();
 
         // Initialize font sizes
-        SENDERS_FONT_SIZE = res.getDimensionPixelSize(R.dimen.widget_senders_font_size);
         DATE_FONT_SIZE = res.getDimensionPixelSize(R.dimen.widget_date_font_size);
         SUBJECT_FONT_SIZE = res.getDimensionPixelSize(R.dimen.widget_subject_font_size);
 
         // Initialize colors
         SUBJECT_TEXT_COLOR_READ = res.getColor(R.color.subject_text_color_read);
         SUBJECT_TEXT_COLOR_UNREAD = res.getColor(R.color.subject_text_color_unread);
-        SENDERS_TEXT_COLOR_READ = res.getColor(R.color.senders_text_color_read);
-        SENDERS_TEXT_COLOR_UNREAD = res.getColor(R.color.senders_text_color_unread);
         DATE_TEXT_COLOR = res.getColor(R.color.date_text_color);
-        DRAFT_TEXT_COLOR = res.getColor(R.color.drafts);
-
-        SENDERS_SPLIT_TOKEN = res.getString(R.string.senders_split_token);
 
         // Initialize Bitmap
         ATTACHMENT = BitmapFactory.decodeResource(res, R.drawable.ic_attachment_holo_light);
@@ -161,7 +147,7 @@ public class WidgetConversationViewBuilder {
      */
     public RemoteViews getStyledView(CharSequence status, CharSequence date,
             Conversation conversation, Folder currentFolder, SpannableStringBuilder senders,
-            String subject) {
+            String filteredSubject) {
 
         final boolean isUnread = !conversation.read;
         String snippet = conversation.getSnippet();
@@ -172,10 +158,10 @@ public class WidgetConversationViewBuilder {
 
         // Add style to subject
         int subjectColor = isUnread ? SUBJECT_TEXT_COLOR_UNREAD : SUBJECT_TEXT_COLOR_READ;
-        SpannableStringBuilder subjectAndSnippet = new SpannableStringBuilder(mContext.getString(
-                R.string.subject_and_snippet, subject, snippet));
+        SpannableStringBuilder subjectAndSnippet = Conversation.getSubjectAndSnippetForDisplay(
+                mContext, filteredSubject, snippet);
         if (isUnread) {
-            subjectAndSnippet.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
+            subjectAndSnippet.setSpan(new StyleSpan(Typeface.BOLD), 0, filteredSubject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         subjectAndSnippet.setSpan(new ForegroundColorSpan(subjectColor), 0, subjectAndSnippet
