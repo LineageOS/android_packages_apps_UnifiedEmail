@@ -600,9 +600,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 : sSubjectTextColorRead;
         int snippetColor = activated ? sActivatedTextColor : isUnread ? sSnippetTextColorUnread
                 : sSnippetTextColorRead;
-        SpannableStringBuilder subjectText = new SpannableStringBuilder(
-                (snippet != null) ? mContext.getString(R.string.subject_and_snippet, subject,
-                        snippet) : subject);
+        SpannableStringBuilder subjectText = Conversation.getSubjectAndSnippetForDisplay(mContext,
+                subject, snippet);
         if (isUnread) {
             subjectText.setSpan(new StyleSpan(Typeface.BOLD), 0, subject.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
