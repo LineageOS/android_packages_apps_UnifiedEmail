@@ -17,24 +17,28 @@
 
 package com.android.mail.ui;
 
+import android.animation.ObjectAnimator;
+import android.animation.Animator.AnimatorListener;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.google.common.collect.ImmutableList;
 
-public class LeaveBehindItem extends AnimatingItemView implements OnClickListener,
+public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     SwipeableItemView {
 
     private ToastBarOperation mUndoOp;
@@ -151,5 +155,53 @@ public class LeaveBehindItem extends AnimatingItemView implements OnClickListene
             }
 
         };
+    }
+
+    private Conversation mData;
+    private int mAnimatedHeight = -1;
+
+    /**
+     * Start the animation on an animating view.
+     * @param item the conversation to animate
+     * @param listener the method to call when the animation is done
+     * @param undo true if an operation is being undone. We animate the item away during delete.
+     * Undoing populates the item.
+     */
+    public void startAnimation(ViewMode viewMode, AnimatorListener listener) {
+        int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(), viewMode);
+        setMinimumHeight(minHeight);
+        final int start = minHeight;
+        final int end = 0;
+        ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
+        mAnimatedHeight = start;
+        height.setInterpolator(new DecelerateInterpolator(2.0f));
+        height.addListener(listener);
+        height.setDuration(500);
+        height.start();
+    }
+
+    public void setData(Conversation conversation) {
+        mData = conversation;
+    }
+
+    public Conversation getData() {
+        return mData;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mAnimatedHeight != -1) {
+            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+        return;
+    }
+
+    // Used by animator
+    @SuppressWarnings("unused")
+    public void setAnimatedHeight(int height) {
+        mAnimatedHeight = height;
+        requestLayout();
     }
 }
