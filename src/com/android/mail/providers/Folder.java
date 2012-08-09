@@ -49,6 +49,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
      */
     private static final String FOLDER_UNINITIALIZED = "Uninitialized!";
 
+    // TODO: remove this once we figure out which folder is returing a "null" string as the
+    // conversation list uri
+    private static final String NULL_STRING_URI = "null";
+
     // Try to match the order of members with the order of constants in UIProvider.
 
     /**
@@ -594,7 +598,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
      * Returns a boolean indicating whether this Folder object has been initialized
      */
     public boolean isInitialized() {
-        return name != FOLDER_UNINITIALIZED;
+        return name != FOLDER_UNINITIALIZED && conversationListUri != null &&
+                !NULL_STRING_URI.equals(conversationListUri.toString());
     }
 
     /**
