@@ -30,16 +30,25 @@ public class ConversationInfo {
     private static Pattern MESSAGE_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\*\\^");
 
     final public ArrayList<MessageInfo> messageInfos;
-    final public int messageCount;
-    final public int draftCount;
+    public int messageCount;
+    public int draftCount;
     public String firstSnippet;
     public String firstUnreadSnippet;
     public String lastSnippet;
 
+    public ConversationInfo() {
+        messageInfos = new ArrayList<MessageInfo>();
+    }
+
     public ConversationInfo(int count, int draft, String first, String firstUnread, String last) {
+        messageInfos = new ArrayList<MessageInfo>();
+        set(count, draft, first, firstUnread, last);
+    }
+
+    public void set(int count, int draft, String first, String firstUnread, String last) {
+        messageInfos.clear();
         messageCount = count;
         draftCount = draft;
-        messageInfos = new ArrayList<MessageInfo>();
         firstSnippet = first;
         firstUnreadSnippet = firstUnread;
         lastSnippet = last;

@@ -21,15 +21,23 @@ import android.text.TextUtils;
 import java.util.regex.Pattern;
 
 public class MessageInfo {
-    public static String SENDER_LIST_TOKEN_ELIDED = " .. ";
+    public static final String SENDER_LIST_TOKEN_ELIDED = " .. ";
+    public static final String MSG_DIVIDER = "^****^";
+    private static final Pattern MSG_DIVIDER_REGEX = Pattern.compile("\\^\\*\\*\\*\\*\\^");
+
     public boolean read;
     public boolean starred;
-    public final String sender;
-    public static String MSG_DIVIDER = "^****^";
-    private static Pattern MSG_DIVIDER_REGEX = Pattern.compile("\\^\\*\\*\\*\\*\\^");
+    public String sender;
     public int priority;
 
+    public MessageInfo() {
+    }
+
     public MessageInfo(boolean isRead, boolean isStarred, String senderString, int p) {
+        set(isRead, isStarred, senderString, p);
+    }
+
+    public void set(boolean isRead, boolean isStarred, String senderString, int p) {
         read = isRead;
         starred = isStarred;
         sender = senderString;
