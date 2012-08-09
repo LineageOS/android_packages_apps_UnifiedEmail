@@ -550,7 +550,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 lm.restartLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
             }
         } else if (!folder.isInitialized()) {
-            LogUtils.e(LOG_TAG, new Error(), "Uninitialized Folder in setFolder");
+            LogUtils.e(LOG_TAG, new Error(), "Uninitialized Folder %s in setFolder.", folder);
         } else if (folder == null) {
             LogUtils.wtf(LOG_TAG, "Folder in setFolder is null");
         }
