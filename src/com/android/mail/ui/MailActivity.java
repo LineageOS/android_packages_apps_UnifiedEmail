@@ -149,6 +149,12 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         setupNfc();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mController.onRestart();
+    }
+
     private void setupNfc() {
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }

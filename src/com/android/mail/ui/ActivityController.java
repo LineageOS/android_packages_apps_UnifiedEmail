@@ -100,6 +100,12 @@ public interface ActivityController extends LayoutListener,
     boolean onCreate(Bundle savedState);
 
     /**
+     * Called when the the root activity calls onRestart
+     * @see android.app.Activity#onRestart
+     */
+    void onRestart();
+
+    /**
      * @see android.app.Activity#onCreateDialog(int, Bundle)
      * @param id
      * @param bundle
