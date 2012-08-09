@@ -99,6 +99,29 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         }
     }
 
+    public void dismiss() {
+        if (mAdapter != null) {
+            mAdapter.fadeOutLeaveBehindItems(new KillCompletelyAction(getData()));
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private class KillCompletelyAction implements DestructiveAction {
+        Conversation mConv;
+
+        public KillCompletelyAction(Conversation conv) {
+            mConv = conv;
+        }
+
+        @Override
+        public void performAction() {
+            if (mConversationCursor != null) {
+                mConversationCursor.delete(getContext(), ImmutableList.of(mConv));
+            }
+        };
+
+    };
+
     public long getConversationId() {
         return getData().id;
     }

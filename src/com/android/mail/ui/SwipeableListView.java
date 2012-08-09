@@ -160,7 +160,7 @@ public class SwipeableListView extends ListView implements Callback {
             if (view instanceof ConversationItemView) {
                 dismissChildren((ConversationItemView) view, null);
             } else if (view instanceof LeaveBehindItem) {
-                ((LeaveBehindItem) view).commit();
+                ((LeaveBehindItem) view).dismiss();
             }
         }
     }
