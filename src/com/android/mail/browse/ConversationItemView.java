@@ -123,7 +123,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static int sTouchSlop;
     private static int sDateBackgroundHeight;
     private static int sStandardScaledDimen;
-    private static int sUndoAnimationDuration;
+    private static int sShrinkAnimationDuration;
+    private static int sSlideAnimationDuration;
 
     // Static paints.
     private static TextPaint sPaint = new TextPaint();
@@ -372,7 +373,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
             sTouchSlop = res.getDimensionPixelSize(R.dimen.touch_slop);
             sDateBackgroundHeight = res.getDimensionPixelSize(R.dimen.date_background_height);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
-            sUndoAnimationDuration = res.getInteger(R.integer.undo_animation_duration);
+            sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
+            sSlideAnimationDuration = res.getInteger(R.integer.slide_animation_duration);
             sUndoAnimationOffset = res.getDimensionPixelOffset(R.dimen.undo_animation_offset);
             // Initialize static color.
             sSendersSplitToken = res.getString(R.string.senders_split_token);
@@ -1338,12 +1340,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
      * @param listener
      */
     public void startSwipeUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
-        final int start = sUndoAnimationOffset;
-        final int end = 0;
-        ObjectAnimator undoAnimator = ObjectAnimator.ofFloat(this, "translationX", start, end);
-        undoAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
+        ObjectAnimator undoAnimator = createTranslateXAnimation(true);
         undoAnimator.addListener(listener);
-        undoAnimator.setDuration(sUndoAnimationDuration);
         undoAnimator.start();
     }
 
@@ -1355,17 +1353,59 @@ public class ConversationItemView extends View implements SwipeableItemView {
     public void startUndoAnimation(ViewMode viewMode, final AnimatorListener listener) {
         int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext, viewMode);
         setMinimumHeight(minHeight);
-        final int start = 0;
-        final int end = minHeight;
-        ObjectAnimator undoAnimator = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
-        Animator fadeAnimator = ObjectAnimator.ofFloat(this, "itemAlpha", 0, 1.0f);
-        mAnimatedHeight = start;
-        undoAnimator.setInterpolator(new DecelerateInterpolator(2.0f));
-        undoAnimator.addListener(listener);
-        undoAnimator.setDuration(sUndoAnimationDuration);
+        mAnimatedHeight = 0;
+        ObjectAnimator height = createHeightAnimation(true);
+        Animator fade = ObjectAnimator.ofFloat(this, "itemAlpha", 0, 1.0f);
+        fade.setDuration(sShrinkAnimationDuration);
+        fade.setInterpolator(new DecelerateInterpolator(2.0f));
         AnimatorSet transitionSet = new AnimatorSet();
-        transitionSet.playTogether(undoAnimator, fadeAnimator);
+        transitionSet.playTogether(height, fade);
+        transitionSet.addListener(listener);
         transitionSet.start();
+    }
+
+    /**
+     * Grow the height of the item and fade it in when bringing a conversation
+     * back from a destructive action.
+     * @param listener
+     */
+    public void startDestroyWithSwipeAnimation(final AnimatorListener listener) {
+        ObjectAnimator slide = createTranslateXAnimation(false);
+        ObjectAnimator height = createHeightAnimation(false);
+        AnimatorSet transitionSet = new AnimatorSet();
+        transitionSet.playSequentially(slide, height);
+        transitionSet.addListener(listener);
+        transitionSet.start();
+    }
+
+    private ObjectAnimator createTranslateXAnimation(boolean show) {
+        final float start = show ? sUndoAnimationOffset : 0f;
+        final float end = show ? 0f : sUndoAnimationOffset;
+        ObjectAnimator slide = ObjectAnimator.ofFloat(this, "translationX", start, end);
+        slide.setInterpolator(new DecelerateInterpolator(2.0f));
+        slide.setDuration(sSlideAnimationDuration);
+        return slide;
+    }
+
+    private ObjectAnimator createHeightAnimation(boolean show) {
+        int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(),
+                mActivity.getViewMode());
+        final int start = show ? 0 : minHeight;
+        final int end = show ? minHeight : 0;
+        ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
+        height.setInterpolator(new DecelerateInterpolator(2.0f));
+        height.setDuration(sShrinkAnimationDuration);
+        return height;
+    }
+
+    public void startDestroyAnimation(final AnimatorListener listener) {
+        ObjectAnimator height = createHeightAnimation(false);
+        int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext,
+                mActivity.getViewMode());
+        setMinimumHeight(0);
+        mAnimatedHeight = minHeight;
+        height.addListener(listener);
+        height.start();
     }
 
     // Used by animator
