@@ -16,13 +16,16 @@
 
 package com.android.mail.providers;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 
+import com.android.mail.R;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.google.common.collect.ImmutableList;
 
@@ -494,5 +497,15 @@ public class Conversation implements Parcelable {
      */
     private static String emptyIfNull(String in) {
         return in != null ? in : EMPTY_STRING;
+    }
+
+    /**
+     * Get the properly formatted subject and snippet string for display a conversation.
+     */
+    public static SpannableStringBuilder getSubjectAndSnippetForDisplay(Context context,
+            String filteredSubject, String snippet) {
+        return new SpannableStringBuilder((!TextUtils.isEmpty(snippet)) ?
+                context.getString(R.string.subject_and_snippet, filteredSubject, snippet)
+                : filteredSubject);
     }
 }
