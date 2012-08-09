@@ -612,4 +612,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
         final Collection<Folder> target = (in == null) ? EMPTY : ImmutableList.of(in);
         return target;
     }
+
+    /**
+     * Return if this is the trash folder.
+     */
+    public boolean isTrash() {
+        return type == UIProvider.FolderType.TRASH;
+    }
 }
