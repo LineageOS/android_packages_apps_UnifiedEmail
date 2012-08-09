@@ -532,7 +532,8 @@ public final class ConversationListFragment extends ListFragment implements
     private void setSwipeAction() {
         int swipeSetting = Settings.getSwipeSetting(mAccount.settings);
         if (swipeSetting == Swipe.DISABLED
-                || !mAccount.supportsCapability(AccountCapabilities.UNDO)) {
+                || !mAccount.supportsCapability(AccountCapabilities.UNDO)
+                || (mFolder != null && mFolder.isTrash())) {
             mListView.enableSwipe(false);
         } else {
             int action;

@@ -369,7 +369,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MenuItem markNotImportant = menu.findItem(R.id.mark_not_important);
         markNotImportant.setVisible(!showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-
+        final MenuItem trash = menu.findItem(R.id.delete);
+        trash.setVisible(!mFolder.isTrash());
         return true;
     }
 
