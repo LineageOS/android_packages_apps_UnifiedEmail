@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.Cursor;
@@ -41,6 +42,7 @@ import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
@@ -54,7 +56,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final static int TYPE_VIEW_LEAVEBEHIND = 4;
     private final HashSet<Integer> mDeletingItems = new HashSet<Integer>();
     private final HashSet<Integer> mUndoingItems = new HashSet<Integer>();
+    private final HashSet<Integer> mSwipeDeletingItems = new HashSet<Integer>();
     private final HashSet<Integer> mSwipeUndoingItems = new HashSet<Integer>();
+    private final HashMap<Long, SwipeableConversationItemView> mAnimatingViews =
+            new HashMap<Long, SwipeableConversationItemView>();
     /** The current account */
     private final Account mAccount;
     private final Context mContext;
@@ -181,34 +186,44 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     /**
-     * Deletes the selected conversations from the conversation list view. These conversations
-     * <b>must</b> have their {@link Conversation#position} set to the position of these
-     * conversations among the list. This will only remove the
-     * element from the list. The job of deleting the actual element is left to the the listener.
-     * This listener will be called when the animations are complete and is required to
-     * delete the conversation.
+     * Deletes the selected conversations from the conversation list view with a
+     * translation and then a shrink. These conversations <b>must</b> have their
+     * {@link Conversation#position} set to the position of these conversations
+     * among the list. This will only remove the element from the list. The job
+     * of deleting the actual element is left to the the listener. This listener
+     * will be called when the animations are complete and is required to delete
+     * the conversation.
+     * @param conversations
+     * @param listener
+     */
+    public void swipeDelete(Collection<Conversation> conversations, DestructiveAction listener) {
+        delete(conversations, listener, mSwipeDeletingItems);
+    }
+
+
+    /**
+     * Deletes the selected conversations from the conversation list view by
+     * shrinking them away. These conversations <b>must</b> have their
+     * {@link Conversation#position} set to the position of these conversations
+     * among the list. This will only remove the element from the list. The job
+     * of deleting the actual element is left to the the listener. This listener
+     * will be called when the animations are complete and is required to delete
+     * the conversation.
      * @param conversations
      * @param listener
      */
     public void delete(Collection<Conversation> conversations, DestructiveAction listener) {
-        // Animate out the positions.
-        // Call when all the animations are complete.
-        final ArrayList<Integer> positions = new ArrayList<Integer>();
-        for (Conversation c : conversations) {
-            positions.add(c.position);
-        }
-        delete(positions, listener);
+        delete(conversations, listener, mDeletingItems);
     }
 
-    /**
-     * Deletes a conversation with the list positions given here. This will only remove the
-     * element from the list. The job of deleting the actual elements is left to the the listener.
-     * This listener will be called when the animations are complete and is required to
-     * delete the conversations.
-     * @param deletedRows the position in the list view to be deleted.
-     * @param action the destructive action that modifies the database.
-     */
-    private void delete(ArrayList<Integer> deletedRows, DestructiveAction action) {
+    private void delete(Collection<Conversation> conversations, DestructiveAction action,
+            HashSet<Integer> list) {
+        // Animate out the positions.
+        // Call when all the animations are complete.
+        final ArrayList<Integer> deletedRows = new ArrayList<Integer>();
+        for (Conversation c : conversations) {
+            deletedRows.add(c.position);
+        }
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
 
@@ -219,11 +234,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         for (int deletedRow: deletedRows) {
             if (deletedRow >= startPosition && deletedRow <= endPosition) {
                 mLastDeletingItems.add(deletedRow);
-                mDeletingItems.add(deletedRow);
+                list.add(deletedRow);
             }
         }
 
-        if (mDeletingItems.isEmpty()) {
+        if (list.isEmpty()) {
             // If we have no deleted items on screen, skip the animation
             action.performAction();
         } else {
@@ -239,19 +254,16 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (mShowFooter && position == super.getCount()) {
-            if (mFooter == null) {
-                LogUtils.e(LOG_TAG,  "Adding null view to list in place of footer");
-            }
             return mFooter;
         }
         if (isPositionUndoing(position)) {
-            return getUndoingView(position, convertView, parent,
-                    false /* don't show swipe background */);
+            return getUndoingView(position, parent, false /* don't show swipe background */);
         } if (isPositionUndoingSwipe(position)) {
-            return getUndoingView(position, convertView, parent,
-                    true /* show swipe background */);
+            return getUndoingView(position, parent, true /* show swipe background */);
         } else if (isPositionDeleting(position)) {
-            return getDeletingView(position, convertView, parent);
+            return getDeletingView(position, parent, false);
+        } else if (isPositionSwipeDeleting(position)) {
+            return getDeletingView(position, parent, true);
         }
         if (hasFadeLeaveBehinds()) {
             Conversation conv = new Conversation((ConversationCursor) getItem(position));
@@ -264,23 +276,16 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (hasLeaveBehinds()) {
             Conversation conv = new Conversation((ConversationCursor) getItem(position));
             if(isPositionLeaveBehind(conv)) {
-                View v = getLeaveBehindItem(conv);
-                if (v == null) {
-                    LogUtils.e(LOG_TAG,  "Adding null view to list in place of footer");
-                }
-                return v;
+                return getLeaveBehindItem(conv);
             }
         }
-        if (!(convertView instanceof SwipeableConversationItemView)) {
+        if (convertView != null && !(convertView instanceof SwipeableConversationItemView)) {
+            LogUtils.w(LOG_TAG, "Incorrect convert view received; nulling it out");
             convertView = null;
         } else if (convertView != null) {
             ((SwipeableConversationItemView) convertView).reset();
         }
-        View v = super.getView(position, convertView, parent);
-        if (v == null) {
-            LogUtils.e(LOG_TAG,  "Adding null view to list in place of footer");
-        }
-        return v;
+        return super.getView(position, convertView, parent);
     }
 
     private boolean hasLeaveBehinds() {
@@ -353,43 +358,42 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return super.getItemId(position);
     }
 
-    /**
-     * Get an animating view. This happens when a list item is in the process of being removed
-     * from the list (items being deleted).
-     * @param position the position of the view inside the list
-     * @param convertView if null, a recycled view that we can reuse
-     * @param parent the parent view
-     * @return the view to show when animating an operation.
-     */
-    private View getDeletingView(int position, View convertView, ViewGroup parent) {
-        // We are getting the wrong view, and we need to gracefully carry on.
-        if (convertView != null && !(convertView instanceof AnimatingItemView)) {
-            LogUtils.d(LOG_TAG, "AnimatedAdapter.getAnimatingView received the wrong view!");
-            convertView = null;
-        }
+    private View getDeletingView(int position, ViewGroup parent, boolean swipe) {
         Conversation conversation = new Conversation((ConversationCursor) getItem(position));
         conversation.position = position;
-        // Destroying a conversation just shows a blank shrinking item.
-        final AnimatingItemView view = new AnimatingItemView(mContext);
-        view.setData(conversation);
-        view.startAnimation(mActivity.getViewMode(), this);
-        return view;
+        SwipeableConversationItemView deletingView = mAnimatingViews.get(conversation.id);
+        if (deletingView == null) {
+            // The undo animation consists of fading in the conversation that
+            // had been destroyed.
+            deletingView = newConversationItemView(position, parent, conversation);
+            deletingView.startDeleteAnimation(this, swipe);
+        }
+        return deletingView;
     }
 
-    private View getUndoingView(int position, View convertView, ViewGroup parent,
-            boolean swipe) {
+    private View getUndoingView(int position, ViewGroup parent, boolean swipe) {
         Conversation conversation = new Conversation((ConversationCursor) getItem(position));
         conversation.position = position;
-        // The undo animation consists of fading in the conversation that
-        // had been destroyed.
-        final SwipeableConversationItemView convView = (SwipeableConversationItemView) super
-                .getView(position, null, parent);
-        convView.bind(conversation, mActivity, mBatchConversations, mFolder,
+        SwipeableConversationItemView undoView = mAnimatingViews.get(conversation.id);
+        if (undoView == null) {
+            // The undo animation consists of fading in the conversation that
+            // had been destroyed.
+            undoView = newConversationItemView(position, parent, conversation);
+            undoView.startUndoAnimation(mListView.getSwipeActionText(), mActivity.getViewMode(),
+                    this, swipe);
+        }
+        return undoView;
+    }
+
+    private SwipeableConversationItemView newConversationItemView(int position, ViewGroup parent,
+            Conversation conversation) {
+        SwipeableConversationItemView view = (SwipeableConversationItemView) super.getView(
+                position, null, parent);
+        view.bind(conversation, mActivity, mBatchConversations, mFolder,
                 mCachedSettings != null ? mCachedSettings.hideCheckboxes : false, mSwipeEnabled,
                 mPriorityMarkersEnabled, this);
-        convView.startUndoAnimation(mListView.getSwipeActionText(), mActivity.getViewMode(), this,
-                swipe);
-        return convView;
+        mAnimatingViews.put(conversation.id, view);
+        return view;
     }
 
     @Override
@@ -402,6 +406,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     private boolean isPositionDeleting(int position) {
         return mDeletingItems.contains(position);
+    }
+
+    private boolean isPositionSwipeDeleting(int position) {
+        return mSwipeDeletingItems.contains(position);
     }
 
     private boolean isPositionUndoing(int position) {
@@ -444,6 +452,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (!mUndoingItems.isEmpty()) {
             mDeletingItems.clear();
             mLastDeletingItems.clear();
+            mSwipeDeletingItems.clear();
         } else {
             mUndoingItems.clear();
         }
@@ -463,42 +472,39 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        Object obj = ((ObjectAnimator) animation).getTarget();
-        if (hasFadeLeaveBehinds() && obj instanceof LeaveBehindItem) {
-                LeaveBehindItem objItem = (LeaveBehindItem)obj;
-                clearLeaveBehind(objItem.getConversationId());
-                objItem.commit();
-        } else if (hasUndoingItems() && obj instanceof ConversationItemView) {
-            // See if we have received all the animations we expected; if
-            // so, call the listener and reset it.
-            final int position = ((ConversationItemView) obj).getPosition();
-            if (isPositionUndoingSwipe(position)) {
-                mSwipeUndoingItems.remove(position);
-                if (mSwipeUndoingItems.isEmpty()) {
-                    performAndSetNextAction(null);
-                }
-            } else if (isPositionUndoing(position)) {
-                mUndoingItems.remove(position);
-                if (mUndoingItems.isEmpty()) {
-                    performAndSetNextAction(null);
-                }
-            }
-        } else if (!mDeletingItems.isEmpty() && obj instanceof AnimatingItemView) {
-            // See if we have received all the animations we expected; if
-            // so, call the listener and reset it.
-            final AnimatingItemView target = (AnimatingItemView) obj;
-            final int position = target.getData().position;
-            mDeletingItems.remove(position);
-            if (mDeletingItems.isEmpty()) {
-                performAndSetNextAction(null);
-            }
+        Object obj;
+        if (animation instanceof AnimatorSet) {
+            AnimatorSet set = (AnimatorSet) animation;
+            obj = ((ObjectAnimator) set.getChildAnimations().get(0)).getTarget();
+        } else {
+            obj = ((ObjectAnimator) animation).getTarget();
         }
-        // The view types have changed, since the animating views are gone.
-        notifyDataSetChanged();
+        updateAnimatingConversationItems(obj, mSwipeDeletingItems);
+        updateAnimatingConversationItems(obj, mDeletingItems);
+        updateAnimatingConversationItems(obj, mSwipeUndoingItems);
+        updateAnimatingConversationItems(obj, mUndoingItems);
+        if (hasFadeLeaveBehinds() && obj instanceof LeaveBehindItem) {
+            LeaveBehindItem objItem = (LeaveBehindItem) obj;
+            clearLeaveBehind(objItem.getConversationId());
+            objItem.commit();
+            // The view types have changed, since the animating views are gone.
+            notifyDataSetChanged();
+        }
     }
 
-    private boolean hasUndoingItems() {
-        return !mUndoingItems.isEmpty() || !mSwipeUndoingItems.isEmpty();
+    private void updateAnimatingConversationItems(Object obj, HashSet<Integer> items) {
+        if (!items.isEmpty()) {
+            if (obj instanceof ConversationItemView) {
+                final ConversationItemView target = (ConversationItemView) obj;
+                final int position = target.getPosition();
+                items.remove(position);
+                mAnimatingViews.remove(target.getConversation().id);
+                if (items.isEmpty()) {
+                    performAndSetNextAction(null);
+                    notifyDataSetChanged();
+                }
+            }
+        }
     }
 
     @Override

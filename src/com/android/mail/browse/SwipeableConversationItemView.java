@@ -72,6 +72,7 @@ public class SwipeableConversationItemView extends FrameLayout {
         setBackgroundVisibility(View.GONE);
         mConversationItemView.setAlpha(1);
         mConversationItemView.setTranslationX(0);
+        mConversationItemView.setAnimatedHeight(-1);
     }
 
     public ConversationItemView getSwipeableItemView() {
@@ -113,5 +114,13 @@ public class SwipeableConversationItemView extends FrameLayout {
             removeView(mBackground);
         }
         mBackground = null;
+    }
+
+    public void startDeleteAnimation(AnimatedAdapter listener, boolean swipe) {
+        if (swipe) {
+            mConversationItemView.startDestroyWithSwipeAnimation(listener);
+        } else {
+            mConversationItemView.startDestroyAnimation(listener);
+        }
     }
 }

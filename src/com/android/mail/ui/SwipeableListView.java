@@ -297,35 +297,6 @@ public class SwipeableListView extends ListView implements Callback {
     }
 
     /**
-     * Get the position within the adapter's data set for the view, where view is a an adapter item
-     * or a descendant of an adapter item.
-     *
-     * @param view an adapter item, or a descendant of an adapter item. This must be visible in this
-     *        AdapterView at the time of the call.
-     * @return the position within the adapter's data set of the view, or {@link #INVALID_POSITION}
-     *         if the view does not correspond to a list item (or it is not currently visible).
-     */
-    // TODO(mindyp): remove this override once I fix b/6884047
-    @Override
-    public int getPositionForView(View view) {
-        View listItem = view;
-        View v = null;
-        try {
-            while (!(v = (View) listItem.getParent()).equals(this)) {
-                listItem = v;
-            }
-        } catch (ClassCastException e) {
-            // We made it up to the window without find this list view
-            return INVALID_POSITION;
-        } catch (NullPointerException e) {
-            LogUtils.e(LOG_TAG, e, "WHAT HAS NO PARENT "
-                    + (listItem != null ? listItem.getClass() : null));
-            return INVALID_POSITION;
-        }
-        return super.getPositionForView(view);
-    }
-
-    /**
      * Archive items using the swipe away animation before shrinking them away.
      */
     public void destroyItems(final ArrayList<ConversationItemView> views,
@@ -337,14 +308,44 @@ public class SwipeableListView extends ListView implements Callback {
         final ArrayList<Conversation> conversations = new ArrayList<Conversation>();
         for (ConversationItemView view : views) {
             Conversation conv = view.getConversation();
-            conv.position = conv.position == -1 && view.getParent() != null ?
-                    getPositionForView(view) : conv.position;
+            conv.position = findConversation(view, conv);
             conversations.add(conv);
         }
         AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter != null) {
-            adapter.delete(conversations, listener);
+            adapter.swipeDelete(conversations, listener);
         }
+    }
+
+    private int findConversation(ConversationItemView view, Conversation conv) {
+        int position = conv.position;
+        long convId = conv.id;
+        try {
+            if (position == INVALID_POSITION) {
+                position = getPositionForView(view);
+            }
+        } catch (Exception e) {
+            position = INVALID_POSITION;
+            LogUtils.w(LOG_TAG, "Exception finding position; using alternate strategy");
+        }
+        if (position == INVALID_POSITION) {
+            // Try the other way!
+            Conversation foundConv;
+            long foundId;
+            for (int i = 0; i < getChildCount(); i++) {
+                View child = getChildAt(i);
+                if (child instanceof SwipeableConversationItemView) {
+                    foundConv = ((SwipeableConversationItemView) child).getSwipeableItemView()
+                            .getConversation();
+                    foundId = foundConv.id;
+                    if (foundId == convId) {
+                        position = i;
+                        break;
+                    }
+                }
+            }
+        }
+        return position;
     }
 
     private AnimatedAdapter getAnimatedAdapter() {
