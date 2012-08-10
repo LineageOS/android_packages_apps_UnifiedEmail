@@ -492,17 +492,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
     }
 
     private void onRefreshStopped(int status) {
-        if (setRefreshInProgress(false)) {
-            switch (status) {
-                case LastSyncResult.SUCCESS:
-                    break;
-                default:
-                    Context context = mActivity.getActivityContext();
-                    Toast.makeText(context, Utils.getSyncStatusText(context, status),
-                            Toast.LENGTH_LONG).show();
-                    break;
-            }
-        }
+        setRefreshInProgress(false);
     }
 
     /**
