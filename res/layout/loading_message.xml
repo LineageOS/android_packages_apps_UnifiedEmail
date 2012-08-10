@@ -21,7 +21,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="@drawable/conversation_unread_selector">
     <ProgressBar
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
