@@ -847,8 +847,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
             }
             builder.append(fragmentDisplayText);
         }
+        mHeader.styledMessageInfoStringOffset = builder.length();
         if (messageInfoString != null) {
-            mHeader.styledMessageInfoStringOffset = builder.length();
             builder.append(messageInfoString);
         }
         mHeader.styledSendersString = builder;
