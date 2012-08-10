@@ -332,4 +332,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public FolderController getFolderController() {
         return null;
     }
+
+    @Override
+    public void onAnimationEnd(AnimatedAdapter animatedAdapter) {
+    }
 }

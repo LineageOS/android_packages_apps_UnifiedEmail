@@ -80,6 +80,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
     };
 
+    public interface Listener {
+        void onAnimationEnd(AnimatedAdapter adapter);
+    }
+
     private final ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
     private View mFooter;
     private boolean mShowFooter;
@@ -493,6 +497,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             objItem.commit();
             // The view types have changed, since the animating views are gone.
             notifyDataSetChanged();
+        }
+
+        if (!isAnimating()) {
+            mActivity.onAnimationEnd(this);
         }
     }
 
