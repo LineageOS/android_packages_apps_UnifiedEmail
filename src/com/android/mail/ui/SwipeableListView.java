@@ -159,7 +159,7 @@ public class SwipeableListView extends ListView implements Callback {
         View view = v.getView();
         if (view != null) {
             if (view instanceof ConversationItemView) {
-                dismissChildren((ConversationItemView) view, null);
+                dismissChild((ConversationItemView) view);
             } else if (view instanceof LeaveBehindItem) {
                 ((LeaveBehindItem) view).dismiss();
             }
@@ -175,71 +175,12 @@ public class SwipeableListView extends ListView implements Callback {
         }
     }
 
-    @Override
-    public void onChildrenDismissed(SwipeableItemView target,
-            Collection<ConversationItemView> views) {
-        assert (target instanceof ConversationItemView);
-        dismissChildren((ConversationItemView) target.getView(), views);
-    }
-
-    private void dismissChildren(final ConversationItemView target,
-            final Collection<ConversationItemView> conversationViews) {
+    private void dismissChild(final ConversationItemView target) {
         final Context context = getContext();
-        final AnimatedAdapter adapter = getAnimatedAdapter();
         final ToastBarOperation undoOp;
-        if (conversationViews != null) {
-            final ArrayList<Conversation> conversations = new ArrayList<Conversation>(
-                    conversationViews.size());
-            Conversation conversation;
-            for (ConversationItemView view : conversationViews) {
-                if (view.getConversation().id != target.getConversation().id) {
-                    conversation = view.getConversation();
-                    conversation.localDeleteOnUpdate = true;
-                    conversations.add(conversation);
-                }
-            }
-            undoOp = new ToastBarOperation(conversationViews != null ? (conversations.size() + 1)
-                    : 1, mSwipeAction, ToastBarOperation.UNDO);
-            handleLeaveBehind(target, undoOp, context);
-            adapter.delete(conversations, new DestructiveAction() {
-                @Override
-                public void performAction() {
-                    ConversationCursor cc = (ConversationCursor) adapter.getCursor();
-                    switch (mSwipeAction) {
-                        case R.id.archive:
-                            cc.archive(context, conversations);
-                            break;
-                        case R.id.change_folder:
-                            FolderOperation folderOp = new FolderOperation(mFolder, false);
-                            // For each conversation, for each operation, remove
-                            // the current folder.
-                            for (Conversation target : conversations) {
-                                HashMap<Uri, Folder> targetFolders = Folder
-                                        .hashMapForFolders(target.getRawFolders());
-                                targetFolders.remove(folderOp.mFolder.uri);
-                                target.setRawFolders(Folder.getSerializedFolderString(targetFolders
-                                        .values()));
-                                cc.updateString(context, Conversation.listOf(target),
-                                        Conversation.UPDATE_FOLDER_COLUMN,
-                                        target.getRawFoldersString());
-                            }
-                            break;
-                        case R.id.delete:
-                            cc.delete(context, conversations);
-                            break;
-                    }
-                }
-            });
-        } else {
-            undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO);
-            target.getConversation().position = target.getParent() != null ?
-                    getPositionForView(target) : -1;
-            handleLeaveBehind(target, undoOp, context);
-        }
-    }
 
-    private void handleLeaveBehind(ConversationItemView target, ToastBarOperation undoOp,
-            Context context) {
+        undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO);
+        target.getConversation().position = getPositionForView(target);
         Conversation conv = target.getConversation();
         final AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter == null) {
