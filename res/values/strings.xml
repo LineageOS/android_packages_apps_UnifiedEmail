@@ -583,14 +583,14 @@
     <!-- Displayed in the middle of the Folders screen when no folders have been defined -->
     <string name="folders_activity_instructions">No folders have been set for this account.</string>
 
-    <!-- Sync status errors translate="false" [CHAR LIMIT=100] -->
+    <!-- Sync status errors. Please do not change the order [CHAR LIMIT=100] -->
     <string-array name="sync_status">
         <item>Success</item>
-        <item>Connection error</item>
-        <item>Authentication error</item>
-        <item>Security error</item>
-        <item>Storage error</item>
-        <item>Internal error</item>
+        <item>No connection.</item>
+        <item>Couldn\'t sign in.</item>
+        <item>Security error.</item>
+        <item>Couldn\'t sync.</item>
+        <item>Error</item>
     </string-array>
 
     <!-- Widget strings -->
@@ -700,6 +700,19 @@
         <item>Frequently Used</item>
         <item>All Folders</item>
     </string-array>
+
+    <!-- Button text for the button to click to have the user sign in again. [CHAR LIMIT=20]-->
+    <string name="signin">Sign-in</string>
+    <!-- Button text for the button to click for more information. [CHAR LIMIT=20]-->
+    <string name="info">Info</string>
+    <!-- Button text for the button to click to report feedback. [CHAR LIMIT=20]-->
+    <string name="report">Report</string>
+    <!-- Dialog title when a sync error occurs. [CHAR LIMIT=50]-->
+    <string name="sync_error">Couldn\'t sync.</string>
+    <!-- Dialog title when a sync error occurs. [CHAR LIMIT=100]-->
+    <string name="sync_error_message">Your device doesn\'t have enough storage space to sync.</string>
+    <!-- Button text for the button to click to go to the manage storage settings screen. [CHAR LIMIT=20]-->
+    <string name="storage">Storage</string>
 
     <string translate="false" name="hierarchical_folder_parent_top"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
     <string translate="false" name="hierarchical_folder_parent_top_ellip"><xliff:g id="topLevelParent">%1$s</xliff:g>\u2215\u2026\u2215<xliff:g id="parent">%2$s</xliff:g>\u2215</string>
