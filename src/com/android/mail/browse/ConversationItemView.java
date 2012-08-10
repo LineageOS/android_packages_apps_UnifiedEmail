@@ -608,7 +608,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
         subjectText.setSpan(new ForegroundColorSpan(subjectColor), 0, subject.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        if (snippet != null) {
+        if (!TextUtils.isEmpty(snippet)) {
             subjectText.setSpan(new ForegroundColorSpan(snippetColor), subject.length() + 1,
                     subjectText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
