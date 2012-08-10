@@ -231,7 +231,8 @@ public class SendersView {
                 if (oldPos == DOES_NOT_EXIST || !currentMessage.read) {
                     // If the sender entry already existed, and is right next to the
                     // current sender, remove the old entry.
-                    if (oldPos != DOES_NOT_EXIST && i > 0 && oldPos == i - 1) {
+                    if (oldPos != DOES_NOT_EXIST && i > 0 && oldPos == i - 1
+                            && oldPos < senders.size()) {
                         // Remove the old one!
                         senders.set(oldPos, null);
                     }
