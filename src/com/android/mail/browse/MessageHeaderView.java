@@ -1134,9 +1134,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      */
     @VisibleForTesting
     static String makeSnippet(final String messageBody) {
-        StringBuilder snippet = new StringBuilder(MAX_SNIPPET_LENGTH);
+        if (TextUtils.isEmpty(messageBody)) {
+            return null;
+        }
 
-        StringReader reader = new StringReader(messageBody);
+        final StringBuilder snippet = new StringBuilder(MAX_SNIPPET_LENGTH);
+
+        final StringReader reader = new StringReader(messageBody);
         try {
             int c;
             while ((c = reader.read()) != -1 && snippet.length() < MAX_SNIPPET_LENGTH) {
