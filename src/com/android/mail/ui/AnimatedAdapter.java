@@ -598,4 +598,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mLeaveBehindItem = item;
         }
     }
+
+    /**
+     * Return if the adapter is in the process of animating anything.
+     */
+    public boolean isAnimating() {
+        return !mUndoingItems.isEmpty()
+                || !mSwipeUndoingItems.isEmpty()
+                || mFadeLeaveBehindItem != null
+                || !mDeletingItems.isEmpty()
+                || !mSwipeDeletingItems.isEmpty();
+    }
 }
