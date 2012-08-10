@@ -301,7 +301,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         fadeOutLeaveBehindItems();
         LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext).inflate(
                 R.layout.swipe_leavebehind, null);
-        leaveBehind.bindOperations(deletedRow, mAccount, this, undoOp, target);
+        leaveBehind.bindOperations(deletedRow, mAccount, this, undoOp, target, mFolder);
         mLeaveBehindItem = leaveBehind;
         mLastDeletingItems.add(deletedRow);
         return leaveBehind;
