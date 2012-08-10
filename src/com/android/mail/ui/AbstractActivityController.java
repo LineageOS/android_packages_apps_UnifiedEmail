@@ -1911,6 +1911,10 @@ public abstract class AbstractActivityController implements ActivityController {
             LogUtils.d(LOG_TAG, "onRefreshRequired: delay until scrolling done");
             return;
         }
+        if (!isAnimating()) {
+            LogUtils.d(LOG_TAG, "onRefreshRequired: delay until animating done");
+            return;
+        }
         // Refresh the query in the background
         final long now = System.currentTimeMillis();
         final long sinceLastRefresh = now - mConversationListRefreshTime;
@@ -1921,6 +1925,18 @@ public abstract class AbstractActivityController implements ActivityController {
             }
     }
 
+    private boolean isAnimating() {
+        boolean isAnimating = false;
+        ConversationListFragment convListFragment = getConversationListFragment();
+        if (convListFragment != null) {
+            AnimatedAdapter adapter = convListFragment.getAnimatedAdapter();
+            if (adapter != null) {
+                isAnimating = adapter.isAnimating();
+            }
+        }
+        return isAnimating;
+    }
+
     /**
      * Called when the {@link ConversationCursor} is changed or has new data in it.
      * <p>
@@ -1928,7 +1944,7 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public final void onRefreshReady() {
-        if (!mIsConversationListScrolling) {
+        if (!mIsConversationListScrolling && !isAnimating()) {
             // Swap cursors
             mConversationListCursor.sync();
         }
