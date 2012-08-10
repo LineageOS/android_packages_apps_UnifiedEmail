@@ -228,6 +228,7 @@ public final class ConversationListFragment extends ListFragment implements
         mFooterView = (ConversationListFooterView) LayoutInflater.from(
                 mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
                 null);
+        mFooterView.setFragmentManager(getFragmentManager());
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
                 getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
                 mActivity.getSettings(), mActivity, mListView);

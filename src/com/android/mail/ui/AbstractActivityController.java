@@ -22,6 +22,7 @@ import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
@@ -62,6 +63,7 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationPagerController;
+import com.android.mail.browse.SyncErrorDialogFragment;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.compose.ComposeActivity;
@@ -243,6 +245,7 @@ public abstract class AbstractActivityController implements ActivityController {
     // will just run the next time the user opens the app.
     private AsyncTask<String, Void, Void> mEnableShareIntents;
     private Folder mFolderListFolder;
+    public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
         mActivity = activity;
@@ -644,6 +647,15 @@ public abstract class AbstractActivityController implements ActivityController {
         // Create the accounts loader; this loads the account switch spinner.
         mActivity.getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
         return true;
+    }
+
+    @Override
+    public void onRestart() {
+        DialogFragment fragment = (DialogFragment)
+                mFragmentManager.findFragmentByTag(SYNC_ERROR_DIALOG_FRAGMENT_TAG);
+        if (fragment != null) {
+            fragment.dismiss();
+        }
     }
 
     @Override
@@ -2331,18 +2343,44 @@ public abstract class AbstractActivityController implements ActivityController {
 
     protected final void showErrorToast(final Folder folder, boolean replaceVisibleToast) {
         mToastBar.setConversationMode(false);
+
+        ActionClickedListener listener = null;
+        int actionTextResourceId;
+        final int lastSyncResult = folder.lastSyncResult;
+        switch (lastSyncResult) {
+            case UIProvider.LastSyncResult.CONNECTION_ERROR:
+                listener = getRetryClickedListener(folder);
+                actionTextResourceId = R.string.retry;
+                break;
+            case UIProvider.LastSyncResult.AUTH_ERROR:
+                listener = getSignInClickedListener();
+                actionTextResourceId = R.string.signin;
+                break;
+            case UIProvider.LastSyncResult.SECURITY_ERROR:
+                return; // Currently we do nothing for security errors.
+            case UIProvider.LastSyncResult.STORAGE_ERROR:
+                listener = getStorageErrorClickedListener();
+                actionTextResourceId = R.string.info;
+                break;
+            case UIProvider.LastSyncResult.INTERNAL_ERROR:
+                listener = getInternalErrorClickedListener();
+                actionTextResourceId = R.string.report;
+                break;
+            default:
+                return;
+        }
         mToastBar.show(
-                getRetryClickedListener(folder),
+                listener,
                 R.drawable.ic_alert_white,
                 Utils.getSyncStatusText(mActivity.getActivityContext(),
-                        folder.lastSyncResult),
+                        lastSyncResult),
                 false, /* showActionIcon */
-                R.string.retry,
+                actionTextResourceId,
                 replaceVisibleToast,
                 new ToastBarOperation(1, 0, ToastBarOperation.ERROR));
     }
 
-    private final ActionClickedListener getRetryClickedListener(final Folder folder) {
+    private ActionClickedListener getRetryClickedListener(final Folder folder) {
         return new ActionClickedListener() {
             @Override
             public void onActionClicked() {
@@ -2355,6 +2393,41 @@ public abstract class AbstractActivityController implements ActivityController {
                     mFolderSyncTask = new AsyncRefreshTask(mActivity.getActivityContext(), uri);
                     mFolderSyncTask.execute();
                 }
+            }
+        };
+    }
+
+    private ActionClickedListener getSignInClickedListener() {
+        return new ActionClickedListener() {
+            @Override
+            public void onActionClicked() {
+                // TODO - have pressing Sign-in actually
+                // allow the user to update their credentials
+                // Needs to also be done in ConversationListFooterView
+            }
+        };
+    }
+
+    private ActionClickedListener getStorageErrorClickedListener() {
+        return new ActionClickedListener() {
+            @Override
+            public void onActionClicked() {
+                DialogFragment fragment = (DialogFragment)
+                        mFragmentManager.findFragmentByTag(SYNC_ERROR_DIALOG_FRAGMENT_TAG);
+                if (fragment == null) {
+                    fragment = SyncErrorDialogFragment.newInstance();
+                }
+                fragment.show(mFragmentManager, SYNC_ERROR_DIALOG_FRAGMENT_TAG);
+            }
+        };
+    }
+
+    private ActionClickedListener getInternalErrorClickedListener() {
+        return new ActionClickedListener() {
+            @Override
+            public void onActionClicked() {
+                // TODO - have pressing report actually do something
+                // Needs to also be done in ConversationListFooterView
             }
         };
     }

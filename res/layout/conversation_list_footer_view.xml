@@ -46,12 +46,11 @@
             android:textColor="@android:color/black"
             android:text="@string/network_error"/>
 
-        <Button android:id="@+id/retry_button"
+        <Button android:id="@+id/error_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="?android:attr/buttonStyleSmall"
             android:textColor="@android:color/black"
-            android:text="@string/retry"
             android:paddingTop="15dip"
             android:paddingBottom="15dip"
             android:paddingLeft="20dip"
