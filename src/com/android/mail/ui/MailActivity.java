@@ -413,4 +413,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void doNothingClickHandler(View v) {
         // Do nothing.
     }
+
+    @Override
+    public void onAnimationEnd(AnimatedAdapter animatedAdapter) {
+        mController.onAnimationEnd(animatedAdapter);
+    }
 }
