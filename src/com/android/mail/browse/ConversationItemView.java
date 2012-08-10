@@ -169,6 +169,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private Runnable mListItemClick;
     private ControllableActivity mActivity;
     private UnsetPressedState mUnsetPressedState;
+    private CharacterStyle mActivatedTextSpan;
+    private static ForegroundColorSpan sActivatedTextSpan;
     private static Bitmap sDateBackgroundAttachment;
     private static Bitmap sDateBackgroundNoAttachment;
     private static int sUndoAnimationOffset;
@@ -363,6 +365,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             // Initialize colors.
             sDefaultTextColor = res.getColor(R.color.default_text_color);
             sActivatedTextColor = res.getColor(android.R.color.white);
+            sActivatedTextSpan = new ForegroundColorSpan(sActivatedTextColor);
             sSubjectTextColorRead = res.getColor(R.color.subject_text_color_read);
             sSubjectTextColorUnead = res.getColor(R.color.subject_text_color_unread);
             sSnippetTextColorRead = res.getColor(R.color.snippet_text_color_read);
@@ -518,6 +521,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             if (fontChanged) {
                 layoutSubjectSpans(isUnread);
                 layoutSubject();
+                layoutSenderSpans();
             }
             pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
             return;
@@ -586,6 +590,24 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         pauseTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
         pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
+    }
+
+    private void layoutSenderSpans() {
+        if (isActivated() && showActivatedText()) {
+            if (mActivatedTextSpan == null) {
+                mActivatedTextSpan = getActivatedTextSpan();
+            }
+            mHeader.styledSendersString.setSpan(mActivatedTextSpan, 0,
+                    mHeader.styledMessageInfoStringOffset, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } else {
+            mHeader.styledSendersString.removeSpan(mActivatedTextSpan);
+        }
+        mHeader.sendersDisplayLayout = new StaticLayout(mHeader.styledSendersString, sPaint,
+                mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
+    }
+
+    private CharacterStyle getActivatedTextSpan() {
+        return CharacterStyle.wrap(sActivatedTextSpan);
     }
 
     private void layoutSubjectSpans(boolean isUnread) {
@@ -714,8 +736,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         if (mHeader.styledSenders != null) {
             ellipsizeStyledSenders();
-            mHeader.sendersDisplayLayout = new StaticLayout(mHeader.styledSendersString, sPaint,
-                    mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
+            layoutSenderSpans();
         } else {
             // First pass to calculate width of each fragment.
             int totalWidth = 0;
@@ -826,7 +847,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
             }
             builder.append(fragmentDisplayText);
         }
-        if (messageInfoString.length() > 0) {
+        if (messageInfoString != null) {
+            mHeader.styledMessageInfoStringOffset = builder.length();
             builder.append(messageInfoString);
         }
         mHeader.styledSendersString = builder;
