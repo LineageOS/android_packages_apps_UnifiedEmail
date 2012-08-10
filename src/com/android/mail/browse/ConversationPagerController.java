@@ -71,11 +71,8 @@ public class ConversationPagerController implements OnPageChangeListener {
      * <p>
      * Should improve load times. It also works around an issue in ViewPager that always loads item
      * zero (with the fragment visibility hint ON) when the adapter is initially set.
-     * <p>
-     * However, this is disabled right now because ViewPager seems to have a bug when you enable
-     * this adapter data set change when the initial current item was item #1.
      */
-    private static final boolean ENABLE_SINGLETON_INITIAL_LOAD = false;
+    private static final boolean ENABLE_SINGLETON_INITIAL_LOAD = true;
 
     public ConversationPagerController(RestrictedActivity activity,
             ActivityController controller) {
