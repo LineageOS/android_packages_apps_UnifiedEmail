@@ -254,10 +254,11 @@
     <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> מתוך <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
     <string name="conversation_newer" msgid="7381341099165809801">"חדשה יותר"</string>
     <string name="conversation_older" msgid="6384287019562069353">"ישנה יותר"</string>
-    <!-- no translation found for new_incoming_messages:one (8778057959289554701) -->
-    <!-- no translation found for new_incoming_messages:other (6738671955116853198) -->
-    <!-- no translation found for show (7114006150083237343) -->
-    <skip />
+  <plurals name="new_incoming_messages">
+    <item quantity="one" msgid="8778057959289554701">"הודעה חדשה מאת <xliff:g id="SENDER">%s</xliff:g>."</item>
+    <item quantity="other" msgid="6738671955116853198">"<xliff:g id="COUNT">%1$d</xliff:g> הודעות חדשות"</item>
+  </plurals>
+    <string name="show" msgid="7114006150083237343">"הצג"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"הרחב פרטי נמען"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"כווץ את פרטי הנמען"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"הצג פרטי איש קשר של <xliff:g id="NAME">%1$s</xliff:g>"</string>
