@@ -599,7 +599,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private Message createMessage(ReplyFromAccount selectedReplyFromAccount, int mode) {
         Message message = new Message();
         message.id = UIProvider.INVALID_MESSAGE_ID;
-        message.serverId =UIProvider.INVALID_MESSAGE_ID;
+        message.serverId = null;
         message.uri = null;
         message.conversationUri = null;
         message.subject = mSubject.getText().toString();
@@ -1864,7 +1864,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // Some text has been added to the message OR
             // an attachment has been added or removed
             // AND there is actually something in the draft to save.
-            return (mTextChanged || mAttachmentsChanged || mReplyFromChanged) 
+            return (mTextChanged || mAttachmentsChanged || mReplyFromChanged)
                     && !isBlank();
         }
     }

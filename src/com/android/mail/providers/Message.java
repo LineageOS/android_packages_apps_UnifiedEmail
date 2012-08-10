@@ -49,7 +49,7 @@ public class Message implements Parcelable {
     /**
      * @see UIProvider.MessageColumns#SERVER_ID
      */
-    public long serverId;
+    public String serverId;
     /**
      * @see UIProvider.MessageColumns#URI
      */
@@ -216,7 +216,7 @@ public class Message implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeLong(serverId);
+        dest.writeString(serverId);
         dest.writeParcelable(uri, 0);
         dest.writeParcelable(conversationUri, 0);
         dest.writeString(subject);
@@ -252,7 +252,7 @@ public class Message implements Parcelable {
 
     private Message(Parcel in) {
         id = in.readLong();
-        serverId = in.readLong();
+        serverId = in.readString();
         uri = in.readParcelable(null);
         conversationUri = in.readParcelable(null);
         subject = in.readString();
@@ -312,7 +312,7 @@ public class Message implements Parcelable {
     public Message(Cursor cursor) {
         if (cursor != null) {
             id = cursor.getLong(UIProvider.MESSAGE_ID_COLUMN);
-            serverId = cursor.getLong(UIProvider.MESSAGE_SERVER_ID_COLUMN);
+            serverId = cursor.getString(UIProvider.MESSAGE_SERVER_ID_COLUMN);
             final String messageUriStr = cursor.getString(UIProvider.MESSAGE_URI_COLUMN);
             uri = !TextUtils.isEmpty(messageUriStr) ? Uri.parse(messageUriStr) : null;
             final String convUriStr = cursor.getString(UIProvider.MESSAGE_CONVERSATION_URI_COLUMN);
