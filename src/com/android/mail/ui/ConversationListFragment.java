@@ -249,7 +249,6 @@ public final class ConversationListFragment extends ListFragment implements
         // force setting the mode manually this time around.
         onViewModeChanged(mActivity.getViewMode().getMode());
         mActivity.getViewMode().addListener(this);
-
         // Restore the list state
         if (mListSavedState != null) {
             mListView.onRestoreInstanceState(mListSavedState);
@@ -538,7 +537,7 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     private void setSwipeAction() {
-        int swipeSetting = Settings.getSwipeSetting(mAccount.settings);
+        int swipeSetting = Settings.getSwipeSetting(mActivity.getSettings());
         if (swipeSetting == Swipe.DISABLED
                 || !mAccount.supportsCapability(AccountCapabilities.UNDO)
                 || (mFolder != null && mFolder.isTrash())) {
@@ -613,5 +612,6 @@ public final class ConversationListFragment extends ListFragment implements
         if (mListAdapter != null) {
             mListAdapter.onSettingsChanged(updatedSettings);
         }
+        setSwipeAction();
     }
 }
