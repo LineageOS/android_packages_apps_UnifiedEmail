@@ -478,8 +478,6 @@ public class SwipeHelper {
 
         void onChildDismissed(SwipeableItemView v);
 
-        void onChildrenDismissed(SwipeableItemView target, Collection<ConversationItemView> v);
-
         void onDragCancelled(SwipeableItemView v);
 
         ConversationSelectionSet getSelectionSet();
