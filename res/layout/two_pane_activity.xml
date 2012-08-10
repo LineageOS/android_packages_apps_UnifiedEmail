@@ -23,7 +23,8 @@
         android:orientation="horizontal"
         android:splitMotionEvents="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true" >
 
         <FrameLayout
             android:id="@+id/content_pane"
