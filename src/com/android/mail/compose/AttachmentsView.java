@@ -44,6 +44,7 @@ import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
@@ -106,7 +107,9 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
                     expandView();
                     mComposeLayoutTransition.setStartDelay(LayoutTransition.CHANGING, 0l);
                 }
-                mComposeLayoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+                if (Utils.isRunningJellybeanOrLater()) {
+                    mComposeLayoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+                }
                 break;
         }
     }
@@ -205,11 +208,16 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
     @VisibleForTesting
     protected void deleteAttachment(final View attachmentView,
             final Attachment attachment) {
-        mComposeLayoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        if (Utils.isRunningJellybeanOrLater()) {
+            mComposeLayoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        }
         mComposeLayoutTransition.setStartDelay(
                 LayoutTransition.CHANGING, mChangingDelay);
+
         final LayoutTransition transition = getLayoutTransition();
-        transition.enableTransitionType(LayoutTransition.CHANGING);
+        if (Utils.isRunningJellybeanOrLater()) {
+            transition.enableTransitionType(LayoutTransition.CHANGING);
+        }
         transition.setStartDelay(LayoutTransition.CHANGING, mChangingDelay);
         transition.addTransitionListener(this);
 
@@ -242,7 +250,9 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
     @Override
     public void endTransition(LayoutTransition transition, ViewGroup container, View view,
             int transitionType) {
-        transition.disableTransitionType(LayoutTransition.CHANGING);
+        if (Utils.isRunningJellybeanOrLater()) {
+            transition.disableTransitionType(LayoutTransition.CHANGING);
+        }
         transition.setStartDelay(LayoutTransition.CHANGING, 0l);
     }
 
