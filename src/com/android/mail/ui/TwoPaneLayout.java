@@ -334,7 +334,8 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        if (!isAnimatingFade()) {
+        final boolean animationDisabled = true;
+        if (animationDisabled || !isAnimatingFade()) {
             super.dispatchDraw(canvas);
             return;
         }
@@ -375,8 +376,27 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
         // Slide folder list in from the left.
         final int folderListWidth = computeFolderListWidth();
+        final int convListWidth = mListView.getMeasuredWidth();
+        final int screenWidth = getWidth();
         setFolderListWidth(folderListWidth);
 
+        // Reset the relative left of the list view.
+        setConversationListLeft(0);
+
+        // Push conversation list out to fill remaining space.
+        setConversationListWidth(computeConversationListWidth());
+
+        // Temporary workaround while a full fix for b/6963808 is being prepared.
+        final boolean disableAnimation = true;
+        if (disableAnimation) {
+            mConversationListListener.onAnimationStart(null);
+            setFoldersLeft(0);
+            setListLeft(folderListWidth);
+            setConversationLeft(screenWidth);
+            mConversationListListener.onAnimationEnd(null);
+            return;
+        } else {
+        // Unindented on purpose. The above fix is temporary.
         // Prepare animation.
         mAnimatingFade = true;
         captureListBitmaps();
@@ -384,11 +404,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
         values.add(PropertyValuesHolder.ofInt("foldersLeft", -folderListWidth, 0));
 
-        // Reset the relative left of the list view.
-        setConversationListLeft(0);
-
-        // Push conversation list out to fill remaining space.
-        setConversationListWidth(computeConversationListWidth());
 
         // Fading out the conversation bitmap should finish before
         // the final transition to the conversation list view.
@@ -401,8 +416,8 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         values.add(PropertyValuesHolder.ofInt("listAlpha", 0, 255));
 
         // Slide conversation out to the right.
-        values.add(PropertyValuesHolder.ofInt("conversationLeft", mListView.getMeasuredWidth(),
-                getWidth()));
+        values.add(PropertyValuesHolder.ofInt("conversationLeft", convListWidth,
+                screenWidth));
         ObjectAnimator valuesAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
                 values.toArray(new PropertyValuesHolder[values.size()])).setDuration(
                 sAnimationSlideRightDuration);
@@ -413,6 +428,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         AnimatorSet transitionSet = new AnimatorSet();
         transitionSet.playTogether(animator, valuesAnimator);
         transitionSet.start();
+        }
     }
 
     private void enterConversationMode() {
@@ -425,23 +441,41 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
             return;
         }
 
-        // Prepare for animation.
-        mAnimatingFade = true;
-        captureListBitmaps();
-        ArrayList<PropertyValuesHolder> values = Lists.newArrayList();
-
         // Slide folders out towards the left off screen.
-        int foldersWidth = mFoldersView.getMeasuredWidth();
-        values.add(PropertyValuesHolder.ofInt("foldersLeft", 0, -foldersWidth));
+        final int foldersWidth = mFoldersView.getMeasuredWidth();
 
         // Shrink the conversation list to make room for the conversation, and default
         // it to collapsed in case it is collapsible.
-        int targetWidth = computeConversationListWidth();
+        final int targetWidth = computeConversationListWidth();
         setConversationListWidth(targetWidth);
 
-        int currentListLeft = foldersWidth + getConversationListLeft();
-        int targetListLeft = computeConversationListLeft(targetWidth);
+        final int currentListLeft = foldersWidth + getConversationListLeft();
+        final int targetListLeft = computeConversationListLeft(targetWidth);
         setConversationListLeft(targetListLeft);
+
+        // Set up the conversation view.
+        // Performance note: do not animate the width of this, as it is very
+        // expensive to reflow in the WebView.
+        setConversationWidth(computeConversationWidth());
+
+        // Temporary workaround while a full fix for b/6963808 is being prepared.
+        final boolean disableAnimation = true;
+        if (disableAnimation) {
+            mConversationListener.onAnimationStart(null);
+            setFoldersLeft(-foldersWidth);
+            setListLeft(targetListLeft);
+            setConversationLeft(targetListLeft + targetWidth);
+            mConversationListener.onAnimationEnd(null);
+            return;
+        } else {
+        // Unindented on purpose. The above fix is temporary.
+        // Prepare for animation.
+        mAnimatingFade = true;
+        ArrayList<PropertyValuesHolder> values = Lists.newArrayList();
+
+        captureListBitmaps();
+        values.add(PropertyValuesHolder.ofInt("foldersLeft", 0, -foldersWidth));
+
         if (currentListLeft != targetListLeft) {
             values.add(
                     PropertyValuesHolder.ofInt("listBitmapLeft", currentListLeft, targetListLeft));
@@ -452,15 +486,12 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
             values.add(PropertyValuesHolder.ofInt("listAlpha", 0, 255));
         }
 
-        // Set up the conversation view.
-        // Performance note: do not animate the width of this, as it is very
-        // expensive to reflow in the WebView.
-        setConversationWidth(computeConversationWidth());
         values.add(PropertyValuesHolder.ofInt(
                 "conversationLeft", getWidth(), targetListLeft + targetWidth));
 
         startLayoutAnimation(sAnimationSlideLeftDuration, mConversationListener, sLeftInterpolator,
                 values.toArray(new PropertyValuesHolder[values.size()]));
+        }
     }
 
     /**
