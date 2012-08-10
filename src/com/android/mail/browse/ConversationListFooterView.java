@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -33,6 +34,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AbstractActivityController;
 import com.android.mail.ui.AsyncRefreshTask;
+import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
 
 public class ConversationListFooterView extends LinearLayout implements View.OnClickListener {
@@ -46,9 +48,14 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
     private Uri mLoadMoreUri;
     private int mErrorStatus;
     private FragmentManager mFragmentManager;
+    private boolean mTabletDevice;
+    // Backgrounds for different states.
+    private static Drawable sWideBackground;
+    private static Drawable sNormalBackground;
 
     public ConversationListFooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mTabletDevice = Utils.useTabletUI(context);
     }
 
     @Override
@@ -183,5 +190,36 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
             showFooter = false;
         }
         return showFooter;
+    }
+
+    /**
+     * Update to the appropriate background when the view mode changes.
+     */
+    public void onViewModeChanged(int newMode) {
+        Drawable drawable;
+        if (mTabletDevice && newMode == ViewMode.CONVERSATION_LIST) {
+            drawable = getWideBackground();
+        } else {
+            drawable = getNormalBackground();
+        }
+        setBackgroundDrawable(drawable);
+    }
+
+    private Drawable getWideBackground() {
+        if (sWideBackground == null) {
+            sWideBackground = getBackground(R.drawable.conversation_wide_unread_selector);
+        }
+        return sWideBackground;
+    }
+
+    private Drawable getNormalBackground() {
+        if (sNormalBackground == null) {
+            sNormalBackground = getBackground(R.drawable.conversation_unread_selector);
+        }
+        return sNormalBackground;
+    }
+
+    private Drawable getBackground(int resId) {
+        return getContext().getResources().getDrawable(resId);
     }
 }

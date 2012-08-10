@@ -248,6 +248,7 @@ public final class ConversationListFragment extends ListFragment implements
         // The onViewModeChanged callback doesn't get called when the mode object is created, so
         // force setting the mode manually this time around.
         onViewModeChanged(mActivity.getViewMode().getMode());
+        mActivity.getViewMode().addListener(this);
 
         // Restore the list state
         if (mListSavedState != null) {
@@ -436,14 +437,19 @@ public final class ConversationListFragment extends ListFragment implements
             if (newMode == ViewMode.CONVERSATION) {
                 mListView.setBackgroundResource(R.drawable.panel_conversation_leftstroke);
             } else if (newMode == ViewMode.CONVERSATION_LIST) {
-                // There are no selected conversations when in conversation list mode.
+                // There are no selected conversations when in conversation
+                // list mode.
                 mListView.clearChoices();
                 mListView.setBackgroundDrawable(null);
             }
         } else {
             mListView.setBackgroundDrawable(null);
         }
+        if (mFooterView != null) {
+            mFooterView.onViewModeChanged(newMode);
+        }
     }
+
     /**
      * Handles a request to show a new conversation list, either from a search query or for viewing
      * a folder. This will initiate a data load, and hence must be called on the UI thread.
