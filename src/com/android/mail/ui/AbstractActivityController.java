@@ -183,7 +183,6 @@ public abstract class AbstractActivityController implements ActivityController {
     };
 
     private boolean mIsConversationListScrolling = false;
-    private long mConversationListRefreshTime = 0;
     private RefreshTimerTask mConversationListRefreshTask;
 
     /** Listeners that are interested in changes to current account settings. */
@@ -1907,22 +1906,14 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public final void onRefreshRequired() {
-        if (mIsConversationListScrolling) {
-            LogUtils.d(LOG_TAG, "onRefreshRequired: delay until scrolling done");
-            return;
-        }
         if (isAnimating()) {
             LogUtils.d(LOG_TAG, "onRefreshRequired: delay until animating done");
             return;
         }
         // Refresh the query in the background
-        final long now = System.currentTimeMillis();
-        final long sinceLastRefresh = now - mConversationListRefreshTime;
-            if (mConversationListCursor.isRefreshRequired()) {
-                mConversationListCursor.refresh();
-                mTracker.updateCursor(mConversationListCursor);
-                mConversationListRefreshTime = now;
-            }
+        if (mConversationListCursor.isRefreshRequired()) {
+            mConversationListCursor.refresh();
+        }
     }
 
     private boolean isAnimating() {
@@ -1944,7 +1935,7 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public final void onRefreshReady() {
-        if (!mIsConversationListScrolling && !isAnimating()) {
+        if (!isAnimating()) {
             // Swap cursors
             mConversationListCursor.sync();
         }
@@ -2004,24 +1995,16 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        mIsConversationListScrolling = (scrollState != OnScrollListener.SCROLL_STATE_IDLE);
-        if (!mIsConversationListScrolling) {
-            if (mConversationListCursor.isRefreshReady()) {
-                LogUtils.d(LOG_TAG, "Stop scrolling: try sync");
-                onRefreshReady();
-            }
-
-            if (mConversationListCursor.isRefreshRequired()) {
-                LogUtils.d(LOG_TAG, "Stop scrolling: refresh");
-                mConversationListCursor.refresh();
-            }
+    public void onAnimationEnd(AnimatedAdapter animatedAdapter) {
+        if (mConversationListCursor.isRefreshReady()) {
+            LogUtils.d(LOG_TAG, "Stop scrolling: try sync");
+            onRefreshReady();
         }
-    }
 
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
-            int totalItemCount) {
+        if (mConversationListCursor.isRefreshRequired()) {
+            LogUtils.d(LOG_TAG, "Stop scrolling: refresh");
+            mConversationListCursor.refresh();
+        }
     }
 
     @Override
@@ -2173,7 +2156,6 @@ public abstract class AbstractActivityController implements ActivityController {
             final ConversationListFragment convList = getConversationListFragment();
             if (convList != null) {
                 convList.onCursorUpdated();
-                convList.getListView().setOnScrollListener(AbstractActivityController.this);
 
                 if (convList.isVisible()) {
                     // The conversation list is visible.

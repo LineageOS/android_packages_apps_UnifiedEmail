@@ -27,7 +27,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.widget.AbsListView.OnScrollListener;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
@@ -45,7 +44,7 @@ import com.android.mail.ui.ViewMode.ModeChangeListener;
 public interface ActivityController extends LayoutListener,
         ModeChangeListener, ConversationListCallbacks,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
-        ConversationSetObserver, ConversationListener, OnScrollListener,
+        ConversationSetObserver, ConversationListener,
         FolderListFragment.FolderListSelectionListener, HelpCallback, UndoListener,
         ConversationUpdater, ErrorListener, FolderController {
 
@@ -309,4 +308,9 @@ public interface ActivityController extends LayoutListener,
      * @return a {@link SubjectDisplayChanger}, or null
      */
     SubjectDisplayChanger getSubjectDisplayChanger();
+
+    /**
+     * Handles the animation end of the animated adapter.
+     */
+    void onAnimationEnd(AnimatedAdapter animatedAdapter);
 }
