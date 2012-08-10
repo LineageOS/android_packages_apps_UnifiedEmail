@@ -188,7 +188,9 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         final String title;
         final int currentPosition = mPager.getCurrentItem();
 
-        if (position == currentPosition) {
+        if (isSingletonMode()) {
+            title = null;
+        } else if (position == currentPosition) {
             int total = getCount();
             if (mController != null) {
                 final Folder f = mController.getFolder();
@@ -198,7 +200,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
             }
             title = mResources.getString(R.string.conversation_count, position + 1, total);
         } else {
-            title = mResources.getString(position > currentPosition ?
+            title = mResources.getString(position < currentPosition ?
                     R.string.conversation_newer : R.string.conversation_older);
         }
         return title;
