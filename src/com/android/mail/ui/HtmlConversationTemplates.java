@@ -161,7 +161,6 @@ public class HtmlConversationTemplates {
 
         append(sMessage,
                 getMessageDomId(message),
-                MESSAGE_PREFIX + message.serverId,
                 expandedClass,
                 headerHeight,
                 showImagesClass,
