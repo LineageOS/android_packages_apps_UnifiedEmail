@@ -36,6 +36,7 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.google.common.collect.ImmutableList;
 
 public class LeaveBehindItem extends LinearLayout implements OnClickListener,
@@ -77,14 +78,14 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     }
 
     public void bindOperations(int position, Account account, AnimatedAdapter adapter,
-            ToastBarOperation undoOp, Conversation target) {
+            ToastBarOperation undoOp, Conversation target, Folder folder) {
         mUndoOp = undoOp;
         mAccount = account;
         mAdapter = adapter;
         mConversationCursor = (ConversationCursor) adapter.getCursor();
         setData(target);
         ((TextView) findViewById(R.id.undo_descriptionview)).setText(Html.fromHtml(mUndoOp
-                .getSingularDescription(getContext())));
+                .getSingularDescription(getContext(), folder)));
         ((RelativeLayout) findViewById(R.id.undo_button)).setOnClickListener(this);
     }
 

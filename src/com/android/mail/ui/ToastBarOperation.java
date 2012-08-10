@@ -17,6 +17,7 @@
 package com.android.mail.ui;
 
 import com.android.mail.R;
+import com.android.mail.providers.Folder;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -124,7 +125,10 @@ public class ToastBarOperation implements Parcelable {
         return desc;
     }
 
-    public String getSingularDescription(Context context) {
+    public String getSingularDescription(Context context, Folder folder) {
+        if (mAction == R.id.change_folder) {
+            return context.getString(R.string.folder_removed, folder.name);
+        }
         int resId = -1;
         switch (mAction) {
             case R.id.delete:
@@ -133,11 +137,8 @@ public class ToastBarOperation implements Parcelable {
             case R.id.archive:
                 resId = R.string.archived;
                 break;
-            case R.id.change_folder:
-                resId = R.string.folder_removed;
-                break;
         }
-        return(resId == -1) ? "" : context.getString(resId);
+        return (resId == -1) ? "" : context.getString(resId);
     }
 
     @Override
