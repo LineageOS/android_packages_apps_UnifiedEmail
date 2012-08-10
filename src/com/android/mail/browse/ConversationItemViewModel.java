@@ -124,6 +124,8 @@ public class ConversationItemViewModel {
 
     public SpannableStringBuilder messageInfoString;
 
+    public int styledMessageInfoStringOffset;
+
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
      * null is returned. Note: this should only be called from the UI thread.
