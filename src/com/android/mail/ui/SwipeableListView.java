@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -368,15 +369,11 @@ public class SwipeableListView extends ListView implements Callback {
     /**
      * Get the text resource corresponding to the result of a swipe.
      */
-    public int getSwipeActionText() {
-        switch (mSwipeAction) {
-            case R.id.archive:
-                return R.string.archive;
-            case R.id.delete:
-                return R.string.delete;
-            case R.id.change_folder:
-                return R.string.remove_folder;
+    public String getSwipeActionText() {
+        Resources res = getContext().getResources();
+        if (mSwipeAction == R.id.change_folder) {
+            return res.getString(R.string.remove_folder, mFolder.name);
         }
-        return -1;
+        return res.getString(mSwipeAction == R.id.archive ? R.string.archive : R.string.delete);
     }
 }
