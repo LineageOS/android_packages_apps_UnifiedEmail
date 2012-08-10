@@ -44,10 +44,6 @@ public class SwipeableConversationItemView extends FrameLayout {
         addView(mConversationItemView);
     }
 
-    public void addBackground(Context context, int textRes) {
-        addBackground(context, context.getResources().getString(textRes));
-    }
-
     public void addBackground(Context context, String text) {
         mBackground = (TextView) findViewById(R.id.background);
         if (mBackground == null) {
@@ -93,7 +89,7 @@ public class SwipeableConversationItemView extends FrameLayout {
                 priorityArrowsEnabled, animatedAdapter);
     }
 
-    public void startUndoAnimation(int actionText, ViewMode viewMode, AnimatedAdapter listener,
+    public void startUndoAnimation(String actionText, ViewMode viewMode, AnimatedAdapter listener,
             boolean swipe) {
         if (swipe) {
             addBackground(getContext(), actionText);

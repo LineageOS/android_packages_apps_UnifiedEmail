@@ -1911,7 +1911,7 @@ public abstract class AbstractActivityController implements ActivityController {
             LogUtils.d(LOG_TAG, "onRefreshRequired: delay until scrolling done");
             return;
         }
-        if (!isAnimating()) {
+        if (isAnimating()) {
             LogUtils.d(LOG_TAG, "onRefreshRequired: delay until animating done");
             return;
         }
