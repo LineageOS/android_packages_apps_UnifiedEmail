@@ -168,6 +168,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private String mAccount;
     private Runnable mListItemClick;
     private ControllableActivity mActivity;
+    private UnsetPressedState mUnsetPressedState;
     private static Bitmap sDateBackgroundAttachment;
     private static Bitmap sDateBackgroundNoAttachment;
     private static int sUndoAnimationOffset;
@@ -326,6 +327,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 }
             }
         };
+        mUnsetPressedState = new UnsetPressedState();
         Resources res = mContext.getResources();
 
         if (CHECKMARK_OFF == null) {
@@ -1194,6 +1196,12 @@ public class ConversationItemView extends View implements SwipeableItemView {
         removeCallbacks(mPendingCheckForLongPress);
     }
 
+    private final class UnsetPressedState implements Runnable {
+        public void run() {
+            setPressed(false);
+        }
+    }
+
     /**
      * ConversationItemView is given the first chance to handle touch events.
      */
@@ -1218,6 +1226,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 break;
             case MotionEvent.ACTION_CANCEL:
                 mDownEvent = false;
+                setPressed(false);
                 break;
             case MotionEvent.ACTION_UP:
                 if (mDownEvent) {
@@ -1237,11 +1246,12 @@ public class ConversationItemView extends View implements SwipeableItemView {
                         toggleStar();
                         handled = true;
                     } else {
-                        setActivated(true);
+                        setPressed(true);
                         // Put the list item click in the queue so we can show
                         // the user tap feedback first.
                         postDelayed(mListItemClick, 0);
                     }
+                    postDelayed(mUnsetPressedState, ViewConfiguration.getPressedStateDuration());
                     handled = true;
                 } else {
                     // There was no down event that this view was made aware of,
