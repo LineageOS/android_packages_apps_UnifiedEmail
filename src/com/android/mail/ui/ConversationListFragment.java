@@ -436,7 +436,8 @@ public final class ConversationListFragment extends ListFragment implements
         if (mTabletDevice) {
             if (newMode == ViewMode.CONVERSATION) {
                 mListView.setBackgroundResource(R.drawable.panel_conversation_leftstroke);
-            } else if (newMode == ViewMode.CONVERSATION_LIST) {
+            } else if (newMode == ViewMode.CONVERSATION_LIST
+                    || newMode == ViewMode.SEARCH_RESULTS_LIST) {
                 // There are no selected conversations when in conversation
                 // list mode.
                 mListView.clearChoices();
