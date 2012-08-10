@@ -130,7 +130,7 @@ public class MessageCursor extends CursorWrapper {
         while (moveToPosition(++pos)) {
             final Message m = getMessage();
             sb.append(String.format(
-                    "[Message #%d uri=%s id=%d serverId=%d, from='%s' draftType=%d isSending=%s]\n",
+                    "[Message #%d uri=%s id=%d serverId=%s, from='%s' draftType=%d isSending=%s]\n",
                     pos, m.uri, m.id, m.serverId, m.from, m.draftType, m.isSending));
         }
         return sb.toString();
