@@ -46,6 +46,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     private Account mAccount;
     private AnimatedAdapter mAdapter;
     private ConversationCursor mConversationCursor;
+    private static int sShrinkAnimationDuration = -1;
 
     public LeaveBehindItem(Context context) {
         this(context, null);
@@ -57,6 +58,10 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
 
     public LeaveBehindItem(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        if (sShrinkAnimationDuration == -1) {
+            sShrinkAnimationDuration = context.getResources().getInteger(
+                    R.integer.shrink_animation_duration);
+        }
     }
 
     @Override
@@ -183,13 +188,14 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
 
     private Conversation mData;
     private int mAnimatedHeight = -1;
+    private int mWidth;
 
     /**
      * Start the animation on an animating view.
      * @param item the conversation to animate
      * @param listener the method to call when the animation is done
-     * @param undo true if an operation is being undone. We animate the item away during delete.
-     * Undoing populates the item.
+     * @param undo true if an operation is being undone. We animate the item
+     *            away during delete. Undoing populates the item.
      */
     public void startAnimation(ViewMode viewMode, AnimatorListener listener) {
         int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(), viewMode);
@@ -198,9 +204,10 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         final int end = 0;
         ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
         mAnimatedHeight = start;
+        mWidth = getMeasuredWidth();
         height.setInterpolator(new DecelerateInterpolator(2.0f));
         height.addListener(listener);
-        height.setDuration(500);
+        height.setDuration(sShrinkAnimationDuration);
         height.start();
     }
 
@@ -215,7 +222,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (mAnimatedHeight != -1) {
-            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mAnimatedHeight);
+            setMeasuredDimension(mWidth, mAnimatedHeight);
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
