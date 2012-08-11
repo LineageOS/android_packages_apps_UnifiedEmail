@@ -180,8 +180,8 @@ public class SwipeableListView extends ListView implements Callback {
         final ToastBarOperation undoOp;
 
         undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO);
-        target.getConversation().position = getPositionForView(target);
         Conversation conv = target.getConversation();
+        target.getConversation().position = findConversation(target, conv);
         final AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter == null) {
             return;
