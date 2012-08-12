@@ -40,6 +40,7 @@
     <dimen name="date_background_height">17sp</dimen>
     <dimen name="date_background_padding_left">4dip</dimen>
     <dimen name="touch_slop">16dip</dimen>
+    <dimen name="move_slop">4dip</dimen>
     <dimen name="standard_scaled_dimen">100sp</dimen>
     <dimen name="folder_cell_width">8dip</dimen>
     <dimen name="triangle_width">15dip</dimen>
