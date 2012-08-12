@@ -54,7 +54,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_marginRight="8dip"
-        android:layout_toRightOf="@id/undo_separator"
         android:src="@drawable/ic_menu_revert_holo_dark" />
 
     <TextView
@@ -62,7 +61,6 @@
         style="@style/UndoTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_toRightOf="@id/undo_icon"
         android:gravity="center_vertical"
         android:paddingRight="16dip"
         android:text="@string/undo"
