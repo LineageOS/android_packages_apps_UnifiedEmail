@@ -60,6 +60,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final HashSet<Integer> mSwipeUndoingItems = new HashSet<Integer>();
     private final HashMap<Long, SwipeableConversationItemView> mAnimatingViews =
             new HashMap<Long, SwipeableConversationItemView>();
+    private HashMap<Long, LeaveBehindItem> mFadeLeaveBehindItems =
+            new HashMap<Long, LeaveBehindItem>();
     /** The current account */
     private final Account mAccount;
     private final Context mContext;
@@ -91,7 +93,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final SwipeableListView mListView;
     private Settings mCachedSettings;
     private final boolean mSwipeEnabled;
-    private LeaveBehindItem mFadeLeaveBehindItem;
     private LeaveBehindItem mLeaveBehindItem;
     /** True if priority inbox markers are enabled, false otherwise. */
     private final boolean mPriorityMarkersEnabled;
@@ -297,7 +298,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     private boolean hasFadeLeaveBehinds() {
-        return mFadeLeaveBehindItem != null;
+        return !mFadeLeaveBehindItems.isEmpty();
     }
 
     public LeaveBehindItem setupLeaveBehind(Conversation target, ToastBarOperation undoOp,
@@ -326,7 +327,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             // it.
             Conversation conv = mLeaveBehindItem.getData();
             if (conv.position >= startPosition && conv.position <= endPosition) {
-                mFadeLeaveBehindItem = mLeaveBehindItem;
+                mFadeLeaveBehindItems.put(conv.id, mLeaveBehindItem);
             }
             clearLeaveBehind(conv.id);
         }
@@ -342,7 +343,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             mLeaveBehindItem.commit();
         }
         if (hasFadeLeaveBehinds()) {
-            mFadeLeaveBehindItem.commit();
+            for (LeaveBehindItem item : mFadeLeaveBehindItems.values()) {
+                item.commit();
+            }
         }
         if (!mLastDeletingItems.isEmpty()) {
             mLastDeletingItems.clear();
@@ -355,7 +358,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     private LeaveBehindItem getFadeLeaveBehindItem(int position, Conversation target) {
-        return mFadeLeaveBehindItem;
+        return mFadeLeaveBehindItems.get(target.id);
     }
 
     @Override
@@ -440,7 +443,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     private boolean isPositionFadeLeaveBehind(Conversation conv) {
         return hasFadeLeaveBehinds()
-                && mFadeLeaveBehindItem.getConversationId() == conv.id
+                && mFadeLeaveBehindItems.containsKey(conv.id)
                 && conv.isMostlyDead();
     }
 
@@ -565,8 +568,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public void clearLeaveBehind(long itemId) {
         if (hasLeaveBehinds() && mLeaveBehindItem.getConversationId() == itemId) {
             mLeaveBehindItem = null;
-        } else if (hasFadeLeaveBehinds() && mFadeLeaveBehindItem.getConversationId() == itemId) {
-            mFadeLeaveBehindItem = null;
+        } else if (hasFadeLeaveBehinds()) {
+            mFadeLeaveBehindItems.remove(itemId);
         } else {
             LogUtils.d(LOG_TAG, "Trying to clear a non-existant leave behind");
         }
@@ -613,7 +616,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public boolean isAnimating() {
         return !mUndoingItems.isEmpty()
                 || !mSwipeUndoingItems.isEmpty()
-                || mFadeLeaveBehindItem != null
+                || !mFadeLeaveBehindItems.isEmpty()
                 || !mDeletingItems.isEmpty()
                 || !mSwipeDeletingItems.isEmpty();
     }
