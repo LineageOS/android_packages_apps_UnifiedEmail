@@ -68,7 +68,8 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.undo_button:
+            case R.id.undo_text:
+            case R.id.undo_icon:
                 if (mAccount.undoUri != null) {
                     // NOTE: We might want undo to return the messages affected,
                     // in which case the resulting cursor might be interesting...
@@ -91,7 +92,8 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         setData(target);
         ((TextView) findViewById(R.id.undo_descriptionview)).setText(Html.fromHtml(mUndoOp
                 .getSingularDescription(getContext(), folder)));
-        ((RelativeLayout) findViewById(R.id.undo_button)).setOnClickListener(this);
+        findViewById(R.id.undo_text).setOnClickListener(this);
+        findViewById(R.id.undo_icon).setOnClickListener(this);
     }
 
     public void commit() {
