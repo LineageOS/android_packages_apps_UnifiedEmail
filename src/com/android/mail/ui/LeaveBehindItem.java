@@ -191,6 +191,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     private Conversation mData;
     private int mAnimatedHeight = -1;
     private int mWidth;
+    private boolean mAnimating;
 
     /**
      * Start the animation on an animating view.
@@ -200,17 +201,20 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
      *            away during delete. Undoing populates the item.
      */
     public void startAnimation(ViewMode viewMode, AnimatorListener listener) {
-        int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(), viewMode);
-        setMinimumHeight(minHeight);
-        final int start = minHeight;
-        final int end = 0;
-        ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
-        mAnimatedHeight = start;
-        mWidth = getMeasuredWidth();
-        height.setInterpolator(new DecelerateInterpolator(2.0f));
-        height.addListener(listener);
-        height.setDuration(sShrinkAnimationDuration);
-        height.start();
+        if (!mAnimating) {
+            mAnimating = true;
+            int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(), viewMode);
+            setMinimumHeight(minHeight);
+            final int start = minHeight;
+            final int end = 0;
+            ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
+            mAnimatedHeight = start;
+            mWidth = getMeasuredWidth();
+            height.setInterpolator(new DecelerateInterpolator(2.0f));
+            height.addListener(listener);
+            height.setDuration(sShrinkAnimationDuration);
+            height.start();
+        }
     }
 
     public void setData(Conversation conversation) {
