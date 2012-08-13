@@ -312,11 +312,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return leaveBehind;
     }
 
-    public void fadeOutLeaveBehindItems(DestructiveAction action) {
-        fadeOutLeaveBehindItems();
-        performAndSetNextAction(action);
-    }
-
     public void fadeOutLeaveBehindItems() {
         // Remove any previously existing leave behind item.
         final int startPosition = mListView.getFirstVisiblePosition();
@@ -340,12 +335,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public void commitLeaveBehindItems() {
         // Remove any previously existing leave behinds.
         if (hasLeaveBehinds()) {
-            mLeaveBehindItem.commit();
-        }
-        if (hasFadeLeaveBehinds()) {
-            for (LeaveBehindItem item : mFadeLeaveBehindItems.values()) {
-                item.commit();
-            }
+            mLeaveBehindItem.dismiss();
         }
         if (!mLastDeletingItems.isEmpty()) {
             mLastDeletingItems.clear();
