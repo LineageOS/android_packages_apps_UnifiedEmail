@@ -1636,7 +1636,6 @@ public abstract class AbstractActivityController implements ActivityController {
                                 // Dismiss waiting mode
                                 hideWaitForInitialization();
                             }
-                            initializeShareIntents();
                         } else if (!updatedAccount.isAccountIntialized() && inWaitingMode) {
                             // Update the WaitFragment's account object
                             updateWaitMode();
@@ -1708,33 +1707,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 mActivity.invalidateOptionsMenu();
                 mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
                 break;
-        }
-    }
-
-    private void initializeShareIntents() {
-        Resources res = mContext.getResources();
-        String composeName = res.getString(R.string.compose_component_name);
-        initializeComponent(composeName);
-        String autoSendName = res.getString(R.string.autosend_component_name);
-        initializeComponent(autoSendName);
-    }
-
-    private void initializeComponent(String name) {
-        if (!TextUtils.isEmpty(name)) {
-            final PackageManager pm = mContext.getPackageManager();
-            final ComponentName component = new ComponentName(mContext, name);
-            if (pm.getComponentEnabledSetting(component)
-                    != PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
-                mEnableShareIntents = new AsyncTask<String, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(String... args) {
-                        pm.setComponentEnabledSetting(component,
-                                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                                PackageManager.DONT_KILL_APP);
-                        return null;
-                    }
-                }.execute(name);
-            }
         }
     }
 
