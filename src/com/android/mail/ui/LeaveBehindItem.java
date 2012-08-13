@@ -28,7 +28,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -97,38 +96,17 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     }
 
     public void commit() {
-        Conversation conv = getData();
         if (mConversationCursor != null) {
-            mConversationCursor.delete(getContext(), ImmutableList.of(conv));
-        }
-        if (mAdapter != null) {
-            mAdapter.clearLeaveBehind(conv.id);
-            mAdapter.notifyDataSetChanged();
+            mConversationCursor.delete(getContext(), ImmutableList.of(getData()));
         }
     }
 
     public void dismiss() {
         if (mAdapter != null) {
-            mAdapter.fadeOutLeaveBehindItems(new KillCompletelyAction(getData()));
+            mAdapter.fadeOutLeaveBehindItems();
             mAdapter.notifyDataSetChanged();
         }
     }
-
-    private class KillCompletelyAction implements DestructiveAction {
-        Conversation mConv;
-
-        public KillCompletelyAction(Conversation conv) {
-            mConv = conv;
-        }
-
-        @Override
-        public void performAction() {
-            if (mConversationCursor != null) {
-                mConversationCursor.delete(getContext(), ImmutableList.of(mConv));
-            }
-        };
-
-    };
 
     public long getConversationId() {
         return getData().id;
