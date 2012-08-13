@@ -17,6 +17,7 @@
 package com.android.mail.providers;
 
 import android.text.TextUtils;
+import com.google.common.base.Objects;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -136,7 +137,7 @@ public class ConversationInfo {
 
     @Override
     public int hashCode() {
-        return messageCount ^ draftCount ^ firstSnippet.hashCode() ^ lastSnippet.hashCode()
-                ^ firstUnreadSnippet.hashCode() ^ messageInfos.hashCode();
+        return Objects.hashCode(messageCount, draftCount, messageInfos, firstSnippet,
+                lastSnippet, firstUnreadSnippet);
     }
 }

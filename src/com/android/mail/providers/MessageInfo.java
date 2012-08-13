@@ -17,6 +17,7 @@
 package com.android.mail.providers;
 
 import android.text.TextUtils;
+import com.google.common.base.Objects;
 
 import java.util.regex.Pattern;
 
@@ -71,6 +72,6 @@ public class MessageInfo {
 
     @Override
     public int hashCode() {
-        return (read ? 1 : 0) ^ (starred ? 1 : 0) ^ sender.hashCode();
+        return Objects.hashCode(read, starred, sender);
     }
 }
