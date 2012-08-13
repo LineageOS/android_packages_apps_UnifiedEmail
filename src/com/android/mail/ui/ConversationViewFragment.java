@@ -76,6 +76,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.ui.ConversationViewState.MessageViewState.ExpansionState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -559,6 +560,7 @@ public final class ConversationViewFragment extends Fragment implements
         int collapsedStart = -1;
         ConversationMessage prevCollapsedMsg = null;
         boolean prevSafeForImages = false;
+        final Set<Message> potentiallySuperCollapsedMsgs = Sets.newHashSet();
 
         while (messageCursor.moveToPosition(++pos)) {
             final ConversationMessage msg = messageCursor.getMessage();
@@ -567,28 +569,37 @@ public final class ConversationViewFragment extends Fragment implements
             final boolean safeForImages = msg.alwaysShowImages /* || savedStateSaysSafe */;
             allowNetworkImages |= safeForImages;
 
-            final Boolean savedExpanded = prevState.getExpandedState(msg);
-            final boolean expanded;
+            final Integer savedExpanded = prevState.getExpansionState(msg);
+            final int expandedState;
             if (savedExpanded != null) {
-                expanded = savedExpanded;
-                mViewState.setExpandedState(msg, expanded);
+                expandedState = savedExpanded;
             } else {
-                expanded = !msg.read || msg.starred || messageCursor.isLast();
+                expandedState = (!msg.read || msg.starred || messageCursor.isLast()) ?
+                        ExpansionState.EXPANDED : ExpansionState.COLLAPSED;
             }
+            mViewState.setExpansionState(msg, expandedState);
 
             // save off "read" state from the cursor
             // later, the view may not match the cursor (e.g. conversation marked read on open)
             mViewState.setReadState(msg, msg.read);
 
-            if (savedExpanded == null && !expanded) {
-                // contribute to a super-collapsed block that will be emitted just before the next
-                // expanded header
-                if (collapsedStart < 0) {
-                    collapsedStart = pos;
+            if (!ExpansionState.isExpanded(expandedState)) {
+                // We only want to consider this for inclusion in the super collapsed block if
+                // 1) The we don't have previous state about this message  (The first time that the
+                //    user opens a conversation
+                // 2) The previously saved state for this message indicates that this message is
+                //    in the super collapsed block.
+                if (savedExpanded == null || ExpansionState.isSuperCollapsed(savedExpanded)) {
+                    // contribute to a super-collapsed block that will be emitted just before the
+                    // next expanded header
+                    if (collapsedStart < 0) {
+                        collapsedStart = pos;
+                    }
+                    prevCollapsedMsg = msg;
+                    prevSafeForImages = safeForImages;
+                    potentiallySuperCollapsedMsgs.add(msg);
+                    continue;
                 }
-                prevCollapsedMsg = msg;
-                prevSafeForImages = safeForImages;
-                continue;
             }
 
             // resolve any deferred decisions on previous collapsed items
@@ -599,12 +610,15 @@ public final class ConversationViewFragment extends Fragment implements
                             prevSafeForImages);
                 } else {
                     renderSuperCollapsedBlock(collapsedStart, pos - 1);
+                    mViewState.setExpansionStates(
+                            potentiallySuperCollapsedMsgs, ExpansionState.SUPER_COLLAPSED);
                 }
+                potentiallySuperCollapsedMsgs.clear();
                 prevCollapsedMsg = null;
                 collapsedStart = -1;
             }
 
-            renderMessage(msg, expanded, safeForImages);
+            renderMessage(msg, ExpansionState.isExpanded(expandedState), safeForImages);
         }
 
         mWebView.getSettings().setBlockNetworkImage(!allowNetworkImages);
@@ -660,7 +674,7 @@ public final class ConversationViewFragment extends Fragment implements
             replacements.add(header);
             replacements.add(footer);
 
-            mViewState.setExpandedState(msg, false);
+            mViewState.setExpansionState(msg, ExpansionState.COLLAPSED);
         }
 
         mAdapter.replaceSuperCollapsedBlock(blockToReplace, replacements);
@@ -791,7 +805,8 @@ public final class ConversationViewFragment extends Fragment implements
         mWebView.loadUrl(String.format("javascript:setMessageBodyVisible('%s', %s, %d);",
                 mTemplates.getMessageDomId(item.message), item.isExpanded(), h));
 
-        mViewState.setExpandedState(item.message, item.isExpanded());
+        mViewState.setExpansionState(item.message,
+                item.isExpanded() ? ExpansionState.EXPANDED : ExpansionState.COLLAPSED);
     }
 
     @Override

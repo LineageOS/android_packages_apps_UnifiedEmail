@@ -74,20 +74,26 @@ class ConversationViewState implements Parcelable {
      * are expanded by default (e.g. last message, starred messages).
      *
      * @param m a Message in the conversation
-     * @return true if the user expanded it, false if the user collapsed it, or null otherwise.
+     * @return 1 = expanded, 2 = collapsed, 3 = super collapsed, or null otherwise.
      */
-    public Boolean getExpandedState(Message m) {
+    public Integer getExpansionState(Message m) {
         final MessageViewState mvs = mMessageViewStates.get(m.uri);
-        return (mvs == null ? null : mvs.expanded);
+        return (mvs == null ? null : mvs.expansionState);
     }
 
-    public void setExpandedState(Message m, boolean expanded) {
+    public void setExpansionState(Message m, int expansionState) {
         MessageViewState mvs = mMessageViewStates.get(m.uri);
         if (mvs == null) {
             mvs = new MessageViewState();
         }
-        mvs.expanded = expanded;
+        mvs.expansionState = expansionState;
         mMessageViewStates.put(m.uri, mvs);
+    }
+
+    public void setExpansionStates(Set<Message> messages, int expansionState) {
+        for (Message m : messages) {
+            setExpansionState(m, expansionState);
+        }
     }
 
     public String getConversationInfo() {
@@ -161,12 +167,24 @@ class ConversationViewState implements Parcelable {
     // Keep per-message state in an inner Parcelable.
     // This is a semi-private implementation detail.
     static class MessageViewState implements Parcelable {
+        public static class ExpansionState {
+            public static int EXPANDED = 1;
+            public static int COLLAPSED = 2;
+            public static int SUPER_COLLAPSED = 3;
+
+            public static boolean isExpanded(int state) {
+                return state == EXPANDED;
+            }
+            public static boolean isSuperCollapsed(int state) {
+                return state == SUPER_COLLAPSED;
+            }
+        }
 
         public boolean read;
         /**
-         * null = default, false = collapsed, true = expanded
+         * null = default, 1 = expanded, 2 = collapsed, 3 = super collapsed
          */
-        public Boolean expanded;
+        public Integer expansionState;
 
         public MessageViewState() {}
 
@@ -178,13 +196,13 @@ class ConversationViewState implements Parcelable {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(read ? 1 : 0);
-            dest.writeInt(expanded == null ? -1 : (expanded ? 1 : 0));
+            dest.writeInt(expansionState == null ? -1 : expansionState.intValue());
         }
 
         private MessageViewState(Parcel source) {
             read = (source.readInt() != 0);
             final int expandedVal = source.readInt();
-            expanded = (expandedVal == -1) ? null : (expandedVal != 0);
+            expansionState = (expandedVal == -1) ? null : expandedVal;
         }
 
         @SuppressWarnings("hiding")
