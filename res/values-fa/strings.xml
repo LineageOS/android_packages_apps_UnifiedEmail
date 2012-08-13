@@ -55,7 +55,8 @@
     <string name="mute" msgid="1995954983688603977">"نادیده گرفتن"</string>
     <string name="add_star" msgid="2866003744391266498">"افزودن ستاره"</string>
     <string name="remove_star" msgid="4372327933122106128">"حذف ستاره"</string>
-    <string name="remove_folder" msgid="6098805949226229827">"حذف از پوشه"</string>
+    <!-- no translation found for remove_folder (4906542720439865413) -->
+    <skip />
     <string name="archive" msgid="847250094775910499">"بایگانی"</string>
     <string name="report_spam" msgid="6467567747975393907">"گزارش هرزنامه"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"گزارش بعنوان غیرهرزنامه"</string>
@@ -218,7 +219,8 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"حذف شد"</string>
     <string name="archived" msgid="7533995360704366325">"بایگانی شد"</string>
-    <string name="folder_removed" msgid="858015177285651764">"از پوشه حذف شد"</string>
+    <!-- no translation found for folder_removed (1047474677580149436) -->
+    <skip />
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به عنوان مهم علامت‌گذاری شد."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به عنوان مهم علامت‌گذاری شد."</item>
@@ -295,11 +297,11 @@
     <string name="folders_activity_instructions" msgid="5237801615196958918">"پوشه‌ای برای این حساب تنظیم نشده است."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"موفقیت‌آمیز"</item>
-    <item msgid="5037283655022689372">"خطای اتصال"</item>
-    <item msgid="4252875340758600974">"خطای تأیید اعتبار"</item>
-    <item msgid="7611299631880179587">"خطای امنیتی"</item>
-    <item msgid="665244114363057627">"خطای فضای ذخیره"</item>
-    <item msgid="9190542479647789762">"خطای داخلی"</item>
+    <item msgid="7109065688039971961">"اتصال برقرار نیست."</item>
+    <item msgid="8437496123716232060">"ورود به برنامه انجام نشد."</item>
+    <item msgid="1651266301325684887">"خطای امنیتی."</item>
+    <item msgid="1461520171154288533">"همگام‌سازی انجام نشد."</item>
+    <item msgid="8749857841162829469">"خطا"</item>
   </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"برای راه‌اندازی لمس کنید"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"برای مشاهده مکالمات، این پوشه همگام شود."</string>
@@ -342,6 +344,12 @@
     <item msgid="6593672292311851204">"اغلب استفاده می‌شود"</item>
     <item msgid="3584541772344786752">"همه پوشه‌ها"</item>
   </string-array>
+    <string name="signin" msgid="8958889809095796177">"ورود به برنامه"</string>
+    <string name="info" msgid="6009817562073541204">"اطلاعات"</string>
+    <string name="report" msgid="5417082746232614958">"گزارش"</string>
+    <string name="sync_error" msgid="7368819509040597851">"همگام‌سازی نشد."</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"دستگاه شما فضای ذخیره کافی برای همگام‌سازی ندارد."</string>
+    <string name="storage" msgid="3262760336059073446">"محل ذخیره"</string>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>

@@ -55,7 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Ignorar"</string>
     <string name="add_star" msgid="2866003744391266498">"Adicionar estrela"</string>
     <string name="remove_star" msgid="4372327933122106128">"Remover estrela"</string>
-    <string name="remove_folder" msgid="6098805949226229827">"Remover da pasta"</string>
+    <string name="remove_folder" msgid="4906542720439865413">"Remover de <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="847250094775910499">"Arquivar"</string>
     <string name="report_spam" msgid="6467567747975393907">"Denunciar spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Informar que não é spam"</string>
@@ -218,7 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Eliminada"</string>
     <string name="archived" msgid="7533995360704366325">"Arquivada"</string>
-    <string name="folder_removed" msgid="858015177285651764">"Removida da pasta"</string>
+    <string name="folder_removed" msgid="1047474677580149436">"Removida de <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; marcada como importante."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; marcadas como importantes."</item>
@@ -254,10 +254,11 @@
     <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> de <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
     <string name="conversation_newer" msgid="7381341099165809801">"Mais recente"</string>
     <string name="conversation_older" msgid="6384287019562069353">"Mais antigo"</string>
-    <!-- no translation found for new_incoming_messages:one (8778057959289554701) -->
-    <!-- no translation found for new_incoming_messages:other (6738671955116853198) -->
-    <!-- no translation found for show (7114006150083237343) -->
-    <skip />
+  <plurals name="new_incoming_messages">
+    <item quantity="one" msgid="8778057959289554701">"Nova mensagem de <xliff:g id="SENDER">%s</xliff:g>."</item>
+    <item quantity="other" msgid="6738671955116853198">"<xliff:g id="COUNT">%1$d</xliff:g> mensagens novas"</item>
+  </plurals>
+    <string name="show" msgid="7114006150083237343">"Mostrar"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Expandir detalhes do destinatário"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Fechar detalhes do destinatário"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Mostrar informações de contacto de <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -294,11 +295,11 @@
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Não foram definidas pastas para esta conta."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Êxito"</item>
-    <item msgid="5037283655022689372">"Erro de ligação"</item>
-    <item msgid="4252875340758600974">"Erro de autenticação"</item>
-    <item msgid="7611299631880179587">"Erro de segurança"</item>
-    <item msgid="665244114363057627">"Erro de armazenamento"</item>
-    <item msgid="9190542479647789762">"Erro interno."</item>
+    <item msgid="7109065688039971961">"Sem ligação."</item>
+    <item msgid="8437496123716232060">"Não foi possível iniciar sessão."</item>
+    <item msgid="1651266301325684887">"Erro de segurança"</item>
+    <item msgid="1461520171154288533">"Não foi possível sincronizar."</item>
+    <item msgid="8749857841162829469">"Erro"</item>
   </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Toque para configurar"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Para ver as conversas, sincronize esta pasta."</string>
@@ -341,6 +342,12 @@
     <item msgid="6593672292311851204">"Utilizado Frequentemente"</item>
     <item msgid="3584541772344786752">"Todas as Pastas"</item>
   </string-array>
+    <string name="signin" msgid="8958889809095796177">"Iniciar sessão"</string>
+    <string name="info" msgid="6009817562073541204">"Informações"</string>
+    <string name="report" msgid="5417082746232614958">"Relatório"</string>
+    <string name="sync_error" msgid="7368819509040597851">"Não foi possível sincronizar."</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"O dispositivo não tem espaço de armazenamento suficiente para sincronizar."</string>
+    <string name="storage" msgid="3262760336059073446">"Armazenamento"</string>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
