@@ -141,8 +141,6 @@ public final class TwoPaneController extends AbstractActivityController {
 
         // The tablet layout needs to refer to mode changes.
         mViewMode.addListener(mLayout);
-        // The activity controller needs to listen to layout changes.
-        mLayout.setListener(this);
         final boolean isParentInitialized = super.onCreate(savedState);
         return isParentInitialized;
     }
@@ -227,11 +225,6 @@ public final class TwoPaneController extends AbstractActivityController {
         if (!visible) {
             mPagerController.hide();
         }
-    }
-
-    @Override
-    public void onConversationListVisibilityChanged(boolean visible) {
-        super.onConversationListVisibilityChanged(visible);
     }
 
     @Override
