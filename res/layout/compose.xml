@@ -15,70 +15,83 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white">
+    android:layout_width="match_parent">
+    <RelativeLayout
+        android:id="@+id/wait"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"/>
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:visibility="gone"
+        android:id="@+id/compose">
 
-    <ScrollView
-      android:id="@+id/compose_scrollview"
-      android:fillViewport="true"
-      android:layout_height="0dip"
-      android:layout_weight="1"
-      android:layout_width="match_parent">
+        <ScrollView
+            android:id="@+id/compose_scrollview"
+            android:fillViewport="true"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:layout_width="match_parent">
 
-        <LinearLayout android:id="@+id/content"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:animateLayoutChanges="true"
-            android:paddingLeft="16dip"
-            android:paddingRight="16dip">
-
-            <include layout="@layout/compose_from"/>
-
-            <LinearLayout android:layout_height="wrap_content"
+            <LinearLayout android:id="@+id/content"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:paddingLeft="16dip"
+                android:paddingRight="16dip">
 
-                <include layout="@layout/compose_recipients"
+                <include layout="@layout/compose_from"/>
+
+                <LinearLayout android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/compose_recipients"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+                <!--  Attachments -->
+                <com.android.mail.compose.AttachmentsView android:id="@+id/attachments"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:animateLayoutChanges="true"
+                    android:paddingTop="8dip"
+                    android:paddingRight="5dip"
+                    android:paddingBottom="0dip"
+                    android:paddingLeft="5dip"
+                    android:visibility="gone">
+                    <include layout="@layout/compose_attachments" />
+                </com.android.mail.compose.AttachmentsView>
+                <!-- Body -->
+                <include layout="@layout/compose_body"/>
+
+                <!-- Quoted text -->
+                <com.android.mail.compose.QuotedTextView android:id="@+id/quoted_text_view"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:visibility="gone" />
+
+                <View android:id="@+id/composearea_tap_trap_bottom"
+                    android:clickable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/compose_background_color"/>
 
             </LinearLayout>
 
-            <!--  Attachments -->
-            <com.android.mail.compose.AttachmentsView android:id="@+id/attachments"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:animateLayoutChanges="true"
-                android:paddingTop="8dip"
-                android:paddingRight="5dip"
-                android:paddingBottom="0dip"
-                android:paddingLeft="5dip"
-                android:visibility="gone">
-                <include layout="@layout/compose_attachments" />
-            </com.android.mail.compose.AttachmentsView>
-            <!-- Body -->
-            <include layout="@layout/compose_body"/>
+        </ScrollView>
 
-            <!-- Quoted text -->
-            <com.android.mail.compose.QuotedTextView android:id="@+id/quoted_text_view"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:visibility="gone" />
-
-            <View android:id="@+id/composearea_tap_trap_bottom"
-                android:clickable="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/compose_background_color"/>
-
-        </LinearLayout>
-
-    </ScrollView>
-
-</LinearLayout>
+    </LinearLayout>
+</FrameLayout>
