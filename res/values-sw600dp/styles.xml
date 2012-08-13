@@ -61,7 +61,4 @@
     <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
     </style>
 
-    <style name="AccountSpinnerStyle">
-        <item name="android:layout_width">@dimen/spinner_frame_width</item>
-    </style>
 </resources>
