@@ -121,6 +121,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static int sDateTextColor;
     private static int sDateBackgroundPaddingLeft;
     private static int sTouchSlop;
+    private static int sMoveSlop;
     private static int sDateBackgroundHeight;
     private static int sStandardScaledDimen;
     private static int sShrinkAnimationDuration;
@@ -376,6 +377,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             sDateBackgroundPaddingLeft = res
                     .getDimensionPixelSize(R.dimen.date_background_padding_left);
             sTouchSlop = res.getDimensionPixelSize(R.dimen.touch_slop);
+            sMoveSlop = res.getDimensionPixelSize(R.dimen.move_slop);
             sDateBackgroundHeight = res.getDimensionPixelSize(R.dimen.date_background_height);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
@@ -1229,16 +1231,26 @@ public class ConversationItemView extends View implements SwipeableItemView {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int x = mLastTouchX = (int) event.getX();
-        int y = mLastTouchY = (int) event.getY();
+        int x = (int) event.getX();
+        int y = (int) event.getY();
         if (!mSwipeEnabled) {
             return onTouchEventNoSwipe(event);
         }
         boolean handled = true;
 
         switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                // If we move > slop, cancel the long press event.
+                if (Math.abs(mLastTouchX - x) > sMoveSlop
+                        || Math.abs(mLastTouchY - y) > sMoveSlop) {
+                    cancelTap();
+                    resetDownEvent();
+                }
+                break;
             case MotionEvent.ACTION_DOWN:
                 mDownEvent = true;
+                mLastTouchX = x;
+                mLastTouchY = y;
                 // This checks for long press. The actual tap is handled on "up".
                 checkForLongPress();
                 // In order to allow the down event and subsequent move events
@@ -1247,6 +1259,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 handled = true;
                 break;
             case MotionEvent.ACTION_CANCEL:
+                resetDownEvent();
                 mDownEvent = false;
                 setPressed(false);
                 break;
@@ -1280,11 +1293,17 @@ public class ConversationItemView extends View implements SwipeableItemView {
                     // therefore it cannot handle it.
                     handled = false;
                 }
+                resetDownEvent();
                 break;
         }
-
         // Let View try to handle it as well.
         return handled || super.onTouchEvent(event);
+    }
+
+    private void resetDownEvent() {
+        mDownEvent = true;
+        mLastTouchX = -1;
+        mLastTouchY = -1;
     }
 
     private ListView getListView() {
