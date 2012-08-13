@@ -27,10 +27,11 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
+import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.RecentFolderList;
-import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -91,6 +92,28 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
+    final AccountObserver mAccountObserver = new AccountObserver() {
+        @Override
+        public void onChanged(Account newAccount){
+            // If the account is missing or we have no accounts array, we cannot
+            // proceed.
+            if (newAccount == null) {
+                return;
+            }
+            if (newAccount.uri.equals(getCurrentAccountUri())) {
+                // The current account matches what is being given, get out.
+                return;
+            }
+            mCurrentAccount = newAccount;
+            final int pos = Account.findPosition(mAllAccounts, newAccount.uri);
+            LogUtils.d(LOG_TAG, "setCurrentAccount: mCurrentAccountPos = %d", pos);
+            if (pos >= 0) {
+                requestRecentFoldersAndRedraw();
+            }
+            notifyDataSetChanged();
+        }
+    };
+
     /**
      * There can be three types of views: Accounts (test@android.com, fifi@example.com), folders
      * (Inbox, Outbox) or header and footer. This method returns the type of account at given
@@ -143,7 +166,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @param recentFolders
      * @param showAllFolders
      */
-    public AccountSpinnerAdapter(RestrictedActivity activity, Context context,
+    public AccountSpinnerAdapter(ControllableActivity activity, Context context,
             RecentFolderList recentFolders, boolean showAllFolders) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
@@ -152,6 +175,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         // Owned by the AccountSpinnerAdapter since nobody else needed it. Move to controller if
         // required.
         mFolderWatcher = new FolderWatcher(activity);
+        mCurrentAccount = mAccountObserver.initialize(activity.getAccountController());
     }
 
 
@@ -187,30 +211,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Set the current account.
-     * @param account
-     * @return if changed.
-     */
-    public boolean setCurrentAccount(Account account) {
-        // If the account is missing or we have no accounts array, we cannot
-        // proceed.
-        if (account == null) {
-            return false;
-        }
-        if (account.uri.equals(getCurrentAccountUri())) {
-            // The current account matches what is being given, get out.
-            return false;
-        }
-        mCurrentAccount = account;
-        final int pos = Account.findPosition(mAllAccounts, account.uri);
-        LogUtils.d(LOG_TAG, "setCurrentAccount: mCurrentAccountPos = %d", pos);
-        if (pos >= 0) {
-            requestRecentFoldersAndRedraw();
-        }
-        return true;
     }
 
     @Override
@@ -466,5 +466,12 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             notifyDataSetChanged();
             mRecentFoldersVisible = true;
         }
+    }
+
+    /**
+     * Destroys the spinner adapter
+     */
+    public void destroy() {
+        mAccountObserver.unregisterAndDestroy();
     }
 }

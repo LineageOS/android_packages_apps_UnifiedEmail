@@ -33,7 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
-import com.android.mail.providers.Settings;
+// Should not rely on any mail-specific packages.
 
 /**
  * {@link RestrictedActivity} gives access to a subset of {@link Activity} methods. These methods
@@ -184,12 +184,6 @@ public interface RestrictedActivity {
      * @return the context associated with this activity.
      */
     Context getActivityContext();
-
-    /**
-     * Return the settings currently being used by this activity.
-     * @return
-     */
-    Settings getSettings();
 
     /**
      * @see Activity#onOptionsItemSelected(MenuItem)

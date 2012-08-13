@@ -68,6 +68,7 @@ import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -137,6 +138,13 @@ public final class ConversationViewFragment extends Fragment implements
     private boolean mViewsCreated;
 
     private MenuItem mChangeFoldersMenuItem;
+
+    private final AccountObserver mAccountObserver = new AccountObserver() {
+        @Override
+        public void onChanged(Account newAccount) {
+            mAccount = newAccount;
+        }
+    };
 
     /**
      * Folder is used to help determine valid menu actions for this conversation.
@@ -233,7 +241,7 @@ public final class ConversationViewFragment extends Fragment implements
             return;
         }
         mTemplates = new HtmlConversationTemplates(mContext);
-
+        mAccount = mAccountObserver.initialize(mActivity.getAccountController());
         mAdapter = new ConversationViewAdapter(mActivity.getActivityContext(), mAccount,
                 getLoaderManager(), this, mContactLoaderCallbacks, this, this, mAddressCache);
         mConversationContainer.setOverlayAdapter(mAdapter);
@@ -360,6 +368,7 @@ public final class ConversationViewFragment extends Fragment implements
             mMarkReadObserver = null;
         }
         mViewsCreated = false;
+        mAccountObserver.unregisterAndDestroy();
     }
 
     @Override
@@ -534,7 +543,7 @@ public final class ConversationViewFragment extends Fragment implements
         boolean allowNetworkImages = false;
 
         // TODO: re-use any existing adapter item state (expanded, details expanded, show pics)
-        final Settings settings = mActivity.getSettings();
+        final Settings settings = mAccount.settings;
         if (settings != null) {
             mAdapter.setDefaultReplyAll(settings.replyBehavior ==
                     UIProvider.DefaultReplyBehavior.REPLY_ALL);

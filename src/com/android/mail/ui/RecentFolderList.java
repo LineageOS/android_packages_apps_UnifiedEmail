@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.utils.LogUtils;
@@ -61,6 +62,13 @@ public final class RecentFolderList {
      */
     private final static int MAX_EXCLUDED_FOLDERS = 2;
 
+    private final AccountObserver mAccountObserver = new AccountObserver() {
+        @Override
+        public void onChanged(Account newAccount) {
+            setCurrentAccount(newAccount);
+        }
+    };
+
     /**
      * Compare based on alphanumeric name of the folder, ignoring case.
      */
@@ -74,8 +82,13 @@ public final class RecentFolderList {
      * Class to store the recent folder list asynchronously.
      */
     private class StoreRecent extends AsyncTask<Void, Void, Void> {
-        final Account mAccount;
-        final Folder mFolder;
+        /**
+         * Copy {@link RecentFolderList#mAccount} in case the account changes between when the
+         * AsyncTask is created and when it is executed.
+         */
+        @SuppressWarnings("hiding")
+        private final Account mAccount;
+        private final Folder mFolder;
 
         /**
          * Create a new asynchronous task to store the recent folder list. Both the account
@@ -107,11 +120,19 @@ public final class RecentFolderList {
     /**
      * Create a Recent Folder List from the given account. This will query the UIProvider to
      * retrieve the RecentFolderList from persistent storage (if any).
-     * @param account
+     * @param context
      */
     public RecentFolderList(Context context) {
         mFolderCache = new LruCache<String, Folder>(MAX_RECENT_FOLDERS);
         mContext = context;
+    }
+
+    /**
+     * Initialize the {@link RecentFolderList} with a controllable activity.
+     * @param activity
+     */
+    public void initialize(ControllableActivity activity){
+        setCurrentAccount(mAccountObserver.initialize(activity.getAccountController()));
     }
 
     /**
@@ -120,7 +141,7 @@ public final class RecentFolderList {
      * cursor. Till then, the recent account list will be empty.
      * @param account the new current account
      */
-    public void setCurrentAccount(Account account) {
+    private void setCurrentAccount(Account account) {
         mAccount = account;
         mFolderCache.clear();
     }
@@ -192,5 +213,12 @@ public final class RecentFolderList {
             if (recentFolders.size() == MAX_RECENT_FOLDERS) break;
         }
         return recentFolders;
+    }
+
+    /**
+     * Destroys this instance. The object is unusable after this has been called.
+     */
+    public void destroy() {
+        mAccountObserver.unregisterAndDestroy();
     }
 }

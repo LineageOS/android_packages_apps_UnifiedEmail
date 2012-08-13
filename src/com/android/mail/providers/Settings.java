@@ -41,18 +41,6 @@ import org.json.JSONObject;
  * Model to hold Settings for an account.
  */
 public class Settings implements Parcelable {
-    /**
-     * Interface to listen to settings changes. You need to register with the
-     * {@link com.android.mail.ui.ActivityController} for observing changes to settings.
-     */
-    public interface ChangeListener {
-        /**
-         * Method that is called when settings are changed.
-         * @param updatedSettings the updated settings.
-         */
-        public void onSettingsChanged(Settings updatedSettings);
-    }
-
     private static final String LOG_TAG = LogTag.getLogTag();
 
     static final Settings EMPTY_SETTINGS = new Settings();

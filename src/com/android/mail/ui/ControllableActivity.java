@@ -98,5 +98,15 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
 
     ErrorListener getErrorListener();
 
+    /**
+     * Returns the {@link FolderController} object associated with this activity, if any.
+     * @return
+     */
     FolderController getFolderController();
+
+    /**
+     * Returns the {@link AccountController} object associated with this activity, if any.
+     * @return
+     */
+    AccountController getAccountController();
 }
