@@ -429,6 +429,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      */
     private void showNavList() {
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        mActionBar.setListNavigationCallbacks(mSpinner, this);
         mActionBar.setDisplayOptions(0,
                 ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
     }
