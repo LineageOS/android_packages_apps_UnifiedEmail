@@ -60,7 +60,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final HashSet<Integer> mSwipeUndoingItems = new HashSet<Integer>();
     private final HashMap<Long, SwipeableConversationItemView> mAnimatingViews =
             new HashMap<Long, SwipeableConversationItemView>();
-    private HashMap<Long, LeaveBehindItem> mFadeLeaveBehindItems =
+    private final HashMap<Long, LeaveBehindItem> mFadeLeaveBehindItems =
             new HashMap<Long, LeaveBehindItem>();
     /** The current account */
     private final Account mAccount;
@@ -616,7 +616,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public boolean isAnimating() {
         return !mUndoingItems.isEmpty()
                 || !mSwipeUndoingItems.isEmpty()
-                || !mFadeLeaveBehindItems.isEmpty()
+                || hasFadeLeaveBehinds()
                 || !mDeletingItems.isEmpty()
                 || !mSwipeDeletingItems.isEmpty();
     }
