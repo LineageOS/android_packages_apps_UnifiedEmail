@@ -50,10 +50,8 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.SparseArray;
-import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ListView;
 
@@ -121,7 +119,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static int sDateTextColor;
     private static int sDateBackgroundPaddingLeft;
     private static int sTouchSlop;
-    private static int sMoveSlop;
     private static int sDateBackgroundHeight;
     private static int sStandardScaledDimen;
     private static int sShrinkAnimationDuration;
@@ -160,16 +157,13 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private Folder mDisplayedFolder;
     private boolean mPriorityMarkersEnabled;
     private boolean mCheckboxesEnabled;
-    private HandleLongPress mPendingCheckForLongPress;
     private boolean mSwipeEnabled;
     private int mLastTouchX;
     private int mLastTouchY;
     private AnimatedAdapter mAdapter;
     private int mAnimatedHeight = -1;
     private String mAccount;
-    private Runnable mListItemClick;
     private ControllableActivity mActivity;
-    private UnsetPressedState mUnsetPressedState;
     private CharacterStyle mActivatedTextSpan;
     private static ForegroundColorSpan sActivatedTextSpan;
     private static Bitmap sDateBackgroundAttachment;
@@ -316,21 +310,11 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     public ConversationItemView(Context context, String account) {
         super(context);
+        setClickable(true);
+        setLongClickable(true);
         mContext = context.getApplicationContext();
         mTabletDevice = Utils.useTabletUI(mContext);
         mAccount = account;
-        final View item = this;
-        mListItemClick = new Runnable() {
-            @Override
-            public void run() {
-                ListView list = getListView();
-                if (list != null) {
-                    int pos = list.getPositionForView(item);
-                    list.performItemClick(item, pos, mHeader.conversation.id);
-                }
-            }
-        };
-        mUnsetPressedState = new UnsetPressedState();
         Resources res = mContext.getResources();
 
         if (CHECKMARK_OFF == null) {
@@ -377,7 +361,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
             sDateBackgroundPaddingLeft = res
                     .getDimensionPixelSize(R.dimen.date_background_padding_left);
             sTouchSlop = res.getDimensionPixelSize(R.dimen.touch_slop);
-            sMoveSlop = res.getDimensionPixelSize(R.dimen.move_slop);
             sDateBackgroundHeight = res.getDimensionPixelSize(R.dimen.date_background_height);
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
@@ -1216,14 +1199,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
      */
     @Override
     public void cancelTap() {
-        setPressed(false);
-        removeCallbacks(mPendingCheckForLongPress);
-    }
-
-    private final class UnsetPressedState implements Runnable {
-        public void run() {
-            setPressed(false);
-        }
+        // Do nothing.
     }
 
     /**
@@ -1236,74 +1212,46 @@ public class ConversationItemView extends View implements SwipeableItemView {
         if (!mSwipeEnabled) {
             return onTouchEventNoSwipe(event);
         }
-        boolean handled = true;
-
         switch (event.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                // If we move > slop, cancel the long press event.
-                if (Math.abs(mLastTouchX - x) > sMoveSlop
-                        || Math.abs(mLastTouchY - y) > sMoveSlop) {
-                    cancelTap();
-                    resetDownEvent();
-                }
-                break;
             case MotionEvent.ACTION_DOWN:
-                mDownEvent = true;
-                mLastTouchX = x;
-                mLastTouchY = y;
-                // This checks for long press. The actual tap is handled on "up".
-                checkForLongPress();
-                // In order to allow the down event and subsequent move events
-                // to bubble to the swipe handler, we need to return that all
-                // down events are handled.
-                handled = true;
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                resetDownEvent();
-                mDownEvent = false;
-                setPressed(false);
+                if (isTouchInCheckmark(x, y) || isTouchInStar(x, y)) {
+                    mDownEvent = true;
+                    return true;
+                }
                 break;
             case MotionEvent.ACTION_UP:
                 if (mDownEvent) {
-                    // ConversationItemView gets the first chance to handle up
-                    // events if there was a down event and there was no move
-                    // event in between. In this case, ConversationItemView
-                    // received the down event, and then an up event in the
-                    // same location (+/- slop). Treat this as a click on the
-                    // view or on a specific part of the view.
-                    cancelTap();
                     if (isTouchInCheckmark(x, y)) {
                         // Touch on the check mark
+                        mDownEvent = false;
                         toggleCheckMark();
-                        handled = true;
+                        return true;
                     } else if (isTouchInStar(x, y)) {
                         // Touch on the star
+                        mDownEvent = false;
                         toggleStar();
-                        handled = true;
-                    } else {
-                        setPressed(true);
-                        // Put the list item click in the queue so we can show
-                        // the user tap feedback first.
-                        postDelayed(mListItemClick, 0);
+                        return true;
                     }
-                    postDelayed(mUnsetPressedState, ViewConfiguration.getPressedStateDuration());
-                    handled = true;
-                } else {
-                    // There was no down event that this view was made aware of,
-                    // therefore it cannot handle it.
-                    handled = false;
                 }
-                resetDownEvent();
                 break;
         }
         // Let View try to handle it as well.
-        return handled || super.onTouchEvent(event);
+        boolean handled = super.onTouchEvent(event);
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            return true;
+        }
+        return handled;
     }
 
-    private void resetDownEvent() {
-        mDownEvent = true;
-        mLastTouchX = -1;
-        mLastTouchY = -1;
+    @Override
+    public boolean performClick() {
+        boolean handled = super.performClick();
+        ListView list = getListView();
+        if (list != null) {
+            int pos = list.getPositionForView(this);
+            list.performItemClick(this, pos, mHeader.conversation.id);
+        }
+        return handled;
     }
 
     private ListView getListView() {
@@ -1352,36 +1300,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         // Let View try to handle it as well.
         return handled || super.onTouchEvent(event);
-    }
-
-    /**
-     * Return if this item should respond to long clicks.
-     */
-    @Override
-    public boolean isLongClickable() {
-        return true;
-    }
-
-    public void checkForLongPress() {
-        // refreshDrawableState();
-        final int longPressTimeout = ViewConfiguration.getLongPressTimeout();
-        final boolean longClickable = isLongClickable();
-
-        if (longClickable) {
-            if (mPendingCheckForLongPress == null) {
-                mPendingCheckForLongPress = new HandleLongPress();
-            }
-            postDelayed(mPendingCheckForLongPress, longPressTimeout);
-        }
-    }
-
-    private class HandleLongPress implements Runnable {
-        @Override
-        public void run() {
-            setPressed(false);
-            handleLongClick();
-            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-        }
     }
 
     /**
@@ -1529,23 +1447,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     @Override
     public View getView() {
         return this;
-    }
-
-    /**
-     * With two pane mode and mailboxes in one pane (tablet), add the
-     * conversation to the selected set and start drag mode. In two pane mode
-     * when viewing conversations (tablet), toggle selection. In one pane mode
-     * (phone, and portrait mode on tablet), toggle selection.
-     */
-    private void handleLongClick() {
-        mDownEvent = false;
-        // If we are in one pane mode, or we are looking at conversations, drag and drop is
-        // meaningless. Allow the list's long click handler to do the right thing.
-        if (!Utils.useTabletUI(mContext) || !mActivity.getViewMode().isListMode()) {
-            performLongClick();
-        } else {
-            beginDragMode();
-        }
     }
 
     /**
