@@ -55,7 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Mute"</string>
     <string name="add_star" msgid="2866003744391266498">"Add star"</string>
     <string name="remove_star" msgid="4372327933122106128">"Remove star"</string>
-    <string name="remove_folder" msgid="6098805949226229827">"Remove from folder"</string>
+    <string name="remove_folder" msgid="4906542720439865413">"Remove from <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="847250094775910499">"Archive"</string>
     <string name="report_spam" msgid="6467567747975393907">"Report spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Report not spam"</string>
@@ -218,7 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Deleted"</string>
     <string name="archived" msgid="7533995360704366325">"Archived"</string>
-    <string name="folder_removed" msgid="858015177285651764">"Remove from folder..."</string>
+    <string name="folder_removed" msgid="1047474677580149436">"Removed from <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; marked important."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; marked important."</item>
@@ -295,11 +295,11 @@
     <string name="folders_activity_instructions" msgid="5237801615196958918">"No folders have been set for this account."</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"Success"</item>
-    <item msgid="5037283655022689372">"Connection error"</item>
-    <item msgid="4252875340758600974">"Authentication error"</item>
-    <item msgid="7611299631880179587">"Security error"</item>
-    <item msgid="665244114363057627">"Storage error"</item>
-    <item msgid="9190542479647789762">"Internal error"</item>
+    <item msgid="7109065688039971961">"No connection."</item>
+    <item msgid="8437496123716232060">"Couldn\'t sign in."</item>
+    <item msgid="1651266301325684887">"Security error."</item>
+    <item msgid="1461520171154288533">"Couldn\'t sync."</item>
+    <item msgid="8749857841162829469">"Error"</item>
   </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Touch to set up"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"To view conversations, sync this folder."</string>
@@ -342,6 +342,12 @@
     <item msgid="6593672292311851204">"Frequently Used"</item>
     <item msgid="3584541772344786752">"All Folders"</item>
   </string-array>
+    <string name="signin" msgid="8958889809095796177">"Sign-in"</string>
+    <string name="info" msgid="6009817562073541204">"Info"</string>
+    <string name="report" msgid="5417082746232614958">"Report"</string>
+    <string name="sync_error" msgid="7368819509040597851">"Couldn\'t sync."</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"Your device doesn\'t have enough storage space to sync."</string>
+    <string name="storage" msgid="3262760336059073446">"Storage"</string>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
