@@ -862,6 +862,9 @@ public abstract class AbstractActivityController implements ActivityController {
         // Update the conversations in the selection too.
         for (final Conversation c : targets) {
             c.read = read;
+            if (markViewed) {
+                c.markViewed();
+            }
         }
     }
 

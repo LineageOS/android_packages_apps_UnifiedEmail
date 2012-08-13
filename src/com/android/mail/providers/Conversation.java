@@ -153,6 +153,8 @@ public class Conversation implements Parcelable {
     // that is it's now in some other folder(s)
     public transient boolean localDeleteOnUpdate;
 
+    private transient boolean viewed;
+
     private ArrayList<Folder> cachedRawFolders;
     private ArrayList<Folder> cachedDisplayableFolders;
 
@@ -473,6 +475,14 @@ public class Conversation implements Parcelable {
      */
     public int numDrafts() {
         return conversationInfo != null ? conversationInfo.draftCount : numDrafts;
+    }
+
+    public boolean isViewed() {
+        return viewed;
+    }
+
+    public void markViewed() {
+        viewed = true;
     }
 
     /**

@@ -28,8 +28,6 @@ import com.android.mail.providers.Message;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import org.json.JSONException;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -44,6 +42,21 @@ class ConversationViewState implements Parcelable {
     private final Map<Uri, MessageViewState> mMessageViewStates = Maps.newHashMap();
 
     private String mConversationInfo;
+
+    public static final class ExpansionState {
+        public static int EXPANDED = 1;
+        public static int COLLAPSED = 2;
+        public static int SUPER_COLLAPSED = 3;
+
+        private ExpansionState() {}
+
+        public static boolean isExpanded(int state) {
+            return state == EXPANDED;
+        }
+        public static boolean isSuperCollapsed(int state) {
+            return state == SUPER_COLLAPSED;
+        }
+    }
 
     public ConversationViewState() {}
 
@@ -69,12 +82,11 @@ class ConversationViewState implements Parcelable {
     }
 
     /**
-     * Returns the expansion state of a message in a conversation view. Expansion state only refers
-     * to the user action of expanding or collapsing a message view, and not any messages that
-     * are expanded by default (e.g. last message, starred messages).
+     * Returns the expansion state of a message in a conversation view.
      *
      * @param m a Message in the conversation
-     * @return 1 = expanded, 2 = collapsed, 3 = super collapsed, or null otherwise.
+     * @return 1 = expanded, 2 = collapsed, 3 = super collapsed, or null otherwise
+     * (see {@link ExpansionState}).
      */
     public Integer getExpansionState(Message m) {
         final MessageViewState mvs = mMessageViewStates.get(m.uri);
@@ -90,17 +102,11 @@ class ConversationViewState implements Parcelable {
         mMessageViewStates.put(m.uri, mvs);
     }
 
-    public void setExpansionStates(Set<Message> messages, int expansionState) {
-        for (Message m : messages) {
-            setExpansionState(m, expansionState);
-        }
-    }
-
     public String getConversationInfo() {
         return mConversationInfo;
     }
 
-    public void setInfoForConversation(Conversation conv) throws JSONException {
+    public void setInfoForConversation(Conversation conv) {
         mConversationInfo = ConversationInfo.toString(conv.conversationInfo);
     }
 
@@ -167,22 +173,11 @@ class ConversationViewState implements Parcelable {
     // Keep per-message state in an inner Parcelable.
     // This is a semi-private implementation detail.
     static class MessageViewState implements Parcelable {
-        public static class ExpansionState {
-            public static int EXPANDED = 1;
-            public static int COLLAPSED = 2;
-            public static int SUPER_COLLAPSED = 3;
-
-            public static boolean isExpanded(int state) {
-                return state == EXPANDED;
-            }
-            public static boolean isSuperCollapsed(int state) {
-                return state == SUPER_COLLAPSED;
-            }
-        }
 
         public boolean read;
         /**
-         * null = default, 1 = expanded, 2 = collapsed, 3 = super collapsed
+         * See {@link ExpansionState} for values.
+         *
          */
         public Integer expansionState;
 
