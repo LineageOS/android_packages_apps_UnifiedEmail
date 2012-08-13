@@ -55,7 +55,8 @@
     <string name="mute" msgid="1995954983688603977">"Suprimaţi"</string>
     <string name="add_star" msgid="2866003744391266498">"Marcaţi cu stea"</string>
     <string name="remove_star" msgid="4372327933122106128">"Eliminaţi steaua"</string>
-    <string name="remove_folder" msgid="6098805949226229827">"Eliminaţi din dosar"</string>
+    <!-- no translation found for remove_folder (4906542720439865413) -->
+    <skip />
     <string name="archive" msgid="847250094775910499">"Arhivaţi"</string>
     <string name="report_spam" msgid="6467567747975393907">"Raportaţi ca spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Nu este spam"</string>
@@ -218,7 +219,8 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Ştearsă"</string>
     <string name="archived" msgid="7533995360704366325">"Arhivată"</string>
-    <string name="folder_removed" msgid="858015177285651764">"Eliminată din dosar"</string>
+    <!-- no translation found for folder_removed (1047474677580149436) -->
+    <skip />
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a fost marcată ca importantă."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; au fost marcate ca importante."</item>
@@ -254,10 +256,11 @@
     <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> din <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
     <string name="conversation_newer" msgid="7381341099165809801">"Mai nouă"</string>
     <string name="conversation_older" msgid="6384287019562069353">"Mai veche"</string>
-    <!-- no translation found for new_incoming_messages:one (8778057959289554701) -->
-    <!-- no translation found for new_incoming_messages:other (6738671955116853198) -->
-    <!-- no translation found for show (7114006150083237343) -->
-    <skip />
+  <plurals name="new_incoming_messages">
+    <item quantity="one" msgid="8778057959289554701">"Mesaj nou de la <xliff:g id="SENDER">%s</xliff:g>."</item>
+    <item quantity="other" msgid="6738671955116853198">"<xliff:g id="COUNT">%1$d</xliff:g> (de) mesaje noi"</item>
+  </plurals>
+    <string name="show" msgid="7114006150083237343">"Afişaţi"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Extindeţi detaliile destinatarului"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Restrângeţi detaliile destinatarului"</string>
     <string name="contact_info_string" msgid="6911322458329265644">"Afişaţi informaţiile de contact pentru <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -292,14 +295,11 @@
     <string name="cancel" msgid="8762981157252199115">"Anulaţi"</string>
     <string name="close" msgid="419945428844076406">"Închideţi"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Pentru acest cont nu a fost setat niciun dosar."</string>
-  <string-array name="sync_status">
-    <item msgid="2446076619901049026">"Finalizat"</item>
-    <item msgid="5037283655022689372">"Eroare de conexiune"</item>
-    <item msgid="4252875340758600974">"Eroare de autentificare"</item>
-    <item msgid="7611299631880179587">"Eroare de securitate"</item>
-    <item msgid="665244114363057627">"Eroare de stocare"</item>
-    <item msgid="9190542479647789762">"Eroare internă"</item>
-  </string-array>
+    <!-- no translation found for sync_status:1 (7109065688039971961) -->
+    <!-- no translation found for sync_status:2 (8437496123716232060) -->
+    <!-- no translation found for sync_status:3 (1651266301325684887) -->
+    <!-- no translation found for sync_status:4 (1461520171154288533) -->
+    <!-- no translation found for sync_status:5 (8749857841162829469) -->
     <string name="tap_to_configure" msgid="1181356242354390930">"Atingeţi pentru a configura"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Pentru a afişa conversaţiile, sincronizaţi acest dosar."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sincronizaţi dosarul"</string>
@@ -341,6 +341,18 @@
     <item msgid="6593672292311851204">"Utilizate des"</item>
     <item msgid="3584541772344786752">"Toate dosarele"</item>
   </string-array>
+    <!-- no translation found for signin (8958889809095796177) -->
+    <skip />
+    <!-- no translation found for info (6009817562073541204) -->
+    <skip />
+    <!-- no translation found for report (5417082746232614958) -->
+    <skip />
+    <!-- no translation found for sync_error (7368819509040597851) -->
+    <skip />
+    <!-- no translation found for sync_error_message (5367907194753034375) -->
+    <skip />
+    <!-- no translation found for storage (3262760336059073446) -->
+    <skip />
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
