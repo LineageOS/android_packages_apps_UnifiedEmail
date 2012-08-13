@@ -83,8 +83,8 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
             case R.id.error_action_button:
                 switch (mErrorStatus) {
                     case UIProvider.LastSyncResult.CONNECTION_ERROR:
-                        if (f != null && f.loadMoreUri != null) {
-                            uri = f.loadMoreUri;
+                        if (f != null && f.refreshUri != null) {
+                            uri = f.refreshUri;
                         }
                         break;
                     case UIProvider.LastSyncResult.AUTH_ERROR:
