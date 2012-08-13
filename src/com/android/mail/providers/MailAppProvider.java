@@ -318,7 +318,7 @@ public abstract class MailAppProvider extends ContentProvider
     }
 
     /**
-     * Asynchronously ads all of the accounts that are specified by the result set returned by
+     * Asynchronously adds all of the accounts that are specified by the result set returned by
      * {@link ContentProvider#query()} for the specified uri.  The content provider handling the
      * query needs to handle the {@link UIProvider.ACCOUNTS_PROJECTION}
      * Any changes to the underlying provider will automatically be reflected.
