@@ -511,6 +511,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
             boolean isSearchResult) {
         mContext = context;
         mController = controller;
+        mListener = mController;
         mIsSearchResult = isSearchResult;
 
         Resources res = getResources();
@@ -730,13 +731,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     public void setListBitmapLeft(int left) {
         mListBitmapLeft = left;
         invalidate();
-    }
-
-    /**
-     * Sets the {@link LayoutListener} for this object.
-     */
-    public void setListener(LayoutListener listener) {
-        mListener = listener;
     }
 
     /**

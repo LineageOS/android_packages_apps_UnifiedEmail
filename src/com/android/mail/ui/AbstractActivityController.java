@@ -55,8 +55,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.Toast;
 
 import com.android.mail.ConversationListContext;
@@ -236,8 +234,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
     private DestructiveAction mPendingDestruction;
-    /** Indicates if a conversation view is visible. */
-    private boolean mIsConversationVisible;
     protected AsyncRefreshTask mFolderSyncTask;
     // Task for setting any share intents for the account to enabled.
     // This gets cancelled if the user kills the app before it finishes, and
@@ -602,7 +598,6 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void onConversationVisibilityChanged(boolean visible) {
-        mIsConversationVisible = visible;
         return;
     }
 
@@ -1787,8 +1782,8 @@ public abstract class AbstractActivityController implements ActivityController {
 
             // Are we destroying the currently shown conversation? Show the next one.
             if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)){
-                LogUtils.d(LOG_TAG, "ConversationAction.performAction(): mIsConversationVisible=%b"
-                        + "\nmTarget=%s\nCurrent=%s", mIsConversationVisible,
+                LogUtils.d(LOG_TAG, "ConversationAction.performAction():"
+                        + "\nmTarget=%s\nCurrent=%s",
                         Conversation.toString(mTarget), mCurrentConversation);
             }
 
