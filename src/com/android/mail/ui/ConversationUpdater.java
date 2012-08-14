@@ -24,6 +24,7 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 
 import java.util.Collection;
@@ -126,6 +127,16 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * @return
      */
     public DestructiveAction getDeferredBatchAction(int action);
+
+    /**
+     * Get destructive folder change for selected conversations.
+     * The caller must explicitly call performAction.
+     * @param action
+     * @return
+     */
+    public DestructiveAction getDeferredRemoveFolder(Collection<Conversation> target,
+            Folder toRemove, boolean isDestructive, boolean isBatch,
+            boolean showUndo);
 
     /**
      * Assign the target conversations to the given folders, and remove them from all other

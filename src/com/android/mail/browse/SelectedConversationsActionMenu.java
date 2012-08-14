@@ -115,6 +115,11 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             case R.id.archive:
                 performDestructiveAction(R.id.archive);
                 break;
+            case R.id.remove_folder:
+                destroy(R.id.remove_folder, mSelectionSet.values(),
+                        mUpdater.getDeferredRemoveFolder(mSelectionSet.values(), mFolder, true,
+                                true, true));
+                break;
             case R.id.mute:
                 mUpdater.delete(mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute));
                 break;
@@ -347,8 +352,15 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MenuItem unread = menu.findItem(R.id.unread);
         unread.setVisible(showMarkUnread);
         final MenuItem archive = menu.findItem(R.id.archive);
-        archive.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE) &&
-                mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
+        archive.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE)
+                && mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
+        final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
+        removeFolder.setVisible(!archive.isVisible() && mFolder != null
+                && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
+        if (mFolder != null) {
+            removeFolder.setTitle(mActivity.getActivityContext().getString(R.string.remove_folder,
+                    mFolder.name));
+        }
         final MenuItem spam = menu.findItem(R.id.report_spam);
         spam.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM) &&
                 mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM));
