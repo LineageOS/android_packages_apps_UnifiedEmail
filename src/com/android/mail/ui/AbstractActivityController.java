@@ -687,6 +687,9 @@ public abstract class AbstractActivityController implements ActivityController {
                         getAction(R.id.archive, target));
                 break;
             }
+            case R.id.remove_folder:
+                delete(target, getRemoveFolder(target, mFolder, true, false, true));
+                break;
             case R.id.delete: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_delete_conversation,
@@ -2209,6 +2212,7 @@ public abstract class AbstractActivityController implements ActivityController {
         private boolean mCompleted;
         private boolean mIsSelectedSet;
         private boolean mShowUndo;
+        private int mAction;
 
         /**
          * Create a new folder destruction object to act on the given conversations.
@@ -2216,12 +2220,13 @@ public abstract class AbstractActivityController implements ActivityController {
          */
         private FolderDestruction(final Collection<Conversation> target,
                 final Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
-                boolean showUndo) {
+                boolean showUndo, int action) {
             mTarget = ImmutableList.copyOf(target);
             mFolderOps.addAll(folders);
             mIsDestructive = isDestructive;
             mIsSelectedSet = isBatch;
             mShowUndo = showUndo;
+            mAction = action;
         }
 
         @Override
@@ -2231,7 +2236,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             if (mIsDestructive && mShowUndo) {
                 ToastBarOperation undoOp = new ToastBarOperation(mTarget.size(),
-                        R.id.change_folder, ToastBarOperation.UNDO);
+                        mAction, ToastBarOperation.UNDO);
                 onUndoAvailable(undoOp);
             }
             // For each conversation, for each operation, add/ remove the
@@ -2239,6 +2244,9 @@ public abstract class AbstractActivityController implements ActivityController {
             for (Conversation target : mTarget) {
                 HashMap<Uri, Folder> targetFolders = Folder
                         .hashMapForFolders(target.getRawFolders());
+                if (mIsDestructive) {
+                    target.localDeleteOnUpdate = true;
+                }
                 for (FolderOperation op : mFolderOps) {
                     if (op.mAdd) {
                         targetFolders.put(op.mFolder.uri, op.mFolder);
@@ -2273,7 +2281,28 @@ public abstract class AbstractActivityController implements ActivityController {
             Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
             boolean showUndo) {
         final DestructiveAction da = new FolderDestruction(target, folders, isDestructive, isBatch,
-                showUndo);
+                showUndo, R.id.change_folder);
+        registerDestructiveAction(da);
+        return da;
+    }
+
+    @Override
+    public final DestructiveAction getDeferredRemoveFolder(Collection<Conversation> target,
+            Folder toRemove, boolean isDestructive, boolean isBatch,
+            boolean showUndo) {
+        Collection<FolderOperation> folderOps = new ArrayList<FolderOperation>();
+        folderOps.add(new FolderOperation(toRemove, false));
+        return new FolderDestruction(target, folderOps, isDestructive, isBatch,
+                showUndo, R.id.remove_folder);
+    }
+
+    private final DestructiveAction getRemoveFolder(Collection<Conversation> target,
+            Folder toRemove, boolean isDestructive, boolean isBatch,
+            boolean showUndo) {
+        Collection<FolderOperation> folderOps = new ArrayList<FolderOperation>();
+        folderOps.add(new FolderOperation(toRemove, false));
+        DestructiveAction da = new FolderDestruction(target, folderOps, isDestructive, isBatch,
+                showUndo, R.id.remove_folder);
         registerDestructiveAction(da);
         return da;
     }

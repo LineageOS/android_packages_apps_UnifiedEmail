@@ -547,7 +547,7 @@ public final class ConversationListFragment extends ListFragment implements
             if (ConversationListContext.isSearchResult(mViewContext)) {
                 action = R.id.delete;
             } else if (mFolder == null) {
-                action = R.id.change_folder;
+                action = R.id.remove_folder;
             } else {
                 // We have enough information to respect user settings.
                 switch (swipeSetting) {
@@ -558,7 +558,7 @@ public final class ConversationListFragment extends ListFragment implements
                                 break;
                             } else if (mFolder.supportsCapability
                                     (FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)) {
-                                action = R.id.change_folder;
+                                action = R.id.remove_folder;
                                 break;
                             }
                         }

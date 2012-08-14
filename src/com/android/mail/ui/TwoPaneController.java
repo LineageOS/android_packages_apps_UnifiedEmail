@@ -450,7 +450,8 @@ public final class TwoPaneController extends AbstractActivityController {
                     mToastBar.show(
                             getUndoClickedListener(convList.getAnimatedAdapter()),
                             0,
-                            Html.fromHtml(op.getDescription(mActivity.getActivityContext())),
+                            Html.fromHtml(op.getDescription(mActivity.getActivityContext(),
+                                    mFolder)),
                             true, /* showActionIcon */
                             R.string.undo,
                             true,  /* replaceVisibleToast */
@@ -477,7 +478,8 @@ public final class TwoPaneController extends AbstractActivityController {
                 mToastBar.show(
                         getUndoClickedListener(convList.getAnimatedAdapter()),
                         0,
-                        Html.fromHtml(op.getDescription(mActivity.getActivityContext())),
+                        Html.fromHtml(op.getDescription(mActivity.getActivityContext(),
+                                mFolder)),
                         true, /* showActionIcon */
                         R.string.undo,
                         true,  /* replaceVisibleToast */
