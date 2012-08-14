@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
@@ -49,7 +50,6 @@ import java.net.URLEncoder;
  * conversation list or a conversation view).
  */
 public class MailActivity extends AbstractMailActivity implements ControllableActivity {
-    // TODO(viki) This class lacks: Conversation Position tracking
     // TODO(viki) This class lacks: What's New dialog
     // TODO(viki) This class lacks: Sync Window Upgrade dialog
 
@@ -339,11 +339,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public Settings getSettings() {
-        return mController.getSettings();
-    }
-
-    @Override
     public boolean shouldShowFirstConversation() {
         return mController.shouldShowFirstConversation();
     }
@@ -417,5 +412,10 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public void onAnimationEnd(AnimatedAdapter animatedAdapter) {
         mController.onAnimationEnd(animatedAdapter);
+    }
+
+    @Override
+    public AccountController getAccountController() {
+        return mController;
     }
 }

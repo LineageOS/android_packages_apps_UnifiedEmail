@@ -38,17 +38,15 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
-import android.widget.Toast;
-
 import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.R;
 import com.android.mail.browse.SnippetTextView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.SearchRecentSuggestionsProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.providers.UIProvider.LastSyncResult;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -63,7 +61,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         ViewMode.ModeChangeListener, OnQueryTextListener, OnSuggestionListener,
         MenuItem.OnActionExpandListener, SubjectDisplayChanger {
     protected ActionBar mActionBar;
-    protected RestrictedActivity mActivity;
+    protected ControllableActivity mActivity;
     protected ActivityController mController;
     private View mFolderView;
     /**
@@ -107,6 +105,16 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
     private final boolean mShowConversationSubject;
     private TextView mFolderAccountName;
     private DataSetObserver mFolderObserver;
+
+    private final AccountObserver mAccountObserver = new AccountObserver() {
+        @Override
+        public void onChanged(Account newAccount) {
+            mAccount = newAccount;
+            if (mFolderAccountName != null) {
+                mFolderAccountName.setText(mAccount.name);
+            }
+        }
+    };
 
     public MailActionBarView(Context context) {
         this(context, null);
@@ -216,7 +224,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
     public void handleSaveInstanceState(Bundle outState) {
     }
 
-    public void initialize(RestrictedActivity activity, ActivityController callback,
+    public void initialize(ControllableActivity activity, ActivityController callback,
             ViewMode viewMode, ActionBar actionBar, RecentFolderList recentFolders) {
         mActionBar = actionBar;
         mController = callback;
@@ -226,6 +234,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         // We don't want to include the "Show all folders" menu item on tablet devices
         final boolean showAllFolders = !Utils.useTabletUI(getContext());
         mSpinner = new AccountSpinnerAdapter(activity, getContext(), recentFolders, showAllFolders);
+        mAccount = mAccountObserver.initialize(activity.getAccountController());
     }
 
     /**
@@ -266,17 +275,6 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         mSpinner.setCurrentFolder(folder);
         mSpinner.notifyDataSetChanged();
         mFolder = folder;
-    }
-
-    /**
-     * Called by the owner of the ActionBar to set the
-     * account that is currently being displayed.
-     */
-    public void setAccount(Account account) {
-        mAccount = account;
-        mSpinner.setCurrentAccount(account);
-        mSpinner.notifyDataSetChanged();
-        mFolderAccountName.setText(mAccount.name);
     }
 
     @Override
@@ -323,6 +321,8 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
             mController.unregisterFolderObserver(mFolderObserver);
             mFolderObserver = null;
         }
+        mSpinner.destroy();
+        mAccountObserver.unregisterAndDestroy();
     }
 
     @Override

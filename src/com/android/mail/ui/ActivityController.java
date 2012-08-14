@@ -33,7 +33,6 @@ import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.Settings;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
 /**
@@ -46,7 +45,7 @@ public interface ActivityController extends LayoutListener,
         FolderChangeListener, AccountChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
         ConversationSetObserver, ConversationListener,
         FolderListFragment.FolderListSelectionListener, HelpCallback, UndoListener,
-        ConversationUpdater, ErrorListener, FolderController {
+        ConversationUpdater, ErrorListener, FolderController, AccountController {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
@@ -243,12 +242,6 @@ public interface ActivityController extends LayoutListener,
      * Handle a touch event.
      */
     void onTouchEvent(MotionEvent event);
-
-    /**
-     * Return the settings currently being used by this activity.
-     * @return
-     */
-    Settings getSettings();
 
     /**
      * Returns whether the first conversation in the conversation list should be
