@@ -1019,6 +1019,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     quotedText = message.bodyHtml.subSequence(quotedTextIndex,
                             message.bodyHtml.length());
                 }
+            } else {
+                htmlText = Html.fromHtml(message.bodyHtml);
             }
             mBodyView.setText(htmlText);
         } else {
