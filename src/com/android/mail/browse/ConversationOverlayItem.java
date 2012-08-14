@@ -91,4 +91,13 @@ public abstract class ConversationOverlayItem {
     public void invalidateMeasurement() {
         mNeedsMeasure = true;
     }
+
+    public boolean canBecomeSnapHeader() {
+        return false;
+    }
+
+    public boolean canPushSnapHeader() {
+        return false;
+    }
+
 }
