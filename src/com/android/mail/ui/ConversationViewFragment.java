@@ -174,7 +174,6 @@ public final class ConversationViewFragment extends Fragment implements
 
     private final MessageLoaderCallbacks mMessageLoaderCallbacks = new MessageLoaderCallbacks();
     private final ContactLoaderCallbacks mContactLoaderCallbacks = new ContactLoaderCallbacks();
-    private MenuItem mRemoveFolder;
 
     private static final String ARG_ACCOUNT = "account";
     public static final String ARG_CONVERSATION = "conversation";
@@ -232,10 +231,6 @@ public final class ConversationViewFragment extends Fragment implements
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
             return;
-        }
-        if (mRemoveFolder != null) {
-            mRemoveFolder.setTitle(mActivity.getActivityContext().getString(R.string.remove_folder,
-                    mFolder.name));
         }
         mTemplates = new HtmlConversationTemplates(mContext);
 
@@ -387,7 +382,10 @@ public final class ConversationViewFragment extends Fragment implements
         Utils.setMenuItemVisibility(menu, R.id.archive, archiveVisible);
         Utils.setMenuItemVisibility(menu, R.id.remove_folder, !archiveVisible && mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
-        mRemoveFolder = menu.findItem(R.id.remove_folder);
+        final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
+        if (removeFolder != null) {
+            removeFolder.setTitle(getString(R.string.remove_folder, mFolder.name));
+        }
         Utils.setMenuItemVisibility(menu, R.id.report_spam,
                 mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM)
