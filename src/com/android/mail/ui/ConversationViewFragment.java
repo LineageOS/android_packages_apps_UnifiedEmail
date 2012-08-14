@@ -373,24 +373,13 @@ public final class ConversationViewFragment extends Fragment implements
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         final boolean showMarkImportant = !mConversation.isImportant();
-        Utils.setMenuItemVisibility(
-                menu,
-                R.id.mark_important,
-                showMarkImportant
-                        && mAccount
-                                .supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        Utils.setMenuItemVisibility(
-                menu,
-                R.id.mark_not_important,
-                !showMarkImportant
-                        && mAccount
-                                .supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        // TODO(mindyp) show/ hide spam and mute based on conversation
-        // properties to be added.
-        boolean archiveVisible = mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
+        Utils.setMenuItemVisibility(menu, R.id.mark_important, showMarkImportant
+                && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+        Utils.setMenuItemVisibility(menu, R.id.mark_not_important, !showMarkImportant
+                && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+        final boolean archiveVisible = mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
                 && mFolder != null && mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
-        Utils.setMenuItemVisibility(menu, R.id.archive,
-                archiveVisible);
+        Utils.setMenuItemVisibility(menu, R.id.archive, archiveVisible);
         Utils.setMenuItemVisibility(menu, R.id.remove_folder, !archiveVisible && mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
         if (mFolder != null) {
@@ -409,10 +398,8 @@ public final class ConversationViewFragment extends Fragment implements
                 mAccount.supportsCapability(AccountCapabilities.REPORT_PHISHING) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.REPORT_PHISHING)
                         && !mConversation.phishing);
-        Utils.setMenuItemVisibility(
-                menu,
-                R.id.mute,
-                mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
+        Utils.setMenuItemVisibility(menu, R.id.mute,
+                        mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)
                         && !mConversation.muted);
     }
