@@ -36,6 +36,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
@@ -351,19 +352,32 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         read.setVisible(!showMarkUnread);
         final MenuItem unread = menu.findItem(R.id.unread);
         unread.setVisible(showMarkUnread);
-        final MenuItem archive = menu.findItem(R.id.archive);
-        archive.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE)
-                && mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
+        // We only ever show one of:
+        // 1) remove folder
+        // 2) archive
+        // If we show neither archive or remove folder, then show a disabled archive icon.
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
-        removeFolder.setVisible(!archive.isVisible() && mFolder != null
-                && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
-        if (mFolder != null) {
+        final boolean showRemoveFolder = mFolder != null && mFolder.type == FolderType.DEFAULT
+                && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
+                && !mFolder.isProviderFolder();
+        removeFolder.setVisible(showRemoveFolder);
+        if (mFolder != null && showRemoveFolder) {
             removeFolder.setTitle(mActivity.getActivityContext().getString(R.string.remove_folder,
                     mFolder.name));
         }
+        final MenuItem archive = menu.findItem(R.id.archive);
+        final boolean showArchive =
+                mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE)
+                && mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
+        archive.setVisible(showArchive);
+        if (!showRemoveFolder && !showArchive) {
+            archive.setEnabled(false);
+            archive.setVisible(true);
+        }
         final MenuItem spam = menu.findItem(R.id.report_spam);
-        spam.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM) &&
-                mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM));
+        spam.setVisible(!showMarkNotSpam
+                && mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM)
+                && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM));
         final MenuItem notSpam = menu.findItem(R.id.mark_not_spam);
         notSpam.setVisible(showMarkNotSpam &&
                 mAccount.supportsCapability(UIProvider.AccountCapabilities.REPORT_SPAM) &&
@@ -374,7 +388,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 mFolder.supportsCapability(FolderCapabilities.REPORT_PHISHING));
 
         final MenuItem mute = menu.findItem(R.id.mute);
-        mute.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.MUTE));
+        mute.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.MUTE)
+                && (mFolder != null && mFolder.type == FolderType.INBOX));
         final MenuItem markImportant = menu.findItem(R.id.mark_important);
         markImportant.setVisible(showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));

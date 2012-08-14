@@ -597,6 +597,7 @@ public class UIProvider {
         public static final int TRASH = 5;
         public static final int SPAM = 6;
         public static final int STARRED = 7;
+        public static final int OTHER_PROVIDER_FOLDER = 8;
     }
 
     public static final class FolderCapabilities {
