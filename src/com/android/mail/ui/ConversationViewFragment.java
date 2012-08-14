@@ -383,8 +383,11 @@ public final class ConversationViewFragment extends Fragment implements
         Utils.setMenuItemVisibility(menu, R.id.remove_folder, !archiveVisible && mFolder != null
                 && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
         if (mFolder != null) {
-            menu.findItem(R.id.remove_folder).setTitle(
-                    mActivity.getActivityContext().getString(R.string.remove_folder, mFolder.name));
+            final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
+            if (removeFolder != null) {
+                removeFolder.setTitle(mActivity.getActivityContext().getString(
+                        R.string.remove_folder, mFolder.name));
+            }
         }
         Utils.setMenuItemVisibility(menu, R.id.report_spam,
                 mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
