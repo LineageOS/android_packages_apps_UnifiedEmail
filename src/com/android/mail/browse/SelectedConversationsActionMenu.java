@@ -355,7 +355,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // We only ever show one of:
         // 1) remove folder
         // 2) archive
-        // If we show neither archive or remove folder, then show a disabled archive icon.
+        // 3) If we show neither archive or remove folder, then show a disabled
+        // archive icon if the setting for that is true.
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
         final boolean showRemoveFolder = mFolder != null && mFolder.type == FolderType.DEFAULT
                 && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
@@ -374,7 +375,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         } else {
             archive.setVisible(showArchive);
         }
-        if (!showRemoveFolder && !showArchive) {
+        if (!showRemoveFolder && !showArchive
+                && Utils.shouldShowDisabledArchiveIcon(mActivity.getActivityContext())) {
             archive.setEnabled(false);
             archive.setVisible(true);
         }
