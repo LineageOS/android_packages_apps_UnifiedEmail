@@ -987,4 +987,12 @@ public class Utils {
     public static boolean showTwoPaneSearchResults(Context context) {
         return context.getResources().getBoolean(R.bool.show_two_pane_search_results);
     }
+
+    /**
+     * Return whether menus should show the disabled archive menu item or just
+     * remove it when archive is not available.
+     */
+    public static boolean shouldShowDisabledArchiveIcon(Context context) {
+        return context.getResources().getBoolean(R.bool.show_disabled_archive_menu_item);
+    }
 }
