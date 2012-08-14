@@ -23,6 +23,9 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -82,6 +85,7 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.DraftType;
 import com.android.mail.ui.MailActivity;
+import com.android.mail.ui.WaitFragment;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -185,7 +189,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_FOCUS_SELECTION_END = null;
     private static final String EXTRA_MESSAGE = "extraMessage";
     private static final int REFERENCE_MESSAGE_LOADER = 0;
+    private static final int LOADER_ACCOUNT_CURSOR = 1;
     private static final String EXTRA_SELECTED_ACCOUNT = "selectedAccount";
+    private static final String TAG_WAIT = "wait-fragment";
 
     /**
      * A single thread for running tasks in the background.
@@ -237,6 +243,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private RecipientTextWatcher mCcListener;
     private RecipientTextWatcher mBccListener;
     private Uri mRefMessageUri;
+    private Bundle mSavedInstanceState;
 
 
     /**
@@ -291,6 +298,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.compose);
+        mSavedInstanceState = savedInstanceState;
+        checkValidAccounts();
+    }
+
+    private void finishCreate() {
+        Bundle savedInstanceState = mSavedInstanceState;
         findViews();
         Intent intent = getIntent();
         Message message;
@@ -371,6 +384,32 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         finishSetup(action, intent, savedInstanceState, showQuotedText);
     }
 
+    private void checkValidAccounts() {
+        mAccounts = AccountUtils.getAccounts(this);
+        if (mAccounts == null || mAccounts.length == 0) {
+            final Intent noAccountIntent = MailAppProvider.getNoAccountIntent(this);
+            if (noAccountIntent != null) {
+                startActivityForResult(noAccountIntent, RESULT_CREATE_ACCOUNT);
+            }
+        } else {
+            // If none of the accounts are syncing. setup a watcher.
+            boolean anySyncing = false;
+            for (Account a : mAccounts) {
+                if (a.isAccountIntialized()) {
+                    anySyncing = true;
+                    break;
+                }
+            }
+            if (!anySyncing) {
+                // There are accounts, but none are sync'd, which is just like having no accounts.
+                mAccounts = null;
+                getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
+                return;
+            }
+            finishCreate();
+        }
+    }
+
     private Account obtainAccount(Intent intent) {
         Account account = null;
         Object accountExtra = null;
@@ -387,12 +426,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 accountExtra = Uri.parse(lastAccountUri);
             }
         }
-        final Account[] syncingAccounts = AccountUtils.getSyncingAccounts(this);
-        if (syncingAccounts.length > 0) {
+        if (mAccounts != null && mAccounts.length > 0) {
             if (accountExtra instanceof String && !TextUtils.isEmpty((String) accountExtra)) {
                 // For backwards compatibility, we need to check account
                 // names.
-                for (Account a : syncingAccounts) {
+                for (Account a : mAccounts) {
                     if (a.name.equals(accountExtra)) {
                         account = a;
                     }
@@ -400,13 +438,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             } else if (accountExtra instanceof Uri) {
                 // The uri of the last viewed account is what is stored in
                 // the current code base.
-                for (Account a : syncingAccounts) {
+                for (Account a : mAccounts) {
                     if (a.uri.equals(accountExtra)) {
                         account = a;
                     }
                 }
-            } else {
-                account = syncingAccounts[0];
+            }
+            if (account == null) {
+                account = mAccounts[0];
             }
         }
         return account;
@@ -492,7 +531,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Update the from spinner as other accounts
         // may now be available.
         if (mFromSpinner != null && mAccount != null) {
-            mFromSpinner.asyncInitFromSpinner(mComposeMode, mAccount);
+            mFromSpinner.asyncInitFromSpinner(mComposeMode, mAccount, mAccounts);
         }
     }
 
@@ -514,10 +553,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @Override
     protected final void onActivityResult(int request, int result, Intent data) {
-        mAddingAttachment = false;
-
-        if (result == RESULT_OK && request == RESULT_PICK_ATTACHMENT) {
+        if (request == RESULT_PICK_ATTACHMENT && result == RESULT_OK) {
             addAttachmentAndUpdateView(data);
+            mAddingAttachment = false;
+        } else if (request == RESULT_CREATE_ACCOUNT) {
+                // We were waiting for the user to create an account
+            if (result != RESULT_OK) {
+                finish();
+            } else {
+                // Watch for accounts to show up!
+                // restart the loader to get the updated list of accounts
+                getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
+                showWaitFragment(null);
+            }
         }
     }
 
@@ -542,6 +590,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public final void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
+        // We have no accounts so there is nothing to compose, and therefore, nothing to save.
+        if (mAccounts == null || mAccounts.length == 0) {
+            return;
+        }
         // The framework is happy to save and restore the selection but only if it also saves and
         // restores the contents of the edit text. That's a lot of text to put in a bundle so we do
         // this manually.
@@ -661,7 +713,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (action == EDIT_DRAFT && mDraft.draftType == UIProvider.DraftType.COMPOSE) {
             action = COMPOSE;
         }
-        mFromSpinner.asyncInitFromSpinner(action, mAccount);
+        mFromSpinner.asyncInitFromSpinner(action, mAccount, mAccounts);
         if (bundle != null) {
             if (bundle.containsKey(EXTRA_SELECTED_REPLY_FROM_ACCOUNT)) {
                 mReplyFromAccount = ReplyFromAccount.deserialize(mAccount,
@@ -806,6 +858,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void findViews() {
+        findViewById(R.id.compose).setVisibility(View.VISIBLE);
         mCcBccButton = (Button) findViewById(R.id.add_cc_bcc);
         if (mCcBccButton != null) {
             mCcBccButton.setOnClickListener(this);
@@ -1524,6 +1577,10 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
+        // Don't render any menu items when there are no accounts.
+        if (mAccounts == null || mAccounts.length == 0) {
+            return true;
+        }
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.compose_menu, menu);
         mSave = menu.findItem(R.id.save);
@@ -1600,6 +1657,16 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 break;
         }
         return !handled ? super.onOptionsItemSelected(item) : handled;
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If we are showing the wait fragment, just exit.
+        if (getWaitFragment() != null) {
+            finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void onAppUpPressed() {
@@ -1741,6 +1808,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private int mRequestId;
     private String mSignature;
     private AttachmentTypeSelectorAdapter mAttachmentTypeSelectorAdapter;
+    private Account[] mAccounts;
 
     @VisibleForTesting
     public static class SendOrSaveMessage {
@@ -2685,32 +2753,91 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             case REFERENCE_MESSAGE_LOADER:
                 return new CursorLoader(this, mRefMessageUri, UIProvider.MESSAGE_PROJECTION, null,
                         null, null);
+            case LOADER_ACCOUNT_CURSOR:
+                return new CursorLoader(this, MailAppProvider.getAccountsUri(),
+                        UIProvider.ACCOUNTS_PROJECTION, null, null, null);
         }
         return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null && data.moveToFirst()) {
-            mRefMessage = new Message(data);
-            // We set these based on EXTRA_TO.
-            mRefMessage.to = null;
-            mRefMessage.from = null;
-            Intent intent = getIntent();
-            int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
-            initFromRefMessage(action, mAccount.name);
-            finishSetup(action, intent, null, true);
-            if (action != FORWARD) {
-                String to = intent.getStringExtra(EXTRA_TO);
-                if (!TextUtils.isEmpty(to)) {
-                    clearChangeListeners();
-                    mTo.append(to);
-                    initChangeListeners();
+        int id = loader.getId();
+        switch (id) {
+            case REFERENCE_MESSAGE_LOADER:
+                if (data != null && data.moveToFirst()) {
+                    mRefMessage = new Message(data);
+                    // We set these based on EXTRA_TO.
+                    mRefMessage.to = null;
+                    mRefMessage.from = null;
+                    Intent intent = getIntent();
+                    int action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
+                    initFromRefMessage(action, mAccount.name);
+                    finishSetup(action, intent, null, true);
+                    if (action != FORWARD) {
+                        String to = intent.getStringExtra(EXTRA_TO);
+                        if (!TextUtils.isEmpty(to)) {
+                            clearChangeListeners();
+                            mTo.append(to);
+                            initChangeListeners();
+                        }
+                    }
+                } else {
+                    finish();
                 }
-            }
-        } else {
-            finish();
+                break;
+            case LOADER_ACCOUNT_CURSOR:
+                if (data != null && data.moveToFirst()) {
+                    // there are accounts now!
+                    Account account;
+                    ArrayList<Account> accounts = new ArrayList<Account>();
+                    ArrayList<Account> initializedAccounts = new ArrayList<Account>();
+                    do {
+                        account = new Account(data);
+                        if (account.isAccountIntialized()) {
+                            initializedAccounts.add(account);
+                        }
+                        accounts.add(account);
+                    } while (data.moveToNext());
+                    if (initializedAccounts.size() > 0) {
+                        findViewById(R.id.wait).setVisibility(View.GONE);
+                        getLoaderManager().destroyLoader(LOADER_ACCOUNT_CURSOR);
+                        findViewById(R.id.compose).setVisibility(View.VISIBLE);
+                        mAccounts = accounts.toArray(new Account[initializedAccounts.size()]);
+                        finishCreate();
+                        invalidateOptionsMenu();
+                    } else {
+                        // Show "waiting"
+                        account = accounts.size() > 0 ? accounts.get(0) : null;
+                        showWaitFragment(account);
+                    }
+                }
+                break;
         }
+    }
+
+    private void showWaitFragment(Account account) {
+        WaitFragment fragment = getWaitFragment();
+        if (fragment != null) {
+            fragment.updateAccount(account);
+        } else {
+            findViewById(R.id.wait).setVisibility(View.VISIBLE);
+            replaceFragment(WaitFragment.newInstance(account, true),
+                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT);
+        }
+    }
+
+    private WaitFragment getWaitFragment() {
+        return (WaitFragment) getFragmentManager().findFragmentByTag(TAG_WAIT);
+    }
+
+    private int replaceFragment(Fragment fragment, int transition, String tag) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.setTransition(transition);
+        fragmentTransaction.replace(R.id.wait, fragment, tag);
+        final int transactionId = fragmentTransaction.commitAllowingStateLoss();
+        return transactionId;
     }
 
     @Override

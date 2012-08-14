@@ -94,4 +94,29 @@ public class AccountUtils {
         }
         return accounts.toArray(new Account[accounts.size()]);
     }
+
+    /**
+     * Synchronous method which returns registered accounts.
+     * @param context
+     * @return
+     */
+    public static Account[] getAccounts(Context context) {
+        final ContentResolver resolver = context.getContentResolver();
+        Cursor accountsCursor = null;
+        final List<Account> accounts = Lists.newArrayList();
+        try {
+            accountsCursor = resolver.query(MailAppProvider.getAccountsUri(),
+                    UIProvider.ACCOUNTS_PROJECTION, null, null, null);
+            if (accountsCursor != null) {
+                while (accountsCursor.moveToNext()) {
+                    accounts.add(new Account(accountsCursor));
+                }
+            }
+        } finally {
+            if (accountsCursor != null) {
+                accountsCursor.close();
+            }
+        }
+        return accounts.toArray(new Account[accounts.size()]);
+    }
 }

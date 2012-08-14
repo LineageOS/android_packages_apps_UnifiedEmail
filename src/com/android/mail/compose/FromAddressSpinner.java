@@ -95,10 +95,12 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
      *            accounts. Otherwise, show just the account this was launched
      *            with.
      * @param currentAccount Account used to launch activity.
+     * @param syncing accounts
      */
-    public void asyncInitFromSpinner(int action, Account currentAccount) {
+    public void asyncInitFromSpinner(int action, Account currentAccount,
+            Account[] syncingAccounts) {
         if (action == ComposeActivity.COMPOSE) {
-            Account[] result = AccountUtils.getSyncingAccounts(getContext());
+            Account[] result = syncingAccounts;
             mAccounts = AccountUtils
                     .mergeAccountLists(mAccounts, result, true /* prioritizeAccountList */);
         } else {
