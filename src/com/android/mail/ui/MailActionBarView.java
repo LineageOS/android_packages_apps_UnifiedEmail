@@ -379,8 +379,6 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                     && mFolder.supportsCapability(FolderCapabilities.SUPPORTS_SETTINGS));
         }
 
-        prepareComposeOptionsMenu(menu);
-
         switch (mMode) {
             case ViewMode.UNKNOWN:
                 if (mSearch != null) {
@@ -409,19 +407,6 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                 break;
         }
         return false;
-    }
-
-    private void prepareComposeOptionsMenu(Menu menu) {
-        final Context context = mActivity.getActivityContext();
-        final String composeName = context.getString(R.string.compose_component_name);
-        final PackageManager pm = context.getPackageManager();
-        final ComponentName component = new ComponentName(context, composeName);
-        MenuItem compose = menu.findItem(R.id.compose);
-        if (compose != null) {
-            compose.setEnabled(
-                    pm.getComponentEnabledSetting(component)
-                        == PackageManager.COMPONENT_ENABLED_STATE_ENABLED);
-        }
     }
 
     /**
