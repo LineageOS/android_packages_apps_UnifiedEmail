@@ -293,11 +293,14 @@
     <string name="cancel" msgid="8762981157252199115">"Cancelar"</string>
     <string name="close" msgid="419945428844076406">"Cerrar"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"No se ha establecido ninguna carpeta para esta cuenta."</string>
-    <!-- no translation found for sync_status:1 (7109065688039971961) -->
-    <!-- no translation found for sync_status:2 (8437496123716232060) -->
-    <!-- no translation found for sync_status:3 (1651266301325684887) -->
-    <!-- no translation found for sync_status:4 (1461520171154288533) -->
-    <!-- no translation found for sync_status:5 (8749857841162829469) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Sin errores"</item>
+    <item msgid="7109065688039971961">"Sin conexión"</item>
+    <item msgid="8437496123716232060">"Error al iniciar sesión"</item>
+    <item msgid="1651266301325684887">"Error de seguridad"</item>
+    <item msgid="1461520171154288533">"Error al sincronizar"</item>
+    <item msgid="8749857841162829469">"Error"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Tocar para configurar"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Para ver conversaciones, sincroniza esta carpeta."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sincronizar carpeta"</string>
@@ -339,18 +342,12 @@
     <item msgid="6593672292311851204">"Uso frecuente"</item>
     <item msgid="3584541772344786752">"Todas las carpetas"</item>
   </string-array>
-    <!-- no translation found for signin (8958889809095796177) -->
-    <skip />
-    <!-- no translation found for info (6009817562073541204) -->
-    <skip />
-    <!-- no translation found for report (5417082746232614958) -->
-    <skip />
-    <!-- no translation found for sync_error (7368819509040597851) -->
-    <skip />
-    <!-- no translation found for sync_error_message (5367907194753034375) -->
-    <skip />
-    <!-- no translation found for storage (3262760336059073446) -->
-    <skip />
+    <string name="signin" msgid="8958889809095796177">"Iniciar sesión"</string>
+    <string name="info" msgid="6009817562073541204">"Información"</string>
+    <string name="report" msgid="5417082746232614958">"Informar"</string>
+    <string name="sync_error" msgid="7368819509040597851">"Error al sincronizar"</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"No hay suficiente espacio en el dispositivo para sincronizar tu correo"</string>
+    <string name="storage" msgid="3262760336059073446">"Almacenamiento"</string>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
