@@ -33,9 +33,9 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -46,7 +46,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class AnimatedAdapter extends SimpleCursorAdapter implements
-        android.animation.Animator.AnimatorListener, Settings.ChangeListener {
+        android.animation.Animator.AnimatorListener {
     private static final String LAST_DELETING_ITEMS = "last_deleting_items";
     private static final String LEAVE_BEHIND_ITEM = "leave_behind_item";
     private final static int TYPE_VIEW_CONVERSATION = 0;
@@ -63,7 +63,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final HashMap<Long, LeaveBehindItem> mFadeLeaveBehindItems =
             new HashMap<Long, LeaveBehindItem>();
     /** The current account */
-    private final Account mAccount;
+    private Account mAccount;
     private final Context mContext;
     private final ConversationSelectionSet mBatchConversations;
     /**
@@ -91,30 +91,46 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private boolean mShowFooter;
     private Folder mFolder;
     private final SwipeableListView mListView;
-    private Settings mCachedSettings;
-    private final boolean mSwipeEnabled;
+    private boolean mSwipeEnabled;
     private LeaveBehindItem mLeaveBehindItem;
     /** True if priority inbox markers are enabled, false otherwise. */
-    private final boolean mPriorityMarkersEnabled;
+    private boolean mPriorityMarkersEnabled;
     private ControllableActivity mActivity;
+    private final AccountObserver mAccountListener = new AccountObserver() {
+        @Override
+        public void onChanged(Account newAccount) {
+            setAccount(newAccount);
+            notifyDataSetChanged();
+        }
+    };
+
+    private final void setAccount(Account newAccount) {
+        mAccount = newAccount;
+        mPriorityMarkersEnabled = mAccount.settings.priorityArrowsEnabled;
+        mSwipeEnabled = mAccount.supportsCapability(UIProvider.AccountCapabilities.UNDO);
+    }
+
     /**
      * Used only for debugging.
      */
     private static final String LOG_TAG = LogTag.getLogTag();
 
     public AnimatedAdapter(Context context, int textViewResourceId, ConversationCursor cursor,
-            ConversationSelectionSet batch, Account account, Settings settings,
+            ConversationSelectionSet batch,
             ControllableActivity activity, SwipeableListView listView) {
         super(context, textViewResourceId, cursor, UIProvider.CONVERSATION_PROJECTION, null, 0);
         mContext = context;
         mBatchConversations = batch;
-        mAccount = account;
+        setAccount(mAccountListener.initialize(activity.getAccountController()));
         mActivity = activity;
         mShowFooter = false;
         mListView = listView;
-        mCachedSettings = settings;
-        mSwipeEnabled = account.supportsCapability(UIProvider.AccountCapabilities.UNDO);
-        mPriorityMarkersEnabled = account.settings.priorityArrowsEnabled;
+    }
+
+    public final void destroy() {
+        // Set a null cursor in the adapter
+        swapCursor(null);
+        mAccountListener.unregisterAndDestroy();
     }
 
     @Override
@@ -156,7 +172,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             return;
         }
         ((SwipeableConversationItemView) view).bind(cursor, mActivity, mBatchConversations, mFolder,
-                mCachedSettings != null ? mCachedSettings.hideCheckboxes : false,
+                mAccount != null ? mAccount.settings.hideCheckboxes : false,
                         mSwipeEnabled, mPriorityMarkersEnabled, this);
     }
 
@@ -391,7 +407,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         SwipeableConversationItemView view = (SwipeableConversationItemView) super.getView(
                 position, null, parent);
         view.bind(conversation, mActivity, mBatchConversations, mFolder,
-                mCachedSettings != null ? mCachedSettings.hideCheckboxes : false, mSwipeEnabled,
+                mAccount != null ? mAccount.settings.hideCheckboxes : false, mSwipeEnabled,
                 mPriorityMarkersEnabled, this);
         mAnimatingViews.put(conversation.id, view);
         return view;
@@ -563,16 +579,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         } else {
             LogUtils.d(LOG_TAG, "Trying to clear a non-existant leave behind");
         }
-    }
-
-    /**
-     * Callback invoked when settings for the current account have been changed.
-     * @param updatedSettings
-     */
-    @Override
-    public void onSettingsChanged(Settings updatedSettings) {
-        mCachedSettings = updatedSettings;
-        notifyDataSetChanged();
     }
 
     public void onSaveInstanceState(Bundle outState) {

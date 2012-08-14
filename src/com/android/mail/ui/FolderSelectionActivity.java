@@ -36,7 +36,6 @@ import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.Settings;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
@@ -242,11 +241,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public Settings getSettings() {
-        return null;
-    }
-
-    @Override
     public boolean onSearchRequested(String query) {
         return false;
     }
@@ -335,5 +329,11 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     @Override
     public void onAnimationEnd(AnimatedAdapter animatedAdapter) {
+    }
+
+    @Override
+    public AccountController getAccountController() {
+        // Unsupported
+        return null;
     }
 }
