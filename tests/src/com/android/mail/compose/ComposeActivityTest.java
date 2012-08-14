@@ -319,7 +319,8 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
         ReplyFromAccount currentAccount = new ReplyFromAccount(mAccount, mAccount.uri,
                 mAccount.name, mAccount.name, mAccount.name, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
-        mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY, currentAccount.account);
+        mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY, currentAccount.account,
+                null);
 
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -359,7 +360,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
                 mAccount.name, mAccount.name, mAccount.name, true, false);
         mActivity.mFromSpinner.setCurrentAccount(currentAccount);
         mActivity.mFromSpinner.asyncInitFromSpinner(ComposeActivity.REPLY_ALL,
-                currentAccount.account);
+                currentAccount.account, null);
         mActivity.runOnUiThread(new Runnable() {
             public void run() {
                 activity.initReplyRecipients(account.name, refMessage, ComposeActivity.REPLY_ALL);
