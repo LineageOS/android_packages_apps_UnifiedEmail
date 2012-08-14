@@ -119,6 +119,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static int sStandardScaledDimen;
     private static int sShrinkAnimationDuration;
     private static int sSlideAnimationDuration;
+    private static int sAnimatingBackgroundColor;
 
     // Static paints.
     private static TextPaint sPaint = new TextPaint();
@@ -364,6 +365,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
             sEllipsis = res.getString(R.string.ellipsis);
+            sAnimatingBackgroundColor = res.getColor(R.color.animating_item_background_color);
         }
     }
 
@@ -1093,6 +1095,12 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     private void updateBackground(boolean isUnread) {
+        if (mAnimatedHeight != -1) {
+            // If the item is animating, we use a color to avoid shrinking a 9-patch
+            // and getting weird artifacts from the overlap.
+            setBackgroundColor(sAnimatingBackgroundColor);
+            return;
+        }
         final boolean isListOnTablet = mTabletDevice && mActivity.getViewMode().isListMode();
         if (isUnread) {
             if (isListOnTablet) {
@@ -1365,6 +1373,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
         int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext,
                 mActivity.getViewMode());
         setMinimumHeight(0);
+        setBackgroundColor(sAnimatingBackgroundColor);
         mAnimatedHeight = minHeight;
         height.addListener(listener);
         height.start();
