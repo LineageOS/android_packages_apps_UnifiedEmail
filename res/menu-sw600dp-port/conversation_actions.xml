@@ -83,11 +83,6 @@
         android:showAsAction="never"
         android:visible="false" />
 
-    <!-- Available for Folders with SUPPORTS_SETTINGS capability -->
-    <item android:id="@+id/folder_options"
-        android:title="@string/menu_folder_options"
-        android:showAsAction="never"  />
-
     <item android:id="@+id/settings"
         android:title="@string/menu_settings"
         android:showAsAction="never" />

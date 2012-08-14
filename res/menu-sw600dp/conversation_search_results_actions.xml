@@ -57,11 +57,6 @@
         android:title="@string/mark_not_important" />
 
     <item
-        android:id="@+id/mute"
-        android:title="@string/mute"
-        android:showAsAction="never" />
-
-    <item
         android:id="@+id/report_spam"
         android:title="@string/report_spam"
         android:showAsAction="never"/>
