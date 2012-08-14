@@ -133,7 +133,7 @@ public abstract class AbstractActivityController implements ActivityController {
     protected Account mAccount;
     protected Folder mFolder;
     protected MailActionBarView mActionBarView;
-    protected final RestrictedActivity mActivity;
+    protected final ControllableActivity mActivity;
     protected final Context mContext;
     private final FragmentManager mFragmentManager;
     protected final RecentFolderList mRecentFolderList;
@@ -164,23 +164,37 @@ public abstract class AbstractActivityController implements ActivityController {
         public void registerObserver(DataSetObserver observer) {
             final int count = mObservers.size();
             super.registerObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.registerListObserver: %s before=%d after=%d", observer,
+            LogUtils.d(LOG_TAG, "IN AAC.register(List)Observer: %s before=%d after=%d", observer,
                     count, mObservers.size());
         }
         @Override
         public void unregisterObserver(DataSetObserver observer) {
             final int count = mObservers.size();
             super.unregisterObserver(observer);
-            LogUtils.d(LOG_TAG, "IN AAC.unregisterListObserver: %s before=%d after=%d", observer,
+            LogUtils.d(LOG_TAG, "IN AAC.unregister(List)Observer: %s before=%d after=%d", observer,
                     count, mObservers.size());
         }
     };
 
-    private boolean mIsConversationListScrolling = false;
     private RefreshTimerTask mConversationListRefreshTask;
 
-    /** Listeners that are interested in changes to current account settings. */
-    private final ArrayList<Settings.ChangeListener> mSettingsListeners = Lists.newArrayList();
+    /** Listeners that are interested in changes to the current account. */
+    private final DataSetObservable mAccountObservers = new DataSetObservable() {
+        @Override
+        public void registerObserver(DataSetObserver observer) {
+            final int count = mObservers.size();
+            super.registerObserver(observer);
+            LogUtils.d(LOG_TAG, "IN AAC.register(Account)Observer: %s before=%d after=%d",
+                    observer, count, mObservers.size());
+        }
+        @Override
+        public void unregisterObserver(DataSetObserver observer) {
+            final int count = mObservers.size();
+            super.unregisterObserver(observer);
+            LogUtils.d(LOG_TAG, "IN AAC.unregister(Account)Observer: %s before=%d after=%d",
+                    observer, count, mObservers.size());
+        }
+    };
 
     /**
      * Selected conversations, if any.
@@ -365,11 +379,9 @@ public abstract class AbstractActivityController implements ActivityController {
                 mAccount.uri);
         cancelRefreshTask();
         updateSettings();
-        mActionBarView.setAccount(mAccount);
         if (shouldReloadInbox) {
             loadAccountInbox();
         }
-        mRecentFolderList.setCurrentAccount(account);
         restartOptionalLoader(LOADER_RECENT_FOLDERS);
         mActivity.invalidateOptionsMenu();
         disableNotificationsOnAccountChange(mAccount);
@@ -403,7 +415,7 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param settings
      */
     public void updateSettings() {
-        notifySettingsChanged();
+        mAccountObservers.notifyChanged();
         resetActionBarIcon();
         mActivity.invalidateOptionsMenu();
         // If the user was viewing the default Inbox here, and the new setting contains a different
@@ -411,47 +423,28 @@ public abstract class AbstractActivityController implements ActivityController {
         // current folder.
     }
 
+    /**
+     * Adds a listener interested in change in the current account. If a class is storing a
+     * reference to the current account, it should listen on changes, so it can receive updates to
+     * settings. Must happen in the UI thread.
+     */
     @Override
-    public Settings getSettings() {
-        return mAccount.settings;
+    public void registerAccountObserver(DataSetObserver obs) {
+        mAccountObservers.registerObserver(obs);
     }
 
     /**
-     * Adds a listener interested in change in settings. If a class is storing a reference to
-     * Settings, it should listen on changes, so it can receive updates to settings.
+     * Removes a listener from receiving current account changes.
      * Must happen in the UI thread.
      */
-    public void addSettingsListener(Settings.ChangeListener listener) {
-        mSettingsListeners.add(listener);
+    @Override
+    public void unregisterAccountObserver(DataSetObserver obs) {
+        mAccountObservers.unregisterObserver(obs);
     }
 
-    /**
-     * Removes a listener from receiving settings changes.
-     * Must happen in the UI thread.
-     */
-    public void removeSettingsListener(Settings.ChangeListener listener) {
-        mSettingsListeners.remove(listener);
-    }
-
-    /**
-     * Method that lets the settings listeners know when the settings got changed.
-     */
-    private void notifySettingsChanged() {
-        final Settings updatedSettings = mAccount.settings;
-        // Copy the list of current listeners so that
-        final ArrayList<Settings.ChangeListener> allListeners =
-                new ArrayList<Settings.ChangeListener>(mSettingsListeners);
-        for (Settings.ChangeListener listener : allListeners) {
-            if (listener != null) {
-                listener.onSettingsChanged(updatedSettings);
-            }
-        }
-        // And we know that the ConversationListFragment is interested in changes to settings,
-        // though it hasn't registered itself with us.
-        final ConversationListFragment convList = getConversationListFragment();
-        if (convList != null) {
-            convList.onSettingsChanged(updatedSettings);
-        }
+    @Override
+    public Account getAccount() {
+        return mAccount;
     }
 
     private void fetchSearchFolder(Intent intent) {
@@ -604,6 +597,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mActivity.setDefaultKeyMode(Activity.DEFAULT_KEYS_SHORTCUT);
         mResolver = mActivity.getContentResolver();
         mNewEmailReceiver = new SuppressNotificationReceiver();
+        mRecentFolderList.initialize(mActivity);
 
         // All the individual UI components listen for ViewMode changes. This
         // simplifies the amount of logic in the AbstractActivityController, but increases the
@@ -1065,7 +1059,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // unregister the ViewPager's observer on the conversation cursor
         mPagerController.onDestroy();
         mActionBarView.onDestroy();
-
+        mRecentFolderList.destroy();
         mDestroyed = true;
     }
 
@@ -1120,12 +1114,11 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         LogUtils.d(LOG_TAG, "AbstractActivityController.setAccount(): account = %s", account.uri);
         mAccount = account;
-        mActionBarView.setAccount(mAccount);
         if (account.settings == null) {
             LogUtils.w(LOG_TAG, new Error(), "AAC ignoring account with null settings.");
             return;
         }
-        notifySettingsChanged();
+        mAccountObservers.notifyChanged();
     }
 
     /**
@@ -1240,7 +1233,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
                 mActivity.invalidateOptionsMenu();
                 restartOptionalLoader(LOADER_RECENT_FOLDERS);
-                mRecentFolderList.setCurrentAccount(mAccount);
                 fetchSearchFolder(intent);
             } else {
                 LogUtils.e(LOG_TAG, "Missing account extra from search intent.  Finishing");
@@ -1625,7 +1617,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
                         // Only notify about a settings change if something differs
                         if (!Objects.equal(mAccount.settings, previousSettings)) {
-                            notifySettingsChanged();
+                            mAccountObservers.notifyChanged();
                         }
 
                         // Got an update for the current account
@@ -1986,7 +1978,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (convList == null) {
             return;
         }
-        mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set, mAccount, mFolder,
+        mCabActionMenu = new SelectedConversationsActionMenu(mActivity, set, mFolder,
                 (SwipeableListView) convList.getListView());
         enableCabMode();
     }

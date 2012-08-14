@@ -40,6 +40,7 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
@@ -59,8 +60,7 @@ import java.util.Collection;
  * The conversation list UI component.
  */
 public final class ConversationListFragment extends ListFragment implements
-        OnItemLongClickListener, ModeChangeListener, SwipeCompleteListener,
-        Settings.ChangeListener {
+        OnItemLongClickListener, ModeChangeListener, SwipeCompleteListener {
     // Keys used to pass data to {@link ConversationListFragment}.
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     // Key used to keep track of the scroll state of the list.
@@ -118,6 +118,13 @@ public final class ConversationListFragment extends ListFragment implements
     private DataSetObserver mConversationListStatusObserver;
 
     private ConversationSelectionSet mSelectedSet;
+    private final AccountObserver mAccountObserver = new AccountObserver() {
+        @Override
+        public void onChanged(Account newAccount) {
+            mAccount = newAccount;
+            setSwipeAction();
+        }
+    };
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -222,6 +229,9 @@ public final class ConversationListFragment extends ListFragment implements
                     "create it. Cannot proceed.");
         }
         mActivity = (ControllableActivity) activity;
+        // Since we now have a controllable activity, load the account from it, and register for
+        // future account changes.
+        mAccount = mAccountObserver.initialize(mActivity.getAccountController());
         mCallbacks = mActivity.getListHandler();
         mErrorListener = mActivity.getErrorListener();
         // Start off with the current state of the folder being viewed.
@@ -230,8 +240,7 @@ public final class ConversationListFragment extends ListFragment implements
                 null);
         mFooterView.setFragmentManager(getFragmentManager());
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
-                getConversationListCursor(), mActivity.getSelectedSet(), mAccount,
-                mActivity.getSettings(), mActivity, mListView);
+                getConversationListCursor(), mActivity.getSelectedSet(), mActivity, mListView);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         mSelectedSet = mActivity.getSelectedSet();
@@ -328,8 +337,8 @@ public final class ConversationListFragment extends ListFragment implements
     public void onDestroyView() {
         mListSavedState = mListView.onSaveInstanceState();
 
-        // Set a null cursor in the dapter, and clear the list's adapter
-        mListAdapter.swapCursor(null);
+        // Clear the list's adapter
+        mListAdapter.destroy();
         mListView.setAdapter(null);
 
         mActivity.unsetViewModeListener(this);
@@ -345,6 +354,7 @@ public final class ConversationListFragment extends ListFragment implements
                     mConversationListStatusObserver);
             mConversationListStatusObserver = null;
         }
+        mAccountObserver.unregisterAndDestroy();
         super.onDestroyView();
     }
 
@@ -537,7 +547,7 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     private void setSwipeAction() {
-        int swipeSetting = Settings.getSwipeSetting(mActivity.getSettings());
+        int swipeSetting = Settings.getSwipeSetting(mAccount.settings);
         if (swipeSetting == Swipe.DISABLED
                 || !mAccount.supportsCapability(AccountCapabilities.UNDO)
                 || (mFolder != null && mFolder.isTrash())) {
@@ -607,11 +617,4 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
-    @Override
-    public void onSettingsChanged(Settings updatedSettings) {
-        if (mListAdapter != null) {
-            mListAdapter.onSettingsChanged(updatedSettings);
-        }
-        setSwipeAction();
-    }
 }

@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
+import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
@@ -85,18 +86,24 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     /** Object that can update conversation state on our behalf. */
     private final ConversationUpdater mUpdater;
 
-    private final Account mAccount;
+    private Account mAccount;
 
     private final Folder mFolder;
 
     private final SwipeableListView mListView;
+    private final AccountObserver mAccountObserver = new AccountObserver() {
+        @Override
+        public void onChanged(Account newAccount) {
+            mAccount = newAccount;
+        }
+    };
 
-    public SelectedConversationsActionMenu(RestrictedActivity activity,
-            ConversationSelectionSet selectionSet, Account account,
+    public SelectedConversationsActionMenu(ControllableActivity activity,
+            ConversationSelectionSet selectionSet,
             Folder folder, SwipeableListView list) {
         mActivity = activity;
         mSelectionSet = selectionSet;
-        mAccount = account;
+        mAccount = mAccountObserver.initialize(activity.getAccountController());
         mFolder = folder;
         mListView = list;
 
@@ -222,7 +229,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private void performDestructiveAction(final int action) {
         final DestructiveAction destructiveAction = mUpdater.getDeferredBatchAction(action);
-        final Settings settings = mActivity.getSettings();
+        final Settings settings = mAccount.settings;
         final Collection<Conversation> conversations = mSelectionSet.values();
         final boolean showDialog = (settings != null
                 && (action == R.id.delete) ? settings.confirmDelete : settings.confirmArchive);
@@ -491,6 +498,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mSelectionSet.removeObserver(this);
         clearSelection();
         mUpdater.refreshConversationList();
+        mAccountObserver.unregisterAndDestroy();
     }
 
     /**
