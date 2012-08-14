@@ -366,10 +366,14 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     mFolder.name));
         }
         final MenuItem archive = menu.findItem(R.id.archive);
-        final boolean showArchive =
+        boolean showArchive =
                 mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE)
                 && mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
-        archive.setVisible(showArchive);
+        if (archive == null) {
+            showArchive = false;
+        } else {
+            archive.setVisible(showArchive);
+        }
         if (!showRemoveFolder && !showArchive) {
             archive.setEnabled(false);
             archive.setVisible(true);
@@ -388,8 +392,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 mFolder.supportsCapability(FolderCapabilities.REPORT_PHISHING));
 
         final MenuItem mute = menu.findItem(R.id.mute);
-        mute.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.MUTE)
-                && (mFolder != null && mFolder.type == FolderType.INBOX));
+        if (mute != null) {
+            mute.setVisible(mAccount.supportsCapability(UIProvider.AccountCapabilities.MUTE)
+                    && (mFolder != null && mFolder.type == FolderType.INBOX));
+        }
         final MenuItem markImportant = menu.findItem(R.id.mark_important);
         markImportant.setVisible(showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
