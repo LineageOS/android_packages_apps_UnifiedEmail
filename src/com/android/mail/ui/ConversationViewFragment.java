@@ -63,6 +63,7 @@ import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
+import com.android.mail.browse.MessageCursor.ConversationController;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
@@ -76,7 +77,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
-import com.android.mail.ui.ConversationViewState.MessageViewState.ExpansionState;
+import com.android.mail.ui.ConversationViewState.ExpansionState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -84,8 +85,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
-import org.json.JSONException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -99,7 +98,8 @@ import java.util.Set;
 public final class ConversationViewFragment extends Fragment implements
         ConversationViewHeader.ConversationViewHeaderCallbacks,
         MessageHeaderViewCallbacks,
-        SuperCollapsedBlock.OnClickListener {
+        SuperCollapsedBlock.OnClickListener,
+        ConversationController {
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
@@ -133,7 +133,6 @@ public final class ConversationViewFragment extends Fragment implements
 
     private ConversationViewAdapter mAdapter;
     private MessageCursor mCursor;
-    private MessageCursor mPendingCursor;
 
     private boolean mViewsCreated;
 
@@ -425,6 +424,17 @@ public final class ConversationViewFragment extends Fragment implements
         return handled;
     }
 
+    @Override
+    public ConversationUpdater getListController() {
+        final ControllableActivity activity = (ControllableActivity) getActivity();
+        return activity != null ? activity.getConversationUpdater() : null;
+    }
+
+    @Override
+    public MessageCursor getMessageCursor() {
+        return mCursor;
+    }
+
     private void markUnread() {
         // Ignore unsafe calls made after a fragment is detached from an activity
         final ControllableActivity activity = (ControllableActivity) getActivity();
@@ -560,7 +570,6 @@ public final class ConversationViewFragment extends Fragment implements
         int collapsedStart = -1;
         ConversationMessage prevCollapsedMsg = null;
         boolean prevSafeForImages = false;
-        final Set<Message> potentiallySuperCollapsedMsgs = Sets.newHashSet();
 
         while (messageCursor.moveToPosition(++pos)) {
             final ConversationMessage msg = messageCursor.getMessage();
@@ -574,8 +583,9 @@ public final class ConversationViewFragment extends Fragment implements
             if (savedExpanded != null) {
                 expandedState = savedExpanded;
             } else {
+                // new messages that are not expanded default to being eligible for super-collapse
                 expandedState = (!msg.read || msg.starred || messageCursor.isLast()) ?
-                        ExpansionState.EXPANDED : ExpansionState.COLLAPSED;
+                        ExpansionState.EXPANDED : ExpansionState.SUPER_COLLAPSED;
             }
             mViewState.setExpansionState(msg, expandedState);
 
@@ -583,23 +593,20 @@ public final class ConversationViewFragment extends Fragment implements
             // later, the view may not match the cursor (e.g. conversation marked read on open)
             mViewState.setReadState(msg, msg.read);
 
-            if (!ExpansionState.isExpanded(expandedState)) {
-                // We only want to consider this for inclusion in the super collapsed block if
-                // 1) The we don't have previous state about this message  (The first time that the
-                //    user opens a conversation
-                // 2) The previously saved state for this message indicates that this message is
-                //    in the super collapsed block.
-                if (savedExpanded == null || ExpansionState.isSuperCollapsed(savedExpanded)) {
-                    // contribute to a super-collapsed block that will be emitted just before the
-                    // next expanded header
-                    if (collapsedStart < 0) {
-                        collapsedStart = pos;
-                    }
-                    prevCollapsedMsg = msg;
-                    prevSafeForImages = safeForImages;
-                    potentiallySuperCollapsedMsgs.add(msg);
-                    continue;
+            // We only want to consider this for inclusion in the super collapsed block if
+            // 1) The we don't have previous state about this message  (The first time that the
+            //    user opens a conversation)
+            // 2) The previously saved state for this message indicates that this message is
+            //    in the super collapsed block.
+            if (ExpansionState.isSuperCollapsed(expandedState)) {
+                // contribute to a super-collapsed block that will be emitted just before the
+                // next expanded header
+                if (collapsedStart < 0) {
+                    collapsedStart = pos;
                 }
+                prevCollapsedMsg = msg;
+                prevSafeForImages = safeForImages;
+                continue;
             }
 
             // resolve any deferred decisions on previous collapsed items
@@ -610,10 +617,7 @@ public final class ConversationViewFragment extends Fragment implements
                             prevSafeForImages);
                 } else {
                     renderSuperCollapsedBlock(collapsedStart, pos - 1);
-                    mViewState.setExpansionStates(
-                            potentiallySuperCollapsedMsgs, ExpansionState.SUPER_COLLAPSED);
                 }
-                potentiallySuperCollapsedMsgs.clear();
                 prevCollapsedMsg = null;
                 collapsedStart = -1;
             }
@@ -723,12 +727,12 @@ public final class ConversationViewFragment extends Fragment implements
             return;
         }
 
-        // Viewing a conversation should always update the "viewed" status. We do not want to update
-        // the read state every single time, but since we are doing an update, an additional update
-        // to the read state should be safe.
-        try {
-            mViewState.setInfoForConversation(mConversation);
+        mViewState.setInfoForConversation(mConversation);
 
+        // mark viewed if not previously marked viewed by this conversation view
+        // ('mark read', if necessary, will also happen there)
+        // we don't want to keep marking viewed on rotation or restore
+        if (!mConversation.isViewed()) {
             final ConversationUpdater listController = activity.getConversationUpdater();
             // The conversation cursor may not have finished loading by now (when launched via
             // notification), so watch for when it finishes and mark it read then.
@@ -738,13 +742,8 @@ public final class ConversationViewFragment extends Fragment implements
                 mMarkReadObserver = new MarkReadObserver(listController);
                 listController.registerConversationListObserver(mMarkReadObserver);
             } else {
-                // Mark the conversation viewed and read.
-                listController.markConversationsRead(Arrays.asList(mConversation),
-                        true, true);
+                markReadOnSeen(listController);
             }
-
-        } catch (JSONException e) {
-            LogUtils.w(LOG_TAG, e, "bad ConversationInfo, unable to mark conversation read");
         }
 
         activity.onConversationSeen(mConversation);
@@ -752,6 +751,18 @@ public final class ConversationViewFragment extends Fragment implements
         final SubjectDisplayChanger sdc = activity.getSubjectDisplayChanger();
         if (sdc != null) {
             sdc.setSubject(mConversation.subject);
+        }
+    }
+
+    private void markReadOnSeen(ConversationUpdater listController) {
+        // Mark the conversation viewed and read.
+        listController.markConversationsRead(Arrays.asList(mConversation), true /* read */,
+                true /* viewed */);
+
+        // and update the Message objects in the cursor so the next time a cursor update happens
+        // with these messages marked read, we know to ignore it
+        if (mCursor != null) {
+            mCursor.markMessagesRead();
         }
     }
 
@@ -836,24 +847,23 @@ public final class ConversationViewFragment extends Fragment implements
     private void onNewMessageBarClick() {
         mNewMessageBar.setVisibility(View.GONE);
 
-        renderConversation(mPendingCursor);
-        mPendingCursor = null;
+        renderConversation(mCursor); // mCursor is already up-to-date per onLoadFinished()
     }
 
     private static class MessageLoader extends CursorLoader {
         private boolean mDeliveredFirstResults = false;
         private final Conversation mConversation;
-        private final ConversationUpdater mListController;
+        private final ConversationController mController;
 
-        public MessageLoader(Context c, Conversation conv, ConversationUpdater updater) {
+        public MessageLoader(Context c, Conversation conv, ConversationController controller) {
             super(c, conv.messageListUri, UIProvider.MESSAGE_PROJECTION, null, null, null);
             mConversation = conv;
-            mListController = updater;
+            mController = controller;
         }
 
         @Override
         public Cursor loadInBackground() {
-            return new MessageCursor(super.loadInBackground(), mConversation, mListController);
+            return new MessageCursor(super.loadInBackground(), mConversation, mController);
         }
 
         @Override
@@ -1034,7 +1044,7 @@ public final class ConversationViewFragment extends Fragment implements
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return new MessageLoader(mContext, mConversation, mActivity.getConversationUpdater());
+            return new MessageLoader(mContext, mConversation, ConversationViewFragment.this);
         }
 
         @Override
@@ -1064,32 +1074,49 @@ public final class ConversationViewFragment extends Fragment implements
                 return;
             }
 
-            if (mCursor != null) {
-                final NewMessagesInfo info = getNewIncomingMessagesInfo(messageCursor);
-
-                if (info.count > 0) {
-                    // don't immediately render new incoming messages from other senders
-                    // (to avoid a new message from losing the user's focus)
-                    //
-                    // hold the new cursor as pending for later render
-                    mPendingCursor = messageCursor;
-                    LogUtils.i(LOG_TAG,
-                            "conversation updated, holding cursor for new incoming message");
-
-                    showNewMessageNotification(info);
-
-                    return;
-                }
-            }
+            /*
+             * what kind of changes affect the MessageCursor?
+             * 1. new message(s)
+             * 2. read/unread state change
+             * 3. deleted message, either regular or draft
+             * 4. updated message, either from self or from others, updated in content or state
+             * or sender
+             * 5. star/unstar of message (technically similar to #1)
+             * 6. other label change
+             *
+             * Use MessageCursor.hashCode() to sort out interesting vs. no-op cursor updates.
+             */
 
             if (mCursor == null) {
-                LogUtils.i(LOG_TAG, "existing cursor is null, rendering from scratch");
+                LogUtils.i(LOG_TAG, "CONV RENDER: existing cursor is null, rendering from scratch");
             } else {
-                // re-render?
-                // or render just those messages that changed?
-                LogUtils.i(LOG_TAG,
-                        "conversation updated, but not due to incoming message. rendering.");
+                final NewMessagesInfo info = getNewIncomingMessagesInfo(messageCursor);
+
+                if (info.count > 0 || messageCursor.hashCode() == mCursor.hashCode()) {
+
+                    if (info.count > 0) {
+                        // don't immediately render new incoming messages from other senders
+                        // (to avoid a new message from losing the user's focus)
+                        LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
+                                + ", holding cursor for new incoming message");
+                        showNewMessageNotification(info);
+                    } else {
+                        LogUtils.i(LOG_TAG, "CONV RENDER: uninteresting update"
+                                + ", ignoring this conversation update");
+                    }
+
+                    // update mCursor reference because the old one is about to be closed by
+                    // CursorLoader
+                    mCursor = messageCursor;
+                    return;
+                }
+
+                // cursors are different, and not due to an incoming message. fall through and
+                // render.
+                LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
+                        + ", but not due to incoming message. rendering.");
             }
+
             renderConversation(messageCursor);
 
             // TODO: if this is not user-visible, delay render until user-visible fragment is done.
@@ -1100,7 +1127,6 @@ public final class ConversationViewFragment extends Fragment implements
         @Override
         public void onLoaderReset(Loader<Cursor> loader) {
             mCursor = null;
-            // TODO: null out all Message.mMessageCursor references
         }
 
         private NewMessagesInfo getNewIncomingMessagesInfo(MessageCursor newCursor) {
@@ -1190,8 +1216,7 @@ public final class ConversationViewFragment extends Fragment implements
             mListController.unregisterConversationListObserver(this);
             mMarkReadObserver = null;
             LogUtils.i(LOG_TAG, "running deferred conv mark read on open, id=%d", mConversation.id);
-            mListController.markConversationsRead(Arrays.asList(mConversation),
-                    true /* read */, true /* viewed */);
+            markReadOnSeen(mListController);
         }
     }
 
