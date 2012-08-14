@@ -59,12 +59,12 @@
 
     <item android:id="@+id/star"
         android:title="@string/add_star"
-        android:showAsAction="never"
+        android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_star_holo_light" />
 
     <item android:id="@+id/remove_star"
         android:title="@string/remove_star"
-        android:showAsAction="never"
+        android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_star_off_holo_light" />
 
     <item
