@@ -27,6 +27,7 @@ import android.text.TextUtils;
 
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.utils.Utils;
+import com.google.common.base.Objects;
 
 import java.util.Collections;
 import java.util.List;
@@ -198,14 +199,8 @@ public class Message implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || !(o instanceof Message)) {
-            return false;
-        }
-        final Uri otherUri = ((Message) o).uri;
-        if (uri == null) {
-            return (otherUri == null);
-        }
-        return uri.equals(otherUri);
+        return this == o || (o != null && o instanceof Message
+                && Objects.equal(uri, ((Message) o).uri));
     }
 
     @Override
