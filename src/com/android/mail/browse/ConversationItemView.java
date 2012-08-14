@@ -21,8 +21,6 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.ClipData;
-import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -32,7 +30,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
@@ -69,7 +66,6 @@ import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -158,8 +154,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private boolean mPriorityMarkersEnabled;
     private boolean mCheckboxesEnabled;
     private boolean mSwipeEnabled;
-    private int mLastTouchX;
-    private int mLastTouchY;
     private AnimatedAdapter mAdapter;
     private int mAnimatedHeight = -1;
     private String mAccount;
@@ -1099,9 +1093,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     private void updateBackground(boolean isUnread) {
-        ViewMode viewMode = mActivity.getViewMode();
+        final boolean isListOnTablet = mTabletDevice && mActivity.getViewMode().isListMode();
         if (isUnread) {
-            if (mTabletDevice && viewMode.isListMode()) {
+            if (isListOnTablet) {
                 if (mChecked) {
                     setBackgroundResource(R.drawable.list_conversation_wide_unread_selected_holo);
                 } else {
@@ -1115,7 +1109,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 }
             }
         } else {
-            if (mTabletDevice && viewMode.isListMode()) {
+            if (isListOnTablet) {
                 if (mChecked) {
                     setBackgroundResource(R.drawable.list_conversation_wide_read_selected_holo);
                 } else {
@@ -1435,85 +1429,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 mHeader.conversation.position : -1;
     }
 
-    /**
-     * Select the current conversation.
-     */
-    private void selectConversation() {
-        if (!mSelectedConversationSet.containsKey(mHeader.conversation.id)) {
-            toggleCheckMark();
-        }
-    }
-
     @Override
     public View getView() {
         return this;
-    }
-
-    /**
-     * Begin drag mode. Keep the conversation selected (NOT toggle selection) and start drag.
-     */
-    private void beginDragMode() {
-        selectConversation();
-
-        // Clip data has form: [conversations_uri, conversationId1,
-        // maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]
-        final int count = mSelectedConversationSet.size();
-        String description = Utils.formatPlural(mContext, R.plurals.move_conversation, count);
-
-        final ClipData data = ClipData.newUri(mContext.getContentResolver(), description,
-                Conversation.MOVE_CONVERSATIONS_URI);
-        for (Conversation conversation : mSelectedConversationSet.values()) {
-            data.addItem(new Item(String.valueOf(conversation.position)));
-        }
-        // Protect against non-existent views: only happens for monkeys
-        final int width = this.getWidth();
-        final int height = this.getHeight();
-        final boolean isDimensionNegative = (width < 0) || (height < 0);
-        if (isDimensionNegative) {
-            LogUtils.e(LOG_TAG, "ConversationItemView: dimension is negative: "
-                        + "width=%d, height=%d", width, height);
-            return;
-        }
-        // Start drag mode
-        startDrag(data, new ShadowBuilder(this, count, mLastTouchX, mLastTouchY), null, 0);
-    }
-
-    private class ShadowBuilder extends DragShadowBuilder {
-        private final Drawable mBackground;
-
-        private final View mView;
-        private final String mDragDesc;
-        private final int mTouchX;
-        private final int mTouchY;
-        private int mDragDescX;
-        private int mDragDescY;
-
-        public ShadowBuilder(View view, int count, int touchX, int touchY) {
-            super(view);
-            mView = view;
-            mBackground = mView.getResources().getDrawable(R.drawable.list_pressed_holo);
-            mDragDesc = Utils.formatPlural(mView.getContext(), R.plurals.move_conversation, count);
-            mTouchX = touchX;
-            mTouchY = touchY;
-        }
-
-        @Override
-        public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
-            int width = mView.getWidth();
-            int height = mView.getHeight();
-            mDragDescX = mCoordinates.sendersX;
-            mDragDescY = getPadding(height, mCoordinates.subjectFontSize)
-                    - mCoordinates.subjectAscent;
-            shadowSize.set(width, height);
-            shadowTouchPoint.set(mTouchX, mTouchY);
-        }
-
-        @Override
-        public void onDrawShadow(Canvas canvas) {
-            mBackground.setBounds(0, 0, mView.getWidth(), mView.getHeight());
-            mBackground.draw(canvas);
-            sPaint.setTextSize(mCoordinates.subjectFontSize);
-            canvas.drawText(mDragDesc, mDragDescX, mDragDescY, sPaint);
-        }
     }
 }
