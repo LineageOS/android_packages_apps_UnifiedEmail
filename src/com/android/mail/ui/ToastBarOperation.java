@@ -89,12 +89,14 @@ public class ToastBarOperation implements Parcelable {
      * Get a string description of the operation that will be performed
      * when the user taps the undo bar.
      */
-    public String getDescription(Context context) {
+    public String getDescription(Context context, Folder folder) {
         int resId = -1;
         switch (mAction) {
             case R.id.delete:
                 resId = R.plurals.conversation_deleted;
                 break;
+            case R.id.remove_folder:
+                return context.getString(R.string.folder_removed, folder.name);
             case R.id.change_folder:
                 resId = R.plurals.conversation_folder_changed;
                 break;
@@ -126,7 +128,7 @@ public class ToastBarOperation implements Parcelable {
     }
 
     public String getSingularDescription(Context context, Folder folder) {
-        if (mAction == R.id.change_folder) {
+        if (mAction == R.id.remove_folder) {
             return context.getString(R.string.folder_removed, folder.name);
         }
         int resId = -1;

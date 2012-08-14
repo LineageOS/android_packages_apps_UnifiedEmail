@@ -387,9 +387,16 @@ public final class ConversationViewFragment extends Fragment implements
                                 .supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
         // TODO(mindyp) show/ hide spam and mute based on conversation
         // properties to be added.
+        boolean archiveVisible = mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
+                && mFolder != null && mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
         Utils.setMenuItemVisibility(menu, R.id.archive,
-                mAccount.supportsCapability(AccountCapabilities.ARCHIVE) && mFolder != null
-                        && mFolder.supportsCapability(FolderCapabilities.ARCHIVE));
+                archiveVisible);
+        Utils.setMenuItemVisibility(menu, R.id.remove_folder, !archiveVisible && mFolder != null
+                && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
+        if (mFolder != null) {
+            menu.findItem(R.id.remove_folder).setTitle(
+                    mActivity.getActivityContext().getString(R.string.remove_folder, mFolder.name));
+        }
         Utils.setMenuItemVisibility(menu, R.id.report_spam,
                 mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
                         && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM)
