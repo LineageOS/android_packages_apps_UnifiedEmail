@@ -464,7 +464,7 @@
         <!-- Displayed while marking multiple conversations as unread. [CHAR LIMIT=80]-->
         <item quantity="other">&lt;b><xliff:g id="count">%1$d</xliff:g>&lt;/b> marked unread.</item>
     </plurals>
-
+ 
     <plurals name="conversation_folder_changed">
         <!-- Displayed while adding and removing folders to a single conversation. [CHAR LIMIT=100] -->
         <item quantity="one">Changed folder.</item>

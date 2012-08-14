@@ -189,7 +189,7 @@ public class SwipeableListView extends ListView implements Callback {
         adapter.setupLeaveBehind(conv, undoOp, conv.position);
         ConversationCursor cc = (ConversationCursor) adapter.getCursor();
         switch (mSwipeAction) {
-            case R.id.change_folder:
+            case R.id.remove_folder:
                 FolderOperation folderOp = new FolderOperation(mFolder, false);
                 HashMap<Uri, Folder> targetFolders = Folder
                         .hashMapForFolders(conv.getRawFolders());
@@ -312,7 +312,7 @@ public class SwipeableListView extends ListView implements Callback {
      */
     public String getSwipeActionText() {
         Resources res = getContext().getResources();
-        if (mSwipeAction == R.id.change_folder) {
+        if (mSwipeAction == R.id.remove_folder) {
             return res.getString(R.string.remove_folder, mFolder.name);
         }
         return res.getString(mSwipeAction == R.id.archive ? R.string.archive : R.string.delete);
