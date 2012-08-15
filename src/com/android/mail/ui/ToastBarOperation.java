@@ -109,6 +109,9 @@ public class ToastBarOperation implements Parcelable {
             case R.id.mark_not_spam:
                 resId = R.plurals.conversation_not_spam;
                 break;
+            case R.id.mark_not_important:
+                resId = R.plurals.conversation_not_important;
+                break;
             case R.id.mute:
                 resId = R.plurals.conversation_muted;
                 break;
