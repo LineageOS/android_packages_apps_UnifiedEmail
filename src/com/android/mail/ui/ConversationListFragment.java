@@ -38,6 +38,7 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
+import com.android.mail.browse.ConversationItemViewModel;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
@@ -529,6 +530,8 @@ public final class ConversationListFragment extends ListFragment implements
         if (mFolder.lastSyncResult != UIProvider.LastSyncResult.SUCCESS) {
             mErrorListener.onError(mFolder, false);
         }
+        // Blow away conversation items cache.
+        ConversationItemViewModel.onFolderUpdated(mFolder);
     }
 
     public void onConversationListStatusUpdated() {
