@@ -2136,9 +2136,6 @@ public abstract class AbstractActivityController implements ActivityController {
             if (shouldShowFirstConversation()) {
                 if (mConversationListCursor.getCount() > 0) {
                     mConversationListCursor.moveToPosition(0);
-                    if (convList != null) {
-                        convList.getListView().setItemChecked(0, true);
-                    }
                     final Conversation conv = new Conversation(mConversationListCursor);
                     conv.position = 0;
                     onConversationSelected(conv);

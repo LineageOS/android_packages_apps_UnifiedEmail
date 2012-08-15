@@ -211,9 +211,9 @@ public final class TwoPaneController extends AbstractActivityController {
         // In conversation mode, if the conversation list is not visible, then the user cannot
         // see the selected conversations. Disable the CAB mode while leaving the selected set
         // untouched.
-        // Otherwise, the conversation list is guaranteed to be visible. Try to enable the CAB
+        // When the conversation list is made visible again, try to enable the CAB
         // mode if any conversations are selected.
-        if (newMode == ViewMode.CONVERSATION){
+        if (newMode == ViewMode.CONVERSATION || newMode == ViewMode.CONVERSATION_LIST){
             enableOrDisableCab();
         }
         resetActionBarIcon();

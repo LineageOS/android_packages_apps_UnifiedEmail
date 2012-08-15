@@ -64,6 +64,9 @@ public abstract class AccountObserver extends DataSetObserver {
 
     @Override
     public final void onChanged() {
+        if (mController == null) {
+            return;
+        }
         onChanged(mController.getAccount());
     }
 
@@ -81,6 +84,9 @@ public abstract class AccountObserver extends DataSetObserver {
      * @return
      */
     public final Account getAccount() {
+        if (mController == null) {
+            return null;
+        }
         return mController.getAccount();
     }
 
@@ -88,6 +94,9 @@ public abstract class AccountObserver extends DataSetObserver {
      * Unregisters for account changes and makes the object unusable.
      */
     public void unregisterAndDestroy() {
+        if (mController == null) {
+            return;
+        }
         mController.unregisterAccountObserver(this);
     }
 }
