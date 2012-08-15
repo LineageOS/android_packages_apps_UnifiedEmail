@@ -29,6 +29,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -360,8 +361,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
         if (colorBlock == null) {
             return;
         }
-        final boolean showBg = !TextUtils.isEmpty(folder.bgColor);
+        boolean showBg = !TextUtils.isEmpty(folder.bgColor);
         final int backgroundColor = showBg ? Integer.parseInt(folder.bgColor) : 0;
+        if (backgroundColor == Utils.getDefaultFolderBackgroundColor(colorBlock.getContext())) {
+            showBg = false;
+        }
         if (!showBg) {
             colorBlock.setBackgroundDrawable(null);
             colorBlock.setVisibility(View.GONE);
