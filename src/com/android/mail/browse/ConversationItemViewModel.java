@@ -102,12 +102,6 @@ public class ConversationItemViewModel {
 
     public ConversationItemView.ConversationItemFolderDisplayer folderDisplayer;
 
-    public ArrayList<Folder> rawFolders;
-
-    public int personalLevel;
-
-    public int priority;
-
     public boolean hasBeenForwarded;
 
     public boolean hasBeenRepliedTo;
@@ -155,9 +149,6 @@ public class ConversationItemViewModel {
             header.checkboxVisible = true;
             header.conversation = conv;
             header.unread = !conv.read;
-            header.rawFolders = conv.getRawFolders();
-            header.personalLevel = conv.personalLevel;
-            header.priority = conv.priority;
             header.hasBeenForwarded =
                     (conv.convFlags & UIProvider.ConversationFlags.FORWARDED)
                     == UIProvider.ConversationFlags.FORWARDED;
@@ -222,14 +213,14 @@ public class ConversationItemViewModel {
      * Returns the hashcode to compare if the data in the header is valid.
      */
     private static int getHashCode(Context context, String dateText, Object convInfo,
-            String rawFolders, boolean starred, boolean read) {
+            String rawFolders, boolean starred, boolean read, int priority) {
         if (dateText == null) {
             return -1;
         }
         if (TextUtils.isEmpty(rawFolders)) {
             rawFolders = "";
         }
-        return Objects.hashCode(convInfo, dateText, rawFolders, starred, read);
+        return Objects.hashCode(convInfo, dateText, rawFolders, starred, read, priority);
     }
 
     /**
@@ -250,7 +241,8 @@ public class ConversationItemViewModel {
      */
     void validate(Context context) {
         mDataHashCode = getHashCode(context, dateText, getConvInfo(),
-                conversation.getRawFoldersString(), conversation.starred, conversation.read);
+                conversation.getRawFoldersString(), conversation.starred, conversation.read,
+                conversation.priority);
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -259,7 +251,8 @@ public class ConversationItemViewModel {
      */
     boolean isDataValid(Context context) {
         return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
-                conversation.getRawFoldersString(), conversation.starred, conversation.read);
+                conversation.getRawFoldersString(), conversation.starred, conversation.read,
+                conversation.priority);
     }
 
     /**
