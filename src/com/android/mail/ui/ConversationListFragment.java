@@ -113,6 +113,7 @@ public final class ConversationListFragment extends ListFragment implements
     private AnimatedAdapter mListAdapter;
 
     private ConversationListFooterView mFooterView;
+    private View mEmptyView;
     private int mSwipeAction;
     private ErrorListener mErrorListener;
     private DataSetObserver mFolderObserver;
@@ -318,6 +319,7 @@ public final class ConversationListFragment extends ListFragment implements
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
+        mEmptyView = rootView.findViewById(R.id.empty_view);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -542,9 +544,14 @@ public final class ConversationListFragment extends ListFragment implements
         int error = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
                 extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
                 : UIProvider.LastSyncResult.SUCCESS;
-        if (error != UIProvider.LastSyncResult.SUCCESS) {
-            // Check the status of the folder to see if we are done loading.
+        int status = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
+        if (error == UIProvider.LastSyncResult.SUCCESS
+                && (status == UIProvider.CursorStatus.LOADED
+                || status == UIProvider.CursorStatus.COMPLETE)) {
             updateSearchResultHeader(mFolder != null ? mFolder.totalCount : 0);
+            if (mFolder == null || mFolder.totalCount == 0) {
+                mListView.setEmptyView(mEmptyView);
+            }
         }
         mListAdapter.setFooterVisibility(showFooter);
     }
