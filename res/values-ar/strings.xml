@@ -26,6 +26,10 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"إرفاق ملف"</string>
+    <!-- no translation found for add_photo_attachment (8548176514426323119) -->
+    <skip />
+    <!-- no translation found for add_video_attachment (4284457799113546464) -->
+    <skip />
     <string name="save_draft" msgid="5555744208032445632">"حفظ كمسودة"</string>
     <string name="discard" msgid="1714960202994370243">"إلغاء"</string>
     <string name="compose" msgid="1473559896062432878">"إنشاء"</string>
@@ -200,6 +204,8 @@
     <item quantity="one" msgid="7361303622131552596">"تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثة ليست ضمن المحادثات غير المرغوب فيها."</item>
     <item quantity="other" msgid="2250720080221922267">"تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثات ليست ضمن المحادثات غير المرغوب فيها."</item>
   </plurals>
+    <!-- no translation found for conversation_not_important:one (788387259924027833) -->
+    <!-- no translation found for conversation_not_important:other (6662213740575340397) -->
   <plurals name="conversation_phished">
     <item quantity="one" msgid="5386916574432049235">"تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثة تهدف إلى التصيّد."</item>
     <item quantity="other" msgid="3678624994662639442">"تم الإبلاغ عن &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; كمحادثات تهدف إلى التصيّد."</item>
@@ -298,7 +304,7 @@
     <item msgid="7109065688039971961">"لا يتوفر اتصال."</item>
     <item msgid="8437496123716232060">"تعذر تسجيل الدخول."</item>
     <item msgid="1651266301325684887">"خطأ أمنى."</item>
-    <item msgid="1461520171154288533">"تتعذر المزامنة"</item>
+    <item msgid="1461520171154288533">"تعذرت المزامنة"</item>
     <item msgid="8749857841162829469">"خطأ"</item>
   </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"المس للإعداد"</string>
@@ -345,7 +351,7 @@
     <string name="signin" msgid="8958889809095796177">"تسجيل الدخول"</string>
     <string name="info" msgid="6009817562073541204">"معلومات"</string>
     <string name="report" msgid="5417082746232614958">"الإبلاغ"</string>
-    <string name="sync_error" msgid="7368819509040597851">"تتعذر المزامنة."</string>
+    <string name="sync_error" msgid="7368819509040597851">"تعذرت المزامنة."</string>
     <string name="sync_error_message" msgid="5367907194753034375">"ليست هناك مساحة تخزينية كافية على الجهاز لإجراء المزامنة."</string>
     <string name="storage" msgid="3262760336059073446">"وحدة التخزين"</string>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
