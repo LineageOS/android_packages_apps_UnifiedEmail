@@ -24,6 +24,7 @@ import com.google.common.collect.Lists;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.StaticLayout;
@@ -52,6 +53,11 @@ public class ConversationItemViewModel {
     @VisibleForTesting
     static LruCache<Pair<String, Long>, ConversationItemViewModel> sConversationHeaderMap
         = new LruCache<Pair<String, Long>, ConversationItemViewModel>(MAX_CACHE_SIZE);
+
+    /**
+     * The Folder associated with the cache of models.
+     */
+    private static Folder sCachedModelsFolder;
 
     // The hashcode used to detect if the conversation has changed.
     private int mDataHashCode;
@@ -301,5 +307,17 @@ public class ConversationItemViewModel {
     public CharSequence getContentDescription(Context context) {
         return context.getString(R.string.content_description, conversation.subject,
                 conversation.getSnippet());
+    }
+
+    /**
+     * Clear cached header model objects when the folder changes.
+     */
+    public static void onFolderUpdated(Folder folder) {
+        Uri old = sCachedModelsFolder != null ? sCachedModelsFolder.uri : Uri.EMPTY;
+        Uri newUri = folder != null ? folder.uri : Uri.EMPTY;
+        if (!old.equals(newUri)) {
+            sCachedModelsFolder = folder;
+            sConversationHeaderMap.evictAll();
+        }
     }
 }
