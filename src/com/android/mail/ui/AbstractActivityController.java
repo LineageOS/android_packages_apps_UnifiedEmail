@@ -1794,8 +1794,16 @@ public abstract class AbstractActivityController implements ActivityController {
                     break;
                 case R.id.mark_not_important:
                     LogUtils.d(LOG_TAG, "Marking not-important");
-                    // Marking not important is destructive in a mailbox containing only important
-                    // messages
+                    // Marking not important is destructive in a mailbox
+                    // containing only important messages
+                    if (mFolder != null
+                            && mFolder
+                                    .supportsCapability(
+                                            UIProvider.FolderCapabilities.ONLY_IMPORTANT)) {
+                        for (Conversation conv : mTarget) {
+                            conv.localDeleteOnUpdate = true;
+                        }
+                    }
                     mConversationListCursor.updateInt(mContext, mTarget,
                             ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                     break;
@@ -1970,10 +1978,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onSetEmpty() {
-        ConversationListFragment fragment = getConversationListFragment();
-        if (fragment != null) {
-            getConversationListFragment().commitDestructiveActions();
-        }
     }
 
     @Override
