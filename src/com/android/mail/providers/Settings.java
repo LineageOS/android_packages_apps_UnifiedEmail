@@ -88,8 +88,11 @@ public class Settings implements Parcelable {
     /** Cached value of hashCode */
     private int mHashCode;
 
+    /** Safe defaults to be used if some values are unspecified. */
+    private static final Settings sDefault = EMPTY_SETTINGS;
+
     private Settings() {
-        signature = null;
+        signature = "";
         autoAdvance = AutoAdvance.LIST;
         messageTextSize = MessageTextSize.NORMAL;
         snapHeaders = SnapHeaderValue.ALWAYS;
@@ -145,26 +148,37 @@ public class Settings implements Parcelable {
                 cursor.getInt(UIProvider.ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN) != 0;
     }
 
-    private Settings(JSONObject json) throws JSONException {
-        signature = json.optString(AccountColumns.SettingsColumns.SIGNATURE);
-
-        autoAdvance = json.optInt(AccountColumns.SettingsColumns.AUTO_ADVANCE);
-        messageTextSize = json.optInt(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE);
-        snapHeaders = json.optInt(AccountColumns.SettingsColumns.SNAP_HEADERS);
-        replyBehavior = json.optInt(AccountColumns.SettingsColumns.REPLY_BEHAVIOR);
-        hideCheckboxes = json.optBoolean(AccountColumns.SettingsColumns.HIDE_CHECKBOXES);
-        confirmDelete = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_DELETE);
-        confirmArchive = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE);
-        confirmSend = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_SEND);
+    private Settings(JSONObject json) {
+        signature = json.optString(AccountColumns.SettingsColumns.SIGNATURE, sDefault.signature);
+        autoAdvance = json.optInt(AccountColumns.SettingsColumns.AUTO_ADVANCE,
+                sDefault.autoAdvance);
+        messageTextSize = json.optInt(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE,
+                sDefault.messageTextSize);
+        snapHeaders = json.optInt(AccountColumns.SettingsColumns.SNAP_HEADERS,
+                sDefault.snapHeaders);
+        replyBehavior = json.optInt(AccountColumns.SettingsColumns.REPLY_BEHAVIOR,
+                sDefault.replyBehavior);
+        hideCheckboxes = json.optBoolean(AccountColumns.SettingsColumns.HIDE_CHECKBOXES,
+                sDefault.hideCheckboxes);
+        confirmDelete = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_DELETE,
+                sDefault.confirmDelete);
+        confirmArchive = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE,
+                sDefault.confirmArchive);
+        confirmSend = json.optBoolean(AccountColumns.SettingsColumns.CONFIRM_SEND,
+                sDefault.confirmSend);
         defaultInbox = Utils.getValidUri(
                 json.optString(AccountColumns.SettingsColumns.DEFAULT_INBOX));
-        defaultInboxName = json.optString(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME);
+        defaultInboxName = json.optString(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME,
+                sDefault.defaultInboxName);
         forceReplyFromDefault =
-                json.optBoolean(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT);
-        maxAttachmentSize = json.getInt(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE);
-        swipe = json.optInt(AccountColumns.SettingsColumns.SWIPE);
+                json.optBoolean(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
+                        sDefault.forceReplyFromDefault);
+        maxAttachmentSize = json.optInt(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
+                sDefault.maxAttachmentSize);
+        swipe = json.optInt(AccountColumns.SettingsColumns.SWIPE, sDefault.swipe);
         priorityArrowsEnabled =
-                json.optBoolean(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED);
+                json.optBoolean(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
+                        sDefault.priorityArrowsEnabled);
     }
 
     /**
@@ -175,13 +189,20 @@ public class Settings implements Parcelable {
         return json.toString();
     }
 
+    private static final Object getNonNull(Object candidate, Object fallback){
+        if (candidate == null)
+            return fallback;
+        return candidate;
+    }
+
     /**
      * Return a JSONObject for these settings.
      */
     public synchronized JSONObject toJSON() {
         final JSONObject json = new JSONObject();
         try {
-            json.put(AccountColumns.SettingsColumns.SIGNATURE, signature);
+            json.put(AccountColumns.SettingsColumns.SIGNATURE,
+                    getNonNull(signature, sDefault.signature));
             json.put(AccountColumns.SettingsColumns.AUTO_ADVANCE, autoAdvance);
             json.put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE, messageTextSize);
             json.put(AccountColumns.SettingsColumns.SNAP_HEADERS, snapHeaders);
@@ -190,8 +211,10 @@ public class Settings implements Parcelable {
             json.put(AccountColumns.SettingsColumns.CONFIRM_DELETE, confirmDelete);
             json.put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE, confirmArchive);
             json.put(AccountColumns.SettingsColumns.CONFIRM_SEND, confirmSend);
-            json.put(AccountColumns.SettingsColumns.DEFAULT_INBOX, defaultInbox);
-            json.put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME, defaultInboxName);
+            json.put(AccountColumns.SettingsColumns.DEFAULT_INBOX,
+                    getNonNull(defaultInbox, sDefault.defaultInbox));
+            json.put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME,
+                    getNonNull(defaultInboxName, sDefault.defaultInboxName));
             json.put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
                     forceReplyFromDefault);
             json.put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
@@ -224,7 +247,6 @@ public class Settings implements Parcelable {
         }
     }
 
-
     /**
      * Create a new instance of an Settings object using a JSONObject  instance created previously
      * using {@link #toJSON()}. This returns null if the serialized instance was invalid or does
@@ -237,13 +259,7 @@ public class Settings implements Parcelable {
         if (json == null) {
             return null;
         }
-        try {
-            return new Settings(json);
-        } catch (JSONException e) {
-            LogUtils.e(LOG_TAG, e, "Could not create an settings from this input: \"%s\"",
-                    json.toString());
-            return null;
-        }
+        return new Settings(json);
     }
 
     @Override
@@ -253,7 +269,7 @@ public class Settings implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(signature);
+        dest.writeString((String) getNonNull(signature, sDefault.signature));
         dest.writeInt(autoAdvance);
         dest.writeInt(messageTextSize);
         dest.writeInt(snapHeaders);
@@ -262,8 +278,8 @@ public class Settings implements Parcelable {
         dest.writeInt(confirmDelete ? 1 : 0);
         dest.writeInt(confirmArchive? 1 : 0);
         dest.writeInt(confirmSend? 1 : 0);
-        dest.writeString(defaultInbox.toString());
-        dest.writeString(defaultInboxName);
+        dest.writeString(((Uri) getNonNull(defaultInbox, sDefault.defaultInbox)).toString());
+        dest.writeString((String) getNonNull(defaultInboxName, sDefault.defaultInboxName));
         dest.writeInt(forceReplyFromDefault ? 1 : 0);
         dest.writeInt(maxAttachmentSize);
         dest.writeInt(swipe);
@@ -278,10 +294,10 @@ public class Settings implements Parcelable {
      * is specified.
      */
     public static Uri getDefaultInboxUri(Settings settings) {
-        if (settings != null && settings.defaultInbox != null) {
-            return settings.defaultInbox;
+        if (settings == null) {
+            return sDefault.defaultInbox;
         }
-        return Uri.EMPTY;
+        return (Uri) getNonNull(settings.defaultInbox, sDefault.defaultInbox);
     }
 
     /**
@@ -305,7 +321,7 @@ public class Settings implements Parcelable {
      * @return the auto advance setting, a constant from {@link Swipe}
      */
     public static int getSwipeSetting(Settings settings) {
-        return settings != null ? settings.swipe : Swipe.DEFAULT;
+        return settings != null ? settings.swipe : sDefault.swipe;
     }
 
     @SuppressWarnings("hiding")
@@ -338,9 +354,7 @@ public class Settings implements Parcelable {
             return false;
         }
         final Settings that = (Settings) aThat;
-        // If both signatures are null or empty, we want to treat them as equals
-        return (((TextUtils.isEmpty(signature) && TextUtils.isEmpty(that.signature)) ||
-                    TextUtils.equals(signature, that.signature))
+        return (TextUtils.equals(signature, that.signature)
                 && autoAdvance == that.autoAdvance
                 && messageTextSize == that.messageTextSize
                 && replyBehavior == that.replyBehavior
