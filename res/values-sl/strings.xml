@@ -26,6 +26,10 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Priloži datoteko"</string>
+    <!-- no translation found for add_photo_attachment (8548176514426323119) -->
+    <skip />
+    <!-- no translation found for add_video_attachment (4284457799113546464) -->
+    <skip />
     <string name="save_draft" msgid="5555744208032445632">"Shrani osnutek"</string>
     <string name="discard" msgid="1714960202994370243">"Zavrzi"</string>
     <string name="compose" msgid="1473559896062432878">"Novo"</string>
@@ -55,8 +59,7 @@
     <string name="mute" msgid="1995954983688603977">"Prezri"</string>
     <string name="add_star" msgid="2866003744391266498">"Dodaj zvezdico"</string>
     <string name="remove_star" msgid="4372327933122106128">"Odstrani zvezdico"</string>
-    <!-- no translation found for remove_folder (4906542720439865413) -->
-    <skip />
+    <string name="remove_folder" msgid="4906542720439865413">"Odstrani iz <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="847250094775910499">"Arhiviraj"</string>
     <string name="report_spam" msgid="6467567747975393907">"Prijavite neželeno vsebino"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Ni vsiljena pošta"</string>
@@ -201,6 +204,8 @@
     <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; pogovor je bil prijavljen kot neželen."</item>
     <item quantity="other" msgid="2250720080221922267">"Št. pogovorov, prijavljenih kot neželenih: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
+    <!-- no translation found for conversation_not_important:one (788387259924027833) -->
+    <!-- no translation found for conversation_not_important:other (6662213740575340397) -->
   <plurals name="conversation_phished">
     <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; pogovor je bil prijavljen kot lažno predstavljanje."</item>
     <item quantity="other" msgid="3678624994662639442">"Št. pogovorov, prijavljenih kot lažno predstavljanje: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
@@ -219,8 +224,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Izbrisan"</string>
     <string name="archived" msgid="7533995360704366325">"Arhiviran"</string>
-    <!-- no translation found for folder_removed (1047474677580149436) -->
-    <skip />
+    <string name="folder_removed" msgid="1047474677580149436">"Odstranjeno iz <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; pogovor je označen kot pomemben."</item>
     <item quantity="other" msgid="709648106181749594">"Št. pogovorov, označenih kot pomembnih: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
