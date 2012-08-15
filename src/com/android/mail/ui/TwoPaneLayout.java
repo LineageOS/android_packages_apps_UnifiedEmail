@@ -32,7 +32,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +85,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * The current mode that the tablet layout is in. This is a constant integer that holds values
      * that are {@link ViewMode} constants like {@link ViewMode#CONVERSATION}.
      */
-    private int currentMode;
+    private int mCurrentMode;
     /**
      * Whether or not the layout is currently in the middle of a cross-fade animation that requires
      * custom rendering.
@@ -109,11 +108,15 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     /** Captured bitmap of each fragment. */
     private Bitmap mListBitmap;
     private int mListBitmapLeft;
-    /** Whether or not the conversation list can be collapsed all the way to hidden on the left.
-     * This is used only in portrait view*/
-    private boolean mListCollapsed;
-    /** True if {@link #mListCollapsed} has been initialized, false otherwise. */
-    private boolean mIsListCollapsedValid = false;
+    /**
+     * True if the conversation list is currently collapsed.  We assume that we start out in
+     * {@link ViewMode#CONVERSATION_LIST} at which point the conversation list is visible (both
+     * in portrait and landscape). In the case that conversation view is directly launched:
+     * through a notification or the widget, we will get appropriate calls to
+     * {@link ViewMode.ModeChangeListener#onViewModeChanged(int)} which will enable us to set the
+     * correct value.
+     */
+    private boolean mListCollapsed = false;
     private LayoutListener mListener;
     private int mListLeft;
     private Paint mListPaint;
@@ -143,7 +146,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
          * {@link #CONVERSATION_LIST}, {@link #COLLAPSE_LIST}, {@link #CONVERSATION} or
          * {@link #UNCOLLAPSE_LIST}
          */
-        private final int listener_type;
+        private final int mListenerType;
 
         /**
          * Create an animator listener of a specific type. The types are created using the constants
@@ -152,7 +155,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
          * @param type
          */
         AnimatorListener(int type){
-            this.listener_type = type;
+            this.mListenerType = type;
         }
 
         @Override
@@ -173,7 +176,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
             }
 
             // Now close the animation depending on the type of animator selected.
-            switch (listener_type) {
+            switch (mListenerType) {
                 case CONVERSATION_LIST:
                     onFinishEnteringConversationListMode();
                     return;
@@ -190,7 +193,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
         @Override
         public void onAnimationStart(Animator animation) {
-            switch (listener_type) {
+            switch (mListenerType) {
                 case CONVERSATION_LIST:
                     mFoldersView.setVisibility(View.VISIBLE);
             }
@@ -207,17 +210,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
     public TwoPaneLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-    }
-
-    /**
-     * Sets the {@link ViewMode} that this layout is synchronized to.
-     * @param viewMode The view mode object to listen to changes on.
-     */
-    // TODO(viki): Change this to have the ActivityController provide the viewMode only for adding
-    // as a listener.
-    public void attachToViewMode(ViewMode viewMode) {
-        viewMode.addListener(this);
-        currentMode = viewMode.getMode();
     }
 
     /**
@@ -244,7 +236,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * This is only relevant in a collapsible view, and will be 0 otherwise.
      */
     private int computeConversationListLeft(int width) {
-        return isConversationListCollapsed() ? -width : 0;
+        return mListCollapsed ? -width : 0;
     }
 
     /**
@@ -258,7 +250,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * Computes the width of the conversation list in stable state of the current mode.
      */
     private int computeConversationListWidth(int totalWidth) {
-        switch (currentMode) {
+        switch (mCurrentMode) {
             case ViewMode.CONVERSATION_LIST:
             case ViewMode.SEARCH_RESULTS_LIST:
                 return totalWidth - computeFolderListWidth();
@@ -281,11 +273,11 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * current mode.
      */
     private int computeConversationWidth(int totalWidth) {
-        switch (currentMode) {
+        switch (mCurrentMode) {
             case ViewMode.CONVERSATION:
                 // Fallthrough
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
-                if (isConversationListCollapsed()) {
+                if (mListCollapsed) {
                     return totalWidth;
                 }
                 return totalWidth - (int) (totalWidth * sScaledConversationListWeight);
@@ -313,16 +305,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
     private void dispatchConversationListVisibilityChange() {
         if (mListener != null) {
-            // Post the visibility change using a handler, so other views
-            // will not be modified while we are performing a layout of the
-            // TwoPaneLayout
-            final Handler handler = new Handler();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mListener.onConversationListVisibilityChanged(!isConversationListCollapsed());
-                }
-            });
+            mListener.onConversationListVisibilityChanged(!mListCollapsed);
         }
     }
 
@@ -365,6 +348,9 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     private void enterConversationListMode() {
         mListView.setPadding(mListView.getPaddingLeft(), 0, mListView.getPaddingRight(),
                 mListView.getPaddingBottom());
+
+        // The conversation list is visible now.
+        mListCollapsed = false;
 
         // On the initial call, measurements may not have been done (i.e. this
         // Layout has never been rendered), so no animation will be done.
@@ -433,6 +419,11 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
     private void enterConversationMode() {
         mConversationView.setVisibility(View.VISIBLE);
+
+        // The conversation list might be visible now, depending on the layout: in portrait we
+        // don't show the conversation list, but in landscape we do.  This information is stored
+        // in the constants
+        mListCollapsed = mContext.getResources().getBoolean(R.bool.list_collapsed);
 
         // On the initial call, measurements may not have been done (i.e. this Layout has never
         // been rendered), so no animation will be done.
@@ -556,10 +547,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * @return Whether or not the conversation list is visible on screen.
      */
     public boolean isConversationListCollapsed() {
-        if (!mIsListCollapsedValid) {
-            mListCollapsed = mContext.getResources().getBoolean(R.bool.list_collapsed);
-            mIsListCollapsedValid = true;
-        }
         return mListCollapsed;
     }
 
@@ -587,6 +574,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         mFoldersView.setVisibility(View.GONE);
         setConversationListWidth(computeConversationListWidth());
         dispatchConversationVisibilityChanged(true);
+        dispatchConversationListVisibilityChange();
     }
 
     /**
@@ -605,7 +593,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
             return;
         }
 
-        switch (currentMode) {
+        switch (mCurrentMode) {
             case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.CONVERSATION_LIST:
                 setFolderListWidth(computeFolderListWidth());
@@ -629,12 +617,13 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
 
     @Override
     public void onViewModeChanged(int newMode) {
-        currentMode = newMode;
+        mCurrentMode = newMode;
+        LogUtils.d(LOG_TAG, "TPL.onViewModeChanged(%d)", newMode);
         // Finish the current animation before changing mode.
         if (mOutstandingAnimator != null) {
             mOutstandingAnimator.cancel();
         }
-        switch (currentMode) {
+        switch (mCurrentMode) {
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
             case ViewMode.CONVERSATION:
                 enterConversationMode();
