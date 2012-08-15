@@ -25,6 +25,7 @@ import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
 import org.json.JSONArray;
@@ -187,6 +188,16 @@ public class Attachment implements Parcelable {
                 name == null ? "" : name.replaceAll("[|\n]", ""), contentType, size, contentType,
                 contentUri != null ? LOCAL_FILE : SERVER_ATTACHMENT, contentUri,
                 originExtras == null ? "" : originExtras, ""));
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return toJSON().toString();
+        } catch (JSONException e) {
+            LogUtils.e(LOG_TAG, e, "JSONException in toString");
+            return super.toString();
+        }
     }
 
     private static Uri parseOptionalUri(String uriString) {

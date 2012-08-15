@@ -184,8 +184,16 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         }
 
         updateActionItems();
+    }
+
+    @Override
+    public void onFragmentVisible(PhotoViewFragment fragment) {
+        super.onFragmentVisible(fragment);
+
+        final Attachment attachment = getCurrentAttachment();
         updateProgressAndEmptyViews(fragment, attachment);
     }
+
 
     /**
      * Updates the empty views of the fragment based upon the current
@@ -195,6 +203,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      */
     private void updateProgressAndEmptyViews(
             PhotoViewFragment fragment, final Attachment attachment) {
+
         final ProgressBarWrapper progressBar = fragment.getPhotoProgressBar();
         final TextView emptyText = fragment.getEmptyText();
         final ImageView retryButton = fragment.getRetryButton();
@@ -204,7 +213,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             progressBar.setMax(attachment.size);
             progressBar.setProgress(attachment.downloadedSize);
             progressBar.setIndeterminate(false);
-        } else {
+        } else if (fragment.isProgressBarNeeded()) {
             progressBar.setIndeterminate(true);
         }
 
