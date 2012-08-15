@@ -691,8 +691,12 @@ public abstract class AbstractActivityController implements ActivityController {
                         ConversationColumns.PRIORITY, UIProvider.ConversationPriority.HIGH);
                 break;
             case R.id.mark_not_important:
-                updateConversation(Conversation.listOf(mCurrentConversation),
-                        ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
+                if (mFolder != null && mFolder.isImportantOnly()) {
+                    delete(target, getAction(R.id.mark_not_important, target));
+                } else {
+                    updateConversation(Conversation.listOf(mCurrentConversation),
+                            ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
+                }
                 break;
             case R.id.mute:
                 delete(target, getAction(R.id.mute, target));
@@ -1796,10 +1800,7 @@ public abstract class AbstractActivityController implements ActivityController {
                     LogUtils.d(LOG_TAG, "Marking not-important");
                     // Marking not important is destructive in a mailbox
                     // containing only important messages
-                    if (mFolder != null
-                            && mFolder
-                                    .supportsCapability(
-                                            UIProvider.FolderCapabilities.ONLY_IMPORTANT)) {
+                    if (mFolder != null && mFolder.isImportantOnly()) {
                         for (Conversation conv : mTarget) {
                             conv.localDeleteOnUpdate = true;
                         }
