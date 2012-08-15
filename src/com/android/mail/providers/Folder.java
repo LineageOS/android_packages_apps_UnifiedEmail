@@ -619,4 +619,12 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public boolean isTrash() {
         return type == UIProvider.FolderType.TRASH;
     }
+
+    /**
+     * Whether this folder supports only showing important messages.
+     */
+    public boolean isImportantOnly() {
+        return supportsCapability(
+                UIProvider.FolderCapabilities.ONLY_IMPORTANT);
+    }
 }
