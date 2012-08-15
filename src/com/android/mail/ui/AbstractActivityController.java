@@ -1970,6 +1970,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onSetEmpty() {
+        ConversationListFragment fragment = getConversationListFragment();
+        if (fragment != null) {
+            getConversationListFragment().commitDestructiveActions();
+        }
     }
 
     @Override
