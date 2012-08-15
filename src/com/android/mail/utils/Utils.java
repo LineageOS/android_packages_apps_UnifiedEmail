@@ -189,6 +189,7 @@ public class Utils {
 
     private static int sMaxUnreadCount = -1;
     private static String sUnreadText;
+    private static int sDefaultFolderBackgroundColor = -1;
 
     public static void getStyledSenderSnippet(Context context, String senderInstructions,
             SpannableStringBuilder senderBuilder, SpannableStringBuilder statusBuilder,
@@ -994,5 +995,13 @@ public class Utils {
      */
     public static boolean shouldShowDisabledArchiveIcon(Context context) {
         return context.getResources().getBoolean(R.bool.show_disabled_archive_menu_item);
+    }
+
+    public static int getDefaultFolderBackgroundColor(Context context) {
+        if (sDefaultFolderBackgroundColor == -1) {
+            sDefaultFolderBackgroundColor = context.getResources().getColor(
+                    R.color.default_folder_background_color);
+        }
+        return sDefaultFolderBackgroundColor;
     }
 }
