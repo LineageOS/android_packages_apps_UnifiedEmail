@@ -401,7 +401,9 @@
     </style>
 
     <style name="WaitFragmentTitle" parent="@android:style/Widget.Holo.TextView">
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_marginBottom">8dip</item>
     </style>
 
     <style name="NotificationPrimaryText">

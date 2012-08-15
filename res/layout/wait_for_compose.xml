@@ -16,13 +16,11 @@
      limitations under the License.
 -->
 
- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:gravity="center"
-    android:layout_gravity="center"
-    android:id="@+id/wait_for_sync_wrapper">
+    android:padding="@dimen/wait_padding">
 
     <ProgressBar
         android:indeterminate="true"
@@ -40,4 +38,4 @@
         android:layout_marginTop="8dip"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
- </RelativeLayout>
+</RelativeLayout>
