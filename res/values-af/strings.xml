@@ -26,6 +26,10 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Heg lêer aan"</string>
+    <!-- no translation found for add_photo_attachment (8548176514426323119) -->
+    <skip />
+    <!-- no translation found for add_video_attachment (4284457799113546464) -->
+    <skip />
     <string name="save_draft" msgid="5555744208032445632">"Stoor konsep"</string>
     <string name="discard" msgid="1714960202994370243">"Gooi weg"</string>
     <string name="compose" msgid="1473559896062432878">"Skryf"</string>
@@ -200,6 +204,8 @@
     <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; gerapporteer as nie strooipos nie."</item>
     <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; gerapporteer as nie strooipos nie."</item>
   </plurals>
+    <!-- no translation found for conversation_not_important:one (788387259924027833) -->
+    <!-- no translation found for conversation_not_important:other (6662213740575340397) -->
   <plurals name="conversation_phished">
     <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; as uitvissing gerapporteer."</item>
     <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; as uitvissing gerapporteer."</item>
@@ -255,7 +261,7 @@
     <string name="conversation_newer" msgid="7381341099165809801">"Nuwer"</string>
     <string name="conversation_older" msgid="6384287019562069353">"Ouer"</string>
   <plurals name="new_incoming_messages">
-    <item quantity="one" msgid="8778057959289554701">"Nuwe boodskap van <xliff:g id="SENDER">%s</xliff:g>."</item>
+    <item quantity="one" msgid="8778057959289554701">"Nuwe boodskap van <xliff:g id="SENDER">%s</xliff:g> af."</item>
     <item quantity="other" msgid="6738671955116853198">"<xliff:g id="COUNT">%1$d</xliff:g> nuwe boodskappe"</item>
   </plurals>
     <string name="show" msgid="7114006150083237343">"Wys"</string>
