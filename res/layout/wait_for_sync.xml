@@ -16,43 +16,35 @@
      limitations under the License.
 -->
 
- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="match_parent"
-     android:layout_height="match_parent"
-     android:background="@android:color/white">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="@dimen/wait_padding">
 
-     <RelativeLayout android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:gravity="center"
-         android:id="@+id/wait_for_sync_wrapper"
-         android:layout_marginTop="16dip"
-         android:layout_marginLeft="16dip"
-         android:visibility="visible" >
+    <ProgressBar
+        android:indeterminate="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_spinner"/>
 
-         <ProgressBar
-             android:indeterminate="true"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:id="@+id/progress_spinner"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/wait_for_sync_title"
+        style="@style/WaitFragmentTitle"
+        android:id="@+id/wait_for_sync_title"
+        android:layout_toRightOf="@id/progress_spinner"
+        android:layout_marginLeft="4dip"
+        android:layout_marginBottom="4dip"/>
 
-         <TextView
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="@string/wait_for_sync_title"
-             style="@style/WaitFragmentTitle"
-             android:id="@+id/wait_for_sync_title"
-             android:layout_toRightOf="@id/progress_spinner"
-             android:layout_marginLeft="4dip" />
-
-         <TextView
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:text="@string/wait_for_sync_body"
-             android:textAppearance="?android:attr/textAppearanceSmall"
-             android:layout_below="@id/wait_for_sync_title"
-             android:layout_toRightOf="@id/progress_spinner"
-             android:layout_marginLeft="4dip" />
-     </RelativeLayout>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/wait_for_sync_body"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@id/wait_for_sync_title"
+        android:layout_toRightOf="@id/progress_spinner"
+        android:layout_marginLeft="4dip" />
 
  </RelativeLayout>
