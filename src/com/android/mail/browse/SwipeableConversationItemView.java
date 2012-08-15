@@ -66,9 +66,7 @@ public class SwipeableConversationItemView extends FrameLayout {
 
     public void reset() {
         setBackgroundVisibility(View.GONE);
-        mConversationItemView.setAlpha(1);
-        mConversationItemView.setTranslationX(0);
-        mConversationItemView.setAnimatedHeight(-1);
+        mConversationItemView.reset();
     }
 
     public ConversationItemView getSwipeableItemView() {
