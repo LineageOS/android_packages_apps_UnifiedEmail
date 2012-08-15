@@ -192,6 +192,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final int LOADER_ACCOUNT_CURSOR = 1;
     private static final String EXTRA_SELECTED_ACCOUNT = "selectedAccount";
     private static final String TAG_WAIT = "wait-fragment";
+    private static final String MIME_TYPE_PHOTO = "image/*";
+    private static final String MIME_TYPE_VIDEO = "video/*";
 
     /**
      * A single thread for running tasks in the background.
@@ -233,7 +235,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private long mDraftId = UIProvider.INVALID_MESSAGE_ID;
     private Message mDraft;
     private Object mDraftLock = new Object();
-    private ImageView mAttachmentsButton;
 
     /**
      * Boolean indicating whether ComposeActivity was launched from a Gmail controlled view.
@@ -868,10 +869,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         LayoutTransition transition =
                 ((ViewGroup) findViewById(R.id.content)).getLayoutTransition();
         mAttachmentsView.setComposeLayoutTransition(transition);
-        mAttachmentsButton = (ImageView) findViewById(R.id.add_attachment);
-        if (mAttachmentsButton != null) {
-            mAttachmentsButton.setOnClickListener(this);
-        }
         mTo = (RecipientEditTextView) findViewById(R.id.to);
         mCc = (RecipientEditTextView) findViewById(R.id.cc);
         mBcc = (RecipientEditTextView) findViewById(R.id.bcc);
@@ -1570,9 +1567,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // Animate in cc/bcc.
                 showCcBccViews();
                 break;
-            case R.id.add_attachment:
-                openAttachmentTypeSelectionDialog();
-                break;
         }
     }
 
@@ -1626,8 +1620,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         int id = item.getItemId();
         boolean handled = true;
         switch (id) {
-            case R.id.add_attachment:
-                openAttachmentTypeSelectionDialog();
+            case R.id.add_photo_attachment:
+                doAttach(MIME_TYPE_PHOTO);
+                break;
+            case R.id.add_video_attachment:
+                doAttach(MIME_TYPE_VIDEO);
                 break;
             case R.id.add_cc_bcc:
                 showCcBccViews();
@@ -1809,7 +1806,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     public ArrayList<SendOrSaveTask> mActiveTasks = Lists.newArrayList();
     private int mRequestId;
     private String mSignature;
-    private AttachmentTypeSelectorAdapter mAttachmentTypeSelectorAdapter;
     private Account[] mAccounts;
 
     @VisibleForTesting
@@ -2357,23 +2353,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // TODO: store the request map in user preferences.
     }
 
-    public void openAttachmentTypeSelectionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.add_file_attachment);
-        builder.setAdapter(new AttachmentTypeSelectorAdapter(this),
-                new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int position) {
-                doAttach(position);
-            }
-        });
-        builder.show();
-    }
-
-    private void doAttach(int position) {
+    private void doAttach(String type) {
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        i.setType(AttachmentTypeSelectorAdapter.ITEMS.get(position).mMimeType);
+        i.setType(type);
         mAddingAttachment = true;
         startActivityForResult(Intent.createChooser(i, getText(R.string.select_attachment_type)),
                 RESULT_PICK_ATTACHMENT);

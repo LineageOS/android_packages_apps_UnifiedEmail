@@ -22,9 +22,14 @@
         android:icon="@drawable/send"
         android:title="@string/send"/>
 
-    <item android:id="@+id/add_attachment"
+    <item android:id="@+id/add_photo_attachment"
         android:icon="@drawable/ic_attachment_holo_light"
-        android:title="@string/add_file_attachment"
+        android:title="@string/add_photo_attachment"
+        android:showAsAction="never" />
+
+    <item android:id="@+id/add_video_attachment"
+        android:icon="@drawable/ic_attachment_holo_light"
+        android:title="@string/add_video_attachment"
         android:showAsAction="never" />
 
     <item android:id="@+id/add_cc_bcc"

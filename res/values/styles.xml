@@ -85,8 +85,6 @@
     <style name="ComposeButton">
         <item name="android:padding">0dip</item>
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:layout_gravity">center_vertical|left</item>
-        <item name="android:gravity">left</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">12sp</item>
