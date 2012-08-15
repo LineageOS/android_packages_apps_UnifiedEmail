@@ -561,7 +561,7 @@
     <!-- Displayed for one second after user saves message as draft [CHAR LIMIT=50]-->
     <string name="message_saved">Message saved as draft.</string>
     <!-- Displayed for one second while message is being sent [CHAR LIMIT=50]-->
-    <string name="sending_message">Sending message\u2026</string>
+    <string name="sending_message">Sending message to outbox\u2026</string>
     <!-- Displayed for one second after trying to send with invalid recipients [CHAR LIMIT=50]-->
     <string name="invalid_recipient">The address <xliff:g id="wrongemail" example="foo@@gmail..com">%s</xliff:g> is invalid.</string>
     <!-- Shown in HTML to allow the user to see quoted text; should match Gmail web UI. 25B6 is Unicode for a right-pointing triangle. [CHAR LIMIT=50] -->
