@@ -60,12 +60,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
     FolderChangeListener getFolderChangeListener();
 
     /**
-     * Returns whether the first conversation in the conversation list should be
-     * automatically selected and shown.
-     */
-    boolean shouldShowFirstConversation();
-
-    /**
      * Get the set of currently selected conversations. This method returns a non-null value.
      * In case no conversation is currently selected, it returns an empty selection set.
      * @return
