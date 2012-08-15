@@ -15,16 +15,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<!--  For add attachments and +cc/bcc -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="wrap_content"
-    style="@style/ComposeButtonColumn">
-
-    <Button android:id="@+id/add_cc_bcc"
-        android:text="@string/add_cc_label"
-        style="@style/ComposeButton"
-        android:layout_marginLeft="16dip"
-        android:layout_gravity="bottom" />
-
-</FrameLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ComposeFieldLayout"
+                android:layout_below="@id/cc_bcc_wrapper">
+        <!-- Subject: localization cannot control what field pressing tab will bring the user to. This is controlled at runtime.  -->
+        <EditText android:id="@+id/subject"
+            android:inputType="textEmailSubject|textAutoCorrect|textCapSentences|textImeMultiLine|textMultiLine"
+            android:hint="@string/subject_hint"
+            android:textColorHint="@color/compose_label_text"
+            android:imeOptions="actionDone|flagNoExtractUi"
+            style="@style/ComposeEditTextView" />
+</RelativeLayout>

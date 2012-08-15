@@ -71,6 +71,12 @@
 
                 </LinearLayout>
 
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/compose_area_right_padding">
+                    <include layout="@layout/compose_subject"/>
+                </FrameLayout>
                 <!--  Attachments -->
                 <com.android.mail.compose.AttachmentsView android:id="@+id/attachments"
                     android:layout_height="wrap_content"
