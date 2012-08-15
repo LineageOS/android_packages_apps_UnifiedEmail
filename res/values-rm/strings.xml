@@ -34,6 +34,10 @@
     <skip />
     <!-- no translation found for add_file_attachment (2203398371671979481) -->
     <skip />
+    <!-- no translation found for add_photo_attachment (8548176514426323119) -->
+    <skip />
+    <!-- no translation found for add_video_attachment (4284457799113546464) -->
+    <skip />
     <!-- no translation found for save_draft (5555744208032445632) -->
     <skip />
     <!-- no translation found for discard (1714960202994370243) -->
@@ -297,6 +301,8 @@
     <!-- no translation found for conversation_spammed:other (5071459475389411227) -->
     <!-- no translation found for conversation_not_spam:one (7361303622131552596) -->
     <!-- no translation found for conversation_not_spam:other (2250720080221922267) -->
+    <!-- no translation found for conversation_not_important:one (788387259924027833) -->
+    <!-- no translation found for conversation_not_important:other (6662213740575340397) -->
     <!-- no translation found for conversation_phished:one (5386916574432049235) -->
     <!-- no translation found for conversation_phished:other (3678624994662639442) -->
     <!-- no translation found for conversation_archived:one (5457612502965117672) -->

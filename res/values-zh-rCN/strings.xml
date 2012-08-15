@@ -26,6 +26,10 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"添加附件"</string>
+    <!-- no translation found for add_photo_attachment (8548176514426323119) -->
+    <skip />
+    <!-- no translation found for add_video_attachment (4284457799113546464) -->
+    <skip />
     <string name="save_draft" msgid="5555744208032445632">"保存草稿"</string>
     <string name="discard" msgid="1714960202994370243">"舍弃"</string>
     <string name="compose" msgid="1473559896062432878">"写邮件"</string>
@@ -200,6 +204,8 @@
     <item quantity="one" msgid="7361303622131552596">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话举报为非垃圾邮件。"</item>
     <item quantity="other" msgid="2250720080221922267">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话举报为非垃圾邮件。"</item>
   </plurals>
+    <!-- no translation found for conversation_not_important:one (788387259924027833) -->
+    <!-- no translation found for conversation_not_important:other (6662213740575340397) -->
   <plurals name="conversation_phished">
     <item quantity="one" msgid="5386916574432049235">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话举报为网上诱骗。"</item>
     <item quantity="other" msgid="3678624994662639442">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话举报为网上诱骗。"</item>
