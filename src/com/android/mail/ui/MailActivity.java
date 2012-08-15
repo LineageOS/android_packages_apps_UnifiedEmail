@@ -339,11 +339,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public boolean shouldShowFirstConversation() {
-        return mController.shouldShowFirstConversation();
-    }
-
-    @Override
     public ConversationSelectionSet getSelectedSet() {
         return mController.getSelectedSet();
     }
