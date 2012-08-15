@@ -55,8 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"نادیده گرفتن"</string>
     <string name="add_star" msgid="2866003744391266498">"افزودن ستاره"</string>
     <string name="remove_star" msgid="4372327933122106128">"حذف ستاره"</string>
-    <!-- no translation found for remove_folder (4906542720439865413) -->
-    <skip />
+    <string name="remove_folder" msgid="4906542720439865413">"حذف از <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="847250094775910499">"بایگانی"</string>
     <string name="report_spam" msgid="6467567747975393907">"گزارش هرزنامه"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"گزارش بعنوان غیرهرزنامه"</string>
@@ -219,8 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"حذف شد"</string>
     <string name="archived" msgid="7533995360704366325">"بایگانی شد"</string>
-    <!-- no translation found for folder_removed (1047474677580149436) -->
-    <skip />
+    <string name="folder_removed" msgid="1047474677580149436">"از <xliff:g id="FOLDERNAME">%1$s</xliff:g> حذف شد"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به عنوان مهم علامت‌گذاری شد."</item>
     <item quantity="other" msgid="709648106181749594">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; مورد به عنوان مهم علامت‌گذاری شد."</item>
