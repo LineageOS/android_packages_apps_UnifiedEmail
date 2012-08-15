@@ -525,6 +525,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (mFolder == null) {
             return;
         }
+
         mListAdapter.setFolder(mFolder);
         mFooterView.setFolder(mFolder);
         if (mFolder.lastSyncResult != UIProvider.LastSyncResult.SUCCESS) {
@@ -609,7 +610,6 @@ public final class ConversationListFragment extends ListFragment implements
         if (mListAdapter != null) {
             mListAdapter.swapCursor(mCallbacks.getConversationListCursor());
         }
-        onFolderUpdated(mFolder);
     }
 
     public void commitDestructiveActions() {
