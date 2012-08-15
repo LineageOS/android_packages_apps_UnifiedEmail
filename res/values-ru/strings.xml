@@ -293,11 +293,14 @@
     <string name="cancel" msgid="8762981157252199115">"Отмена"</string>
     <string name="close" msgid="419945428844076406">"Закрыть"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"В этом аккаунте нет папок."</string>
-    <!-- no translation found for sync_status:1 (7109065688039971961) -->
-    <!-- no translation found for sync_status:2 (8437496123716232060) -->
-    <!-- no translation found for sync_status:3 (1651266301325684887) -->
-    <!-- no translation found for sync_status:4 (1461520171154288533) -->
-    <!-- no translation found for sync_status:5 (8749857841162829469) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Без ошибок"</item>
+    <item msgid="7109065688039971961">"Нет соединения"</item>
+    <item msgid="8437496123716232060">"Не удалось войти"</item>
+    <item msgid="1651266301325684887">"Ошибка системы безопасности"</item>
+    <item msgid="1461520171154288533">"Ошибка синхронизации"</item>
+    <item msgid="8749857841162829469">"Ошибка"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Нажмите для настройки"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Для просмотра цепочек писем синхронизируйте эту папку."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Синхронизировать папку"</string>
@@ -339,18 +342,12 @@
     <item msgid="6593672292311851204">"Часто"</item>
     <item msgid="3584541772344786752">"Все папки"</item>
   </string-array>
-    <!-- no translation found for signin (8958889809095796177) -->
-    <skip />
-    <!-- no translation found for info (6009817562073541204) -->
-    <skip />
-    <!-- no translation found for report (5417082746232614958) -->
-    <skip />
-    <!-- no translation found for sync_error (7368819509040597851) -->
-    <skip />
-    <!-- no translation found for sync_error_message (5367907194753034375) -->
-    <skip />
-    <!-- no translation found for storage (3262760336059073446) -->
-    <skip />
+    <string name="signin" msgid="8958889809095796177">"Вход"</string>
+    <string name="info" msgid="6009817562073541204">"Детали"</string>
+    <string name="report" msgid="5417082746232614958">"Отчет"</string>
+    <string name="sync_error" msgid="7368819509040597851">"Ошибка синхронизации"</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"Недостаточно места для синхронизации"</string>
+    <string name="storage" msgid="3262760336059073446">"Память"</string>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>

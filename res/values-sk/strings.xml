@@ -55,8 +55,7 @@
     <string name="mute" msgid="1995954983688603977">"Ignorovať"</string>
     <string name="add_star" msgid="2866003744391266498">"Pridať hviezdičku"</string>
     <string name="remove_star" msgid="4372327933122106128">"Odstrániť hviezdičku"</string>
-    <!-- no translation found for remove_folder (4906542720439865413) -->
-    <skip />
+    <string name="remove_folder" msgid="4906542720439865413">"Odstrániť z priečinka <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="847250094775910499">"Archivovať"</string>
     <string name="report_spam" msgid="6467567747975393907">"Nahlásiť spam"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Nahlásiť, že to nie je spam"</string>
@@ -219,8 +218,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Odstránené"</string>
     <string name="archived" msgid="7533995360704366325">"Archivované"</string>
-    <!-- no translation found for folder_removed (1047474677580149436) -->
-    <skip />
+    <string name="folder_removed" msgid="1047474677580149436">"Odstránené z priečinka <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"Konverzácie boli označené ako dôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
     <item quantity="other" msgid="709648106181749594">"Konverzácie boli označené ako dôležité (počet: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;)."</item>
@@ -295,11 +293,14 @@
     <string name="cancel" msgid="8762981157252199115">"Zrušiť"</string>
     <string name="close" msgid="419945428844076406">"Zavrieť"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Pre tento účet neboli nastavené žiadne priečinky."</string>
-    <!-- no translation found for sync_status:1 (7109065688039971961) -->
-    <!-- no translation found for sync_status:2 (8437496123716232060) -->
-    <!-- no translation found for sync_status:3 (1651266301325684887) -->
-    <!-- no translation found for sync_status:4 (1461520171154288533) -->
-    <!-- no translation found for sync_status:5 (8749857841162829469) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Úspech"</item>
+    <item msgid="7109065688039971961">"Žiadne pripojenie."</item>
+    <item msgid="8437496123716232060">"Nepodarilo sa prihlásiť."</item>
+    <item msgid="1651266301325684887">"Chyba zabezpečenia."</item>
+    <item msgid="1461520171154288533">"Nepodarilo sa synchronizovať."</item>
+    <item msgid="8749857841162829469">"Chyba"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Klepnutím nastavte"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Zobr. konverz., synchr. priečinok."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Synchronizovať priečinok"</string>
@@ -341,18 +342,12 @@
     <item msgid="6593672292311851204">"Často používané"</item>
     <item msgid="3584541772344786752">"Všetky priečinky"</item>
   </string-array>
-    <!-- no translation found for signin (8958889809095796177) -->
-    <skip />
-    <!-- no translation found for info (6009817562073541204) -->
-    <skip />
-    <!-- no translation found for report (5417082746232614958) -->
-    <skip />
-    <!-- no translation found for sync_error (7368819509040597851) -->
-    <skip />
-    <!-- no translation found for sync_error_message (5367907194753034375) -->
-    <skip />
-    <!-- no translation found for storage (3262760336059073446) -->
-    <skip />
+    <string name="signin" msgid="8958889809095796177">"Prihlásiť sa"</string>
+    <string name="info" msgid="6009817562073541204">"Informácie"</string>
+    <string name="report" msgid="5417082746232614958">"Prehľad"</string>
+    <string name="sync_error" msgid="7368819509040597851">"Nepodarilo sa synchronizovať."</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"Vaše zariadenie nemá dostatočný ukladací priestor potrebný na synchronizáciu."</string>
+    <string name="storage" msgid="3262760336059073446">"Ukladací priestor"</string>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
