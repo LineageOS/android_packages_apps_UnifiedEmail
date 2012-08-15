@@ -160,6 +160,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private String mAccount;
     private ControllableActivity mActivity;
     private CharacterStyle mActivatedTextSpan;
+    private int mBackgroundOverride = -1;
     private static ForegroundColorSpan sActivatedTextSpan;
     private static Bitmap sDateBackgroundAttachment;
     private static Bitmap sDateBackgroundNoAttachment;
@@ -1095,10 +1096,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     private void updateBackground(boolean isUnread) {
-        if (mAnimatedHeight != -1) {
+        if (mBackgroundOverride != -1) {
             // If the item is animating, we use a color to avoid shrinking a 9-patch
             // and getting weird artifacts from the overlap.
-            setBackgroundColor(sAnimatingBackgroundColor);
+            setBackgroundColor(mBackgroundOverride);
             return;
         }
         final boolean isListOnTablet = mTabletDevice && mActivity.getViewMode().isListMode();
@@ -1305,6 +1306,17 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     /**
+     * Reset any state associated with this conversation item view so that it
+     * can be reused.
+     */
+    public void reset() {
+        mBackgroundOverride = -1;
+        setAlpha(1);
+        setTranslationX(0);
+        setAnimatedHeight(-1);
+    }
+
+    /**
      * Grow the height of the item and fade it in when bringing a conversation
      * back from a destructive action.
      * @param listener
@@ -1357,6 +1369,18 @@ public class ConversationItemView extends View implements SwipeableItemView {
         return slide;
     }
 
+    public void startDestroyAnimation(final AnimatorListener listener) {
+        ObjectAnimator height = createHeightAnimation(false);
+        int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext,
+                mActivity.getViewMode());
+        setMinimumHeight(0);
+        mBackgroundOverride = sAnimatingBackgroundColor;
+        setBackgroundColor(mBackgroundOverride);
+        mAnimatedHeight = minHeight;
+        height.addListener(listener);
+        height.start();
+    }
+
     private ObjectAnimator createHeightAnimation(boolean show) {
         int minHeight = ConversationItemViewCoordinates.getMinHeight(getContext(),
                 mActivity.getViewMode());
@@ -1366,17 +1390,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
         height.setInterpolator(new DecelerateInterpolator(2.0f));
         height.setDuration(sShrinkAnimationDuration);
         return height;
-    }
-
-    public void startDestroyAnimation(final AnimatorListener listener) {
-        ObjectAnimator height = createHeightAnimation(false);
-        int minHeight = ConversationItemViewCoordinates.getMinHeight(mContext,
-                mActivity.getViewMode());
-        setMinimumHeight(0);
-        setBackgroundColor(sAnimatingBackgroundColor);
-        mAnimatedHeight = minHeight;
-        height.addListener(listener);
-        height.start();
     }
 
     // Used by animator
