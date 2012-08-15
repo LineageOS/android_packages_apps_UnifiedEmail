@@ -42,11 +42,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
 
 
 /**
@@ -381,21 +379,13 @@ public abstract class MailAppProvider extends ContentProvider
         cacheAccountList();
     }
 
-    public static void removeAccount(Uri accountUri) {
-        final MailAppProvider provider = getInstance();
-        if (provider == null) {
-            throw new IllegalStateException("MailAppProvider not intialized");
-        }
-        provider.removeAccounts(Collections.singleton(accountUri), true /* notify */);
-    }
-
     private void removeAccounts(Set<Uri> uris, boolean notify) {
         synchronized (mAccountCache) {
             for (Uri accountUri : uris) {
+                LogUtils.d(LOG_TAG, "Removing account %s", accountUri);
                 mAccountCache.remove(accountUri);
             }
         }
-
         // Explicitly calling this out of the synchronized block in case any of the observers get
         // called synchronously.
         if (notify) {
@@ -549,16 +539,13 @@ public abstract class MailAppProvider extends ContentProvider
             newQueryUriMap.add(accountUri);
             addAccountImpl(account, accountsQueryUri, false /* don't notify */);
         }
+        // Remove all of the accounts that are in the new result set
+        previousQueryUriMap.removeAll(newQueryUriMap);
 
-        if (previousQueryUriMap != null) {
-            // Remove all of the accounts that are in the new result set
-            previousQueryUriMap.removeAll(newQueryUriMap);
-
-            // For all of the entries that had been in the previous result set, and are not
-            // in the new result set, remove them from the cache
-            if (previousQueryUriMap.size() > 0 && mAccountsFullyLoaded) {
-              removeAccounts(previousQueryUriMap, false /* don't notify */);
-            }
+        // For all of the entries that had been in the previous result set, and are not
+        // in the new result set, remove them from the cache
+        if (previousQueryUriMap.size() > 0 && mAccountsFullyLoaded) {
+            removeAccounts(previousQueryUriMap, false /* don't notify */);
         }
         broadcastAccountChange();
     }
