@@ -91,18 +91,19 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     private final Folder mFolder;
 
     private final SwipeableListView mListView;
-    private final AccountObserver mAccountObserver = new AccountObserver() {
-        @Override
-        public void onChanged(Account newAccount) {
-            mAccount = newAccount;
-        }
-    };
+    private AccountObserver mAccountObserver;
 
     public SelectedConversationsActionMenu(ControllableActivity activity,
             ConversationSelectionSet selectionSet,
             Folder folder, SwipeableListView list) {
         mActivity = activity;
         mSelectionSet = selectionSet;
+        mAccountObserver = new AccountObserver() {
+            @Override
+            public void onChanged(Account newAccount) {
+                mAccount = newAccount;
+            }
+        };
         mAccount = mAccountObserver.initialize(activity.getAccountController());
         mFolder = folder;
         mListView = list;
@@ -498,7 +499,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mSelectionSet.removeObserver(this);
         clearSelection();
         mUpdater.refreshConversationList();
-        mAccountObserver.unregisterAndDestroy();
+        if (mAccountObserver != null) {
+            mAccountObserver.unregisterAndDestroy();
+            mAccountObserver = null;
+        }
     }
 
     /**
