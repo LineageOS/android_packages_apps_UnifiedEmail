@@ -92,6 +92,11 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
     }
 
     private Bitmap loadBitmap(final Uri thumbnailUri) {
+        if (thumbnailUri == null) {
+            LogUtils.e(LOG_TAG, "Attempting to load bitmap for null uri");
+            return null;
+        }
+
         AssetFileDescriptor fd = null;
         Bitmap result = null;
 
