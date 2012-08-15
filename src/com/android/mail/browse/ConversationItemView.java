@@ -529,9 +529,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Personal level.
         mHeader.personalLevelBitmap = null;
         if (mCoordinates.showPersonalLevel) {
-            final int personalLevel = mHeader.personalLevel;
+            final int personalLevel = mHeader.conversation.personalLevel;
             final boolean isImportant =
-                    mHeader.priority == UIProvider.ConversationPriority.IMPORTANT;
+                    mHeader.conversation.priority == UIProvider.ConversationPriority.IMPORTANT;
             final boolean useImportantMarkers = isImportant && mPriorityMarkersEnabled;
 
             if (personalLevel == UIProvider.ConversationPersonalLevel.ONLY_TO_ME) {
