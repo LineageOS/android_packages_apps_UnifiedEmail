@@ -83,8 +83,6 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationListCallbacks mCallbacks;
 
     private final Handler mHandler = new Handler();
-    // List save state.
-    private Parcelable mListSavedState;
 
     // The internal view objects.
     private SwipeableListView mListView;
@@ -261,11 +259,14 @@ public final class ConversationListFragment extends ListFragment implements
         onViewModeChanged(mActivity.getViewMode().getMode());
         mActivity.getViewMode().addListener(this);
         // Restore the list state
-        if (mListSavedState != null) {
-            mListView.onRestoreInstanceState(mListSavedState);
+        if (savedInstanceState != null) {
+            final Parcelable listSavedState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+            if (listSavedState != null) {
+                mListView.onRestoreInstanceState(listSavedState);
 
-            // TODO: find a better way to unset the selected item when restoring
-            mListView.clearChoices();
+                // TODO: find a better way to unset the selected item when restoring
+                mListView.clearChoices();
+            }
         }
 
         if (mActivity.isFinishing()) {
@@ -309,9 +310,7 @@ public final class ConversationListFragment extends ListFragment implements
         // TODO(mindyp): do we want this as a setting?
         mSwipeAction = mAccount.supportsCapability(AccountCapabilities.ARCHIVE) ?
                 R.id.archive : R.id.delete;
-        if (savedState != null) {
-            mListSavedState = savedState.getParcelable(LIST_STATE_KEY);
-        }
+
         setRetainInstance(true);
     }
 
