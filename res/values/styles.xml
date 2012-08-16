@@ -452,6 +452,6 @@
     </style>
 
     <style name="AccountSpinnerStyle">
-        <item name="android:layout_width">@dimen/spinner_frame_width</item>
+        <item name="android:layout_width">wrap_content</item>
     </style>
 </resources>
