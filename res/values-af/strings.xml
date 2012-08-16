@@ -283,7 +283,8 @@
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
     <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&amp;gt via <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Boodskap as konsep gestoor."</string>
-    <string name="sending_message" msgid="1498583163419122128">"Stuur tans boodskap…"</string>
+    <!-- no translation found for sending_message (2822171587017313151) -->
+    <skip />
     <string name="invalid_recipient" msgid="2161317422860961623">"Die adres <xliff:g id="WRONGEMAIL">%s</xliff:g> is ongeldig."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Wys aangehaalde teks"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Versteek aangehaalde teks"</string>
@@ -304,7 +305,7 @@
     <item msgid="7109065688039971961">"Geen verbinding nie."</item>
     <item msgid="8437496123716232060">"Kon nie aanmeld nie."</item>
     <item msgid="1651266301325684887">"Sekuriteitsfout"</item>
-    <item msgid="1461520171154288533">"Kon nie sinchroniseer nie."</item>
+    <item msgid="1461520171154288533">"Kon nie sinkroniseer nie."</item>
     <item msgid="8749857841162829469">"Fout"</item>
   </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Raak om op te stel"</string>
@@ -351,8 +352,8 @@
     <string name="signin" msgid="8958889809095796177">"Meld aan"</string>
     <string name="info" msgid="6009817562073541204">"Inligting"</string>
     <string name="report" msgid="5417082746232614958">"Gee aan"</string>
-    <string name="sync_error" msgid="7368819509040597851">"Kon nie sinchroniseer nie."</string>
-    <string name="sync_error_message" msgid="5367907194753034375">"Jou toestel het nie genoeg stoorplek om te sinchroniseer nie."</string>
+    <string name="sync_error" msgid="7368819509040597851">"Kon nie sinkroniseer nie."</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"Jou toestel het nie genoeg stoorplek om te sinkroniseer nie."</string>
     <string name="storage" msgid="3262760336059073446">"Berging"</string>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
