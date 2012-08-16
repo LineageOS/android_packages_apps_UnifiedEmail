@@ -283,7 +283,8 @@
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
     <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="VIA_DOMAIN">%3$s</xliff:g>経由の<xliff:g id="NAME">%1$s</xliff:g>&lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
     <string name="message_saved" msgid="7073947895562277576">"メッセージを下書きとして保存しました。"</string>
-    <string name="sending_message" msgid="1498583163419122128">"メールを送信中..."</string>
+    <!-- no translation found for sending_message (2822171587017313151) -->
+    <skip />
     <string name="invalid_recipient" msgid="2161317422860961623">"アドレス<xliff:g id="WRONGEMAIL">%s</xliff:g>は無効です。"</string>
     <string name="show_elided" msgid="5255917904110437886">"▶元のメッセージを表示"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼元のメッセージを隠す"</string>
