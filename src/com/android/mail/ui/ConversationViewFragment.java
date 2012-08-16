@@ -51,6 +51,7 @@ import android.widget.TextView;
 
 import com.android.mail.ContactInfo;
 import com.android.mail.ContactInfoSource;
+import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.SenderInfoLoader;
 import com.android.mail.browse.ConversationContainer;
@@ -64,6 +65,7 @@ import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageCursor.ConversationController;
+import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
@@ -242,9 +244,19 @@ public final class ConversationViewFragment extends Fragment implements
         }
         mTemplates = new HtmlConversationTemplates(mContext);
         mAccount = mAccountObserver.initialize(mActivity.getAccountController());
+
+        final FormattedDateBuilder dateBuilder = new FormattedDateBuilder(mContext);
+
         mAdapter = new ConversationViewAdapter(mActivity.getActivityContext(), mAccount,
-                getLoaderManager(), this, mContactLoaderCallbacks, this, this, mAddressCache);
+                getLoaderManager(), this, mContactLoaderCallbacks, this, this, mAddressCache,
+                dateBuilder);
         mConversationContainer.setOverlayAdapter(mAdapter);
+
+        // set up snap header (the adapter usually does this with the other ones)
+        final MessageHeaderView snapHeader = mConversationContainer.getSnapHeader();
+        snapHeader.initialize(dateBuilder, mAccount, mAddressCache);
+        snapHeader.setCallbacks(this);
+        snapHeader.setContactInfoSource(mContactLoaderCallbacks);
 
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
 

@@ -167,6 +167,17 @@ public class ConversationViewAdapter extends BaseAdapter {
                 mExpanded = expanded;
             }
         }
+
+        @Override
+        public boolean canBecomeSnapHeader() {
+            return isExpanded();
+        }
+
+        @Override
+        public boolean canPushSnapHeader() {
+            return true;
+        }
+
     }
 
     public class MessageFooterItem extends ConversationOverlayItem {
@@ -256,15 +267,21 @@ public class ConversationViewAdapter extends BaseAdapter {
         public int getEnd() {
             return mEnd;
         }
+
+        @Override
+        public boolean canPushSnapHeader() {
+            return true;
+        }
     }
 
     public ConversationViewAdapter(Context context, Account account, LoaderManager loaderManager,
             MessageHeaderViewCallbacks messageCallbacks,
             ContactInfoSource contactInfoSource,
             ConversationViewHeaderCallbacks convCallbacks,
-            SuperCollapsedBlock.OnClickListener scbListener, Map<String, Address> addressCache) {
+            SuperCollapsedBlock.OnClickListener scbListener, Map<String, Address> addressCache,
+            FormattedDateBuilder dateBuilder) {
         mContext = context;
-        mDateBuilder = new FormattedDateBuilder(context);
+        mDateBuilder = dateBuilder;
         mAccount = account;
         mLoaderManager = loaderManager;
         mMessageCallbacks = messageCallbacks;
