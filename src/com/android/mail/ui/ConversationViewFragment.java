@@ -922,6 +922,15 @@ public final class ConversationViewFragment extends Fragment implements
         return "(" + s + " subj=" + mConversation.subject + ")";
     }
 
+    private Address getAddress(String rawFrom) {
+        Address addr = mAddressCache.get(rawFrom);
+        if (addr == null) {
+            addr = Address.getEmailAddress(rawFrom);
+            mAddressCache.put(rawFrom, addr);
+        }
+        return addr;
+    }
+
     private class ConversationWebViewClient extends WebViewClient {
 
         @Override
@@ -1044,11 +1053,7 @@ public final class ConversationViewFragment extends Fragment implements
             if (count > 1) {
                 param = count;
             } else {
-                Address addr = mAddressCache.get(senderAddress);
-                if (addr == null) {
-                    addr = Address.getEmailAddress(senderAddress);
-                    mAddressCache.put(senderAddress, addr);
-                }
+                final Address addr = getAddress(senderAddress);
                 param = TextUtils.isEmpty(addr.getName()) ? addr.getAddress() : addr.getName();
             }
             return getResources().getQuantityString(R.plurals.new_incoming_messages, count, param);
@@ -1152,7 +1157,15 @@ public final class ConversationViewFragment extends Fragment implements
                 final Message m = newCursor.getMessage();
                 if (!mViewState.contains(m)) {
                     LogUtils.i(LOG_TAG, "conversation diff: found new msg: %s", m.uri);
-                    // TODO: distinguish ours from theirs
+
+                    final Address from = getAddress(m.from);
+                    // distinguish ours from theirs
+                    // new messages from the account owner should not trigger a notification
+                    if (mAccount.ownsFromAddress(from.getAddress())) {
+                        LogUtils.i(LOG_TAG, "found message from self: %s", m.uri);
+                        continue;
+                    }
+
                     info.count++;
                     info.senderAddress = m.from;
                 }

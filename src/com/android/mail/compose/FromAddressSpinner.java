@@ -25,19 +25,12 @@ import android.widget.Spinner;
 
 import com.android.mail.providers.Account;
 import com.android.mail.providers.ReplyFromAccount;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class FromAddressSpinner extends Spinner implements OnItemSelectedListener {
@@ -122,49 +115,13 @@ public class FromAddressSpinner extends Spinner implements OnItemSelectedListene
 
         mReplyFromAccounts.clear();
         for (Account account : mAccounts) {
-            try {
-                mReplyFromAccounts.addAll(getAccountSpecificFroms(account));
-            } catch (JSONException e) {
-                LogUtils.e(LOG_TAG, e, "Failed parsing from addresses associated with account %s",
-                        account.name);
-            }
+            mReplyFromAccounts.addAll(account.getReplyFroms());
         }
         adapter.addAccounts(mReplyFromAccounts);
 
         setAdapter(adapter);
         selectCurrentAccount();
         setOnItemSelectedListener(this);
-    }
-
-    public static List<ReplyFromAccount> getAccountSpecificFroms(Account account)
-            throws JSONException {
-        List<ReplyFromAccount> froms = new ArrayList<ReplyFromAccount>();
-        // Skip this account if sending unsupported
-        if (account.supportsCapability(AccountCapabilities.SENDING_UNAVAILABLE)) {
-            return froms;
-        }
-        ReplyFromAccount replyFrom = new ReplyFromAccount(account, account.uri, account.name,
-                account.name, account.name, false, false);
-        if (replyFrom != null) {
-            froms.add(replyFrom);
-        }
-        if (!TextUtils.isEmpty(account.accountFromAddresses)) {
-            try {
-                JSONArray accounts = new JSONArray(account.accountFromAddresses);
-                JSONObject accountString;
-                for (int i = 0; i < accounts.length(); i++) {
-                    accountString = (JSONObject) accounts.get(i);
-                    ReplyFromAccount a = ReplyFromAccount.deserialize(account, accountString);
-                    if (a != null) {
-                        froms.add(a);
-                    }
-                }
-            } catch (JSONException e) {
-                LogUtils.e(LOG_TAG, e, "Failed to parse accountFromAddresses for account %s",
-                        account.name);
-            }
-        }
-        return froms;
     }
 
     public List<ReplyFromAccount> getReplyFromAccounts() {
