@@ -29,15 +29,13 @@ import android.widget.TextView;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
 import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 
 /**
  * A header block that expands to a list of collapsed message headers. Will notify a listener on tap
  * so the listener can hide the block and reveal the corresponding collapsed message headers.
  *
  */
-public class SuperCollapsedBlock extends FrameLayout implements View.OnClickListener,
-        HeaderBlock {
+public class SuperCollapsedBlock extends FrameLayout implements View.OnClickListener {
 
     public interface OnClickListener {
         /**
@@ -116,36 +114,6 @@ public class SuperCollapsedBlock extends FrameLayout implements View.OnClickList
         // vertical dimension components.
         return r.getDimensionPixelSize(R.dimen.super_collapsed_height)
                 + r.getDimensionPixelOffset(R.dimen.message_header_vertical_margin);
-    }
-
-    @Override
-    public boolean canSnap() {
-        return false;
-    }
-
-    @Override
-    public MessageHeaderView getSnapView() {
-        return null;
-    }
-
-    @Override
-    public void setMarginBottom(int height) {
-        // no-op. should never have a matching body.
-
-        // sanity check
-        if (height != 0) {
-            LogUtils.d(LOG_TAG, "super-collapsed block yielded unexpected body height: %d", height);
-        }
-    }
-
-    @Override
-    public void updateContactInfo() {
-        // no-op
-    }
-
-    @Override
-    public void setStarDisplay(boolean starred) {
-        // no-op
     }
 
 }
