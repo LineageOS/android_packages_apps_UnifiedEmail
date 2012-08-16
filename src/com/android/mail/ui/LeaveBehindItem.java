@@ -201,7 +201,6 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         }
     }
 
-
     public void startFadeInAnimation() {
         if (!mFadingInText) {
             mFadingInText = true;
