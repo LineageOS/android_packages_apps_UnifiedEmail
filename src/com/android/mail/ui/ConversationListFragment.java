@@ -338,8 +338,6 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onDestroyView() {
-        mListSavedState = mListView.onSaveInstanceState();
-
         // Clear the list's adapter
         mListAdapter.destroy();
         mListView.setAdapter(null);
