@@ -283,7 +283,8 @@
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
     <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; über <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Nachricht wurde als Entwurf gespeichert."</string>
-    <string name="sending_message" msgid="1498583163419122128">"Nachricht wird gesendet…"</string>
+    <!-- no translation found for sending_message (2822171587017313151) -->
+    <skip />
     <string name="invalid_recipient" msgid="2161317422860961623">"Die Adresse <xliff:g id="WRONGEMAIL">%s</xliff:g> ist ungültig."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Zitierten Text anzeigen"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Zitierten Text ausblenden"</string>
@@ -349,7 +350,7 @@
     <item msgid="3584541772344786752">"Alle Ordner"</item>
   </string-array>
     <string name="signin" msgid="8958889809095796177">"Anmelden"</string>
-    <string name="info" msgid="6009817562073541204">"Informationen"</string>
+    <string name="info" msgid="6009817562073541204">"Details"</string>
     <string name="report" msgid="5417082746232614958">"Feedback"</string>
     <string name="sync_error" msgid="7368819509040597851">"Synchronisierung nicht möglich"</string>
     <string name="sync_error_message" msgid="5367907194753034375">"Das Gerät verfügt nicht über genügend Speicherplatz für die Synchronisierung."</string>
