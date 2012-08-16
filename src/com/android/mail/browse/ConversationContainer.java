@@ -35,6 +35,7 @@ import com.android.mail.R;
 import com.android.mail.browse.ScrollNotifier.ScrollListener;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.DequeMap;
+import com.android.mail.utils.InputSmoother;
 import com.android.mail.utils.LogUtils;
 import com.google.common.collect.Lists;
 
@@ -72,6 +73,12 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private static final int[] TOP_LAYER_VIEW_IDS = {
         R.id.conversation_topmost_overlay
     };
+
+    /**
+     * Maximum scroll speed (in dp/sec) at which the snap header animation will draw.
+     * Anything faster than that, and drawing it creates visual artifacting (wagon-wheel effect).
+     */
+    private static final float SNAP_HEADER_MAX_SCROLL_SPEED = 600f;
 
     private ConversationViewAdapter mOverlayAdapter;
     private int[] mOverlayBottoms;
@@ -158,6 +165,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private boolean mDisableLayoutTracing;
 
+    private final InputSmoother mVelocityTracker;
+
     private final DataSetObserver mAdapterObserver = new AdapterObserver();
 
     /**
@@ -199,6 +208,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         super(c, attrs);
 
         mOverlayViews = new SparseArray<OverlayView>();
+
+        mVelocityTracker = new InputSmoother(c);
 
         mTouchSlop = ViewConfiguration.get(c).getScaledTouchSlop();
 
@@ -340,6 +351,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     @Override
     public void onNotifierScroll(final int x, final int y) {
+        mVelocityTracker.onInput(y);
         mDisableLayoutTracing = true;
         positionOverlays(x, y);
         mDisableLayoutTracing = false;
@@ -415,21 +427,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             spacerIndex--;
         }
 
-        // render and/or re-position snap header
-        ConversationOverlayItem snapItem = null;
-        if (mSnapIndex != -1) {
-            final ConversationOverlayItem item = mOverlayAdapter.getItem(mSnapIndex);
-            if (item.canBecomeSnapHeader()) {
-                snapItem = item;
-            }
-        }
-        if (snapItem == null) {
-            mSnapHeader.setVisibility(GONE);
-            mSnapHeader.unbind();
-        } else {
-            snapItem.bindView(mSnapHeader, false /* measureOnly */);
-            mSnapHeader.setVisibility(VISIBLE);
-        }
+        positionSnapHeader(mSnapIndex);
     }
 
     /**
@@ -604,6 +602,9 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         final OverlayView overlay = mOverlayViews.get(adapterIndex);
         final ConversationOverlayItem item = mOverlayAdapter.getItem(adapterIndex);
 
+        // save off the item's current top for later snap calculations
+        item.setTop(overlayTopY);
+
         // is the overlay visible and does it have non-zero height?
         if (overlayTopY != overlayBottomY && overlayBottomY > mOffsetY
                 && overlayTopY < mOffsetY + getHeight()) {
@@ -682,6 +683,53 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         mAttachedOverlaySinceLastDraw = true;
 
         return view;
+    }
+
+    // render and/or re-position snap header
+    private void positionSnapHeader(int snapIndex) {
+        ConversationOverlayItem snapItem = null;
+        if (snapIndex != -1) {
+            final ConversationOverlayItem item = mOverlayAdapter.getItem(snapIndex);
+            if (item.canBecomeSnapHeader()) {
+                snapItem = item;
+            }
+        }
+        if (snapItem == null) {
+            mSnapHeader.setVisibility(GONE);
+            mSnapHeader.unbind();
+            return;
+        }
+
+        snapItem.bindView(mSnapHeader, false /* measureOnly */);
+        mSnapHeader.setVisibility(VISIBLE);
+
+        int overlap = 0;
+
+        final ConversationOverlayItem next = findNextPushingOverlay(snapIndex + 1);
+        if (next != null) {
+            overlap = Math.min(0, next.getTop() - mSnapHeader.getHeight() - mOffsetY);
+
+            // disable overlap drawing past a certain speed
+            if (overlap < 0) {
+                final Float v = mVelocityTracker.getSmoothedVelocity();
+                if (v != null && v > SNAP_HEADER_MAX_SCROLL_SPEED) {
+                    overlap = 0;
+                }
+            }
+        }
+        mSnapHeader.setTranslateY(overlap);
+    }
+
+    // find the next header that can push the snap header up
+    private ConversationOverlayItem findNextPushingOverlay(int start) {
+        int value = -1;
+        for (int i = start, len = mOverlayAdapter.getCount(); i < len; i++) {
+            final ConversationOverlayItem next = mOverlayAdapter.getItem(i);
+            if (next.canPushSnapHeader()) {
+                return next;
+            }
+        }
+        return null;
     }
 
     /**

@@ -62,7 +62,7 @@ import java.io.StringReader;
 import java.util.Map;
 
 public class MessageHeaderView extends LinearLayout implements OnClickListener,
-        OnMenuItemClickListener, HeaderBlock, ConversationContainer.DetachListener {
+        OnMenuItemClickListener, ConversationContainer.DetachListener {
 
     /**
      * Cap very long recipient lists during summary construction for efficiency.
@@ -277,16 +277,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return mMessageHeaderItem == null || mMessageHeaderItem.isExpanded();
     }
 
-    @Override
-    public boolean canSnap() {
-        return isExpanded();
-    }
-
-    @Override
-    public MessageHeaderView getSnapView() {
-        return this;
-    }
-
     public void setSnappy(boolean snappy) {
         mIsSnappy = snappy;
         hideMessageDetails();
@@ -295,16 +285,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         } else {
             setBackgroundColor(android.R.color.white);
         }
-    }
-
-    /**
-     * Check if this header's displayed data matches that of another header.
-     *
-     * @param other another header
-     * @return true if the headers are displaying data for the same message
-     */
-    public boolean matches(MessageHeaderView other) {
-        return other != null && mMessage != null && mMessage.equals(other.mMessage);
     }
 
     @Override
@@ -326,24 +306,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             mContactInfoSource.unregisterObserver(mContactInfoObserver);
             mObservingContactInfo = false;
         }
-    }
-
-    public void renderUpperHeaderFrom(MessageHeaderView other) {
-        mMessageHeaderItem = other.mMessageHeaderItem;
-        mMessage = other.mMessage;
-        mSender = other.mSender;
-        mDefaultReplyAll = other.mDefaultReplyAll;
-
-        mSenderNameView.setText(other.mSenderNameView.getText());
-        mSenderEmailView.setText(other.mSenderEmailView.getText());
-        mStarView.setSelected(other.mStarView.isSelected());
-        mStarView.setContentDescription(getResources().getString(
-                mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
-
-        updateContactInfo();
-
-        mIsDraft = other.mIsDraft;
-        updateChildVisibility();
     }
 
     public void initialize(FormattedDateBuilder dateBuilder, Account account,
@@ -662,23 +624,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         findViewById(rowRes).setVisibility(VISIBLE);
     }
 
-    @Override
-    public void setMarginBottom(int bottomMargin) {
-        MarginLayoutParams p = (MarginLayoutParams) getLayoutParams();
-        if (p.bottomMargin != bottomMargin) {
-            p.bottomMargin = bottomMargin;
-            setLayoutParams(p);
-        }
-    }
-
-    public void setMarginTop(int topMargin) {
-        MarginLayoutParams p = (MarginLayoutParams) getLayoutParams();
-        if (p.topMargin != topMargin) {
-            p.topMargin = topMargin;
-            setLayoutParams(p);
-        }
-    }
-
     public void setTranslateY(int offsetY) {
         if (mDrawTranslateY != offsetY) {
             mDrawTranslateY = offsetY;
@@ -773,8 +718,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return builder.build();
     }
 
-    @Override
-    public void updateContactInfo() {
+    private void updateContactInfo() {
 
         mPresenceView.setImageDrawable(null);
         mPresenceView.setVisibility(GONE);
@@ -969,13 +913,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     public void hideMessageDetails() {
         setMessageDetailsVisibility(GONE);
-    }
-
-    @Override
-    public void setStarDisplay(boolean starred) {
-        if (mStarView.isSelected() != starred) {
-            mStarView.setSelected(starred);
-        }
     }
 
     private void hideCollapsedDetails() {
