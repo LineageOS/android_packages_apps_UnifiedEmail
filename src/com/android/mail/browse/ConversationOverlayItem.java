@@ -29,6 +29,7 @@ import com.android.mail.utils.LogUtils;
 
 public abstract class ConversationOverlayItem {
     private int mHeight;  // in px
+    private int mTop;  // in px
     private boolean mNeedsMeasure;
 
     public static final String LOG_TAG = ConversationViewFragment.LAYOUT_TAG;
@@ -78,6 +79,14 @@ public abstract class ConversationOverlayItem {
             mHeight = h;
             mNeedsMeasure = true;
         }
+    }
+
+    public int getTop() {
+        return mTop;
+    }
+
+    public void setTop(int top) {
+        mTop = top;
     }
 
     public boolean isMeasurementValid() {
