@@ -304,7 +304,7 @@
         <item quantity="other">Move <xliff:g>%1$d</xliff:g> conversations</item>
     </plurals>
     <!-- Formatting string for the content description field of a conversation list item when device is in accessibility mode. [CHAR LIMI=250] -->
-    <string name="content_description">Subject: <xliff:g id="subject">%1$s</xliff:g> Snippet:<xliff:g id="snippet">%2$s</xliff:g></string>
+    <string name="content_description"><xliff:g id="sender">%1$s</xliff:g> sent <xliff:g id="subject">%2$s</xliff:g> on <xliff:g id="date">%3$s</xliff:g></string>
     <!-- Formatting string. If the subject contains the tag of a mailing-list (text surrounded with
     return the subject with that tag ellipsized, e.g. "[android-gmail-team] Hello" -> "[andr...] Hello" [CHAR LIMIT=100] -->
     <string name="filtered_tag"> [<xliff:g id="tag">%1$s</xliff:g>]<xliff:g id="subject">%2$s</xliff:g></string>
