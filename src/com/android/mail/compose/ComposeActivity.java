@@ -809,19 +809,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
         int matchingAddressCount = 0;
         List<ReplyFromAccount> customFroms;
-        try {
-            customFroms = FromAddressSpinner.getAccountSpecificFroms(account);
-            if (customFroms != null) {
-                for (ReplyFromAccount entry : customFroms) {
-                    if (recipientsMap.contains(entry.address)) {
-                        matchingReplyFrom = entry;
-                        matchingAddressCount++;
-                    }
+        customFroms = account.getReplyFroms();
+        if (customFroms != null) {
+            for (ReplyFromAccount entry : customFroms) {
+                if (recipientsMap.contains(entry.address)) {
+                    matchingReplyFrom = entry;
+                    matchingAddressCount++;
                 }
             }
-        } catch (JSONException e) {
-            LogUtils.wtf(LOG_TAG, "Exception parsing from addresses for account %s",
-                    account.name);
         }
         if (matchingAddressCount > 1) {
             matchingReplyFrom = getDefaultReplyFromAccount(account);
