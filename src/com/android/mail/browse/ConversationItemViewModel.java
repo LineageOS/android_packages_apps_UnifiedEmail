@@ -29,6 +29,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.StaticLayout;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.text.style.CharacterStyle;
 import android.util.LruCache;
 import android.util.Pair;
@@ -36,6 +37,7 @@ import android.util.Pair;
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.UIProvider;
 
 import java.util.ArrayList;
@@ -125,6 +127,8 @@ public class ConversationItemViewModel {
     public SpannableStringBuilder messageInfoString;
 
     public int styledMessageInfoStringOffset;
+
+    private String mContentDescription;
 
     /**
      * Returns the view model for a conversation. If the model doesn't exist for this conversation
@@ -305,8 +309,37 @@ public class ConversationItemViewModel {
      * Get conversation information to use for accessibility.
      */
     public CharSequence getContentDescription(Context context) {
-        return context.getString(R.string.content_description, conversation.subject,
-                conversation.getSnippet());
+        if (mContentDescription == null) {
+            // If any are unread, get the first unread sender.
+            // If all are unread, get the first sender.
+            // If all are read, get the last sender.
+            String sender = "";
+            if (conversation.conversationInfo != null) {
+                String lastSender = null;
+                int last = conversation.conversationInfo.messageInfos != null ?
+                        conversation.conversationInfo.messageInfos.size() - 1 : -1;
+                if (last != -1) {
+                    lastSender = conversation.conversationInfo.messageInfos.get(last).sender;
+                }
+                if (conversation.read) {
+                    sender = lastSender;
+                } else {
+                    String firstUnread = null;
+                    for (MessageInfo m : conversation.conversationInfo.messageInfos) {
+                        if (!m.read) {
+                            firstUnread = m.sender;
+                            break;
+                        }
+                    }
+                    sender = firstUnread;
+                }
+            }
+            String date = DateUtils.getRelativeTimeSpanString(context, conversation.dateMs)
+                    .toString();
+            mContentDescription = context.getString(R.string.content_description, sender,
+                    conversation.subject, date);
+        }
+        return mContentDescription;
     }
 
     /**
