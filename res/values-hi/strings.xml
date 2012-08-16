@@ -99,7 +99,7 @@
     <string name="bytes" msgid="8851050881674287386">"B"</string>
     <string name="kilobytes" msgid="8506546136898321025">"KB"</string>
     <string name="megabytes" msgid="1469217534120857347">"MB"</string>
-    <string name="attachment_image" msgid="3832985223906528449">"छवि"</string>
+    <string name="attachment_image" msgid="3832985223906528449">"चित्र"</string>
     <string name="attachment_video" msgid="7526134752988603154">"वीडियो"</string>
     <string name="attachment_audio" msgid="135527133955622936">"ऑडियो"</string>
     <string name="attachment_text" msgid="5544874374971562759">"पाठ"</string>
@@ -283,7 +283,8 @@
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
     <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; <xliff:g id="VIA_DOMAIN">%3$s</xliff:g> के माध्यम से"</string>
     <string name="message_saved" msgid="7073947895562277576">"संदेश ड्राफ़्ट के रूप में सहेजा गया."</string>
-    <string name="sending_message" msgid="1498583163419122128">"संदेश भेज रहा है..."</string>
+    <!-- no translation found for sending_message (2822171587017313151) -->
+    <skip />
     <string name="invalid_recipient" msgid="2161317422860961623">"<xliff:g id="WRONGEMAIL">%s</xliff:g> पता अमान्‍य है."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ उद्धृत पाठ दिखाएं"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ उद्धृत पाठ छिपाएं"</string>
@@ -337,7 +338,7 @@
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"यह खाता स्वचालित रूप से समन्वयित करने के लिए सेट नहीं है. "\n"एक बार मेल समन्‍वयित करने के लिए, "<b>"अभी समन्वयित करें"</b>" स्‍पर्श करें, या इस खाते को मेल स्वचालित रूप से समन्‍वयित करने के लिए सेट करने हेतु "<b>"समन्वयन सेटिंग बदलें"</b>" स्‍पर्श करें."</string>
     <string name="manual_sync" msgid="6743983544685622800">"अभी समन्वयित करें"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"समन्वयन सेटिंग बदलें"</string>
-    <string name="photo_load_failed" msgid="8811324070219403896">"छवि लोड नहीं की जा सकी"</string>
+    <string name="photo_load_failed" msgid="8811324070219403896">"चित्र लोड नहीं की जा सकी"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"चयन में एकाधिक खाते होने के कारण नहीं ले जाया जा सकता."</string>
     <string name="multiple_new_message_notification_item" msgid="9125239830562919898"><b>"<xliff:g id="SENDER">%1$s</xliff:g>"</b>"   <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="single_new_message_notification_big_text" msgid="291800374285445488">"<xliff:g id="SUBJECT">%1$s</xliff:g>"\n"<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
