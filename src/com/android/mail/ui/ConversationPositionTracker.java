@@ -36,12 +36,18 @@ import java.util.Collection;
 public class ConversationPositionTracker {
     protected static final String LOG_TAG = LogTag.getLogTag();
 
-    /** Cursor into the conversations */
-    private ConversationCursor mCursor = null;
+
+    public interface Callbacks {
+        ConversationCursor getConversationListCursor();
+    }
+
+
     /** Did we recalculate positions after updating the cursor? */
     private boolean mCursorDirty = false;
     /** The currently selected conversation */
     private Conversation mConversation;
+
+    private final Callbacks mCallbacks;
     /**
      * This utility method returns the conversation ID at the current cursor position.
      * @return the conversation id at the cursor.
@@ -54,14 +60,15 @@ public class ConversationPositionTracker {
     /**
      * Constructs a position tracker that doesn't point to any specific conversation.
      */
-    public ConversationPositionTracker() {
-        // Do nothing.
+    public ConversationPositionTracker(Callbacks callbacks) {
+        mCallbacks = callbacks;
     }
 
     /** Move cursor to a specific position and return the conversation there */
     private Conversation conversationAtPosition(int position){
-        mCursor.moveToPosition(position);
-        final Conversation conv = new Conversation(mCursor);
+        final ConversationCursor cursor = mCallbacks.getConversationListCursor();
+        cursor.moveToPosition(position);
+        final Conversation conv = new Conversation(cursor);
         conv.position = position;
         return conv;
     }
@@ -70,8 +77,9 @@ public class ConversationPositionTracker {
      * @return the total number of conversations in the list.
      */
     private int getCount() {
-        if (isDataLoaded()) {
-            return mCursor.getCount();
+        final ConversationCursor cursor = mCallbacks.getConversationListCursor();
+        if (isDataLoaded(cursor)) {
+            return cursor.getCount();
         } else {
             return 0;
         }
@@ -125,7 +133,7 @@ public class ConversationPositionTracker {
      * Initializes the tracker with initial conversation id and initial position. This invalidates
      * the positions in the tracker. We need a valid cursor before we can bless the position as
      * valid. This requires a call to
-     * {@link #updateCursor(ConversationCursor)}.
+     * {@link #onCursorUpdated()}.
      * TODO(viki): Get rid of this method and the mConversation field entirely.
      */
     public void initialize(Conversation conversation) {
@@ -134,21 +142,19 @@ public class ConversationPositionTracker {
     }
 
     /** @return whether or not we have a valid cursor to check the position of. */
+    private static boolean isDataLoaded(ConversationCursor cursor) {
+        return cursor != null && !cursor.isClosed();
+    }
+
     private boolean isDataLoaded() {
-        return mCursor != null && !mCursor.isClosed();
+        final ConversationCursor cursor = mCallbacks.getConversationListCursor();
+        return isDataLoaded(cursor);
     }
 
     /**
-     * Updates the underlying data when the conversation list changes. This class will try to find
-     * the existing conversation and update the position if the conversation is found. If the
-     * conversation that was pointed to by the existing position was not found, it will find the
-     * next valid possible conversation, though if none is found, it may become invalid.
-     *
-     * @return Whether or not the same conversation was found after the update and this position
-     *     tracker is in a valid state.
+     * Called when the conversation list changes.
      */
-    public void updateCursor(ConversationCursor cursor) {
-        mCursor = cursor;
+    public void onCursorUpdated() {
         // Now we should run applyCursor before proceeding.
         mCursorDirty = true;
     }
@@ -170,27 +176,28 @@ public class ConversationPositionTracker {
      */
     private int calculatePosition() {
         final int invalidPosition = -1;
+        final ConversationCursor cursor = mCallbacks.getConversationListCursor();
         // Run this method once for a mConversation, mCursor pair.
-        if (mCursor == null || !mCursorDirty) {
+        if (cursor == null || !mCursorDirty) {
             return invalidPosition;
         }
         mCursorDirty = false;
 
-        final int listSize = (mCursor == null) ? 0 : mCursor.getCount();
-        if (!isDataLoaded() || listSize == 0) {
+        final int listSize = (cursor == null) ? 0 : cursor.getCount();
+        if (!isDataLoaded(cursor) || listSize == 0) {
             return invalidPosition;
         }
         // Update the internal state for where the current conversation is in
         // the list.  Start from the beginning and find the current conversation in it.
         int newPosition = 0;
-        while (mCursor.moveToPosition(newPosition)) {
-            if (getConversationId(mCursor) == mConversation.id) {
+        while (cursor.moveToPosition(newPosition)) {
+            if (getConversationId(cursor) == mConversation.id) {
                 mConversation.position = newPosition;
                 final boolean changed = (mConversation.position != newPosition);
                 // Pre-emptively try to load the next cursor position so that the cursor window
                 // can be filled. The odd behavior of the ConversationCursor requires us to do this
                 // to ensure the adjacent conversation information is loaded for calls to hasNext.
-                mCursor.moveToPosition(newPosition + 1);
+                cursor.moveToPosition(newPosition + 1);
                 return newPosition;
             }
             newPosition++;
@@ -200,16 +207,16 @@ public class ConversationPositionTracker {
         // a valid one.
         if (mConversation.position >= listSize) {
             // Go to the last position since our expected position is past this somewhere.
-            newPosition = mCursor.getCount() - 1;
+            newPosition = cursor.getCount() - 1;
         }
 
         // Did not keep the same conversation, but could still be a valid conversation.
-        if (isDataLoaded()){
+        if (isDataLoaded(cursor)){
             LogUtils.d(LOG_TAG, "ConversationPositionTracker: Could not find conversation %s" +
                     " in the cursor. Moving to position %d ", mConversation.toString(),
                     newPosition);
-            mCursor.moveToPosition(newPosition);
-            mConversation = new Conversation(mCursor);
+            cursor.moveToPosition(newPosition);
+            mConversation = new Conversation(cursor);
         }
         return newPosition;
     }
