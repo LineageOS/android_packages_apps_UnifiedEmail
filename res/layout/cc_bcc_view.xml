@@ -38,7 +38,8 @@
 
                 <com.android.ex.chips.RecipientEditTextView
                     android:id="@+id/cc"
-                    style="@style/RecipientEditTextViewStyle"/>
+                    style="@style/RecipientEditTextViewStyle"
+                    android:contentDescription="@string/cc"/>
         </LinearLayout>
 
         <View style="@style/RecipientComposeFieldSpacer"/>
@@ -62,7 +63,8 @@
 
             <com.android.ex.chips.RecipientEditTextView
                 android:id="@+id/bcc"
-                style="@style/RecipientEditTextViewStyle"/>
+                style="@style/RecipientEditTextViewStyle"
+                android:contentDescription="@string/bcc"/>
 
         </LinearLayout>
 
