@@ -177,6 +177,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private AsyncQueryHandler mQueryHandler;
 
+    private boolean mObservingContactInfo;
+
     private final DataSetObserver mContactInfoObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
@@ -320,7 +322,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mMessageHeaderItem = null;
         mMessage = null;
 
-        mContactInfoSource.unregisterObserver(mContactInfoObserver);
+        if (mObservingContactInfo) {
+            mContactInfoSource.unregisterObserver(mContactInfoObserver);
+            mObservingContactInfo = false;
+        }
     }
 
     public void renderUpperHeaderFrom(MessageHeaderView other) {
@@ -350,6 +355,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     public void bind(MessageHeaderItem headerItem, boolean defaultReplyAll,
             boolean measureOnly) {
+        if (mMessageHeaderItem != null && mMessageHeaderItem == headerItem) {
+            return;
+        }
+
         Timer t = new Timer();
         t.start(HEADER_RENDER_TAG);
 
@@ -415,9 +424,15 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mStarView.setContentDescription(getResources().getString(
                 mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
 
-        if (!measureOnly) {
+        if (measureOnly) {
+            // avoid leaving any state around that would interfere with future regular bind() calls
+            unbind();
+        } else {
             updateContactInfo();
-            mContactInfoSource.registerObserver(mContactInfoObserver);
+            if (!mObservingContactInfo) {
+                mContactInfoSource.registerObserver(mContactInfoObserver);
+                mObservingContactInfo = true;
+            }
         }
 
         t.pause(HEADER_RENDER_TAG);
