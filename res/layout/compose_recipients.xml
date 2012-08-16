@@ -37,7 +37,8 @@
 
             <com.android.ex.chips.RecipientEditTextView
                 android:id="@+id/to"
-                style="@style/RecipientEditTextViewStyle"/>
+                style="@style/RecipientEditTextViewStyle"
+                android:contentDescription="@string/to"/>
 
         </LinearLayout>
 
