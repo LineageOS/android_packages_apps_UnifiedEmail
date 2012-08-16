@@ -453,7 +453,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
             mSearch.collapseActionView();
             mSearchWidget.setQuery("", false);
         }
-        mActivity.onSearchRequested(query);
+        mActivity.onSearchRequested(query.trim());
         return true;
     }
 
@@ -507,7 +507,9 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
             return true;
         }
         collapseSearch();
+        // what is in the text field
         String queryText = mSearchWidget.getQuery().toString();
+        // What the suggested query is
         String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY));
         if (!TextUtils.isEmpty(queryText)) {
             final int queryTokenIndex = queryText
@@ -529,7 +531,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                 query = query.substring(0, start) + query.substring(start + queryText.length());
             }
         }
-        mController.onSearchRequested(query);
+        mController.onSearchRequested(query.trim());
         return true;
     }
 
