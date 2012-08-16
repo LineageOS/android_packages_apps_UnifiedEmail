@@ -204,7 +204,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private final int mFolderItemUpdateDelayMs;
 
     /** Keeps track of selected and unselected conversations */
-    final protected ConversationPositionTracker mTracker = new ConversationPositionTracker();
+    final protected ConversationPositionTracker mTracker;
 
     /**
      * Action menu associated with the selected set.
@@ -258,6 +258,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mViewMode = viewMode;
         mContext = activity.getApplicationContext();
         mRecentFolderList = new RecentFolderList(mContext);
+        mTracker = new ConversationPositionTracker(this);
         // Allow the fragment to observe changes to its own selection set. No other object is
         // aware of the selected set.
         mSelectedSet.addObserver(this);
@@ -1909,7 +1910,7 @@ public abstract class AbstractActivityController implements ActivityController {
             // Swap cursors
             mConversationListCursor.sync();
         }
-        mTracker.updateCursor(mConversationListCursor);
+        mTracker.onCursorUpdated();
     }
 
     @Override
@@ -2107,7 +2108,7 @@ public abstract class AbstractActivityController implements ActivityController {
         @Override
         public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
             Loader<ConversationCursor> result = new ConversationCursorLoader((Activity) mActivity,
-                    mAccount, mFolder.conversationListUri, mFolder.name, mListCursorCallbacks);
+                    mAccount, mFolder.conversationListUri, mFolder.name, this);
             return result;
         }
 
@@ -2119,6 +2120,8 @@ public abstract class AbstractActivityController implements ActivityController {
             destroyPending(null);
             mConversationListCursor = data;
             mConversationListCursor.addListener(AbstractActivityController.this);
+
+            mTracker.onCursorUpdated();
 
             mConversationListObservable.notifyChanged();
             // Register the AbstractActivityController as a listener to changes in
