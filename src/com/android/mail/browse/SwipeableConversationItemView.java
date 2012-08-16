@@ -23,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Conversation;
@@ -36,7 +35,7 @@ import com.android.mail.ui.ViewMode;
 public class SwipeableConversationItemView extends FrameLayout {
 
     private ConversationItemView mConversationItemView;
-    private TextView mBackground;
+    private View mBackground;
 
     public SwipeableConversationItemView(Context context, String account) {
         super(context);
@@ -44,14 +43,12 @@ public class SwipeableConversationItemView extends FrameLayout {
         addView(mConversationItemView);
     }
 
-    public void addBackground(Context context, String text) {
-        mBackground = (TextView) findViewById(R.id.background);
+    public void addBackground(Context context) {
+        mBackground = findViewById(R.id.background);
         if (mBackground == null) {
-            mBackground = (TextView) LayoutInflater.from(context).inflate(R.layout.background,
-                    null, true);
+            mBackground = LayoutInflater.from(context).inflate(R.layout.background, null, true);
             addView(mBackground, 0);
         }
-        mBackground.setText(text);
     }
 
     public void setBackgroundVisibility(int visibility) {
@@ -87,10 +84,9 @@ public class SwipeableConversationItemView extends FrameLayout {
                 priorityArrowsEnabled, animatedAdapter);
     }
 
-    public void startUndoAnimation(String actionText, ViewMode viewMode, AnimatedAdapter listener,
-            boolean swipe) {
+    public void startUndoAnimation(ViewMode viewMode, AnimatedAdapter listener, boolean swipe) {
         if (swipe) {
-            addBackground(getContext(), actionText);
+            addBackground(getContext());
             setBackgroundVisibility(View.VISIBLE);
             mConversationItemView.startSwipeUndoAnimation(viewMode, listener);
         } else {
