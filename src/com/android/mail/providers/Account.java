@@ -22,14 +22,19 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.SyncStatus;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class Account extends android.accounts.Account implements Parcelable {
     private static final String SETTINGS_KEY = "settings";
@@ -149,6 +154,12 @@ public class Account extends android.accounts.Account implements Parcelable {
      * URI for forcing a manual sync of this account.
      */
     public final Uri manualSyncUri;
+
+    /**
+     * Transient cache of parsed {@link #accountFromAddresses}, plus an entry for the main account
+     * address.
+     */
+    private transient List<ReplyFromAccount> mReplyFroms;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -508,6 +519,55 @@ public class Account extends android.accounts.Account implements Parcelable {
      */
     public boolean matches(Account other) {
         return other != null && Objects.equal(uri, other.uri);
+    }
+
+    public List<ReplyFromAccount> getReplyFroms() {
+
+        if (mReplyFroms == null) {
+            mReplyFroms = Lists.newArrayList();
+
+            // skip if sending is unsupported
+            if (supportsCapability(AccountCapabilities.SENDING_UNAVAILABLE)) {
+                return mReplyFroms;
+            }
+
+            // add the main account address
+            mReplyFroms.add(new ReplyFromAccount(this, uri, name, name, name,
+                    false /* isDefault */, false /* isCustom */));
+
+            if (!TextUtils.isEmpty(accountFromAddresses)) {
+                try {
+                    JSONArray accounts = new JSONArray(accountFromAddresses);
+
+                    for (int i = 0, len = accounts.length(); i < len; i++) {
+                        final ReplyFromAccount a = ReplyFromAccount.deserialize(this,
+                                accounts.getJSONObject(i));
+                        if (a != null) {
+                            mReplyFroms.add(a);
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    LogUtils.e(LOG_TAG, e, "Unable to parse accountFromAddresses. name=%s", name);
+                }
+            }
+        }
+        return mReplyFroms;
+    }
+
+    /**
+     * @param fromAddress a raw email address, e.g. "user@domain.com"
+     * @return if the address belongs to this Account (either as the main address or as a
+     * custom-from)
+     */
+    public boolean ownsFromAddress(String fromAddress) {
+        for (ReplyFromAccount replyFrom : getReplyFroms()) {
+            if (TextUtils.equals(replyFrom.address, fromAddress)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @SuppressWarnings("hiding")
