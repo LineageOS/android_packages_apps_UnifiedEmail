@@ -297,7 +297,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (hasLeaveBehinds()) {
             Conversation conv = new Conversation((ConversationCursor) getItem(position));
             if(isPositionLeaveBehind(conv)) {
-                return getLeaveBehindItem(conv);
+                LeaveBehindItem fadeIn = getLeaveBehindItem(conv);
+                fadeIn.startFadeInAnimation();
+                return fadeIn;
             }
         }
         if (convertView != null && !(convertView instanceof SwipeableConversationItemView)) {
@@ -396,8 +398,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             // The undo animation consists of fading in the conversation that
             // had been destroyed.
             undoView = newConversationItemView(position, parent, conversation);
-            undoView.startUndoAnimation(mListView.getSwipeActionText(), mActivity.getViewMode(),
-                    this, swipe);
+            undoView.startUndoAnimation(mActivity.getViewMode(), this, swipe);
         }
         return undoView;
     }
