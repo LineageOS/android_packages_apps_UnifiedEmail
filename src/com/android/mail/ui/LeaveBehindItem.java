@@ -45,7 +45,9 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     private Account mAccount;
     private AnimatedAdapter mAdapter;
     private ConversationCursor mConversationCursor;
+    private TextView mText;
     private static int sShrinkAnimationDuration = -1;
+    private static int sFadeInAnimationDuration = -1;
 
     public LeaveBehindItem(Context context) {
         this(context, null);
@@ -60,6 +62,8 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         if (sShrinkAnimationDuration == -1) {
             sShrinkAnimationDuration = context.getResources().getInteger(
                     R.integer.shrink_animation_duration);
+            sFadeInAnimationDuration = context.getResources().getInteger(
+                    R.integer.fade_in_animation_duration);
         }
     }
 
@@ -89,7 +93,8 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         mAdapter = adapter;
         mConversationCursor = (ConversationCursor) adapter.getCursor();
         setData(target);
-        ((TextView) findViewById(R.id.undo_descriptionview)).setText(Html.fromHtml(mUndoOp
+        mText = ((TextView) findViewById(R.id.undo_descriptionview));
+        mText.setText(Html.fromHtml(mUndoOp
                 .getSingularDescription(getContext(), folder)));
         findViewById(R.id.undo_text).setOnClickListener(this);
         findViewById(R.id.undo_icon).setOnClickListener(this);
@@ -170,6 +175,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     private int mAnimatedHeight = -1;
     private int mWidth;
     private boolean mAnimating;
+    private boolean mFadingInText;
 
     /**
      * Start the animation on an animating view.
@@ -192,6 +198,19 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
             height.addListener(listener);
             height.setDuration(sShrinkAnimationDuration);
             height.start();
+        }
+    }
+
+
+    public void startFadeInAnimation() {
+        if (!mFadingInText) {
+            mFadingInText = true;
+            final float start = 0;
+            final float end = 1.0f;
+            ObjectAnimator fadeIn = ObjectAnimator.ofFloat(mText, "alpha", start, end);
+            fadeIn.setInterpolator(new DecelerateInterpolator(2.0f));
+            fadeIn.setDuration(sFadeInAnimationDuration);
+            fadeIn.start();
         }
     }
 

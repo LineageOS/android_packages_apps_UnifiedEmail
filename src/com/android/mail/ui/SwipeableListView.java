@@ -222,7 +222,7 @@ public class SwipeableListView extends ListView implements Callback {
             view = (SwipeableConversationItemView) v.getParent();
         }
         if (view != null) {
-            view.addBackground(getContext(), getSwipeActionText());
+            view.addBackground(getContext());
             view.setBackgroundVisibility(View.VISIBLE);
         }
     }
@@ -305,16 +305,5 @@ public class SwipeableListView extends ListView implements Callback {
         // conversation to view.
         commitDestructiveActions();
         return handled;
-    }
-
-    /**
-     * Get the text resource corresponding to the result of a swipe.
-     */
-    public String getSwipeActionText() {
-        Resources res = getContext().getResources();
-        if (mSwipeAction == R.id.remove_folder) {
-            return res.getString(R.string.remove_folder, mFolder.name);
-        }
-        return res.getString(mSwipeAction == R.id.archive ? R.string.archive : R.string.delete);
     }
 }
