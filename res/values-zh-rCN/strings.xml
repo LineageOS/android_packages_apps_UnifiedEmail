@@ -59,7 +59,7 @@
     <string name="mute" msgid="1995954983688603977">"忽略"</string>
     <string name="add_star" msgid="2866003744391266498">"加注星标"</string>
     <string name="remove_star" msgid="4372327933122106128">"删除星标"</string>
-    <string name="remove_folder" msgid="4906542720439865413">"从“<xliff:g id="FOLDERNAME">%1$s</xliff:g>”中删除"</string>
+    <string name="remove_folder" msgid="4906542720439865413">"从<xliff:g id="FOLDERNAME">%1$s</xliff:g>中删除"</string>
     <string name="archive" msgid="847250094775910499">"归档"</string>
     <string name="report_spam" msgid="6467567747975393907">"举报垃圾邮件"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"这不是垃圾邮件"</string>
@@ -150,7 +150,8 @@
     <item quantity="one" msgid="3657821200245019288">"移动会话"</item>
     <item quantity="other" msgid="1685896770174368261">"移动 <xliff:g id="ID_1">%1$d</xliff:g> 个会话"</item>
   </plurals>
-    <string name="content_description" msgid="5986818539537753005">"主题：<xliff:g id="SUBJECT">%1$s</xliff:g>；摘要：<xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <!-- no translation found for content_description (175899621885107464) -->
+    <skip />
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>] <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> - <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -224,7 +225,7 @@
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"已删除"</string>
     <string name="archived" msgid="7533995360704366325">"已归档"</string>
-    <string name="folder_removed" msgid="1047474677580149436">"已从“<xliff:g id="FOLDERNAME">%1$s</xliff:g>”中删除"</string>
+    <string name="folder_removed" msgid="1047474677580149436">"已从<xliff:g id="FOLDERNAME">%1$s</xliff:g>中删除"</string>
   <plurals name="conversation_marked_important">
     <item quantity="one" msgid="2335171317119674993">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话标记为重要。"</item>
     <item quantity="other" msgid="709648106181749594">"已将 &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; 个会话标记为重要。"</item>
@@ -302,7 +303,7 @@
     <string name="folders_activity_instructions" msgid="5237801615196958918">"此帐户尚未设置文件夹。"</string>
   <string-array name="sync_status">
     <item msgid="2446076619901049026">"成功"</item>
-    <item msgid="7109065688039971961">"无连接。"</item>
+    <item msgid="7109065688039971961">"无网络连接。"</item>
     <item msgid="8437496123716232060">"无法登录。"</item>
     <item msgid="1651266301325684887">"安全错误。"</item>
     <item msgid="1461520171154288533">"无法同步。"</item>
@@ -351,7 +352,7 @@
   </string-array>
     <string name="signin" msgid="8958889809095796177">"登录"</string>
     <string name="info" msgid="6009817562073541204">"信息"</string>
-    <string name="report" msgid="5417082746232614958">"报告"</string>
+    <string name="report" msgid="5417082746232614958">"提交反馈"</string>
     <string name="sync_error" msgid="7368819509040597851">"无法同步。"</string>
     <string name="sync_error_message" msgid="5367907194753034375">"您的设备存储空间不足，无法同步。"</string>
     <string name="storage" msgid="3262760336059073446">"存储"</string>
