@@ -150,7 +150,8 @@
     <item quantity="one" msgid="3657821200245019288">"Перамясціць размову"</item>
     <item quantity="other" msgid="1685896770174368261">"Перамяшчэнне размоў: <xliff:g id="ID_1">%1$d</xliff:g>"</item>
   </plurals>
-    <string name="content_description" msgid="5986818539537753005">"Тэма: <xliff:g id="SUBJECT">%1$s</xliff:g>; фрагмент: <xliff:g id="SNIPPET">%2$s</xliff:g>"</string>
+    <!-- no translation found for content_description (175899621885107464) -->
+    <skip />
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
