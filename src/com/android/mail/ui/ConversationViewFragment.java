@@ -510,6 +510,13 @@ public final class ConversationViewFragment extends Fragment implements
                 "Fragment is short or user-visible, immediately rendering conversation: %s",
                 mConversation.uri);
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, Bundle.EMPTY, mMessageLoaderCallbacks);
+
+        if (mUserVisible) {
+            final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
+            if (sdc != null) {
+                sdc.setSubject(mConversation.subject);
+            }
+        }
     }
 
     public Conversation getConversation() {
