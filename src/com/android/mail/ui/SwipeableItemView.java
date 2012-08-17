@@ -23,7 +23,9 @@ import android.view.View;
  * Represents an item that can be dismissed by the SwipeableListView.
  */
 public interface SwipeableItemView {
-    public View getView();
+    public View getSwipeableView();
 
-    public void cancelTap();
+    public boolean canChildBeDismissed();
+
+    public void dismiss();
 }

@@ -207,7 +207,7 @@ public class SwipeHelper {
                 }
                 mVelocityTracker.clear();
                 if (mCurrView != null) {
-                    mCurrAnimView = mCurrView.getView();
+                    mCurrAnimView = mCurrView.getSwipeableView();
                     mCanCurrViewBeDimissed = mCallback.canChildBeDismissed(mCurrView);
                     mVelocityTracker.addMovement(ev);
                     mInitialTouchPosX = ev.getX();
@@ -224,7 +224,6 @@ public class SwipeHelper {
                         float deltaX = Math.abs(currX - mInitialTouchPosX);
                         if (deltaY > SCROLL_SLOP && deltaY > (FACTOR * deltaX)) {
                             mLastY = ev.getY();
-                            mCurrView.cancelTap();
                             return false;
                         }
                     }
@@ -232,11 +231,10 @@ public class SwipeHelper {
                     float pos = ev.getX();
                     float delta = pos - mInitialTouchPosX;
                     if (Math.abs(delta) > mPagingTouchSlop) {
-                        mCallback.onBeginDrag(mCurrView.getView());
+                        mCallback.onBeginDrag(mCurrView.getSwipeableView());
                         mDragging = true;
                         mInitialTouchPosX = ev.getX() - mCurrAnimView.getTranslationX();
                         mInitialTouchPosY = ev.getY();
-                        mCurrView.cancelTap();
                     }
                 }
                 mLastY = ev.getY();
@@ -258,7 +256,7 @@ public class SwipeHelper {
      *            move
      */
     private void dismissChild(final SwipeableItemView view, float velocity) {
-        final View animView = mCurrView.getView();
+        final View animView = mCurrView.getSwipeableView();
         final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(view);
         float newPos = determinePos(animView, velocity);
         int duration = determineDuration(animView, newPos, velocity);
@@ -286,7 +284,7 @@ public class SwipeHelper {
 
     private void dismissChildren(final Collection<ConversationItemView> views, float velocity,
             AnimatorListenerAdapter listener) {
-        final View animView = mCurrView.getView();
+        final View animView = mCurrView.getSwipeableView();
         final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(mCurrView);
         float newPos = determinePos(animView, velocity);
         int duration = DISMISS_ANIMATION_DURATION;
@@ -344,7 +342,7 @@ public class SwipeHelper {
     }
 
     public void snapChild(final SwipeableItemView view, float velocity) {
-        final View animView = view.getView();
+        final View animView = view.getSwipeableView();
         final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(view);
         ObjectAnimator anim = createTranslationAnimation(animView, 0);
         int duration = SNAP_ANIM_LEN;
@@ -380,11 +378,6 @@ public class SwipeHelper {
     public boolean onTouchEvent(MotionEvent ev) {
         if (!mDragging) {
             return false;
-        }
-        // If this item is being dragged, cancel any tap handlers/ events/
-        // actions for this item.
-        if (mCurrView != null) {
-            mCurrView.cancelTap();
         }
         mVelocityTracker.addMovement(ev);
         final int action = ev.getAction();
@@ -423,7 +416,7 @@ public class SwipeHelper {
                     if (FADE_OUT_DURING_SWIPE && mCanCurrViewBeDimissed) {
                         mCurrAnimView.setAlpha(getAlphaForOffset(mCurrAnimView));
                     }
-                    invalidateGlobalRegion(mCurrView.getView());
+                    invalidateGlobalRegion(mCurrView.getSwipeableView());
                 }
                 break;
             case MotionEvent.ACTION_UP:

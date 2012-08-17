@@ -27,6 +27,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -38,7 +39,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.google.common.collect.ImmutableList;
 
-public class LeaveBehindItem extends LinearLayout implements OnClickListener,
+public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     SwipeableItemView {
 
     private ToastBarOperation mUndoOp;
@@ -46,6 +47,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     private AnimatedAdapter mAdapter;
     private ConversationCursor mConversationCursor;
     private TextView mText;
+    private View mSwipeableContent;
     private static int sShrinkAnimationDuration = -1;
     private static int sFadeInAnimationDuration = -1;
     private static int sSwipedBgColor = -1;
@@ -95,6 +97,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         mAdapter = adapter;
         mConversationCursor = (ConversationCursor) adapter.getCursor();
         setData(target);
+        mSwipeableContent = findViewById(R.id.swipeable_content);
         mText = ((TextView) findViewById(R.id.undo_descriptionview));
         mText.setText(Html.fromHtml(mUndoOp
                 .getSingularDescription(getContext(), folder)));
@@ -108,6 +111,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
         }
     }
 
+    @Override
     public void dismiss() {
         if (mAdapter != null) {
             mAdapter.fadeOutLeaveBehindItems();
@@ -120,13 +124,13 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     }
 
     @Override
-    public View getView() {
-        return this;
+    public View getSwipeableView() {
+        return mSwipeableContent;
     }
 
     @Override
-    public void cancelTap() {
-        // Do nothing.
+    public boolean canChildBeDismissed() {
+        return true;
     }
 
     public LeaveBehindData getLeaveBehindData() {
