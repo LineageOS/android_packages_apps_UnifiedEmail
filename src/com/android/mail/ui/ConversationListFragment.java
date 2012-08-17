@@ -535,9 +535,9 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     public void onConversationListStatusUpdated() {
-        ConversationCursor cursor = getConversationListCursor();
-        final boolean showFooter = mFooterView.updateStatus(cursor);
-        Bundle extras = cursor.getExtras();
+        final ConversationCursor cursor = getConversationListCursor();
+        final boolean showFooter = cursor != null && mFooterView.updateStatus(cursor);
+        Bundle extras = cursor != null ? cursor.getExtras() : Bundle.EMPTY;
         int error = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
                 extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
                 : UIProvider.LastSyncResult.SUCCESS;

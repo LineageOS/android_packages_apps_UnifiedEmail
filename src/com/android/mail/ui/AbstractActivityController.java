@@ -2108,7 +2108,7 @@ public abstract class AbstractActivityController implements ActivityController {
         @Override
         public Loader<ConversationCursor> onCreateLoader(int id, Bundle args) {
             Loader<ConversationCursor> result = new ConversationCursorLoader((Activity) mActivity,
-                    mAccount, mFolder.conversationListUri, mFolder.name, this);
+                    mAccount, mFolder.conversationListUri, mFolder.name);
             return result;
         }
 
@@ -2148,11 +2148,23 @@ public abstract class AbstractActivityController implements ActivityController {
 
         @Override
         public void onLoaderReset(Loader<ConversationCursor> loader) {
-            final ConversationListFragment convList = getConversationListFragment();
-            if (convList == null) {
-                return;
+            LogUtils.d(LOG_TAG, "IN AAC.ConversationCursor.onLoaderReset, data=%s loader=%s",
+                    mConversationListCursor, loader);
+
+            if (mConversationListCursor != null) {
+                // Unregister the listener
+                mConversationListCursor.removeListener(AbstractActivityController.this);
+                mConversationListCursor = null;
+
+                // Inform anyone who is interested about the change
+                mTracker.onCursorUpdated();
+                mConversationListObservable.notifyChanged();
+
+                final ConversationListFragment convList = getConversationListFragment();
+                if (convList != null) {
+                    convList.onCursorUpdated();
+                }
             }
-            convList.onCursorUpdated();
         }
     }
 
