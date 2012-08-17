@@ -150,20 +150,12 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public boolean canChildBeDismissed(SwipeableItemView v) {
-        View view = v.getView();
-        return view instanceof ConversationItemView || view instanceof LeaveBehindItem;
+        return v.canChildBeDismissed();
     }
 
     @Override
     public void onChildDismissed(SwipeableItemView v) {
-        View view = v!= null ? v.getView() : null;
-        if (view != null) {
-            if (view instanceof ConversationItemView) {
-                dismissChild((ConversationItemView) view);
-            } else if (view instanceof LeaveBehindItem) {
-                ((LeaveBehindItem) view).dismiss();
-            }
-        }
+        v.dismiss();
     }
 
     // Call this whenever a new action is taken; this forces a commit of any
@@ -175,7 +167,7 @@ public class SwipeableListView extends ListView implements Callback {
         }
     }
 
-    private void dismissChild(final ConversationItemView target) {
+    public void dismissChild(final ConversationItemView target) {
         final Context context = getContext();
         final ToastBarOperation undoOp;
 
