@@ -16,10 +16,7 @@
      limitations under the License.
 -->
 <View xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/background"
-        android:layout_width="match_parent"
-        android:minHeight="@dimen/conversation_item_height"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:paddingLeft="16dip"
-        android:background="@color/leaveBehindBackground" />
+    android:id="@+id/background"
+    android:layout_width="match_parent"
+    android:minHeight="@dimen/conversation_item_height"
+    android:background="@drawable/swiped_bg" />
