@@ -41,6 +41,7 @@ import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -1004,4 +1005,18 @@ public class Utils {
         }
         return sDefaultFolderBackgroundColor;
     }
+
+    /**
+     * Hacky method to allow invalidating views all the way up the hierarchy.
+     */
+    public static void markDirtyTillRoot(String message, View v) {
+        LogUtils.d(LOG_TAG, "%s: markingDirtyTillRoot", message);
+        v.invalidate();
+        ViewParent parent = v.getParent();
+        while (parent != null) {
+            parent.requestLayout();
+            parent = parent.getParent();
+        }
+    }
+
 }
