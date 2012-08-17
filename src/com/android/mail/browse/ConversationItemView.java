@@ -64,6 +64,7 @@ import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.FolderDisplayer;
 import com.android.mail.ui.SwipeableItemView;
+import com.android.mail.ui.SwipeableListView;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.Utils;
@@ -1197,12 +1198,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
         return x > mCoordinates.starX - sTouchSlop;
     }
 
-    /**
-     * Cancel any potential tap handling on this view.
-     */
     @Override
-    public void cancelTap() {
-        // Do nothing.
+    public boolean canChildBeDismissed() {
+        return true;
+    }
+
+    @Override
+    public void dismiss() {
+        getListView().dismissChild(this);
     }
 
     /**
@@ -1257,8 +1260,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
         return handled;
     }
 
-    private ListView getListView() {
-        return ((SwipeableConversationItemView) getParent()).getListView();
+    private SwipeableListView getListView() {
+        return (SwipeableListView)((SwipeableConversationItemView) getParent()).getListView();
     }
 
     private boolean onTouchEventNoSwipe(MotionEvent event) {
@@ -1452,7 +1455,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     @Override
-    public View getView() {
+    public View getSwipeableView() {
         return this;
     }
 }

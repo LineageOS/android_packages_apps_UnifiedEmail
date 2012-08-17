@@ -19,49 +19,53 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/swiped_bg"
-    android:clickable="true"
-    android:gravity="center_vertical"
-    android:minHeight="@dimen/conversation_item_height"
-    android:orientation="horizontal" >
+    android:minHeight="@dimen/conversation_item_height" >
 
-    <TextView
-        android:id="@+id/undo_descriptionview"
-        android:layout_width="0dip"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:text="@string/no_conversations"
-        android:textColor="@android:color/white"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginLeft="16dip" />
-
-    <View
-        android:id="@+id/undo_separator"
-        android:layout_width="1dip"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="20dip"
-        android:layout_marginRight="12dip"
-        android:layout_marginTop="20dip"
-        android:background="@android:color/white" />
-
-    <ImageView
-        android:id="@+id/undo_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginRight="8dip"
-        android:src="@drawable/ic_menu_revert_holo_dark" />
-
-    <TextView
-        android:id="@+id/undo_text"
-        style="@style/UndoTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingRight="16dip"
-        android:text="@string/undo"
-        android:textAllCaps="true"
         android:clickable="true"
         android:gravity="center_vertical"
-        android:textColor="@android:color/white" />
+        android:orientation="horizontal"
+        android:id="@+id/swipeable_content">
+        <TextView
+            android:id="@+id/undo_descriptionview"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/no_conversations"
+            android:textColor="@android:color/white"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:paddingLeft="16dip" />
 
+        <View
+            android:id="@+id/undo_separator"
+            android:layout_width="1dip"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dip"
+            android:layout_marginRight="12dip"
+            android:layout_marginTop="20dip"
+            android:background="@android:color/white" />
+
+        <ImageView
+            android:id="@+id/undo_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="8dip"
+            android:src="@drawable/ic_menu_revert_holo_dark" />
+
+        <TextView
+            android:id="@+id/undo_text"
+            style="@style/UndoTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingRight="16dip"
+            android:text="@string/undo"
+            android:textAllCaps="true"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 </com.android.mail.ui.LeaveBehindItem>
