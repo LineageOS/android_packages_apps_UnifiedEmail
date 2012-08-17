@@ -48,6 +48,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
     private TextView mText;
     private static int sShrinkAnimationDuration = -1;
     private static int sFadeInAnimationDuration = -1;
+    private static int sSwipedBgColor = -1;
 
     public LeaveBehindItem(Context context) {
         this(context, null);
@@ -64,6 +65,7 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
                     R.integer.shrink_animation_duration);
             sFadeInAnimationDuration = context.getResources().getInteger(
                     R.integer.fade_in_animation_duration);
+            sSwipedBgColor = context.getResources().getColor(R.color.swiped_bg_color);
         }
     }
 
@@ -194,6 +196,8 @@ public class LeaveBehindItem extends LinearLayout implements OnClickListener,
             ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
             mAnimatedHeight = start;
             mWidth = getMeasuredWidth();
+            // Use a color instead of a 9 patch to avoid weird artifacts when animating.
+            setBackgroundColor(sSwipedBgColor);
             height.setInterpolator(new DecelerateInterpolator(2.0f));
             height.addListener(listener);
             height.setDuration(sShrinkAnimationDuration);
