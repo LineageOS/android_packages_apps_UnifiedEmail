@@ -377,7 +377,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MenuItem archive = menu.findItem(R.id.archive);
         boolean showArchive =
                 mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE)
-                && mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
+                && mFolder.supportsCapability(FolderCapabilities.ARCHIVE) && !mFolder.isTrash();
         if (archive == null) {
             showArchive = false;
         } else {

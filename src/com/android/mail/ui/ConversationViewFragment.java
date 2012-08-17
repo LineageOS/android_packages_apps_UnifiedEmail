@@ -398,11 +398,14 @@ public final class ConversationViewFragment extends Fragment implements
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
         Utils.setMenuItemVisibility(menu, R.id.mark_not_important, !showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+        Utils.setMenuItemVisibility(menu, R.id.delete, mFolder != null && !mFolder.isTrash());
         final boolean archiveVisible = mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
-                && mFolder != null && mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
+                && mFolder != null && mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
+                && !mFolder.isTrash();
         Utils.setMenuItemVisibility(menu, R.id.archive, archiveVisible);
         Utils.setMenuItemVisibility(menu, R.id.remove_folder, !archiveVisible && mFolder != null
-                && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES));
+                && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
+                && !mFolder.isProviderFolder());
         final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
         if (removeFolder != null) {
             removeFolder.setTitle(getString(R.string.remove_folder, mFolder.name));
