@@ -340,14 +340,13 @@ public final class ConversationCursor implements Cursor {
                     // If we're in a requery and we're still around, remove the requery key
                     // We're good here, the cached change (delete/update) is on its way to UP
                     values.remove(REQUERY_COLUMN);
-                    LogUtils.i(TAG, new Error(),
+                    LogUtils.i(TAG,
                             "IN resetCursor, remove requery column from %s", entry.getKey());
                 } else {
                     // Keep the deleted count up-to-date; remove the cache entry
                     if (values.containsKey(DELETED_COLUMN)) {
                         mDeletedCount--;
-                        LogUtils.i(TAG, new Error(),
-                                "IN resetCursor, sDeletedCount decremented to: %d by %s",
+                        LogUtils.i(TAG, "IN resetCursor, sDeletedCount decremented to: %d by %s",
                                 mDeletedCount, entry.getKey());
                     }
                     // Remove the entry
@@ -718,8 +717,10 @@ public final class ConversationCursor implements Cursor {
         while (true) {
             boolean ret = mUnderlyingCursor.moveToNext();
             if (!ret) {
-                // Make sure we're still in sync (mPosition++ should also work)
-                mPosition = mUnderlyingCursor.getPosition();
+                mPosition = getCount();
+                // STOPSHIP
+                LogUtils.i(TAG, "*** moveToNext returns false; pos = %d, und = %d, del = %d",
+                        mPosition, mUnderlyingCursor.getPosition(), mDeletedCount);
                 return false;
             }
             if (getCachedValue(DELETED_COLUMN_INDEX) instanceof Integer) continue;
@@ -795,6 +796,12 @@ public final class ConversationCursor implements Cursor {
                 }
             }
             return true;
+        } else if ((mPosition - pos) > pos) {
+            // Optimization if it's easier to move forward to position instead of backward
+            // STOPSHIP (Remove logging)
+            LogUtils.i(TAG, "*** Move from %d to %d, starting from first", mPosition, pos);
+            moveToFirst();
+            return moveToPosition(pos);
         } else {
             while (pos < mPosition) {
                 if (!moveToPrevious()) {
