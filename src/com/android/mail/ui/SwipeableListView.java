@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewParent;
 import android.widget.ListView;
 
 import com.android.mail.R;
@@ -50,6 +51,8 @@ public class SwipeableListView extends ListView implements Callback {
     private ConversationSelectionSet mConvSelectionSet;
     private int mSwipeAction;
     private Folder mFolder;
+    private boolean mAttachedToWindow;
+    private boolean mLayoutCalled;
 
     public SwipeableListView(Context context) {
         this(context, null);
@@ -65,6 +68,27 @@ public class SwipeableListView extends ListView implements Callback {
         float pagingTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
         mSwipeHelper = new SwipeHelper(context, SwipeHelper.X, this, densityScale,
                 pagingTouchSlop);
+    }
+    @Override
+    protected void onAttachedToWindow() {
+        mAttachedToWindow = true;
+        super.onAttachedToWindow();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        mAttachedToWindow = false;
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        mLayoutCalled = true;
+        super.onLayout(changed, l, t, r, b);
+    }
+
+    public final boolean isWedged(){
+        return mAttachedToWindow && !mLayoutCalled;
     }
 
     @Override
