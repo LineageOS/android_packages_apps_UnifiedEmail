@@ -27,7 +27,8 @@
         android:clickable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:id="@+id/swipeable_content">
+        android:id="@+id/swipeable_content"
+        android:minHeight="@dimen/conversation_item_height">
         <TextView
             android:id="@+id/undo_descriptionview"
             android:layout_width="0dip"
