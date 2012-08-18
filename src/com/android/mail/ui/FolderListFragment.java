@@ -40,6 +40,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 /**
  * The folder list UI component.
@@ -79,6 +80,14 @@ public final class FolderListFragment extends ListFragment implements
         super();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Hacky workaround for http://b/6946182
+        if (isVisible() && mListView.getMeasuredHeight() == 0) {
+            Utils.markDirtyTillRoot("FolderListFragment", mListView);
+        }
+    }
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
