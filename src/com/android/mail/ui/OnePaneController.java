@@ -517,4 +517,14 @@ public final class OnePaneController extends AbstractActivityController {
                 break;
         }
     }
+
+    @Override
+    public String getHelpContext() {
+        final int mode = mViewMode.getMode();
+        switch (mode) {
+            case ViewMode.FOLDER_LIST:
+                return mContext.getString(R.string.one_pane_folder_list_help_context);
+        }
+        return super.getHelpContext();
+    }
 }
