@@ -7,6 +7,10 @@
 
 # keep names that are used by reflection, from javascript or from unit tests
 
+-keepclasseswithmembers class com.android.mail.compose.ComposeActivity {
+  *** registerTestSendOrSaveCallback(...);
+}
+
 -keepclasseswithmembers class com.android.mail.providers.MockUiProvider {
   *** getAccountsUri(...);
 }
