@@ -1758,6 +1758,13 @@ public abstract class AbstractActivityController implements ActivityController {
                         Conversation.toString(mTarget), mCurrentConversation);
             }
 
+            if (mConversationListCursor == null) {
+                LogUtils.e(LOG_TAG, "null ConversationCursor in ConversationAction.performAction():"
+                        + "\nmTarget=%s\nCurrent=%s",
+                        Conversation.toString(mTarget), mCurrentConversation);
+                return;
+            }
+
             switch (mAction) {
                 case R.id.archive:
                     LogUtils.d(LOG_TAG, "Archiving");
