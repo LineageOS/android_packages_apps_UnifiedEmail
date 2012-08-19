@@ -612,47 +612,52 @@ public class UIProvider {
         public static final int ARCHIVE = 0x0010;
 
         /**
+         * This will indicated that this folder supports the delete functionality.
+         */
+        public static final int DELETE = 0x0020;
+
+        /**
          * For accounts that support report spam, this will indicate that this folder supports
          * the report spam functionality.
          */
-        public static final int REPORT_SPAM = 0x0020;
+        public static final int REPORT_SPAM = 0x0040;
 
         /**
          * For accounts that support report spam, this will indicate that this folder supports
          * the mark not spam functionality.
          */
-        public static final int MARK_NOT_SPAM = 0x0040;
+        public static final int MARK_NOT_SPAM = 0x0080;
 
         /**
          * For accounts that support mute, this will indicate if a mute is performed from within
          * this folder, the action is destructive.
          */
-        public static final int DESTRUCTIVE_MUTE = 0x0080;
+        public static final int DESTRUCTIVE_MUTE = 0x0100;
 
         /**
          * Indicates that a folder supports settings (sync lookback, etc.)
          */
-        public static final int SUPPORTS_SETTINGS = 0x0100;
+        public static final int SUPPORTS_SETTINGS = 0x0200;
         /**
          * All the messages in this folder are important.
          */
-        public static final int ONLY_IMPORTANT = 0x0200;
+        public static final int ONLY_IMPORTANT = 0x0400;
         /**
          * Deletions in this folder can't be undone (could include archive if desirable)
          */
-        public static final int DELETE_ACTION_FINAL = 0x0400;
+        public static final int DELETE_ACTION_FINAL = 0x0800;
         /**
          * This folder is virtual, i.e. contains conversations potentially pulled from other
          * folders, potentially even from different accounts.  Examples might be a "starred"
          * folder, or an "unread" folder (per account or provider-wide)
          */
-        public static final int IS_VIRTUAL = 0x0800;
+        public static final int IS_VIRTUAL = 0x1000;
 
         /**
          * For accounts that support report phishing, this will indicate that this folder supports
          * the report phishing functionality.
          */
-        public static final int REPORT_PHISHING = 0x1000;
+        public static final int REPORT_PHISHING = 0x2000;
     }
 
     public static final class FolderColumns {
