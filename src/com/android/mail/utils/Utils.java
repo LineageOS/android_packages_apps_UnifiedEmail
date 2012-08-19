@@ -662,7 +662,7 @@ public class Utils {
         final Uri uri = addParamsToUrl(context, urlString);
         Uri.Builder builder = uri.buildUpon();
         // Add the activity specific information parameter.
-        if (fromWhere != null) {
+        if (!TextUtils.isEmpty(fromWhere)) {
             builder = builder.appendQueryParameter(SMART_HELP_LINK_PARAMETER_NAME, fromWhere);
         }
 

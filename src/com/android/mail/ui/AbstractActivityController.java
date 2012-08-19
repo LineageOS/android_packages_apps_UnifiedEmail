@@ -279,7 +279,16 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public String getHelpContext() {
-        return "Mail";
+        final int mode = mViewMode.getMode();
+        final int helpContextResId;
+        switch (mode) {
+            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
+                helpContextResId = R.string.wait_help_context;
+                break;
+            default:
+                helpContextResId = R.string.main_help_context;
+        }
+        return mContext.getString(helpContextResId);
     }
 
     @Override
@@ -732,8 +741,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 Utils.showFolderSettings(mActivity.getActivityContext(), mAccount, mFolder);
                 break;
             case R.id.help_info_menu_item:
-                // TODO: enable context sensitive help
-                Utils.showHelp(mActivity.getActivityContext(), mAccount, null);
+                Utils.showHelp(mActivity.getActivityContext(), mAccount, getHelpContext());
                 break;
             case R.id.feedback_menu_item:
                 Utils.sendFeedback(mActivity.getActivityContext(), mAccount);
