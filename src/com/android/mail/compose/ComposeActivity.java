@@ -1640,8 +1640,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 onAppUpPressed();
                 break;
             case R.id.help_info_menu_item:
-                // TODO: enable context sensitive help
-                Utils.showHelp(this, mAccount, null);
+                Utils.showHelp(this, mAccount, getString(R.string.compose_help_context));
                 break;
             case R.id.feedback_menu_item:
                 Utils.sendFeedback(this, mAccount);
