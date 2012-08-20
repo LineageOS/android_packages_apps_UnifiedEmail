@@ -336,7 +336,7 @@ public final class ConversationListFragment extends ListFragment implements
         mEmptyView = rootView.findViewById(R.id.empty_view);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
-        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         mListView.setOnItemLongClickListener(this);
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         // Note - we manually save/restore the listview state.
@@ -513,6 +513,8 @@ public final class ConversationListFragment extends ListFragment implements
      */
     protected final void setSelected(int position) {
         mListView.smoothScrollToPosition(position);
+        mListView.clearChoices();
+        mListView.setItemChecked(position, true);
     }
 
     private ConversationCursor getConversationListCursor() {
