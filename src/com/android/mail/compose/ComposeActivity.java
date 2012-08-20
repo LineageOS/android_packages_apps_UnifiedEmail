@@ -1643,7 +1643,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 Utils.showHelp(this, mAccount, getString(R.string.compose_help_context));
                 break;
             case R.id.feedback_menu_item:
-                Utils.sendFeedback(this, mAccount);
+                Utils.sendFeedback(this, mAccount, false);
                 break;
             default:
                 handled = false;

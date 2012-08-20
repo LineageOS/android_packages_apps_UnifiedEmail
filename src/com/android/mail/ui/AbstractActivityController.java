@@ -743,7 +743,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 Utils.showHelp(mActivity.getActivityContext(), mAccount, getHelpContext());
                 break;
             case R.id.feedback_menu_item:
-                Utils.sendFeedback(mActivity.getActivityContext(), mAccount);
+                Utils.sendFeedback(mActivity.getActivityContext(), mAccount, false);
                 break;
             case R.id.manage_folders_item:
                 Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
@@ -2460,8 +2460,8 @@ public abstract class AbstractActivityController implements ActivityController {
         return new ActionClickedListener() {
             @Override
             public void onActionClicked() {
-                // TODO - have pressing report actually do something
-                // Needs to also be done in ConversationListFooterView
+                Utils.sendFeedback(
+                        mActivity.getActivityContext(), mAccount, true /* reportingProblem */);
             }
         };
     }

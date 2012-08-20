@@ -1700,4 +1700,11 @@ public class UIProvider {
          */
         public static final String EXTRA_MANAGE_FOLDERS = "extra_manage_folders";
     }
+
+    public static final class SendFeedbackExtras {
+        /**
+         * Optional boolean extras which indicates that the user is reporting a problem.
+         */
+        public static final String EXTRA_REPORTING_PROBLEM = "reporting_problem";
+    }
 }
