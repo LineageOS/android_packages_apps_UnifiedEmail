@@ -75,8 +75,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.undo_text:
-            case R.id.undo_icon:
+            case R.id.undo_button:
                 if (mAccount.undoUri != null) {
                     // NOTE: We might want undo to return the messages affected,
                     // in which case the resulting cursor might be interesting...
@@ -101,8 +100,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
         mText = ((TextView) findViewById(R.id.undo_descriptionview));
         mText.setText(Html.fromHtml(mUndoOp
                 .getSingularDescription(getContext(), folder)));
-        findViewById(R.id.undo_text).setOnClickListener(this);
-        findViewById(R.id.undo_icon).setOnClickListener(this);
+        findViewById(R.id.undo_button).setOnClickListener(this);
     }
 
     public void commit() {
