@@ -76,6 +76,7 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
     }
 
     public void onClick(View v) {
+        // TODO(pwestbro): use the implementation in the activity controller
         int id = v.getId();
         Folder f = (Folder) v.getTag();
         Uri uri = null;
