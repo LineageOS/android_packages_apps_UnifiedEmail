@@ -342,6 +342,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             if (conv.position >= startPosition && conv.position <= endPosition) {
                 mFadeLeaveBehindItems.put(conv.id, mLeaveBehindItem);
             }
+            mLeaveBehindItem.commit();
             clearLeaveBehind(conv.id);
         }
         if (!mLastDeletingItems.isEmpty()) {
