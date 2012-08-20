@@ -1118,6 +1118,12 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
+    /**
+     * Set the account, and carry out all the account-related changes that rely on this.
+     * @param account
+     */
+    // TODO(viki): Two different methods do the same thing. Resolve
+    // {@link #setAccount(Account)} and {@link #switchAccount(Account, boolean)}
     private void setAccount(Account account) {
         if (account == null) {
             LogUtils.w(LOG_TAG, new Error(),
@@ -1126,6 +1132,14 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         LogUtils.d(LOG_TAG, "AbstractActivityController.setAccount(): account = %s", account.uri);
         mAccount = account;
+        // Only change AAC state here. Do *not* modify any other object's state. The object
+        // should listen on account changes.
+        restartOptionalLoader(LOADER_RECENT_FOLDERS);
+        mActivity.invalidateOptionsMenu();
+        disableNotificationsOnAccountChange(mAccount);
+        restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
+        MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
+
         if (account.settings == null) {
             LogUtils.w(LOG_TAG, new Error(), "AAC ignoring account with null settings.");
             return;
