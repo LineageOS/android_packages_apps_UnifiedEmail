@@ -377,7 +377,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MenuItem archive = menu.findItem(R.id.archive);
         boolean showArchive =
                 mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE)
-                && mFolder.supportsCapability(FolderCapabilities.ARCHIVE) && !mFolder.isTrash();
+                && mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
         if (archive == null) {
             showArchive = false;
         } else {
@@ -413,7 +413,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         markNotImportant.setVisible(!showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
         final MenuItem trash = menu.findItem(R.id.delete);
-        trash.setVisible(!mFolder.isTrash());
+        trash.setVisible(mFolder != null
+                && mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE));
         return true;
     }
 

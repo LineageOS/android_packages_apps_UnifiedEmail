@@ -398,7 +398,9 @@ public final class ConversationViewFragment extends Fragment implements
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
         Utils.setMenuItemVisibility(menu, R.id.mark_not_important, !showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        Utils.setMenuItemVisibility(menu, R.id.delete, mFolder != null && !mFolder.isTrash());
+        Utils.setMenuItemVisibility(menu, R.id.delete,
+                mFolder != null && mFolder.supportsCapability(
+                        UIProvider.FolderCapabilities.DELETE));
         final boolean archiveVisible = mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
                 && mFolder != null && mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
                 && !mFolder.isTrash();
