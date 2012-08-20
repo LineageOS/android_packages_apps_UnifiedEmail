@@ -601,7 +601,7 @@
         <item>Couldn\'t sign in.</item>
         <item>Security error.</item>
         <item>Couldn\'t sync.</item>
-        <item>Error</item>
+        <item>Internal Error</item>
     </string-array>
 
     <!-- Widget strings -->

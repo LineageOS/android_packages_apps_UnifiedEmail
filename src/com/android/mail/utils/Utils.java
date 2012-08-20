@@ -599,7 +599,7 @@ public class Utils {
      * Get text matching the last sync status.
      */
     public static CharSequence getSyncStatusText(Context context, int status) {
-        String[] errors = context.getResources().getStringArray(R.array.sync_status);
+        final String[] errors = context.getResources().getStringArray(R.array.sync_status);
         if (status >= errors.length) {
             return "";
         }
@@ -666,7 +666,7 @@ public class Utils {
             builder = builder.appendQueryParameter(SMART_HELP_LINK_PARAMETER_NAME, fromWhere);
         }
 
-        openUrl(context, builder.build());
+        openUrl(context, builder.build(), null);
     }
 
     /**
@@ -675,13 +675,18 @@ public class Utils {
      * @param context Context
      * @param uri Uri to open.
      */
-    private static void openUrl(Context context, Uri uri) {
+    private static void openUrl(Context context, Uri uri, Bundle optionalExtras) {
         if(uri == null || TextUtils.isEmpty(uri.toString())) {
             LogUtils.wtf(LOG_TAG, "invalid url in Utils.openUrl(): %s", uri);
             return;
         }
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        // Fill in any of extras that have been requested.
+        if (optionalExtras != null) {
+            intent.putExtras(optionalExtras);
+        }
         intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
+
         context.startActivity(intent);
     }
 
@@ -780,9 +785,12 @@ public class Utils {
     /**
      * Show the feedback screen for the supplied account.
      */
-    public static void sendFeedback(Context context, Account account) {
+    public static void sendFeedback(Context context, Account account, boolean reportingProblem) {
         if (account != null && account.sendFeedbackIntentUri != null) {
-            openUrl(context, account.sendFeedbackIntentUri);
+            final Bundle optionalExtras = new Bundle(1);
+            optionalExtras.putBoolean(
+                    UIProvider.SendFeedbackExtras.EXTRA_REPORTING_PROBLEM, reportingProblem);
+            openUrl(context, account.sendFeedbackIntentUri, optionalExtras);
         }
     }
 
