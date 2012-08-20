@@ -544,12 +544,11 @@ public abstract class AbstractActivityController implements ActivityController {
                 // However, if there was an existing folder AND we have changed
                 // folders, we want to restart the loader to get the information
                 // for the newly selected folder
-                lm.restartLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
+                lm.destroyLoader(LOADER_CONVERSATION_LIST);
+                lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
             }
         } else if (!folder.isInitialized()) {
             LogUtils.e(LOG_TAG, new Error(), "Uninitialized Folder %s in setFolder.", folder);
-        } else if (folder == null) {
-            LogUtils.wtf(LOG_TAG, "Folder in setFolder is null");
         }
     }
 
