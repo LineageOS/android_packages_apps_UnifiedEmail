@@ -92,6 +92,8 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public void onResume() {
+        Utils.dumpLayoutRequests("FLF(" + this + ").onResume()", getView());
+
         super.onResume();
         // Hacky workaround for http://b/6946182
         Utils.fixSubTreeLayoutIfOrphaned(getView(), "FolderListFragment");
@@ -165,12 +167,32 @@ public final class FolderListFragment extends ListFragment implements
         if (mParentFolder != null) {
             mSelectedFolder = mParentFolder;
         }
+        Utils.dumpLayoutRequests("FLF(" + this + ").onCreateView()", rootView);
 
         return rootView;
     }
 
     @Override
+    public void onStart() {
+        Utils.dumpLayoutRequests("FLF(" + this + ").onStart()", getView());
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        Utils.dumpLayoutRequests("FLF(" + this + ").onStop()", getView());
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        Utils.dumpLayoutRequests("FLF(" + this + ").onPause()", getView());
+        super.onPause();
+    }
+
+    @Override
     public void onDestroyView() {
+        Utils.dumpLayoutRequests("FLF(" + this + ").onDestoryView()", getView());
         // Clear the adapter.
         setListAdapter(null);
         if (mFolderObserver != null) {

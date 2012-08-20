@@ -748,4 +748,22 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         mOutstandingAnimator = animator;
         animator.start();
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        LogUtils.w(Utils.VIEW_DEBUGGING_TAG, "TPL(%s).onMeasure()", this);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        LogUtils.w(Utils.VIEW_DEBUGGING_TAG, "TPL(%s).onLayout()", this);
+        super.onLayout(changed, l, t, r, b);
+    }
+
+    @Override
+    public void requestLayout() {
+        Utils.checkRequestLayout(this);
+        super.requestLayout();
+    }
 }
