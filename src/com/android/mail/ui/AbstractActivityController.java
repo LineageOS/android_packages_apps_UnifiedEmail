@@ -2421,11 +2421,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 final Uri uri = folder.refreshUri;
 
                 if (uri != null) {
-                    if (mFolderSyncTask != null) {
-                        mFolderSyncTask.cancel(true);
-                    }
-                    mFolderSyncTask = new AsyncRefreshTask(mActivity.getActivityContext(), uri);
-                    mFolderSyncTask.execute();
+                    startAsyncRefreshTask(uri);
                 }
             }
         };
@@ -2446,14 +2442,18 @@ public abstract class AbstractActivityController implements ActivityController {
         return new ActionClickedListener() {
             @Override
             public void onActionClicked() {
-                DialogFragment fragment = (DialogFragment)
-                        mFragmentManager.findFragmentByTag(SYNC_ERROR_DIALOG_FRAGMENT_TAG);
-                if (fragment == null) {
-                    fragment = SyncErrorDialogFragment.newInstance();
-                }
-                fragment.show(mFragmentManager, SYNC_ERROR_DIALOG_FRAGMENT_TAG);
+                showStorageErrorDialog();
             }
         };
+    }
+
+    private void showStorageErrorDialog() {
+        DialogFragment fragment = (DialogFragment)
+                mFragmentManager.findFragmentByTag(SYNC_ERROR_DIALOG_FRAGMENT_TAG);
+        if (fragment == null) {
+            fragment = SyncErrorDialogFragment.newInstance();
+        }
+        fragment.show(mFragmentManager, SYNC_ERROR_DIALOG_FRAGMENT_TAG);
     }
 
     private ActionClickedListener getInternalErrorClickedListener() {
@@ -2464,5 +2464,50 @@ public abstract class AbstractActivityController implements ActivityController {
                         mActivity.getActivityContext(), mAccount, true /* reportingProblem */);
             }
         };
+    }
+
+    @Override
+    public void onFooterViewErrorActionClick(Folder folder, int errorStatus) {
+        Uri uri = null;
+        switch (errorStatus) {
+            case UIProvider.LastSyncResult.CONNECTION_ERROR:
+                if (folder != null && folder.refreshUri != null) {
+                    uri = folder.refreshUri;
+                }
+                break;
+            case UIProvider.LastSyncResult.AUTH_ERROR:
+                // TODO - open sign-in page here
+                return;
+            case UIProvider.LastSyncResult.SECURITY_ERROR:
+                return; // Currently we do nothing for security errors.
+            case UIProvider.LastSyncResult.STORAGE_ERROR:
+                showStorageErrorDialog();
+                return;
+            case UIProvider.LastSyncResult.INTERNAL_ERROR:
+                Utils.sendFeedback(
+                        mActivity.getActivityContext(), mAccount, true /* reportingProblem */);
+                return;
+            default:
+                return;
+        }
+
+        if (uri != null) {
+            startAsyncRefreshTask(uri);
+        }
+    }
+
+    @Override
+    public void onFooterViewLoadMoreClick(Folder folder) {
+        if (folder != null && folder.loadMoreUri != null) {
+            startAsyncRefreshTask(folder.loadMoreUri);
+        }
+    }
+
+    private void startAsyncRefreshTask(Uri uri) {
+        if (mFolderSyncTask != null) {
+            mFolderSyncTask.cancel(true);
+        }
+        mFolderSyncTask = new AsyncRefreshTask(mActivity.getActivityContext(), uri);
+        mFolderSyncTask.execute();
     }
 }
