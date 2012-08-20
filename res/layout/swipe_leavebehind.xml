@@ -46,27 +46,34 @@
             android:layout_width="1dip"
             android:layout_height="match_parent"
             android:layout_marginBottom="20dip"
-            android:layout_marginRight="12dip"
             android:layout_marginTop="20dip"
             android:background="@android:color/white" />
 
-        <ImageView
-            android:id="@+id/undo_icon"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="8dip"
-            android:src="@drawable/ic_menu_revert_holo_dark" />
-
-        <TextView
-            android:id="@+id/undo_text"
-            style="@style/UndoTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingRight="16dip"
-            android:text="@string/undo"
-            android:textAllCaps="true"
+            android:id="@+id/undo_button"
             android:clickable="true"
-            android:gravity="center_vertical"
-            android:textColor="@android:color/white" />
+            android:background="?android:attr/selectableItemBackground">
+            <ImageView
+                android:id="@+id/undo_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="12dip"
+                android:layout_marginRight="8dip"
+                android:src="@drawable/ic_menu_revert_holo_dark" />
+
+            <TextView
+                android:id="@+id/undo_text"
+                style="@style/UndoTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingRight="16dip"
+                android:text="@string/undo"
+                android:textAllCaps="true"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/white"
+                android:layout_toRightOf="@id/undo_icon" />
+        </RelativeLayout>
     </LinearLayout>
 </com.android.mail.ui.LeaveBehindItem>
