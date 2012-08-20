@@ -353,21 +353,21 @@ public final class ConversationCursor implements Cursor {
                     iter.remove();
                 }
             }
-        }
 
-        // Swap cursor
-        if (mUnderlyingCursor != null) {
-            close();
-        }
-        mUnderlyingCursor = newCursor;
+            // Swap cursor
+            if (mUnderlyingCursor != null) {
+                close();
+            }
+            mUnderlyingCursor = newCursor;
 
-        mPosition = -1;
-        mUnderlyingCursor.moveToPosition(mPosition);
-        if (!mCursorObserverRegistered) {
-            mUnderlyingCursor.registerContentObserver(mCursorObserver);
-            mCursorObserverRegistered = true;
+            mPosition = -1;
+            mUnderlyingCursor.moveToPosition(mPosition);
+            if (!mCursorObserverRegistered) {
+                mUnderlyingCursor.registerContentObserver(mCursorObserver);
+                mCursorObserverRegistered = true;
+            }
+            mRefreshRequired = false;
         }
-        mRefreshRequired = false;
     }
 
     /**
@@ -539,15 +539,15 @@ public final class ConversationCursor implements Cursor {
      * When the underlying cursor changes, we want to alert the listener
      */
     private void underlyingChanged() {
-        if (mCursorObserverRegistered) {
-            try {
-                mUnderlyingCursor.unregisterContentObserver(mCursorObserver);
-            } catch (IllegalStateException e) {
-                // Maybe the cursor was GC'd?
-            }
-            mCursorObserverRegistered = false;
-        }
         synchronized(mCacheMapLock) {
+            if (mCursorObserverRegistered) {
+                try {
+                    mUnderlyingCursor.unregisterContentObserver(mCursorObserver);
+                } catch (IllegalStateException e) {
+                    // Maybe the cursor was GC'd?
+                }
+                mCursorObserverRegistered = false;
+            }
             mRefreshRequired = true;
             if (!mPaused) {
                 notifyRefreshRequired();
@@ -604,8 +604,7 @@ public final class ConversationCursor implements Cursor {
      * Put the refreshed cursor in place (called by the UI)
      */
     public void sync() {
-        final Wrapper requeryCursor = mRequeryCursor;
-        if (requeryCursor == null) {
+        if (mRequeryCursor == null) {
             // This can happen during an animated deletion, if the UI isn't keeping track, or
             // if a new query intervened (i.e. user changed folders)
             if (DEBUG) {
@@ -613,16 +612,15 @@ public final class ConversationCursor implements Cursor {
             }
             return;
         }
-        if (DEBUG) {
-            LogUtils.i(TAG, "[sync() %s]", mName);
-        }
         synchronized(mCacheMapLock) {
+            if (DEBUG) {
+                LogUtils.i(TAG, "[sync() %s]", mName);
+            }
+            resetCursor(mRequeryCursor);
             mRequeryCursor = null;
             mRefreshTask = null;
             mRefreshReady = false;
         }
-        resetCursor(requeryCursor);
-
         notifyDataChanged();
     }
 
