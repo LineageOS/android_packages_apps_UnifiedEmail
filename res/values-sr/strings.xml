@@ -26,10 +26,8 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Приложи датотеку"</string>
-    <!-- no translation found for add_photo_attachment (8548176514426323119) -->
-    <skip />
-    <!-- no translation found for add_video_attachment (4284457799113546464) -->
-    <skip />
+    <string name="add_photo_attachment" msgid="8548176514426323119">"Приложи слику"</string>
+    <string name="add_video_attachment" msgid="4284457799113546464">"Приложи видео"</string>
     <string name="save_draft" msgid="5555744208032445632">"Сачувај недовршену поруку"</string>
     <string name="discard" msgid="1714960202994370243">"Одбаци"</string>
     <string name="compose" msgid="1473559896062432878">"Нова порука"</string>
@@ -205,8 +203,10 @@
     <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; преписка је пријављена да није непожељна."</item>
     <item quantity="other" msgid="2250720080221922267">"Преписке (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;) су пријављене да нису непожељне."</item>
   </plurals>
-    <!-- no translation found for conversation_not_important:one (788387259924027833) -->
-    <!-- no translation found for conversation_not_important:other (6662213740575340397) -->
+  <plurals name="conversation_not_important">
+    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; преписка је означена као неважна."</item>
+    <item quantity="other" msgid="6662213740575340397">"Преписке (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;) су означене као неважне."</item>
+  </plurals>
   <plurals name="conversation_phished">
     <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; преписка је пријављена као „пецање“."</item>
     <item quantity="other" msgid="3678624994662639442">"Преписке (&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;) су пријављене као „пецање“."</item>
@@ -284,8 +284,7 @@
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
     <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; преко <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Порука је сачувана као недовршена."</string>
-    <!-- no translation found for sending_message (2822171587017313151) -->
-    <skip />
+    <string name="sending_message" msgid="2822171587017313151">"Слање поруке у директоријум За слање…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Адреса <xliff:g id="WRONGEMAIL">%s</xliff:g> је неважећа."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Прикажи наведени текст"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Сакриј наведени текст"</string>
