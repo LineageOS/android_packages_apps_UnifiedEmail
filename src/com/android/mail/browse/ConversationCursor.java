@@ -28,11 +28,11 @@ import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.util.Log;
@@ -79,8 +79,6 @@ public final class ConversationCursor implements Cursor {
     @VisibleForTesting
     static ConversationProvider sProvider;
 
-    // The cursor instantiator's activity
-    private Activity mActivity;
     // The cursor underlying the caching cursor
     @VisibleForTesting
     Wrapper mUnderlyingCursor;
@@ -140,14 +138,13 @@ public final class ConversationCursor implements Cursor {
 
     public ConversationCursor(Activity activity, Uri uri, boolean initialConversationLimit,
             String name) {
-        //sActivity = activity;
         mInitialConversationLimit = initialConversationLimit;
         sResolver = activity.getContentResolver();
         sUriColumnIndex = UIProvider.CONVERSATION_URI_COLUMN;
         qUri = uri;
         mName = name;
         qProjection = UIProvider.CONVERSATION_PROJECTION;
-        mCursorObserver = new CursorObserver();
+        mCursorObserver = new CursorObserver(new Handler(Looper.getMainLooper()));
     }
 
     /**
@@ -271,9 +268,6 @@ public final class ConversationCursor implements Cursor {
     }
 
     private Wrapper doQuery(boolean withLimit) {
-        if (sResolver == null) {
-            sResolver = mActivity.getContentResolver();
-        }
         Uri uri = qUri;
         if (withLimit) {
             uri = uri.buildUpon().appendQueryParameter(ConversationListQueryParameters.LIMIT,
@@ -894,14 +888,14 @@ public final class ConversationCursor implements Cursor {
      * Observer of changes to underlying data
      */
     private class CursorObserver extends ContentObserver {
-        public CursorObserver() {
-            super(null);
+        public CursorObserver(Handler handler) {
+            super(handler);
         }
 
         @Override
         public void onChange(boolean selfChange) {
             // If we're here, then something outside of the UI has changed the data, and we
-            // must query the underlying provider for that data
+            // must query the underlying provider for that data;
             ConversationCursor.this.underlyingChanged();
         }
     }
