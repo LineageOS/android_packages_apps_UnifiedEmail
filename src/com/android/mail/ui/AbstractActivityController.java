@@ -1996,12 +1996,12 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onAnimationEnd(AnimatedAdapter animatedAdapter) {
         if (mConversationListCursor.isRefreshReady()) {
-            LogUtils.d(LOG_TAG, "Stop scrolling: try sync");
+            LogUtils.d(LOG_TAG, "Stopped animating: try sync");
             onRefreshReady();
         }
 
         if (mConversationListCursor.isRefreshRequired()) {
-            LogUtils.d(LOG_TAG, "Stop scrolling: refresh");
+            LogUtils.d(LOG_TAG, "Stopped animating: refresh");
             mConversationListCursor.refresh();
         }
     }
