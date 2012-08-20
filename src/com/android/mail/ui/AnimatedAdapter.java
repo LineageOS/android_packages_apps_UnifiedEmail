@@ -350,15 +350,24 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         notifyDataSetChanged();
     }
 
+    public SwipeableListView getListView() {
+        return mListView;
+    }
+
     public void commitLeaveBehindItems() {
         // Remove any previously existing leave behinds.
+        boolean changed = false;
         if (hasLeaveBehinds()) {
             mLeaveBehindItem.dismiss();
+            changed = true;
         }
         if (!mLastDeletingItems.isEmpty()) {
             mLastDeletingItems.clear();
+            changed = true;
         }
-        notifyDataSetChanged();
+        if (changed) {
+            notifyDataSetChanged();
+        }
     }
 
     private LeaveBehindItem getLeaveBehindItem(Conversation target) {
