@@ -354,7 +354,7 @@
     <string name="info" msgid="6009817562073541204">"Інформація"</string>
     <string name="report" msgid="5417082746232614958">"Повідомити"</string>
     <string name="sync_error" msgid="7368819509040597851">"Не вдалося синхронізувати."</string>
-    <string name="sync_error_message" msgid="5367907194753034375">"У вашого пристрою недостатній обсяг пам’яті для синхронізації."</string>
+    <string name="sync_error_message" msgid="5367907194753034375">"У вашому пристрої не вистачає пам’яті для синхронізації."</string>
     <string name="storage" msgid="3262760336059073446">"Пам’ять"</string>
     <string name="hierarchical_folder_parent_top" msgid="3304098729588424059">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
     <string name="hierarchical_folder_parent_top_ellip" msgid="4733427814906262914">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕…∕<xliff:g id="PARENT_0">%2$s</xliff:g>∕"</string>
