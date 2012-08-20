@@ -413,4 +413,14 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public AccountController getAccountController() {
         return mController;
     }
+
+    @Override
+    public void onFooterViewErrorActionClick(Folder folder, int errorStatus) {
+        mController.onFooterViewErrorActionClick(folder, errorStatus);
+    }
+
+    @Override
+    public void onFooterViewLoadMoreClick(Folder folder) {
+        mController.onFooterViewLoadMoreClick(folder);
+    }
 }
