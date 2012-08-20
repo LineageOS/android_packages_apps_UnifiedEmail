@@ -1205,7 +1205,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     @Override
     public void dismiss() {
-        getListView().dismissChild(this);
+        SwipeableListView listView = this.getListView();
+        if (listView != null) {
+            getListView().dismissChild(this);
+        }
     }
 
     /**
@@ -1261,7 +1264,12 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     private SwipeableListView getListView() {
-        return (SwipeableListView)((SwipeableConversationItemView) getParent()).getListView();
+        SwipeableListView v = (SwipeableListView) ((SwipeableConversationItemView) getParent())
+                .getListView();
+        if (v == null) {
+            v = mAdapter.getListView();
+        }
+        return v;
     }
 
     private boolean onTouchEventNoSwipe(MotionEvent event) {
