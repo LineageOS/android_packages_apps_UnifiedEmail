@@ -30,6 +30,7 @@ import android.view.MotionEvent;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
+import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -46,7 +47,7 @@ public interface ActivityController extends LayoutListener,
         ConversationSetObserver, ConversationListener,
         FolderListFragment.FolderListSelectionListener, HelpCallback, UndoListener,
         ConversationUpdater, ErrorListener, FolderController, AccountController,
-        ConversationPositionTracker.Callbacks{
+        ConversationPositionTracker.Callbacks, ConversationListFooterView.FooterViewClickListener {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.

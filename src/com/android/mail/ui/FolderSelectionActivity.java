@@ -331,4 +331,14 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         // Unsupported
         return null;
     }
+
+    @Override
+    public void onFooterViewErrorActionClick(Folder folder, int errorStatus) {
+        // Unsupported
+    }
+
+    @Override
+    public void onFooterViewLoadMoreClick(Folder folder) {
+        // Unsupported
+    }
 }
