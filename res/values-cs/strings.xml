@@ -299,14 +299,7 @@
     <string name="cancel" msgid="8762981157252199115">"Zrušit"</string>
     <string name="close" msgid="419945428844076406">"Zavřít"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Pro tento účet nebyly nastaveny žádné složky."</string>
-  <string-array name="sync_status">
-    <item msgid="2446076619901049026">"Podařilo se"</item>
-    <item msgid="7109065688039971961">"Žádné připojení."</item>
-    <item msgid="8437496123716232060">"Přihlášení se nezdařilo."</item>
-    <item msgid="1651266301325684887">"Chyba zabezpečení."</item>
-    <item msgid="1461520171154288533">"Chyba synchronizace."</item>
-    <item msgid="8749857841162829469">"Chyba"</item>
-  </string-array>
+    <!-- no translation found for sync_status:5 (4779810016424303449) -->
     <string name="tap_to_configure" msgid="1181356242354390930">"Nastavte dotykem"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Chcete-li zobrazit konverzace, synchronizujte tuto složku."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Synchronizovat složku"</string>
