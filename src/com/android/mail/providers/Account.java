@@ -122,6 +122,12 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final Uri sendFeedbackIntentUri;
 
     /**
+     * Uri for VIEW intent that will cause the reauthentication screen for this account to be
+     * shown.
+     */
+    public final Uri reauthenticationIntentUri;
+
+    /**
      * The sync status of the account
      */
     public final int syncStatus;
@@ -185,6 +191,8 @@ public class Account extends android.accounts.Account implements Parcelable {
             json.put(UIProvider.AccountColumns.SETTINGS_INTENT_URI, settingsIntentUri);
             json.put(UIProvider.AccountColumns.HELP_INTENT_URI, helpIntentUri);
             json.put(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI, sendFeedbackIntentUri);
+            json.put(UIProvider.AccountColumns.REAUTHENTICATION_INTENT_URI,
+                    reauthenticationIntentUri);
             json.put(UIProvider.AccountColumns.SYNC_STATUS, syncStatus);
             json.put(UIProvider.AccountColumns.COMPOSE_URI, composeIntentUri);
             json.put(UIProvider.AccountColumns.MIME_TYPE, mimeType);
@@ -264,6 +272,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 .getValidUri(json.optString(UIProvider.AccountColumns.HELP_INTENT_URI));
         sendFeedbackIntentUri = Utils.getValidUri(json
                 .optString(UIProvider.AccountColumns.SEND_FEEDBACK_INTENT_URI));
+        reauthenticationIntentUri = Utils.getValidUri(
+                json.optString(UIProvider.AccountColumns.REAUTHENTICATION_INTENT_URI));
         syncStatus = json.optInt(UIProvider.AccountColumns.SYNC_STATUS);
         composeIntentUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.COMPOSE_URI));
         mimeType = json.optString(UIProvider.AccountColumns.MIME_TYPE);
@@ -301,6 +311,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         settingsIntentUri = in.readParcelable(null);
         helpIntentUri = in.readParcelable(null);
         sendFeedbackIntentUri = in.readParcelable(null);
+        reauthenticationIntentUri = in.readParcelable(null);
         syncStatus = in.readInt();
         composeIntentUri = in.readParcelable(null);
         mimeType = in.readString();
@@ -341,6 +352,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 .getString(UIProvider.ACCOUNT_HELP_INTENT_URI_COLUMN));
         sendFeedbackIntentUri = Utils.getValidUri(cursor
                 .getString(UIProvider.ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN));
+        reauthenticationIntentUri = Utils.getValidUri(
+                cursor.getString(UIProvider.ACCOUNT_REAUTHENTICATION_INTENT_URI_COLUMN));
         syncStatus = cursor.getInt(UIProvider.ACCOUNT_SYNC_STATUS_COLUMN);
         composeIntentUri = Utils.getValidUri(cursor
                 .getString(UIProvider.ACCOUNT_COMPOSE_INTENT_URI_COLUMN));
@@ -403,6 +416,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(settingsIntentUri, 0);
         dest.writeParcelable(helpIntentUri, 0);
         dest.writeParcelable(sendFeedbackIntentUri, 0);
+        dest.writeParcelable(reauthenticationIntentUri, 0);
         dest.writeInt(syncStatus);
         dest.writeParcelable(composeIntentUri, 0);
         dest.writeString(mimeType);
@@ -450,6 +464,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         sb.append(helpIntentUri);
         sb.append(",sendFeedbackIntentUri=");
         sb.append(sendFeedbackIntentUri);
+        sb.append(",reauthenticationIntentUri=");
+        sb.append(reauthenticationIntentUri);
         sb.append(",syncStatus=");
         sb.append(syncStatus);
         sb.append(",composeIntentUri=");
@@ -493,6 +509,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(settingsIntentUri, other.settingsIntentUri) &&
                 Objects.equal(helpIntentUri, other.helpIntentUri) &&
                 Objects.equal(sendFeedbackIntentUri, other.sendFeedbackIntentUri) &&
+                Objects.equal(reauthenticationIntentUri, other.reauthenticationIntentUri) &&
                 (syncStatus == other.syncStatus) &&
                 Objects.equal(composeIntentUri, other.composeIntentUri) &&
                 TextUtils.equals(mimeType, other.mimeType) &&
@@ -508,8 +525,9 @@ public class Account extends android.accounts.Account implements Parcelable {
                 ^ Objects.hashCode(name, type, capabilities, providerVersion, uri, folderListUri,
                         fullFolderListUri, searchUri, accountFromAddresses, saveDraftUri,
                         sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri,
-                        helpIntentUri, sendFeedbackIntentUri, syncStatus, composeIntentUri,
-                        mimeType, recentFolderListUri, color, defaultRecentFolderListUri);
+                        helpIntentUri, sendFeedbackIntentUri, reauthenticationIntentUri, syncStatus,
+                        composeIntentUri, mimeType, recentFolderListUri, color,
+                        defaultRecentFolderListUri);
     }
 
     /**
