@@ -585,8 +585,11 @@ public class ConversationItemView extends View implements SwipeableItemView {
         } else {
             mHeader.styledSendersString.removeSpan(mActivatedTextSpan);
         }
-        mHeader.sendersDisplayLayout = new StaticLayout(mHeader.styledSendersString, sPaint,
-                mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
+        int length = (int) sPaint.measureText(mHeader.styledSendersString.toString());
+        mHeader.sendersDisplayLayout = new StaticLayout(mHeader.styledSendersString, 0,
+                mHeader.styledSendersString.length(), sPaint,
+                length,
+                Alignment.ALIGN_NORMAL, 1, 0, true, TextUtils.TruncateAt.END, length);
     }
 
     private CharacterStyle getActivatedTextSpan() {
@@ -764,9 +767,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         float totalWidth = 0;
         boolean ellipsize = false;
-        SpannableString ellipsizedText;
         float width;
-        SpannableStringBuilder messageInfoString = mHeader.messageInfoString;
+        SpannableStringBuilder messageInfoString =  mHeader.messageInfoString;
         if (messageInfoString.length() > 0) {
             CharacterStyle[] spans = messageInfoString.getSpans(0, messageInfoString.length(),
                     CharacterStyle.class);
@@ -779,7 +781,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
             float messageInfoWidth = sPaint.measureText(messageInfoString.toString());
             totalWidth += messageInfoWidth;
         }
-        SpannableString prevSender = null;
+       SpannableString prevSender = null;
+       SpannableString ellipsizedText;
         for (SpannableString sender : mHeader.styledSenders) {
             // There may be null sender strings if there were dupes we had to remove.
             if (sender == null) {
@@ -807,13 +810,16 @@ public class ConversationItemView extends View implements SwipeableItemView {
             } else {
                 prevSender = sender;
             }
+            if (spans.length > 0) {
+                spans[0].updateDrawState(sPaint);
+            }
             // Measure the width of the current sender and make sure we have space
             width = (int) sPaint.measureText(sender.toString());
             if (width + totalWidth > mSendersWidth) {
                 // The text is too long, new line won't help. We have to
                 // ellipsize text.
                 ellipsize = true;
-                width = mSendersWidth - totalWidth - getEllipsisWidth(); // ellipsis width?
+                width = mSendersWidth - totalWidth; // ellipsis width?
                 ellipsizedText = copyStyles(spans,
                         TextUtils.ellipsize(sender, sPaint, width, TruncateAt.END));
                 width = (int) sPaint.measureText(ellipsizedText.toString());
@@ -836,10 +842,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
         mHeader.styledSendersString = builder;
         return (int)totalWidth;
-    }
-
-    private float getEllipsisWidth() {
-        return sPaint.measureText(sEllipsis);
     }
 
     private SpannableString copyStyles(CharacterStyle[] spans, CharSequence newText) {
@@ -966,6 +968,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
             int sendersColor = getFontColor(isUnread ? sSendersTextColorUnread
                     : sSendersTextColorRead);
             sPaint.setColor(sendersColor);
+        } else {
+            sPaint.setTextSize(mCoordinates.sendersFontSize);
         }
         canvas.save();
         canvas.translate(mCoordinates.sendersX,
