@@ -254,8 +254,12 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     public int getConversationPosition(Conversation conv) {
         if (isSingletonMode()) {
+            if (getCursor() == null) {
+                return POSITION_NONE;
+            }
+
             if (conv != mInitialConversation) {
-                LogUtils.wtf(LOG_TAG, "unable to find conversation with null pager cursor. c=%s",
+                LogUtils.w(LOG_TAG, "unable to find conversation in singleton mode. c=%s",
                         conv);
                 return POSITION_NONE;
             }
