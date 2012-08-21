@@ -148,8 +148,7 @@
     <item quantity="one" msgid="3657821200245019288">"Beszélgetés áthelyezése"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> beszélgetés áthelyezése"</item>
   </plurals>
-    <!-- no translation found for content_description (175899621885107464) -->
-    <skip />
+    <string name="content_description" msgid="175899621885107464">"<xliff:g id="SENDER">%1$s</xliff:g> küldte a következőt: <xliff:g id="SUBJECT">%2$s</xliff:g> | ekkor: <xliff:g id="DATE">%3$s</xliff:g>"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> -- <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -300,14 +299,7 @@
     <string name="cancel" msgid="8762981157252199115">"Mégse"</string>
     <string name="close" msgid="419945428844076406">"Bezárás"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Nincs beállítva mappa ehhez a fiókhoz."</string>
-  <string-array name="sync_status">
-    <item msgid="2446076619901049026">"Sikerült"</item>
-    <item msgid="7109065688039971961">"Nincs kapcsolat."</item>
-    <item msgid="8437496123716232060">"A bejelentkezés sikertelen."</item>
-    <item msgid="1651266301325684887">"Biztonsági hiba"</item>
-    <item msgid="1461520171154288533">"A szinkronizálás sikertelen."</item>
-    <item msgid="8749857841162829469">"Hiba"</item>
-  </string-array>
+    <!-- no translation found for sync_status:5 (4779810016424303449) -->
     <string name="tap_to_configure" msgid="1181356242354390930">"Érintse meg a beállításhoz"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Beszélgetésekhez szinkr. a mappát."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Mappa szinkronizálása"</string>
