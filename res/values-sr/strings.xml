@@ -148,8 +148,7 @@
     <item quantity="one" msgid="3657821200245019288">"Премести преписку"</item>
     <item quantity="other" msgid="1685896770174368261">"Премести преписке (<xliff:g id="ID_1">%1$d</xliff:g>)"</item>
   </plurals>
-    <!-- no translation found for content_description (175899621885107464) -->
-    <skip />
+    <string name="content_description" msgid="175899621885107464">"<xliff:g id="SENDER">%1$s</xliff:g> је послао/ла <xliff:g id="SUBJECT">%2$s</xliff:g> <xliff:g id="DATE">%3$s</xliff:g>"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>] <xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -300,14 +299,7 @@
     <string name="cancel" msgid="8762981157252199115">"Откажи"</string>
     <string name="close" msgid="419945428844076406">"Затвори"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Нису подешени директоријуми за овај налог."</string>
-  <string-array name="sync_status">
-    <item msgid="2446076619901049026">"Успешно"</item>
-    <item msgid="7109065688039971961">"Веза није успостављена."</item>
-    <item msgid="8437496123716232060">"Пријављивање није могуће."</item>
-    <item msgid="1651266301325684887">"Безбедносна грешка."</item>
-    <item msgid="1461520171154288533">"Синхронизација није могућа."</item>
-    <item msgid="8749857841162829469">"Грешка"</item>
-  </string-array>
+    <!-- no translation found for sync_status:5 (4779810016424303449) -->
     <string name="tap_to_configure" msgid="1181356242354390930">"Додирните да бисте подесили"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Да бисте прегледали преписке, синхронизујте директоријум."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Синхронизуј директоријум"</string>
