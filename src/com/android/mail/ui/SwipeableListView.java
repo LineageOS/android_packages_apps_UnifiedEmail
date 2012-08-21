@@ -19,13 +19,11 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewParent;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
@@ -53,8 +51,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     private ConversationSelectionSet mConvSelectionSet;
     private int mSwipeAction;
     private Folder mFolder;
-    private boolean mAttachedToWindow;
-    private boolean mLayoutCalled;
 
     public SwipeableListView(Context context) {
         this(context, null);
@@ -71,27 +67,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         mSwipeHelper = new SwipeHelper(context, SwipeHelper.X, this, densityScale,
                 pagingTouchSlop);
         setOnScrollListener(this);
-    }
-    @Override
-    protected void onAttachedToWindow() {
-        mAttachedToWindow = true;
-        super.onAttachedToWindow();
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        mAttachedToWindow = false;
-        super.onDetachedFromWindow();
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        mLayoutCalled = true;
-        super.onLayout(changed, l, t, r, b);
-    }
-
-    public final boolean isWedged(){
-        return mAttachedToWindow && !mLayoutCalled;
     }
 
     @Override

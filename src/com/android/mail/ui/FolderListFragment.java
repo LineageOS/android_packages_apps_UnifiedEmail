@@ -84,9 +84,7 @@ public final class FolderListFragment extends ListFragment implements
     public void onResume() {
         super.onResume();
         // Hacky workaround for http://b/6946182
-        if (isVisible() && mListView.getMeasuredHeight() == 0) {
-            Utils.markDirtyTillRoot("FolderListFragment", mListView);
-        }
+        Utils.fixSubTreeLayoutIfOrphaned(getView(), "FolderListFragment");
     }
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized

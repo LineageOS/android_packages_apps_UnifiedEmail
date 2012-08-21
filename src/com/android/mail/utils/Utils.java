@@ -1014,6 +1014,37 @@ public class Utils {
         return sDefaultFolderBackgroundColor;
     }
 
+    public static void fixSubTreeLayoutIfOrphaned(View v, String tag) {
+        if (isLayoutSubTreeOrphaned(v)) {
+            markDirtyTillRoot(tag, v);
+        }
+    }
+
+    /**
+     * An orphaned subtree is one where child views have requested layout, but at least one
+     * ancestor is not marked for layout. In this scenario, any future layout requests on the root
+     * will ignore the orphaned subtree, and we have to force the issue.
+     * <p>
+     * Note: this might be okay if it's true while a layout pass is in progress. Callers should
+     * only trust this return value if not currently in layout.
+     *
+     */
+    public static boolean isLayoutSubTreeOrphaned(View v) {
+        if (v == null) {
+            return false;
+        }
+
+        final boolean isLayoutRequested = v.isLayoutRequested();
+        ViewParent parent = v.getParent();
+        while (isLayoutRequested && parent != null) {
+            if (!parent.isLayoutRequested()) {
+                return true;
+            }
+            parent = parent.getParent();
+        }
+        return false;
+    }
+
     /**
      * Hacky method to allow invalidating views all the way up the hierarchy.
      */
