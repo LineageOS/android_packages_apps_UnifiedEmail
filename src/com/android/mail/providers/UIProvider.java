@@ -114,6 +114,7 @@ public class UIProvider {
             AccountColumns.SYNC_STATUS,
             AccountColumns.HELP_INTENT_URI,
             AccountColumns.SEND_FEEDBACK_INTENT_URI,
+            AccountColumns.REAUTHENTICATION_INTENT_URI,
             AccountColumns.COMPOSE_URI,
             AccountColumns.MIME_TYPE,
             AccountColumns.RECENT_FOLDER_LIST_URI,
@@ -154,28 +155,29 @@ public class UIProvider {
     public static final int ACCOUNT_SYNC_STATUS_COLUMN = 14;
     public static final int ACCOUNT_HELP_INTENT_URI_COLUMN = 15;
     public static final int ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN = 16;
-    public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 17;
-    public static final int ACCOUNT_MIME_TYPE_COLUMN = 18;
-    public static final int ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN = 19;
-    public static final int ACCOUNT_COLOR_COLUMN = 20;
-    public static final int ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN = 21;
-    public static final int ACCOUNT_MANUAL_SYNC_URI_COLUMN = 22;
+    public static final int ACCOUNT_REAUTHENTICATION_INTENT_URI_COLUMN = 17;
+    public static final int ACCOUNT_COMPOSE_INTENT_URI_COLUMN = 18;
+    public static final int ACCOUNT_MIME_TYPE_COLUMN = 19;
+    public static final int ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN = 20;
+    public static final int ACCOUNT_COLOR_COLUMN = 21;
+    public static final int ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN = 22;
+    public static final int ACCOUNT_MANUAL_SYNC_URI_COLUMN = 23;
 
-    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 23;
-    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 24;
-    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 25;
-    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 26;
-    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 27;
-    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 28;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 29;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 30;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 31;
-    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 32;
-    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN = 33;
-    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 34;
-    public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 35;
-    public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 36;
-    public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 37;
+    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 24;
+    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 25;
+    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 26;
+    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 27;
+    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 28;
+    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 29;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 30;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 31;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 32;
+    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 33;
+    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN = 34;
+    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 35;
+    public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 36;
+    public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 37;
+    public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 38;
 
     public static final class AccountCapabilities {
         /**
@@ -388,6 +390,14 @@ public class UIProvider {
          * to be moved to a global content provider.
          */
         public static String SEND_FEEDBACK_INTENT_URI = "sendFeedbackIntentUri";
+
+        /**
+         * Uri for VIEW intent that will cause the user to be prompted for authentication for
+         * this account.  startActivityForResult() will be called with this intent. Activities that
+         * handle this intent are expected to return {@link android.app.Activity.RESULT_OK} if the
+         * user successfully authenticated.
+         */
+        public static String REAUTHENTICATION_INTENT_URI = "reauthenticationUri";
 
         /**
          * This int column contains the current sync status of the account (the logical AND of the

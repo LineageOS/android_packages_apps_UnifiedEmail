@@ -241,6 +241,7 @@ public abstract class AbstractActivityController implements ActivityController {
     public static final int LAST_LOADER_ID = 100;
 
     private static final int ADD_ACCOUNT_REQUEST_CODE = 1;
+    private static final int REAUTHENTICATE_REQUEST_CODE = 2;
 
     /** The pending destructive action to be carried out before swapping the conversation cursor.*/
     private DestructiveAction mPendingDestruction;
@@ -569,16 +570,27 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD_ACCOUNT_REQUEST_CODE) {
-            // We were waiting for the user to create an account
-            if (resultCode == Activity.RESULT_OK) {
-                // restart the loader to get the updated list of accounts
-                mActivity.getLoaderManager().initLoader(
-                        LOADER_ACCOUNT_CURSOR, null, this);
-            } else {
-                // The user failed to create an account, just exit the app
-                mActivity.finish();
-            }
+        switch (requestCode) {
+            case ADD_ACCOUNT_REQUEST_CODE:
+                // We were waiting for the user to create an account
+                if (resultCode == Activity.RESULT_OK) {
+                    // restart the loader to get the updated list of accounts
+                    mActivity.getLoaderManager().initLoader(
+                            LOADER_ACCOUNT_CURSOR, null, this);
+                } else {
+                    // The user failed to create an account, just exit the app
+                    mActivity.finish();
+                }
+                break;
+            case REAUTHENTICATE_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    // The user successfully authenticated, attempt to refresh the list
+                    final Uri refreshUri = mFolder != null ? mFolder.refreshUri : null;
+                    if (refreshUri != null) {
+                        startAsyncRefreshTask(refreshUri);
+                    }
+                }
+                break;
         }
     }
 
@@ -2431,9 +2443,7 @@ public abstract class AbstractActivityController implements ActivityController {
         return new ActionClickedListener() {
             @Override
             public void onActionClicked() {
-                // TODO - have pressing Sign-in actually
-                // allow the user to update their credentials
-                // Needs to also be done in ConversationListFooterView
+                promptUserForAuthentication(mAccount);
             }
         };
     }
@@ -2476,7 +2486,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
                 break;
             case UIProvider.LastSyncResult.AUTH_ERROR:
-                // TODO - open sign-in page here
+                promptUserForAuthentication(mAccount);
                 return;
             case UIProvider.LastSyncResult.SECURITY_ERROR:
                 return; // Currently we do nothing for security errors.
@@ -2509,5 +2519,13 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         mFolderSyncTask = new AsyncRefreshTask(mActivity.getActivityContext(), uri);
         mFolderSyncTask.execute();
+    }
+
+    private void promptUserForAuthentication(Account account) {
+        if (account != null && account.reauthenticationIntentUri != null) {
+            final Intent authenticationIntent =
+                    new Intent(Intent.ACTION_VIEW, account.reauthenticationIntentUri);
+            mActivity.startActivityForResult(authenticationIntent, REAUTHENTICATE_REQUEST_CODE);
+        }
     }
 }
