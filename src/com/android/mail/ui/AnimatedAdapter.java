@@ -341,8 +341,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             Conversation conv = mLeaveBehindItem.getData();
             if (conv.position >= startPosition && conv.position <= endPosition) {
                 mFadeLeaveBehindItems.put(conv.id, mLeaveBehindItem);
+            } else {
+                mLeaveBehindItem.commit();
             }
-            mLeaveBehindItem.commit();
             clearLeaveBehind(conv.id);
         }
         if (!mLastDeletingItems.isEmpty()) {
