@@ -26,10 +26,8 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Załącz plik"</string>
-    <!-- no translation found for add_photo_attachment (8548176514426323119) -->
-    <skip />
-    <!-- no translation found for add_video_attachment (4284457799113546464) -->
-    <skip />
+    <string name="add_photo_attachment" msgid="8548176514426323119">"Dołącz zdjęcie"</string>
+    <string name="add_video_attachment" msgid="4284457799113546464">"Dołącz film"</string>
     <string name="save_draft" msgid="5555744208032445632">"Zapisz wersję roboczą"</string>
     <string name="discard" msgid="1714960202994370243">"Odrzuć"</string>
     <string name="compose" msgid="1473559896062432878">"Utwórz"</string>
@@ -148,8 +146,7 @@
     <item quantity="one" msgid="3657821200245019288">"Przenieś wątek"</item>
     <item quantity="other" msgid="1685896770174368261">"Przenieś <xliff:g id="ID_1">%1$d</xliff:g> wątki(ów)"</item>
   </plurals>
-    <!-- no translation found for content_description (175899621885107464) -->
-    <skip />
+    <string name="content_description" msgid="175899621885107464">"<xliff:g id="SENDER">%1$s</xliff:g> wysłał(a) <xliff:g id="SUBJECT">%2$s</xliff:g> <xliff:g id="DATE">%3$s</xliff:g>"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> – <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -203,8 +200,10 @@
     <item quantity="one" msgid="7361303622131552596">"Zgłoszone jako nie spam: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="2250720080221922267">"Zgłoszone jako nie spam: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
-    <!-- no translation found for conversation_not_important:one (788387259924027833) -->
-    <!-- no translation found for conversation_not_important:other (6662213740575340397) -->
+  <plurals name="conversation_not_important">
+    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; oznaczono jako mało ważny."</item>
+    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; oznaczono jako mało ważny."</item>
+  </plurals>
   <plurals name="conversation_phished">
     <item quantity="one" msgid="5386916574432049235">"Zgłoszone jako wyłudzanie informacji: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="3678624994662639442">"Zgłoszone jako wyłudzanie informacji: &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
@@ -282,8 +281,7 @@
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
     <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; przez <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Wiadomość została zapisana jako wersja robocza."</string>
-    <!-- no translation found for sending_message (2822171587017313151) -->
-    <skip />
+    <string name="sending_message" msgid="2822171587017313151">"Wysyłam wiadomość do skrzynki nadawczej…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Adres <xliff:g id="WRONGEMAIL">%s</xliff:g> jest nieprawidłowy."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Pokaż cytowany tekst"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Ukryj cytowany tekst"</string>
@@ -299,14 +297,7 @@
     <string name="cancel" msgid="8762981157252199115">"Anuluj"</string>
     <string name="close" msgid="419945428844076406">"Zamknij"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Dla tego konta nie ustawiono żadnych folderów."</string>
-  <string-array name="sync_status">
-    <item msgid="2446076619901049026">"Udało się"</item>
-    <item msgid="7109065688039971961">"Brak połączenia."</item>
-    <item msgid="8437496123716232060">"Nie można się zalogować."</item>
-    <item msgid="1651266301325684887">"Błąd zabezpieczeń."</item>
-    <item msgid="1461520171154288533">"Błąd synchronizacji."</item>
-    <item msgid="8749857841162829469">"Błąd"</item>
-  </string-array>
+    <!-- no translation found for sync_status:5 (4779810016424303449) -->
     <string name="tap_to_configure" msgid="1181356242354390930">"Kliknij, by skonfigurować"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Aby wyświetlić rozmowy, zsynchronizuj ten folder."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Synchronizuj folder"</string>
