@@ -270,6 +270,10 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="MessageAttachmentsHeaderStyle" parent="MessageHeaderExtraSmallStyle">
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="MessageHeaderDateTextStyle" parent="MessageHeaderSmallStyle">
         <item name="android:layout_marginRight">@dimen/message_details_header_date_margin_right</item>
     </style>
