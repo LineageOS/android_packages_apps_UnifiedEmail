@@ -363,6 +363,14 @@ public final class ConversationViewFragment extends Fragment implements
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        // Hacky workaround for http://b/6946182
+        Utils.fixSubTreeLayoutIfOrphaned(getView(), "ConversationViewFragment");
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         if (mViewState != null) {
             outState.putParcelable(BUNDLE_VIEW_STATE, mViewState);
