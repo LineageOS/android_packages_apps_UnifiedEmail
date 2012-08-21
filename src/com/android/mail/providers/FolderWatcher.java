@@ -23,6 +23,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.BaseAdapter;
 
 import com.android.mail.ui.AbstractActivityController;
 import com.android.mail.ui.RestrictedActivity;
@@ -43,6 +44,11 @@ public class FolderWatcher implements LoaderManager.LoaderCallbacks<Cursor>{
     /** Map returning the most recent folder object for each URI */
     private final Map<Uri, Folder> mFolder = new HashMap<Uri, Folder>();
     private final RestrictedActivity mActivity;
+    /**
+     * The adapter that consumes this data. We use this only to notify the consumer that new data
+     * is available.
+     */
+    private BaseAdapter mConsumer;
 
     private final static String LOG_TAG = LogUtils.TAG;
 
@@ -50,8 +56,9 @@ public class FolderWatcher implements LoaderManager.LoaderCallbacks<Cursor>{
      * Create a {@link FolderWatcher}.
      * @param activity
      */
-    public FolderWatcher(RestrictedActivity activity) {
+    public FolderWatcher(RestrictedActivity activity, BaseAdapter consumer) {
         mActivity = activity;
+        mConsumer = consumer;
     }
 
     /**
@@ -137,6 +144,8 @@ public class FolderWatcher implements LoaderManager.LoaderCallbacks<Cursor>{
         final Uri uri = mUri.get(getPositionFromLoader(loader.getId()));
         final Folder folder = new Folder(data);
         mFolder.put(uri, folder);
+        // Once we have updated data, we notify the parent class that something new appeared.
+        mConsumer.notifyDataSetChanged();
     }
 
     @Override
