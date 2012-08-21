@@ -120,14 +120,23 @@ public class MessageCursor extends CursorWrapper {
     public boolean isConversationStarred() {
         int pos = -1;
         while (moveToPosition(++pos)) {
-            Message m = getMessage();
-            if (m.starred) {
+            if (getMessage().starred) {
                 return true;
             }
         }
         return false;
     }
 
+
+    public boolean isConversationRead() {
+        int pos = -1;
+        while (moveToPosition(++pos)) {
+            if (!getMessage().read) {
+                return false;
+            }
+        }
+        return true;
+    }
     public void markMessagesRead() {
         int pos = -1;
         while (moveToPosition(++pos)) {
