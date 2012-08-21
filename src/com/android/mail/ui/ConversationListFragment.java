@@ -155,9 +155,7 @@ public final class ConversationListFragment extends ListFragment implements
     public void onResume() {
         super.onResume();
         // Hacky workaround for http://b/6946182
-        if (mListView.isWedged()) {
-            Utils.markDirtyTillRoot("SwipeableListView", mListView);
-        }
+        Utils.fixSubTreeLayoutIfOrphaned(getView(), "ConversationListFragment");
     }
 
     /**
