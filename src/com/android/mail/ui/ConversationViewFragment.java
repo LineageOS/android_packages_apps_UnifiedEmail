@@ -57,14 +57,15 @@ import com.android.mail.SenderInfoLoader;
 import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
+import com.android.mail.browse.ConversationViewAdapter.ConversationAccountController;
 import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
 import com.android.mail.browse.MessageCursor;
-import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageCursor.ConversationController;
+import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock;
@@ -76,7 +77,6 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
 import com.android.mail.providers.Message;
-import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
@@ -102,7 +102,8 @@ public final class ConversationViewFragment extends Fragment implements
         ConversationViewHeader.ConversationViewHeaderCallbacks,
         MessageHeaderViewCallbacks,
         SuperCollapsedBlock.OnClickListener,
-        ConversationController {
+        ConversationController,
+        ConversationAccountController {
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
@@ -141,13 +142,6 @@ public final class ConversationViewFragment extends Fragment implements
 
     private MenuItem mChangeFoldersMenuItem;
 
-    private final AccountObserver mAccountObserver = new AccountObserver() {
-        @Override
-        public void onChanged(Account newAccount) {
-            mAccount = newAccount;
-        }
-    };
-
     /**
      * Folder is used to help determine valid menu actions for this conversation.
      */
@@ -184,6 +178,17 @@ public final class ConversationViewFragment extends Fragment implements
 
     private final MessageLoaderCallbacks mMessageLoaderCallbacks = new MessageLoaderCallbacks();
     private final ContactLoaderCallbacks mContactLoaderCallbacks = new ContactLoaderCallbacks();
+
+    private final AccountObserver mAccountObserver = new AccountObserver() {
+        @Override
+        public void onChanged(Account newAccount) {
+            mAccount = newAccount;
+
+            // settings may have been updated; refresh views that are known to depend on settings
+            mConversationContainer.getSnapHeader().onAccountChanged();
+            mAdapter.notifyDataSetChanged();
+        }
+    };
 
     private static final String ARG_ACCOUNT = "account";
     public static final String ARG_CONVERSATION = "conversation";
@@ -247,14 +252,14 @@ public final class ConversationViewFragment extends Fragment implements
 
         final FormattedDateBuilder dateBuilder = new FormattedDateBuilder(mContext);
 
-        mAdapter = new ConversationViewAdapter(mActivity.getActivityContext(), mAccount,
+        mAdapter = new ConversationViewAdapter(mActivity.getActivityContext(), this,
                 getLoaderManager(), this, mContactLoaderCallbacks, this, this, mAddressCache,
                 dateBuilder);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         // set up snap header (the adapter usually does this with the other ones)
         final MessageHeaderView snapHeader = mConversationContainer.getSnapHeader();
-        snapHeader.initialize(dateBuilder, mAccount, mAddressCache);
+        snapHeader.initialize(dateBuilder, this, mAddressCache);
         snapHeader.setCallbacks(this);
         snapHeader.setContactInfoSource(mContactLoaderCallbacks);
 
@@ -575,11 +580,7 @@ public final class ConversationViewFragment extends Fragment implements
         boolean allowNetworkImages = false;
 
         // TODO: re-use any existing adapter item state (expanded, details expanded, show pics)
-        final Settings settings = mAccount.settings;
-        if (settings != null) {
-            mAdapter.setDefaultReplyAll(settings.replyBehavior ==
-                    UIProvider.DefaultReplyBehavior.REPLY_ALL);
-        }
+
         // Walk through the cursor and build up an overlay adapter as you go.
         // Each overlay has an entry in the adapter for easy scroll handling in the container.
         // Items are not necessarily 1:1 in cursor and adapter because of super-collapsed blocks.
@@ -954,6 +955,11 @@ public final class ConversationViewFragment extends Fragment implements
         return addr;
     }
 
+    @Override
+    public Account getAccount() {
+        return mAccount;
+    }
+
     private class ConversationWebViewClient extends WebViewClient {
 
         @Override
@@ -1269,11 +1275,6 @@ public final class ConversationViewFragment extends Fragment implements
             LogUtils.i(LOG_TAG, "running deferred conv mark read on open, id=%d", mConversation.id);
             markReadOnSeen(mListController);
         }
-    }
-
-    @Override
-    public Settings getSettings() {
-        return mAccount.settings;
     }
 
     private class SetCookieTask extends AsyncTask<Void, Void, Void> {

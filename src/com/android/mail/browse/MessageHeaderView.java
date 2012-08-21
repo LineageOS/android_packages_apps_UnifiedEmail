@@ -44,6 +44,7 @@ import com.android.mail.ContactInfo;
 import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
+import com.android.mail.browse.ConversationViewAdapter.ConversationAccountController;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.compose.ComposeActivity;
@@ -138,13 +139,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private boolean mPreMeasuring;
 
-    private Account mAccount;
+    private ConversationAccountController mAccountController;
 
     private Map<String, Address> mAddressCache;
 
     private boolean mShowImagePrompt;
-
-    private boolean mDefaultReplyAll;
 
     private int mDrawTranslateY;
 
@@ -308,15 +307,19 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     }
 
-    public void initialize(FormattedDateBuilder dateBuilder, Account account,
+    public void initialize(FormattedDateBuilder dateBuilder,
+            ConversationAccountController accountController,
             Map<String, Address> addressCache) {
         mDateBuilder = dateBuilder;
-        mAccount = account;
+        mAccountController = accountController;
         mAddressCache = addressCache;
     }
 
-    public void bind(MessageHeaderItem headerItem, boolean defaultReplyAll,
-            boolean measureOnly) {
+    private Account getAccount() {
+        return mAccountController.getAccount();
+    }
+
+    public void bind(MessageHeaderItem headerItem, boolean measureOnly) {
         if (mMessageHeaderItem != null && mMessageHeaderItem == headerItem) {
             return;
         }
@@ -330,7 +333,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mMessageHeaderItem = headerItem;
         mMessage = headerItem.message;
         mShowImagePrompt = mMessage.shouldShowImagePrompt();
-        mDefaultReplyAll = defaultReplyAll;
         setExpanded(headerItem.isExpanded());
 
         mTimestampMs = mMessage.dateReceivedMs;
@@ -363,7 +365,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         // the only possible fromAddress.
         String from = mMessage.from;
         if (TextUtils.isEmpty(from)) {
-            from = mAccount.name;
+            from = getAccount().name;
         }
         mSender = getAddress(from);
 
@@ -510,6 +512,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     }
 
+    // update internal Account- or Settings-related state
+    public void onAccountChanged() {
+        updateChildVisibility();
+    }
+
     /**
      * Update the visibility of the many child views based on expanded/collapsed
      * and draft/normal state.
@@ -586,8 +593,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             return;
         }
 
-        setChildVisibility(mDefaultReplyAll ? GONE : VISIBLE, mReplyButton);
-        setChildVisibility(mDefaultReplyAll ? VISIBLE : GONE, mReplyAllButton);
+        final boolean defaultReplyAll = getAccount().settings.replyBehavior
+                == UIProvider.DefaultReplyBehavior.REPLY_ALL;
+        setChildVisibility(defaultReplyAll ? GONE : VISIBLE, mReplyButton);
+        setChildVisibility(defaultReplyAll ? VISIBLE : GONE, mReplyAllButton);
     }
 
     private static void setChildMarginRight(View childView, int marginRight) {
@@ -780,13 +789,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         switch (id) {
             case R.id.reply:
-                ComposeActivity.reply(getContext(), mAccount, mMessage);
+                ComposeActivity.reply(getContext(), getAccount(), mMessage);
                 break;
             case R.id.reply_all:
-                ComposeActivity.replyAll(getContext(), mAccount, mMessage);
+                ComposeActivity.replyAll(getContext(), getAccount(), mMessage);
                 break;
             case R.id.forward:
-                ComposeActivity.forward(getContext(), mAccount, mMessage);
+                ComposeActivity.forward(getContext(), getAccount(), mMessage);
                 break;
             case R.id.star: {
                 final boolean newValue = !v.isSelected();
@@ -795,7 +804,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 break;
             }
             case R.id.edit_draft:
-                ComposeActivity.editDraft(getContext(), mAccount, mMessage);
+                ComposeActivity.editDraft(getContext(), getAccount(), mMessage);
                 break;
             case R.id.overflow: {
                 if (mPopup == null) {
@@ -804,8 +813,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                             mPopup.getMenu());
                     mPopup.setOnMenuItemClickListener(this);
                 }
-                mPopup.getMenu().findItem(R.id.reply).setVisible(mDefaultReplyAll);
-                mPopup.getMenu().findItem(R.id.reply_all).setVisible(!mDefaultReplyAll);
+                final boolean defaultReplyAll = getAccount().settings.replyBehavior
+                        == UIProvider.DefaultReplyBehavior.REPLY_ALL;
+                mPopup.getMenu().findItem(R.id.reply).setVisible(defaultReplyAll);
+                mPopup.getMenu().findItem(R.id.reply_all).setVisible(!defaultReplyAll);
 
                 mPopup.show();
                 break;
@@ -1031,7 +1042,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (!mCollapsedDetailsValid) {
             if (mMessageHeaderItem.recipientSummaryText == null) {
                 mMessageHeaderItem.recipientSummaryText = getRecipientSummaryText(getContext(),
-                        mAccount.name, mTo, mCc, mBcc, mAddressCache);
+                        getAccount().name, mTo, mCc, mBcc, mAddressCache);
             }
             ((TextView) findViewById(R.id.recipients_summary))
                     .setText(mMessageHeaderItem.recipientSummaryText);
