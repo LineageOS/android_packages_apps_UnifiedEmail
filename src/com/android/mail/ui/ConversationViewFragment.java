@@ -618,7 +618,9 @@ public final class ConversationViewFragment extends Fragment implements
 
             // save off "read" state from the cursor
             // later, the view may not match the cursor (e.g. conversation marked read on open)
-            mViewState.setReadState(msg, msg.read);
+            // however, if a previous state indicated this message was unread, trust that instead
+            // so "mark unread" marks all originally unread messages
+            mViewState.setReadState(msg, msg.read && !prevState.isUnread(msg));
 
             // We only want to consider this for inclusion in the super collapsed block if
             // 1) The we don't have previous state about this message  (The first time that the
@@ -756,10 +758,11 @@ public final class ConversationViewFragment extends Fragment implements
 
         mViewState.setInfoForConversation(mConversation);
 
-        // mark viewed if not previously marked viewed by this conversation view
-        // ('mark read', if necessary, will also happen there)
+        // mark viewed/read if not previously marked viewed by this conversation view,
+        // or if unread messages still exist in the message list cursor
         // we don't want to keep marking viewed on rotation or restore
-        if (!mConversation.isViewed()) {
+        // but we do want future re-renders to mark read (e.g. "New message from X" case)
+        if (!mConversation.isViewed() || (mCursor != null && !mCursor.isConversationRead())) {
             final ConversationUpdater listController = activity.getConversationUpdater();
             // The conversation cursor may not have finished loading by now (when launched via
             // notification), so watch for when it finishes and mark it read then.
