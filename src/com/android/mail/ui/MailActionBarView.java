@@ -272,9 +272,9 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      */
     public void setFolder(Folder folder) {
         setRefreshInProgress(false);
-        mSpinner.setCurrentFolder(folder);
-        mSpinner.notifyDataSetChanged();
         mFolder = folder;
+        mSpinner.setCurrentFolder(folder);
+        mActivity.invalidateOptionsMenu();
     }
 
     @Override

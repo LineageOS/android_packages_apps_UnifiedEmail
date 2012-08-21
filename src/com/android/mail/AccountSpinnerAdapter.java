@@ -173,11 +173,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         mRecentFolders = recentFolders;
         mShowAllFoldersItem = showAllFolders;
         // Owned by the AccountSpinnerAdapter since nobody else needed it. Move to controller if
-        // required.
-        mFolderWatcher = new FolderWatcher(activity);
+        // required. The folder watcher tells us directly when new data is available. We are only
+        // interested in unread counts at this point.
+        mFolderWatcher = new FolderWatcher(activity, this);
         mCurrentAccount = mAccountObserver.initialize(activity.getAccountController());
     }
-
 
     /**
      * Set the accounts for this spinner.
@@ -295,8 +295,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.account_spinner_first)).setText(getFolderLabel());
         ((TextView) view.findViewById(R.id.account_spinner_second))
                 .setText(getCurrentAccountName());
-        populateUnreadCountView((TextView) view.findViewById(R.id.unread),
-                getFolderUnreadCount());
+        final int currentViewUnreadCount = getFolderUnreadCount();
+        populateUnreadCountView((TextView) view.findViewById(R.id.unread), currentViewUnreadCount);
         return view;
     }
 
@@ -400,9 +400,14 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         target.setText(toDisplay);
     }
 
-    private void populateUnreadCountView(TextView unreadCountView, int unreadCount) {
+    /**
+     * Sets the unread count, which is a nonzero number or an empty string if there are no unread
+     * messages.
+     * @param unreadCountView
+     * @param unreadCount
+     */
+    private final void populateUnreadCountView(TextView unreadCountView, int unreadCount) {
         unreadCountView.setText(Utils.getUnreadCountString(mContext, unreadCount));
-        unreadCountView.setVisibility(unreadCount == 0 ? View.GONE : View.VISIBLE);
     }
 
     /**
