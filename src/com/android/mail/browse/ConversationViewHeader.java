@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationViewAdapter.ConversationAccountController;
 import com.android.mail.browse.FolderSpan.FolderSpanDimensions;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -67,16 +68,12 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
          * @return the remainder of text that didn't fit
          */
         String getSubjectRemainder(String subject);
-        /**
-         * Returns the {@link Settings} object associated with the current account.
-         * @return
-         */
-        Settings getSettings();
     }
 
     private TextView mSubjectView;
     private FolderSpanTextView mFoldersView;
     private ConversationViewHeaderCallbacks mCallbacks;
+    private ConversationAccountController mAccountController;
     private ConversationFolderDisplayer mFolderDisplayer;
 
     private boolean mSizeChanged;
@@ -123,8 +120,10 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         return child.getMeasuredWidth() + p.leftMargin + p.rightMargin;
     }
 
-    public void setCallbacks(ConversationViewHeaderCallbacks callbacks) {
+    public void setCallbacks(ConversationViewHeaderCallbacks callbacks,
+            ConversationAccountController accountController) {
         mCallbacks = callbacks;
+        mAccountController = accountController;
     }
 
     public void setSubject(final String subject, boolean notify) {
@@ -145,7 +144,7 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
 
     public void setFolders(Conversation conv, boolean notify) {
         SpannableStringBuilder sb = new SpannableStringBuilder();
-        final Settings settings = mCallbacks.getSettings();
+        final Settings settings = mAccountController.getAccount().settings;
         if (settings.priorityArrowsEnabled && conv.isImportant()) {
             sb.append('.');
             sb.setSpan(new PriorityIndicatorSpan(getContext(),

@@ -268,6 +268,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private void onDataSetChanged() {
         clearOverlays();
+        positionOverlays(0, mOffsetY);
     }
 
     private void forwardFakeMotionEvent(MotionEvent original, int newAction) {

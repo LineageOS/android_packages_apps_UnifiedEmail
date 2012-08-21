@@ -56,7 +56,7 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     private Context mContext;
     private final FormattedDateBuilder mDateBuilder;
-    private final Account mAccount;
+    private final ConversationAccountController mAccountController;
     private final LoaderManager mLoaderManager;
     private final MessageHeaderViewCallbacks mMessageCallbacks;
     private final ContactInfoSource mContactInfoSource;
@@ -64,7 +64,6 @@ public class ConversationViewAdapter extends BaseAdapter {
     private OnClickListener mSuperCollapsedListener;
     private Map<String, Address> mAddressCache;
     private final LayoutInflater mInflater;
-    private boolean mDefaultReplyAll;
 
     private final List<ConversationOverlayItem> mItems;
 
@@ -73,6 +72,10 @@ public class ConversationViewAdapter extends BaseAdapter {
     public static final int VIEW_TYPE_MESSAGE_FOOTER = 2;
     public static final int VIEW_TYPE_SUPER_COLLAPSED_BLOCK = 3;
     public static final int VIEW_TYPE_COUNT = 4;
+
+    public interface ConversationAccountController {
+        Account getAccount();
+    }
 
     public class ConversationHeaderItem extends ConversationOverlayItem {
         public final Conversation mConversation;
@@ -90,10 +93,10 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final ConversationViewHeader headerView = (ConversationViewHeader) inflater.inflate(
                     R.layout.conversation_view_header, parent, false);
-            headerView.setCallbacks(mConversationCallbacks);
+            headerView.setCallbacks(mConversationCallbacks, mAccountController);
 
             headerView.setSubject(mConversation.subject, false /* notify */);
-            if (mAccount.supportsCapability(
+            if (mAccountController.getAccount().supportsCapability(
                     UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
                 headerView.setFolders(mConversation, false /* notify */);
             }
@@ -141,7 +144,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final MessageHeaderView v = (MessageHeaderView) inflater.inflate(
                     R.layout.conversation_message_header, parent, false);
-            v.initialize(mDateBuilder, mAccount, mAddressCache);
+            v.initialize(mDateBuilder, mAccountController, mAddressCache);
             v.setCallbacks(mMessageCallbacks);
             v.setContactInfoSource(mContactInfoSource);
             return v;
@@ -150,7 +153,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public void bindView(View v, boolean measureOnly) {
             final MessageHeaderView header = (MessageHeaderView) v;
-            header.bind(this, mDefaultReplyAll, measureOnly);
+            header.bind(this, measureOnly);
         }
 
         @Override
@@ -274,7 +277,9 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
     }
 
-    public ConversationViewAdapter(Context context, Account account, LoaderManager loaderManager,
+    public ConversationViewAdapter(Context context,
+            ConversationAccountController accountController,
+            LoaderManager loaderManager,
             MessageHeaderViewCallbacks messageCallbacks,
             ContactInfoSource contactInfoSource,
             ConversationViewHeaderCallbacks convCallbacks,
@@ -282,7 +287,7 @@ public class ConversationViewAdapter extends BaseAdapter {
             FormattedDateBuilder dateBuilder) {
         mContext = context;
         mDateBuilder = dateBuilder;
-        mAccount = account;
+        mAccountController = accountController;
         mLoaderManager = loaderManager;
         mMessageCallbacks = messageCallbacks;
         mContactInfoSource = contactInfoSource;
@@ -292,10 +297,6 @@ public class ConversationViewAdapter extends BaseAdapter {
         mInflater = LayoutInflater.from(context);
 
         mItems = Lists.newArrayList();
-    }
-
-    public void setDefaultReplyAll(boolean defaultReplyAll) {
-        mDefaultReplyAll = defaultReplyAll;
     }
 
     @Override
