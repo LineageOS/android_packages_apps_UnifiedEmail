@@ -148,8 +148,7 @@
     <item quantity="one" msgid="3657821200245019288">"İleti dizisini taşı"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> ileti dizisini taşı"</item>
   </plurals>
-    <!-- no translation found for content_description (175899621885107464) -->
-    <skip />
+    <string name="content_description" msgid="175899621885107464">"<xliff:g id="SENDER">%1$s</xliff:g>, <xliff:g id="SUBJECT">%2$s</xliff:g> konulu iletiyi <xliff:g id="DATE">%3$s</xliff:g> tarihinde gönderdi"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -300,14 +299,7 @@
     <string name="cancel" msgid="8762981157252199115">"İptal"</string>
     <string name="close" msgid="419945428844076406">"Kapat"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Bu hesap için hiçbir klasör ayarlanmamış."</string>
-  <string-array name="sync_status">
-    <item msgid="2446076619901049026">"Başarılı"</item>
-    <item msgid="7109065688039971961">"Bağlantı yok."</item>
-    <item msgid="8437496123716232060">"Oturum açılamadı."</item>
-    <item msgid="1651266301325684887">"Güvenlik hatası."</item>
-    <item msgid="1461520171154288533">"Senkronize edilemedi."</item>
-    <item msgid="8749857841162829469">"Hata"</item>
-  </string-array>
+    <!-- no translation found for sync_status:5 (4779810016424303449) -->
     <string name="tap_to_configure" msgid="1181356242354390930">"Kurulum için dokunun"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"İleti dizilerini görüntülemek için bu klasörü senk edin."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Klasörü Senkronize Et"</string>

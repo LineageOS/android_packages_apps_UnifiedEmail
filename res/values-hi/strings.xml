@@ -26,10 +26,8 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"फ़ाइल अनुलग्‍न करें"</string>
-    <!-- no translation found for add_photo_attachment (8548176514426323119) -->
-    <skip />
-    <!-- no translation found for add_video_attachment (4284457799113546464) -->
-    <skip />
+    <string name="add_photo_attachment" msgid="8548176514426323119">"चित्र अनुलग्न करें"</string>
+    <string name="add_video_attachment" msgid="4284457799113546464">"वीडियो अनुलग्न करें"</string>
     <string name="save_draft" msgid="5555744208032445632">"ड्राफ़्ट सहेजें"</string>
     <string name="discard" msgid="1714960202994370243">"छोड़ें"</string>
     <string name="compose" msgid="1473559896062432878">"लिखें"</string>
@@ -150,8 +148,7 @@
     <item quantity="one" msgid="3657821200245019288">"बातचीत ले जाएं"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> बातचीत ले जाएं"</item>
   </plurals>
-    <!-- no translation found for content_description (175899621885107464) -->
-    <skip />
+    <string name="content_description" msgid="175899621885107464">"<xliff:g id="SENDER">%1$s</xliff:g> ने <xliff:g id="DATE">%3$s</xliff:g> को <xliff:g id="SUBJECT">%2$s</xliff:g> भेजा"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -205,8 +202,10 @@
     <item quantity="one" msgid="7361303622131552596">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को स्पैम नहीं के रूप में रिपोर्ट किया गया."</item>
     <item quantity="other" msgid="2250720080221922267">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को स्पैम नहीं के रूप में रिपोर्ट किया गया."</item>
   </plurals>
-    <!-- no translation found for conversation_not_important:one (788387259924027833) -->
-    <!-- no translation found for conversation_not_important:other (6662213740575340397) -->
+  <plurals name="conversation_not_important">
+    <item quantity="one" msgid="788387259924027833">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को महत्‍वपूर्ण नहीं के रूप में चि‍ह्नि‍त कि‍या गया."</item>
+    <item quantity="other" msgid="6662213740575340397">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को महत्‍वपूर्ण नहीं के रूप में चि‍ह्नि‍त कि‍या गया."</item>
+  </plurals>
   <plurals name="conversation_phished">
     <item quantity="one" msgid="5386916574432049235">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को फ़िशिंग के रूप में रिपोर्ट किया गया."</item>
     <item quantity="other" msgid="3678624994662639442">"&lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; को फ़िशिंग के रूप में रिपोर्ट किया गया."</item>
@@ -280,12 +279,11 @@
     <string name="bcc_heading" msgid="5528824453033598299">"Bcc:"</string>
     <string name="show_images" msgid="1875700481186331432">"चित्र दिखाएं"</string>
     <string name="always_show_images" msgid="5966408990164581801">"इस प्रेषक के चित्र हमेशा दिखाएं"</string>
-    <string name="always_show_images_toast" msgid="6218061921546973716">"इस प्रेषक के चित्रों को स्वचालित रूप से दिखाया जाएगा."</string>
+    <string name="always_show_images_toast" msgid="6218061921546973716">"इस प्रेषक के चित्रों को अपने आप दिखाया जाएगा."</string>
     <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
     <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; <xliff:g id="VIA_DOMAIN">%3$s</xliff:g> के माध्यम से"</string>
     <string name="message_saved" msgid="7073947895562277576">"संदेश ड्राफ़्ट के रूप में सहेजा गया."</string>
-    <!-- no translation found for sending_message (2822171587017313151) -->
-    <skip />
+    <string name="sending_message" msgid="2822171587017313151">"आउटबॉक्स पर संदेश भेज रहा है…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"<xliff:g id="WRONGEMAIL">%s</xliff:g> पता अमान्‍य है."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ उद्धृत पाठ दिखाएं"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ उद्धृत पाठ छिपाएं"</string>
@@ -301,14 +299,7 @@
     <string name="cancel" msgid="8762981157252199115">"रद्द करें"</string>
     <string name="close" msgid="419945428844076406">"बंद करें"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"इस खाते के लिए कोई फ़ोल्‍डर सेट नहीं किया गया है."</string>
-  <string-array name="sync_status">
-    <item msgid="2446076619901049026">"सफल"</item>
-    <item msgid="7109065688039971961">"कोई कनेक्शन नहीं."</item>
-    <item msgid="8437496123716232060">"साइन इन नहीं किया जा सका."</item>
-    <item msgid="1651266301325684887">"सुरक्षा त्रुटि."</item>
-    <item msgid="1461520171154288533">"समन्‍वयित नहीं किया जा सका."</item>
-    <item msgid="8749857841162829469">"त्रुटि"</item>
-  </string-array>
+    <!-- no translation found for sync_status:5 (4779810016424303449) -->
     <string name="tap_to_configure" msgid="1181356242354390930">"सेट करने के लिए स्पर्श करें"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"बातचीत देखने हेतु, फ़ोल्डर समन्वयित करें."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"फ़ोल्डर समन्वयित करें"</string>
@@ -336,7 +327,7 @@
     <string name="wait_for_sync_title" msgid="2767841242539238015">"समन्‍वयन की प्रतीक्षा कर रहा है"</string>
     <string name="wait_for_sync_body" msgid="7718316938173643688">"आपका ईमेल शीघ्र ही दिखाई देगा."</string>
     <string name="not_synced_title" msgid="794279749170198599">"खाता समन्वयित नहीं है"</string>
-    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"यह खाता स्वचालित रूप से समन्वयित करने के लिए सेट नहीं है. "\n"एक बार मेल समन्‍वयित करने के लिए, "<b>"अभी समन्वयित करें"</b>" स्‍पर्श करें, या इस खाते को मेल स्वचालित रूप से समन्‍वयित करने के लिए सेट करने हेतु "<b>"समन्वयन सेटिंग बदलें"</b>" स्‍पर्श करें."</string>
+    <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"यह खाता अपने आप समन्वयित करने के लिए सेट नहीं है. "\n"एक बार मेल समन्‍वयित करने के लिए, "<b>"अभी समन्वयित करें"</b>" स्‍पर्श करें, या इस खाते को मेल अपने आप समन्‍वयित करने के लिए सेट करने हेतु "<b>"समन्वयन सेटिंग बदलें"</b>" स्‍पर्श करें."</string>
     <string name="manual_sync" msgid="6743983544685622800">"अभी समन्वयित करें"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"समन्वयन सेटिंग बदलें"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"चित्र लोड नहीं की जा सकी"</string>
