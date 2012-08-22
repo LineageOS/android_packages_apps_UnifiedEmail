@@ -112,6 +112,10 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void resetActionBarIcon() {
         final int mode = mViewMode.getMode();
+        // If the viewmode is not set, preserve existing icon.
+        if (mode == ViewMode.UNKNOWN) {
+            return;
+        }
         if (!inInbox(mAccount, mConvListContext)
                 || mode == ViewMode.SEARCH_RESULTS_LIST
                 || mode == ViewMode.SEARCH_RESULTS_CONVERSATION
@@ -439,10 +443,8 @@ public final class OnePaneController extends AbstractActivityController {
         }
         if (isTransactionIdValid(mLastConversationListTransactionId)) {
             mActivity.getFragmentManager().popBackStack(mLastConversationListTransactionId, 0);
-            resetActionBarIcon();
         } else if (isTransactionIdValid(mLastInboxConversationListTransactionId)) {
             mActivity.getFragmentManager().popBackStack(mLastInboxConversationListTransactionId, 0);
-            resetActionBarIcon();
             onFolderChanged(mInbox);
         } else {
             // TODO: revisit if this block is necessary
