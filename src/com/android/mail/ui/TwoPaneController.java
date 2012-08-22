@@ -229,6 +229,10 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void resetActionBarIcon() {
+        // If the viewmode is not set, preserve existing icon.
+        if (mViewMode.getMode() == ViewMode.UNKNOWN) {
+            return;
+        }
         if (mViewMode.isListMode()) {
             mActionBarView.removeBackButton();
         } else {
