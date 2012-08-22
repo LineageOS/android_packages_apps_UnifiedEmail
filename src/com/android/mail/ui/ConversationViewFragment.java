@@ -601,7 +601,12 @@ public final class ConversationViewFragment extends Fragment implements
         final int convHeaderPos = mAdapter.addConversationHeader(mConversation);
         final int convHeaderPx = measureOverlayHeight(convHeaderPos);
 
-        mTemplates.startConversation(mWebView.screenPxToWebPx(convHeaderPx));
+        final int sideMarginPx = getResources().getDimensionPixelOffset(
+                R.dimen.conversation_view_margin_side) + getResources().getDimensionPixelOffset(
+                R.dimen.conversation_message_content_margin_side);
+
+        mTemplates.startConversation(mWebView.screenPxToWebPx(sideMarginPx),
+                mWebView.screenPxToWebPx(convHeaderPx));
 
         int collapsedStart = -1;
         ConversationMessage prevCollapsedMsg = null;
@@ -691,7 +696,7 @@ public final class ConversationViewFragment extends Fragment implements
         final int headerPx = measureOverlayHeight(headerPos);
         final int footerPx = measureOverlayHeight(footerPos);
 
-        mTemplates.appendMessageHtml(msg, expanded, safeForImages, 1.0f,
+        mTemplates.appendMessageHtml(msg, expanded, safeForImages,
                 mWebView.screenPxToWebPx(headerPx), mWebView.screenPxToWebPx(footerPx));
     }
 
@@ -711,7 +716,7 @@ public final class ConversationViewFragment extends Fragment implements
             final int headerPx = measureOverlayHeight(header);
             final int footerPx = measureOverlayHeight(footer);
 
-            mTemplates.appendMessageHtml(msg, false /* expanded */, msg.alwaysShowImages, 1.0f,
+            mTemplates.appendMessageHtml(msg, false /* expanded */, msg.alwaysShowImages,
                     mWebView.screenPxToWebPx(headerPx), mWebView.screenPxToWebPx(footerPx));
             replacements.add(header);
             replacements.add(footer);

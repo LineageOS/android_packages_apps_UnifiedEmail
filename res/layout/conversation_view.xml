@@ -34,7 +34,9 @@
     <FrameLayout
         android:id="@+id/conversation_topmost_overlay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/conversation_view_margin_side"
+        android:layout_marginRight="@dimen/conversation_view_margin_side">
 
         <include layout="@layout/conversation_message_header"
             android:id="@+id/snap_header"

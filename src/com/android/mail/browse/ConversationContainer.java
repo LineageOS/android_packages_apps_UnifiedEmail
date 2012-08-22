@@ -26,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.webkit.WebView;
 import android.widget.Adapter;
 import android.widget.ListView;
@@ -168,6 +169,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
     private final InputSmoother mVelocityTracker;
 
+    final private int mSideMargin;
+
     private final DataSetObserver mAdapterObserver = new AdapterObserver();
 
     /**
@@ -219,6 +222,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         // Intercepting ACTION_POINTER_DOWN events allows pinch-zoom to work when the first pointer
         // goes down on an overlay view.
         setMotionEventSplittingEnabled(false);
+
+        mSideMargin = getResources().getDimensionPixelOffset(R.dimen.conversation_view_margin_side);
     }
 
     @Override
@@ -671,8 +676,15 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         final int itemType = mOverlayAdapter.getItemViewType(adapterIndex);
         final View convertView = mScrapViews.poll(itemType);
 
-        View view = mOverlayAdapter.getView(adapterIndex, convertView, this);
+        final View view = mOverlayAdapter.getView(adapterIndex, convertView, this);
         mOverlayViews.put(adapterIndex, new OverlayView(view, itemType));
+
+
+        // apply a default margin to all overlay items
+        MarginLayoutParams lp = (MarginLayoutParams) view.getLayoutParams();
+        if (lp.leftMargin != mSideMargin || lp.rightMargin != mSideMargin) {
+            lp.leftMargin = lp.rightMargin = mSideMargin;
+        }
 
         final int index = BOTTOM_LAYER_VIEW_IDS.length;
 
