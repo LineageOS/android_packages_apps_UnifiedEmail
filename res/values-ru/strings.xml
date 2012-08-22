@@ -299,7 +299,14 @@
     <string name="cancel" msgid="8762981157252199115">"Отмена"</string>
     <string name="close" msgid="419945428844076406">"Закрыть"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"В этом аккаунте нет папок."</string>
-    <!-- no translation found for sync_status:5 (4779810016424303449) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Без ошибок"</item>
+    <item msgid="7109065688039971961">"Нет соединения"</item>
+    <item msgid="8437496123716232060">"Не удалось войти"</item>
+    <item msgid="1651266301325684887">"Ошибка системы безопасности"</item>
+    <item msgid="1461520171154288533">"Ошибка синхронизации"</item>
+    <item msgid="4779810016424303449">"Внутренняя ошибка"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Нажмите для настройки"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Для просмотра цепочек писем синхронизируйте эту папку."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Синхронизировать папку"</string>
