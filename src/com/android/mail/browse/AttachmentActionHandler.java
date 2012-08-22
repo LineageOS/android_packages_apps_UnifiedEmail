@@ -125,8 +125,9 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
     private void showDownloadingDialog() {
         mViewProgressDialog = new ProgressDialog(mContext);
         mViewProgressDialog.setTitle(R.string.fetching_attachment);
-        mViewProgressDialog.setMessage(mContext.getResources().getString(R.string.please_wait));
+        mViewProgressDialog.setMessage(mAttachment.name);
         mViewProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mViewProgressDialog.setIndeterminate(true);
         mViewProgressDialog.setMax(mAttachment.size);
         mViewProgressDialog.setOnDismissListener(this);
         mViewProgressDialog.setOnCancelListener(this);
@@ -156,7 +157,11 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
 
         if (isProgressDialogVisible()) {
             mViewProgressDialog.setProgress(mAttachment.downloadedSize);
-            mViewProgressDialog.setIndeterminate(!showProgress);
+
+            // We don't want the progress bar to switch back to indeterminate mode after
+            // have been in determinate progress mode.
+            final boolean indeterminate = !showProgress && mViewProgressDialog.isIndeterminate();
+            mViewProgressDialog.setIndeterminate(indeterminate);
 
             if (!mAttachment.isDownloading()) {
                 mViewProgressDialog.dismiss();
