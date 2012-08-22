@@ -66,6 +66,12 @@
 
         </FrameLayout>
     </com.android.mail.ui.TwoPaneLayout>
+    <RelativeLayout
+        android:id="@+id/wait"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"/>
     <com.android.mail.ui.ActionableToastBar
         android:id="@+id/toast_bar"
         style="@style/ToastBarStyle" />
