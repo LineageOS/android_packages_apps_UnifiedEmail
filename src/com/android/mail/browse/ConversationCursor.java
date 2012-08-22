@@ -795,7 +795,7 @@ public final class ConversationCursor implements Cursor {
                 }
             }
             return true;
-        } else if ((mPosition - pos) > pos) {
+        } else if ((pos >= 0) && (mPosition - pos) > pos) {
             // Optimization if it's easier to move forward to position instead of backward
             // STOPSHIP (Remove logging)
             LogUtils.i(TAG, "*** Move from %d to %d, starting from first", mPosition, pos);
