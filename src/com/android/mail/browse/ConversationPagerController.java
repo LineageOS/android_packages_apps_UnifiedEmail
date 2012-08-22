@@ -186,6 +186,8 @@ public class ConversationPagerController implements OnPageChangeListener {
      * {@link #hide()}.
      */
     public void stopListening() {
-        mPagerAdapter.setActivityController(null);
+        if (mPagerAdapter != null) {
+            mPagerAdapter.setActivityController(null);
+        }
     }
 }
