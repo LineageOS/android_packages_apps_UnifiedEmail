@@ -198,8 +198,6 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
             ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
             mAnimatedHeight = start;
             mWidth = getMeasuredWidth();
-            // Use a color instead of a 9 patch to avoid weird artifacts when animating.
-            setBackgroundColor(sSwipedBgColor);
             height.setInterpolator(new DecelerateInterpolator(2.0f));
             height.addListener(listener);
             height.setDuration(sShrinkAnimationDuration);

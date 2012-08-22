@@ -19,4 +19,4 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:minHeight="@dimen/conversation_item_height"
-    android:background="@drawable/swiped_bg" />
+    android:background="@color/swiped_bg_color" />
