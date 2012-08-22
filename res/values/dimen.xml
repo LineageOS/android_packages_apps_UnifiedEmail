@@ -99,4 +99,6 @@
     <dimen name="toast_bar_bottom_margin_in_conversation">24dip</dimen>
     <dimen name="undo_animation_offset">360dp</dimen>
     <dimen name="wait_padding">16dp</dimen>
+    <dimen name="senders_textview_top_padding">-4dp</dimen>
+    <dimen name="senders_textview_height">30dp</dimen>
 </resources>
