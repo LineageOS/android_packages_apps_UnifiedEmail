@@ -231,6 +231,11 @@ public final class ConversationCursor implements Cursor {
         @Override
         protected void onPostExecute(Void param) {
             synchronized(mCacheMapLock) {
+                // If cursor got closed (e.g. reset loader) in the meantime, cancel the refresh
+                if (isClosed()) {
+                    onCancelled();
+                    return;
+                }
                 mRequeryCursor = mCursor;
                 // Make sure window is full
                 mRequeryCursor.getCount();
