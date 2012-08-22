@@ -405,6 +405,11 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                 setStandardMode();
                 mFolderView.setVisibility(View.VISIBLE);
                 break;
+            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
+                // We want the user to be able to switch accounts while waiting for an account
+                // to sync.
+                showNavList();
+                break;
         }
         return false;
     }
