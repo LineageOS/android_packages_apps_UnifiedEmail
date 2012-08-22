@@ -20,7 +20,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <View android:id="@+id/account_spinner_color"
+    <!-- In the IDs below, ABD = ActionBarDropdown -->
+    <View android:id="@+id/abd_folder_color"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_height="@dimen/color_block_height"
@@ -40,22 +41,22 @@
         <!-- Something is strange here. Gmail1 allows for two-line label names while Gmail2 does
         not. TODO(viki): Fix. -->
         <TextView
-            android:id="@+id/account_spinner_first"
+            android:id="@+id/abd_folder_first"
             android:singleLine="true"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:ellipsize="end"
             style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title" />
         <TextView
-            android:id="@+id/account_spinner_second"
+            android:id="@+id/abd_folder_second"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:ellipsize="end"
-            android:layout_below="@id/account_spinner_first"
+            android:layout_below="@id/abd_folder_first"
             style="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle" />
     </RelativeLayout>
     <TextView
-        android:id="@+id/account_spinner_unread_count"
+        android:id="@+id/abd_folder_unread"
         style="@style/UnreadCount"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"/>
