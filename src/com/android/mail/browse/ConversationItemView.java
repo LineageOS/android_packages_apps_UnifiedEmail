@@ -47,10 +47,14 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemViewModel.SenderFragment;
@@ -162,6 +166,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private ControllableActivity mActivity;
     private CharacterStyle mActivatedTextSpan;
     private int mBackgroundOverride = -1;
+    private static int sSendersTextViewTopPadding;
+    private static int sSendersTextViewHeight;
     private static ForegroundColorSpan sActivatedTextSpan;
     private static Bitmap sDateBackgroundAttachment;
     private static Bitmap sDateBackgroundNoAttachment;
@@ -368,6 +374,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
             sEllipsis = res.getString(R.string.ellipsis);
             sAnimatingBackgroundColor = res.getColor(R.color.animating_item_background_color);
+            sSendersTextViewTopPadding = res.getDimensionPixelSize
+                    (R.dimen.senders_textview_top_padding);
+            sSendersTextViewHeight = res.getDimensionPixelSize
+                    (R.dimen.senders_textview_height);
         }
     }
 
@@ -585,11 +595,19 @@ public class ConversationItemView extends View implements SwipeableItemView {
         } else {
             mHeader.styledSendersString.removeSpan(mActivatedTextSpan);
         }
+        mHeader.sendersTextView = getSendersTextView();
+    }
+
+    private TextView getSendersTextView() {
+        TextView sendersTextView = new TextView(mContext);
+        sendersTextView.setMaxLines(1);
+        sendersTextView.setEllipsize(TextUtils.TruncateAt.END);
+        sendersTextView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
         int length = (int) sPaint.measureText(mHeader.styledSendersString.toString());
-        mHeader.sendersDisplayLayout = new StaticLayout(mHeader.styledSendersString, 0,
-                mHeader.styledSendersString.length(), sPaint,
-                length,
-                Alignment.ALIGN_NORMAL, 1, 0, true, TextUtils.TruncateAt.END, length);
+        sendersTextView.setText(mHeader.styledSendersString, TextView.BufferType.SPANNABLE);
+        sendersTextView.setWidth(length);
+        return sendersTextView;
     }
 
     private CharacterStyle getActivatedTextSpan() {
@@ -962,20 +980,23 @@ public class ConversationItemView extends View implements SwipeableItemView {
         // Senders.
         boolean isUnread = mHeader.unread;
         // Old style senders; apply text colors/ sizes/ styling.
-        if (mHeader.senderFragments.size() > 0) {
+        canvas.save();
+        if (mHeader.sendersDisplayLayout != null) {
             sPaint.setTextSize(mCoordinates.sendersFontSize);
             sPaint.setTypeface(SendersView.getTypeface(isUnread));
-            int sendersColor = getFontColor(isUnread ? sSendersTextColorUnread
-                    : sSendersTextColorRead);
-            sPaint.setColor(sendersColor);
+            sPaint.setColor(getFontColor(isUnread ? sSendersTextColorUnread
+                    : sSendersTextColorRead));
+            canvas.translate(mCoordinates.sendersX,
+                    mCoordinates.sendersY + mHeader.sendersDisplayLayout.getTopPadding());
+            mHeader.sendersDisplayLayout.draw(canvas);
         } else {
-            sPaint.setTextSize(mCoordinates.sendersFontSize);
+            canvas.translate(mCoordinates.sendersX,
+                    mCoordinates.sendersY + sSendersTextViewTopPadding);
+            mHeader.sendersTextView.layout(0, 0, mSendersWidth, sSendersTextViewHeight);
+            mHeader.sendersTextView.draw(canvas);
         }
-        canvas.save();
-        canvas.translate(mCoordinates.sendersX,
-                mCoordinates.sendersY + mHeader.sendersDisplayLayout.getTopPadding());
-        mHeader.sendersDisplayLayout.draw(canvas);
         canvas.restore();
+
 
         // Subject.
         sPaint.setTextSize(mCoordinates.subjectFontSize);
