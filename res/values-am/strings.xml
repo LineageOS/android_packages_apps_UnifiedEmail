@@ -298,8 +298,15 @@
     <string name="done" msgid="3079981801778027540">"ተከናውኗል"</string>
     <string name="cancel" msgid="8762981157252199115">"ሰርዝ"</string>
     <string name="close" msgid="419945428844076406">"ዝጋ"</string>
-    <string name="folders_activity_instructions" msgid="5237801615196958918">"ለዚህ መለያ ምንም ስያሜዎች አልተዘጋጁም።"</string>
-    <!-- no translation found for sync_status:5 (4779810016424303449) -->
+    <string name="folders_activity_instructions" msgid="5237801615196958918">"ለእዚህ መለያ ምንም ስያሜዎች አልተዘጋጁም።"</string>
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"ተሳክቷል"</item>
+    <item msgid="7109065688039971961">"ግንኙነት የለም።"</item>
+    <item msgid="8437496123716232060">"በመለያ መግባት አልተቻለም።"</item>
+    <item msgid="1651266301325684887">"የደህንነት ስህተት።"</item>
+    <item msgid="1461520171154288533">"ማመሳሰል አልተቻለም።"</item>
+    <item msgid="4779810016424303449">"ውስጣዊ ስህተት"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"ለማዋቀር ንካ"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"ውይይቶችን ለማየት ይህንን እቃፊ አመሳስል።"</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"አቃፊ አመሳስል"</string>

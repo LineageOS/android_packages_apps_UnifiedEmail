@@ -299,7 +299,14 @@
     <string name="cancel" msgid="8762981157252199115">"Адмена"</string>
     <string name="close" msgid="419945428844076406">"Закрыць"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Для гэтага ўліковага запісу не былі ўсталяваны цэтлікі."</string>
-    <!-- no translation found for sync_status:5 (4779810016424303449) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Паспяхова"</item>
+    <item msgid="7109065688039971961">"Няма злучэння."</item>
+    <item msgid="8437496123716232060">"Не атрымалася ўвайсці."</item>
+    <item msgid="1651266301325684887">"Памылка бяспекi."</item>
+    <item msgid="1461520171154288533">"Не атрымалася сінхранізаваць."</item>
+    <item msgid="4779810016424303449">"Унутраная памылка"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Націсніце, каб наладзіць"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Сінхр. гэту тэчку, каб прагл. разм."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Сінхранізацыя тэчкi"</string>
