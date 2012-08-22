@@ -308,4 +308,14 @@ public interface ActivityController extends LayoutListener,
      * Handles the animation end of the animated adapter.
      */
     void onAnimationEnd(AnimatedAdapter animatedAdapter);
+
+    /**
+     * Called when the user has started a drag/ drop gesture.
+     */
+    void startDragMode();
+
+    /**
+     * Called when the user has ended drag/drop.
+     */
+    void stopDragMode();
 }

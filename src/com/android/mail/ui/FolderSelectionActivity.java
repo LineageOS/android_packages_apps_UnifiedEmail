@@ -341,4 +341,14 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public void onFooterViewLoadMoreClick(Folder folder) {
         // Unsupported
     }
+
+    @Override
+    public void startDragMode() {
+        // Unsupported
+    }
+
+    @Override
+    public void stopDragMode() {
+        // Unsupported
+    }
 }
