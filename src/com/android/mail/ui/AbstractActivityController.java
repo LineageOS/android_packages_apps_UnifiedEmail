@@ -252,6 +252,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private AsyncTask<String, Void, Void> mEnableShareIntents;
     private Folder mFolderListFolder;
     private boolean mIsDragHappening;
+    private int mShowUndoBarDelay;
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
@@ -267,6 +268,8 @@ public abstract class AbstractActivityController implements ActivityController {
 
         mFolderItemUpdateDelayMs =
                 mContext.getResources().getInteger(R.integer.folder_item_refresh_delay_ms);
+        mShowUndoBarDelay =
+                mContext.getResources().getInteger(R.integer.show_undo_bar_delay_ms);
     }
 
     @Override
@@ -1868,8 +1871,13 @@ public abstract class AbstractActivityController implements ActivityController {
                     break;
             }
             if (undoEnabled) {
-                onUndoAvailable(new ToastBarOperation(mTarget.size(), mAction,
-                        ToastBarOperation.UNDO));
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onUndoAvailable(new ToastBarOperation(mTarget.size(), mAction,
+                                ToastBarOperation.UNDO));
+                    }
+                }, mShowUndoBarDelay);
             }
             refreshConversationList();
             if (mIsSelectedSet) {
