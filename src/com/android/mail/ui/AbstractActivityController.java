@@ -423,6 +423,9 @@ public abstract class AbstractActivityController implements ActivityController {
                     }
                 });
             }
+            if (accountChanged) {
+                commitDestructiveActions(false);
+            }
             switchAccount(account, accountChanged);
         }
     }
@@ -473,6 +476,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onFolderChanged(Folder folder) {
+        if (!Objects.equal(mFolder, folder)) {
+            commitDestructiveActions(false);
+        }
         changeFolder(folder, null);
     }
 
@@ -701,7 +707,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final Collection<Conversation> target = Conversation.listOf(mCurrentConversation);
         final Settings settings = (mAccount == null) ? null : mAccount.settings;
         // The user is choosing a new action; commit whatever they had been doing before.
-        commitDestructiveActions();
+        commitDestructiveActions(true);
         switch (id) {
             case R.id.archive: {
                 final boolean showDialog = (settings != null && settings.confirmArchive);
@@ -1111,7 +1117,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // this themselves?
 
         // Commit any destructive undoable actions the user may have performed.
-        commitDestructiveActions();
+        commitDestructiveActions(true);
 
         // We don't want to invalidate the options menu when switching to
         // conversation
@@ -1125,10 +1131,10 @@ public abstract class AbstractActivityController implements ActivityController {
         return mDestroyed;
     }
 
-    private void commitDestructiveActions() {
-        ConversationListFragment fragment = this.getConversationListFragment();
+    private void commitDestructiveActions(boolean animate) {
+        ConversationListFragment fragment = getConversationListFragment();
         if (fragment != null) {
-            fragment.commitDestructiveActions();
+            fragment.commitDestructiveActions(animate);
         }
     }
 
@@ -2082,7 +2088,7 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     protected void disableCabMode() {
         // Commit any previous destructive actions when entering/ exiting CAB mode.
-        commitDestructiveActions();
+        commitDestructiveActions(true);
         if (mCabActionMenu != null) {
             mCabActionMenu.deactivate();
         }
@@ -2093,7 +2099,7 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     protected void enableCabMode() {
         // Commit any previous destructive actions when entering/ exiting CAB mode.
-        commitDestructiveActions();
+        commitDestructiveActions(true);
         if (mCabActionMenu != null) {
             mCabActionMenu.activate();
         }
