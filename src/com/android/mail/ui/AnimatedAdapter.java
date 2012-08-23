@@ -54,10 +54,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private final static int TYPE_VIEW_UNDOING = 2;
     private final static int TYPE_VIEW_FOOTER = 3;
     private final static int TYPE_VIEW_LEAVEBEHIND = 4;
-    private final HashSet<Integer> mDeletingItems = new HashSet<Integer>();
-    private final HashSet<Integer> mUndoingItems = new HashSet<Integer>();
-    private final HashSet<Integer> mSwipeDeletingItems = new HashSet<Integer>();
-    private final HashSet<Integer> mSwipeUndoingItems = new HashSet<Integer>();
+    private final HashSet<Long> mDeletingItems = new HashSet<Long>();
+    private final ArrayList<Long> mLastDeletingItems = new ArrayList<Long>();
+    private final HashSet<Long> mUndoingItems = new HashSet<Long>();
+    private final HashSet<Long> mSwipeDeletingItems = new HashSet<Long>();
+    private final HashSet<Long> mSwipeUndoingItems = new HashSet<Long>();
     private final HashMap<Long, SwipeableConversationItemView> mAnimatingViews =
             new HashMap<Long, SwipeableConversationItemView>();
     private final HashMap<Long, LeaveBehindItem> mFadeLeaveBehindItems =
@@ -86,7 +87,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         void onAnimationEnd(AnimatedAdapter adapter);
     }
 
-    private final ArrayList<Integer> mLastDeletingItems = new ArrayList<Integer>();
     private View mFooter;
     private boolean mShowFooter;
     private Folder mFolder;
@@ -191,16 +191,17 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public int getItemViewType(int position) {
         // Try to recycle views.
-        if (isPositionDeleting(position)) {
-            return TYPE_VIEW_DELETING;
-        }
-        if (isPositionUndoingType(position)) {
-            return TYPE_VIEW_UNDOING;
-        }
         if (mShowFooter && position == super.getCount()) {
             return TYPE_VIEW_FOOTER;
         }
-        if (isPositionTypeLeaveBehind(position)) {
+        Conversation conv = new Conversation((ConversationCursor) getItem(position));
+        if (isPositionDeleting(conv.id)) {
+            return TYPE_VIEW_DELETING;
+        }
+        if (isPositionUndoingType(conv.id)) {
+            return TYPE_VIEW_UNDOING;
+        }
+        if (isPositionTypeLeaveBehind(conv)) {
             return TYPE_VIEW_LEAVEBEHIND;
         }
         return TYPE_VIEW_CONVERSATION;
@@ -238,13 +239,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     private void delete(Collection<Conversation> conversations, DestructiveAction action,
-            HashSet<Integer> list) {
-        // Animate out the positions.
-        // Call when all the animations are complete.
-        final ArrayList<Integer> deletedRows = new ArrayList<Integer>();
-        for (Conversation c : conversations) {
-            deletedRows.add(c.position);
-        }
+            HashSet<Long> list) {
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
 
@@ -252,10 +247,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         final int endPosition = mListView.getLastVisiblePosition();
 
         // Only animate visible items
-        for (int deletedRow: deletedRows) {
-            if (deletedRow >= startPosition && deletedRow <= endPosition) {
-                mLastDeletingItems.add(deletedRow);
-                list.add(deletedRow);
+        for (Conversation c: conversations) {
+            if (c.position >= startPosition && c.position <= endPosition) {
+                mLastDeletingItems.add(c.id);
+                list.add(c.id);
             }
         }
 
@@ -277,17 +272,17 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (mShowFooter && position == super.getCount()) {
             return mFooter;
         }
-        if (isPositionUndoing(position)) {
-            return getUndoingView(position, parent, false /* don't show swipe background */);
-        } if (isPositionUndoingSwipe(position)) {
-            return getUndoingView(position, parent, true /* show swipe background */);
-        } else if (isPositionDeleting(position)) {
-            return getDeletingView(position, parent, false);
-        } else if (isPositionSwipeDeleting(position)) {
-            return getDeletingView(position, parent, true);
+        Conversation conv = new Conversation((ConversationCursor) getItem(position));
+        if (isPositionUndoing(conv.id)) {
+            return getUndoingView(position, conv, parent, false /* don't show swipe background */);
+        } if (isPositionUndoingSwipe(conv.id)) {
+            return getUndoingView(position, conv, parent, true /* show swipe background */);
+        } else if (isPositionDeleting(conv.id)) {
+            return getDeletingView(position, conv, parent, false);
+        } else if (isPositionSwipeDeleting(conv.id)) {
+            return getDeletingView(position, conv, parent, true);
         }
         if (hasFadeLeaveBehinds()) {
-            Conversation conv = new Conversation((ConversationCursor) getItem(position));
             if(isPositionFadeLeaveBehind(conv)) {
                 LeaveBehindItem fade  = getFadeLeaveBehindItem(position, conv);
                 fade.startAnimation(mActivity.getViewMode(), this);
@@ -295,7 +290,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             }
         }
         if (hasLeaveBehinds()) {
-            Conversation conv = new Conversation((ConversationCursor) getItem(position));
             if(isPositionLeaveBehind(conv)) {
                 LeaveBehindItem fadeIn = getLeaveBehindItem(conv);
                 fadeIn.startFadeInAnimation();
@@ -326,7 +320,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 R.layout.swipe_leavebehind, null);
         leaveBehind.bindOperations(deletedRow, mAccount, this, undoOp, target, mFolder);
         mLeaveBehindItem = leaveBehind;
-        mLastDeletingItems.add(deletedRow);
+        mLastDeletingItems.add(target.id);
         return leaveBehind;
     }
 
@@ -392,8 +386,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return super.getItemId(position);
     }
 
-    private View getDeletingView(int position, ViewGroup parent, boolean swipe) {
-        Conversation conversation = new Conversation((ConversationCursor) getItem(position));
+    private View getDeletingView(int position, Conversation conversation, ViewGroup parent,
+            boolean swipe) {
         conversation.position = position;
         SwipeableConversationItemView deletingView = mAnimatingViews.get(conversation.id);
         if (deletingView == null) {
@@ -405,14 +399,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return deletingView;
     }
 
-    private View getUndoingView(int position, ViewGroup parent, boolean swipe) {
-        Conversation conversation = new Conversation((ConversationCursor) getItem(position));
-        conversation.position = position;
-        SwipeableConversationItemView undoView = mAnimatingViews.get(conversation.id);
+    private View getUndoingView(int position, Conversation conv, ViewGroup parent, boolean swipe) {
+        conv.position = position;
+        SwipeableConversationItemView undoView = mAnimatingViews.get(conv.id);
         if (undoView == null) {
             // The undo animation consists of fading in the conversation that
             // had been destroyed.
-            undoView = newConversationItemView(position, parent, conversation);
+            undoView = newConversationItemView(position, parent, conv);
             undoView.startUndoAnimation(mActivity.getViewMode(), this, swipe);
         }
         return undoView;
@@ -437,24 +430,24 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return super.getItem(position);
     }
 
-    private boolean isPositionDeleting(int position) {
-        return mDeletingItems.contains(position);
+    private boolean isPositionDeleting(long id) {
+        return mDeletingItems.contains(id);
     }
 
-    private boolean isPositionSwipeDeleting(int position) {
-        return mSwipeDeletingItems.contains(position);
+    private boolean isPositionSwipeDeleting(long id) {
+        return mSwipeDeletingItems.contains(id);
     }
 
-    private boolean isPositionUndoing(int position) {
-        return mUndoingItems.contains(position);
+    private boolean isPositionUndoing(long id) {
+        return mUndoingItems.contains(id);
     }
 
-    private boolean isPositionUndoingSwipe(int position) {
-        return mSwipeUndoingItems.contains(position);
+    private boolean isPositionUndoingSwipe(long id) {
+        return mSwipeUndoingItems.contains(id);
     }
 
-    private boolean isPositionUndoingType(int position) {
-        return isPositionUndoing(position) || isPositionUndoingSwipe(position);
+    private boolean isPositionUndoingType(long id) {
+        return isPositionUndoing(id) || isPositionUndoingSwipe(id);
     }
 
     private boolean isPositionLeaveBehind(Conversation conv) {
@@ -469,13 +462,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 && conv.isMostlyDead();
     }
 
-    private boolean isPositionTypeLeaveBehind(int position) {
+    private boolean isPositionTypeLeaveBehind(Conversation conv) {
         if (hasLeaveBehinds()) {
-            Object item = getItem(position);
-            if (item instanceof ConversationCursor) {
-                Conversation conv = new Conversation((ConversationCursor) item);
-                return isPositionLeaveBehind(conv) || isPositionFadeLeaveBehind(conv);
-            }
+            return isPositionLeaveBehind(conv) || isPositionFadeLeaveBehind(conv);
         }
         return false;
     }
@@ -529,13 +518,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
     }
 
-    private void updateAnimatingConversationItems(Object obj, HashSet<Integer> items) {
+    private void updateAnimatingConversationItems(Object obj, HashSet<Long> items) {
         if (!items.isEmpty()) {
             if (obj instanceof ConversationItemView) {
                 final ConversationItemView target = (ConversationItemView) obj;
-                final int position = target.getPosition();
-                items.remove(position);
-                mAnimatingViews.remove(target.getConversation().id);
+                final long id = target.getConversation().id;
+                items.remove(id);
+                mAnimatingViews.remove(id);
                 if (items.isEmpty()) {
                     performAndSetNextAction(null);
                     notifyDataSetChanged();
@@ -598,11 +587,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        int[] lastDeleting = new int[mLastDeletingItems.size()];
+        long[] lastDeleting = new long[mLastDeletingItems.size()];
         for (int i = 0; i < lastDeleting.length; i++) {
             lastDeleting[i] = mLastDeletingItems.get(i);
         }
-        outState.putIntArray(LAST_DELETING_ITEMS, lastDeleting);
+        outState.putLongArray(LAST_DELETING_ITEMS, lastDeleting);
         if (hasLeaveBehinds()) {
             outState.putParcelable(LEAVE_BEHIND_ITEM, mLeaveBehindItem.getLeaveBehindData());
         }
@@ -610,7 +599,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     public void onRestoreInstanceState(Bundle outState) {
         if (outState.containsKey(LAST_DELETING_ITEMS)) {
-            final int[] lastDeleting = outState.getIntArray(LAST_DELETING_ITEMS);
+            final long[] lastDeleting = outState.getLongArray(LAST_DELETING_ITEMS);
             for (int i = 0; i < lastDeleting.length;i++) {
                 mLastDeletingItems.add(lastDeleting[i]);
             }
