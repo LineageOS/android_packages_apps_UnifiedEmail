@@ -299,7 +299,14 @@
     <string name="cancel" msgid="8762981157252199115">"취소"</string>
     <string name="close" msgid="419945428844076406">"닫기"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"이 계정에 대한 폴더를 설정하지 않았습니다."</string>
-    <!-- no translation found for sync_status:5 (4779810016424303449) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"완료"</item>
+    <item msgid="7109065688039971961">"연결되지 않았습니다."</item>
+    <item msgid="8437496123716232060">"로그인하지 못했습니다."</item>
+    <item msgid="1651266301325684887">"보안 오류입니다."</item>
+    <item msgid="1461520171154288533">"동기화하지 못했습니다."</item>
+    <item msgid="4779810016424303449">"내부 오류"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"설정하려면 터치하세요."</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"대화를 보려면 폴더를 동기화하세요."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"폴더 동기화"</string>
