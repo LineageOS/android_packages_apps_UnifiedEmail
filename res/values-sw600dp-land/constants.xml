@@ -17,5 +17,4 @@
 <resources>
     <!-- Whether to show conversation subject in conversation view -->
     <bool name="show_conversation_subject">false</bool>
-    <dimen name="undo_animation_offset">720dp</dimen>
 </resources>
