@@ -162,10 +162,10 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     // Call this whenever a new action is taken; this forces a commit of any
     // existing destructive actions.
-    public void commitDestructiveActions() {
+    public void commitDestructiveActions(boolean animate) {
         final AnimatedAdapter adapter = getAnimatedAdapter();
         if (adapter != null) {
-            adapter.commitLeaveBehindItems();
+            adapter.commitLeaveBehindItems(animate);
         }
     }
 
@@ -297,7 +297,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         boolean handled = super.performItemClick(view, pos, id);
         // Commit any existing destructive actions when the user selects a
         // conversation to view.
-        commitDestructiveActions();
+        commitDestructiveActions(true);
         return handled;
     }
 
@@ -310,7 +310,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     public void onScrollStateChanged(AbsListView view, int state) {
         if (state == OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
                 || state == OnScrollListener.SCROLL_STATE_FLING) {
-            commitDestructiveActions();
+            commitDestructiveActions(true);
         }
     }
 }

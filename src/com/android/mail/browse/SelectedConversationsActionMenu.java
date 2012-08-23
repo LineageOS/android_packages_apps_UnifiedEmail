@@ -116,7 +116,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         boolean handled = true;
         // If the user taps a new menu item, commit any existing destructive actions.
-        mListView.commitDestructiveActions();
+        mListView.commitDestructiveActions(true);
         switch (item.getItemId()) {
             case R.id.delete:
                 performDestructiveAction(R.id.delete);
