@@ -280,8 +280,10 @@
     <string name="show_images" msgid="1875700481186331432">"Afişaţi fotografiile"</string>
     <string name="always_show_images" msgid="5966408990164581801">"Afişaţi întot. imag. de la acest exped."</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"Imaginile de la acest expeditor vor fi afişate în mod automat."</string>
-    <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; prin <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
+    <!-- no translation found for address_display_format (3581303608028992576) -->
+    <skip />
+    <!-- no translation found for address_display_format_with_via_domain (2316262813990842490) -->
+    <skip />
     <string name="message_saved" msgid="7073947895562277576">"Mesaj salvat ca mesaj nefinalizat."</string>
     <string name="sending_message" msgid="2822171587017313151">"Se trimite mesajul în Mesaje de trimis…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Adresa <xliff:g id="WRONGEMAIL">%s</xliff:g> este nevalidă."</string>
