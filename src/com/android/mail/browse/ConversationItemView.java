@@ -1172,29 +1172,34 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     /**
-     * Toggle the check mark on this view and update the conversation
+     * Toggle the check mark on this view and update the conversation or begin
+     * drag, if drag is enabled.
      */
-    public void toggleCheckMark() {
+    public void toggleCheckMarkOrBeginDrag() {
         ViewMode mode = mActivity.getViewMode();
         if (!mTabletDevice || !mode.isListMode()) {
-            if (mHeader != null && mHeader.conversation != null) {
-                mChecked = !mChecked;
-                Conversation conv = mHeader.conversation;
-                // Set the list position of this item in the conversation
-                ListView listView = getListView();
-                conv.position = mChecked && listView != null ? listView.getPositionForView(this)
-                        : Conversation.NO_POSITION;
-                if (mSelectedConversationSet != null) {
-                    mSelectedConversationSet.toggle(this, conv);
-                }
-                // We update the background after the checked state has changed
-                // now that we have a selected background asset. Setting the background
-                // usually waits for a layout pass, but we don't need a full layout,
-                // just an update to the background.
-                requestLayout();
-            }
+            toggleCheckMark();
         } else {
             beginDragMode();
+        }
+    }
+
+    private void toggleCheckMark() {
+        if (mHeader != null && mHeader.conversation != null) {
+            mChecked = !mChecked;
+            Conversation conv = mHeader.conversation;
+            // Set the list position of this item in the conversation
+            ListView listView = getListView();
+            conv.position = mChecked && listView != null ? listView.getPositionForView(this)
+                    : Conversation.NO_POSITION;
+            if (mSelectedConversationSet != null) {
+                mSelectedConversationSet.toggle(this, conv);
+            }
+            // We update the background after the checked state has changed
+            // now that we have a selected background asset. Setting the background
+            // usually waits for a layout pass, but we don't need a full layout,
+            // just an update to the background.
+            requestLayout();
         }
     }
 
@@ -1500,30 +1505,13 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     /**
-     * Select the current conversation.
-     */
-    private void selectConversation() {
-        if (!mSelectedConversationSet.containsKey(mHeader.conversation.id)) {
-            mChecked = !mChecked;
-            Conversation conv = mHeader.conversation;
-            // Set the list position of this item in the conversation
-            ListView listView = getListView();
-            conv.position = mChecked && listView != null ? listView.getPositionForView(this)
-                    : Conversation.NO_POSITION;
-            if (mSelectedConversationSet != null) {
-                mSelectedConversationSet.toggle(this, conv);
-            }
-        }
-    }
-
-    /**
      * Begin drag mode. Keep the conversation selected (NOT toggle selection) and start drag.
      */
     private void beginDragMode() {
         if (mLastTouchX < 0 || mLastTouchY < 0) {
             return;
         }
-        selectConversation();
+        toggleCheckMark();
 
         // Clip data has form: [conversations_uri, conversationId1,
         // maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]

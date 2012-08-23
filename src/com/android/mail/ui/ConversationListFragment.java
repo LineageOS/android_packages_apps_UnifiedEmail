@@ -405,7 +405,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (!(view instanceof ConversationItemView)) {
             return true;
         }
-        ((ConversationItemView) view).toggleCheckMark();
+        ((ConversationItemView) view).toggleCheckMarkOrBeginDrag();
         return true;
     }
 
@@ -429,7 +429,7 @@ public final class ConversationListFragment extends ListFragment implements
             return;
         }
         if (mAccount.settings.hideCheckboxes && !mSelectedSet.isEmpty()) {
-            ((ConversationItemView) view).toggleCheckMark();
+            ((ConversationItemView) view).toggleCheckMarkOrBeginDrag();
         } else {
             viewConversation(position);
         }
