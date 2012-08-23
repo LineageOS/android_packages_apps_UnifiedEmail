@@ -39,9 +39,12 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.MatrixCursorWithExtra;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -168,11 +171,11 @@ public abstract class MailAppProvider extends ContentProvider
         extras.putInt(AccountCursorExtraKeys.ACCOUNTS_LOADED, mAccountsFullyLoaded ? 1 : 0);
 
         // Make a copy of the account cache
-
-        final Set<AccountCacheEntry> accountList;
+        final List<AccountCacheEntry> accountList = Lists.newArrayList();
         synchronized (mAccountCache) {
-            accountList = ImmutableSet.copyOf(mAccountCache.values());
+            accountList.addAll(mAccountCache.values());
         }
+        Collections.sort(accountList);
 
         final MatrixCursor cursor =
                 new MatrixCursorWithExtra(resultProjection, accountList.size(), extras);
@@ -366,10 +369,16 @@ public abstract class MailAppProvider extends ContentProvider
     }
 
     private void addAccountImpl(Account account, Uri accountsQueryUri, boolean notify) {
+        addAccountImpl(account, accountsQueryUri, mAccountCache.size(), notify);
+    }
+
+    private void addAccountImpl(Account account, Uri accountsQueryUri, int position,
+            boolean notify) {
         synchronized (mAccountCache) {
             if (account != null) {
                 LogUtils.v(LOG_TAG, "adding account %s", account);
-                mAccountCache.put(account.uri, new AccountCacheEntry(account, accountsQueryUri));
+                mAccountCache.put(account.uri,
+                        new AccountCacheEntry(account, accountsQueryUri, position));
             }
         }
         // Explicitly calling this out of the synchronized block in case any of the observers get
@@ -447,16 +456,20 @@ public abstract class MailAppProvider extends ContentProvider
         final Set<String> accountsStringSet = preference.getStringSet(ACCOUNT_LIST_KEY, null);
 
         if (accountsStringSet != null) {
+            int pos = 0;
             for (String serializedAccount : accountsStringSet) {
                 try {
+                    // TODO (pwestbro): we are creating duplicate AccountCacheEntry objects.
+                    // One here, and one in addAccountImpl.  We should stop doing that.
                     final AccountCacheEntry accountEntry =
-                            new AccountCacheEntry(serializedAccount);
+                            new AccountCacheEntry(serializedAccount, pos);
                     if (accountEntry.mAccount.settings != null) {
-                        addAccountImpl(accountEntry.mAccount, accountEntry.mAccountsQueryUri,
+                        addAccountImpl(accountEntry.mAccount, accountEntry.mAccountsQueryUri, pos,
                                 false /* don't notify */);
                     } else {
                         LogUtils.e(LOG_TAG, "Dropping account that doesn't specify settings");
                     }
+                    pos++;
                 } catch (Exception e) {
                     // Unable to create account object, skip to next
                     LogUtils.e(LOG_TAG, e,
@@ -469,10 +482,11 @@ public abstract class MailAppProvider extends ContentProvider
     }
 
     private void cacheAccountList() {
-        final Set<AccountCacheEntry> accountList;
+        final List<AccountCacheEntry> accountList = Lists.newArrayList();
         synchronized (mAccountCache) {
-            accountList = ImmutableSet.copyOf(mAccountCache.values());
+            accountList.addAll(mAccountCache.values());
         }
+        Collections.sort(accountList);
 
         final Set<String> serializedAccounts = Sets.newHashSet();
         for (AccountCacheEntry accountEntry : accountList) {
@@ -521,11 +535,15 @@ public abstract class MailAppProvider extends ContentProvider
             accountList = ImmutableSet.copyOf(mAccountCache.values());
         }
 
+        int lastPosition = 0;
         // Build a set of the account uris that had been associated with that query
-        final Set<Uri> previousQueryUriMap = Sets.newHashSet();
+        final Set<Uri> previousQueryUriSet = Sets.newHashSet();
         for (AccountCacheEntry entry : accountList) {
             if (accountsQueryUri.equals(entry.mAccountsQueryUri)) {
-                previousQueryUriMap.add(entry.mAccount.uri);
+                previousQueryUriSet.add(entry.mAccount.uri);
+            }
+            if (entry.mPosition > lastPosition) {
+                lastPosition = entry.mPosition;
             }
         }
 
@@ -536,19 +554,23 @@ public abstract class MailAppProvider extends ContentProvider
         mAccountsFullyLoaded = extra.getInt(AccountCursorExtraKeys.ACCOUNTS_LOADED) != 0;
 
         final Set<Uri> newQueryUriMap = Sets.newHashSet();
+
+        // We are relying on the fact that all accounts are added in the order specified in the
+        // cursor.  Initially assume that we insert these items to at the end of the list
+        int pos = lastPosition;
         while (data.moveToNext()) {
             final Account account = new Account(data);
             final Uri accountUri = account.uri;
             newQueryUriMap.add(accountUri);
-            addAccountImpl(account, accountsQueryUri, false /* don't notify */);
+            addAccountImpl(account, accountsQueryUri, pos++, false /* don't notify */);
         }
         // Remove all of the accounts that are in the new result set
-        previousQueryUriMap.removeAll(newQueryUriMap);
+        previousQueryUriSet.removeAll(newQueryUriMap);
 
         // For all of the entries that had been in the previous result set, and are not
         // in the new result set, remove them from the cache
-        if (previousQueryUriMap.size() > 0 && mAccountsFullyLoaded) {
-            removeAccounts(previousQueryUriMap, false /* don't notify */);
+        if (previousQueryUriSet.size() > 0 && mAccountsFullyLoaded) {
+            removeAccounts(previousQueryUriSet, false /* don't notify */);
         }
         broadcastAccountChange();
     }
@@ -557,9 +579,10 @@ public abstract class MailAppProvider extends ContentProvider
      * Object that allows the Account Cache provider to associate the account with the content
      * provider uri that originated that account.
      */
-    private static class AccountCacheEntry {
+    private static class AccountCacheEntry implements Comparable<AccountCacheEntry> {
         final Account mAccount;
         final Uri mAccountsQueryUri;
+        final int mPosition;
 
         private static final String ACCOUNT_ENTRY_COMPONENT_SEPARATOR = "^**^";
         private static final Pattern ACCOUNT_ENTRY_COMPONENT_SEPARATOR_PATTERN =
@@ -567,9 +590,10 @@ public abstract class MailAppProvider extends ContentProvider
 
         private static final int NUMBER_MEMBERS = 2;
 
-        public AccountCacheEntry(Account account, Uri accountQueryUri) {
+        public AccountCacheEntry(Account account, Uri accountQueryUri, int position) {
             mAccount = account;
             mAccountsQueryUri = accountQueryUri;
+            mPosition = position;
         }
 
         /**
@@ -591,7 +615,8 @@ public abstract class MailAppProvider extends ContentProvider
          * ignoring the newly created object if the exception is thrown.
          * @param serializedString
          */
-        public AccountCacheEntry(String serializedString) throws IllegalArgumentException {
+        public AccountCacheEntry(String serializedString, int position)
+                throws IllegalArgumentException {
             String[] cacheEntryMembers = TextUtils.split(serializedString,
                     ACCOUNT_ENTRY_COMPONENT_SEPARATOR_PATTERN);
             if (cacheEntryMembers.length != NUMBER_MEMBERS) {
@@ -611,6 +636,12 @@ public abstract class MailAppProvider extends ContentProvider
             }
             mAccountsQueryUri = !TextUtils.isEmpty(cacheEntryMembers[1]) ?
                     Uri.parse(cacheEntryMembers[1]) : null;
+            mPosition = position;
+        }
+
+        @Override
+        public int compareTo(AccountCacheEntry o) {
+            return o.mPosition - mPosition;
         }
     }
 }
