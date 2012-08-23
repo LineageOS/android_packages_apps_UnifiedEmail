@@ -105,4 +105,8 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      * @return
      */
     AccountController getAccountController();
+
+    void startDragMode();
+
+    void stopDragMode();
 }

@@ -21,6 +21,8 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.ClipData;
+import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -30,6 +32,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
@@ -48,6 +51,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.SparseArray;
 import android.view.Gravity;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +75,7 @@ import com.android.mail.ui.SwipeableItemView;
 import com.android.mail.ui.SwipeableListView;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -106,7 +111,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     private static String sSendersSplitToken;
     private static String sElidedPaddingToken;
-    private static String sEllipsis;
 
     // Static colors.
     private static int sDefaultTextColor;
@@ -160,6 +164,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private boolean mPriorityMarkersEnabled;
     private boolean mCheckboxesEnabled;
     private boolean mSwipeEnabled;
+    private int mLastTouchX;
+    private int mLastTouchY;
     private AnimatedAdapter mAdapter;
     private int mAnimatedHeight = -1;
     private String mAccount;
@@ -372,7 +378,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
             // Initialize static color.
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
-            sEllipsis = res.getString(R.string.ellipsis);
             sAnimatingBackgroundColor = res.getColor(R.color.animating_item_background_color);
             sSendersTextViewTopPadding = res.getDimensionPixelSize
                     (R.dimen.senders_textview_top_padding);
@@ -1172,23 +1177,26 @@ public class ConversationItemView extends View implements SwipeableItemView {
      * Toggle the check mark on this view and update the conversation
      */
     public void toggleCheckMark() {
-        if (mHeader != null && mHeader.conversation != null) {
-            mChecked = !mChecked;
-            Conversation conv = mHeader.conversation;
-            // Set the list position of this item in the conversation
-            ListView listView = getListView();
-            conv.position = mChecked && listView != null ? listView.getPositionForView(this)
-                    : Conversation.NO_POSITION;
-            if (mSelectedConversationSet != null) {
-                mSelectedConversationSet.toggle(this, conv);
+        ViewMode mode = mActivity.getViewMode();
+        if (!mTabletDevice || !mode.isListMode()) {
+            if (mHeader != null && mHeader.conversation != null) {
+                mChecked = !mChecked;
+                Conversation conv = mHeader.conversation;
+                // Set the list position of this item in the conversation
+                ListView listView = getListView();
+                conv.position = mChecked && listView != null ? listView.getPositionForView(this)
+                        : Conversation.NO_POSITION;
+                if (mSelectedConversationSet != null) {
+                    mSelectedConversationSet.toggle(this, conv);
+                }
+                // We update the background after the checked state has changed
+                // now that we have a selected background asset. Setting the background
+                // usually waits for a layout pass, but we don't need a full layout,
+                // just an update to the background.
+                requestLayout();
             }
-            // We update the background after the checked state has changed now
-            // that
-            // we have a selected background asset. Setting the background
-            // usually
-            // waits for a layout pass, but we don't need a full layout, just an
-            // update to the background.
-            requestLayout();
+        } else {
+            beginDragMode();
         }
     }
 
@@ -1243,6 +1251,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
     public boolean onTouchEvent(MotionEvent event) {
         int x = (int) event.getX();
         int y = (int) event.getY();
+        mLastTouchX = x;
+        mLastTouchY = y;
         if (!mSwipeEnabled) {
             return onTouchEventNoSwipe(event);
         }
@@ -1298,29 +1308,26 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     private boolean onTouchEventNoSwipe(MotionEvent event) {
-        boolean handled = true;
+        boolean handled = false;
 
         int x = (int) event.getX();
         int y = (int) event.getY();
+        mLastTouchX = x;
+        mLastTouchY = y;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mDownEvent = true;
-                // In order to allow the down event and subsequent move events
-                // to bubble to the swipe handler, we need to return that all
-                // down events are handled.
-                handled = isTouchInCheckmark(x, y) || isTouchInStar(x, y);
+                if (isTouchInCheckmark(x, y) || isTouchInStar(x, y)) {
+                    handled = true;
+                }
                 break;
+
             case MotionEvent.ACTION_CANCEL:
                 mDownEvent = false;
                 break;
+
             case MotionEvent.ACTION_UP:
                 if (mDownEvent) {
-                    // ConversationItemView gets the first chance to handle up
-                    // events if there was a down event and there was no move
-                    // event in between. In this case, ConversationItemView
-                    // received the down event, and then an up event in the
-                    // same location (+/- slop). Treat this as a click on the
-                    // view or on a specific part of the view.
                     if (isTouchInCheckmark(x, y)) {
                         // Touch on the check mark
                         toggleCheckMark();
@@ -1329,16 +1336,15 @@ public class ConversationItemView extends View implements SwipeableItemView {
                         toggleStar();
                     }
                     handled = true;
-                } else {
-                    // There was no down event that this view was made aware of,
-                    // therefore it cannot handle it.
-                    handled = false;
                 }
                 break;
         }
 
-        // Let View try to handle it as well.
-        return handled || super.onTouchEvent(event);
+        if (!handled) {
+            handled = super.onTouchEvent(event);
+        }
+
+        return handled;
     }
 
     /**
@@ -1490,5 +1496,106 @@ public class ConversationItemView extends View implements SwipeableItemView {
     @Override
     public View getSwipeableView() {
         return this;
+    }
+
+    /**
+     * Select the current conversation.
+     */
+    private void selectConversation() {
+        if (!mSelectedConversationSet.containsKey(mHeader.conversation.id)) {
+            mChecked = !mChecked;
+            Conversation conv = mHeader.conversation;
+            // Set the list position of this item in the conversation
+            ListView listView = getListView();
+            conv.position = mChecked && listView != null ? listView.getPositionForView(this)
+                    : Conversation.NO_POSITION;
+            if (mSelectedConversationSet != null) {
+                mSelectedConversationSet.toggle(this, conv);
+            }
+        }
+    }
+
+    /**
+     * Begin drag mode. Keep the conversation selected (NOT toggle selection) and start drag.
+     */
+    private void beginDragMode() {
+        selectConversation();
+
+        // Clip data has form: [conversations_uri, conversationId1,
+        // maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]
+        final int count = mSelectedConversationSet.size();
+        String description = Utils.formatPlural(mContext, R.plurals.move_conversation, count);
+
+        final ClipData data = ClipData.newUri(mContext.getContentResolver(), description,
+                Conversation.MOVE_CONVERSATIONS_URI);
+        for (Conversation conversation : mSelectedConversationSet.values()) {
+            data.addItem(new Item(String.valueOf(conversation.position)));
+        }
+        // Protect against non-existent views: only happens for monkeys
+        final int width = this.getWidth();
+        final int height = this.getHeight();
+        final boolean isDimensionNegative = (width < 0) || (height < 0);
+        if (isDimensionNegative) {
+            LogUtils.e(LOG_TAG, "ConversationItemView: dimension is negative: "
+                        + "width=%d, height=%d", width, height);
+            return;
+        }
+        mActivity.startDragMode();
+        // Start drag mode
+        startDrag(data, new ShadowBuilder(this, count, mLastTouchX, mLastTouchY), null, 0);
+    }
+
+    /**
+     * Handles the drag event.
+     *
+     * @param event the drag event to be handled
+     */
+    @Override
+    public boolean onDragEvent(DragEvent event) {
+        switch (event.getAction()) {
+            case DragEvent.ACTION_DRAG_ENDED:
+                mActivity.stopDragMode();
+                return true;
+        }
+        return false;
+    }
+
+    private class ShadowBuilder extends DragShadowBuilder {
+        private final Drawable mBackground;
+
+        private final View mView;
+        private final String mDragDesc;
+        private final int mTouchX;
+        private final int mTouchY;
+        private int mDragDescX;
+        private int mDragDescY;
+
+        public ShadowBuilder(View view, int count, int touchX, int touchY) {
+            super(view);
+            mView = view;
+            mBackground = mView.getResources().getDrawable(R.drawable.list_pressed_holo);
+            mDragDesc = Utils.formatPlural(mView.getContext(), R.plurals.move_conversation, count);
+            mTouchX = touchX;
+            mTouchY = touchY;
+        }
+
+        @Override
+        public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
+            int width = mView.getWidth();
+            int height = mView.getHeight();
+            mDragDescX = mCoordinates.sendersX;
+            mDragDescY = getPadding(height, mCoordinates.subjectFontSize)
+                    - mCoordinates.subjectAscent;
+            shadowSize.set(width, height);
+            shadowTouchPoint.set(mTouchX, mTouchY);
+        }
+
+        @Override
+        public void onDrawShadow(Canvas canvas) {
+            mBackground.setBounds(0, 0, mView.getWidth(), mView.getHeight());
+            mBackground.draw(canvas);
+            sPaint.setTextSize(mCoordinates.subjectFontSize);
+            canvas.drawText(mDragDesc, mDragDescX, mDragDescY, sPaint);
+        }
     }
 }
