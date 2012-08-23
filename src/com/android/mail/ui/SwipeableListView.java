@@ -19,6 +19,7 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -37,6 +38,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.ui.SwipeHelper.Callback;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -76,6 +78,23 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         mSwipeHelper.setDensityScale(densityScale);
         float pagingTouchSlop = ViewConfiguration.get(getContext()).getScaledPagingTouchSlop();
         mSwipeHelper.setPagingTouchSlop(pagingTouchSlop);
+    }
+
+    @Override
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+        LogUtils.w(Utils.VIEW_DEBUGGING_TAG,
+                "START CLF-ListView.onFocusChanged layoutRequested=%s root.layoutRequested=%s",
+                isLayoutRequested(), getRootView().isLayoutRequested());
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        LogUtils.w(Utils.VIEW_DEBUGGING_TAG, new Error(),
+                "FINISH CLF-ListView.onFocusChanged layoutRequested=%s root.layoutRequested=%s",
+                isLayoutRequested(), getRootView().isLayoutRequested());
+    }
+
+    @Override
+    public void requestLayout() {
+        Utils.checkRequestLayout(this);
+        super.requestLayout();
     }
 
     /**

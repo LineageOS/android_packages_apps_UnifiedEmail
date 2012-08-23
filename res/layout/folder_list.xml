@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 
-<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.mail.ui.FolderListLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -47,4 +47,4 @@
             android:textAppearance="?android:attr/textAppearanceMedium"/>
     </RelativeLayout>
 
-</FrameLayout>
+</com.android.mail.ui.FolderListLayout>
