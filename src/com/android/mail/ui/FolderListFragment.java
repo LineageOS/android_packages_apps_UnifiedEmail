@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -72,6 +73,15 @@ public final class FolderListFragment extends ListFragment implements
     private FolderListFragmentCursorAdapter mCursorAdapter;
 
     private View mEmptyView;
+
+    private FolderObserver mFolderObserver = null;
+    // Listen to folder changes from the controller and update state accordingly.
+    private class FolderObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            mSelectedFolder = mActivity.getFolderController().getFolder();
+        }
+    }
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -135,6 +145,9 @@ public final class FolderListFragment extends ListFragment implements
 
         selectInitialFolder(mActivity.getHierarchyFolder());
         getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
+        // Listen to folder changes in the future
+        mFolderObserver = new FolderObserver();
+        mActivity.getFolderController().registerFolderObserver(mFolderObserver);
     }
 
     @Override
@@ -160,6 +173,10 @@ public final class FolderListFragment extends ListFragment implements
     public void onDestroyView() {
         // Clear the adapter.
         setListAdapter(null);
+        if (mFolderObserver != null) {
+            mActivity.getFolderController().unregisterFolderObserver(mFolderObserver);
+            mFolderObserver = null;
+        }
         super.onDestroyView();
     }
 
