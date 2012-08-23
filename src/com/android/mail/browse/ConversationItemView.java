@@ -177,7 +177,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private static ForegroundColorSpan sActivatedTextSpan;
     private static Bitmap sDateBackgroundAttachment;
     private static Bitmap sDateBackgroundNoAttachment;
-    private static int sUndoAnimationOffset;
     private static Bitmap MORE_FOLDERS;
 
     static {
@@ -374,7 +373,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
             sStandardScaledDimen = res.getDimensionPixelSize(R.dimen.standard_scaled_dimen);
             sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
             sSlideAnimationDuration = res.getInteger(R.integer.slide_animation_duration);
-            sUndoAnimationOffset = res.getDimensionPixelOffset(R.dimen.undo_animation_offset);
             // Initialize static color.
             sSendersSplitToken = res.getString(R.string.senders_split_token);
             sElidedPaddingToken = res.getString(R.string.elided_padding_token);
@@ -1238,7 +1236,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
     @Override
     public void dismiss() {
-        SwipeableListView listView = this.getListView();
+        SwipeableListView listView = getListView();
         if (listView != null) {
             getListView().dismissChild(this);
         }
@@ -1403,8 +1401,11 @@ public class ConversationItemView extends View implements SwipeableItemView {
     }
 
     private ObjectAnimator createTranslateXAnimation(boolean show) {
-        final float start = show ? sUndoAnimationOffset : 0f;
-        final float end = show ? 0f : sUndoAnimationOffset;
+        SwipeableListView parent = getListView();
+        // If we can't get the parent...we have bigger problems.
+        int width = parent != null ? parent.getMeasuredWidth() : 0;
+        final float start = show ? width : 0f;
+        final float end = show ? 0f : width;
         ObjectAnimator slide = ObjectAnimator.ofFloat(this, "translationX", start, end);
         slide.setInterpolator(new DecelerateInterpolator(2.0f));
         slide.setDuration(sSlideAnimationDuration);
@@ -1519,6 +1520,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
      * Begin drag mode. Keep the conversation selected (NOT toggle selection) and start drag.
      */
     private void beginDragMode() {
+        if (mLastTouchX < 0 || mLastTouchY < 0) {
+            return;
+        }
         selectConversation();
 
         // Clip data has form: [conversations_uri, conversationId1,
