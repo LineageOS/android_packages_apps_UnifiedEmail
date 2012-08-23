@@ -299,7 +299,14 @@
     <string name="cancel" msgid="8762981157252199115">"Annuller"</string>
     <string name="close" msgid="419945428844076406">"Luk"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Der er ikke angivet nogen etiketter for denne konto."</string>
-    <!-- no translation found for sync_status:5 (4779810016424303449) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Gennemført"</item>
+    <item msgid="7109065688039971961">"Ingen forbindelse."</item>
+    <item msgid="8437496123716232060">"Det var ikke muligt at logge ind."</item>
+    <item msgid="1651266301325684887">"Sikkerhedsfejl."</item>
+    <item msgid="1461520171154288533">"Det var ikke muligt at synkronisere."</item>
+    <item msgid="4779810016424303449">"Intern fejl"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Tryk for at konfigurere"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Synkroniser denne mappe for at se samtaler."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Synkroniser mappe"</string>
