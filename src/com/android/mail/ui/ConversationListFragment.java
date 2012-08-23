@@ -639,9 +639,9 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
-    public void commitDestructiveActions() {
+    public void commitDestructiveActions(boolean animate) {
         if (mListView != null) {
-            mListView.commitDestructiveActions();
+            mListView.commitDestructiveActions(animate);
 
         }
     }
