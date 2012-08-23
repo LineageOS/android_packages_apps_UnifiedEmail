@@ -121,6 +121,21 @@ public final class TwoPaneController extends AbstractActivityController {
         initializeConversationListFragment(true);
     }
 
+    /**
+     * Update the conversation list without creating another fragment, if possible
+     */
+    @Override
+    protected void updateConversationList(){
+        exitCabMode();
+        FolderListFragment folderList = getFolderListFragment();
+        if (folderList == null && mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
+            // Create a folder list fragment if none exists.
+            renderFolderList();
+            folderList = getFolderListFragment();
+        }
+        initializeConversationListFragment(true);
+    }
+
     @Override
     public void showFolderList() {
         // On two-pane layouts, showing the folder list takes you to the top level of the
