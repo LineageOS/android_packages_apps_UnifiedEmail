@@ -280,8 +280,10 @@
     <string name="show_images" msgid="1875700481186331432">"चित्र दिखाएं"</string>
     <string name="always_show_images" msgid="5966408990164581801">"इस प्रेषक के चित्र हमेशा दिखाएं"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"इस प्रेषक के चित्रों को अपने आप दिखाया जाएगा."</string>
-    <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; <xliff:g id="VIA_DOMAIN">%3$s</xliff:g> के माध्यम से"</string>
+    <!-- no translation found for address_display_format (3581303608028992576) -->
+    <skip />
+    <!-- no translation found for address_display_format_with_via_domain (2316262813990842490) -->
+    <skip />
     <string name="message_saved" msgid="7073947895562277576">"संदेश ड्राफ़्ट के रूप में सहेजा गया."</string>
     <string name="sending_message" msgid="2822171587017313151">"आउटबॉक्स पर संदेश भेज रहा है…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"<xliff:g id="WRONGEMAIL">%s</xliff:g> पता अमान्‍य है."</string>
