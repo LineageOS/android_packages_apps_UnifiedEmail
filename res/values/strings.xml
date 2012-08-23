@@ -555,9 +555,9 @@
     <!-- Shown in a toast to acknowledge always showing images for a sender [CHAR LIMIT=100] -->
     <string name="always_show_images_toast">Pictures from this sender will be shown automatically.</string>
     <!-- Display format of an email recipient, displayed in expanded message details [CHAR LIMIT=10] -->
-    <string name="address_display_format"><xliff:g id="name">%1$s</xliff:g> &lt;<xliff:g id="email">%2$s</xliff:g>&gt;</string>
+    <string name="address_display_format"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g></string>
     <!-- Display format of an email sender if the message has a via domain set, displayed in expanded message details [CHAR LIMIT=15] -->
-    <string name="address_display_format_with_via_domain"><xliff:g id="name">%1$s</xliff:g> &lt;<xliff:g id="email">%2$s</xliff:g>&gt; via <xliff:g id="via_domain">%3$s</xliff:g></string>
+    <string name="address_display_format_with_via_domain"><xliff:g id="name">%1$s</xliff:g> <xliff:g id="email">%2$s</xliff:g> via <xliff:g id="via_domain">%3$s</xliff:g></string>
     <!-- Displayed for one second after user saves message as draft [CHAR LIMIT=50]-->
     <string name="message_saved">Message saved as draft.</string>
     <!-- Displayed for one second while message is being sent [CHAR LIMIT=50]-->
