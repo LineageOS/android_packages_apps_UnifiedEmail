@@ -299,7 +299,14 @@
     <string name="cancel" msgid="8762981157252199115">"لغو"</string>
     <string name="close" msgid="419945428844076406">"بستن"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"پوشه‌ای برای این حساب تنظیم نشده است."</string>
-    <!-- no translation found for sync_status:5 (4779810016424303449) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"موفقیت‌آمیز"</item>
+    <item msgid="7109065688039971961">"اتصال برقرار نیست."</item>
+    <item msgid="8437496123716232060">"ورود به برنامه انجام نشد."</item>
+    <item msgid="1651266301325684887">"خطای امنیتی."</item>
+    <item msgid="1461520171154288533">"همگام‌سازی انجام نشد."</item>
+    <item msgid="4779810016424303449">"خطای داخلی"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"برای راه‌اندازی لمس کنید"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"برای مشاهده مکالمات، این پوشه همگام شود."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"همگام‌سازی پوشه"</string>

@@ -299,7 +299,14 @@
     <string name="cancel" msgid="8762981157252199115">"Odustani"</string>
     <string name="close" msgid="419945428844076406">"Zatvori"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"Za ovaj račun nisu postavljene mape."</string>
-    <!-- no translation found for sync_status:5 (4779810016424303449) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"Uspjeh"</item>
+    <item msgid="7109065688039971961">"Nema veze."</item>
+    <item msgid="8437496123716232060">"Prijava nije bila moguća."</item>
+    <item msgid="1651266301325684887">"Sigurnosna pogreška."</item>
+    <item msgid="1461520171154288533">"Sinkronizacija nije bila moguća."</item>
+    <item msgid="4779810016424303449">"Interna pogreška"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"Dodirnite za postavljanje"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"Za prikaz razgovora sinkronizirajte ovu mapu."</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"Sinkronizacija mape"</string>
