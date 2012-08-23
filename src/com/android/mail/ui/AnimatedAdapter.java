@@ -356,11 +356,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return mListView;
     }
 
-    public void commitLeaveBehindItems() {
+    public void commitLeaveBehindItems(boolean animate) {
         // Remove any previously existing leave behinds.
         boolean changed = false;
         if (hasLeaveBehinds()) {
-            mLeaveBehindItem.dismiss();
+            if (animate) {
+                mLeaveBehindItem.dismiss();
+            } else {
+                mLeaveBehindItem.commit();
+            }
             changed = true;
         }
         if (!mLastDeletingItems.isEmpty()) {
