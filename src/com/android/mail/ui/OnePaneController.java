@@ -406,6 +406,50 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
+    /**
+     * Update the conversation list without creating another fragment, if possible
+     */
+    @Override
+    protected void updateConversationList(){
+        enableCabMode();
+        // TODO(viki): Check if the account has been changed since the previous
+        // time.
+        if (ConversationListContext.isSearchResult(mConvListContext)) {
+            mViewMode.enterSearchResultsListMode();
+        } else {
+            mViewMode.enterConversationListMode();
+        }
+        // TODO(viki): This account transition looks strange in two pane mode.
+        // Revisit as the app is coming together and improve the look and feel.
+        final int transition = mConversationListNeverShown
+                ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
+                : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
+        Fragment listFragment = getConversationListFragment();
+        if (listFragment == null) {
+            listFragment = ConversationListFragment.newInstance(mConvListContext);
+            if (!inInbox(mAccount, mConvListContext)) {
+                // Maintain fragment transaction history so we can get back to the
+                // fragment used to launch this list.
+                mLastConversationListTransactionId = replaceFragment(listFragment,
+                        transition, TAG_CONVERSATION_LIST);
+            } else {
+                // If going to the inbox, clear the folder list transaction history.
+                mInbox = mConvListContext.folder;
+                mLastInboxConversationListTransactionId = replaceFragment(listFragment,
+                        transition, TAG_CONVERSATION_LIST);
+                mLastFolderListTransactionId = INVALID_ID;
+
+                // If we ever to to the inbox, we want to unset the transation id for any other
+                // non-inbox folder.
+                mLastConversationListTransactionId = INVALID_ID;
+            }
+        }
+        mConversationListVisible = true;
+        onConversationVisibilityChanged(false);
+        onConversationListVisibilityChanged(true);
+        mConversationListNeverShown = false;
+    }
+
     private boolean isTransactionIdValid(int id) {
         return id >= 0;
     }

@@ -479,10 +479,27 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onFolderChanged(Folder folder) {
-        if (!Objects.equal(mFolder, folder)) {
-            commitDestructiveActions(false);
-        }
         changeFolder(folder, null);
+    }
+
+    /**
+     * Sets the folder state without changing view mode and without creating a list fragment, if
+     * possible.
+     * @param folder
+     */
+    private void setListContext(Folder folder, String query) {
+        updateFolder(folder);
+        if (query != null) {
+            mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder, query);
+        } else {
+            mConvListContext = ConversationListContext.forFolder(mAccount, mFolder);
+        }
+        // Add the folder that we were viewing to the recent folders list.
+        // TODO: this may need to be fine tuned.  If this is the signal that is indicating that
+        // the list is shown to the user, this could fire in one pane if the user goes directly
+        // to a conversation
+        updateRecentFolderList();
+        cancelRefreshTask();
     }
 
     /**
@@ -491,23 +508,25 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param query if non-null, this represents the search string that the folder represents.
      */
     private void changeFolder(Folder folder, String query) {
+        if (!Objects.equal(mFolder, folder)) {
+            commitDestructiveActions(false);
+        }
         if (folder != null && !folder.equals(mFolder)
                 || (mViewMode.getMode() != ViewMode.CONVERSATION_LIST)) {
-            updateFolder(folder);
-            if (query != null) {
-                mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder, query);
-            } else {
-                mConvListContext = ConversationListContext.forFolder(mAccount, mFolder);
-            }
+            setListContext(folder, query);
             showConversationList(mConvListContext);
-
-            // Add the folder that we were viewing to the recent folders list.
-            // TODO: this may need to be fine tuned.  If this is the signal that is indicating that
-            // the list is shown to the user, this could fire in one pane if the user goes directly
-            // to a conversation
-            updateRecentFolderList();
-            cancelRefreshTask();
         }
+    }
+
+    /**
+     * Update the conversation list to {@link #mConvListContext} without creating a new frament if
+     * possible.
+     */
+    protected abstract void updateConversationList();
+
+    private void setFirstFolder(Folder folder, String query) {
+        setListContext(folder, query);
+        updateConversationList();
     }
 
     @Override
@@ -660,11 +679,8 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             if (savedState.containsKey(SAVED_FOLDER)) {
                 final Folder folder = (Folder) savedState.getParcelable(SAVED_FOLDER);
-                if (savedState.containsKey(SAVED_QUERY)) {
-                    changeFolder(folder, savedState.getString(SAVED_QUERY));
-                } else {
-                    onFolderChanged(folder);
-                }
+                final String query = savedState.getString(SAVED_QUERY, null);
+                setFirstFolder(folder, query);
             }
         } else if (intent != null) {
             handleIntent(intent);
