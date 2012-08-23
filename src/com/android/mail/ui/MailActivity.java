@@ -423,4 +423,14 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void onFooterViewLoadMoreClick(Folder folder) {
         mController.onFooterViewLoadMoreClick(folder);
     }
+
+    @Override
+    public void startDragMode() {
+        mController.startDragMode();
+    }
+
+    @Override
+    public void stopDragMode() {
+        mController.stopDragMode();
+    }
 }
