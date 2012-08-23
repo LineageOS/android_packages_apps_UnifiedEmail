@@ -41,7 +41,9 @@ public class AttachmentUtils {
      *         depending on its size.
      */
     public static String convertToHumanReadableSize(Context context, long size) {
-        if (size < KILO) {
+        if (size == 0) {
+            return "";
+        } if (size < KILO) {
             return size + context.getString(R.string.bytes);
         } else if (size < MEGA) {
             return (size / KILO) + context.getString(R.string.kilobytes);
