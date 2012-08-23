@@ -87,6 +87,10 @@ public class Utils {
     public static final String EXTRA_COMPOSE_URI = "composeUri";
     public static final String EXTRA_CONVERSATION = "conversationUri";
     public static final String EXTRA_FOLDER = "folder";
+
+    /** Extra tag for debugging the blank fragment problem. */
+    public static final String VIEW_DEBUGGING_TAG = "MailBlankFragment";
+
     /*
      * Notifies that changes happened. Certain UI components, e.g., widgets, can
      * register for this {@link Intent} and update accordingly. However, this
@@ -1049,7 +1053,11 @@ public class Utils {
      * Hacky method to allow invalidating views all the way up the hierarchy.
      */
     public static void markDirtyTillRoot(String message, View v) {
-        LogUtils.d(LOG_TAG, "%s: markingDirtyTillRoot", message);
+        // During development, we want to log extra debugging information, and disable the
+        // hacky workaround to help diagnose the underlying problem.
+        if (LogUtils.isDebugLoggingEnabled(VIEW_DEBUGGING_TAG)) return;
+
+        LogUtils.d(VIEW_DEBUGGING_TAG, "%s: markingDirtyTillRoot", message);
         v.invalidate();
         ViewParent parent = v.getParent();
         while (parent != null) {
@@ -1058,4 +1066,56 @@ public class Utils {
         }
     }
 
+    public static void checkRequestLayout(View v) {
+        boolean inLayout = false;
+        final View root = v.getRootView();
+
+        if (root == null) {
+            return;
+        }
+
+        final Error e = new Error();
+        for (StackTraceElement ste : e.getStackTrace()) {
+            if ("android.view.ViewGroup".equals(ste.getClassName())
+                    && "layout".equals(ste.getMethodName())) {
+                inLayout = true;
+                break;
+            }
+        }
+        if (inLayout && !v.isLayoutRequested()) {
+            LogUtils.e(VIEW_DEBUGGING_TAG,
+                    e, "WARNING: in requestLayout during layout pass, view=%s", v);
+        }
+    }
+
+    /**
+     * Logs extra information about the views to help find the problem with blank fragments.
+     * To turn on this debugging, enable the "MailBlankFragment" tag with
+     * adb shell setprop log.tag.MailBlankFragment VERBOSE
+     * @param message
+     * @param v
+     */
+    public static void dumpLayoutRequests(String message, View v) {
+        LogUtils.w(VIEW_DEBUGGING_TAG, "dumpLayoutRequests: %s", message);
+
+        while (v != null) {
+            LogUtils.w(VIEW_DEBUGGING_TAG,
+                    "view item: %s mw/mh=%d/%d w/h=%d/%d layoutRequested=%s vis=%s id=0x%x",
+                    v, v.getMeasuredWidth(), v.getMeasuredHeight(), v.getWidth(), v.getHeight(),
+                    v.isLayoutRequested(), v.getVisibility(), v.getId());
+
+            ViewParent vp = v.getParent();
+            if (vp instanceof ViewGroup) {
+                v = (ViewGroup) vp;
+            } else {
+                if (vp != null) {
+                    // this is the root. can't really get access to this guy
+                    LogUtils.w(VIEW_DEBUGGING_TAG,
+                            "view item: (ViewRootImpl) isLayoutRequested=%s\n",
+                            vp.isLayoutRequested());
+                }
+                v = null;
+            }
+        }
+    }
 }

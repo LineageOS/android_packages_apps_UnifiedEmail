@@ -153,6 +153,8 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onResume() {
+        Utils.dumpLayoutRequests("CLF.onResume()", getView());
+
         super.onResume();
         // Hacky workaround for http://b/6946182
         Utils.fixSubTreeLayoutIfOrphaned(getView(), "ConversationListFragment");
@@ -345,11 +347,20 @@ public final class ConversationListFragment extends ListFragment implements
         if (conversationListCursor != null && conversationListCursor.isRefreshReady()) {
             conversationListCursor.sync();
         }
+        Utils.dumpLayoutRequests("CLF.onCreateView()", container);
         return rootView;
     }
 
     @Override
+    public void onDestroy() {
+        Utils.dumpLayoutRequests("CLF.onDestroy()", getView());
+        super.onDestroy();
+    }
+
+    @Override
     public void onDestroyView() {
+        Utils.dumpLayoutRequests("CLF.onDestroyView()", getView());
+
         // If this fragment is being retained, onSaveInstance will not be called, so we need to
         // manage saving the state ourselves.  Unfortunately we don't have a signal indicates that
         // this fragment instance will be reused, so we have to save the state in all cases.
@@ -437,6 +448,7 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onPause() {
+        Utils.dumpLayoutRequests("CLF.onPause()", getView());
         super.onPause();
     }
 
@@ -450,12 +462,14 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onStart() {
+        Utils.dumpLayoutRequests("CLF.onStart()", getView());
         super.onStart();
         mHandler.postDelayed(mUpdateTimestampsRunnable, TIMESTAMP_UPDATE_INTERVAL);
     }
 
     @Override
     public void onStop() {
+        Utils.dumpLayoutRequests("CLF.onStop()", getView());
         super.onStop();
         mHandler.removeCallbacks(mUpdateTimestampsRunnable);
     }
