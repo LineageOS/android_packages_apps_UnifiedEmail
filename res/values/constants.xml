@@ -48,6 +48,8 @@
     <!-- We don't want the unread count to flicker too much in the action bar, when a lot of
     activity.  Throttle loader updates. -->
     <integer name="folder_item_refresh_delay_ms">500</integer>
+    <!-- Delay showing undo bar after a destructive action long enough for the user to process the animations for what just happened -->
+    <integer name="show_undo_bar_delay_ms">500</integer>
     <integer name="conversation_desired_font_size_px">14</integer>
     <!-- matches 'font-size' style in template_conversation_upper.html -->
     <integer name="conversation_unstyled_font_size_px">13</integer>
