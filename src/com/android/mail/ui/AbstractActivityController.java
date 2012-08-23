@@ -251,6 +251,7 @@ public abstract class AbstractActivityController implements ActivityController {
     // will just run the next time the user opens the app.
     private AsyncTask<String, Void, Void> mEnableShareIntents;
     private Folder mFolderListFolder;
+    private boolean mIsDragHappening;
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
@@ -1927,7 +1928,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public final void onRefreshRequired() {
-        if (isAnimating()) {
+        if (isAnimating() || isDragging()) {
             LogUtils.d(LOG_TAG, "onRefreshRequired: delay until animating done");
             return;
         }
@@ -1935,6 +1936,29 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mConversationListCursor.isRefreshRequired()) {
             mConversationListCursor.refresh();
         }
+    }
+
+    @Override
+    public void startDragMode() {
+        mIsDragHappening = true;
+    }
+
+    @Override
+    public void stopDragMode() {
+        mIsDragHappening = false;
+        if (mConversationListCursor.isRefreshReady()) {
+            LogUtils.d(LOG_TAG, "Stopped animating: try sync");
+            onRefreshReady();
+        }
+
+        if (mConversationListCursor.isRefreshRequired()) {
+            LogUtils.d(LOG_TAG, "Stopped animating: refresh");
+            mConversationListCursor.refresh();
+        }
+    }
+
+    private boolean isDragging() {
+        return mIsDragHappening;
     }
 
     private boolean isAnimating() {
