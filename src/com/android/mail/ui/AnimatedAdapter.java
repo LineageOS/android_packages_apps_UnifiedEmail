@@ -366,6 +366,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             }
             changed = true;
         }
+        if (hasFadeLeaveBehinds() && !animate) {
+            // Find any fading leave behind items and commit them all, too.
+            for (LeaveBehindItem item : mFadeLeaveBehindItems.values()) {
+                item.commit();
+            }
+            mFadeLeaveBehindItems.clear();
+            changed = true;
+        }
         if (!mLastDeletingItems.isEmpty()) {
             mLastDeletingItems.clear();
             changed = true;

@@ -359,6 +359,9 @@ public final class ConversationListFragment extends ListFragment implements
 
     @Override
     public void onDestroyView() {
+        // If we are destroying this view, make sure anything that needs to be
+        // committed gets committed.
+        commitDestructiveActions(false);
         Utils.dumpLayoutRequests("CLF.onDestroyView()", getView());
 
         // If this fragment is being retained, onSaveInstance will not be called, so we need to
