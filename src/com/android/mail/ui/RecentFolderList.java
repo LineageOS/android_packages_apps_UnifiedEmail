@@ -123,7 +123,7 @@ public final class RecentFolderList {
      * @param context
      */
     public RecentFolderList(Context context) {
-        mFolderCache = new LruCache<String, Folder>(MAX_RECENT_FOLDERS);
+        mFolderCache = new LruCache<String, Folder>(MAX_RECENT_FOLDERS + MAX_EXCLUDED_FOLDERS);
         mContext = context;
     }
 
@@ -156,13 +156,15 @@ public final class RecentFolderList {
         }
         LogUtils.d(TAG, "Number of recents = %d", c.getCount());
         int i = 0;
-        while (c.moveToNext()) {
+        c.moveToLast();
+        // Add them backwards, since the most recent values are at the beginning in the cursor.
+        // This enables older values to fall off the LRU cache. Also, read all values, just in case
+        // there are duplicates in the cursor.
+        do {
             final Folder folder = new Folder(c);
             mFolderCache.putElement(folder.uri.toString(), folder);
             LogUtils.v(TAG, "Account %s, Recent: %s", mAccount.name, folder.name);
-            if (++i == (MAX_RECENT_FOLDERS + MAX_EXCLUDED_FOLDERS))
-                break;
-        }
+        } while (c.moveToPrevious());
     }
 
     /**
@@ -188,8 +190,9 @@ public final class RecentFolderList {
 
     /**
      * Generate a sorted list of recent folders, excluding the passed in folder (if any) and
-     * the current account's default inbox. This must be called <em>after</em>
+     * default inbox for the current account. This must be called <em>after</em>
      * {@link #setCurrentAccount(Account)} has been called.
+     * Returns a list of size {@value #MAX_RECENT_FOLDERS} or smaller.
      * @param excludedFolder the folder to be excluded (typically the current folder)
      */
     public ArrayList<Folder> getRecentFolderList(Folder excludedFolder) {
@@ -198,20 +201,22 @@ public final class RecentFolderList {
             excludedUris.add(excludedFolder.uri);
         }
         final Uri defaultInbox = (mAccount == null) ?
-            Uri.EMPTY : Settings.getDefaultInboxUri(mAccount.settings);
+                Uri.EMPTY : Settings.getDefaultInboxUri(mAccount.settings);
         if (!defaultInbox.equals(Uri.EMPTY)) {
-            // This could already be in the list, but that's ok
             excludedUris.add(defaultInbox);
         }
         final List<Folder> recent = new ArrayList<Folder>(mFolderCache.values());
-        Collections.sort(recent, ALPHABET_IGNORECASE);
         final ArrayList<Folder> recentFolders = new ArrayList<Folder>();
-        for (Folder f : recent) {
+        for (final Folder f : recent) {
             if (!excludedUris.contains(f.uri)) {
                 recentFolders.add(f);
             }
-            if (recentFolders.size() == MAX_RECENT_FOLDERS) break;
+            if (recentFolders.size() == MAX_RECENT_FOLDERS) {
+                break;
+            }
         }
+        // Sort the values as the very last step.
+        Collections.sort(recentFolders, ALPHABET_IGNORECASE);
         return recentFolders;
     }
 
