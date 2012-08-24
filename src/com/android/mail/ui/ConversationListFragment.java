@@ -370,7 +370,11 @@ public final class ConversationListFragment extends ListFragment implements
         // If the activity is being being torn down the loader may have been reset, so this state
         // may not useful for a future list instance, but in that case, the valid list state would
         // have been saved in onSaveInstanceState
-        mListSavedState = mListView.onSaveInstanceState();
+        // We only want to do this, if the conversation cursor is not disabled
+        final ConversationCursor cursor = getConversationListCursor();
+        if (cursor != null && !cursor.isClosed()) {
+            mListSavedState = mListView.onSaveInstanceState();
+        }
 
         // Clear the list's adapter
         mListAdapter.destroy();
