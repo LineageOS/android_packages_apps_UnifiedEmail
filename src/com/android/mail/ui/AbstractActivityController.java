@@ -1403,6 +1403,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onConversationSelected(Conversation conversation) {
+        // Only animate destructive actions if we are going to be showing the
+        // conversation list when we show the next conversation.
+        commitDestructiveActions(Utils.useTabletUI(mContext));
         showConversation(conversation);
         if (Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())) {
             mViewMode.enterSearchResultsConversationMode();
