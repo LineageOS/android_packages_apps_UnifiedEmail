@@ -202,6 +202,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
             ObjectAnimator height = ObjectAnimator.ofInt(this, "animatedHeight", start, end);
             mAnimatedHeight = start;
             mWidth = getMeasuredWidth();
+            mSwipeableContent.setVisibility(View.GONE);
             height.setInterpolator(new DecelerateInterpolator(2.0f));
             height.addListener(listener);
             height.setDuration(sShrinkAnimationDuration);
@@ -244,5 +245,13 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     public void setAnimatedHeight(int height) {
         mAnimatedHeight = height;
         requestLayout();
+    }
+
+    /**
+     * We are in a state where we can't afford the alpha fade in, so just show the text.
+     */
+    public void showTextImmediately() {
+        // Fake that we are already fading it in so animations get ignored.
+        mFadingInText = true;
     }
 }
