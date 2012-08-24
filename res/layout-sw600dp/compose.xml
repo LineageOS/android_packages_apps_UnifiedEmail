@@ -113,11 +113,7 @@
                     android:layout_width="0dip">
                     <!-- Subject: localization cannot control what field pressing tab will bring the user to. This is controlled at runtime.  -->
                     <EditText android:id="@+id/subject"
-                        android:inputType="textEmailSubject|textAutoCorrect|textCapSentences|textImeMultiLine|textMultiLine"
-                        android:hint="@string/subject_hint"
-                        android:textColorHint="@color/compose_label_text"
-                        android:imeOptions="actionDone|flagNoExtractUi"
-                        style="@style/ComposeEditTextView" />
+                        style="@style/ComposeSubjectView" />
                 </RelativeLayout>
                 <ImageView android:id="@+id/add_photo_attachment"
                         android:text="@string/add_file_attachment"

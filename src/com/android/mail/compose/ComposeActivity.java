@@ -50,6 +50,7 @@ import android.text.TextWatcher;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -58,6 +59,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -110,7 +112,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
-        AttachmentDeletedListener, OnAccountChangedListener, LoaderManager.LoaderCallbacks<Cursor> {
+        AttachmentDeletedListener, OnAccountChangedListener, LoaderManager.LoaderCallbacks<Cursor>,
+        TextView.OnEditorActionListener {
     // Identifiers for which type of composition this is
     static final int COMPOSE = -1;
     static final int REPLY = 0;
@@ -880,6 +883,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // TODO: add special chips text change watchers before adding
         // this as a text changed watcher to the to, cc, bcc fields.
         mSubject = (TextView) findViewById(R.id.subject);
+        mSubject.setOnEditorActionListener(this);
         mQuotedTextView = (QuotedTextView) findViewById(R.id.quoted_text_view);
         mQuotedTextView.setRespondInlineListener(this);
         mBodyView = (EditText) findViewById(R.id.body);
@@ -887,6 +891,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         mFromStaticText = (TextView) findViewById(R.id.from_account_name);
         mFromSpinnerWrapper = findViewById(R.id.spinner_from_content);
         mFromSpinner = (FromAddressSpinner) findViewById(R.id.from_picker);
+    }
+
+    @Override
+    public boolean onEditorAction(TextView view, int action, KeyEvent keyEvent) {
+        if (action == EditorInfo.IME_ACTION_DONE) {
+            focusBody();
+            return true;
+        }
+        return false;
     }
 
     protected TextView getBody() {
