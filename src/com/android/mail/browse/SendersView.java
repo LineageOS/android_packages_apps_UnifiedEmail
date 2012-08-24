@@ -104,25 +104,36 @@ public class SendersView {
         }
     }
 
-    public static SpannableStringBuilder createMessageInfo(Context context,
-            Conversation conv) {
+    public static SpannableStringBuilder createMessageInfo(Context context, Conversation conv) {
         ConversationInfo conversationInfo = conv.conversationInfo;
         int sendingStatus = conv.sendingState;
         SpannableStringBuilder messageInfo = new SpannableStringBuilder();
+        boolean hasSenders = false;
+        // This covers the case where the sender is "me" and this is a draft
+        // message, which means this will only run once most of the time.
+        for (MessageInfo m : conversationInfo.messageInfos) {
+            if (!TextUtils.isEmpty(m.sender)) {
+                hasSenders = true;
+                break;
+            }
+        }
         getSenderResources(context);
         if (conversationInfo != null) {
             int count = conversationInfo.messageCount;
             int draftCount = conversationInfo.draftCount;
-            if (count > 0 || draftCount <= 0) {
-                messageInfo.append(sMessageCountSpacerString);
-            }
+            boolean showSending = sendingStatus == UIProvider.ConversationSendingState.SENDING;
             if (count > 1) {
                 messageInfo.append(count + "");
             }
             messageInfo.setSpan(CharacterStyle.wrap(sMessageInfoStyleSpan), 0,
                     messageInfo.length(), 0);
             if (draftCount > 0) {
-                messageInfo.append(sSendersSplitToken);
+                // If we are showing a message count or any draft text and there
+                // is at least 1 sender, prepend the sending state text with a
+                // comma.
+                if (hasSenders || count > 1) {
+                    messageInfo.append(sSendersSplitToken);
+                }
                 SpannableStringBuilder draftString = new SpannableStringBuilder();
                 if (draftCount == 1) {
                     draftString.append(sDraftSingularString);
@@ -134,16 +145,21 @@ public class SendersView {
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 messageInfo.append(draftString);
             }
-            if (sendingStatus == UIProvider.ConversationSendingState.SENDING) {
+            if (showSending) {
                 // If we are showing a message count or any draft text, prepend
                 // the sending state text with a comma.
-                if (count > 1 ||draftCount > 0) {
+                if (count > 1 || draftCount > 0) {
                     messageInfo.append(sSendersSplitToken);
                 }
                 SpannableStringBuilder sending = new SpannableStringBuilder();
                 sending.append(sSendingString);
                 sending.setSpan(sSendingStyleSpan, 0, sending.length(), 0);
                 messageInfo.append(sending);
+            }
+            // Prepend a space if we are showing other message info text.
+            if (count > 1 || (draftCount > 0 && hasSenders) || showSending) {
+                messageInfo = new SpannableStringBuilder(sMessageCountSpacerString)
+                        .append(messageInfo);
             }
         }
         return messageInfo;
