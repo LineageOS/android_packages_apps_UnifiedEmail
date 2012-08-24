@@ -292,7 +292,12 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (hasLeaveBehinds()) {
             if(isPositionLeaveBehind(conv)) {
                 LeaveBehindItem fadeIn = getLeaveBehindItem(conv);
-                fadeIn.startFadeInAnimation();
+                if (hasFadeLeaveBehinds()) {
+                    // Avoid the fade in and just show the text.
+                    fadeIn.showTextImmediately();
+                } else {
+                    fadeIn.startFadeInAnimation();
+                }
                 return fadeIn;
             }
         }
