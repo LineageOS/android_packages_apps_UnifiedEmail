@@ -587,6 +587,10 @@ public final class ConversationViewFragment extends Fragment implements
         // When adding adapter items, also add their heights to help the container later determine
         // overlay dimensions.
 
+        // When re-rendering, prevent ConversationContainer from laying out overlays until after
+        // the new spacers are positioned by WebView.
+        mConversationContainer.invalidateSpacerGeometry();
+
         mAdapter.clear();
 
         // re-evaluate the message parts of the view state, since the messages may have changed
