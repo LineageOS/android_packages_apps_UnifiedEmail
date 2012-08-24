@@ -44,6 +44,8 @@
     <dimen name="standard_scaled_dimen">100sp</dimen>
     <dimen name="folder_cell_width">8dip</dimen>
     <dimen name="triangle_width">15dip</dimen>
+    <dimen name="conversation_message_content_margin_side">16dp</dimen>
+    <dimen name="conversation_view_margin_side">0dp</dimen>
     <dimen name="conversation_header_vertical_item_padding">8dip</dimen>
     <dimen name="conversation_header_vertical_padding">0dip</dimen>
     <dimen name="conversation_header_side_padding">8dip</dimen>
@@ -67,7 +69,6 @@
     <dimen name="contact_photo_width">48sp</dimen>
     <dimen name="contact_photo_height">48sp</dimen>
     <dimen name="message_header_inner_side_padding">8dip</dimen>
-    <dimen name="new_message_notification_margin_side">0dp</dimen>
     <dimen name="attachment_toast_yoffset">-100dip</dimen>
     <dimen name="spinner_frame_width">168dip</dimen>
     <dimen name="folder_list_heading_padding_side">8dp</dimen>
