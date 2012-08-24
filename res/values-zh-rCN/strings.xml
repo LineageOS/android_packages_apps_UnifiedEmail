@@ -280,10 +280,12 @@
     <string name="show_images" msgid="1875700481186331432">"显示图片"</string>
     <string name="always_show_images" msgid="5966408990164581801">"总是显示来自此发件人的图片"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"系统会自动显示来自此发件人的图片。"</string>
-    <string name="address_display_format" msgid="7394762772703217683">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt;"</string>
-    <string name="address_display_format_with_via_domain" msgid="2292171199773526754">"<xliff:g id="NAME">%1$s</xliff:g> &lt;<xliff:g id="EMAIL">%2$s</xliff:g>&gt; 来自 <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
+    <!-- no translation found for address_display_format (3581303608028992576) -->
+    <skip />
+    <!-- no translation found for address_display_format_with_via_domain (2316262813990842490) -->
+    <skip />
     <string name="message_saved" msgid="7073947895562277576">"邮件已另存为草稿。"</string>
-    <string name="sending_message" msgid="2822171587017313151">"正在将邮件发送到发件箱…"</string>
+    <string name="sending_message" msgid="2822171587017313151">"正在将邮件送到发件箱…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"地址 <xliff:g id="WRONGEMAIL">%s</xliff:g> 无效。"</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ 显示引用文字"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ 隐藏引用文字"</string>
@@ -299,7 +301,14 @@
     <string name="cancel" msgid="8762981157252199115">"取消"</string>
     <string name="close" msgid="419945428844076406">"关闭"</string>
     <string name="folders_activity_instructions" msgid="5237801615196958918">"此帐户尚未设置文件夹。"</string>
-    <!-- no translation found for sync_status:5 (4779810016424303449) -->
+  <string-array name="sync_status">
+    <item msgid="2446076619901049026">"成功"</item>
+    <item msgid="7109065688039971961">"无网络连接。"</item>
+    <item msgid="8437496123716232060">"无法登录。"</item>
+    <item msgid="1651266301325684887">"安全错误。"</item>
+    <item msgid="1461520171154288533">"无法同步。"</item>
+    <item msgid="4779810016424303449">"内部错误"</item>
+  </string-array>
     <string name="tap_to_configure" msgid="1181356242354390930">"触摸可进行设置"</string>
     <string name="non_synced_folder_description" msgid="6059194125558004080">"要查看会话，请同步此文件夹。"</string>
     <string name="tap_to_configure_folder_sync" msgid="3846898229180591661">"同步文件夹"</string>
