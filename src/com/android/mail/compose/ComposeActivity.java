@@ -235,6 +235,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private long mDraftId = UIProvider.INVALID_MESSAGE_ID;
     private Message mDraft;
     private Object mDraftLock = new Object();
+    private ImageView mPhotoAttachmentsButton;
+    private ImageView mVideoAttachmentsButton;
 
     /**
      * Boolean indicating whether ComposeActivity was launched from a Gmail controlled view.
@@ -861,6 +863,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
+        mPhotoAttachmentsButton = (ImageView) findViewById(R.id.add_photo_attachment);
+        if (mPhotoAttachmentsButton != null) {
+            mPhotoAttachmentsButton.setOnClickListener(this);
+        }
+        mVideoAttachmentsButton = (ImageView) findViewById(R.id.add_video_attachment);
+        if (mVideoAttachmentsButton != null) {
+            mVideoAttachmentsButton.setOnClickListener(this);
+        }
         LayoutTransition transition =
                 ((ViewGroup) findViewById(R.id.content)).getLayoutTransition();
         mAttachmentsView.setComposeLayoutTransition(transition);
@@ -1284,7 +1294,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 mCcBccButton.setText(getString(!ccVisible ? R.string.add_cc_label
                         : R.string.add_bcc_label));
             } else {
-                mCcBccButton.setVisibility(View.GONE);
+                mCcBccButton.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -1561,6 +1571,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // Verify that cc/ bcc aren't showing.
                 // Animate in cc/bcc.
                 showCcBccViews();
+                break;
+            case R.id.add_photo_attachment:
+                doAttach(MIME_TYPE_PHOTO);
+                break;
+            case R.id.add_video_attachment:
+                doAttach(MIME_TYPE_VIDEO);
                 break;
         }
     }
@@ -2360,7 +2376,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private void showCcBccViews() {
         mCcBccView.show(true, true, true);
         if (mCcBccButton != null) {
-            mCcBccButton.setVisibility(View.GONE);
+            mCcBccButton.setVisibility(View.INVISIBLE);
         }
     }
 
