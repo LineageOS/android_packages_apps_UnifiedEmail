@@ -22,13 +22,13 @@ public class FolderListLayout extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        LogUtils.w(Utils.VIEW_DEBUGGING_TAG, "FolderListLayout(%s).onMeasure() called", this);
+        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "FolderListLayout(%s).onMeasure() called", this);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        LogUtils.w(Utils.VIEW_DEBUGGING_TAG, "FolderListLayout(%s).onLayout() called", this);
+        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "FolderListLayout(%s).onLayout() called", this);
         super.onLayout(changed, left, top, right, bottom);
     }
 

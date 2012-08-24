@@ -82,11 +82,11 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
 
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
-        LogUtils.w(Utils.VIEW_DEBUGGING_TAG,
+        LogUtils.d(Utils.VIEW_DEBUGGING_TAG,
                 "START CLF-ListView.onFocusChanged layoutRequested=%s root.layoutRequested=%s",
                 isLayoutRequested(), getRootView().isLayoutRequested());
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-        LogUtils.w(Utils.VIEW_DEBUGGING_TAG, new Error(),
+        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, new Error(),
                 "FINISH CLF-ListView.onFocusChanged layoutRequested=%s root.layoutRequested=%s",
                 isLayoutRequested(), getRootView().isLayoutRequested());
     }
