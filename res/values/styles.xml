@@ -272,6 +272,7 @@
 
     <style name="MessageAttachmentsHeaderStyle" parent="MessageHeaderExtraSmallStyle">
         <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginBottom">8dp</item>
     </style>
 
     <style name="MessageHeaderDateTextStyle" parent="MessageHeaderSmallStyle">
