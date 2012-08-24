@@ -28,7 +28,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -50,7 +49,6 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     private View mSwipeableContent;
     private static int sShrinkAnimationDuration = -1;
     private static int sFadeInAnimationDuration = -1;
-    private static int sSwipedBgColor = -1;
 
     public LeaveBehindItem(Context context) {
         this(context, null);
@@ -67,7 +65,6 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
                     R.integer.shrink_animation_duration);
             sFadeInAnimationDuration = context.getResources().getInteger(
                     R.integer.fade_in_animation_duration);
-            sSwipedBgColor = context.getResources().getColor(R.color.swiped_bg_color);
         }
     }
 
@@ -75,7 +72,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.undo_button:
+            case R.id.swipeable_content:
                 if (mAccount.undoUri != null) {
                     // NOTE: We might want undo to return the messages affected,
                     // in which case the resulting cursor might be interesting...
@@ -85,6 +82,10 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
                     mAdapter.setSwipeUndo(true);
                     mConversationCursor.undo(getContext(), mAccount.undoUri);
                 }
+                break;
+            case R.id.undo_descriptionview:
+                // Essentially, makes sure that tapping description view doesn't highlight
+                // either the undo button icon or text.
                 break;
         }
     }
@@ -97,10 +98,13 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
         mConversationCursor = (ConversationCursor) adapter.getCursor();
         setData(target);
         mSwipeableContent = findViewById(R.id.swipeable_content);
+        // Listen on swipeable content so that we can show both the undo icon
+        // and button text as selected since they set duplicateParentState to true
+        mSwipeableContent.setOnClickListener(this);
         mText = ((TextView) findViewById(R.id.undo_descriptionview));
         mText.setText(Html.fromHtml(mUndoOp
                 .getSingularDescription(getContext(), folder)));
-        findViewById(R.id.undo_button).setOnClickListener(this);
+        mText.setOnClickListener(this);
     }
 
     public void commit() {
