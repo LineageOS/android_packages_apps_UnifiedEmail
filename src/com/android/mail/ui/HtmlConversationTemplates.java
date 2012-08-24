@@ -128,7 +128,7 @@ public class HtmlConversationTemplates {
     }
 
     public void appendMessageHtml(Message message, boolean isExpanded,
-            boolean safeForImages, float zoomValue, int headerHeight, int footerHeight) {
+            boolean safeForImages, int headerHeight, int footerHeight) {
 
         final String bodyDisplay = isExpanded ? "block" : "none";
         final String expandedClass = isExpanded ? "expanded" : "";
@@ -165,7 +165,6 @@ public class HtmlConversationTemplates {
                 headerHeight,
                 showImagesClass,
                 bodyDisplay,
-                zoomValue,
                 body,
                 bodyDisplay,
                 footerHeight
@@ -176,13 +175,13 @@ public class HtmlConversationTemplates {
         return MESSAGE_PREFIX + msg.id;
     }
 
-    public void startConversation(int conversationHeaderHeight) {
+    public void startConversation(int sideMargin, int conversationHeaderHeight) {
         if (mInProgress) {
             throw new IllegalStateException("must call startConversation first");
         }
 
         reset();
-        append(sConversationUpper, conversationHeaderHeight);
+        append(sConversationUpper, sideMargin, conversationHeaderHeight);
         mInProgress = true;
     }
 
