@@ -22,16 +22,6 @@
         android:title="@string/send"
         android:icon="@drawable/send" />
 
-    <item android:id="@+id/add_photo_attachment"
-        android:icon="@drawable/ic_attachment_holo_light"
-        android:title="@string/add_photo_attachment"
-        android:showAsAction="never" />
-
-    <item android:id="@+id/add_video_attachment"
-        android:icon="@drawable/ic_attachment_holo_light"
-        android:title="@string/add_video_attachment"
-        android:showAsAction="never" />
-
     <item android:id="@+id/save"
         android:showAsAction="never"
         android:title="@string/save_draft"
