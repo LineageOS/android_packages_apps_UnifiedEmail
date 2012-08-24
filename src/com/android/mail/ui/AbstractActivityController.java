@@ -494,11 +494,6 @@ public abstract class AbstractActivityController implements ActivityController {
         } else {
             mConvListContext = ConversationListContext.forFolder(mAccount, mFolder);
         }
-        // Add the folder that we were viewing to the recent folders list.
-        // TODO: this may need to be fine tuned.  If this is the signal that is indicating that
-        // the list is shown to the user, this could fire in one pane if the user goes directly
-        // to a conversation
-        updateRecentFolderList();
         cancelRefreshTask();
     }
 
@@ -1351,6 +1346,11 @@ public abstract class AbstractActivityController implements ActivityController {
     public void showConversation(Conversation conversation) {
         // Set the current conversation just in case it wasn't already set.
         setCurrentConversation(conversation);
+        // Add the folder that we were viewing to the recent folders list.
+        // TODO: this may need to be fine tuned.  If this is the signal that is indicating that
+        // the list is shown to the user, this could fire in one pane if the user goes directly
+        // to a conversation
+        updateRecentFolderList();
     }
 
     /**
