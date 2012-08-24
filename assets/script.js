@@ -67,8 +67,8 @@ function normalizeMessageWidths() {
     var i;
     var elements = document.getElementsByClassName("mail-message-content");
     var messageElement;
-    var documentWidth = document.documentElement.offsetWidth;
-    var scale;
+    var documentWidth = document.body.offsetWidth;
+
     for (i = 0; i < elements.length; i++) {
         messageElement = elements[i];
         messageElement.style.zoom = documentWidth / messageElement.scrollWidth;
