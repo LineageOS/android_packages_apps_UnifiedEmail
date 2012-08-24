@@ -2589,7 +2589,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     private void promptUserForAuthentication(Account account) {
-        if (account != null && account.reauthenticationIntentUri != null) {
+        if (account != null && !Utils.isEmpty(account.reauthenticationIntentUri)) {
             final Intent authenticationIntent =
                     new Intent(Intent.ACTION_VIEW, account.reauthenticationIntentUri);
             mActivity.startActivityForResult(authenticationIntent, REAUTHENTICATE_REQUEST_CODE);
