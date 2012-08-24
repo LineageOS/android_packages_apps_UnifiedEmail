@@ -1055,7 +1055,7 @@ public class Utils {
     public static void markDirtyTillRoot(String message, View v) {
         // During development, we want to log extra debugging information, and disable the
         // hacky workaround to help diagnose the underlying problem.
-        if (LogUtils.isDebugLoggingEnabled(VIEW_DEBUGGING_TAG)) return;
+        if (LogUtils.isLoggable(VIEW_DEBUGGING_TAG, LogUtils.DEBUG)) return;
 
         LogUtils.d(VIEW_DEBUGGING_TAG, "%s: markingDirtyTillRoot", message);
         v.invalidate();
@@ -1083,7 +1083,7 @@ public class Utils {
             }
         }
         if (inLayout && !v.isLayoutRequested()) {
-            LogUtils.e(VIEW_DEBUGGING_TAG,
+            LogUtils.i(VIEW_DEBUGGING_TAG,
                     e, "WARNING: in requestLayout during layout pass, view=%s", v);
         }
     }
@@ -1096,10 +1096,10 @@ public class Utils {
      * @param v
      */
     public static void dumpLayoutRequests(String message, View v) {
-        LogUtils.w(VIEW_DEBUGGING_TAG, "dumpLayoutRequests: %s", message);
+        LogUtils.d(VIEW_DEBUGGING_TAG, "dumpLayoutRequests: %s", message);
 
         while (v != null) {
-            LogUtils.w(VIEW_DEBUGGING_TAG,
+            LogUtils.d(VIEW_DEBUGGING_TAG,
                     "view item: %s mw/mh=%d/%d w/h=%d/%d layoutRequested=%s vis=%s id=0x%x",
                     v, v.getMeasuredWidth(), v.getMeasuredHeight(), v.getWidth(), v.getHeight(),
                     v.isLayoutRequested(), v.getVisibility(), v.getId());
@@ -1110,7 +1110,7 @@ public class Utils {
             } else {
                 if (vp != null) {
                     // this is the root. can't really get access to this guy
-                    LogUtils.w(VIEW_DEBUGGING_TAG,
+                    LogUtils.d(VIEW_DEBUGGING_TAG,
                             "view item: (ViewRootImpl) isLayoutRequested=%s\n",
                             vp.isLayoutRequested());
                 }
