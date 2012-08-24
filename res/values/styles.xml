@@ -30,6 +30,15 @@
         <item name="android:background">@null</item>
     </style>
 
+    <style name="ComposeSubjectView" parent="@style/ComposeEditTextView">
+        <item name="android:maxLines">1</item>
+        <item name="android:inputType">textEmailSubject|textAutoCorrect|textCapSentences|textImeMultiLine|textMultiLine</item>
+        <item name="android:hint">@string/subject_hint</item>
+        <item name="android:textColorHint">@color/compose_label_text</item>
+        <item name="android:imeOptions">actionDone|flagNoExtractUi</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
     <style name="RecipientComposeFieldSpacer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">4dip</item>
