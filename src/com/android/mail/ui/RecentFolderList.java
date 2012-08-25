@@ -156,7 +156,10 @@ public final class RecentFolderList {
         }
         LogUtils.d(TAG, "Number of recents = %d", c.getCount());
         int i = 0;
-        c.moveToLast();
+        if (!c.moveToLast()) {
+            LogUtils.d(TAG, "Not able to move to last in recent labels cursor");
+            return;
+        }
         // Add them backwards, since the most recent values are at the beginning in the cursor.
         // This enables older values to fall off the LRU cache. Also, read all values, just in case
         // there are duplicates in the cursor.
