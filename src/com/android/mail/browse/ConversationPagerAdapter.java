@@ -50,9 +50,13 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     private final Folder mFolder;
     /**
      * In singleton mode, this adapter ignores the cursor contents and size, and acts as if the
-     * data set size is exactly size=1, with {@link #mInitialConversation} at position 0.
+     * data set size is exactly size=1, with {@link #getDefaultConversation()} at position 0.
      */
     private boolean mSingletonMode = true;
+    /**
+     * Similar to singleton mode, but once enabled, detached mode is permanent for this adapter.
+     */
+    private boolean mDetachedMode = false;
     /**
      * Adapter methods may trigger a data set change notification in the middle of a ViewPager
      * update, but they are not safe to handle, so we have to ignore them. This will not ignore
@@ -81,6 +85,9 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
+    private static final String BUNDLE_DETACHED_MODE =
+            ConversationPagerAdapter.class.getName() + "-detachedmode";
+
     public ConversationPagerAdapter(Resources res, FragmentManager fm, Account account,
             Folder folder, Conversation initialConversation) {
         super(fm, false /* enableSavedStates */);
@@ -104,7 +111,11 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     }
 
     public boolean isSingletonMode() {
-        return mSingletonMode || getCursor() == null;
+        return mSingletonMode;
+    }
+
+    public boolean isPagingDisabled() {
+        return mSingletonMode || mDetachedMode || getCursor() == null;
     }
 
     private Cursor getCursor() {
@@ -124,14 +135,14 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     public Fragment getItem(int position) {
         final Conversation c;
 
-        if (isSingletonMode()) {
+        if (isPagingDisabled()) {
             // cursor-less adapter is a size-1 cursor that points to mInitialConversation.
             // sanity-check
             if (position != 0) {
                 LogUtils.wtf(LOG_TAG, "pager cursor is null and position is non-zero: %d",
                         position);
             }
-            c = mInitialConversation;
+            c = getDefaultConversation();
             c.position = 0;
         } else {
             final Cursor cursor = getCursor();
@@ -156,7 +167,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     @Override
     public int getCount() {
-        if (isSingletonMode()) {
+        if (isPagingDisabled()) {
             return 1;
         }
         final Cursor cursor = getCursor();
@@ -188,7 +199,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         final String title;
         final int currentPosition = mPager.getCurrentItem();
 
-        if (isSingletonMode()) {
+        if (isPagingDisabled()) {
             title = null;
         } else if (position == currentPosition) {
             int total = getCount();
@@ -208,14 +219,24 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
 
     @Override
     public Parcelable saveState() {
-        LogUtils.d(LOG_TAG, "IN PagerAdapter.saveState");
-        return super.saveState();
+        LogUtils.d(LOG_TAG, "IN PagerAdapter.saveState. this=%s", this);
+        Bundle state = (Bundle) super.saveState(); // superclass uses a Bundle
+        if (state == null) {
+            state = new Bundle();
+        }
+        state.putBoolean(BUNDLE_DETACHED_MODE, mDetachedMode);
+        return state;
     }
 
     @Override
     public void restoreState(Parcelable state, ClassLoader loader) {
-        LogUtils.d(LOG_TAG, "IN PagerAdapter.restoreState");
+        LogUtils.d(LOG_TAG, "IN PagerAdapter.restoreState. this=%s", this);
         super.restoreState(state, loader);
+        if (state != null) {
+            Bundle b = (Bundle) state;
+            b.setClassLoader(loader);
+            mDetachedMode = b.getBoolean(BUNDLE_DETACHED_MODE);
+        }
     }
 
     @Override
@@ -236,7 +257,30 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
             LogUtils.d(LOG_TAG, "IN PagerAdapter.notifyDataSetChanged, ignoring unsafe update");
             return;
         }
+
+        // when the currently visible item disappears from the dataset:
+        //   if the new version of the currently visible item has zero messages:
+        //     notify the list controller so it can handle this 'current conversation gone' case
+        //     (by backing out of conversation mode)
+        //   else
+        //     'detach' the conversation view from the cursor, keeping the current item as-is but
+        //     disabling swipe (effectively the same as singleton mode)
+        if (mController != null) {
+            final Conversation currConversation = mController.getCurrentConversation();
+            final int pos = getConversationPosition(currConversation);
+            if (pos == POSITION_NONE) {
+                // enable detached mode and do no more here. the fragment itself will figure out
+                // if the conversation is empty (using message list cursor) and back out if needed.
+                mDetachedMode = true;
+                LogUtils.i(LOG_TAG, "CPA: current conv is gone, reverting to detached mode. c=%s",
+                        currConversation.uri);
+            }
+        }
+
         super.notifyDataSetChanged();
+
+        // notify unaffected fragment items of the change, so they can re-render
+        // (the change may have been to the labels for a single conversation, for example)
     }
 
     @Override
@@ -252,14 +296,22 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         }
     }
 
+    private Conversation getDefaultConversation() {
+        Conversation c = (mController != null) ? mController.getCurrentConversation() : null;
+        if (c == null) {
+            c = mInitialConversation;
+        }
+        return c;
+    }
+
     public int getConversationPosition(Conversation conv) {
-        if (isSingletonMode()) {
+        if (isPagingDisabled()) {
             if (getCursor() == null) {
                 return POSITION_NONE;
             }
 
-            if (conv != mInitialConversation) {
-                LogUtils.w(LOG_TAG, "unable to find conversation in singleton mode. c=%s",
+            if (conv != getDefaultConversation()) {
+                LogUtils.d(LOG_TAG, "unable to find conversation in singleton mode. c=%s",
                         conv);
                 return POSITION_NONE;
             }

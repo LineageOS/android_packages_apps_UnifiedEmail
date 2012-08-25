@@ -267,8 +267,12 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void showConversation(Conversation conversation) {
-        super.showConversation(conversation);
+    protected void showConversation(Conversation conversation, boolean inLoaderCallbacks) {
+        super.showConversation(conversation, inLoaderCallbacks);
+
+        // 2-pane can ignore inLoaderCallbacks because it doesn't use
+        // FragmentManager.popBackStack().
+
         if (mActivity == null) {
             return;
         }

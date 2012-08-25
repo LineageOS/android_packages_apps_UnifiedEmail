@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
@@ -214,13 +215,13 @@ public final class OnePaneController extends AbstractActivityController {
     }
 
     @Override
-    public void showConversation(Conversation conversation) {
-        super.showConversation(conversation);
+    protected void showConversation(Conversation conversation, boolean inLoaderCallbacks) {
+        super.showConversation(conversation, inLoaderCallbacks);
         if (conversation == null) {
             // This is a request to remove the conversation view, and pop back the view stack.
             // If we are in conversation list view already, this should be a safe thing to do, so
             // we don't check viewmode.
-            transitionBackToConversationListMode();
+            transitionBackToConversationListMode(inLoaderCallbacks);
             return;
         }
         disableCabMode();
@@ -347,7 +348,7 @@ public final class OnePaneController extends AbstractActivityController {
                 transitionToInbox();
             }
         } else if (mode == ViewMode.CONVERSATION || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
-            transitionBackToConversationListMode();
+            transitionBackToConversationListMode(false /* inLoaderCallbacks */);
         } else {
             mActivity.finish();
         }
@@ -477,7 +478,7 @@ public final class OnePaneController extends AbstractActivityController {
         return true;
     }
 
-    private void transitionBackToConversationListMode() {
+    private void transitionBackToConversationListMode(boolean inLoaderCallbacks) {
         final int mode = mViewMode.getMode();
         enableCabMode();
         if (mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
@@ -486,9 +487,9 @@ public final class OnePaneController extends AbstractActivityController {
             mViewMode.enterConversationListMode();
         }
         if (isTransactionIdValid(mLastConversationListTransactionId)) {
-            mActivity.getFragmentManager().popBackStack(mLastConversationListTransactionId, 0);
+            safelyPopBackStack(mLastConversationListTransactionId, inLoaderCallbacks);
         } else if (isTransactionIdValid(mLastInboxConversationListTransactionId)) {
-            mActivity.getFragmentManager().popBackStack(mLastInboxConversationListTransactionId, 0);
+            safelyPopBackStack(mLastInboxConversationListTransactionId, inLoaderCallbacks);
             onFolderChanged(mInbox);
         } else {
             // TODO: revisit if this block is necessary
@@ -503,6 +504,36 @@ public final class OnePaneController extends AbstractActivityController {
         mConversationListVisible = true;
         onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
+    }
+
+    /**
+     * Pop to a specified point in the fragment back stack without causing IllegalStateExceptions
+     * from committing a fragment transaction "at the wrong time".
+     * <p>
+     * If the caller specifies that we are in
+     * the scope of an {@link LoaderCallbacks#onLoadFinished(android.content.Loader, Object)},
+     * this method will pop back in a Handler. The deferred job will also check that the Activity
+     * is in a valid state for fragment transactions, using {@link #safeToModifyFragments()}.
+     * Otherwise, this method will pop back immediately if safe. Finally, if we are not in
+     * onLoadFinished and it's not safe, this method will just ignore the request.
+     *
+     * @param transactionId back stack destination to pop to
+     * @param inLoaderCallbacks whether we are in the scope of an onLoadFinished (when fragment
+     * transactions are disallowed)
+     */
+    private void safelyPopBackStack(int transactionId, boolean inLoaderCallbacks) {
+        final PopBackStackRunnable r = new PopBackStackRunnable(transactionId);
+        if (inLoaderCallbacks) {
+            // always run deferred. ensure deferred job checks safety.
+            mHandler.post(r);
+        } else if (safeToModifyFragments()) {
+            // run now
+            r.popBackStack();
+        } else {
+            // ignore
+            LogUtils.i(LOG_TAG, "Activity has been saved; ignoring unsafe immediate request"
+                    + " to pop back stack");
+        }
     }
 
     @Override
@@ -573,4 +604,28 @@ public final class OnePaneController extends AbstractActivityController {
         }
         return super.getHelpContext();
     }
+
+    private final class PopBackStackRunnable implements Runnable {
+
+        private final int mTransactionId;
+
+        public PopBackStackRunnable(int transactionId) {
+            mTransactionId = transactionId;
+        }
+
+        public void popBackStack() {
+            mActivity.getFragmentManager().popBackStack(mTransactionId, 0);
+        }
+
+        @Override
+        public void run() {
+            if (safeToModifyFragments()) {
+                popBackStack();
+            } else {
+                LogUtils.i(LOG_TAG, "Activity has been saved; ignoring unsafe deferred request"
+                        + " to pop back stack");
+            }
+        }
+    }
+
 }

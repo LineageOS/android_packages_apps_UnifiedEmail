@@ -279,7 +279,6 @@ public final class ConversationViewFragment extends Fragment implements
 
     @Override
     public void onCreate(Bundle savedState) {
-        LogUtils.d(LOG_TAG, "onCreate in ConversationViewFragment (this=%s)", this);
         super.onCreate(savedState);
 
         final Bundle args = getArguments();
@@ -289,6 +288,8 @@ public final class ConversationViewFragment extends Fragment implements
         // Since the uri specified in the conversation base uri may not be unique, we specify a
         // base uri that us guaranteed to be unique for this conversation.
         mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
+
+        LogUtils.d(LOG_TAG, "onCreate in ConversationViewFragment (this=%s)", this);
 
         // Not really, we just want to get a crack to store a reference to the change_folder item
         setHasOptionsMenu(true);
@@ -581,8 +582,7 @@ public final class ConversationViewFragment extends Fragment implements
     private String renderMessageBodies(MessageCursor messageCursor) {
         int pos = -1;
 
-        LogUtils.d(LOG_TAG, "IN renderMessageBodies, fragment=%s subj=%s", this,
-                mConversation.subject);
+        LogUtils.d(LOG_TAG, "IN renderMessageBodies, fragment=%s", this);
         boolean allowNetworkImages = false;
 
         // TODO: re-use any existing adapter item state (expanded, details expanded, show pics)
@@ -632,7 +632,13 @@ public final class ConversationViewFragment extends Fragment implements
             final Integer savedExpanded = prevState.getExpansionState(msg);
             final int expandedState;
             if (savedExpanded != null) {
-                expandedState = savedExpanded;
+                if (ExpansionState.isSuperCollapsed(savedExpanded) && messageCursor.isLast()) {
+                    // override saved state when this is now the new last message
+                    // this happens to the second-to-last message when you discard a draft
+                    expandedState = ExpansionState.EXPANDED;
+                } else {
+                    expandedState = savedExpanded;
+                }
             } else {
                 // new messages that are not expanded default to being eligible for super-collapse
                 expandedState = (!msg.read || msg.starred || messageCursor.isLast()) ?
@@ -1125,16 +1131,36 @@ public final class ConversationViewFragment extends Fragment implements
                 LogUtils.d(LOG_TAG, "LOADED CONVERSATION= %s", messageCursor.getDebugDump());
             }
 
-            // ignore cursors that are still loading results
-            if (!messageCursor.isLoaded()) {
+            // TODO: handle ERROR status
+
+            // When the last cursor had message(s), and the new version has no messages,
+            // we need to exit conversation view.
+            if (messageCursor.getCount() == 0 && mCursor != null) {
+
+                if (mUserVisible) {
+                    // need to exit this view- conversation may have been deleted, or for
+                    // whatever reason is now invalid (e.g. discard single draft)
+                    //
+                    // N.B. this may involve a fragment transaction, which FragmentManager will
+                    // refuse to execute directly within onLoadFinished. Make sure the controller
+                    // knows.
+                    LogUtils.i(LOG_TAG, "CVF: visible conv has no messages, exiting conv mode");
+                    mActivity.getListHandler().onConversationSelected(null,
+                            true /* inLoaderCallbacks */);
+                } else {
+                    // we expect that the pager adapter will remove this conversation fragment
+                    // on its own due to a separate conversation cursor update
+                    // (we might get here if the message list update fires first. nothing to do
+                    // because we expect to be torn down soon.)
+                    LogUtils.i(LOG_TAG, "CVF: offscreen conv has no messages, ignoring update"
+                            + " in anticipation of conv cursor update. c=%s", mConversation.uri);
+                }
+
                 return;
             }
 
-            // TODO: handle ERROR status
-
-            if (messageCursor.getCount() == 0 && mCursor != null) {
-                // TODO: need to exit this view- conversation may have been deleted, or for
-                // whatever reason is now invalid (e.g. discard single draft)
+            // ignore cursors that are still loading results
+            if (!messageCursor.isLoaded()) {
                 return;
             }
 

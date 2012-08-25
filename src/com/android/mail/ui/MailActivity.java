@@ -282,6 +282,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         if (mLaunchedCleanly) {
             // TODO(viki): Show a "what's new screen"
         }
+        mController.onStart();
     }
 
     @Override
