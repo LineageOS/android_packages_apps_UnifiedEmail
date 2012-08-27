@@ -21,9 +21,7 @@ import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -38,6 +36,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
+
 import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.R;
 import com.android.mail.browse.SnippetTextView;
@@ -421,8 +420,10 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
     private void showNavList() {
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         mActionBar.setListNavigationCallbacks(mSpinner, this);
-        mActionBar.setDisplayOptions(0,
-                ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+        // Don't show title, and don't show custom views.
+        final int mask = ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM;
+        final int enabled = 0;
+        mActionBar.setDisplayOptions(enabled, mask);
     }
 
     /**
@@ -430,16 +431,18 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      */
     protected void setStandardMode() {
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
+        // Show a custom view, and use a logo.
+        final int mask = ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME;
+        mActionBar.setDisplayOptions(mask, mask);
     }
 
     public void removeBackButton() {
         if (mActionBar == null) {
             return;
         }
-        mActionBar.setDisplayOptions(
-                ActionBar.DISPLAY_SHOW_HOME,
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
+        // Remove the back button but continue showing an icon.
+        final int mask = ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME;
+        mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME, mask);
         mActivity.getActionBar().setHomeButtonEnabled(false);
     }
 
@@ -447,9 +450,9 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         if (mActionBar == null){
             return;
         }
-        mActionBar.setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME,
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
+        // Show home as up, and show an icon.
+        final int mask = ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME;
+        mActionBar.setDisplayOptions(mask, mask);
         mActivity.getActionBar().setHomeButtonEnabled(true);
     }
 

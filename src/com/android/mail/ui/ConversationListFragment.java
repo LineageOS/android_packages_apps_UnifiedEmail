@@ -62,10 +62,11 @@ import java.util.Collection;
  */
 public final class ConversationListFragment extends ListFragment implements
         OnItemLongClickListener, ModeChangeListener, SwipeCompleteListener {
-    // Keys used to pass data to {@link ConversationListFragment}.
+    /** Key used to pass data to {@link ConversationListFragment}. */
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
-    // Key used to keep track of the scroll state of the list.
+    /** Key used to keep track of the scroll state of the list. */
     private static final String LIST_STATE_KEY = "list-state";
+
     private static final String LOG_TAG = LogTag.getLogTag();
 
     // True if we are on a tablet device

@@ -49,18 +49,18 @@ import com.android.mail.utils.Utils;
 public final class FolderListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = LogTag.getLogTag();
-
+    /** The parent activity */
     private ControllableActivity mActivity;
-
-    // The internal view objects.
+    /** The underlying list view */
     private ListView mListView;
-
+    /** URI that points to the list of folders for the current account. */
     private Uri mFolderListUri;
-
+    /** Callback into the parent */
     private FolderListSelectionListener mListener;
 
-    private Folder mSelectedFolder;
-
+    /** The currently selected folder (the folder being viewed).  This is never null. */
+    private Uri mSelectedFolderUri = Uri.EMPTY;
+    /** Parent of the current folder, or null if the current folder is not a child. */
     private Folder mParentFolder;
 
     private static final int FOLDER_LOADER_ID = 0;
@@ -68,18 +68,34 @@ public final class FolderListFragment extends ListFragment implements
     public static final int MODE_PICK = 1;
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
     private static final String ARG_FOLDER_URI = "arg-folder-list-uri";
+    private static final String BUNDLE_LIST_STATE = "flf-list-state";
+    private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
+
+    /** For posting drag and drop calls */
     private FolderItemView.DropHandler mDropHandler;
 
     private FolderListFragmentCursorAdapter mCursorAdapter;
-
+    /** View that we show while we are waiting for the folder list to load */
     private View mEmptyView;
-
+    /** Observer to wait for changes to the current folder so we can change the selected folder */
     private FolderObserver mFolderObserver = null;
+
     // Listen to folder changes from the controller and update state accordingly.
     private class FolderObserver extends DataSetObserver {
         @Override
         public void onChanged() {
-            mSelectedFolder = mActivity.getFolderController().getFolder();
+            if (mActivity == null) {
+                return;
+            }
+            final FolderController controller = mActivity.getFolderController();
+            if (controller == null) {
+                return;
+            }
+            final Folder folder = controller.getFolder();
+            if (folder == null) {
+                return;
+            }
+            mSelectedFolderUri = folder.uri;
         }
     }
 
@@ -157,18 +173,23 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+            Bundle savedState) {
         final Bundle args = getArguments();
         mFolderListUri = Uri.parse(args.getString(ARG_FOLDER_URI));
         mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
-        View rootView = inflater.inflate(R.layout.folder_list, null);
+        final View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setEmptyView(null);
+        if (savedState != null && savedState.containsKey(BUNDLE_LIST_STATE)) {
+            mListView.onRestoreInstanceState(savedState.getParcelable(BUNDLE_LIST_STATE));
+        }
         mEmptyView = rootView.findViewById(R.id.empty_view);
-        if (mParentFolder != null) {
-            mSelectedFolder = mParentFolder;
+        if (savedState != null && savedState.containsKey(BUNDLE_SELECTED_FOLDER)) {
+            mSelectedFolderUri = Uri.parse(savedState.getString(BUNDLE_SELECTED_FOLDER));
+        } else if (mParentFolder != null) {
+            mSelectedFolderUri = mParentFolder.uri;
         }
         Utils.dumpLayoutRequests("FLF(" + this + ").onCreateView()", rootView);
 
@@ -191,6 +212,17 @@ public final class FolderListFragment extends ListFragment implements
     public void onPause() {
         Utils.dumpLayoutRequests("FLF(" + this + ").onPause()", getView());
         super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mListView != null) {
+            outState.putParcelable(BUNDLE_LIST_STATE, mListView.onSaveInstanceState());
+        }
+        if (mSelectedFolderUri != null) {
+            outState.putString(BUNDLE_SELECTED_FOLDER, mSelectedFolderUri.toString());
+        }
     }
 
     @Override
@@ -279,7 +311,7 @@ public final class FolderListFragment extends ListFragment implements
             getCursor().moveToPosition(position);
             Folder folder = new Folder(getCursor());
             folderItemView.bind(folder, mDropHandler, true);
-            if (mSelectedFolder != null && folder.uri.equals(mSelectedFolder.uri)) {
+            if (folder.uri.equals(mSelectedFolderUri)) {
                 getListView().setItemChecked(position, true);
             }
             Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.color_block));
@@ -333,7 +365,7 @@ public final class FolderListFragment extends ListFragment implements
                         mActivity.getActivityContext()).inflate(resId, null);
             }
             folderItemView.bind(folder, mDropHandler, !isParent);
-            if (mSelectedFolder != null && folder.uri.equals(mSelectedFolder.uri)) {
+            if (folder.uri.equals(mSelectedFolderUri)) {
                 getListView().setItemChecked(position, true);
             }
             Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.folder_box));
@@ -359,7 +391,11 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     public void selectInitialFolder(Folder folder) {
-        mSelectedFolder = folder;
+        if (folder == null) {
+            mSelectedFolderUri = Uri.EMPTY;
+            return;
+        }
+        mSelectedFolderUri = folder.uri;
     }
 
     public interface FolderListSelectionListener {
