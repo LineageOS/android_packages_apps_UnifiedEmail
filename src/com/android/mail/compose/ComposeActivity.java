@@ -423,6 +423,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             accountExtra = intent.getExtras().get(Utils.EXTRA_ACCOUNT);
             if (accountExtra instanceof Account) {
                 return (Account) accountExtra;
+            } else if (accountExtra instanceof String) {
+                // This is the Account attached to the widget compose intent.
+                account = Account.newinstance((String)accountExtra);
+                if (account != null) {
+                    return account;
+                }
             }
             accountExtra = intent.getStringExtra(EXTRA_SELECTED_ACCOUNT);
         }
