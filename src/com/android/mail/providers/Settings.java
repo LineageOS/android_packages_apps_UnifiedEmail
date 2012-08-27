@@ -338,7 +338,7 @@ public class Settings implements Parcelable {
     };
 
     /**
-     *  Get the maximum size in KB for attachments.
+     *  Get the maximum size in bytes for attachments.
      */
     public int getMaxAttachmentSize() {
         return maxAttachmentSize <= 0 ? DEFAULT_MAX_ATTACHMENT_SIZE : maxAttachmentSize;

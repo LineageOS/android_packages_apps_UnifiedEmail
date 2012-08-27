@@ -405,25 +405,17 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
 
         // Error getting the size or the size was too big.
         if (attachment.size == -1 || attachment.size > maxSize) {
-            throw new AttachmentFailureException("Attachment too large to attach");
+            throw new AttachmentFailureException(
+                    "Attachment too large to attach", R.string.too_large_to_attach_single);
         } else if ((getTotalAttachmentsSize()
                 + attachment.size) > maxSize) {
-            throw new AttachmentFailureException("Attachment too large to attach");
+            throw new AttachmentFailureException(
+                    "Attachment too large to attach", R.string.too_large_to_attach_additional);
         } else {
             addAttachment(attachment);
         }
 
         return attachment.size;
-    }
-
-
-    public void addAttachments(Account account, Message refMessage)
-            throws AttachmentFailureException {
-        if (refMessage.hasAttachments) {
-            for (Attachment a : refMessage.getAttachments()) {
-                addAttachment(account, a);
-            }
-        }
     }
 
     @VisibleForTesting
@@ -466,12 +458,29 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
      */
     static class AttachmentFailureException extends Exception {
         private static final long serialVersionUID = 1L;
+        private final int errorRes;
 
-        public AttachmentFailureException(String error) {
-            super(error);
+        public AttachmentFailureException(String detailMessage) {
+            super(detailMessage);
+            this.errorRes = R.string.generic_attachment_problem;
         }
+
+        public AttachmentFailureException(String error, int errorRes) {
+            super(error);
+            this.errorRes = errorRes;
+        }
+
         public AttachmentFailureException(String detailMessage, Throwable throwable) {
             super(detailMessage, throwable);
+            this.errorRes = R.string.generic_attachment_problem;
+        }
+
+        /**
+         * Get the error string resource that corresponds to this attachment failure. Always a valid
+         * string resource.
+         */
+        public int getErrorRes() {
+            return errorRes;
         }
     }
 }
