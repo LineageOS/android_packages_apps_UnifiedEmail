@@ -692,6 +692,13 @@ public abstract class AbstractActivityController implements ActivityController {
         if (fragment != null) {
             fragment.dismiss();
         }
+        // When the user places the app in the background by pressing "home",
+        // dismiss the toast bar. However, since there is no way to determine if
+        // home was pressed, just dismiss any existing toast bar when restarting
+        // the app.
+        if (mToastBar != null) {
+            mToastBar.hide(false);
+        }
     }
 
     @Override
