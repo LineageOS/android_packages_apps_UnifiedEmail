@@ -130,7 +130,7 @@ public class WidgetService extends RemoteViewsService {
         // On click intent for Compose
         final Intent composeIntent = new Intent();
         composeIntent.setAction(Intent.ACTION_SEND);
-        composeIntent.putExtra(Utils.EXTRA_ACCOUNT, account);
+        composeIntent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
         composeIntent.setData(account.composeIntentUri);
         composeIntent.putExtra(ComposeActivity.EXTRA_FROM_EMAIL_TASK, true);
         if (account.composeIntentUri != null) {
