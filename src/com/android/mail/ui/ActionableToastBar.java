@@ -143,18 +143,16 @@ public class ActionableToastBar extends LinearLayout {
      * Hides the view and resets the state.
      */
     public void hide(boolean animate) {
-        if (!mHidden) {
-            mHidden = true;
-            if (isShown()) {
-                mActionDescriptionView.setText("");
-                mActionButton.setOnClickListener(null);
-                // Hide view once it's clicked.
-                if (animate) {
-                    getHideAnimation().start();
-                } else {
-                    setAlpha(0);
-                    setVisibility(View.GONE);
-                }
+        mHidden = true;
+        if (getVisibility() == View.VISIBLE) {
+            mActionDescriptionView.setText("");
+            mActionButton.setOnClickListener(null);
+            // Hide view once it's clicked.
+            if (animate) {
+                getHideAnimation().start();
+            } else {
+                setAlpha(0);
+                setVisibility(View.GONE);
             }
         }
     }
