@@ -143,7 +143,13 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private boolean mMissedPointerDown;
 
     /**
-     * A recycler for scrap views, organized by integer item view type.
+     * A recycler that holds detached scrap views, organized by integer item view type. All views
+     * in this data structure should be detached from their view parent (using
+     * {@link ViewGroup#detachViewFromParent(View)}) prior to insertion.
+     * <p>
+     * N.B. per the framework docs, it is imperative that users of this data structure call either
+     * {@link ViewGroup#removeDetachedView(View, boolean)} on each view immediately after removal.
+     * See b/6905156 for what happens if you don't :).
      */
     private final DequeMap<Integer, View> mScrapViews = new DequeMap<Integer, View>();
 
@@ -491,8 +497,13 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         layoutOverlay(overlay.view, overlayTop, overlayBottom);
     }
 
+    /**
+     * Returns an existing scrap view, if available. The view will already be detached from the view
+     * hierarchy. This method will not remove the view from the scrap heap.
+     *
+     */
     public View getScrapView(int type) {
-        return mScrapViews.poll(type);
+        return mScrapViews.peek(type);
     }
 
     public void addScrapView(int type, View v) {
