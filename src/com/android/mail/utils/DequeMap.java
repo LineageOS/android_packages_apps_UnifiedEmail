@@ -65,6 +65,23 @@ public class DequeMap<K, V> {
         return pile.poll();
     }
 
+    /**
+     * Returns, but does not remove, the first value V from the deque of Vs for key K, or null if
+     * no such Vs exist.
+     *
+     * @see Deque#peek()
+     *
+     * @param key
+     * @return a V, or null
+     */
+    public V peek(K key) {
+        final Deque<V> pile = mMap.get(key);
+        if (pile == null) {
+            return null;
+        }
+        return pile.peek();
+    }
+
     public void clear() {
         mMap.clear();
     }
