@@ -89,6 +89,7 @@ import com.android.mail.providers.UIProvider.DraftType;
 import com.android.mail.ui.MailActivity;
 import com.android.mail.ui.WaitFragment;
 import com.android.mail.utils.AccountUtils;
+import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -175,7 +176,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // If this is a reply/forward then this extra will hold a uri we must query
     // to get the original message.
     protected static final String EXTRA_IN_REFERENCE_TO_MESSAGE_URI = "in-reference-to-message-uri";
-    // If this is an action to edit an existing draft messagge, this extra will hold the
+    // If this is an action to edit an existing draft message, this extra will hold the
     // draft message
     private static final String ORIGINAL_DRAFT_MESSAGE = "original-draft-message";
     private static final String END_TOKEN = ", ";
@@ -1215,12 +1216,28 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     @VisibleForTesting
     protected void initAttachments(Message refMessage) {
-        try {
-            mAttachmentsView.addAttachments(mAccount, refMessage);
-        } catch (AttachmentFailureException e) {
-            LogUtils.e(LOG_TAG, e, "Error adding attachment");
-            showAttachmentTooBigToast();
+        addAttachments(refMessage.getAttachments());
+    }
+
+    public long addAttachments(List<Attachment> attachments) {
+        long size = 0;
+        AttachmentFailureException error = null;
+        for (Attachment a : attachments) {
+            try {
+                size += mAttachmentsView.addAttachment(mAccount, a);
+            } catch (AttachmentFailureException e) {
+                error = e;
+            }
         }
+        if (error != null) {
+            LogUtils.e(LOG_TAG, error, "Error adding attachment");
+            if (attachments.size() > 1) {
+                showAttachmentTooBigToast(R.string.too_large_to_attach_multiple);
+            } else {
+                showAttachmentTooBigToast(error.getErrorRes());
+            }
+        }
+        return size;
     }
 
     /**
@@ -1228,13 +1245,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * This method also updates the position of the toast so that it is shown
      * clearly above they keyboard if it happens to be open.
      */
-    private void showAttachmentTooBigToast() {
-        showErrorToast(R.string.too_large_to_attach);
+    private void showAttachmentTooBigToast(int errorRes) {
+        String maxSize = AttachmentUtils.convertToHumanReadableSize(
+                getApplicationContext(), mAccount.settings.getMaxAttachmentSize());
+        showErrorToast(getString(errorRes, maxSize));
     }
 
-    private void showErrorToast(int resId) {
-        Toast t = Toast.makeText(this, resId, Toast.LENGTH_LONG);
-        t.setText(resId);
+    private void showErrorToast(String message) {
+        Toast t = Toast.makeText(this, message, Toast.LENGTH_LONG);
+        t.setText(message);
         t.setGravity(Gravity.CENTER_HORIZONTAL, 0,
                 getResources().getDimensionPixelSize(R.dimen.attachment_toast_yoffset));
         t.show();
@@ -1257,7 +1276,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                         size =  mAttachmentsView.addAttachment(mAccount, uri);
                     } catch (AttachmentFailureException e) {
                         LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                        showAttachmentTooBigToast();
+                        showAttachmentTooBigToast(e.getErrorRes());
                     }
                     totalSize += size;
                 }
@@ -1269,7 +1288,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     size =  mAttachmentsView.addAttachment(mAccount, uri);
                 } catch (AttachmentFailureException e) {
                     LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                    showAttachmentTooBigToast();
+                    showAttachmentTooBigToast(e.getErrorRes());
                 }
                 totalSize += size;
             }
@@ -1277,16 +1296,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             if (Intent.ACTION_SEND_MULTIPLE.equals(action)
                     && extras.containsKey(Intent.EXTRA_STREAM)) {
                 ArrayList<Parcelable> uris = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
+                ArrayList<Attachment> attachments = new ArrayList<Attachment>();
                 for (Parcelable uri : uris) {
-                    long size = 0;
                     try {
-                        size = mAttachmentsView.addAttachment(mAccount, (Uri) uri);
+                        attachments.add(mAttachmentsView.generateLocalAttachment((Uri) uri));
                     } catch (AttachmentFailureException e) {
                         LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                        showAttachmentTooBigToast();
+                        String maxSize = AttachmentUtils.convertToHumanReadableSize(
+                                getApplicationContext(),
+                                mAccount.settings.getMaxAttachmentSize());
+                        showErrorToast(getString(R.string.generic_attachment_problem, maxSize));
                     }
-                    totalSize += size;
                 }
+                totalSize += addAttachments(attachments);
             }
 
             if (totalSize > 0) {
@@ -1344,20 +1366,23 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             addAttachmentAndUpdateView(mAttachmentsView.generateLocalAttachment(contentUri));
         } catch (AttachmentFailureException e) {
             LogUtils.e(LOG_TAG, e, "Error adding attachment");
-            showErrorToast(R.string.generic_attachment_problem);
+            showErrorToast(getResources().getString(
+                    e.getErrorRes(),
+                    AttachmentUtils.convertToHumanReadableSize(
+                            getApplicationContext(), mAccount.settings.getMaxAttachmentSize())));
         }
     }
 
     public void addAttachmentAndUpdateView(Attachment attachment) {
         try {
-            long size =  mAttachmentsView.addAttachment(mAccount, attachment);
+            long size = mAttachmentsView.addAttachment(mAccount, attachment);
             if (size > 0) {
                 mAttachmentsChanged = true;
                 updateSaveUi();
             }
         } catch (AttachmentFailureException e) {
             LogUtils.e(LOG_TAG, e, "Error adding attachment");
-            showAttachmentTooBigToast();
+            showAttachmentTooBigToast(e.getErrorRes());
         }
     }
 
