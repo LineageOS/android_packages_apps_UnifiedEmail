@@ -280,10 +280,8 @@
     <string name="show_images" msgid="1875700481186331432">"사진 표시"</string>
     <string name="always_show_images" msgid="5966408990164581801">"이 발신자가 보낸 사진을 항상 표시"</string>
     <string name="always_show_images_toast" msgid="6218061921546973716">"이 발신자가 보낸 사진이 자동으로 표시됩니다."</string>
-    <!-- no translation found for address_display_format (3581303608028992576) -->
-    <skip />
-    <!-- no translation found for address_display_format_with_via_domain (2316262813990842490) -->
-    <skip />
+    <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
+    <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>(도메인: <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>)"</string>
     <string name="message_saved" msgid="7073947895562277576">"메일이 임시보관함에 저장되었습니다."</string>
     <string name="sending_message" msgid="2822171587017313151">"보낼편지함에 메일 전송 중…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"주소(<xliff:g id="WRONGEMAIL">%s</xliff:g>)가 잘못되었습니다."</string>
