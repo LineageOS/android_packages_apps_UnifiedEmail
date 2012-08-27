@@ -35,6 +35,7 @@ import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderType;
@@ -120,6 +121,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         switch (item.getItemId()) {
             case R.id.delete:
                 performDestructiveAction(R.id.delete);
+                break;
+            case R.id.discard_drafts:
+                performDestructiveAction(R.id.discard_drafts);
                 break;
             case R.id.archive:
                 performDestructiveAction(R.id.archive);
@@ -232,11 +236,22 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final DestructiveAction destructiveAction = mUpdater.getDeferredBatchAction(action);
         final Settings settings = mAccount.settings;
         final Collection<Conversation> conversations = mSelectionSet.values();
-        final boolean showDialog = (settings != null
-                && (action == R.id.delete) ? settings.confirmDelete : settings.confirmArchive);
+        final boolean showDialog =
+                (settings != null && (action == R.id.delete || action == R.id.discard_drafts) ?
+                        settings.confirmDelete : settings.confirmArchive);
         if (showDialog) {
-            int resId = action == R.id.delete ? R.plurals.confirm_delete_conversation
-                    : R.plurals.confirm_archive_conversation;
+            final int resId;
+            switch (action) {
+                case R.id.delete:
+                    resId = R.plurals.confirm_delete_conversation;
+                    break;
+                case R.id.discard_drafts:
+                    resId = R.plurals.confirm_discard_drafts_conversation;
+                    break;
+                default:
+                    resId = R.plurals.confirm_archive_conversation;
+                    break;
+            }
             CharSequence message = Utils.formatPlural(mContext, resId, conversations.size());
             new AlertDialog.Builder(mContext).setMessage(message)
                     .setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
@@ -412,9 +427,20 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final MenuItem markNotImportant = menu.findItem(R.id.mark_not_important);
         markNotImportant.setVisible(!showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+        final boolean showDelete = mFolder != null
+                && mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE);
         final MenuItem trash = menu.findItem(R.id.delete);
-        trash.setVisible(mFolder != null
-                && mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE));
+        trash.setVisible(showDelete);
+        // We only want to show the discard drafts menu item if we are not showing the delete menu
+        // item, and the current folder is a draft folder and the account supports discarding
+        // drafts for a conversation
+        final boolean showDiscardDrafts = !showDelete && mFolder != null && mFolder.isDraft() &&
+                mAccount.supportsCapability(AccountCapabilities.DISCARD_CONVERSATION_DRAFTS);
+        final MenuItem discardDrafts = menu.findItem(R.id.discard_drafts);
+        if (discardDrafts != null) {
+            discardDrafts.setVisible(showDiscardDrafts);
+        }
+
         return true;
     }
 
