@@ -147,9 +147,12 @@ public final class FolderListFragment extends ListFragment implements
 
         selectInitialFolder(mActivity.getHierarchyFolder());
         getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
-        // Listen to folder changes in the future
-        mFolderObserver = new FolderObserver();
-        mActivity.getFolderController().registerFolderObserver(mFolderObserver);
+        FolderController controller = mActivity.getFolderController();
+        if (controller != null) {
+            // Listen to folder changes in the future
+            mFolderObserver = new FolderObserver();
+            controller.registerFolderObserver(mFolderObserver);
+        }
     }
 
     @Override
@@ -196,8 +199,11 @@ public final class FolderListFragment extends ListFragment implements
         // Clear the adapter.
         setListAdapter(null);
         if (mFolderObserver != null) {
-            mActivity.getFolderController().unregisterFolderObserver(mFolderObserver);
-            mFolderObserver = null;
+            FolderController controller = mActivity.getFolderController();
+            if (controller != null) {
+                controller.unregisterFolderObserver(mFolderObserver);
+                mFolderObserver = null;
+            }
         }
         super.onDestroyView();
     }
