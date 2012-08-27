@@ -785,6 +785,11 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * for menu item clicks.
      */
     public boolean onClick(View v, int id) {
+        if (mMessage == null) {
+            LogUtils.i(LOG_TAG, "ignoring message header tap on unbound view");
+            return false;
+        }
+
         boolean handled = true;
 
         switch (id) {
