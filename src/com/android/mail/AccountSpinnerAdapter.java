@@ -31,6 +31,7 @@ import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
 import com.android.mail.ui.ControllableActivity;
+import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.ui.RecentFolderList;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
  * This class keeps the account and folder information and returns appropriate views.
  */
 public class AccountSpinnerAdapter extends BaseAdapter {
+    private ConversationListCallbacks mActivityController;
     private final LayoutInflater mInflater;
     /**
      * The position of the current account being viewed.
@@ -206,6 +208,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     /**
      * Create a spinner adapter with the context and the list of recent folders.
+     * @param activity
      * @param context
      * @param recentFolders
      * @param showAllFolders
@@ -216,11 +219,12 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         mInflater = LayoutInflater.from(context);
         mRecentFolders = recentFolders;
         mShowAllFoldersItem = showAllFolders;
-        // Owned by the AccountSpinnerAdapter since nobody else needed it. Move to controller if
-        // required. The folder watcher tells us directly when new data is available. We are only
-        // interested in unread counts at this point.
+        // Owned by the AccountSpinnerAdapter since nobody else needed it. Move
+        // to controller if required. The folder watcher tells us directly when
+        // new data is available. We are only interested in unread counts at this point.
         mFolderWatcher = new FolderWatcher(activity, this);
         mCurrentAccount = mAccountObserver.initialize(activity.getAccountController());
+        mActivityController = activity.getListHandler();
     }
 
     /**
@@ -360,6 +364,10 @@ public class AccountSpinnerAdapter extends BaseAdapter {
 
     @Override
     public View getDropDownView(int position, View view, ViewGroup parent) {
+        if (position == 0) {
+            // Commit any leave behind items.
+            mActivityController.commitDestructiveActions(false);
+        }
         // Shown in the first text view with big font.
         String bigText = "";
         // Shown in the second text view with smaller font.
