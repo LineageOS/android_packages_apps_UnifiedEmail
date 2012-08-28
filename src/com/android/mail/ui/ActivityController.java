@@ -100,6 +100,11 @@ public interface ActivityController extends LayoutListener,
     boolean onCreate(Bundle savedState);
 
     /**
+     * @see android.app.Activity#onStart
+     */
+    void onStart();
+
+    /**
      * Called when the the root activity calls onRestart
      * @see android.app.Activity#onRestart
      */
@@ -211,14 +216,6 @@ public interface ActivityController extends LayoutListener,
      * @param listContext context providing information on what conversation list to display.
      */
     void showConversationList(ConversationListContext listContext);
-
-    /**
-     * Show the conversation provided here. If the conversation is null, this is a request to pop
-     * <em>out</em> of conversation view mode and head back to conversation list mode, or whatever
-     * should best show in its place.
-     * @param conversation conversation to display, possibly null.
-     */
-    void showConversation(Conversation conversation);
 
     /**
      * Show the wait for account initialization mode.

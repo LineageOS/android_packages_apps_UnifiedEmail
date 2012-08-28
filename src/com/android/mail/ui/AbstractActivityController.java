@@ -157,6 +157,16 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private boolean mDestroyed;
 
+    /**
+     * Are we in a point in the Activity/Fragment lifecycle where it's safe to execute fragment
+     * transactions? (including back stack manipulation)
+     * <p>
+     * Per docs in {@link FragmentManager#beginTransaction()}, this flag starts out true, switches
+     * to false after {@link Activity#onSaveInstanceState}, and becomes true again in both onStart
+     * and onResume.
+     */
+    private boolean mSafeToModifyFragments = true;
+
     private final Set<Uri> mCurrentAccountUris = Sets.newHashSet();
     protected ConversationCursor mConversationListCursor;
     private final DataSetObservable mConversationListObservable = new DataSetObservable() {
@@ -686,6 +696,11 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
+    public void onStart() {
+        mSafeToModifyFragments = true;
+    }
+
+    @Override
     public void onRestart() {
         DialogFragment fragment = (DialogFragment)
                 mFragmentManager.findFragmentByTag(SYNC_ERROR_DIALOG_FRAGMENT_TAG);
@@ -1069,6 +1084,8 @@ public abstract class AbstractActivityController implements ActivityController {
         // The SupressNotificationReceiver will block the broadcast if we're looking at the folder
         // that the notification was received for.
         disableNotifications();
+
+        mSafeToModifyFragments = true;
     }
 
     @Override
@@ -1101,6 +1118,15 @@ public abstract class AbstractActivityController implements ActivityController {
             convListFragment.getAnimatedAdapter()
             .onSaveInstanceState(outState);
         }
+
+        mSafeToModifyFragments = false;
+    }
+
+    /**
+     * @see #mSafeToModifyFragments
+     */
+    protected boolean safeToModifyFragments() {
+        return mSafeToModifyFragments;
     }
 
     @Override
@@ -1350,12 +1376,15 @@ public abstract class AbstractActivityController implements ActivityController {
         return mActionBarView;
     }
 
+    private void showConversation(Conversation conversation) {
+        showConversation(conversation, false /* inLoaderCallbacks */);
+    }
+
     /**
      * Children can override this method, but they must call super.showConversation().
-     * {@inheritDoc}
+     *
      */
-    @Override
-    public void showConversation(Conversation conversation) {
+    protected void showConversation(Conversation conversation, boolean inLoaderCallbacks) {
         // Set the current conversation just in case it wasn't already set.
         setCurrentConversation(conversation);
         // Add the folder that we were viewing to the recent folders list.
@@ -1414,16 +1443,16 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onConversationSelected(Conversation conversation) {
+    public void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
         // Only animate destructive actions if we are going to be showing the
         // conversation list when we show the next conversation.
         commitDestructiveActions(Utils.useTabletUI(mContext));
-        showConversation(conversation);
-        if (Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction())) {
-            mViewMode.enterSearchResultsConversationMode();
-        } else {
-            mViewMode.enterConversationMode();
-        }
+        showConversation(conversation, inLoaderCallbacks);
+    }
+
+    @Override
+    public Conversation getCurrentConversation() {
+        return mCurrentConversation;
     }
 
     /**
@@ -2272,7 +2301,7 @@ public abstract class AbstractActivityController implements ActivityController {
                     mConversationListCursor.moveToPosition(0);
                     final Conversation conv = new Conversation(mConversationListCursor);
                     conv.position = 0;
-                    onConversationSelected(conv);
+                    onConversationSelected(conv, true /* checkSafeToModifyFragments */);
                 }
             }
         }

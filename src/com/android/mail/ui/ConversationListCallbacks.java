@@ -17,6 +17,7 @@
 
 package com.android.mail.ui;
 
+import android.app.LoaderManager.LoaderCallbacks;
 import android.database.DataSetObserver;
 
 import com.android.mail.browse.ConversationCursor;
@@ -27,14 +28,18 @@ import com.android.mail.providers.Conversation;
  */
 public interface ConversationListCallbacks {
     /**
-     * Handles a selection of a conversation in the list.
-     *
-     * @param position The position in the list clicked.
+     * Show the conversation provided here. If the conversation is null, this is a request to pop
+     * <em>out</em> of conversation view mode and head back to conversation list mode, or whatever
+     * should best show in its place.
+     * @param conversation conversation to display, possibly null.
+     * @param inLoaderCallbacks whether we are in the scope of a {@link LoaderCallbacks} method
+     * (when fragment transactions are disallowed)
      */
-    void onConversationSelected(Conversation conversation);
+    void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks);
 
     ConversationCursor getConversationListCursor();
 
+    Conversation getCurrentConversation();
     void setCurrentConversation(Conversation c);
 
     void registerConversationListObserver(DataSetObserver observer);
