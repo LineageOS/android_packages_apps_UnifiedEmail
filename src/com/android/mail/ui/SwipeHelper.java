@@ -60,7 +60,6 @@ public class SwipeHelper {
     private static float MIN_SWIPE;
     private static float MIN_VERT;
     private static float MIN_LOCK;
-    private static float SCROLL_SLOP;
 
     public static float ALPHA_FADE_START = 0f; // fraction of thumbnail width
                                                  // where fade starts
@@ -98,7 +97,6 @@ public class SwipeHelper {
             MAX_DISMISS_VELOCITY = res.getInteger(R.integer.max_dismiss_velocity);
             SNAP_ANIM_LEN = res.getInteger(R.integer.snap_animation_duration);
             DISMISS_ANIMATION_DURATION = res.getInteger(R.integer.dismiss_animation_duration);
-            SCROLL_SLOP = res.getInteger(R.integer.swipeScrollSlop);
             MIN_SWIPE = res.getDimension(R.dimen.min_swipe);
             MIN_VERT = res.getDimension(R.dimen.min_vert);
             MIN_LOCK = res.getDimension(R.dimen.min_lock);
@@ -222,8 +220,10 @@ public class SwipeHelper {
                         float currX = ev.getX();
                         float deltaY = Math.abs(currY - mInitialTouchPosY);
                         float deltaX = Math.abs(currX - mInitialTouchPosX);
-                        if (deltaY > SCROLL_SLOP && deltaY > (FACTOR * deltaX)) {
+                        if (deltaY > mCurrView.getMinAllowScrollDistance()
+                                && deltaY > (FACTOR * deltaX)) {
                             mLastY = ev.getY();
+                            mCallback.onScroll();
                             return false;
                         }
                     }
@@ -392,6 +392,7 @@ public class SwipeHelper {
                     // the swipe.
                     if (!mDragging && deltaY > MIN_VERT && (Math.abs(deltaX)) < MIN_LOCK
                             && deltaY > (FACTOR * Math.abs(deltaX))) {
+                        mCallback.onScroll();
                         return false;
                     }
                     float minDistance = MIN_SWIPE;
@@ -464,6 +465,8 @@ public class SwipeHelper {
 
     public interface Callback {
         View getChildAtPosition(MotionEvent ev);
+
+        void onScroll();
 
         boolean canChildBeDismissed(SwipeableItemView v);
 
