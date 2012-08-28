@@ -44,7 +44,6 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     private ToastBarOperation mUndoOp;
     private Account mAccount;
     private AnimatedAdapter mAdapter;
-    private ConversationCursor mConversationCursor;
     private TextView mText;
     private View mSwipeableContent;
     private static int sShrinkAnimationDuration = -1;
@@ -80,7 +79,10 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
                     // the set of commands to undo
                     mAdapter.clearLeaveBehind(getConversationId());
                     mAdapter.setSwipeUndo(true);
-                    mConversationCursor.undo(getContext(), mAccount.undoUri);
+                    ConversationCursor cursor = mAdapter.getConversationCursor();
+                    if (cursor != null) {
+                        cursor.undo(getContext(), mAccount.undoUri);
+                    }
                 }
                 break;
             case R.id.undo_descriptionview:
@@ -95,7 +97,6 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
         mUndoOp = undoOp;
         mAccount = account;
         mAdapter = adapter;
-        mConversationCursor = (ConversationCursor) adapter.getCursor();
         setData(target);
         mSwipeableContent = findViewById(R.id.swipeable_content);
         // Listen on swipeable content so that we can show both the undo icon
@@ -108,8 +109,9 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     }
 
     public void commit() {
-        if (mConversationCursor != null) {
-            mConversationCursor.delete(getContext(), ImmutableList.of(getData()));
+        ConversationCursor cursor = mAdapter.getConversationCursor();
+        if (cursor != null) {
+            cursor.delete(getContext(), ImmutableList.of(getData()));
         }
     }
 
