@@ -131,6 +131,8 @@
     <string name="report_phishing">Report phishing</string>
     <!-- Menu item: delete this conversation -->
     <string name="delete">Delete</string>
+    <!-- Menu item: discard the drafts in this conversation [CHAR LIMIT = 30] -->
+    <string name="discard_drafts">Discard drafts</string>
     <!-- Menu item: next conversation -->
     <string name="next">Older</string>
     <!-- Menu item: previous conversation -->
@@ -342,6 +344,12 @@
         <item quantity="one">Archive this conversation?</item>
         <!-- Dialog message to confirm archival of several conversations -->
         <item quantity="other">Archive these <xliff:g id="count">%1$d</xliff:g> conversations?</item>
+    </plurals>
+    <plurals name="confirm_discard_drafts_conversation">
+        <!-- Dialog message to confirm discarding drafts from one conversation [CHAR LIMIT=50] -->
+        <item quantity="one">Discard drafts from this conversation?</item>
+        <!-- Dialog message to confirm discarding drafts from several conversations [CHAR LIMIT=50] -->
+        <item quantity="other">Discard drafts from these <xliff:g id="count">%1$d</xliff:g> conversations?</item>
     </plurals>
 
     <!-- Dialog text: confirm discard -->

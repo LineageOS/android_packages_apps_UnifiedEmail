@@ -625,6 +625,13 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
+     * Return if this is a draft folder.
+     */
+    public boolean isDraft() {
+        return type == UIProvider.FolderType.DRAFT;
+    }
+
+    /**
      * Whether this folder supports only showing important messages.
      */
     public boolean isImportantOnly() {

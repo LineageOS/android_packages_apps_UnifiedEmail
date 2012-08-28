@@ -43,9 +43,16 @@
         android:showAsAction="ifRoom"
         android:icon="@drawable/archive"
         android:alphabeticShortcut="@string/trigger_y_char" />
+    <!-- Depends on FolderCapabilities.DELETE -->
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/trash" />
+    <!-- Depends on the user viewing a draft label, and the above menu item not being shown -->
+    <item
+        android:id="@+id/discard_drafts"
+        android:title="@string/discard_drafts"
         android:showAsAction="ifRoom"
         android:icon="@drawable/trash" />
 

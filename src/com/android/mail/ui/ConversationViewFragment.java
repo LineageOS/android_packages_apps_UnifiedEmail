@@ -411,9 +411,15 @@ public final class ConversationViewFragment extends Fragment implements
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
         Utils.setMenuItemVisibility(menu, R.id.mark_not_important, !showMarkImportant
                 && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        Utils.setMenuItemVisibility(menu, R.id.delete,
-                mFolder != null && mFolder.supportsCapability(
-                        UIProvider.FolderCapabilities.DELETE));
+        final boolean showDelete = mFolder != null &&
+                mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE);
+        Utils.setMenuItemVisibility(menu, R.id.delete, showDelete);
+        // We only want to show the discard drafts menu item if we are not showing the delete menu
+        // item, and the current folder is a draft folder and the account supports discarding
+        // drafts for a conversation
+        final boolean showDiscardDrafts = !showDelete && mFolder != null && mFolder.isDraft() &&
+                mAccount.supportsCapability(AccountCapabilities.DISCARD_CONVERSATION_DRAFTS);
+        Utils.setMenuItemVisibility(menu, R.id.discard_drafts, showDiscardDrafts);
         final boolean archiveVisible = mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
                 && mFolder != null && mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
                 && !mFolder.isTrash();
