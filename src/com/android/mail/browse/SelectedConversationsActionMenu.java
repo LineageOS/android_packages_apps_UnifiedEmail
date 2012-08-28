@@ -110,7 +110,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mListView = list;
 
         mContext = mActivity.getActivityContext();
-        mUpdater = ((ControllableActivity) mActivity).getConversationUpdater();
+        mUpdater = activity.getConversationUpdater();
     }
 
     @Override
@@ -452,6 +452,10 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         // active, that implies the user hit "Done" in the top right, and resources need cleaning.
         if (mActivated) {
             destroy();
+            // Only commit destructive actions if the user actually pressed
+            // done; otherwise, this was handled when we toggled conversation
+            // selection state.
+            ((ControllableActivity)mActivity).getListHandler().commitDestructiveActions(true);
         }
         mMenu = null;
     }
