@@ -634,4 +634,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
                 || !mDeletingItems.isEmpty()
                 || !mSwipeDeletingItems.isEmpty();
     }
+
+    /**
+     * Get the ConversationCursor associated with this adapter.
+     */
+    public ConversationCursor getConversationCursor() {
+        return (ConversationCursor) getCursor();
+    }
 }
