@@ -745,6 +745,11 @@ public abstract class AbstractActivityController implements ActivityController {
                         getAction(R.id.delete, target));
                 break;
             }
+            case R.id.discard_drafts:
+                final boolean showDialog = (settings != null && settings.confirmDelete);
+                confirmAndDelete(target, showDialog, R.plurals.confirm_discard_drafts_conversation,
+                        getAction(R.id.discard_drafts, target));
+                break;
             case R.id.mark_important:
                 updateConversation(Conversation.listOf(mCurrentConversation),
                         ConversationColumns.PRIORITY, UIProvider.ConversationPriority.HIGH);
@@ -1894,6 +1899,18 @@ public abstract class AbstractActivityController implements ActivityController {
                     }
                     mConversationListCursor.updateInt(mContext, mTarget,
                             ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
+                    break;
+                case R.id.discard_drafts:
+                    LogUtils.d(LOG_TAG, "Discarding draft messages");
+                    // Discarding draft messages is destructive in a "draft" mailbox
+                    if (mFolder != null && mFolder.isDraft()) {
+                        for (Conversation conv : mTarget) {
+                            conv.localDeleteOnUpdate = true;
+                        }
+                    }
+                    mConversationListCursor.discardDrafts(mContext, mTarget);
+                    // We don't support undoing discarding drafts
+                    undoEnabled = false;
                     break;
             }
             if (undoEnabled) {

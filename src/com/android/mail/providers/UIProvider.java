@@ -276,6 +276,11 @@ public class UIProvider {
          * Whether the account cannot be used for sending
          */
         public static final int SENDING_UNAVAILABLE = 0x80000;
+        /**
+         * Whether the account supports discarding drafts from a conversation.  This should be
+         * removed when all providers support this capability
+         */
+        public static final int DISCARD_CONVERSATION_DRAFTS = 0x100000;
     }
 
     public static final class AccountColumns {
@@ -1060,6 +1065,11 @@ public class UIProvider {
          * Report phishing operation
          */
         public static final String REPORT_PHISHING = "report_phishing";
+
+        /**
+         * Discard drafts operation
+         */
+        public static final String DISCARD_DRAFTS = "discard_drafts";
 
         private ConversationOperations() {
         }
