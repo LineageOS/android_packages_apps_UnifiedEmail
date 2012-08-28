@@ -44,4 +44,10 @@ public interface ConversationListCallbacks {
 
     void registerConversationListObserver(DataSetObserver observer);
     void unregisterConversationListObserver(DataSetObserver observer);
+
+    /**
+     * Commit any destructive action leave behind items so that it is no longer
+     * possible to undo them.
+     */
+    void commitDestructiveActions(boolean animate);
 }
