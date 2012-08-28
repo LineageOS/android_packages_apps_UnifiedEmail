@@ -380,11 +380,10 @@ public final class FolderListFragment extends ListFragment implements
             }
             if (cursor != null && cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                Folder f;
                 do {
-                    f = new Folder(cursor);
+                    Folder f = new Folder(cursor);
                     f.parent = mParent;
-                    add(new Folder(cursor));
+                    add(f);
                 } while (cursor.moveToNext());
             }
         }
