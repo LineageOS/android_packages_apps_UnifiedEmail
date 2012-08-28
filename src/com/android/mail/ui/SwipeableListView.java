@@ -25,8 +25,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
 import com.android.mail.R;
@@ -44,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class SwipeableListView extends ListView implements Callback, OnScrollListener {
+public class SwipeableListView extends ListView implements Callback {
     private SwipeHelper mSwipeHelper;
     private boolean mEnableSwipe = false;
 
@@ -68,7 +66,6 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
         float pagingTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
         mSwipeHelper = new SwipeHelper(context, SwipeHelper.X, this, densityScale,
                 pagingTouchSlop);
-        setOnScrollListener(this);
     }
 
     @Override
@@ -321,15 +318,7 @@ public class SwipeableListView extends ListView implements Callback, OnScrollLis
     }
 
     @Override
-    public void onScroll(AbsListView view, int arg1, int arg2, int arg3) {
-        // Do nothing; we only care about going from not scrolling to scrolling.
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int state) {
-        if (state == OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
-                || state == OnScrollListener.SCROLL_STATE_FLING) {
-            commitDestructiveActions(true);
-        }
+    public void onScroll() {
+        commitDestructiveActions(true);
     }
 }

@@ -43,6 +43,7 @@
     <!-- Max unread count to show for a folder -->
     <integer name="maxUnreadCount">999</integer>
     <integer name="swipeScrollSlop">2</integer>
+    <integer name="leaveBehindSwipeScrollSlop">25</integer>
     <integer name="widget_refresh_delay_ms">4000</integer>
     <integer name="widget_folder_refresh_delay_ms">500</integer>
     <!-- We don't want the unread count to flicker too much in the action bar, when a lot of
