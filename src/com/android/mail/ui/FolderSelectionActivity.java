@@ -346,4 +346,10 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     public void stopDragMode() {
         // Unsupported
     }
+
+    @Override
+    public RecentFolderController getRecentFolderController() {
+        // Unsupported
+        return null;
+    }
 }

@@ -604,14 +604,23 @@ public class UIProvider {
     public static final int FOLDER_HIERARCHICAL_DESC_COLUMN = 18;
 
     public static final class FolderType {
+        /** A user defined label. */
         public static final int DEFAULT = 0;
+        /** A system defined inbox */
         public static final int INBOX = 1;
+        /** A system defined containing mails to be edited before sending. */
         public static final int DRAFT = 2;
+        /** A system defined folder containing mails <b>to be</b> sent */
         public static final int OUTBOX = 3;
+        /** A system defined folder containing sent mails */
         public static final int SENT = 4;
+        /** A system defined trash folder */
         public static final int TRASH = 5;
+        /** A system defined spam folder */
         public static final int SPAM = 6;
+        /** A system defined starred folder */
         public static final int STARRED = 7;
+        /** Any other system label that we do not have a specific name for. */
         public static final int OTHER_PROVIDER_FOLDER = 8;
     }
 
