@@ -1183,7 +1183,8 @@ public abstract class AbstractActivityController implements ActivityController {
         return mDestroyed;
     }
 
-    private void commitDestructiveActions(boolean animate) {
+    @Override
+    public void commitDestructiveActions(boolean animate) {
         ConversationListFragment fragment = getConversationListFragment();
         if (fragment != null) {
             fragment.commitDestructiveActions(animate);

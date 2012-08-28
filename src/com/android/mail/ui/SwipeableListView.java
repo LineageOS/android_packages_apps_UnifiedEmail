@@ -219,6 +219,11 @@ public class SwipeableListView extends ListView implements Callback {
         if (mConvSelectionSet != null && !mConvSelectionSet.isEmpty()
                 && mConvSelectionSet.contains(conv)) {
             mConvSelectionSet.toggle(null, conv);
+            // Don't commit destructive actions if the item we just removed from
+            // the selection set is the item we just destroyed!
+            if (!conv.isMostlyDead() && mConvSelectionSet.isEmpty()) {
+                commitDestructiveActions(true);
+            }
         }
     }
 

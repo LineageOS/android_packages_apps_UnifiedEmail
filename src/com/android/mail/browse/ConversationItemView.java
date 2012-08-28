@@ -1191,11 +1191,14 @@ public class ConversationItemView extends View implements SwipeableItemView {
             mChecked = !mChecked;
             Conversation conv = mHeader.conversation;
             // Set the list position of this item in the conversation
-            ListView listView = getListView();
+            SwipeableListView listView = getListView();
             conv.position = mChecked && listView != null ? listView.getPositionForView(this)
                     : Conversation.NO_POSITION;
             if (mSelectedConversationSet != null) {
                 mSelectedConversationSet.toggle(this, conv);
+            }
+            if (mSelectedConversationSet.isEmpty()) {
+                listView.commitDestructiveActions(true);
             }
             // We update the background after the checked state has changed
             // now that we have a selected background asset. Setting the background
