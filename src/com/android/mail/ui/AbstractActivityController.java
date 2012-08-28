@@ -43,6 +43,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
+import android.text.TextUtils;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -118,8 +119,10 @@ public abstract class AbstractActivityController implements ActivityController {
     private static final String SAVED_CONVERSATION = "saved-conversation";
     /** Tag for {@link #mSelectedSet} */
     private static final String SAVED_SELECTED_SET = "saved-selected-set";
+    /** Tag for {@link ActionableToastBar#getOperation()} */
     private static final String SAVED_TOAST_BAR_OP = "saved-toast-bar-op";
-    protected static final String SAVED_HIERARCHICAL_FOLDER = "saved-hierarchical-folder";
+    /** Tag for {@link #mFolderListFolder} */
+    private static final String SAVED_HIERARCHICAL_FOLDER = "saved-hierarchical-folder";
     /** Tag for {@link ConversationListContext#searchQuery} */
     private static final String SAVED_QUERY = "saved-query";
 
@@ -376,8 +379,11 @@ public abstract class AbstractActivityController implements ActivityController {
         if (actionBar != null && mActionBarView != null) {
             actionBar.setCustomView(mActionBarView, new ActionBar.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-                    ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_TITLE);
+            // Show a custom view and home icon, but remove the title
+            final int mask = ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_TITLE
+                    | ActionBar.DISPLAY_SHOW_HOME;
+            final int enabled = ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME;
+            actionBar.setDisplayOptions(enabled, mask);
             mActionBarView.attach();
         }
         mViewMode.addListener(mActionBarView);
@@ -521,17 +527,6 @@ public abstract class AbstractActivityController implements ActivityController {
             setListContext(folder, query);
             showConversationList(mConvListContext);
         }
-    }
-
-    /**
-     * Update the conversation list to {@link #mConvListContext} without creating a new frament if
-     * possible.
-     */
-    protected abstract void updateConversationList();
-
-    private void setFirstFolder(Folder folder, String query) {
-        setListContext(folder, query);
-        updateConversationList();
     }
 
     @Override
@@ -685,8 +680,9 @@ public abstract class AbstractActivityController implements ActivityController {
             if (savedState.containsKey(SAVED_FOLDER)) {
                 final Folder folder = (Folder) savedState.getParcelable(SAVED_FOLDER);
                 final String query = savedState.getString(SAVED_QUERY, null);
-                setFirstFolder(folder, query);
+                setListContext(folder, query);
             }
+            mViewMode.handleRestore(savedState);
         } else if (intent != null) {
             handleIntent(intent);
         }
@@ -1090,6 +1086,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        mViewMode.handleSaveInstanceState(outState);
         if (mAccount != null) {
             LogUtils.d(LOG_TAG, "Saving the account now");
             outState.putParcelable(SAVED_ACCOUNT, mAccount);
@@ -1101,7 +1098,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (ConversationListContext.isSearchResult(mConvListContext)) {
             outState.putString(SAVED_QUERY, mConvListContext.searchQuery);
         }
-        int mode = mViewMode.getMode();
+        final int mode = mViewMode.getMode();
         if (mCurrentConversation != null
                 && (mode == ViewMode.CONVERSATION ||
                 mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION)) {
@@ -1113,13 +1110,13 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mToastBar.getVisibility() == View.VISIBLE) {
             outState.putParcelable(SAVED_TOAST_BAR_OP, mToastBar.getOperation());
         }
-        ConversationListFragment convListFragment = getConversationListFragment();
+        final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
-            convListFragment.getAnimatedAdapter()
-            .onSaveInstanceState(outState);
+            convListFragment.getAnimatedAdapter().onSaveInstanceState(outState);
         }
-
         mSafeToModifyFragments = false;
+        outState.putString(SAVED_HIERARCHICAL_FOLDER,
+                (mFolderListFolder != null) ? Folder.toString(mFolderListFolder) : null);
     }
 
     /**
@@ -1262,11 +1259,13 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
             }
         }
-
-        ConversationListFragment convListFragment = getConversationListFragment();
+        final String folderString = savedState.getString(SAVED_HIERARCHICAL_FOLDER, null);
+        if (!TextUtils.isEmpty(folderString)) {
+            mFolderListFolder = Folder.fromString(folderString);
+        }
+        final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
-            convListFragment.getAnimatedAdapter()
-                    .onRestoreInstanceState(savedState);
+            convListFragment.getAnimatedAdapter().onRestoreInstanceState(savedState);
         }
         /**
          * Restore the state of selected conversations. This needs to be done after the correct mode
@@ -1277,20 +1276,24 @@ public abstract class AbstractActivityController implements ActivityController {
         restoreSelectedConversations(savedState);
     }
 
+    /**
+     * Handle an intent to open the app. This method is called only when there is no saved state,
+     * so we need to set state that wasn't set before. It is correct to change the viewmode here
+     * since it has not been previously set.
+     * @param intent
+     */
     private void handleIntent(Intent intent) {
         boolean handled = false;
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             if (intent.hasExtra(Utils.EXTRA_ACCOUNT)) {
-                setAccount(Account.newinstance(intent
-                        .getStringExtra(Utils.EXTRA_ACCOUNT)));
+                setAccount(Account.newinstance(intent.getStringExtra(Utils.EXTRA_ACCOUNT)));
             }
             if (mAccount == null) {
                 return;
             }
             mActivity.invalidateOptionsMenu();
             final boolean isConversationMode = intent.hasExtra(Utils.EXTRA_CONVERSATION);
-            // TODO(viki): Allow the controller to set the mode instead of a mode transition.
-            if (isConversationMode) {
+            if (isConversationMode && mViewMode.getMode() == ViewMode.UNKNOWN) {
                 mViewMode.enterConversationMode();
             } else {
                 mViewMode.enterConversationListMode();

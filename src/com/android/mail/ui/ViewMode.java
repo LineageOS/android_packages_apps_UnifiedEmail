@@ -177,7 +177,14 @@ public class ViewMode {
      * @param inState
      */
     public void handleRestore(Bundle inState) {
-        mMode = inState.getInt(VIEW_MODE_KEY);
+        if (inState == null) {
+            return;
+        }
+        // Restore the previous mode, and UNKNOWN if nothing exists.
+        final int newMode = inState.getInt(VIEW_MODE_KEY, UNKNOWN);
+        if (newMode != UNKNOWN) {
+            setModeInternal(newMode);
+        }
     }
 
     /**
@@ -185,6 +192,9 @@ public class ViewMode {
      * @param outState
      */
     public void handleSaveInstanceState(Bundle outState) {
+        if (outState == null) {
+            return;
+        }
         outState.putInt(VIEW_MODE_KEY, mMode);
     }
 

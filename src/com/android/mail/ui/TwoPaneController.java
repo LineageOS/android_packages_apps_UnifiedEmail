@@ -121,21 +121,6 @@ public final class TwoPaneController extends AbstractActivityController {
         initializeConversationListFragment(true);
     }
 
-    /**
-     * Update the conversation list without creating another fragment, if possible
-     */
-    @Override
-    protected void updateConversationList(){
-        exitCabMode();
-        FolderListFragment folderList = getFolderListFragment();
-        if (folderList == null && mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
-            // Create a folder list fragment if none exists.
-            renderFolderList();
-            folderList = getFolderListFragment();
-        }
-        initializeConversationListFragment(true);
-    }
-
     @Override
     public void showFolderList() {
         // On two-pane layouts, showing the folder list takes you to the top level of the
@@ -411,32 +396,6 @@ public final class TwoPaneController extends AbstractActivityController {
                 mActivity.finish();
             }
         }
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle inState) {
-        super.onRestoreInstanceState(inState);
-        if (inState.containsKey(SAVED_HIERARCHICAL_FOLDER)) {
-            String folderString = inState.getString(SAVED_HIERARCHICAL_FOLDER);
-            if (!TextUtils.isEmpty(folderString)) {
-                Folder folder = Folder.fromString(inState.getString(SAVED_HIERARCHICAL_FOLDER));
-                mViewMode.enterConversationListMode();
-                if (folder.hasChildren) {
-                    onFolderSelected(folder);
-                } else if (folder.parent != null) {
-                    onFolderSelected(folder.parent);
-                    setHierarchyFolder(folder);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Folder hierarchyFolder = getHierarchyFolder();
-        outState.putString(SAVED_HIERARCHICAL_FOLDER,
-                hierarchyFolder != null ? Folder.toString(hierarchyFolder) : null);
     }
 
     @Override
