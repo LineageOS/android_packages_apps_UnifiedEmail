@@ -24,8 +24,6 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.TextUtils;
-
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.providers.Account;
@@ -48,6 +46,8 @@ public final class OnePaneController extends AbstractActivityController {
             "inbox_conversation-list-transaction";
     private static final String CONVERSATION_LIST_TRANSACTION_KEY = "conversation-list-transaction";
     private static final String CONVERSATION_TRANSACTION_KEY = "conversation-transaction";
+    private static final String CONVERSATION_LIST_VISIBLE_KEY = "conversation-list-visible";
+    private static final String CONVERSATION_LIST_NEVER_SHOWN_KEY = "conversation-list-never-shown";
 
     private static final int INVALID_ID = -1;
     private boolean mConversationListVisible = false;
@@ -71,27 +71,17 @@ public final class OnePaneController extends AbstractActivityController {
     public void onRestoreInstanceState(Bundle inState) {
         super.onRestoreInstanceState(inState);
         // TODO(mindyp) handle saved state.
-        if (inState != null) {
-            mLastFolderListTransactionId = inState.getInt(FOLDER_LIST_TRANSACTION_KEY, INVALID_ID);
-            mLastInboxConversationListTransactionId =
-                    inState.getInt(INBOX_CONVERSATION_LIST_TRANSACTION_KEY, INVALID_ID);
-            mLastConversationListTransactionId = inState.getInt(CONVERSATION_LIST_TRANSACTION_KEY,
-                    INVALID_ID);
-            mLastConversationTransactionId = inState.getInt(CONVERSATION_TRANSACTION_KEY,
-                    INVALID_ID);
-
-            // Enter folder list mode.
-            if (inState.containsKey(SAVED_HIERARCHICAL_FOLDER)) {
-                String folderString = inState.getString(SAVED_HIERARCHICAL_FOLDER);
-                if (!TextUtils.isEmpty(folderString)) {
-                    Folder folder = Folder.fromString(inState
-                            .getString(SAVED_HIERARCHICAL_FOLDER));
-                    onFolderSelected(folder);
-                } else {
-                    showFolderList();
-                }
-            }
+        if (inState == null) {
+            return;
         }
+        mLastFolderListTransactionId = inState.getInt(FOLDER_LIST_TRANSACTION_KEY, INVALID_ID);
+        mLastInboxConversationListTransactionId =
+                inState.getInt(INBOX_CONVERSATION_LIST_TRANSACTION_KEY, INVALID_ID);
+        mLastConversationListTransactionId =
+                inState.getInt(CONVERSATION_LIST_TRANSACTION_KEY, INVALID_ID);
+        mLastConversationTransactionId = inState.getInt(CONVERSATION_TRANSACTION_KEY, INVALID_ID);
+        mConversationListVisible = inState.getBoolean(CONVERSATION_LIST_VISIBLE_KEY);
+        mConversationListNeverShown = inState.getBoolean(CONVERSATION_LIST_NEVER_SHOWN_KEY);
     }
 
     @Override
@@ -103,11 +93,8 @@ public final class OnePaneController extends AbstractActivityController {
                 mLastInboxConversationListTransactionId);
         outState.putInt(CONVERSATION_LIST_TRANSACTION_KEY, mLastConversationListTransactionId);
         outState.putInt(CONVERSATION_TRANSACTION_KEY, mLastConversationTransactionId);
-        if (mViewMode.getMode() == ViewMode.FOLDER_LIST) {
-            Folder hierarchyFolder = getHierarchyFolder();
-            outState.putString(SAVED_HIERARCHICAL_FOLDER,
-                    hierarchyFolder != null ? Folder.toString(hierarchyFolder) : null);
-        }
+        outState.putBoolean(CONVERSATION_LIST_VISIBLE_KEY, mConversationListVisible);
+        outState.putBoolean(CONVERSATION_LIST_NEVER_SHOWN_KEY, mConversationListNeverShown);
     }
 
     @Override
@@ -331,8 +318,7 @@ public final class OnePaneController extends AbstractActivityController {
                 // back should display the parent folder's parent and siblings.
                 goUpFolderHierarchy(hierarchyFolder);
             } else {
-                // We are at the topmost list of folders; just go back to
-                // whatever conv list we were viewing before.
+                // We are at the topmost list of folders: go back
                 mLastFolderListTransactionId = INVALID_ID;
                 transitionToInbox();
             }
@@ -375,15 +361,22 @@ public final class OnePaneController extends AbstractActivityController {
         }
     }
 
+    /**
+     * Switch to the Inbox by creating a new conversation list context that loads the inbox.
+     */
     private void transitionToInbox() {
         mViewMode.enterConversationListMode();
-        if (mInbox == null) {
+        // This is nearly certainly a bug. We check if mInbox is null, but don't actually do
+        // anything with it.
+        // TODO(viki): Resolve this in time for UR7.
+        boolean enablePossiblyBuggyPath = false;
+        if (mInbox == null && enablePossiblyBuggyPath) {
+            // Nothing creates mInbox here...!
             loadAccountInbox();
         } else {
-            ConversationListContext listContext = ConversationListContext.forFolder(
-                    mAccount, mInbox);
-            // Set the correct context for what the conversation view will be
-            // now.
+            ConversationListContext listContext =
+                    ConversationListContext.forFolder(mAccount, mInbox);
+            // Set the correct context for what the conversation view will be now.
             onFolderChanged(mInbox);
             showConversationList(listContext);
         }
@@ -405,50 +398,6 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             super.onFolderSelected(folder);
         }
-    }
-
-    /**
-     * Update the conversation list without creating another fragment, if possible
-     */
-    @Override
-    protected void updateConversationList(){
-        enableCabMode();
-        // TODO(viki): Check if the account has been changed since the previous
-        // time.
-        if (ConversationListContext.isSearchResult(mConvListContext)) {
-            mViewMode.enterSearchResultsListMode();
-        } else {
-            mViewMode.enterConversationListMode();
-        }
-        // TODO(viki): This account transition looks strange in two pane mode.
-        // Revisit as the app is coming together and improve the look and feel.
-        final int transition = mConversationListNeverShown
-                ? FragmentTransaction.TRANSIT_FRAGMENT_FADE
-                : FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
-        Fragment listFragment = getConversationListFragment();
-        if (listFragment == null) {
-            listFragment = ConversationListFragment.newInstance(mConvListContext);
-            if (!inInbox(mAccount, mConvListContext)) {
-                // Maintain fragment transaction history so we can get back to the
-                // fragment used to launch this list.
-                mLastConversationListTransactionId = replaceFragment(listFragment,
-                        transition, TAG_CONVERSATION_LIST);
-            } else {
-                // If going to the inbox, clear the folder list transaction history.
-                mInbox = mConvListContext.folder;
-                mLastInboxConversationListTransactionId = replaceFragment(listFragment,
-                        transition, TAG_CONVERSATION_LIST);
-                mLastFolderListTransactionId = INVALID_ID;
-
-                // If we ever to to the inbox, we want to unset the transation id for any other
-                // non-inbox folder.
-                mLastConversationListTransactionId = INVALID_ID;
-            }
-        }
-        mConversationListVisible = true;
-        onConversationVisibilityChanged(false);
-        onConversationListVisibilityChanged(true);
-        mConversationListNeverShown = false;
     }
 
     private boolean isTransactionIdValid(int id) {
