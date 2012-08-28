@@ -522,7 +522,7 @@ public final class ConversationListFragment extends ListFragment implements
         if (cursor != null && cursor.moveToPosition(position)) {
             final Conversation conv = new Conversation(cursor);
             conv.position = position;
-            mCallbacks.onConversationSelected(conv);
+            mCallbacks.onConversationSelected(conv, false /* inLoaderCallbacks */);
         }
     }
 
