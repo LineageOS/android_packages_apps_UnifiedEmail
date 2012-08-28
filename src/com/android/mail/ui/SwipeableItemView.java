@@ -28,4 +28,6 @@ public interface SwipeableItemView {
     public boolean canChildBeDismissed();
 
     public void dismiss();
+
+    public float getMinAllowScrollDistance();
 }

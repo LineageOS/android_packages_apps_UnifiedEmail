@@ -20,6 +20,7 @@ package com.android.mail.ui;
 import android.animation.ObjectAnimator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
@@ -48,6 +49,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     private View mSwipeableContent;
     private static int sShrinkAnimationDuration = -1;
     private static int sFadeInAnimationDuration = -1;
+    private static float sScrollSlop;
 
     public LeaveBehindItem(Context context) {
         this(context, null);
@@ -60,10 +62,10 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     public LeaveBehindItem(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         if (sShrinkAnimationDuration == -1) {
-            sShrinkAnimationDuration = context.getResources().getInteger(
-                    R.integer.shrink_animation_duration);
-            sFadeInAnimationDuration = context.getResources().getInteger(
-                    R.integer.fade_in_animation_duration);
+            Resources res = context.getResources();
+            sShrinkAnimationDuration = res.getInteger(R.integer.shrink_animation_duration);
+            sFadeInAnimationDuration = res.getInteger(R.integer.fade_in_animation_duration);
+            sScrollSlop = res.getInteger(R.integer.leaveBehindSwipeScrollSlop);
         }
     }
 
@@ -255,5 +257,10 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     public void showTextImmediately() {
         // Fake that we are already fading it in so animations get ignored.
         mFadingInText = true;
+    }
+
+    @Override
+    public float getMinAllowScrollDistance() {
+        return sScrollSlop;
     }
 }

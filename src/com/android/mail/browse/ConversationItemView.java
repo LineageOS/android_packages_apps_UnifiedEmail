@@ -172,6 +172,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private ControllableActivity mActivity;
     private CharacterStyle mActivatedTextSpan;
     private int mBackgroundOverride = -1;
+    private static int sScrollSlop;
     private static int sSendersTextViewTopPadding;
     private static int sSendersTextViewHeight;
     private static ForegroundColorSpan sActivatedTextSpan;
@@ -381,6 +382,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
                     (R.dimen.senders_textview_top_padding);
             sSendersTextViewHeight = res.getDimensionPixelSize
                     (R.dimen.senders_textview_height);
+            sScrollSlop = res.getInteger(R.integer.swipeScrollSlop);
         }
     }
 
@@ -1589,5 +1591,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
             sPaint.setTextSize(mCoordinates.subjectFontSize);
             canvas.drawText(mDragDesc, mDragDescX, mDragDescY, sPaint);
         }
+    }
+
+    @Override
+    public float getMinAllowScrollDistance() {
+        return sScrollSlop;
     }
 }
