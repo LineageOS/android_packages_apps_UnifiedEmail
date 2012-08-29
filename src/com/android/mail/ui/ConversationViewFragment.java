@@ -806,7 +806,7 @@ public final class ConversationViewFragment extends Fragment implements
             }
         }
 
-        activity.onConversationSeen(mConversation);
+        activity.getListHandler().onConversationSeen(mConversation);
 
         final SubjectDisplayChanger sdc = activity.getSubjectDisplayChanger();
         if (sdc != null) {

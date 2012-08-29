@@ -116,8 +116,10 @@ public class ConversationPagerController implements OnPageChangeListener {
         if (!ENABLE_SINGLETON_INITIAL_LOAD) {
             // FIXME: unnecessary to do this on restore. setAdapter will restore current position
             final int initialPos = mPagerAdapter.getConversationPosition(initialConversation);
-            LogUtils.w(LOG_TAG, "*** pager fragment init pos=%d", initialPos);
-            mPager.setCurrentItem(initialPos);
+            if (initialPos >= 0) {
+                LogUtils.d(LOG_TAG, "*** pager fragment init pos=%d", initialPos);
+                mPager.setCurrentItem(initialPos);
+            }
         }
 
         mShown = true;
@@ -157,7 +159,7 @@ public class ConversationPagerController implements OnPageChangeListener {
         // take the adapter out of singleton mode to begin loading the
         // other non-visible conversations
         if (mPagerAdapter != null && mPagerAdapter.isSingletonMode()) {
-            LogUtils.d(LOG_TAG, "IN pager adapter, finished loading primary conversation," +
+            LogUtils.i(LOG_TAG, "IN pager adapter, finished loading primary conversation," +
                     " switching to cursor mode to load other conversations");
             mPagerAdapter.setSingletonMode(false);
         }
