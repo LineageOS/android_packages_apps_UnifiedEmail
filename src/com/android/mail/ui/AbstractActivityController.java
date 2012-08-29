@@ -2417,6 +2417,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             // For each conversation, for each operation, add/ remove the
             // appropriate folders.
+            ArrayList<String> updatedTargetFolders = new ArrayList<String>(mTarget.size());
             for (Conversation target : mTarget) {
                 HashMap<Uri, Folder> targetFolders = Folder
                         .hashMapForFolders(target.getRawFolders());
@@ -2430,11 +2431,11 @@ public abstract class AbstractActivityController implements ActivityController {
                         targetFolders.remove(op.mFolder.uri);
                     }
                 }
-                target.setRawFolders(Folder.getSerializedFolderString(targetFolders.values()));
-                if (mConversationListCursor != null) {
-                    mConversationListCursor.updateString(mContext, Conversation.listOf(target),
-                            Conversation.UPDATE_FOLDER_COLUMN, target.getRawFoldersString());
-                }
+                updatedTargetFolders.add(Folder.getSerializedFolderString(targetFolders.values()));
+            }
+            if (mConversationListCursor != null) {
+                mConversationListCursor.updateStrings(mContext, mTarget,
+                        Conversation.UPDATE_FOLDER_COLUMN, updatedTargetFolders);
             }
             refreshConversationList();
             if (mIsSelectedSet) {
