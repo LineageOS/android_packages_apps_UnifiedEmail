@@ -2455,7 +2455,6 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
-    @Override
     public final DestructiveAction getFolderChange(Collection<Conversation> target,
             Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
             boolean showUndo) {
