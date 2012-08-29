@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.DisplayMetrics;
 
 import com.android.mail.providers.Attachment;
 import com.android.mail.utils.LogTag;
@@ -108,6 +109,7 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
 
             final BitmapFactory.Options opts = new BitmapFactory.Options();
             opts.inJustDecodeBounds = true;
+            opts.inDensity = DisplayMetrics.DENSITY_MEDIUM;
 
             BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, opts);
             if (isCancelled() || opts.outWidth == -1 || opts.outHeight == -1) {

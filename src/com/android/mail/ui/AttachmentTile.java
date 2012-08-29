@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ImageView.ScaleType;
 
 import com.android.ex.photo.util.ImageUtils;
 import com.android.mail.R;
@@ -137,6 +138,11 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
 
     public void setThumbnail(Bitmap result) {
         mIcon.setImageBitmap(result);
+        if (result.getWidth() < mIcon.getWidth() || result.getHeight() < mIcon.getHeight()) {
+            mIcon.setScaleType(ScaleType.CENTER);
+        } else {
+            mIcon.setScaleType(ScaleType.CENTER_CROP);
+        }
         mDefaultThumbnailSet = false;
     }
 
