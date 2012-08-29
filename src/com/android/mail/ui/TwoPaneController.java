@@ -262,9 +262,6 @@ public final class TwoPaneController extends AbstractActivityController {
             return;
         }
         if (conversation == null) {
-            // This is a request to remove the conversation view and show the conversation list
-            // fragment instead.
-            mPagerController.stopListening();
             onBackPressed();
             return;
         }
