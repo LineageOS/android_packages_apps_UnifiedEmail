@@ -2005,13 +2005,16 @@ public abstract class AbstractActivityController implements ActivityController {
                 c.localDeleteOnUpdate = true;
             }
         }
-        final DestructiveAction folderChange = getFolderChange(target, folderOps, isDestructive,
-                batch, showUndo);
+        final DestructiveAction folderChange;
         // Update the UI elements depending no their visibility and availability
         // TODO(viki): Consolidate this into a single method requestDelete.
         if (isDestructive) {
+            folderChange = getDeferredFolderChange(target, folderOps, isDestructive,
+                    batch, showUndo);
             delete(target, folderChange);
         } else {
+            folderChange = getFolderChange(target, folderOps, isDestructive,
+                    batch, showUndo);
             requestUpdate(target, folderChange);
         }
     }
@@ -2452,12 +2455,21 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
-    private final DestructiveAction getFolderChange(Collection<Conversation> target,
+    @Override
+    public final DestructiveAction getFolderChange(Collection<Conversation> target,
+            Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
+            boolean showUndo) {
+        final DestructiveAction da = getDeferredFolderChange(target, folders, isDestructive,
+                isBatch, showUndo);
+        registerDestructiveAction(da);
+        return da;
+    }
+
+    public final DestructiveAction getDeferredFolderChange(Collection<Conversation> target,
             Collection<FolderOperation> folders, boolean isDestructive, boolean isBatch,
             boolean showUndo) {
         final DestructiveAction da = new FolderDestruction(target, folders, isDestructive, isBatch,
                 showUndo, R.id.change_folder);
-        registerDestructiveAction(da);
         return da;
     }
 
@@ -2472,12 +2484,9 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     private final DestructiveAction getRemoveFolder(Collection<Conversation> target,
-            Folder toRemove, boolean isDestructive, boolean isBatch,
-            boolean showUndo) {
-        Collection<FolderOperation> folderOps = new ArrayList<FolderOperation>();
-        folderOps.add(new FolderOperation(toRemove, false));
-        DestructiveAction da = new FolderDestruction(target, folderOps, isDestructive, isBatch,
-                showUndo, R.id.remove_folder);
+            Folder toRemove, boolean isDestructive, boolean isBatch, boolean showUndo) {
+        DestructiveAction da = getDeferredRemoveFolder(target, toRemove, isDestructive, isBatch,
+                showUndo);
         registerDestructiveAction(da);
         return da;
     }
