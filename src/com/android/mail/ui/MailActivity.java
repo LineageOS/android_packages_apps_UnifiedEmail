@@ -249,7 +249,8 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        return mController.onPrepareOptionsMenu(menu) || super.onPrepareOptionsMenu(menu);
+        super.onPrepareOptionsMenu(menu);
+        return mController.onPrepareOptionsMenu(menu);
     }
 
     @Override

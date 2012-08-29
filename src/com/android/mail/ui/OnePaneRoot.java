@@ -25,15 +25,15 @@ public class OnePaneRoot extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "OnePaneLayout(%s).onMeasure() called", this);
+        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "OnePaneRoot(%s).onMeasure() called", this);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "OnePaneLayout(%s).onLayout() START", this);
+        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "OnePaneRoot(%s).onLayout() START", this);
         super.onLayout(changed, left, top, right, bottom);
-        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "OnePaneLayout(%s).onLayout() FINISH", this);
+        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "OnePaneRoot(%s).onLayout() FINISH", this);
     }
 
     @Override
