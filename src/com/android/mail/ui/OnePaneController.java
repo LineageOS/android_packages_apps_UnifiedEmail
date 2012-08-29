@@ -366,15 +366,10 @@ public final class OnePaneController extends AbstractActivityController {
      */
     private void transitionToInbox() {
         mViewMode.enterConversationListMode();
-        // This is nearly certainly a bug. We check if mInbox is null, but don't actually do
-        // anything with it.
-        // TODO(viki): Resolve this in time for UR7.
-        boolean enablePossiblyBuggyPath = false;
-        if (mInbox == null && enablePossiblyBuggyPath) {
-            // Nothing creates mInbox here...!
+        if (mInbox == null) {
             loadAccountInbox();
         } else {
-            ConversationListContext listContext =
+            final ConversationListContext listContext =
                     ConversationListContext.forFolder(mAccount, mInbox);
             // Set the correct context for what the conversation view will be now.
             onFolderChanged(mInbox);
