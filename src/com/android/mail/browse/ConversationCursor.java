@@ -1523,6 +1523,21 @@ public final class ConversationCursor implements Cursor {
      * Update a string columns for a group of conversations (see updateValues below)
      */
     public int updateStrings(Context context, Collection<Conversation> conversations,
+            String columnName, ArrayList<String> values) {
+        ArrayList<ConversationOperation> operations = new ArrayList<ConversationOperation>();
+        int i = 0;
+        ContentValues cv = new ContentValues();
+        for (Conversation c : conversations) {
+            cv.put(columnName, values.get(i));
+            operations.add(getOperationForConversation(c, ConversationOperation.UPDATE, cv));
+        }
+        return apply(context, operations);
+    }
+
+    /**
+     * Update a string columns for a group of conversations (see updateValues below)
+     */
+    public int updateStrings(Context context, Collection<Conversation> conversations,
             String[] columnNames, String[] values) {
         ContentValues cv = new ContentValues();
         for (int i = 0; i < columnNames.length; i++) {
@@ -1556,10 +1571,14 @@ public final class ConversationCursor implements Cursor {
             Collection<Conversation> conversations, int type, ContentValues values) {
         final ArrayList<ConversationOperation> ops = Lists.newArrayList();
         for (Conversation conv: conversations) {
-            ConversationOperation op = new ConversationOperation(type, conv, values);
-            ops.add(op);
+            ops.add(getOperationForConversation(conv, type, values));
         }
         return ops;
+    }
+
+    private ConversationOperation getOperationForConversation(Conversation conv, int type,
+            ContentValues values) {
+        return new ConversationOperation(type, conv, values);
     }
 
     /**
