@@ -2428,8 +2428,10 @@ public abstract class AbstractActivityController implements ActivityController {
                     }
                 }
                 target.setRawFolders(Folder.getSerializedFolderString(targetFolders.values()));
-                mConversationListCursor.updateString(mContext, Conversation.listOf(target),
-                        Conversation.UPDATE_FOLDER_COLUMN, target.getRawFoldersString());
+                if (mConversationListCursor != null) {
+                    mConversationListCursor.updateString(mContext, Conversation.listOf(target),
+                            Conversation.UPDATE_FOLDER_COLUMN, target.getRawFoldersString());
+                }
             }
             refreshConversationList();
             if (mIsSelectedSet) {
