@@ -1516,7 +1516,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
         if (mLastTouchX < 0 || mLastTouchY < 0) {
             return;
         }
-        toggleCheckMark();
+        // If this is already checked, don't bother unchecking it!
+        if (!mChecked) {
+            toggleCheckMark();
+        }
 
         // Clip data has form: [conversations_uri, conversationId1,
         // maxMessageId1, label1, conversationId2, maxMessageId2, label2, ...]
