@@ -44,6 +44,7 @@ import com.android.mail.utils.Utils;
 // Called TwoPaneActivityController in Gmail.
 public final class TwoPaneController extends AbstractActivityController {
     private TwoPaneLayout mLayout;
+    private Conversation mConversationToShow;
 
     /**
      * @param activity
@@ -224,6 +225,9 @@ public final class TwoPaneController extends AbstractActivityController {
         super.onConversationVisibilityChanged(visible);
         if (!visible) {
             mPagerController.hide();
+        } else if (mConversationToShow != null) {
+            mPagerController.show(mAccount, mFolder, mConversationToShow);
+            mConversationToShow = null;
         }
     }
 
@@ -271,13 +275,21 @@ public final class TwoPaneController extends AbstractActivityController {
         // ViewMode.CONVERSATION and yet the conversation list goes in and out of visibility.
         enableOrDisableCab();
 
+        // When a mode change is required, wait for onConversationVisibilityChanged(), the signal
+        // that the mode change animation has finished, before rendering the conversation.
+        mConversationToShow = conversation;
+
         final int mode = mViewMode.getMode();
+        boolean changedMode = false;
         if (mode == ViewMode.SEARCH_RESULTS_LIST || mode == ViewMode.SEARCH_RESULTS_CONVERSATION) {
-            mViewMode.enterSearchResultsConversationMode();
+            changedMode = mViewMode.enterSearchResultsConversationMode();
         } else {
-            mViewMode.enterConversationMode();
+            changedMode = mViewMode.enterConversationMode();
         }
-        mPagerController.show(mAccount, mFolder, conversation);
+        // load the conversation immediately if we're already in conversation mode
+        if (!changedMode) {
+            onConversationVisibilityChanged(true);
+        }
     }
 
     @Override
