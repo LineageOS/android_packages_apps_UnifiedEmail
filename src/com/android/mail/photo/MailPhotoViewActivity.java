@@ -75,8 +75,12 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         mShareItem = mMenu.findItem(R.id.menu_share);
         mShareAllItem = mMenu.findItem(R.id.menu_share_all);
 
-        updateActionItems();
+        return true;
+    }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        updateActionItems();
         return true;
     }
 
