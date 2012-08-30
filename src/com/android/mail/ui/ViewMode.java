@@ -95,12 +95,11 @@ public class ViewMode {
      * Dispatches a change event for the mode.
      * Always happens in the UI thread.
      */
-    private void dispatchModeChange(int newMode) {
-        mMode = newMode;
+    private void dispatchModeChange() {
         ArrayList<ModeChangeListener> list = new ArrayList<ModeChangeListener>(mListeners);
         for (ModeChangeListener listener : list) {
             assert (listener != null);
-            listener.onViewModeChanged(newMode);
+            listener.onViewModeChanged(mMode);
         }
     }
 
@@ -214,7 +213,8 @@ public class ViewMode {
         if (mMode == mode) {
             return false;
         }
-        dispatchModeChange(mode);
+        mMode = mode;
+        dispatchModeChange();
         return true;
     }
 }
