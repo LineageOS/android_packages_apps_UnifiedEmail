@@ -22,6 +22,8 @@ import com.google.common.collect.Lists;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.LayoutTransition;
+import android.animation.LayoutTransition.TransitionListener;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
@@ -67,7 +69,7 @@ import java.util.ArrayList;
  *
  * In the Gmail source code, this was called TriStateSplitLayout
  */
-final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
+final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener, TransitionListener {
 
     /**
      * Scaling modifier for sAnimationSlideRightDuration.
@@ -96,8 +98,6 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     private AbstractActivityController mController;
 
     private int mConversationLeft;
-
-    private View mConversationListContainer;
 
     private View mConversationView;
     /** Left position of each fragment. */
@@ -201,15 +201,16 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     }
 
     public TwoPaneLayout(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public TwoPaneLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
 
-    public TwoPaneLayout(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+        LayoutTransition lt = new LayoutTransition();
+        lt.addTransitionListener(this);
+        // FIXME: implement transitions
+//        setLayoutTransition(lt);
     }
 
     /**
@@ -493,7 +494,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      *     This is only relevant in a collapsible view, and will be 0 otherwise.
      */
     public int getConversationListLeft() {
-        return ((ViewGroup.MarginLayoutParams) mConversationListContainer.getLayoutParams())
+        return ((ViewGroup.MarginLayoutParams) mListView.getLayoutParams())
                 .leftMargin;
     }
 
@@ -514,9 +515,8 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         if (mIsSearchResult && !mShowTwoPaneSearchResults) {
             mFoldersView.setVisibility(View.GONE);
         }
-        mConversationListContainer = findViewById(R.id.conversation_column_container);
-        mListView = findViewById(R.id.conversation_list);
-        mConversationView = findViewById(R.id.conversation_pane_container);
+        mListView = findViewById(R.id.conversation_list_pane);
+        mConversationView = findViewById(R.id.conversation_pane);
 
         sAnimationSlideLeftDuration = res.getInteger(R.integer.activity_slide_left_duration);
         sAnimationSlideRightDuration = res.getInteger(R.integer.activity_slide_right_duration);
@@ -553,6 +553,19 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         return mListCollapsed;
     }
 
+
+    @Override
+    public void startTransition(
+            LayoutTransition transition, ViewGroup container, View view, int transitionType) {
+        LogUtils.d(LOG_TAG, "*** START TRANSITION, v=%s type=%s", view, transitionType);
+    }
+
+    @Override
+    public void endTransition(
+            LayoutTransition transition, ViewGroup container, View view, int transitionType) {
+        LogUtils.d(LOG_TAG, "*** END TRANSITION, v=%s type=%s", view, transitionType);
+    }
+
     /**
      * Finalizes state after animations settle when entering the conversation list mode.
      */
@@ -564,7 +577,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
         // remaining space that is on the right, so avoid hard pixel values,
         // since this avoids manual re-computations when the parent container
         // size changes for any reason (e.g. orientation change).
-        mConversationListContainer.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        mListView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
         requestLayout();
         dispatchConversationListVisibilityChange();
         dispatchConversationVisibilityChanged(false);
@@ -654,7 +667,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * Sets the relative left position of the conversation list.
      */
     private void setConversationListLeft(int left) {
-        ((ViewGroup.MarginLayoutParams) mConversationListContainer.getLayoutParams())
+        ((ViewGroup.MarginLayoutParams) mListView.getLayoutParams())
             .leftMargin = left;
         requestLayout();
     }
@@ -663,7 +676,7 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
      * Sets the width of the conversation list.
      */
     private void setConversationListWidth(int width) {
-        mConversationListContainer.getLayoutParams().width = width;
+        mListView.getLayoutParams().width = width;
         requestLayout();
     }
 

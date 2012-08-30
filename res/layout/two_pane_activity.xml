@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.mail.ui.OnePaneRoot xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     <com.android.mail.ui.TwoPaneLayout
@@ -23,8 +23,7 @@
         android:orientation="horizontal"
         android:splitMotionEvents="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true" >
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/content_pane"
@@ -32,39 +31,18 @@
             android:layout_height="match_parent"
             android:background="@drawable/folder_bg_holo_light"/>
 
-        <RelativeLayout
+        <FrameLayout
+            android:id="@+id/conversation_list_pane"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/conversation_column_container"
-            android:layout_toRightOf="@id/content_pane">
+            android:layout_toRightOf="@id/content_pane" />
 
-            <RelativeLayout
-                android:id="@+id/conversation_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/conversation_list_pane"
-                    android:layout_alignParentTop="true" />
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-        <FrameLayout
-            android:id="@+id/conversation_pane_container"
-            android:layout_width="0dip"
+        <include layout="@layout/conversation_pager"
+            android:id="@+id/conversation_pane"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            android:background="@android:color/white"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true" />
 
-            <!-- TODO: combine this pager with its container -->
-            <include layout="@layout/conversation_pager" />
-
-        </FrameLayout>
     </com.android.mail.ui.TwoPaneLayout>
     <RelativeLayout
         android:id="@+id/wait"
@@ -75,4 +53,4 @@
     <com.android.mail.ui.ActionableToastBar
         android:id="@+id/toast_bar"
         style="@style/ToastBarStyle" />
-</FrameLayout>
+</com.android.mail.ui.OnePaneRoot>

@@ -1053,8 +1053,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        mActionBarView.onPrepareOptionsMenu(menu);
-        return true;
+        return mActionBarView.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -1157,13 +1156,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
         // Commit any destructive undoable actions the user may have performed.
         commitDestructiveActions(true);
-
-        // We don't want to invalidate the options menu when switching to
-        // conversation
-        // mode, as it will happen when the conversation finishes loading.
-        if (newMode != ViewMode.CONVERSATION) {
-            mActivity.invalidateOptionsMenu();
-        }
     }
 
     public void disablePagerUpdates() {

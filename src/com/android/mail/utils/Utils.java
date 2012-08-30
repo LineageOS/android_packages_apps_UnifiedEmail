@@ -1053,24 +1053,20 @@ public class Utils {
      * Hacky method to allow invalidating views all the way up the hierarchy.
      */
     public static void markDirtyTillRoot(String message, View v) {
-        // During development, we want to log extra debugging information, and disable the
-        // hacky workaround to help diagnose the underlying problem.
-        if (LogUtils.isLoggable(VIEW_DEBUGGING_TAG, LogUtils.DEBUG)) return;
-
-        LogUtils.d(VIEW_DEBUGGING_TAG, "%s: markingDirtyTillRoot", message);
-        v.invalidate();
-        ViewParent parent = v.getParent();
-        while (parent != null) {
-            parent.requestLayout();
-            parent = parent.getParent();
-        }
+//        LogUtils.d(VIEW_DEBUGGING_TAG, "%s: markingDirtyTillRoot", message);
+//        v.invalidate();
+//        ViewParent parent = v.getParent();
+//        while (parent != null) {
+//            parent.requestLayout();
+//            parent = parent.getParent();
+//        }
     }
 
     public static void checkRequestLayout(View v) {
         boolean inLayout = false;
         final View root = v.getRootView();
 
-        if (root == null) {
+        if (root == null || v.isLayoutRequested()) {
             return;
         }
 
@@ -1101,8 +1097,9 @@ public class Utils {
         while (v != null) {
             LogUtils.d(VIEW_DEBUGGING_TAG,
                     "view item: %s mw/mh=%d/%d w/h=%d/%d layoutRequested=%s vis=%s id=0x%x",
-                    v, v.getMeasuredWidth(), v.getMeasuredHeight(), v.getWidth(), v.getHeight(),
-                    v.isLayoutRequested(), v.getVisibility(), v.getId());
+                    v.getClass().getSimpleName(), v.getMeasuredWidth(), v.getMeasuredHeight(),
+                    v.getWidth(), v.getHeight(), v.isLayoutRequested(), v.getVisibility(),
+                    v.getId());
 
             ViewParent vp = v.getParent();
             if (vp instanceof ViewGroup) {
