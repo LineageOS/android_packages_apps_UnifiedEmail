@@ -641,7 +641,7 @@ public abstract class MailAppProvider extends ContentProvider
 
         @Override
         public int compareTo(AccountCacheEntry o) {
-            return o.mPosition - mPosition;
+            return mPosition - o.mPosition;
         }
     }
 }
