@@ -159,21 +159,15 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
     }
 
-    @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        SwipeableConversationItemView view = new SwipeableConversationItemView(context,
-                mAccount.name);
-        return view;
-    }
-
-    @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-        if (! (view instanceof SwipeableConversationItemView)) {
-            return;
+    public View createConversationItemView(SwipeableConversationItemView view, Context context,
+            Conversation conv) {
+        if (view == null) {
+            view = new SwipeableConversationItemView(context, mAccount.name);
         }
-        ((SwipeableConversationItemView) view).bind(cursor, mActivity, mBatchConversations, mFolder,
-                mAccount != null ? mAccount.settings.hideCheckboxes : false,
-                        mSwipeEnabled, mPriorityMarkersEnabled, this);
+        ((SwipeableConversationItemView) view).bind(conv, mActivity, mBatchConversations, mFolder,
+                mAccount != null ? mAccount.settings.hideCheckboxes : false, mSwipeEnabled,
+                mPriorityMarkersEnabled, this);
+        return view;
     }
 
     @Override
@@ -262,7 +256,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (mShowFooter && position == super.getCount()) {
             return mFooter;
         }
-        Conversation conv = new Conversation((ConversationCursor) getItem(position));
+        ConversationCursor cursor = (ConversationCursor) getItem(position);
+        Conversation conv = new Conversation(cursor);
         if (isPositionUndoing(conv.id)) {
             return getUndoingView(position, conv, parent, false /* don't show swipe background */);
         } if (isPositionUndoingSwipe(conv.id)) {
@@ -297,7 +292,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         } else if (convertView != null) {
             ((SwipeableConversationItemView) convertView).reset();
         }
-        return super.getView(position, convertView, parent);
+        return createConversationItemView((SwipeableConversationItemView) convertView, mContext,
+                conv);
     }
 
     private boolean hasLeaveBehinds() {
