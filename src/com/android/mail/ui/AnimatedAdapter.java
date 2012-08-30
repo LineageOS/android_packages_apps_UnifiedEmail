@@ -410,6 +410,23 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         return undoView;
     }
 
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        SwipeableConversationItemView view = new SwipeableConversationItemView(context,
+                mAccount.name);
+        return view;
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        if (! (view instanceof SwipeableConversationItemView)) {
+            return;
+        }
+        ((SwipeableConversationItemView) view).bind(cursor, mActivity, mBatchConversations, mFolder,
+                mAccount != null ? mAccount.settings.hideCheckboxes : false,
+                        mSwipeEnabled, mPriorityMarkersEnabled, this);
+    }
+
     private SwipeableConversationItemView newConversationItemView(int position, ViewGroup parent,
             Conversation conversation) {
         SwipeableConversationItemView view = (SwipeableConversationItemView) super.getView(
