@@ -89,7 +89,8 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      * there is functionality that is not relevant (eg, the Save
      * button should not appear if the photo has already been saved).
      */
-    private void updateActionItems() {
+    @Override
+    protected void updateActionItems() {
         final boolean runningJellyBeanOrLater = Utils.isRunningJellybeanOrLater();
         final Attachment attachment = getCurrentAttachment();
 
