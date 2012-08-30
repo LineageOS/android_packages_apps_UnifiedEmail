@@ -351,12 +351,12 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     public void setActivityController(ActivityController controller) {
         if (mController != null) {
             mController.unregisterConversationListObserver(mListObserver);
-            mController.unregisterConversationListObserver(mFolderObserver);
+            mController.unregisterFolderObserver(mFolderObserver);
         }
         mController = controller;
         if (mController != null) {
             mController.registerConversationListObserver(mListObserver);
-            mController.registerConversationListObserver(mFolderObserver);
+            mController.registerFolderObserver(mFolderObserver);
 
             notifyDataSetChanged();
         } else {
