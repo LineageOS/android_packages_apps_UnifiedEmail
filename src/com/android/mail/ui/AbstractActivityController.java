@@ -1813,15 +1813,19 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
                 break;
             case LOADER_SEARCH:
-                data.moveToFirst();
-                Folder search = new Folder(data);
-                updateFolder(search);
-                mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder,
-                        mActivity.getIntent()
-                                .getStringExtra(UIProvider.SearchQueryParameters.QUERY));
-                showConversationList(mConvListContext);
-                mActivity.invalidateOptionsMenu();
-                mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
+                if (data != null && data.getCount() > 0) {
+                    data.moveToFirst();
+                    Folder search = new Folder(data);
+                    updateFolder(search);
+                    mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder,
+                            mActivity.getIntent()
+                                    .getStringExtra(UIProvider.SearchQueryParameters.QUERY));
+                    showConversationList(mConvListContext);
+                    mActivity.invalidateOptionsMenu();
+                    mActivity.getLoaderManager().destroyLoader(LOADER_SEARCH);
+                } else {
+                    LogUtils.e(LOG_TAG, "Null or empty cursor returned by LOADER_SEARCH loader");
+                }
                 break;
         }
     }
