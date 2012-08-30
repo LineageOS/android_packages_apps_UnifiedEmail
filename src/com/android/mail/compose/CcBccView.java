@@ -50,13 +50,9 @@ public class CcBccView extends RelativeLayout {
         boolean ccWasAlreadyShown = mCc.isShown();
         mCc.setVisibility(showCc ? View.VISIBLE : View.GONE);
         mBcc.setVisibility(showBcc ? View.VISIBLE : View.GONE);
-
         if (animate) {
             animate(showCc, showBcc, ccWasAlreadyShown);
         } else {
-            int ccHeight = showCc ? mCc.getLayoutParams().height : 0;
-            int bccHeight = showBcc ? mBcc.getLayoutParams().height : 0;
-            getLayoutParams().height = ccHeight + bccHeight;
             if (showCc) {
                 mCc.setAlpha(1);
             }
@@ -76,19 +72,11 @@ public class CcBccView extends RelativeLayout {
 
     private void animate(Boolean showCc, boolean showBcc, boolean ccWasAlreadyShown) {
         Resources res = getResources();
-        // First, have the height of the wrapper grow to fit the fields.
-        int ccHeight = showCc ? mCc.getLayoutParams().height : 0;
-        int bccHeight = showBcc ? mBcc.getLayoutParams().height : 0;
-        ObjectAnimator heightAnimator = ObjectAnimator.ofInt(this, "ccBccHeight",
-                getLayoutParams().height, ccHeight + bccHeight);
-        heightAnimator.setDuration(res.getInteger(R.integer.expand_cc_bcc_dur));
-
         // Then, have cc/ bcc fade in
         int fadeDuration = res.getInteger(R.integer.fadein_cc_bcc_dur);
         ObjectAnimator bccAnimator = ObjectAnimator.ofFloat(mBcc, "alpha", 0, 1);
         bccAnimator.setDuration(fadeDuration);
 
-        AnimatorSet transitionSet = new AnimatorSet();
         Animator fadeAnimation;
         if (!ccWasAlreadyShown) {
             ObjectAnimator ccAnimator = ObjectAnimator.ofFloat(mCc, "alpha", 0, 1);
@@ -98,8 +86,7 @@ public class CcBccView extends RelativeLayout {
         } else {
             fadeAnimation = bccAnimator;
         }
-        transitionSet.playSequentially(heightAnimator, fadeAnimation);
-        transitionSet.start();
+        fadeAnimation.start();
     }
 
     /**
