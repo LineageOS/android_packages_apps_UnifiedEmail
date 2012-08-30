@@ -40,7 +40,9 @@
     <string name="forward_attribution" msgid="1498936339458535158">"---------- הודעה שהועברה ----------&lt;br&gt;מאת: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;תאריך: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;נושא: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;אל: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
     <string name="cc_attribution" msgid="374493748526504562">"עותק: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"בחר סוג קובץ מצורף"</string>
-    <string name="too_large_to_attach" msgid="6355534239324333583">"הקובץ גדול מדי ולא ניתן לצרף אותו."</string>
+    <string name="too_large_to_attach_single" msgid="2996733972478212136">"לא ניתן לצרף קובץ שגדול מ-<xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"קובץ אחד או יותר לא צורפו. המגבלה היא <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_additional" msgid="3366607594339390249">"הקובץ לא צורף. המגבלה היא <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="generic_attachment_problem" msgid="8775959340559458709">"לא ניתן היה לצרף קובץ."</string>
     <string name="recipient_needed" msgid="999037027358925655">"הוסף נמען אחד לפחות."</string>
     <string name="recipient_error_dialog_title" msgid="6051694305498669180">"שגיאת נמען"</string>
@@ -63,6 +65,7 @@
     <string name="mark_not_spam" msgid="694891665407228160">"דווח שפריט זה אינו דואר זבל"</string>
     <string name="report_phishing" msgid="5714205737453138338">"דווח על התחזות"</string>
     <string name="delete" msgid="844871204175957681">"מחק"</string>
+    <string name="discard_drafts" msgid="6862272443470085375">"מחק טיוטות"</string>
     <string name="next" msgid="4674401197968248302">"ישנה יותר"</string>
     <string name="previous" msgid="309943944831349924">"חדשה יותר"</string>
     <string name="refresh" msgid="490989798005710951">"רענן"</string>
@@ -166,6 +169,10 @@
   <plurals name="confirm_archive_conversation">
     <item quantity="one" msgid="2990537295519552069">"האם להעביר שיחה זו לארכיון?"</item>
     <item quantity="other" msgid="4713469868399246772">"האם להעביר <xliff:g id="COUNT">%1$d</xliff:g> שיחות אלה לארכיון?"</item>
+  </plurals>
+  <plurals name="confirm_discard_drafts_conversation">
+    <item quantity="one" msgid="5974090449454432874">"למחוק טיוטות משיחה זו?"</item>
+    <item quantity="other" msgid="4173815457177336569">"למחוק טיוטות מ-<xliff:g id="COUNT">%1$d</xliff:g> שיחות אלה?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"האם למחוק הודעה זו?"</string>
     <string name="no_conversations" msgid="35400008890372241">"אין שיחות."</string>
