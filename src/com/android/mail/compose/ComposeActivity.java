@@ -239,8 +239,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private long mDraftId = UIProvider.INVALID_MESSAGE_ID;
     private Message mDraft;
     private Object mDraftLock = new Object();
-    private ImageView mPhotoAttachmentsButton;
-    private ImageView mVideoAttachmentsButton;
+    private View mPhotoAttachmentsButton;
+    private View mVideoAttachmentsButton;
 
     /**
      * Boolean indicating whether ComposeActivity was launched from a Gmail controlled view.
@@ -873,11 +873,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         mCcBccView = (CcBccView) findViewById(R.id.cc_bcc_wrapper);
         mAttachmentsView = (AttachmentsView)findViewById(R.id.attachments);
-        mPhotoAttachmentsButton = (ImageView) findViewById(R.id.add_photo_attachment);
+        mPhotoAttachmentsButton = findViewById(R.id.add_photo_attachment);
         if (mPhotoAttachmentsButton != null) {
             mPhotoAttachmentsButton.setOnClickListener(this);
         }
-        mVideoAttachmentsButton = (ImageView) findViewById(R.id.add_video_attachment);
+        mVideoAttachmentsButton = findViewById(R.id.add_video_attachment);
         if (mVideoAttachmentsButton != null) {
             mVideoAttachmentsButton.setOnClickListener(this);
         }
