@@ -346,6 +346,9 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener {
     }
 
     private void enterConversationListMode() {
+        // detach the pager immediately from its data source (to prevent processing updates)
+        mController.disablePagerUpdates();
+
         mListView.setPadding(mListView.getPaddingLeft(), 0, mListView.getPaddingRight(),
                 mListView.getPaddingBottom());
 

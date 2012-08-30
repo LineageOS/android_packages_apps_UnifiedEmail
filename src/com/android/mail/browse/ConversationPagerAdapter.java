@@ -123,7 +123,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
             // Happens when someone calls setActivityController(null) on us. This is done in
             // ConversationPagerController.stopListening() to indicate that the Conversation View
             // is going away *very* soon.
-            LogUtils.d(LOG_TAG, "Pager adapter has a null controller. If the conversation view"
+            LogUtils.i(LOG_TAG, "Pager adapter has a null controller. If the conversation view"
                     + " is going away, this is fine.  Otherwise, the state is inconsistent");
             return null;
         }
@@ -168,6 +168,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     @Override
     public int getCount() {
         if (isPagingDisabled()) {
+            LogUtils.d(LOG_TAG, "IN CPA.getCount, returning 1 (effective singleton). cursor=%s",
+                    getCursor());
             return 1;
         }
         final Cursor cursor = getCursor();

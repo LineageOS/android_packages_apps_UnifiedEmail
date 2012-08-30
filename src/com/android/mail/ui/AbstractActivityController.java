@@ -409,11 +409,6 @@ public abstract class AbstractActivityController implements ActivityController {
         LogUtils.d(LOG_TAG, "AbstractActivityController.switchAccount(): mAccount = %s",
                 mAccount.uri);
         cancelRefreshTask();
-        // If we are currently listening to changes in conversation, the account switch is going to
-        // make us do a lot of un-necessary work. Let's stop listening to changes.
-        if (mPagerController != null) {
-            mPagerController.stopListening();
-        }
         updateSettings();
         if (shouldReloadInbox) {
             loadAccountInbox();
@@ -427,9 +422,9 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onAccountChanged(Account account) {
-        LogUtils.d(LOG_TAG, "onAccountChanged (%s) called.", account);
         // Is the account or account settings different from the existing account?
         final boolean firstLoad = mAccount == null;
+        LogUtils.d(LOG_TAG, "onAccountChanged (%s) called. firstLoad=%s", account, firstLoad);
         final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
         final boolean settingsChanged = firstLoad || !account.settings.equals(mAccount.settings);
         if (accountChanged || settingsChanged) {
@@ -559,11 +554,6 @@ public abstract class AbstractActivityController implements ActivityController {
             final LoaderManager lm = mActivity.getLoaderManager();
             mFolder = folder;
             mActionBarView.setFolder(mFolder);
-
-            // Stop listening to changes to the previous folder.
-            if (mPagerController != null) {
-                mPagerController.stopListening();
-            }
 
             // Only when we switch from one folder to another do we want to restart the
             // folder and conversation list loaders (to trigger onCreateLoader).
@@ -1174,6 +1164,10 @@ public abstract class AbstractActivityController implements ActivityController {
         if (newMode != ViewMode.CONVERSATION) {
             mActivity.invalidateOptionsMenu();
         }
+    }
+
+    public void disablePagerUpdates() {
+        mPagerController.stopListening();
     }
 
     public boolean isDestroyed() {

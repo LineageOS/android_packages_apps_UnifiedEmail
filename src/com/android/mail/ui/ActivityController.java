@@ -276,12 +276,6 @@ public interface ActivityController extends LayoutListener,
     void handleDrop(DragEvent event, Folder folder);
 
     /**
-     * Coordinates actions that might occur in response to a conversation that has finished loading
-     * and is now user-visible.
-     */
-    void onConversationSeen(Conversation conv);
-
-    /**
      * Load the default inbox associated with the current account.
      */
     public void loadAccountInbox();

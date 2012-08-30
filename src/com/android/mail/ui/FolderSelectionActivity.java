@@ -283,11 +283,6 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     @Override
-    public void onConversationSeen(Conversation conv) {
-        // Do nothing.
-    }
-
-    @Override
     public Folder getHierarchyFolder() {
         return null;
     }

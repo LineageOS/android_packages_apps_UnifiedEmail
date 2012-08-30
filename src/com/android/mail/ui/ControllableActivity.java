@@ -75,8 +75,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      */
     FolderListFragment.FolderListSelectionListener getFolderListSelectionListener();
 
-    void onConversationSeen(Conversation conv);
-
     /**
      * Get the folder currently being accessed by the activity.
      */
