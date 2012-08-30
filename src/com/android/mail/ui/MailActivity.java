@@ -360,11 +360,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     }
 
     @Override
-    public void onConversationSeen(Conversation conv) {
-        mController.onConversationSeen(conv);
-    }
-
-    @Override
     public Folder getHierarchyFolder() {
         return mController.getHierarchyFolder();
     }
