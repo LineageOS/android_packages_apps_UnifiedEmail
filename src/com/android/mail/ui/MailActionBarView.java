@@ -338,6 +338,38 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         } else {
             mSpinner.disableRecentFolders();
         }
+
+        boolean showFolderView = false;
+
+        switch (mMode) {
+            case ViewMode.UNKNOWN:
+                if (mSearch != null) {
+                    mSearch.collapseActionView();
+                }
+                break;
+            case ViewMode.CONVERSATION_LIST:
+                showNavList();
+                break;
+            case ViewMode.CONVERSATION:
+                mActionBar.setDisplayHomeAsUpEnabled(true);
+                if (!mShowConversationSubject) {
+                    showNavList();
+                } else {
+                    setStandardMode();
+                }
+                break;
+            case ViewMode.FOLDER_LIST:
+                mActionBar.setDisplayHomeAsUpEnabled(true);
+                setStandardMode();
+                showFolderView = true;
+                break;
+            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
+                // We want the user to be able to switch accounts while waiting for an account
+                // to sync.
+                showNavList();
+                break;
+        }
+        mFolderView.setVisibility(showFolderView ? VISIBLE : GONE);
     }
 
     protected int getMode() {
@@ -348,10 +380,9 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         // We start out with every option enabled. Based on the current view, we disable actions
         // that are possible.
         LogUtils.d(LOG_TAG, "ActionBarView.onPrepareOptionsMenu().");
-        if (mFolderView != null) {
-            mFolderView.setVisibility(GONE);
-        }
 
+        // TODO: move refresh stuff into setRefreshInProgress. can just setActionView without
+        // invalidating.
         if (mRefreshInProgress) {
             if (mRefreshItem != null) {
                 if (mRefreshActionView == null) {
@@ -380,38 +411,14 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         }
 
         switch (mMode) {
-            case ViewMode.UNKNOWN:
-                if (mSearch != null) {
-                    mSearch.collapseActionView();
-                }
-                break;
             case ViewMode.CONVERSATION_LIST:
                 // Show compose, search, folders, and sync based on the account
                 // The only option that needs to be disabled is search
-                showNavList();
                 Utils.setMenuItemVisibility(menu, R.id.search,
                         mAccount.supportsCapability(AccountCapabilities.FOLDER_SERVER_SEARCH));
                 break;
-            case ViewMode.CONVERSATION:
-                mActionBar.setDisplayHomeAsUpEnabled(true);
-                if (!mShowConversationSubject) {
-                    showNavList();
-                } else {
-                    setStandardMode();
-                }
-                break;
-            case ViewMode.FOLDER_LIST:
-                mActionBar.setDisplayHomeAsUpEnabled(true);
-                setStandardMode();
-                mFolderView.setVisibility(View.VISIBLE);
-                break;
-            case ViewMode.WAITING_FOR_ACCOUNT_INITIALIZATION:
-                // We want the user to be able to switch accounts while waiting for an account
-                // to sync.
-                showNavList();
-                break;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -419,7 +426,6 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      */
     private void showNavList() {
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        mActionBar.setListNavigationCallbacks(mSpinner, this);
         // Don't show title, and don't show custom views.
         final int mask = ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM;
         final int enabled = 0;
