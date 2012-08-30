@@ -194,16 +194,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         if (mShowFooter && position == super.getCount()) {
             return TYPE_VIEW_FOOTER;
         }
-        Conversation conv = new Conversation((ConversationCursor) getItem(position));
-        if (isPositionDeleting(conv.id)) {
-            return TYPE_VIEW_DELETING;
-        }
-        if (isPositionUndoingType(conv.id)) {
-            return TYPE_VIEW_UNDOING;
-        }
-        if (isPositionTypeLeaveBehind(conv)) {
-            return TYPE_VIEW_LEAVEBEHIND;
-        }
         return TYPE_VIEW_CONVERSATION;
     }
 
