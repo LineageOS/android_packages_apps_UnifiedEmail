@@ -58,6 +58,7 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationPagerController;
+import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.SelectedConversationsActionMenu;
 import com.android.mail.browse.SyncErrorDialogFragment;
@@ -89,6 +90,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.TimerTask;
 
@@ -888,31 +890,32 @@ public abstract class AbstractActivityController implements ActivityController {
 
     private void markConversationsRead(Collection<Conversation> targets, boolean read,
             boolean markViewed, boolean showNext) {
-        // auto-advance if requested and the current conversation is being marked unread
+        // Auto-advance if requested and the current conversation is being marked unread
         if (showNext && !read) {
             showNextConversation(targets);
         }
-
-        for (Conversation target : targets) {
-            final ContentValues values = new ContentValues();
-            values.put(ConversationColumns.READ, read);
+        final int size = targets.size();
+        final List<ConversationOperation> opList = new ArrayList<ConversationOperation>(size);
+        for (final Conversation target : targets) {
+            final ContentValues value = new ContentValues();
+            value.put(ConversationColumns.READ, read);
             if (markViewed) {
-                values.put(ConversationColumns.VIEWED, true);
+                value.put(ConversationColumns.VIEWED, true);
             }
             final ConversationInfo info = target.conversationInfo;
             if (info != null) {
                 info.markRead(read);
-                values.put(ConversationColumns.CONVERSATION_INFO, ConversationInfo.toString(info));
+                value.put(ConversationColumns.CONVERSATION_INFO, ConversationInfo.toString(info));
             }
-            updateConversation(Conversation.listOf(target), values);
-        }
-        // Update the conversations in the selection too.
-        for (final Conversation c : targets) {
-            c.read = read;
+            opList.add(mConversationListCursor.getOperationForConversation(
+                    target, ConversationOperation.UPDATE, value));
+            // Update the local conversation objects so they immediately change state.
+            target.read = read;
             if (markViewed) {
-                c.markViewed();
+                target.markViewed();
             }
         }
+        mConversationListCursor.updateBulkValues(mContext, opList);
     }
 
     /**
