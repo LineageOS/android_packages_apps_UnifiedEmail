@@ -244,6 +244,9 @@ public abstract class MailAppProvider extends ContentProvider
                 } else if (TextUtils.equals(column,
                         UIProvider.AccountColumns.MANUAL_SYNC_URI)) {
                     builder.add(account.manualSyncUri);
+                } else if (TextUtils.equals(column,
+                        UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI)) {
+                    builder.add(account.viewIntentProxyUri);
                 } else if (TextUtils.equals(column, UIProvider.AccountColumns.COLOR)) {
                     builder.add(account.color);
                 } else if (TextUtils.equals(column,

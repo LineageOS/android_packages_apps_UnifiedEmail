@@ -359,6 +359,8 @@ public final class MockUiProvider extends ContentProvider {
                 Uri.EMPTY);
         accountMap.put(AccountColumns.MANUAL_SYNC_URI,
                 Uri.EMPTY);
+        accountMap.put(AccountColumns.VIEW_INTENT_PROXY_URI,
+                Uri.EMPTY);
 
         // TODO: store the default inbox
         accountMap.put(SettingsColumns.DEFAULT_INBOX, defaultInbox);
@@ -464,6 +466,8 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI),
                 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.MANUAL_SYNC_URI),
+                0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.VIEW_INTENT_PROXY_URI),
                 0);
         Parcel p = Parcel.obtain();
         p.writeString("");

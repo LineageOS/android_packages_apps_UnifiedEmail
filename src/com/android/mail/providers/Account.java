@@ -162,6 +162,11 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final Uri manualSyncUri;
 
     /**
+     * URI for account type specific supplementary account info on outgoing links, if any.
+     */
+    public final Uri viewIntentProxyUri;
+
+    /**
      * Transient cache of parsed {@link #accountFromAddresses}, plus an entry for the main account
      * address.
      */
@@ -202,6 +207,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                     defaultRecentFolderListUri);
             json.put(UIProvider.AccountColumns.MANUAL_SYNC_URI,
                     manualSyncUri);
+            json.put(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI,
+                    viewIntentProxyUri);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
@@ -284,6 +291,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 .optString(UIProvider.AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI));
         manualSyncUri = Utils
                 .getValidUri(json.optString(UIProvider.AccountColumns.MANUAL_SYNC_URI));
+        viewIntentProxyUri = Utils
+                .getValidUri(json.optString(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI));
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -319,6 +328,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         color = in.readInt();
         defaultRecentFolderListUri = in.readParcelable(null);
         manualSyncUri = in.readParcelable(null);
+        viewIntentProxyUri = in.readParcelable(null);
         final String serializedSettings = in.readString();
         final Settings parcelSettings = Settings.newInstance(serializedSettings);
         if (parcelSettings != null) {
@@ -365,6 +375,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 .getString(UIProvider.ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN));
         manualSyncUri = Utils.getValidUri(cursor
                 .getString(UIProvider.ACCOUNT_MANUAL_SYNC_URI_COLUMN));
+        viewIntentProxyUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_VIEW_INTENT_PROXY_URI_COLUMN));
         settings = new Settings(cursor);
     }
 
@@ -424,6 +436,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeInt(color);
         dest.writeParcelable(defaultRecentFolderListUri, 0);
         dest.writeParcelable(manualSyncUri, 0);
+        dest.writeParcelable(viewIntentProxyUri, 0);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
         }
@@ -516,6 +529,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(recentFolderListUri, other.recentFolderListUri) &&
                 color == other.color &&
                 Objects.equal(defaultRecentFolderListUri, other.defaultRecentFolderListUri) &&
+                Objects.equal(viewIntentProxyUri, other.viewIntentProxyUri) &&
                 Objects.equal(settings, other.settings);
     }
 
@@ -527,7 +541,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                         sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri,
                         helpIntentUri, sendFeedbackIntentUri, reauthenticationIntentUri, syncStatus,
                         composeIntentUri, mimeType, recentFolderListUri, color,
-                        defaultRecentFolderListUri);
+                        defaultRecentFolderListUri, viewIntentProxyUri);
     }
 
     /**
