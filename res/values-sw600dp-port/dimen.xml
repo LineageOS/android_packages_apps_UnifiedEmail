@@ -17,7 +17,7 @@
 -->
 <resources>
     <dimen name="compose_scrollview_width">600dip</dimen>
-    <dimen name="compose_area_left_padding">76dip</dimen>
-    <dimen name="compose_area_right_padding">76dip</dimen>
+    <dimen name="compose_area_left_padding">80dip</dimen>
+    <dimen name="compose_area_right_padding">80dip</dimen>
     <dimen name="search_view_width">400dip</dimen>
 </resources>
