@@ -431,6 +431,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             Conversation conversation) {
         SwipeableConversationItemView view = (SwipeableConversationItemView) super.getView(
                 position, null, parent);
+        view.reset();
         view.bind(conversation, mActivity, mBatchConversations, mFolder,
                 mAccount != null ? mAccount.settings.hideCheckboxes : false, mSwipeEnabled,
                 mPriorityMarkersEnabled, this);

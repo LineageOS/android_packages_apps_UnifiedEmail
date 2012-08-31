@@ -308,6 +308,15 @@ public class ConversationItemViewModel {
         }
     }
 
+
+    /**
+     * Reset the content description; enough content has changed that we need to
+     * regenerate it.
+     */
+    public void resetContentDescription() {
+        mContentDescription = null;
+    }
+
     /**
      * Get conversation information to use for accessibility.
      */
@@ -325,22 +334,30 @@ public class ConversationItemViewModel {
                     lastSender = conversation.conversationInfo.messageInfos.get(last).sender;
                 }
                 if (conversation.read) {
-                    sender = lastSender;
+                    sender = TextUtils.isEmpty(lastSender) ?
+                            SendersView.getMe(context) : lastSender;
                 } else {
-                    String firstUnread = null;
+                    MessageInfo firstUnread = null;
                     for (MessageInfo m : conversation.conversationInfo.messageInfos) {
                         if (!m.read) {
-                            firstUnread = m.sender;
+                            firstUnread = m;
                             break;
                         }
                     }
-                    sender = firstUnread;
+                    sender = TextUtils.isEmpty(firstUnread.sender) ?
+                            SendersView.getMe(context) : firstUnread.sender;
+                }
+                if (TextUtils.isEmpty(sender)) {
+                    // Just take the last sender
+                    sender = lastSender;
                 }
             }
+            boolean isToday = DateUtils.isToday(conversation.dateMs);
             String date = DateUtils.getRelativeTimeSpanString(context, conversation.dateMs)
                     .toString();
-            mContentDescription = context.getString(R.string.content_description, sender,
-                    conversation.subject, date);
+            int res = isToday ? R.string.content_description_today : R.string.content_description;
+            mContentDescription = context.getString(res, sender,
+                    conversation.subject, conversation.getSnippet(), date);
         }
         return mContentDescription;
     }
