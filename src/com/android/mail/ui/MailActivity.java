@@ -19,7 +19,6 @@ package com.android.mail.ui;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -33,10 +32,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
-import com.android.mail.providers.Settings;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.Utils;
@@ -408,6 +405,11 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     @Override
     public AccountController getAccountController() {
+        return mController;
+    }
+
+    @Override
+    public RecentFolderController getRecentFolderController() {
         return mController;
     }
 

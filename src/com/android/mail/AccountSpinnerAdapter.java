@@ -30,6 +30,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.FolderWatcher;
+import com.android.mail.providers.RecentFolderObserver;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.ui.RecentFolderList;
@@ -115,6 +116,13 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 requestRecentFoldersAndRedraw();
             }
             notifyDataSetChanged();
+        }
+    };
+
+    private final RecentFolderObserver mRecentFolderObserver = new RecentFolderObserver() {
+        @Override
+        public void onChanged() {
+            requestRecentFoldersAndRedraw();
         }
     };
 
@@ -214,10 +222,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * @param showAllFolders
      */
     public AccountSpinnerAdapter(ControllableActivity activity, Context context,
-            RecentFolderList recentFolders, boolean showAllFolders) {
+            boolean showAllFolders) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
-        mRecentFolders = recentFolders;
+        mRecentFolders = mRecentFolderObserver.initialize(activity.getRecentFolderController());
+        LogUtils.d(LOG_TAG, "mRecentFolders = %s", mRecentFolders.getRecentFolderList(null));
         mShowAllFoldersItem = showAllFolders;
         // Owned by the AccountSpinnerAdapter since nobody else needed it. Move
         // to controller if required. The folder watcher tells us directly when
@@ -497,7 +506,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * the new information.
      */
     public void requestRecentFoldersAndRedraw() {
-        mRecentFolderList = mRecentFolders.getRecentFolderList(mCurrentFolder);
+        final Uri uri = mCurrentFolder == null ? null : mCurrentFolder.uri;
+        mRecentFolderList = mRecentFolders.getRecentFolderList(uri);
         notifyDataSetChanged();
     }
 
@@ -526,5 +536,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void destroy() {
         mAccountObserver.unregisterAndDestroy();
+        mRecentFolderObserver.unregisterAndDestroy();
     }
 }
