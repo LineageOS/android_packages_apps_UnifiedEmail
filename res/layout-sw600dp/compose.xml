@@ -38,11 +38,11 @@
             android:background="@android:color/white"
             android:layout_gravity="center_horizontal"
             android:paddingLeft="@dimen/compose_area_left_padding"
-            android:paddingRight="@dimen/compose_area_right_padding"
             android:animateLayoutChanges="true">
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/compose_area_right_padding">
                 <FrameLayout
                     style="@style/FillRowStyle">
                     <include layout="@layout/compose_from"/>
@@ -51,48 +51,47 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <LinearLayout style="@style/FillRowStyle"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:id="@+id/to_content"
-                        android:layout_width="match_parent"
-                        style="@style/RecipientComposeFieldLayout"
-                        android:paddingRight="8dp"
-                        android:orientation="horizontal">
-                        <LinearLayout android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:addStatesFromChildren="true"
-                            android:gravity="center_vertical"
-                            android:layout_gravity="center_vertical">
+                <LinearLayout android:id="@+id/to_content"
+                    style="@style/RecipientComposeFieldLayout"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:addStatesFromChildren="true"
+                        android:gravity="center_vertical"
+                        android:layout_gravity="center_vertical">
 
-                            <TextView style="@style/RecipientComposeHeading"
-                                android:text="@string/to"
-                                android:id="@+id/to_label"
-                                android:contentDescription="@string/to"/>
+                        <TextView style="@style/RecipientComposeHeading"
+                            android:text="@string/to"
+                            android:id="@+id/to_label"
+                            android:contentDescription="@string/to"/>
 
-                            <com.android.ex.chips.RecipientEditTextView
-                                android:id="@+id/to"
-                                style="@style/RecipientEditTextViewStyle"
-                                android:contentDescription="@string/to"/>
-
-                        </LinearLayout>
-
-                        <Button android:id="@+id/add_cc_bcc"
-                            android:text="@string/add_cc_label"
-                            style="@style/ComposeButton"
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:gravity="bottom"
-                            android:layout_marginBottom="6dip"
-                            android:paddingLeft="8dip"/>
+                        <com.android.ex.chips.RecipientEditTextView
+                            android:id="@+id/to"
+                            style="@style/RecipientEditTextViewStyle"
+                            android:contentDescription="@string/to"/>
                     </LinearLayout>
+
                     <View style="@style/RecipientComposeFieldSpacer"/>
                 </LinearLayout>
+                <RelativeLayout android:id="@+id/add_photo_attachment"
+                    android:layout_width="@dimen/compose_area_right_padding"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:layout_gravity="bottom|left"
+                    android:gravity="bottom|left">
+                    <Button android:id="@+id/add_cc_bcc"
+                        android:text="@string/add_cc_label"
+                        style="@style/ComposeButton"
+                        android:layout_marginBottom="6dip"
+                        android:paddingLeft="8dip"/>
+                </RelativeLayout>
             </TableRow>
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/compose_area_right_padding">
                 <com.android.mail.compose.CcBccView
                     android:id="@+id/cc_bcc_wrapper"
                     style="@style/FillRowStyle"/>
@@ -110,33 +109,22 @@
                     <com.android.mail.compose.EnterSubject android:id="@+id/subject"
                         style="@style/ComposeSubjectView" />
                 </RelativeLayout>
-                <RelativeLayout android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <RelativeLayout android:id="@+id/add_photo_attachment"
+                    style="@style/AttachmentButtonStyle"
                     android:layout_column="2">
-                    <RelativeLayout android:id="@+id/add_photo_attachment"
-                        style="@style/AttachmentButtonStyle">
-                        <ImageView
-                            android:text="@string/add_file_attachment"
-                            android:src="@drawable/ic_attach_image_holo_light"
-                            android:clickable="false"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </RelativeLayout>
-                    <RelativeLayout android:id="@+id/add_video_attachment"
-                        android:layout_toRightOf="@id/add_photo_attachment"
-                        style="@style/AttachmentButtonStyle">
-                        <ImageView
-                            android:text="@string/add_file_attachment"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_attach_video_holo_light"
-                            android:clickable="false"/>
-                    </RelativeLayout>
+                    <ImageView
+                        android:text="@string/add_file_attachment"
+                        android:src="@drawable/ic_attach_image_holo_light"
+                        android:clickable="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="4dip"/>
                 </RelativeLayout>
             </TableRow>
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/compose_area_right_padding">
                 <!-- Compose Area -->
                 <FrameLayout
                     android:id="@+id/compose_wrapper"
@@ -146,7 +134,8 @@
             </TableRow>
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/compose_area_right_padding">
                 <!--  Attachments -->
                 <com.android.mail.compose.AttachmentsView android:id="@+id/attachments"
                     android:orientation="vertical"
@@ -162,7 +151,8 @@
             </TableRow>
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/compose_area_right_padding">
                 <!-- Quoted text -->
                 <com.android.mail.compose.QuotedTextView android:id="@+id/quoted_text_view"
                     android:layout_height="wrap_content"
