@@ -40,7 +40,9 @@
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Umyalezo odlulisiwe ----------&lt;br&gt;Kusuka: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Usuku: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Isihloko: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Ku: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Khetha uhlobo lokunamathelisa"</string>
-    <string name="too_large_to_attach" msgid="6355534239324333583">"Ifayela likhulu kakhulu ukuthi linganamathiselwa."</string>
+    <string name="too_large_to_attach_single" msgid="2996733972478212136">"Ayikwazi ukunamathisela ifayela elingaphezu kuka <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"Ifayela elilodewa noma amaningi awanamathiselwe. Umkhawulo <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_additional" msgid="3366607594339390249">"Ifayela alinamathiselwe. Umkhawulo ongu-<xliff:g id="MAXSIZE">%1$s</xliff:g> ufinyelelwe."</string>
     <string name="generic_attachment_problem" msgid="8775959340559458709">"Ayikwazi ukunamathelisa ifayela."</string>
     <string name="recipient_needed" msgid="999037027358925655">"Ngeza okungenani umamukeli oyedwa."</string>
     <string name="recipient_error_dialog_title" msgid="6051694305498669180">"Iphutha Lomamukeli"</string>
@@ -63,6 +65,7 @@
     <string name="mark_not_spam" msgid="694891665407228160">"Bika ugaxekile"</string>
     <string name="report_phishing" msgid="5714205737453138338">"Bika ukwebiwa kwemininingwane"</string>
     <string name="delete" msgid="844871204175957681">"Susa"</string>
+    <string name="discard_drafts" msgid="6862272443470085375">"Lahla imilayezo engaphelile"</string>
     <string name="next" msgid="4674401197968248302">"Okudadlana"</string>
     <string name="previous" msgid="309943944831349924">"Okusha"</string>
     <string name="refresh" msgid="490989798005710951">"Qala kabusha"</string>
@@ -166,6 +169,10 @@
   <plurals name="confirm_archive_conversation">
     <item quantity="one" msgid="2990537295519552069">"Ufuna ukufaka lengxoxo kungobo yomlando?"</item>
     <item quantity="other" msgid="4713469868399246772">"Faka lezi zingxoxo ezingu-<xliff:g id="COUNT">%1$d</xliff:g> kungobo yomlando?"</item>
+  </plurals>
+  <plurals name="confirm_discard_drafts_conversation">
+    <item quantity="one" msgid="5974090449454432874">"Lahla okungakapheli kule ngxoxo?"</item>
+    <item quantity="other" msgid="4173815457177336569">"Lahla okungakapheli kulezi zingxoxo ezingu-<xliff:g id="COUNT">%1$d</xliff:g>?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Lahla lo mlayezo?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Azikho izingxoxo."</string>
