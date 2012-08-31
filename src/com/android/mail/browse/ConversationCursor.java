@@ -1087,7 +1087,7 @@ public final class ConversationCursor implements Cursor {
             }
         }
 
-        public int apply(ArrayList<ConversationOperation> ops,
+        public int apply(Collection<ConversationOperation> ops,
                 ConversationCursor conversationCursor) {
             final HashMap<String, ArrayList<ContentProviderOperation>> batchMap =
                     new HashMap<String, ArrayList<ContentProviderOperation>>();
@@ -1567,6 +1567,17 @@ public final class ConversationCursor implements Cursor {
                 getOperationsForConversations(conversations, ConversationOperation.UPDATE, values));
     }
 
+    /**
+     * Apply many operations in a single batch transaction.
+     * @param context the caller's context
+     * @param op the collection of operations obtained through successive calls to
+     * {@link #getOperationForConversation(Conversation, int, ContentValues)}.
+     * @return the sequence number of the operation (for undo)
+     */
+    public int updateBulkValues(Context context, Collection<ConversationOperation> op) {
+        return apply(context, op);
+    }
+
     private ArrayList<ConversationOperation> getOperationsForConversations(
             Collection<Conversation> conversations, int type, ContentValues values) {
         final ArrayList<ConversationOperation> ops = Lists.newArrayList();
@@ -1576,7 +1587,7 @@ public final class ConversationCursor implements Cursor {
         return ops;
     }
 
-    private ConversationOperation getOperationForConversation(Conversation conv, int type,
+    public ConversationOperation getOperationForConversation(Conversation conv, int type,
             ContentValues values) {
         return new ConversationOperation(type, conv, values);
     }
@@ -1615,7 +1626,7 @@ public final class ConversationCursor implements Cursor {
     }
 
     // Convenience methods
-    private int apply(Context context, ArrayList<ConversationOperation> operations) {
+    private int apply(Context context, Collection<ConversationOperation> operations) {
         return sProvider.apply(operations, this);
     }
 
