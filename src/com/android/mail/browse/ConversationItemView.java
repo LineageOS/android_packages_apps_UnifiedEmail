@@ -469,6 +469,10 @@ public class ConversationItemView extends View implements SwipeableItemView {
                 mHeader.standardScaledDimen);
         calculateTextsAndBitmaps();
         calculateCoordinates();
+        if (!mHeader.isLayoutValid(mContext)) {
+            mHeader.resetContentDescription();
+            setContentDescription(mHeader.getContentDescription(mContext));
+        }
         mHeader.validate(mContext);
 
         pauseTimer(PERF_TAG_LAYOUT);
@@ -524,7 +528,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
             pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
             return;
         }
-
         startTimer(PERF_TAG_CALCULATE_FOLDERS);
 
         // Initialize folder displayer.
@@ -1364,6 +1367,8 @@ public class ConversationItemView extends View implements SwipeableItemView {
         setAlpha(1);
         setTranslationX(0);
         setAnimatedHeight(-1);
+        setMinimumHeight(ConversationItemViewCoordinates.getMinHeight(mContext,
+                mActivity.getViewMode()));
     }
 
     /**
