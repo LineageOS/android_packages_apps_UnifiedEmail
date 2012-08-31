@@ -161,6 +161,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 barAttachments.add(attachment);
             }
         }
+        mMessageHeaderItem.message.attachmentsJson = Attachment.toJSONArray(attachments);
 
         mTitleText.setVisibility(View.VISIBLE);
         mTitleBar.setVisibility(View.VISIBLE);
