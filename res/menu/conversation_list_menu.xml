@@ -54,18 +54,18 @@
         android:title="@string/menu_settings"
         android:showAsAction="never" />
 
-    <!-- Available if the account specifies a help url -->
-    <item
-        android:id="@+id/help_info_menu_item"
-        android:icon="@android:drawable/ic_menu_help"
-        android:showAsAction="never"
-        android:title="@string/help_and_info" />
-
     <!-- Always available -->
     <item
         android:id="@+id/feedback_menu_item"
         android:icon="@android:drawable/ic_menu_send"
         android:showAsAction="never"
         android:title="@string/feedback" />
+
+    <!-- Available if the account specifies a help url -->
+    <item
+        android:id="@+id/help_info_menu_item"
+        android:icon="@android:drawable/ic_menu_help"
+        android:showAsAction="never"
+        android:title="@string/help_and_info" />
 
 </menu>
