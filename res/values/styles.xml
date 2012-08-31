@@ -23,7 +23,7 @@
     </style>
 
     <style name="ComposeEditTextView">
-        <item name="android:minHeight">44dip</item>
+        <item name="android:minHeight">40dip</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
@@ -35,6 +35,12 @@
         <item name="android:hint">@string/subject_hint</item>
         <item name="android:textColorHint">@color/compose_label_text</item>
         <item name="android:imeOptions">actionDone|flagNoExtractUi</item>
+    </style>
+
+    <style name="ComposeBodyView" parent="@style/ComposeEditTextView">
+        <item name="android:textColorHint">@color/compose_label_text</item>
+        <item name="android:inputType">textLongMessage|textMultiLine|textAutoCorrect|textCapSentences</item>
+        <item name="android:imeOptions">flagNoFullscreen|actionDone|flagNoEnterAction</item>
     </style>
 
     <style name="RecipientComposeFieldSpacer">
