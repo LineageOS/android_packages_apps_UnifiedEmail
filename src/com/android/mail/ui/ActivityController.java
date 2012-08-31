@@ -32,7 +32,6 @@ import com.android.mail.ConversationListContext;
 import com.android.mail.browse.ConversationCursor.ConversationListener;
 import com.android.mail.browse.ConversationListFooterView;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 
