@@ -276,7 +276,7 @@ public class SendersView {
         return CharacterStyle.wrap(sReadStyleSpan);
     }
 
-    private static String getMe(Context context) {
+    static String getMe(Context context) {
         if (sMeString == null) {
             sMeString = context.getResources().getString(R.string.me);
         }
