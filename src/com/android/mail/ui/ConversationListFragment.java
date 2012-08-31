@@ -84,8 +84,6 @@ public final class ConversationListFragment extends ListFragment implements
     private ConversationListCallbacks mCallbacks;
 
     private final Handler mHandler = new Handler();
-     // List save state.
-    private Parcelable mListSavedState;
 
     // The internal view objects.
     private SwipeableListView mListView;
@@ -271,20 +269,6 @@ public final class ConversationListFragment extends ListFragment implements
         onViewModeChanged(mActivity.getViewMode().getMode());
         mActivity.getViewMode().addListener(this);
 
-        // Restore the list state
-        final Parcelable listSavedState;
-        if (savedInstanceState != null) {
-            listSavedState = savedInstanceState.getParcelable(LIST_STATE_KEY);
-        } else {
-            listSavedState = mListSavedState;
-        }
-        if (listSavedState != null) {
-            mListView.onRestoreInstanceState(listSavedState);
-
-            // TODO: find a better way to unset the selected item when restoring
-            mListView.clearChoices();
-        }
-
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
             return;
@@ -327,12 +311,11 @@ public final class ConversationListFragment extends ListFragment implements
         mSwipeAction = mAccount.supportsCapability(AccountCapabilities.ARCHIVE) ?
                 R.id.archive : R.id.delete;
 
-        setRetainInstance(true);
+        setRetainInstance(false);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-            ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View rootView = inflater.inflate(R.layout.conversation_list, null);
         mEmptyView = rootView.findViewById(R.id.empty_view);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
@@ -340,10 +323,15 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         mListView.setOnItemLongClickListener(this);
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
-        // Note - we manually save/restore the listview state.
-        mListView.setSaveEnabled(false);
 
-        ConversationCursor conversationListCursor = getConversationListCursor();
+        // Restore the list state
+        if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
+            mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
+            // TODO: find a better way to unset the selected item when restoring
+            mListView.clearChoices();
+        }
+
+        final ConversationCursor conversationListCursor = getConversationListCursor();
         // Belt and suspenders here; make sure we do any necessary sync of the ConversationCursor
         if (conversationListCursor != null && conversationListCursor.isRefreshReady()) {
             conversationListCursor.sync();
@@ -364,18 +352,6 @@ public final class ConversationListFragment extends ListFragment implements
         // committed gets committed.
         commitDestructiveActions(false);
         Utils.dumpLayoutRequests("CLF.onDestroyView()", getView());
-
-        // If this fragment is being retained, onSaveInstance will not be called, so we need to
-        // manage saving the state ourselves.  Unfortunately we don't have a signal indicates that
-        // this fragment instance will be reused, so we have to save the state in all cases.
-        // If the activity is being being torn down the loader may have been reset, so this state
-        // may not useful for a future list instance, but in that case, the valid list state would
-        // have been saved in onSaveInstanceState
-        // We only want to do this, if the conversation cursor is not disabled
-        final ConversationCursor cursor = getConversationListCursor();
-        if (cursor != null && !cursor.isClosed()) {
-            mListSavedState = mListView.onSaveInstanceState();
-        }
 
         // Clear the list's adapter
         mListAdapter.destroy();
