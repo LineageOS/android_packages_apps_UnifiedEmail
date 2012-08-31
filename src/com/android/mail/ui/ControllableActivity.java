@@ -104,6 +104,12 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
      */
     AccountController getAccountController();
 
+    /**
+     * Returns the {@link RecentFolderController} object associated with this activity, if any.
+     * @return
+     */
+    RecentFolderController getRecentFolderController();
+
     void startDragMode();
 
     void stopDragMode();

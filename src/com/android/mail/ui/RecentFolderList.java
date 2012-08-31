@@ -196,12 +196,12 @@ public final class RecentFolderList {
      * default inbox for the current account. This must be called <em>after</em>
      * {@link #setCurrentAccount(Account)} has been called.
      * Returns a list of size {@value #MAX_RECENT_FOLDERS} or smaller.
-     * @param excludedFolder the folder to be excluded (typically the current folder)
+     * @param excludedFolderUri the uri of folder to be excluded (typically the current folder)
      */
-    public ArrayList<Folder> getRecentFolderList(Folder excludedFolder) {
+    public ArrayList<Folder> getRecentFolderList(Uri excludedFolderUri) {
         final ArrayList<Uri> excludedUris = new ArrayList<Uri>();
-        if (excludedFolder != null) {
-            excludedUris.add(excludedFolder.uri);
+        if (excludedFolderUri != null) {
+            excludedUris.add(excludedFolderUri);
         }
         final Uri defaultInbox = (mAccount == null) ?
                 Uri.EMPTY : Settings.getDefaultInboxUri(mAccount.settings);
