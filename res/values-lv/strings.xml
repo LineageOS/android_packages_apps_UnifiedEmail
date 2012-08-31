@@ -40,7 +40,9 @@
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Pārsūtīts ziņojums ----------&lt;br&gt;No: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Datums: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Temats: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Kam: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Kopija: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Izvēlieties pielikuma veidu."</string>
-    <string name="too_large_to_attach" msgid="6355534239324333583">"Failu nevar pievienot, jo tas ir pārāk liels."</string>
+    <string name="too_large_to_attach_single" msgid="2996733972478212136">"Nevar pievienot failu, kas ir lielāks par <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"Viens vai vairāki faili nav pievienoti. Maksimālais lielums ir <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_additional" msgid="3366607594339390249">"Fails nav pievienots. Ir sasniegts ierobežojums (<xliff:g id="MAXSIZE">%1$s</xliff:g>)."</string>
     <string name="generic_attachment_problem" msgid="8775959340559458709">"Nevarēja pievienot failu."</string>
     <string name="recipient_needed" msgid="999037027358925655">"Pievienojiet vismaz vienu adresātu."</string>
     <string name="recipient_error_dialog_title" msgid="6051694305498669180">"Adresāta kļūda"</string>
@@ -63,6 +65,7 @@
     <string name="mark_not_spam" msgid="694891665407228160">"Ziņot, ka tā nav mēstule"</string>
     <string name="report_phishing" msgid="5714205737453138338">"Ziņot par pikšķerēšanu"</string>
     <string name="delete" msgid="844871204175957681">"Dzēst"</string>
+    <string name="discard_drafts" msgid="6862272443470085375">"Atmest melnrakstus"</string>
     <string name="next" msgid="4674401197968248302">"Vecāki"</string>
     <string name="previous" msgid="309943944831349924">"Jaunāka"</string>
     <string name="refresh" msgid="490989798005710951">"Atsvaidzināt"</string>
@@ -166,6 +169,10 @@
   <plurals name="confirm_archive_conversation">
     <item quantity="one" msgid="2990537295519552069">"Vai arhivēt šo sarunu?"</item>
     <item quantity="other" msgid="4713469868399246772">"Vai arhivēt šīs sarunas (<xliff:g id="COUNT">%1$d</xliff:g>)?"</item>
+  </plurals>
+  <plurals name="confirm_discard_drafts_conversation">
+    <item quantity="one" msgid="5974090449454432874">"Vai atmest melnrakstus no šīs sarunas?"</item>
+    <item quantity="other" msgid="4173815457177336569">"Vai atmest melnrakstus no šīm <xliff:g id="COUNT">%1$d</xliff:g> sarunām?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Vai atmest šo ziņojumu?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Nav nevienas sarunas."</string>
