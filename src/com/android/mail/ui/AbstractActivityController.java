@@ -409,7 +409,7 @@ public abstract class AbstractActivityController implements ActivityController {
         LogUtils.d(LOG_TAG, "AbstractActivityController.switchAccount(): mAccount = %s",
                 mAccount.uri);
         cancelRefreshTask();
-        updateSettings();
+        mAccountObservers.notifyChanged();
         if (shouldReloadInbox) {
             loadAccountInbox();
         }
@@ -442,19 +442,6 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             switchAccount(account, accountChanged);
         }
-    }
-
-    /**
-     * Changes the settings for the current account. The new settings are provided as a parameter.
-     * @param settings
-     */
-    public void updateSettings() {
-        mAccountObservers.notifyChanged();
-        resetActionBarIcon();
-        mActivity.invalidateOptionsMenu();
-        // If the user was viewing the default Inbox here, and the new setting contains a different
-        // default Inbox, we don't want to load a different folder here. So do not change the
-        // current folder.
     }
 
     /**
@@ -665,7 +652,6 @@ public abstract class AbstractActivityController implements ActivityController {
         if (savedState != null) {
             if (savedState.containsKey(SAVED_ACCOUNT)) {
                 setAccount((Account) savedState.getParcelable(SAVED_ACCOUNT));
-                mActivity.invalidateOptionsMenu();
             }
             if (savedState.containsKey(SAVED_FOLDER)) {
                 final Folder folder = (Folder) savedState.getParcelable(SAVED_FOLDER);
@@ -1277,7 +1263,6 @@ public abstract class AbstractActivityController implements ActivityController {
             if (mAccount == null) {
                 return;
             }
-            mActivity.invalidateOptionsMenu();
             final boolean isConversationMode = intent.hasExtra(Utils.EXTRA_CONVERSATION);
             if (isConversationMode && mViewMode.getMode() == ViewMode.UNKNOWN) {
                 mViewMode.enterConversationMode();
@@ -1328,7 +1313,6 @@ public abstract class AbstractActivityController implements ActivityController {
                     mViewMode.enterSearchResultsListMode();
                 }
                 setAccount((Account) intent.getParcelableExtra(Utils.EXTRA_ACCOUNT));
-                mActivity.invalidateOptionsMenu();
                 restartOptionalLoader(LOADER_RECENT_FOLDERS);
                 fetchSearchFolder(intent);
             } else {
