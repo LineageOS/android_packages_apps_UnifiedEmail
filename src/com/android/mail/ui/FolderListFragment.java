@@ -252,7 +252,9 @@ public final class FolderListFragment extends ListFragment implements
         Object item = getListAdapter().getItem(position);
         final Folder folder;
         if (item instanceof FolderListAdapter.Item) {
-            folder = ((FolderListAdapter.Item) item).mFolder;
+            FolderListAdapter.Item folderItem = (FolderListAdapter.Item) item;
+            folder = folderItem.mFolder;
+            ((FolderListAdapter) getListAdapter()).setSelectedType(folderItem.mFolderType);
         } else if (item instanceof Folder) {
             folder = (Folder) item;
         } else {
@@ -318,25 +320,54 @@ public final class FolderListFragment extends ListFragment implements
         private final List<Item> mItemList = new ArrayList<Item>();
         /** Cursor into the folder list. This might be null. */
         private Cursor mCursor = null;
+        /**
+         * Type of currently selected folder: {@link Item#FOLDER_SYSTEM}, {@link Item#FOLDER_RECENT}
+         * or {@link Item#FOLDER_USER}
+         */
+        private int mSelectedFolderType;
 
         /** A union of either a folder or a resource string */
         private class Item {
             public final Folder mFolder;
             public final int mResource;
+            /** Either {@link #VIEW_FOLDER} or {@link #VIEW_HEADER} */
             public final int mType;
             /** A normal folder, also a child, if a parent is specified. */
             private static final int VIEW_FOLDER = 0;
             /** A text-label which serves as a header in sectioned lists. */
             private static final int VIEW_HEADER = 1;
-            private Item(Folder folder) {
+
+            /**
+             * Either {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT} or {@link #FOLDER_USER} when
+             * {@link #mType} is {@link #VIEW_FOLDER}, and {@link #NOT_A_FOLDER} otherwise.
+             */
+            public final int mFolderType;
+            private static final int NOT_A_FOLDER = 0;
+            private static final int FOLDER_SYSTEM = 1;
+            private static final int FOLDER_RECENT = 2;
+            private static final int FOLDER_USER = 3;
+
+            /**
+             * Create a folder item with the given type.
+             * @param folder
+             * @param folderType one of {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT} or
+             * {@link #FOLDER_USER}
+             */
+            private Item(Folder folder, int folderType) {
                 mFolder = folder;
                 mResource = -1;
                 mType = VIEW_FOLDER;
+                mFolderType = folderType;
             }
+            /**
+             * Create a header item with a string resource.
+             * @param resource the string resource: R.string.all_folders_heading
+             */
             private Item(int resource) {
                 mFolder = null;
                 mResource = resource;
                 mType = VIEW_HEADER;
+                mFolderType = NOT_A_FOLDER;
             }
             private final View getView(int position, View convertView, ViewGroup parent) {
                 if (mType == VIEW_FOLDER) {
@@ -382,7 +413,9 @@ public final class FolderListFragment extends ListFragment implements
                 }
                 folderItemView.bind(mFolder, mActivity, false);
                 if (mListView != null) {
-                    mListView.setItemChecked(position, mFolder.uri.equals(mSelectedFolderUri));
+                    final boolean isSelected = (mFolderType == mSelectedFolderType)
+                            && mFolder.uri.equals(mSelectedFolderUri);
+                    mListView.setItemChecked(position, isSelected);
                 }
                 Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
                 Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_box));
@@ -400,6 +433,13 @@ public final class FolderListFragment extends ListFragment implements
             mInflater = LayoutInflater.from(mActivity.getActivityContext());
             mRecentFolders =
                     mRecentFolderObserver.initialize(mActivity.getRecentFolderController());
+        }
+
+        /**
+         * Sets the currently selected folder's type to the type given here.
+         */
+        public void setSelectedType(int type) {
+            mSelectedFolderType = type;
         }
 
         @Override
@@ -456,7 +496,7 @@ public final class FolderListFragment extends ListFragment implements
             do {
                 final Folder f = new Folder(mCursor);
                 if (f.isProviderFolder()) {
-                    mItemList.add(new Item(f));
+                    mItemList.add(new Item(f, Item.FOLDER_SYSTEM));
                 } else {
                     userFolderList.add(f);
                 }
@@ -465,14 +505,14 @@ public final class FolderListFragment extends ListFragment implements
             if (recentFolderList.size() > 0) {
                 mItemList.add(new Item(R.string.recent_folders_heading));
                 for (Folder f : recentFolderList) {
-                    mItemList.add(new Item(f));
+                    mItemList.add(new Item(f, Item.FOLDER_RECENT));
                 }
             }
             // If there are user folders, add them and a header.
             if (userFolderList.size() > 0) {
                 mItemList.add(new Item(R.string.all_folders_heading));
                 for (final Folder f : userFolderList) {
-                    mItemList.add(new Item(f));
+                    mItemList.add(new Item(f, Item.FOLDER_USER));
                 }
             }
             // Ask the list to invalidate its views.
