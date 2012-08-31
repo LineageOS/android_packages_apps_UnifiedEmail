@@ -98,13 +98,13 @@
 
     <!-- Always available -->
     <item
-        android:id="@+id/help_info_menu_item"
-        android:icon="@android:drawable/ic_menu_help"
-        android:title="@string/help_and_info" />
-
-    <!-- Always available -->
-    <item
         android:id="@+id/feedback_menu_item"
         android:icon="@android:drawable/ic_menu_send"
         android:title="@string/feedback" />
+
+    <!-- Always available -->
+    <item
+        android:id="@+id/help_info_menu_item"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/help_and_info" />
 </menu>
