@@ -757,4 +757,9 @@
     <string translatable="false" name="ellipsis">\u2026</string>
 
     <string translatable="false" name="quote_begin">&lt;div class=\"quote\"&gt;</string>
+
+    <!-- String used in the FolderListFragment to mark the start of user-defined folders -->
+    <string name="all_folders_heading">All folders</string>
+    <!-- String used in the FolderListFragment to mark the start of recent folders -->
+    <string name="recent_folders_heading">Recent folders</string>
 </resources>

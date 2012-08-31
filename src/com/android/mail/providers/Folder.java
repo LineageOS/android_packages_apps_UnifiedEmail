@@ -50,7 +50,7 @@ public class Folder implements Parcelable, Comparable<Folder> {
      */
     private static final String FOLDER_UNINITIALIZED = "Uninitialized!";
 
-    // TODO: remove this once we figure out which folder is returing a "null" string as the
+    // TODO: remove this once we figure out which folder is returning a "null" string as the
     // conversation list uri
     private static final String NULL_STRING_URI = "null";
 

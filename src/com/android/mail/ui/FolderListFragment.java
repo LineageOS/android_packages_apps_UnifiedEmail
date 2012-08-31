@@ -31,17 +31,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Folder;
+import com.android.mail.providers.RecentFolderObserver;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * The folder list UI component.
@@ -70,9 +76,6 @@ public final class FolderListFragment extends ListFragment implements
     private static final String ARG_FOLDER_URI = "arg-folder-list-uri";
     private static final String BUNDLE_LIST_STATE = "flf-list-state";
     private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
-
-    /** For posting drag and drop calls */
-    private FolderItemView.DropHandler mDropHandler;
 
     private FolderListFragmentCursorAdapter mCursorAdapter;
     /** View that we show while we are waiting for the folder list to load */
@@ -143,9 +146,6 @@ public final class FolderListFragment extends ListFragment implements
                     "create it. Cannot proceed.");
         }
         mActivity = (ControllableActivity) activity;
-        if (activity instanceof FolderItemView.DropHandler) {
-            mDropHandler = (FolderItemView.DropHandler) activity;
-        }
         mListener = mActivity.getFolderListSelectionListener();
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
@@ -153,11 +153,9 @@ public final class FolderListFragment extends ListFragment implements
         }
 
         if (mParentFolder != null) {
-            mCursorAdapter = new HierarchicalFolderListAdapter(mActivity.getActivityContext(),
-                    null, mParentFolder);
+            mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
         } else {
-            mCursorAdapter = new FolderListAdapter(mActivity.getActivityContext(),
-                    R.layout.folder_item, null, null, null);
+            mCursorAdapter = new FolderListAdapter(R.layout.folder_item);
         }
         setListAdapter(mCursorAdapter);
 
@@ -228,6 +226,7 @@ public final class FolderListFragment extends ListFragment implements
     @Override
     public void onDestroyView() {
         Utils.dumpLayoutRequests("FLF(" + this + ").onDestoryView()", getView());
+        mCursorAdapter.destroy();
         // Clear the adapter.
         setListAdapter(null);
         if (mFolderObserver != null) {
@@ -251,8 +250,10 @@ public final class FolderListFragment extends ListFragment implements
      */
     private void viewFolder(int position) {
         Object item = getListAdapter().getItem(position);
-        Folder folder;
-        if (item instanceof Folder) {
+        final Folder folder;
+        if (item instanceof FolderListAdapter.Item) {
+            folder = ((FolderListAdapter.Item) item).mFolder;
+        } else if (item instanceof Folder) {
             folder = (Folder) item;
         } else {
             folder = new Folder((Cursor) item);
@@ -285,43 +286,218 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        // Do nothing.
+        mCursorAdapter.setCursor(null);
     }
 
+    /**
+     * Interface for all cursor adpaters that allow setting a cursor and being destroyed.
+     */
     private interface FolderListFragmentCursorAdapter extends ListAdapter {
+        /** Update the folder list cursor with the cursor given here. */
         void setCursor(Cursor cursor);
+        /** Remove all observers and destroy the object. */
+        void destroy();
     }
 
-    private class FolderListAdapter extends SimpleCursorAdapter
-            implements FolderListFragmentCursorAdapter{
+    /**
+     * An adapter for flat folder lists.
+     */
+    private class FolderListAdapter extends BaseAdapter implements FolderListFragmentCursorAdapter {
 
-        public FolderListAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
-            super(context, layout, c, new String[0], new int[0], 0);
+        private final RecentFolderObserver mRecentFolderObserver = new RecentFolderObserver() {
+            @Override
+            public void onChanged() {
+                recalculateList();
+            }
+        };
+
+        private final RecentFolderList mRecentFolders;
+
+        private final LayoutInflater mInflater;
+        /** All the items */
+        private final List<Item> mItemList = new ArrayList<Item>();
+        /** Cursor into the folder list. This might be null. */
+        private Cursor mCursor = null;
+
+        /** A union of either a folder or a resource string */
+        private class Item {
+            public final Folder mFolder;
+            public final int mResource;
+            public final int mType;
+            /** A normal folder, also a child, if a parent is specified. */
+            private static final int VIEW_FOLDER = 0;
+            /** A text-label which serves as a header in sectioned lists. */
+            private static final int VIEW_HEADER = 1;
+            private Item(Folder folder) {
+                mFolder = folder;
+                mResource = -1;
+                mType = VIEW_FOLDER;
+            }
+            private Item(int resource) {
+                mFolder = null;
+                mResource = resource;
+                mType = VIEW_HEADER;
+            }
+            private final View getView(int position, View convertView, ViewGroup parent) {
+                if (mType == VIEW_FOLDER) {
+                    return getFolderView(position, convertView, parent);
+                } else {
+                    return getHeaderView(position, convertView, parent);
+                }
+            }
+
+            /**
+             * Returns a text divider between sections.
+             * @param convertView
+             * @param parent
+             * @return a text header at the given position.
+             */
+            private final View getHeaderView(int position, View convertView, ViewGroup parent) {
+                final TextView headerView;
+                if (convertView != null) {
+                    headerView = (TextView) convertView;
+                } else {
+                    headerView = (TextView) mInflater.inflate(
+                            R.layout.folder_list_header, parent, false);
+                }
+                headerView.setText(mResource);
+                return headerView;
+            }
+
+            /**
+             * Return a folder: either a parent folder or a normal (child or flat)
+             * folder.
+             * @param position
+             * @param convertView
+             * @param parent
+             * @return a view showing a folder at the given position.
+             */
+            private final View getFolderView(int position, View convertView, ViewGroup parent) {
+                final FolderItemView folderItemView;
+                if (convertView != null) {
+                    folderItemView = (FolderItemView) convertView;
+                } else {
+                    folderItemView =
+                            (FolderItemView) mInflater.inflate(R.layout.folder_item, null, false);
+                }
+                folderItemView.bind(mFolder, mActivity, false);
+                if (mListView != null) {
+                    mListView.setItemChecked(position, mFolder.uri.equals(mSelectedFolderUri));
+                }
+                Folder.setFolderBlockColor(mFolder, folderItemView.findViewById(R.id.color_block));
+                Folder.setIcon(mFolder, (ImageView) folderItemView.findViewById(R.id.folder_box));
+                return folderItemView;
+            }
+        }
+
+        /**
+         * Creates a {@link FolderListAdapter}.This is a flat folder list of all the folders for the
+         * given account.
+         * @param layout
+         */
+        public FolderListAdapter(int layout) {
+            super();
+            mInflater = LayoutInflater.from(mActivity.getActivityContext());
+            mRecentFolders =
+                    mRecentFolderObserver.initialize(mActivity.getRecentFolderController());
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            FolderItemView folderItemView;
-            if (convertView != null) {
-                folderItemView = (FolderItemView) convertView;
-            } else {
-                folderItemView = (FolderItemView) LayoutInflater.from(
-                        mActivity.getActivityContext()).inflate(R.layout.folder_item, null);
+            return ((Item) getItem(position)).getView(position, convertView, parent);
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            // Headers and folders
+            return 2;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return ((Item) getItem(position)).mType;
+        }
+
+        @Override
+        public int getCount() {
+            return mItemList.size();
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            // We disallow taps on headers
+            return ((Item) getItem(position)).mType != Item.VIEW_HEADER;
+        }
+
+        @Override
+        public boolean areAllItemsEnabled() {
+            // The headers are not enabled.
+            return false;
+        }
+
+        /**
+         * Recalculates the system, recent and user label lists. Notifies that the data has changed.
+         * This method modifies all the three lists on every single invocation.
+         */
+        private void recalculateList() {
+            if (mCursor == null || mCursor.getCount() <= 0 || !mCursor.moveToFirst()) {
+                return;
             }
-            getCursor().moveToPosition(position);
-            Folder folder = new Folder(getCursor());
-            folderItemView.bind(folder, mDropHandler, true);
-            if (folder.uri.equals(mSelectedFolderUri)) {
-                getListView().setItemChecked(position, true);
+            mItemList.clear();
+            final List<Folder> recentFolderList = new ArrayList<Folder>();
+            // Get all recent folders, after removing system folders.
+            for (final Folder f : mRecentFolders.getRecentFolderList(null)) {
+                if (!f.isProviderFolder()) {
+                    recentFolderList.add(f);
+                }
             }
-            Folder.setFolderBlockColor(folder, folderItemView.findViewById(R.id.color_block));
-            Folder.setIcon(folder, (ImageView) folderItemView.findViewById(R.id.folder_box));
-            return folderItemView;
+            // First add all the system folders.
+            final List<Folder> userFolderList = new ArrayList<Folder>();
+            do {
+                final Folder f = new Folder(mCursor);
+                if (f.isProviderFolder()) {
+                    mItemList.add(new Item(f));
+                } else {
+                    userFolderList.add(f);
+                }
+            } while (mCursor.moveToNext());
+            // If there are recent folders, add them and a header.
+            if (recentFolderList.size() > 0) {
+                mItemList.add(new Item(R.string.recent_folders_heading));
+                for (Folder f : recentFolderList) {
+                    mItemList.add(new Item(f));
+                }
+            }
+            // If there are user folders, add them and a header.
+            if (userFolderList.size() > 0) {
+                mItemList.add(new Item(R.string.all_folders_heading));
+                for (final Folder f : userFolderList) {
+                    mItemList.add(new Item(f));
+                }
+            }
+            // Ask the list to invalidate its views.
+            notifyDataSetChanged();
         }
 
         @Override
         public void setCursor(Cursor cursor) {
-            super.changeCursor(cursor);
+            mCursor = cursor;
+            recalculateList();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mItemList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return getItem(position).hashCode();
+        }
+
+        @Override
+        public final void destroy() {
+            mRecentFolderObserver.unregisterAndDestroy();
         }
     }
 
@@ -332,9 +508,11 @@ public final class FolderListFragment extends ListFragment implements
         private static final int CHILD = 1;
         private final Uri mParentUri;
         private final Folder mParent;
+        private final FolderItemView.DropHandler mDropHandler;
 
-        public HierarchicalFolderListAdapter(Context context, Cursor c, Folder parentFolder) {
-            super(context, R.layout.folder_item);
+        public HierarchicalFolderListAdapter(Cursor c, Folder parentFolder) {
+            super(mActivity.getActivityContext(), R.layout.folder_item);
+            mDropHandler = mActivity;
             mParent = parentFolder;
             mParentUri = parentFolder.uri;
             setCursor(c);
@@ -386,6 +564,11 @@ public final class FolderListFragment extends ListFragment implements
                     add(f);
                 } while (cursor.moveToNext());
             }
+        }
+
+        @Override
+        public void destroy() {
+            // Do nothing.
         }
     }
 

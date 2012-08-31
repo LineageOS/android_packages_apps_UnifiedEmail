@@ -211,6 +211,24 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     };
 
+    /** Listeners that are interested in changes to the recent folders. */
+    private final DataSetObservable mRecentFolderObservers = new DataSetObservable() {
+        @Override
+        public void registerObserver(DataSetObserver observer) {
+            final int count = mObservers.size();
+            super.registerObserver(observer);
+            LogUtils.d(LOG_TAG, "IN AAC.register(RecentFolder)Observer: %s before=%d after=%d",
+                    observer, count, mObservers.size());
+        }
+        @Override
+        public void unregisterObserver(DataSetObserver observer) {
+            final int count = mObservers.size();
+            super.unregisterObserver(observer);
+            LogUtils.d(LOG_TAG, "IN AAC.unregister(RecentFolder)Observer: %s before=%d after=%d",
+                    observer, count, mObservers.size());
+        }
+    };
+
     /**
      * Selected conversations, if any.
      */
@@ -525,6 +543,30 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mFolder != null) {
             mRecentFolderList.touchFolder(mFolder, mAccount);
         }
+    }
+
+    /**
+     * Adds a listener interested in change in the recent folders. If a class is storing a
+     * reference to the recent folders, it should listen on changes, so it can receive updates.
+     * Must happen in the UI thread.
+     */
+    @Override
+    public void registerRecentFolderObserver(DataSetObserver obs) {
+        mRecentFolderObservers.registerObserver(obs);
+    }
+
+    /**
+     * Removes a listener from receiving recent folder changes.
+     * Must happen in the UI thread.
+     */
+    @Override
+    public void unregisterRecentFolderObserver(DataSetObserver obs) {
+        mRecentFolderObservers.unregisterObserver(obs);
+    }
+
+    @Override
+    public RecentFolderList getRecentFolders() {
+        return mRecentFolderList;
     }
 
     // TODO(mindyp): set this up to store a copy of the folder as a transient
@@ -1771,7 +1813,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
                 LogUtils.v(LOG_TAG, "Reading recent folders from the cursor.");
                 mRecentFolderList.loadFromUiProvider(data);
-                mActionBarView.requestRecentFoldersAndRedraw();
+                mRecentFolderObservers.notifyChanged();
                 break;
             case LOADER_ACCOUNT_INBOX:
                 if (data != null && !data.isClosed() && data.moveToFirst()) {

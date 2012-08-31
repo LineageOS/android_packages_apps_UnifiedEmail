@@ -46,7 +46,8 @@ public interface ActivityController extends LayoutListener,
         ConversationSetObserver, ConversationListener,
         FolderListFragment.FolderListSelectionListener, HelpCallback, UndoListener,
         ConversationUpdater, ErrorListener, FolderController, AccountController,
-        ConversationPositionTracker.Callbacks, ConversationListFooterView.FooterViewClickListener {
+        ConversationPositionTracker.Callbacks, ConversationListFooterView.FooterViewClickListener,
+        RecentFolderController {
 
     // As far as possible, the methods here that correspond to Activity lifecycle have the same name
     // as their counterpart in the Activity lifecycle.
