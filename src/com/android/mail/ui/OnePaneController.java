@@ -266,7 +266,7 @@ public final class OnePaneController extends AbstractActivityController {
         mViewMode.enterFolderListMode();
         enableCabMode();
         mLastFolderListTransactionId = replaceFragment(
-                FolderListFragment.newInstance(null, mAccount.folderListUri),
+                FolderListFragment.newInstance(null, mAccount.folderListUri, false),
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
         mConversationListVisible = false;
         onConversationVisibilityChanged(false);
@@ -350,7 +350,7 @@ public final class OnePaneController extends AbstractActivityController {
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(FolderListFragment.newInstance(
-                    top, top.childFoldersListUri),
+                    top, top.childFoldersListUri, false),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
@@ -386,7 +386,7 @@ public final class OnePaneController extends AbstractActivityController {
             // showing this folder's children if we are not already
             // looking at the child view for this folder.
             mLastFolderListTransactionId = replaceFragment(
-                    FolderListFragment.newInstance(folder, folder.childFoldersListUri),
+                    FolderListFragment.newInstance(folder, folder.childFoldersListUri, false),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_FOLDER_LIST);
             // Show the up affordance when digging into child folders.
             mActionBarView.setBackButton();
