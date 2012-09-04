@@ -158,11 +158,8 @@ public final class FolderListFragment extends ListFragment implements
         // Listen to folder changes in the future
         mFolderObserver = new FolderObserver();
         if (controller != null) {
-            // If we don't have a controller: this can happen if the FolderListFragment is used to
-            // create lists that do not have a concept of a selected folder.  Ignore changes to
-            // the selected folder.
+            // Only register for selected folder updates if we have a controller.
             controller.registerFolderObserver(mFolderObserver);
-            return;
         }
 
         mListener = mActivity.getFolderListSelectionListener();
