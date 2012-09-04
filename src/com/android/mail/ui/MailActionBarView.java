@@ -525,7 +525,11 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         String queryText = mSearchWidget.getQuery().toString();
         // What the suggested query is
         String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY));
-        if (!TextUtils.isEmpty(queryText)) {
+        // If the text the user typed in is a prefix of what is in the search
+        // widget suggestion query, just take the search widget suggestion
+        // query. Otherwise, it is a suffix and we want to remove matching
+        // prefix portions.
+        if (!TextUtils.isEmpty(queryText) && query.indexOf(queryText) != 0) {
             final int queryTokenIndex = queryText
                     .lastIndexOf(SearchRecentSuggestionsProvider.QUERY_TOKEN_SEPARATOR);
             if (queryTokenIndex > -1) {
