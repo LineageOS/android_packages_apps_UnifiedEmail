@@ -417,7 +417,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                         mAccount.supportsCapability(AccountCapabilities.FOLDER_SERVER_SEARCH));
                 break;
         }
-        return true;
+        return false;
     }
 
     /**
