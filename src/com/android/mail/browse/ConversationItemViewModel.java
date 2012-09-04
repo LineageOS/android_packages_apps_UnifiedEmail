@@ -327,7 +327,7 @@ public class ConversationItemViewModel {
             // If all are read, get the last sender.
             String sender = "";
             if (conversation.conversationInfo != null) {
-                String lastSender = null;
+                String lastSender = "";
                 int last = conversation.conversationInfo.messageInfos != null ?
                         conversation.conversationInfo.messageInfos.size() - 1 : -1;
                 if (last != -1) {
@@ -344,8 +344,10 @@ public class ConversationItemViewModel {
                             break;
                         }
                     }
-                    sender = TextUtils.isEmpty(firstUnread.sender) ?
-                            SendersView.getMe(context) : firstUnread.sender;
+                    if (firstUnread != null) {
+                        sender = TextUtils.isEmpty(firstUnread.sender) ?
+                                SendersView.getMe(context) : firstUnread.sender;
+                    }
                 }
                 if (TextUtils.isEmpty(sender)) {
                     // Just take the last sender
