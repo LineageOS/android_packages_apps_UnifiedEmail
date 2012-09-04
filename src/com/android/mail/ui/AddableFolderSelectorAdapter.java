@@ -36,50 +36,51 @@ public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
         final int projectionSize = UIProvider.FOLDERS_PROJECTION.length;
         final MatrixCursor cursor = new MatrixCursor(UIProvider.FOLDERS_PROJECTION);
         Object[] folder = new Object[projectionSize];
-        folderCursor.moveToFirst();
-        do {
-            int type = folderCursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
-            if (type == UIProvider.FolderType.INBOX || type == UIProvider.FolderType.DEFAULT) {
-                folder[UIProvider.FOLDER_ID_COLUMN] = folderCursor
-                        .getLong(UIProvider.FOLDER_ID_COLUMN);
-                folder[UIProvider.FOLDER_URI_COLUMN] = folderCursor
-                        .getString(UIProvider.FOLDER_URI_COLUMN);
-                folder[UIProvider.FOLDER_NAME_COLUMN] = folderCursor
-                        .getString(UIProvider.FOLDER_NAME_COLUMN);
-                folder[UIProvider.FOLDER_HAS_CHILDREN_COLUMN] = folderCursor
-                        .getInt(UIProvider.FOLDER_HAS_CHILDREN_COLUMN);
-                folder[UIProvider.FOLDER_CAPABILITIES_COLUMN] = folderCursor
-                        .getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
-                folder[UIProvider.FOLDER_SYNC_WINDOW_COLUMN] = folderCursor
-                        .getInt(UIProvider.FOLDER_SYNC_WINDOW_COLUMN);
-                folder[UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN] = folderCursor
-                        .getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN);
-                folder[UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN] = folderCursor
-                        .getString(UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN);
-                folder[UIProvider.FOLDER_UNREAD_COUNT_COLUMN] = folderCursor
-                        .getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
-                folder[UIProvider.FOLDER_TOTAL_COUNT_COLUMN] = folderCursor
-                        .getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
-                folder[UIProvider.FOLDER_REFRESH_URI_COLUMN] = folderCursor
-                        .getString(UIProvider.FOLDER_REFRESH_URI_COLUMN);
-                folder[UIProvider.FOLDER_SYNC_STATUS_COLUMN] = folderCursor
-                        .getInt(UIProvider.FOLDER_SYNC_STATUS_COLUMN);
-                folder[UIProvider.FOLDER_LAST_SYNC_RESULT_COLUMN] = folderCursor
-                        .getInt(UIProvider.FOLDER_LAST_SYNC_RESULT_COLUMN);
-                folder[UIProvider.FOLDER_TYPE_COLUMN] = type;
-                folder[UIProvider.FOLDER_ICON_RES_ID_COLUMN] = folderCursor
-                        .getLong(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
-                folder[UIProvider.FOLDER_BG_COLOR_COLUMN] = folderCursor
-                        .getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
-                folder[UIProvider.FOLDER_FG_COLOR_COLUMN] = folderCursor
-                        .getString(UIProvider.FOLDER_FG_COLOR_COLUMN);
-                folder[UIProvider.FOLDER_LOAD_MORE_URI_COLUMN] = folderCursor
-                        .getString(UIProvider.FOLDER_LOAD_MORE_URI_COLUMN);
-                folder[UIProvider.FOLDER_HIERARCHICAL_DESC_COLUMN] = folderCursor
-                        .getString(UIProvider.FOLDER_HIERARCHICAL_DESC_COLUMN);
-                cursor.addRow(folder);
-            }
-        } while (folderCursor.moveToNext());
+        if (folderCursor.moveToFirst()) {
+            do {
+                int type = folderCursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
+                if (type == UIProvider.FolderType.INBOX || type == UIProvider.FolderType.DEFAULT) {
+                    folder[UIProvider.FOLDER_ID_COLUMN] = folderCursor
+                            .getLong(UIProvider.FOLDER_ID_COLUMN);
+                    folder[UIProvider.FOLDER_URI_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_URI_COLUMN);
+                    folder[UIProvider.FOLDER_NAME_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_NAME_COLUMN);
+                    folder[UIProvider.FOLDER_HAS_CHILDREN_COLUMN] = folderCursor
+                            .getInt(UIProvider.FOLDER_HAS_CHILDREN_COLUMN);
+                    folder[UIProvider.FOLDER_CAPABILITIES_COLUMN] = folderCursor
+                            .getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
+                    folder[UIProvider.FOLDER_SYNC_WINDOW_COLUMN] = folderCursor
+                            .getInt(UIProvider.FOLDER_SYNC_WINDOW_COLUMN);
+                    folder[UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN);
+                    folder[UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_CHILD_FOLDERS_LIST_COLUMN);
+                    folder[UIProvider.FOLDER_UNREAD_COUNT_COLUMN] = folderCursor
+                            .getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
+                    folder[UIProvider.FOLDER_TOTAL_COUNT_COLUMN] = folderCursor
+                            .getInt(UIProvider.FOLDER_TOTAL_COUNT_COLUMN);
+                    folder[UIProvider.FOLDER_REFRESH_URI_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_REFRESH_URI_COLUMN);
+                    folder[UIProvider.FOLDER_SYNC_STATUS_COLUMN] = folderCursor
+                            .getInt(UIProvider.FOLDER_SYNC_STATUS_COLUMN);
+                    folder[UIProvider.FOLDER_LAST_SYNC_RESULT_COLUMN] = folderCursor
+                            .getInt(UIProvider.FOLDER_LAST_SYNC_RESULT_COLUMN);
+                    folder[UIProvider.FOLDER_TYPE_COLUMN] = type;
+                    folder[UIProvider.FOLDER_ICON_RES_ID_COLUMN] = folderCursor
+                            .getLong(UIProvider.FOLDER_ICON_RES_ID_COLUMN);
+                    folder[UIProvider.FOLDER_BG_COLOR_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
+                    folder[UIProvider.FOLDER_FG_COLOR_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_FG_COLOR_COLUMN);
+                    folder[UIProvider.FOLDER_LOAD_MORE_URI_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_LOAD_MORE_URI_COLUMN);
+                    folder[UIProvider.FOLDER_HIERARCHICAL_DESC_COLUMN] = folderCursor
+                            .getString(UIProvider.FOLDER_HIERARCHICAL_DESC_COLUMN);
+                    cursor.addRow(folder);
+                }
+            } while (folderCursor.moveToNext());
+        }
         return cursor;
     }
 }
