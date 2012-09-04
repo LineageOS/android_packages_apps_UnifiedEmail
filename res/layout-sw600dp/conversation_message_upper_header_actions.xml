@@ -17,11 +17,10 @@
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
     <ImageView
-        android:id="@+id/edit_draft"
+        android:id="@+id/star"
         style="@style/MessageHeaderActionButtonStyle"
-        android:visibility="gone"
-        android:src="@drawable/ic_edit_holo_dark"
-        android:contentDescription="@string/resume_draft" />
+        android:src="@drawable/message_header_star"
+        android:contentDescription="@string/add_star" />
     <ImageView
         android:id="@+id/reply"
         style="@style/MessageHeaderActionButtonStyle"
@@ -38,8 +37,9 @@
         android:src="@drawable/ic_forward_holo_dark"
         android:contentDescription="@string/forward" />
     <ImageView
-        android:id="@+id/star"
+        android:id="@+id/edit_draft"
         style="@style/MessageHeaderActionButtonStyle"
-        android:src="@drawable/message_header_star"
-        android:contentDescription="@string/add_star" />
+        android:visibility="gone"
+        android:src="@drawable/ic_edit_holo_dark"
+        android:contentDescription="@string/resume_draft" />
 </merge>
