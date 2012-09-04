@@ -75,7 +75,7 @@
 
                     <View style="@style/RecipientComposeFieldSpacer"/>
                 </LinearLayout>
-                <RelativeLayout android:id="@+id/add_photo_attachment"
+                <RelativeLayout
                     android:layout_width="@dimen/compose_area_right_padding"
                     android:layout_height="wrap_content"
                     android:layout_column="2"
