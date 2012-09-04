@@ -18,6 +18,7 @@ package com.android.mail.providers;
 
 import android.app.Activity;
 import android.content.ContentProvider;
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -464,8 +465,16 @@ public abstract class MailAppProvider extends ContentProvider
                     final AccountCacheEntry accountEntry =
                             new AccountCacheEntry(serializedAccount, pos);
                     if (accountEntry.mAccount.settings != null) {
-                        addAccountImpl(accountEntry.mAccount, accountEntry.mAccountsQueryUri, pos,
-                                false /* don't notify */);
+                        Account account = accountEntry.mAccount;
+                        ContentProviderClient client =
+                                mResolver.acquireContentProviderClient(account.uri);
+                        if (client != null) {
+                            client.release();
+                            addAccountImpl(account, accountEntry.mAccountsQueryUri,
+                                    false /* don't notify */);
+                        } else {
+                            LogUtils.e("Dropping account without provider: %s", account.name);
+                        }
                     } else {
                         LogUtils.e(LOG_TAG, "Dropping account that doesn't specify settings");
                     }
