@@ -51,6 +51,7 @@ public final class RecentFolderList {
     /** The current account */
     private Account mAccount = null;
 
+    /** The actual cache: map of folder URIs to folder objects. */
     private final LruCache<String, Folder> mFolderCache;
     /**
      *  We want to show at most five recent folders
