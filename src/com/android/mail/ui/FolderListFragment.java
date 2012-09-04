@@ -20,7 +20,6 @@ package com.android.mail.ui;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -46,7 +45,6 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -61,6 +59,8 @@ public final class FolderListFragment extends ListFragment implements
     private ListView mListView;
     /** URI that points to the list of folders for the current account. */
     private Uri mFolderListUri;
+    /** True if you want a sectioned FolderList, false otherwise. */
+    private boolean mIsSectioned;
     /** Callback into the parent */
     private FolderListSelectionListener mListener;
 
@@ -72,8 +72,13 @@ public final class FolderListFragment extends ListFragment implements
     private static final int FOLDER_LOADER_ID = 0;
     public static final int MODE_DEFAULT = 0;
     public static final int MODE_PICK = 1;
+    /** Key to store {@link #mParentFolder}. */
     private static final String ARG_PARENT_FOLDER = "arg-parent-folder";
+    /** Key to store {@link #mFolderListUri}. */
     private static final String ARG_FOLDER_URI = "arg-folder-list-uri";
+    /** Key to store {@link #mIsSectioned} */
+    private static final String ARG_IS_SECTIONED = "arg-is-sectioned";
+
     private static final String BUNDLE_LIST_STATE = "flf-list-state";
     private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
 
@@ -120,14 +125,17 @@ public final class FolderListFragment extends ListFragment implements
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.
+     * @param isSectioned TODO(viki):
      */
-    public static FolderListFragment newInstance(Folder parentFolder, Uri folderUri) {
+    public static FolderListFragment newInstance(Folder parentFolder, Uri folderUri,
+            boolean isSectioned) {
         final FolderListFragment fragment = new FolderListFragment();
         final Bundle args = new Bundle();
         if (parentFolder != null) {
             args.putParcelable(ARG_PARENT_FOLDER, parentFolder);
         }
         args.putString(ARG_FOLDER_URI, folderUri.toString());
+        args.putBoolean(ARG_IS_SECTIONED, isSectioned);
         fragment.setArguments(args);
         return fragment;
     }
@@ -146,6 +154,17 @@ public final class FolderListFragment extends ListFragment implements
                     "create it. Cannot proceed.");
         }
         mActivity = (ControllableActivity) activity;
+        final FolderController controller = mActivity.getFolderController();
+        // Listen to folder changes in the future
+        mFolderObserver = new FolderObserver();
+        if (controller != null) {
+            // If we don't have a controller: this can happen if the FolderListFragment is used to
+            // create lists that do not have a concept of a selected folder.  Ignore changes to
+            // the selected folder.
+            controller.registerFolderObserver(mFolderObserver);
+            return;
+        }
+
         mListener = mActivity.getFolderListSelectionListener();
         if (mActivity.isFinishing()) {
             // Activity is finishing, just bail.
@@ -155,18 +174,12 @@ public final class FolderListFragment extends ListFragment implements
         if (mParentFolder != null) {
             mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
         } else {
-            mCursorAdapter = new FolderListAdapter(R.layout.folder_item);
+            mCursorAdapter = new FolderListAdapter(R.layout.folder_item, mIsSectioned);
         }
         setListAdapter(mCursorAdapter);
 
         selectInitialFolder(mActivity.getHierarchyFolder());
         getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
-        FolderController controller = mActivity.getFolderController();
-        if (controller != null) {
-            // Listen to folder changes in the future
-            mFolderObserver = new FolderObserver();
-            controller.registerFolderObserver(mFolderObserver);
-        }
     }
 
     @Override
@@ -175,6 +188,7 @@ public final class FolderListFragment extends ListFragment implements
         final Bundle args = getArguments();
         mFolderListUri = Uri.parse(args.getString(ARG_FOLDER_URI));
         mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
+        mIsSectioned = args.getBoolean(ARG_IS_SECTIONED);
         final View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
@@ -221,12 +235,15 @@ public final class FolderListFragment extends ListFragment implements
         if (mSelectedFolderUri != null) {
             outState.putString(BUNDLE_SELECTED_FOLDER, mSelectedFolderUri.toString());
         }
+        outState.putBoolean(ARG_IS_SECTIONED, mIsSectioned);
     }
 
     @Override
     public void onDestroyView() {
         Utils.dumpLayoutRequests("FLF(" + this + ").onDestoryView()", getView());
-        mCursorAdapter.destroy();
+        if (mCursorAdapter != null) {
+            mCursorAdapter.destroy();
+        }
         // Clear the adapter.
         setListAdapter(null);
         if (mFolderObserver != null) {
@@ -314,7 +331,8 @@ public final class FolderListFragment extends ListFragment implements
         };
 
         private final RecentFolderList mRecentFolders;
-
+        /** True if the list is sectioned, false otherwise */
+        private final boolean mIsSectioned;
         private final LayoutInflater mInflater;
         /** All the items */
         private final List<Item> mItemList = new ArrayList<Item>();
@@ -427,14 +445,19 @@ public final class FolderListFragment extends ListFragment implements
          * Creates a {@link FolderListAdapter}.This is a flat folder list of all the folders for the
          * given account.
          * @param layout
+         * @param isSectioned TODO(viki):
          */
-        public FolderListAdapter(int layout) {
+        public FolderListAdapter(int layout, boolean isSectioned) {
             super();
             mInflater = LayoutInflater.from(mActivity.getActivityContext());
-            mRecentFolders =
-                    mRecentFolderObserver.initialize(mActivity.getRecentFolderController());
+            mIsSectioned = isSectioned;
+            final RecentFolderController controller = mActivity.getRecentFolderController();
+            if (controller != null && mIsSectioned) {
+                mRecentFolders = mRecentFolderObserver.initialize(controller);
+            } else {
+                mRecentFolders = null;
+            }
         }
-
         /**
          * Sets the currently selected folder's type to the type given here.
          */
@@ -476,6 +499,25 @@ public final class FolderListFragment extends ListFragment implements
         }
 
         /**
+         * Returns all the recent folders from the list given here. Safe to call with a null list.
+         * @param recentList
+         * @return a valid list of folders, which are all recent folders.
+         */
+        private final List<Folder> getRecentFolders(RecentFolderList recentList) {
+            final List<Folder> folderList = new ArrayList<Folder>();
+            if (recentList == null) {
+                return folderList;
+            }
+            // Get all recent folders, after removing system folders.
+            for (final Folder f : recentList.getRecentFolderList(null)) {
+                if (!f.isProviderFolder()) {
+                    folderList.add(f);
+                }
+            }
+            return folderList;
+        }
+
+        /**
          * Recalculates the system, recent and user label lists. Notifies that the data has changed.
          * This method modifies all the three lists on every single invocation.
          */
@@ -484,13 +526,18 @@ public final class FolderListFragment extends ListFragment implements
                 return;
             }
             mItemList.clear();
-            final List<Folder> recentFolderList = new ArrayList<Folder>();
-            // Get all recent folders, after removing system folders.
-            for (final Folder f : mRecentFolders.getRecentFolderList(null)) {
-                if (!f.isProviderFolder()) {
-                    recentFolderList.add(f);
-                }
+            if (!mIsSectioned) {
+                // Adapter for a flat list. Everything is a FOLDER_USER, and there are no headers.
+                do {
+                    final Folder f = new Folder(mCursor);
+                    mItemList.add(new Item(f, Item.FOLDER_USER));
+                } while (mCursor.moveToNext());
+                // Ask the list to invalidate its views.
+                notifyDataSetChanged();
+                return;
             }
+
+            // Otherwise, this is an adapter for a sectioned list.
             // First add all the system folders.
             final List<Folder> userFolderList = new ArrayList<Folder>();
             do {
@@ -502,6 +549,7 @@ public final class FolderListFragment extends ListFragment implements
                 }
             } while (mCursor.moveToNext());
             // If there are recent folders, add them and a header.
+            final List<Folder> recentFolderList = getRecentFolders(mRecentFolders);
             if (recentFolderList.size() > 0) {
                 mItemList.add(new Item(R.string.recent_folders_heading));
                 for (Folder f : recentFolderList) {
