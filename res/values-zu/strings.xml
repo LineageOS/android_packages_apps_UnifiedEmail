@@ -41,7 +41,7 @@
     <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Khetha uhlobo lokunamathelisa"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"Ayikwazi ukunamathisela ifayela elingaphezu kuka <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
-    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"Ifayela elilodewa noma amaningi awanamathiselwe. Umkhawulo <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"Ifayela elilodwa noma amaningi awanamathiselwe. Umkhawulo <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="3366607594339390249">"Ifayela alinamathiselwe. Umkhawulo ongu-<xliff:g id="MAXSIZE">%1$s</xliff:g> ufinyelelwe."</string>
     <string name="generic_attachment_problem" msgid="8775959340559458709">"Ayikwazi ukunamathelisa ifayela."</string>
     <string name="recipient_needed" msgid="999037027358925655">"Ngeza okungenani umamukeli oyedwa."</string>
