@@ -96,15 +96,16 @@ public class FolderSelectorAdapter extends BaseAdapter {
         if (folders == null) {
             return;
         }
-        folders.moveToFirst();
-        do {
-            final Folder folder = new Folder(folders);
-            if (meetsRequirements(folder)) {
-                final FolderRow row =
-                        new FolderRow(folder, initiallySelected.contains(folder.uri.toString()));
-                mFolderRows.add(row);
-            }
-        } while (folders.moveToNext());
+        if (folders.moveToFirst()) {
+            do {
+                final Folder folder = new Folder(folders);
+                if (meetsRequirements(folder)) {
+                    final FolderRow row = new FolderRow(folder,
+                            initiallySelected.contains(folder.uri.toString()));
+                    mFolderRows.add(row);
+                }
+            } while (folders.moveToNext());
+        }
         Collections.sort(mFolderRows);
     }
 
