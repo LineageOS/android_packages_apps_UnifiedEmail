@@ -55,7 +55,11 @@
     <skip />
     <!-- no translation found for select_attachment_type (4711524151968942082) -->
     <skip />
-    <!-- no translation found for too_large_to_attach (6355534239324333583) -->
+    <!-- no translation found for too_large_to_attach_single (2996733972478212136) -->
+    <skip />
+    <!-- no translation found for too_large_to_attach_multiple (5452547998184881210) -->
+    <skip />
+    <!-- no translation found for too_large_to_attach_additional (3366607594339390249) -->
     <skip />
     <!-- no translation found for generic_attachment_problem (8775959340559458709) -->
     <skip />
@@ -100,6 +104,8 @@
     <!-- no translation found for report_phishing (5714205737453138338) -->
     <skip />
     <!-- no translation found for delete (844871204175957681) -->
+    <skip />
+    <!-- no translation found for discard_drafts (6862272443470085375) -->
     <skip />
     <!-- no translation found for next (4674401197968248302) -->
     <skip />
@@ -279,6 +285,8 @@
     <!-- no translation found for confirm_delete_conversation:other (930334208937121234) -->
     <!-- no translation found for confirm_archive_conversation:one (2990537295519552069) -->
     <!-- no translation found for confirm_archive_conversation:other (4713469868399246772) -->
+    <!-- no translation found for confirm_discard_drafts_conversation:one (5974090449454432874) -->
+    <!-- no translation found for confirm_discard_drafts_conversation:other (4173815457177336569) -->
     <!-- no translation found for confirm_discard_text (1149834186404614612) -->
     <skip />
     <!-- no translation found for no_conversations (35400008890372241) -->

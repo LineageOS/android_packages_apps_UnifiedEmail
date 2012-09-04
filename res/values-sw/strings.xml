@@ -40,7 +40,9 @@
     <string name="forward_attribution" msgid="1498936339458535158">"---------- Ujumbe uliosambazwa ----------&lt;br&gt;Kutoka: <xliff:g id="FROM">%1$s</xliff:g>&lt;br&gt;Tarehe: <xliff:g id="DATE">%2$s</xliff:g>&lt;br&gt;Kichwa: <xliff:g id="SUBJECT">%3$s</xliff:g>&lt;br&gt;Kwa: <xliff:g id="TO">%4$s</xliff:g>&lt;br&gt;"</string>
     <string name="cc_attribution" msgid="374493748526504562">"Nakala kwa: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Chagua aina ya kiambatisho"</string>
-    <string name="too_large_to_attach" msgid="6355534239324333583">"Faili ni kubwa sana haiwezi kuambatisha."</string>
+    <string name="too_large_to_attach_single" msgid="2996733972478212136">"Haiwezi kuambatisha faili inayozidi <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"Faili moja au zaidi hazijaambatishwa. Kiwango ni <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_additional" msgid="3366607594339390249">"Faili haijaambatishwa. <xliff:g id="MAXSIZE">%1$s</xliff:g> kiwango kimefikiwa."</string>
     <string name="generic_attachment_problem" msgid="8775959340559458709">"Haikuweza kuambatisha faili."</string>
     <string name="recipient_needed" msgid="999037027358925655">"Ongeza angalau mpokeaji mmoja."</string>
     <string name="recipient_error_dialog_title" msgid="6051694305498669180">"Hitilafu ya mpokeaji"</string>
@@ -63,6 +65,7 @@
     <string name="mark_not_spam" msgid="694891665407228160">"Ripoti kuwa siyo barua taka"</string>
     <string name="report_phishing" msgid="5714205737453138338">"Ripoti hadaa"</string>
     <string name="delete" msgid="844871204175957681">"Futa"</string>
+    <string name="discard_drafts" msgid="6862272443470085375">"Tupa rasimu"</string>
     <string name="next" msgid="4674401197968248302">"Nzee zaidi"</string>
     <string name="previous" msgid="309943944831349924">"Mpya zaidi"</string>
     <string name="refresh" msgid="490989798005710951">"Onyesha upya"</string>
@@ -166,6 +169,10 @@
   <plurals name="confirm_archive_conversation">
     <item quantity="one" msgid="2990537295519552069">"Mazungumzo haya yajalidiwe?"</item>
     <item quantity="other" msgid="4713469868399246772">"Mazungumzo haya <xliff:g id="COUNT">%1$d</xliff:g> yajalidiwe?"</item>
+  </plurals>
+  <plurals name="confirm_discard_drafts_conversation">
+    <item quantity="one" msgid="5974090449454432874">"Tupa rasimu kutoka kwenye mazungumzo haya?"</item>
+    <item quantity="other" msgid="4173815457177336569">"Tupa rasimu kutoka kwenye mazungumzo haya <xliff:g id="COUNT">%1$d</xliff:g>?"</item>
   </plurals>
     <string name="confirm_discard_text" msgid="1149834186404614612">"Ujumbe huu utupwe?"</string>
     <string name="no_conversations" msgid="35400008890372241">"Hakuna mazungumzo."</string>
