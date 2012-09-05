@@ -151,7 +151,10 @@
     <item quantity="one" msgid="3657821200245019288">"انتقال مکالمه"</item>
     <item quantity="other" msgid="1685896770174368261">"انتقال <xliff:g id="ID_1">%1$d</xliff:g> مکالمه"</item>
   </plurals>
-    <string name="content_description" msgid="175899621885107464">"<xliff:g id="SENDER">%1$s</xliff:g> <xliff:g id="SUBJECT">%2$s</xliff:g> را در تاریخ <xliff:g id="DATE">%3$s</xliff:g> ارسال کرد"</string>
+    <!-- no translation found for content_description (517417382820459541) -->
+    <skip />
+    <!-- no translation found for content_description_today (3358818622191430053) -->
+    <skip />
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -366,4 +369,10 @@
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="compose_component_name" msgid="1673799619444668402">"com.android.mail.compose.ComposeActivity"</string>
     <string name="autosend_component_name" msgid="3204704549005619187"></string>
+    <!-- no translation found for senders_split_token (5895854795157860258) -->
+    <skip />
+    <!-- no translation found for draft_count_format (4869620346730961822) -->
+    <skip />
+    <string name="all_folders_heading" msgid="2506843494725730618">"همه پوشه‌ها"</string>
+    <string name="recent_folders_heading" msgid="8613621794529777406">"پوشه‌های اخیر"</string>
 </resources>
