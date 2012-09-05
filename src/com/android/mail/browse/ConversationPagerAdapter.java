@@ -270,7 +270,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         if (mController != null) {
             final Conversation currConversation = mController.getCurrentConversation();
             final int pos = getConversationPosition(currConversation);
-            if (pos == POSITION_NONE) {
+            if (pos == POSITION_NONE && getCursor() != null) {
                 // enable detached mode and do no more here. the fragment itself will figure out
                 // if the conversation is empty (using message list cursor) and back out if needed.
                 mDetachedMode = true;
