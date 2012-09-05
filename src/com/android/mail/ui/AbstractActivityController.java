@@ -440,6 +440,12 @@ public abstract class AbstractActivityController implements ActivityController {
         disableNotificationsOnAccountChange(mAccount);
         restartOptionalLoader(LOADER_ACCOUNT_UPDATE_CURSOR);
         MailAppProvider.getInstance().setLastViewedAccount(mAccount.uri.toString());
+        if (mAccount != null && !Uri.EMPTY.equals(mAccount.settings.setupIntentUri)) {
+            // Launch the intent!
+            Intent intent = new Intent(Intent.ACTION_EDIT);
+            intent.setData(mAccount.settings.setupIntentUri);
+            mActivity.startActivity(intent);
+        }
     }
 
     @Override
