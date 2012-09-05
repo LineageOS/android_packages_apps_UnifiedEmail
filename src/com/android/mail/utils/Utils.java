@@ -929,12 +929,17 @@ public class Utils {
         return uri == null || uri.equals(Uri.EMPTY);
     }
 
-    public static boolean executeConversationCursorCommand(Cursor cursor, String commandKey,
-            boolean value) {
-        final Bundle params = new Bundle();
-        params.putBoolean(commandKey, value);
-        final Bundle response = cursor.respond(params);
-        final String result = response.getString(commandKey,
+    /**
+     * Executes an out-of-band command on the cursor.
+     * @param cursor
+     * @param request Bundle with all keys and values set for the command.
+     * @param key The string value against which we will check for success or failure
+     * @return true if the operation was a success.
+     */
+    private static boolean executeConversationCursorCommand(
+            Cursor cursor, Bundle request, String key) {
+        final Bundle response = cursor.respond(request);
+        final String result = response.getString(key,
                 UIProvider.ConversationCursorCommand.COMMAND_RESPONSE_FAILED);
 
         return UIProvider.ConversationCursorCommand.COMMAND_RESPONSE_OK.equals(result);
@@ -948,8 +953,10 @@ public class Utils {
      * @return true iff the provider supports network requests and they were previously enabled
      */
     public static boolean disableConversationCursorNetworkAccess(Cursor cursor) {
-        return executeConversationCursorCommand(cursor,
-                UIProvider.ConversationCursorCommand.COMMAND_KEY_ALLOW_NETWORK_ACCESS, false);
+        final Bundle request = new Bundle();
+        final String key = UIProvider.ConversationCursorCommand.COMMAND_KEY_ALLOW_NETWORK_ACCESS;
+        request.putBoolean(key, false);
+        return executeConversationCursorCommand(cursor, request, key);
     }
 
     /**
@@ -960,37 +967,63 @@ public class Utils {
      * @return true iff the provider supports network requests and they are successfully enabled
      */
     public static boolean enableConversationCursorNetworkAccess(Cursor cursor) {
-        return executeConversationCursorCommand(cursor,
-                UIProvider.ConversationCursorCommand.COMMAND_KEY_ALLOW_NETWORK_ACCESS, true);
+        final Bundle request = new Bundle();
+        final String key = UIProvider.ConversationCursorCommand.COMMAND_KEY_ALLOW_NETWORK_ACCESS;
+        request.putBoolean(key, true);
+        return executeConversationCursorCommand(cursor, request, key);
     }
 
     /**
      * Commands a cursor representing a set of conversations to set its visibility state.
      *
      * @param cursor a conversation cursor
+     * @param visible true if the conversation list is visible, false otherwise.
+     * @param isFirstSeen true if you want to notify the cursor that this conversation list was seen
+     *        for the first time: the user launched the app into it, or the user switched from some
+     *        other folder into it.
      */
-    public static void setConversationCursorVisibility(Cursor cursor, boolean visible) {
-        new MarkConversationCursorVisibleTask(cursor, visible).execute();
+    public static void setConversationCursorVisibility(
+            Cursor cursor, boolean visible, boolean isFirstSeen) {
+        new MarkConversationCursorVisibleTask(cursor, visible, isFirstSeen).execute();
     }
 
     /**
-     * Async task for  marking conversations "seen"
+     * Async task for  marking conversations "seen" and informing the cursor that the folder was
+     * seen for the first time by the UI.
      */
     private static class MarkConversationCursorVisibleTask extends AsyncTask<Void, Void, Void> {
         private final Cursor mCursor;
         private final boolean mVisible;
+        private final boolean mIsFirstSeen;
 
-        public MarkConversationCursorVisibleTask(Cursor cursor, boolean visible) {
+        /**
+         * Create a new task with the given cursor, with the given visibility and
+         *
+         * @param cursor
+         * @param isVisible true if the conversation list is visible, false otherwise.
+         * @param isFirstSeen true if the folder was shown for the first time: either the user has
+         *        just switched to it, or the user started the app in this folder.
+         */
+        public MarkConversationCursorVisibleTask(
+                Cursor cursor, boolean isVisible, boolean isFirstSeen) {
             mCursor = cursor;
-            mVisible = visible;
+            mVisible = isVisible;
+            mIsFirstSeen = isFirstSeen;
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            if (mCursor != null) {
-                executeConversationCursorCommand(mCursor,
-                        UIProvider.ConversationCursorCommand.COMMAND_KEY_SET_VISIBILITY, mVisible);
+            if (mCursor == null) {
+                return null;
             }
+            final Bundle request = new Bundle();
+            if (mIsFirstSeen) {
+                request.putBoolean(
+                        UIProvider.ConversationCursorCommand.COMMAND_KEY_ENTERED_FOLDER, true);
+            }
+            final String key = UIProvider.ConversationCursorCommand.COMMAND_KEY_SET_VISIBILITY;
+            request.putBoolean(key, mVisible);
+            executeConversationCursorCommand(mCursor, request, key);
             return null;
         }
     }
