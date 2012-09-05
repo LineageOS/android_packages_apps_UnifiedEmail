@@ -137,6 +137,8 @@ public abstract class AbstractActivityController implements ActivityController {
 
     protected Account mAccount;
     protected Folder mFolder;
+    /** True when {@link #mFolder} is first shown to the user. */
+    private boolean mFolderChanged = false;
     protected MailActionBarView mActionBarView;
     protected final ControllableActivity mActivity;
     protected final Context mContext;
@@ -576,14 +578,24 @@ public abstract class AbstractActivityController implements ActivityController {
         restartOptionalLoader(LOADER_ACCOUNT_INBOX);
     }
 
-    /** Set the current folder */
+    /**
+     * Sets the current folder if it is different from the object provided here. This method does
+     * NOT notify the folder observers that a change has happened. Observers are notified when we
+     * get an updated folder from the loaders, which will happen as a consequence of this method
+     * (since this method starts/restarts the loaders).
+     * @param folder The folder to assign
+     */
     private void updateFolder(Folder folder) {
-        // Start watching folder for sync status.
         boolean wasNull = mFolder == null;
         if (folder != null && !folder.equals(mFolder) && folder.isInitialized()) {
             LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
             final LoaderManager lm = mActivity.getLoaderManager();
             mFolder = folder;
+            mFolderChanged = true;
+
+            // We do not need to notify folder observers yet. Instead we start the loaders and
+            // when the load finishes, we will get an updated folder. Then, we notify the
+            // folderObservers in onLoadFinished.
             mActionBarView.setFolder(mFolder);
 
             // Only when we switch from one folder to another do we want to restart the
@@ -654,12 +666,22 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
+    /**
+     * Inform the conversation cursor that there has been a visibility change.
+     * @param visible
+     */
+    protected synchronized void informCursorVisiblity(boolean visible) {
+        if (mConversationListCursor != null) {
+            Utils.setConversationCursorVisibility(mConversationListCursor, visible, mFolderChanged);
+            // We have informed the cursor. Subsequent visibility changes should not tell it that
+            // the folder has changed.
+            mFolderChanged = false;
+        }
+    }
+
     @Override
     public void onConversationListVisibilityChanged(boolean visible) {
-        if (mConversationListCursor != null) {
-            // The conversation list is visible.
-            Utils.setConversationCursorVisibility(mConversationListCursor, visible);
-        }
+        informCursorVisiblity(visible);
     }
 
     /**
@@ -1207,10 +1229,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        ConversationListFragment convList = getConversationListFragment();
+        final ConversationListFragment convList = getConversationListFragment();
         if (hasFocus && convList != null && convList.isVisible()) {
             // The conversation list is visible.
-            Utils.setConversationCursorVisibility(mConversationListCursor, true);
+            informCursorVisiblity(true);
         }
     }
 
@@ -2113,7 +2135,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (convList != null) {
             refreshConversationList();
             if (convList.isVisible()) {
-                Utils.setConversationCursorVisibility(mConversationListCursor, true);
+                informCursorVisiblity(true);
             }
         }
     }
@@ -2318,7 +2340,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
                 if (convList.isVisible()) {
                     // The conversation list is visible.
-                    Utils.setConversationCursorVisibility(mConversationListCursor, true);
+                    informCursorVisiblity(true);
                 }
             }
             // Shown for search results in two-pane mode only.

@@ -1026,8 +1026,26 @@ public class UIProvider {
         /**
          * This bundle key has a boolean value: true to indicate that this cursor has been shown
          * to the user.
+         * <p>
+         * A provider that implements this command should include this key in its response with a
+         * value of {@link #COMMAND_RESPONSE_OK} or {@link #COMMAND_RESPONSE_FAILED}.
          */
         public static final String COMMAND_KEY_SET_VISIBILITY = "setVisibility";
+
+        /**
+         * This key has a boolean value: true to indicate that this folder list is shown to the user
+         * either on first call (launcher/widget/notification) or after switching from an existing
+         * folder: Inbox -> Folder. Repeated calls are sent when switching back to the folder. Inbox
+         * -> Folder -> Spam -> Folder will generate two calls to respond() with the value true for
+         * "Folder".
+         * <p>
+         * A provider that implements this command should include the
+         * {@link #COMMAND_KEY_SET_VISIBILITY} key in its response with a value of
+         * {@link #COMMAND_RESPONSE_OK} or {@link #COMMAND_RESPONSE_FAILED}. This is <b>always</b>
+         * set with {@link #COMMAND_KEY_SET_VISIBILITY} because this is only set when the folder
+         * list is made visible.
+         */
+        public static final String COMMAND_KEY_ENTERED_FOLDER = "enteredFolder";
 
         private ConversationCursorCommand() {}
     }
