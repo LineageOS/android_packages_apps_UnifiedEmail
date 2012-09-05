@@ -136,6 +136,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     @Override
     public int getCount() {
         final int count = super.getCount();
+        if (mShowFooter) {
+            LogUtils.w(LOG_TAG, "GetCount: Has footer view: adding 1 to count");
+        }
         return mShowFooter ? count + 1 : count;
     }
 
@@ -379,6 +382,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
     @Override
     public long getItemId(int position) {
+        if (mShowFooter) {
+            LogUtils.w(LOG_TAG, "GetItemId: Has footer view: adding 1 to count");
+        }
         if (mShowFooter && position == super.getCount()) {
             return -1;
         }
