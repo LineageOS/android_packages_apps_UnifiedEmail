@@ -1025,6 +1025,31 @@ public class Utils {
     }
 
     /**
+     * Returns the count that should be shown for the specified folder.  This method should be used
+     * when the UI wants to display an "unread" count.  For most labels, the returned value will be
+     * the unread count, but for some folder types (outbox, drafts, trash) this will return the
+     * total count.
+     */
+    public static int getFolderUnreadDisplayCount(Folder folder) {
+        final int count;
+        if (folder != null) {
+            switch (folder.type) {
+                case UIProvider.FolderType.DRAFT:
+                case UIProvider.FolderType.TRASH:
+                case UIProvider.FolderType.OUTBOX:
+                    count = folder.totalCount;
+                    break;
+                default:
+                    count = folder.unreadCount;
+                    break;
+            }
+        } else {
+            count = 0;
+        }
+        return count;
+    }
+
+    /**
      * An orphaned subtree is one where child views have requested layout, but at least one
      * ancestor is not marked for layout. In this scenario, any future layout requests on the root
      * will ignore the orphaned subtree, and we have to force the issue.

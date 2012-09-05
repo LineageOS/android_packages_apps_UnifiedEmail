@@ -318,10 +318,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         return mCurrentFolder != null ? mCurrentFolder.name : "";
     }
 
-    private int getFolderUnreadCount() {
-        return mCurrentFolder != null ? mCurrentFolder.unreadCount : 0;
-    }
-
     /**
      * Returns whether the current account is an invalid offset into the array.
      * @return true if the current account is invalid, and false otherwise.
@@ -353,7 +349,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.account_first)).setText(getFolderLabel());
         ((TextView) view.findViewById(R.id.account_second))
                 .setText(getCurrentAccountName());
-        final int currentViewUnreadCount = getFolderUnreadCount();
+        final int currentViewUnreadCount = Utils.getFolderUnreadDisplayCount(mCurrentFolder);
         populateUnreadCountView((TextView) view.findViewById(R.id.account_unread),
                 currentViewUnreadCount);
         return view;
