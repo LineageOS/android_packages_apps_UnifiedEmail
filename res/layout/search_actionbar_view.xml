@@ -26,6 +26,12 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
+    <Spinner
+        android:id="@+id/account_spinner"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        style="@style/PlainSpinnerDropdown"/>
+
     <include layout="@layout/actionbar_folder" />
 
     <include layout="@layout/actionbar_subject" />

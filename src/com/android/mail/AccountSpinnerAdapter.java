@@ -113,7 +113,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             final int pos = Account.findPosition(mAllAccounts, newAccount.uri);
             LogUtils.d(LOG_TAG, "setCurrentAccount: mCurrentAccountPos = %d", pos);
             if (pos >= 0) {
-                requestRecentFoldersAndRedraw();
+                requestRecentFolders();
             }
             notifyDataSetChanged();
         }
@@ -122,7 +122,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     private final RecentFolderObserver mRecentFolderObserver = new RecentFolderObserver() {
         @Override
         public void onChanged() {
-            requestRecentFoldersAndRedraw();
+            requestRecentFolders();
         }
     };
 
@@ -264,7 +264,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public boolean setCurrentFolder(Folder folder) {
         if (folder != null && folder != mCurrentFolder) {
             mCurrentFolder = folder;
-            requestRecentFoldersAndRedraw();
+            requestRecentFolders();
             return true;
         }
         return false;
@@ -501,10 +501,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * Cause a refresh of the recent folders for the current folder and redraw the spinner with
      * the new information.
      */
-    public void requestRecentFoldersAndRedraw() {
+    public void requestRecentFolders() {
         final Uri uri = mCurrentFolder == null ? null : mCurrentFolder.uri;
         mRecentFolderList = mRecentFolders.getRecentFolderList(uri);
-        notifyDataSetChanged();
     }
 
     /**

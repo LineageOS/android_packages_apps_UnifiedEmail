@@ -20,10 +20,9 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
     android:paddingLeft="0dip"
-    android:paddingRight="0dip"
-    android:layout_marginLeft="0dip">
+    android:layout_marginLeft="0dip"
+    style="@style/AccountSwitchSpinnerItem">
 
     <LinearLayout
         android:layout_height="match_parent"
@@ -57,7 +56,5 @@
         android:id="@+id/account_unread"
         android:layout_toRightOf="@id/account_spinner"
         android:layout_marginLeft="4dp"
-        android:layout_marginRight="0dp"
-        android:paddingRight="0dp"
         style="@style/UnreadCountActionBar"/>
 </RelativeLayout>

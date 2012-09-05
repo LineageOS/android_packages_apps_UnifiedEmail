@@ -31,8 +31,12 @@ import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
@@ -56,9 +60,9 @@ import com.android.mail.utils.Utils;
  * This also happens to be the custom view we supply to ActionBar.
  *
  */
-public class MailActionBarView extends LinearLayout implements OnNavigationListener,
-        ViewMode.ModeChangeListener, OnQueryTextListener, OnSuggestionListener,
-        MenuItem.OnActionExpandListener, SubjectDisplayChanger {
+public class MailActionBarView extends LinearLayout implements ViewMode.ModeChangeListener,
+        OnQueryTextListener, OnSuggestionListener, MenuItem.OnActionExpandListener,
+        SubjectDisplayChanger, OnItemSelectedListener {
     protected ActionBar mActionBar;
     protected ControllableActivity mActivity;
     protected ActivityController mController;
@@ -69,7 +73,8 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
     private int mMode = ViewMode.UNKNOWN;
 
     private MenuItem mSearch;
-    private AccountSpinnerAdapter mSpinner;
+    private AccountSpinnerAdapter mSpinnerAdapter;
+    private Spinner mSpinner;
     /**
      * The account currently being shown
      */
@@ -232,7 +237,10 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         mController.registerFolderObserver(mFolderObserver);
         // We don't want to include the "Show all folders" menu item on tablet devices
         final boolean showAllFolders = !Utils.useTabletUI(getContext());
-        mSpinner = new AccountSpinnerAdapter(activity, getContext(), showAllFolders);
+        mSpinnerAdapter = new AccountSpinnerAdapter(activity, getContext(), showAllFolders);
+        mSpinner = (Spinner) findViewById(R.id.account_spinner);
+        mSpinner.setAdapter(mSpinnerAdapter);
+        mSpinner.setOnItemSelectedListener(this);
         mAccount = mAccountObserver.initialize(activity.getAccountController());
     }
 
@@ -240,7 +248,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      * Attach the action bar to the view.
      */
     public void attach() {
-        mActionBar.setListNavigationCallbacks(mSpinner, this);
+        // Do nothing.
     }
 
     /**
@@ -249,20 +257,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      */
     public void setAccounts(Account[] accounts) {
         final Account currentAccount = mController.getCurrentAccount();
-        mSpinner.setAccountArray(accounts);
-    }
-
-    /**
-     * Sets the selected navigation position in the spinner to the position given here.
-     * @param position
-     */
-    private void setSelectedPosition(int position) {
-        // Only change the position if we are in the correct mode.
-        if (mActionBar.getNavigationMode() != ActionBar.NAVIGATION_MODE_LIST) {
-            return;
-        }
-        LogUtils.d(LOG_TAG, "ActionBarView.setSelectedNavigationItem(%d)", position);
-        mActionBar.setSelectedNavigationItem(position);
+        mSpinnerAdapter.setAccountArray(accounts);
     }
 
     /**
@@ -272,14 +267,18 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
     public void setFolder(Folder folder) {
         setRefreshInProgress(false);
         mFolder = folder;
-        mSpinner.setCurrentFolder(folder);
         mActivity.invalidateOptionsMenu();
     }
 
     @Override
-    public boolean onNavigationItemSelected(int position, long id) {
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Do nothing.
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         LogUtils.d(LOG_TAG, "onNavigationItemSelected(%d, %d) called", position, id);
-        final int type = mSpinner.getType(position);
+        final int type = mSpinnerAdapter.getType(position);
         switch (type) {
             case AccountSpinnerAdapter.TYPE_DEAD_HEADER:
                 // Automatic selections
@@ -287,7 +286,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                 break;
             case AccountSpinnerAdapter.TYPE_ACCOUNT:
                 // Get the capabilities associated with this account.
-                final Account account = (Account) mSpinner.getItem(position);
+                final Account account = (Account) mSpinnerAdapter.getItem(position);
                 LogUtils.d(LOG_TAG, "onNavigationItemSelected: Selecting account: %s",
                         account.name);
                 if (mAccount.uri.equals(account.uri)) {
@@ -299,7 +298,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                 }
                 break;
             case AccountSpinnerAdapter.TYPE_FOLDER:
-                final Object folder = mSpinner.getItem(position);
+                final Object folder = mSpinnerAdapter.getItem(position);
                 assert (folder instanceof Folder);
                 LogUtils.d(LOG_TAG, "onNavigationItemSelected: Selecting folder: %s",
                         ((Folder)folder).name);
@@ -309,10 +308,6 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
                 mController.showFolderList();
                 break;
         }
-        // Change the currently selected item to an element which is a spacer: valid
-        // but not useful. This allows us to receive subsequent taps on all menu items.
-        setSelectedPosition(mSpinner.getSpacerPosition());
-        return false;
     }
 
     public void onDestroy() {
@@ -320,7 +315,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
             mController.unregisterFolderObserver(mFolderObserver);
             mFolderObserver = null;
         }
-        mSpinner.destroy();
+        mSpinnerAdapter.destroy();
         mAccountObserver.unregisterAndDestroy();
     }
 
@@ -333,9 +328,9 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
         // Check if we are either on a phone, or in Conversation mode on tablet. For these, the
         // recent folders is enabled.
         if (!mIsOnTablet || mMode == ViewMode.CONVERSATION) {
-            mSpinner.enableRecentFolders();
+            mSpinnerAdapter.enableRecentFolders();
         } else {
-            mSpinner.disableRecentFolders();
+            mSpinnerAdapter.disableRecentFolders();
         }
 
         boolean showFolderView = false;
@@ -424,21 +419,27 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      * Put the ActionBar in List navigation mode. This starts the spinner up if it is missing.
      */
     private void showNavList() {
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        // Don't show title, and don't show custom views.
-        final int mask = ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM;
-        final int enabled = 0;
-        mActionBar.setDisplayOptions(enabled, mask);
+        mSpinner.setVisibility(View.VISIBLE);
+        mFolderView.setVisibility(View.GONE);
+        mFolderAccountName.setVisibility(View.GONE);
     }
 
     /**
      * Set the actionbar mode to standard mode: no list navigation.
      */
     protected void setStandardMode() {
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        // Show a custom view, and use a logo.
-        final int mask = ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME;
-        mActionBar.setDisplayOptions(mask, mask);
+        mSpinner.setVisibility(View.GONE);
+        mFolderView.setVisibility(View.VISIBLE);
+        mFolderAccountName.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Set the actionbar mode to empty: no title, no custom content.
+     */
+    protected void setEmptyMode() {
+        mSpinner.setVisibility(View.GONE);
+        mFolderView.setVisibility(View.GONE);
+        mFolderAccountName.setVisibility(View.GONE);
     }
 
     public void removeBackButton() {
@@ -557,7 +558,7 @@ public class MailActionBarView extends LinearLayout implements OnNavigationListe
      * Notify that the folder has changed.
      */
     public void onFolderUpdated(Folder folder) {
-        mSpinner.onFolderUpdated(folder);
+        mSpinnerAdapter.onFolderUpdated(folder);
         int status = folder.syncStatus;
         if (folder.isSyncInProgress()) {
             onRefreshStarted();
