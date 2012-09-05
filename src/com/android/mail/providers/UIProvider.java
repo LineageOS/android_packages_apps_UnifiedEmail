@@ -135,7 +135,8 @@ public class UIProvider {
             AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
             AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
             AccountColumns.SettingsColumns.SWIPE,
-            AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED
+            AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
+            AccountColumns.SettingsColumns.SETUP_INTENT_URI
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -178,6 +179,7 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 36;
     public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 37;
     public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 38;
+    public static final int ACCOUNT_SETTINGS_SETUP_INTENT_URI = 39;
 
     public static final class AccountCapabilities {
         /**
@@ -517,6 +519,12 @@ public class UIProvider {
              * Boolean column containing whether priority inbox arrows are enabled.
              */
             public static final String PRIORITY_ARROWS_ENABLED = "priority_inbox_arrows_enabled";
+            /**
+             * Uri for EDIT intent that will cause account-specific setup UI to be shown. If not
+             * null, this intent should be used when an account is "entered" (i.e. viewing a folder
+             * in the account, etc.)
+             */
+            public static final String SETUP_INTENT_URI = "setup_intent_uri";
         }
     }
 

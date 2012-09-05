@@ -84,6 +84,7 @@ public class Settings implements Parcelable {
     public final int swipe;
     /** True if arrows on the priority inbox are enabled. */
     public final boolean priorityArrowsEnabled;
+    public final Uri setupIntentUri;
 
     /** Cached value of hashCode */
     private int mHashCode;
@@ -107,6 +108,7 @@ public class Settings implements Parcelable {
         maxAttachmentSize = 0;
         swipe = DEFAULT;
         priorityArrowsEnabled = false;
+        setupIntentUri = Uri.EMPTY;
     }
 
     public Settings(Parcel inParcel) {
@@ -125,6 +127,7 @@ public class Settings implements Parcelable {
         maxAttachmentSize = inParcel.readInt();
         swipe = inParcel.readInt();
         priorityArrowsEnabled = inParcel.readInt() != 0;
+        setupIntentUri = Utils.getValidUri(inParcel.readString());
     }
 
     public Settings(Cursor cursor) {
@@ -146,6 +149,8 @@ public class Settings implements Parcelable {
         swipe = cursor.getInt(UIProvider.ACCOUNT_SETTINGS_SWIPE_COLUMN);
         priorityArrowsEnabled =
                 cursor.getInt(UIProvider.ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN) != 0;
+        setupIntentUri = Utils.getValidUri(
+                cursor.getString(UIProvider.ACCOUNT_SETTINGS_SETUP_INTENT_URI));
     }
 
     private Settings(JSONObject json) {
@@ -179,6 +184,8 @@ public class Settings implements Parcelable {
         priorityArrowsEnabled =
                 json.optBoolean(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
                         sDefault.priorityArrowsEnabled);
+        setupIntentUri = Utils.getValidUri(
+                json.optString(AccountColumns.SettingsColumns.SETUP_INTENT_URI));
     }
 
     /**
@@ -221,6 +228,7 @@ public class Settings implements Parcelable {
                     maxAttachmentSize);
             json.put(AccountColumns.SettingsColumns.SWIPE, swipe);
             json.put(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED, priorityArrowsEnabled);
+            json.put(AccountColumns.SettingsColumns.SETUP_INTENT_URI, setupIntentUri);
         } catch (JSONException e) {
             LogUtils.wtf(LOG_TAG, e, "Could not serialize settings");
         }
@@ -284,6 +292,7 @@ public class Settings implements Parcelable {
         dest.writeInt(maxAttachmentSize);
         dest.writeInt(swipe);
         dest.writeInt(priorityArrowsEnabled ? 1 : 0);
+        dest.writeString(((Uri) getNonNull(setupIntentUri, sDefault.setupIntentUri)).toString());
     }
 
     /**
@@ -367,7 +376,8 @@ public class Settings implements Parcelable {
                 && forceReplyFromDefault == that.forceReplyFromDefault
                 && maxAttachmentSize == that.maxAttachmentSize
                 && swipe == that.swipe
-                && priorityArrowsEnabled == that.priorityArrowsEnabled);
+                && priorityArrowsEnabled == that.priorityArrowsEnabled
+                && setupIntentUri == that.setupIntentUri);
     }
 
     @Override
@@ -387,6 +397,6 @@ public class Settings implements Parcelable {
                 ^ Objects.hashCode(signature, autoAdvance, messageTextSize, replyBehavior,
                         hideCheckboxes, confirmDelete, confirmArchive, confirmSend,
                         defaultInbox, forceReplyFromDefault, maxAttachmentSize, swipe,
-                        priorityArrowsEnabled);
+                        priorityArrowsEnabled, setupIntentUri);
     }
 }
