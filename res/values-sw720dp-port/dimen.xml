@@ -16,5 +16,5 @@
      limitations under the License.
 -->
 <resources>
-    <dimen name="spinner_frame_width">200dip</dimen>
+    <dimen name="spinner_frame_width">172dip</dimen>
 </resources>

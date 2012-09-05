@@ -16,6 +16,9 @@
      limitations under the License.
 -->
 <resources>
+    <style name="AccountSwitchSpinnerItem">
+        <item name="android:layout_width">308dp</item>
+    </style>
     <style name="PersonalIndicatorStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

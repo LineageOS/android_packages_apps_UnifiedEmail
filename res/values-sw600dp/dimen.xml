@@ -24,7 +24,7 @@
     <dimen name="max_total_folder_width_wide">128dip</dimen>
     <dimen name="wide_subject_margin_right">28dip</dimen>
     <dimen name="subject_width">238dip</dimen>
-    <dimen name="spinner_frame_width">180dp</dimen>
+    <dimen name="spinner_frame_width">196dp</dimen>
     <dimen name="conversation_view_margin_side">32dp</dimen>
     <dimen name="conversation_header_side_padding">0dip</dimen>
     <dimen name="conversation_header_vertical_padding">12dip</dimen>
