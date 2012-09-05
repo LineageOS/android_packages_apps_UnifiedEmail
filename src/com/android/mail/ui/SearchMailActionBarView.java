@@ -54,7 +54,7 @@ public class SearchMailActionBarView extends MailActionBarView {
             case ViewMode.SEARCH_RESULTS_LIST:
             case ViewMode.SEARCH_RESULTS_CONVERSATION:
                 mActionBar.setDisplayHomeAsUpEnabled(true);
-                setStandardMode();
+                setEmptyMode();
                 if (!showConversationSubject()) {
                     setPopulatedSearchView();
                 }
