@@ -390,18 +390,22 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     mFolder.name));
         }
         final MenuItem archive = menu.findItem(R.id.archive);
-        boolean showArchive =
-                mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE)
+        final boolean accountSupportsArchive =
+                mAccount.supportsCapability(UIProvider.AccountCapabilities.ARCHIVE);
+        boolean showArchive = accountSupportsArchive
                 && mFolder.supportsCapability(FolderCapabilities.ARCHIVE);
         if (archive == null) {
             showArchive = false;
         } else {
             archive.setVisible(showArchive);
         }
-        if (!showRemoveFolder && !showArchive
-                && Utils.shouldShowDisabledArchiveIcon(mActivity.getActivityContext())) {
-            archive.setEnabled(false);
-            archive.setVisible(true);
+        // We may want to reshow the archive menu item, but only if the account supports archiving
+        if (!showArchive && accountSupportsArchive) {
+            if (!showRemoveFolder &&
+                    Utils.shouldShowDisabledArchiveIcon(mActivity.getActivityContext())) {
+                archive.setEnabled(false);
+                archive.setVisible(true);
+            }
         }
         final MenuItem spam = menu.findItem(R.id.report_spam);
         spam.setVisible(!showMarkNotSpam
