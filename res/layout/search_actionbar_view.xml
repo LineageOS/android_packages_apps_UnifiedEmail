@@ -26,11 +26,14 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <Spinner
+    <com.android.mail.ui.MailSpinner
         android:id="@+id/account_spinner"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        style="@style/PlainSpinnerDropdown"/>
+        android:layout_width="wrap_content"
+        style="@style/PlainSpinnerDropdown"
+        android:focusableInTouchMode="false"
+        android:focusable="false"
+        android:clickable="true"/>
 
     <include layout="@layout/actionbar_folder" />
 

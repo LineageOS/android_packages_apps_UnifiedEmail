@@ -314,10 +314,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         }
     }
 
-    private String getFolderLabel() {
-        return mCurrentFolder != null ? mCurrentFolder.name : "";
-    }
-
     /**
      * Returns whether the current account is an invalid offset into the array.
      * @return true if the current account is invalid, and false otherwise.
@@ -341,21 +337,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        if (view == null) {
-            view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
-        }
-        selectRelevant(view, TYPE_NON_DROPDOWN);
-        ((TextView) view.findViewById(R.id.account_first)).setText(getFolderLabel());
-        ((TextView) view.findViewById(R.id.account_second))
-                .setText(getCurrentAccountName());
-        final int currentViewUnreadCount = Utils.getFolderUnreadDisplayCount(mCurrentFolder);
-        populateUnreadCountView((TextView) view.findViewById(R.id.account_unread),
-                currentViewUnreadCount);
-        return view;
-    }
-
-    @Override
     public boolean hasStableIds() {
         // The ID is the hash of the URI of the object.
         return true;
@@ -368,7 +349,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getDropDownView(int position, View view, ViewGroup parent) {
+    public View getView(int position, View view, ViewGroup parent) {
         if (position == 0) {
             // Commit any leave behind items.
             mActivityController.commitDestructiveActions(false);
