@@ -40,14 +40,21 @@ import com.android.mail.utils.LogUtils;
 
 // Called OnePaneActivityController in Gmail.
 public final class OnePaneController extends AbstractActivityController {
-    // Used for saving transaction IDs in bundles
+    /** Key used to store {@link #mLastFolderListTransactionId}. */
     private static final String FOLDER_LIST_TRANSACTION_KEY = "folder-list-transaction";
+    /** Key used to store {@link #mLastInboxConversationListTransactionId} */
     private static final String INBOX_CONVERSATION_LIST_TRANSACTION_KEY =
             "inbox_conversation-list-transaction";
+    /** Key used to store {@link #mLastConversationListTransactionId} */
     private static final String CONVERSATION_LIST_TRANSACTION_KEY = "conversation-list-transaction";
+    /** Key used to store {@link #mLastConversationTransactionId}. */
     private static final String CONVERSATION_TRANSACTION_KEY = "conversation-transaction";
+    /** Key used to store {@link #mConversationListVisible}. */
     private static final String CONVERSATION_LIST_VISIBLE_KEY = "conversation-list-visible";
+    /** Key used to store {@link #mConversationListNeverShown}. */
     private static final String CONVERSATION_LIST_NEVER_SHOWN_KEY = "conversation-list-never-shown";
+    /** Key to store {@link #mInbox}. */
+    private final static String SAVED_INBOX_KEY = "m-inbox";
 
     private static final int INVALID_ID = -1;
     private boolean mConversationListVisible = false;
@@ -82,6 +89,7 @@ public final class OnePaneController extends AbstractActivityController {
         mLastConversationTransactionId = inState.getInt(CONVERSATION_TRANSACTION_KEY, INVALID_ID);
         mConversationListVisible = inState.getBoolean(CONVERSATION_LIST_VISIBLE_KEY);
         mConversationListNeverShown = inState.getBoolean(CONVERSATION_LIST_NEVER_SHOWN_KEY);
+        mInbox = inState.getParcelable(SAVED_INBOX_KEY);
     }
 
     @Override
@@ -95,6 +103,7 @@ public final class OnePaneController extends AbstractActivityController {
         outState.putInt(CONVERSATION_TRANSACTION_KEY, mLastConversationTransactionId);
         outState.putBoolean(CONVERSATION_LIST_VISIBLE_KEY, mConversationListVisible);
         outState.putBoolean(CONVERSATION_LIST_NEVER_SHOWN_KEY, mConversationListNeverShown);
+        outState.putParcelable(SAVED_INBOX_KEY, mInbox);
     }
 
     @Override
