@@ -62,7 +62,7 @@ import com.android.mail.utils.Utils;
  */
 public class MailActionBarView extends LinearLayout implements ViewMode.ModeChangeListener,
         OnQueryTextListener, OnSuggestionListener, MenuItem.OnActionExpandListener,
-        SubjectDisplayChanger, OnItemSelectedListener {
+        SubjectDisplayChanger {
     protected ActionBar mActionBar;
     protected ControllableActivity mActivity;
     protected ActivityController mController;
@@ -74,7 +74,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
 
     private MenuItem mSearch;
     private AccountSpinnerAdapter mSpinnerAdapter;
-    private Spinner mSpinner;
+    private MailSpinner mSpinner;
     /**
      * The account currently being shown
      */
@@ -117,6 +117,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             if (mFolderAccountName != null) {
                 mFolderAccountName.setText(mAccount.name);
             }
+            mSpinner.setAccount(mAccount);
         }
     };
 
@@ -238,9 +239,9 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         // We don't want to include the "Show all folders" menu item on tablet devices
         final boolean showAllFolders = !Utils.useTabletUI(getContext());
         mSpinnerAdapter = new AccountSpinnerAdapter(activity, getContext(), showAllFolders);
-        mSpinner = (Spinner) findViewById(R.id.account_spinner);
+        mSpinner = (MailSpinner) findViewById(R.id.account_spinner);
         mSpinner.setAdapter(mSpinnerAdapter);
-        mSpinner.setOnItemSelectedListener(this);
+        mSpinner.setController(mController);
         mAccount = mAccountObserver.initialize(activity.getAccountController());
     }
 
@@ -267,47 +268,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     public void setFolder(Folder folder) {
         setRefreshInProgress(false);
         mFolder = folder;
+        mSpinner.setFolder(folder);
         mActivity.invalidateOptionsMenu();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Do nothing.
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        LogUtils.d(LOG_TAG, "onNavigationItemSelected(%d, %d) called", position, id);
-        final int type = mSpinnerAdapter.getType(position);
-        switch (type) {
-            case AccountSpinnerAdapter.TYPE_DEAD_HEADER:
-                // Automatic selections
-                LogUtils.d(LOG_TAG, "Got a tap on the dead header");
-                break;
-            case AccountSpinnerAdapter.TYPE_ACCOUNT:
-                // Get the capabilities associated with this account.
-                final Account account = (Account) mSpinnerAdapter.getItem(position);
-                LogUtils.d(LOG_TAG, "onNavigationItemSelected: Selecting account: %s",
-                        account.name);
-                if (mAccount.uri.equals(account.uri)) {
-                    // The selected account is the same, let's load the default inbox.
-                    mController.loadAccountInbox();
-                } else {
-                    // Switching accounts.
-                    mController.onAccountChanged(account);
-                }
-                break;
-            case AccountSpinnerAdapter.TYPE_FOLDER:
-                final Object folder = mSpinnerAdapter.getItem(position);
-                assert (folder instanceof Folder);
-                LogUtils.d(LOG_TAG, "onNavigationItemSelected: Selecting folder: %s",
-                        ((Folder)folder).name);
-                mController.onFolderChanged((Folder) folder);
-                break;
-            case AccountSpinnerAdapter.TYPE_ALL_FOLDERS:
-                mController.showFolderList();
-                break;
-        }
     }
 
     public void onDestroy() {
