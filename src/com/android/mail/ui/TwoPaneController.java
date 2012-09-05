@@ -151,7 +151,7 @@ public final class TwoPaneController extends AbstractActivityController {
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus && !mLayout.isConversationListCollapsed()) {
             // The conversation list is visible.
-            Utils.setConversationCursorVisibility(mConversationListCursor, true);
+            informCursorVisiblity(true);
         }
     }
 
