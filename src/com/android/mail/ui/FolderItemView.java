@@ -117,20 +117,12 @@ public class FolderItemView extends RelativeLayout {
         mFolderTextView.setText(folder.name);
         mFolderParentIcon.setVisibility(mFolder.hasChildren && showParentIcon ? View.VISIBLE
                 : View.GONE);
-        final int count = getFolderItemCount();
+        final int count = Utils.getFolderUnreadDisplayCount(mFolder);
         mUnreadCountTextView.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
 
         if (count > 0) {
             mUnreadCountTextView.setText(Utils.getUnreadCountString(getContext(), count));
         }
-    }
-
-    /**
-     * Returns the appropriate count for this folder item
-     */
-    private int getFolderItemCount() {
-        // Always show the total count for Draft folders, otherwise use the unread count.
-        return mFolder.type == FolderType.DRAFT ? mFolder.totalCount : mFolder.unreadCount;
     }
 
     private boolean isDroppableTarget(DragEvent event) {
