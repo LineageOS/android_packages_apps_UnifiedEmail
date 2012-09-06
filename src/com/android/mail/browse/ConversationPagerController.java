@@ -82,7 +82,8 @@ public class ConversationPagerController implements OnPageChangeListener {
         mSubjectDisplayChanger = controller.getSubjectDisplayChanger();
     }
 
-    public void show(Account account, Folder folder, Conversation initialConversation) {
+    public void show(Account account, Folder folder, Conversation initialConversation,
+            boolean changeVisibility) {
         if (mShown) {
             LogUtils.d(LOG_TAG, "IN CPC.show, but already shown");
             // optimize for the case where account+folder are the same, when we can just shift
@@ -98,7 +99,9 @@ public class ConversationPagerController implements OnPageChangeListener {
             cleanup();
         }
 
-        mPager.setVisibility(View.VISIBLE);
+        if (changeVisibility) {
+            mPager.setVisibility(View.VISIBLE);
+        }
 
         mPagerAdapter = new ConversationPagerAdapter(mPager.getResources(), mFragmentManager,
                 account, folder, initialConversation);
@@ -125,13 +128,15 @@ public class ConversationPagerController implements OnPageChangeListener {
         mShown = true;
     }
 
-    public void hide() {
+    public void hide(boolean changeVisibility) {
         if (!mShown) {
             LogUtils.d(LOG_TAG, "IN CPC.hide, but already hidden");
             return;
         }
         mShown = false;
-        mPager.setVisibility(View.GONE);
+        if (changeVisibility) {
+            mPager.setVisibility(View.GONE);
+        }
 
         mSubjectDisplayChanger.clearSubject();
 
@@ -185,7 +190,7 @@ public class ConversationPagerController implements OnPageChangeListener {
 
     /**
      * Stops listening to changes to the adapter. This must be followed immediately by
-     * {@link #hide()}.
+     * {@link #hide(boolean)}.
      */
     public void stopListening() {
         if (mPagerAdapter != null) {
