@@ -17,10 +17,8 @@
 
 package com.android.mail.browse;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 
 import com.android.mail.R;
@@ -52,7 +50,7 @@ import com.android.mail.utils.LogUtils;
  * lifetime.
  *
  */
-public class ConversationPagerController implements OnPageChangeListener {
+public class ConversationPagerController {
 
     private ViewPager mPager;
     private ConversationPagerAdapter mPagerAdapter;
@@ -110,8 +108,6 @@ public class ConversationPagerController implements OnPageChangeListener {
         mPagerAdapter.setPager(mPager);
         LogUtils.d(LOG_TAG, "IN CPC.show, adapter=%s", mPagerAdapter);
 
-        mPager.setOnPageChangeListener(this);
-
         LogUtils.d(LOG_TAG, "init pager adapter, count=%d initial=%s", mPagerAdapter.getCount(),
                 initialConversation.subject);
         mPager.setAdapter(mPagerAdapter);
@@ -142,7 +138,6 @@ public class ConversationPagerController implements OnPageChangeListener {
 
         LogUtils.d(LOG_TAG, "IN CPC.hide, clearing adapter and unregistering list observer");
         mPager.setAdapter(null);
-        mPager.setOnPageChangeListener(null);
         cleanup();
     }
 
@@ -168,24 +163,6 @@ public class ConversationPagerController implements OnPageChangeListener {
                     " switching to cursor mode to load other conversations");
             mPagerAdapter.setSingletonMode(false);
         }
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        // no-op
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        final Fragment f = mPagerAdapter.getFragmentAt(position);
-        if (f != null) {
-            mPagerAdapter.setItemVisible(f, true);
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        // no-op
     }
 
     /**

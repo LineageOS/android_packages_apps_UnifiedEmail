@@ -1505,6 +1505,10 @@ public abstract class AbstractActivityController implements ActivityController {
     public void setCurrentConversation(Conversation conversation) {
         mCurrentConversation = conversation;
         mTracker.initialize(mCurrentConversation);
+
+        if (mCurrentConversation != null) {
+            getSubjectDisplayChanger().setSubject(mCurrentConversation.subject);
+        }
     }
 
     /**
