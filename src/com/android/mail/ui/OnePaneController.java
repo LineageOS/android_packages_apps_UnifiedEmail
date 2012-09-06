@@ -166,7 +166,7 @@ public final class OnePaneController extends AbstractActivityController {
         // conversation.
         // TODO: improve this transition
         if (newMode == ViewMode.CONVERSATION_LIST || newMode == ViewMode.SEARCH_RESULTS_LIST) {
-            mPagerController.hide();
+            mPagerController.hide(true /* changeVisibility */);
         }
     }
 
@@ -242,7 +242,7 @@ public final class OnePaneController extends AbstractActivityController {
         }
 
         // TODO: improve this transition
-        mPagerController.show(mAccount, mFolder, conversation);
+        mPagerController.show(mAccount, mFolder, conversation, true /* changeVisibility */);
         onConversationVisibilityChanged(true);
         resetActionBarIcon();
 

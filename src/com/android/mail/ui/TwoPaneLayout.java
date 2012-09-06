@@ -17,36 +17,23 @@
 
 package com.android.mail.ui;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-
 import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.LayoutTransition;
-import android.animation.LayoutTransition.TransitionListener;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.RelativeLayout;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 
 import com.android.mail.R;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
-import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-
-import java.util.ArrayList;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * This is a custom layout that manages the possible views of Gmail's large screen (read: tablet)
@@ -69,136 +56,55 @@ import java.util.ArrayList;
  *
  * In the Gmail source code, this was called TriStateSplitLayout
  */
-final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener, TransitionListener {
+final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
 
+    private static final String LOG_TAG = "TwoPaneLayout";
+    private static final long SLIDE_DURATION_MS = 300;
+
+    private final double mConversationListWeight;
+    private final double mFolderListWeight;
+    private final TimeInterpolator mSlideInterpolator;
     /**
-     * Scaling modifier for sAnimationSlideRightDuration.
+     * True if and only if the conversation list is collapsible in the current device configuration.
+     * See {@link #isConversationListCollapsed()} to see whether it is currently collapsed
+     * (based on the current view mode).
      */
-    private static final double SLIDE_DURATION_SCALE = 2.0 / 3.0;
-    private static final String LOG_TAG = LogTag.getLogTag();
-    private static final TimeInterpolator sLeftInterpolator = new DecelerateInterpolator(2.25f);
-    private static final TimeInterpolator sRightInterpolator = new DecelerateInterpolator(2.5f);
+    private final boolean mListCollapsible;
 
-    private static int sAnimationSlideLeftDuration;
-    private static int sAnimationSlideRightDuration;
-    private static double sScaledConversationListWeight;
-    private static double sScaledFolderListWeight;
     /**
      * The current mode that the tablet layout is in. This is a constant integer that holds values
      * that are {@link ViewMode} constants like {@link ViewMode#CONVERSATION}.
      */
-    private int mCurrentMode;
+    private int mCurrentMode = ViewMode.UNKNOWN;
     /**
-     * Whether or not the layout is currently in the middle of a cross-fade animation that requires
-     * custom rendering.
+     * This mode represents the current positions of the three panes. This is split out from the
+     * current mode to give context to state transitions.
      */
-    private boolean mAnimatingFade;
+    private int mPositionedMode = ViewMode.UNKNOWN;
 
-    private Context mContext;
     private AbstractActivityController mController;
-
-    private int mConversationLeft;
+    private LayoutListener mListener;
+    private boolean mIsSearchResult;
 
     private View mConversationView;
-    /** Left position of each fragment. */
-    private int mFoldersLeft;
     private View mFoldersView;
-    private int mListAlpha;
-
-    /** Captured bitmap of each fragment. */
-    private Bitmap mListBitmap;
-    private int mListBitmapLeft;
-    /**
-     * True if the conversation list is currently collapsed.  We assume that we start out in
-     * {@link ViewMode#CONVERSATION_LIST} at which point the conversation list is visible (both
-     * in portrait and landscape). In the case that conversation view is directly launched:
-     * through a notification or the widget, we will get appropriate calls to
-     * {@link ViewMode.ModeChangeListener#onViewModeChanged(int)} which will enable us to set the
-     * correct value.
-     */
-    private boolean mListCollapsed = false;
-    private LayoutListener mListener;
-    private int mListLeft;
-    private Paint mListPaint;
     private View mListView;
     /**
-     * A handle to any out standing animations that are in progress.
+     * A special view used during animation of the conversation list.
+     * <p>
+     * The conversation list changes width when switching view modes, so to visually smooth out
+     * the transition, we cross-fade the old and new widths. During the transition, a bitmap of the
+     * old conversation list is kept here, and this view moves in tandem with the real list view,
+     * but its opacity gradually fades out to give way to the new width.
      */
-    private Animator mOutstandingAnimator;
+    private ConversationListCopy mListCopyView;
 
-    /** Paint to be used for each fragment. */
-    private Paint mPaint;
-
-    private final AnimatorListener mConversationListListener =
-            new AnimatorListener(AnimatorListener.CONVERSATION_LIST);
-    private final AnimatorListener mConversationListener =
-            new AnimatorListener(AnimatorListener.CONVERSATION);
-    private boolean mIsSearchResult = false;
-    private boolean mShowTwoPaneSearchResults;
-
-    private class AnimatorListener implements Animator.AnimatorListener {
-        public static final int CONVERSATION_LIST = 1;
-        public static final int CONVERSATION = 2;
-
-        /**
-         * Different animator listeners need to perform different actions on start and finish based
-         * on their type. The types are assigned at object creation using only the constants:
-         * {@link #CONVERSATION_LIST}, {@link #COLLAPSE_LIST}, {@link #CONVERSATION} or
-         * {@link #UNCOLLAPSE_LIST}
-         */
-        private final int mListenerType;
-
-        /**
-         * Create an animator listener of a specific type. The types are created using the constants
-         * {@link #CONVERSATION_LIST}, {@link #COLLAPSE_LIST}, {@link #CONVERSATION} or
-         * {@link #UNCOLLAPSE_LIST}
-         * @param type
-         */
-        AnimatorListener(int type){
-            this.mListenerType = type;
-        }
-
-        @Override
-        public void onAnimationCancel(Animator animation) {
-            LogUtils.d(LOG_TAG, "Cancelling animation (this=%s)", animation);
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            mAnimatingFade = false;
-            mOutstandingAnimator = null;
-            destroyBitmaps();
-
-            if (mController.isDestroyed()) {
-                // quit early if the hosting activity was destroyed before the animation finished
-                LogUtils.i(LOG_TAG, "IN TPL.onAnimationEnd, activity destroyed->quitting early");
-                return;
-            }
-
-            // Now close the animation depending on the type of animator selected.
-            switch (mListenerType) {
-                case CONVERSATION_LIST:
-                    onFinishEnteringConversationListMode();
-                    return;
-                case CONVERSATION:
-                    onFinishEnteringConversationMode();
-                    return;
-            }
-        }
-
-        @Override
-        public void onAnimationRepeat(Animator animation) {
-            // Do nothing.
-        }
-
-        @Override
-        public void onAnimationStart(Animator animation) {
-            switch (mListenerType) {
-                case CONVERSATION_LIST:
-                    mFoldersView.setVisibility(View.VISIBLE);
-            }
-        }
-    }
+    /**
+     * During a mode transition, this value is the final width for {@link #mListCopyView}. We want
+     * to avoid changing its width during the animation, as it should match the initial width of
+     * {@link #mListView}.
+     */
+    private Integer mListCopyWidthOnComplete;
 
     public TwoPaneLayout(Context context) {
         this(context, null);
@@ -207,37 +113,274 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener, 
     public TwoPaneLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        LayoutTransition lt = new LayoutTransition();
-        lt.addTransitionListener(this);
-        // FIXME: implement transitions
-//        setLayoutTransition(lt);
+        final Resources res = getResources();
+
+        // The conversation list might be visible now, depending on the layout: in portrait we
+        // don't show the conversation list, but in landscape we do.  This information is stored
+        // in the constants
+        mListCollapsible = res.getBoolean(R.bool.list_collapsed);
+
+        mSlideInterpolator = AnimationUtils.loadInterpolator(context,
+                android.R.interpolator.decelerate_cubic);
+
+        final int folderListWeight = res.getInteger(R.integer.folder_list_weight);
+        final int convListWeight = res.getInteger(R.integer.conversation_list_weight);
+        final int convViewWeight = res.getInteger(R.integer.conversation_view_weight);
+        mFolderListWeight = (double) folderListWeight
+                / (folderListWeight + convListWeight);
+        mConversationListWeight = (double) convListWeight
+                / (convListWeight + convViewWeight);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        mFoldersView = findViewById(R.id.content_pane);
+        mListView = findViewById(R.id.conversation_list_pane);
+        mListCopyView = (ConversationListCopy) findViewById(R.id.conversation_list_copy);
+        mConversationView = findViewById(R.id.conversation_pane);
+
+        // all panes start GONE in initial UNKNOWN mode to avoid drawing misplaced panes
+        mCurrentMode = ViewMode.UNKNOWN;
+        mFoldersView.setVisibility(GONE);
+        mListView.setVisibility(GONE);
+        mListCopyView.setVisibility(GONE);
+        mConversationView.setVisibility(GONE);
+    }
+
+    @VisibleForTesting
+    public void setController(AbstractActivityController controller, boolean isSearchResult) {
+        mController = controller;
+        mListener = controller;
+        mIsSearchResult = isSearchResult;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "TPL(%s).onMeasure()", this);
+        setupPaneWidths(MeasureSpec.getSize(widthMeasureSpec));
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "TPL(%s).onLayout()", this);
+        if (changed || mCurrentMode != mPositionedMode) {
+            positionPanes(getMeasuredWidth());
+        }
+        super.onLayout(changed, l, t, r, b);
     }
 
     /**
-     * Captures list view.
+     * Sizes up the three sliding panes. This method will ensure that the LayoutParams of the panes
+     * have the correct widths set for the current overall size and view mode.
+     *
+     * @param parentWidth this view's new width
      */
-    private void captureListBitmaps() {
-        if (mListBitmap != null || mListView == null || mListView.getWidth() == 0
-                || mListView.getHeight() == 0) {
+    private void setupPaneWidths(int parentWidth) {
+        final int foldersWidth = computeFolderListWidth(parentWidth);
+        final int convWidth = computeConversationWidth(parentWidth);
+
+        // only adjust the fixed folder and conversation view widths when my width changes
+        if (parentWidth != getWidth()) {
+            LogUtils.i(LOG_TAG, "setting up new TPL, w=%d fw=%d cv=%d", parentWidth,
+                    foldersWidth, convWidth);
+
+            setPaneWidth(mFoldersView, foldersWidth);
+            setPaneWidth(mConversationView, convWidth);
+        }
+
+        final int currListWidth = getPaneWidth(mListView);
+        int listWidth = currListWidth;
+        switch (mCurrentMode) {
+            case ViewMode.CONVERSATION:
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                if (!mListCollapsible) {
+                    listWidth = parentWidth - convWidth;
+                }
+                break;
+            case ViewMode.CONVERSATION_LIST:
+            case ViewMode.SEARCH_RESULTS_LIST:
+                listWidth = parentWidth - foldersWidth;
+                break;
+            default:
+                break;
+        }
+        LogUtils.d(LOG_TAG, "conversation list width change, w=%d", listWidth);
+        setPaneWidth(mListView, listWidth);
+
+        if ((mCurrentMode != mPositionedMode && mPositionedMode != ViewMode.UNKNOWN)
+                || mListCopyWidthOnComplete != null) {
+            mListCopyWidthOnComplete = listWidth;
+        } else {
+            setPaneWidth(mListCopyView, listWidth);
+        }
+    }
+
+    /**
+     * Positions the three sliding panes at the correct X offset (using {@link View#setX(float)}).
+     * When switching from list->conversation mode or vice versa, animate the change in X.
+     *
+     * @param width
+     */
+    private void positionPanes(int width) {
+        if (mPositionedMode == mCurrentMode) {
             return;
         }
 
-        try {
-            mListBitmap = Bitmap.createBitmap(mListView.getWidth(), mListView.getHeight(),
-                    Config.ARGB_8888);
-            Canvas canvas = new Canvas(mListBitmap);
-            mListView.draw(canvas);
-        } catch (OutOfMemoryError e) {
-            LogUtils.e(LOG_TAG, e, "Could not create a bitmap due to OutOfMemoryError");
+        boolean hasPositions = false;
+        int convX = 0, listX = 0, foldersX = 0;
+
+        switch (mCurrentMode) {
+            case ViewMode.CONVERSATION:
+            case ViewMode.SEARCH_RESULTS_CONVERSATION: {
+                final int foldersW = getPaneWidth(mFoldersView);
+                final int listW;
+                listW = getPaneWidth(mListView);
+
+                if (mListCollapsible) {
+                    convX = 0;
+                    listX = -listW;
+                    foldersX = listX - foldersW;
+                } else {
+                    convX = listW;
+                    listX = 0;
+                    foldersX = -foldersW;
+                }
+                hasPositions = true;
+                LogUtils.i(LOG_TAG, "conversation mode layout, x=%d/%d/%d", foldersX, listX, convX);
+                break;
+            }
+            case ViewMode.CONVERSATION_LIST:
+            case ViewMode.SEARCH_RESULTS_LIST: {
+                convX = width;
+                listX = getPaneWidth(mFoldersView);
+                foldersX = 0;
+
+                hasPositions = true;
+                LogUtils.i(LOG_TAG, "conv-list mode layout, x=%d/%d/%d", foldersX, listX, convX);
+                break;
+            }
+            default:
+                break;
         }
+
+        if (hasPositions) {
+            animatePanes(foldersX, listX, convX);
+        }
+
+        mPositionedMode = mCurrentMode;
     }
 
     /**
-     * Computes left position of the conversation list relative to its uncollapsed position.
-     * This is only relevant in a collapsible view, and will be 0 otherwise.
+     * @param foldersX
+     * @param listX
+     * @param convX
      */
-    private int computeConversationListLeft(int width) {
-        return mListCollapsed ? -width : 0;
+    private void animatePanes(int foldersX, int listX, int convX) {
+        // If positioning has not yet happened, we don't need to animate panes into place.
+        // This happens on first layout, rotate, and when jumping straight to a conversation from
+        // a view intent.
+        if (mPositionedMode == ViewMode.UNKNOWN) {
+            mConversationView.setX(convX);
+            mFoldersView.setX(foldersX);
+            mListView.setX(listX);
+
+            // listeners need to know that the "transition" is complete, even if one is not run.
+            // defer notifying listeners because we're in a layout pass, and they might do layout.
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    onTransitionComplete();
+                }
+            });
+            return;
+        }
+
+        // freeze the current list view before it gets redrawn
+        mListCopyView.bind(mListView);
+        mListCopyView.setX(mListView.getX());
+
+        mListCopyView.setAlpha(1.0f);
+        mListView.setAlpha(0.0f);
+
+        useHardwareLayer(true);
+
+        mConversationView.animate().x(convX);
+        mFoldersView.animate().x(foldersX);
+        mListCopyView.animate().x(listX).alpha(0.0f);
+        mListView.animate()
+            .x(listX)
+            .alpha(1.0f)
+            .setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mListCopyView.unbind();
+                    useHardwareLayer(false);
+                    fixupListCopyWidth();
+                    onTransitionComplete();
+                }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    mListCopyView.unbind();
+                    useHardwareLayer(false);
+                }
+        });
+        configureAnimations(mConversationView, mFoldersView, mListView, mListCopyView);
+    }
+
+    private void configureAnimations(View... views) {
+        for (View v : views) {
+            v.animate()
+                .setInterpolator(mSlideInterpolator)
+                .setDuration(SLIDE_DURATION_MS);
+        }
+    }
+
+    private void useHardwareLayer(boolean useHardware) {
+        final int layerType = useHardware ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE;
+        mFoldersView.setLayerType(layerType, null);
+        mListView.setLayerType(layerType, null);
+        mListCopyView.setLayerType(layerType, null);
+        mConversationView.setLayerType(layerType, null);
+    }
+
+    private void fixupListCopyWidth() {
+        if (mListCopyWidthOnComplete == null ||
+                getPaneWidth(mListCopyView) == mListCopyWidthOnComplete) {
+            mListCopyWidthOnComplete = null;
+            return;
+        }
+        LogUtils.i(LOG_TAG, "onAnimationEnd of list view, setting copy width to %d",
+                mListCopyWidthOnComplete);
+        setPaneWidth(mListCopyView, mListCopyWidthOnComplete);
+        mListCopyWidthOnComplete = null;
+    }
+
+    private void onTransitionComplete() {
+        if (mController.isDestroyed()) {
+            // quit early if the hosting activity was destroyed before the animation finished
+            LogUtils.i(LOG_TAG, "IN TPL.onTransitionComplete, activity destroyed->quitting early");
+            return;
+        }
+
+        switch (mCurrentMode) {
+            case ViewMode.CONVERSATION:
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                dispatchConversationVisibilityChanged(true);
+                dispatchConversationListVisibilityChange(!isConversationListCollapsed());
+
+                break;
+            case ViewMode.CONVERSATION_LIST:
+            case ViewMode.SEARCH_RESULTS_LIST:
+                dispatchConversationVisibilityChanged(false);
+                dispatchConversationListVisibilityChange(true);
+
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -254,19 +397,12 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener, 
         switch (mCurrentMode) {
             case ViewMode.CONVERSATION_LIST:
             case ViewMode.SEARCH_RESULTS_LIST:
-                return totalWidth - computeFolderListWidth();
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                return totalWidth - computeFolderListWidth(totalWidth);
             case ViewMode.CONVERSATION:
-                return (int) (totalWidth * sScaledConversationListWeight);
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                return (int) (totalWidth * mConversationListWeight);
         }
         return 0;
-    }
-
-    /**
-     * Computes the width of the conversation pane in stable state of the current mode.
-     */
-    private int computeConversationWidth() {
-        return computeConversationWidth(getMeasuredWidth());
     }
 
     /**
@@ -274,39 +410,26 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener, 
      * current mode.
      */
     private int computeConversationWidth(int totalWidth) {
-        switch (mCurrentMode) {
-            case ViewMode.CONVERSATION:
-                // Fallthrough
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-                if (mListCollapsed) {
-                    return totalWidth;
-                }
-                return totalWidth - (int) (totalWidth * sScaledConversationListWeight);
+        if (mListCollapsible) {
+            return totalWidth;
+        } else {
+            return totalWidth - (int) (totalWidth * mConversationListWeight);
         }
-        return 0;
     }
 
     /**
      * Computes the width of the folder list in stable state of the current mode.
      */
-    private int computeFolderListWidth() {
-        return isFolderListCollapsed() ?
-                0 : (int) (getMeasuredWidth() * sScaledFolderListWeight);
-    }
-
-    /**
-     * Frees up the bitmaps.
-     */
-    private void destroyBitmaps() {
-        if (mListBitmap != null) {
-            mListBitmap.recycle();
-            mListBitmap = null;
+    private int computeFolderListWidth(int parentWidth) {
+        if (mIsSearchResult) {
+            return 0;
         }
+        return (int) (parentWidth * mFolderListWeight);
     }
 
-    private void dispatchConversationListVisibilityChange() {
+    private void dispatchConversationListVisibilityChange(boolean visible) {
         if (mListener != null) {
-            mListener.onConversationListVisibilityChanged(!mListCollapsed);
+            mListener.onConversationListVisibilityChanged(visible);
         }
     }
 
@@ -316,465 +439,51 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener, 
         }
     }
 
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        final boolean animationDisabled = true;
-        if (animationDisabled || !isAnimatingFade()) {
-            super.dispatchDraw(canvas);
-            return;
-        }
-
-        canvas.save();
-        canvas.translate(mFoldersLeft, 0);
-        mFoldersView.draw(canvas);
-        canvas.restore();
-
-        // The bitmap can be null if the view hasn't been drawn by the time we capture the bitmap.
-        if (mListBitmap != null) {
-            canvas.drawBitmap(mListBitmap, mListBitmapLeft, 0, mListPaint);
-        }
-
-        canvas.saveLayerAlpha(mListLeft, 0, mListLeft + mListView.getWidth(), getHeight(),
-                mListAlpha, Canvas.ALL_SAVE_FLAG);
-        canvas.translate(mListLeft, 0);
-        mListView.draw(canvas);
-        canvas.restore();
-
-        canvas.save();
-        canvas.translate(mConversationLeft, 0);
-        mConversationView.draw(canvas);
-        canvas.restore();
-    }
-
-    private void enterConversationListMode() {
-        // detach the pager immediately from its data source (to prevent processing updates)
-        mController.disablePagerUpdates();
-
-        mListView.setPadding(mListView.getPaddingLeft(), 0, mListView.getPaddingRight(),
-                mListView.getPaddingBottom());
-
-        // The conversation list is visible now.
-        mListCollapsed = false;
-
-        // On the initial call, measurements may not have been done (i.e. this
-        // Layout has never been rendered), so no animation will be done.
-        if (getMeasuredWidth() == 0) {
-            mFoldersView.setVisibility(View.VISIBLE);
-            onFinishEnteringConversationListMode();
-            return;
-        }
-
-        // Slide folder list in from the left.
-        final int folderListWidth = computeFolderListWidth();
-        final int convListWidth = mListView.getMeasuredWidth();
-        final int screenWidth = getWidth();
-        setFolderListWidth(folderListWidth);
-
-        // Reset the relative left of the list view.
-        setConversationListLeft(0);
-
-        // Push conversation list out to fill remaining space.
-        setConversationListWidth(computeConversationListWidth());
-
-        // Temporary workaround while a full fix for b/6963808 is being prepared.
-        final boolean disableAnimation = true;
-        if (disableAnimation) {
-            mConversationListListener.onAnimationStart(null);
-            setFoldersLeft(0);
-            setListLeft(folderListWidth);
-            setConversationLeft(screenWidth);
-            mConversationListListener.onAnimationEnd(null);
-            return;
-        } else {
-        // Unindented on purpose. The above fix is temporary.
-        // Prepare animation.
-        mAnimatingFade = true;
-        captureListBitmaps();
-        ArrayList<PropertyValuesHolder> values = Lists.newArrayList();
-
-        values.add(PropertyValuesHolder.ofInt("foldersLeft", -folderListWidth, 0));
-
-
-        // Fading out the conversation bitmap should finish before
-        // the final transition to the conversation list view.
-        ObjectAnimator animator = ObjectAnimator.ofInt(this, "listBitmapAlpha", 255, 0);
-        animator.setDuration((long) (sAnimationSlideRightDuration * SLIDE_DURATION_SCALE));
-        animator.setInterpolator(sRightInterpolator);
-
-        values.add(PropertyValuesHolder.ofInt("listBitmapLeft", 0, folderListWidth));
-        values.add(PropertyValuesHolder.ofInt("listLeft", 0, folderListWidth));
-        values.add(PropertyValuesHolder.ofInt("listAlpha", 0, 255));
-
-        // Slide conversation out to the right.
-        values.add(PropertyValuesHolder.ofInt("conversationLeft", convListWidth,
-                screenWidth));
-        ObjectAnimator valuesAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
-                values.toArray(new PropertyValuesHolder[values.size()])).setDuration(
-                sAnimationSlideRightDuration);
-        valuesAnimator.setInterpolator(sRightInterpolator);
-        valuesAnimator.addListener(mConversationListListener);
-
-        mOutstandingAnimator = valuesAnimator;
-        AnimatorSet transitionSet = new AnimatorSet();
-        transitionSet.playTogether(animator, valuesAnimator);
-        transitionSet.start();
-        }
-    }
-
-    private void enterConversationMode() {
-        mConversationView.setVisibility(View.VISIBLE);
-
-        // The conversation list might be visible now, depending on the layout: in portrait we
-        // don't show the conversation list, but in landscape we do.  This information is stored
-        // in the constants
-        mListCollapsed = mContext.getResources().getBoolean(R.bool.list_collapsed);
-
-        // On the initial call, measurements may not have been done (i.e. this Layout has never
-        // been rendered), so no animation will be done.
-        if (getMeasuredWidth() == 0) {
-            onFinishEnteringConversationMode();
-            return;
-        }
-
-        // Slide folders out towards the left off screen.
-        final int foldersWidth = mFoldersView.getMeasuredWidth();
-
-        // Shrink the conversation list to make room for the conversation, and default
-        // it to collapsed in case it is collapsible.
-        final int targetWidth = computeConversationListWidth();
-        setConversationListWidth(targetWidth);
-
-        final int currentListLeft = foldersWidth + getConversationListLeft();
-        final int targetListLeft = computeConversationListLeft(targetWidth);
-        setConversationListLeft(targetListLeft);
-
-        // Set up the conversation view.
-        // Performance note: do not animate the width of this, as it is very
-        // expensive to reflow in the WebView.
-        setConversationWidth(computeConversationWidth());
-
-        // Temporary workaround while a full fix for b/6963808 is being prepared.
-        final boolean disableAnimation = true;
-        if (disableAnimation) {
-            mConversationListener.onAnimationStart(null);
-            setFoldersLeft(-foldersWidth);
-            setListLeft(targetListLeft);
-            setConversationLeft(targetListLeft + targetWidth);
-            mConversationListener.onAnimationEnd(null);
-            return;
-        } else {
-        // Unindented on purpose. The above fix is temporary.
-        // Prepare for animation.
-        mAnimatingFade = true;
-        ArrayList<PropertyValuesHolder> values = Lists.newArrayList();
-
-        captureListBitmaps();
-        values.add(PropertyValuesHolder.ofInt("foldersLeft", 0, -foldersWidth));
-
-        if (currentListLeft != targetListLeft) {
-            values.add(
-                    PropertyValuesHolder.ofInt("listBitmapLeft", currentListLeft, targetListLeft));
-            values.add(PropertyValuesHolder.ofInt("listBitmapAlpha", 255, 0));
-            values.add(
-                    PropertyValuesHolder.ofInt("listLeft",
-                            currentListLeft + mListView.getWidth() - targetWidth, targetListLeft));
-            values.add(PropertyValuesHolder.ofInt("listAlpha", 0, 255));
-        }
-
-        values.add(PropertyValuesHolder.ofInt(
-                "conversationLeft", getWidth(), targetListLeft + targetWidth));
-
-        startLayoutAnimation(sAnimationSlideLeftDuration, mConversationListener, sLeftInterpolator,
-                values.toArray(new PropertyValuesHolder[values.size()]));
-        }
-    }
-
-    /**
-     * @return The left position of the conversation list relative to its uncollapsed position.
-     *     This is only relevant in a collapsible view, and will be 0 otherwise.
-     */
-    public int getConversationListLeft() {
-        return ((ViewGroup.MarginLayoutParams) mListView.getLayoutParams())
-                .leftMargin;
-    }
-
-    /**
-     * Initializes the layout with a specific context.
-     */
-    @VisibleForTesting
-    public void initializeLayout(Context context, AbstractActivityController controller,
-            boolean isSearchResult) {
-        mContext = context;
-        mController = controller;
-        mListener = mController;
-        mIsSearchResult = isSearchResult;
-
-        Resources res = getResources();
-        mFoldersView = findViewById(R.id.content_pane);
-        mShowTwoPaneSearchResults = Utils.showTwoPaneSearchResults(mContext);
-        if (mIsSearchResult && !mShowTwoPaneSearchResults) {
-            mFoldersView.setVisibility(View.GONE);
-        }
-        mListView = findViewById(R.id.conversation_list_pane);
-        mConversationView = findViewById(R.id.conversation_pane);
-
-        sAnimationSlideLeftDuration = res.getInteger(R.integer.activity_slide_left_duration);
-        sAnimationSlideRightDuration = res.getInteger(R.integer.activity_slide_right_duration);
-        final int sFolderListWeight = res.getInteger(R.integer.folder_list_weight);
-        final int sConversationListWeight = res.getInteger(R.integer.conversation_list_weight);
-        final int sConversationViewWeight = res.getInteger(R.integer.conversation_view_weight);
-        sScaledFolderListWeight = (double) sFolderListWeight
-                / (sFolderListWeight + sConversationListWeight);
-        sScaledConversationListWeight = (double) sConversationListWeight
-                / (sConversationListWeight + sConversationViewWeight);
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setColor(android.R.color.white);
-        mListPaint = new Paint();
-        mListPaint.setAntiAlias(true);
+    private int getPaneWidth(View pane) {
+        return pane.getLayoutParams().width;
     }
 
     public View getConversationView() {
         return mConversationView;
     }
 
-    private boolean isAnimatingFade() {
-        return mAnimatingFade;
-    }
-
-    private boolean isFolderListCollapsed() {
-        return mIsSearchResult && !mShowTwoPaneSearchResults;
-    }
-
     /**
      * @return Whether or not the conversation list is visible on screen.
      */
     public boolean isConversationListCollapsed() {
-        return mListCollapsed;
-    }
-
-
-    @Override
-    public void startTransition(
-            LayoutTransition transition, ViewGroup container, View view, int transitionType) {
-        LogUtils.d(LOG_TAG, "*** START TRANSITION, v=%s type=%s", view, transitionType);
-    }
-
-    @Override
-    public void endTransition(
-            LayoutTransition transition, ViewGroup container, View view, int transitionType) {
-        LogUtils.d(LOG_TAG, "*** END TRANSITION, v=%s type=%s", view, transitionType);
-    }
-
-    /**
-     * Finalizes state after animations settle when entering the conversation list mode.
-     */
-    private void onFinishEnteringConversationListMode() {
-        mConversationView.setVisibility(View.GONE);
-        mFoldersView.setVisibility(View.VISIBLE);
-
-        // Once animations settle, the conversation list always takes up the
-        // remaining space that is on the right, so avoid hard pixel values,
-        // since this avoids manual re-computations when the parent container
-        // size changes for any reason (e.g. orientation change).
-        mListView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        requestLayout();
-        dispatchConversationListVisibilityChange();
-        dispatchConversationVisibilityChanged(false);
-    }
-
-    /**
-     * Finalizes state after animations settle when entering conversation mode.
-     */
-    private void onFinishEnteringConversationMode() {
-        mFoldersView.setVisibility(View.GONE);
-        setConversationListWidth(computeConversationListWidth());
-        dispatchConversationVisibilityChanged(true);
-        dispatchConversationListVisibilityChange();
-    }
-
-    /**
-     * Handles a size change and sets layout parameters as necessary.
-     * Most of the time this occurs for an orientation change, but theoretically could occur
-     * if the Gmail layout was included in a larger ViewGroup.
-     *
-     * {@inheritDoc}
-     */
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-
-        if (w == oldw) {
-            // Only width changes are relevant to our logic.
-            return;
-        }
-
-        switch (mCurrentMode) {
-            case ViewMode.SEARCH_RESULTS_LIST:
-            case ViewMode.CONVERSATION_LIST:
-                setFolderListWidth(computeFolderListWidth());
-                break;
-
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-            case ViewMode.CONVERSATION:
-                final int conversationListWidth = computeConversationListWidth(w);
-                setConversationListWidth(conversationListWidth);
-                setConversationWidth(computeConversationWidth(w));
-                setConversationListLeft(computeConversationListLeft(conversationListWidth));
-                break;
-        }
-
-        // Request a measure pass here so all children views can be measured correctly before
-        // layout.
-        int widthSpec = MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY);
-        int heightSpec = MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY);
-        measure(widthSpec, heightSpec);
+        return !ViewMode.isListMode(mCurrentMode) && mListCollapsible;
     }
 
     @Override
     public void onViewModeChanged(int newMode) {
+        // make all initially GONE panes visible only when the view mode is first determined
+        if (mCurrentMode == ViewMode.UNKNOWN) {
+            mFoldersView.setVisibility(VISIBLE);
+            mListView.setVisibility(VISIBLE);
+            mListCopyView.setVisibility(VISIBLE);
+            mConversationView.setVisibility(VISIBLE);
+        }
+
+        // detach the pager immediately from its data source (to prevent processing updates)
+        if (ViewMode.isConversationMode(mCurrentMode)) {
+            mController.disablePagerUpdates();
+        }
+
         mCurrentMode = newMode;
-        LogUtils.d(LOG_TAG, "TPL.onViewModeChanged(%d)", newMode);
-        // Finish the current animation before changing mode.
-        if (mOutstandingAnimator != null) {
-            mOutstandingAnimator.cancel();
+        LogUtils.i(LOG_TAG, "onViewModeChanged(%d)", newMode);
+
+        // do all the real work in onMeasure/onLayout, when panes are sized and positioned for the
+        // current width/height anyway
+        requestLayout();
+    }
+
+    private void setPaneWidth(View pane, int w) {
+        final ViewGroup.LayoutParams lp = pane.getLayoutParams();
+        if (lp.width == w) {
+            return;
         }
-        switch (mCurrentMode) {
-            case ViewMode.SEARCH_RESULTS_CONVERSATION:
-            case ViewMode.CONVERSATION:
-                enterConversationMode();
-                break;
-            case ViewMode.SEARCH_RESULTS_LIST:
-            case ViewMode.CONVERSATION_LIST:
-                enterConversationListMode();
-                break;
-            case ViewMode.FOLDER_LIST:
-                break;
-        }
-    }
-
-    /**
-     * Sets the left position of the conversation fragment. Used by animators.
-     * Not to be used externally.
-     * @hide
-     */
-    public void setConversationLeft(int left) {
-        mConversationLeft = left;
-        invalidate();
-    }
-
-    /**
-     * Sets the relative left position of the conversation list.
-     */
-    private void setConversationListLeft(int left) {
-        ((ViewGroup.MarginLayoutParams) mListView.getLayoutParams())
-            .leftMargin = left;
-        requestLayout();
-    }
-
-    /**
-     * Sets the width of the conversation list.
-     */
-    private void setConversationListWidth(int width) {
-        mListView.getLayoutParams().width = width;
-        requestLayout();
-    }
-
-    /**
-     * Sets the width of the conversation pane.
-     */
-    private void setConversationWidth(int width) {
-        mConversationView.getLayoutParams().width = width;
-        requestLayout();
-    }
-
-    /**
-     * Sets the width of the folder list pane.
-     * Used internally and by animators. Not to be used externally.
-     */
-    private void setFolderListWidth(int width) {
-        mFoldersView.getLayoutParams().width = width;
-        // Mindy points out that this is strange. Instead of requesting a layout for the folders
-        // view, we should be requesting a layout for the entire view.
-        // TODO(viki): Change to this.requestLayout() and see if there is any improvement or loss
-        requestLayout();
-    }
-
-    /**
-     * Sets the left position of the folders fragment. Used by animators. Not to
-     * be used externally.
-     * @hide
-     */
-    public void setFoldersLeft(int left) {
-        mFoldersLeft = left;
-        invalidate();
-    }
-
-    /**
-     * Sets the alpha of the conversation list. Used by animators. Not to be used externally.
-     * @hide
-     */
-    public void setListAlpha(int alpha) {
-        mListAlpha = alpha;
-        invalidate();
-    }
-
-    /**
-     * Sets the alpha of the conversation list bitmap. Used by animators. Not to be used externally.
-     * @hide
-     */
-    public void setListBitmapAlpha(int alpha) {
-        mListPaint.setAlpha(alpha);
-        invalidate();
-    }
-
-    /**
-     * Sets the left position of the conversation list bitmap. Used by animators. Not to be used
-     * externally.
-     * @hide
-     */
-    public void setListBitmapLeft(int left) {
-        mListBitmapLeft = left;
-        invalidate();
-    }
-
-    /**
-     * Sets the left position of the conversation list. Used by animators. Not to be used
-     * externally.
-     * @hide
-     */
-    public void setListLeft(int left) {
-        mListLeft = left;
-        invalidate();
-    }
-
-    /**
-     * Helper method to start animation.
-     */
-    private void startLayoutAnimation(
-            int duration, AnimatorListener listener, TimeInterpolator interpolator,
-            PropertyValuesHolder... values) {
-        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(
-                this, values).setDuration(duration);
-        animator.setInterpolator(interpolator);
-        if (listener != null) {
-            animator.addListener(listener);
-        }
-
-        mOutstandingAnimator = animator;
-        animator.start();
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "TPL(%s).onMeasure()", this);
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "TPL(%s).onLayout()", this);
-        super.onLayout(changed, l, t, r, b);
+        lp.width = w;
+        pane.setLayoutParams(lp);
     }
 
     @Override
@@ -782,4 +491,5 @@ final class TwoPaneLayout extends RelativeLayout implements ModeChangeListener, 
         Utils.checkRequestLayout(this);
         super.requestLayout();
     }
+
 }
