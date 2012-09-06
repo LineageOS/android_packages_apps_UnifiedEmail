@@ -39,7 +39,8 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
-public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
+public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
+        implements ViewPager.OnPageChangeListener {
 
     private final DataSetObserver mListObserver = new ListObserver();
     private final DataSetObserver mFolderObserver = new FolderObserver();
@@ -290,12 +291,6 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
         super.setItemVisible(item, visible);
         final ConversationViewFragment fragment = (ConversationViewFragment) item;
         fragment.setExtraUserVisibleHint(visible);
-
-        if (visible && mController != null) {
-            final Conversation c = fragment.getConversation();
-            LogUtils.d(LOG_TAG, "pager adapter setting current conv: %s (%s)", c.subject, item);
-            mController.setCurrentConversation(c);
-        }
     }
 
     private Conversation getDefaultConversation() {
@@ -347,7 +342,13 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
     }
 
     public void setPager(ViewPager pager) {
+        if (mPager != null) {
+            mPager.setOnPageChangeListener(null);
+        }
         mPager = pager;
+        if (mPager != null) {
+            mPager.setOnPageChangeListener(this);
+        }
     }
 
     public void setActivityController(ActivityController controller) {
@@ -365,6 +366,26 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2 {
             // We're being torn down; do not notify.
             // Let the pager controller manage pager lifecycle.
         }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        // no-op
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        final ConversationViewFragment f = (ConversationViewFragment) getFragmentAt(position);
+        if (f != null && mController != null) {
+            final Conversation c = f.getConversation();
+            LogUtils.d(LOG_TAG, "pager adapter setting current conv: %s (%s)", c.subject, f);
+            mController.setCurrentConversation(c);
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        // no-op
     }
 
     // update the pager title strip as the Folder's conversation count changes
