@@ -343,4 +343,9 @@ class QuotedTextView extends LinearLayout implements OnClickListener {
         String textString = htmlText.toString();
         return textString.indexOf(sQuoteBegin);
     }
+
+    public void setUpperDividerVisible(boolean visible) {
+        findViewById(R.id.upper_quotedtext_divider_bar).setVisibility(
+                visible ? View.VISIBLE : View.GONE);
+    }
 }
