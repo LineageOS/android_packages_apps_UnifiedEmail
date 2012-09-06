@@ -520,7 +520,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * Notify that the folder has changed.
      */
     public void onFolderUpdated(Folder folder) {
-        mSpinnerAdapter.onFolderUpdated(folder);
+        mSpinner.onFolderUpdated(folder);
         int status = folder.syncStatus;
         if (folder.isSyncInProgress()) {
             onRefreshStarted();

@@ -16,8 +16,6 @@
 package com.android.mail.ui;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +24,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListPopupWindow;
-import android.widget.ListView;
-import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
 
 import com.android.mail.AccountSpinnerAdapter;
@@ -150,5 +146,10 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
 
     public void dismiss() {
         mListPopupWindow.dismiss();
+    }
+
+    public void onFolderUpdated(Folder folder) {
+        mSpinnerAdapter.onFolderUpdated(folder);
+        setFolder(folder);
     }
 }
