@@ -26,7 +26,8 @@
         android:layout_height="match_parent"
         android:cacheColorHint="@android:color/transparent"
         android:drawSelectorOnTop="false"
-        android:fadingEdge="none" />
+        android:fadingEdge="none"
+        android:background="@color/folder_list_background_color" />
 
     <RelativeLayout
         android:id="@+id/empty_view"
