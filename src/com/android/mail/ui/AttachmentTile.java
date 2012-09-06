@@ -132,7 +132,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     }
 
     public void setThumbnailToDefault() {
-        mIcon.setImageResource(R.drawable.ic_attach_picture_holo_light);
+        mIcon.setImageResource(R.drawable.default_image);
         mDefaultThumbnailSet = true;
     }
 
