@@ -80,6 +80,7 @@ import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.providers.UIProvider.ViewProxyExtras;
 import com.android.mail.ui.ConversationViewState.ExpansionState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -1017,15 +1018,19 @@ public final class ConversationViewFragment extends Fragment implements
             }
 
             boolean result = false;
-            final Uri uri = Uri.parse(url);
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            intent.putExtra(Browser.EXTRA_APPLICATION_ID, activity.getPackageName());
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-
-            // FIXME: give provider a chance to customize url intents?
-            // Utils.addGoogleUriAccountIntentExtras(mContext, uri, mAccount, intent);
+            final Intent intent;
+            Uri uri = Uri.parse(url);
+            if (!Utils.isEmpty(mAccount.viewIntentProxyUri)) {
+                intent = new Intent(Intent.ACTION_VIEW, mAccount.viewIntentProxyUri);
+                intent.putExtra(ViewProxyExtras.EXTRA_ORIGINAL_URI, uri);
+                intent.putExtra(ViewProxyExtras.EXTRA_ACCOUNT, mAccount);
+            } else {
+                intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.putExtra(Browser.EXTRA_APPLICATION_ID, activity.getPackageName());
+            }
 
             try {
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                 activity.startActivity(intent);
                 result = true;
             } catch (ActivityNotFoundException ex) {

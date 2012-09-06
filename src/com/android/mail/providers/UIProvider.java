@@ -121,6 +121,7 @@ public class UIProvider {
             AccountColumns.COLOR,
             AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
             AccountColumns.MANUAL_SYNC_URI,
+            AccountColumns.VIEW_INTENT_PROXY_URI,
             AccountColumns.SettingsColumns.SIGNATURE,
             AccountColumns.SettingsColumns.AUTO_ADVANCE,
             AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE,
@@ -163,23 +164,24 @@ public class UIProvider {
     public static final int ACCOUNT_COLOR_COLUMN = 21;
     public static final int ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN = 22;
     public static final int ACCOUNT_MANUAL_SYNC_URI_COLUMN = 23;
+    public static final int ACCOUNT_VIEW_INTENT_PROXY_URI_COLUMN = 24;
 
-    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 24;
-    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 25;
-    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 26;
-    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 27;
-    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 28;
-    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 29;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 30;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 31;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 32;
-    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 33;
-    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN = 34;
-    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 35;
-    public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 36;
-    public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 37;
-    public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 38;
-    public static final int ACCOUNT_SETTINGS_SETUP_INTENT_URI = 39;
+    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 25;
+    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 26;
+    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 27;
+    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 28;
+    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 29;
+    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 30;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 31;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 32;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 33;
+    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 34;
+    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN = 35;
+    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 36;
+    public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 37;
+    public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 38;
+    public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 39;
+    public static final int ACCOUNT_SETTINGS_SETUP_INTENT_URI = 40;
 
     public static final class AccountCapabilities {
         /**
@@ -436,6 +438,10 @@ public class UIProvider {
          * URI for forcing a manual sync of this account.
          */
         public static final String MANUAL_SYNC_URI = "manualSyncUri";
+        /**
+         * Optional URI of this account for proxying view intents.
+         */
+        public static final String VIEW_INTENT_PROXY_URI = "viewProxyUri";
 
         public static final class SettingsColumns {
             /**
@@ -1761,5 +1767,25 @@ public class UIProvider {
          * Optional boolean extras which indicates that the user is reporting a problem.
          */
         public static final String EXTRA_REPORTING_PROBLEM = "reporting_problem";
+    }
+
+    public static final class ViewProxyExtras {
+        /**
+         * Uri extra passed to the proxy which indicates the original Uri that was intended to be
+         * viewed.
+         */
+        public static final String EXTRA_ORIGINAL_URI = "original_uri";
+        /**
+         * Parcelable extra passed to the proxy which indicates the account being viewed from.
+         */
+        public static final String EXTRA_ACCOUNT = "account";
+        /**
+         * String extra passed from the proxy which indicates the salt used to generate the digest.
+         */
+        public static final String EXTRA_SALT = "salt";
+        /**
+         * Byte[] extra passed from the proxy which indicates the digest of the salted account name.
+         */
+        public static final String EXTRA_ACCOUNT_DIGEST = "digest";
     }
 }
