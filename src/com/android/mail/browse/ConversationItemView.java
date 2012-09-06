@@ -1255,6 +1255,46 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
     }
 
+    private boolean onTouchEventNoSwipe(MotionEvent event) {
+        boolean handled = false;
+
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        mLastTouchX = x;
+        mLastTouchY = y;
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (isTouchInCheckmark(x, y) || isTouchInStar(x, y)) {
+                    mDownEvent = true;
+                    handled = true;
+                }
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+                mDownEvent = false;
+                break;
+
+            case MotionEvent.ACTION_UP:
+                if (mDownEvent) {
+                    if (isTouchInCheckmark(x, y)) {
+                        // Touch on the check mark
+                        toggleCheckMark();
+                    } else if (isTouchInStar(x, y)) {
+                        // Touch on the star
+                        toggleStar();
+                    }
+                    handled = true;
+                }
+                break;
+        }
+
+        if (!handled) {
+            handled = super.onTouchEvent(event);
+        }
+
+        return handled;
+    }
+
     /**
      * ConversationItemView is given the first chance to handle touch events.
      */
@@ -1316,46 +1356,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
             v = mAdapter.getListView();
         }
         return v;
-    }
-
-    private boolean onTouchEventNoSwipe(MotionEvent event) {
-        boolean handled = false;
-
-        int x = (int) event.getX();
-        int y = (int) event.getY();
-        mLastTouchX = x;
-        mLastTouchY = y;
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mDownEvent = true;
-                if (isTouchInCheckmark(x, y) || isTouchInStar(x, y)) {
-                    handled = true;
-                }
-                break;
-
-            case MotionEvent.ACTION_CANCEL:
-                mDownEvent = false;
-                break;
-
-            case MotionEvent.ACTION_UP:
-                if (mDownEvent) {
-                    if (isTouchInCheckmark(x, y)) {
-                        // Touch on the check mark
-                        toggleCheckMark();
-                    } else if (isTouchInStar(x, y)) {
-                        // Touch on the star
-                        toggleStar();
-                    }
-                    handled = true;
-                }
-                break;
-        }
-
-        if (!handled) {
-            handled = super.onTouchEvent(event);
-        }
-
-        return handled;
     }
 
     /**
