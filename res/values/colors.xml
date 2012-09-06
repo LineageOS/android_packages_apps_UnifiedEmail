@@ -36,6 +36,7 @@
     <color name="default_folder_background_color">#f1f5ec</color>
     <color name="default_folder_foreground_color">#888888</color>
     <color name="conversation_list_background_color">#dddddd</color>
+    <color name="folder_list_background_color">#ffdddddd</color>
     <color name="swiped_bg_color">#ff999999</color>
 
     <!-- Compose colors -->
