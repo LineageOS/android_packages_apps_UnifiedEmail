@@ -690,7 +690,6 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void onConversationVisibilityChanged(boolean visible) {
-        return;
     }
 
     @Override
