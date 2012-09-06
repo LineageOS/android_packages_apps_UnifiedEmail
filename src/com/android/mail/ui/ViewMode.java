@@ -167,7 +167,19 @@ public class ViewMode {
      * Return whether the current mode is considered a list mode.
      */
     public boolean isListMode() {
-        return mMode == ViewMode.CONVERSATION_LIST || mMode == ViewMode.SEARCH_RESULTS_LIST;
+        return isListMode(mMode);
+    }
+
+    public static boolean isListMode(int mode) {
+        return mode == CONVERSATION_LIST || mode == SEARCH_RESULTS_LIST;
+    }
+
+    public boolean isConversationMode() {
+        return isConversationMode(mMode);
+    }
+
+    public static boolean isConversationMode(int mode) {
+        return mode == CONVERSATION || mode == SEARCH_RESULTS_CONVERSATION;
     }
 
     /**

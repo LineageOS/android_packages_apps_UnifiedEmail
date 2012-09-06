@@ -138,10 +138,11 @@ public final class TwoPaneController extends AbstractActivityController {
             // We need the layout for everything. Crash early if it is null.
             LogUtils.wtf(LOG_TAG, "mLayout is null!");
         }
-        mLayout.initializeLayout(mActivity.getApplicationContext(), this,
-                Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
+        mLayout.setController(this, Intent.ACTION_SEARCH.equals(mActivity.getIntent().getAction()));
 
-        // The tablet layout needs to refer to mode changes.
+        // 2-pane layout is the main listener of view mode changes, and issues secondary
+        // notifications upon animation completion:
+        // (onConversationVisibilityChanged, onConversationListVisibilityChanged)
         mViewMode.addListener(mLayout);
         final boolean isParentInitialized = super.onCreate(savedState);
         return isParentInitialized;
@@ -225,9 +226,10 @@ public final class TwoPaneController extends AbstractActivityController {
     public void onConversationVisibilityChanged(boolean visible) {
         super.onConversationVisibilityChanged(visible);
         if (!visible) {
-            mPagerController.hide();
+            mPagerController.hide(false /* changeVisibility */);
         } else if (mConversationToShow != null) {
-            mPagerController.show(mAccount, mFolder, mConversationToShow);
+            mPagerController.show(mAccount, mFolder, mConversationToShow,
+                    false /* changeVisibility */);
             mConversationToShow = null;
         }
     }
