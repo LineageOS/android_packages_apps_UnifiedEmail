@@ -50,9 +50,9 @@
     <!--  Compose screen button. Add an attachment to this message [CHAR LIMIT=20] -->
     <string name="add_file_attachment">Attach file</string>
     <!--  Compose screen button. Add a photo attachment to this message [CHAR LIMIT=20] -->
-    <string name="add_photo_attachment">Attach Picture</string>
+    <string name="add_photo_attachment">Attach picture</string>
     <!--  Compose screen button. Add a video attachment to this message [CHAR LIMIT=20] -->
-    <string name="add_video_attachment">Attach Video</string>
+    <string name="add_video_attachment">Attach video</string>
     <!-- Button name: save this message as draft [CHAR LIMIT=25]-->
     <string name="save_draft">Save draft</string>
     <!--  Button name: discard this message [CHAR LIMIT=15] -->
