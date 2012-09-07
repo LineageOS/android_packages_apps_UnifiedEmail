@@ -29,11 +29,13 @@ import com.android.mail.providers.Settings;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.LruCache;
 import com.android.mail.utils.Utils;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A self-updating list of folder canonical names for the N most recently touched folders, ordered
@@ -52,7 +54,7 @@ public final class RecentFolderList {
     private Account mAccount = null;
 
     /** The actual cache: map of folder URIs to folder objects. */
-    private final LruCache<String, Folder> mFolderCache;
+    private final LruCache<String, RecentFolderListEntry> mFolderCache;
     /**
      *  We want to show at most five recent folders
      */
@@ -124,7 +126,8 @@ public final class RecentFolderList {
      * @param context
      */
     public RecentFolderList(Context context) {
-        mFolderCache = new LruCache<String, Folder>(MAX_RECENT_FOLDERS + MAX_EXCLUDED_FOLDERS);
+        mFolderCache = new LruCache<String, RecentFolderListEntry>(
+                MAX_RECENT_FOLDERS + MAX_EXCLUDED_FOLDERS);
         mContext = context;
     }
 
@@ -166,7 +169,8 @@ public final class RecentFolderList {
         // there are duplicates in the cursor.
         do {
             final Folder folder = new Folder(c);
-            mFolderCache.putElement(folder.uri.toString(), folder);
+            final RecentFolderListEntry entry = new RecentFolderListEntry(folder);
+            mFolderCache.putElement(folder.uri.toString(), entry);
             LogUtils.v(TAG, "Account %s, Recent: %s", mAccount.name, folder.name);
         } while (c.moveToPrevious());
     }
@@ -188,7 +192,8 @@ public final class RecentFolderList {
             }
         }
         assert (folder != null);
-        mFolderCache.putElement(folder.uri.toString(), folder);
+        final RecentFolderListEntry entry = new RecentFolderListEntry(folder);
+        mFolderCache.putElement(folder.uri.toString(), entry);
         new StoreRecent(mAccount, folder).execute();
     }
 
@@ -209,18 +214,23 @@ public final class RecentFolderList {
         if (!defaultInbox.equals(Uri.EMPTY)) {
             excludedUris.add(defaultInbox);
         }
-        final List<Folder> recent = new ArrayList<Folder>(mFolderCache.values());
-        final ArrayList<Folder> recentFolders = new ArrayList<Folder>();
-        for (final Folder f : recent) {
-            if (!excludedUris.contains(f.uri)) {
-                recentFolders.add(f);
+        final List<RecentFolderListEntry> recent = Lists.newArrayList();
+        recent.addAll(mFolderCache.values());
+        Collections.sort(recent);
+
+        final ArrayList<Folder> recentFolders = Lists.newArrayList();
+        for (final RecentFolderListEntry entry : recent) {
+            if (!excludedUris.contains(entry.mFolder.uri)) {
+                recentFolders.add(entry.mFolder);
             }
             if (recentFolders.size() == MAX_RECENT_FOLDERS) {
                 break;
             }
         }
+
         // Sort the values as the very last step.
         Collections.sort(recentFolders, ALPHABET_IGNORECASE);
+
         return recentFolders;
     }
 
@@ -229,5 +239,26 @@ public final class RecentFolderList {
      */
     public void destroy() {
         mAccountObserver.unregisterAndDestroy();
+    }
+
+    private static class RecentFolderListEntry implements Comparable<RecentFolderListEntry> {
+        private static final AtomicInteger SEQUENCE_GENERATOR = new AtomicInteger();
+
+        private final Folder mFolder;
+        private final int mSequence;
+
+        RecentFolderListEntry(Folder folder) {
+            mFolder = folder;
+            mSequence = SEQUENCE_GENERATOR.getAndIncrement();
+        }
+
+        /**
+         * Ensure that RecentFolderListEntry objects with greater sequence number will appear
+         * before objects with lower sequence numbers
+         */
+        @Override
+        public int compareTo(RecentFolderListEntry t) {
+            return t.mSequence - mSequence;
+        }
     }
 }
