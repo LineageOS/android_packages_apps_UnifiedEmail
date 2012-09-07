@@ -20,7 +20,9 @@
     android:id="@+id/attachment_tile"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/attachment_bg_holo">
+    android:background="@drawable/attachment_bg_holo"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <ImageView
         android:id="@+id/attachment_tile_image"

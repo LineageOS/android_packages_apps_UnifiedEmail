@@ -20,9 +20,19 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:background="#babebe"
+        android:id="@+id/upper_quotedtext_divider_bar"
+        android:visibility="gone" />
+
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="48dip"
-        android:id="@+id/quoted_text_button_bar">
+        android:id="@+id/quoted_text_button_bar"
+        android:layout_below="@id/upper_quotedtext_divider_bar"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_alignParentTop="true">
 
         <RelativeLayout android:layout_width="0dip"
             android:layout_weight="1"
@@ -65,7 +75,9 @@
             android:textAllCaps="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@null"/>
+            android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
 
     </LinearLayout>
 
