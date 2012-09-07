@@ -20,16 +20,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minWidth="@dimen/folder_list_popup_width"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@color/folder_list_background_color" >
 
     <FrameLayout
         android:id="@+id/content_pane"
         android:name="com.android.mail.ui.FolderListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginLeft="16dip"
-        android:layout_marginRight="16dip"/>
+        android:layout_weight="1"/>
 
     <include layout="@layout/one_button_button_bar"/>
 
