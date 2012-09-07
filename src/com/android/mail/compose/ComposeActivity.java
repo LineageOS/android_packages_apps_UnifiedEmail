@@ -70,7 +70,7 @@ import android.widget.Toast;
 import com.android.common.Rfc822Validator;
 import com.android.ex.chips.RecipientEditTextView;
 import com.android.mail.R;
-import com.android.mail.compose.AttachmentsView.AttachmentDeletedListener;
+import com.android.mail.compose.AttachmentsView.AttachmentAddedOrDeletedListener;
 import com.android.mail.compose.AttachmentsView.AttachmentFailureException;
 import com.android.mail.compose.FromAddressSpinner.OnAccountChangedListener;
 import com.android.mail.compose.QuotedTextView.RespondInlineListener;
@@ -113,7 +113,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ComposeActivity extends Activity implements OnClickListener, OnNavigationListener,
         RespondInlineListener, DialogInterface.OnClickListener, TextWatcher,
-        AttachmentDeletedListener, OnAccountChangedListener, LoaderManager.LoaderCallbacks<Cursor>,
+        AttachmentAddedOrDeletedListener, OnAccountChangedListener, LoaderManager.LoaderCallbacks<Cursor>,
         TextView.OnEditorActionListener {
     // Identifiers for which type of composition this is
     static final int COMPOSE = -1;
@@ -490,6 +490,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void updateHideOrShowQuotedText(boolean showQuotedText) {
         mQuotedTextView.updateCheckedState(showQuotedText);
+        mQuotedTextView.setUpperDividerVisible(mAttachmentsView.getAttachments().size() > 0);
     }
 
     private void setFocus(int action) {
@@ -881,9 +882,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (mVideoAttachmentsButton != null) {
             mVideoAttachmentsButton.setOnClickListener(this);
         }
-        LayoutTransition transition =
-                ((ViewGroup) findViewById(R.id.content)).getLayoutTransition();
-        mAttachmentsView.setComposeLayoutTransition(transition);
         mTo = (RecipientEditTextView) findViewById(R.id.to);
         mCc = (RecipientEditTextView) findViewById(R.id.cc);
         mBcc = (RecipientEditTextView) findViewById(R.id.bcc);
@@ -2512,6 +2510,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void onRespondInline(String text) {
         appendToBody(text, false);
+        mQuotedTextView.setUpperDividerVisible(false);
+        mTo.requestFocus();
     }
 
     /**
@@ -2676,9 +2676,17 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     @Override
     public void onAttachmentDeleted() {
         mAttachmentsChanged = true;
+        // If we are showing any attachments, make sure we have an upper
+        // divider.
+        mQuotedTextView.setUpperDividerVisible(mAttachmentsView.getAttachments().size() > 0);
         updateSaveUi();
     }
 
+    @Override
+    public void onAttachmentAdded() {
+        mQuotedTextView.setUpperDividerVisible(mAttachmentsView.getAttachments().size() > 0);
+        mAttachmentsView.focusLastAttachment();
+    }
 
     /**
      * This is called any time one of our text fields changes.
