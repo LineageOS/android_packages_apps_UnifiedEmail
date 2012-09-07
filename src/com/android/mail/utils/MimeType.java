@@ -103,6 +103,13 @@ public class MimeType {
         }
         final List<ResolveInfo> list = manager.queryIntentActivities(mimetypeIntent,
                 PackageManager.MATCH_DEFAULT_ONLY);
+        if (list.size() == 0) {
+            // This logging will help track down bug 7092215.  Once that bug is resolved, remove
+            // this.
+            LogUtils.w(LOG_TAG, "Unable to find supporting activity. " +
+                    "mime-type: %s, uri: %s, normalized mime-type: %s normalized uri: %s",
+                    contentType, contentUri, mimetypeIntent.getType(), mimetypeIntent.getData());
+        }
         return list.size() > 0;
     }
 
