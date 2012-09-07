@@ -276,7 +276,7 @@ public class SwipeableListView extends ListView implements Callback {
         }
     }
 
-    private int findConversation(ConversationItemView view, Conversation conv) {
+    public int findConversation(ConversationItemView view, Conversation conv) {
         int position = conv.position;
         long convId = conv.id;
         try {
