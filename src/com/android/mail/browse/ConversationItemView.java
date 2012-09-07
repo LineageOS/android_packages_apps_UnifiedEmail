@@ -1341,9 +1341,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
     @Override
     public boolean performClick() {
         boolean handled = super.performClick();
-        ListView list = getListView();
+        SwipeableListView list = getListView();
         if (list != null) {
-            int pos = list.getPositionForView(this);
+            int pos = list.findConversation(this, mHeader.conversation);
             list.performItemClick(this, pos, mHeader.conversation.id);
         }
         return handled;
