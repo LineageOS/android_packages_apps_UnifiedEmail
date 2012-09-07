@@ -15,11 +15,8 @@
  */
 package com.android.mail.compose;
 
-import android.animation.LayoutTransition;
-import android.animation.LayoutTransition.TransitionListener;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
@@ -28,23 +25,17 @@ import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
-import com.android.mail.providers.Message;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
@@ -55,22 +46,13 @@ import java.util.ArrayList;
 /*
  * View for displaying attachments in the compose screen.
  */
-class AttachmentsView extends LinearLayout implements OnClickListener, TransitionListener {
+class AttachmentsView extends LinearLayout {
     private static final String LOG_TAG = LogTag.getLogTag();
 
-    private final Resources mResources;
-
     private ArrayList<Attachment> mAttachments;
-    private AttachmentDeletedListener mChangeListener;
+    private AttachmentAddedOrDeletedListener mChangeListener;
     private AttachmentTileGrid mTileGrid;
     private LinearLayout mAttachmentLayout;
-    private GridLayout mCollapseLayout;
-    private TextView mCollapseText;
-    private ImageView mCollapseCaret;
-    private LayoutTransition mComposeLayoutTransition;
-
-    private boolean mIsExpanded;
-    private long mChangingDelay;
 
     public AttachmentsView(Context context) {
         this(context, null);
@@ -79,7 +61,6 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
     public AttachmentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mAttachments = Lists.newArrayList();
-        mResources = context.getResources();
     }
 
     @Override
@@ -88,37 +69,11 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
 
         mTileGrid = (AttachmentTileGrid) findViewById(R.id.attachment_tile_grid);
         mAttachmentLayout = (LinearLayout) findViewById(R.id.attachment_bar_list);
-        mCollapseLayout = (GridLayout) findViewById(R.id.attachment_collapse_view);
-        mCollapseText = (TextView) findViewById(R.id.attachment_collapse_text);
-        mCollapseCaret = (ImageView) findViewById(R.id.attachment_collapse_caret);
-
-        mCollapseLayout.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.attachment_collapse_view:
-                if (mIsExpanded) {
-                    collapseView();
-                    mComposeLayoutTransition.setStartDelay(
-                            LayoutTransition.CHANGING, mChangingDelay);
-                } else {
-                    expandView();
-                    mComposeLayoutTransition.setStartDelay(LayoutTransition.CHANGING, 0l);
-                }
-                if (Utils.isRunningJellybeanOrLater()) {
-                    mComposeLayoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-                }
-                break;
-        }
     }
 
     public void expandView() {
         mTileGrid.setVisibility(VISIBLE);
         mAttachmentLayout.setVisibility(VISIBLE);
-        setupCollapsibleView(false);
-        mIsExpanded = true;
 
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
@@ -127,38 +82,11 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
         }
     }
 
-    public void collapseView() {
-        mTileGrid.setVisibility(GONE);
-        mAttachmentLayout.setVisibility(GONE);
-
-        // If there are some attachments, show the preview
-        if (!mAttachments.isEmpty()) {
-            setupCollapsibleView(true);
-            mCollapseLayout.setVisibility(VISIBLE);
-        }
-
-        mIsExpanded = false;
-    }
-
-    private void setupCollapsibleView(boolean isCollapsed) {
-        // setup text
-        final int numAttachments = mAttachments.size();
-        final String attachmentText = mResources.getQuantityString(
-                R.plurals.number_of_attachments, numAttachments, numAttachments);
-        mCollapseText.setText(attachmentText);
-
-        if (isCollapsed) {
-            mCollapseCaret.setImageResource(R.drawable.ic_menu_expander_minimized_holo_light);
-        } else {
-            mCollapseCaret.setImageResource(R.drawable.ic_menu_expander_maximized_holo_light);
-        }
-    }
-
     /**
      * Set a listener for changes to the attachments.
      * @param listener
      */
-    public void setAttachmentChangesListener(AttachmentDeletedListener listener) {
+    public void setAttachmentChangesListener(AttachmentAddedOrDeletedListener listener) {
         mChangeListener = listener;
     }
 
@@ -203,57 +131,19 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.MATCH_PARENT));
         }
+        if (mChangeListener != null) {
+            mChangeListener.onAttachmentAdded();
+        }
     }
 
     @VisibleForTesting
     protected void deleteAttachment(final View attachmentView,
             final Attachment attachment) {
-        if (Utils.isRunningJellybeanOrLater()) {
-            mComposeLayoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-        }
-        mComposeLayoutTransition.setStartDelay(
-                LayoutTransition.CHANGING, mChangingDelay);
-
-        final LayoutTransition transition = getLayoutTransition();
-        if (Utils.isRunningJellybeanOrLater()) {
-            transition.enableTransitionType(LayoutTransition.CHANGING);
-        }
-        transition.setStartDelay(LayoutTransition.CHANGING, mChangingDelay);
-        transition.addTransitionListener(this);
-
         mAttachments.remove(attachment);
         ((ViewGroup) attachmentView.getParent()).removeView(attachmentView);
         if (mChangeListener != null) {
             mChangeListener.onAttachmentDeleted();
         }
-        if (mAttachments.size() == 0) {
-            setVisibility(View.GONE);
-            collapseView();
-        } else {
-            setupCollapsibleView(true);
-        }
-    }
-
-    public void setComposeLayoutTransition(LayoutTransition transition) {
-        mComposeLayoutTransition = transition;
-        mComposeLayoutTransition.addTransitionListener(this);
-        mChangingDelay =
-                mComposeLayoutTransition.getDuration(LayoutTransition.DISAPPEARING);
-    }
-
-    @Override
-    public void startTransition(LayoutTransition transition, ViewGroup container, View view,
-            int transitionType) {
-        /* Do nothing */
-    }
-
-    @Override
-    public void endTransition(LayoutTransition transition, ViewGroup container, View view,
-            int transitionType) {
-        if (Utils.isRunningJellybeanOrLater()) {
-            transition.disableTransitionType(LayoutTransition.CHANGING);
-        }
-        transition.setStartDelay(LayoutTransition.CHANGING, 0l);
     }
 
     /**
@@ -272,7 +162,6 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
         mTileGrid.removeAllViews();
         mAttachmentLayout.removeAllViews();
         setVisibility(GONE);
-        collapseView();
     }
 
     /**
@@ -287,11 +176,13 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
     }
 
     /**
-     * Interface to implement to be notified about changes to the attachments.
-     *
+     * Interface to implement to be notified about changes to the attachments
+     * explicitly made by the user.
      */
-    public interface AttachmentDeletedListener {
+    public interface AttachmentAddedOrDeletedListener {
         public void onAttachmentDeleted();
+
+        public void onAttachmentAdded();
     }
 
     /**
@@ -451,6 +342,10 @@ class AttachmentsView extends LinearLayout implements OnClickListener, Transitio
             // ignore, leave result null
         }
         return result;
+    }
+
+    public void focusLastAttachment() {
+        mTileGrid.getChildAt(mTileGrid.getChildCount() - 1).requestFocus();
     }
 
     /**
