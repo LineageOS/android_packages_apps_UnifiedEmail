@@ -2134,6 +2134,7 @@ public abstract class AbstractActivityController implements ActivityController {
     public final void onDataSetChanged() {
         updateConversationListFragment();
         mConversationListObservable.notifyChanged();
+        mSelectedSet.validateAgainstCursor(mConversationListCursor);
     }
 
     /**
