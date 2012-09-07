@@ -845,31 +845,18 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     public void toggleExpanded() {
-        if (mIsSnappy) {
-            // In addition to making the snappy header disappear, this will
-            // propagate the change to the normal header. It should only be
-            // possible to collapse an expanded snappy header; collapsed snappy
-            // headers should never exist.
-
-            // TODO: make this work right. the scroll position jumps and the
-            // snappy header doesn't re-appear bound to a subsequent message.
-            // mCallbacks.setMessageExpanded(mLocalMessageId, mServerMessageId,
-            // false);
-            // setVisibility(GONE);
-            // unbind();
-            return;
-        }
-
         setExpanded(!isExpanded());
 
-        mSenderNameView.setText(getHeaderTitle());
-        mSenderEmailView.setText(getHeaderSubtitle());
+        // The snappy header will disappear; no reason to update text.
+        if (!mIsSnappy) {
+            mSenderNameView.setText(getHeaderTitle());
+            mSenderEmailView.setText(getHeaderSubtitle());
+        }
 
         updateChildVisibility();
 
         // Force-measure the new header height so we can set the spacer size and
-        // reveal the message
-        // div in one pass. Force-measuring makes it unnecessary to set
+        // reveal the message div in one pass. Force-measuring makes it unnecessary to set
         // mSizeChanged.
         int h = measureHeight();
         mMessageHeaderItem.setHeight(h);
