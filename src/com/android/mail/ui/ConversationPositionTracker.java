@@ -25,6 +25,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 import java.util.Collection;
 
@@ -48,14 +49,6 @@ public class ConversationPositionTracker {
     private Conversation mConversation;
 
     private final Callbacks mCallbacks;
-    /**
-     * This utility method returns the conversation ID at the current cursor position.
-     * @return the conversation id at the cursor.
-     */
-    private static long getConversationId(Cursor cursor) {
-        final Conversation conversation = new Conversation(cursor);
-        return conversation.id;
-    }
 
     /**
      * Constructs a position tracker that doesn't point to any specific conversation.
@@ -191,7 +184,7 @@ public class ConversationPositionTracker {
         // the list.  Start from the beginning and find the current conversation in it.
         int newPosition = 0;
         while (cursor.moveToPosition(newPosition)) {
-            if (getConversationId(cursor) == mConversation.id) {
+            if (Utils.getConversationId(cursor) == mConversation.id) {
                 mConversation.position = newPosition;
                 final boolean changed = (mConversation.position != newPosition);
                 // Pre-emptively try to load the next cursor position so that the cursor window
