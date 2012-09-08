@@ -24,10 +24,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.android.mail.browse.ConversationItemView;
+import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Conversation;
+import com.android.mail.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A simple thread-safe wrapper over a set of conversations representing a
@@ -173,10 +179,16 @@ public class ConversationSelectionSet implements Parcelable {
 
     /** @see java.util.HashMap#remove */
     private synchronized void remove(Long id) {
+        removeAll(Collections.singleton(id));
+    }
+
+    private synchronized void removeAll(Collection<Long> ids) {
         final boolean initiallyNotEmpty = !mInternalMap.isEmpty();
 
-        mInternalViewMap.remove(id);
-        mInternalMap.remove(id);
+        for (Long id : ids) {
+            mInternalViewMap.remove(id);
+            mInternalMap.remove(id);
+        }
 
         ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
         dispatchOnChange(observersCopy);
@@ -225,6 +237,11 @@ public class ConversationSelectionSet implements Parcelable {
         return mInternalMap.values();
     }
 
+    /** @see java.util.HashMap#keySet() */
+    public synchronized Set<Long> keySet() {
+        return mInternalMap.keySet();
+    }
+
     /**
      * Puts all conversations given in the input argument into the selection set. If there are
      * any listeners they are notified once after adding <em>all</em> conversations to the selection
@@ -264,4 +281,54 @@ public class ConversationSelectionSet implements Parcelable {
             remove(id);
         }
     }
+
+    /**
+     * Iterates through a cursor of conversations and ensures that the current set is present
+     * within the result set denoted by the cursor. Any conversations not foun in the result set
+     * is removed from the collection.
+     */
+    public synchronized void validateAgainstCursor(ConversationCursor cursor) {
+        if (isEmpty()) {
+            return;
+        }
+
+        if (cursor == null) {
+            clear();
+            return;
+        }
+
+        // Get the current position of the cursor, so it can be reset
+        final int currentPosition = cursor.getPosition();
+        if (currentPosition != -1) {
+            // Validate batch selection across all conversations, not just the most
+            // recently loaded set.  See bug 2405138 (Batch selection cleared when
+            // additional conversations are loaded on demand).
+            cursor.moveToPosition(-1);
+        }
+
+        // The query has run, but we have been in the list
+        // Make sure that the list of selected conversations
+        // contains only items that are in the result set
+        final Set<Long> selectedConversationsToToggle = new HashSet<Long>(keySet());
+
+        // Go through the list of what we think is selected,
+        // if any of the conversations are not present,
+        // untoggle them from the list
+        //
+        // Only continue going through the list while we are unsure
+        // if a conversation is selected.  If we don't stop when
+        // there are no more items in the selectedConversationsToToggle
+        // collection, this will force the whole collection list to be loaded
+        // If we believe that there is at least one conversation selected,
+        // we need to keep looking to make sure that the conversation is still
+        // present
+        while (!selectedConversationsToToggle.isEmpty() && cursor.moveToNext()) {
+            selectedConversationsToToggle.remove(Utils.getConversationId(cursor));
+        }
+
+        removeAll(selectedConversationsToToggle);
+
+        cursor.moveToPosition(currentPosition);
+    }
+
 }
