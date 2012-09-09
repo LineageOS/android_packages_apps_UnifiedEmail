@@ -277,13 +277,16 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                 mDetachedMode = true;
                 LogUtils.i(LOG_TAG, "CPA: current conv is gone, reverting to detached mode. c=%s",
                         currConversation.uri);
+            } else {
+                // notify unaffected fragment items of the change, so they can re-render
+                // (the change may have been to the labels for a single conversation, for example)
+                ConversationViewFragment frag = (ConversationViewFragment) getFragmentAt(pos);
+                // reload what we think is in the current position.
+                frag.onConversationUpdated(new Conversation(getCursor()));
             }
         }
 
         super.notifyDataSetChanged();
-
-        // notify unaffected fragment items of the change, so they can re-render
-        // (the change may have been to the labels for a single conversation, for example)
     }
 
     @Override
