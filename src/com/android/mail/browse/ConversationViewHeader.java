@@ -162,6 +162,16 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         }
     }
 
+    /**
+     * Update the conversation view header to reflect the updated conversation.
+     */
+    public void onConversationUpdated(Conversation conv) {
+        // The only things we have to worry about when the conversation changes
+        // in the conversation header are the folders and priority indicators.
+        // Updating these will resize the space for the header.
+        setFolders(conv, false);
+    }
+
     @Override
     public void onClick(View v) {
         if (R.id.folders == v.getId()) {
