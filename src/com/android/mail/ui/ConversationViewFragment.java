@@ -17,6 +17,9 @@
 
 package com.android.mail.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.Animator.AnimatorListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -25,6 +28,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
@@ -32,8 +36,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.Browser;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -112,6 +120,13 @@ public final class ConversationViewFragment extends Fragment implements
     private static final int MESSAGE_LOADER_ID = 0;
     private static final int CONTACT_LOADER_ID = 1;
 
+    /** Do not auto load data when create this {@link ConversationView}. */
+    public static final int NO_AUTO_LOAD = 0;
+    /** Auto load data but do not show any animation. */
+    public static final int AUTO_LOAD_BACKGROUND = 1;
+    /** Auto load data and show animation. */
+    public static final int AUTO_LOAD_VISIBLE = 2;
+
     private ControllableActivity mActivity;
 
     private Context mContext;
@@ -125,6 +140,16 @@ public final class ConversationViewFragment extends Fragment implements
     private ConversationWebView mWebView;
 
     private View mNewMessageBar;
+
+    private View mBackgroundView;
+
+    private View mInfoView;
+
+    private TextView mSendersView;
+
+    private TextView mSubjectView;
+
+    private View mProgressView;
 
     private HtmlConversationTemplates mTemplates;
 
@@ -142,7 +167,6 @@ public final class ConversationViewFragment extends Fragment implements
     private boolean mViewsCreated;
 
     private MenuItem mChangeFoldersMenuItem;
-
     /**
      * Folder is used to help determine valid menu actions for this conversation.
      */
@@ -190,14 +214,18 @@ public final class ConversationViewFragment extends Fragment implements
             mAdapter.notifyDataSetChanged();
         }
     };
+    private boolean mEnableContentReadySignal;
 
     private static final String ARG_ACCOUNT = "account";
     public static final String ARG_CONVERSATION = "conversation";
     private static final String ARG_FOLDER = "folder";
     private static final String BUNDLE_VIEW_STATE = "viewstate";
+    private static int sSubjectColor = Integer.MIN_VALUE;
+    private static int sSnippetColor = Integer.MIN_VALUE;
 
     private static final boolean DEBUG_DUMP_CONVERSATION_HTML = false;
     private static final boolean DISABLE_OFFSCREEN_LOADING = false;
+    protected static final String AUTO_LOAD_KEY = "auto-load";
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -289,11 +317,37 @@ public final class ConversationViewFragment extends Fragment implements
         // Since the uri specified in the conversation base uri may not be unique, we specify a
         // base uri that us guaranteed to be unique for this conversation.
         mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
-
         LogUtils.d(LOG_TAG, "onCreate in ConversationViewFragment (this=%s)", this);
 
         // Not really, we just want to get a crack to store a reference to the change_folder item
         setHasOptionsMenu(true);
+    }
+
+    private CharSequence createSubjectSnippet(CharSequence subject, CharSequence snippet) {
+        SpannableStringBuilder subjectText = new SpannableStringBuilder(mContext.getString(
+                R.string.subject_and_snippet, subject, snippet));
+        ensureSubjectSnippetColors();
+        int snippetStart = 0;
+        int fontColor = sSubjectColor;
+        if (subject != null) {
+            subjectText.setSpan(new ForegroundColorSpan(fontColor), 0, subject.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            snippetStart = subject.length() + 1;
+        }
+        if (snippet != null) {
+            fontColor = sSnippetColor;
+            subjectText.setSpan(new ForegroundColorSpan(fontColor), snippetStart, subjectText
+                    .length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return subjectText;
+    }
+
+    private void ensureSubjectSnippetColors() {
+        if (sSubjectColor == Integer.MIN_VALUE) {
+            Resources res = mContext.getResources();
+            sSubjectColor = res.getColor(R.color.subject_text_color_read);
+            sSnippetColor = res.getColor(R.color.snippet_text_color_read);
+        }
     }
 
     @Override
@@ -318,9 +372,19 @@ public final class ConversationViewFragment extends Fragment implements
             }
         });
 
+        mBackgroundView = rootView.findViewById(R.id.background_view);
+        mInfoView = rootView.findViewById(R.id.info_view);
+        mSendersView = (TextView) rootView.findViewById(R.id.senders_view);
+        mSubjectView = (TextView) rootView.findViewById(R.id.info_subject_view);
+        mProgressView = rootView.findViewById(R.id.loading_progress);
+
         mWebView = (ConversationWebView) mConversationContainer.findViewById(R.id.webview);
 
         mWebView.addJavascriptInterface(mJsBridge, "mail");
+        // On JB or newer, we use the 'webkitAnimationStart' DOM event to signal load complete
+        // Below JB, try to speed up initial render by having the webview do supplemental draws to
+        // custom a software canvas.
+        mEnableContentReadySignal = Utils.isRunningJellybeanOrLater();
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -520,12 +584,14 @@ public final class ConversationViewFragment extends Fragment implements
     }
 
     /**
-     * Handles a request to show a new conversation list, either from a search query or for viewing
-     * a folder. This will initiate a data load, and hence must be called on the UI thread.
+     * Handles a request to show a new conversation list, either from a search
+     * query or for viewing a folder. This will initiate a data load, and hence
+     * must be called on the UI thread.
      */
     private void showConversation() {
-        final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING ||
-                (mConversation.isRemote || mConversation.getNumMessages() > mMaxAutoLoadMessages);
+        final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING
+                || (mConversation.isRemote
+                        || mConversation.getNumMessages() > mMaxAutoLoadMessages);
         if (!mUserVisible && disableOffscreenLoading) {
             LogUtils.v(LOG_TAG, "Fragment not user-visible, not showing conversation: %s",
                     mConversation.uri);
@@ -535,14 +601,18 @@ public final class ConversationViewFragment extends Fragment implements
         LogUtils.v(LOG_TAG,
                 "Fragment is short or user-visible, immediately rendering conversation: %s",
                 mConversation.uri);
+        mWebView.setVisibility(View.VISIBLE);
         getLoaderManager().initLoader(MESSAGE_LOADER_ID, Bundle.EMPTY, mMessageLoaderCallbacks);
-
         if (mUserVisible) {
             final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
             if (sdc != null) {
                 sdc.setSubject(mConversation.subject);
             }
         }
+        // TODO(mindyp): don't show loading status for a previously rendered
+        // conversation. Ielieve this is better done by making sure don't show loading status
+        // until XX ms have passed without loading completed.
+        showLoadingStatus();
     }
 
     public Conversation getConversation() {
@@ -550,7 +620,7 @@ public final class ConversationViewFragment extends Fragment implements
     }
 
     private void renderConversation(MessageCursor messageCursor) {
-        final String convHtml = renderMessageBodies(messageCursor);
+        final String convHtml = renderMessageBodies(messageCursor, mEnableContentReadySignal);
 
         if (DEBUG_DUMP_CONVERSATION_HTML) {
             java.io.FileWriter fw = null;
@@ -580,7 +650,8 @@ public final class ConversationViewFragment extends Fragment implements
      * conversation header), and return an HTML document with spacer divs inserted for all overlays.
      *
      */
-    private String renderMessageBodies(MessageCursor messageCursor) {
+    private String renderMessageBodies(MessageCursor messageCursor,
+            boolean enableContentReadySignal) {
         int pos = -1;
 
         LogUtils.d(LOG_TAG, "IN renderMessageBodies, fragment=%s", this);
@@ -691,7 +762,7 @@ public final class ConversationViewFragment extends Fragment implements
         final String conversationBaseUri = mConversation.conversationBaseUri != null ?
                 mConversation.conversationBaseUri.toString() : mBaseUri;
         return mTemplates.endConversation(mBaseUri, conversationBaseUri, 320,
-                mWebView.getViewportWidth());
+                mWebView.getViewportWidth(), enableContentReadySignal);
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
@@ -1000,7 +1071,10 @@ public final class ConversationViewFragment extends Fragment implements
             if (mUserVisible) {
                 onConversationSeen();
             }
-
+            if (!mEnableContentReadySignal) {
+                notifyConversationLoaded(mConversation);
+                dismissLoadingStatus();
+            }
             final Set<String> emailAddresses = Sets.newHashSet();
             for (Address addr : mAddressCache.values()) {
                 emailAddresses.add(addr.getAddress());
@@ -1041,6 +1115,73 @@ public final class ConversationViewFragment extends Fragment implements
             return result;
         }
 
+    }
+
+    /**
+     * Notifies the {@link ConversationViewable.ConversationCallbacks} that the conversation has
+     * been loaded.
+     */
+    public void notifyConversationLoaded(Conversation c) {
+        // Do nothing.
+    }
+
+    /**
+     * Notifies the {@link ConversationViewable.ConversationCallbacks} that the conversation has
+     * failed to load.
+     */
+    protected void notifyConversationLoadError(Conversation c) {
+        mActivity.onConversationLoadError();
+    }
+
+    private void showLoadingStatus() {
+        mBackgroundView.setVisibility(View.VISIBLE);
+        String senders = mConversation.getSenders(mContext);
+        if (!TextUtils.isEmpty(senders) && mConversation.subject != null) {
+            mInfoView.setVisibility(View.VISIBLE);
+            mSendersView.setText(senders);
+            mSubjectView.setText(createSubjectSnippet(mConversation.subject,
+                    mConversation.getSnippet()));
+        } else {
+            mProgressView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void dismissLoadingStatus() {
+        // Fade out the info view.
+        if (mBackgroundView.getVisibility() == View.VISIBLE) {
+            Animator animator = AnimatorInflater.loadAnimator(mContext, R.anim.fade_out);
+            animator.setTarget(mBackgroundView);
+            animator.addListener(new AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    if (mProgressView.getVisibility() != View.VISIBLE) {
+                        mProgressView.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mBackgroundView.setVisibility(View.GONE);
+                    mInfoView.setVisibility(View.GONE);
+                    mProgressView.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    // Do nothing.
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                    // Do nothing.
+                }
+            });
+            animator.start();
+        } else {
+            mBackgroundView.setVisibility(View.GONE);
+            mInfoView.setVisibility(View.GONE);
+            mProgressView.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -1086,6 +1227,29 @@ public final class ConversationViewFragment extends Fragment implements
             }
         }
 
+        private void showConversation(Conversation conv) {
+            notifyConversationLoaded(conv);
+            dismissLoadingStatus();
+        }
+
+        @SuppressWarnings("unused")
+        public void onContentReady() {
+            final Conversation conv = mConversation;
+            try {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        LogUtils.d(LOG_TAG, "ANIMATION STARTED, ready to draw. t=%s",
+                                SystemClock.uptimeMillis());
+                        showConversation(conv);
+                    }
+                });
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onContentReady");
+                // Still try to show the conversation.
+                showConversation(conv);
+            }
+        }
     }
 
     private class NewMessagesInfo {

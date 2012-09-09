@@ -158,6 +158,8 @@ public class Conversation implements Parcelable {
     private ArrayList<Folder> cachedRawFolders;
     private ArrayList<Folder> cachedDisplayableFolders;
 
+    private static String sSendersDelimeter;
+
     // Constituents of convFlags below
     // Flag indicating that the item has been deleted, but will continue being
     // shown in the list Delete/Archive of a mostly-dead item will NOT propagate
@@ -461,6 +463,25 @@ public class Conversation implements Parcelable {
     public String getSnippet() {
         return conversationInfo != null && !TextUtils.isEmpty(conversationInfo.firstSnippet) ?
                 conversationInfo.firstSnippet : snippet;
+    }
+
+    public String getSenders(Context context) {
+        if (conversationInfo != null) {
+            ArrayList<String> senders = new ArrayList<String>();
+            for (MessageInfo m : this.conversationInfo.messageInfos) {
+                senders.add(m.sender);
+            }
+            return TextUtils.join(getSendersDelimeter(context), senders);
+        } else {
+            return senders;
+        }
+    }
+
+    private String getSendersDelimeter(Context context) {
+        if (sSendersDelimeter == null) {
+            sSendersDelimeter = context.getResources().getString(R.string.senders_split_token);
+        }
+        return sSendersDelimeter;
     }
 
     /**
