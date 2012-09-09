@@ -48,4 +48,5 @@
     <dimen name="search_view_width">500dip</dimen>
     <dimen name="attachment_tile_min_size">180dp</dimen>
     <dimen name="wait_padding">32dp</dimen>
+    <dimen name="info_view_margin">96dip</dimen>
 </resources>

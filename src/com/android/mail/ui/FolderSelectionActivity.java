@@ -352,4 +352,9 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         // Unsupported
         return null;
     }
+
+    @Override
+    public void onConversationLoadError() {
+        // Do nothing.
+    }
 }

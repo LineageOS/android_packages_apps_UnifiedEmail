@@ -432,4 +432,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     public void stopDragMode() {
         mController.stopDragMode();
     }
+
+    @Override
+    public void onConversationLoadError() {
+        mController.onConversationLoadError();
+    }
 }

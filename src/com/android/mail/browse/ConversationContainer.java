@@ -26,7 +26,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.webkit.WebView;
 import android.widget.Adapter;
 import android.widget.ListView;
@@ -34,6 +33,7 @@ import android.widget.ScrollView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ScrollNotifier.ScrollListener;
+import com.android.mail.providers.Conversation;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.DequeMap;
 import com.android.mail.utils.InputSmoother;
@@ -65,7 +65,6 @@ import java.util.List;
  *
  */
 public class ConversationContainer extends ViewGroup implements ScrollListener {
-
     private static final String TAG = ConversationViewFragment.LAYOUT_TAG;
 
     private static final int[] BOTTOM_LAYER_VIEW_IDS = {
@@ -798,5 +797,4 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
             onDataSetChanged();
         }
     }
-
 }

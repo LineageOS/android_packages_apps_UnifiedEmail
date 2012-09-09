@@ -686,6 +686,21 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
+    public void onConversationLoadError() {
+        // Jump back to conversation list view. this can happen if connectivity is interrupted while
+        // looking at a live label.
+        // {@link FragmentTransaction} cannot be committed inside {@link
+        // LoaderManager.LoaderCallbacks<D>#onLoadFinished(Loader<D>, D)}. So we post a {@link
+        // Runnable} to run later.
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                showConversationList(mConvListContext);
+            }
+        });
+    }
+
+    @Override
     public void onConversationListVisibilityChanged(boolean visible) {
         informCursorVisiblity(visible);
     }

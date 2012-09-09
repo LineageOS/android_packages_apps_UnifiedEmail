@@ -222,7 +222,25 @@ function replaceSuperCollapsedBlock(startIndex) {
     parent.removeChild(block);
     measurePositions();
 }
+
+function onContentReady(event) {
+    window.mail.onContentReady();
+}
+
 // END Java->JavaScript handlers
+
+window.onload = function() {
+    // PAGE READINESS SIGNAL FOR JELLYBEAN AND NEWER
+    // Notify the app on 'webkitAnimationStart' of a simple dummy element with a simple no-op
+    // animation that immediately runs on page load. The app uses this as a signal that the
+    // content is loaded and ready to draw, since WebView delays firing this event until the
+    // layers are composited and everything is ready to draw.
+    //
+    // This code is conditionally enabled on JB+ by setting the 'initial-load' CSS class on this
+    // dummy element.
+    document.getElementById("initial-load-signal")
+        .addEventListener("webkitAnimationStart", onContentReady, false);
+};
 
 collapseQuotedText();
 hideUnsafeImages();
