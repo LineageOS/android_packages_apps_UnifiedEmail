@@ -44,6 +44,10 @@
   *** setAnimatedHeight(...);
 }
 
+-keepclasseswithmembers class com.android.mail.ui.LeaveBehindItem {
+  *** setAnimatedHeight(...);
+}
+
 -keepclasseswithmembers class com.android.mail.ui.ConversationViewFragment$MailJsBridge {
   public <methods>;
 }
