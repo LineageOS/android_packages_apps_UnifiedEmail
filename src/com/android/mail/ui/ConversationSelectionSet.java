@@ -18,7 +18,10 @@
 package com.android.mail.ui;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -69,6 +72,7 @@ public class ConversationSelectionSet implements Parcelable {
 
     private final HashMap<Long, ConversationItemView> mInternalViewMap =
             new HashMap<Long, ConversationItemView>();
+    private final BiMap<String, Long> mConversationUriToIdMap = HashBiMap.create();
 
     @VisibleForTesting
     final ArrayList<ConversationSetObserver> mObservers = new ArrayList<ConversationSetObserver>();
@@ -89,6 +93,7 @@ public class ConversationSelectionSet implements Parcelable {
         boolean initiallyNotEmpty = !mInternalMap.isEmpty();
         mInternalViewMap.clear();
         mInternalMap.clear();
+        mConversationUriToIdMap.clear();
 
         if (mInternalMap.isEmpty() && initiallyNotEmpty) {
             ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
@@ -113,7 +118,7 @@ public class ConversationSelectionSet implements Parcelable {
      * @return true if the conversation exists in the selected set.
      */
     public synchronized boolean contains(Conversation conversation) {
-        return mInternalMap.containsKey(conversation.id);
+        return containsKey(conversation.id);
     }
 
     @Override
@@ -156,8 +161,9 @@ public class ConversationSelectionSet implements Parcelable {
         // Fill out the view map with null. The sizes will match, but
         // we won't have any views available yet to store.
         mInternalViewMap.put(id, null);
+        mConversationUriToIdMap.put(info.uri.toString(), id);
 
-        ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
+        final ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
         dispatchOnChange(observersCopy);
         if (initiallyEmpty) {
             dispatchOnBecomeUnempty(observersCopy);
@@ -169,8 +175,9 @@ public class ConversationSelectionSet implements Parcelable {
         boolean initiallyEmpty = mInternalMap.isEmpty();
         mInternalViewMap.put(id, info);
         mInternalMap.put(id, info.mHeader.conversation);
+        mConversationUriToIdMap.put(info.mHeader.conversation.uri.toString(), id);
 
-        ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
+        final ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
         dispatchOnChange(observersCopy);
         if (initiallyEmpty) {
             dispatchOnBecomeUnempty(observersCopy);
@@ -185,9 +192,12 @@ public class ConversationSelectionSet implements Parcelable {
     private synchronized void removeAll(Collection<Long> ids) {
         final boolean initiallyNotEmpty = !mInternalMap.isEmpty();
 
+        final BiMap<Long, String> inverseMap = mConversationUriToIdMap.inverse();
+
         for (Long id : ids) {
             mInternalViewMap.remove(id);
             mInternalMap.remove(id);
+            inverseMap.remove(id);
         }
 
         ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
@@ -312,7 +322,25 @@ public class ConversationSelectionSet implements Parcelable {
         // The query has run, but we have been in the list
         // Make sure that the list of selected conversations
         // contains only items that are in the result set
-        final Set<Long> selectedConversationsToToggle = new HashSet<Long>(keySet());
+        final Set<Long> batchConversations = new HashSet<Long>(keySet());
+
+        // First ask the ConversationCursor for the list of conversations that have been deleted
+        final Set<String> deletedConversations = cursor.getDeletedItems();
+        // For each of the uris in the deleted set, add the conversation id to the
+        // itemsToRemoveFromBatch set.
+        final Set<Long> itemsToRemoveFromBatch = Sets.newHashSet();
+        for (String conversationUri : deletedConversations) {
+            final Long conversationId = mConversationUriToIdMap.get(conversationUri);
+            if (conversationId != null) {
+                itemsToRemoveFromBatch.add(conversationId);
+            }
+        }
+
+        // Now remove the deleted conversations from the conversation cursor from the set of batch
+        // conversations.  This can prevent the need to iterate over the cursor when the
+        // ConversationCursor indicates that all of the items in the batch selection have been
+        // deleted.
+        batchConversations.removeAll(itemsToRemoveFromBatch);
 
         // Go through the list of what we think is selected,
         // if any of the conversations are not present,
@@ -325,11 +353,14 @@ public class ConversationSelectionSet implements Parcelable {
         // If we believe that there is at least one conversation selected,
         // we need to keep looking to make sure that the conversation is still
         // present
-        while (!selectedConversationsToToggle.isEmpty() && cursor.moveToNext()) {
-            selectedConversationsToToggle.remove(Utils.getConversationId(cursor));
+        while (!batchConversations.isEmpty() && cursor.moveToNext()) {
+            final long conversationId = Utils.getConversationId(cursor);
+            if (batchConversations.remove(conversationId)) {
+                itemsToRemoveFromBatch.add(conversationId);
+            }
         }
 
-        removeAll(selectedConversationsToToggle);
+        removeAll(itemsToRemoveFromBatch);
 
         cursor.moveToPosition(currentPosition);
 
