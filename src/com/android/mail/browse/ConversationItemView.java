@@ -501,11 +501,13 @@ public class ConversationItemView extends View implements SwipeableItemView {
             mChecked = mSelectedConversationSet.contains(mHeader.conversation);
         }
         // Update font color.
-        int fontColor = getFontColor(sDefaultTextColor);
-        boolean fontChanged = false;
+        final int fontColor = getFontColor(sDefaultTextColor);
+        final boolean fontChanged;
         if (mHeader.fontColor != fontColor) {
             fontChanged = true;
             mHeader.fontColor = fontColor;
+        } else {
+            fontChanged = false;
         }
 
         boolean isUnread = mHeader.unread;
@@ -653,13 +655,21 @@ public class ConversationItemView extends View implements SwipeableItemView {
         return subjectText;
     }
 
+    /**
+     * Returns the resource for the text color depending on whether the element is activated or not.
+     * @param defaultColor
+     * @return
+     */
     private int getFontColor(int defaultColor) {
-        return isActivated() && mTabletDevice ? sActivatedTextColor
-                : defaultColor;
+        final boolean isBackGroundBlue = isActivated() && showActivatedText();
+        return isBackGroundBlue ? sActivatedTextColor : defaultColor;
     }
 
     private boolean showActivatedText() {
-        return mTabletDevice;
+        // For activated elements in tablet in conversation mode, we show an activated color, since
+        // the background is dark blue for activated versus gray for non-activated.
+        final boolean isListCollapsed = mContext.getResources().getBoolean(R.bool.list_collapsed);
+        return mTabletDevice && !isListCollapsed;
     }
 
     private void layoutSubject() {
