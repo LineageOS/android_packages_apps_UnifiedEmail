@@ -1100,6 +1100,9 @@ public final class ConversationCursor implements Cursor {
                 }
                 mUndoSequence = 0;
                 conversationCursor.recalibratePosition();
+                // Notify listeners that there was a change to the underlying
+                // cursor to add back in some items.
+                conversationCursor.notifyDataChanged();
             }
         }
 
