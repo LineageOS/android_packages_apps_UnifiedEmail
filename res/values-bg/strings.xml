@@ -26,8 +26,10 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Прикачване на файл"</string>
-    <string name="add_photo_attachment" msgid="8548176514426323119">"Прикачване на снимка"</string>
-    <string name="add_video_attachment" msgid="4284457799113546464">"Прикачване на клип"</string>
+    <!-- no translation found for add_photo_attachment (3738882100645552858) -->
+    <skip />
+    <!-- no translation found for add_video_attachment (8916625983712820173) -->
+    <skip />
     <string name="save_draft" msgid="5555744208032445632">"Запазване на черновата"</string>
     <string name="discard" msgid="1714960202994370243">"Отхвърляне"</string>
     <string name="compose" msgid="1473559896062432878">"Ново съобщение"</string>
@@ -151,10 +153,8 @@
     <item quantity="one" msgid="3657821200245019288">"Преместване на кореспонденция"</item>
     <item quantity="other" msgid="1685896770174368261">"Преместване на <xliff:g id="ID_1">%1$d</xliff:g> кореспонденции"</item>
   </plurals>
-    <!-- no translation found for content_description (517417382820459541) -->
-    <skip />
-    <!-- no translation found for content_description_today (3358818622191430053) -->
-    <skip />
+    <string name="content_description" msgid="517417382820459541">"<xliff:g id="SENDER">%1$s</xliff:g> относно <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> на <xliff:g id="DATE">%4$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="3358818622191430053">"<xliff:g id="SENDER">%1$s</xliff:g> относно <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> в <xliff:g id="TIME">%4$s</xliff:g>"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> – <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -369,10 +369,8 @@
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="compose_component_name" msgid="1673799619444668402">"com.android.mail.compose.ComposeActivity"</string>
     <string name="autosend_component_name" msgid="3204704549005619187"></string>
-    <!-- no translation found for senders_split_token (5895854795157860258) -->
-    <skip />
-    <!-- no translation found for draft_count_format (4869620346730961822) -->
-    <skip />
+    <string name="senders_split_token" msgid="5895854795157860258">", "</string>
+    <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Всички папки"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Скорошни папки"</string>
 </resources>
