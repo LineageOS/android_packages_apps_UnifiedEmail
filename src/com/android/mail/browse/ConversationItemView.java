@@ -773,6 +773,9 @@ public class ConversationItemView extends View implements SwipeableItemView {
             if (!ConversationItemViewCoordinates.displaySendersInline(mMode)) {
                 sendersY += totalWidth <= mSendersWidth ? mCoordinates.sendersLineHeight / 2 : 0;
             }
+            if (mSendersWidth < 0) {
+                mSendersWidth = 0;
+            }
             totalWidth = ellipsize(fixedWidth, sendersY);
             mHeader.sendersDisplayLayout = new StaticLayout(mHeader.sendersDisplayText, sPaint,
                     mSendersWidth, Alignment.ALIGN_NORMAL, 1, 0, true);
