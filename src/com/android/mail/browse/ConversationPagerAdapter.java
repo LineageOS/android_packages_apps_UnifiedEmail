@@ -280,9 +280,11 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             } else {
                 // notify unaffected fragment items of the change, so they can re-render
                 // (the change may have been to the labels for a single conversation, for example)
-                ConversationViewFragment frag = (ConversationViewFragment) getFragmentAt(pos);
-                // reload what we think is in the current position.
-                frag.onConversationUpdated(new Conversation(getCursor()));
+                final ConversationViewFragment frag = (ConversationViewFragment) getFragmentAt(pos);
+                if (frag != null) {
+                    // reload what we think is in the current position.
+                    frag.onConversationUpdated(new Conversation(getCursor()));
+                }
             }
         }
 
