@@ -319,11 +319,6 @@ public class ConversationSelectionSet implements Parcelable {
             cursor.moveToPosition(-1);
         }
 
-        // The query has run, but we have been in the list
-        // Make sure that the list of selected conversations
-        // contains only items that are in the result set
-        final Set<Long> batchConversations = new HashSet<Long>(keySet());
-
         // First ask the ConversationCursor for the list of conversations that have been deleted
         final Set<String> deletedConversations = cursor.getDeletedItems();
         // For each of the uris in the deleted set, add the conversation id to the
@@ -336,29 +331,22 @@ public class ConversationSelectionSet implements Parcelable {
             }
         }
 
-        // Now remove the deleted conversations from the conversation cursor from the set of batch
-        // conversations.  This can prevent the need to iterate over the cursor when the
-        // ConversationCursor indicates that all of the items in the batch selection have been
-        // deleted.
-        batchConversations.removeAll(itemsToRemoveFromBatch);
+        // Get the set of the items that had been in the batch
+        final Set<Long> batchConversationToCheck = new HashSet<Long>(keySet());
 
-        // Go through the list of what we think is selected,
-        // if any of the conversations are not present,
-        // untoggle them from the list
-        //
-        // Only continue going through the list while we are unsure
-        // if a conversation is selected.  If we don't stop when
-        // there are no more items in the selectedConversationsToToggle
-        // collection, this will force the whole collection list to be loaded
-        // If we believe that there is at least one conversation selected,
-        // we need to keep looking to make sure that the conversation is still
-        // present
-        while (!batchConversations.isEmpty() && cursor.moveToNext()) {
-            final long conversationId = Utils.getConversationId(cursor);
-            if (batchConversations.remove(conversationId)) {
-                itemsToRemoveFromBatch.add(conversationId);
-            }
+        // Remove all of the items that we know are missing.  This will leave the items where
+        // we need to check for existence in the cursor
+        batchConversationToCheck.removeAll(itemsToRemoveFromBatch);
+
+        // While there are items to check, walk through the cursor to determine if the item is
+        // still specified in the cursor.  If it is, we can remove it from the items to check
+        while (!batchConversationToCheck.isEmpty() && cursor.moveToNext()) {
+            batchConversationToCheck.remove(Utils.getConversationId(cursor));
         }
+
+        // At this point any of the item that are remaining in the batchConversationToCheck set are
+        // to be removed from the selected conversation set
+        itemsToRemoveFromBatch.addAll(batchConversationToCheck);
 
         removeAll(itemsToRemoveFromBatch);
 
