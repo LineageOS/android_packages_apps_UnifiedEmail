@@ -340,21 +340,26 @@ public final class ConversationViewFragment extends Fragment implements
     }
 
     private CharSequence createSubjectSnippet(CharSequence subject, CharSequence snippet) {
+        if (TextUtils.isEmpty(subject) && TextUtils.isEmpty(snippet)) {
+            return "";
+        }
+        if (subject == null) {
+            subject = "";
+        }
+        if (snippet == null) {
+            snippet = "";
+        }
         SpannableStringBuilder subjectText = new SpannableStringBuilder(mContext.getString(
                 R.string.subject_and_snippet, subject, snippet));
         ensureSubjectSnippetColors();
         int snippetStart = 0;
         int fontColor = sSubjectColor;
-        if (subject != null) {
-            subjectText.setSpan(new ForegroundColorSpan(fontColor), 0, subject.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            snippetStart = subject.length() + 1;
-        }
-        if (snippet != null) {
-            fontColor = sSnippetColor;
-            subjectText.setSpan(new ForegroundColorSpan(fontColor), snippetStart, subjectText
-                    .length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
+        subjectText.setSpan(new ForegroundColorSpan(fontColor), 0, subject.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        snippetStart = subject.length() + 1;
+        fontColor = sSnippetColor;
+        subjectText.setSpan(new ForegroundColorSpan(fontColor), snippetStart, subjectText.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return subjectText;
     }
 
