@@ -274,13 +274,15 @@ public final class FolderListFragment extends ListFragment implements
         } else {
             folder = new Folder((Cursor) item);
         }
-        // Since we may be looking at hierarchical views, if we can determine
-        // the parent of the folder we have tapped, set it here.
-        // If we are looking at the folder we are already viewing, don't update
-        // its parent!
-        folder.parent = folder.equals(mParentFolder) ? null : mParentFolder;
-        // Go to the conversation list for this folder.
-        mListener.onFolderSelected(folder);
+        if (folder != null) {
+            // Since we may be looking at hierarchical views, if we can
+            // determine the parent of the folder we have tapped, set it here.
+            // If we are looking at the folder we are already viewing, don't
+            // update its parent!
+            folder.parent = folder.equals(mParentFolder) ? null : mParentFolder;
+            // Go to the conversation list for this folder.
+            mListener.onFolderSelected(folder);
+        }
     }
 
     @Override
@@ -384,6 +386,7 @@ public final class FolderListFragment extends ListFragment implements
                 mType = VIEW_HEADER;
                 mFolderType = NOT_A_FOLDER;
             }
+
             private final View getView(int position, View convertView, ViewGroup parent) {
                 if (mType == VIEW_FOLDER) {
                     return getFolderView(position, convertView, parent);
