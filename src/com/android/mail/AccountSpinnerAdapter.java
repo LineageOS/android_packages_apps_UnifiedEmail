@@ -45,7 +45,7 @@ import java.util.ArrayList;
  * This class keeps the account and folder information and returns appropriate views.
  */
 public class AccountSpinnerAdapter extends BaseAdapter {
-    private ConversationListCallbacks mActivityController;
+    private final ConversationListCallbacks mActivityController;
     private final LayoutInflater mInflater;
     /**
      * The position of the current account being viewed.
@@ -218,7 +218,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * Create a spinner adapter with the context and the list of recent folders.
      * @param activity
      * @param context
-     * @param recentFolders
      * @param showAllFolders
      */
     public AccountSpinnerAdapter(ControllableActivity activity, Context context,
@@ -264,6 +263,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public boolean setCurrentFolder(Folder folder) {
         if (folder != null && folder != mCurrentFolder) {
             mCurrentFolder = folder;
+            // This calls notifyDataSetChanged() so another call is unnecessary.
             requestRecentFolders();
             return true;
         }
@@ -485,6 +485,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public void requestRecentFolders() {
         final Uri uri = mCurrentFolder == null ? null : mCurrentFolder.uri;
         mRecentFolderList = mRecentFolders.getRecentFolderList(uri);
+        notifyDataSetChanged();
     }
 
     /**
