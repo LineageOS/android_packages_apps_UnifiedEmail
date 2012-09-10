@@ -97,7 +97,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
      * cause sub-views to update.
      */
     public void render(Attachment attachment, Uri attachmentsListUri, int index,
-            AttachmentPreviewCache attachmentPreviewCache) {
+            AttachmentPreviewCache attachmentPreviewCache, boolean loaderResult) {
         if (attachment == null) {
             setVisibility(View.INVISIBLE);
             return;

@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -81,6 +82,10 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
         mActionHandler = new AttachmentActionHandler(context, this);
     }
 
+    public void initialize(FragmentManager fragmentManager) {
+        mActionHandler.initialize(fragmentManager);
+    }
+
     public static MessageAttachmentBar inflate(LayoutInflater inflater, ViewGroup parent) {
         MessageAttachmentBar view = (MessageAttachmentBar) inflater.inflate(
                 R.layout.conversation_message_attachment_bar, parent, false);
@@ -93,7 +98,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
      * cause sub-views to update.
      *
      */
-    public void render(Attachment attachment) {
+    public void render(Attachment attachment, boolean loaderResult) {
         final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
         mActionHandler.setAttachment(mAttachment);
@@ -120,7 +125,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
         }
 
         updateActions();
-        mActionHandler.updateStatus();
+        mActionHandler.updateStatus(loaderResult);
     }
 
     @Override

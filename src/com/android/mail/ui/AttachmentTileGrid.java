@@ -16,6 +16,8 @@
 
 package com.android.mail.ui;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -48,6 +50,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
     private int mColumnCount;
     private List<Attachment> mAttachments;
     private HashMap<String, AttachmentPreview> mAttachmentPreviews;
+    private FragmentManager mFragmentManager;
 
     public AttachmentTileGrid(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -60,27 +63,31 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
     /**
      * Configures the grid to add {@link Attachment}s information to the views.
      */
-    public void configureGrid(Uri attachmentsListUri, List<Attachment> list) {
+    public void configureGrid(FragmentManager fragmentManager, Uri attachmentsListUri,
+            List<Attachment> list, boolean loaderResult) {
+        mFragmentManager = fragmentManager;
         mAttachmentsListUri = attachmentsListUri;
         mAttachments = list;
         // Adding tiles to grid and filling in attachment information
         int index = 0;
         for (Attachment attachment : list) {
-            addMessageTileFromAttachment(attachment, index++);
+            addMessageTileFromAttachment(attachment, index++, loaderResult);
         }
     }
 
-    private void addMessageTileFromAttachment(Attachment attachment, int index) {
-        final AttachmentTile attachmentTile;
+    private void addMessageTileFromAttachment(Attachment attachment, int index,
+            boolean loaderResult) {
+        final MessageAttachmentTile attachmentTile;
 
         if (getChildCount() <= index) {
             attachmentTile = MessageAttachmentTile.inflate(mInflater, this);
+            attachmentTile.initialize(mFragmentManager);
             addView(attachmentTile);
         } else {
-            attachmentTile = (AttachmentTile) getChildAt(index);
+            attachmentTile = (MessageAttachmentTile) getChildAt(index);
         }
 
-        attachmentTile.render(attachment, mAttachmentsListUri, index, this);
+        attachmentTile.render(attachment, mAttachmentsListUri, index, this, loaderResult);
     }
 
     public ComposeAttachmentTile addComposeTileFromAttachment(Attachment attachment) {
@@ -88,7 +95,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
                 ComposeAttachmentTile.inflate(mInflater, this);
 
         addView(attachmentTile);
-        attachmentTile.render(attachment, null, -1, this);
+        attachmentTile.render(attachment, null, -1, this, false);
 
         return attachmentTile;
     }
