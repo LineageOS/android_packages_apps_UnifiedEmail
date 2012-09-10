@@ -22,11 +22,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/attachment_bg_holo">
 
-    <ImageView
-        android:id="@+id/attachment_tile_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+    <include layout="@layout/attachment_preview"/>
 
     <LinearLayout
         android:id="@+id/attachment_tile_text_container"
