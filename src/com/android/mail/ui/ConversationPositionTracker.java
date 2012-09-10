@@ -203,7 +203,7 @@ public class ConversationPositionTracker {
             // If the conversation is no longer found in the list, try to save the same position if
             // it is still a valid position. Otherwise, go back to a valid position until we can
             // find a valid one.
-            if (mConversation.position >= listSize) {
+            if (mConversation.position >= listSize || newPosition >= listSize) {
                 // Go to the last position since our expected position is past this somewhere.
                 newPosition = cursor.getCount() - 1;
             }
