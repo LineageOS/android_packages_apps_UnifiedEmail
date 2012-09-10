@@ -1091,13 +1091,17 @@ public final class ConversationViewFragment extends Fragment implements
                 notifyConversationLoaded(mConversation);
                 dismissLoadingStatus();
             }
-            final Set<String> emailAddresses = Sets.newHashSet();
-            for (Address addr : mAddressCache.values()) {
-                emailAddresses.add(addr.getAddress());
+            // We are not able to use the loader manager unless this fragment is added to the
+            // activity
+            if (isAdded()) {
+                final Set<String> emailAddresses = Sets.newHashSet();
+                for (Address addr : mAddressCache.values()) {
+                    emailAddresses.add(addr.getAddress());
+                }
+                mContactLoaderCallbacks.setSenders(emailAddresses);
+                getLoaderManager().restartLoader(CONTACT_LOADER_ID, Bundle.EMPTY,
+                        mContactLoaderCallbacks);
             }
-            mContactLoaderCallbacks.setSenders(emailAddresses);
-            getLoaderManager().restartLoader(CONTACT_LOADER_ID, Bundle.EMPTY,
-                    mContactLoaderCallbacks);
         }
 
         @Override
