@@ -215,6 +215,21 @@ public final class ConversationViewFragment extends Fragment implements
         }
     };
     private boolean mEnableContentReadySignal;
+    private Runnable mDelayedShow = new Runnable() {
+        @Override
+        public void run() {
+            mBackgroundView.setVisibility(View.VISIBLE);
+            String senders = mConversation.getSenders(mContext);
+            if (!TextUtils.isEmpty(senders) && mConversation.subject != null) {
+                mInfoView.setVisibility(View.VISIBLE);
+                mSendersView.setText(senders);
+                mSubjectView.setText(createSubjectSnippet(mConversation.subject,
+                        mConversation.getSnippet()));
+            } else {
+                mProgressView.setVisibility(View.VISIBLE);
+            }
+        }
+    };
 
     private static final String ARG_ACCOUNT = "account";
     public static final String ARG_CONVERSATION = "conversation";
@@ -222,6 +237,7 @@ public final class ConversationViewFragment extends Fragment implements
     private static final String BUNDLE_VIEW_STATE = "viewstate";
     private static int sSubjectColor = Integer.MIN_VALUE;
     private static int sSnippetColor = Integer.MIN_VALUE;
+    private static long sMinDelay = -1;
 
     private static final boolean DEBUG_DUMP_CONVERSATION_HTML = false;
     private static final boolean DISABLE_OFFSCREEN_LOADING = false;
@@ -1134,19 +1150,19 @@ public final class ConversationViewFragment extends Fragment implements
     }
 
     private void showLoadingStatus() {
-        mBackgroundView.setVisibility(View.VISIBLE);
-        String senders = mConversation.getSenders(mContext);
-        if (!TextUtils.isEmpty(senders) && mConversation.subject != null) {
-            mInfoView.setVisibility(View.VISIBLE);
-            mSendersView.setText(senders);
-            mSubjectView.setText(createSubjectSnippet(mConversation.subject,
-                    mConversation.getSnippet()));
-        } else {
-            mProgressView.setVisibility(View.VISIBLE);
+        if (sMinDelay == -1) {
+            sMinDelay = mContext.getResources()
+                    .getInteger(R.integer.conversationview_show_loading_delay);
         }
+        mHandler.postDelayed(mDelayedShow, sMinDelay);
     }
 
     private void dismissLoadingStatus() {
+        if (mBackgroundView.getVisibility() != View.VISIBLE) {
+            // The runnable hasn't run yet, so just remove it.
+            mHandler.removeCallbacks(mDelayedShow);
+            return;
+        }
         // Fade out the info view.
         if (mBackgroundView.getVisibility() == View.VISIBLE) {
             Animator animator = AnimatorInflater.loadAnimator(mContext, R.anim.fade_out);
@@ -1505,6 +1521,8 @@ public final class ConversationViewFragment extends Fragment implements
         final ConversationViewHeader headerView = (ConversationViewHeader) mConversationContainer
                 .findViewById(R.id.conversation_header);
         mConversation = conv;
-        headerView.onConversationUpdated(conv);
+        if (headerView != null) {
+            headerView.onConversationUpdated(conv);
+        }
     }
 }
