@@ -173,7 +173,9 @@ public class SwipeableListView extends ListView implements Callback {
 
     @Override
     public void onChildDismissed(SwipeableItemView v) {
-        v.dismiss();
+        if (v != null) {
+            v.dismiss();
+        }
     }
 
     // Call this whenever a new action is taken; this forces a commit of any
