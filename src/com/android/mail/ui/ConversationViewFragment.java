@@ -408,7 +408,14 @@ public final class ConversationViewFragment extends Fragment implements
         // On JB or newer, we use the 'webkitAnimationStart' DOM event to signal load complete
         // Below JB, try to speed up initial render by having the webview do supplemental draws to
         // custom a software canvas.
-        mEnableContentReadySignal = Utils.isRunningJellybeanOrLater();
+        // TODO(mindyp):
+        //PAGE READINESS SIGNAL FOR JELLYBEAN AND NEWER
+        // Notify the app on 'webkitAnimationStart' of a simple dummy element with a simple no-op
+        // animation that immediately runs on page load. The app uses this as a signal that the
+        // content is loaded and ready to draw, since WebView delays firing this event until the
+        // layers are composited and everything is ready to draw.
+        // This signal does not seem to be reliable, so just use the old method for now.
+        mEnableContentReadySignal = false;
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
