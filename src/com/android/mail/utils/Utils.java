@@ -48,6 +48,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.android.mail.R;
+import com.android.mail.browse.ConversationCursor;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -1026,6 +1027,16 @@ public class Utils {
             executeConversationCursorCommand(mCursor, request, key);
             return null;
         }
+    }
+
+
+    /**
+     * This utility method returns the conversation ID at the current cursor position.
+     * @return the conversation id at the cursor.
+     */
+    public static long getConversationId(ConversationCursor cursor) {
+        final Conversation conversation = new Conversation(cursor);
+        return conversation.id;
     }
 
     /**
