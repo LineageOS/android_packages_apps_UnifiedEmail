@@ -19,7 +19,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:background="@color/attachment_bg_color">
     <ImageView
         android:id="@+id/attachment_tile_image"
@@ -30,5 +29,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/default_image"
-        android:id="@+id/attachment_default_image"/>
+        android:id="@+id/attachment_default_image"
+        android:layout_centerInParent="true"/>
 </RelativeLayout>
