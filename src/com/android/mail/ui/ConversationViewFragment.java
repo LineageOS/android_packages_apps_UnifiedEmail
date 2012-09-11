@@ -1176,6 +1176,8 @@ public final class ConversationViewFragment extends Fragment implements
             sMinDelay = mContext.getResources()
                     .getInteger(R.integer.conversationview_show_loading_delay);
         }
+        // In case there were any other instances around, get rid of them.
+        mHandler.removeCallbacks(mDelayedShow);
         mHandler.postDelayed(mDelayedShow, sMinDelay);
     }
 
