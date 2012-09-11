@@ -63,7 +63,7 @@
     <bool name="show_two_pane_search_results">false</bool>
 
     <!-- Whether to show the archive item as disabled rather than hiding it entirely -->
-    <bool name="show_disabled_archive_menu_item">true</bool>
+    <bool name="show_disabled_archive_menu_item">false</bool>
 
     <!-- Whether to show conversation subject in conversation view -->
     <bool name="show_conversation_subject">true</bool>
