@@ -345,7 +345,23 @@ class AttachmentsView extends LinearLayout {
     }
 
     public void focusLastAttachment() {
-        mTileGrid.getChildAt(mTileGrid.getChildCount() - 1).requestFocus();
+        Attachment lastAttachment = mAttachments.get(mAttachments.size() - 1);
+        View lastView = null;
+        int last = 0;
+        if (AttachmentTile.isTiledAttachment(lastAttachment)) {
+            last = mTileGrid.getChildCount() - 1;
+            if (last > 0) {
+                lastView = mTileGrid.getChildAt(last);
+            }
+        } else {
+            last = getChildCount() - 1;
+            if (last > 0) {
+                lastView = getChildAt(last);
+            }
+        }
+        if (lastView != null) {
+            lastView.requestFocus();
+        }
     }
 
     /**

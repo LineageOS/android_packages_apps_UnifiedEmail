@@ -16,7 +16,9 @@
      limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/AttachmentContainer">
+    style="@style/AttachmentContainer"
+    android:focusableInTouchMode="true"
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/thumbnail"
