@@ -267,7 +267,8 @@ public class Account extends android.accounts.Account implements Parcelable {
         fullFolderListUri = Utils.getValidUri(json
                 .optString(UIProvider.AccountColumns.FULL_FOLDER_LIST_URI));
         searchUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SEARCH_URI));
-        accountFromAddresses = UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES;
+        accountFromAddresses = json.optString(UIProvider.AccountColumns.ACCOUNT_FROM_ADDRESSES,
+                "");
         saveDraftUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SAVE_DRAFT_URI));
         sendMessageUri = Utils.getValidUri(json.optString(UIProvider.AccountColumns.SEND_MAIL_URI));
         expungeMessageUri = Utils.getValidUri(json
