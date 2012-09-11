@@ -78,4 +78,7 @@
     <bool name="display_folder_colors_in_widget">false</bool>
 
     <integer name="max_num_notification_digest_items">10</integer>
+
+    <!-- Wait at least this long for the webview to render conversation content before showing the loading dialog -->
+    <integer name="conversationview_show_loading_delay">500</integer>
 </resources>
