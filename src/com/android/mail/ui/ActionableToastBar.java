@@ -160,7 +160,7 @@ public class ActionableToastBar extends LinearLayout {
     private Animator getShowAnimation() {
         if (mShowAnimation == null) {
             mShowAnimation = AnimatorInflater.loadAnimator(getContext(),
-                    R.animator.fade_in);
+                    R.anim.fade_in);
             mShowAnimation.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -184,7 +184,7 @@ public class ActionableToastBar extends LinearLayout {
     private Animator getHideAnimation() {
         if (mHideAnimation == null) {
             mHideAnimation = AnimatorInflater.loadAnimator(getContext(),
-                    R.animator.fade_out);
+                    R.anim.fade_out);
             mHideAnimation.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
