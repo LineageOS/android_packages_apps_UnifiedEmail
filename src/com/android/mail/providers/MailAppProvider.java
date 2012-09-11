@@ -479,7 +479,8 @@ public abstract class MailAppProvider extends ContentProvider
                             addAccountImpl(account, accountEntry.mAccountsQueryUri,
                                     false /* don't notify */);
                         } else {
-                            LogUtils.e("Dropping account without provider: %s", account.name);
+                            LogUtils.e(LOG_TAG, "Dropping account without provider: %s",
+                                    account.name);
                         }
                     } else {
                         LogUtils.e(LOG_TAG, "Dropping account that doesn't specify settings");
