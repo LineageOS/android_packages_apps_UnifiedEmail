@@ -23,4 +23,5 @@
     <color name="subject_text_color_read">#444444</color>
     <color name="snippet_text_color_read">#666666</color>
     <color name="senders_text_color_read">#444444</color>
+    <color name="folder_list_background_color">@android:color/transparent</color>
 </resources>
