@@ -815,6 +815,9 @@ public final class ConversationViewFragment extends Fragment implements
 
         mTemplates.reset();
 
+        // In devices with non-integral density multiplier, screen pixels translate to non-integral
+        // web pixels. Keep track of the error that occurs when we cast all heights to int
+        float error = 0f;
         for (int i = blockToReplace.getStart(), end = blockToReplace.getEnd(); i <= end; i++) {
             cursor.moveToPosition(i);
             final ConversationMessage msg = cursor.getMessage();
@@ -824,9 +827,19 @@ public final class ConversationViewFragment extends Fragment implements
 
             final int headerPx = measureOverlayHeight(header);
             final int footerPx = measureOverlayHeight(footer);
+            error += mWebView.screenPxToWebPxError(headerPx)
+                    + mWebView.screenPxToWebPxError(footerPx);
+
+            // When the error becomes greater than 1 pixel, make the next header 1 pixel taller
+            int correction = 0;
+            if (error >= 1) {
+                correction = 1;
+                error -= 1;
+            }
 
             mTemplates.appendMessageHtml(msg, false /* expanded */, msg.alwaysShowImages,
-                    mWebView.screenPxToWebPx(headerPx), mWebView.screenPxToWebPx(footerPx));
+                    mWebView.screenPxToWebPx(headerPx) + correction,
+                    mWebView.screenPxToWebPx(footerPx));
             replacements.add(header);
             replacements.add(footer);
 
