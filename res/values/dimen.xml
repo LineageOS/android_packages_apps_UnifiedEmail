@@ -101,4 +101,5 @@
     <dimen name="wait_padding">16dp</dimen>
     <dimen name="senders_textview_top_padding">-4dp</dimen>
     <dimen name="senders_textview_height">30dp</dimen>
+    <dimen name="info_view_margin">8dip</dimen>
 </resources>
