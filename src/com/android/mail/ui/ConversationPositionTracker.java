@@ -180,37 +180,49 @@ public class ConversationPositionTracker {
         if (!isDataLoaded(cursor) || listSize == 0) {
             return invalidPosition;
         }
-        // Update the internal state for where the current conversation is in
-        // the list.  Start from the beginning and find the current conversation in it.
+
+        // We don't want iterating over this cusor to trigger a network request
+        final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
         int newPosition = 0;
-        while (cursor.moveToPosition(newPosition)) {
-            if (Utils.getConversationId(cursor) == mConversation.id) {
-                mConversation.position = newPosition;
-                final boolean changed = (mConversation.position != newPosition);
-                // Pre-emptively try to load the next cursor position so that the cursor window
-                // can be filled. The odd behavior of the ConversationCursor requires us to do this
-                // to ensure the adjacent conversation information is loaded for calls to hasNext.
-                cursor.moveToPosition(newPosition + 1);
-                return newPosition;
+        try {
+            // Update the internal state for where the current conversation is in
+            // the list.  Start from the beginning and find the current conversation in it.
+            while (cursor.moveToPosition(newPosition)) {
+                if (Utils.getConversationId(cursor) == mConversation.id) {
+                    mConversation.position = newPosition;
+                    final boolean changed = (mConversation.position != newPosition);
+                    // Pre-emptively try to load the next cursor position so that the cursor window
+                    // can be filled. The odd behavior of the ConversationCursor requires us to do
+                    // this to ensure the adjacent conversation information is loaded for calls to
+                    // hasNext.
+                    cursor.moveToPosition(newPosition + 1);
+                    return newPosition;
+                }
+                newPosition++;
             }
-            newPosition++;
-        }
-        // If the conversation is no longer found in the list, try to save the same position if
-        // it is still a valid position. Otherwise, go back to a valid position until we can find
-        // a valid one.
-        if (mConversation.position >= listSize) {
-            // Go to the last position since our expected position is past this somewhere.
-            newPosition = cursor.getCount() - 1;
+            // If the conversation is no longer found in the list, try to save the same position if
+            // it is still a valid position. Otherwise, go back to a valid position until we can
+            // find a valid one.
+            if (mConversation.position >= listSize) {
+                // Go to the last position since our expected position is past this somewhere.
+                newPosition = cursor.getCount() - 1;
+            }
+
+            // Did not keep the same conversation, but could still be a valid conversation.
+            if (isDataLoaded(cursor)){
+                LogUtils.d(LOG_TAG, "ConversationPositionTracker: Could not find conversation %s" +
+                        " in the cursor. Moving to position %d ", mConversation.toString(),
+                        newPosition);
+                cursor.moveToPosition(newPosition);
+                mConversation = new Conversation(cursor);
+            }
+
+        } finally {
+            if (networkWasEnabled) {
+                Utils.enableConversationCursorNetworkAccess(cursor);
+            }
         }
 
-        // Did not keep the same conversation, but could still be a valid conversation.
-        if (isDataLoaded(cursor)){
-            LogUtils.d(LOG_TAG, "ConversationPositionTracker: Could not find conversation %s" +
-                    " in the cursor. Moving to position %d ", mConversation.toString(),
-                    newPosition);
-            cursor.moveToPosition(newPosition);
-            mConversation = new Conversation(cursor);
-        }
         return newPosition;
     }
 

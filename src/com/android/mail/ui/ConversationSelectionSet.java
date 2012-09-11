@@ -297,6 +297,9 @@ public class ConversationSelectionSet implements Parcelable {
             return;
         }
 
+        // We don't want iterating over this cusor to trigger a network request
+        final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
+
         // Get the current position of the cursor, so it can be reset
         final int currentPosition = cursor.getPosition();
         if (currentPosition != -1) {
@@ -329,6 +332,9 @@ public class ConversationSelectionSet implements Parcelable {
         removeAll(selectedConversationsToToggle);
 
         cursor.moveToPosition(currentPosition);
-    }
 
+        if (networkWasEnabled) {
+            Utils.enableConversationCursorNetworkAccess(cursor);
+        }
+    }
 }
