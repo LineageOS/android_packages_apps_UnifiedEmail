@@ -71,6 +71,7 @@ import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.ConversationViewAdapter.SuperCollapsedBlockItem;
 import com.android.mail.browse.ConversationViewHeader;
 import com.android.mail.browse.ConversationWebView;
+import com.android.mail.browse.ConversationWebView.ContentSizeChangeListener;
 import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationController;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
@@ -230,6 +231,8 @@ public final class ConversationViewFragment extends Fragment implements
             }
         }
     };
+
+    private ContentSizeChangeListener mWebViewSizeChangeListener;
 
     private static final String ARG_ACCOUNT = "account";
     public static final String ARG_CONVERSATION = "conversation";
@@ -413,16 +416,6 @@ public final class ConversationViewFragment extends Fragment implements
                 LogUtils.i(LOG_TAG, "JS: %s (%s:%d)", consoleMessage.message(),
                         consoleMessage.sourceId(), consoleMessage.lineNumber());
                 return true;
-            }
-        });
-        mWebView.setContentSizeChangeListener(new ConversationWebView.ContentSizeChangeListener() {
-            @Override
-            public void onHeightChange(int h) {
-                // When WebKit says the DOM height has changed, re-measure bodies and re-position
-                // their headers.
-                // This is separate from the typical JavaScript DOM change listeners because
-                // cases like NARROW_COLUMNS text reflow do not trigger DOM events.
-                mWebView.loadUrl("javascript:measurePositions();");
             }
         });
 
@@ -1147,7 +1140,20 @@ public final class ConversationViewFragment extends Fragment implements
      * been loaded.
      */
     public void notifyConversationLoaded(Conversation c) {
-        // Do nothing.
+        if (mWebViewSizeChangeListener == null) {
+            mWebViewSizeChangeListener = new ConversationWebView.ContentSizeChangeListener() {
+                @Override
+                public void onHeightChange(int h) {
+                    // When WebKit says the DOM height has changed, re-measure
+                    // bodies and re-position their headers.
+                    // This is separate from the typical JavaScript DOM change
+                    // listeners because cases like NARROW_COLUMNS text reflow do not trigger DOM
+                    // events.
+                    mWebView.loadUrl("javascript:measurePositions();");
+                }
+            };
+        }
+        mWebView.setContentSizeChangeListener(mWebViewSizeChangeListener);
     }
 
     /**
