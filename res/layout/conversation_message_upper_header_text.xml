@@ -34,7 +34,7 @@
         android:layout_alignParentRight="true"
         android:visibility="gone"
         android:minHeight="24dp"
-        android:gravity="bottom"
+        android:layout_marginTop="4dp"
         android:lines="1"
         style="@style/MessageHeaderExtraSmallStyle" />
     <ImageView
@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/upper_date"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
         android:src="@drawable/ic_attachment_holo_light" />
@@ -52,9 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/attachment"
         android:layout_alignParentLeft="true"
-        android:layout_alignBaseline="@id/upper_date"
         style="@style/MessageSenderNameStyle"
-        android:layout_marginTop="0dip"
         android:singleLine="true" />
     <ImageView
         android:id="@+id/presence"
