@@ -43,6 +43,7 @@ import com.android.mail.utils.LogUtils;
 public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHolder {
     protected Attachment mAttachment;
     private ImageView mIcon;
+    private ImageView mDefaultIcon;
     private ThumbnailLoadTask mThumbnailTask;
     private TextView mTitle;
     private TextView mSubtitle;
@@ -78,6 +79,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
         mTitle = (TextView) findViewById(R.id.attachment_tile_title);
         mSubtitle = (TextView) findViewById(R.id.attachment_tile_subtitle);
         mIcon = (ImageView) findViewById(R.id.attachment_tile_image);
+        mDefaultIcon = (ImageView) findViewById(R.id.attachment_default_image);
     }
 
     @Override
@@ -132,11 +134,13 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     }
 
     public void setThumbnailToDefault() {
-        mIcon.setImageResource(R.drawable.default_image);
+        mDefaultIcon.setVisibility(View.VISIBLE);
         mDefaultThumbnailSet = true;
     }
 
     public void setThumbnail(Bitmap result) {
+        // We got a real thumbnail; hide the default thumbnail.
+        mDefaultIcon.setVisibility(View.GONE);
         mIcon.setImageBitmap(result);
         if (result.getWidth() < mIcon.getWidth() || result.getHeight() < mIcon.getHeight()) {
             mIcon.setScaleType(ScaleType.CENTER);
