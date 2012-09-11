@@ -101,8 +101,6 @@ public class ConversationItemViewModel {
     // Standard scaled dimen used to detect if the scale of text has changed.
     public int standardScaledDimen;
 
-    public String fromSnippetInstructions;
-
     public long maxMessageId;
 
     public boolean checkboxVisible;
@@ -245,8 +243,7 @@ public class ConversationItemViewModel {
 
     private Object getConvInfo() {
         return conversation.conversationInfo != null ?
-                conversation.conversationInfo :
-                    TextUtils.isEmpty(fromSnippetInstructions) ? "" : fromSnippetInstructions;
+                conversation.conversationInfo : conversation.getSnippet();
     }
 
     /**
