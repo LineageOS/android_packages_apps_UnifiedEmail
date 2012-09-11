@@ -1500,4 +1500,11 @@ public final class ConversationViewFragment extends Fragment implements
             return null;
         }
     }
+
+    public void onConversationUpdated(Conversation conv) {
+        final ConversationViewHeader headerView = (ConversationViewHeader) mConversationContainer
+                .findViewById(R.id.conversation_header);
+        mConversation = conv;
+        headerView.onConversationUpdated(conv);
+    }
 }
