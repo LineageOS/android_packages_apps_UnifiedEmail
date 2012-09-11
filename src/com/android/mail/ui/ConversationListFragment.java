@@ -48,6 +48,7 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.providers.UIProvider.Swipe;
 import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -582,7 +583,8 @@ public final class ConversationListFragment extends ListFragment implements
             mListView.enableSwipe(false);
         } else {
             int action;
-            if (ConversationListContext.isSearchResult(mViewContext)) {
+            if (ConversationListContext.isSearchResult(mViewContext)
+                    || (mFolder != null && mFolder.type == FolderType.SPAM)) {
                 action = R.id.delete;
             } else if (mFolder == null) {
                 action = R.id.remove_folder;
