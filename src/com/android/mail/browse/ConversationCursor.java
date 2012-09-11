@@ -44,6 +44,7 @@ import com.android.mail.providers.UIProvider.ConversationOperations;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +52,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * ConversationCursor is a wrapper around a conversation list cursor that provides update/delete
@@ -370,6 +372,31 @@ public final class ConversationCursor implements Cursor {
     }
 
     /**
+     * Returns the conversation uris for the Conversations that the ConversationCursor is treating
+     * as deleted.  This is an optimization to allow clients to determine if an item has been
+     * removed, without having to iterate through the whole cursor
+     */
+    public Set<String> getDeletedItems() {
+        synchronized (mCacheMapLock) {
+            // Walk through the cache and return the list of uris that have been deleted
+            final Set<String> deletedItems = Sets.newHashSet();
+            final Iterator<HashMap.Entry<String, ContentValues>> iter =
+                    mCacheMap.entrySet().iterator();
+            while (iter.hasNext()) {
+                final HashMap.Entry<String, ContentValues> entry = iter.next();
+                final ContentValues values = entry.getValue();
+                if (values.containsKey(DELETED_COLUMN)) {
+                    // Since clients of the conversation cursor see conversation ConversationCursor
+                    // provider uris, we need to make sure that this also returns these uris
+                    final Uri conversationUri = Uri.parse(entry.getKey());
+                    deletedItems.add(uriToCachingUriString(conversationUri)) ;
+                }
+            }
+            return deletedItems;
+        }
+    }
+
+    /**
      * Add a listener for this cursor; we'll notify it when our data changes
      */
     public void addListener(ConversationListener listener) {
@@ -400,7 +427,7 @@ public final class ConversationCursor implements Cursor {
      * @return a forwarding uri to ConversationProvider
      */
     private static String uriToCachingUriString (Uri uri) {
-        String provider = uri.getAuthority();
+        final String provider = uri.getAuthority();
         return uri.getScheme() + "://" + ConversationProvider.AUTHORITY
                 + "/" + provider + uri.getPath();
     }
@@ -1544,13 +1571,6 @@ public final class ConversationCursor implements Cursor {
             cv.put(columnNames[i], values[i]);
         }
         return updateValues(context, conversations, cv);
-    }
-
-    public int updateBoolean(Context context, String conversationUri, String columnName,
-            boolean value) {
-        Conversation conv = new Conversation();
-        conv.uri = Uri.parse(conversationUri);
-        return updateBoolean(context, conv, columnName, value);
     }
 
     /**
