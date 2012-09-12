@@ -50,7 +50,6 @@ import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.providers.UIProvider.Swipe;
-import com.android.mail.ui.SwipeableListView.SwipeCompleteListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -62,7 +61,7 @@ import java.util.Collection;
  * The conversation list UI component.
  */
 public final class ConversationListFragment extends ListFragment implements
-        OnItemLongClickListener, ModeChangeListener, SwipeCompleteListener {
+        OnItemLongClickListener, ModeChangeListener {
     /** Key used to pass data to {@link ConversationListFragment}. */
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     /** Key used to keep track of the scroll state of the list. */
@@ -612,26 +611,6 @@ public final class ConversationListFragment extends ListFragment implements
             mListView.setSwipeAction(action);
         }
         mListView.setCurrentFolder(mFolder);
-    }
-
-    @Override
-    public void onSwipeComplete(Collection<Conversation> conversations) {
-        Context context = getActivity().getApplicationContext();
-        ConversationCursor cc = getConversationListCursor();
-        switch (mSwipeAction) {
-            case R.id.archive:
-                cc.archive(context, conversations);
-                break;
-            case R.id.delete:
-                cc.delete(context, conversations);
-                break;
-        }
-        mListAdapter.notifyDataSetChanged();
-        if (!mActivity.getSelectedSet().isEmpty()) {
-            mActivity.getSelectedSet().clear();
-        }
-        mActivity.onUndoAvailable(new ToastBarOperation(conversations.size(), mSwipeAction,
-                ToastBarOperation.UNDO));
     }
 
     public void onCursorUpdated() {

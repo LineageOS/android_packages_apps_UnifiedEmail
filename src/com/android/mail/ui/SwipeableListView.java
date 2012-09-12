@@ -191,7 +191,7 @@ public class SwipeableListView extends ListView implements Callback {
         final Context context = getContext();
         final ToastBarOperation undoOp;
 
-        undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO);
+        undoOp = new ToastBarOperation(1, mSwipeAction, ToastBarOperation.UNDO, false);
         Conversation conv = target.getConversation();
         target.getConversation().position = findConversation(target, conv);
         final AnimatedAdapter adapter = getAnimatedAdapter();
@@ -309,10 +309,6 @@ public class SwipeableListView extends ListView implements Callback {
 
     private AnimatedAdapter getAnimatedAdapter() {
         return (AnimatedAdapter) getAdapter();
-    }
-
-    public interface SwipeCompleteListener {
-        public void onSwipeComplete(Collection<Conversation> conversations);
     }
 
     @Override
