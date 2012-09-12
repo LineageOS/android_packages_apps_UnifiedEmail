@@ -2016,7 +2016,7 @@ public abstract class AbstractActivityController implements ActivityController {
                     @Override
                     public void run() {
                         onUndoAvailable(new ToastBarOperation(mTarget.size(), mAction,
-                                ToastBarOperation.UNDO));
+                                ToastBarOperation.UNDO, mIsSelectedSet));
                     }
                 }, mShowUndoBarDelay);
             }
@@ -2478,7 +2478,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             if (mIsDestructive && mShowUndo) {
                 ToastBarOperation undoOp = new ToastBarOperation(mTarget.size(),
-                        mAction, ToastBarOperation.UNDO);
+                        mAction, ToastBarOperation.UNDO, mIsSelectedSet);
                 onUndoAvailable(undoOp);
             }
             // For each conversation, for each operation, add/ remove the
@@ -2624,7 +2624,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 false, /* showActionIcon */
                 actionTextResourceId,
                 replaceVisibleToast,
-                new ToastBarOperation(1, 0, ToastBarOperation.ERROR));
+                new ToastBarOperation(1, 0, ToastBarOperation.ERROR, false));
     }
 
     private ActionClickedListener getRetryClickedListener(final Folder folder) {
