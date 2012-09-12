@@ -42,10 +42,10 @@ public class ToastBarOperation implements Parcelable {
      * @param menuId res id identifying the menu item tapped; used to determine
      *            what action was performed
      */
-    public ToastBarOperation(int count, int menuId, int type) {
+    public ToastBarOperation(int count, int menuId, int type, boolean batch) {
         mCount = count;
         mAction = menuId;
-        mBatch = mCount > 1;
+        mBatch = batch;
         mType = type;
     }
 
