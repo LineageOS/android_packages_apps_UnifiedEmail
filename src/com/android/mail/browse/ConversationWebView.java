@@ -150,4 +150,11 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
         return (int) (webPx * getInitialScale());
     }
 
+    public float screenPxToWebPxError(int screenPx) {
+        return screenPx / getInitialScale() - screenPxToWebPx(screenPx);
+    }
+
+    public float webPxToScreenPxError(int webPx) {
+        return webPx * getInitialScale() - webPxToScreenPx(webPx);
+    }
 }
