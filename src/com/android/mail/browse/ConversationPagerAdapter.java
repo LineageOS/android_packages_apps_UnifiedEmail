@@ -384,6 +384,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         final ConversationViewFragment f = (ConversationViewFragment) getFragmentAt(position);
         if (f != null && mController != null) {
             final Conversation c = f.getConversation();
+            c.position = position;
             LogUtils.d(LOG_TAG, "pager adapter setting current conv: %s (%s)", c.subject, f);
             mController.setCurrentConversation(c);
         }
