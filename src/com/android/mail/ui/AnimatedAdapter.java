@@ -31,6 +31,7 @@ import android.widget.SimpleCursorAdapter;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
+import com.android.mail.browse.ConversationItemViewCoordinates;
 import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
@@ -310,8 +311,10 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     public LeaveBehindItem setupLeaveBehind(Conversation target, ToastBarOperation undoOp,
             int deletedRow) {
         fadeOutLeaveBehindItems();
+        boolean isWide = ConversationItemViewCoordinates.isWideMode(ConversationItemViewCoordinates
+                .getMode(mContext, mActivity.getViewMode()));
         LeaveBehindItem leaveBehind = (LeaveBehindItem) LayoutInflater.from(mContext).inflate(
-                R.layout.swipe_leavebehind, null);
+                isWide? R.layout.swipe_leavebehind_wide : R.layout.swipe_leavebehind, null);
         leaveBehind.bindOperations(deletedRow, mAccount, this, undoOp, target, mFolder);
         mLeaveBehindItem = leaveBehind;
         mLastDeletingItems.add(target.id);
