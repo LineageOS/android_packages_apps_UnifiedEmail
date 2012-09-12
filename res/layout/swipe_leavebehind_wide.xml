@@ -17,10 +17,9 @@
 -->
 <com.android.mail.ui.LeaveBehindItem xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/conversation_item_height"
+    android:layout_height="@dimen/conversation_item_height_wide"
     android:background="@color/swiped_bg_color"
-    android:minHeight="@dimen/conversation_item_height" >
+    android:minHeight="@dimen/conversation_item_height_wide">
 
     <include layout="@layout/swipe_leavebehind_inner"/>
-
 </com.android.mail.ui.LeaveBehindItem>

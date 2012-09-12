@@ -18,5 +18,5 @@
 <View xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/background"
     android:layout_width="match_parent"
-    android:minHeight="@dimen/conversation_item_height"
+    android:layout_height="match_parent"
     android:background="@color/swiped_bg_color" />
