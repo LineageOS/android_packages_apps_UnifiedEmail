@@ -487,6 +487,7 @@ public final class ConversationListFragment extends ListFragment implements
     private void showList() {
         mListView.setEmptyView(null);
         onFolderUpdated(mActivity.getFolderController().getFolder());
+        onConversationListStatusUpdated();
     }
 
     /**
