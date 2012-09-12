@@ -1226,9 +1226,6 @@ public abstract class AbstractActivityController implements ActivityController {
         // reset the action bar icon based on the mode. Why don't the individual
         // controllers do
         // this themselves?
-
-        // Commit any destructive undoable actions the user may have performed.
-        commitDestructiveActions(true);
     }
 
     public void disablePagerUpdates() {
@@ -1438,6 +1435,8 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     private void showConversation(Conversation conversation) {
+        // Commit destructive actions whenever we show a conversation.
+        commitDestructiveActions(Utils.useTabletUI(mContext));
         showConversation(conversation, false /* inLoaderCallbacks */);
     }
 
