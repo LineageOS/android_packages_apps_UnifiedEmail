@@ -50,6 +50,8 @@ import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.providers.UIProvider.Swipe;
+import com.android.mail.ui.SwipeableListView.ListItemSwipedListener;
+import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -61,7 +63,7 @@ import java.util.Collection;
  * The conversation list UI component.
  */
 public final class ConversationListFragment extends ListFragment implements
-        OnItemLongClickListener, ModeChangeListener {
+        OnItemLongClickListener, ModeChangeListener, ListItemSwipedListener {
     /** Key used to pass data to {@link ConversationListFragment}. */
     private static final String CONVERSATION_LIST_KEY = "conversation-list";
     /** Key used to keep track of the scroll state of the list. */
@@ -73,8 +75,8 @@ public final class ConversationListFragment extends ListFragment implements
     private static boolean mTabletDevice;
 
     /**
-     * Frequency of update of timestamps. Initialized in {@link #onCreate(Bundle)} and final
-     * afterwards.
+     * Frequency of update of timestamps. Initialized in
+     * {@link #onCreate(Bundle)} and final afterwards.
      */
     private static int TIMESTAMP_UPDATE_INTERVAL = 0;
 
@@ -113,7 +115,6 @@ public final class ConversationListFragment extends ListFragment implements
 
     private ConversationListFooterView mFooterView;
     private View mEmptyView;
-    private int mSwipeAction;
     private ErrorListener mErrorListener;
     private DataSetObserver mFolderObserver;
     private DataSetObserver mConversationListStatusObserver;
@@ -126,9 +127,11 @@ public final class ConversationListFragment extends ListFragment implements
             setSwipeAction();
         }
     };
+    private ConversationUpdater mUpdater;
 
     /**
-     * Constructor needs to be public to handle orientation changes and activity lifecycle events.
+     * Constructor needs to be public to handle orientation changes and activity
+     * lifecycle events.
      */
     public ConversationListFragment() {
         super();
@@ -160,8 +163,8 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * Creates a new instance of {@link ConversationListFragment}, initialized to display
-     * conversation list context.
+     * Creates a new instance of {@link ConversationListFragment}, initialized
+     * to display conversation list context.
      */
     public static ConversationListFragment newInstance(ConversationListContext viewContext) {
         ConversationListFragment fragment = new ConversationListFragment();
@@ -172,7 +175,8 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * Show the header if the current conversation list is showing search results.
+     * Show the header if the current conversation list is showing search
+     * results.
      */
     void configureSearchResultHeader() {
         if (mActivity == null) {
@@ -181,8 +185,10 @@ public final class ConversationListFragment extends ListFragment implements
         // Only show the header if the context is for a search result
         final Resources res = getResources();
         final boolean showHeader = ConversationListContext.isSearchResult(mViewContext);
-        // TODO(viki): This code contains intimate understanding of the view. Much of this logic
-        // needs to reside in a separate class that handles the text view in isolation. Then,
+        // TODO(viki): This code contains intimate understanding of the view.
+        // Much of this logic
+        // needs to reside in a separate class that handles the text view in
+        // isolation. Then,
         // that logic can be reused in other fragments.
         if (showHeader) {
             mSearchStatusTextView.setText(res.getString(R.string.search_results_searching_header));
@@ -197,7 +203,8 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * Show the header if the current conversation list is showing search results.
+     * Show the header if the current conversation list is showing search
+     * results.
      */
     private void updateSearchResultHeader(int count) {
         if (mActivity == null) {
@@ -217,29 +224,36 @@ public final class ConversationListFragment extends ListFragment implements
      * Initializes all internal state for a rendering.
      */
     private void initializeUiForFirstDisplay() {
-        // TODO(mindyp): find some way to make the notification container more re-usable.
-        // TODO(viki): refactor according to comment in configureSearchResultHandler()
+        // TODO(mindyp): find some way to make the notification container more
+        // re-usable.
+        // TODO(viki): refactor according to comment in
+        // configureSearchResultHandler()
         mSearchStatusView = mActivity.findViewById(R.id.search_status_view);
         mSearchStatusTextView = (TextView) mActivity.findViewById(R.id.search_status_text_view);
-        mSearchResultCountTextView = (TextView) mActivity.findViewById(
-                R.id.search_result_count_view);
+        mSearchResultCountTextView = (TextView) mActivity
+                .findViewById(R.id.search_result_count_view);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // Strictly speaking, we get back an android.app.Activity from getActivity. However, the
-        // only activity creating a ConversationListContext is a MailActivity which is of type
-        // ControllableActivity, so this cast should be safe. If this cast fails, some other
-        // activity is creating ConversationListFragments. This activity must be of type
+        // Strictly speaking, we get back an android.app.Activity from
+        // getActivity. However, the
+        // only activity creating a ConversationListContext is a MailActivity
+        // which is of type
+        // ControllableActivity, so this cast should be safe. If this cast
+        // fails, some other
+        // activity is creating ConversationListFragments. This activity must be
+        // of type
         // ControllableActivity.
         final Activity activity = getActivity();
-        if (! (activity instanceof ControllableActivity)) {
-            LogUtils.e(LOG_TAG, "ConversationListFragment expects only a ControllableActivity to" +
-                    "create it. Cannot proceed.");
+        if (!(activity instanceof ControllableActivity)) {
+            LogUtils.e(LOG_TAG, "ConversationListFragment expects only a ControllableActivity to"
+                    + "create it. Cannot proceed.");
         }
         mActivity = (ControllableActivity) activity;
-        // Since we now have a controllable activity, load the account from it, and register for
+        // Since we now have a controllable activity, load the account from it,
+        // and register for
         // future account changes.
         mAccount = mAccountObserver.initialize(mActivity.getAccountController());
         mCallbacks = mActivity.getListHandler();
@@ -259,12 +273,13 @@ public final class ConversationListFragment extends ListFragment implements
         mFolderObserver = new FolderObserver();
         mActivity.getFolderController().registerFolderObserver(mFolderObserver);
         mConversationListStatusObserver = new ConversationListStatusObserver();
-        mActivity.getConversationUpdater().registerConversationListObserver(
-                mConversationListStatusObserver);
+        mUpdater = mActivity.getConversationUpdater();
+        mUpdater.registerConversationListObserver(mConversationListStatusObserver);
         mTabletDevice = Utils.useTabletUI(mActivity.getApplicationContext());
         initializeUiForFirstDisplay();
         configureSearchResultHeader();
-        // The onViewModeChanged callback doesn't get called when the mode object is created, so
+        // The onViewModeChanged callback doesn't get called when the mode
+        // object is created, so
         // force setting the mode manually this time around.
         onViewModeChanged(mActivity.getViewMode().getMode());
         mActivity.getViewMode().addListener(this);
@@ -295,7 +310,7 @@ public final class ConversationListFragment extends ListFragment implements
         // Initialize fragment constants from resources
         final Resources res = getResources();
         TIMESTAMP_UPDATE_INTERVAL = res.getInteger(R.integer.timestamp_update_interval);
-        mUpdateTimestampsRunnable = new Runnable(){
+        mUpdateTimestampsRunnable = new Runnable() {
             @Override
             public void run() {
                 mListView.invalidateViews();
@@ -307,9 +322,6 @@ public final class ConversationListFragment extends ListFragment implements
         final Bundle args = getArguments();
         mViewContext = ConversationListContext.forBundle(args.getBundle(CONVERSATION_LIST_KEY));
         mAccount = mViewContext.account;
-        // TODO(mindyp): do we want this as a setting?
-        mSwipeAction = mAccount.supportsCapability(AccountCapabilities.ARCHIVE) ?
-                R.id.archive : R.id.delete;
 
         setRetainInstance(false);
     }
@@ -323,6 +335,7 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         mListView.setOnItemLongClickListener(this);
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
+        mListView.setSwipedListener(this);
 
         // Restore the list state
         if (savedState != null && savedState.containsKey(LIST_STATE_KEY)) {
@@ -332,7 +345,8 @@ public final class ConversationListFragment extends ListFragment implements
         }
 
         final ConversationCursor conversationListCursor = getConversationListCursor();
-        // Belt and suspenders here; make sure we do any necessary sync of the ConversationCursor
+        // Belt and suspenders here; make sure we do any necessary sync of the
+        // ConversationCursor
         if (conversationListCursor != null && conversationListCursor.isRefreshReady()) {
             conversationListCursor.sync();
         }
@@ -363,8 +377,7 @@ public final class ConversationListFragment extends ListFragment implements
             mFolderObserver = null;
         }
         if (mConversationListStatusObserver != null) {
-            mActivity.getConversationUpdater().unregisterConversationListObserver(
-                    mConversationListStatusObserver);
+            mUpdater.unregisterConversationListObserver(mConversationListStatusObserver);
             mConversationListStatusObserver = null;
         }
         mAccountObserver.unregisterAndDestroy();
@@ -372,14 +385,15 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * There are three binary variables, which determine what we do with a message.
-     * checkbEnabled: Whether check boxes are enabled or not (forced true on tablet)
-     * cabModeOn: Whether CAB mode is currently on or not.
-     * pressType: long or short tap
-     * (There is a third possibility: phone or tablet, but they have <em>identical</em> behavior)
-     * The matrix of possibilities is:
-     * <p>Long tap:
-     * Always toggle selection of conversation. If CAB mode is not started, then start it.
+     * There are three binary variables, which determine what we do with a
+     * message. checkbEnabled: Whether check boxes are enabled or not (forced
+     * true on tablet) cabModeOn: Whether CAB mode is currently on or not.
+     * pressType: long or short tap (There is a third possibility: phone or
+     * tablet, but they have <em>identical</em> behavior) The matrix of
+     * possibilities is:
+     * <p>
+     * Long tap: Always toggle selection of conversation. If CAB mode is not
+     * started, then start it.
      * <pre>
      *              | Checkboxes | No Checkboxes
      *    ----------+------------+---------------
@@ -387,6 +401,7 @@ public final class ConversationListFragment extends ListFragment implements
      *    List mode |   Select   |     Select
      *
      * </pre>
+     *
      * Reference: http://b/issue?id=6392199
      * <p>
      * {@inheritDoc}
@@ -402,14 +417,18 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * See the comment for {@link #onItemLongClick(AdapterView, View, int, long)}.
-     * <p>Short tap behavior:
+     * See the comment for
+     * {@link #onItemLongClick(AdapterView, View, int, long)}.
+     * <p>
+     * Short tap behavior:
+     *
      * <pre>
      *              | Checkboxes | No Checkboxes
      *    ----------+------------+---------------
      *    CAB mode  |    Peek    |     Select
      *    List mode |    Peek    |      Peek
      * </pre>
+     *
      * Reference: http://b/issue?id=6392199
      * <p>
      * {@inheritDoc}
@@ -425,6 +444,11 @@ public final class ConversationListFragment extends ListFragment implements
         } else {
             viewConversation(position);
         }
+        // When a new list item is clicked, commit any existing leave behind
+        // items.
+        // Wait until we have opened the desired conversation to cause any
+        // position changes.
+        commitDestructiveActions(Utils.useTabletUI(mActivity.getActivityContext()));
     }
 
     @Override
@@ -477,8 +501,9 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * Handles a request to show a new conversation list, either from a search query or for viewing
-     * a folder. This will initiate a data load, and hence must be called on the UI thread.
+     * Handles a request to show a new conversation list, either from a search
+     * query or for viewing a folder. This will initiate a data load, and hence
+     * must be called on the UI thread.
      */
     private void showList() {
         mListView.setEmptyView(null);
@@ -502,7 +527,8 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * Sets the selected position (the highlighted conversation) to the position provided here.
+     * Sets the selected position (the highlighted conversation) to the position
+     * provided here.
      * @param position
      */
     protected final void setSelected(int position) {
@@ -516,7 +542,8 @@ public final class ConversationListFragment extends ListFragment implements
     }
 
     /**
-     * Request a refresh of the list. No sync is carried out and none is promised.
+     * Request a refresh of the list. No sync is carried out and none is
+     * promised.
      */
     public void requestListRefresh() {
         mListAdapter.notifyDataSetChanged();
@@ -524,17 +551,24 @@ public final class ConversationListFragment extends ListFragment implements
 
     /**
      * Change the UI to delete the conversations provided and then call the
-     * {@link DestructiveAction} provided here <b>after</b> the UI has been updated.
+     * {@link DestructiveAction} provided here <b>after</b> the UI has been
+     * updated.
      * @param conversations
      * @param action
      */
-    public void requestDelete(Collection<Conversation> conversations, DestructiveAction action) {
+    public void requestDelete(final Collection<Conversation> conversations,
+            final DestructiveAction action) {
         for (Conversation conv : conversations) {
             conv.localDeleteOnUpdate = true;
         }
         // Delete the local delete items (all for now) and when done,
         // update...
-        mListAdapter.delete(conversations, action);
+        mListAdapter.delete(conversations, new ListItemsRemovedListener() {
+            @Override
+            public void onListItemsRemoved() {
+                action.performAction();
+            }
+        });
     }
 
     public void onFolderUpdated(Folder folder) {
@@ -563,7 +597,7 @@ public final class ConversationListFragment extends ListFragment implements
         int status = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
         if (error == UIProvider.LastSyncResult.SUCCESS
                 && (status == UIProvider.CursorStatus.LOADED
-                || status == UIProvider.CursorStatus.COMPLETE)) {
+                    || status == UIProvider.CursorStatus.COMPLETE)) {
             updateSearchResultHeader(mFolder != null ? mFolder.totalCount : 0);
             if (mFolder == null || mFolder.totalCount == 0) {
                 mListView.setEmptyView(mEmptyView);
@@ -621,6 +655,11 @@ public final class ConversationListFragment extends ListFragment implements
             mListView.commitDestructiveActions(animate);
 
         }
+    }
+
+    @Override
+    public void onListItemSwiped(Collection<Conversation> conversations) {
+        mUpdater.showNextConversation(conversations);
     }
 
 }
