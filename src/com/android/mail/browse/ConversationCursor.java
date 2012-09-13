@@ -298,10 +298,10 @@ public final class ConversationCursor implements Cursor {
      * @param uriString the uri string we're looking for
      * @return true if the uri string is in the cursor; false otherwise
      */
-    private boolean isInUnderlyingCursor(String uriString) {
-        mUnderlyingCursor.moveToPosition(-1);
-        while (mUnderlyingCursor.moveToNext()) {
-            if (uriString.equals(mUnderlyingCursor.getString(sUriColumnIndex))) {
+    private boolean isInCursor(Cursor c, String uriString) {
+        c.moveToPosition(-1);
+        while (c.moveToNext()) {
+            if (uriString.equals(c.getString(sUriColumnIndex))) {
                 return true;
             }
         }
@@ -322,33 +322,43 @@ public final class ConversationCursor implements Cursor {
     private void resetCursor(Wrapper newCursor) {
         synchronized (mCacheMapLock) {
             // Walk through the cache.  Here are the cases:
-            // 1) The entry isn't marked with REQUERY - remove it from the cache. If DELETED is
-            //    set, decrement the deleted count
-            // 2) The REQUERY entry is still in the UP
-            //    2a) The REQUERY entry isn't DELETED; we're good, and the client change will remain
-            //    (i.e. client wins, it's on its way to the UP)
-            //    2b) The REQUERY entry is DELETED; we're good (client change remains, it's on
-            //        its way to the UP)
-            // 3) the REQUERY was deleted on the server (sheesh; this would be bizarre timing!) -
-            //    we need to throw the item out of the cache
-            // So ... the only interesting case is #3, we need to look for remaining deleted items
-            // and see if they're still in the UP
+            // 1) The entry isn't REQUERY and is not DELETED - remove it from the cache.
+            // 2) The entry isn't REQUERY, and is DELETED
+            //    2a) The DELETED entry is in newCursor; leave entry in cache.  If the deletion
+            //        was undone, DELETED wouldn't be set
+            //    2b) The DELETED entry is not in newCursor; decrement the count & remove the entry
+            // 3) A REQUERY entry is in newCursor; we're good, and the client change will remain
+            //        (i.e. client wins, it's on its way to the UP)
+            // 4) A REQUERY entry is not in newCursor (sheesh; this would be bizarre timing!) -
+            //    same as case #1 (remov it from the cache)
             Iterator<HashMap.Entry<String, ContentValues>> iter = mCacheMap.entrySet().iterator();
             while (iter.hasNext()) {
                 HashMap.Entry<String, ContentValues> entry = iter.next();
                 ContentValues values = entry.getValue();
-                if (values.containsKey(REQUERY_COLUMN) && isInUnderlyingCursor(entry.getKey())) {
+                String key = entry.getKey();
+                if (values.containsKey(REQUERY_COLUMN) && isInCursor(newCursor, key)) {
                     // If we're in a requery and we're still around, remove the requery key
                     // We're good here, the cached change (delete/update) is on its way to UP
                     values.remove(REQUERY_COLUMN);
                     LogUtils.i(TAG,
-                            "IN resetCursor, remove requery column from %s", entry.getKey());
+                            "IN resetCursor, requery in newCursor, remove column from %s", key);
                 } else {
-                    // Keep the deleted count up-to-date; remove the cache entry
                     if (values.containsKey(DELETED_COLUMN)) {
+                        // If we're moving to a new cursor and the deleted item is in the new
+                        // cursor, do nothing; it will continue to appear deleted.
+                        // NOTE: The only legitimate way the item could be in a new cursor would
+                        // be for the deletion to have been undone in the UI, and in this case
+                        // DELETED_COLUMN would not be set
+                        if (mRefreshTask != null && isInCursor(newCursor, key)) {
+                            LogUtils.i(TAG, "IN resetCursor, deleted item is in newCursor: %s",
+                                    entry.getKey());
+                            // Don't decrement deleted count; don't remove entry
+                            continue;
+                        }
+                        // Keep the deleted count up-to-date; remove the cache entry
                         mDeletedCount--;
                         LogUtils.i(TAG, "IN resetCursor, sDeletedCount decremented to: %d by %s",
-                                mDeletedCount, entry.getKey());
+                                mDeletedCount, key);
                     }
                     // Remove the entry
                     iter.remove();
