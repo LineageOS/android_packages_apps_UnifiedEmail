@@ -37,6 +37,7 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
+import com.android.mail.ui.AttachmentTile.AttachmentPreviewCache;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -73,10 +74,11 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
      * Render or update an attachment's view. This happens immediately upon instantiation, and
      * repeatedly as status updates stream in, so only properties with new or changed values will
      * cause sub-views to update.
-     *
      */
-    public void render(Attachment attachment, Uri attachmentsListUri, int index) {
-        super.render(attachment, attachmentsListUri, index);
+    @Override
+    public void render(Attachment attachment, Uri attachmentsListUri, int index,
+            AttachmentPreviewCache attachmentPreviewCache) {
+        super.render(attachment, attachmentsListUri, index, attachmentPreviewCache);
 
         mAttachmentsListUri = attachmentsListUri;
         mPhotoIndex = index;

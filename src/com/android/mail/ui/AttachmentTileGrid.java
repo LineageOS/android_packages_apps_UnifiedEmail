@@ -17,6 +17,7 @@
 package com.android.mail.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -27,24 +28,33 @@ import com.android.mail.R;
 import com.android.mail.browse.MessageAttachmentTile;
 import com.android.mail.compose.ComposeAttachmentTile;
 import com.android.mail.providers.Attachment;
+import com.android.mail.ui.AttachmentTile.AttachmentPreview;
+import com.android.mail.ui.AttachmentTile.AttachmentPreviewCache;
+import com.android.mail.utils.AttachmentUtils;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Acts as a grid composed of {@link AttachmentTile}s.
  */
-public class AttachmentTileGrid extends FrameLayout {
+public class AttachmentTileGrid extends FrameLayout implements AttachmentPreviewCache {
     private LayoutInflater mInflater;
     private Uri mAttachmentsListUri;
     private final int mTileMinSize;
     private int mColumnCount;
     private List<Attachment> mAttachments;
+    private HashMap<String, AttachmentPreview> mAttachmentPreviews;
 
     public AttachmentTileGrid(Context context, AttributeSet attrs) {
         super(context, attrs);
         mInflater = LayoutInflater.from(context);
         mTileMinSize = context.getResources()
                 .getDimensionPixelSize(R.dimen.attachment_tile_min_size);
+        mAttachmentPreviews = Maps.newHashMap();
     }
 
     /**
@@ -70,7 +80,7 @@ public class AttachmentTileGrid extends FrameLayout {
             attachmentTile = (AttachmentTile) getChildAt(index);
         }
 
-        attachmentTile.render(attachment, mAttachmentsListUri, index);
+        attachmentTile.render(attachment, mAttachmentsListUri, index, this);
     }
 
     public ComposeAttachmentTile addComposeTileFromAttachment(Attachment attachment) {
@@ -78,7 +88,7 @@ public class AttachmentTileGrid extends FrameLayout {
                 ComposeAttachmentTile.inflate(mInflater, this);
 
         addView(attachmentTile);
-        attachmentTile.render(attachment, null, -1);
+        attachmentTile.render(attachment, null, -1, this);
 
         return attachmentTile;
     }
@@ -183,5 +193,45 @@ public class AttachmentTileGrid extends FrameLayout {
 
     public List<Attachment> getAttachments() {
         return mAttachments;
+    }
+
+    public ArrayList<AttachmentPreview> getAttachmentPreviews() {
+        return Lists.newArrayList(mAttachmentPreviews.values());
+    }
+
+    public void setAttachmentPreviews(ArrayList<AttachmentPreview> previews) {
+        if (previews != null) {
+            for (AttachmentPreview preview : previews) {
+                mAttachmentPreviews.put(preview.attachmentIdentifier, preview);
+            }
+        }
+    }
+
+    /*
+     * Save the preview for an attachment
+     */
+    @Override
+    public void set(Attachment attachment, Bitmap preview) {
+        final String attachmentIdentifier = AttachmentUtils.getIdentifier(attachment);
+        if (attachmentIdentifier != null) {
+            mAttachmentPreviews.put(
+                    attachmentIdentifier, new AttachmentPreview(attachment, preview));
+        }
+    }
+
+    /*
+     * Returns a saved preview that was previously set
+     */
+    @Override
+    public Bitmap get(Attachment attachment) {
+        final String attachmentIdentifier = AttachmentUtils.getIdentifier(attachment);
+        if (attachmentIdentifier != null) {
+            final AttachmentPreview attachmentPreview = mAttachmentPreviews.get(
+                    attachmentIdentifier);
+            if (attachmentPreview != null) {
+                return attachmentPreview.preview;
+            }
+        }
+        return null;
     }
 }

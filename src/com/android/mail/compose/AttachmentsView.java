@@ -34,6 +34,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Attachment;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
+import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
@@ -152,6 +153,21 @@ class AttachmentsView extends LinearLayout {
      */
     public ArrayList<Attachment> getAttachments() {
         return mAttachments;
+    }
+
+    /**
+     * Get all attachments previews that have been loaded
+     * @return attachments previews.
+     */
+    public ArrayList<AttachmentPreview> getAttachmentPreviews() {
+        return mTileGrid.getAttachmentPreviews();
+    }
+
+    /**
+     * Call this on restore instance state so previews persist across configuration changes
+     */
+    public void setAttachmentPreviews(ArrayList<AttachmentPreview> previews) {
+        mTileGrid.setAttachmentPreviews(previews);
     }
 
     /**
