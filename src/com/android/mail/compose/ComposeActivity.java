@@ -63,7 +63,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +87,7 @@ import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.DraftType;
 import com.android.mail.ui.MailActivity;
 import com.android.mail.ui.WaitFragment;
+import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.utils.AccountUtils;
 import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.LogTag;
@@ -137,6 +137,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     private static final String EXTRA_BODY = "body";
 
     private static final String EXTRA_FROM_ACCOUNT_STRING = "fromAccountString";
+
+    private static final String EXTRA_ATTACHMENT_PREVIEWS = "attachmentPreviews";
 
     // Extra that we can get passed from other activities
     private static final String EXTRA_TO = "to";
@@ -314,6 +316,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         findViews();
         Intent intent = getIntent();
         Message message;
+        ArrayList<AttachmentPreview> previews;
         boolean showQuotedText = false;
         int action;
         // Check for any of the possibly supplied accounts.;
@@ -322,15 +325,19 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             action = savedInstanceState.getInt(EXTRA_ACTION, COMPOSE);
             account = savedInstanceState.getParcelable(Utils.EXTRA_ACCOUNT);
             message = (Message) savedInstanceState.getParcelable(EXTRA_MESSAGE);
+
+            previews = savedInstanceState.getParcelableArrayList(EXTRA_ATTACHMENT_PREVIEWS);
             mRefMessage = (Message) savedInstanceState.getParcelable(EXTRA_IN_REFERENCE_TO_MESSAGE);
         } else {
             account = obtainAccount(intent);
             action = intent.getIntExtra(EXTRA_ACTION, COMPOSE);
             // Initialize the message from the message in the intent
             message = (Message) intent.getParcelableExtra(ORIGINAL_DRAFT_MESSAGE);
+            previews = intent.getParcelableArrayListExtra(EXTRA_ATTACHMENT_PREVIEWS);
             mRefMessage = (Message) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE);
             mRefMessageUri = (Uri) intent.getParcelableExtra(EXTRA_IN_REFERENCE_TO_MESSAGE_URI);
         }
+        mAttachmentsView.setAttachmentPreviews(previews);
 
         setAccount(account);
         if (mAccount == null) {
@@ -650,6 +657,9 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
         state.putBoolean(EXTRA_SHOW_CC, mCcBccView.isCcVisible());
         state.putBoolean(EXTRA_SHOW_BCC, mCcBccView.isBccVisible());
+
+        state.putParcelableArrayList(
+                EXTRA_ATTACHMENT_PREVIEWS, mAttachmentsView.getAttachmentPreviews());
     }
 
     private int getMode() {
