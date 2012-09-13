@@ -247,10 +247,6 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         } else {
             performAndSetNextAction(listener);
         }
-
-        // TODO(viki): Rather than notifying for a full data set change,
-        // perhaps we can mark
-        // only the affected conversations?
         notifyDataSetChanged();
     }
 
