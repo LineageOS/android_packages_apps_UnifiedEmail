@@ -18,8 +18,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/message_header_height"
-    android:paddingRight="@dimen/message_header_padding_right"
     android:background="@drawable/message_header_bg">
+    <View
+        android:id="@+id/left_spacer"
+        android:layout_width="@dimen/conversation_view_margin_side"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="gone" />
+
     <QuickContactBadge
         android:id="@+id/photo"
         android:layout_width="@dimen/contact_photo_width"
@@ -41,4 +47,14 @@
         android:src="@drawable/ic_email_draft" />
     <include layout="@layout/conversation_message_upper_header_text" />
     <include layout="@layout/conversation_message_upper_header_actions" />
+
+    <View
+        android:layout_width="@dimen/message_header_padding_right"
+        android:layout_height="match_parent" />
+    <View
+        android:id="@+id/right_spacer"
+        android:layout_width="@dimen/conversation_view_margin_side"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="gone" />
 </LinearLayout>
