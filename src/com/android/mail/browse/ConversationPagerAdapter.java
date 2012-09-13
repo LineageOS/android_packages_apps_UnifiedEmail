@@ -278,14 +278,17 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                 LogUtils.i(LOG_TAG, "CPA: current conv is gone, reverting to detached mode. c=%s",
                         currConversation.uri);
             } else {
-                // notify unaffected fragment items of the change, so they can re-render
-                // (the change may have been to the labels for a single conversation, for example)
-                final ConversationViewFragment frag = (ConversationViewFragment) getFragmentAt(pos);
-                final Cursor cursor = getCursor();
-                if (frag != null && cursor.moveToPosition(pos)) {
-                    // reload what we think is in the current position.
-                    frag.onConversationUpdated(new Conversation(cursor));
-                }
+                // notify unaffected fragment items of the change, so they can
+                // re-render
+                // (the change may have been to the labels for a single
+                // conversation, for example)
+                // final ConversationViewFragment frag =
+                // (ConversationViewFragment) getFragmentAt(pos);
+                // final Cursor cursor = getCursor();
+                // if (frag != null && cursor.moveToPosition(pos)) {
+                // reload what we think is in the current position.
+                // frag.onConversationUpdated(new Conversation(cursor));
+                // }
             }
         }
 
