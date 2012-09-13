@@ -1010,7 +1010,8 @@ public abstract class AbstractActivityController implements ActivityController {
      *
      * @param target the set of conversations being deleted/marked unread
      */
-    private void showNextConversation(Collection<Conversation> target) {
+    @Override
+    public void showNextConversation(Collection<Conversation> target) {
         final boolean currentConversationInView = (mViewMode.getMode() == ViewMode.CONVERSATION)
                 && Conversation.contains(target, mCurrentConversation);
         if (currentConversationInView) {
@@ -1435,8 +1436,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     private void showConversation(Conversation conversation) {
-        // Commit destructive actions whenever we show a conversation.
-        commitDestructiveActions(Utils.useTabletUI(mContext));
         showConversation(conversation, false /* inLoaderCallbacks */);
     }
 

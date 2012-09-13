@@ -38,6 +38,7 @@ import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -51,10 +52,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private static final String LAST_DELETING_ITEMS = "last_deleting_items";
     private static final String LEAVE_BEHIND_ITEM = "leave_behind_item";
     private final static int TYPE_VIEW_CONVERSATION = 0;
-    private final static int TYPE_VIEW_DELETING = 1;
-    private final static int TYPE_VIEW_UNDOING = 2;
-    private final static int TYPE_VIEW_FOOTER = 3;
-    private final static int TYPE_VIEW_LEAVEBEHIND = 4;
+    private final static int TYPE_VIEW_FOOTER = 1;
     private final HashSet<Long> mDeletingItems = new HashSet<Long>();
     private final ArrayList<Long> mLastDeletingItems = new ArrayList<Long>();
     private final HashSet<Long> mUndoingItems = new HashSet<Long>();
@@ -73,13 +71,13 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * be in {@link #performAndSetNextAction(DestructiveAction)} which commits the
      * previous action, if any.
      */
-    private DestructiveAction mPendingDestruction;
+    private ListItemsRemovedListener mPendingDestruction;
     /**
      * A destructive action that refreshes the list and performs no other action.
      */
-    private final DestructiveAction mRefreshAction = new DestructiveAction() {
+    private final ListItemsRemovedListener mRefreshAction = new ListItemsRemovedListener() {
         @Override
-        public void performAction() {
+        public void onListItemsRemoved() {
             notifyDataSetChanged();
         }
     };
@@ -206,7 +204,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * @param conversations
      * @param listener
      */
-    public void swipeDelete(Collection<Conversation> conversations, DestructiveAction listener) {
+    public void swipeDelete(Collection<Conversation> conversations,
+            ListItemsRemovedListener listener) {
         delete(conversations, listener, mSwipeDeletingItems);
     }
 
@@ -222,11 +221,11 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * @param conversations
      * @param listener
      */
-    public void delete(Collection<Conversation> conversations, DestructiveAction listener) {
+    public void delete(Collection<Conversation> conversations, ListItemsRemovedListener listener) {
         delete(conversations, listener, mDeletingItems);
     }
 
-    private void delete(Collection<Conversation> conversations, DestructiveAction action,
+    private void delete(Collection<Conversation> conversations, ListItemsRemovedListener listener,
             HashSet<Long> list) {
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
@@ -244,9 +243,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
 
         if (list.isEmpty()) {
             // If we have no deleted items on screen, skip the animation
-            action.performAction();
+            listener.onListItemsRemoved();
         } else {
-            performAndSetNextAction(action);
+            performAndSetNextAction(listener);
         }
 
         // TODO(viki): Rather than notifying for a full data set change,
@@ -511,9 +510,9 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
      * @param next The next action that is to be performed, possibly null (if no next action is
      * needed).
      */
-    private final void performAndSetNextAction(DestructiveAction next) {
+    private final void performAndSetNextAction(ListItemsRemovedListener next) {
         if (mPendingDestruction != null) {
-            mPendingDestruction.performAction();
+            mPendingDestruction.onListItemsRemoved();
         }
         mPendingDestruction = next;
     }
