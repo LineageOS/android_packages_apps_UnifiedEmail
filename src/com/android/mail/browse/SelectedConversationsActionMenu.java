@@ -47,6 +47,7 @@ import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.FoldersSelectionDialog;
 import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SwipeableListView;
+import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -272,8 +273,15 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
             for (ConversationItemView view : mSelectionSet.views()) {
                 views.add(view);
             }
-            mListView.destroyItems(views, listener);
+            // The list view has already gotten rid of the items in this case.
+            mListView.destroyItems(views, new ListItemsRemovedListener() {
+                public void onListItemsRemoved() {
+                    mUpdater.showNextConversation(conversations);
+                    listener.performAction();
+                }
+            });
         } else {
+            // Tell the list view to get rid of items.
             mUpdater.delete(conversations, listener);
         }
     }

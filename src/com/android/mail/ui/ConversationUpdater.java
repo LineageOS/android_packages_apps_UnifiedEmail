@@ -153,4 +153,12 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      * Refreshes the conversation list, if one exists.
      */
     void refreshConversationList();
+
+    /**
+     * Show the next conversation after a destructive action. The next
+     * conversation is determined by list state and user preferences.
+     * @param conversations Conversations that were removed as part of the
+     *            destructive action.
+     */
+    void showNextConversation(Collection<Conversation> conversations);
 }

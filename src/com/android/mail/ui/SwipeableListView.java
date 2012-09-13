@@ -34,6 +34,7 @@ import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.SwipeHelper.Callback;
+import com.android.mail.ui.SwipeableListView.ListItemSwipedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -51,6 +52,7 @@ public class SwipeableListView extends ListView implements Callback {
     private ConversationSelectionSet mConvSelectionSet;
     private int mSwipeAction;
     private Folder mFolder;
+    private ListItemSwipedListener mSwipedListener;
 
     public SwipeableListView(Context context) {
         this(context, null);
@@ -107,6 +109,10 @@ public class SwipeableListView extends ListView implements Callback {
 
     public void setSwipeAction(int action) {
         mSwipeAction = action;
+    }
+
+    public void setSwipedListener(ListItemSwipedListener listener) {
+        mSwipedListener = listener;
     }
 
     public int getSwipeAction() {
@@ -200,6 +206,7 @@ public class SwipeableListView extends ListView implements Callback {
         }
         adapter.setupLeaveBehind(conv, undoOp, conv.position);
         ConversationCursor cc = (ConversationCursor) adapter.getCursor();
+        Collection<Conversation> convList = Conversation.listOf(conv);
         switch (mSwipeAction) {
             case R.id.remove_folder:
                 FolderOperation folderOp = new FolderOperation(mFolder, false);
@@ -211,11 +218,14 @@ public class SwipeableListView extends ListView implements Callback {
                         Conversation.UPDATE_FOLDER_COLUMN, conv.getRawFoldersString());
                 break;
             case R.id.archive:
-                cc.mostlyArchive(context, Conversation.listOf(conv));
+                cc.mostlyArchive(context, convList);
                 break;
             case R.id.delete:
-                cc.mostlyDelete(context, Conversation.listOf(conv));
+                cc.mostlyDelete(context, convList);
                 break;
+        }
+        if (mSwipedListener != null) {
+            mSwipedListener.onListItemSwiped(convList);
         }
         adapter.notifyDataSetChanged();
         if (mConvSelectionSet != null && !mConvSelectionSet.isEmpty()
@@ -259,7 +269,7 @@ public class SwipeableListView extends ListView implements Callback {
      * Archive items using the swipe away animation before shrinking them away.
      */
     public void destroyItems(final ArrayList<ConversationItemView> views,
-            final DestructiveAction listener) {
+            final ListItemsRemovedListener listener) {
         if (views == null || views.size() == 0) {
             return;
         }
@@ -323,5 +333,13 @@ public class SwipeableListView extends ListView implements Callback {
     @Override
     public void onScroll() {
         commitDestructiveActions(true);
+    }
+
+    public interface ListItemsRemovedListener {
+        public void onListItemsRemoved();
+    }
+
+    public interface ListItemSwipedListener {
+        public void onListItemSwiped(Collection<Conversation> conversations);
     }
 }
