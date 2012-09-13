@@ -2249,8 +2249,6 @@ public abstract class AbstractActivityController implements ActivityController {
      * Re-enable the CAB menu if required. The selection set is not changed.
      */
     protected void enableCabMode() {
-        // Commit any previous destructive actions when entering/ exiting CAB mode.
-        commitDestructiveActions(true);
         if (mCabActionMenu != null) {
             mCabActionMenu.activate();
         }
