@@ -57,6 +57,7 @@ import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -556,19 +557,26 @@ public final class ConversationListFragment extends ListFragment implements
      * @param conversations
      * @param action
      */
-    public void requestDelete(final Collection<Conversation> conversations,
+    public void requestDelete(int actionId, final Collection<Conversation> conversations,
             final DestructiveAction action) {
         for (Conversation conv : conversations) {
             conv.localDeleteOnUpdate = true;
         }
-        // Delete the local delete items (all for now) and when done,
-        // update...
-        mListAdapter.delete(conversations, new ListItemsRemovedListener() {
+        final ListItemsRemovedListener listener = new ListItemsRemovedListener() {
             @Override
             public void onListItemsRemoved() {
                 action.performAction();
             }
-        });
+        };
+        final SwipeableListView listView = (SwipeableListView) getListView();
+        if (listView.getSwipeAction() == actionId) {
+            listView.destroyItems(new ArrayList<ConversationItemView>(mSelectedSet.views()),
+                    listener);
+            return;
+        }
+        // Delete the local delete items (all for now) and when done,
+        // update...
+        mListAdapter.delete(conversations, listener);
     }
 
     public void onFolderUpdated(Folder folder) {
