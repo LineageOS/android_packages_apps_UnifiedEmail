@@ -26,8 +26,10 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Adjuntar archivo"</string>
-    <string name="add_photo_attachment" msgid="8548176514426323119">"Adjuntar imagen"</string>
-    <string name="add_video_attachment" msgid="4284457799113546464">"Adjuntar vídeo"</string>
+    <!-- no translation found for add_photo_attachment (3738882100645552858) -->
+    <skip />
+    <!-- no translation found for add_video_attachment (8916625983712820173) -->
+    <skip />
     <string name="save_draft" msgid="5555744208032445632">"Guardar borrador"</string>
     <string name="discard" msgid="1714960202994370243">"Descartar"</string>
     <string name="compose" msgid="1473559896062432878">"Redactar"</string>
@@ -291,7 +293,7 @@
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> a través de <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Mensaje guardado como borrador"</string>
-    <string name="sending_message" msgid="2822171587017313151">"Enviando mensaje a bandeja de salida…"</string>
+    <string name="sending_message" msgid="1498583163419122128">"Enviando mensaje..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"La dirección <xliff:g id="WRONGEMAIL">%s</xliff:g> no es válida."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Mostrar texto citado"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Ocultar texto citado"</string>

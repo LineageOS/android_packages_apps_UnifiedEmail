@@ -26,8 +26,8 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"צרף קובץ"</string>
-    <string name="add_photo_attachment" msgid="8548176514426323119">"צרף תמונה"</string>
-    <string name="add_video_attachment" msgid="4284457799113546464">"צרף סרטון"</string>
+    <string name="add_photo_attachment" msgid="3738882100645552858">"צרף תמונה"</string>
+    <string name="add_video_attachment" msgid="8916625983712820173">"צרף סרטון"</string>
     <string name="save_draft" msgid="5555744208032445632">"שמור טיוטה"</string>
     <string name="discard" msgid="1714960202994370243">"מחק"</string>
     <string name="compose" msgid="1473559896062432878">"כתוב"</string>
@@ -291,7 +291,7 @@
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> דרך <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"ההודעה נשמרה כטיוטה."</string>
-    <string name="sending_message" msgid="2822171587017313151">"שולח הודעה לתיבת הדואר היוצא…"</string>
+    <string name="sending_message" msgid="1498583163419122128">"שולח הודעה…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"הכתובת <xliff:g id="WRONGEMAIL">%s</xliff:g> אינה חוקית."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ הצג טקסט מצוטט"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ הסתר טקסט מצוטט"</string>
