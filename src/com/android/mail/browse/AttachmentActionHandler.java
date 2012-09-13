@@ -17,17 +17,19 @@
 
 package com.android.mail.browse;
 
-import android.app.ProgressDialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
-import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.Parcelable;
 
-import com.android.mail.R;
 import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider.AttachmentColumns;
 import com.android.mail.providers.UIProvider.AttachmentDestination;
@@ -39,39 +41,30 @@ import com.android.mail.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttachmentActionHandler implements DialogInterface.OnCancelListener,
-        DialogInterface.OnDismissListener {
-    private ProgressDialog mViewProgressDialog;
+public class AttachmentActionHandler {
+    private static final String PROGRESS_FRAGMENT_TAG = "attachment-progress";
+
     private Attachment mAttachment;
     private boolean mDialogClosed;
 
     private final AttachmentCommandHandler mCommandHandler;
     private final AttachmentViewInterface mView;
     private final Context mContext;
+    private final Handler mHandler;
+    private FragmentManager mFragmentManager;
 
     private static final String LOG_TAG = LogTag.getLogTag();
-
-    private class AttachmentCommandHandler extends AsyncQueryHandler {
-
-        public AttachmentCommandHandler(Context context) {
-            super(context.getContentResolver());
-        }
-
-        /**
-         * Asynchronously begin an update() on a ContentProvider.
-         *
-         */
-        public void sendCommand(Uri uri, ContentValues params) {
-            startUpdate(0, null, uri, params, null, null);
-        }
-
-    }
 
     public AttachmentActionHandler(Context context, AttachmentViewInterface view) {
         mCommandHandler = new AttachmentCommandHandler(context);
         mView = view;
         mContext = context;
         mDialogClosed = false;
+        mHandler = new Handler();
+    }
+
+    public void initialize(FragmentManager fragmentManager) {
+        mFragmentManager = fragmentManager;
     }
 
     public void setAttachment(Attachment attachment) {
@@ -82,7 +75,7 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
         if (mAttachment.isPresentLocally()) {
             mView.viewAttachment();
         } else {
-            showDownloadingDialog();
+            showDownloadingDialog(destination);
             startDownloadingAttachment(destination);
         }
     }
@@ -122,28 +115,24 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
      * Displays a loading dialog to be used for downloading attachments.
      * Must be called on the UI thread.
      */
-    private void showDownloadingDialog() {
-        mViewProgressDialog = new ProgressDialog(mContext);
-        mViewProgressDialog.setTitle(R.string.fetching_attachment);
-        mViewProgressDialog.setMessage(mAttachment.name);
-        mViewProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mViewProgressDialog.setIndeterminate(true);
-        mViewProgressDialog.setMax(mAttachment.size);
-        mViewProgressDialog.setOnDismissListener(this);
-        mViewProgressDialog.setOnCancelListener(this);
-        mViewProgressDialog.show();
+    private void showDownloadingDialog(int destination) {
+        final FragmentTransaction ft = mFragmentManager.beginTransaction();
+        final Fragment prev = mFragmentManager.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
 
-        // The progress number format needs to be set after the dialog is shown.  See bug: 5149918
-        mViewProgressDialog.setProgressNumberFormat(null);
+         // Create and show the dialog.
+        final DialogFragment newFragment = AttachmentProgressDialogFragment.newInstance(
+                mAttachment, destination);
+        newFragment.show(ft, PROGRESS_FRAGMENT_TAG);
     }
 
-    @Override
     public void onDismiss(DialogInterface dialog) {
-        mViewProgressDialog = null;
         mDialogClosed = true;
     }
 
-    @Override
     public void onCancel(DialogInterface dialog) {
         cancelAttachment();
     }
@@ -152,19 +141,26 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
      * Update progress-related views. Will also trigger a view intent if a progress dialog was
      * previously brought up (by tapping 'View') and the download has now finished.
      */
-    public void updateStatus() {
+    public void updateStatus(boolean loaderResult) {
         final boolean showProgress = mAttachment.shouldShowProgress();
 
-        if (isProgressDialogVisible()) {
-            mViewProgressDialog.setProgress(mAttachment.downloadedSize);
+        final AttachmentProgressDialogFragment dialog = (AttachmentProgressDialogFragment)
+                mFragmentManager.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
+        if (dialog != null && dialog.isShowingDialogForAttachment(mAttachment)) {
+            dialog.setProgress(mAttachment.downloadedSize);
 
             // We don't want the progress bar to switch back to indeterminate mode after
             // have been in determinate progress mode.
-            final boolean indeterminate = !showProgress && mViewProgressDialog.isIndeterminate();
-            mViewProgressDialog.setIndeterminate(indeterminate);
+            final boolean indeterminate = !showProgress && dialog.isIndeterminate();
+            dialog.setIndeterminate(indeterminate);
 
-            if (!mAttachment.isDownloading()) {
-                mViewProgressDialog.dismiss();
+            if (loaderResult && !mAttachment.isDownloading()) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                });
             }
 
             if (mAttachment.state == AttachmentState.SAVED) {
@@ -179,7 +175,8 @@ public class AttachmentActionHandler implements DialogInterface.OnCancelListener
     }
 
     public boolean isProgressDialogVisible() {
-        return mViewProgressDialog != null && mViewProgressDialog.isShowing();
+        final Fragment dialog = mFragmentManager.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
+        return dialog != null && dialog.isVisible();
     }
 
     public void shareAttachment() {

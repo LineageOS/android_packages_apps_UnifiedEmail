@@ -300,9 +300,9 @@ public final class ConversationViewFragment extends Fragment implements
 
         final FormattedDateBuilder dateBuilder = new FormattedDateBuilder(mContext);
 
-        mAdapter = new ConversationViewAdapter(mActivity.getActivityContext(), this,
-                getLoaderManager(), this, mContactLoaderCallbacks, this, this, mAddressCache,
-                dateBuilder);
+        mAdapter = new ConversationViewAdapter(mActivity, this,
+                getLoaderManager(), this, mContactLoaderCallbacks, this,
+                this, mAddressCache, dateBuilder);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
         // set up snap header (the adapter usually does this with the other ones)
