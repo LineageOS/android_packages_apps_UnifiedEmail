@@ -18,6 +18,7 @@ package com.android.mail.utils;
 import com.google.common.collect.ImmutableMap;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.android.mail.R;
@@ -126,5 +127,13 @@ public class AttachmentUtils {
                 .build();
         }
         return sDisplayNameMap.get(type);
+    }
+
+    public static String getIdentifier(final Attachment attachment) {
+        Uri uri = attachment.contentUri;
+        if (uri != null) {
+            return uri.toString();
+        }
+        return null;
     }
 }
