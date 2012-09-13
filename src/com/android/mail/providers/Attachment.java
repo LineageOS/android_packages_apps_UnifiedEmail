@@ -277,11 +277,11 @@ public class Attachment implements Parcelable {
     // other fields so Compose View can use JSON objects
 
     public JSONObject toJSON() throws JSONException {
-        return toJSON(name, size, uri, contentUri, contentType);
+        return toJSON(name, size, uri, contentUri, contentType, state);
     }
 
     public static JSONObject toJSON(String name, int size, Uri uri, Uri contentUri,
-            String contentType) throws JSONException {
+            String contentType, Integer state) throws JSONException {
         final JSONObject result = new JSONObject();
 
         result.putOpt(AttachmentColumns.NAME, name);
@@ -293,6 +293,9 @@ public class Attachment implements Parcelable {
             result.putOpt(AttachmentColumns.CONTENT_URI, contentUri.toString());
         }
         result.putOpt(AttachmentColumns.CONTENT_TYPE, contentType);
+        if (state != null) {
+            result.put(AttachmentColumns.STATE, state.intValue());
+        }
 
         return result;
     }
@@ -303,6 +306,9 @@ public class Attachment implements Parcelable {
         uri = parseOptionalUri(srcJson, AttachmentColumns.URI);
         contentUri = parseOptionalUri(srcJson, AttachmentColumns.CONTENT_URI);
         contentType = srcJson.optString(AttachmentColumns.CONTENT_TYPE, null);
+        if (srcJson.has(AttachmentColumns.STATE)) {
+            state = srcJson.optInt(AttachmentColumns.STATE);
+        }
     }
 
     private static Uri parseOptionalUri(JSONObject srcJson, String key) {
