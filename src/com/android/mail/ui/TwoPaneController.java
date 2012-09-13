@@ -235,6 +235,12 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
+    public void onConversationListVisibilityChanged(boolean visible) {
+        super.onConversationListVisibilityChanged(visible);
+        enableOrDisableCab();
+    }
+
+    @Override
     public void resetActionBarIcon() {
         // If the viewmode is not set, preserve existing icon.
         if (mViewMode.getMode() == ViewMode.UNKNOWN) {
