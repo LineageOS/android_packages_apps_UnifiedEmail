@@ -21,6 +21,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -37,8 +39,8 @@ import com.android.mail.utils.AttachmentUtils;
 import com.android.mail.utils.LogUtils;
 
 /**
- * Base class for attachment tiles that handles the work
- * of fetching and displaying the bitmaps for the tiles.
+ * Base class for attachment tiles that handles the work of fetching and displaying the bitmaps for
+ * the tiles.
  */
 public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHolder {
     protected Attachment mAttachment;
@@ -50,12 +52,12 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     private String mAttachmentSizeText;
     private String mDisplayType;
     private boolean mDefaultThumbnailSet;
+    private AttachmentPreviewCache mAttachmentPreviewCache;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
     /**
-     * Returns true if the attachment should be rendered as a tile.
-     * with a large image preview.
+     * Returns true if the attachment should be rendered as a tile. with a large image preview.
      * @param attachment the attachment to render
      * @return true if the attachment should be rendered as a tile
      */
@@ -93,9 +95,9 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
      * Render or update an attachment's view. This happens immediately upon instantiation, and
      * repeatedly as status updates stream in, so only properties with new or changed values will
      * cause sub-views to update.
-     *
      */
-    public void render(Attachment attachment, Uri attachmentsListUri, int index) {
+    public void render(Attachment attachment, Uri attachmentsListUri, int index,
+            AttachmentPreviewCache attachmentPreviewCache) {
         if (attachment == null) {
             setVisibility(View.INVISIBLE);
             return;
@@ -103,6 +105,7 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
 
         final Attachment prevAttachment = mAttachment;
         mAttachment = attachment;
+        mAttachmentPreviewCache = attachmentPreviewCache;
 
         LogUtils.d(LOG_TAG, "got attachment list row: name=%s state/dest=%d/%d dled=%d" +
                 " contentUri=%s MIME=%s", attachment.name, attachment.state,
@@ -133,11 +136,18 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
         mSubtitle.setText(sb.toString());
     }
 
+    @Override
     public void setThumbnailToDefault() {
+        Bitmap cachedPreview = mAttachmentPreviewCache.get(mAttachment);
+        if (cachedPreview != null) {
+            setThumbnail(cachedPreview);
+            return;
+        }
         mDefaultIcon.setVisibility(View.VISIBLE);
         mDefaultThumbnailSet = true;
     }
 
+    @Override
     public void setThumbnail(Bitmap result) {
         // We got a real thumbnail; hide the default thumbnail.
         mDefaultIcon.setVisibility(View.GONE);
@@ -147,13 +157,16 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
         } else {
             mIcon.setScaleType(ScaleType.CENTER_CROP);
         }
+        mAttachmentPreviewCache.set(mAttachment, result);
         mDefaultThumbnailSet = false;
     }
 
+    @Override
     public int getThumbnailWidth() {
         return mIcon.getWidth();
     }
 
+    @Override
     public int getThumbnailHeight() {
         return mIcon.getHeight();
     }
@@ -166,5 +179,49 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     @Override
     public boolean bitmapSetToDefault() {
         return mDefaultThumbnailSet;
+    }
+
+    public static final class AttachmentPreview implements Parcelable {
+        public String attachmentIdentifier;
+        public Bitmap preview;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(attachmentIdentifier);
+            dest.writeParcelable(preview, 0);
+        }
+
+        public static final Parcelable.Creator<AttachmentPreview> CREATOR
+                = new Parcelable.Creator<AttachmentPreview>() {
+                        @Override
+                    public AttachmentPreview createFromParcel(Parcel in) {
+                        return new AttachmentPreview(in);
+                    }
+
+                        @Override
+                    public AttachmentPreview[] newArray(int size) {
+                        return new AttachmentPreview[size];
+                    }
+                };
+
+        private AttachmentPreview(Parcel in) {
+            attachmentIdentifier = in.readString();
+            preview = in.readParcelable(null);
+        }
+
+        public AttachmentPreview(Attachment attachment, Bitmap preview) {
+            this.attachmentIdentifier = AttachmentUtils.getIdentifier(attachment);
+            this.preview = preview;
+        }
+    }
+
+    public interface AttachmentPreviewCache {
+        void set(Attachment attachment, Bitmap preview);
+        Bitmap get(Attachment attachment);
     }
 }
