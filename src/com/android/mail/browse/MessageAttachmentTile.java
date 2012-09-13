@@ -17,6 +17,7 @@
 
 package com.android.mail.browse;
 
+import android.app.FragmentManager;;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -70,6 +71,10 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         mActionHandler = new AttachmentActionHandler(context, this);
     }
 
+    public void initialize(FragmentManager fragmentManager) {
+        mActionHandler.initialize(fragmentManager);
+    }
+
     /**
      * Render or update an attachment's view. This happens immediately upon instantiation, and
      * repeatedly as status updates stream in, so only properties with new or changed values will
@@ -77,14 +82,14 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
      */
     @Override
     public void render(Attachment attachment, Uri attachmentsListUri, int index,
-            AttachmentPreviewCache attachmentPreviewCache) {
-        super.render(attachment, attachmentsListUri, index, attachmentPreviewCache);
+            AttachmentPreviewCache attachmentPreviewCache, boolean loaderResult) {
+        super.render(attachment, attachmentsListUri, index, attachmentPreviewCache, loaderResult);
 
         mAttachmentsListUri = attachmentsListUri;
         mPhotoIndex = index;
 
         mActionHandler.setAttachment(mAttachment);
-        mActionHandler.updateStatus();
+        mActionHandler.updateStatus(loaderResult);
     }
 
     public static MessageAttachmentTile inflate(LayoutInflater inflater, ViewGroup parent) {
