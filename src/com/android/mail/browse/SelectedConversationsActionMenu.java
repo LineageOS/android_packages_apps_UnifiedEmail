@@ -40,6 +40,7 @@ import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.ui.ControllableActivity;
+import com.android.mail.ui.ConversationListCallbacks;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.ConversationUpdater;
@@ -70,8 +71,8 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      */
     protected final ConversationSelectionSet mSelectionSet;
 
-    private final RestrictedActivity mActivity;
-
+    private final ControllableActivity mActivity;
+    private final ConversationListCallbacks mListController;
     /**
      * Context of the activity. A dialog requires the context of an activity rather than the global
      * root context of the process. So mContext = mActivity.getApplicationContext() will fail.
@@ -92,13 +93,13 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private final Folder mFolder;
 
-    private final SwipeableListView mListView;
     private AccountObserver mAccountObserver;
 
     public SelectedConversationsActionMenu(ControllableActivity activity,
             ConversationSelectionSet selectionSet,
             Folder folder, SwipeableListView list) {
         mActivity = activity;
+        mListController = activity.getListHandler();
         mSelectionSet = selectionSet;
         mAccountObserver = new AccountObserver() {
             @Override
@@ -108,8 +109,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         };
         mAccount = mAccountObserver.initialize(activity.getAccountController());
         mFolder = folder;
-        mListView = list;
-
         mContext = mActivity.getActivityContext();
         mUpdater = activity.getConversationUpdater();
     }
@@ -118,7 +117,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         boolean handled = true;
         // If the user taps a new menu item, commit any existing destructive actions.
-        mListView.commitDestructiveActions(true);
+        mListController.commitDestructiveActions(true);
         switch (item.getItemId()) {
             case R.id.delete:
                 performDestructiveAction(R.id.delete);
@@ -135,20 +134,22 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                                 true, true));
                 break;
             case R.id.mute:
-                mUpdater.delete(mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute));
+                mUpdater.delete(
+                        R.id.mute, mSelectionSet.values(), mUpdater.getBatchAction(R.id.mute));
                 break;
             case R.id.report_spam:
-                mUpdater.delete(mSelectionSet.values(), mUpdater.getBatchAction(R.id.report_spam));
+                mUpdater.delete(R.id.report_spam, mSelectionSet.values(),
+                        mUpdater.getBatchAction(R.id.report_spam));
                 break;
             case R.id.mark_not_spam:
                 // Currently, since spam messages are only shown in list with other spam messages,
                 // marking a message not as spam is a destructive action
-                mUpdater.delete(mSelectionSet.values(),
-                        mUpdater.getBatchAction(R.id.mark_not_spam));
+                mUpdater.delete(R.id.mark_not_spam,
+                        mSelectionSet.values(), mUpdater.getBatchAction(R.id.mark_not_spam));
                 break;
             case R.id.report_phishing:
-                mUpdater.delete(mSelectionSet.values(),
-                        mUpdater.getBatchAction(R.id.report_phishing));
+                mUpdater.delete(R.id.report_phishing,
+                        mSelectionSet.values(), mUpdater.getBatchAction(R.id.report_phishing));
                 break;
             case R.id.read:
                 markConversationsRead(true);
@@ -268,22 +269,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     private void destroy(int action, final Collection<Conversation> conversations,
             final DestructiveAction listener) {
-        if (mListView.getSwipeAction() == action) {
-            ArrayList<ConversationItemView> views = new ArrayList<ConversationItemView>();
-            for (ConversationItemView view : mSelectionSet.views()) {
-                views.add(view);
-            }
-            // The list view has already gotten rid of the items in this case.
-            mListView.destroyItems(views, new ListItemsRemovedListener() {
-                public void onListItemsRemoved() {
-                    mUpdater.showNextConversation(conversations);
-                    listener.performAction();
-                }
-            });
-        } else {
-            // Tell the list view to get rid of items.
-            mUpdater.delete(conversations, listener);
-        }
+        mUpdater.delete(action, conversations, listener);
     }
 
     /**
@@ -509,7 +495,6 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
      */
     public void activate() {
         if (mSelectionSet.isEmpty()) {
-            // We have nothing to do since there is no conversation selected.
             return;
         }
         mActivated = true;

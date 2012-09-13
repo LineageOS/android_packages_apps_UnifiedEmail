@@ -52,11 +52,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationPagerController;
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
@@ -810,7 +812,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 break;
             }
             case R.id.remove_folder:
-                delete(target, getRemoveFolder(target, mFolder, true, false, true));
+                delete(R.id.remove_folder, target,
+                        getRemoveFolder(target, mFolder, true, false, true));
                 break;
             case R.id.delete: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
@@ -818,36 +821,38 @@ public abstract class AbstractActivityController implements ActivityController {
                         getAction(R.id.delete, target));
                 break;
             }
-            case R.id.discard_drafts:
+            case R.id.discard_drafts: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_discard_drafts_conversation,
                         getAction(R.id.discard_drafts, target));
                 break;
+            }
             case R.id.mark_important:
                 updateConversation(Conversation.listOf(mCurrentConversation),
                         ConversationColumns.PRIORITY, UIProvider.ConversationPriority.HIGH);
                 break;
             case R.id.mark_not_important:
                 if (mFolder != null && mFolder.isImportantOnly()) {
-                    delete(target, getAction(R.id.mark_not_important, target));
+                    delete(R.id.mark_not_important, target,
+                            getAction(R.id.mark_not_important, target));
                 } else {
                     updateConversation(Conversation.listOf(mCurrentConversation),
                             ConversationColumns.PRIORITY, UIProvider.ConversationPriority.LOW);
                 }
                 break;
             case R.id.mute:
-                delete(target, getAction(R.id.mute, target));
+                delete(R.id.mute, target, getAction(R.id.mute, target));
                 break;
             case R.id.report_spam:
-                delete(target, getAction(R.id.report_spam, target));
+                delete(R.id.report_spam, target, getAction(R.id.report_spam, target));
                 break;
             case R.id.mark_not_spam:
                 // Currently, since spam messages are only shown in list with other spam messages,
                 // marking a message not as spam is a destructive action
-                delete(target, getAction(R.id.mark_not_spam, target));
+                delete(R.id.mark_not_spam, target, getAction(R.id.mark_not_spam, target));
                 break;
             case R.id.report_phishing:
-                delete(target, getAction(R.id.report_phishing, target));
+                delete(R.id.report_phishing, target, getAction(R.id.report_phishing, target));
                 break;
             case android.R.id.home:
                 onUpPressed();
@@ -1076,7 +1081,7 @@ public abstract class AbstractActivityController implements ActivityController {
             final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    delete(target, action);
+                    delete(0, target, action);
                 }
             };
             final CharSequence message = Utils.formatPlural(mContext, confirmResource,
@@ -1086,12 +1091,13 @@ public abstract class AbstractActivityController implements ActivityController {
                     .setNegativeButton(R.string.cancel, null)
                     .create().show();
         } else {
-            delete(target, action);
+            delete(0, target, action);
         }
     }
 
     @Override
-    public void delete(final Collection<Conversation> target, final DestructiveAction action) {
+    public void delete(int actionId, final Collection<Conversation> target,
+            final DestructiveAction action) {
         // Order of events is critical! The Conversation View Fragment must be notified
         // of the next conversation with showConversation(next) *before* the conversation list
         // fragment has a chance to delete the conversation, animating it away.
@@ -1102,7 +1108,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
             LogUtils.d(LOG_TAG, "AAC.requestDelete: ListFragment is handling delete.");
-            convListFragment.requestDelete(target, action);
+            convListFragment.requestDelete(actionId, target, action);
             return;
         }
         // No visible UI element handled it on our behalf. Perform the action ourself.
@@ -2074,7 +2080,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (isDestructive) {
             folderChange = getDeferredFolderChange(target, folderOps, isDestructive,
                     batch, showUndo);
-            delete(target, folderChange);
+            delete(0, target, folderChange);
         } else {
             folderChange = getFolderChange(target, folderOps, isDestructive,
                     batch, showUndo);
@@ -2314,7 +2320,7 @@ public abstract class AbstractActivityController implements ActivityController {
         // current folder.
         final DestructiveAction action = getFolderChange(conversations, dropTarget, true, true,
                 true);
-        delete(conversations, action);
+        delete(0, conversations, action);
     }
 
     @Override
