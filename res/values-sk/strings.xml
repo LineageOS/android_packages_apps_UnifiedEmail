@@ -293,7 +293,7 @@
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> cez doménu <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Správa bola uložená ako koncept."</string>
-    <string name="sending_message" msgid="2822171587017313151">"Odosielanie správy do pošty na odoslanie..."</string>
+    <string name="sending_message" msgid="1498583163419122128">"Prebieha odosielanie správy..."</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"Adresa <xliff:g id="WRONGEMAIL">%s</xliff:g> je neplatná."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Zobraziť citovaný text"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Skryť citovaný text"</string>

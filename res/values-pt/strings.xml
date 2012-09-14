@@ -293,7 +293,7 @@
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> por <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Mensagem salva como rascunho."</string>
-    <string name="sending_message" msgid="2822171587017313151">"Enviando a mensagem para a caixa de saída..."</string>
+    <string name="sending_message" msgid="1498583163419122128">"Enviando mensagem…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"O endereço <xliff:g id="WRONGEMAIL">%s</xliff:g> é inválido."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Exibir texto das mensagens anteriores"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Ocultar texto das mensagens anteriores"</string>
