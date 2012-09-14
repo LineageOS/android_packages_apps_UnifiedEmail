@@ -110,6 +110,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private View mReplyButton;
     private View mReplyAllButton;
     private View mAttachmentIcon;
+    private View mLeftSpacer;
+    private View mRightSpacer;
 
     // temporary fields to reference raw data between initial render and details
     // expansion
@@ -232,6 +234,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 .getLayoutParams()).rightMargin;
 
         mBottomBorderView = findViewById(R.id.details_bottom_border);
+        mLeftSpacer = findViewById(R.id.left_spacer);
+        mRightSpacer = findViewById(R.id.right_spacer);
 
         setExpanded(true);
 
@@ -281,8 +285,14 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         hideMessageDetails();
         if (snappy) {
             setBackgroundDrawable(null);
+            // snappy header overlay has no padding so we need spacers
+            mLeftSpacer.setVisibility(View.VISIBLE);
+            mRightSpacer.setVisibility(View.VISIBLE);
         } else {
             setBackgroundColor(android.R.color.white);
+            // scrolling layer does have padding so we don't need spacers
+            mLeftSpacer.setVisibility(View.GONE);
+            mRightSpacer.setVisibility(View.GONE);
         }
     }
 
