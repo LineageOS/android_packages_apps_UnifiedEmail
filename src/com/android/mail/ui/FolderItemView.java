@@ -111,10 +111,18 @@ public class FolderItemView extends RelativeLayout {
         mFolderParentIcon = (ImageView) findViewById(R.id.folder_parent_icon);
     }
 
+    private final String getNameString(Folder folder) {
+        if (folder.hasChildren) {
+            final Resources res = getResources();
+            return folder.name + res.getString(R.string.folder_name_elipses);
+        }
+        return folder.name;
+    }
+
     public void bind(Folder folder, DropHandler dropHandler, boolean showParentIcon) {
         mFolder = folder;
         mDropHandler = dropHandler;
-        mFolderTextView.setText(folder.name);
+        mFolderTextView.setText(getNameString(folder));
         mFolderParentIcon.setVisibility(mFolder.hasChildren && showParentIcon ? View.VISIBLE
                 : View.GONE);
         final int count = Utils.getFolderUnreadDisplayCount(mFolder);
