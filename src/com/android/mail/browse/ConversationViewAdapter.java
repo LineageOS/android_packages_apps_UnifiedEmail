@@ -131,7 +131,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public CharSequence timestampLong;
         public CharSequence recipientSummaryText;
 
-        private MessageHeaderItem(ConversationMessage message, boolean expanded) {
+        MessageHeaderItem(ConversationMessage message, boolean expanded) {
             this.message = message;
             mExpanded = expanded;
 

@@ -21,16 +21,13 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.Animator.AnimatorListener;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.LoaderManager;
+
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.database.DataSetObservable;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -43,9 +40,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -58,11 +52,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
-import com.android.mail.ContactInfo;
-import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
-import com.android.mail.SenderInfoLoader;
 import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
@@ -81,35 +72,26 @@ import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
-import com.android.mail.providers.Folder;
-import com.android.mail.providers.ListParams;
 import com.android.mail.providers.Message;
-import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.ViewProxyExtras;
 import com.android.mail.ui.ConversationViewState.ExpansionState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 
 /**
  * The conversation view UI component.
  */
-public final class ConversationViewFragment extends Fragment implements
+public final class ConversationViewFragment extends AbstractConversationViewFragment implements
         ConversationViewHeader.ConversationViewHeaderCallbacks,
         MessageHeaderViewCallbacks,
         SuperCollapsedBlock.OnClickListener,
@@ -119,9 +101,6 @@ public final class ConversationViewFragment extends Fragment implements
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
 
-    private static final int MESSAGE_LOADER_ID = 0;
-    private static final int CONTACT_LOADER_ID = 1;
-
     /** Do not auto load data when create this {@link ConversationView}. */
     public static final int NO_AUTO_LOAD = 0;
     /** Auto load data but do not show any animation. */
@@ -129,15 +108,7 @@ public final class ConversationViewFragment extends Fragment implements
     /** Auto load data and show animation. */
     public static final int AUTO_LOAD_VISIBLE = 2;
 
-    private ControllableActivity mActivity;
-
-    private Context mContext;
-
-    private Conversation mConversation;
-
     private ConversationContainer mConversationContainer;
-
-    private Account mAccount;
 
     private ConversationWebView mWebView;
 
@@ -155,8 +126,6 @@ public final class ConversationViewFragment extends Fragment implements
 
     private HtmlConversationTemplates mTemplates;
 
-    private String mBaseUri;
-
     private final Handler mHandler = new Handler();
 
     private final MailJsBridge mJsBridge = new MailJsBridge();
@@ -164,17 +133,8 @@ public final class ConversationViewFragment extends Fragment implements
     private final WebViewClient mWebViewClient = new ConversationWebViewClient();
 
     private ConversationViewAdapter mAdapter;
-    private MessageCursor mCursor;
 
     private boolean mViewsCreated;
-
-    private MenuItem mChangeFoldersMenuItem;
-    /**
-     * Folder is used to help determine valid menu actions for this conversation.
-     */
-    private Folder mFolder;
-
-    private final Map<String, Address> mAddressCache = Maps.newHashMap();
 
     /**
      * Temporary string containing the message bodies of the messages within a super-collapsed
@@ -183,8 +143,6 @@ public final class ConversationViewFragment extends Fragment implements
      * using {@link MailJsBridge}.
      */
     private String mTempBodiesHtml;
-
-    private boolean mUserVisible;
 
     private int  mMaxAutoLoadMessages;
 
@@ -203,25 +161,12 @@ public final class ConversationViewFragment extends Fragment implements
      */
     private ConversationViewState mViewState;
 
-    private final MessageLoaderCallbacks mMessageLoaderCallbacks = new MessageLoaderCallbacks();
-    private final ContactLoaderCallbacks mContactLoaderCallbacks = new ContactLoaderCallbacks();
-
-    private final AccountObserver mAccountObserver = new AccountObserver() {
-        @Override
-        public void onChanged(Account newAccount) {
-            mAccount = newAccount;
-
-            // settings may have been updated; refresh views that are known to depend on settings
-            mConversationContainer.getSnapHeader().onAccountChanged();
-            mAdapter.notifyDataSetChanged();
-        }
-    };
     private boolean mEnableContentReadySignal;
     private Runnable mDelayedShow = new Runnable() {
         @Override
         public void run() {
             mBackgroundView.setVisibility(View.VISIBLE);
-            String senders = mConversation.getSenders(mContext);
+            String senders = mConversation.getSenders(getContext());
             if (!TextUtils.isEmpty(senders) && mConversation.subject != null) {
                 mInfoView.setVisibility(View.VISIBLE);
                 mSendersView.setText(senders);
@@ -235,9 +180,6 @@ public final class ConversationViewFragment extends Fragment implements
 
     private ContentSizeChangeListener mWebViewSizeChangeListener;
 
-    private static final String ARG_ACCOUNT = "account";
-    public static final String ARG_CONVERSATION = "conversation";
-    private static final String ARG_FOLDER = "folder";
     private static final String BUNDLE_VIEW_STATE = "viewstate";
     private static int sSubjectColor = Integer.MIN_VALUE;
     private static int sSnippetColor = Integer.MIN_VALUE;
@@ -268,11 +210,12 @@ public final class ConversationViewFragment extends Fragment implements
         return f;
     }
 
-    public static Bundle makeBasicArgs(Account account, Folder folder) {
-        Bundle args = new Bundle();
-        args.putParcelable(ARG_ACCOUNT, account);
-        args.putParcelable(ARG_FOLDER, folder);
-        return args;
+    @Override
+    public void onAccountChanged() {
+        // settings may have been updated; refresh views that are known to
+        // depend on settings
+        mConversationContainer.getSnapHeader().onAccountChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -280,29 +223,13 @@ public final class ConversationViewFragment extends Fragment implements
         LogUtils.d(LOG_TAG, "IN CVF.onActivityCreated, this=%s subj=%s", this,
                 mConversation.subject);
         super.onActivityCreated(savedInstanceState);
-        // Strictly speaking, we get back an android.app.Activity from getActivity. However, the
-        // only activity creating a ConversationListContext is a MailActivity which is of type
-        // ControllableActivity, so this cast should be safe. If this cast fails, some other
-        // activity is creating ConversationListFragments. This activity must be of type
-        // ControllableActivity.
-        final Activity activity = getActivity();
-        if (!(activity instanceof ControllableActivity)) {
-            LogUtils.wtf(LOG_TAG, "ConversationViewFragment expects only a ControllableActivity to"
-                    + "create it. Cannot proceed.");
-        }
-        mActivity = (ControllableActivity) activity;
-        mContext = mActivity.getApplicationContext();
-        if (mActivity.isFinishing()) {
-            // Activity is finishing, just bail.
-            return;
-        }
-        mTemplates = new HtmlConversationTemplates(mContext);
-        mAccount = mAccountObserver.initialize(mActivity.getAccountController());
+        Context context = getContext();
+        mTemplates = new HtmlConversationTemplates(context);
 
-        final FormattedDateBuilder dateBuilder = new FormattedDateBuilder(mContext);
+        final FormattedDateBuilder dateBuilder = new FormattedDateBuilder(context);
 
         mAdapter = new ConversationViewAdapter(mActivity, this,
-                getLoaderManager(), this, mContactLoaderCallbacks, this,
+                getLoaderManager(), this, getContactInfoSource(), this,
                 this, mAddressCache, dateBuilder);
         mConversationContainer.setOverlayAdapter(mAdapter);
 
@@ -310,11 +237,11 @@ public final class ConversationViewFragment extends Fragment implements
         final MessageHeaderView snapHeader = mConversationContainer.getSnapHeader();
         snapHeader.initialize(dateBuilder, this, mAddressCache);
         snapHeader.setCallbacks(this);
-        snapHeader.setContactInfoSource(mContactLoaderCallbacks);
+        snapHeader.setContactInfoSource(getContactInfoSource());
 
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
 
-        mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(activity));
+        mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(getActivity()));
 
         showConversation();
 
@@ -324,23 +251,6 @@ public final class ConversationViewFragment extends Fragment implements
             new SetCookieTask(mConversation.conversationBaseUri.toString(),
                     mConversation.conversationCookie).execute();
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedState) {
-        super.onCreate(savedState);
-
-        final Bundle args = getArguments();
-        mAccount = args.getParcelable(ARG_ACCOUNT);
-        mConversation = args.getParcelable(ARG_CONVERSATION);
-        mFolder = args.getParcelable(ARG_FOLDER);
-        // Since the uri specified in the conversation base uri may not be unique, we specify a
-        // base uri that us guaranteed to be unique for this conversation.
-        mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
-        LogUtils.d(LOG_TAG, "onCreate in ConversationViewFragment (this=%s)", this);
-
-        // Not really, we just want to get a crack to store a reference to the change_folder item
-        setHasOptionsMenu(true);
     }
 
     private CharSequence createSubjectSnippet(CharSequence subject, CharSequence snippet) {
@@ -353,7 +263,7 @@ public final class ConversationViewFragment extends Fragment implements
         if (snippet == null) {
             snippet = "";
         }
-        SpannableStringBuilder subjectText = new SpannableStringBuilder(mContext.getString(
+        SpannableStringBuilder subjectText = new SpannableStringBuilder(getContext().getString(
                 R.string.subject_and_snippet, subject, snippet));
         ensureSubjectSnippetColors();
         int snippetStart = 0;
@@ -369,7 +279,7 @@ public final class ConversationViewFragment extends Fragment implements
 
     private void ensureSubjectSnippetColors() {
         if (sSubjectColor == Integer.MIN_VALUE) {
-            Resources res = mContext.getResources();
+            Resources res = getContext().getResources();
             sSubjectColor = res.getColor(R.color.subject_text_color_read);
             sSnippetColor = res.getColor(R.color.snippet_text_color_read);
         }
@@ -481,88 +391,10 @@ public final class ConversationViewFragment extends Fragment implements
             mMarkReadObserver = null;
         }
         mViewsCreated = false;
-        mAccountObserver.unregisterAndDestroy();
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        mChangeFoldersMenuItem = menu.findItem(R.id.change_folder);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        final boolean showMarkImportant = !mConversation.isImportant();
-        Utils.setMenuItemVisibility(menu, R.id.mark_important, showMarkImportant
-                && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        Utils.setMenuItemVisibility(menu, R.id.mark_not_important, !showMarkImportant
-                && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        final boolean showDelete = mFolder != null &&
-                mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE);
-        Utils.setMenuItemVisibility(menu, R.id.delete, showDelete);
-        // We only want to show the discard drafts menu item if we are not showing the delete menu
-        // item, and the current folder is a draft folder and the account supports discarding
-        // drafts for a conversation
-        final boolean showDiscardDrafts = !showDelete && mFolder != null && mFolder.isDraft() &&
-                mAccount.supportsCapability(AccountCapabilities.DISCARD_CONVERSATION_DRAFTS);
-        Utils.setMenuItemVisibility(menu, R.id.discard_drafts, showDiscardDrafts);
-        final boolean archiveVisible = mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
-                && mFolder != null && mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
-                && !mFolder.isTrash();
-        Utils.setMenuItemVisibility(menu, R.id.archive, archiveVisible);
-        Utils.setMenuItemVisibility(menu, R.id.remove_folder, !archiveVisible && mFolder != null
-                && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
-                && !mFolder.isProviderFolder());
-        final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
-        if (removeFolder != null) {
-            removeFolder.setTitle(getString(R.string.remove_folder, mFolder.name));
-        }
-        Utils.setMenuItemVisibility(menu, R.id.report_spam,
-                mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
-                        && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM)
-                        && !mConversation.spam);
-        Utils.setMenuItemVisibility(menu, R.id.mark_not_spam,
-                mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
-                        && mFolder.supportsCapability(FolderCapabilities.MARK_NOT_SPAM)
-                        && mConversation.spam);
-        Utils.setMenuItemVisibility(menu, R.id.report_phishing,
-                mAccount.supportsCapability(AccountCapabilities.REPORT_PHISHING) && mFolder != null
-                        && mFolder.supportsCapability(FolderCapabilities.REPORT_PHISHING)
-                        && !mConversation.phishing);
-        Utils.setMenuItemVisibility(menu, R.id.mute,
-                        mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
-                        && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)
-                        && !mConversation.muted);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean handled = false;
-
-        switch (item.getItemId()) {
-            case R.id.inside_conversation_unread:
-                markUnread();
-                handled = true;
-                break;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public ConversationUpdater getListController() {
-        final ControllableActivity activity = (ControllableActivity) getActivity();
-        return activity != null ? activity.getConversationUpdater() : null;
-    }
-
-    @Override
-    public MessageCursor getMessageCursor() {
-        return mCursor;
-    }
-
-    private void markUnread() {
+    protected void markUnread() {
         // Ignore unsafe calls made after a fragment is detached from an activity
         final ControllableActivity activity = (ControllableActivity) getActivity();
         if (activity == null) {
@@ -579,28 +411,18 @@ public final class ConversationViewFragment extends Fragment implements
                 mViewState.getUnreadMessageUris(), mViewState.getConversationInfo());
     }
 
-    /**
-     * {@link #setUserVisibleHint(boolean)} only works on API >= 15, so implement our own for
-     * reliability on older platforms.
-     */
-    public void setExtraUserVisibleHint(boolean isVisibleToUser) {
-        LogUtils.v(LOG_TAG, "in CVF.setHint, val=%s (%s)", isVisibleToUser, this);
-
-        if (mUserVisible != isVisibleToUser) {
-            mUserVisible = isVisibleToUser;
-
-            if (isVisibleToUser && mViewsCreated) {
-
-                if (mCursor == null && mDeferredConversationLoad) {
-                    // load
-                    LogUtils.v(LOG_TAG, "Fragment is now user-visible, showing conversation: %s",
-                            mConversation.uri);
-                    showConversation();
-                    mDeferredConversationLoad = false;
-                } else {
-                    onConversationSeen();
-                }
-
+    @Override
+    public void onUserVisibleHintChanged() {
+        if (mUserVisible && mViewsCreated) {
+            Cursor cursor = getMessageCursor();
+            if (cursor == null && mDeferredConversationLoad) {
+                // load
+                LogUtils.v(LOG_TAG, "Fragment is now user-visible, showing conversation: %s",
+                        mConversation.uri);
+                showConversation();
+                mDeferredConversationLoad = false;
+            } else {
+                onConversationSeen();
             }
         }
     }
@@ -624,7 +446,7 @@ public final class ConversationViewFragment extends Fragment implements
                 "Fragment is short or user-visible, immediately rendering conversation: %s",
                 mConversation.uri);
         mWebView.setVisibility(View.VISIBLE);
-        getLoaderManager().initLoader(MESSAGE_LOADER_ID, Bundle.EMPTY, mMessageLoaderCallbacks);
+        getLoaderManager().initLoader(MESSAGE_LOADER, Bundle.EMPTY, getMessageLoaderCallbacks());
         if (mUserVisible) {
             final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
             if (sdc != null) {
@@ -635,10 +457,6 @@ public final class ConversationViewFragment extends Fragment implements
         // conversation. Ielieve this is better done by making sure don't show loading status
         // until XX ms have passed without loading completed.
         showLoadingStatus();
-    }
-
-    public Conversation getConversation() {
-        return mConversation;
     }
 
     private void renderConversation(MessageCursor messageCursor) {
@@ -664,7 +482,6 @@ public final class ConversationViewFragment extends Fragment implements
         }
 
         mWebView.loadDataWithBaseURL(mBaseUri, convHtml, "text/html", "utf-8", null);
-        mCursor = messageCursor;
     }
 
     /**
@@ -899,7 +716,8 @@ public final class ConversationViewFragment extends Fragment implements
         // or if unread messages still exist in the message list cursor
         // we don't want to keep marking viewed on rotation or restore
         // but we do want future re-renders to mark read (e.g. "New message from X" case)
-        if (!mConversation.isViewed() || (mCursor != null && !mCursor.isConversationRead())) {
+        MessageCursor cursor = getMessageCursor();
+        if (!mConversation.isViewed() || (cursor != null && !cursor.isConversationRead())) {
             final ConversationUpdater listController = activity.getConversationUpdater();
             // The conversation cursor may not have finished loading by now (when launched via
             // notification), so watch for when it finishes and mark it read then.
@@ -923,19 +741,10 @@ public final class ConversationViewFragment extends Fragment implements
 
         // and update the Message objects in the cursor so the next time a cursor update happens
         // with these messages marked read, we know to ignore it
-        if (mCursor != null) {
-            mCursor.markMessagesRead();
+        MessageCursor cursor = getMessageCursor();
+        if (cursor != null) {
+            cursor.markMessagesRead();
         }
-    }
-
-    // BEGIN conversation header callbacks
-    @Override
-    public void onFoldersClicked() {
-        if (mChangeFoldersMenuItem == null) {
-            LogUtils.e(LOG_TAG, "unable to open 'change folders' dialog for a conversation");
-            return;
-        }
-        mActivity.onOptionsItemSelected(mChangeFoldersMenuItem);
     }
 
     @Override
@@ -944,14 +753,6 @@ public final class ConversationViewFragment extends Fragment implements
         // are added/removed
     }
 
-    @Override
-    public String getSubjectRemainder(String subject) {
-        final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
-        if (sdc == null) {
-            return subject;
-        }
-        return sdc.getUnshownSubject(subject);
-    }
     // END conversation header callbacks
 
     // START message header callbacks
@@ -991,11 +792,12 @@ public final class ConversationViewFragment extends Fragment implements
 
     @Override
     public void onSuperCollapsedClick(SuperCollapsedBlockItem item) {
-        if (mCursor == null || !mViewsCreated) {
+        MessageCursor cursor = getMessageCursor();
+        if (cursor == null || !mViewsCreated) {
             return;
         }
 
-        mTempBodiesHtml = renderCollapsedHeaders(mCursor, item);
+        mTempBodiesHtml = renderCollapsedHeaders(cursor, item);
         mWebView.loadUrl("javascript:replaceSuperCollapsedBlock(" + item.getStart() + ")");
     }
 
@@ -1009,45 +811,8 @@ public final class ConversationViewFragment extends Fragment implements
     private void onNewMessageBarClick() {
         mNewMessageBar.setVisibility(View.GONE);
 
-        renderConversation(mCursor); // mCursor is already up-to-date per onLoadFinished()
-    }
-
-    private static class MessageLoader extends CursorLoader {
-        private boolean mDeliveredFirstResults = false;
-        private final Conversation mConversation;
-        private final ConversationController mController;
-
-        public MessageLoader(Context c, Conversation conv, ConversationController controller) {
-            super(c, conv.messageListUri, UIProvider.MESSAGE_PROJECTION, null, null, null);
-            mConversation = conv;
-            mController = controller;
-        }
-
-        @Override
-        public Cursor loadInBackground() {
-            return new MessageCursor(super.loadInBackground(), mConversation, mController);
-        }
-
-        @Override
-        public void deliverResult(Cursor result) {
-            // We want to deliver these results, and then we want to make sure that any subsequent
-            // queries do not hit the network
-            super.deliverResult(result);
-
-            if (!mDeliveredFirstResults) {
-                mDeliveredFirstResults = true;
-                Uri uri = getUri();
-
-                // Create a ListParams that tells the provider to not hit the network
-                final ListParams listParams =
-                        new ListParams(ListParams.NO_LIMIT, false /* useNetwork */);
-
-                // Build the new uri with this additional parameter
-                uri = uri.buildUpon().appendQueryParameter(
-                        UIProvider.LIST_PARAMS_QUERY_PARAMETER, listParams.serialize()).build();
-                setUri(uri);
-            }
-        }
+        renderConversation(getMessageCursor()); // mCursor is already up-to-date
+                                                // per onLoadFinished()
     }
 
     private static int[] parseInts(final String[] stringArray) {
@@ -1117,9 +882,9 @@ public final class ConversationViewFragment extends Fragment implements
                 for (Address addr : mAddressCache.values()) {
                     emailAddresses.add(addr.getAddress());
                 }
-                mContactLoaderCallbacks.setSenders(emailAddresses);
-                getLoaderManager().restartLoader(CONTACT_LOADER_ID, Bundle.EMPTY,
-                        mContactLoaderCallbacks);
+                ContactLoaderCallbacks callbacks = getContactInfoSource();
+                getContactInfoSource().setSenders(emailAddresses);
+                getLoaderManager().restartLoader(CONTACT_LOADER, Bundle.EMPTY, callbacks);
             }
         }
 
@@ -1187,7 +952,7 @@ public final class ConversationViewFragment extends Fragment implements
 
     private void showLoadingStatus() {
         if (sMinDelay == -1) {
-            sMinDelay = mContext.getResources()
+            sMinDelay = getContext().getResources()
                     .getInteger(R.integer.conversationview_show_loading_delay);
         }
         // In case there were any other instances around, get rid of them.
@@ -1203,7 +968,7 @@ public final class ConversationViewFragment extends Fragment implements
         }
         // Fade out the info view.
         if (mBackgroundView.getVisibility() == View.VISIBLE) {
-            Animator animator = AnimatorInflater.loadAnimator(mContext, R.anim.fade_out);
+            Animator animator = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
             animator.setTarget(mBackgroundView);
             animator.addListener(new AnimatorListener() {
                 @Override
@@ -1331,192 +1096,77 @@ public final class ConversationViewFragment extends Fragment implements
         }
     }
 
-    private class MessageLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+    @Override
+    public void onMessageCursorLoadFinished(Loader<Cursor> loader, Cursor data, boolean wasNull,
+            boolean changed) {
+        MessageCursor messageCursor = (MessageCursor) data;
+        /*
+         * what kind of changes affect the MessageCursor? 1. new message(s) 2.
+         * read/unread state change 3. deleted message, either regular or draft
+         * 4. updated message, either from self or from others, updated in
+         * content or state or sender 5. star/unstar of message (technically
+         * similar to #1) 6. other label change Use MessageCursor.hashCode() to
+         * sort out interesting vs. no-op cursor updates.
+         */
+        if (!wasNull) {
+            final NewMessagesInfo info = getNewIncomingMessagesInfo(messageCursor);
 
-        @Override
-        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return new MessageLoader(mContext, mConversation, ConversationViewFragment.this);
-        }
+            if (info.count > 0 || !changed) {
 
-        @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            MessageCursor messageCursor = (MessageCursor) data;
-
-            // ignore truly duplicate results
-            // this can happen when restoring after rotation
-            if (mCursor == messageCursor) {
-                return;
-            }
-
-            if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
-                LogUtils.d(LOG_TAG, "LOADED CONVERSATION= %s", messageCursor.getDebugDump());
-            }
-
-            // TODO: handle ERROR status
-
-            // When the last cursor had message(s), and the new version has no messages,
-            // we need to exit conversation view.
-            if (messageCursor.getCount() == 0 && mCursor != null) {
-
-                if (mUserVisible) {
-                    // need to exit this view- conversation may have been deleted, or for
-                    // whatever reason is now invalid (e.g. discard single draft)
-                    //
-                    // N.B. this may involve a fragment transaction, which FragmentManager will
-                    // refuse to execute directly within onLoadFinished. Make sure the controller
-                    // knows.
-                    LogUtils.i(LOG_TAG, "CVF: visible conv has no messages, exiting conv mode");
-                    mActivity.getListHandler().onConversationSelected(null,
-                            true /* inLoaderCallbacks */);
+                if (info.count > 0) {
+                    // don't immediately render new incoming messages from other
+                    // senders
+                    // (to avoid a new message from losing the user's focus)
+                    LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
+                            + ", holding cursor for new incoming message");
+                    showNewMessageNotification(info);
                 } else {
-                    // we expect that the pager adapter will remove this conversation fragment
-                    // on its own due to a separate conversation cursor update
-                    // (we might get here if the message list update fires first. nothing to do
-                    // because we expect to be torn down soon.)
-                    LogUtils.i(LOG_TAG, "CVF: offscreen conv has no messages, ignoring update"
-                            + " in anticipation of conv cursor update. c=%s", mConversation.uri);
+                    LogUtils.i(LOG_TAG, "CONV RENDER: uninteresting update"
+                            + ", ignoring this conversation update");
                 }
 
+                // update mCursor reference because the old one is about to be
+                // closed by CursorLoader
                 return;
             }
-
-            // ignore cursors that are still loading results
-            if (!messageCursor.isLoaded()) {
-                return;
-            }
-
-            /*
-             * what kind of changes affect the MessageCursor?
-             * 1. new message(s)
-             * 2. read/unread state change
-             * 3. deleted message, either regular or draft
-             * 4. updated message, either from self or from others, updated in content or state
-             * or sender
-             * 5. star/unstar of message (technically similar to #1)
-             * 6. other label change
-             *
-             * Use MessageCursor.hashCode() to sort out interesting vs. no-op cursor updates.
-             */
-
-            if (mCursor == null) {
-                LogUtils.i(LOG_TAG, "CONV RENDER: existing cursor is null, rendering from scratch");
-            } else {
-                final NewMessagesInfo info = getNewIncomingMessagesInfo(messageCursor);
-
-                if (info.count > 0 || messageCursor.hashCode() == mCursor.hashCode()) {
-
-                    if (info.count > 0) {
-                        // don't immediately render new incoming messages from other senders
-                        // (to avoid a new message from losing the user's focus)
-                        LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
-                                + ", holding cursor for new incoming message");
-                        showNewMessageNotification(info);
-                    } else {
-                        LogUtils.i(LOG_TAG, "CONV RENDER: uninteresting update"
-                                + ", ignoring this conversation update");
-                    }
-
-                    // update mCursor reference because the old one is about to be closed by
-                    // CursorLoader
-                    mCursor = messageCursor;
-                    return;
-                }
-
-                // cursors are different, and not due to an incoming message. fall through and
-                // render.
-                LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
-                        + ", but not due to incoming message. rendering.");
-            }
-
-            renderConversation(messageCursor);
-
-            // TODO: if this is not user-visible, delay render until user-visible fragment is done.
-            // This is needed in addition to the showConversation() delay to speed up rotation and
-            // restoration.
         }
 
-        @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
-            mCursor = null;
-        }
+        // cursors are different, and not due to an incoming message. fall
+        // through and render.
+        LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
+                + ", but not due to incoming message. rendering.");
 
-        private NewMessagesInfo getNewIncomingMessagesInfo(MessageCursor newCursor) {
-            final NewMessagesInfo info = new NewMessagesInfo();
-
-            int pos = -1;
-            while (newCursor.moveToPosition(++pos)) {
-                final Message m = newCursor.getMessage();
-                if (!mViewState.contains(m)) {
-                    LogUtils.i(LOG_TAG, "conversation diff: found new msg: %s", m.uri);
-
-                    final Address from = getAddress(m.from);
-                    // distinguish ours from theirs
-                    // new messages from the account owner should not trigger a notification
-                    if (mAccount.ownsFromAddress(from.getAddress())) {
-                        LogUtils.i(LOG_TAG, "found message from self: %s", m.uri);
-                        continue;
-                    }
-
-                    info.count++;
-                    info.senderAddress = m.from;
-                }
-            }
-            return info;
-        }
-
+        // TODO: if this is not user-visible, delay render until user-visible
+        // fragment is done. This is needed in addition to the
+        // showConversation() delay to speed up rotation and restoration.
+        renderConversation(messageCursor);
     }
 
-    /**
-     * Inner class to to asynchronously load contact data for all senders in the conversation,
-     * and notify observers when the data is ready.
-     *
-     */
-    private class ContactLoaderCallbacks implements ContactInfoSource,
-            LoaderManager.LoaderCallbacks<ImmutableMap<String, ContactInfo>> {
+    private NewMessagesInfo getNewIncomingMessagesInfo(MessageCursor newCursor) {
+        final NewMessagesInfo info = new NewMessagesInfo();
 
-        private Set<String> mSenders;
-        private ImmutableMap<String, ContactInfo> mContactInfoMap;
-        private DataSetObservable mObservable = new DataSetObservable();
+        int pos = -1;
+        while (newCursor.moveToPosition(++pos)) {
+            final Message m = newCursor.getMessage();
+            if (!mViewState.contains(m)) {
+                LogUtils.i(LOG_TAG, "conversation diff: found new msg: %s", m.uri);
 
-        public void setSenders(Set<String> emailAddresses) {
-            mSenders = emailAddresses;
-        }
+                final Address from = getAddress(m.from);
+                // distinguish ours from theirs
+                // new messages from the account owner should not trigger a
+                // notification
+                if (mAccount.ownsFromAddress(from.getAddress())) {
+                    LogUtils.i(LOG_TAG, "found message from self: %s", m.uri);
+                    continue;
+                }
 
-        @Override
-        public Loader<ImmutableMap<String, ContactInfo>> onCreateLoader(int id, Bundle args) {
-            return new SenderInfoLoader(mContext, mSenders);
-        }
-
-        @Override
-        public void onLoadFinished(Loader<ImmutableMap<String, ContactInfo>> loader,
-                ImmutableMap<String, ContactInfo> data) {
-            mContactInfoMap = data;
-            mObservable.notifyChanged();
-        }
-
-        @Override
-        public void onLoaderReset(Loader<ImmutableMap<String, ContactInfo>> loader) {
-        }
-
-        @Override
-        public ContactInfo getContactInfo(String email) {
-            if (mContactInfoMap == null) {
-                return null;
+                info.count++;
+                info.senderAddress = m.from;
             }
-            return mContactInfoMap.get(email);
         }
-
-        @Override
-        public void registerObserver(DataSetObserver observer) {
-            mObservable.registerObserver(observer);
-        }
-
-        @Override
-        public void unregisterObserver(DataSetObserver observer) {
-            mObservable.unregisterObserver(observer);
-        }
-
+        return info;
     }
+
 
     private class MarkReadObserver extends DataSetObserver {
         private final ConversationUpdater mListController;
@@ -1551,7 +1201,7 @@ public final class ConversationViewFragment extends Fragment implements
         @Override
         public Void doInBackground(Void... args) {
             final CookieSyncManager csm =
-                CookieSyncManager.createInstance(mContext);
+                CookieSyncManager.createInstance(getContext());
             CookieManager.getInstance().setCookie(mUri, mCookie);
             csm.sync();
             return null;
@@ -1561,7 +1211,6 @@ public final class ConversationViewFragment extends Fragment implements
     public void onConversationUpdated(Conversation conv) {
         final ConversationViewHeader headerView = (ConversationViewHeader) mConversationContainer
                 .findViewById(R.id.conversation_header);
-        mConversation = conv;
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
         }
