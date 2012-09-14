@@ -35,7 +35,7 @@ LOCAL_STATIC_JAVA_LIBRARIES += android-common
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v13
 
-LOCAL_SDK_VERSION := 16
+LOCAL_SDK_VERSION := current
 
 LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs)) \
         $(call all-logtags-files-under, $(src_dirs))
