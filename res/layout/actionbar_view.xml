@@ -28,8 +28,7 @@
     <com.android.mail.ui.MailSpinner
         android:id="@+id/account_spinner"
         android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        style="@style/PlainSpinnerDropdown"
+        style="@style/AccountSwitchSpinnerItem"
         android:focusableInTouchMode="false"
         android:focusable="false"
         android:clickable="true"/>
