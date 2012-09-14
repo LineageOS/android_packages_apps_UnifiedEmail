@@ -26,7 +26,7 @@
 
     <LinearLayout
         android:layout_height="match_parent"
-        android:id="@+id/account_spinner"
+        android:id="@+id/account_spinner_container"
         android:orientation="vertical"
         android:gravity="center_vertical"
         android:background="@drawable/spinner_ab_holo_light"
@@ -54,7 +54,7 @@
 
     <TextView
         android:id="@+id/account_unread"
-        android:layout_toRightOf="@id/account_spinner"
+        android:layout_toRightOf="@id/account_spinner_container"
         android:layout_marginLeft="4dp"
         android:layout_alignParentLeft="true"
         style="@style/UnreadCountActionBar"/>

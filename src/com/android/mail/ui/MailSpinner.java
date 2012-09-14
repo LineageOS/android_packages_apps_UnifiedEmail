@@ -23,6 +23,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListPopupWindow;
 import android.widget.TextView;
 
@@ -36,14 +37,15 @@ import com.android.mail.utils.Utils;
 
 public class MailSpinner extends FrameLayout implements OnItemClickListener, OnClickListener {
     private static final String LOG_TAG = LogTag.getLogTag();
-    private ListPopupWindow mListPopupWindow;
+    private final ListPopupWindow mListPopupWindow;
     private AccountSpinnerAdapter mSpinnerAdapter;
     private Account mAccount;
     private Folder mFolder;
     private ActivityController mController;
-    private TextView mAccountName;
-    private TextView mFolderName;
-    private TextView mFolderCount;
+    private final TextView mAccountName;
+    private final TextView mFolderName;
+    private final TextView mFolderCount;
+    private final LinearLayout mContainer;
 
     public MailSpinner(Context context) {
         this(context, null);
@@ -65,14 +67,31 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
         mListPopupWindow.setModal(true);
         addView(LayoutInflater.from(getContext()).inflate(R.layout.account_switch_spinner_item,
                 null));
-        mAccountName = (TextView)findViewById(R.id.account_second);
-        mFolderName = (TextView)findViewById(R.id.account_first);
+        mAccountName = (TextView) findViewById(R.id.account_second);
+        mFolderName = (TextView) findViewById(R.id.account_first);
         mFolderCount = (TextView) findViewById(R.id.account_unread);
+        mContainer = (LinearLayout) findViewById(R.id.account_spinner_container);
+        mContainer.setOnClickListener(this);
     }
 
     public void setAdapter(AccountSpinnerAdapter adapter) {
         mSpinnerAdapter = adapter;
         mListPopupWindow.setAdapter(mSpinnerAdapter);
+    }
+
+    /**
+     * Changes the enabled state of the spinner. Not called {@link #setEnabled(boolean)} because
+     * that is an existing method on views.
+     *
+     * @param enabled
+     */
+    public final void changeEnabledState(boolean enabled) {
+        setEnabled(enabled);
+        if (enabled) {
+            mContainer.setBackgroundResource(R.drawable.spinner_ab_holo_light);
+        } else {
+            mContainer.setBackgroundDrawable(null);
+        }
     }
 
     public void setAccount(Account account) {
@@ -145,7 +164,7 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
 
     @Override
     public void onClick(View arg0) {
-        if (!mListPopupWindow.isShowing()) {
+        if (isEnabled() && !mListPopupWindow.isShowing()) {
             mListPopupWindow.show();
         }
     }
