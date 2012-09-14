@@ -764,4 +764,7 @@
     <string name="all_folders_heading">All folders</string>
     <!-- String used in the FolderListFragment to mark the start of recent folders -->
     <string name="recent_folders_heading">Recent folders</string>
+
+    <!-- String suffix to indicate parent folder in Hierarchical folders -->
+    <string translatable="false" name="folder_name_elipses">...</string>
 </resources>
