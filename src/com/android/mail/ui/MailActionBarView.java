@@ -18,7 +18,6 @@
 package com.android.mail.ui;
 
 import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
@@ -31,12 +30,8 @@ import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SearchView.OnSuggestionListener;
@@ -259,6 +254,13 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     public void setAccounts(Account[] accounts) {
         final Account currentAccount = mController.getCurrentAccount();
         mSpinnerAdapter.setAccountArray(accounts);
+        // On phone we always show recent labels: we pre-populate them if necessary. So on phone we
+        // always want to enable the spinner. This is the default behavior since the drawable is
+        // set in the XML layout, and by default it is enabled.
+        if (mIsOnTablet) {
+            // Singleton spinner: we disable taps.
+            mSpinner.changeEnabledState(accounts.length != 1);
+        }
     }
 
     /**
@@ -389,7 +391,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     /**
      * Set the actionbar mode to standard mode: no list navigation.
      */
-    protected void setStandardMode() {
+    private void setStandardMode() {
         mSpinner.setVisibility(View.GONE);
         mFolderView.setVisibility(View.VISIBLE);
         mFolderAccountName.setVisibility(View.VISIBLE);
