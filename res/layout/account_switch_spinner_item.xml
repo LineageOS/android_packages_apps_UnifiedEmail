@@ -56,6 +56,5 @@
         android:id="@+id/account_unread"
         android:layout_toRightOf="@id/account_spinner"
         android:layout_marginLeft="4dp"
-        android:layout_alignParentLeft="true"
         style="@style/UnreadCountActionBar"/>
 </RelativeLayout>
