@@ -179,7 +179,7 @@
     <style name="AccountSpinnerAnchorTextSecondary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
     </style>
 
-    <style name="AccountSwitchSpinnerItem">
+    <style name="AccountSwitchSpinnerItem" parent="@style/PlainSpinnerDropdown">
         <item name="android:layout_width">match_parent</item>
     </style>
 
