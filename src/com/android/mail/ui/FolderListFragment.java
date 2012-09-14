@@ -630,7 +630,7 @@ public final class FolderListFragment extends ListFragment implements
                 folderItemView = (FolderItemView) LayoutInflater.from(
                         mActivity.getActivityContext()).inflate(resId, null);
             }
-            folderItemView.bind(folder, mDropHandler, !isParent);
+            folderItemView.bind(folder, mDropHandler, isParent);
             if (folder.uri.equals(mSelectedFolderUri)) {
                 getListView().setItemChecked(position, true);
             }
