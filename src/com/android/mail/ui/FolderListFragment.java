@@ -81,15 +81,24 @@ public final class FolderListFragment extends ListFragment implements
 
     private static final String BUNDLE_LIST_STATE = "flf-list-state";
     private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
+    private static final String BUNDLE_SELECTED_TYPE = "flf-selected-type";
 
     private FolderListFragmentCursorAdapter mCursorAdapter;
     /** View that we show while we are waiting for the folder list to load */
     private View mEmptyView;
     /** Observer to wait for changes to the current folder so we can change the selected folder */
     private FolderObserver mFolderObserver = null;
+    /**
+     * Type of currently selected folder: {@link FolderListAdapter.Item#FOLDER_SYSTEM},
+     * {@link FolderListAdapter.Item#FOLDER_RECENT} or {@link FolderListAdapter.Item#FOLDER_USER}.
+     */
+    // Setting to NOT_A_FOLDER = leaving uninitialized.
+    private int mSelectedFolderType = FolderListAdapter.Item.NOT_A_FOLDER;
 
-    // Listen to folder changes from the controller and update state accordingly.
-    private class FolderObserver extends DataSetObserver {
+    /**
+     * Listens to folder changes from the controller and updates state accordingly.
+     */
+    private final class FolderObserver extends DataSetObserver {
         @Override
         public void onChanged() {
             if (mActivity == null) {
@@ -99,11 +108,7 @@ public final class FolderListFragment extends ListFragment implements
             if (controller == null) {
                 return;
             }
-            final Folder folder = controller.getFolder();
-            if (folder == null) {
-                return;
-            }
-            mSelectedFolderUri = folder.uri;
+            setSelectedFolder(controller.getFolder());
         }
     }
 
@@ -168,14 +173,21 @@ public final class FolderListFragment extends ListFragment implements
             return;
         }
 
+        final Folder selectedFolder;
         if (mParentFolder != null) {
             mCursorAdapter = new HierarchicalFolderListAdapter(null, mParentFolder);
+            selectedFolder = mActivity.getHierarchyFolder();
         } else {
             mCursorAdapter = new FolderListAdapter(R.layout.folder_item, mIsSectioned);
+            selectedFolder = controller.getFolder();
+        }
+        // Is the selected folder fresher than the one we have restored from a bundle?
+        if (selectedFolder != null && !selectedFolder.uri.equals(mSelectedFolderUri)) {
+            setSelectedFolder(selectedFolder);
+            setSelectedFolderType(selectedFolder);
         }
         setListAdapter(mCursorAdapter);
-
-        selectInitialFolder(mActivity.getHierarchyFolder());
+        // Set the region which gets highlighted since it might not have been set till now.
         getLoaderManager().initLoader(FOLDER_LOADER_ID, Bundle.EMPTY, this);
     }
 
@@ -197,8 +209,10 @@ public final class FolderListFragment extends ListFragment implements
         mEmptyView = rootView.findViewById(R.id.empty_view);
         if (savedState != null && savedState.containsKey(BUNDLE_SELECTED_FOLDER)) {
             mSelectedFolderUri = Uri.parse(savedState.getString(BUNDLE_SELECTED_FOLDER));
+            mSelectedFolderType = savedState.getInt(BUNDLE_SELECTED_TYPE);
         } else if (mParentFolder != null) {
             mSelectedFolderUri = mParentFolder.uri;
+            // No selected folder type required for hierarchical lists.
         }
         Utils.dumpLayoutRequests("FLF(" + this + ").onCreateView()", rootView);
 
@@ -232,6 +246,7 @@ public final class FolderListFragment extends ListFragment implements
         if (mSelectedFolderUri != null) {
             outState.putString(BUNDLE_SELECTED_FOLDER, mSelectedFolderUri.toString());
         }
+        outState.putInt(BUNDLE_SELECTED_TYPE, mSelectedFolderType);
         outState.putBoolean(ARG_IS_SECTIONED, mIsSectioned);
     }
 
@@ -263,12 +278,12 @@ public final class FolderListFragment extends ListFragment implements
      * @param position
      */
     private void viewFolder(int position) {
-        Object item = getListAdapter().getItem(position);
+        final Object item = getListAdapter().getItem(position);
         final Folder folder;
         if (item instanceof FolderListAdapter.Item) {
-            FolderListAdapter.Item folderItem = (FolderListAdapter.Item) item;
+            final FolderListAdapter.Item folderItem = (FolderListAdapter.Item) item;
             folder = folderItem.mFolder;
-            ((FolderListAdapter) getListAdapter()).setSelectedType(folderItem.mFolderType);
+            mSelectedFolderType = folderItem.mFolderType;
         } else if (item instanceof Folder) {
             folder = (Folder) item;
         } else {
@@ -337,11 +352,6 @@ public final class FolderListFragment extends ListFragment implements
         private final List<Item> mItemList = new ArrayList<Item>();
         /** Cursor into the folder list. This might be null. */
         private Cursor mCursor = null;
-        /**
-         * Type of currently selected folder: {@link Item#FOLDER_SYSTEM}, {@link Item#FOLDER_RECENT}
-         * or {@link Item#FOLDER_USER}
-         */
-        private int mSelectedFolderType;
 
         /** A union of either a folder or a resource string */
         private class Item {
@@ -457,12 +467,6 @@ public final class FolderListFragment extends ListFragment implements
             } else {
                 mRecentFolders = null;
             }
-        }
-        /**
-         * Sets the currently selected folder's type to the type given here.
-         */
-        public void setSelectedType(int type) {
-            mSelectedFolderType = type;
         }
 
         @Override
@@ -660,12 +664,25 @@ public final class FolderListFragment extends ListFragment implements
         }
     }
 
-    public void selectInitialFolder(Folder folder) {
+    /**
+     * Sets the currently selected folder safely.
+     * @param folder
+     */
+    private void setSelectedFolder(Folder folder) {
         if (folder == null) {
             mSelectedFolderUri = Uri.EMPTY;
             return;
         }
         mSelectedFolderUri = folder.uri;
+    }
+
+    /**
+     * Sets the selected folder type safely.
+     * @param folder
+     */
+    private void setSelectedFolderType(Folder folder) {
+        mSelectedFolderType = folder.isProviderFolder() ? FolderListAdapter.Item.FOLDER_SYSTEM
+                : FolderListAdapter.Item.FOLDER_USER;
     }
 
     public interface FolderListSelectionListener {

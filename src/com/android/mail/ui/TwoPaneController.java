@@ -166,14 +166,10 @@ public final class TwoPaneController extends AbstractActivityController {
     public void onFolderChanged(Folder folder) {
         super.onFolderChanged(folder);
         exitCabMode();
-        FolderListFragment folderList = getFolderListFragment();
+        final FolderListFragment folderList = getFolderListFragment();
         if (folderList == null && mViewMode.getMode() == ViewMode.CONVERSATION_LIST) {
             // Create a folder list fragment if none exists.
             renderFolderList();
-            folderList = getFolderListFragment();
-        }
-        if (folderList != null) {
-            folderList.selectInitialFolder(folder);
         }
     }
 
