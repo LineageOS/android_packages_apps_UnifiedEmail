@@ -17,6 +17,7 @@
 
 package com.android.mail.browse;
 
+import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.ControllableActivity;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
@@ -58,6 +60,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     private final FormattedDateBuilder mDateBuilder;
     private final ConversationAccountController mAccountController;
     private final LoaderManager mLoaderManager;
+    private final FragmentManager mFragmentManager;
     private final MessageHeaderViewCallbacks mMessageCallbacks;
     private final ContactInfoSource mContactInfoSource;
     private ConversationViewHeaderCallbacks mConversationCallbacks;
@@ -203,7 +206,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         public View createView(Context context, LayoutInflater inflater, ViewGroup parent) {
             final MessageFooterView v = (MessageFooterView) inflater.inflate(
                     R.layout.conversation_message_footer, parent, false);
-            v.initialize(mLoaderManager);
+            v.initialize(mLoaderManager, mFragmentManager);
             return v;
         }
 
@@ -277,7 +280,7 @@ public class ConversationViewAdapter extends BaseAdapter {
         }
     }
 
-    public ConversationViewAdapter(Context context,
+    public ConversationViewAdapter(ControllableActivity controllableActivity,
             ConversationAccountController accountController,
             LoaderManager loaderManager,
             MessageHeaderViewCallbacks messageCallbacks,
@@ -285,16 +288,17 @@ public class ConversationViewAdapter extends BaseAdapter {
             ConversationViewHeaderCallbacks convCallbacks,
             SuperCollapsedBlock.OnClickListener scbListener, Map<String, Address> addressCache,
             FormattedDateBuilder dateBuilder) {
-        mContext = context;
+        mContext = controllableActivity.getActivityContext();
         mDateBuilder = dateBuilder;
         mAccountController = accountController;
         mLoaderManager = loaderManager;
+        mFragmentManager = controllableActivity.getFragmentManager();
         mMessageCallbacks = messageCallbacks;
         mContactInfoSource = contactInfoSource;
         mConversationCallbacks = convCallbacks;
         mSuperCollapsedListener = scbListener;
         mAddressCache = addressCache;
-        mInflater = LayoutInflater.from(context);
+        mInflater = LayoutInflater.from(mContext);
 
         mItems = Lists.newArrayList();
     }
