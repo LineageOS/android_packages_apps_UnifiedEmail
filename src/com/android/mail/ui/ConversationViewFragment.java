@@ -51,7 +51,6 @@ import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -1246,7 +1245,6 @@ public final class ConversationViewFragment extends Fragment implements
     private class MailJsBridge {
 
         @SuppressWarnings("unused")
-        @JavascriptInterface
         public void onWebContentGeometryChange(final String[] overlayBottomStrs) {
             try {
                 mHandler.post(new Runnable() {
@@ -1267,7 +1265,6 @@ public final class ConversationViewFragment extends Fragment implements
         }
 
         @SuppressWarnings("unused")
-        @JavascriptInterface
         public String getTempMessageBodies() {
             try {
                 if (!mViewsCreated) {
@@ -1289,7 +1286,6 @@ public final class ConversationViewFragment extends Fragment implements
         }
 
         @SuppressWarnings("unused")
-        @JavascriptInterface
         public void onContentReady() {
             final Conversation conv = mConversation;
             try {
