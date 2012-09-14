@@ -26,10 +26,8 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"फ़ाइल अनुलग्‍न करें"</string>
-    <!-- no translation found for add_photo_attachment (3738882100645552858) -->
-    <skip />
-    <!-- no translation found for add_video_attachment (8916625983712820173) -->
-    <skip />
+    <string name="add_photo_attachment" msgid="3738882100645552858">"चित्र अनुलग्न करें"</string>
+    <string name="add_video_attachment" msgid="8916625983712820173">"वीडियो अनुलग्न करें"</string>
     <string name="save_draft" msgid="5555744208032445632">"ड्राफ़्ट सहेजें"</string>
     <string name="discard" msgid="1714960202994370243">"छोड़ें"</string>
     <string name="compose" msgid="1473559896062432878">"लिखें"</string>
