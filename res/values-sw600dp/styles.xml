@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 <resources>
-    <style name="AccountSwitchSpinnerItem">
+    <style name="AccountSwitchSpinnerItem" parent="@style/PlainSpinnerDropdown">
         <item name="android:layout_width">308dp</item>
     </style>
     <style name="PersonalIndicatorStyle">
