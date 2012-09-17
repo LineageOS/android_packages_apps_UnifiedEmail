@@ -44,6 +44,6 @@
         android:id="@+id/show_pics_bottom_border"
         android:layout_width="match_parent"
         android:layout_height="@dimen/message_details_header_bottom_border_height"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/show_pictures_text"
         android:background="@color/conv_subject_border" />
 </RelativeLayout>

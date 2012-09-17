@@ -187,6 +187,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
     };
 
+    private boolean mExpandable = true;
+
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
 
@@ -854,7 +856,14 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         return handled;
     }
 
+    public void setExpandable(boolean expandable) {
+        mExpandable = expandable;
+    }
+
     public void toggleExpanded() {
+        if (!mExpandable) {
+            return;
+        }
         setExpanded(!isExpanded());
 
         // The snappy header will disappear; no reason to update text.
