@@ -19,7 +19,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:gravity="center_vertical"
     android:layout_gravity="center_vertical"
     android:orientation="horizontal"
     android:id="@+id/swipeable_content">
@@ -42,7 +41,9 @@
         android:id="@+id/undo_separator"
         android:layout_width="1dip"
         android:layout_height="match_parent"
-        android:background="@android:color/white" />
+        android:background="@android:color/white"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
 
     <ImageView
         android:id="@+id/undo_icon"
