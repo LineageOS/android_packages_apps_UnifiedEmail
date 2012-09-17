@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.text.Html;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.browse.SecureConversationViewFragment;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -214,9 +215,6 @@ public final class OnePaneController extends AbstractActivityController {
     protected void showConversation(Conversation conversation, boolean inLoaderCallbacks) {
         super.showConversation(conversation, inLoaderCallbacks);
         if (conversation == null) {
-            // This is a request to remove the conversation view, and pop back the view stack.
-            // If we are in conversation list view already, this should be a safe thing to do, so
-            // we don't check viewmode.
             transitionBackToConversationListMode(inLoaderCallbacks);
             return;
         }
@@ -226,21 +224,21 @@ public final class OnePaneController extends AbstractActivityController {
         } else {
             mViewMode.enterConversationMode();
         }
-
-        // Switching to conversation view is an incongruous transition: we are not replacing a
-        // fragment with another fragment as usual. Instead, reveal the heretofore inert
-        // conversation ViewPager and just remove the previously visible fragment
-        // (e.g. conversation list, or possibly label list?).
         final FragmentManager fm = mActivity.getFragmentManager();
+        final FragmentTransaction ft = fm.beginTransaction();
+        ft.addToBackStack(null);
+        // Switching to conversation view is an incongruous transition:
+        // we are not replacing a fragment with another fragment as
+        // usual. Instead, reveal the heretofore inert conversation
+        // ViewPager and just remove the previously visible fragment
+        // e.g. conversation list, or possibly label list?).
         final Fragment f = fm.findFragmentById(R.id.content_pane);
-        if (f != null) {
-            final FragmentTransaction ft = fm.beginTransaction();
-            ft.addToBackStack(null);
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ft.remove(f);
-            ft.commitAllowingStateLoss();
+        if (f == null) {
+            return;
         }
-
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.remove(f);
+        ft.commitAllowingStateLoss();
         // TODO: improve this transition
         mPagerController.show(mAccount, mFolder, conversation, true /* changeVisibility */);
         onConversationVisibilityChanged(true);
