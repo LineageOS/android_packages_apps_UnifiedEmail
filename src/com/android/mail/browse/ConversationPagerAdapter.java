@@ -32,6 +32,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.ui.AbstractConversationViewFragment;
 import com.android.mail.ui.ActivityController;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.FragmentStatePagerAdapter2;
@@ -83,6 +84,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
      * minimize dangling references.
      */
     private ViewPager mPager;
+    private boolean mSanitizedHtml;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -93,10 +95,12 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             Folder folder, Conversation initialConversation) {
         super(fm, false /* enableSavedStates */);
         mResources = res;
-        mCommonFragmentArgs = ConversationViewFragment.makeBasicArgs(account, folder);
+        mCommonFragmentArgs = AbstractConversationViewFragment.makeBasicArgs(account, folder);
         mInitialConversation = initialConversation;
         mAccount = account;
         mFolder = folder;
+        mSanitizedHtml = mAccount.supportsCapability
+                (UIProvider.AccountCapabilities.SANITIZED_HTML);
     }
 
     public boolean matches(Account account, Folder folder) {
@@ -161,9 +165,17 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
             c = new Conversation(cursor);
             c.position = position;
         }
-        final Fragment f = ConversationViewFragment.newInstance(mCommonFragmentArgs, c);
+        final Fragment f = getConversationViewFragment(c);
         LogUtils.d(LOG_TAG, "IN PagerAdapter.getItem, frag=%s subj=%s", f, c.subject);
         return f;
+    }
+
+    private AbstractConversationViewFragment getConversationViewFragment(Conversation c) {
+        if (mSanitizedHtml) {
+            return ConversationViewFragment.newInstance(mCommonFragmentArgs, c);
+        } else {
+            return SecureConversationViewFragment.newInstance(mCommonFragmentArgs, c);
+        }
     }
 
     @Override
@@ -182,11 +194,11 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
 
     @Override
     public int getItemPosition(Object item) {
-        if (!(item instanceof ConversationViewFragment)) {
+        if (!(item instanceof AbstractConversationViewFragment)) {
             LogUtils.wtf(LOG_TAG, "getItemPosition received unexpected item: %s", item);
         }
 
-        final ConversationViewFragment fragment = (ConversationViewFragment) item;
+        final AbstractConversationViewFragment fragment = (AbstractConversationViewFragment) item;
         return getConversationPosition(fragment.getConversation());
     }
 
@@ -298,7 +310,7 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
     @Override
     public void setItemVisible(Fragment item, boolean visible) {
         super.setItemVisible(item, visible);
-        final ConversationViewFragment fragment = (ConversationViewFragment) item;
+        final AbstractConversationViewFragment fragment = (AbstractConversationViewFragment) item;
         fragment.setExtraUserVisibleHint(visible);
     }
 
@@ -384,7 +396,8 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
 
     @Override
     public void onPageSelected(int position) {
-        final ConversationViewFragment f = (ConversationViewFragment) getFragmentAt(position);
+        final AbstractConversationViewFragment f =
+                (AbstractConversationViewFragment) getFragmentAt(position);
         if (f != null && mController != null) {
             final Conversation c = f.getConversation();
             c.position = position;
