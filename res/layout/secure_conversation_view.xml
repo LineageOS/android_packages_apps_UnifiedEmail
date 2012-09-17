@@ -49,15 +49,6 @@
             <!-- TODO: scroll indicators go HERE on top of all other layers -->
         </FrameLayout>
     </RelativeLayout>
-
-    <com.android.mail.MinTimeProgressView
-        android:id="@+id/loading_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:indeterminate="true"
-        android:indeterminateBehavior="repeat"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+    <include layout="@layout/conversation_load_spinner"/>
 
 </FrameLayout>
