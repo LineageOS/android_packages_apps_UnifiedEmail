@@ -179,7 +179,7 @@ public final class FolderListFragment extends ListFragment implements
             selectedFolder = mActivity.getHierarchyFolder();
         } else {
             mCursorAdapter = new FolderListAdapter(R.layout.folder_item, mIsSectioned);
-            selectedFolder = controller.getFolder();
+            selectedFolder = controller == null ? null : controller.getFolder();
         }
         // Is the selected folder fresher than the one we have restored from a bundle?
         if (selectedFolder != null && !selectedFolder.uri.equals(mSelectedFolderUri)) {
