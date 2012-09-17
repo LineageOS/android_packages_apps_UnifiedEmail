@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
@@ -53,6 +54,12 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     private ConversationViewHeader mConversationHeaderView;
     private MessageHeaderView mMessageHeaderView;
     private ConversationMessage mMessage;
+    private WebViewClient mWebViewClient = new WebViewClient() {
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            dismissLoadingStatus();
+        }
+    };
 
     /**
      * Creates a new instance of {@link ConversationViewFragment}, initialized
@@ -92,6 +99,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         mMessageHeaderView.setCallbacks(this);
         mMessageHeaderView.setExpandable(false);
         getLoaderManager().initLoader(MESSAGE_LOADER, null, getMessageLoaderCallbacks());
+        showLoadingStatus();
     }
 
     @Override
@@ -100,7 +108,9 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         View rootView = inflater.inflate(R.layout.secure_conversation_view, container, false);
         mConversationHeaderView = (ConversationViewHeader) rootView.findViewById(R.id.conv_header);
         mMessageHeaderView = (MessageHeaderView) rootView.findViewById(R.id.message_header);
+        instantiateProgressIndicators(rootView);
         mWebView = (WebView) rootView.findViewById(R.id.webview);
+        mWebView.setWebViewClient(mWebViewClient);
         final WebSettings settings = mWebView.getSettings();
 
         settings.setJavaScriptEnabled(false);

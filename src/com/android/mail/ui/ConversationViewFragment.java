@@ -17,28 +17,20 @@
 
 package com.android.mail.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.Animator.AnimatorListener;
 import android.app.Activity;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.Browser;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,19 +106,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private View mNewMessageBar;
 
-    private View mBackgroundView;
-
-    private View mInfoView;
-
-    private TextView mSendersView;
-
-    private TextView mSubjectView;
-
-    private View mProgressView;
-
     private HtmlConversationTemplates mTemplates;
-
-    private final Handler mHandler = new Handler();
 
     private final MailJsBridge mJsBridge = new MailJsBridge();
 
@@ -162,28 +142,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private ConversationViewState mViewState;
 
     private boolean mEnableContentReadySignal;
-    private Runnable mDelayedShow = new Runnable() {
-        @Override
-        public void run() {
-            mBackgroundView.setVisibility(View.VISIBLE);
-            String senders = mConversation.getSenders(getContext());
-            if (!TextUtils.isEmpty(senders) && mConversation.subject != null) {
-                mInfoView.setVisibility(View.VISIBLE);
-                mSendersView.setText(senders);
-                mSubjectView.setText(createSubjectSnippet(mConversation.subject,
-                        mConversation.getSnippet()));
-            } else {
-                mProgressView.setVisibility(View.VISIBLE);
-            }
-        }
-    };
 
     private ContentSizeChangeListener mWebViewSizeChangeListener;
 
     private static final String BUNDLE_VIEW_STATE = "viewstate";
-    private static int sSubjectColor = Integer.MIN_VALUE;
-    private static int sSnippetColor = Integer.MIN_VALUE;
-    private static long sMinDelay = -1;
 
     private static final boolean DEBUG_DUMP_CONVERSATION_HTML = false;
     private static final boolean DISABLE_OFFSCREEN_LOADING = false;
@@ -253,38 +215,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
     }
 
-    private CharSequence createSubjectSnippet(CharSequence subject, CharSequence snippet) {
-        if (TextUtils.isEmpty(subject) && TextUtils.isEmpty(snippet)) {
-            return "";
-        }
-        if (subject == null) {
-            subject = "";
-        }
-        if (snippet == null) {
-            snippet = "";
-        }
-        SpannableStringBuilder subjectText = new SpannableStringBuilder(getContext().getString(
-                R.string.subject_and_snippet, subject, snippet));
-        ensureSubjectSnippetColors();
-        int snippetStart = 0;
-        int fontColor = sSubjectColor;
-        subjectText.setSpan(new ForegroundColorSpan(fontColor), 0, subject.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        snippetStart = subject.length() + 1;
-        fontColor = sSnippetColor;
-        subjectText.setSpan(new ForegroundColorSpan(fontColor), snippetStart, subjectText.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return subjectText;
-    }
-
-    private void ensureSubjectSnippetColors() {
-        if (sSubjectColor == Integer.MIN_VALUE) {
-            Resources res = getContext().getResources();
-            sSubjectColor = res.getColor(R.color.subject_text_color_read);
-            sSnippetColor = res.getColor(R.color.snippet_text_color_read);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -307,11 +237,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             }
         });
 
-        mBackgroundView = rootView.findViewById(R.id.background_view);
-        mInfoView = rootView.findViewById(R.id.info_view);
-        mSendersView = (TextView) rootView.findViewById(R.id.senders_view);
-        mSubjectView = (TextView) rootView.findViewById(R.id.info_subject_view);
-        mProgressView = rootView.findViewById(R.id.loading_progress);
+        instantiateProgressIndicators(rootView);
 
         mWebView = (ConversationWebView) mConversationContainer.findViewById(R.id.webview);
 
@@ -950,59 +876,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mActivity.onConversationLoadError();
     }
 
-    private void showLoadingStatus() {
-        if (sMinDelay == -1) {
-            sMinDelay = getContext().getResources()
-                    .getInteger(R.integer.conversationview_show_loading_delay);
-        }
-        // In case there were any other instances around, get rid of them.
-        mHandler.removeCallbacks(mDelayedShow);
-        mHandler.postDelayed(mDelayedShow, sMinDelay);
-    }
-
-    private void dismissLoadingStatus() {
-        if (mBackgroundView.getVisibility() != View.VISIBLE) {
-            // The runnable hasn't run yet, so just remove it.
-            mHandler.removeCallbacks(mDelayedShow);
-            return;
-        }
-        // Fade out the info view.
-        if (mBackgroundView.getVisibility() == View.VISIBLE) {
-            Animator animator = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
-            animator.setTarget(mBackgroundView);
-            animator.addListener(new AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    if (mProgressView.getVisibility() != View.VISIBLE) {
-                        mProgressView.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mBackgroundView.setVisibility(View.GONE);
-                    mInfoView.setVisibility(View.GONE);
-                    mProgressView.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    // Do nothing.
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                    // Do nothing.
-                }
-            });
-            animator.start();
-        } else {
-            mBackgroundView.setVisibility(View.GONE);
-            mInfoView.setVisibility(View.GONE);
-            mProgressView.setVisibility(View.GONE);
-        }
-    }
-
     /**
      * NOTE: all public methods must be listed in the proguard flags so that they can be accessed
      * via reflection and not stripped.
@@ -1014,7 +887,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         @JavascriptInterface
         public void onWebContentGeometryChange(final String[] overlayBottomStrs) {
             try {
-                mHandler.post(new Runnable() {
+                getHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         if (!mViewsCreated) {
@@ -1058,7 +931,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         public void onContentReady() {
             final Conversation conv = mConversation;
             try {
-                mHandler.post(new Runnable() {
+                getHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         LogUtils.d(LOG_TAG, "ANIMATION STARTED, ready to draw. t=%s",
