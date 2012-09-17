@@ -370,9 +370,9 @@ class AttachmentsView extends LinearLayout {
                 lastView = mTileGrid.getChildAt(last);
             }
         } else {
-            last = getChildCount() - 1;
+            last = mAttachmentLayout.getChildCount() - 1;
             if (last > 0) {
-                lastView = getChildAt(last);
+                lastView = mAttachmentLayout.getChildAt(last);
             }
         }
         if (lastView != null) {
