@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -227,6 +228,13 @@ public final class ConversationCursor implements Cursor {
             }
             // Get new data
             mCursor = doQuery(false);
+            // Make sure window is full
+            mCursor.getCount();
+            if (mDeletedCount > 0) {
+                // We're probably going to end up walking the cursor once, so let's do it
+                // now, while we're in the background
+                mCursor.isInCursor("");
+            }
             return null;
         }
 
@@ -239,8 +247,6 @@ public final class ConversationCursor implements Cursor {
                     return;
                 }
                 mRequeryCursor = mCursor;
-                // Make sure window is full
-                mRequeryCursor.getCount();
                 mRefreshReady = true;
                 if (DEBUG) {
                     LogUtils.i(TAG, "[Query done %s: %d]", mName, hashCode());
@@ -266,11 +272,26 @@ public final class ConversationCursor implements Cursor {
      * Wrapper that includes the Uri used to create the cursor
      */
     private static class Wrapper extends CursorWrapper {
-        private final Uri mUri;
+        private final Cursor mCursor;
+        private HashSet<String> mUriSet;
 
         Wrapper(Cursor cursor, Uri uri) {
             super(cursor);
-            mUri = uri;
+            mCursor = cursor;
+        }
+
+        private boolean isInCursor(String uri) {
+            if (mUriSet == null) {
+                mUriSet = new HashSet<String>();
+                // Populate the Uri map with the uri's it contains
+                mCursor.moveToPosition(-1);
+                while (mCursor.moveToNext()) {
+                    mUriSet.add(mCursor.getString(sUriColumnIndex));
+                }
+                // Reset the cursor to before the first row
+                mCursor.moveToPosition(-1);
+            }
+            return mUriSet.contains(uri);
         }
     }
 
@@ -291,21 +312,6 @@ public final class ConversationCursor implements Cursor {
                     uri, time, result.getCount());
         }
         return result;
-    }
-
-    /**
-     * Return whether the uri string (message list uri) is in the underlying cursor
-     * @param uriString the uri string we're looking for
-     * @return true if the uri string is in the cursor; false otherwise
-     */
-    private boolean isInCursor(Cursor c, String uriString) {
-        c.moveToPosition(-1);
-        while (c.moveToNext()) {
-            if (uriString.equals(c.getString(sUriColumnIndex))) {
-                return true;
-            }
-        }
-        return false;
     }
 
     static boolean offUiThread() {
@@ -336,7 +342,7 @@ public final class ConversationCursor implements Cursor {
                 HashMap.Entry<String, ContentValues> entry = iter.next();
                 ContentValues values = entry.getValue();
                 String key = entry.getKey();
-                if (values.containsKey(REQUERY_COLUMN) && isInCursor(newCursor, key)) {
+                if (values.containsKey(REQUERY_COLUMN) && newCursor.isInCursor(key)) {
                     // If we're in a requery and we're still around, remove the requery key
                     // We're good here, the cached change (delete/update) is on its way to UP
                     values.remove(REQUERY_COLUMN);
@@ -349,7 +355,7 @@ public final class ConversationCursor implements Cursor {
                         // NOTE: The only legitimate way the item could be in a new cursor would
                         // be for the deletion to have been undone in the UI, and in this case
                         // DELETED_COLUMN would not be set
-                        if (mRefreshTask != null && isInCursor(newCursor, key)) {
+                        if (mRefreshTask != null && newCursor.isInCursor(key)) {
                             LogUtils.i(TAG, "IN resetCursor, deleted item is in newCursor: %s",
                                     entry.getKey());
                             // Don't decrement deleted count; don't remove entry
