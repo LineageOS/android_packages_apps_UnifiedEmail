@@ -17,19 +17,14 @@
 
 package com.android.mail.ui;
 
-import android.app.Activity;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.DataSetObserver;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.provider.Browser;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +63,7 @@ import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider.ViewProxyExtras;
+import com.android.mail.ui.AbstractConversationViewFragment.AbstractConversationWebViewClient;
 import com.android.mail.ui.ConversationViewState.ExpansionState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -773,8 +769,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         return mAccount;
     }
 
-    private class ConversationWebViewClient extends WebViewClient {
-
+    private class ConversationWebViewClient extends AbstractConversationWebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
             // Ignore unsafe calls made after a fragment is detached from an activity
@@ -815,35 +810,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            final Activity activity = getActivity();
-            if (!mViewsCreated || activity == null) {
-                return false;
-            }
-
-            boolean result = false;
-            final Intent intent;
-            Uri uri = Uri.parse(url);
-            if (!Utils.isEmpty(mAccount.viewIntentProxyUri)) {
-                intent = new Intent(Intent.ACTION_VIEW, mAccount.viewIntentProxyUri);
-                intent.putExtra(ViewProxyExtras.EXTRA_ORIGINAL_URI, uri);
-                intent.putExtra(ViewProxyExtras.EXTRA_ACCOUNT, mAccount);
-            } else {
-                intent = new Intent(Intent.ACTION_VIEW, uri);
-                intent.putExtra(Browser.EXTRA_APPLICATION_ID, activity.getPackageName());
-            }
-
-            try {
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                activity.startActivity(intent);
-                result = true;
-            } catch (ActivityNotFoundException ex) {
-                // If no application can handle the URL, assume that the
-                // caller can handle it.
-            }
-
-            return result;
+            return mViewsCreated && super.shouldOverrideUrlLoading(view, url);
         }
-
     }
 
     /**
