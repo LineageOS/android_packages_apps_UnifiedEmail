@@ -23,9 +23,14 @@ import android.animation.Animator.AnimatorListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObservable;
@@ -33,15 +38,17 @@ import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Browser;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.android.mail.ContactInfo;
@@ -68,7 +75,9 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -605,6 +614,75 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         public void unregisterObserver(DataSetObserver observer) {
             mObservable.unregisterObserver(observer);
         }
-
     }
+
+    protected class AbstractConversationWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            final Activity activity = getActivity();
+            if (activity == null) {
+                return false;
+            }
+
+            boolean result = false;
+            final Intent intent;
+            Uri uri = Uri.parse(url);
+            if (!Utils.isEmpty(mAccount.viewIntentProxyUri)) {
+                intent = generateProxyIntent(uri);
+            } else {
+                intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.putExtra(Browser.EXTRA_APPLICATION_ID, activity.getPackageName());
+            }
+
+            try {
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                activity.startActivity(intent);
+                result = true;
+            } catch (ActivityNotFoundException ex) {
+                // If no application can handle the URL, assume that the
+                // caller can handle it.
+            }
+
+            return result;
+        }
+
+        private Intent generateProxyIntent(Uri uri) {
+            final Intent intent = new Intent(Intent.ACTION_VIEW, mAccount.viewIntentProxyUri);
+            intent.putExtra(UIProvider.ViewProxyExtras.EXTRA_ORIGINAL_URI, uri);
+            intent.putExtra(UIProvider.ViewProxyExtras.EXTRA_ACCOUNT, mAccount);
+
+            final Context context = getContext();
+            PackageManager manager = null;
+            // We need to catch the exception to make CanvasConversationHeaderView
+            // test pass.  Bug: http://b/issue?id=3470653.
+            try {
+                manager = context.getPackageManager();
+            } catch (UnsupportedOperationException e) {
+                LogUtils.e(LOG_TAG, e, "Error getting package manager");
+            }
+
+            if (manager != null) {
+                // Try and resolve the intent, to find an activity from this package
+                final List<ResolveInfo> resolvedActivities = manager.queryIntentActivities(
+                        intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+                final String packageName = context.getPackageName();
+
+                // Now try and find one that came from this package, if one is not found, the UI
+                // provider must have specified an intent that is to be handled by a different apk.
+                // In that case, the class name will not be set on the intent, so the default
+                // intent resolution will be used.
+                for (ResolveInfo resolveInfo: resolvedActivities) {
+                    final ActivityInfo activityInfo = resolveInfo.activityInfo;
+                    if (packageName.equals(activityInfo.packageName)) {
+                        intent.setClassName(activityInfo.packageName, activityInfo.name);
+                        break;
+                    }
+                }
+            }
+
+            return intent;
+        }
+    }
+
 }
