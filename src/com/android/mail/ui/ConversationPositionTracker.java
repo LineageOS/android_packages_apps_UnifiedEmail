@@ -132,6 +132,7 @@ public class ConversationPositionTracker {
     public void initialize(Conversation conversation) {
         mConversation = conversation;
         mCursorDirty = true;
+        calculatePosition();
     }
 
     /** @return whether or not we have a valid cursor to check the position of. */
@@ -148,7 +149,6 @@ public class ConversationPositionTracker {
      * Called when the conversation list changes.
      */
     public void onCursorUpdated() {
-        // Now we should run applyCursor before proceeding.
         mCursorDirty = true;
     }
 
@@ -171,7 +171,7 @@ public class ConversationPositionTracker {
         final int invalidPosition = -1;
         final ConversationCursor cursor = mCallbacks.getConversationListCursor();
         // Run this method once for a mConversation, mCursor pair.
-        if (cursor == null || !mCursorDirty) {
+        if (cursor == null || !mCursorDirty || mConversation == null) {
             return invalidPosition;
         }
         mCursorDirty = false;
@@ -181,7 +181,7 @@ public class ConversationPositionTracker {
             return invalidPosition;
         }
 
-        // We don't want iterating over this cusor to trigger a network request
+        // We don't want iterating over this cursor to trigger a network request
         final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
         int newPosition = 0;
         try {
