@@ -142,7 +142,13 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         }
     }
 
+
+    public void setFoldersVisible(boolean show) {
+        mFoldersView.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
     public void setFolders(Conversation conv, boolean notify) {
+        setFoldersVisible(true);
         SpannableStringBuilder sb = new SpannableStringBuilder();
         final Settings settings = mAccountController.getAccount().settings;
         if (settings.priorityArrowsEnabled && conv.isImportant()) {
@@ -242,5 +248,4 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         }
 
     }
-
 }
