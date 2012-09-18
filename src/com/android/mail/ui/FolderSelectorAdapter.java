@@ -78,9 +78,9 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     }
 
-    protected List<FolderRow> mFolderRows = Lists.newArrayList();
-    private LayoutInflater mInflater;
-    private int mLayout;
+    protected final List<FolderRow> mFolderRows = Lists.newArrayList();
+    private final LayoutInflater mInflater;
+    private final int mLayout;
     private final String mHeader;
 
 
@@ -96,17 +96,34 @@ public class FolderSelectorAdapter extends BaseAdapter {
         if (folders == null) {
             return;
         }
+        // Rows corresponding to user created, unchecked folders.
+        final List<FolderRow> userUnselected = Lists.newArrayList();
+        // Rows corresponding to system created, unchecked folders.
+        final List<FolderRow> systemUnselected = Lists.newArrayList();
         if (folders.moveToFirst()) {
             do {
                 final Folder folder = new Folder(folders);
+                final boolean isSelected = initiallySelected.contains(folder.uri.toString());
                 if (meetsRequirements(folder)) {
-                    final FolderRow row = new FolderRow(folder,
-                            initiallySelected.contains(folder.uri.toString()));
-                    mFolderRows.add(row);
+                    final FolderRow row = new FolderRow(folder, isSelected);
+                    // Add the currently selected first.
+                    if (isSelected) {
+                        mFolderRows.add(row);
+                    } else if (folder.isProviderFolder()) {
+                        systemUnselected.add(row);
+                    } else {
+                        userUnselected.add(row);
+                    }
                 }
             } while (folders.moveToNext());
         }
+        // Sort the checked folders.
         Collections.sort(mFolderRows);
+        // Leave system folders unsorted, and add them.
+        mFolderRows.addAll(systemUnselected);
+        // Sort all the user rows, and then add them at the end of the output rows.
+        Collections.sort(userUnselected);
+        mFolderRows.addAll(userUnselected);
     }
 
     /**
