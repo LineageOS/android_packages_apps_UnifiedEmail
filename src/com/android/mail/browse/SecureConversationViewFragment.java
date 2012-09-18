@@ -161,12 +161,6 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void setMessageDetailsExpanded(boolean expanded) {
-        int currentHeight = mTitleBar.getMeasuredHeight();
-        setContentViewMarginTop(expanded ? currentHeight - mTitleBarHeight : 0);
-    }
-
-    @Override
     public void onConversationViewHeaderHeightChange(int newHeight) {
         // Do nothing.
     }
@@ -217,18 +211,9 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
                     null, null, null, null, null, null);
             MessageHeaderItem item = mAdapter.newMessageHeaderItem(mMessage, true);
             mMessageHeaderView.initialize(mDateBuilder, this, mAddressCache);
+            mMessageHeaderView.setExpandMode(MessageHeaderView.POPUP_MODE);
             mMessageHeaderView.bind(item, false);
             mMessageHeaderView.setMessageDetailsVisibility(View.VISIBLE);
         }
-    }
-
-    private void setContentViewMarginTop(int topMargin) {
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mWebView.getLayoutParams();
-        if (params == null) {
-            params = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT);
-        }
-        params.topMargin = topMargin;
-        mWebView.setLayoutParams(params);
     }
 }
