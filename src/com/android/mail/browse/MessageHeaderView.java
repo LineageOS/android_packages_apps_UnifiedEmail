@@ -16,6 +16,8 @@
 
 package com.android.mail.browse;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -85,6 +87,10 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private static final String RECIPIENT_HEADING_DELIMITER = "   ";
 
     private static final String LOG_TAG = LogTag.getLogTag();
+
+    public static final int DEFAULT_MODE = 0;
+
+    public static final int POPUP_MODE = 1;
 
     private MessageHeaderViewCallbacks mCallbacks;
 
@@ -189,14 +195,16 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
     private boolean mExpandable = true;
 
+    private int mExpandMode = DEFAULT_MODE;
+
+    private AlertDialog mDetailsPopup;
+
     public interface MessageHeaderViewCallbacks {
         void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeight);
 
         void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight);
 
         void showExternalResources(Message msg);
-
-        void setMessageDetailsExpanded(boolean expand);
     }
 
     public MessageHeaderView(Context context) {
@@ -211,6 +219,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         super(context, attrs, defStyle);
 
         mInflater = LayoutInflater.from(context);
+    }
+
+    /**
+     * Expand mode is DEFAULT_MODE by default.
+     */
+    public void setExpandMode(int mode) {
+        mExpandMode = mode;
     }
 
     @Override
@@ -619,7 +634,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         childView.setLayoutParams(mlp);
     }
 
-    private void renderEmailList(int rowRes, int valueRes, String[] emails, boolean showViaDomain) {
+    private void renderEmailList(int rowRes, int valueRes, String[] emails, boolean showViaDomain,
+            View rootView) {
         if (emails == null || emails.length == 0) {
             return;
         }
@@ -643,8 +659,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                 }
             }
         }
-        ((TextView) findViewById(valueRes)).setText(TextUtils.join("\n", formattedEmails));
-        findViewById(rowRes).setVisibility(VISIBLE);
+        ((TextView) rootView.findViewById(valueRes)).setText(TextUtils.join("\n", formattedEmails));
+        rootView.findViewById(rowRes).setVisibility(VISIBLE);
     }
 
     public void setTranslateY(int offsetY) {
@@ -893,18 +909,24 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     private void setMessageDetailsExpanded(boolean expand) {
-        if (expand) {
-            showExpandedDetails();
-            hideCollapsedDetails();
-        } else {
-            hideExpandedDetails();
-            showCollapsedDetails();
+        if (mExpandMode == DEFAULT_MODE) {
+            if (expand) {
+                showExpandedDetails();
+                hideCollapsedDetails();
+            } else {
+                hideExpandedDetails();
+                showCollapsedDetails();
+            }
+        } else if (mExpandMode == POPUP_MODE) {
+            if (expand) {
+                showDetailsPopup();
+            } else {
+                hideDetailsPopup();
+                showCollapsedDetails();
+            }
         }
         if (mMessageHeaderItem != null) {
             mMessageHeaderItem.detailsExpanded = expand;
-        }
-        if (mCallbacks != null) {
-            mCallbacks.setMessageDetailsExpanded(expand);
         }
     }
 
@@ -1077,10 +1099,15 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      */
     private void showExpandedDetails() {
         // lazily create expanded details view
+        ensureExpandedDetailsView();
+        addView(mExpandedDetailsView, indexOfChild(mUpperHeaderView) + 1);
+        mExpandedDetailsView.setVisibility(VISIBLE);
+    }
+
+    private void ensureExpandedDetailsView() {
         if (mExpandedDetailsView == null) {
-            View v = mInflater.inflate(R.layout.conversation_message_details_header_expanded,
-                    this, false);
-            addView(v, indexOfChild(mUpperHeaderView) + 1);
+            View v = mInflater.inflate(R.layout.conversation_message_details_header_expanded, null,
+                    false);
             v.setOnClickListener(this);
 
             mExpandedDetailsView = (ViewGroup) v;
@@ -1089,18 +1116,40 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             if (mMessageHeaderItem.timestampLong == null) {
                 mMessageHeaderItem.timestampLong = mDateBuilder.formatLongDateTime(mTimestampMs);
             }
-            ((TextView) findViewById(R.id.date_value)).setText(mMessageHeaderItem.timestampLong);
-            renderEmailList(R.id.replyto_row, R.id.replyto_value, mReplyTo, false);
+            ((TextView) mExpandedDetailsView.findViewById(R.id.date_value))
+                    .setText(mMessageHeaderItem.timestampLong);
+            renderEmailList(R.id.replyto_row, R.id.replyto_value, mReplyTo, false,
+                    mExpandedDetailsView);
             if (mMessage.viaDomain != null) {
-                renderEmailList(R.id.from_row, R.id.from_value, mFrom, true);
+                renderEmailList(R.id.from_row, R.id.from_value, mFrom, true, mExpandedDetailsView);
             }
-            renderEmailList(R.id.to_row, R.id.to_value, mTo, false);
-            renderEmailList(R.id.cc_row, R.id.cc_value, mCc, false);
-            renderEmailList(R.id.bcc_row, R.id.bcc_value, mBcc, false);
+            renderEmailList(R.id.to_row, R.id.to_value, mTo, false, mExpandedDetailsView);
+            renderEmailList(R.id.cc_row, R.id.cc_value, mCc, false, mExpandedDetailsView);
+            renderEmailList(R.id.bcc_row, R.id.bcc_value, mBcc, false, mExpandedDetailsView);
 
             mExpandedDetailsValid = true;
         }
-        mExpandedDetailsView.setVisibility(VISIBLE);
+    }
+
+    private void showDetailsPopup() {
+        ensureExpandedDetailsView();
+        if (mDetailsPopup == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            mExpandedDetailsView.findViewById(R.id.details_expander)
+                .setVisibility(View.GONE);
+            builder.setView(mExpandedDetailsView)
+                .setCancelable(true)
+                .setTitle(getContext().getString(R.string.message_details_title));
+            mDetailsPopup = builder.show();
+        } else {
+            mDetailsPopup.show();
+        }
+    }
+
+    private void hideDetailsPopup() {
+        if (mDetailsPopup != null) {
+            mDetailsPopup.hide();
+        }
     }
 
     /**
