@@ -20,7 +20,6 @@ package com.android.mail.ui;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
-
 import com.android.mail.providers.UIProvider;
 
 import java.util.Set;
@@ -28,8 +27,8 @@ import java.util.Set;
 public class AddableFolderSelectorAdapter extends FolderSelectorAdapter {
 
     public AddableFolderSelectorAdapter(Context context, Cursor folders,
-            Set<String> initiallySelected, boolean single, String header) {
-        super(context, folders, initiallySelected, single, header);
+            Set<String> initiallySelected, int layout, String header) {
+        super(context, folders, initiallySelected, layout, header);
     }
 
     public static Cursor filterFolders(Cursor folderCursor) {
