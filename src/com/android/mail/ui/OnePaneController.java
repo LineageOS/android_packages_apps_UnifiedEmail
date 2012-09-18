@@ -233,13 +233,12 @@ public final class OnePaneController extends AbstractActivityController {
         // ViewPager and just remove the previously visible fragment
         // e.g. conversation list, or possibly label list?).
         final Fragment f = fm.findFragmentById(R.id.content_pane);
-        if (f == null) {
-            return;
+        if (f != null) {
+            // TODO: improve this transition
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.remove(f);
+            ft.commitAllowingStateLoss();
         }
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.remove(f);
-        ft.commitAllowingStateLoss();
-        // TODO: improve this transition
         mPagerController.show(mAccount, mFolder, conversation, true /* changeVisibility */);
         onConversationVisibilityChanged(true);
         resetActionBarIcon();
