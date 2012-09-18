@@ -807,8 +807,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // all the message recipients and find one that matches
             // a custom from or account.
             List<String> allRecipients = new ArrayList<String>();
-            allRecipients.addAll(Arrays.asList(Utils.splitCommaSeparatedString(refMessage.to)));
-            allRecipients.addAll(Arrays.asList(Utils.splitCommaSeparatedString(refMessage.cc)));
+            allRecipients.addAll(Arrays.asList(refMessage.getToAddresses()));
+            allRecipients.addAll(Arrays.asList(refMessage.getCcAddresses()));
             return getMatchingRecipient(account, allRecipients);
         }
     }
@@ -1409,7 +1409,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // the reply.
         final String accountEmail = Address.getEmailAddress(account).getAddress();
         String fromAddress = getAddress(refMessage.from);
-        String[] sentToAddresses = Utils.splitCommaSeparatedString(refMessage.to);
+        String[] sentToAddresses = refMessage.getToAddresses();
         String replytoAddress = refMessage.replyTo;
         final Collection<String> toAddresses;
 
@@ -1427,8 +1427,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     sentToAddresses);
             addToAddresses(toAddresses);
             addRecipients(accountEmail, ccAddresses, sentToAddresses);
-            addRecipients(accountEmail, ccAddresses,
-                    Utils.splitCommaSeparatedString(refMessage.cc));
+            addRecipients(accountEmail, ccAddresses, refMessage.getCcAddresses());
             addCcAddresses(ccAddresses, toAddresses);
         }
     }
