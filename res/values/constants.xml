@@ -81,4 +81,7 @@
 
     <!-- Wait at least this long for the webview to render conversation content before showing the loading dialog -->
     <integer name="conversationview_show_loading_delay">500</integer>
+
+    <!-- Animation duration for showing the title bar again for SecureConversationViewFragment -->
+    <integer name="title_bar_show_animation_duration">300</integer>
 </resources>

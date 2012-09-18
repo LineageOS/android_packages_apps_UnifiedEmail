@@ -195,6 +195,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight);
 
         void showExternalResources(Message msg);
+
+        void setMessageDetailsExpanded(boolean expand);
     }
 
     public MessageHeaderView(Context context) {
@@ -900,6 +902,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
         if (mMessageHeaderItem != null) {
             mMessageHeaderItem.detailsExpanded = expand;
+        }
+        if (mCallbacks != null) {
+            mCallbacks.setMessageDetailsExpanded(expand);
         }
     }
 
