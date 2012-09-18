@@ -17,7 +17,7 @@
 
 package com.android.mail.browse;
 
-import android.app.FragmentManager;;
+import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +38,6 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.AttachmentTile;
 import com.android.mail.ui.AttachmentTileGrid;
-import com.android.mail.ui.AttachmentTile.AttachmentPreviewCache;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
@@ -119,6 +118,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         return true;
     }
 
+    @Override
     public void viewAttachment() {
         if (ImageUtils.isImageMimeType(Utils.normalizeMimeType(mAttachment.contentType))) {
             final PhotoViewIntentBuilder builder =
@@ -145,9 +145,11 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         }
     }
 
+    @Override
     public void updateProgress(boolean showDeterminateProgress) {
     }
 
+    @Override
     public void onUpdateStatus() {
     }
 
