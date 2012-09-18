@@ -47,7 +47,7 @@ public class HierarchicalFolderSelectorAdapter extends FolderSelectorAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
-        if (position == 0 && hasHeader()) {
+        if (isHeader(position)) {
             return view;
         }
         Folder folder = ((FolderRow) getItem(position)).getFolder();
