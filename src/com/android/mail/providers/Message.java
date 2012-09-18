@@ -24,6 +24,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
+import android.text.util.Rfc822Token;
+import android.text.util.Rfc822Tokenizer;
 
 import com.android.mail.providers.UIProvider.MessageColumns;
 import com.android.mail.utils.Utils;
@@ -191,7 +193,7 @@ public class Message implements Parcelable {
     private transient String[] mReplyToAddresses = null;
 
     private transient List<Attachment> mAttachments = null;
-
+    private Rfc822Tokenizer mTokenizer = new Rfc822Tokenizer();
     @Override
     public int describeContents() {
         return 0;
@@ -373,39 +375,50 @@ public class Message implements Parcelable {
 
     public synchronized String[] getFromAddresses() {
         if (mFromAddresses == null) {
-            mFromAddresses = Utils.splitCommaSeparatedString(from);
+            mFromAddresses = tokenizeAddresses(from);
         }
         return mFromAddresses;
     }
 
     public synchronized String[] getToAddresses() {
         if (mToAddresses == null) {
-            mToAddresses = Utils.splitCommaSeparatedString(to);
+            mToAddresses = tokenizeAddresses(to);
         }
         return mToAddresses;
     }
 
     public synchronized String[] getCcAddresses() {
         if (mCcAddresses == null) {
-            mCcAddresses = Utils.splitCommaSeparatedString(cc);
+            mCcAddresses = tokenizeAddresses(cc);
         }
         return mCcAddresses;
     }
 
     public synchronized String[] getBccAddresses() {
         if (mBccAddresses == null) {
-            mBccAddresses = Utils.splitCommaSeparatedString(bcc);
+            mBccAddresses = tokenizeAddresses(bcc);
         }
         return mBccAddresses;
     }
 
     public synchronized String[] getReplyToAddresses() {
         if (mReplyToAddresses == null) {
-            mReplyToAddresses = Utils.splitCommaSeparatedString(replyTo);
+            mReplyToAddresses = tokenizeAddresses(replyTo);
         }
         return mReplyToAddresses;
     }
 
+    private String[] tokenizeAddresses(String addresses) {
+        if (TextUtils.isEmpty(addresses)) {
+            return new String[0];
+        }
+        Rfc822Token[] tokens = mTokenizer.tokenize(addresses);
+        String[] strings = new String[tokens.length];
+        for (int i = 0; i < tokens.length;i++) {
+            strings[i] = tokens[i].toString();
+        }
+        return strings;
+    }
     public synchronized List<Attachment> getAttachments() {
         if (mAttachments == null) {
             if (attachmentsJson != null) {
