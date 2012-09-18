@@ -24,7 +24,6 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.DragEvent;
@@ -34,7 +33,6 @@ import android.widget.Button;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -96,7 +94,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
         }
 
         mAccount = intent.getParcelableExtra(EXTRA_ACCOUNT_SHORTCUT);
-        Button firstButton = (Button) findViewById(R.id.first_button);
+        final Button firstButton = (Button) findViewById(R.id.first_button);
         firstButton.setVisibility(View.VISIBLE);
         // TODO(mindyp) disable the manage folders buttons until we have a manage folders screen.
         if (mMode == VIEW) {
@@ -108,8 +106,8 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     }
 
     private void createFolderListFragment(Folder parent, Uri uri) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        Fragment fragment = FolderListFragment.newInstance(parent, uri, false);
+        final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        final Fragment fragment = FolderListFragment.newInstance(parent, uri, false);
         fragmentTransaction.replace(R.id.content_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -145,7 +143,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
      */
     protected void createWidget(int id, Account account, Folder selectedFolder) {
         WidgetProvider.updateWidget(this, id, account, selectedFolder);
-        Intent result = new Intent();
+        final Intent result = new Intent();
         result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
         setResult(RESULT_OK, result);
         finish();
@@ -181,7 +179,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
                         Intent.ShortcutIconResource.fromContext(this,
                                 R.mipmap.ic_launcher_shortcut_folder));
 
-                CharSequence humanFolderName = mSelectedFolder.name;
+                final CharSequence humanFolderName = mSelectedFolder.name;
 
                 resultIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, humanFolderName);
 
