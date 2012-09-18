@@ -17,7 +17,7 @@
 
 package com.android.mail.browse;
 
-import android.app.FragmentManager;;
+import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
