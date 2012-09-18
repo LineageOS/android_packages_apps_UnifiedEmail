@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
- * Copyright (c) 2010 Google Inc.
+ * Copyright (c) 2012 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,8 @@
 
     <!-- Note: the checkbox is not focusable because the parent list item itself handles
          the toggling -->
-    <TextView android:id="@+id/folder_name"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginLeft="16dp" />
+    <RadioButton android:id="@+id/checkbox"
+        style="@style/FolderSelectionItemStyle"/>
 
     <View
         android:id="@+id/color_block"
