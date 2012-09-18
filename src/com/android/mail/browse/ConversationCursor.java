@@ -759,7 +759,7 @@ public final class ConversationCursor implements Cursor {
         while (true) {
             boolean ret = mUnderlyingCursor.moveToNext();
             if (!ret) {
-                mPosition = getCount();
+                mPosition = getCount() - mDeletedCount;
                 // STOPSHIP
                 LogUtils.i(TAG, "*** moveToNext returns false; pos = %d, und = %d, del = %d",
                         mPosition, mUnderlyingCursor.getPosition(), mDeletedCount);
