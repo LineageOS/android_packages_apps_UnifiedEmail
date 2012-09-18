@@ -57,7 +57,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     private ConversationViewHeader mConversationHeaderView;
     private MessageHeaderView mMessageHeaderView;
     private ConversationMessage mMessage;
-    private WebViewClient mWebViewClient = new WebViewClient() {
+    private WebViewClient mWebViewClient = new AbstractConversationWebViewClient() {
         @Override
         public void onPageFinished(WebView view, String url) {
             dismissLoadingStatus();
