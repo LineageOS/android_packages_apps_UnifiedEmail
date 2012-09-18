@@ -683,6 +683,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     // START message header callbacks
     @Override
+    public void setMessageDetailsExpanded(boolean expanded) {
+        // Do nothing.
+    }
+
+    @Override
     public void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeightPx) {
         mConversationContainer.invalidateSpacerGeometry();
 

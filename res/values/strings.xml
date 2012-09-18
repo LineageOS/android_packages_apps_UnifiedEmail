@@ -767,4 +767,6 @@
 
     <!-- String suffix to indicate parent folder in Hierarchical folders -->
     <string translatable="false" name="folder_name_elipses">...</string>
+
+    <string translatable="false" name="title_bar_html">&lt;div style=\"height:<xliff:g id="height">%1$d</xliff:g>;width:0px;\"&gt;&lt;/div&gt;</string>
 </resources>
