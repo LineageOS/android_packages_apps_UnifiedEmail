@@ -882,8 +882,15 @@ public abstract class AbstractActivityController implements ActivityController {
                 Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
                 break;
             case R.id.change_folder:
-                new FoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                        Conversation.listOf(mCurrentConversation), false, mFolder).show();
+                if (mAccount
+                        .supportsCapability(UIProvider
+                                .AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
+                    new MultiFoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
+                            Conversation.listOf(mCurrentConversation), false, mFolder).show();
+                } else {
+                    new SingleFolderSelectionDialog(mActivity.getActivityContext(), mAccount, this,
+                            Conversation.listOf(mCurrentConversation), false, mFolder).show();
+                }
                 break;
             default:
                 handled = false;

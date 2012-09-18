@@ -21,10 +21,12 @@ import com.android.mail.R;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.providers.UIProvider.FolderType;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,14 +84,24 @@ public class FolderSelectorAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
     private final int mLayout;
     private final String mHeader;
+    private Folder mExcludedFolder;
 
 
     public FolderSelectorAdapter(Context context, Cursor folders,
-            Set<String> initiallySelected, boolean single, String header) {
+            Set<String> initiallySelected, int layout, String header) {
         mInflater = LayoutInflater.from(context);
-        mLayout = single? R.layout.single_folders_view : R.layout.multi_folders_view;
+        mLayout = layout;
         mHeader = header;
         createFolderRows(folders, initiallySelected);
+    }
+
+    public FolderSelectorAdapter(Context context, Cursor folders, int layout, String header,
+            Folder excludedFolder) {
+        mInflater = LayoutInflater.from(context);
+        mLayout = layout;
+        mHeader = header;
+        mExcludedFolder = excludedFolder;
+        createFolderRows(folders, null);
     }
 
     protected void createFolderRows(Cursor folders, Set<String> initiallySelected) {
@@ -103,8 +115,9 @@ public class FolderSelectorAdapter extends BaseAdapter {
         if (folders.moveToFirst()) {
             do {
                 final Folder folder = new Folder(folders);
-                final boolean isSelected = initiallySelected.contains(folder.uri.toString());
-                if (meetsRequirements(folder)) {
+                final boolean isSelected = initiallySelected != null
+                        && initiallySelected.contains(folder.uri.toString());
+                if (meetsRequirements(folder) && !Objects.equal(folder, mExcludedFolder)) {
                     final FolderRow row = new FolderRow(folder, isSelected);
                     // Add the currently selected first.
                     if (isSelected) {
@@ -133,7 +146,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
     protected boolean meetsRequirements(Folder folder) {
         // We only want to show the non-Trash folders that can accept moved messages
         return folder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES) &&
-                folder.type != FolderType.TRASH;
+                folder.type != FolderType.TRASH && !Objects.equal(folder, mExcludedFolder);
     }
 
     @Override
@@ -189,21 +202,33 @@ public class FolderSelectorAdapter extends BaseAdapter {
             view.setText(mHeader);
             return view;
         }
-        final View view = convertView != null ? convertView :
-            mInflater.inflate(mLayout, parent, false);
+        View view = convertView;
+        CompoundButton checkBox = null;
+        View colorBlock;
+        ImageView iconView;
+        TextView display;
 
-        final CompoundButton checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
-        // Suppress the checkbox selection, and handle the toggling of the
-        // folder on the parent list item's click handler.
-        checkBox.setClickable(false);
-        final View colorBlock = view.findViewById(R.id.color_block);
-        final ImageView iconView = (ImageView) view.findViewById(R.id.folder_box);
-
-        final FolderRow row = (FolderRow) getItem(position);
-        final Folder folder = row.getFolder();
-        checkBox.setText(folder.name);
-        checkBox.setChecked(row.isPresent());
-
+        if (view == null) {
+            view = mInflater.inflate(mLayout, parent, false);
+        }
+        FolderRow row = (FolderRow) getItem(position);
+        Folder folder = row.getFolder();
+        String folderDisplay = !TextUtils.isEmpty(folder.hierarchicalDesc) ?
+                folder.hierarchicalDesc : folder.name;
+        checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
+        display = (TextView) view.findViewById(R.id.folder_name);
+        if (checkBox != null) {
+            // Suppress the checkbox selection, and handle the toggling of the
+            // folder on the parent list item's click handler.
+            checkBox.setClickable(false);
+            checkBox.setText(folderDisplay);
+            checkBox.setChecked(row.isPresent());
+        }
+        if (display != null) {
+            display.setText(folderDisplay);
+        }
+        colorBlock = view.findViewById(R.id.color_block);
+        iconView = (ImageView) view.findViewById(R.id.folder_box);
         Folder.setFolderBlockColor(folder, colorBlock);
         Folder.setIcon(folder, iconView);
         return view;

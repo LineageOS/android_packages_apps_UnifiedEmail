@@ -45,8 +45,9 @@ import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.ui.DestructiveAction;
-import com.android.mail.ui.FoldersSelectionDialog;
+import com.android.mail.ui.MultiFoldersSelectionDialog;
 import com.android.mail.ui.RestrictedActivity;
+import com.android.mail.ui.SingleFolderSelectionDialog;
 import com.android.mail.ui.SwipeableListView;
 import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
@@ -192,8 +193,15 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     }
                 }
                 if (!cantMove) {
-                    new FoldersSelectionDialog(mContext, acct, mUpdater,
-                            mSelectionSet.values(), true, mFolder).show();
+                    if (mAccount
+                            .supportsCapability(UIProvider
+                                    .AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
+                        new MultiFoldersSelectionDialog(mContext, acct, mUpdater,
+                                mSelectionSet.values(), true, mFolder).show();
+                    } else {
+                        new SingleFolderSelectionDialog(mContext, acct, mUpdater,
+                                mSelectionSet.values(), true, mFolder).show();
+                    }
                 }
                 break;
             case R.id.mark_important:
