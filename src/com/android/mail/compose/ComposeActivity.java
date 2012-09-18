@@ -540,7 +540,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         if (signatureStartPos > -1) {
             // In case the user deleted the newlines...
             mBodyView.setSelection(signatureStartPos);
-        } else if (length > 0) {
+        } else if (length >= 0) {
             // Move cursor to the end.
             mBodyView.setSelection(length);
         }
