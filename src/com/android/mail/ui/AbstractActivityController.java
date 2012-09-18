@@ -499,7 +499,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     private void fetchSearchFolder(Intent intent) {
-        Bundle args = new Bundle();
+        final Bundle args = new Bundle();
         args.putString(ConversationListContext.EXTRA_SEARCH_QUERY, intent
                 .getStringExtra(ConversationListContext.EXTRA_SEARCH_QUERY));
         mActivity.getLoaderManager().restartLoader(LOADER_SEARCH, args, this);
@@ -1395,7 +1395,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 // Save this search query for future suggestions.
                 final String query = intent.getStringExtra(SearchManager.QUERY);
                 final String authority = mContext.getString(R.string.suggestions_authority);
-                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
+                final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
                         mContext, authority, SuggestionsProvider.MODE);
                 suggestions.saveRecentQuery(query, null);
                 if (Utils.showTwoPaneSearchResults(mActivity.getActivityContext())) {
@@ -1881,7 +1881,7 @@ public abstract class AbstractActivityController implements ActivityController {
             case LOADER_SEARCH:
                 if (data != null && data.getCount() > 0) {
                     data.moveToFirst();
-                    Folder search = new Folder(data);
+                    final Folder search = new Folder(data);
                     updateFolder(search);
                     mConvListContext = ConversationListContext.forSearchQuery(mAccount, mFolder,
                             mActivity.getIntent()
