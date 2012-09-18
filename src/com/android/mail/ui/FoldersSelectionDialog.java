@@ -90,7 +90,7 @@ public class FoldersSelectionDialog implements OnClickListener {
     private final class QueryRunner extends AsyncTask<Void, Void, Void> {
         private final Context mContext;
         private final Account mAccount;
-        final AlertDialog.Builder mBuilder;
+        private final AlertDialog.Builder mBuilder;
         private final Folder mCurrentFolder;
 
         private QueryRunner(final Context context, final Account account,
