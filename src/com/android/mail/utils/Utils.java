@@ -572,13 +572,6 @@ public class Utils {
     }
 
     /**
-     * Returns comma seperated strings as an array.
-     */
-    public static String[] splitCommaSeparatedString(String str) {
-        return TextUtils.isEmpty(str) ? new String[0] : TextUtils.split(str, ",");
-    }
-
-    /**
      * Get the correct display string for the unread count of a folder.
      */
     public static String getUnreadCountString(Context context, int unreadCount) {
