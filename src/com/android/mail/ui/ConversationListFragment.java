@@ -289,7 +289,6 @@ public final class ConversationListFragment extends ListFragment implements
             // Activity is finishing, just bail.
             return;
         }
-
         // Show list and start loading list.
         showList();
         ToastBarOperation pendingOp = mActivity.getPendingToastOperation();
@@ -333,7 +332,9 @@ public final class ConversationListFragment extends ListFragment implements
         mEmptyView = rootView.findViewById(R.id.empty_view);
         mListView = (SwipeableListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
-        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        // Choice mode here represents the current conversation only. CAB mode does not rely on the
+        // platform: it is a local variable within conversation items.
+        mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setOnItemLongClickListener(this);
         mListView.enableSwipe(mAccount.supportsCapability(AccountCapabilities.UNDO));
         mListView.setSwipedListener(this);
@@ -344,7 +345,6 @@ public final class ConversationListFragment extends ListFragment implements
             // TODO: find a better way to unset the selected item when restoring
             mListView.clearChoices();
         }
-
         final ConversationCursor conversationListCursor = getConversationListCursor();
         // Belt and suspenders here; make sure we do any necessary sync of the
         // ConversationCursor
@@ -534,7 +534,6 @@ public final class ConversationListFragment extends ListFragment implements
      */
     protected final void setSelected(int position) {
         mListView.smoothScrollToPosition(position);
-        mListView.clearChoices();
         mListView.setItemChecked(position, true);
     }
 
@@ -612,6 +611,9 @@ public final class ConversationListFragment extends ListFragment implements
             }
         }
         mListAdapter.setFooterVisibility(showFooter);
+
+        // Also change the cursor here.
+        onCursorUpdated();
     }
 
     private void setSwipeAction() {
@@ -652,9 +654,23 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setCurrentFolder(mFolder);
     }
 
-    public void onCursorUpdated() {
-        if (mListAdapter != null) {
-            mListAdapter.swapCursor(mCallbacks.getConversationListCursor());
+    /**
+     * Changes the conversation cursor in the list and sets selected position if none is set.
+     */
+    private void onCursorUpdated() {
+        if (mCallbacks == null || mListAdapter == null) {
+            return;
+        }
+        mListAdapter.swapCursor(mCallbacks.getConversationListCursor());
+        // If a current conversation is available, and none is selected in the list, then ask
+        // the list to select the current conversation.
+        final Conversation conv = mCallbacks.getCurrentConversation();
+        if (conv == null) {
+            return;
+        }
+        if (mListView.getCheckedItemPosition() == -1) {
+            LogUtils.d("VIKILOGTAG", "CLF.onCursorUpdated: Selecting %d", conv.position);
+            setSelected(conv.position);
         }
     }
 
