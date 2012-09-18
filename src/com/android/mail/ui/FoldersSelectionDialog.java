@@ -47,13 +47,13 @@ import java.util.HashSet;
  */
 public class FoldersSelectionDialog implements OnClickListener {
     private AlertDialog mDialog;
-    private ConversationUpdater mUpdater;
-    private boolean mSingle = false;
-    private SeparatedFolderListAdapter mAdapter;
+    private final ConversationUpdater mUpdater;
+    private final boolean mSingle;
+    private final SeparatedFolderListAdapter mAdapter;
     private final Collection<Conversation> mTarget;
-    private boolean mBatch;
-    private HashMap<Uri, FolderOperation> mOperations;
-    final QueryRunner mRunner;
+    private final boolean mBatch;
+    private final HashMap<Uri, FolderOperation> mOperations;
+    private final QueryRunner mRunner;
 
     /**
      * Create a new {@link FoldersSelectionDialog}. It is displayed when the {@link #show()} method
