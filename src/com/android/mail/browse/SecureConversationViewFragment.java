@@ -92,14 +92,12 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mConversationHeaderView.setCallbacks(this, this);
-        mConversationHeaderView.setSubject(mConversation.subject, false /* notify */);
-        if (mAccount.supportsCapability(UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
-            mConversationHeaderView.setFolders(mConversation, false /* notify */);
-        }
+        mConversationHeaderView.setFoldersVisible(false);
         final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
         if (sdc != null) {
             sdc.setSubject(mConversation.subject);
         }
+        mConversationHeaderView.setSubject(mConversation.subject, false /* notify */);
         mMessageHeaderView.setContactInfoSource(getContactInfoSource());
         mMessageHeaderView.setCallbacks(this);
         mMessageHeaderView.setExpandable(false);
@@ -167,7 +165,14 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
 
     @Override
     public void onUserVisibleHintChanged() {
-        // Do nothing.
+        if (mActivity == null) {
+            return;
+        }
+        final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
+        if (sdc != null) {
+            sdc.setSubject(mConversation.subject);
+        }
+        mConversationHeaderView.setSubject(mConversation.subject, false /* notify */);
     }
 
     @Override
