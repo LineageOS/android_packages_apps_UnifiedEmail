@@ -126,7 +126,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        if (position == 0 && hasHeader()) {
+        if (isHeader(position)) {
             return mHeader;
         }
         return mFolderRows.get(correctPosition(position));
@@ -134,7 +134,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        if (hasHeader() && position == 0) {
+        if (isHeader(position)) {
             return -1;
         }
         return position;
@@ -142,7 +142,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (hasHeader() && position == 0) {
+        if (isHeader(position)) {
             return SeparatedFolderListAdapter.TYPE_SECTION_HEADER;
         } else {
             return SeparatedFolderListAdapter.TYPE_ITEM;
@@ -154,35 +154,36 @@ public class FolderSelectorAdapter extends BaseAdapter {
         return 2;
     }
 
+    /**
+     * Returns true if this position represents the header.
+     * @param position
+     * @return
+     */
+    protected final boolean isHeader(int position) {
+        return position == 0 && hasHeader();
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // check if position inside this section
-        if (position == 0 && hasHeader()) {
-            TextView view = (TextView) convertView;
-            // Inflate the header view.
-            if (view == null) {
-                view = (TextView) mInflater.inflate(R.layout.folder_header, parent, false);
-            }
+        // The header is at the top
+        if (isHeader(position)) {
+            final TextView view = convertView != null ? (TextView) convertView :
+                (TextView) mInflater.inflate(R.layout.folder_header, parent, false);
             view.setText(mHeader);
             return view;
         }
-        View view = convertView;
-        CompoundButton checkBox = null;
-        View colorBlock;
-        ImageView iconView;
+        final View view = convertView != null ? convertView :
+            mInflater.inflate(mLayout, parent, false);
 
-        if (view == null) {
-            view = mInflater.inflate(mLayout, parent, false);
-        }
-        checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
+        final CompoundButton checkBox = (CompoundButton) view.findViewById(R.id.checkbox);
         // Suppress the checkbox selection, and handle the toggling of the
         // folder on the parent list item's click handler.
         checkBox.setClickable(false);
-        colorBlock = view.findViewById(R.id.color_block);
-        iconView = (ImageView) view.findViewById(R.id.folder_box);
+        final View colorBlock = view.findViewById(R.id.color_block);
+        final ImageView iconView = (ImageView) view.findViewById(R.id.folder_box);
 
-        FolderRow row = (FolderRow) getItem(position);
-        Folder folder = row.getFolder();
+        final FolderRow row = (FolderRow) getItem(position);
+        final Folder folder = row.getFolder();
         checkBox.setText(folder.name);
         checkBox.setChecked(row.isPresent());
 
@@ -191,7 +192,7 @@ public class FolderSelectorAdapter extends BaseAdapter {
         return view;
     }
 
-    public boolean hasHeader() {
+    private final boolean hasHeader() {
         return mHeader != null;
     }
 
@@ -202,9 +203,4 @@ public class FolderSelectorAdapter extends BaseAdapter {
     public int correctPosition(int position) {
         return hasHeader() ? position-1 : position;
     }
-
-    public String getHeader() {
-        return mHeader;
-    }
-
 }
