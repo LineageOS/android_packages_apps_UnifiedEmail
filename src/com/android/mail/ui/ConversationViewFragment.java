@@ -84,7 +84,6 @@ import java.util.Set;
  * The conversation view UI component.
  */
 public final class ConversationViewFragment extends AbstractConversationViewFragment implements
-        ConversationViewHeader.ConversationViewHeaderCallbacks,
         MessageHeaderViewCallbacks,
         SuperCollapsedBlock.OnClickListener,
         ConversationController,
@@ -682,11 +681,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     // END conversation header callbacks
 
     // START message header callbacks
-    @Override
-    public void setMessageDetailsExpanded(boolean expanded) {
-        // Do nothing.
-    }
-
     @Override
     public void setMessageSpacerHeight(MessageHeaderItem item, int newSpacerHeightPx) {
         mConversationContainer.invalidateSpacerGeometry();
