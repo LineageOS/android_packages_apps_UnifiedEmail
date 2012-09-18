@@ -769,4 +769,7 @@
     <string translatable="false" name="folder_name_elipses">...</string>
 
     <string translatable="false" name="title_bar_html">&lt;div style=\"height:<xliff:g id="height">%1$d</xliff:g>;width:0px;\"&gt;&lt;/div&gt;</string>
+
+    <!-- Dialog title when showing message header details in a popup window. [CHAR LIMIT=100]-->
+    <string name="message_details_title">Message details</string>
 </resources>
