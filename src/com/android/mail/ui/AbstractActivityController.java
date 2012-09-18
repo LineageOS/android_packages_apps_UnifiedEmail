@@ -1441,7 +1441,7 @@ public abstract class AbstractActivityController implements ActivityController {
         return mActionBarView;
     }
 
-    private void showConversation(Conversation conversation) {
+    private final void showConversation(Conversation conversation) {
         showConversation(conversation, false /* inLoaderCallbacks */);
     }
 
@@ -1508,7 +1508,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
+    public final void onConversationSelected(Conversation conversation, boolean inLoaderCallbacks) {
         // Only animate destructive actions if we are going to be showing the
         // conversation list when we show the next conversation.
         commitDestructiveActions(Utils.useTabletUI(mContext));
@@ -1528,8 +1528,9 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void setCurrentConversation(Conversation conversation) {
-        mCurrentConversation = conversation;
+        // Must be the first call because this sets conversation.position if a cursor is available.
         mTracker.initialize(mCurrentConversation);
+        mCurrentConversation = conversation;
 
         if (mCurrentConversation != null) {
             getSubjectDisplayChanger().setSubject(mCurrentConversation.subject);
@@ -2359,16 +2360,13 @@ public abstract class AbstractActivityController implements ActivityController {
             mTracker.onCursorUpdated();
 
             mConversationListObservable.notifyChanged();
-            // Register the AbstractActivityController as a listener to changes in
-            // data in the cursor.
-            final ConversationListFragment convList = getConversationListFragment();
-            if (convList != null) {
-                convList.onCursorUpdated();
 
-                if (convList.isVisible()) {
-                    // The conversation list is visible.
-                    informCursorVisiblity(true);
-                }
+            final ConversationListFragment convList = getConversationListFragment();
+            if (convList != null && convList.isVisible()) {
+                // The conversation list is already listening to list changes and gets notified
+                // in the mConversationListObservable.notifyChanged() line above. We only need to
+                // check and inform the cursor of the change in visibility here.
+                informCursorVisiblity(true);
             }
             // Shown for search results in two-pane mode only.
             if (shouldShowFirstConversation()) {
@@ -2394,11 +2392,6 @@ public abstract class AbstractActivityController implements ActivityController {
                 // Inform anyone who is interested about the change
                 mTracker.onCursorUpdated();
                 mConversationListObservable.notifyChanged();
-
-                final ConversationListFragment convList = getConversationListFragment();
-                if (convList != null) {
-                    convList.onCursorUpdated();
-                }
             }
         }
     }
