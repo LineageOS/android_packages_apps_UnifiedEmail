@@ -249,16 +249,16 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Activity activity = getActivity();
+        final Activity activity = getActivity();
         if (!(activity instanceof ControllableActivity)) {
             LogUtils.wtf(LOG_TAG, "ConversationViewFragment expects only a ControllableActivity to"
                     + "create it. Cannot proceed.");
         }
-        if (activity.isFinishing()) {
+        if (activity == null || activity.isFinishing()) {
             // Activity is finishing, just bail.
             return;
         }
-        mActivity = (ControllableActivity) getActivity();
+        mActivity = (ControllableActivity) activity;
         mContext = activity.getApplicationContext();
         mDateBuilder = new FormattedDateBuilder((Context) mActivity);
         mAccount = mAccountObserver.initialize(mActivity.getAccountController());
