@@ -25,10 +25,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
@@ -42,6 +44,7 @@ import com.android.mail.ui.AbstractConversationViewFragment;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.ui.SubjectDisplayChanger;
+import com.android.mail.ui.TitleBar;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -50,7 +53,7 @@ import java.util.HashSet;
 public class SecureConversationViewFragment extends AbstractConversationViewFragment implements
         MessageHeaderViewCallbacks {
     private static final String LOG_TAG = LogTag.getLogTag();
-    private WebView mWebView;
+    private SecureConversationWebView mWebView;
     private ConversationViewHeader mConversationHeaderView;
     private MessageHeaderView mMessageHeaderView;
     private ConversationMessage mMessage;
@@ -60,6 +63,8 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             dismissLoadingStatus();
         }
     };
+    private TitleBar mTitleBar;
+    private int mTitleBarHeight;
 
     /**
      * Creates a new instance of {@link ConversationViewFragment}, initialized
@@ -109,8 +114,11 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         mConversationHeaderView = (ConversationViewHeader) rootView.findViewById(R.id.conv_header);
         mMessageHeaderView = (MessageHeaderView) rootView.findViewById(R.id.message_header);
         instantiateProgressIndicators(rootView);
-        mWebView = (WebView) rootView.findViewById(R.id.webview);
+        mTitleBar = (TitleBar) rootView.findViewById(R.id.header);
+        mWebView = (SecureConversationWebView) rootView.findViewById(R.id.webview);
         mWebView.setWebViewClient(mWebViewClient);
+        mWebView.setTitleBar(mTitleBar);
+        mTitleBar.setWebView(mWebView);
         final WebSettings settings = mWebView.getSettings();
 
         settings.setJavaScriptEnabled(false);
@@ -150,6 +158,12 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     @Override
     public void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight) {
         // Do nothing.
+    }
+
+    @Override
+    public void setMessageDetailsExpanded(boolean expanded) {
+        int currentHeight = mTitleBar.getMeasuredHeight();
+        setContentViewMarginTop(expanded ? currentHeight - mTitleBarHeight : 0);
     }
 
     @Override
@@ -194,6 +208,8 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             if (TextUtils.isEmpty(content)) {
                 content = messageCursor.getString(UIProvider.MESSAGE_BODY_TEXT_COLUMN);
             }
+            mTitleBarHeight = mTitleBar.getMeasuredHeight();
+            convHtml.append(mTitleBar.getHtmlContent());
             convHtml.append(content);
             mWebView.loadDataWithBaseURL(mBaseUri, convHtml.toString(), "text/html", "utf-8", null);
             mMessage = messageCursor.getMessage();
@@ -204,5 +220,15 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             mMessageHeaderView.bind(item, false);
             mMessageHeaderView.setMessageDetailsVisibility(View.VISIBLE);
         }
+    }
+
+    private void setContentViewMarginTop(int topMargin) {
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mWebView.getLayoutParams();
+        if (params == null) {
+            params = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.MATCH_PARENT);
+        }
+        params.topMargin = topMargin;
+        mWebView.setLayoutParams(params);
     }
 }

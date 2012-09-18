@@ -18,29 +18,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/conversation_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <include layout="@layout/conversation_view_header"
-            android:id="@+id/conv_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" />
-
-        <include layout="@layout/conversation_message_header"
-            android:id="@+id/message_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/conv_header" />
-
         <!-- base WebView layer -->
-        <WebView
+        <com.android.mail.browse.SecureConversationWebView
             android:id="@+id/webview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/message_header" />
+            android:layout_height="match_parent" />
 
         <FrameLayout
             android:id="@+id/conversation_topmost_overlay"
@@ -48,7 +34,23 @@
             android:layout_height="match_parent">
             <!-- TODO: scroll indicators go HERE on top of all other layers -->
         </FrameLayout>
-    </RelativeLayout>
+        <com.android.mail.ui.TitleBar android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/white">
+            <include layout="@layout/conversation_view_header"
+                android:id="@+id/conv_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <include layout="@layout/conversation_message_header"
+                android:id="@+id/message_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/conv_header" />
+        </com.android.mail.ui.TitleBar>
+    </FrameLayout>
     <include layout="@layout/conversation_load_spinner"/>
 
 </FrameLayout>
