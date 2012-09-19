@@ -50,14 +50,12 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.mail.R;
@@ -172,6 +170,7 @@ public class ConversationItemView extends View implements SwipeableItemView {
     private ControllableActivity mActivity;
     private CharacterStyle mActivatedTextSpan;
     private int mBackgroundOverride = -1;
+    private static TextView sSendersTextView;
     private static int sScrollSlop;
     private static int sSendersTextViewTopPadding;
     private static int sSendersTextViewHeight;
@@ -605,19 +604,18 @@ public class ConversationItemView extends View implements SwipeableItemView {
         } else {
             mHeader.styledSendersString.removeSpan(mActivatedTextSpan);
         }
-        mHeader.sendersTextView = getSendersTextView();
     }
 
     private TextView getSendersTextView() {
-        TextView sendersTextView = new TextView(mContext);
-        sendersTextView.setMaxLines(1);
-        sendersTextView.setEllipsize(TextUtils.TruncateAt.END);
-        sendersTextView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        int length = (int) sPaint.measureText(mHeader.styledSendersString.toString());
-        sendersTextView.setText(mHeader.styledSendersString, TextView.BufferType.SPANNABLE);
-        sendersTextView.setWidth(length);
-        return sendersTextView;
+        if (sSendersTextView == null) {
+            TextView sendersTextView = new TextView(mContext);
+            sendersTextView.setMaxLines(1);
+            sendersTextView.setEllipsize(TextUtils.TruncateAt.END);
+            sendersTextView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            sSendersTextView = sendersTextView;
+        }
+        return sSendersTextView;
     }
 
     private CharacterStyle getActivatedTextSpan() {
@@ -1015,6 +1013,11 @@ public class ConversationItemView extends View implements SwipeableItemView {
         } else {
             canvas.translate(mCoordinates.sendersX,
                     mCoordinates.sendersY + sSendersTextViewTopPadding);
+            mHeader.sendersTextView = getSendersTextView();
+            int length = (int) sPaint.measureText(mHeader.styledSendersString.toString());
+            mHeader.sendersTextView.setText(mHeader.styledSendersString,
+                    TextView.BufferType.SPANNABLE);
+            mHeader.sendersTextView.setWidth(length);
             mHeader.sendersTextView.layout(0, 0, mSendersWidth, sSendersTextViewHeight);
             mHeader.sendersTextView.draw(canvas);
         }
