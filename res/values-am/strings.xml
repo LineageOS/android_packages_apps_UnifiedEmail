@@ -26,8 +26,8 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"ፋይል አያይዝ"</string>
-    <string name="add_photo_attachment" msgid="8548176514426323119">"ስዕል አያይዝ"</string>
-    <string name="add_video_attachment" msgid="4284457799113546464">"ቪዲዮ አያይዝ"</string>
+    <string name="add_photo_attachment" msgid="3738882100645552858">"ስዕል አያይዝ"</string>
+    <string name="add_video_attachment" msgid="8916625983712820173">"ቪዲዮ አያይዝ"</string>
     <string name="save_draft" msgid="5555744208032445632">"ረቂቅ አስቀምጥ"</string>
     <string name="discard" msgid="1714960202994370243">"አስወግድ"</string>
     <string name="compose" msgid="1473559896062432878">"አዲስ ጻፍ"</string>
@@ -151,7 +151,8 @@
     <item quantity="one" msgid="3657821200245019288">"ውይይት አንቀሳቅስ"</item>
     <item quantity="other" msgid="1685896770174368261">"<xliff:g id="ID_1">%1$d</xliff:g> ውይይቶች አንቀሳቅስ"</item>
   </plurals>
-    <string name="content_description" msgid="175899621885107464">"<xliff:g id="SENDER">%1$s</xliff:g> <xliff:g id="DATE">%3$s</xliff:g> ላይ <xliff:g id="SUBJECT">%2$s</xliff:g>ን ልኳል"</string>
+    <string name="content_description" msgid="517417382820459541">"<xliff:g id="SENDER">%1$s</xliff:g> ስለ<xliff:g id="SUBJECT">%2$s</xliff:g>፣ <xliff:g id="SNIPPET">%3$s</xliff:g> <xliff:g id="DATE">%4$s</xliff:g> ላይ"</string>
+    <string name="content_description_today" msgid="3358818622191430053">"<xliff:g id="SENDER">%1$s</xliff:g> ስለ<xliff:g id="SUBJECT">%2$s</xliff:g>፣ <xliff:g id="SNIPPET">%3$s</xliff:g> <xliff:g id="TIME">%4$s</xliff:g> ላይ"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -290,7 +291,7 @@
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> በ<xliff:g id="VIA_DOMAIN">%3$s</xliff:g> በኩል"</string>
     <string name="message_saved" msgid="7073947895562277576">"መልዕክት እንደረቂቅ ተቀምጧል።"</string>
-    <string name="sending_message" msgid="2822171587017313151">"መልዕክት ወደ ወጪ መልዕክት ሳጥን በመላክ ላይ…"</string>
+    <string name="sending_message" msgid="1498583163419122128">"መልዕክት በመላክ ላይ…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"<xliff:g id="WRONGEMAIL">%s</xliff:g> አድራሻ ልክ አይደለም።"</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ ትምህርተ ጥቅስ የተደረገባቸውን ፅሁፎች አሳይ"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ ትምህርተ ጥቅስ የተደረገባቸውን ፅሁፎች ደብቅ"</string>
@@ -366,4 +367,8 @@
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="compose_component_name" msgid="1673799619444668402">"com.android.mail.compose.ComposeActivity"</string>
     <string name="autosend_component_name" msgid="3204704549005619187"></string>
+    <string name="senders_split_token" msgid="5895854795157860258">"፣ "</string>
+    <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
+    <string name="all_folders_heading" msgid="2506843494725730618">"ሁሉም አቃፊዎች"</string>
+    <string name="recent_folders_heading" msgid="8613621794529777406">"የቅርብ ጊዜ አቃፊዎች"</string>
 </resources>

@@ -26,8 +26,8 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Adjunta un fitxer"</string>
-    <string name="add_photo_attachment" msgid="8548176514426323119">"Adjunta una imatge"</string>
-    <string name="add_video_attachment" msgid="4284457799113546464">"Adjunta un vídeo"</string>
+    <string name="add_photo_attachment" msgid="3738882100645552858">"Adjunta una imatge"</string>
+    <string name="add_video_attachment" msgid="8916625983712820173">"Adjunta un vídeo"</string>
     <string name="save_draft" msgid="5555744208032445632">"Desa l\'esborrany"</string>
     <string name="discard" msgid="1714960202994370243">"Descarta"</string>
     <string name="compose" msgid="1473559896062432878">"Redacta"</string>
@@ -41,7 +41,7 @@
     <string name="cc_attribution" msgid="374493748526504562">"Cc: <xliff:g id="CC">%1$s</xliff:g>&lt;br&gt;"</string>
     <string name="select_attachment_type" msgid="4711524151968942082">"Tria el tipus de fitxer adjunt"</string>
     <string name="too_large_to_attach_single" msgid="2996733972478212136">"No es pot adjuntar un fitxer de més de <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
-    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"No s\'ha adjuntat un fitxer com a mínim. Límit: <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
+    <string name="too_large_to_attach_multiple" msgid="5452547998184881210">"No s\'han adjuntat un o més fitxers. Límit: <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="too_large_to_attach_additional" msgid="3366607594339390249">"El fitxer no s\'ha adjuntat. Has arribat al límit de <xliff:g id="MAXSIZE">%1$s</xliff:g>."</string>
     <string name="generic_attachment_problem" msgid="8775959340559458709">"No s\'ha pogut adjuntar el fitxer."</string>
     <string name="recipient_needed" msgid="999037027358925655">"Afegeix com a mínim un destinatari."</string>
@@ -151,7 +151,8 @@
     <item quantity="one" msgid="3657821200245019288">"Mou la conversa"</item>
     <item quantity="other" msgid="1685896770174368261">"Mou <xliff:g id="ID_1">%1$d</xliff:g> converses"</item>
   </plurals>
-    <string name="content_description" msgid="175899621885107464">"<xliff:g id="SENDER">%1$s</xliff:g> ha enviat <xliff:g id="SUBJECT">%2$s</xliff:g> el dia <xliff:g id="DATE">%3$s</xliff:g>"</string>
+    <string name="content_description" msgid="517417382820459541">"<xliff:g id="SENDER">%1$s</xliff:g> sobre <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> el dia <xliff:g id="DATE">%4$s</xliff:g>"</string>
+    <string name="content_description_today" msgid="3358818622191430053">"<xliff:g id="SENDER">%1$s</xliff:g> sobre <xliff:g id="SUBJECT">%2$s</xliff:g>, <xliff:g id="SNIPPET">%3$s</xliff:g> a les <xliff:g id="TIME">%4$s</xliff:g>"</string>
     <string name="filtered_tag" msgid="6470627954465675488">"[<xliff:g id="TAG">%1$s</xliff:g>]<xliff:g id="SUBJECT">%2$s</xliff:g>"</string>
     <string name="subject_and_snippet" msgid="7884124651812798896">"<xliff:g id="ID_1">%s</xliff:g> — <xliff:g id="ID_2">%s</xliff:g>"</string>
   <plurals name="draft">
@@ -290,7 +291,7 @@
     <string name="address_display_format" msgid="3581303608028992576">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g>"</string>
     <string name="address_display_format_with_via_domain" msgid="2316262813990842490">"<xliff:g id="NAME">%1$s</xliff:g> <xliff:g id="EMAIL">%2$s</xliff:g> a través de <xliff:g id="VIA_DOMAIN">%3$s</xliff:g>"</string>
     <string name="message_saved" msgid="7073947895562277576">"Missatge desat com a esborrany."</string>
-    <string name="sending_message" msgid="2822171587017313151">"S\'està enviant el missatge a la bústia de sortida…"</string>
+    <string name="sending_message" msgid="1498583163419122128">"S\'està enviant el missatge…"</string>
     <string name="invalid_recipient" msgid="2161317422860961623">"L\'adreça <xliff:g id="WRONGEMAIL">%s</xliff:g> no és vàlida."</string>
     <string name="show_elided" msgid="5255917904110437886">"▶ Mostra el text citat"</string>
     <string name="hide_elided" msgid="8907305605854960737">"▼ Amaga el text citat"</string>
@@ -366,4 +367,8 @@
     <string name="hierarchical_folder_top" msgid="7574690149481839837">"<xliff:g id="TOPLEVELPARENT">%1$s</xliff:g>∕"</string>
     <string name="compose_component_name" msgid="1673799619444668402">"com.android.mail.compose.ComposeActivity"</string>
     <string name="autosend_component_name" msgid="3204704549005619187"></string>
+    <string name="senders_split_token" msgid="5895854795157860258">", "</string>
+    <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
+    <string name="all_folders_heading" msgid="2506843494725730618">"Totes les carpetes"</string>
+    <string name="recent_folders_heading" msgid="8613621794529777406">"Carpetes recents"</string>
 </resources>
