@@ -31,6 +31,7 @@ import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.ScrollView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
@@ -44,7 +45,6 @@ import com.android.mail.ui.AbstractConversationViewFragment;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.ui.SubjectDisplayChanger;
-import com.android.mail.ui.TitleBar;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
@@ -53,18 +53,18 @@ import java.util.HashSet;
 public class SecureConversationViewFragment extends AbstractConversationViewFragment implements
         MessageHeaderViewCallbacks {
     private static final String LOG_TAG = LogTag.getLogTag();
-    private SecureConversationWebView mWebView;
+    private WebView mWebView;
     private ConversationViewHeader mConversationHeaderView;
     private MessageHeaderView mMessageHeaderView;
+    private MessageFooterView mMessageFooterView;
     private ConversationMessage mMessage;
+    private ScrollView mScrollView;
     private WebViewClient mWebViewClient = new AbstractConversationWebViewClient() {
         @Override
         public void onPageFinished(WebView view, String url) {
             dismissLoadingStatus();
         }
     };
-    private TitleBar mTitleBar;
-    private int mTitleBarHeight;
 
     /**
      * Creates a new instance of {@link ConversationViewFragment}, initialized
@@ -109,14 +109,13 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.secure_conversation_view, container, false);
+        mScrollView = (ScrollView) rootView.findViewById(R.id.scroll_view);
         mConversationHeaderView = (ConversationViewHeader) rootView.findViewById(R.id.conv_header);
         mMessageHeaderView = (MessageHeaderView) rootView.findViewById(R.id.message_header);
+        mMessageFooterView = (MessageFooterView) rootView.findViewById(R.id.message_footer);
         instantiateProgressIndicators(rootView);
-        mTitleBar = (TitleBar) rootView.findViewById(R.id.header);
-        mWebView = (SecureConversationWebView) rootView.findViewById(R.id.webview);
+        mWebView = (WebView) rootView.findViewById(R.id.webview);
         mWebView.setWebViewClient(mWebViewClient);
-        mWebView.setTitleBar(mTitleBar);
-        mTitleBar.setWebView(mWebView);
         final WebSettings settings = mWebView.getSettings();
 
         settings.setJavaScriptEnabled(false);
@@ -174,6 +173,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             sdc.setSubject(mConversation.subject);
         }
         mConversationHeaderView.setSubject(mConversation.subject, false /* notify */);
+        this.mScrollView.scrollTo(0, 0);
     }
 
     @Override
@@ -208,8 +208,6 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             if (TextUtils.isEmpty(content)) {
                 content = messageCursor.getString(UIProvider.MESSAGE_BODY_TEXT_COLUMN);
             }
-            mTitleBarHeight = mTitleBar.getMeasuredHeight();
-            convHtml.append(mTitleBar.getHtmlContent());
             convHtml.append(content);
             mWebView.loadDataWithBaseURL(mBaseUri, convHtml.toString(), "text/html", "utf-8", null);
             mMessage = messageCursor.getMessage();
@@ -220,6 +218,19 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             mMessageHeaderView.setExpandMode(MessageHeaderView.POPUP_MODE);
             mMessageHeaderView.bind(item, false);
             mMessageHeaderView.setMessageDetailsVisibility(View.VISIBLE);
+            if (mMessage.hasAttachments) {
+                mMessageFooterView.setVisibility(View.VISIBLE);
+                mMessageFooterView.initialize(getLoaderManager(), getFragmentManager());
+                mMessageFooterView.bind(item, false);
+            }
+        }
+    }
+
+    @Override
+    public void onConversationUpdated(Conversation conv) {
+        final ConversationViewHeader headerView = mConversationHeaderView;
+        if (headerView != null) {
+            headerView.onConversationUpdated(conv);
         }
     }
 }
