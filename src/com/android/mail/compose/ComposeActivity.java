@@ -567,7 +567,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             mRecipientErrorDialog.dismiss();
         }
         // When the user exits the compose view, see if this draft needs saving.
-        if (isFinishing()) {
+        // Don't save unnecessary drafts if we are only changing the orientation.
+        if (!isChangingConfigurations()) {
             saveIfNeeded();
         }
     }
