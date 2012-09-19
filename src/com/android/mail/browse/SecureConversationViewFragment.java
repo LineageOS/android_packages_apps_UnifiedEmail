@@ -116,6 +116,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         instantiateProgressIndicators(rootView);
         mWebView = (WebView) rootView.findViewById(R.id.webview);
         mWebView.setWebViewClient(mWebViewClient);
+        mWebView.setFocusable(false);
         final WebSettings settings = mWebView.getSettings();
 
         settings.setJavaScriptEnabled(false);
