@@ -450,6 +450,12 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         LogUtils.v(LOG_TAG, "in CVF.setHint, val=%s (%s)", isVisibleToUser, this);
         if (mUserVisible != isVisibleToUser) {
             mUserVisible = isVisibleToUser;
+            MessageCursor cursor = getMessageCursor();
+            if (mUserVisible && (cursor == null || cursor.getCount() == 0)) {
+                // Pop back to conversation list and show error.
+                onError();
+                return;
+            }
             onUserVisibleHintChanged();
         }
     }
@@ -475,22 +481,11 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                     LogUtils.d(LOG_TAG, "LOADED CONVERSATION= %s", messageCursor.getDebugDump());
                 }
 
-                // TODO: handle ERROR status
-
                 // When the last cursor had message(s), and the new version has
                 // no messages, we need to exit conversation view.
                 if (messageCursor.getCount() == 0 && mCursor != null) {
                     if (mUserVisible) {
-                        // need to exit this view- conversation may have been
-                        // deleted, or for whatever reason is now invalid (e.g.
-                        // discard single draft)
-                        //
-                        // N.B. this may involve a fragment transaction, which
-                        // FragmentManager will refuse to execute directly
-                        // within onLoadFinished. Make sure the controller knows.
-                        LogUtils.i(LOG_TAG, "CVF: visible conv has no messages, exiting conv mode");
-                        mActivity.getListHandler()
-                                .onConversationSelected(null, true /* inLoaderCallbacks */);
+                        onError();
                     } else {
                         // we expect that the pager adapter will remove this
                         // conversation fragment on its own due to a separate
@@ -500,7 +495,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                         LogUtils.i(LOG_TAG, "CVF: offscreen conv has no messages, ignoring update"
                                 + " in anticipation of conv cursor update. c=%s", mConversation.uri);
                     }
-
                     return;
                 }
 
@@ -521,6 +515,29 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             mCursor = null;
         }
 
+    }
+
+    private void onError() {
+        // need to exit this view- conversation may have been
+        // deleted, or for whatever reason is now invalid (e.g.
+        // discard single draft)
+        //
+        // N.B. this may involve a fragment transaction, which
+        // FragmentManager will refuse to execute directly
+        // within onLoadFinished. Make sure the controller knows.
+        LogUtils.i(LOG_TAG, "CVF: visible conv has no messages, exiting conv mode");
+        // TODO(mindyp): handle ERROR status by showing an error
+        // message to the user that there are no messages in
+        // this conversation
+        mHandler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                mActivity.getListHandler()
+                .onConversationSelected(null, true /* inLoaderCallbacks */);
+            }
+
+        });
     }
 
     private static class MessageLoader extends CursorLoader {
