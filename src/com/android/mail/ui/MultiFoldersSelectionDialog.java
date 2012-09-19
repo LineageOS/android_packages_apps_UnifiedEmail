@@ -45,7 +45,7 @@ import java.util.HashSet;
  * Displays a folder selection dialog for the conversation provided. It allows the user to mark
  * folders to assign that conversation to.
  */
-public class FoldersSelectionDialog implements OnClickListener {
+public class MultiFoldersSelectionDialog implements OnClickListener {
     private AlertDialog mDialog;
     private final ConversationUpdater mUpdater;
     private final boolean mSingle;
@@ -56,16 +56,18 @@ public class FoldersSelectionDialog implements OnClickListener {
     private final QueryRunner mRunner;
 
     /**
-     * Create a new {@link FoldersSelectionDialog}. It is displayed when the {@link #show()} method
-     * is called.
+     * Create a new {@link MultiFoldersSelectionDialog}. It is displayed when
+     * the {@link #show()} method is called.
      * @param context
      * @param account the current account
      * @param updater
      * @param target conversations that are impacted
-     * @param isBatch whether the dialog is shown during Contextual Action Bar (CAB) mode
-     * @param currentFolder the current folder that the {@link FolderListFragment} is showing
+     * @param isBatch whether the dialog is shown during Contextual Action Bar
+     *            (CAB) mode
+     * @param currentFolder the current folder that the
+     *            {@link FolderListFragment} is showing
      */
-    public FoldersSelectionDialog(final Context context, Account account,
+    public MultiFoldersSelectionDialog(final Context context, Account account,
             final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
             Folder currentFolder) {
         mUpdater = updater;
@@ -129,14 +131,14 @@ public class FoldersSelectionDialog implements OnClickListener {
                  // Currently, the number of adapters are assumed to match the
                  // number of headers in the string array.
                  mAdapter.addSection(new SystemFolderSelectorAdapter(mContext,
-                 foldersCursor, checked, mSingle, null));
+                 foldersCursor, checked, R.layout.multi_folders_view, null));
 
                 // TODO(mindyp): we currently do not support frequently moved to
                 // folders, at headers[1]; need to define what that means.*/
                 mAdapter.addSection(new AddableFolderSelectorAdapter(mContext,
                         AddableFolderSelectorAdapter.filterFolders(foldersCursor), checked,
-                        mSingle, null));
-                mBuilder.setAdapter(mAdapter, FoldersSelectionDialog.this);
+                        R.layout.multi_folders_view, null));
+                mBuilder.setAdapter(mAdapter, MultiFoldersSelectionDialog.this);
             } finally {
                 if (foldersCursor != null) {
                     foldersCursor.close();
@@ -152,7 +154,7 @@ public class FoldersSelectionDialog implements OnClickListener {
     }
 
     /**
-     * Shows the {@link FoldersSelectionDialog} dialog.
+     * Shows the {@link MultiFoldersSelectionDialog} dialog.
      */
     public void show() {
         mRunner.execute();
