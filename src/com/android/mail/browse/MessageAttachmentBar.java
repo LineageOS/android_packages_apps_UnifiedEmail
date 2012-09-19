@@ -294,7 +294,7 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
     }
 
     public void updateProgress(boolean showProgress) {
-        if (mAttachment.isDownloading() && mSaveClicked) {
+        if (mAttachment.isDownloading()) {
             mProgress.setMax(mAttachment.size);
             mProgress.setProgress(mAttachment.downloadedSize);
             mProgress.setIndeterminate(!showProgress);
