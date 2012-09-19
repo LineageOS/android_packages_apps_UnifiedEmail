@@ -348,11 +348,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
     }
 
-    /**
-     * Handles a request to show a new conversation list, either from a search
-     * query or for viewing a folder. This will initiate a data load, and hence
-     * must be called on the UI thread.
-     */
     private void showConversation() {
         final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING
                 || (mConversation.isRemote
