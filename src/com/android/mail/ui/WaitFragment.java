@@ -38,7 +38,7 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
     // Keys used to pass data to {@link WaitFragment}.
     private static final String ACCOUNT_KEY = "account";
 
-    private static final String COMPOSE_KEY = "isCompose";
+    private static final String DEFAULT_KEY = "isDefault";
 
     private static final int MANUAL_SYNC_LOADER = 0;
 
@@ -49,18 +49,18 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
 
     private ViewGroup mContainer;
 
-    private boolean mCompose;
+    private boolean mDefault;
 
     public static WaitFragment newInstance(Account account) {
         return newInstance(account, false);
     }
 
-    public static WaitFragment newInstance(Account account, boolean compose) {
+    public static WaitFragment newInstance(Account account, boolean def) {
         WaitFragment fragment = new WaitFragment();
 
         final Bundle args = new Bundle();
         args.putParcelable(ACCOUNT_KEY, account);
-        args.putBoolean(COMPOSE_KEY, compose);
+        args.putBoolean(DEFAULT_KEY, def);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,7 +71,7 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
 
         Bundle args = getArguments();
         mAccount = (Account)args.getParcelable(ACCOUNT_KEY);
-        mCompose = args.getBoolean(COMPOSE_KEY, false);
+        mDefault = args.getBoolean(DEFAULT_KEY, false);
     }
 
     @Override
@@ -96,8 +96,8 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
             root.findViewById(R.id.manual_sync).setOnClickListener(this);
             root.findViewById(R.id.change_sync_settings).setOnClickListener(this);
 
-        } else if (mCompose) {
-            root = mInflater.inflate(R.layout.wait_for_compose, mContainer, false);
+        } else if (mDefault) {
+            root = mInflater.inflate(R.layout.wait_default, mContainer, false);
         } else {
             root = mInflater.inflate(R.layout.wait_for_sync, mContainer, false);
         }
@@ -107,7 +107,7 @@ public class WaitFragment extends Fragment implements View.OnClickListener,
 
     public void updateAccount(Account account) {
         mAccount = account;
-        getContent();
+        mContainer.addView(getContent());
     }
 
     Account getAccount() {
