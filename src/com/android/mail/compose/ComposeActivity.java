@@ -406,7 +406,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 startActivityForResult(noAccountIntent, RESULT_CREATE_ACCOUNT);
             }
         } else {
-            // If none of the accounts are syncing. setup a watcher.
+            // If none of the accounts are syncing, setup a watcher.
             boolean anySyncing = false;
             for (Account a : mAccounts) {
                 if (a.isAccountIntialized()) {

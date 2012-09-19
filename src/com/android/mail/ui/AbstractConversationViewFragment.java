@@ -685,4 +685,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
     }
 
+    public abstract void onConversationUpdated(Conversation conversation);
+
 }
