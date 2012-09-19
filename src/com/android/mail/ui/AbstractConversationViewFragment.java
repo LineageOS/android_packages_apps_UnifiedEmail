@@ -451,7 +451,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         if (mUserVisible != isVisibleToUser) {
             mUserVisible = isVisibleToUser;
             MessageCursor cursor = getMessageCursor();
-            if (mUserVisible && (cursor == null || cursor.getCount() == 0)) {
+            if (mUserVisible && (cursor != null && cursor.isLoaded() && cursor.getCount() == 0)) {
                 // Pop back to conversation list and show error.
                 onError();
                 return;
