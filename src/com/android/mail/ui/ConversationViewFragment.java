@@ -1048,6 +1048,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
     }
 
+    @Override
     public void onConversationUpdated(Conversation conv) {
         final ConversationViewHeader headerView = (ConversationViewHeader) mConversationContainer
                 .findViewById(R.id.conversation_header);
