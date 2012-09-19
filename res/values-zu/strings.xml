@@ -371,4 +371,5 @@
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Wonke amafolda"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Amafolda akamuva"</string>
+    <string name="message_details_title" msgid="2183394728494962332">"Imininingwane yomlayezo"</string>
 </resources>
