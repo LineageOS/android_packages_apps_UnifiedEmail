@@ -24,4 +24,11 @@ public interface ScrollNotifier {
 
     void addScrollListener(ScrollListener l);
     void removeScrollListener(ScrollListener l);
+
+    int computeVerticalScrollRange();
+    int computeVerticalScrollExtent();
+    int computeVerticalScrollOffset();
+    int computeHorizontalScrollRange();
+    int computeHorizontalScrollExtent();
+    int computeHorizontalScrollOffset();
 }
