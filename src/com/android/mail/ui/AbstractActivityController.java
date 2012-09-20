@@ -587,6 +587,25 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
+     * Marks the {@link #mFolderChanged} value if the newFolder is different from the existing
+     * {@link #mFolder}. This should be called immediately <b>before</b> assigning newFolder to
+     * mFolder.
+     * @param newFolder
+     */
+    private final void setHasFolderChanged(final Folder newFolder) {
+        // We should never try to assign a null folder. But in the rare event that we do, we should
+        // only set the bit when we have a valid folder, and null is not valid.
+        if (newFolder == null) {
+            return;
+        }
+        // If the previous folder was null, or if the two folders represent different data, then we
+        // consider that the folder has changed.
+        if (mFolder == null || !newFolder.uri.equals(mFolder.uri)) {
+            mFolderChanged = true;
+        }
+    }
+
+    /**
      * Sets the current folder if it is different from the object provided here. This method does
      * NOT notify the folder observers that a change has happened. Observers are notified when we
      * get an updated folder from the loaders, which will happen as a consequence of this method
@@ -598,8 +617,11 @@ public abstract class AbstractActivityController implements ActivityController {
         if (folder != null && !folder.equals(mFolder) && folder.isInitialized()) {
             LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
             final LoaderManager lm = mActivity.getLoaderManager();
+            // updateFolder is called from AAC.onLoadFinished() on folder changes.  We need to
+            // ensure that the folder is different from the previous folder before marking the
+            // folder changed.
+            setHasFolderChanged(folder);
             mFolder = folder;
-            mFolderChanged = true;
 
             // We do not need to notify folder observers yet. Instead we start the loaders and
             // when the load finishes, we will get an updated folder. Then, we notify the
@@ -1549,7 +1571,6 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // Create a loader to listen in on account changes.
         switch (id) {
             case LOADER_ACCOUNT_CURSOR:
                 return new CursorLoader(mContext, MailAppProvider.getAccountsUri(),
@@ -1843,10 +1864,9 @@ public abstract class AbstractActivityController implements ActivityController {
                 if (data != null && data.moveToFirst()) {
                     final Folder folder = new Folder(data);
                     LogUtils.d(LOG_TAG, "FOLDER STATUS = %d", folder.syncStatus);
-
+                    setHasFolderChanged(folder);
                     mFolder = folder;
                     mFolderObservable.notifyChanged();
-
                 } else {
                     LogUtils.d(LOG_TAG, "Unable to get the folder %s",
                             mFolder != null ? mAccount.name : "");
