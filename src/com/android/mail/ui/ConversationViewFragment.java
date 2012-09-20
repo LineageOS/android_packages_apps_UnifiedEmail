@@ -44,6 +44,7 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationContainer;
 import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
+import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.ConversationViewAdapter.ConversationAccountController;
 import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
@@ -98,6 +99,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private ConversationContainer mConversationContainer;
 
     private ConversationWebView mWebView;
+
+    private ScrollIndicatorsView mScrollIndicators;
 
     private View mNewMessageBar;
 
@@ -259,6 +262,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         });
 
         final WebSettings settings = mWebView.getSettings();
+
+        mScrollIndicators = (ScrollIndicatorsView) rootView.findViewById(R.id.scroll_indicators);
+        mScrollIndicators.setSourceView(mWebView);
 
         settings.setJavaScriptEnabled(true);
         settings.setUseWideViewPort(true);

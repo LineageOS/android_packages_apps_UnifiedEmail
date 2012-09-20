@@ -79,6 +79,37 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
         mSizeChangeListener = l;
     }
 
+
+    @Override
+    public int computeVerticalScrollRange() {
+        return super.computeVerticalScrollRange();
+    }
+
+    @Override
+    public int computeVerticalScrollOffset() {
+        return super.computeVerticalScrollOffset();
+    }
+
+    @Override
+    public int computeVerticalScrollExtent() {
+        return super.computeVerticalScrollExtent();
+    }
+
+    @Override
+    public int computeHorizontalScrollRange() {
+        return super.computeHorizontalScrollRange();
+    }
+
+    @Override
+    public int computeHorizontalScrollOffset() {
+        return super.computeHorizontalScrollOffset();
+    }
+
+    @Override
+    public int computeHorizontalScrollExtent() {
+        return super.computeHorizontalScrollExtent();
+    }
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
