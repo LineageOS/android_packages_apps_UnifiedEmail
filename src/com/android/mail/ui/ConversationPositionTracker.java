@@ -170,12 +170,15 @@ public class ConversationPositionTracker {
     private int calculatePosition() {
         final int invalidPosition = -1;
         final ConversationCursor cursor = mCallbacks.getConversationListCursor();
-        // Run this method once for a mConversation, mCursor pair.
-        if (cursor == null || !mCursorDirty || mConversation == null) {
+        // If we have a valid position and nothing has changed, return that right away
+        if (!mCursorDirty) {
+            return mConversation.position;
+        }
+        // Ensure valid input data
+        if (cursor == null || mConversation == null) {
             return invalidPosition;
         }
         mCursorDirty = false;
-
         final int listSize = (cursor == null) ? 0 : cursor.getCount();
         if (!isDataLoaded(cursor) || listSize == 0) {
             return invalidPosition;
