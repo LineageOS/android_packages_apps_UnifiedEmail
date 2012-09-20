@@ -22,18 +22,11 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
-import java.util.ArrayList;
-
 import android.app.ActionBar;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.ListActivity;
-import android.app.LoaderManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -50,8 +43,7 @@ import android.widget.TextView;
  * An activity that shows the list of all the available accounts and return the
  * one selected in onResult().
  */
-public class MailboxSelectionActivity extends ListActivity implements OnClickListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+public class MailboxSelectionActivity extends ListActivity implements OnClickListener {
 
     // Used to save our instance state
     private static final String CREATE_SHORTCUT_KEY = "createShortcut";
@@ -62,9 +54,6 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
     private static final String ACCOUNT = "name";
     private static final String[] COLUMN_NAMES = { ACCOUNT };
     protected static final String LOG_TAG = LogTag.getLogTag();
-    private static final int RESULT_CREATE_ACCOUNT = 2;
-    private static final int LOADER_ACCOUNT_CURSOR = 0;
-    private static final String TAG_WAIT = "wait-fragment";
     private final int[] VIEW_IDS = { R.id.mailbox_name };
     private boolean mCreateShortcut = false;
     private boolean mConfigureWidget = false;
@@ -209,12 +198,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
             if (accounts == null || accounts.getCount() == 0) {
                 // No account found, show Add Account screen, for both the widget or
                 // shortcut creation process
-                // No account found, show Add Account screen, for both the widget or
-                // shortcut creation process
-                final Intent noAccountIntent = MailAppProvider.getNoAccountIntent(this);
-                if (noAccountIntent != null) {
-                    startActivityForResult(noAccountIntent, RESULT_CREATE_ACCOUNT);
-                }
+                // TODO: (mindyp) allow for adding of account.
                 // No reason to display the account list
                 displayAccountList = false;
 
@@ -222,7 +206,6 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                 // This allows us to process the results that we get in the AddAccountCallback
                 mWaitingForAddAccountResult = true;
             } else if (mConfigureWidget && accounts.getCount() == 1) {
-                findViewById(R.id.wait).setVisibility(View.GONE);
                 // When configuring a widget, if there is only one account, automatically
                 // choose that account.
                 accounts.moveToFirst();
@@ -292,99 +275,6 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                 setResult(RESULT_CANCELED);
                 finish();
                 break;
-        }
-    }
-
-    @Override
-    protected final void onActivityResult(int request, int result, Intent data) {
-        if (request == RESULT_CREATE_ACCOUNT) {
-            // We were waiting for the user to create an account
-            if (result != RESULT_OK) {
-                finish();
-            } else {
-                // Watch for accounts to show up!
-                // restart the loader to get the updated list of accounts
-                getLoaderManager().initLoader(LOADER_ACCOUNT_CURSOR, null, this);
-                showWaitFragment(null);
-            }
-        }
-    }
-
-    private void showWaitFragment(Account account) {
-        WaitFragment fragment = getWaitFragment();
-        if (fragment != null) {
-            fragment.updateAccount(account);
-        } else {
-            findViewById(R.id.wait).setVisibility(View.VISIBLE);
-            replaceFragment(WaitFragment.newInstance(account, true),
-                    FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT);
-        }
-        findViewById(R.id.content).setVisibility(View.GONE);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case LOADER_ACCOUNT_CURSOR:
-                return new CursorLoader(this, MailAppProvider.getAccountsUri(),
-                        UIProvider.ACCOUNTS_PROJECTION, null, null, null);
-        }
-        return null;
-    }
-
-    private WaitFragment getWaitFragment() {
-        return (WaitFragment) getFragmentManager().findFragmentByTag(TAG_WAIT);
-    }
-
-    private int replaceFragment(Fragment fragment, int transition, String tag) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.setTransition(transition);
-        fragmentTransaction.replace(R.id.wait, fragment, tag);
-        final int transactionId = fragmentTransaction.commitAllowingStateLoss();
-        return transactionId;
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> arg0) {
-        // Do nothing.
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursor, Cursor data) {
-        if (data != null && data.moveToFirst()) {
-            // there are accounts now!
-            Account account;
-            ArrayList<Account> accounts = new ArrayList<Account>();
-            ArrayList<Account> initializedAccounts = new ArrayList<Account>();
-            do {
-                account = new Account(data);
-                if (account.isAccountIntialized()) {
-                    initializedAccounts.add(account);
-                }
-                accounts.add(account);
-            } while (data.moveToNext());
-            if (initializedAccounts.size() > 0) {
-                findViewById(R.id.wait).setVisibility(View.GONE);
-                getLoaderManager().destroyLoader(LOADER_ACCOUNT_CURSOR);
-                findViewById(R.id.content).setVisibility(View.VISIBLE);
-                updateAccountList(data);
-            } else {
-                // Show "waiting"
-                account = accounts.size() > 0 ? accounts.get(0) : null;
-                showWaitFragment(account);
-            }
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        mWaitingForAddAccountResult = false;
-        // If we are showing the wait fragment, just exit.
-        if (getWaitFragment() != null) {
-            finish();
-        } else {
-            super.onBackPressed();
         }
     }
 }
