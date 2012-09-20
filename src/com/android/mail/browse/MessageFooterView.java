@@ -158,8 +158,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
         // filter the attachments into tiled and non-tiled
         final int maxSize = attachments.size();
-        List<Attachment> tiledAttachments = new ArrayList<Attachment>(maxSize);
-        List<Attachment> barAttachments = new ArrayList<Attachment>(maxSize);
+        final List<Attachment> tiledAttachments = new ArrayList<Attachment>(maxSize);
+        final List<Attachment> barAttachments = new ArrayList<Attachment>(maxSize);
 
         for (Attachment attachment : attachments) {
             if (AttachmentTile.isTiledAttachment(attachment)) {
