@@ -26,7 +26,7 @@
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"添加附件"</string>
-    <string name="add_photo_attachment" msgid="3738882100645552858">"附加照片"</string>
+    <string name="add_photo_attachment" msgid="3738882100645552858">"附加图片"</string>
     <string name="add_video_attachment" msgid="8916625983712820173">"附加视频"</string>
     <string name="save_draft" msgid="5555744208032445632">"保存草稿"</string>
     <string name="discard" msgid="1714960202994370243">"舍弃"</string>
@@ -371,6 +371,5 @@
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"所有文件夹"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"近期文件夹"</string>
-    <!-- no translation found for message_details_title (2183394728494962332) -->
-    <skip />
+    <string name="message_details_title" msgid="2183394728494962332">"邮件详情"</string>
 </resources>
