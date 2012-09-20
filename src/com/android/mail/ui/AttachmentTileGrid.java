@@ -16,7 +16,6 @@
 
 package com.android.mail.ui;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -47,6 +46,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
     private LayoutInflater mInflater;
     private Uri mAttachmentsListUri;
     private final int mTileMinSize;
+    private final int mTileMaxSize;
     private int mColumnCount;
     private List<Attachment> mAttachments;
     private HashMap<String, AttachmentPreview> mAttachmentPreviews;
@@ -57,6 +57,8 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
         mInflater = LayoutInflater.from(context);
         mTileMinSize = context.getResources()
                 .getDimensionPixelSize(R.dimen.attachment_tile_min_size);
+        mTileMaxSize = context.getResources()
+                .getDimensionPixelSize(R.dimen.attachment_tile_max_size);
         mAttachmentPreviews = Maps.newHashMap();
     }
 
@@ -135,7 +137,10 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
         // 3. Set the dimensions of itself.
         //    Let width = given width.
         //    Let height = image size + bottom padding.
-        final int imageSize = (width) / mColumnCount;
+
+        // b/7204811: Hack for measure. set imageSize to max size. We'd rather have too much
+        // whitespace, than overlapping overlays
+        final int imageSize = mTileMaxSize; //(width) / mColumnCount;
         final int remainder = width - (imageSize * mColumnCount);
 
         for (int i = 0; i < childCount; i++) {
