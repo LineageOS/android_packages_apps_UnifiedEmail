@@ -2212,6 +2212,10 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public void onAnimationEnd(AnimatedAdapter animatedAdapter) {
+        if (mConversationListCursor == null) {
+            LogUtils.e(LOG_TAG, "null ConversationCursor in onAnimationEnd");
+            return;
+        }
         if (mConversationListCursor.isRefreshReady()) {
             LogUtils.d(LOG_TAG, "Stopped animating: try sync");
             onRefreshReady();
