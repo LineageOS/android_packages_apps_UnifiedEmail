@@ -27,7 +27,8 @@
         <com.android.mail.browse.ConversationWebView
             android:id="@+id/webview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scrollbars="none" />
 
         <!-- scrolling overlay views go here -->
 
@@ -52,9 +53,17 @@
                 android:paddingLeft="@dimen/conversation_view_margin_side"
                 android:paddingRight="@dimen/conversation_view_margin_side" />
 
-            <!-- TODO: scroll indicators go on top of all other layers (or the parent draws it) -->
         </FrameLayout>
 
     </com.android.mail.browse.ConversationContainer>
+
+    <com.android.mail.browse.ScrollIndicatorsView
+        android:id="@+id/scroll_indicators"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="vertical|horizontal" />
+
     <include layout="@layout/conversation_load_spinner"/>
+
 </FrameLayout>
