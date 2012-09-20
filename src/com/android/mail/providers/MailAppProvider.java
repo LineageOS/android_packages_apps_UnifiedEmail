@@ -84,6 +84,7 @@ public abstract class MailAppProvider extends ContentProvider
     private ContentResolver mResolver;
     private static String sAuthority;
     private static MailAppProvider sInstance;
+    private final static Set<Uri> PENDING_ACCOUNT_URIS = Sets.newHashSet();
 
     private volatile boolean mAccountsFullyLoaded = false;
 
@@ -133,7 +134,6 @@ public abstract class MailAppProvider extends ContentProvider
 
     /** Default constructor */
     protected MailAppProvider() {
-        sInstance = this;
     }
 
     @Override
@@ -147,12 +147,26 @@ public abstract class MailAppProvider extends ContentProvider
         // Load the previously saved account list
         loadCachedAccountList();
 
+        synchronized (PENDING_ACCOUNT_URIS) {
+            sInstance = this;
+
+            // Handle the case where addAccountsForUriAsync was called before
+            // this Provider instance was created
+            final Set<Uri> urisToQery = ImmutableSet.copyOf(PENDING_ACCOUNT_URIS);
+            PENDING_ACCOUNT_URIS.clear();
+            for (Uri accountQueryUri : urisToQery) {
+                addAccountsForUriAsync(accountQueryUri);
+            }
+        }
+
         return true;
     }
 
     @Override
     public void shutdown() {
-        sInstance = null;
+        synchronized (PENDING_ACCOUNT_URIS) {
+            sInstance = null;
+        }
 
         for (CursorLoader loader : mCursorLoaderMap.values()) {
             loader.stopLoading();
@@ -337,7 +351,14 @@ public abstract class MailAppProvider extends ContentProvider
      * @param accountsQueryUri
      */
     public static void addAccountsForUriAsync(Uri accountsQueryUri) {
-        getInstance().startAccountsLoader(accountsQueryUri);
+        synchronized (PENDING_ACCOUNT_URIS) {
+            final MailAppProvider instance = getInstance();
+            if (instance != null) {
+                instance.startAccountsLoader(accountsQueryUri);
+            } else {
+                PENDING_ACCOUNT_URIS.add(accountsQueryUri);
+            }
+        }
     }
 
     /**
