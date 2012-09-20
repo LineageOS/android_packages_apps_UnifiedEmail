@@ -18,7 +18,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
-    <include layout="@layout/wait_fragment"/>
+    <RelativeLayout
+        android:id="@+id/wait"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"/>
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
