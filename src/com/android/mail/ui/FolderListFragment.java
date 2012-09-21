@@ -439,7 +439,7 @@ public final class FolderListFragment extends ListFragment implements
                     folderItemView =
                             (FolderItemView) mInflater.inflate(R.layout.folder_item, null, false);
                 }
-                folderItemView.bind(mFolder, mActivity, false);
+                folderItemView.bind(mFolder, mActivity);
                 if (mListView != null) {
                     final boolean isSelected = (mFolderType == mSelectedFolderType)
                             && mFolder.uri.equals(mSelectedFolderUri);
@@ -634,7 +634,7 @@ public final class FolderListFragment extends ListFragment implements
                 folderItemView = (FolderItemView) LayoutInflater.from(
                         mActivity.getActivityContext()).inflate(resId, null);
             }
-            folderItemView.bind(folder, mDropHandler, isParent);
+            folderItemView.bind(folder, mDropHandler);
             if (folder.uri.equals(mSelectedFolderUri)) {
                 getListView().setItemChecked(position, true);
             }

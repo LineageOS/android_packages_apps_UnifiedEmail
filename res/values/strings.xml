@@ -765,9 +765,6 @@
     <!-- String used in the FolderListFragment to mark the start of recent folders -->
     <string name="recent_folders_heading">Recent folders</string>
 
-    <!-- String suffix to indicate parent folder in Hierarchical folders -->
-    <string translatable="false" name="folder_name_elipses">...</string>
-
     <!-- Dialog title when showing message header details in a popup window. [CHAR LIMIT=100]-->
     <string name="message_details_title">Message details</string>
 </resources>
