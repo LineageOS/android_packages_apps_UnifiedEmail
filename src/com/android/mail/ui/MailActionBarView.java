@@ -115,6 +115,8 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             mSpinner.setAccount(mAccount);
         }
     };
+    /** True if the application has more than one account. */
+    private boolean mHasManyAccounts;
 
     public MailActionBarView(Context context) {
         this(context, null);
@@ -254,13 +256,26 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     public void setAccounts(Account[] accounts) {
         final Account currentAccount = mController.getCurrentAccount();
         mSpinnerAdapter.setAccountArray(accounts);
-        // On phone we always show recent labels: we pre-populate them if necessary. So on phone we
-        // always want to enable the spinner. This is the default behavior since the drawable is
-        // set in the XML layout, and by default it is enabled.
-        if (mIsOnTablet) {
-            // Singleton spinner: we disable taps.
-            mSpinner.changeEnabledState(accounts.length != 1);
+        mHasManyAccounts = accounts.length > 1;
+        enableDisableSpinnner();
+    }
+
+    /**
+     * Changes the spinner state according to the following logic. On phone we always show recent
+     * labels: pre-populating if necessary. So on phone we always want to enable the spinner.
+     * On tablet, we enable the spinner when the Folder list is NOT visible: In conversation view,
+     * and search conversation view.
+     */
+    private final void enableDisableSpinnner() {
+        // Spinner is always shown on phone, and it is enabled by default, so don't mess with it.
+        // By default the drawable is set in the XML layout, and the view is enabled.
+        if (!mIsOnTablet) {
+            return;
         }
+        // More than one account, or in conversation view.
+        final boolean enabled = mHasManyAccounts || (mMode == ViewMode.CONVERSATION
+                || mMode == ViewMode.SEARCH_RESULTS_CONVERSATION);
+        mSpinner.changeEnabledState(enabled);
     }
 
     /**
@@ -288,6 +303,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         mMode = newMode;
         // Always update the options menu and redraw. This will read the new mode and redraw
         // the options menu.
+        enableDisableSpinnner();
         mActivity.invalidateOptionsMenu();
         // Check if we are either on a phone, or in Conversation mode on tablet. For these, the
         // recent folders is enabled.
