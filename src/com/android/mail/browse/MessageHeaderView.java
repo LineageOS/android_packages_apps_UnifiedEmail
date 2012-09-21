@@ -1099,18 +1099,22 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      */
     private void showExpandedDetails() {
         // lazily create expanded details view
-        ensureExpandedDetailsView();
-        addView(mExpandedDetailsView, indexOfChild(mUpperHeaderView) + 1);
+        final boolean expandedViewCreated = ensureExpandedDetailsView();
+        if (expandedViewCreated) {
+            addView(mExpandedDetailsView, indexOfChild(mUpperHeaderView) + 1);
+        }
         mExpandedDetailsView.setVisibility(VISIBLE);
     }
 
-    private void ensureExpandedDetailsView() {
+    private boolean ensureExpandedDetailsView() {
+        boolean viewCreated = false;
         if (mExpandedDetailsView == null) {
             View v = mInflater.inflate(R.layout.conversation_message_details_header_expanded, null,
                     false);
             v.setOnClickListener(this);
 
             mExpandedDetailsView = (ViewGroup) v;
+            viewCreated = true;
         }
         if (!mExpandedDetailsValid) {
             if (mMessageHeaderItem.timestampLong == null) {
@@ -1129,6 +1133,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
             mExpandedDetailsValid = true;
         }
+        return viewCreated;
     }
 
     private void showDetailsPopup() {
