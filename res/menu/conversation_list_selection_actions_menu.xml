@@ -20,7 +20,11 @@
      in the conversation list -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Availability based on account -->
+    <!-- Depends on AccountCapabilities.ARCHIVE and
+         FolderCapabilities.ARCHIVE. Only one of archive or
+         remove_folder are shown, and they have the same drawable, so
+         show the first one.
+    -->
     <item
         android:id="@+id/archive"
         android:title="@string/archive"
@@ -32,7 +36,8 @@
         android:title="@string/remove_folder"
         android:showAsAction="ifRoom"
         android:icon="@drawable/archive"
-        android:alphabeticShortcut="@string/trigger_y_char" />
+        android:alphabeticShortcut="@string/trigger_y_char"
+        android:visible="false" />
     <!-- Depends on FolderCapabilities.DELETE -->
     <item
         android:id="@+id/delete"
