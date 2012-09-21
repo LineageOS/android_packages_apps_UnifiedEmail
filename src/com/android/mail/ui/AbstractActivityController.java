@@ -1562,7 +1562,9 @@ public abstract class AbstractActivityController implements ActivityController {
         mCurrentConversation = conversation;
 
         if (mCurrentConversation != null) {
+            mActionBarView.setCurrentConversation(mCurrentConversation);
             getSubjectDisplayChanger().setSubject(mCurrentConversation.subject);
+            mActivity.invalidateOptionsMenu();
         }
     }
 

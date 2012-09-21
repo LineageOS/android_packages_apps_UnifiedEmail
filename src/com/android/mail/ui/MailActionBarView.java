@@ -40,9 +40,11 @@ import com.android.mail.AccountSpinnerAdapter;
 import com.android.mail.R;
 import com.android.mail.browse.SnippetTextView;
 import com.android.mail.providers.Account;
-import com.android.mail.providers.Folder;
 import com.android.mail.providers.AccountObserver;
+import com.android.mail.providers.Conversation;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.SearchRecentSuggestionsProvider;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogTag;
@@ -87,6 +89,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
     private MenuItem mFolderSettingsItem;
     private View mRefreshActionView;
     private boolean mRefreshInProgress;
+    private Conversation mCurrentConversation;
     /**
      * True if we are running on tablet.
      */
@@ -385,6 +388,14 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
 
         switch (mMode) {
+            case ViewMode.CONVERSATION:
+            case ViewMode.SEARCH_RESULTS_CONVERSATION:
+                // We update the ActionBar options when we are entering conversation view because
+                // waiting for the AbstractConversationViewFragment to do it causes duplicate icons
+                // to show up during the time between the conversation is selected and the fragment
+                // is added.
+                setConversationModeOptions(menu);
+                break;
             case ViewMode.CONVERSATION_LIST:
                 // Show compose, search, folders, and sync based on the account
                 // The only option that needs to be disabled is search
@@ -595,5 +606,58 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         }
 
         return mSubjectView.getTextRemainder(subject);
+    }
+
+    public void setCurrentConversation(Conversation conversation) {
+        mCurrentConversation = conversation;
+    }
+
+    //We need to do this here instead of in the fragment
+    public void setConversationModeOptions(Menu menu) {
+        if (mCurrentConversation == null) {
+            return;
+        }
+        final boolean showMarkImportant = !mCurrentConversation.isImportant();
+        Utils.setMenuItemVisibility(menu, R.id.mark_important, showMarkImportant
+                && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+        Utils.setMenuItemVisibility(menu, R.id.mark_not_important, !showMarkImportant
+                && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
+        final boolean showDelete = mFolder != null &&
+                mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE);
+        Utils.setMenuItemVisibility(menu, R.id.delete, showDelete);
+        // We only want to show the discard drafts menu item if we are not showing the delete menu
+        // item, and the current folder is a draft folder and the account supports discarding
+        // drafts for a conversation
+        final boolean showDiscardDrafts = !showDelete && mFolder != null && mFolder.isDraft() &&
+                mAccount.supportsCapability(AccountCapabilities.DISCARD_CONVERSATION_DRAFTS);
+        Utils.setMenuItemVisibility(menu, R.id.discard_drafts, showDiscardDrafts);
+        final boolean archiveVisible = mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
+                && mFolder != null && mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
+                && !mFolder.isTrash();
+        Utils.setMenuItemVisibility(menu, R.id.archive, archiveVisible);
+        Utils.setMenuItemVisibility(menu, R.id.remove_folder, !archiveVisible && mFolder != null
+                && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
+                && !mFolder.isProviderFolder());
+        final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
+        if (removeFolder != null) {
+            removeFolder.setTitle(mActivity.getApplicationContext().getString(
+                    R.string.remove_folder, mFolder.name));
+        }
+        Utils.setMenuItemVisibility(menu, R.id.report_spam,
+                mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
+                        && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM)
+                        && !mCurrentConversation.spam);
+        Utils.setMenuItemVisibility(menu, R.id.mark_not_spam,
+                mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
+                        && mFolder.supportsCapability(FolderCapabilities.MARK_NOT_SPAM)
+                        && mCurrentConversation.spam);
+        Utils.setMenuItemVisibility(menu, R.id.report_phishing,
+                mAccount.supportsCapability(AccountCapabilities.REPORT_PHISHING) && mFolder != null
+                        && mFolder.supportsCapability(FolderCapabilities.REPORT_PHISHING)
+                        && !mCurrentConversation.phishing);
+        Utils.setMenuItemVisibility(menu, R.id.mute,
+                        mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
+                        && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)
+                        && !mCurrentConversation.muted);
     }
 }

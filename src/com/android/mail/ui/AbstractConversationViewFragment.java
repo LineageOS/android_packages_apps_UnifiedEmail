@@ -359,52 +359,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        final boolean showMarkImportant = !mConversation.isImportant();
-        Utils.setMenuItemVisibility(menu, R.id.mark_important, showMarkImportant
-                && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        Utils.setMenuItemVisibility(menu, R.id.mark_not_important, !showMarkImportant
-                && mAccount.supportsCapability(UIProvider.AccountCapabilities.MARK_IMPORTANT));
-        final boolean showDelete = mFolder != null &&
-                mFolder.supportsCapability(UIProvider.FolderCapabilities.DELETE);
-        Utils.setMenuItemVisibility(menu, R.id.delete, showDelete);
-        // We only want to show the discard drafts menu item if we are not showing the delete menu
-        // item, and the current folder is a draft folder and the account supports discarding
-        // drafts for a conversation
-        final boolean showDiscardDrafts = !showDelete && mFolder != null && mFolder.isDraft() &&
-                mAccount.supportsCapability(AccountCapabilities.DISCARD_CONVERSATION_DRAFTS);
-        Utils.setMenuItemVisibility(menu, R.id.discard_drafts, showDiscardDrafts);
-        final boolean archiveVisible = mAccount.supportsCapability(AccountCapabilities.ARCHIVE)
-                && mFolder != null && mFolder.supportsCapability(FolderCapabilities.ARCHIVE)
-                && !mFolder.isTrash();
-        Utils.setMenuItemVisibility(menu, R.id.archive, archiveVisible);
-        Utils.setMenuItemVisibility(menu, R.id.remove_folder, !archiveVisible && mFolder != null
-                && mFolder.supportsCapability(FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES)
-                && !mFolder.isProviderFolder());
-        final MenuItem removeFolder = menu.findItem(R.id.remove_folder);
-        if (removeFolder != null) {
-            removeFolder.setTitle(getString(R.string.remove_folder, mFolder.name));
-        }
-        Utils.setMenuItemVisibility(menu, R.id.report_spam,
-                mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
-                        && mFolder.supportsCapability(FolderCapabilities.REPORT_SPAM)
-                        && !mConversation.spam);
-        Utils.setMenuItemVisibility(menu, R.id.mark_not_spam,
-                mAccount.supportsCapability(AccountCapabilities.REPORT_SPAM) && mFolder != null
-                        && mFolder.supportsCapability(FolderCapabilities.MARK_NOT_SPAM)
-                        && mConversation.spam);
-        Utils.setMenuItemVisibility(menu, R.id.report_phishing,
-                mAccount.supportsCapability(AccountCapabilities.REPORT_PHISHING) && mFolder != null
-                        && mFolder.supportsCapability(FolderCapabilities.REPORT_PHISHING)
-                        && !mConversation.phishing);
-        Utils.setMenuItemVisibility(menu, R.id.mute,
-                        mAccount.supportsCapability(AccountCapabilities.MUTE) && mFolder != null
-                        && mFolder.supportsCapability(FolderCapabilities.DESTRUCTIVE_MUTE)
-                        && !mConversation.muted);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = false;
         switch (item.getItemId()) {
