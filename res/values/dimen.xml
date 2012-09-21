@@ -81,10 +81,10 @@
     <dimen name="widget_senders_font_size">18sp</dimen>
     <dimen name="widget_subject_font_size">14sp</dimen>
     <dimen name="widget_date_font_size">12sp</dimen>
-    <dimen name="widget_margin_top">11dip</dimen>
-    <dimen name="widget_margin_left">17dip</dimen>
-    <dimen name="widget_margin_right">17dip</dimen>
-    <dimen name="widget_margin_bottom">22dip</dimen>
+    <dimen name="widget_margin_top">0dip</dimen>
+    <dimen name="widget_margin_left">0dip</dimen>
+    <dimen name="widget_margin_right">0dip</dimen>
+    <dimen name="widget_margin_bottom">0dip</dimen>
     <dimen name="conversation_item_height">70sp</dimen>
     <dimen name="conversation_item_height_wide">64sp</dimen>
     <dimen name="search_view_width">400dip</dimen>
