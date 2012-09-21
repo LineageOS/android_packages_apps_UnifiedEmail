@@ -25,12 +25,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
 import android.widget.ScrollView;
 
 import com.android.mail.R;
@@ -62,6 +60,10 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     private WebViewClient mWebViewClient = new AbstractConversationWebViewClient() {
         @Override
         public void onPageFinished(WebView view, String url) {
+            if (mUserVisible) {
+                onConversationSeen();
+            }
+
             dismissLoadingStatus();
         }
     };
@@ -125,6 +127,8 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
+
+        mViewState = getNewViewState();
         return rootView;
     }
 
@@ -175,6 +179,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         }
         mConversationHeaderView.setSubject(mConversation.subject, false /* notify */);
         this.mScrollView.scrollTo(0, 0);
+        onConversationSeen();
     }
 
     @Override
