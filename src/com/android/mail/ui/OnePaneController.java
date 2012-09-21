@@ -166,8 +166,13 @@ public final class OnePaneController extends AbstractActivityController {
         // When entering conversation list mode, hide and clean up any currently visible
         // conversation.
         // TODO: improve this transition
-        if (newMode == ViewMode.CONVERSATION_LIST || newMode == ViewMode.SEARCH_RESULTS_LIST) {
+        if (ViewMode.isListMode(newMode)) {
             mPagerController.hide(true /* changeVisibility */);
+        }
+        // When we step away from the conversation mode, we don't have a current conversation
+        // anymore. Let's blank it out so clients calling getCurrentConversation are not misled.
+        if (!ViewMode.isConversationMode(newMode)) {
+            setCurrentConversation(null);
         }
     }
 

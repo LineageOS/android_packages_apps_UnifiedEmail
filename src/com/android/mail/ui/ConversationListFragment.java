@@ -584,7 +584,6 @@ public final class ConversationListFragment extends ListFragment implements
         if (mFolder == null) {
             return;
         }
-
         mListAdapter.setFolder(mFolder);
         mFooterView.setFolder(mFolder);
         if (mFolder.lastSyncResult != UIProvider.LastSyncResult.SUCCESS) {
@@ -669,7 +668,6 @@ public final class ConversationListFragment extends ListFragment implements
             return;
         }
         if (mListView.getCheckedItemPosition() == -1) {
-            LogUtils.d("VIKILOGTAG", "CLF.onCursorUpdated: Selecting %d", conv.position);
             setSelected(conv.position);
         }
     }
