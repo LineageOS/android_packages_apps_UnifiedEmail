@@ -805,7 +805,7 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public final boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = mActivity.getMenuInflater();
+        final MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(mActionBarView.getOptionsMenuId(), menu);
         mActionBarView.onCreateOptionsMenu(menu);
         return true;

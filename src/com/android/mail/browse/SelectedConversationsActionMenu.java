@@ -339,8 +339,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        // Determine read/ unread
-        // Star/ unstar
+        // Update the actionbar to select operations available on the current conversation.
         final Collection<Conversation> conversations = mSelectionSet.values();
         boolean showStar = false;
         boolean showMarkUnread = false;
