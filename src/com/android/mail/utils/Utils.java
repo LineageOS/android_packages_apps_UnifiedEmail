@@ -626,9 +626,8 @@ public class Utils {
     /**
      * Create an intent to open a folder.
      *
-     * @param folderUri Folder uri.
-     * @param account
      * @param folder Folder to open.
+     * @param account
      * @return
      */
     public static Intent createViewFolderIntent(Folder folder, Account account) {
@@ -643,6 +642,25 @@ public class Utils {
         intent.setDataAndType(folder.uri, account.mimeType);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
         intent.putExtra(Utils.EXTRA_FOLDER, Folder.toString(folder));
+        return intent;
+    }
+
+    /**
+     * Creates an intent to open the default inbox for the given account.
+     *
+     * @param account
+     * @return
+     */
+    public static Intent createViewInboxIntent(Account account) {
+        if (account == null) {
+            LogUtils.wtf(LOG_TAG, "Utils.createViewInboxIntent(%s): Bad input", account);
+            return null;
+        }
+        final Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        intent.setDataAndType(account.settings.defaultInbox, account.mimeType);
+        intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
         return intent;
     }
 

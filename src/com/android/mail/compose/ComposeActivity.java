@@ -1744,9 +1744,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         // Fire the main activity to ensure it launches the "top" screen of mail.
         // Since the main Activity is singleTask, it should revive that task if it was already
         // started.
-        final Folder defaultInbox = new Folder();
-        defaultInbox.uri = mAccount.settings.defaultInbox;
-        final Intent mailIntent = Utils.createViewFolderIntent(defaultInbox, mAccount);
+        final Intent mailIntent = Utils.createViewInboxIntent(mAccount);
         mailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
                 Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         startActivity(mailIntent);
