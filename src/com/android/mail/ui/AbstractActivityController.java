@@ -1393,7 +1393,6 @@ public abstract class AbstractActivityController implements ActivityController {
             } else {
                 mViewMode.enterConversationListMode();
             }
-
             final Folder folder = intent.hasExtra(Utils.EXTRA_FOLDER) ?
                     Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER)) : null;
             if (folder != null) {
@@ -1417,7 +1416,7 @@ public abstract class AbstractActivityController implements ActivityController {
             }
 
             if (!handled) {
-                // Nothing was saved; just load the account inbox.
+                // We have an account, but nothing else: load the default inbox.
                 loadAccountInbox();
             }
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
