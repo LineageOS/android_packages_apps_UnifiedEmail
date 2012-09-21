@@ -170,7 +170,7 @@ public class ViewMode {
         return isListMode(mMode);
     }
 
-    public static boolean isListMode(int mode) {
+    public static final boolean isListMode(int mode) {
         return mode == CONVERSATION_LIST || mode == SEARCH_RESULTS_LIST;
     }
 
@@ -178,7 +178,7 @@ public class ViewMode {
         return isConversationMode(mMode);
     }
 
-    public static boolean isConversationMode(int mode) {
+    public static final boolean isConversationMode(int mode) {
         return mode == CONVERSATION || mode == SEARCH_RESULTS_CONVERSATION;
     }
 
