@@ -632,14 +632,17 @@ public class Utils {
      * @return
      */
     public static Intent createViewFolderIntent(Folder folder, Account account) {
+        if (folder == null || account == null) {
+            LogUtils.wtf(
+                    LOG_TAG, "Utils.createViewFolderIntent(%s,%s): Bad input", folder, account);
+            return null;
+        }
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         intent.setDataAndType(folder.uri, account.mimeType);
         intent.putExtra(Utils.EXTRA_ACCOUNT, account.serialize());
-        if (folder != null) {
-            intent.putExtra(Utils.EXTRA_FOLDER, Folder.toString(folder));
-        }
+        intent.putExtra(Utils.EXTRA_FOLDER, Folder.toString(folder));
         return intent;
     }
 
