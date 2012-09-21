@@ -351,9 +351,15 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Get the conversation list fragment for this activity. If the conversation list fragment
-     * is not attached, this method returns null
+     * Get the conversation list fragment for this activity. If the conversation list fragment is
+     * not attached, this method returns null.
      *
+     * Caution! This method returns the {@link ConversationListFragment} after the fragment has been
+     * added, <b>and</b> after the {@link FragmentManager} has run through its queue to add the
+     * fragment. There is a non-trivial amount of time after the fragment is instantiated and before
+     * this call returns a non-null value, depending on the {@link FragmentManager}. If you
+     * need the fragment immediately after adding it, consider making the fragment an observer of
+     * the controller and perform the task immediately on {@link Fragment#onActivityCreated(Bundle)}
      */
     protected ConversationListFragment getConversationListFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_CONVERSATION_LIST);
@@ -367,6 +373,12 @@ public abstract class AbstractActivityController implements ActivityController {
      * Returns the folder list fragment attached with this activity. If no such fragment is attached
      * this method returns null.
      *
+     * Caution! This method returns the {@link FolderListFragment} after the fragment has been
+     * added, <b>and</b> after the {@link FragmentManager} has run through its queue to add the
+     * fragment. There is a non-trivial amount of time after the fragment is instantiated and before
+     * this call returns a non-null value, depending on the {@link FragmentManager}. If you
+     * need the fragment immediately after adding it, consider making the fragment an observer of
+     * the controller and perform the task immediately on {@link Fragment#onActivityCreated(Bundle)}
      */
     protected FolderListFragment getFolderListFragment() {
         final Fragment fragment = mFragmentManager.findFragmentByTag(TAG_FOLDER_LIST);
@@ -908,9 +920,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
                 break;
             case R.id.change_folder:
-                if (mAccount
-                        .supportsCapability(UIProvider
-                                .AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
+                if (mAccount.supportsCapability(
+                        UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
                     new MultiFoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
                             Conversation.listOf(mCurrentConversation), false, mFolder).show();
                 } else {
@@ -1200,10 +1211,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (ConversationListContext.isSearchResult(mConvListContext)) {
             outState.putString(SAVED_QUERY, mConvListContext.searchQuery);
         }
-        final int mode = mViewMode.getMode();
-        if (mCurrentConversation != null
-                && (mode == ViewMode.CONVERSATION ||
-                mViewMode.getMode() == ViewMode.SEARCH_RESULTS_CONVERSATION)) {
+        if (mCurrentConversation != null && mViewMode.isConversationMode()) {
             outState.putParcelable(SAVED_CONVERSATION, mCurrentConversation);
         }
         if (!mSelectedSet.isEmpty()) {
@@ -1262,10 +1270,11 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     @Override
     public void onViewModeChanged(int newMode) {
-        // Perform any mode specific work here.
-        // reset the action bar icon based on the mode. Why don't the individual
-        // controllers do
-        // this themselves?
+        // When we step away from the conversation mode, we don't have a current conversation
+        // anymore. Let's blank it out so clients calling getCurrentConversation are not misled.
+        if (!ViewMode.isConversationMode(newMode)) {
+            setCurrentConversation(null);
+        }
     }
 
     public void disablePagerUpdates() {
@@ -1475,8 +1484,12 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     /**
-     * Children can override this method, but they must call super.showConversation().
-     *
+     * Show the conversation provided in the arguments. It is safe to pass a null conversation
+     * object, which is a signal to back out of conversation view mode.
+     * Child classes must call super.showConversation() <b>before</b> their own implementations.
+     * @param conversation
+     * @param inLoaderCallbacks true if the method is called as a result of
+     * {@link #onLoadFinished(Loader, Cursor)}
      */
     protected void showConversation(Conversation conversation, boolean inLoaderCallbacks) {
         // Set the current conversation just in case it wasn't already set.
