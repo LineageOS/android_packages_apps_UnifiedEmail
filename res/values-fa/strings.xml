@@ -87,7 +87,7 @@
     <string name="message_count" msgid="1032500151281269302">"<xliff:g id="COUNT">%1$s</xliff:g> از <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
     <string name="newer" msgid="1007166236908596854">"جدیدتر"</string>
     <string name="older" msgid="6651690916337202936">"قدیمی‌تر"</string>
-    <string name="mark_important" msgid="6904096897104265870">"علامتگذاری به‌عنوان مهم"</string>
+    <string name="mark_important" msgid="6904096897104265870">"علامت‌گذاری به‌عنوان مهم"</string>
     <string name="mark_not_important" msgid="4550967327747977068">"علامت‌گذاری به‌عنوان غیرمهم"</string>
     <string name="add_cc_label" msgid="504861315425773180">"افزودن گیرندهٔ کپی/گیرنده مخفی"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"افزودن گیرنده مخفی"</string>
