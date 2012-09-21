@@ -221,7 +221,7 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
             }
 
             if (mFoldersSortedSet.isEmpty()) {
-                final Folder addLabel = new Folder();
+                final Folder addLabel = Folder.newUnsafeInstance();
                 final Resources r = mContext.getResources();
                 addLabel.name = r.getString(R.string.add_label);
                 addLabel.bgColor = ""
