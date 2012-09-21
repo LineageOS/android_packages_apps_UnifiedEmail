@@ -131,6 +131,12 @@ public class SuppressNotificationReceiver extends BroadcastReceiver {
 
         final Account listContextAccount = listContext.account;
         final Folder listContextFolder = listContext.folder;
+        // Guard against degenerate state in the controller
+        if (listContextAccount == null || listContextFolder == null) {
+            LogUtils.e(LOG_TAG, "SuppressNotificationReceiver.onReceive: account=%s, folder=%s",
+                    listContextAccount, listContextFolder);
+            return;
+        }
 
         final Uri intentAccountUri =
                 (Uri)intent.getParcelableExtra(UIProvider.UpdateNotificationExtras.EXTRA_ACCOUNT);
