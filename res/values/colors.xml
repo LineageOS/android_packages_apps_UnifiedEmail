@@ -64,7 +64,7 @@
     <!--  Color of the semi-transparent shadow box on attachment tiles -->
     <color name="attachment_tile_shadow_box_color">#7F000000</color>
     <!--  Color of the subtitle message in the attachment tile -->
-    <color name="attachment_tile_subtitle_color">#CCCCCC</color>
+    <color name="attachment_tile_subtitle_color">#999999</color>
     <color name="attachment_image_background_color">#E5E5E5</color>
 
     <!-- Color of the parent folders and dividers for hierarchical folder descriptions in the move to folder -->
