@@ -613,45 +613,49 @@ public abstract class AbstractActivityController implements ActivityController {
      * @param folder The folder to assign
      */
     private void updateFolder(Folder folder) {
-        boolean wasNull = mFolder == null;
-        if (folder != null && !folder.equals(mFolder) && folder.isInitialized()) {
-            LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
-            final LoaderManager lm = mActivity.getLoaderManager();
-            // updateFolder is called from AAC.onLoadFinished() on folder changes.  We need to
-            // ensure that the folder is different from the previous folder before marking the
-            // folder changed.
-            setHasFolderChanged(folder);
-            mFolder = folder;
+        if (folder == null || !folder.isInitialized()) {
+            LogUtils.e(LOG_TAG, new Error(), "AAC.setFolder(%s): Bad input", folder);
+            return;
+        }
+        if (folder.equals(mFolder)) {
+            LogUtils.d(LOG_TAG, "AAC.setFolder(%s): Input matches mFolder", folder);
+            return;
+        }
+        final boolean wasNull = mFolder == null;
+        LogUtils.d(LOG_TAG, "AbstractActivityController.setFolder(%s)", folder.name);
+        final LoaderManager lm = mActivity.getLoaderManager();
+        // updateFolder is called from AAC.onLoadFinished() on folder changes.  We need to
+        // ensure that the folder is different from the previous folder before marking the
+        // folder changed.
+        setHasFolderChanged(folder);
+        mFolder = folder;
 
-            // We do not need to notify folder observers yet. Instead we start the loaders and
-            // when the load finishes, we will get an updated folder. Then, we notify the
-            // folderObservers in onLoadFinished.
-            mActionBarView.setFolder(mFolder);
+        // We do not need to notify folder observers yet. Instead we start the loaders and
+        // when the load finishes, we will get an updated folder. Then, we notify the
+        // folderObservers in onLoadFinished.
+        mActionBarView.setFolder(mFolder);
 
-            // Only when we switch from one folder to another do we want to restart the
-            // folder and conversation list loaders (to trigger onCreateLoader).
-            // The first time this runs when the activity is [re-]initialized, we want to re-use the
-            // previous loader's instance and data upon configuration change (e.g. rotation).
-            // If there was not already an instance of the loader, init it.
-            if (lm.getLoader(LOADER_FOLDER_CURSOR) == null) {
-                lm.initLoader(LOADER_FOLDER_CURSOR, null, this);
-            } else {
-                lm.restartLoader(LOADER_FOLDER_CURSOR, null, this);
-            }
-            // In this case, we are starting from no folder, which would occur
-            // the first time the app was launched or on orientation changes.
-            // We want to attach to an existing loader, if available.
-            if (wasNull || lm.getLoader(LOADER_CONVERSATION_LIST) == null) {
-                lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
-            } else {
-                // However, if there was an existing folder AND we have changed
-                // folders, we want to restart the loader to get the information
-                // for the newly selected folder
-                lm.destroyLoader(LOADER_CONVERSATION_LIST);
-                lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
-            }
-        } else if (!folder.isInitialized()) {
-            LogUtils.e(LOG_TAG, new Error(), "Uninitialized Folder %s in setFolder.", folder);
+        // Only when we switch from one folder to another do we want to restart the
+        // folder and conversation list loaders (to trigger onCreateLoader).
+        // The first time this runs when the activity is [re-]initialized, we want to re-use the
+        // previous loader's instance and data upon configuration change (e.g. rotation).
+        // If there was not already an instance of the loader, init it.
+        if (lm.getLoader(LOADER_FOLDER_CURSOR) == null) {
+            lm.initLoader(LOADER_FOLDER_CURSOR, null, this);
+        } else {
+            lm.restartLoader(LOADER_FOLDER_CURSOR, null, this);
+        }
+        // In this case, we are starting from no folder, which would occur
+        // the first time the app was launched or on orientation changes.
+        // We want to attach to an existing loader, if available.
+        if (wasNull || lm.getLoader(LOADER_CONVERSATION_LIST) == null) {
+            lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
+        } else {
+            // However, if there was an existing folder AND we have changed
+            // folders, we want to restart the loader to get the information
+            // for the newly selected folder
+            lm.destroyLoader(LOADER_CONVERSATION_LIST);
+            lm.initLoader(LOADER_CONVERSATION_LIST, null, mListCursorCallbacks);
         }
     }
 
@@ -1390,11 +1394,8 @@ public abstract class AbstractActivityController implements ActivityController {
                 mViewMode.enterConversationListMode();
             }
 
-            Folder folder = null;
-            if (intent.hasExtra(Utils.EXTRA_FOLDER)) {
-                // Open the folder.
-                folder = Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER));
-            }
+            final Folder folder = intent.hasExtra(Utils.EXTRA_FOLDER) ?
+                    Folder.fromString(intent.getStringExtra(Utils.EXTRA_FOLDER)) : null;
             if (folder != null) {
                 onFolderChanged(folder);
                 handled = true;
