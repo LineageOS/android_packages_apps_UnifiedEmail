@@ -1720,9 +1720,9 @@ public abstract class AbstractActivityController implements ActivityController {
         // A match for the current account's URI in the list of accounts.
         Account currentFromList = null;
 
-        // Save the uris for the accounts
+        // Save the uris for the accounts and find the current account in the updated cursor.
         mCurrentAccountUris.clear();
-        for (Account account : allAccounts) {
+        for (final Account account : allAccounts) {
             LogUtils.d(LOG_TAG, "updateAccounts(%s)", account);
             mCurrentAccountUris.add(account.uri);
             if (mAccount != null && account.uri.equals(mAccount.uri)) {
@@ -1803,9 +1803,11 @@ public abstract class AbstractActivityController implements ActivityController {
         }
         switch (loader.getId()) {
             case LOADER_ACCOUNT_CURSOR:
-                // If the account list is not null, and the account list cursor is empty,
-                // we need to start the specified activity.
-                if (data != null && data.getCount() == 0) {
+                if (data == null) {
+                    // Nothing useful to do if we have no valid data.
+                    break;
+                }
+                if (data.getCount() == 0) {
                     // If an empty cursor is returned, the MailAppProvider is indicating that
                     // no accounts have been specified.  We want to navigate to the "add account"
                     // activity that will handle the intent returned by the MailAppProvider
