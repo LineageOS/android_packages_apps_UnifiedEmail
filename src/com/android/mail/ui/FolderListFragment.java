@@ -184,7 +184,6 @@ public final class FolderListFragment extends ListFragment implements
         // Is the selected folder fresher than the one we have restored from a bundle?
         if (selectedFolder != null && !selectedFolder.uri.equals(mSelectedFolderUri)) {
             setSelectedFolder(selectedFolder);
-            setSelectedFolderType(selectedFolder);
         }
         setListAdapter(mCursorAdapter);
         // Set the region which gets highlighted since it might not have been set till now.
@@ -323,13 +322,15 @@ public final class FolderListFragment extends ListFragment implements
     }
 
     /**
-     * Interface for all cursor adpaters that allow setting a cursor and being destroyed.
+     * Interface for all cursor adapters that allow setting a cursor and being destroyed.
      */
     private interface FolderListFragmentCursorAdapter extends ListAdapter {
         /** Update the folder list cursor with the cursor given here. */
         void setCursor(Cursor cursor);
         /** Remove all observers and destroy the object. */
         void destroy();
+        /** Notifies the adapter that the data has changed. */
+        void notifyDataSetChanged();
     }
 
     /**
@@ -674,6 +675,10 @@ public final class FolderListFragment extends ListFragment implements
             return;
         }
         mSelectedFolderUri = folder.uri;
+        setSelectedFolderType(folder);
+        if (mCursorAdapter != null) {
+            mCursorAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -681,6 +686,10 @@ public final class FolderListFragment extends ListFragment implements
      * @param folder
      */
     private void setSelectedFolderType(Folder folder) {
+        // If it is set already, assume it is correct.
+        if (mSelectedFolderType != FolderListAdapter.Item.NOT_A_FOLDER) {
+            return;
+        }
         mSelectedFolderType = folder.isProviderFolder() ? FolderListAdapter.Item.FOLDER_SYSTEM
                 : FolderListAdapter.Item.FOLDER_USER;
     }
