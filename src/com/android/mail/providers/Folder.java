@@ -271,11 +271,20 @@ public class Folder implements Parcelable, Comparable<Folder> {
     }
 
     /**
-     * Constructor that leaves everything uninitialized. For use only by {@link #serialize()}
-     * which is responsible for filling in all the fields
+     * Constructor that leaves everything uninitialized.
      */
-    public Folder() {
+    private Folder() {
         name = FOLDER_UNINITIALIZED;
+    }
+
+    /**
+     * Creates a new instance of a folder object that is <b>not</b> initialized.  The caller is
+     * expected to fill in the details. This resulting instance is not guaranteed to work
+     * correctly, and might break functionality.  Use at your own risk!!
+     * @return a new instance of an unsafe folder.
+     */
+    public static Folder newUnsafeInstance() {
+        return new Folder();
     }
 
     @SuppressWarnings("hiding")
@@ -423,8 +432,8 @@ public class Folder implements Parcelable, Comparable<Folder> {
         if (TextUtils.isEmpty(inString)) {
             return null;
         }
-        Folder f = new Folder();
-        String[] split = TextUtils.split(inString, SPLITTER_REGEX);
+        final Folder f = new Folder();
+        final String[] split = TextUtils.split(inString, SPLITTER_REGEX);
         if (split.length < 20) {
             return null;
         }

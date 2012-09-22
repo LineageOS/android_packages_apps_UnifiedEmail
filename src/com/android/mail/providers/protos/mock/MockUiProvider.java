@@ -201,7 +201,7 @@ public final class MockUiProvider extends ContentProvider {
         Folder[] folders = new Folder[3];
         StringBuilder foldersString = new StringBuilder();
         for (int i = 0; i < folders.length; i++) {
-            folders[i] = new Folder();
+            folders[i] = Folder.newUnsafeInstance();
             folders[i].name = "folder" + i;
             switch (i) {
                 case 0:
