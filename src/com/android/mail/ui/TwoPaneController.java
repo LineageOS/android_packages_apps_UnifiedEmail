@@ -300,10 +300,8 @@ public final class TwoPaneController extends AbstractActivityController {
     @Override
     public void setCurrentConversation(Conversation conversation) {
         super.setCurrentConversation(conversation);
-
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null && conversation != null) {
-            LogUtils.d(LOG_TAG, "showConversation: Selecting position %d.", conversation.position);
             convList.setSelected(conversation.position);
         }
     }
