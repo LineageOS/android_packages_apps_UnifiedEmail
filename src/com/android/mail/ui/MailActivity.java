@@ -50,7 +50,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     // TODO(viki) This class lacks: What's New dialog
     // TODO(viki) This class lacks: Sync Window Upgrade dialog
 
-    private static final boolean STRICT_MODE = true;
     private NfcAdapter mNfcAdapter; // final after onCreate
     private NdefMessage mForegroundNdef;
 
@@ -112,20 +111,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     @Override
     public void onCreate(Bundle savedState) {
-        if (STRICT_MODE) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
-                    .detectNetwork()   // or .detectAll() for all detectable problems
-                    .penaltyLog()
-                    .build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .detectLeakedClosableObjects()
-                    .penaltyLog()
-//                    .penaltyDeath()
-                    .build());
-        }
         super.onCreate(savedState);
 
         mViewMode = new ViewMode(this);
