@@ -21,6 +21,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.SpannedString;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -213,6 +215,9 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             content = messageCursor.getString(UIProvider.MESSAGE_BODY_HTML_COLUMN);
             if (TextUtils.isEmpty(content)) {
                 content = messageCursor.getString(UIProvider.MESSAGE_BODY_TEXT_COLUMN);
+                if (content != null) {
+                    content = Html.toHtml(new SpannedString(content));
+                }
             }
             convHtml.append(content);
             mWebView.loadDataWithBaseURL(mBaseUri, convHtml.toString(), "text/html", "utf-8", null);
