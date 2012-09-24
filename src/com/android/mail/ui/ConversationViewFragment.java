@@ -21,7 +21,6 @@ package com.android.mail.ui;
 import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -63,8 +62,6 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
-import com.android.mail.providers.UIProvider.ViewProxyExtras;
-import com.android.mail.ui.AbstractConversationViewFragment.AbstractConversationWebViewClient;
 import com.android.mail.ui.ConversationViewState.ExpansionState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -72,7 +69,6 @@ import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -125,19 +121,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private int  mMaxAutoLoadMessages;
 
     private boolean mDeferredConversationLoad;
-
-    /**
-     * Handles a deferred 'mark read' operation, necessary when the conversation view has finished
-     * loading before the conversation cursor. Normally null unless this situation occurs.
-     * When finally able to 'mark read', this observer will also be unregistered and cleaned up.
-     */
-    private MarkReadObserver mMarkReadObserver;
-
-    /**
-     * Parcelable state of the conversation view. Can safely be used without null checking any time
-     * after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     */
-    private ConversationViewState mViewState;
 
     private boolean mEnableContentReadySignal;
 
@@ -216,11 +199,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     @Override
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-
         if (savedInstanceState != null) {
             mViewState = savedInstanceState.getParcelable(BUNDLE_VIEW_STATE);
         } else {
-            mViewState = new ConversationViewState();
+            mViewState = getNewViewState();
         }
 
         View rootView = inflater.inflate(R.layout.conversation_view, container, false);
@@ -312,11 +294,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         super.onDestroyView();
         mConversationContainer.setOverlayAdapter(null);
         mAdapter = null;
-        if (mMarkReadObserver != null) {
-            mActivity.getConversationUpdater().unregisterConversationListObserver(
-                    mMarkReadObserver);
-            mMarkReadObserver = null;
-        }
         mViewsCreated = false;
     }
 
@@ -622,51 +599,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         convItem.markMeasurementValid();
 
         return heightPx;
-    }
-
-    private void onConversationSeen() {
-        // Ignore unsafe calls made after a fragment is detached from an activity
-        final ControllableActivity activity = (ControllableActivity) getActivity();
-        if (activity == null) {
-            LogUtils.w(LOG_TAG, "ignoring onConversationSeen for conv=%s", mConversation.id);
-            return;
-        }
-
-        mViewState.setInfoForConversation(mConversation);
-
-        // mark viewed/read if not previously marked viewed by this conversation view,
-        // or if unread messages still exist in the message list cursor
-        // we don't want to keep marking viewed on rotation or restore
-        // but we do want future re-renders to mark read (e.g. "New message from X" case)
-        MessageCursor cursor = getMessageCursor();
-        if (!mConversation.isViewed() || (cursor != null && !cursor.isConversationRead())) {
-            final ConversationUpdater listController = activity.getConversationUpdater();
-            // The conversation cursor may not have finished loading by now (when launched via
-            // notification), so watch for when it finishes and mark it read then.
-            if (listController.getConversationListCursor() == null) {
-                LogUtils.i(LOG_TAG, "deferring conv mark read on open for id=%d",
-                        mConversation.id);
-                mMarkReadObserver = new MarkReadObserver(listController);
-                listController.registerConversationListObserver(mMarkReadObserver);
-            } else {
-                markReadOnSeen(listController);
-            }
-        }
-
-        activity.getListHandler().onConversationSeen(mConversation);
-    }
-
-    private void markReadOnSeen(ConversationUpdater listController) {
-        // Mark the conversation viewed and read.
-        listController.markConversationsRead(Arrays.asList(mConversation), true /* read */,
-                true /* viewed */);
-
-        // and update the Message objects in the cursor so the next time a cursor update happens
-        // with these messages marked read, we know to ignore it
-        MessageCursor cursor = getMessageCursor();
-        if (cursor != null) {
-            cursor.markMessagesRead();
-        }
     }
 
     @Override
@@ -1006,28 +938,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             }
         }
         return info;
-    }
-
-
-    private class MarkReadObserver extends DataSetObserver {
-        private final ConversationUpdater mListController;
-
-        private MarkReadObserver(ConversationUpdater listController) {
-            mListController = listController;
-        }
-
-        @Override
-        public void onChanged() {
-            if (mListController.getConversationListCursor() == null) {
-                // nothing yet, keep watching
-                return;
-            }
-            // done loading, safe to mark read now
-            mListController.unregisterConversationListObserver(this);
-            mMarkReadObserver = null;
-            LogUtils.i(LOG_TAG, "running deferred conv mark read on open, id=%d", mConversation.id);
-            markReadOnSeen(mListController);
-        }
     }
 
     private class SetCookieTask extends AsyncTask<Void, Void, Void> {
