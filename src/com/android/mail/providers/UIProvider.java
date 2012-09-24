@@ -25,6 +25,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
+import android.text.util.Rfc822Token;
+import android.text.util.Rfc822Tokenizer;
 
 import com.android.common.contacts.DataUsageStatUpdater;
 
@@ -1655,9 +1657,12 @@ public class UIProvider {
     public static void incrementRecipientsTimesContacted(Context context, String addressString) {
         DataUsageStatUpdater statsUpdater = new DataUsageStatUpdater(context);
         ArrayList<String> recipients = new ArrayList<String>();
-        String[] addresses = TextUtils.split(addressString, EMAIL_SEPARATOR_PATTERN);
-        for (String address : addresses) {
-            recipients.add(address);
+        if (TextUtils.isEmpty(addressString)) {
+            return;
+        }
+        Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addressString);
+        for (int i = 0; i < tokens.length;i++) {
+            recipients.add(tokens[i].getAddress());
         }
         statsUpdater.updateWithAddress(recipients);
     }
