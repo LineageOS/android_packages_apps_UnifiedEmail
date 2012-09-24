@@ -647,4 +647,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return supportsCapability(
                 UIProvider.FolderCapabilities.ONLY_IMPORTANT);
     }
+
+    /**
+     * Whether this is the special folder just used to display all mail for an account.
+     */
+    public boolean isViewAll() {
+        return type == UIProvider.FolderType.ALL_MAIL;
+    }
 }
