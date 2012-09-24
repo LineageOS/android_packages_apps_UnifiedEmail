@@ -618,7 +618,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         final int h = mWebView.screenPxToWebPx(newSpacerHeightPx);
         LogUtils.i(LAYOUT_TAG, "setting HTML spacer h=%dwebPx (%dscreenPx)", h,
                 newSpacerHeightPx);
-        mWebView.loadUrl(String.format("javascript:setMessageHeaderSpacerHeight('%s', %d);",
+        mWebView.loadUrl(String.format("javascript:setMessageHeaderSpacerHeight('%s', %s);",
                 mTemplates.getMessageDomId(item.message), h));
     }
 
@@ -630,7 +630,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         final int h = mWebView.screenPxToWebPx(newSpacerHeightPx);
         LogUtils.i(LAYOUT_TAG, "setting HTML spacer expanded=%s h=%dwebPx (%dscreenPx)",
                 item.isExpanded(), h, newSpacerHeightPx);
-        mWebView.loadUrl(String.format("javascript:setMessageBodyVisible('%s', %s, %d);",
+        mWebView.loadUrl(String.format("javascript:setMessageBodyVisible('%s', %s, %s);",
                 mTemplates.getMessageDomId(item.message), item.isExpanded(), h));
 
         mViewState.setExpansionState(item.message,
