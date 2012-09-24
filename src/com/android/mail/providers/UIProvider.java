@@ -636,6 +636,8 @@ public class UIProvider {
         public static final int STARRED = 7;
         /** Any other system label that we do not have a specific name for. */
         public static final int OTHER_PROVIDER_FOLDER = 8;
+        /** All mail folder **/
+        public static final int ALL_MAIL = 9;
     }
 
     public static final class FolderCapabilities {

@@ -2369,13 +2369,26 @@ public abstract class AbstractActivityController implements ActivityController {
             return;
         }
         final Collection<Conversation> conversations = mSelectedSet.values();
-        final Collection<FolderOperation> dropTarget = FolderOperation.listOf(new FolderOperation(
-                folder, true));
+        final ArrayList<FolderOperation> dragDropOperations = new ArrayList<FolderOperation>();
+        // Add the drop target folder.
+        dragDropOperations.add(new FolderOperation(folder, true));
+        // Remove the current folder unless the user is viewing "all".
+        // That operation should just add the new folder.
+        boolean isDestructive = !mFolder.isViewAll()
+                && mFolder.supportsCapability
+                    (UIProvider.FolderCapabilities.CAN_ACCEPT_MOVED_MESSAGES);
+        if (isDestructive) {
+            dragDropOperations.add(new FolderOperation(mFolder, false));
+        }
         // Drag and drop is destructive: we remove conversations from the
         // current folder.
-        final DestructiveAction action = getFolderChange(conversations, dropTarget, true, true,
-                true);
-        delete(0, conversations, action);
+        final DestructiveAction action = getFolderChange(conversations, dragDropOperations,
+                isDestructive, true, true);
+        if (isDestructive) {
+            delete(0, conversations, action);
+        } else {
+            action.performAction();
+        }
     }
 
     @Override
