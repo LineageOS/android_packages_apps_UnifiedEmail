@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/abd_account_unread"
             android:layout_alignParentLeft="true">
 
             <!-- Something is strange here. Gmail1 allows for
