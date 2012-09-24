@@ -19,8 +19,6 @@
     <dimen name="senders_font_size">18sp</dimen>
     <dimen name="account_dropdown_dropdownwidth">496dip</dimen>
     <dimen name="wide_senders_margin_top">3sp</dimen>
-    <dimen name="wide_attachment_margin_top">14sp</dimen>
-    <dimen name="wide_date_margin_top">16sp</dimen>
     <dimen name="max_total_folder_width_wide">128dip</dimen>
     <dimen name="wide_subject_margin_right">28dip</dimen>
     <dimen name="subject_width">238dip</dimen>
