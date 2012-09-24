@@ -257,7 +257,6 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
      * @param accounts
      */
     public void setAccounts(Account[] accounts) {
-        final Account currentAccount = mController.getCurrentAccount();
         mSpinnerAdapter.setAccountArray(accounts);
         mHasManyAccounts = accounts.length > 1;
         enableDisableSpinnner();
