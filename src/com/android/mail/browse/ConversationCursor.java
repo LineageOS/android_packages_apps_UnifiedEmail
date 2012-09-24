@@ -830,7 +830,8 @@ public final class ConversationCursor implements Cursor {
         if (pos == 0) {
             return moveToFirst();
         } else if (pos == mPosition) {
-            return true;
+            // Return false if we're past the end of the cursor
+            return pos < getCount();
         } else if (pos > mPosition) {
             while (pos > mPosition) {
                 if (!moveToNext()) {
