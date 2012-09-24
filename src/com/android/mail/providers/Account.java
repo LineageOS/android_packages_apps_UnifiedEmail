@@ -394,7 +394,7 @@ public class Account extends android.accounts.Account implements Parcelable {
             return new Account[0];
         }
 
-        Account[] allAccounts = new Account[initialLength];
+        final Account[] allAccounts = new Account[initialLength];
         int i = 0;
         do {
             allAccounts[i++] = new Account(cursor);
