@@ -183,7 +183,7 @@ public class SendersView {
         int numCharsToRemovePerWord = 0;
         int maxFoundPriority = 0;
         if (numCharsUsed > maxChars) {
-            numCharsToRemovePerWord = (numCharsUsed - maxChars) / numSendersUsed;
+            numCharsToRemovePerWord = numCharsUsed - maxChars;
         }
         if (sPriorityToLength == null) {
             sPriorityToLength = Maps.newHashMap();
