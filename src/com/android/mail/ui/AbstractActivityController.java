@@ -1890,8 +1890,14 @@ public abstract class AbstractActivityController implements ActivityController {
                 }
                 break;
             case LOADER_RECENT_FOLDERS:
-                // No recent folders and we are running on a phone? Populate the default recents.
-                if (data != null && data.getCount() == 0 && !Utils.useTabletUI(mContext)) {
+                // Few recent folders and we are running on a phone? Populate the default recents.
+                // The number of default recent folders is at least 2: every provider has at
+                // least two folders, and the recent folder count never decreases. Having a single
+                // recent folder is an erroneous case, and we can gracefully recover by populating
+                // default recents. The default recents will not stomp on the existing value: it
+                // will be shown in addition to the default folders: the max number of recent
+                // folders is more than 1+num(defaultRecents).
+                if (data != null && data.getCount() <= 1 && !Utils.useTabletUI(mContext)) {
                     final class PopulateDefault extends AsyncTask<Uri, Void, Void> {
                         @Override
                         protected Void doInBackground(Uri... uri) {
