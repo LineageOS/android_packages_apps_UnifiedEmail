@@ -31,13 +31,12 @@
     style="?android:attr/spinnerDropDownItemStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/account_dropdown_item_height"
-    android:gravity="center_horizontal">
+    android:minHeight="@dimen/account_dropdown_item_height">
     <RelativeLayout
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true">
+        android:layout_toLeftOf="@+id/abd_folder_unread"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content">
         <!-- Something is strange here. Gmail1 allows for two-line label names while Gmail2 does
         not. TODO(viki): Fix. -->
         <TextView
@@ -57,8 +56,8 @@
     </RelativeLayout>
     <TextView
         android:id="@+id/abd_folder_unread"
+        android:layout_width="wrap_content"
         style="@style/UnreadCount"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"/>
 </RelativeLayout>
 </RelativeLayout>
