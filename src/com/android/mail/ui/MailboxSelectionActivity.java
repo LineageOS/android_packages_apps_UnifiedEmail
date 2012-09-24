@@ -79,11 +79,15 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
     // Can only do certain actions if the Activity is resumed (e.g. setVisible)
     private boolean mResumed = false;
     private Handler mHandler = new Handler();
+    private View mContent;
+    private View mWait;
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.mailbox_selection_activity);
+        mContent = findViewById(R.id.content);
+        mWait = findViewById(R.id.wait);
         if (icicle != null) {
             restoreState(icicle);
         } else {
@@ -222,7 +226,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                 // This allows us to process the results that we get in the AddAccountCallback
                 mWaitingForAddAccountResult = true;
             } else if (mConfigureWidget && accounts.getCount() == 1) {
-                findViewById(R.id.wait).setVisibility(View.GONE);
+                mWait.setVisibility(View.GONE);
                 // When configuring a widget, if there is only one account, automatically
                 // choose that account.
                 accounts.moveToFirst();
@@ -233,6 +237,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
         }
 
         if (displayAccountList) {
+            mContent.setVisibility(View.VISIBLE);
             // We are about to display the list, make this activity visible
             // But only if the Activity is not paused!
             if (mResumed) {
@@ -315,11 +320,11 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
         if (fragment != null) {
             fragment.updateAccount(account);
         } else {
-            findViewById(R.id.wait).setVisibility(View.VISIBLE);
+            mWait.setVisibility(View.VISIBLE);
             replaceFragment(WaitFragment.newInstance(account, true),
                     FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT);
         }
-        findViewById(R.id.content).setVisibility(View.GONE);
+        mContent.setVisibility(View.GONE);
     }
 
     @Override
@@ -365,9 +370,9 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
                 accounts.add(account);
             } while (data.moveToNext());
             if (initializedAccounts.size() > 0) {
-                findViewById(R.id.wait).setVisibility(View.GONE);
+                mWait.setVisibility(View.GONE);
                 getLoaderManager().destroyLoader(LOADER_ACCOUNT_CURSOR);
-                findViewById(R.id.content).setVisibility(View.VISIBLE);
+                mContent.setVisibility(View.VISIBLE);
                 updateAccountList(data);
             } else {
                 // Show "waiting"
