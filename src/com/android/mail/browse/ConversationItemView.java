@@ -1005,21 +1005,23 @@ public class ConversationItemView extends View implements SwipeableItemView {
         if (mHeader.sendersDisplayLayout != null) {
             sPaint.setTextSize(mCoordinates.sendersFontSize);
             sPaint.setTypeface(SendersView.getTypeface(isUnread));
-            sPaint.setColor(getFontColor(isUnread ? sSendersTextColorUnread
-                    : sSendersTextColorRead));
-            canvas.translate(mCoordinates.sendersX,
-                    mCoordinates.sendersY + mHeader.sendersDisplayLayout.getTopPadding());
+            sPaint.setColor(getFontColor(isUnread ?
+                    sSendersTextColorUnread : sSendersTextColorRead));
+            canvas.translate(mCoordinates.sendersX, mCoordinates.sendersY
+                    + mHeader.sendersDisplayLayout.getTopPadding());
             mHeader.sendersDisplayLayout.draw(canvas);
         } else {
-            canvas.translate(mCoordinates.sendersX,
-                    mCoordinates.sendersY + sSendersTextViewTopPadding);
+            canvas.translate(mCoordinates.sendersX, mCoordinates.sendersY
+                    + sSendersTextViewTopPadding);
             mHeader.sendersTextView = getSendersTextView();
-            int length = (int) sPaint.measureText(mHeader.styledSendersString.toString());
-            mHeader.sendersTextView.setText(mHeader.styledSendersString,
-                    TextView.BufferType.SPANNABLE);
-            mHeader.sendersTextView.setWidth(length);
-            mHeader.sendersTextView.layout(0, 0, mSendersWidth, sSendersTextViewHeight);
-            mHeader.sendersTextView.draw(canvas);
+            if (mHeader.styledSendersString != null) {
+                int length = (int) sPaint.measureText(mHeader.styledSendersString.toString());
+                mHeader.sendersTextView.setText(mHeader.styledSendersString,
+                        TextView.BufferType.SPANNABLE);
+                mHeader.sendersTextView.setWidth(length);
+                mHeader.sendersTextView.layout(0, 0, mSendersWidth, sSendersTextViewHeight);
+                mHeader.sendersTextView.draw(canvas);
+            }
         }
         canvas.restore();
 
