@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.CursorAdapter;
 
+import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.LogUtils;
 
@@ -107,6 +108,13 @@ public abstract class ConversationOverlayItem {
 
     public boolean canPushSnapHeader() {
         return false;
+    }
+
+    public boolean belongsToMessage(ConversationMessage message) {
+        return false;
+    }
+
+    public void setMessage(ConversationMessage message) {
     }
 
 }

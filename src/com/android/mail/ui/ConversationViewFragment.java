@@ -619,7 +619,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         LogUtils.i(LAYOUT_TAG, "setting HTML spacer h=%dwebPx (%dscreenPx)", h,
                 newSpacerHeightPx);
         mWebView.loadUrl(String.format("javascript:setMessageHeaderSpacerHeight('%s', %s);",
-                mTemplates.getMessageDomId(item.message), h));
+                mTemplates.getMessageDomId(item.getMessage()), h));
     }
 
     @Override
@@ -631,9 +631,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         LogUtils.i(LAYOUT_TAG, "setting HTML spacer expanded=%s h=%dwebPx (%dscreenPx)",
                 item.isExpanded(), h, newSpacerHeightPx);
         mWebView.loadUrl(String.format("javascript:setMessageBodyVisible('%s', %s, %s);",
-                mTemplates.getMessageDomId(item.message), item.isExpanded(), h));
+                mTemplates.getMessageDomId(item.getMessage()), item.isExpanded(), h));
 
-        mViewState.setExpansionState(item.message,
+        mViewState.setExpansionState(item.getMessage(),
                 item.isExpanded() ? ExpansionState.EXPANDED : ExpansionState.COLLAPSED);
     }
 
@@ -821,6 +821,31 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             }
         }
 
+        @SuppressWarnings("unused")
+        @JavascriptInterface
+        public String getMessageBody(String domId) {
+            try {
+                final MessageCursor cursor = getMessageCursor();
+                if (!mViewsCreated || cursor == null) {
+                    return "";
+                }
+
+                int pos = -1;
+                while (cursor.moveToPosition(++pos)) {
+                    final ConversationMessage msg = cursor.getMessage();
+                    if (TextUtils.equals(domId, mTemplates.getMessageDomId(msg))) {
+                        return msg.getBodyAsHtml();
+                    }
+                }
+
+                return "";
+
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.getMessageBody");
+                return "";
+            }
+        }
+
         private void showConversation(Conversation conv) {
             notifyConversationLoaded(conv);
             dismissLoadingStatus();
@@ -870,9 +895,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void onMessageCursorLoadFinished(Loader<Cursor> loader, Cursor data, boolean wasNull,
-            boolean changed) {
-        MessageCursor messageCursor = (MessageCursor) data;
+    public void onMessageCursorLoadFinished(Loader<Cursor> loader, MessageCursor newCursor,
+            MessageCursor oldCursor) {
         /*
          * what kind of changes affect the MessageCursor? 1. new message(s) 2.
          * read/unread state change 3. deleted message, either regular or draft
@@ -881,25 +905,30 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
          * similar to #1) 6. other label change Use MessageCursor.hashCode() to
          * sort out interesting vs. no-op cursor updates.
          */
-        if (!wasNull) {
-            final NewMessagesInfo info = getNewIncomingMessagesInfo(messageCursor);
+        final boolean changed = newCursor != null && oldCursor != null
+                && newCursor.hashCode() != oldCursor.hashCode();
 
-            if (info.count > 0 || !changed) {
+        if (oldCursor != null) {
+            final NewMessagesInfo info = getNewIncomingMessagesInfo(newCursor);
 
-                if (info.count > 0) {
-                    // don't immediately render new incoming messages from other
-                    // senders
-                    // (to avoid a new message from losing the user's focus)
-                    LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
-                            + ", holding cursor for new incoming message");
-                    showNewMessageNotification(info);
+            if (info.count > 0) {
+                // don't immediately render new incoming messages from other
+                // senders
+                // (to avoid a new message from losing the user's focus)
+                LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
+                        + ", holding cursor for new incoming message");
+                showNewMessageNotification(info);
+                return;
+            }
+
+            if (!changed) {
+                final boolean processedInPlace = processInPlaceUpdates(newCursor, oldCursor);
+                if (processedInPlace) {
+                    LogUtils.i(LOG_TAG, "CONV RENDER: processed update(s) in place");
                 } else {
                     LogUtils.i(LOG_TAG, "CONV RENDER: uninteresting update"
                             + ", ignoring this conversation update");
                 }
-
-                // update mCursor reference because the old one is about to be
-                // closed by CursorLoader
                 return;
             }
         }
@@ -912,7 +941,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         // TODO: if this is not user-visible, delay render until user-visible
         // fragment is done. This is needed in addition to the
         // showConversation() delay to speed up rotation and restoration.
-        renderConversation(messageCursor);
+        renderConversation(newCursor);
     }
 
     private NewMessagesInfo getNewIncomingMessagesInfo(MessageCursor newCursor) {
@@ -938,6 +967,45 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             }
         }
         return info;
+    }
+
+    private boolean processInPlaceUpdates(MessageCursor newCursor, MessageCursor oldCursor) {
+        final Set<String> idsOfChangedBodies = Sets.newHashSet();
+        boolean changed = false;
+
+        int pos = 0;
+        while (true) {
+            if (!newCursor.moveToPosition(pos) || !oldCursor.moveToPosition(pos)) {
+                break;
+            }
+
+            final ConversationMessage newMsg = newCursor.getMessage();
+            final ConversationMessage oldMsg = oldCursor.getMessage();
+
+            if (!TextUtils.equals(newMsg.from, oldMsg.from)) {
+                mAdapter.updateItemsForMessage(newMsg);
+                LogUtils.i(LOG_TAG, "msg #%d (%d): detected sender change", pos, newMsg.id);
+                changed = true;
+            }
+
+            // update changed message bodies in-place
+            if (!TextUtils.equals(newMsg.bodyHtml, oldMsg.bodyHtml) ||
+                    !TextUtils.equals(newMsg.bodyText, oldMsg.bodyText)) {
+                // maybe just set a flag to notify JS to re-request changed bodies
+                idsOfChangedBodies.add('"' + mTemplates.getMessageDomId(newMsg) + '"');
+                LogUtils.i(LOG_TAG, "msg #%d (%d): detected body change", pos, newMsg.id);
+            }
+
+            pos++;
+        }
+
+        if (!idsOfChangedBodies.isEmpty()) {
+            mWebView.loadUrl(String.format("javascript:replaceMessageBodies([%s]);",
+                    TextUtils.join(",", idsOfChangedBodies)));
+            changed = true;
+        }
+
+        return changed;
     }
 
     private class SetCookieTask extends AsyncTask<Void, Void, Void> {
