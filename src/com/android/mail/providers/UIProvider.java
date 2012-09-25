@@ -42,44 +42,66 @@ public class UIProvider {
      * sync is in progress
      */
     public static final class SyncStatus {
-        // No sync in progress
+        /**
+         * No sync in progress
+         */
         public static final int NO_SYNC = 0;
-        // A user-requested sync/refresh is in progress
+        /**
+         * A user-requested sync/refresh is in progress. This occurs when the user taps on the
+         * refresh icon in the action bar.
+         */
         public static final int USER_REFRESH = 1<<0;
-        // A user-requested query is in progress
+        /**
+         * A user-requested live query is in progress. This occurs when the user goes past the end
+         * of the fetched results in the conversation list.
+         */
+        public static final int LIVE_QUERY = 1<<1;
+        /** Please use the constant {@link #LIVE_QUERY} instead. */
+        @Deprecated
         public static final int USER_QUERY = 1<<1;
-        // A user request for additional results is in progress
-        public static final int USER_MORE_RESULTS = 1<<2;
-        // A background sync is in progress
-        public static final int BACKGROUND_SYNC = 1<<3;
-        // An initial sync is needed for this Account/Folder to be used
-        public static final int INITIAL_SYNC_NEEDED = 1<<4;
-        // Manual sync is required
-        public static final int MANUAL_SYNC_REQUIRED = 1<<5;
+        /**
+         * A background sync is in progress. This happens on <b>no</b> user interaction.
+         */
+        public static final int BACKGROUND_SYNC = 1<<2;
+        /**
+         * An initial sync is needed for this Account/Folder to be used. This is account-wide, when
+         * the user has added an account, and the first sync has not completed successfully.
+         */
+        public static final int INITIAL_SYNC_NEEDED = 1<<3;
+        /**
+         * Manual sync is required. This is account-wide, when the user has disabled sync on the
+         * Gmail account.
+         */
+        public static final int MANUAL_SYNC_REQUIRED = 1<<4;
 
         public static boolean isSyncInProgress(int syncStatus) {
             return 0 != (syncStatus & (BACKGROUND_SYNC |
                     USER_REFRESH |
-                    USER_QUERY |
+                    LIVE_QUERY |
                     USER_MORE_RESULTS));
         }
+        /**
+         * Unused currently, is not used by any provider.
+         * TODO(viki): Remove.
+         */
+        public static final int USER_MORE_RESULTS = 1<<5;
     }
 
     /**
      * Values for the result of the last attempted sync of a Folder/Account
      */
     public static final class LastSyncResult {
-        // The sync completed successfully
+        /** The sync completed successfully */
         public static final int SUCCESS = 0;
-        // The sync wasn't completed due to a connection error
+        /** The sync wasn't completed due to a connection error */
         public static final int CONNECTION_ERROR = 1;
-        // The sync wasn't completed due to an authentication error
+        /** The sync wasn't completed due to an authentication error */
         public static final int AUTH_ERROR = 2;
-        // The sync wasn't completed due to a security error
+        /** The sync wasn't completed due to a security error */
         public static final int SECURITY_ERROR = 3;
-        // The sync wasn't completed due to a low memory condition
+        /** The sync wasn't completed due to a low memory condition */
         public static final int STORAGE_ERROR = 4;
-        // The sync wasn't completed due to an internal error/exception
+        /** The sync wasn't completed due to an internal error/exception */
         public static final int INTERNAL_ERROR = 5;
     }
 
@@ -364,9 +386,9 @@ public class UIProvider {
          * This string column contains the content provider uri that can be used
          * to expunge a message from this account. NOTE: This might be better to
          * be an update operation on the messageUri.
-         * When {@link android.content.ContentResolver#update()} is called with this uri, the
-         * {@link ContentValues} object is expected to have {@link BaseColumns._ID} specified with
-         * the local message id of the message.
+         * When {@link android.content.ContentResolver#update(Uri, ContentValues, String, String[])}
+         * is called with this uri, the {@link ContentValues} object is expected to have
+         * {@link BaseColumns#_ID} specified with the local message id of the message.
          */
         public static final String EXPUNGE_MESSAGE_URI = "expungeMessageUri";
 
@@ -405,7 +427,7 @@ public class UIProvider {
         /**
          * Uri for VIEW intent that will cause the user to be prompted for authentication for
          * this account.  startActivityForResult() will be called with this intent. Activities that
-         * handle this intent are expected to return {@link android.app.Activity.RESULT_OK} if the
+         * handle this intent are expected to return {@link android.app.Activity#RESULT_OK} if the
          * user successfully authenticated.
          */
         public static String REAUTHENTICATION_INTENT_URI = "reauthenticationUri";
@@ -1639,7 +1661,7 @@ public class UIProvider {
          */
         public static final String THUMBNAIL_URI = "thumbnailUri";
         /**
-         * This column is an {@link Uri} used in an {@link Intent.ACTION_VIEW} Intent to launch a
+         * This column is an {@link Uri} used in an {@link Intent#ACTION_VIEW} Intent to launch a
          * preview activity that allows the user to efficiently view an attachment without having to
          * first download the entire file. Providers that do not support
          * previewing attachments may leave this null.
