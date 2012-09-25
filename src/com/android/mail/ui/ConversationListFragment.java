@@ -40,6 +40,7 @@ import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewModel;
 import com.android.mail.browse.ConversationListFooterView;
+import com.android.mail.browse.SwipeableConversationItemView;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.AccountObserver;
 import com.android.mail.providers.Conversation;
@@ -437,7 +438,10 @@ public final class ConversationListFragment extends ListFragment implements
     @Override
     public void onListItemClick(ListView l, View view, int position, long id) {
         // Ignore anything that is not a conversation item. Could be a footer.
-        if (!(view instanceof ConversationItemView)) {
+        // If we are using a keyboard, the highlighted item is the parent;
+        // otherwise, this is a direct call from the ConverationItemView
+        if (!(view instanceof SwipeableConversationItemView)
+                && !(view instanceof ConversationItemView)) {
             return;
         }
         if (mAccount.settings.hideCheckboxes && !mSelectedSet.isEmpty()) {
@@ -446,9 +450,8 @@ public final class ConversationListFragment extends ListFragment implements
             viewConversation(position);
         }
         // When a new list item is clicked, commit any existing leave behind
-        // items.
-        // Wait until we have opened the desired conversation to cause any
-        // position changes.
+        // items. Wait until we have opened the desired conversation to cause
+        // any position changes.
         commitDestructiveActions(Utils.useTabletUI(mActivity.getActivityContext()));
     }
 
