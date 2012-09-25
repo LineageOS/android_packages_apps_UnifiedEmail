@@ -240,6 +240,7 @@ window.onload = function() {
     // dummy element.
     document.getElementById("initial-load-signal")
         .addEventListener("webkitAnimationStart", onContentReady, false);
+    document.getElementById("initial-load-signal").style.webkitAnimationName = 'initial-load';
 };
 
 collapseQuotedText();

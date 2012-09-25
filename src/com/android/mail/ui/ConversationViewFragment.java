@@ -232,7 +232,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         // content is loaded and ready to draw, since WebView delays firing this event until the
         // layers are composited and everything is ready to draw.
         // This signal does not seem to be reliable, so just use the old method for now.
-        mEnableContentReadySignal = false;
+        mEnableContentReadySignal = Utils.isRunningJellybeanOrLater();
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -328,6 +328,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             } else {
                 onConversationSeen();
             }
+        } else if (!mUserVisible) {
+            dismissLoadingStatus();
         }
     }
 
