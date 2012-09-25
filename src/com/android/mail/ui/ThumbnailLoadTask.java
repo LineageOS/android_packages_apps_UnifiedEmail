@@ -17,18 +17,24 @@
 
 package com.android.mail.ui;
 
+import android.content.ContentResolver;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
+
+import com.android.ex.photo.util.Exif;
 
 import com.android.mail.providers.Attachment;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Performs the load of a thumbnail bitmap in a background
@@ -98,23 +104,37 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             return null;
         }
 
-        AssetFileDescriptor fd = null;
-        Bitmap result = null;
-
+        ByteArrayOutputStream out = null;
+        InputStream in = null;
         try {
-            fd = mHolder.getResolver().openAssetFileDescriptor(thumbnailUri, "r");
-            if (isCancelled() || fd == null) {
+            final ContentResolver resolver = mHolder.getResolver();
+            in = resolver.openInputStream(thumbnailUri);
+            out = new ByteArrayOutputStream();
+            final byte[] buffer = new byte[4096];
+            int n = in.read(buffer);
+            while (n >= 0) {
+                out.write(buffer, 0, n);
+                n = in.read(buffer);
+            }
+            in.close();
+            in = null;
+
+            if (isCancelled()) {
                 return null;
             }
 
             final BitmapFactory.Options opts = new BitmapFactory.Options();
             opts.inJustDecodeBounds = true;
             opts.inDensity = DisplayMetrics.DENSITY_MEDIUM;
+            final byte[] bitmapBytes = out.toByteArray();
 
-            BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, opts);
+            BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length, opts);
             if (isCancelled() || opts.outWidth == -1 || opts.outHeight == -1) {
                 return null;
             }
+
+            // Determine the orientation for this image
+            final int orientation = Exif.getOrientation(bitmapBytes);
 
             opts.inJustDecodeBounds = false;
             // Shrink both X and Y (but do not over-shrink)
@@ -127,21 +147,35 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             LogUtils.d(LOG_TAG, "in background, src w/h=%d/%d dst w/h=%d/%d, divider=%d",
                     opts.outWidth, opts.outHeight, mWidth, mHeight, opts.inSampleSize);
 
-            result = BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, opts);
-
+            final Bitmap originalBitmap =
+                    BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length, opts);
+            if (originalBitmap != null && orientation != 0) {
+                final Matrix matrix = new Matrix();
+                matrix.postRotate(orientation);
+                return Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.getWidth(),
+                        originalBitmap.getHeight(), matrix, true);
+            }
+            return originalBitmap;
         } catch (Throwable t) {
             LogUtils.e(LOG_TAG, t, "Unable to decode thumbnail %s", thumbnailUri);
         } finally {
-            if (fd != null) {
+            if (in != null) {
                 try {
-                    fd.close();
+                    in.close();
                 } catch (IOException e) {
-                    LogUtils.e(LOG_TAG, e, "");
+                    LogUtils.e(LOG_TAG, e, "error attemtping to close input stream");
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    LogUtils.e(LOG_TAG, e, "error attemtping to close output stream");
                 }
             }
         }
 
-        return result;
+        return null;
     }
 
     @Override
