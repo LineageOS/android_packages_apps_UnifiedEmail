@@ -18,8 +18,16 @@
 package com.android.mail.browse;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.os.Handler;
 import android.util.AttributeSet;
+import android.view.Display;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.webkit.WebView;
 
 import com.android.mail.R;
@@ -30,6 +38,118 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public class ConversationWebView extends WebView implements ScrollNotifier {
+    /** The initial delay when rendering in hardware layer. */
+    private static int sWebviewInitialDelay;
+
+    /** The dimension of the offscreen bitmap used for software layer. */
+    private static int sBitmapWidth;
+    private static int sBitmapHeight;
+
+    /** The default {@link Matrix} and {@link Paint} used to draw software layer. */
+    private static Matrix sMatrix;
+    private static Paint sPaint;
+
+    private final Handler mHandler = new Handler();
+
+    private Bitmap mBitmap;
+    private Canvas mCanvas;
+
+    private boolean mUseSoftwareLayer;
+
+    /** The visible portion of webview. */
+    private int mLeft = 0;
+    private int mTop = 0;
+
+    /** {@link Runnable} to be run when the page is rendered in hardware layer. */
+    private final Runnable mNotifyPageRenderedInHardwareLayer = new Runnable() {
+        @Override
+        public void run() {
+            // Switch to hardware layer.
+            mUseSoftwareLayer = false;
+            destroyBitmap();
+            invalidate();
+        }
+    };
+
+    @Override
+    public void onDraw(Canvas canvas) {
+        // Always render in hardware layer to avoid flicker when switch.
+        super.onDraw(canvas);
+
+        // Render in software layer on top if needed.
+        if (mUseSoftwareLayer && mBitmap != null) {
+            mCanvas.save();
+            mCanvas.translate(-mLeft, -mTop);
+            super.onDraw(mCanvas);
+            mCanvas.restore();
+            canvas.save();
+            canvas.translate(mLeft, mTop);
+            canvas.drawBitmap(mBitmap, sMatrix, sPaint);
+            canvas.restore();
+        }
+    }
+
+    @Override
+    public void destroy() {
+        destroyBitmap();
+        mHandler.removeCallbacksAndMessages(null);
+
+        super.destroy();
+    }
+
+    /**
+     * Destroys the {@link Bitmap} used for software layer.
+     */
+    private void destroyBitmap() {
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
+    }
+
+    /**
+     * Enable this WebView to also draw to an internal software canvas until
+     * {@link #onVisibilityChanged(boolean)} is called. The software draw will happen every time
+     * a normal {@link #onDraw(Canvas)} happens, and will overwrite whatever is normally drawn
+     * (i.e. drawn in hardware) with the results of software rendering.
+     * <p>
+     * This is useful when you know that the WebView draws sooner to a software layer than it does
+     * to its normal hardware layer.
+     */
+    public void setUseSoftwareLayer(boolean useSoftware) {
+        mUseSoftwareLayer = useSoftware;
+    }
+
+    @Override
+    public void onFinishInflate() {
+        if (sMatrix == null) {
+            final Resources res = getContext().getResources();
+            sWebviewInitialDelay = res.getInteger(R.integer.webview_initial_delay);
+
+            final Display display = ((WindowManager) getContext()
+                    .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            sBitmapWidth = display.getWidth();
+            sBitmapHeight = display.getHeight();
+
+            sMatrix = new Matrix();
+            sPaint = new Paint();
+        }
+
+        // Create an offscreen bitmap.
+        mBitmap = Bitmap.createBitmap(sBitmapWidth, sBitmapHeight, Bitmap.Config.RGB_565);
+        mCanvas = new Canvas(mBitmap);
+    }
+
+    /**
+     * Notifies the {@link CustomWebView} that it has become visible. It can use this signal to
+     * switch between software and hardware layer.
+     */
+    public void onVisibilityChanged(boolean isVisible) {
+        if (isVisible && mUseSoftwareLayer) {
+            // Schedule to switch from software layer to hardware layer in 1s.
+            mHandler.postDelayed(mNotifyPageRenderedInHardwareLayer, sWebviewInitialDelay);
+        }
+    }
 
     // NARROW_COLUMNS reflow can trigger the document to change size, so notify interested parties.
     public interface ContentSizeChangeListener {
@@ -113,6 +233,10 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
+
+        // Update the visible portion of webview.
+        mLeft = l;
+        mTop = t;
 
         for (ScrollListener listener : mScrollListeners) {
             listener.onNotifierScroll(l, t);
