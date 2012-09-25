@@ -87,4 +87,6 @@
 
     <!-- Animation duration for showing the title bar again for SecureConversationViewFragment -->
     <integer name="title_bar_show_animation_duration">300</integer>
+
+    <integer name="webview_initial_delay">1000</integer>
 </resources>

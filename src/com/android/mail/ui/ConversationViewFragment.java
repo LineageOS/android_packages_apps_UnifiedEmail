@@ -233,6 +233,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         // layers are composited and everything is ready to draw.
         // This signal does not seem to be reliable, so just use the old method for now.
         mEnableContentReadySignal = Utils.isRunningJellybeanOrLater();
+        mWebView.setUseSoftwareLayer(!mEnableContentReadySignal);
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
