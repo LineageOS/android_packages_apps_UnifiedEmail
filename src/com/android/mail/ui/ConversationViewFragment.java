@@ -20,6 +20,7 @@ package com.android.mail.ui;
 
 import android.content.Context;
 import android.content.Loader;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -861,14 +862,14 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
          * @return display text
          */
         public String getNotificationText() {
-            final Object param;
+            Resources res = getResources();
             if (count > 1) {
-                param = count;
+                return res.getString(R.string.new_incoming_messages_many, count);
             } else {
                 final Address addr = getAddress(senderAddress);
-                param = TextUtils.isEmpty(addr.getName()) ? addr.getAddress() : addr.getName();
+                return res.getString(R.string.new_incoming_messages_one,
+                        TextUtils.isEmpty(addr.getName()) ? addr.getAddress() : addr.getName());
             }
-            return getResources().getQuantityString(R.plurals.new_incoming_messages, count, param);
         }
     }
 
