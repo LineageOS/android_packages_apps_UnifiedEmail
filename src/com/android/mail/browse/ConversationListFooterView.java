@@ -33,7 +33,8 @@ import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.Utils;
 
-public class ConversationListFooterView extends LinearLayout implements View.OnClickListener {
+public final class ConversationListFooterView extends LinearLayout implements View.OnClickListener,
+        ViewMode.ModeChangeListener {
 
     public interface FooterViewClickListener {
         void onFooterViewErrorActionClick(Folder folder, int errorStatus);
@@ -49,7 +50,7 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
     private Uri mLoadMoreUri;
     private int mErrorStatus;
     private FooterViewClickListener mClickListener;
-    private boolean mTabletDevice;
+    private final boolean mTabletDevice;
     // Backgrounds for different states.
     private static Drawable sWideBackground;
     private static Drawable sNormalBackground;
@@ -76,10 +77,10 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
         mClickListener = listener;
     }
 
+    @Override
     public void onClick(View v) {
-        int id = v.getId();
-        Folder f = (Folder) v.getTag();
-        Uri uri = null;
+        final int id = v.getId();
+        final Folder f = (Folder) v.getTag();
         switch (id) {
             case R.id.error_action_button:
                 mClickListener.onFooterViewErrorActionClick(f, mErrorStatus);
@@ -125,7 +126,7 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
                     mErrorStatus != UIProvider.LastSyncResult.SECURITY_ERROR ?
                     View.VISIBLE : View.GONE);
 
-            int actionTextResourceId = R.string.retry;
+            final int actionTextResourceId;
             switch (mErrorStatus) {
                 case UIProvider.LastSyncResult.CONNECTION_ERROR:
                     actionTextResourceId = R.string.retry;
@@ -134,6 +135,7 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
                     actionTextResourceId = R.string.signin;
                     break;
                 case UIProvider.LastSyncResult.SECURITY_ERROR:
+                    actionTextResourceId = R.string.retry;
                     mNetworkError.setVisibility(View.GONE);
                     break; // Currently we do nothing for security errors.
                 case UIProvider.LastSyncResult.STORAGE_ERROR:
@@ -143,6 +145,7 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
                     actionTextResourceId = R.string.report;
                     break;
                 default:
+                    actionTextResourceId = R.string.retry;
                     mNetworkError.setVisibility(View.GONE);
                     break;
             }
@@ -161,8 +164,9 @@ public class ConversationListFooterView extends LinearLayout implements View.OnC
     /**
      * Update to the appropriate background when the view mode changes.
      */
+    @Override
     public void onViewModeChanged(int newMode) {
-        Drawable drawable;
+        final Drawable drawable;
         if (mTabletDevice && newMode == ViewMode.CONVERSATION_LIST) {
             drawable = getWideBackground();
         } else {
