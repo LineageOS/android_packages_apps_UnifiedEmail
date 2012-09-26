@@ -184,6 +184,10 @@ public class AttachmentActionHandler {
     }
 
     public void shareAttachment() {
+        if (mAttachment.contentUri == null) {
+            return;
+        }
+
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                 | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
