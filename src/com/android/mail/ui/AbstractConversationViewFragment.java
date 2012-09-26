@@ -187,8 +187,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      * Subclasses must override this, since they may want to display a single or
      * many messages related to this conversation.
      */
-    protected abstract void onMessageCursorLoadFinished(Loader<Cursor> loader, Cursor data,
-            boolean wasNull, boolean messageCursorChanged);
+    protected abstract void onMessageCursorLoadFinished(Loader<Cursor> loader,
+            MessageCursor newCursor, MessageCursor oldCursor);
 
     /**
      * Subclasses must override this, since they may want to display a single or
@@ -503,11 +503,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                 if (!messageCursor.isLoaded()) {
                     return;
                 }
-                boolean wasNull = mCursor == null;
-                boolean messageCursorChanged = mCursor != null
-                        && messageCursor.hashCode() != mCursor.hashCode();
+                final MessageCursor oldCursor = mCursor;
                 mCursor = (MessageCursor) data;
-                onMessageCursorLoadFinished(loader, data, wasNull, messageCursorChanged);
+                onMessageCursorLoadFinished(loader, mCursor, oldCursor);
             }
         }
 
