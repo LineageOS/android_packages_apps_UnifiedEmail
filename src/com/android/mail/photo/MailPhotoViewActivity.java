@@ -97,7 +97,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
         if (attachment != null && mSaveItem != null && mShareItem != null) {
             mSaveItem.setEnabled(!attachment.isDownloading()
                     && attachment.canSave() && !attachment.isSavedToExternal());
-            mShareItem.setEnabled(attachment.isPresentLocally());
+            mShareItem.setEnabled(attachment.canShare());
         } else {
             if (mMenu != null) {
                 mMenu.setGroupEnabled(R.id.photo_view_menu_group, false);
@@ -120,7 +120,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
             // all attachments must be present to be able to share all
             enabled = true;
             for (final Attachment a : attachments) {
-                if (!a.isPresentLocally()) {
+                if (!a.canShare()) {
                     enabled = false;
                     break;
                 }
