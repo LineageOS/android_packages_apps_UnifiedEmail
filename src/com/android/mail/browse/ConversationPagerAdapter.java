@@ -119,6 +119,10 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
         return mSingletonMode;
     }
 
+    public boolean isDetached() {
+        return mDetachedMode;
+    }
+
     public boolean isPagingDisabled() {
         return mSingletonMode || mDetachedMode || getCursor() == null;
     }
