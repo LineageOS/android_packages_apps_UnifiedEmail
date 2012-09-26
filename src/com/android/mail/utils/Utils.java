@@ -1049,8 +1049,7 @@ public class Utils {
      * @return the conversation id at the cursor.
      */
     public static long getConversationId(ConversationCursor cursor) {
-        final Conversation conversation = new Conversation(cursor);
-        return conversation.id;
+        return cursor.getLong(UIProvider.CONVERSATION_ID_COLUMN);
     }
 
     /**
