@@ -589,7 +589,7 @@ public final class ConversationListFragment extends ListFragment implements
         }
         mListAdapter.setFolder(mFolder);
         mFooterView.setFolder(mFolder);
-        if (mFolder.lastSyncResult != UIProvider.LastSyncResult.SUCCESS) {
+        if (!mFolder.wasSyncSuccessful()) {
             mErrorListener.onError(mFolder, false);
         }
 

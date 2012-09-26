@@ -86,7 +86,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
 
-    /** Do not auto load data when create this {@link ConversationView}. */
+    /** Do not auto load data when create this {@link ConversationViewFragment}. */
     public static final int NO_AUTO_LOAD = 0;
     /** Auto load data but do not show any animation. */
     public static final int AUTO_LOAD_BACKGROUND = 1;
