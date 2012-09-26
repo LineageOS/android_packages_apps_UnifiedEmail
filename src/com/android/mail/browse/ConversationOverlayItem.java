@@ -74,12 +74,20 @@ public abstract class ConversationOverlayItem {
         return mHeight;
     }
 
-    public void setHeight(int h) {
+    /**
+     * Set a new height.
+     *
+     * @param h a new height
+     * @return true if the value changed
+     */
+    public boolean setHeight(int h) {
         LogUtils.i(LOG_TAG, "IN setHeight=%dpx of overlay item: %s", h, this);
         if (mHeight != h) {
             mHeight = h;
             mNeedsMeasure = true;
+            return true;
         }
+        return false;
     }
 
     public int getTop() {
