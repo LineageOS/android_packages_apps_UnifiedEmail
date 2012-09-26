@@ -827,6 +827,10 @@ public final class ConversationCursor implements Cursor {
         // SQLiteCursor moves the position to 0 when returning false, which we will mirror.
         // But we don't want to return true on a subsequent "move to first", which we would if we
         // check pos vs mPosition first
+        if (mUnderlyingCursor.getPosition() == -1) {
+            LogUtils.i(TAG, "*** Underlyig cursor position is -1 asking to move from %d to %d",
+                    mPosition, pos);
+        }
         if (pos == 0) {
             return moveToFirst();
         } else if (pos == mPosition) {
