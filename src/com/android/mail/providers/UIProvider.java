@@ -73,6 +73,10 @@ public class UIProvider {
          * Gmail account.
          */
         public static final int MANUAL_SYNC_REQUIRED = 1<<4;
+        /**
+         * Account initialization is required.
+         */
+        public static final int ACCOUNT_INITIALIZATION_REQUIRED = 1<<5;
 
         public static boolean isSyncInProgress(int syncStatus) {
             return 0 != (syncStatus & (BACKGROUND_SYNC |
