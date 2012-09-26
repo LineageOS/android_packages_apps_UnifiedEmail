@@ -607,8 +607,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     @Override
     public void onConversationViewHeaderHeightChange(int newHeight) {
-        // TODO: propagate the new height to the header's HTML spacer. This can happen when labels
-        // are added/removed
+        final int h = mWebView.screenPxToWebPx(newHeight);
+
+        mWebView.loadUrl(String.format("javascript:setConversationHeaderSpacerHeight(%s);", h));
     }
 
     // END conversation header callbacks

@@ -181,6 +181,16 @@ function unblockImages(messageDomId) {
     }
 }
 
+function setConversationHeaderSpacerHeight(spacerHeight) {
+    var spacer = document.getElementById("conversation-header");
+    if (!spacer) {
+        console.log("can't set spacer for conversation header");
+        return;
+    }
+    spacer.style.height = spacerHeight + "px";
+    measurePositions();
+}
+
 function setMessageHeaderSpacerHeight(messageDomId, spacerHeight) {
     var spacer = document.querySelector("#" + messageDomId + " > .mail-message-header");
     if (!spacer) {
