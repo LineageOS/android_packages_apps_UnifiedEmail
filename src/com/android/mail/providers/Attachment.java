@@ -259,6 +259,10 @@ public class Attachment implements Parcelable {
                 !isSavedToExternal();
     }
 
+    public boolean canShare() {
+        return isPresentLocally() && contentUri != null;
+    }
+
     public boolean shouldShowProgress() {
         return state == AttachmentState.DOWNLOADING
                 && size > 0 && downloadedSize > 0 && downloadedSize < size;
