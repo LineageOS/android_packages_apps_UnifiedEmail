@@ -482,7 +482,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         setRefreshInProgress(true);
     }
 
-    private void onRefreshStopped(int status) {
+    private void onRefreshStopped() {
         setRefreshInProgress(false);
     }
 
@@ -554,7 +554,7 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
             onRefreshStarted();
         } else {
             // Stop the spinner here.
-            onRefreshStopped(folder.lastSyncResult);
+            onRefreshStopped();
         }
     }
 
