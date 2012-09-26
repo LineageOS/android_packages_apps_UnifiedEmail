@@ -83,8 +83,6 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
     private ConversationFolderDisplayer mFolderDisplayer;
     private ConversationHeaderItem mHeaderItem;
 
-    private boolean mSizeChanged;
-
     public ConversationViewHeader(Context context) {
         this(context, null);
     }
@@ -133,7 +131,7 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         mAccountController = accountController;
     }
 
-    public void setSubject(final String subject, boolean notify) {
+    public void setSubject(final String subject) {
         String subjectToShow = subject;
         if (mCallbacks != null && mCallbacks.getSubjectRemainder(subject) == null) {
             subjectToShow = null;
@@ -143,18 +141,13 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         if (TextUtils.isEmpty(subjectToShow)) {
             mSubjectView.setVisibility(GONE);
         }
-
-        if (notify) {
-            handleSizeChanged();
-        }
     }
-
 
     public void setFoldersVisible(boolean show) {
         mFoldersView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    public void setFolders(Conversation conv, boolean notify) {
+    public void setFolders(Conversation conv) {
         setFoldersVisible(true);
         SpannableStringBuilder sb = new SpannableStringBuilder();
         final Settings settings = mAccountController.getAccount().settings;
@@ -169,15 +162,6 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         mFolderDisplayer.appendFolderSpans(sb);
 
         mFoldersView.setText(sb);
-
-        int h = measureHeight();
-        mHeaderItem.setHeight(h);
-
-        mCallbacks.onConversationViewHeaderHeightChange(h);
-
-        if (notify) {
-            handleSizeChanged();
-        }
     }
 
     public void bind(ConversationHeaderItem headerItem) {
@@ -201,7 +185,12 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         // The only things we have to worry about when the conversation changes
         // in the conversation header are the folders and priority indicators.
         // Updating these will resize the space for the header.
-        setFolders(conv, false);
+        setFolders(conv);
+
+        final int h = measureHeight();
+        if (mHeaderItem.setHeight(h)) {
+            mCallbacks.onConversationViewHeaderHeightChange(h);
+        }
     }
 
     @Override
@@ -210,25 +199,6 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
             if (mCallbacks != null) {
                 mCallbacks.onFoldersClicked();
             }
-        }
-    }
-
-    private void handleSizeChanged() {
-        mSizeChanged = true;
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-
-        if (mSizeChanged) {
-            // propagate new size to webview conversation header spacer
-            // only do this for known size changes
-            if (mCallbacks != null) {
-                mCallbacks.onConversationViewHeaderHeightChange(h);
-            }
-
-            mSizeChanged = false;
         }
     }
 
