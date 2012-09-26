@@ -592,6 +592,10 @@ public final class ConversationListFragment extends ListFragment implements
         if (mFolder.lastSyncResult != UIProvider.LastSyncResult.SUCCESS) {
             mErrorListener.onError(mFolder, false);
         }
+
+        // Notify of changes to the Folder.
+        onFolderStatusUpdated();
+
         // Blow away conversation items cache.
         ConversationItemViewModel.onFolderUpdated(mFolder);
     }
@@ -599,23 +603,32 @@ public final class ConversationListFragment extends ListFragment implements
     public void onConversationListStatusUpdated() {
         final ConversationCursor cursor = getConversationListCursor();
         final boolean showFooter = cursor != null && mFooterView.updateStatus(cursor);
+        // Update the folder status, in case the cursor could affect it.
+        onFolderStatusUpdated();
+        mListAdapter.setFooterVisibility(showFooter);
+
+        // Also change the cursor here.
+        onCursorUpdated();
+    }
+
+    private void onFolderStatusUpdated() {
+        final ConversationCursor cursor = getConversationListCursor();
         Bundle extras = cursor != null ? cursor.getExtras() : Bundle.EMPTY;
         int error = extras.containsKey(UIProvider.CursorExtraKeys.EXTRA_ERROR) ?
                 extras.getInt(UIProvider.CursorExtraKeys.EXTRA_ERROR)
                 : UIProvider.LastSyncResult.SUCCESS;
         int status = extras.getInt(UIProvider.CursorExtraKeys.EXTRA_STATUS);
+        // We want to update the UI with this informaion if either we are loaded or complete, or
+        // we have a folder with a non-0 count.
+        final int folderCount = mFolder != null ? mFolder.totalCount : 0;
         if (error == UIProvider.LastSyncResult.SUCCESS
                 && (status == UIProvider.CursorStatus.LOADED
-                    || status == UIProvider.CursorStatus.COMPLETE)) {
-            updateSearchResultHeader(mFolder != null ? mFolder.totalCount : 0);
-            if (mFolder == null || mFolder.totalCount == 0) {
+                    || status == UIProvider.CursorStatus.COMPLETE) || folderCount > 0) {
+            updateSearchResultHeader(folderCount);
+            if (folderCount == 0) {
                 mListView.setEmptyView(mEmptyView);
             }
         }
-        mListAdapter.setFooterVisibility(showFooter);
-
-        // Also change the cursor here.
-        onCursorUpdated();
     }
 
     private void setSwipeAction() {
