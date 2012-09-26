@@ -268,10 +268,10 @@
     <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> z <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
     <string name="conversation_newer" msgid="7381341099165809801">"Novšie"</string>
     <string name="conversation_older" msgid="6384287019562069353">"Staršie"</string>
-  <plurals name="new_incoming_messages">
-    <item quantity="one" msgid="8778057959289554701">"Nová správa od odosielateľa <xliff:g id="SENDER">%s</xliff:g>."</item>
-    <item quantity="other" msgid="6738671955116853198">"Počet nových správ: <xliff:g id="COUNT">%1$d</xliff:g>"</item>
-  </plurals>
+    <!-- no translation found for new_incoming_messages_one (3200934730744395520) -->
+    <skip />
+    <!-- no translation found for new_incoming_messages_many (1071412616544342913) -->
+    <skip />
     <string name="show" msgid="7114006150083237343">"Zobraziť"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Rozbaliť podrobnosti o príjemcovi"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Zbaliť podrobnosti o príjemcovi"</string>
