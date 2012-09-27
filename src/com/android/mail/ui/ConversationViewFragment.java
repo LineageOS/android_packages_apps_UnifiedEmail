@@ -18,11 +18,13 @@
 package com.android.mail.ui;
 
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -65,6 +67,7 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
+import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ConversationViewState.ExpansionState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -245,10 +248,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         });
 
         if (mConversation.conversationBaseUri != null &&
-                !TextUtils.isEmpty(mConversation.conversationCookie)) {
+                !Utils.isEmpty(mAccount.accoutCookieQueryUri)) {
             // Set the cookie for this base url
-            new SetCookieTask(mConversation.conversationBaseUri.toString(),
-                    mConversation.conversationCookie).execute();
+            new SetCookieTask(getContext(), mConversation.conversationBaseUri,
+                    mAccount.accoutCookieQueryUri).execute();
         }
     }
 
@@ -1095,19 +1098,42 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private class SetCookieTask extends AsyncTask<Void, Void, Void> {
         final String mUri;
-        final String mCookie;
+        final Uri mAccountCookieQueryUri;
+        final ContentResolver mResolver;
 
-        SetCookieTask(String uri, String cookie) {
-            mUri = uri;
-            mCookie = cookie;
+        SetCookieTask(Context context, Uri baseUri, Uri accountCookieQueryUri) {
+            mUri = baseUri.toString();
+            mAccountCookieQueryUri = accountCookieQueryUri;
+            mResolver = context.getContentResolver();
         }
 
         @Override
         public Void doInBackground(Void... args) {
-            final CookieSyncManager csm =
-                CookieSyncManager.createInstance(getContext());
-            CookieManager.getInstance().setCookie(mUri, mCookie);
-            csm.sync();
+            // First query for the coookie string from the UI provider
+            final Cursor cookieCursor = mResolver.query(mAccountCookieQueryUri,
+                    UIProvider.ACCOUNT_COOKIE_PROJECTION, null, null, null);
+            if (cookieCursor == null) {
+                return null;
+            }
+
+            try {
+                if (cookieCursor.moveToFirst()) {
+                    final String cookie = cookieCursor.getString(
+                            cookieCursor.getColumnIndex(UIProvider.AccountCookieColumns.COOKIE));
+
+                    if (cookie != null) {
+                        final CookieSyncManager csm =
+                            CookieSyncManager.createInstance(getContext());
+                        CookieManager.getInstance().setCookie(mUri, cookie);
+                        csm.sync();
+                    }
+                }
+
+            } finally {
+                cookieCursor.close();
+            }
+
+
             return null;
         }
     }

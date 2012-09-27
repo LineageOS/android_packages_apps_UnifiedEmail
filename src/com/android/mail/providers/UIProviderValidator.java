@@ -46,6 +46,13 @@ public class UIProviderValidator {
     }
 
     /**
+     * Validates and returns the projection that can be used for a account cookie query.
+     */
+    public static String[] validateAccountCookieProjection(String[] projection) {
+        return getValidProjection(projection, UIProvider.ACCOUNT_COOKIE_PROJECTION);
+    }
+
+    /**
      * Validates and returns the projection that can be used for a conversation query.
      */
     public static String[] validateConversationProjection(String[] projection) {
