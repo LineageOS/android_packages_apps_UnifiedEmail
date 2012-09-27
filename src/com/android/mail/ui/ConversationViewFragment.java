@@ -201,6 +201,12 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     public void onActivityCreated(Bundle savedInstanceState) {
         LogUtils.d(LOG_TAG, "IN CVF.onActivityCreated, this=%s visible=%s", this, isUserVisible());
         super.onActivityCreated(savedInstanceState);
+
+        if (mActivity == null || mActivity.isFinishing()) {
+            // Activity is finishing, just bail.
+            return;
+        }
+
         Context context = getContext();
         mTemplates = new HtmlConversationTemplates(context);
 
