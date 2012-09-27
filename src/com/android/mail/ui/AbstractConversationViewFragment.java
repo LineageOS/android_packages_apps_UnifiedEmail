@@ -18,8 +18,8 @@
 package com.android.mail.ui;
 
 import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorInflater;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -56,9 +56,9 @@ import com.android.mail.ContactInfoSource;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.SenderInfoLoader;
-import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.ConversationViewAdapter.ConversationAccountController;
 import com.android.mail.browse.ConversationViewHeader.ConversationViewHeaderCallbacks;
+import com.android.mail.browse.MessageCursor;
 import com.android.mail.browse.MessageCursor.ConversationController;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
 import com.android.mail.providers.Account;
@@ -68,14 +68,11 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.ListParams;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.AccountCapabilities;
-import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import java.util.Arrays;
 import java.util.List;
@@ -109,7 +106,11 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     protected boolean mEnableContentReadySignal;
     private MessageCursor mCursor;
     private Context mContext;
-    public boolean mUserVisible;
+    /**
+     * A backwards-compatible version of {{@link #getUserVisibleHint()}. Like the framework flag,
+     * this flag is saved and restored.
+     */
+    private boolean mUserVisible;
     private View mProgressView;
     private View mBackgroundView;
     private View mInfoView;
@@ -117,7 +118,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     /**
      * Parcelable state of the conversation view. Can safely be used without null checking any time
-     * after {@link #onCreateView(android.view.LayoutInflater, android.view.ViewGroup, Bundle)}.
+     * after {@link #onCreate(Bundle)}.
      */
     protected ConversationViewState mViewState;
 
@@ -161,6 +162,11 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     };
     private TextView mSendersView;
     private TextView mSubjectView;
+
+    private static final String BUNDLE_VIEW_STATE =
+            AbstractConversationViewFragment.class.getName() + "viewstate";
+    private static final String BUNDLE_USER_VISIBLE =
+            AbstractConversationViewFragment.class.getName() + "uservisible";
 
     public static Bundle makeBasicArgs(Account account, Folder folder) {
         Bundle args = new Bundle();
@@ -226,6 +232,13 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         LogUtils.d(LOG_TAG, "onCreate in ConversationViewFragment (this=%s)", this);
         // Not really, we just want to get a crack to store a reference to the change_folder item
         setHasOptionsMenu(true);
+
+        if (savedState != null) {
+            mViewState = savedState.getParcelable(BUNDLE_VIEW_STATE);
+            mUserVisible = savedState.getBoolean(BUNDLE_USER_VISIBLE);
+        } else {
+            mViewState = getNewViewState();
+        }
     }
 
     public void instantiateProgressIndicators(View rootView) {
@@ -433,6 +446,14 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     // END conversation header callbacks
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mViewState != null) {
+            outState.putParcelable(BUNDLE_VIEW_STATE, mViewState);
+        }
+        outState.putBoolean(BUNDLE_USER_VISIBLE, mUserVisible);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mAccountObserver.unregisterAndDestroy();
@@ -459,6 +480,10 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             }
             onUserVisibleHintChanged();
         }
+    }
+
+    public boolean isUserVisible() {
+        return mUserVisible;
     }
 
     private class MessageLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -772,5 +797,31 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     public abstract void onConversationUpdated(Conversation conversation);
+
+    /**
+     * Small Runnable-like wrapper that first checks that the Fragment is in a good state before
+     * doing any work. Ideal for use with a {@link Handler}.
+     */
+    protected abstract class FragmentRunnable implements Runnable {
+
+        private final String mOpName;
+
+        public FragmentRunnable(String opName) {
+            mOpName = opName;
+        }
+
+        public abstract void go();
+
+        @Override
+        public void run() {
+            if (!isAdded()) {
+                LogUtils.i(LOG_TAG, "Unable to run op='%s' b/c fragment is not attached: %s",
+                        mOpName, AbstractConversationViewFragment.this);
+                return;
+            }
+            go();
+        }
+
+    }
 
 }

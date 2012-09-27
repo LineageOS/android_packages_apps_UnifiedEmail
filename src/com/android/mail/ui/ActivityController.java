@@ -309,9 +309,4 @@ public interface ActivityController extends LayoutListener,
      * Called when the user has ended drag/drop.
      */
     void stopDragMode();
-
-    /**
-     * Called when there is an error loading the conversation the user selected.
-     */
-    void onConversationLoadError();
 }

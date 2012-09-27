@@ -62,7 +62,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     private WebViewClient mWebViewClient = new AbstractConversationWebViewClient() {
         @Override
         public void onPageFinished(WebView view, String url) {
-            if (mUserVisible) {
+            if (isUserVisible()) {
                 onConversationSeen();
             }
 
@@ -130,7 +130,6 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
-        mViewState = getNewViewState();
         return rootView;
     }
 

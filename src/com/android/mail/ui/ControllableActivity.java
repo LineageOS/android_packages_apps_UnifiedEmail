@@ -113,9 +113,4 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
     void startDragMode();
 
     void stopDragMode();
-
-    /**
-     * Called when there is an error loading the conversation the user is trying to view.
-     */
-    void onConversationLoadError();
 }
