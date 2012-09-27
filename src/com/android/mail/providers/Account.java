@@ -167,6 +167,12 @@ public class Account extends android.accounts.Account implements Parcelable {
     public final Uri viewIntentProxyUri;
 
     /**
+     * URI for querying for the account cookies to be used when displaying inline content in a
+     * conversation
+     */
+    public final Uri accoutCookieQueryUri;
+
+    /**
      * Transient cache of parsed {@link #accountFromAddresses}, plus an entry for the main account
      * address.
      */
@@ -209,6 +215,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                     manualSyncUri);
             json.put(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI,
                     viewIntentProxyUri);
+            json.put(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI, accoutCookieQueryUri);
             if (settings != null) {
                 json.put(SETTINGS_KEY, settings.toJSON());
             }
@@ -294,6 +301,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 .getValidUri(json.optString(UIProvider.AccountColumns.MANUAL_SYNC_URI));
         viewIntentProxyUri = Utils
                 .getValidUri(json.optString(UIProvider.AccountColumns.VIEW_INTENT_PROXY_URI));
+        accoutCookieQueryUri = Utils.getValidUri(
+                json.optString(UIProvider.AccountColumns.ACCOUNT_COOKIE_QUERY_URI));
 
         final Settings jsonSettings = Settings.newInstance(json.optJSONObject(SETTINGS_KEY));
         if (jsonSettings != null) {
@@ -330,6 +339,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         defaultRecentFolderListUri = in.readParcelable(null);
         manualSyncUri = in.readParcelable(null);
         viewIntentProxyUri = in.readParcelable(null);
+        accoutCookieQueryUri = in.readParcelable(null);
         final String serializedSettings = in.readString();
         final Settings parcelSettings = Settings.newInstance(serializedSettings);
         if (parcelSettings != null) {
@@ -378,6 +388,8 @@ public class Account extends android.accounts.Account implements Parcelable {
                 .getString(UIProvider.ACCOUNT_MANUAL_SYNC_URI_COLUMN));
         viewIntentProxyUri = Utils.getValidUri(cursor
                 .getString(UIProvider.ACCOUNT_VIEW_INTENT_PROXY_URI_COLUMN));
+        accoutCookieQueryUri = Utils.getValidUri(cursor
+                .getString(UIProvider.ACCOUNT_COOKIE_QUERY_URI_COLUMN));
         settings = new Settings(cursor);
     }
 
