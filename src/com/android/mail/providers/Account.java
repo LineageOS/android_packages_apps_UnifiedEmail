@@ -408,8 +408,21 @@ public class Account extends android.accounts.Account implements Parcelable {
         return (capabilities & capability) != 0;
     }
 
-    public boolean isAccountIntialized() {
-        return (syncStatus & SyncStatus.INITIAL_SYNC_NEEDED) != SyncStatus.INITIAL_SYNC_NEEDED;
+    public boolean isAccountSyncRequired() {
+        return (syncStatus & SyncStatus.INITIAL_SYNC_NEEDED) == SyncStatus.INITIAL_SYNC_NEEDED;
+    }
+
+    public boolean isAccountInitializationRequired() {
+        return (syncStatus & SyncStatus.ACCOUNT_INITIALIZATION_REQUIRED) ==
+                SyncStatus.ACCOUNT_INITIALIZATION_REQUIRED;
+    }
+
+    /**
+     * Returns true when when the UI provider has indicated that the account has been initialized,
+     * and sync is not required.
+     */
+    public boolean isAccountReady() {
+        return !isAccountInitializationRequired() && !isAccountSyncRequired();
     }
 
     @Override
