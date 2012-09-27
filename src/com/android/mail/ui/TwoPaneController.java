@@ -469,15 +469,13 @@ public final class TwoPaneController extends AbstractActivityController {
                     mToastBar.setLayoutParams(params);
                     mToastBar.setConversationMode(true);
                 }
-                mToastBar.show(
-                        getUndoClickedListener(convList.getAnimatedAdapter()),
-                        0,
-                        Html.fromHtml(op.getDescription(mActivity.getActivityContext(),
-                                mFolder)),
-                        true, /* showActionIcon */
-                        R.string.undo,
-                        true,  /* replaceVisibleToast */
-                        op);
+                if (convList != null) {
+                    mToastBar.show(getUndoClickedListener(convList.getAnimatedAdapter()), 0, Html
+                            .fromHtml(op.getDescription(mActivity.getActivityContext(), mFolder)),
+                            true, /* showActionIcon */
+                            R.string.undo, true, /* replaceVisibleToast */
+                            op);
+                }
                 break;
         }
     }
