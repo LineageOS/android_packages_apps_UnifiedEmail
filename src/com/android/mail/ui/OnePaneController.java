@@ -238,7 +238,11 @@ public final class OnePaneController extends AbstractActivityController {
         // ViewPager and just remove the previously visible fragment
         // e.g. conversation list, or possibly label list?).
         final Fragment f = fm.findFragmentById(R.id.content_pane);
-        if (f != null) {
+        // FragmentManager#findFragmentById can return fragments that are not added to the activity.
+        // We want to make sure that we don't attempt to remove fragments that are not added to the
+        // activity, as when the transaction is popped off, the FragmentManager will attempt to
+        // readd the same fragment twice
+        if (f != null && f.isAdded()) {
             // TODO: improve this transition
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.remove(f);
