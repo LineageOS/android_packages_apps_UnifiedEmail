@@ -196,6 +196,10 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             LogUtils.i(LOG_TAG, "CONV RENDER: existing cursor is null, rendering from scratch");
             return;
         }
+        if (mActivity == null || mActivity.isFinishing()) {
+            // Activity is finishing, just bail.
+            return;
+        }
         renderMessageBodies(newCursor, mEnableContentReadySignal);
     }
 
