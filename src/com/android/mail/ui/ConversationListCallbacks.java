@@ -43,6 +43,18 @@ public interface ConversationListCallbacks {
     void setCurrentConversation(Conversation c);
 
     /**
+     * Returns whether the initial conversation has begun but not finished loading. If this returns
+     * true, you can register to be told when the load in progress finishes
+     * ({@link #registerConversationLoadedObserver(DataSetObserver)}).
+     * <p>
+     * This flag only applies to the first conversation in a set (e.g. when using ViewPager).
+     *
+     * @return true if the initial conversation has begun but not finished loading
+     */
+    boolean isInitialConversationLoading();
+    void registerConversationLoadedObserver(DataSetObserver observer);
+    void unregisterConversationLoadedObserver(DataSetObserver observer);
+    /**
      * Coordinates actions that might occur in response to a conversation that has finished loading
      * and is now user-visible.
      */
