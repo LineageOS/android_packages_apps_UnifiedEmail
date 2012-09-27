@@ -150,6 +150,7 @@ public class UIProvider {
             AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
             AccountColumns.MANUAL_SYNC_URI,
             AccountColumns.VIEW_INTENT_PROXY_URI,
+            AccountColumns.ACCOUNT_COOKIE_QUERY_URI,
             AccountColumns.SettingsColumns.SIGNATURE,
             AccountColumns.SettingsColumns.AUTO_ADVANCE,
             AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE,
@@ -193,23 +194,24 @@ public class UIProvider {
     public static final int ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN = 22;
     public static final int ACCOUNT_MANUAL_SYNC_URI_COLUMN = 23;
     public static final int ACCOUNT_VIEW_INTENT_PROXY_URI_COLUMN = 24;
+    public static final int ACCOUNT_COOKIE_QUERY_URI_COLUMN = 25;
 
-    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 25;
-    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 26;
-    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 27;
-    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 28;
-    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 29;
-    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 30;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 31;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 32;
-    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 33;
-    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 34;
-    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN = 35;
-    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 36;
-    public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 37;
-    public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 38;
-    public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 39;
-    public static final int ACCOUNT_SETTINGS_SETUP_INTENT_URI = 40;
+    public static final int ACCOUNT_SETTINGS_SIGNATURE_COLUMN = 26;
+    public static final int ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN = 27;
+    public static final int ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN = 28;
+    public static final int ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN = 29;
+    public static final int ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN = 30;
+    public static final int ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN = 31;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN = 32;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN = 33;
+    public static final int ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN = 34;
+    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN = 35;
+    public static final int ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN = 36;
+    public static final int ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN = 37;
+    public static final int ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN = 38;
+    public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 39;
+    public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 40;
+    public static final int ACCOUNT_SETTINGS_SETUP_INTENT_URI = 41;
 
     public static final class AccountCapabilities {
         /**
@@ -470,6 +472,14 @@ public class UIProvider {
          * Optional URI of this account for proxying view intents.
          */
         public static final String VIEW_INTENT_PROXY_URI = "viewProxyUri";
+        /**
+         * Optional URI for querying for the cookie needed for accessing inline content.  The cookie
+         * specified here will be set on the uri specified in the
+         * {@link ConversationColumns#CONVERSATION_BASE_URI} column. The cursor returned from this
+         * query is expected have one row, where the columns are specified in
+         * {@link AccountCookieColumns}
+         */
+        public static final String ACCOUNT_COOKIE_QUERY_URI = "accountCookieUri";
 
         public static final class SettingsColumns {
             /**
@@ -560,6 +570,17 @@ public class UIProvider {
              */
             public static final String SETUP_INTENT_URI = "setup_intent_uri";
         }
+    }
+
+    public static final String[] ACCOUNT_COOKIE_PROJECTION = {
+        AccountCookieColumns.COOKIE
+    };
+
+    public static final class AccountCookieColumns {
+        /**
+         * String column containing the cookie string for this account.
+         */
+        public static final String COOKIE = "cookie";
     }
 
     public static final class SearchQueryParameters {
@@ -844,7 +865,6 @@ public class UIProvider {
         ConversationColumns.ACCOUNT_URI,
         ConversationColumns.SENDER_INFO,
         ConversationColumns.CONVERSATION_BASE_URI,
-        ConversationColumns.CONVERSATION_COOKIE,
         ConversationColumns.REMOTE
     };
 
@@ -874,8 +894,7 @@ public class UIProvider {
     public static final int CONVERSATION_ACCOUNT_URI_COLUMN = 21;
     public static final int CONVERSATION_SENDER_INFO_COLUMN = 22;
     public static final int CONVERSATION_BASE_URI_COLUMN = 23;
-    public static final int CONVERSATION_COOKIE_COLUMN = 24;
-    public static final int CONVERSATION_REMOTE_COLUMN = 25;
+    public static final int CONVERSATION_REMOTE_COLUMN = 24;
 
     public static final class ConversationSendingState {
         public static final int OTHER = 0;
@@ -1042,12 +1061,6 @@ public class UIProvider {
          * when handling relative urls in the message content
          */
         public static final String CONVERSATION_BASE_URI = "conversationBaseUri";
-        /**
-         * This String column contains the cookie needed for accessing inline content.  The cookie
-         * specified here will be set on the uri specified in the {@link CONVERSATION_BASE_URI}
-         * column.
-         */
-        public static final String CONVERSATION_COOKIE = "conversationCookie";
 
         private ConversationColumns() {
         }
