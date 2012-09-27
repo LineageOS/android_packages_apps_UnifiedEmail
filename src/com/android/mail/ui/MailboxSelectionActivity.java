@@ -20,7 +20,6 @@ import com.android.mail.providers.Account;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
-import com.android.mail.utils.LogUtils;
 
 import java.util.ArrayList;
 
@@ -364,7 +363,7 @@ public class MailboxSelectionActivity extends ListActivity implements OnClickLis
             ArrayList<Account> initializedAccounts = new ArrayList<Account>();
             do {
                 account = new Account(data);
-                if (account.isAccountIntialized()) {
+                if (account.isAccountReady()) {
                     initializedAccounts.add(account);
                 }
                 accounts.add(account);

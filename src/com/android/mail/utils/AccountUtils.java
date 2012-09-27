@@ -18,9 +18,6 @@ package com.android.mail.utils;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.UIProvider;
-import com.android.mail.providers.UIProvider.SyncStatus;
-
-import android.accounts.AccountManagerCallback;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -82,7 +79,7 @@ public class AccountUtils {
             if (accountsCursor != null) {
                 while (accountsCursor.moveToNext()) {
                     account = new Account(accountsCursor);
-                    if (account.isAccountIntialized()) {
+                    if (!account.isAccountSyncRequired()) {
                         accounts.add(account);
                     }
                 }
