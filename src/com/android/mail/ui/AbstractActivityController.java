@@ -724,21 +724,6 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void onConversationLoadError() {
-        // Jump back to conversation list view. this can happen if connectivity is interrupted while
-        // looking at a live label.
-        // {@link FragmentTransaction} cannot be committed inside {@link
-        // LoaderManager.LoaderCallbacks<D>#onLoadFinished(Loader<D>, D)}. So we post a {@link
-        // Runnable} to run later.
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                showConversationList(mConvListContext);
-            }
-        });
-    }
-
-    @Override
     public void onConversationListVisibilityChanged(boolean visible) {
         informCursorVisiblity(visible);
     }
@@ -1665,6 +1650,16 @@ public abstract class AbstractActivityController implements ActivityController {
         mFolderObservable.unregisterObserver(observer);
     }
 
+    @Override
+    public void registerConversationLoadedObserver(DataSetObserver observer) {
+        mPagerController.registerConversationLoadedObserver(observer);
+    }
+
+    @Override
+    public void unregisterConversationLoadedObserver(DataSetObserver observer) {
+        mPagerController.unregisterConversationLoadedObserver(observer);
+    }
+
     /**
      * Returns true if the number of accounts is different, or if the current account has been
      * removed from the device
@@ -2405,6 +2400,11 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void onConversationSeen(Conversation conv) {
         mPagerController.onConversationSeen(conv);
+    }
+
+    @Override
+    public boolean isInitialConversationLoading() {
+        return mPagerController.isInitialConversationLoading();
     }
 
     private class ConversationListLoaderCallbacks implements
