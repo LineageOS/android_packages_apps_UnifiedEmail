@@ -18,6 +18,8 @@
 package com.android.mail.browse;
 
 import android.app.FragmentManager;
+import android.database.DataSetObservable;
+import android.database.DataSetObserver;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
@@ -58,6 +60,14 @@ public class ConversationPagerController {
     private ActivityController mActivityController;
     private SubjectDisplayChanger mSubjectDisplayChanger;
     private boolean mShown;
+    /**
+     * True when the initial conversation passed to show() is busy loading. We assume that the
+     * first {@link #onConversationSeen(Conversation)} callback is triggered by that initial
+     * conversation, and unset this flag when first signaled. Side-to-side paging will not re-enable
+     * this flag, since it's only needed for initial conversation load.
+     */
+    private boolean mInitialConversationLoading;
+    private final DataSetObservable mLoadedObservable = new DataSetObservable();
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -82,6 +92,8 @@ public class ConversationPagerController {
 
     public void show(Account account, Folder folder, Conversation initialConversation,
             boolean changeVisibility) {
+        mInitialConversationLoading = true;
+
         if (mShown) {
             LogUtils.d(LOG_TAG, "IN CPC.show, but already shown");
             // optimize for the case where account+folder are the same, when we can just shift
@@ -143,6 +155,10 @@ public class ConversationPagerController {
         cleanup();
     }
 
+    public boolean isInitialConversationLoading() {
+        return mInitialConversationLoading;
+    }
+
     public void onDestroy() {
         // need to release resources before a configuration change kills the activity and controller
         cleanup();
@@ -158,13 +174,30 @@ public class ConversationPagerController {
     }
 
     public void onConversationSeen(Conversation conv) {
+        if (mPagerAdapter == null) {
+            return;
+        }
+
         // take the adapter out of singleton mode to begin loading the
         // other non-visible conversations
-        if (mPagerAdapter != null && mPagerAdapter.isSingletonMode()) {
+        if (mPagerAdapter.isSingletonMode()) {
             LogUtils.i(LOG_TAG, "IN pager adapter, finished loading primary conversation," +
                     " switching to cursor mode to load other conversations");
             mPagerAdapter.setSingletonMode(false);
         }
+
+        if (mInitialConversationLoading) {
+            mInitialConversationLoading = false;
+            mLoadedObservable.notifyChanged();
+        }
+    }
+
+    public void registerConversationLoadedObserver(DataSetObserver observer) {
+        mLoadedObservable.registerObserver(observer);
+    }
+
+    public void unregisterConversationLoadedObserver(DataSetObserver observer) {
+        mLoadedObservable.unregisterObserver(observer);
     }
 
     /**
