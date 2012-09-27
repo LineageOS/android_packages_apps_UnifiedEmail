@@ -28,6 +28,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
@@ -81,7 +82,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         MessageHeaderViewCallbacks,
         SuperCollapsedBlock.OnClickListener,
         ConversationController,
-        ConversationAccountController {
+        ConversationAccountController,
+        OnLayoutChangeListener {
 
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
@@ -110,6 +112,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private ConversationViewAdapter mAdapter;
 
     private boolean mViewsCreated;
+    // True if we attempted to render before the views were laid out
+    // We will render immediately once layout is done
+    private boolean mNeedRender;
 
     /**
      * Temporary string containing the message bodies of the messages within a super-collapsed
@@ -943,10 +948,15 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
                 + ", but not due to incoming message. rendering.");
 
-        // TODO: if this is not user-visible, delay render until user-visible
-        // fragment is done. This is needed in addition to the
-        // showConversation() delay to speed up rotation and restoration.
-        renderConversation(newCursor);
+        // if layout hasn't happened, delay render
+        // This is needed in addition to the showConversation() delay to speed
+        // up rotation and restoration.
+        if (mConversationContainer.getWidth() == 0) {
+            mNeedRender = true;
+            mConversationContainer.addOnLayoutChangeListener(this);
+        } else {
+            renderConversation(newCursor);
+        }
     }
 
     private NewMessagesInfo getNewIncomingMessagesInfo(MessageCursor newCursor) {
@@ -1039,6 +1049,18 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mConversation = conv;
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
+        }
+    }
+
+    @Override
+    public void onLayoutChange(View v, int left, int top, int right,
+            int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        boolean sizeChanged = mNeedRender
+                && mConversationContainer.getWidth() != 0;
+        if (sizeChanged) {
+            mNeedRender = false;
+            mConversationContainer.removeOnLayoutChangeListener(this);
+            renderConversation(getMessageCursor());
         }
     }
 }
