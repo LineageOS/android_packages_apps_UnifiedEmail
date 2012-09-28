@@ -98,7 +98,7 @@ public class ConversationViewAdapter extends BaseAdapter {
             final ConversationViewHeader headerView = (ConversationViewHeader) inflater.inflate(
                     R.layout.conversation_view_header, parent, false);
             headerView.setCallbacks(mConversationCallbacks, mAccountController);
-
+            headerView.bind(this);
             headerView.setSubject(mConversation.subject, false /* notify */);
             if (mAccountController.getAccount().supportsCapability(
                     UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
@@ -110,7 +110,8 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         @Override
         public void bindView(View v, boolean measureOnly) {
-            // There is only one conversation header, so the work is done once in createView.
+            ConversationViewHeader header = (ConversationViewHeader) v;
+            header.bind(this);
         }
 
         @Override

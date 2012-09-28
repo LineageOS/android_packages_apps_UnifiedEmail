@@ -26,17 +26,22 @@ import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.ConversationAccountController;
+import com.android.mail.browse.ConversationViewAdapter.ConversationHeaderItem;
 import com.android.mail.browse.FolderSpan.FolderSpanDimensions;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.Settings;
 import com.android.mail.ui.FolderDisplayer;
+import com.android.mail.utils.LogTag;
+import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 
 /**
  * A view for the subject and folders in the conversation view. This container
@@ -70,11 +75,13 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         String getSubjectRemainder(String subject);
     }
 
+    private static final String LOG_TAG = LogTag.getLogTag();
     private TextView mSubjectView;
     private FolderSpanTextView mFoldersView;
     private ConversationViewHeaderCallbacks mCallbacks;
     private ConversationAccountController mAccountController;
     private ConversationFolderDisplayer mFolderDisplayer;
+    private ConversationHeaderItem mHeaderItem;
 
     private boolean mSizeChanged;
 
@@ -163,9 +170,28 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
 
         mFoldersView.setText(sb);
 
+        int h = measureHeight();
+        mHeaderItem.setHeight(h);
+
+        mCallbacks.onConversationViewHeaderHeightChange(h);
+
         if (notify) {
             handleSizeChanged();
         }
+    }
+
+    public void bind(ConversationHeaderItem headerItem) {
+        mHeaderItem = headerItem;
+    }
+
+    private int measureHeight() {
+        ViewGroup parent = (ViewGroup) getParent();
+        if (parent == null) {
+            LogUtils.e(LOG_TAG, "Unable to measure height of conversation header");
+            return getHeight();
+        }
+        final int h = Utils.measureViewHeight(this, parent);
+        return h;
     }
 
     /**
