@@ -833,6 +833,10 @@ public final class ConversationCursor implements Cursor {
         }
         if (pos == 0) {
             return moveToFirst();
+        } else if (pos < 0) {
+            mPosition = -1;
+            mUnderlyingCursor.moveToPosition(mPosition);
+            return false;
         } else if (pos == mPosition) {
             // Return false if we're past the end of the cursor
             return pos < getCount();
@@ -863,7 +867,7 @@ public final class ConversationCursor implements Cursor {
      * Make sure mPosition is correct after locally deleting/undeleting items
      */
     private void recalibratePosition() {
-        int pos = mPosition;
+        final int pos = mPosition;
         moveToFirst();
         moveToPosition(pos);
     }
