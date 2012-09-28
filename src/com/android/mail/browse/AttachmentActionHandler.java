@@ -72,7 +72,11 @@ public class AttachmentActionHandler {
     }
 
     public void showAttachment(int destination) {
-        if (mAttachment.isPresentLocally()) {
+        // If the caller requested that this attachments be saved to the external storage, we should
+        // verify that the it was saved there.
+        if (mAttachment.isPresentLocally() &&
+                (destination == AttachmentDestination.CACHE ||
+                        mAttachment.destination == destination)) {
             mView.viewAttachment();
         } else {
             showDownloadingDialog(destination);
