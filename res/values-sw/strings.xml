@@ -92,7 +92,7 @@
     <string name="add_cc_label" msgid="504861315425773180">"Ongeza Nakala kwa/Nakala fiche kwa"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Ongeza Nakala Fiche Kwa"</string>
     <string name="feedback" msgid="79365993169715049">"Tuma maoni"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"Msaada"</string>
+    <string name="help_and_info" msgid="7873089811705257882">"Usaidizi"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Jumuisha maandishi yaliyonukuliwa"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Nukuu maandishi"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Jibu katika mstari"</string>
@@ -144,7 +144,7 @@
     <string name="contextmenu_send_mail" msgid="8301941130009797208">"Tuma barua pepe"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"Ramani"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Shiriki kiungo"</string>
-    <string name="contextmenu_help" msgid="4651718679842414097">"Msaada"</string>
+    <string name="contextmenu_help" msgid="4651718679842414097">"Usaidizi"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"Tuma maoni"</string>
     <string name="num_selected" msgid="2943309946439316255">"<xliff:g id="NUMBER">%d</xliff:g> zilizochaguliwa"</string>
   <plurals name="move_conversation">
