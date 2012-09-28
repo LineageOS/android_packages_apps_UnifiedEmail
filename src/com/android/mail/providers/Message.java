@@ -410,7 +410,7 @@ public class Message implements Parcelable {
         return mReplyToAddresses;
     }
 
-    private String[] tokenizeAddresses(String addresses) {
+    public static String[] tokenizeAddresses(String addresses) {
         if (TextUtils.isEmpty(addresses)) {
             return new String[0];
         }
