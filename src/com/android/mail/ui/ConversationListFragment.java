@@ -453,7 +453,13 @@ public final class ConversationListFragment extends ListFragment implements
             return;
         }
         if (mAccount.settings.hideCheckboxes && !mSelectedSet.isEmpty()) {
-            ((ConversationItemView) view).toggleCheckMarkOrBeginDrag();
+            ConversationItemView toToggle;
+            if (view instanceof SwipeableConversationItemView) {
+                toToggle = ((SwipeableConversationItemView) view).getSwipeableItemView();
+            } else {
+               toToggle = (ConversationItemView) view;
+            }
+            toToggle.toggleCheckMarkOrBeginDrag();
         } else {
             viewConversation(position);
         }
