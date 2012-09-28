@@ -41,6 +41,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.ConversationListQueryParameters;
 import com.android.mail.providers.UIProvider.ConversationOperations;
+import com.android.mail.ui.ConversationListFragment;
 import com.android.mail.utils.LogUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
@@ -1805,4 +1806,19 @@ public final class ConversationCursor implements Cursor {
         return apply(context, ops);
     }
 
+    /**
+     * Do not make this method dependent on the internal mechanism of the cursor.
+     * Currently just calls the parent implementation. If this is ever overriden, take care to
+     * ensure that two references map to the same hashcode. If
+     * ConversationCursor first == ConversationCursor second,
+     * then
+     * first.hashCode() == second.hashCode().
+     * The {@link ConversationListFragment} relies on this behavior of
+     * {@link ConversationCursor#hashCode()} to avoid storing dangerous references to the cursor.
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
