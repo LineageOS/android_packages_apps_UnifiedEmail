@@ -77,7 +77,7 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
-public class ConversationItemView extends View implements SwipeableItemView {
+public class ConversationItemView extends View implements SwipeableItemView, ToggleableItem {
     // Timer.
     private static int sLayoutCount = 0;
     private static Timer sTimer; // Create the sTimer here if you need to do
