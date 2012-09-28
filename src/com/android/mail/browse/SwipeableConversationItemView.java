@@ -32,7 +32,7 @@ import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ViewMode;
 
-public class SwipeableConversationItemView extends FrameLayout {
+public class SwipeableConversationItemView extends FrameLayout implements ToggleableItem {
 
     private ConversationItemView mConversationItemView;
     private View mBackground;
@@ -111,6 +111,13 @@ public class SwipeableConversationItemView extends FrameLayout {
             mConversationItemView.startDestroyWithSwipeAnimation(listener);
         } else {
             mConversationItemView.startDestroyAnimation(listener);
+        }
+    }
+
+    @Override
+    public void toggleCheckMarkOrBeginDrag() {
+        if (mConversationItemView != null) {
+            mConversationItemView.toggleCheckMarkOrBeginDrag();
         }
     }
 }
