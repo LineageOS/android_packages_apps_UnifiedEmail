@@ -18,6 +18,7 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    style="?android:attr/spinnerDropDownItemStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <!-- In the IDs below, ABD = ActionBarDropdown -->
@@ -26,24 +27,22 @@
         android:layout_alignParentLeft="true"
         android:layout_height="@dimen/color_block_height"
         android:layout_width="@dimen/color_block_width"/>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?android:attr/spinnerDropDownItemStyle"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/account_dropdown_item_height">
-    <RelativeLayout
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/abd_folder_unread"
-        android:layout_alignParentLeft="true"
-        android:layout_width="wrap_content">
+        android:orientation="vertical"
+        android:minHeight="@dimen/account_dropdown_item_height">
         <!-- Something is strange here. Gmail1 allows for two-line label names while Gmail2 does
         not. TODO(viki): Fix. -->
         <TextView
             android:id="@+id/abd_folder_first"
             android:singleLine="true"
-            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_height="0dp"
             android:layout_width="match_parent"
+            android:layout_weight="1"
             android:ellipsize="end"
             style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title" />
         <TextView
@@ -51,13 +50,11 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:ellipsize="end"
-            android:layout_below="@id/abd_folder_first"
             style="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle" />
-    </RelativeLayout>
+    </LinearLayout>
     <TextView
         android:id="@+id/abd_folder_unread"
         android:layout_width="wrap_content"
         style="@style/UnreadCount"
         android:layout_alignParentRight="true"/>
-</RelativeLayout>
 </RelativeLayout>
