@@ -16,7 +16,6 @@
 
 package com.android.mail.compose;
 
-import android.animation.LayoutTransition;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
@@ -24,7 +23,6 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
@@ -76,7 +74,6 @@ import com.android.mail.compose.QuotedTextView.RespondInlineListener;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
 import com.android.mail.providers.Attachment;
-import com.android.mail.providers.Folder;
 import com.android.mail.providers.MailAppProvider;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.MessageModification;
@@ -96,8 +93,6 @@ import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
-import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -409,7 +404,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             // If none of the accounts are syncing, setup a watcher.
             boolean anySyncing = false;
             for (Account a : mAccounts) {
-                if (a.isAccountIntialized()) {
+                if (a.isAccountReady()) {
                     anySyncing = true;
                     break;
                 }
@@ -2851,7 +2846,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     ArrayList<Account> initializedAccounts = new ArrayList<Account>();
                     do {
                         account = new Account(data);
-                        if (account.isAccountIntialized()) {
+                        if (account.isAccountReady()) {
                             initializedAccounts.add(account);
                         }
                         accounts.add(account);

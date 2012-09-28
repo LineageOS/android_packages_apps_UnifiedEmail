@@ -52,13 +52,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
-import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationPagerController;
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
@@ -1853,19 +1851,23 @@ public abstract class AbstractActivityController implements ActivityController {
                             mAccountObservers.notifyChanged();
                         }
 
-                        // Got an update for the current account
-                        final boolean inWaitingMode = inWaitMode();
-                        if (!updatedAccount.isAccountIntialized() && !inWaitingMode) {
-                            // Transition to waiting mode
-                            showWaitForInitialization();
-                        } else if (updatedAccount.isAccountIntialized()) {
-                            if (inWaitingMode) {
-                                // Dismiss waiting mode
-                                hideWaitForInitialization();
+                        // We only want to enter or exit waiting mode if the account has been
+                        // initialized
+                        if (!updatedAccount.isAccountInitializationRequired()) {
+                            // Got an update for the current account
+                            final boolean inWaitingMode = inWaitMode();
+                            if (updatedAccount.isAccountSyncRequired() && !inWaitingMode) {
+                                // Transition to waiting mode
+                                showWaitForInitialization();
+                            } else if (!updatedAccount.isAccountSyncRequired()) {
+                                if (inWaitingMode) {
+                                    // Dismiss waiting mode
+                                    hideWaitForInitialization();
+                                }
+                            } else if (updatedAccount.isAccountSyncRequired() && inWaitingMode) {
+                                // Update the WaitFragment's account object
+                                updateWaitMode();
                             }
-                        } else if (!updatedAccount.isAccountIntialized() && inWaitingMode) {
-                            // Update the WaitFragment's account object
-                            updateWaitMode();
                         }
                     } else {
                         LogUtils.e(LOG_TAG, "Got update for account: %s with current account: %s",
