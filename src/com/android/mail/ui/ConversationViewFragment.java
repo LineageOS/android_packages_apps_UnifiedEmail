@@ -989,7 +989,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
          * sort out interesting vs. no-op cursor updates.
          */
         final boolean changed = newCursor != null && oldCursor != null
-                && newCursor.hashCode() != oldCursor.hashCode();
+                && newCursor.getStateHashCode() != oldCursor.getStateHashCode();
 
         if (oldCursor != null) {
             final NewMessagesInfo info = getNewIncomingMessagesInfo(newCursor);
@@ -1014,12 +1014,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 }
                 return;
             }
+            // cursors are different, and not due to an incoming message. fall
+            // through and render.
+            LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
+                    + ", but not due to incoming message. rendering. (%s)", this);
+        } else {
+            LogUtils.i(LOG_TAG, "CONV RENDER: initial render. (%s)", this);
         }
-
-        // cursors are different, and not due to an incoming message. fall
-        // through and render.
-        LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
-                + ", but not due to incoming message. rendering. (%s)", this);
 
         // if layout hasn't happened, delay render
         // This is needed in addition to the showConversation() delay to speed
