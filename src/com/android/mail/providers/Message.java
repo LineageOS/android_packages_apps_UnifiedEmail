@@ -193,7 +193,7 @@ public class Message implements Parcelable {
     private transient String[] mReplyToAddresses = null;
 
     private transient List<Attachment> mAttachments = null;
-    private Rfc822Tokenizer mTokenizer = new Rfc822Tokenizer();
+
     @Override
     public int describeContents() {
         return 0;
@@ -412,7 +412,7 @@ public class Message implements Parcelable {
         if (TextUtils.isEmpty(addresses)) {
             return new String[0];
         }
-        Rfc822Token[] tokens = mTokenizer.tokenize(addresses);
+        Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addresses);
         String[] strings = new String[tokens.length];
         for (int i = 0; i < tokens.length;i++) {
             strings[i] = tokens[i].toString();
