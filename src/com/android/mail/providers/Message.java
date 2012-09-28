@@ -157,6 +157,8 @@ public class Message implements Parcelable {
     public int quotedTextOffset;
     /**
      * @see UIProvider.MessageColumns#ATTACHMENTS
+     *<p>
+     * N.B. this value is NOT immutable and may change during conversation view render.
      */
     public String attachmentsJson;
     /**
@@ -421,7 +423,8 @@ public class Message implements Parcelable {
         }
         return strings;
     }
-    public synchronized List<Attachment> getAttachments() {
+
+    public List<Attachment> getAttachments() {
         if (mAttachments == null) {
             if (attachmentsJson != null) {
                 mAttachments = Attachment.fromJSONArray(attachmentsJson);
