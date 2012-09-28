@@ -309,4 +309,9 @@ public interface ActivityController extends LayoutListener,
      * Called when the user has ended drag/drop.
      */
     void stopDragMode();
+
+    /**
+     * Called when Accessibility is enabled or disabled.
+     */
+    void onAccessibilityStateChanged();
 }

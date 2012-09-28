@@ -410,7 +410,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSwipeEnabled = swipeEnabled;
         mPriorityMarkersEnabled = priorityArrowEnabled;
         mAdapter = adapter;
-        setContentDescription(mHeader.getContentDescription(mContext));
+        setContentDescription();
         requestLayout();
     }
 
@@ -469,8 +469,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         calculateTextsAndBitmaps();
         calculateCoordinates();
         if (!mHeader.isLayoutValid(mContext)) {
-            mHeader.resetContentDescription();
-            setContentDescription(mHeader.getContentDescription(mContext));
+            setContentDescription();
         }
         mHeader.validate(mContext);
 
@@ -479,6 +478,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sTimer.dumpResults();
             sTimer = new Timer();
             sLayoutCount = 0;
+        }
+    }
+
+    private void setContentDescription() {
+        if (mActivity.isAccessibilityEnabled()) {
+            mHeader.resetContentDescription();
+            setContentDescription(mHeader.getContentDescription(mContext));
         }
     }
 
@@ -504,8 +510,9 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         final boolean fontChanged = mHeader.fontColor != fontColor;
         if (fontChanged) {
             mHeader.fontColor = fontColor;
-            // When the font changes color, we want to force a layout of the sender spans to
-            // pick up the updated font color in the senders by adding/removing the activated span.
+            // When the font changes color, we want to force a layout of the
+            // sender spans to pick up the updated font color in the senders by
+            // adding/removing the activated span.
             if (mHeader.styledSenders != null) {
                 layoutSenderSpans();
             }

@@ -362,6 +362,14 @@ public class ConversationItemViewModel {
     }
 
     /**
+     * Clear cached header model objects when accessibility changes.
+     */
+
+    public static void onAccessibilityUpdated() {
+        sConversationHeaderMap.evictAll();
+    }
+
+    /**
      * Clear cached header model objects when the folder changes.
      */
     public static void onFolderUpdated(Folder folder) {
