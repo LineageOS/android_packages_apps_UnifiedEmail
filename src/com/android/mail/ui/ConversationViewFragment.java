@@ -963,6 +963,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     public void onConversationUpdated(Conversation conv) {
         final ConversationViewHeader headerView = (ConversationViewHeader) mConversationContainer
                 .findViewById(R.id.conversation_header);
+        mConversation = conv;
         if (headerView != null) {
             headerView.onConversationUpdated(conv);
         }

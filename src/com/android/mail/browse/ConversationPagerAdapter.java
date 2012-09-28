@@ -297,9 +297,11 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
                 final AbstractConversationViewFragment frag =
                         (AbstractConversationViewFragment) getFragmentAt(pos);
                 final Cursor cursor = getCursor();
-                if (frag != null && cursor.moveToPosition(pos)) {
+                if (frag != null && cursor.moveToPosition(pos) && frag.mUserVisible) {
                     // reload what we think is in the current position.
-                    frag.onConversationUpdated(new Conversation(cursor));
+                    Conversation conv = new Conversation(cursor);
+                    frag.onConversationUpdated(conv);
+                    mController.setCurrentConversation(conv);
                 }
             }
         }
