@@ -506,7 +506,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             if (mCursor == data) {
                 return;
             } else {
-                MessageCursor messageCursor = (MessageCursor) data;
+                final MessageCursor messageCursor = (MessageCursor) data;
 
                 if (LogUtils.isLoggable(LOG_TAG, LogUtils.DEBUG)) {
                     LogUtils.d(LOG_TAG, "LOADED CONVERSATION= %s", messageCursor.getDebugDump());
@@ -534,7 +534,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                     return;
                 }
                 final MessageCursor oldCursor = mCursor;
-                mCursor = (MessageCursor) data;
+                mCursor = messageCursor;
                 onMessageCursorLoadFinished(loader, mCursor, oldCursor);
             }
         }

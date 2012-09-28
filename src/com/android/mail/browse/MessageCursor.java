@@ -22,6 +22,7 @@ import android.database.CursorWrapper;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import com.android.mail.providers.Attachment;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
@@ -82,7 +83,15 @@ public class MessageCursor extends CursorWrapper {
          *
          */
         public int getStateHashCode() {
-            return Objects.hashCode(uri, read, starred, attachmentsJson);
+            return Objects.hashCode(uri, read, starred, getAttachmentsStateHashCode());
+        }
+
+        private int getAttachmentsStateHashCode() {
+            int hash = 0;
+            for (Attachment a : getAttachments()) {
+                hash += (a.uri != null ? a.uri.hashCode() : 0);
+            }
+            return hash;
         }
 
         public boolean isConversationStarred() {
@@ -143,8 +152,7 @@ public class MessageCursor extends CursorWrapper {
         }
     }
 
-    @Override
-    public int hashCode() {
+    public int getStateHashCode() {
         // overriding hashCode() and not equals() is okay, since we don't expect to use
         // MessageCursors as keys in any hash-based data structures
         int hashCode = 17;
@@ -178,10 +186,12 @@ public class MessageCursor extends CursorWrapper {
                 mConversation.subject, getStatus()));
         int pos = -1;
         while (moveToPosition(++pos)) {
-            final Message m = getMessage();
+            final ConversationMessage m = getMessage();
             sb.append(String.format(
-                    "[Message #%d uri=%s id=%d serverId=%s, from='%s' draftType=%d isSending=%s]\n",
-                    pos, m.uri, m.id, m.serverId, m.from, m.draftType, m.isSending));
+                    "[Message #%d hash=%s uri=%s id=%s serverId=%s from='%s' draftType=%d" +
+                    " isSending=%s read=%s starred=%s attJson=%s]\n",
+                    pos, m.getStateHashCode(), m.uri, m.id, m.serverId, m.from, m.draftType,
+                    m.isSending, m.read, m.starred, m.attachmentsJson));
         }
         return sb.toString();
     }
