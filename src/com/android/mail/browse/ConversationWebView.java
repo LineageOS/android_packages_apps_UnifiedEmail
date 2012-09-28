@@ -118,26 +118,24 @@ public class ConversationWebView extends WebView implements ScrollNotifier {
      */
     public void setUseSoftwareLayer(boolean useSoftware) {
         mUseSoftwareLayer = useSoftware;
-    }
+        if (useSoftware) {
+            if (sMatrix == null) {
+                final Resources res = getContext().getResources();
+                sWebviewInitialDelay = res.getInteger(R.integer.webview_initial_delay);
 
-    @Override
-    public void onFinishInflate() {
-        if (sMatrix == null) {
-            final Resources res = getContext().getResources();
-            sWebviewInitialDelay = res.getInteger(R.integer.webview_initial_delay);
+                final Display display = ((WindowManager) getContext().getSystemService(
+                        Context.WINDOW_SERVICE)).getDefaultDisplay();
+                sBitmapWidth = display.getWidth();
+                sBitmapHeight = display.getHeight();
 
-            final Display display = ((WindowManager) getContext()
-                    .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-            sBitmapWidth = display.getWidth();
-            sBitmapHeight = display.getHeight();
+                sMatrix = new Matrix();
+                sPaint = new Paint();
+            }
 
-            sMatrix = new Matrix();
-            sPaint = new Paint();
+            // Create an offscreen bitmap.
+            mBitmap = Bitmap.createBitmap(sBitmapWidth, sBitmapHeight, Bitmap.Config.RGB_565);
+            mCanvas = new Canvas(mBitmap);
         }
-
-        // Create an offscreen bitmap.
-        mBitmap = Bitmap.createBitmap(sBitmapWidth, sBitmapHeight, Bitmap.Config.RGB_565);
-        mCanvas = new Canvas(mBitmap);
     }
 
     /**
