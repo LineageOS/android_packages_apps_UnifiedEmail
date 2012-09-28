@@ -463,6 +463,7 @@ public class Account extends android.accounts.Account implements Parcelable {
         dest.writeParcelable(defaultRecentFolderListUri, 0);
         dest.writeParcelable(manualSyncUri, 0);
         dest.writeParcelable(viewIntentProxyUri, 0);
+        dest.writeParcelable(accoutCookieQueryUri, 0);
         if (settings == null) {
             LogUtils.e(LOG_TAG, "unexpected null settings object in writeToParcel");
         }
@@ -556,6 +557,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                 color == other.color &&
                 Objects.equal(defaultRecentFolderListUri, other.defaultRecentFolderListUri) &&
                 Objects.equal(viewIntentProxyUri, other.viewIntentProxyUri) &&
+                Objects.equal(accoutCookieQueryUri, other.accoutCookieQueryUri) &&
                 Objects.equal(settings, other.settings);
     }
 
@@ -567,7 +569,7 @@ public class Account extends android.accounts.Account implements Parcelable {
                         sendMessageUri, expungeMessageUri, undoUri, settingsIntentUri,
                         helpIntentUri, sendFeedbackIntentUri, reauthenticationIntentUri, syncStatus,
                         composeIntentUri, mimeType, recentFolderListUri, color,
-                        defaultRecentFolderListUri, viewIntentProxyUri);
+                        defaultRecentFolderListUri, viewIntentProxyUri, accoutCookieQueryUri);
     }
 
     /**
