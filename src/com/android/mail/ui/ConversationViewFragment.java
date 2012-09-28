@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -88,12 +89,24 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private static final String LOG_TAG = LogTag.getLogTag();
     public static final String LAYOUT_TAG = "ConvLayout";
 
-    /** Do not auto load data when create this {@link ConversationViewFragment}. */
-    public static final int NO_AUTO_LOAD = 0;
-    /** Auto load data but do not show any animation. */
-    public static final int AUTO_LOAD_BACKGROUND = 1;
-    /** Auto load data and show animation. */
-    public static final int AUTO_LOAD_VISIBLE = 2;
+    /**
+     * Default value for {@link #mLoadWaitReason}. Conversation load will happen immediately.
+     */
+    private final int LOAD_NOW = 0;
+    /**
+     * Value for {@link #mLoadWaitReason} that means we are offscreen and waiting for the visible
+     * conversation to finish loading before beginning our load.
+     * <p>
+     * When this value is set, the fragment should register with {@link ConversationListCallbacks}
+     * to know when the visible conversation is loaded. When it is unset, it should unregister.
+     */
+    private final int LOAD_WAIT_FOR_INITIAL_CONVERSATION = 1;
+    /**
+     * Value for {@link #mLoadWaitReason} used when a conversation is too heavyweight to load at
+     * all when not visible (e.g. requires network fetch, or too complex). Conversation load will
+     * wait until this fragment is visible.
+     */
+    private final int LOAD_WAIT_UNTIL_VISIBLE = 2;
 
     private ConversationContainer mConversationContainer;
 
@@ -126,13 +139,30 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private int  mMaxAutoLoadMessages;
 
-    private boolean mDeferredConversationLoad;
+    /**
+     * If this conversation fragment is not visible, and it's inappropriate to load up front,
+     * this is the reason we are waiting. This flag should be cleared once it's okay to load
+     * the conversation.
+     */
+    private int mLoadWaitReason = LOAD_NOW;
 
     private boolean mEnableContentReadySignal;
 
     private ContentSizeChangeListener mWebViewSizeChangeListener;
 
-    private static final String BUNDLE_VIEW_STATE = "viewstate";
+    private final DataSetObserver mLoadedObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            getHandler().post(new FragmentRunnable("delayedConversationLoad") {
+                @Override
+                public void go() {
+                    LogUtils.d(LOG_TAG, "CVF load observer fired, this=%s",
+                            ConversationViewFragment.this);
+                    handleDelayedConversationLoad();
+                }
+            });
+        }
+    };
 
     private static final boolean DEBUG_DUMP_CONVERSATION_HTML = false;
     private static final boolean DISABLE_OFFSCREEN_LOADING = false;
@@ -169,8 +199,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        LogUtils.d(LOG_TAG, "IN CVF.onActivityCreated, this=%s subj=%s", this,
-                mConversation.subject);
+        LogUtils.d(LOG_TAG, "IN CVF.onActivityCreated, this=%s visible=%s", this, isUserVisible());
         super.onActivityCreated(savedInstanceState);
         Context context = getContext();
         mTemplates = new HtmlConversationTemplates(context);
@@ -192,7 +221,22 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(getActivity()));
 
-        showConversation();
+        // Defer the call to initLoader with a Handler.
+        // We want to wait until we know which fragments are present and their final visibility
+        // states before going off and doing work. This prevents extraneous loading from occurring
+        // as the ViewPager shifts about before the initial position is set.
+        //
+        // e.g. click on item #10
+        // ViewPager.setAdapter() actually first loads #0 and #1 under the assumption that #0 is
+        // the initial primary item
+        // Then CPC immediately sets the primary item to #10, which tears down #0/#1 and sets up
+        // #9/#10/#11.
+        getHandler().post(new FragmentRunnable("showConversation") {
+            @Override
+            public void go() {
+                showConversation();
+            }
+        });
 
         if (mConversation.conversationBaseUri != null &&
                 !TextUtils.isEmpty(mConversation.conversationCookie)) {
@@ -205,11 +249,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     @Override
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            mViewState = savedInstanceState.getParcelable(BUNDLE_VIEW_STATE);
-        } else {
-            mViewState = getNewViewState();
-        }
 
         View rootView = inflater.inflate(R.layout.conversation_view, container, false);
         mConversationContainer = (ConversationContainer) rootView
@@ -290,18 +329,19 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (mViewState != null) {
-            outState.putParcelable(BUNDLE_VIEW_STATE, mViewState);
-        }
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mConversationContainer.setOverlayAdapter(null);
         mAdapter = null;
+        resetLoadWaiting(); // be sure to unregister any active load observer
         mViewsCreated = false;
+    }
+
+    private void resetLoadWaiting() {
+        if (mLoadWaitReason == LOAD_WAIT_FOR_INITIAL_CONVERSATION) {
+            getListController().unregisterConversationLoadedObserver(mLoadedObserver);
+        }
+        mLoadWaitReason = LOAD_NOW;
     }
 
     @Override
@@ -324,38 +364,69 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     @Override
     public void onUserVisibleHintChanged() {
-        if (mUserVisible && mViewsCreated) {
-            Cursor cursor = getMessageCursor();
-            if (cursor == null && mDeferredConversationLoad) {
-                // load
-                LogUtils.v(LOG_TAG, "Fragment is now user-visible, showing conversation: %s",
-                        mConversation.uri);
-                showConversation();
-                mDeferredConversationLoad = false;
-            } else {
-                onConversationSeen();
-            }
-        } else if (!mUserVisible) {
+        final boolean userVisible = isUserVisible();
+
+        if (!userVisible) {
             dismissLoadingStatus();
+        } else if (mViewsCreated) {
+            if (getMessageCursor() != null) {
+                LogUtils.d(LOG_TAG, "Fragment is now user-visible, onConversationSeen: %s", this);
+                onConversationSeen();
+            } else if (isLoadWaiting()) {
+                LogUtils.d(LOG_TAG, "Fragment is now user-visible, showing conversation: %s", this);
+                handleDelayedConversationLoad();
+            }
         }
     }
 
+    /**
+     * Will either call initLoader now to begin loading, or set {@link #mLoadWaitReason} and do
+     * nothing (in which case you should later call {@link #handleDelayedConversationLoad()}).
+     */
     private void showConversation() {
-        final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING
-                || (mConversation.isRemote
-                        || mConversation.getNumMessages() > mMaxAutoLoadMessages);
-        if (!mUserVisible && disableOffscreenLoading) {
-            LogUtils.v(LOG_TAG, "Fragment not user-visible, not showing conversation: %s",
-                    mConversation.uri);
-            mDeferredConversationLoad = true;
-            return;
+        final int reason;
+
+        if (isUserVisible()) {
+            LogUtils.i(LOG_TAG,
+                    "SHOWCONV: CVF is user-visible, immediately loading conversation (%s)", this);
+            reason = LOAD_NOW;
+        } else {
+            final boolean disableOffscreenLoading = DISABLE_OFFSCREEN_LOADING
+                    || (mConversation.isRemote
+                            || mConversation.getNumMessages() > mMaxAutoLoadMessages);
+
+            // When not visible, we should not immediately load if either this conversation is
+            // too heavyweight, or if the main/initial conversation is busy loading.
+            if (disableOffscreenLoading) {
+                reason = LOAD_WAIT_UNTIL_VISIBLE;
+                LogUtils.i(LOG_TAG, "SHOWCONV: CVF waiting until visible to load (%s)", this);
+            } else if (getListController().isInitialConversationLoading()) {
+                reason = LOAD_WAIT_FOR_INITIAL_CONVERSATION;
+                LogUtils.i(LOG_TAG, "SHOWCONV: CVF waiting for initial to finish (%s)", this);
+                getListController().registerConversationLoadedObserver(mLoadedObserver);
+            } else {
+                LogUtils.i(LOG_TAG,
+                        "SHOWCONV: CVF is not visible, but no reason to wait. loading now. (%s)",
+                        this);
+                reason = LOAD_NOW;
+            }
         }
-        LogUtils.v(LOG_TAG,
-                "Fragment is short or user-visible, immediately rendering conversation: %s",
-                mConversation.uri);
+
+        mLoadWaitReason = reason;
+        if (mLoadWaitReason == LOAD_NOW) {
+            startConversationLoad();
+        }
+    }
+
+    private void handleDelayedConversationLoad() {
+        resetLoadWaiting();
+        startConversationLoad();
+    }
+
+    private void startConversationLoad() {
         mWebView.setVisibility(View.VISIBLE);
         getLoaderManager().initLoader(MESSAGE_LOADER, Bundle.EMPTY, getMessageLoaderCallbacks());
-        if (mUserVisible) {
+        if (isUserVisible()) {
             final SubjectDisplayChanger sdc = mActivity.getSubjectDisplayChanger();
             if (sdc != null) {
                 sdc.setSubject(mConversation.subject);
@@ -365,6 +436,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         // conversation. Ielieve this is better done by making sure don't show loading status
         // until XX ms have passed without loading completed.
         showLoadingStatus();
+    }
+
+    private boolean isLoadWaiting() {
+        return mLoadWaitReason != LOAD_NOW;
     }
 
     private void renderConversation(MessageCursor messageCursor) {
@@ -712,6 +787,23 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         return mAccount;
     }
 
+    private void ensureContentSizeChangeListener() {
+        if (mWebViewSizeChangeListener == null) {
+            mWebViewSizeChangeListener = new ConversationWebView.ContentSizeChangeListener() {
+                @Override
+                public void onHeightChange(int h) {
+                    // When WebKit says the DOM height has changed, re-measure
+                    // bodies and re-position their headers.
+                    // This is separate from the typical JavaScript DOM change
+                    // listeners because cases like NARROW_COLUMNS text reflow do not trigger DOM
+                    // events.
+                    mWebView.loadUrl("javascript:measurePositions();");
+                }
+            };
+        }
+        mWebView.setContentSizeChangeListener(mWebViewSizeChangeListener);
+    }
+
     private class ConversationWebViewClient extends AbstractConversationWebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -728,16 +820,18 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
             super.onPageFinished(view, url);
 
+            ensureContentSizeChangeListener();
+
             // TODO: save off individual message unread state (here, or in onLoadFinished?) so
             // 'mark unread' restores the original unread state for each individual message
 
-            if (mUserVisible) {
+            if (isUserVisible()) {
                 onConversationSeen();
             }
             if (!mEnableContentReadySignal) {
-                notifyConversationLoaded(mConversation);
                 dismissLoadingStatus();
             }
+
             // We are not able to use the loader manager unless this fragment is added to the
             // activity
             if (isAdded()) {
@@ -755,35 +849,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return mViewsCreated && super.shouldOverrideUrlLoading(view, url);
         }
-    }
-
-    /**
-     * Notifies the {@link ConversationViewable.ConversationCallbacks} that the conversation has
-     * been loaded.
-     */
-    public void notifyConversationLoaded(Conversation c) {
-        if (mWebViewSizeChangeListener == null) {
-            mWebViewSizeChangeListener = new ConversationWebView.ContentSizeChangeListener() {
-                @Override
-                public void onHeightChange(int h) {
-                    // When WebKit says the DOM height has changed, re-measure
-                    // bodies and re-position their headers.
-                    // This is separate from the typical JavaScript DOM change
-                    // listeners because cases like NARROW_COLUMNS text reflow do not trigger DOM
-                    // events.
-                    mWebView.loadUrl("javascript:measurePositions();");
-                }
-            };
-        }
-        mWebView.setContentSizeChangeListener(mWebViewSizeChangeListener);
-    }
-
-    /**
-     * Notifies the {@link ConversationViewable.ConversationCallbacks} that the conversation has
-     * failed to load.
-     */
-    protected void notifyConversationLoadError(Conversation c) {
-        mActivity.onConversationLoadError();
     }
 
     /**
@@ -857,7 +922,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
 
         private void showConversation(Conversation conv) {
-            notifyConversationLoaded(conv);
             dismissLoadingStatus();
         }
 
@@ -926,7 +990,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 // senders
                 // (to avoid a new message from losing the user's focus)
                 LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
-                        + ", holding cursor for new incoming message");
+                        + ", holding cursor for new incoming message (%s)", this);
                 showNewMessageNotification(info);
                 return;
             }
@@ -934,10 +998,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             if (!changed) {
                 final boolean processedInPlace = processInPlaceUpdates(newCursor, oldCursor);
                 if (processedInPlace) {
-                    LogUtils.i(LOG_TAG, "CONV RENDER: processed update(s) in place");
+                    LogUtils.i(LOG_TAG, "CONV RENDER: processed update(s) in place (%s)", this);
                 } else {
                     LogUtils.i(LOG_TAG, "CONV RENDER: uninteresting update"
-                            + ", ignoring this conversation update");
+                            + ", ignoring this conversation update (%s)", this);
                 }
                 return;
             }
@@ -946,7 +1010,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         // cursors are different, and not due to an incoming message. fall
         // through and render.
         LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
-                + ", but not due to incoming message. rendering.");
+                + ", but not due to incoming message. rendering. (%s)", this);
 
         // if layout hasn't happened, delay render
         // This is needed in addition to the showConversation() delay to speed
