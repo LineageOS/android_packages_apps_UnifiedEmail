@@ -501,22 +501,22 @@ public class ConversationItemView extends View implements SwipeableItemView {
         }
         // Update font color.
         final int fontColor = getFontColor(sDefaultTextColor);
-        final boolean fontChanged;
-        if (mHeader.fontColor != fontColor) {
-            fontChanged = true;
+        final boolean fontChanged = mHeader.fontColor != fontColor;
+        if (fontChanged) {
             mHeader.fontColor = fontColor;
-        } else {
-            fontChanged = false;
+            // When the font changes color, we want to force a layout of the sender spans to
+            // pick up the updated font color in the senders by adding/removing the activated span.
+            if (mHeader.styledSenders != null) {
+                layoutSenderSpans();
+            }
         }
-
-        boolean isUnread = mHeader.unread;
 
         final boolean checkboxEnabled = mCheckboxesEnabled;
         if (mHeader.checkboxVisible != checkboxEnabled) {
             mHeader.checkboxVisible = checkboxEnabled;
         }
 
-        // Update background.
+        final boolean isUnread = mHeader.unread;
         updateBackground(isUnread);
 
         if (mHeader.isLayoutValid(mContext)) {
@@ -524,7 +524,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
             if (fontChanged) {
                 layoutSubjectSpans(isUnread);
                 layoutSubject();
-                layoutSenderSpans();
             }
             pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
             return;
@@ -758,7 +757,6 @@ public class ConversationItemView extends View implements SwipeableItemView {
 
         if (mHeader.styledSenders != null) {
             ellipsizeStyledSenders();
-            layoutSenderSpans();
         } else {
             // First pass to calculate width of each fragment.
             int totalWidth = 0;
