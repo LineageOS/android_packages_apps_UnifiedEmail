@@ -218,6 +218,11 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         mAccount = args.getParcelable(ARG_ACCOUNT);
         mConversation = args.getParcelable(ARG_CONVERSATION);
         mFolder = args.getParcelable(ARG_FOLDER);
+
+        // Since the uri specified in the conversation base uri may not be unique, we specify a
+        // base uri that us guaranteed to be unique for this conversation.
+        mBaseUri = "x-thread://" + mAccount.name + "/" + mConversation.id;
+
         // On JB or newer, we use the 'webkitAnimationStart' DOM event to signal load complete
         // Below JB, try to speed up initial render by having the webview do supplemental draws to
         // custom a software canvas.
