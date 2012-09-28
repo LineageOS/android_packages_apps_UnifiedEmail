@@ -94,7 +94,8 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     protected static final int CONTACT_LOADER = 1;
     private static int sSubjectColor = Integer.MIN_VALUE;
     private static int sSnippetColor = Integer.MIN_VALUE;
-    private static long sMinDelay = -1;
+    private static int sMinDelay = -1;
+    private static int sMinShowTime = -1;
     protected ControllableActivity mActivity;
     private final MessageLoaderCallbacks mMessageLoaderCallbacks = new MessageLoaderCallbacks();
     protected FormattedDateBuilder mDateBuilder;
@@ -127,10 +128,12 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
      */
     private MarkReadObserver mMarkReadObserver;
 
+    private long mLoadingShownTime = -1;
+
     private Runnable mDelayedShow = new Runnable() {
         @Override
         public void run() {
-            mBackgroundView.setVisibility(View.VISIBLE);
+            mLoadingShownTime = System.currentTimeMillis();
             String senders = mConversation.getSenders(getContext());
             if (!TextUtils.isEmpty(senders) && mConversation.subject != null) {
                 mInfoView.setVisibility(View.VISIBLE);
@@ -143,6 +146,12 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
     };
 
+    private Runnable mDelayedDismiss = new Runnable() {
+        @Override
+        public void run() {
+            dismiss();
+        }
+    };
     private final AccountObserver mAccountObserver = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
@@ -228,11 +237,23 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     protected void dismissLoadingStatus() {
-        if (mBackgroundView.getVisibility() != View.VISIBLE) {
+        if (mLoadingShownTime == -1) {
             // The runnable hasn't run yet, so just remove it.
+            mBackgroundView.setVisibility(View.GONE);
             mHandler.removeCallbacks(mDelayedShow);
             return;
         }
+        final long diff = Math.abs(System.currentTimeMillis() - mLoadingShownTime);
+        if (diff > sMinShowTime) {
+            dismiss();
+        } else {
+            mHandler.postDelayed(mDelayedDismiss, Math.abs(sMinShowTime - diff));
+        }
+    }
+
+    private void dismiss() {
+        // Reset loading shown time.
+        mLoadingShownTime = -1;
         // Fade out the info view.
         if (mBackgroundView.getVisibility() == View.VISIBLE) {
             Animator animator = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
@@ -296,11 +317,17 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
 
     protected void showLoadingStatus() {
-        if (sMinDelay == -1) {
-            sMinDelay = getContext().getResources()
-                    .getInteger(R.integer.conversationview_show_loading_delay);
+        if (!mUserVisible) {
+            return;
         }
-        // In case there were any other instances around, get rid of them.
+        if (sMinDelay == -1) {
+            Resources res = getContext().getResources();
+            sMinDelay = res.getInteger(R.integer.conversationview_show_loading_delay);
+            sMinShowTime = res.getInteger(R.integer.conversationview_min_show_loading);
+        }
+        // If the loading view isn't already showing, show it and remove any
+        // pending calls to show the loading screen.
+        mBackgroundView.setVisibility(View.VISIBLE);
         mHandler.removeCallbacks(mDelayedShow);
         mHandler.postDelayed(mDelayedShow, sMinDelay);
     }

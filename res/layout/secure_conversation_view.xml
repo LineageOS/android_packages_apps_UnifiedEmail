@@ -60,6 +60,7 @@
             android:layout_height="match_parent">
             <!-- TODO: scroll indicators go HERE on top of all other layers -->
     </FrameLayout>
+
     <include layout="@layout/conversation_load_spinner"/>
 
 </FrameLayout>
