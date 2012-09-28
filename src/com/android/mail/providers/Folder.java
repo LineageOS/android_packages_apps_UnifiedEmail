@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.android.mail.utils.Utils;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -119,7 +120,10 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public int syncStatus;
 
     /**
-     * The result of the last sync for this folder
+     * A packed integer containing the last synced result, and the request code. The
+     * value is (requestCode << 4) | syncResult
+     * syncResult is a value from {@link UIProvider.LastSyncResult}
+     * requestCode is a value from: {@link UIProvider.SyncStatus},
      */
     public int lastSyncResult;
 
@@ -653,5 +657,13 @@ public class Folder implements Parcelable, Comparable<Folder> {
      */
     public boolean isViewAll() {
         return type == UIProvider.FolderType.ALL_MAIL;
+    }
+
+    /**
+     * True if the previous sync was successful, false otherwise.
+     * @return
+     */
+    public final boolean wasSyncSuccessful() {
+        return ((lastSyncResult & 0x0f) == UIProvider.LastSyncResult.SUCCESS);
     }
 }

@@ -2650,14 +2650,33 @@ public abstract class AbstractActivityController implements ActivityController {
         };
     }
 
+    /**
+     * Shows an error toast in the bottom when a folder was not fetched successfully.
+     * @param folder the folder which could not be fetched.
+     * @param replaceVisibleToast if true, this should replace any currently visible toast.
+     */
     protected final void showErrorToast(final Folder folder, boolean replaceVisibleToast) {
         mToastBar.setConversationMode(false);
 
-        ActionClickedListener listener = null;
-        int actionTextResourceId;
+        final ActionClickedListener listener;
+        final int actionTextResourceId;
         final int lastSyncResult = folder.lastSyncResult;
-        switch (lastSyncResult) {
+        switch (lastSyncResult & 0x0f) {
             case UIProvider.LastSyncResult.CONNECTION_ERROR:
+                // The sync request that caused this failure.
+                final int syncRequest = lastSyncResult >> 4;
+                // Show: User explicitly pressed the refresh button and there is no connection
+                // Show: The first time the user enters the app and there is no connection
+                //       TODO(viki): Implement this.
+                // Reference: http://b/7202801
+                final boolean showToast = (syncRequest & UIProvider.SyncStatus.USER_REFRESH) != 0;
+                // Don't show: Already in the app; user switches to a synced label
+                // Don't show: In a live label and a background sync fails
+                final boolean avoidToast = !showToast && (folder.syncWindow > 0
+                        || (syncRequest & UIProvider.SyncStatus.BACKGROUND_SYNC) != 0);
+                if (avoidToast) {
+                    return;
+                }
                 listener = getRetryClickedListener(folder);
                 actionTextResourceId = R.string.retry;
                 break;
@@ -2678,11 +2697,9 @@ public abstract class AbstractActivityController implements ActivityController {
             default:
                 return;
         }
-        mToastBar.show(
-                listener,
+        mToastBar.show(listener,
                 R.drawable.ic_alert_white,
-                Utils.getSyncStatusText(mActivity.getActivityContext(),
-                        lastSyncResult),
+                Utils.getSyncStatusText(mActivity.getActivityContext(), lastSyncResult),
                 false, /* showActionIcon */
                 actionTextResourceId,
                 replaceVisibleToast,

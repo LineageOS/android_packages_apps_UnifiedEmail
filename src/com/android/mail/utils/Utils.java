@@ -605,8 +605,9 @@ public class Utils {
     /**
      * Get text matching the last sync status.
      */
-    public static CharSequence getSyncStatusText(Context context, int status) {
+    public static CharSequence getSyncStatusText(Context context, int packedStatus) {
         final String[] errors = context.getResources().getStringArray(R.array.sync_status);
+        final int status = packedStatus & 0x0f;
         if (status >= errors.length) {
             return "";
         }
