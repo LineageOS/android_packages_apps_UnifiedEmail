@@ -18,8 +18,12 @@
 package com.android.mail.browse;
 
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
@@ -88,6 +92,8 @@ public class ConversationPagerController {
         mPager = (ViewPager) activity.findViewById(R.id.conversation_pane);
         mActivityController = controller;
         mSubjectDisplayChanger = controller.getSubjectDisplayChanger();
+
+        setupPageMargin(activity.getActivityContext());
     }
 
     public void show(Account account, Folder folder, Conversation initialConversation,
@@ -209,4 +215,16 @@ public class ConversationPagerController {
             mPagerAdapter.setActivityController(null);
         }
     }
+
+    private void setupPageMargin(Context c) {
+        final TypedArray a = c.obtainStyledAttributes(new int[] {android.R.attr.listDivider});
+        final Drawable divider = a.getDrawable(0);
+        a.recycle();
+        final int padding = c.getResources().getDimensionPixelOffset(
+                R.dimen.conversation_page_gutter);
+        final Drawable gutterDrawable = new InsetDrawable(divider, padding, 0, padding, 0);
+        mPager.setPageMargin(gutterDrawable.getIntrinsicWidth() + 2 * padding);
+        mPager.setPageMarginDrawable(gutterDrawable);
+    }
+
 }
