@@ -2427,7 +2427,6 @@ public abstract class AbstractActivityController implements ActivityController {
             mConversationListCursor.addListener(AbstractActivityController.this);
 
             mTracker.onCursorUpdated();
-
             mConversationListObservable.notifyChanged();
 
             final ConversationListFragment convList = getConversationListFragment();
