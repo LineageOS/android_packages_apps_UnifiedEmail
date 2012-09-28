@@ -527,10 +527,9 @@
     <string name="conversation_older">Older</string>
 
     <!-- New Message notification text that appears over conversation view on incoming message. [CHAR LIMIT=30] -->
-    <plurals name="new_incoming_messages">
-        <item quantity="one">New message from <xliff:g id="sender">%s</xliff:g>.</item>
-        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> new messages</item>
-    </plurals>
+    <string name="new_incoming_messages_one">New message from <xliff:g id="sender">%s</xliff:g>.</string>
+    <!-- New Message notification text that appears over conversation view on incoming messages. [CHAR LIMIT=30] -->
+    <string name="new_incoming_messages_many"><xliff:g id="count">%1$d</xliff:g> new messages</string>
 
     <!-- Anchor text for a control to show new messages when viewing a
          conversation. [CHAR LIMIT=20] -->
