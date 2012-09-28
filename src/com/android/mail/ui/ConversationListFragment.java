@@ -19,12 +19,10 @@ package com.android.mail.ui;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,6 +128,8 @@ public final class ConversationListFragment extends ListFragment implements
         }
     };
     private ConversationUpdater mUpdater;
+    /** Hash of the Conversation Cursor we last obtained from the controller. */
+    private int mConversationCursorHash;
 
     /**
      * Constructor needs to be public to handle orientation changes and activity
@@ -143,14 +143,20 @@ public final class ConversationListFragment extends ListFragment implements
     private class FolderObserver extends DataSetObserver {
         @Override
         public void onChanged() {
-            onFolderUpdated(mActivity.getFolderController().getFolder());
+            if (mActivity == null) {
+                return;
+            }
+            final FolderController controller = mActivity.getFolderController();
+            if (controller == null) {
+                return;
+            }
+            onFolderUpdated(controller.getFolder());
         }
     }
 
     private class ConversationListStatusObserver extends DataSetObserver {
         @Override
         public void onChanged() {
-            // update footer
             onConversationListStatusUpdated();
         }
     }
@@ -265,8 +271,9 @@ public final class ConversationListFragment extends ListFragment implements
                 mActivity.getActivityContext()).inflate(R.layout.conversation_list_footer_view,
                 null);
         mFooterView.setClickListener(mActivity);
+        final ConversationCursor conversationCursor = getConversationListCursor();
         mListAdapter = new AnimatedAdapter(mActivity.getApplicationContext(), -1,
-                getConversationListCursor(), mActivity.getSelectedSet(), mActivity, mListView);
+                conversationCursor, mActivity.getSelectedSet(), mActivity, mListView);
         mListAdapter.addFooter(mFooterView);
         mListView.setAdapter(mListAdapter);
         mSelectedSet = mActivity.getSelectedSet();
@@ -290,6 +297,13 @@ public final class ConversationListFragment extends ListFragment implements
             // Activity is finishing, just bail.
             return;
         }
+        mConversationCursorHash = (conversationCursor == null) ? 0 : conversationCursor.hashCode();
+        // Belt and suspenders here; make sure we do any necessary sync of the
+        // ConversationCursor
+        if (conversationCursor != null && conversationCursor.isRefreshReady()) {
+            conversationCursor.sync();
+        }
+
         // Show list and start loading list.
         showList();
         ToastBarOperation pendingOp = mActivity.getPendingToastOperation();
@@ -345,12 +359,6 @@ public final class ConversationListFragment extends ListFragment implements
             mListView.onRestoreInstanceState(savedState.getParcelable(LIST_STATE_KEY));
             // TODO: find a better way to unset the selected item when restoring
             mListView.clearChoices();
-        }
-        final ConversationCursor conversationListCursor = getConversationListCursor();
-        // Belt and suspenders here; make sure we do any necessary sync of the
-        // ConversationCursor
-        if (conversationListCursor != null && conversationListCursor.isRefreshReady()) {
-            conversationListCursor.sync();
         }
         Utils.dumpLayoutRequests("CLF.onCreateView()", container);
         return rootView;
@@ -600,6 +608,9 @@ public final class ConversationListFragment extends ListFragment implements
         ConversationItemViewModel.onFolderUpdated(mFolder);
     }
 
+    /**
+     * Updates the footer visibility and updates the conversation cursor
+     */
     public void onConversationListStatusUpdated() {
         final ConversationCursor cursor = getConversationListCursor();
         final boolean showFooter = cursor != null && mFooterView.updateStatus(cursor);
@@ -676,7 +687,19 @@ public final class ConversationListFragment extends ListFragment implements
         if (mCallbacks == null || mListAdapter == null) {
             return;
         }
-        mListAdapter.swapCursor(mCallbacks.getConversationListCursor());
+        // Check against the previous cursor here and see if they are the same. If they are, then
+        // do a notifyDataSetChanged.
+        final ConversationCursor newCursor = mCallbacks.getConversationListCursor();
+        mListAdapter.swapCursor(newCursor);
+        // When the conversation cursor is *updated*, we get back the same instance. In that
+        // situation, CursorAdapter.swapCursor() silently returns, without forcing a
+        // notifyDataSetChanged(). So let's force a call to notifyDataSetChanged, since an updated
+        // cursor means that the dataset has changed.
+        final int newCursorHash = (newCursor == null) ? 0 : newCursor.hashCode();
+        if (mConversationCursorHash == newCursorHash && mConversationCursorHash != 0) {
+            mListAdapter.notifyDataSetChanged();
+        }
+        mConversationCursorHash = newCursorHash;
         // If a current conversation is available, and none is selected in the list, then ask
         // the list to select the current conversation.
         final Conversation conv = mCallbacks.getCurrentConversation();
