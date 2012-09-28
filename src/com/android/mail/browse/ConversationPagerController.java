@@ -86,7 +86,9 @@ public class ConversationPagerController {
             LogUtils.d(LOG_TAG, "IN CPC.show, but already shown");
             // optimize for the case where account+folder are the same, when we can just shift
             // the existing pager to show the new conversation
-            if (mPagerAdapter != null && mPagerAdapter.matches(account, folder)) {
+            // If in detached mode, don't do this optimization
+            if (mPagerAdapter != null && mPagerAdapter.matches(account, folder)
+                    && !mPagerAdapter.isDetached()) {
                 final int pos = mPagerAdapter.getConversationPosition(initialConversation);
                 if (pos >= 0) {
                     mPager.setCurrentItem(pos);
