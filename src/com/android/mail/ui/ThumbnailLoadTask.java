@@ -104,6 +104,64 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             return null;
         }
 
+        final int orientation = getOrientation(thumbnailUri);
+
+        AssetFileDescriptor fd = null;
+        try {
+            fd = mHolder.getResolver().openAssetFileDescriptor(thumbnailUri, "r");
+            if (isCancelled() || fd == null) {
+                return null;
+            }
+
+            final BitmapFactory.Options opts = new BitmapFactory.Options();
+            opts.inJustDecodeBounds = true;
+            opts.inDensity = DisplayMetrics.DENSITY_DEFAULT;
+
+            BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, opts);
+            if (isCancelled() || opts.outWidth == -1 || opts.outHeight == -1) {
+                return null;
+            }
+
+            opts.inJustDecodeBounds = false;
+            // Shrink both X and Y (but do not over-shrink)
+            // and pick the least affected dimension to ensure the thumbnail is fillable
+            // (i.e. ScaleType.CENTER_CROP)
+            final int wDivider = Math.max(opts.outWidth / mWidth, 1);
+            final int hDivider = Math.max(opts.outHeight / mHeight, 1);
+            opts.inSampleSize = Math.min(wDivider, hDivider);
+
+            LogUtils.d(LOG_TAG, "in background, src w/h=%d/%d dst w/h=%d/%d, divider=%d",
+                    opts.outWidth, opts.outHeight, mWidth, mHeight, opts.inSampleSize);
+
+            final Bitmap originalBitmap = BitmapFactory.decodeFileDescriptor(
+                    fd.getFileDescriptor(), null, opts);
+            if (originalBitmap != null && orientation != 0) {
+                final Matrix matrix = new Matrix();
+                matrix.postRotate(orientation);
+                return Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.getWidth(),
+                        originalBitmap.getHeight(), matrix, true);
+            }
+            return originalBitmap;
+        } catch (Throwable t) {
+            LogUtils.e(LOG_TAG, t, "Unable to decode thumbnail %s", thumbnailUri);
+        } finally {
+            if (fd != null) {
+                try {
+                    fd.close();
+                } catch (IOException e) {
+                    LogUtils.e(LOG_TAG, e, "");
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private int getOrientation(final Uri thumbnailUri) {
+        if (thumbnailUri == null) {
+            return 0;
+        }
+
         ByteArrayOutputStream out = null;
         InputStream in = null;
         try {
@@ -120,44 +178,13 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             in = null;
 
             if (isCancelled()) {
-                return null;
+                return 0;
             }
 
-            final BitmapFactory.Options opts = new BitmapFactory.Options();
-            opts.inJustDecodeBounds = true;
-            opts.inDensity = DisplayMetrics.DENSITY_MEDIUM;
             final byte[] bitmapBytes = out.toByteArray();
-
-            BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length, opts);
-            if (isCancelled() || opts.outWidth == -1 || opts.outHeight == -1) {
-                return null;
-            }
-
-            // Determine the orientation for this image
-            final int orientation = Exif.getOrientation(bitmapBytes);
-
-            opts.inJustDecodeBounds = false;
-            // Shrink both X and Y (but do not over-shrink)
-            // and pick the least affected dimension to ensure the thumbnail is fillable
-            // (i.e. ScaleType.CENTER_CROP)
-            final int wDivider = Math.max(opts.outWidth / mWidth, 1);
-            final int hDivider = Math.max(opts.outHeight / mHeight, 1);
-            opts.inSampleSize = Math.min(wDivider, hDivider);
-
-            LogUtils.d(LOG_TAG, "in background, src w/h=%d/%d dst w/h=%d/%d, divider=%d",
-                    opts.outWidth, opts.outHeight, mWidth, mHeight, opts.inSampleSize);
-
-            final Bitmap originalBitmap =
-                    BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length, opts);
-            if (originalBitmap != null && orientation != 0) {
-                final Matrix matrix = new Matrix();
-                matrix.postRotate(orientation);
-                return Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.getWidth(),
-                        originalBitmap.getHeight(), matrix, true);
-            }
-            return originalBitmap;
+            return Exif.getOrientation(bitmapBytes);
         } catch (Throwable t) {
-            LogUtils.e(LOG_TAG, t, "Unable to decode thumbnail %s", thumbnailUri);
+            LogUtils.e(LOG_TAG, t, "Unable to get orientation of thumbnail %s", thumbnailUri);
         } finally {
             if (in != null) {
                 try {
@@ -175,7 +202,7 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
             }
         }
 
-        return null;
+        return 0;
     }
 
     @Override
