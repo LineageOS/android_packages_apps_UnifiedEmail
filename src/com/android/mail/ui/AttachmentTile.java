@@ -25,6 +25,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -55,6 +56,10 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
     private AttachmentPreviewCache mAttachmentPreviewCache;
 
     private static final String LOG_TAG = LogTag.getLogTag();
+    // previews with width/height or height/width less than this value will be
+    // considered skinny
+    private static final float skinnyThresholdRatio = 0.5f;
+
 
     /**
      * Returns true if the attachment should be rendered as a tile. with a large image preview.
@@ -149,14 +154,52 @@ public class AttachmentTile extends RelativeLayout implements AttachmentBitmapHo
 
     @Override
     public void setThumbnail(Bitmap result) {
+        if (result == null) {
+            return;
+        }
+
         // We got a real thumbnail; hide the default thumbnail.
         mDefaultIcon.setVisibility(View.GONE);
-        mIcon.setImageBitmap(result);
-        if (result.getWidth() < mIcon.getWidth() || result.getHeight() < mIcon.getHeight()) {
-            mIcon.setScaleType(ScaleType.CENTER);
+
+        final int maxSize = getResources().getInteger(R.integer.attachment_preview_max_size);
+        final int width = result.getWidth();
+        final int height = result.getHeight();
+        final int scaledWidth = width * getResources().getDisplayMetrics().densityDpi
+                / DisplayMetrics.DENSITY_DEFAULT;
+        final int scaledHeight = height * getResources().getDisplayMetrics().densityDpi
+                / DisplayMetrics.DENSITY_DEFAULT;
+        // ratio of the image
+        final float ratio = Math.min((float) width / height, (float) height / width);
+
+        final boolean large = width >= maxSize || scaledWidth >= mIcon.getWidth()
+                || height >= maxSize || scaledHeight >= mIcon.getHeight();
+        final boolean skinny =
+                // the image is loooong
+                ratio < skinnyThresholdRatio &&
+                // AND if the image was centered and cropped, the resulting
+                // image would still be loooong
+                !(scaledWidth >= mIcon.getHeight() * skinnyThresholdRatio
+                        && scaledHeight >= mIcon.getWidth() * skinnyThresholdRatio);
+        LogUtils.d(LOG_TAG, "scaledWidth: %d, scaledHeight: %d, large: %b, skinny: %b", scaledWidth,
+                scaledHeight, large, skinny);
+
+        if (large) {
+            // preview fills up at least 1 dimension
+            if (skinny) {
+                // just center. The shorter dimension stays the same while the
+                // longer dimension is cropped
+                mIcon.setScaleType(ScaleType.CENTER);
+            } else {
+                // fill. Both dimensions are scaled to fill the box, the longer
+                // dimension is cropped
+                mIcon.setScaleType(ScaleType.CENTER_CROP);
+            }
         } else {
-            mIcon.setScaleType(ScaleType.CENTER_CROP);
+            // preview is small. just center
+            mIcon.setScaleType(ScaleType.CENTER);
         }
+
+        mIcon.setImageBitmap(result);
         mAttachmentPreviewCache.set(mAttachment, result);
         mDefaultThumbnailSet = false;
     }
