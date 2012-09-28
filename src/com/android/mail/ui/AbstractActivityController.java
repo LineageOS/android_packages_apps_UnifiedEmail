@@ -57,6 +57,7 @@ import android.widget.Toast;
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.ConversationItemViewModel;
 import com.android.mail.browse.ConversationPagerController;
 import com.android.mail.browse.ConversationCursor.ConversationOperation;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
@@ -2807,6 +2808,20 @@ public abstract class AbstractActivityController implements ActivityController {
             final Intent authenticationIntent =
                     new Intent(Intent.ACTION_VIEW, account.reauthenticationIntentUri);
             mActivity.startActivityForResult(authenticationIntent, REAUTHENTICATE_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onAccessibilityStateChanged() {
+        // Clear the cache of objects.
+        ConversationItemViewModel.onAccessibilityUpdated();
+        // Re-render the list if it exists.
+        ConversationListFragment frag = getConversationListFragment();
+        if (frag != null) {
+            AnimatedAdapter adapter = frag.getAnimatedAdapter();
+            if (adapter != null) {
+                adapter.notifyDataSetInvalidated();
+            }
         }
     }
 }
