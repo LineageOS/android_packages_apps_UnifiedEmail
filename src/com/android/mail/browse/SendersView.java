@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -39,6 +38,9 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.Utils;
+import com.google.android.common.html.parser.HtmlParser;
+import com.google.android.common.html.parser.HtmlTreeBuilder;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 
@@ -68,6 +70,8 @@ public class SendersView {
     public static CharSequence sElidedString;
     private static Map<Integer, Integer> sPriorityToLength;
     private static BroadcastReceiver sConfigurationChangedReceiver;
+    private static HtmlParser sHtmlParser;
+    private static HtmlTreeBuilder sHtmlBuilder;
 
     public static Typeface getTypeface(boolean isUnread) {
         return isUnread ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT;
@@ -228,7 +232,7 @@ public class SendersView {
             if (nameString.length() == 0) {
                 nameString = getMe(context);
             } else {
-                nameString = Html.fromHtml(nameString).toString();
+                nameString = Utils.convertHtmlToPlainText(nameString, getParser(), getBuilder());
             }
             if (numCharsToRemovePerWord != 0) {
                 nameString = nameString.substring(0,
@@ -266,6 +270,20 @@ public class SendersView {
             }
         }
         return senders;
+    }
+
+    private static HtmlTreeBuilder getBuilder() {
+        if (sHtmlBuilder == null) {
+            sHtmlBuilder = new HtmlTreeBuilder();
+        }
+        return sHtmlBuilder;
+    }
+
+    private static HtmlParser getParser() {
+        if (sHtmlParser == null) {
+            sHtmlParser = new HtmlParser();
+        }
+        return sHtmlParser;
     }
 
     private static CharacterStyle getUnreadStyleSpan() {

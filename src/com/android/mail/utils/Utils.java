@@ -518,26 +518,35 @@ public class Utils {
 
     /**
      * Returns displayable text from the provided HTML string.
-     *
      * @param htmlText HTML string
      * @return Plain text string representation of the specified Html string
      */
     public static String convertHtmlToPlainText(String htmlText) {
-        return getHtmlTree(htmlText).getPlainText();
+        return getHtmlTree(htmlText, new HtmlParser(), new HtmlTreeBuilder()).getPlainText();
+    }
+
+    public static String convertHtmlToPlainText(String htmlText, HtmlParser parser,
+            HtmlTreeBuilder builder) {
+        return getHtmlTree(htmlText, parser, builder).getPlainText();
     }
 
     /**
      * Returns a {@link HtmlTree} representation of the specified HTML string.
      */
     public static HtmlTree getHtmlTree(String htmlText) {
-        final HtmlParser parser = new HtmlParser();
+        return getHtmlTree(htmlText, new HtmlParser(), new HtmlTreeBuilder());
+    }
+
+    /**
+     * Returns a {@link HtmlTree} representation of the specified HTML string.
+     */
+    public static HtmlTree getHtmlTree(String htmlText, HtmlParser parser,
+            HtmlTreeBuilder builder) {
         final HtmlDocument doc = parser.parse(htmlText);
-        final HtmlTreeBuilder builder = new HtmlTreeBuilder();
         doc.accept(builder);
 
         return builder.getTree();
     }
-
 
     /**
      * Perform a simulated measure pass on the given child view, assuming the
