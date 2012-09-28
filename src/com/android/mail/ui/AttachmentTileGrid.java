@@ -138,9 +138,7 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
         //    Let width = given width.
         //    Let height = image size + bottom padding.
 
-        // b/7204811: Hack for measure. set imageSize to max size. We'd rather have too much
-        // whitespace, than overlapping overlays
-        final int imageSize = mTileMaxSize; //(width) / mColumnCount;
+        final int imageSize = (width) / mColumnCount;
         final int remainder = width - (imageSize * mColumnCount);
 
         for (int i = 0; i < childCount; i++) {
