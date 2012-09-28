@@ -18,6 +18,7 @@
 package com.android.mail.ui;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -31,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
@@ -46,7 +48,8 @@ import java.net.URLEncoder;
  * (usually a list of folders), and the main content fragment (either a
  * conversation list or a conversation view).
  */
-public class MailActivity extends AbstractMailActivity implements ControllableActivity {
+public class MailActivity extends AbstractMailActivity implements ControllableActivity,
+    AccessibilityManager.AccessibilityStateChangeListener {
     // TODO(viki) This class lacks: What's New dialog
     // TODO(viki) This class lacks: Sync Window Upgrade dialog
 
@@ -67,6 +70,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     private ViewMode mViewMode;
 
     private ToastBarOperation mPendingToastOp;
+    private boolean mAccessibilityEnabled;
     private static MailActivity sForegroundInstance;
 
     public MailActivity() {
@@ -128,6 +132,10 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         if (savedState == null && intent.getAction() != null) {
             mLaunchedCleanly = true;
         }
+        AccessibilityManager accessibilityManager =
+                (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+        accessibilityManager.addAccessibilityStateChangeListener(this);
+        mAccessibilityEnabled = accessibilityManager.isEnabled();
         setupNfc();
     }
 
@@ -416,5 +424,16 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
     @Override
     public void stopDragMode() {
         mController.stopDragMode();
+    }
+
+    @Override
+    public boolean isAccessibilityEnabled() {
+        return mAccessibilityEnabled;
+    }
+
+    @Override
+    public void onAccessibilityStateChanged(boolean enabled) {
+        mAccessibilityEnabled = enabled;
+        mController.onAccessibilityStateChanged();
     }
 }

@@ -410,7 +410,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSwipeEnabled = swipeEnabled;
         mPriorityMarkersEnabled = priorityArrowEnabled;
         mAdapter = adapter;
-        setContentDescription(mHeader.getContentDescription(mContext));
+        setContentDescription();
         requestLayout();
     }
 
@@ -469,8 +469,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         calculateTextsAndBitmaps();
         calculateCoordinates();
         if (!mHeader.isLayoutValid(mContext)) {
-            mHeader.resetContentDescription();
-            setContentDescription(mHeader.getContentDescription(mContext));
+            setContentDescription();
         }
         mHeader.validate(mContext);
 
@@ -479,6 +478,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sTimer.dumpResults();
             sTimer = new Timer();
             sLayoutCount = 0;
+        }
+    }
+
+    private void setContentDescription() {
+        if (mActivity.isAccessibilityEnabled()) {
+            mHeader.resetContentDescription();
+            setContentDescription(mHeader.getContentDescription(mContext));
         }
     }
 
