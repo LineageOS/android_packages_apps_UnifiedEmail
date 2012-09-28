@@ -101,7 +101,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         if (sdc != null) {
             sdc.setSubject(mConversation.subject);
         }
-        mConversationHeaderView.setSubject(mConversation.subject, false /* notify */);
+        mConversationHeaderView.setSubject(mConversation.subject);
         mMessageHeaderView.setContactInfoSource(getContactInfoSource());
         mMessageHeaderView.setCallbacks(this);
         mMessageHeaderView.setExpandable(false);
@@ -179,7 +179,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
         if (sdc != null) {
             sdc.setSubject(mConversation.subject);
         }
-        mConversationHeaderView.setSubject(mConversation.subject, false /* notify */);
+        mConversationHeaderView.setSubject(mConversation.subject);
         this.mScrollView.scrollTo(0, 0);
         onConversationSeen();
     }
