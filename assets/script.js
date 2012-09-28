@@ -49,9 +49,13 @@ function toggleQuotedText(e) {
     measurePositions();
 }
 
-function collapseQuotedText() {
+function collapseAllQuotedText() {
+    collapseQuotedText(document.documentElement);
+}
+
+function collapseQuotedText(elt) {
     var i;
-    var elements = document.getElementsByClassName("elided-text");
+    var elements = elt.getElementsByClassName("elided-text");
     var elidedElement, toggleElement;
     for (i = 0; i < elements.length; i++) {
         elidedElement = elements[i];
@@ -227,6 +231,19 @@ function onContentReady(event) {
     window.mail.onContentReady();
 }
 
+function replaceMessageBodies(messageIds) {
+    var i;
+    var id;
+    var msgContentDiv;
+
+    for (i = 0, len = messageIds.length; i < len; i++) {
+        id = messageIds[i];
+        msgContentDiv = document.querySelector("#" + id + " > .mail-message-content");
+        msgContentDiv.innerHTML = window.mail.getMessageBody(id);
+        collapseQuotedText(msgContentDiv);
+    }
+}
+
 // END Java->JavaScript handlers
 
 window.onload = function() {
@@ -243,7 +260,7 @@ window.onload = function() {
     document.getElementById("initial-load-signal").style.webkitAnimationName = 'initial-load';
 };
 
-collapseQuotedText();
+collapseAllQuotedText();
 hideUnsafeImages();
 normalizeMessageWidths();
 //setWideViewport();

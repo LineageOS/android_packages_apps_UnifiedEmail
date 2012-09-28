@@ -37,6 +37,7 @@ import com.android.mail.providers.Address;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.ui.ControllableActivity;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
@@ -120,7 +121,7 @@ public class ConversationViewAdapter extends BaseAdapter {
     }
 
     public class MessageHeaderItem extends ConversationOverlayItem {
-        public final ConversationMessage message;
+        private ConversationMessage mMessage;
 
         // view state variables
         private boolean mExpanded;
@@ -132,10 +133,14 @@ public class ConversationViewAdapter extends BaseAdapter {
         public CharSequence recipientSummaryText;
 
         MessageHeaderItem(ConversationMessage message, boolean expanded) {
-            this.message = message;
+            mMessage = message;
             mExpanded = expanded;
 
             detailsExpanded = false;
+        }
+
+        public ConversationMessage getMessage() {
+            return mMessage;
         }
 
         @Override
@@ -182,6 +187,16 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public boolean canPushSnapHeader() {
             return true;
+        }
+
+        @Override
+        public boolean belongsToMessage(ConversationMessage message) {
+            return Objects.equal(mMessage, message);
+        }
+
+        @Override
+        public void setMessage(ConversationMessage message) {
+            mMessage = message;
         }
 
     }
@@ -392,6 +407,15 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         mItems.remove(pos);
         mItems.addAll(pos, replacements);
+        notifyDataSetChanged();
+    }
+
+    public void updateItemsForMessage(ConversationMessage message) {
+        for (ConversationOverlayItem item : mItems) {
+            if (item.belongsToMessage(message)) {
+                item.setMessage(message);
+            }
+        }
         notifyDataSetChanged();
     }
 

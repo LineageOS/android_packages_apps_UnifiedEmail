@@ -190,16 +190,14 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    protected void onMessageCursorLoadFinished(Loader<Cursor> loader, Cursor data,
-            boolean wasNull, boolean changed) {
-        MessageCursor messageCursor = getMessageCursor();
-
+    protected void onMessageCursorLoadFinished(Loader<Cursor> loader, MessageCursor newCursor,
+            MessageCursor oldCursor) {
         // ignore cursors that are still loading results
-        if (messageCursor == null || !messageCursor.isLoaded()) {
+        if (newCursor == null || !newCursor.isLoaded()) {
             LogUtils.i(LOG_TAG, "CONV RENDER: existing cursor is null, rendering from scratch");
             return;
         }
-        renderMessageBodies(messageCursor, mEnableContentReadySignal);
+        renderMessageBodies(newCursor, mEnableContentReadySignal);
     }
 
     /**

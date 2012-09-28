@@ -360,7 +360,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mExpandedDetailsValid = false;
 
         mMessageHeaderItem = headerItem;
-        mMessage = headerItem.message;
+        mMessage = headerItem.getMessage();
         mShowImagePrompt = mMessage.shouldShowImagePrompt();
         setExpanded(headerItem.isExpanded());
 

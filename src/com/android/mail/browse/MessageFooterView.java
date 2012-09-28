@@ -94,10 +94,10 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         // repeat the work of layout and measure when
         // we're only updating the attachments.
         if (mMessageHeaderItem != null &&
-                mMessageHeaderItem.message != null &&
-                mMessageHeaderItem.message.attachmentListUri != null &&
-                !mMessageHeaderItem.message.attachmentListUri.equals(
-                headerItem.message.attachmentListUri)) {
+                mMessageHeaderItem.getMessage() != null &&
+                mMessageHeaderItem.getMessage().attachmentListUri != null &&
+                !mMessageHeaderItem.getMessage().attachmentListUri.equals(
+                headerItem.getMessage().attachmentListUri)) {
             mAttachmentGrid.removeAllViewsInLayout();
             mAttachmentBarList.removeAllViewsInLayout();
             mTitleText.setVisibility(View.GONE);
@@ -146,7 +146,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         } else {
             // before the attachment loader results are in, we can still render immediately using
             // the basic info in the message's attachmentsJSON
-            attachments = mMessageHeaderItem.message.getAttachments();
+            attachments = mMessageHeaderItem.getMessage().getAttachments();
         }
         renderAttachments(attachments, loaderResult);
     }
@@ -168,7 +168,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
                 barAttachments.add(attachment);
             }
         }
-        mMessageHeaderItem.message.attachmentsJson = Attachment.toJSONArray(attachments);
+        mMessageHeaderItem.getMessage().attachmentsJson = Attachment.toJSONArray(attachments);
 
         mTitleText.setVisibility(View.VISIBLE);
         mTitleBar.setVisibility(View.VISIBLE);
@@ -182,7 +182,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
         // Setup the tiles.
         mAttachmentGrid.configureGrid(mFragmentManager,
-                mMessageHeaderItem.message.attachmentListUri, tiledAttachments, loaderResult);
+                mMessageHeaderItem.getMessage().attachmentListUri, tiledAttachments, loaderResult);
     }
 
     private void renderBarAttachments(List<Attachment> barAttachments, boolean loaderResult) {
@@ -205,7 +205,7 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     private Integer getAttachmentLoaderId() {
         Integer id = null;
-        final Message msg = mMessageHeaderItem == null ? null : mMessageHeaderItem.message;
+        final Message msg = mMessageHeaderItem == null ? null : mMessageHeaderItem.getMessage();
         if (msg != null && msg.hasAttachments && msg.attachmentListUri != null) {
             id = msg.attachmentListUri.hashCode();
         }
@@ -219,7 +219,8 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new AttachmentLoader(getContext(), mMessageHeaderItem.message.attachmentListUri);
+        return new AttachmentLoader(getContext(),
+                mMessageHeaderItem.getMessage().attachmentListUri);
     }
 
     @Override

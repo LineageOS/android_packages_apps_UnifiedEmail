@@ -82,8 +82,7 @@ public class MessageCursor extends CursorWrapper {
          *
          */
         public int getStateHashCode() {
-            return Objects.hashCode(uri, read, from, bodyHtml, bodyText, starred, isSending,
-                    attachmentsJson);
+            return Objects.hashCode(uri, read, starred, attachmentsJson);
         }
 
         public boolean isConversationStarred() {
