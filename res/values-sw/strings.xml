@@ -92,7 +92,7 @@
     <string name="add_cc_label" msgid="504861315425773180">"Ongeza Nakala kwa/Nakala fiche kwa"</string>
     <string name="add_bcc_label" msgid="7432027645493843336">"Ongeza Nakala Fiche Kwa"</string>
     <string name="feedback" msgid="79365993169715049">"Tuma maoni"</string>
-    <string name="help_and_info" msgid="7873089811705257882">"Msaada"</string>
+    <string name="help_and_info" msgid="7873089811705257882">"Usaidizi"</string>
     <string name="quoted_text" msgid="7250749398672037355">"Jumuisha maandishi yaliyonukuliwa"</string>
     <string name="quoted_text_label" msgid="541007446961960617">"Nukuu maandishi"</string>
     <string name="respond_inline" msgid="6797117334768201180">"Jibu katika mstari"</string>
@@ -144,7 +144,7 @@
     <string name="contextmenu_send_mail" msgid="8301941130009797208">"Tuma barua pepe"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"Ramani"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Shiriki kiungo"</string>
-    <string name="contextmenu_help" msgid="4651718679842414097">"Msaada"</string>
+    <string name="contextmenu_help" msgid="4651718679842414097">"Usaidizi"</string>
     <string name="contextmenu_feedback" msgid="4429118420169571473">"Tuma maoni"</string>
     <string name="num_selected" msgid="2943309946439316255">"<xliff:g id="NUMBER">%d</xliff:g> zilizochaguliwa"</string>
   <plurals name="move_conversation">
@@ -268,10 +268,8 @@
     <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> ya <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
     <string name="conversation_newer" msgid="7381341099165809801">"Mpya zaidi"</string>
     <string name="conversation_older" msgid="6384287019562069353">"Nzee zaidi"</string>
-  <plurals name="new_incoming_messages">
-    <item quantity="one" msgid="8778057959289554701">"Ujumbe mpya kutoka kwa <xliff:g id="SENDER">%s</xliff:g>."</item>
-    <item quantity="other" msgid="6738671955116853198">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</item>
-  </plurals>
+    <string name="new_incoming_messages_one" msgid="3200934730744395520">"Ujumbe mpya kutoka kwa <xliff:g id="SENDER">%s</xliff:g>."</string>
+    <string name="new_incoming_messages_many" msgid="1071412616544342913">"Ujumbe <xliff:g id="COUNT">%1$d</xliff:g> mpya"</string>
     <string name="show" msgid="7114006150083237343">"Onyesha"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Panua maelezo ya mpokeaji"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Kunja maelezo ya wapokeaji"</string>
