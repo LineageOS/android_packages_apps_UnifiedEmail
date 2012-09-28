@@ -219,7 +219,7 @@
     <item quantity="other" msgid="3678624994662639442">"Se marcaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; conversaciones como suplantación de identidad."</item>
   </plurals>
   <plurals name="conversation_archived">
-    <item quantity="one" msgid="5457612502965117672">"Se archivaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="5457612502965117672">"Se archivó &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="3012054504370916482">"Se archivaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
   <plurals name="conversation_moved_to_inbox">
@@ -227,7 +227,7 @@
     <item quantity="other" msgid="395816799927580909">"Se movieron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt; a la bandeja de entrada."</item>
   </plurals>
   <plurals name="conversation_deleted">
-    <item quantity="one" msgid="4398693029405479323">"Se eliminaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
+    <item quantity="one" msgid="4398693029405479323">"Se eliminó &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
     <item quantity="other" msgid="8630099095360065837">"Se eliminaron &lt;b&gt;<xliff:g id="COUNT">%1$d</xliff:g>&lt;/b&gt;."</item>
   </plurals>
     <string name="deleted" msgid="2757349161107268029">"Eliminada"</string>
@@ -268,10 +268,8 @@
     <string name="conversation_count" msgid="4459776616201694172">"<xliff:g id="COUNT">%1$s</xliff:g> de <xliff:g id="TOTAL">%2$s</xliff:g>"</string>
     <string name="conversation_newer" msgid="7381341099165809801">"Más recientes"</string>
     <string name="conversation_older" msgid="6384287019562069353">"Anteriores"</string>
-    <!-- no translation found for new_incoming_messages_one (3200934730744395520) -->
-    <skip />
-    <!-- no translation found for new_incoming_messages_many (1071412616544342913) -->
-    <skip />
+    <string name="new_incoming_messages_one" msgid="3200934730744395520">"Nuevo mensaje de <xliff:g id="SENDER">%s</xliff:g>"</string>
+    <string name="new_incoming_messages_many" msgid="1071412616544342913">"<xliff:g id="COUNT">%1$d</xliff:g> mensajes nuevos"</string>
     <string name="show" msgid="7114006150083237343">"Mostrar"</string>
     <string name="expand_recipient_details" msgid="2266544827446346880">"Expandir detalles del destinatario"</string>
     <string name="collapse_recipient_details" msgid="3608892454869745927">"Contraer detalles del destinatario"</string>
