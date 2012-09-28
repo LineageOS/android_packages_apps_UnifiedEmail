@@ -2452,7 +2452,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 // If the Bcc field is showing, show the Cc field whether it is populated or not.
                 showCc = showBcc || (!TextUtils.isEmpty(mDraft.cc) && mComposeMode == REPLY_ALL);
             } else if (mRefMessage != null) {
-                showCc = mComposeMode == REPLY_ALL && !TextUtils.isEmpty(mRefMessage.cc);
+                showCc = !TextUtils.isEmpty(mCc.getText());
             }
             mCcBccView.show(false, showCc, showBcc);
         }
