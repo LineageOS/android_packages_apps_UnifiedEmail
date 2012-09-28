@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import com.android.mail.ConversationListContext;
 import com.android.mail.R;
+import com.android.mail.browse.ToggleableItem;
 import com.android.mail.browse.ConversationCursor;
 import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.ConversationItemViewModel;
@@ -448,12 +449,12 @@ public final class ConversationListFragment extends ListFragment implements
         // Ignore anything that is not a conversation item. Could be a footer.
         // If we are using a keyboard, the highlighted item is the parent;
         // otherwise, this is a direct call from the ConverationItemView
-        if (!(view instanceof SwipeableConversationItemView)
-                && !(view instanceof ConversationItemView)) {
+        if (!(view instanceof ToggleableItem)) {
             return;
         }
         if (mAccount.settings.hideCheckboxes && !mSelectedSet.isEmpty()) {
-            ((ConversationItemView) view).toggleCheckMarkOrBeginDrag();
+            ToggleableItem v = (ToggleableItem) view;
+            v.toggleCheckMarkOrBeginDrag();
         } else {
             viewConversation(position);
         }
