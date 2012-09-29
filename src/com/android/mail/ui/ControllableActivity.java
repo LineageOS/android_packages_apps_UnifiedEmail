@@ -113,4 +113,6 @@ public interface ControllableActivity extends HelpCallback, RestrictedActivity,
     void startDragMode();
 
     void stopDragMode();
+
+    boolean isAccessibilityEnabled();
 }
