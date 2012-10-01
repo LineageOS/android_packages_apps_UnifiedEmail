@@ -40,12 +40,34 @@ function getTotalOffset(el) {
     return result;
 }
 
+/**
+ * Walks up the DOM starting at a given element, and returns an element that has the
+ * specified class name or null.
+ */
+function up(el, className) {
+    var parent = el;
+    while (parent) {
+        if (parent.classList && parent.classList.contains(className)) {
+            break;
+        }
+        parent = parent.parentNode;
+    }
+    return parent || null;
+}
+
 function toggleQuotedText(e) {
     var toggleElement = e.target;
     var elidedTextElement = toggleElement.nextSibling;
     var isHidden = getComputedStyle(elidedTextElement).display == 'none';
     toggleElement.innerHTML = isHidden ? MSG_HIDE_ELIDED : MSG_SHOW_ELIDED;
     elidedTextElement.style.display = isHidden ? 'block' : 'none';
+
+    // Revealing the elided text should normalize it to fit-width to prevent
+    // this message from blowing out the conversation width.
+    if (isHidden) {
+        normalizeElementWidths([elidedTextElement]);
+    }
+
     measurePositions();
 }
 
@@ -67,15 +89,30 @@ function collapseQuotedText(elt) {
     }
 }
 
-function normalizeMessageWidths() {
+function normalizeAllMessageWidths() {
+    normalizeElementWidths(document.querySelectorAll(".expanded > .mail-message-content"));
+}
+
+/*
+ * Normalizes the width of all elements supplied to the document body's overall width.
+ * Narrower elements are zoomed in, and wider elements are zoomed out.
+ * This method is idempotent.
+ */
+function normalizeElementWidths(elements) {
     var i;
-    var elements = document.getElementsByClassName("mail-message-content");
-    var messageElement;
+    var el;
     var documentWidth = document.body.offsetWidth;
+    var newZoom, oldZoom;
 
     for (i = 0; i < elements.length; i++) {
-        messageElement = elements[i];
-        messageElement.style.zoom = documentWidth / messageElement.scrollWidth;
+        el = elements[i];
+        oldZoom = el.style.zoom;
+        // reset any existing normalization
+        if (oldZoom) {
+            el.style.zoom = 1;
+        }
+        newZoom = documentWidth / el.scrollWidth;
+        el.style.zoom = newZoom;
     }
 }
 
@@ -124,8 +161,18 @@ function attachImageLoadListener(imageElement) {
     // attribute is set after the onload listener.
     var originalSrc = imageElement.src;
     imageElement.src = '';
-    imageElement.onload = measurePositions;
+    imageElement.onload = imageOnLoad;
     imageElement.src = originalSrc;
+}
+
+function imageOnLoad(e) {
+    // normalize the quoted text parent if we're in a quoted text block, or else
+    // normalize the parent message content element
+    var parent = up(e.target, "elided-text") || up(e.target, "mail-message-content");
+    if (parent) {
+        normalizeElementWidths([parent]);
+    }
+    measurePositions();
 }
 
 function blockImage(imageElement) {
@@ -214,6 +261,13 @@ function setMessageBodyVisible(messageDomId, isVisible, spacerHeight) {
     for (i = 0, len = collapsibleDivs.length; i < len; i++) {
         collapsibleDivs[i].style.display = visibility;
     }
+
+    // revealing new content should trigger width normalization, since the initial render
+    // skips collapsed and super-collapsed messages
+    if (isVisible) {
+        normalizeElementWidths(messageDiv.getElementsByClassName("mail-message-content"));
+    }
+
     setMessageHeaderSpacerHeight(messageDomId, spacerHeight);
 }
 
@@ -272,7 +326,7 @@ window.onload = function() {
 
 collapseAllQuotedText();
 hideUnsafeImages();
-normalizeMessageWidths();
+normalizeAllMessageWidths();
 //setWideViewport();
 measurePositions();
 
