@@ -1049,7 +1049,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         canvas.restore();
 
         // Folders.
-        if (mCoordinates.showFolders) {
+        if (mCoordinates.showFolders && mHeader.folderDisplayer != null) {
             mHeader.folderDisplayer.drawFolders(canvas, mCoordinates, mFoldersXEnd, mMode);
         }
 
