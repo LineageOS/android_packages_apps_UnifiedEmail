@@ -1019,10 +1019,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     + sSendersTextViewTopPadding);
             mHeader.sendersTextView = getSendersTextView();
             if (mHeader.styledSendersString != null) {
-                int length = (int) sPaint.measureText(mHeader.styledSendersString.toString());
                 mHeader.sendersTextView.setText(mHeader.styledSendersString,
                         TextView.BufferType.SPANNABLE);
-                mHeader.sendersTextView.setWidth(length);
+                int width = MeasureSpec.makeMeasureSpec(mSendersWidth, MeasureSpec.EXACTLY);
+                mHeader.sendersTextView.measure(width, sSendersTextViewHeight);
                 mHeader.sendersTextView.layout(0, 0, mSendersWidth, sSendersTextViewHeight);
                 mHeader.sendersTextView.draw(canvas);
             }
