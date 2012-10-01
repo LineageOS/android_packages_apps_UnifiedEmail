@@ -204,6 +204,9 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         void setMessageExpanded(MessageHeaderItem item, int newSpacerHeight);
 
+        void setMessageDetailsExpanded(MessageHeaderItem messageHeaderItem, boolean expanded,
+                int previousMessageHeaderItemHeight);
+
         void showExternalResources(Message msg);
     }
 
@@ -903,9 +906,13 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     }
 
     private void toggleMessageDetails(View visibleDetailsView) {
+        int heightBefore = measureHeight();
         final boolean detailsExpanded = (visibleDetailsView == mCollapsedDetailsView);
         setMessageDetailsExpanded(detailsExpanded);
         updateSpacerHeight();
+        if (mCallbacks != null) {
+            mCallbacks.setMessageDetailsExpanded(mMessageHeaderItem, detailsExpanded, heightBefore);
+        }
     }
 
     private void setMessageDetailsExpanded(boolean expand) {

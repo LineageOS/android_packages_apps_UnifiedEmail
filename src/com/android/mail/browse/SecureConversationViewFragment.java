@@ -245,4 +245,9 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
             headerView.onConversationUpdated(conv);
         }
     }
+
+    @Override
+    public void setMessageDetailsExpanded(MessageHeaderItem i, boolean expanded, int heightbefore) {
+        // Do nothing.
+    }
 }
