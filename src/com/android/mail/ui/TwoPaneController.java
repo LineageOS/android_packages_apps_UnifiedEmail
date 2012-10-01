@@ -299,10 +299,13 @@ public final class TwoPaneController extends AbstractActivityController {
 
     @Override
     public void setCurrentConversation(Conversation conversation) {
+        long oldId = mCurrentConversation != null ? mCurrentConversation.id : -1;
+        long newId = conversation != null ? conversation.id : -1;
+        boolean different = oldId != newId;
         super.setCurrentConversation(conversation);
         final ConversationListFragment convList = getConversationListFragment();
         if (convList != null && conversation != null) {
-            convList.setSelected(conversation.position);
+            convList.setSelected(conversation.position, different);
         }
     }
 
