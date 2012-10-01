@@ -539,14 +539,21 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
+
+    public void setSelected(int position, boolean different) {
+        if (different) {
+            mListView.smoothScrollToPosition(position);
+        }
+        mListView.setItemChecked(position, true);
+    }
+
     /**
      * Sets the selected position (the highlighted conversation) to the position
      * provided here.
      * @param position
      */
     protected final void setSelected(int position) {
-        mListView.smoothScrollToPosition(position);
-        mListView.setItemChecked(position, true);
+        setSelected(position, true);
     }
 
     private ConversationCursor getConversationListCursor() {
@@ -723,5 +730,4 @@ public final class ConversationListFragment extends ListFragment implements
     public void onListItemSwiped(Collection<Conversation> conversations) {
         mUpdater.showNextConversation(conversations);
     }
-
 }
