@@ -89,4 +89,7 @@
     <integer name="title_bar_show_animation_duration">300</integer>
 
     <integer name="webview_initial_delay">1000</integer>
+
+    <!-- The width or height of the preview will not exceed this -->
+    <integer name="attachment_preview_max_size">256</integer>
 </resources>
