@@ -830,7 +830,7 @@ public abstract class AbstractActivityController implements ActivityController {
             case R.id.archive: {
                 final boolean showDialog = (settings != null && settings.confirmArchive);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_archive_conversation,
-                        getAction(R.id.archive, target));
+                        getDeferredAction(R.id.archive, target, false));
                 break;
             }
             case R.id.remove_folder:
@@ -840,13 +840,13 @@ public abstract class AbstractActivityController implements ActivityController {
             case R.id.delete: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_delete_conversation,
-                        getAction(R.id.delete, target));
+                        getDeferredAction(R.id.delete, target, false));
                 break;
             }
             case R.id.discard_drafts: {
                 final boolean showDialog = (settings != null && settings.confirmDelete);
                 confirmAndDelete(target, showDialog, R.plurals.confirm_discard_drafts_conversation,
-                        getAction(R.id.discard_drafts, target));
+                        getDeferredAction(R.id.discard_drafts, target, false));
                 break;
             }
             case R.id.mark_important:
@@ -1109,7 +1109,9 @@ public abstract class AbstractActivityController implements ActivityController {
             final AlertDialog.OnClickListener onClick = new AlertDialog.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    delete(0, target, action);
+                    if (which == DialogInterface.BUTTON_POSITIVE) {
+                        delete(0, target, action);
+                    }
                 }
             };
             final CharSequence message = Utils.formatPlural(mContext, confirmResource,
@@ -2501,7 +2503,22 @@ public abstract class AbstractActivityController implements ActivityController {
 
     @Override
     public final DestructiveAction getDeferredBatchAction(int action) {
-        final DestructiveAction da = new ConversationAction(action, mSelectedSet.values(), true);
+        return getDeferredAction(action, mSelectedSet.values(), true);
+    }
+
+    /**
+     * Get a destructive action for a menu action. This is a temporary method,
+     * to control the profusion of {@link DestructiveAction} classes that are
+     * created. Please do not copy this paradigm.
+     * @param action the resource ID of the menu action: R.id.delete, for
+     *            example
+     * @param target the conversations to act upon.
+     * @return a {@link DestructiveAction} that performs the specified action.
+     */
+    @Override
+    public DestructiveAction getDeferredAction(int action, Collection<Conversation> target,
+            boolean batch) {
+        final DestructiveAction da = new ConversationAction(action, target, batch);
         return da;
     }
 
