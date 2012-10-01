@@ -93,6 +93,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     public static final String LAYOUT_TAG = "ConvLayout";
 
     /**
+     * Difference in the height of the message header whose details have been expanded/collapsed
+     */
+    private int mDiff = 0;
+
+    /**
      * Default value for {@link #mLoadWaitReason}. Conversation load will happen immediately.
      */
     private final int LOAD_NOW = 0;
@@ -872,15 +877,23 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         public void onWebContentGeometryChange(final String[] overlayBottomStrs) {
             try {
                 getHandler().post(new Runnable() {
+
                     @Override
                     public void run() {
                         if (!mViewsCreated) {
-                            LogUtils.d(LOG_TAG, "ignoring webContentGeometryChange because views" +
-                                    " are gone, %s", ConversationViewFragment.this);
+                            LogUtils.d(LOG_TAG, "ignoring webContentGeometryChange because views"
+                                    + " are gone, %s", ConversationViewFragment.this);
                             return;
                         }
-
                         mConversationContainer.onGeometryChange(parseInts(overlayBottomStrs));
+                        if (mDiff != 0) {
+                            // SCROLL!
+                            int scale = (int) (mWebView.getScale() / mWebView.getInitialScale());
+                            if (scale > 1) {
+                                mWebView.scrollBy(0, (mDiff * (scale - 1)));
+                            }
+                            mDiff = 0;
+                        }
                     }
                 });
             } catch (Throwable t) {
@@ -1159,5 +1172,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             mConversationContainer.removeOnLayoutChangeListener(this);
             renderConversation(getMessageCursor());
         }
+    }
+
+    @Override
+    public void setMessageDetailsExpanded(MessageHeaderItem i, boolean expanded,
+            int heightBefore) {
+        mDiff = (expanded ? 1 : -1) * Math.abs(i.getHeight() - heightBefore);
     }
 }
