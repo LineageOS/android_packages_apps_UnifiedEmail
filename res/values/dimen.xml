@@ -44,6 +44,7 @@
     <dimen name="standard_scaled_dimen">100sp</dimen>
     <dimen name="folder_cell_width">8dip</dimen>
     <dimen name="triangle_width">15dip</dimen>
+    <dimen name="conversation_page_gutter">16dp</dimen>
     <dimen name="conversation_message_content_margin_side">16dp</dimen>
     <dimen name="conversation_view_margin_side">0dp</dimen>
     <dimen name="conversation_header_vertical_item_padding">8dip</dimen>
