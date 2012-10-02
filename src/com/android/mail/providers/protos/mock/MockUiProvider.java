@@ -106,25 +106,20 @@ public final class MockUiProvider extends ContentProvider {
                 ImmutableList.of(createFolderDetailsMap(10, "zeroChild0", 0, 0),
                         createFolderDetailsMap(11, "zeroChild1", 0, 0)));
 
-        Map<String, Object> conv0 = createConversationDetailsMap("zeroConv0".hashCode(),
-                "zeroConv0", 1, 1, 0);
-        builder.put(conv0.get(ConversationColumns.URI).toString(),
-                ImmutableList.of(conv0));
-        Map<String, Object> conv1 = createConversationDetailsMap("zeroConv1".hashCode(),
-                "zeroConv1", 1, 5, 1);
-        builder.put(conv1.get(ConversationColumns.URI).toString(),
-                ImmutableList.of(conv1));
-        Map<String, Object> conv2 = createConversationDetailsMap("zeroConv2".hashCode(),
-                "zeroConv2", 1, 5, 2);
-        builder.put(conv2.get(ConversationColumns.URI).toString(),
-                ImmutableList.of(conv2));
+
+        ArrayList<Map<String, Object>> conversations = new ArrayList<Map<String, Object>>();
+        for (int i = 0; i < 100; i++) {
+            String name = "zeroConv"+i;
+            conversations.add(createConversationDetailsMap(name.hashCode(),
+                    name, 1, 5, 2));
+        }
         builder.put(folderDetailsMap0.get(FolderColumns.CONVERSATION_LIST_URI).toString(),
-                ImmutableList.of(conv0, conv1, conv2));
+                conversations);
 
         Map<String, Object> message0 = createMessageDetailsMap("zeroConv0".hashCode(), "zeroConv0",
                 1, false);
         builder.put(message0.get(MessageColumns.URI).toString(), ImmutableList.of(message0));
-        builder.put(conv0.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
+        builder.put(conversations.get(0).get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message0));
         builder.put(message0.get(MessageColumns.ATTACHMENT_LIST_URI).toString(),
                 ImmutableList.of(createAttachmentDetailsMap(0, "zero")));
@@ -134,7 +129,7 @@ public final class MockUiProvider extends ContentProvider {
         Map<String, Object> message1a = createMessageDetailsMap("zeroConv1a".hashCode(), "zeroConv1a",
                 2, false);
         builder.put(message1a.get(MessageColumns.URI).toString(), ImmutableList.of(message1a));
-        builder.put(conv1.get(ConversationColumns.MESSAGE_LIST_URI).toString(),
+        builder.put(conversations.get(1).get(ConversationColumns.MESSAGE_LIST_URI).toString(),
                 ImmutableList.of(message1, message1a));
         builder.put(message1.get(MessageColumns.ATTACHMENT_LIST_URI).toString(),
                 ImmutableList.of(createAttachmentDetailsMap(1, "one")));
@@ -458,6 +453,7 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SETTINGS_INTENT_URI), 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.HELP_INTENT_URI), 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.SEND_FEEDBACK_INTENT_URI), 0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.REAUTHENTICATION_INTENT_URI), 0);
         dest.writeInt((Integer) accountInfo.get(AccountColumns.SYNC_STATUS));
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.COMPOSE_URI), 0);
         dest.writeString((String) accountInfo.get(AccountColumns.MIME_TYPE));
@@ -468,6 +464,8 @@ public final class MockUiProvider extends ContentProvider {
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.MANUAL_SYNC_URI),
                 0);
         dest.writeParcelable((Uri) accountInfo.get(AccountColumns.VIEW_INTENT_PROXY_URI),
+                0);
+        dest.writeParcelable((Uri) accountInfo.get(AccountColumns.ACCOUNT_COOKIE_QUERY_URI),
                 0);
         Parcel p = Parcel.obtain();
         p.writeString("");
