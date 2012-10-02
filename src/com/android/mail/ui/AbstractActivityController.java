@@ -754,6 +754,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mPagerController = new ConversationPagerController(mActivity, this);
         mToastBar = (ActionableToastBar) mActivity.findViewById(R.id.toast_bar);
         attachActionBar();
+        FolderSelectionDialog.setDialogDismissed();
 
         final Intent intent = mActivity.getIntent();
         // Immediately handle a clean launch with intent, and any state restoration
@@ -910,13 +911,19 @@ public abstract class AbstractActivityController implements ActivityController {
                 Utils.showManageFolder(mActivity.getActivityContext(), mAccount);
                 break;
             case R.id.change_folder:
+                final FolderSelectionDialog dialog;
                 if (mAccount.supportsCapability(
                         UIProvider.AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
-                    new MultiFoldersSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                            Conversation.listOf(mCurrentConversation), false, mFolder).show();
+                    dialog = MultiFoldersSelectionDialog.getInstance(mActivity.getActivityContext(),
+                            mAccount, this, Conversation.listOf(mCurrentConversation), false,
+                            mFolder);
                 } else {
-                    new SingleFolderSelectionDialog(mActivity.getActivityContext(), mAccount, this,
-                            Conversation.listOf(mCurrentConversation), false, mFolder).show();
+                    dialog = SingleFolderSelectionDialog.getInstance(mActivity.getActivityContext(),
+                            mAccount, this, Conversation.listOf(mCurrentConversation), false,
+                            mFolder);
+                }
+                if (dialog != null) {
+                    dialog.show();
                 }
                 break;
             default:
