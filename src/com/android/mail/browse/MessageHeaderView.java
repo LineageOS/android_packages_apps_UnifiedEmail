@@ -17,11 +17,9 @@
 package com.android.mail.browse;
 
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.provider.ContactsContract;
 import android.text.Spannable;
@@ -152,8 +150,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
     private Map<String, Address> mAddressCache;
 
     private boolean mShowImagePrompt;
-
-    private int mDrawTranslateY;
 
     private CharSequence mTimestampShort;
 
@@ -664,13 +660,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
         ((TextView) rootView.findViewById(valueRes)).setText(TextUtils.join("\n", formattedEmails));
         rootView.findViewById(rowRes).setVisibility(VISIBLE);
-    }
-
-    public void setTranslateY(int offsetY) {
-        if (mDrawTranslateY != offsetY) {
-            mDrawTranslateY = offsetY;
-            invalidate();
-        }
     }
 
     /**
@@ -1256,20 +1245,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
 
         return snippet.toString();
-    }
-
-    @Override
-    public void dispatchDraw(Canvas canvas) {
-        boolean transform = mIsSnappy && (mDrawTranslateY != 0);
-        int saved = -1;
-        if (transform) {
-            saved = canvas.save();
-            canvas.translate(0, mDrawTranslateY);
-        }
-        super.dispatchDraw(canvas);
-        if (transform) {
-            canvas.restoreToCount(saved);
-        }
     }
 
     @Override
