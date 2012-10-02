@@ -42,7 +42,7 @@ import java.util.Collection;
  * Displays a folder selection dialog for the conversation provided. It allows
  * the user to switch a conversation from one folder to another.
  */
-public class SingleFolderSelectionDialog implements OnClickListener {
+public class SingleFolderSelectionDialog extends FolderSelectionDialog implements OnClickListener {
     private AlertDialog mDialog;
     private ConversationUpdater mUpdater;
     private SeparatedFolderListAdapter mAdapter;
@@ -52,6 +52,16 @@ public class SingleFolderSelectionDialog implements OnClickListener {
     private Folder mExcludeFolder;
     private Builder mBuilder;
     private Account mAccount;
+
+    public static SingleFolderSelectionDialog getInstance(final Context context, Account account,
+            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
+            Folder currentFolder) {
+        if (isShown()) {
+            return null;
+        }
+        return new SingleFolderSelectionDialog(
+                context, account, updater, target, isBatch, currentFolder);
+    }
 
     /**
      * Create a new {@link SingleFolderSelectionDialog}. It is displayed when
@@ -65,7 +75,7 @@ public class SingleFolderSelectionDialog implements OnClickListener {
      * @param currentFolder the current folder that the
      *            {@link FolderListFragment} is showing
      */
-    public SingleFolderSelectionDialog(final Context context, Account account,
+    private SingleFolderSelectionDialog(final Context context, Account account,
             final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
             Folder currentFolder) {
         mUpdater = updater;
@@ -132,7 +142,9 @@ public class SingleFolderSelectionDialog implements OnClickListener {
     /**
      * Shows the {@link SingleFolderSelectionDialog} dialog.
      */
+    @Override
     public void show() {
+        super.show();
         mRunner.execute();
     }
 
@@ -156,6 +168,7 @@ public class SingleFolderSelectionDialog implements OnClickListener {
                 }
             }
         });
+        mDialog.setOnDismissListener(this);
     }
 
     @Override

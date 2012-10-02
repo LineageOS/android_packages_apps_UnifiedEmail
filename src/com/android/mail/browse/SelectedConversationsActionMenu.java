@@ -45,6 +45,7 @@ import com.android.mail.ui.ConversationSelectionSet;
 import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.ui.DestructiveAction;
+import com.android.mail.ui.FolderSelectionDialog;
 import com.android.mail.ui.MultiFoldersSelectionDialog;
 import com.android.mail.ui.SingleFolderSelectionDialog;
 import com.android.mail.ui.SwipeableListView;
@@ -109,6 +110,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         mFolder = folder;
         mContext = mActivity.getActivityContext();
         mUpdater = activity.getConversationUpdater();
+        FolderSelectionDialog.setDialogDismissed();
     }
 
     @Override
@@ -190,14 +192,18 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     }
                 }
                 if (!cantMove) {
+                    final FolderSelectionDialog dialog;
                     if (mAccount
                             .supportsCapability(UIProvider
                                     .AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
-                        new MultiFoldersSelectionDialog(mContext, acct, mUpdater,
-                                mSelectionSet.values(), true, mFolder).show();
+                        dialog = MultiFoldersSelectionDialog.getInstance(
+                                mContext, acct, mUpdater, mSelectionSet.values(), true, mFolder);
                     } else {
-                        new SingleFolderSelectionDialog(mContext, acct, mUpdater,
-                                mSelectionSet.values(), true, mFolder).show();
+                        dialog = SingleFolderSelectionDialog.getInstance(
+                                mContext, acct, mUpdater, mSelectionSet.values(), true, mFolder);
+                    }
+                    if(dialog != null) {
+                        dialog.show();
                     }
                 }
                 break;
