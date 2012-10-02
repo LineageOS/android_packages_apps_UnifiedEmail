@@ -25,4 +25,9 @@
 
     <!-- Whether to show single or 2 pane search results -->
     <bool name="show_two_pane_search_results">true</bool>
+
+    <dimen name="undo_bar_width_list">960dp</dimen>
+    <dimen name="undo_bar_width_conv">844dp</dimen>
+    <dimen name="undo_bar_width_conv_list">426dp</dimen>
+    <dimen name="undo_bar_width_search_list">400dp</dimen>
 </resources>
