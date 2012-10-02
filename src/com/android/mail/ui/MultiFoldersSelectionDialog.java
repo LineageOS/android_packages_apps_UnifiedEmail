@@ -42,10 +42,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * Displays a folder selection dialog for the conversation provided. It allows the user to mark
- * folders to assign that conversation to.
+ * Displays a folder selection dialog for the conversation provided. It allows
+ * the user to mark folders to assign that conversation to.
  */
-public class MultiFoldersSelectionDialog implements OnClickListener {
+public class MultiFoldersSelectionDialog extends FolderSelectionDialog implements OnClickListener {
     private AlertDialog mDialog;
     private final ConversationUpdater mUpdater;
     private final boolean mSingle;
@@ -54,6 +54,16 @@ public class MultiFoldersSelectionDialog implements OnClickListener {
     private final boolean mBatch;
     private final HashMap<Uri, FolderOperation> mOperations;
     private final QueryRunner mRunner;
+
+    public static MultiFoldersSelectionDialog getInstance(final Context context, Account account,
+            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
+            Folder currentFolder) {
+        if (isShown()) {
+            return null;
+        }
+        return new MultiFoldersSelectionDialog(
+                context, account, updater, target, isBatch, currentFolder);
+    }
 
     /**
      * Create a new {@link MultiFoldersSelectionDialog}. It is displayed when
@@ -67,7 +77,7 @@ public class MultiFoldersSelectionDialog implements OnClickListener {
      * @param currentFolder the current folder that the
      *            {@link FolderListFragment} is showing
      */
-    public MultiFoldersSelectionDialog(final Context context, Account account,
+    private MultiFoldersSelectionDialog(final Context context, Account account,
             final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
             Folder currentFolder) {
         mUpdater = updater;
@@ -156,7 +166,9 @@ public class MultiFoldersSelectionDialog implements OnClickListener {
     /**
      * Shows the {@link MultiFoldersSelectionDialog} dialog.
      */
+    @Override
     public void show() {
+        super.show();
         mRunner.execute();
     }
 
@@ -174,6 +186,7 @@ public class MultiFoldersSelectionDialog implements OnClickListener {
                 }
             }
         });
+        mDialog.setOnDismissListener(this);
     }
 
     /**
