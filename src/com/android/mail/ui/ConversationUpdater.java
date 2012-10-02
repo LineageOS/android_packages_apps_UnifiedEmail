@@ -21,6 +21,7 @@ import android.content.ContentValues;
 import android.net.Uri;
 
 import com.android.mail.browse.ConversationCursor;
+import com.android.mail.browse.ConversationItemView;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
@@ -82,6 +83,18 @@ public interface ConversationUpdater extends ConversationListCallbacks {
      */
     void delete(
             int actionId, final Collection<Conversation> target, final DestructiveAction action);
+
+    /**
+     * Requests the removal of the current conversation with the specified
+     * destructive action.
+     * @param actionId TODO(viki):
+     * @param target the conversations to act upon.
+     *@param target the conversation views to act upon.
+     * @param action to perform after the UI has been updated to remove the
+     *            conversations
+     */
+    void delete(int actionId, final Collection<Conversation> target,
+            final Collection<ConversationItemView> targetViews, final DestructiveAction action);
 
     /**
      * Mark a number of conversations as read or unread.
