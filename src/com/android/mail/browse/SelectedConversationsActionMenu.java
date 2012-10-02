@@ -46,16 +46,13 @@ import com.android.mail.ui.ConversationSetObserver;
 import com.android.mail.ui.ConversationUpdater;
 import com.android.mail.ui.DestructiveAction;
 import com.android.mail.ui.MultiFoldersSelectionDialog;
-import com.android.mail.ui.RestrictedActivity;
 import com.android.mail.ui.SingleFolderSelectionDialog;
 import com.android.mail.ui.SwipeableListView;
-import com.android.mail.ui.SwipeableListView.ListItemsRemovedListener;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.google.common.annotations.VisibleForTesting;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -130,7 +127,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                 performDestructiveAction(R.id.archive);
                 break;
             case R.id.remove_folder:
-                destroy(R.id.remove_folder, mSelectionSet.values(),
+                destroy(R.id.remove_folder, mSelectionSet.values(), mSelectionSet.views(),
                         mUpdater.getDeferredRemoveFolder(mSelectionSet.values(), mFolder, true,
                                 true, true));
                 break;
@@ -246,6 +243,7 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
         final DestructiveAction destructiveAction = mUpdater.getDeferredBatchAction(action);
         final Settings settings = mAccount.settings;
         final Collection<Conversation> conversations = mSelectionSet.values();
+        final Collection<ConversationItemView> views = mSelectionSet.views();
         final boolean showDialog =
                 (settings != null && (action == R.id.delete || action == R.id.discard_drafts) ?
                         settings.confirmDelete : settings.confirmArchive);
@@ -267,17 +265,17 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     .setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            destroy(action, conversations, destructiveAction);
+                            destroy(action, conversations, views, destructiveAction);
                         }
                     }).setNegativeButton(R.string.cancel, null).create().show();
         } else {
-            destroy(action, conversations, destructiveAction);
+            destroy(action, conversations, views, destructiveAction);
         }
     }
 
     private void destroy(int action, final Collection<Conversation> conversations,
-            final DestructiveAction listener) {
-        mUpdater.delete(action, conversations, listener);
+            final Collection<ConversationItemView> views, final DestructiveAction listener) {
+        mUpdater.delete(action, conversations, views, listener);
     }
 
     /**

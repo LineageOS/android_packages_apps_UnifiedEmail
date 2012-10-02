@@ -576,7 +576,7 @@ public final class ConversationListFragment extends ListFragment implements
      * @param action
      */
     public void requestDelete(int actionId, final Collection<Conversation> conversations,
-            final DestructiveAction action) {
+            final Collection<ConversationItemView> views, final DestructiveAction action) {
         for (Conversation conv : conversations) {
             conv.localDeleteOnUpdate = true;
         }
@@ -588,8 +588,11 @@ public final class ConversationListFragment extends ListFragment implements
         };
         final SwipeableListView listView = (SwipeableListView) getListView();
         if (listView.getSwipeAction() == actionId) {
-            listView.destroyItems(new ArrayList<ConversationItemView>(mSelectedSet.views()),
-                    listener);
+            if (views == null) {
+                listView.destroyItems(conversations, listener);
+            } else {
+                listView.destroyItems(new ArrayList<ConversationItemView>(views), listener);
+            }
             return;
         }
         // Delete the local delete items (all for now) and when done,
