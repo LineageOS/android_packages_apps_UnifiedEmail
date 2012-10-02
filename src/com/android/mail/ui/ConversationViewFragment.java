@@ -310,7 +310,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         settings.setJavaScriptEnabled(true);
         settings.setUseWideViewPort(true);
-        settings.setLoadWithOverviewMode(true);
 
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
