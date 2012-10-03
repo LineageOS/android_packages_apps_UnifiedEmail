@@ -57,7 +57,6 @@ public class MailSpinner extends FrameLayout implements OnItemClickListener, OnC
 
     public MailSpinner(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setOnClickListener(this);
         mListPopupWindow = new ListPopupWindow(context);
         mListPopupWindow.setOnItemClickListener(this);
         mListPopupWindow.setAnchorView(this);
