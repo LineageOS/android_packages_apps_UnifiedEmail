@@ -733,6 +733,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         snapItem.bindView(mSnapHeader, false /* measureOnly */);
         mSnapHeader.setVisibility(VISIBLE);
 
+        // overlap is negative or zero; bump the snap header upwards by that much
         int overlap = 0;
 
         final ConversationOverlayItem next = findNextPushingOverlay(snapIndex + 1);
@@ -747,7 +748,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
                 }
             }
         }
-        mSnapHeader.setTranslateY(overlap);
+
+        mSnapHeader.setTranslationY(overlap);
     }
 
     // find the next header that can push the snap header up
