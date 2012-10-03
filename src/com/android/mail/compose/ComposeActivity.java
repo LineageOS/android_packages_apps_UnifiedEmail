@@ -1285,34 +1285,35 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     totalSize += size;
                 }
             }
-            if (Intent.ACTION_SEND.equals(action) && extras.containsKey(Intent.EXTRA_STREAM)) {
-                final Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
-                long size = 0;
-                try {
-                    size =  mAttachmentsView.addAttachment(mAccount, uri);
-                } catch (AttachmentFailureException e) {
-                    LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                    showAttachmentTooBigToast(e.getErrorRes());
-                }
-                totalSize += size;
-            }
-
-            if (Intent.ACTION_SEND_MULTIPLE.equals(action)
-                    && extras.containsKey(Intent.EXTRA_STREAM)) {
-                ArrayList<Parcelable> uris = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
-                ArrayList<Attachment> attachments = new ArrayList<Attachment>();
-                for (Parcelable uri : uris) {
+            if (extras.containsKey(Intent.EXTRA_STREAM)) {
+                if (Intent.ACTION_SEND_MULTIPLE.equals(action)) {
+                    ArrayList<Parcelable> uris = extras
+                            .getParcelableArrayList(Intent.EXTRA_STREAM);
+                    ArrayList<Attachment> attachments = new ArrayList<Attachment>();
+                    for (Parcelable uri : uris) {
+                        try {
+                            attachments.add(mAttachmentsView.generateLocalAttachment((Uri) uri));
+                        } catch (AttachmentFailureException e) {
+                            LogUtils.e(LOG_TAG, e, "Error adding attachment");
+                            String maxSize = AttachmentUtils.convertToHumanReadableSize(
+                                    getApplicationContext(),
+                                    mAccount.settings.getMaxAttachmentSize());
+                            showErrorToast(getString
+                                    (R.string.generic_attachment_problem, maxSize));
+                        }
+                    }
+                    totalSize += addAttachments(attachments);
+                } else {
+                    final Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
+                    long size = 0;
                     try {
-                        attachments.add(mAttachmentsView.generateLocalAttachment((Uri) uri));
+                        size = mAttachmentsView.addAttachment(mAccount, uri);
                     } catch (AttachmentFailureException e) {
                         LogUtils.e(LOG_TAG, e, "Error adding attachment");
-                        String maxSize = AttachmentUtils.convertToHumanReadableSize(
-                                getApplicationContext(),
-                                mAccount.settings.getMaxAttachmentSize());
-                        showErrorToast(getString(R.string.generic_attachment_problem, maxSize));
+                        showAttachmentTooBigToast(e.getErrorRes());
                     }
+                    totalSize += size;
                 }
-                totalSize += addAttachments(attachments);
             }
 
             if (totalSize > 0) {
