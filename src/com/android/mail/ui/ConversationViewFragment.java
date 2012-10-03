@@ -158,6 +158,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private ContentSizeChangeListener mWebViewSizeChangeListener;
 
+    private float mWebViewYPercent;
+
+    /**
+     * Has loadData been called on the WebView yet?
+     */
+    private boolean mWebViewLoadedData;
+
     private final DataSetObserver mLoadedObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
@@ -174,7 +181,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private static final boolean DEBUG_DUMP_CONVERSATION_HTML = false;
     private static final boolean DISABLE_OFFSCREEN_LOADING = false;
-    protected static final String AUTO_LOAD_KEY = "auto-load";
+
+    private static final String BUNDLE_KEY_WEBVIEW_Y_PERCENT =
+            ConversationViewFragment.class.getName() + "webview-y-percent";
 
     /**
      * Constructor needs to be public to handle orientation changes and activity lifecycle events.
@@ -261,6 +270,15 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
+    public void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
+
+        if (savedState != null) {
+            mWebViewYPercent = savedState.getFloat(BUNDLE_KEY_WEBVIEW_Y_PERCENT);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
 
@@ -329,6 +347,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         settings.setTextZoom(textZoom);
 
         mViewsCreated = true;
+        mWebViewLoadedData = false;
 
         return rootView;
     }
@@ -348,6 +367,31 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mAdapter = null;
         resetLoadWaiting(); // be sure to unregister any active load observer
         mViewsCreated = false;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putFloat(BUNDLE_KEY_WEBVIEW_Y_PERCENT, calculateScrollYPercent());
+    }
+
+    private float calculateScrollYPercent() {
+        float p;
+        int scrollY = mWebView.getScrollY();
+        int viewH = mWebView.getHeight();
+        int webH = (int) (mWebView.getContentHeight() * mWebView.getScale());
+
+        if (webH == 0 || webH <= viewH) {
+            p = 0;
+        } else if (scrollY + viewH >= webH) {
+            // The very bottom is a special case, it acts as a stronger anchor than the scroll top
+            // at that point.
+            p = 1.0f;
+        } else {
+            p = (float) scrollY / webH;
+        }
+        return p;
     }
 
     private void resetLoadWaiting() {
@@ -477,7 +521,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             }
         }
 
+        // save off existing scroll position before re-rendering
+        if (mWebViewLoadedData) {
+            mWebViewYPercent = calculateScrollYPercent();
+        }
+
         mWebView.loadDataWithBaseURL(mBaseUri, convHtml, "text/html", "utf-8", null);
+        mWebViewLoadedData = true;
     }
 
     /**
@@ -963,6 +1013,17 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onContentReady");
                 // Still try to show the conversation.
                 showConversation(conv);
+            }
+        }
+
+        @SuppressWarnings("unused")
+        @JavascriptInterface
+        public float getScrollYPercent() {
+            try {
+                return mWebViewYPercent;
+            } catch (Throwable t) {
+                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.getScrollYPercent");
+                return 0f;
             }
         }
     }
