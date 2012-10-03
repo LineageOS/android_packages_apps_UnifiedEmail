@@ -600,6 +600,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     }
 
     private void layoutSenderSpans() {
+        // If there is not styled sender string, we cannot set/remove a span.
+        if (mHeader.styledSendersString == null || mHeader.styledSendersString.length() <= 0) {
+            return;
+        }
         if (isActivated() && showActivatedText()) {
             if (mActivatedTextSpan == null) {
                 mActivatedTextSpan = getActivatedTextSpan();
@@ -749,7 +753,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 mSendersWidth = dateAttachmentStart - mCoordinates.sendersX - cellWidth;
             }
         }
-
+        // Nothing has changed in the layout, avoid recalculating everything.
         if (mHeader.isLayoutValid(mContext)) {
             pauseTimer(PERF_TAG_CALCULATE_COORDINATES);
             return;
@@ -763,6 +767,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         if (mHeader.styledSenders != null) {
             ellipsizeStyledSenders();
+            layoutSenderSpans();
         } else {
             // First pass to calculate width of each fragment.
             int totalWidth = 0;
