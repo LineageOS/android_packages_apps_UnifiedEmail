@@ -32,6 +32,7 @@ import com.android.mail.providers.Attachment;
 import com.android.mail.ui.AttachmentTile.AttachmentPreview;
 import com.android.mail.ui.AttachmentTile.AttachmentPreviewCache;
 import com.android.mail.utils.AttachmentUtils;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -46,7 +47,6 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
     private LayoutInflater mInflater;
     private Uri mAttachmentsListUri;
     private final int mTileMinSize;
-    private final int mTileMaxSize;
     private int mColumnCount;
     private List<Attachment> mAttachments;
     private HashMap<String, AttachmentPreview> mAttachmentPreviews;
@@ -57,8 +57,6 @@ public class AttachmentTileGrid extends FrameLayout implements AttachmentPreview
         mInflater = LayoutInflater.from(context);
         mTileMinSize = context.getResources()
                 .getDimensionPixelSize(R.dimen.attachment_tile_min_size);
-        mTileMaxSize = context.getResources()
-                .getDimensionPixelSize(R.dimen.attachment_tile_max_size);
         mAttachmentPreviews = Maps.newHashMap();
     }
 
