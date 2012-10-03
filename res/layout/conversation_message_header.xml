@@ -22,7 +22,9 @@
     android:visibility="visible"
     android:background="@android:color/white"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/message_header_vertical_margin">
+    android:paddingBottom="@dimen/message_header_vertical_margin"
+    android:layout_marginLeft="@dimen/conversation_view_margin_side"
+    android:layout_marginRight="@dimen/conversation_view_margin_side" >
 
     <include layout="@layout/conversation_message_upper_header"
         android:id="@+id/upper_header" />
