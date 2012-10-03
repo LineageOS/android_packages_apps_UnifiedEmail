@@ -183,7 +183,7 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         final int convWidth = computeConversationWidth(parentWidth);
 
         // only adjust the fixed folder and conversation view widths when my width changes
-        if (parentWidth != getWidth()) {
+        if (parentWidth != getMeasuredWidth()) {
             LogUtils.i(LOG_TAG, "setting up new TPL, w=%d fw=%d cv=%d", parentWidth,
                     foldersWidth, convWidth);
 
