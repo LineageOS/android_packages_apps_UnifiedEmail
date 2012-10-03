@@ -24,7 +24,6 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.view.ActionMode;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -34,7 +33,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 
-import com.android.mail.providers.Conversation;
 import com.android.mail.providers.Folder;
 import com.android.mail.ui.FolderListFragment.FolderListSelectionListener;
 import com.android.mail.ui.ViewMode.ModeChangeListener;
@@ -48,8 +46,7 @@ import java.net.URLEncoder;
  * (usually a list of folders), and the main content fragment (either a
  * conversation list or a conversation view).
  */
-public class MailActivity extends AbstractMailActivity implements ControllableActivity,
-    AccessibilityManager.AccessibilityStateChangeListener {
+public class MailActivity extends AbstractMailActivity implements ControllableActivity {
     // TODO(viki) This class lacks: What's New dialog
     // TODO(viki) This class lacks: Sync Window Upgrade dialog
 
@@ -71,6 +68,7 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
 
     private ToastBarOperation mPendingToastOp;
     private boolean mAccessibilityEnabled;
+    private AccessibilityManager mAccessibilityManager;
     private static MailActivity sForegroundInstance;
 
     public MailActivity() {
@@ -132,10 +130,9 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         if (savedState == null && intent.getAction() != null) {
             mLaunchedCleanly = true;
         }
-        AccessibilityManager accessibilityManager =
+        mAccessibilityManager =
                 (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
-        accessibilityManager.addAccessibilityStateChangeListener(this);
-        mAccessibilityEnabled = accessibilityManager.isEnabled();
+        mAccessibilityEnabled = mAccessibilityManager.isEnabled();
         setupNfc();
     }
 
@@ -252,6 +249,10 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
             if (mNfcAdapter != null && mForegroundNdef != null) {
                 mNfcAdapter.enableForegroundNdefPush(this, mForegroundNdef);
             }
+        }
+        boolean enabled = mAccessibilityManager.isEnabled();
+        if (enabled != mAccessibilityEnabled) {
+            onAccessibilityStateChanged(enabled);
         }
     }
 
@@ -431,7 +432,6 @@ public class MailActivity extends AbstractMailActivity implements ControllableAc
         return mAccessibilityEnabled;
     }
 
-    @Override
     public void onAccessibilityStateChanged(boolean enabled) {
         mAccessibilityEnabled = enabled;
         mController.onAccessibilityStateChanged();
