@@ -60,7 +60,7 @@
     <string name="add_star" msgid="2866003744391266498">"Ongeza nyota"</string>
     <string name="remove_star" msgid="4372327933122106128">"Ondoa nyota"</string>
     <string name="remove_folder" msgid="4906542720439865413">"Ondoa kutoka kwenye <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
-    <string name="archive" msgid="847250094775910499">"Nyaraka"</string>
+    <string name="archive" msgid="847250094775910499">"Weka kwenye kumbukumbu"</string>
     <string name="report_spam" msgid="6467567747975393907">"Ripoti barua taka"</string>
     <string name="mark_not_spam" msgid="694891665407228160">"Ripoti kuwa siyo barua taka"</string>
     <string name="report_phishing" msgid="5714205737453138338">"Ripoti hadaa"</string>
