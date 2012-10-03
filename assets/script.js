@@ -189,6 +189,13 @@ function setWideViewport() {
     metaViewport.setAttribute('content', 'width=' + WIDE_VIEWPORT_WIDTH);
 }
 
+function restoreScrollPosition() {
+    var scrollYPercent = window.mail.getScrollYPercent();
+    if (scrollYPercent && document.body.offsetHeight > window.innerHeight) {
+        document.body.scrollTop = Math.floor(scrollYPercent * document.body.offsetHeight);
+    }
+}
+
 // BEGIN Java->JavaScript handlers
 function measurePositions() {
     var overlayBottoms;
@@ -328,5 +335,6 @@ collapseAllQuotedText();
 hideUnsafeImages();
 normalizeAllMessageWidths();
 //setWideViewport();
+restoreScrollPosition();
 measurePositions();
 
