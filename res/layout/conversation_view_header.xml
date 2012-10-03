@@ -21,7 +21,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/conversation_header_vertical_padding"
-    android:paddingBottom="@dimen/conversation_header_vertical_padding">
+    android:paddingBottom="@dimen/conversation_header_vertical_padding"
+    android:layout_marginLeft="@dimen/conversation_view_margin_side"
+    android:layout_marginRight="@dimen/conversation_view_margin_side" >
 
     <TextView
         android:id="@+id/subject"
