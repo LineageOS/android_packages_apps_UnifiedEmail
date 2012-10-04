@@ -124,15 +124,17 @@ public class ConversationInfo {
         return new ConversationInfo(messageCount, draftCount, first, firstUnread, lastUnread);
     }
 
-    public void markRead(boolean read) {
+    public boolean markRead(boolean read) {
+        boolean changed = false;
         for (MessageInfo msg : messageInfos) {
-            msg.markRead(read);
+            changed |= msg.markRead(read);
         }
         if (read) {
             firstSnippet = lastSnippet;
         } else {
             firstSnippet = firstUnreadSnippet;
         }
+        return changed;
     }
 
     @Override
