@@ -45,6 +45,7 @@
     </style>
 
     <style name="StarStyle">
+        <item name="android:layout_marginLeft">12dip</item>
         <item name="android:layout_marginRight">12dip</item>
         <item name="android:layout_marginTop">-6sp</item>
         <item name="android:layout_width">wrap_content</item>
