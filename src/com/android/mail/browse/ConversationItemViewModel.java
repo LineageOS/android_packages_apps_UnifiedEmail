@@ -224,14 +224,15 @@ public class ConversationItemViewModel {
      * Returns the hashcode to compare if the data in the header is valid.
      */
     private static int getHashCode(Context context, String dateText, Object convInfo,
-            String rawFolders, boolean starred, boolean read, int priority) {
+            String rawFolders, boolean starred, boolean read, int priority, int sendingState) {
         if (dateText == null) {
             return -1;
         }
         if (TextUtils.isEmpty(rawFolders)) {
             rawFolders = "";
         }
-        return Objects.hashCode(convInfo, dateText, rawFolders, starred, read, priority);
+        return Objects.hashCode(convInfo, dateText, rawFolders, starred, read, priority,
+                sendingState);
     }
 
     /**
@@ -252,7 +253,7 @@ public class ConversationItemViewModel {
     void validate(Context context) {
         mDataHashCode = getHashCode(context, dateText, getConvInfo(),
                 conversation.getRawFoldersString(), conversation.starred, conversation.read,
-                conversation.priority);
+                conversation.priority, conversation.sendingState);
         mLayoutHashCode = getLayoutHashCode();
     }
 
@@ -262,7 +263,7 @@ public class ConversationItemViewModel {
     boolean isDataValid(Context context) {
         return mDataHashCode == getHashCode(context, dateText, getConvInfo(),
                 conversation.getRawFoldersString(), conversation.starred, conversation.read,
-                conversation.priority);
+                conversation.priority, conversation.sendingState);
     }
 
     /**
