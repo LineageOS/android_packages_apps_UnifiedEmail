@@ -41,6 +41,8 @@ import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 import com.android.mail.widget.WidgetProvider;
 
+import java.util.ArrayList;
+
 /**
  * This activity displays the list of available folders for the current account.
  */
@@ -58,7 +60,7 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
     private Account mAccount;
     private Folder mSelectedFolder;
     private boolean mConfigureShortcut;
-    private boolean mConfigureWidget;
+    protected boolean mConfigureWidget;
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private int mMode = -1;
 
@@ -107,9 +109,20 @@ public class FolderSelectionActivity extends Activity implements OnClickListener
 
     private void createFolderListFragment(Folder parent, Uri uri) {
         final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        final Fragment fragment = FolderListFragment.newInstance(parent, uri, false);
+        final Fragment fragment = FolderListFragment.newInstance(parent, uri, false,
+                getExcludedFolderTypes());
         fragmentTransaction.replace(R.id.content_pane, fragment);
         fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    /**
+     * Gets an {@link ArrayList} of canonical names of any folders to exclude from displaying.
+     * By default, this list is empty.
+     *
+     * @return An {@link ArrayList} of folder canonical names
+     */
+    protected ArrayList<Integer> getExcludedFolderTypes() {
+        return new ArrayList<Integer>();
     }
 
     @Override
