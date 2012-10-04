@@ -20,6 +20,8 @@
     android:id="@+id/super_collapsed_block"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/conversation_view_margin_side"
+    android:layout_marginRight="@dimen/conversation_view_margin_side"
     android:paddingBottom="@dimen/message_header_vertical_margin">
     <RelativeLayout
         android:id="@+id/super_collapsed_background"
