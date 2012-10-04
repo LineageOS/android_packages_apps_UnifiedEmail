@@ -40,11 +40,13 @@ import com.android.mail.R;
 import com.android.mail.providers.Folder;
 import com.android.mail.providers.RecentFolderObserver;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.providers.UIProvider.FolderType;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -61,6 +63,8 @@ public final class FolderListFragment extends ListFragment implements
     private Uri mFolderListUri;
     /** True if you want a sectioned FolderList, false otherwise. */
     private boolean mIsSectioned;
+    /** An {@link ArrayList} of {@link FolderType}s to exclude from displaying. */
+    private ArrayList<Integer> mExcludedFolderTypes;
     /** Callback into the parent */
     private FolderListSelectionListener mListener;
 
@@ -78,6 +82,8 @@ public final class FolderListFragment extends ListFragment implements
     private static final String ARG_FOLDER_URI = "arg-folder-list-uri";
     /** Key to store {@link #mIsSectioned} */
     private static final String ARG_IS_SECTIONED = "arg-is-sectioned";
+    /** Key to store {@link #mExcludedFolderTypes} */
+    private static final String ARG_EXCLUDED_FOLDER_TYPES = "arg-excluded-folder-types";
 
     private static final String BUNDLE_LIST_STATE = "flf-list-state";
     private static final String BUNDLE_SELECTED_FOLDER = "flf-selected-folder";
@@ -134,6 +140,17 @@ public final class FolderListFragment extends ListFragment implements
      */
     public static FolderListFragment newInstance(Folder parentFolder, Uri folderUri,
             boolean isSectioned) {
+        return newInstance(parentFolder, folderUri, isSectioned, null);
+    }
+
+    /**
+     * Creates a new instance of {@link ConversationListFragment}, initialized
+     * to display conversation list context.
+     * @param isSectioned TODO(viki):
+     * @param excludedFolderTypes A list of {@link FolderType}s to exclude from displaying
+     */
+    public static FolderListFragment newInstance(Folder parentFolder, Uri folderUri,
+            boolean isSectioned, final ArrayList<Integer> excludedFolderTypes) {
         final FolderListFragment fragment = new FolderListFragment();
         final Bundle args = new Bundle();
         if (parentFolder != null) {
@@ -141,6 +158,9 @@ public final class FolderListFragment extends ListFragment implements
         }
         args.putString(ARG_FOLDER_URI, folderUri.toString());
         args.putBoolean(ARG_IS_SECTIONED, isSectioned);
+        if (excludedFolderTypes != null) {
+            args.putIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES, excludedFolderTypes);
+        }
         fragment.setArguments(args);
         return fragment;
     }
@@ -197,6 +217,7 @@ public final class FolderListFragment extends ListFragment implements
         mFolderListUri = Uri.parse(args.getString(ARG_FOLDER_URI));
         mParentFolder = (Folder) args.getParcelable(ARG_PARENT_FOLDER);
         mIsSectioned = args.getBoolean(ARG_IS_SECTIONED);
+        mExcludedFolderTypes = args.getIntegerArrayList(ARG_EXCLUDED_FOLDER_TYPES);
         final View rootView = inflater.inflate(R.layout.folder_list, null);
         mListView = (ListView) rootView.findViewById(android.R.id.list);
         mListView.setHeaderDividersEnabled(false);
@@ -246,7 +267,6 @@ public final class FolderListFragment extends ListFragment implements
             outState.putString(BUNDLE_SELECTED_FOLDER, mSelectedFolderUri.toString());
         }
         outState.putInt(BUNDLE_SELECTED_TYPE, mSelectedFolderType);
-        outState.putBoolean(ARG_IS_SECTIONED, mIsSectioned);
     }
 
     @Override
@@ -535,7 +555,9 @@ public final class FolderListFragment extends ListFragment implements
                 // Adapter for a flat list. Everything is a FOLDER_USER, and there are no headers.
                 do {
                     final Folder f = new Folder(mCursor);
-                    mItemList.add(new Item(f, Item.FOLDER_USER));
+                    if (mExcludedFolderTypes == null || !mExcludedFolderTypes.contains(f.type)) {
+                        mItemList.add(new Item(f, Item.FOLDER_USER));
+                    }
                 } while (mCursor.moveToNext());
                 // Ask the list to invalidate its views.
                 notifyDataSetChanged();
@@ -547,14 +569,27 @@ public final class FolderListFragment extends ListFragment implements
             final List<Folder> userFolderList = new ArrayList<Folder>();
             do {
                 final Folder f = new Folder(mCursor);
-                if (f.isProviderFolder()) {
-                    mItemList.add(new Item(f, Item.FOLDER_SYSTEM));
-                } else {
-                    userFolderList.add(f);
+                if (mExcludedFolderTypes == null || !mExcludedFolderTypes.contains(f.type)) {
+                    if (f.isProviderFolder()) {
+                        mItemList.add(new Item(f, Item.FOLDER_SYSTEM));
+                    } else {
+                        userFolderList.add(f);
+                    }
                 }
             } while (mCursor.moveToNext());
             // If there are recent folders, add them and a header.
             final List<Folder> recentFolderList = getRecentFolders(mRecentFolders);
+
+            // Remove any excluded folder types
+            if (mExcludedFolderTypes != null) {
+                final Iterator<Folder> iterator = recentFolderList.iterator();
+                while (iterator.hasNext()) {
+                    if (mExcludedFolderTypes.contains(iterator.next().type)) {
+                        iterator.remove();
+                    }
+                }
+            }
+
             if (recentFolderList.size() > 0) {
                 mItemList.add(new Item(R.string.recent_folders_heading));
                 for (Folder f : recentFolderList) {
