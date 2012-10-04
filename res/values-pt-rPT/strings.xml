@@ -22,7 +22,7 @@
     <string name="cc" msgid="7017720927911078193">"Cc"</string>
     <string name="bcc" msgid="3098643138241111579">"Bcc"</string>
     <string name="subject_hint" msgid="7253964583324677128">"Assunto"</string>
-    <string name="body_hint" msgid="4279864165439577668">"Escrever e-mail"</string>
+    <string name="body_hint" msgid="4279864165439577668">"Escrever email"</string>
     <string name="plus_cc_label" msgid="6986556712069681038">"+"</string>
     <string name="plus_bcc_folder" msgid="4756816436930806526">"+"</string>
     <string name="add_file_attachment" msgid="2203398371671979481">"Anexar ficheiro"</string>
@@ -141,7 +141,7 @@
     <string name="contextmenu_dial_dot" msgid="9104426720103729453">"Marcar..."</string>
     <string name="contextmenu_sms_dot" msgid="6481040539501081547">"Enviar SMS…"</string>
     <string name="contextmenu_add_contact" msgid="8395100913366045250">"Adicionar contacto"</string>
-    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Enviar e-mail"</string>
+    <string name="contextmenu_send_mail" msgid="8301941130009797208">"Enviar email"</string>
     <string name="contextmenu_map" msgid="7721544518698532954">"Mapa"</string>
     <string name="contextmenu_sharelink" msgid="6213520416250245200">"Partilhar link"</string>
     <string name="contextmenu_help" msgid="4651718679842414097">"Ajuda"</string>
