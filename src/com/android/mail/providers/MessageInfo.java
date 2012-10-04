@@ -45,8 +45,12 @@ public class MessageInfo {
         priority = p;
     }
 
-    public void markRead(boolean isRead) {
-        read = isRead;
+    public boolean markRead(boolean isRead) {
+        if (read != isRead) {
+            read = isRead;
+            return true;
+        }
+        return false;
     }
 
     public static String toString(MessageInfo info) {

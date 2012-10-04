@@ -1034,8 +1034,11 @@ public abstract class AbstractActivityController implements ActivityController {
             }
             final ConversationInfo info = target.conversationInfo;
             if (info != null) {
-                info.markRead(read);
-                value.put(ConversationColumns.CONVERSATION_INFO, ConversationInfo.toString(info));
+                boolean changed = info.markRead(read);
+                if (changed) {
+                    value.put(ConversationColumns.CONVERSATION_INFO,
+                            ConversationInfo.toString(info));
+                }
             }
             opList.add(mConversationListCursor.getOperationForConversation(
                     target, ConversationOperation.UPDATE, value));
