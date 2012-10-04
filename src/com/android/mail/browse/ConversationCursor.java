@@ -27,6 +27,7 @@ import android.content.OperationApplicationException;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -66,15 +68,11 @@ public final class ConversationCursor implements Cursor {
     // A deleted row is indicated by the presence of DELETED_COLUMN in the cache map
     private static final String DELETED_COLUMN = "__deleted__";
     // An row cached during a requery is indicated by the presence of REQUERY_COLUMN in the map
-    private static final String UPDATE_TIME_COLUMN = "__updatetime__";
+    private static final String REQUERY_COLUMN = "__requery__";
     // A sentinel value for the "index" of the deleted column; it's an int that is otherwise invalid
     private static final int DELETED_COLUMN_INDEX = -1;
     // Empty deletion list
     private static final Collection<Conversation> EMPTY_DELETION_LIST = Lists.newArrayList();
-
-    // If a cached value within 10 seconds of a refresh(), preserve it. This time has been
-    // chosen empirically (long enough for UI changes to propagate in any reasonable case)
-    private static final long REQUERY_ALLOWANCE_TIME = 10000L;
     // The index of the Uri whose data is reflected in the cached row
     // Updates/Deletes to this Uri are cached
     private static int sUriColumnIndex;
@@ -87,9 +85,9 @@ public final class ConversationCursor implements Cursor {
 
     // The cursor underlying the caching cursor
     @VisibleForTesting
-    Cursor mUnderlyingCursor;
+    Wrapper mUnderlyingCursor;
     // The new cursor obtained via a requery
-    private volatile Cursor mRequeryCursor;
+    private volatile Wrapper mRequeryCursor;
     // A mapping from Uri to updated ContentValues
     private HashMap<String, ContentValues> mCacheMap = new HashMap<String, ContentValues>();
     // Cache map lock (will be used only very briefly - few ms at most)
@@ -130,7 +128,7 @@ public final class ConversationCursor implements Cursor {
     private Uri qUri;
     private String[] qProjection;
 
-    private void setCursor(Cursor cursor) {
+    private void setCursor(Wrapper cursor) {
         // If we have an existing underlying cursor, make sure it's closed
         if (mUnderlyingCursor != null) {
             close();
@@ -169,7 +167,8 @@ public final class ConversationCursor implements Cursor {
             try {
                 // Create new ConversationCursor
                 LogUtils.i(TAG, "Create: initial creation");
-                setCursor(doQuery(mInitialConversationLimit));
+                Wrapper c = doQuery(mInitialConversationLimit);
+                setCursor(c);
             } finally {
                 // If we used a limit, queue up a query without limit
                 if (mInitialConversationLimit) {
@@ -218,7 +217,7 @@ public final class ConversationCursor implements Cursor {
      * Runnable that performs the query on the underlying provider
      */
     private class RefreshTask extends AsyncTask<Void, Void, Void> {
-        private Cursor mCursor = null;
+        private Wrapper mCursor = null;
 
         private RefreshTask() {
         }
@@ -232,6 +231,11 @@ public final class ConversationCursor implements Cursor {
             mCursor = doQuery(false);
             // Make sure window is full
             mCursor.getCount();
+            if (mDeletedCount > 0) {
+                // We're probably going to end up walking the cursor once, so let's do it
+                // now, while we're in the background
+                mCursor.isInCursor("");
+            }
             return null;
         }
 
@@ -265,7 +269,34 @@ public final class ConversationCursor implements Cursor {
         }
     }
 
-    private Cursor doQuery(boolean withLimit) {
+    /**
+     * Wrapper that includes the Uri used to create the cursor
+     */
+    private static class Wrapper extends CursorWrapper {
+        private final Cursor mCursor;
+        private HashSet<String> mUriSet;
+
+        Wrapper(Cursor cursor, Uri uri) {
+            super(cursor);
+            mCursor = cursor;
+        }
+
+        private boolean isInCursor(String uri) {
+            if (mUriSet == null) {
+                mUriSet = new HashSet<String>();
+                // Populate the Uri map with the uri's it contains
+                mCursor.moveToPosition(-1);
+                while (mCursor.moveToNext()) {
+                    mUriSet.add(mCursor.getString(sUriColumnIndex));
+                }
+                // Reset the cursor to before the first row
+                mCursor.moveToPosition(-1);
+            }
+            return mUriSet.contains(uri);
+        }
+    }
+
+    private Wrapper doQuery(boolean withLimit) {
         Uri uri = qUri;
         if (withLimit) {
             uri = uri.buildUpon().appendQueryParameter(ConversationListQueryParameters.LIMIT,
@@ -273,8 +304,8 @@ public final class ConversationCursor implements Cursor {
         }
         long time = System.currentTimeMillis();
 
-        Cursor result = sResolver.query(uri, qProjection, null, null, null);
-        if (result == null) {
+        Wrapper result = new Wrapper(sResolver.query(uri, qProjection, null, null, null), uri);
+        if (result.getWrappedCursor() == null) {
             Log.w(TAG, "doQuery returning null cursor, uri: " + uri);
         } else if (DEBUG) {
             time = System.currentTimeMillis() - time;
@@ -295,28 +326,50 @@ public final class ConversationCursor implements Cursor {
      * (estimated at a few ms, but we can profile this; remember that the cache will usually
      * be empty or have a few entries)
      */
-    private void resetCursor(Cursor newCursor) {
+    private void resetCursor(Wrapper newCursor) {
         synchronized (mCacheMapLock) {
-            // Walk through the cache
+            // Walk through the cache.  Here are the cases:
+            // 1) The entry isn't REQUERY and is not DELETED - remove it from the cache.
+            // 2) The entry isn't REQUERY, and is DELETED
+            //    2a) The DELETED entry is in newCursor; leave entry in cache.  If the deletion
+            //        was undone, DELETED wouldn't be set
+            //    2b) The DELETED entry is not in newCursor; decrement the count & remove the entry
+            // 3) A REQUERY entry is in newCursor; we're good, and the client change will remain
+            //        (i.e. client wins, it's on its way to the UP)
+            // 4) A REQUERY entry is not in newCursor (sheesh; this would be bizarre timing!) -
+            //    same as case #1 (remov it from the cache)
             Iterator<HashMap.Entry<String, ContentValues>> iter = mCacheMap.entrySet().iterator();
-            long now = System.currentTimeMillis();
             while (iter.hasNext()) {
                 HashMap.Entry<String, ContentValues> entry = iter.next();
                 ContentValues values = entry.getValue();
                 String key = entry.getKey();
-                long updateTime = values.getAsLong(UPDATE_TIME_COLUMN);
-                if ((now - updateTime) < REQUERY_ALLOWANCE_TIME) {
-                    LogUtils.i(TAG, "IN resetCursor, keep recent changes to %s", key);
-                    continue;
+                if (values.containsKey(REQUERY_COLUMN) && newCursor.isInCursor(key)) {
+                    // If we're in a requery and we're still around, remove the requery key
+                    // We're good here, the cached change (delete/update) is on its way to UP
+                    values.remove(REQUERY_COLUMN);
+                    LogUtils.i(TAG,
+                            "IN resetCursor, requery in newCursor, remove column from %s", key);
+                } else {
+                    if (values.containsKey(DELETED_COLUMN)) {
+                        // If we're moving to a new cursor and the deleted item is in the new
+                        // cursor, do nothing; it will continue to appear deleted.
+                        // NOTE: The only legitimate way the item could be in a new cursor would
+                        // be for the deletion to have been undone in the UI, and in this case
+                        // DELETED_COLUMN would not be set
+                        if (mRefreshTask != null && newCursor.isInCursor(key)) {
+                            LogUtils.i(TAG, "IN resetCursor, deleted item is in newCursor: %s",
+                                    entry.getKey());
+                            // Don't decrement deleted count; don't remove entry
+                            continue;
+                        }
+                        // Keep the deleted count up-to-date; remove the cache entry
+                        mDeletedCount--;
+                        LogUtils.i(TAG, "IN resetCursor, sDeletedCount decremented to: %d by %s",
+                                mDeletedCount, key);
+                    }
+                    // Remove the entry
+                    iter.remove();
                 }
-                if (values.containsKey(DELETED_COLUMN)) {
-                    // Keep the deleted count up-to-date; remove the cache entry
-                    mDeletedCount--;
-                    LogUtils.i(TAG, "IN resetCursor, sDeletedCount decremented to: %d by %s",
-                            mDeletedCount, key);
-                }
-                // Remove the entry
-                iter.remove();
             }
 
             // Swap cursor
@@ -492,7 +545,9 @@ public final class ConversationCursor implements Cursor {
                 throw new IllegalArgumentException("Value class not compatible with cache: "
                         + cname);
             }
-            map.put(UPDATE_TIME_COLUMN, System.currentTimeMillis());
+            if (mRefreshTask != null) {
+                map.put(REQUERY_COLUMN, 1);
+            }
             if (DEBUG && (columnName != DELETED_COLUMN)) {
                 LogUtils.i(TAG, "Caching value for %s: %s", uriString, columnName);
             }
@@ -774,7 +829,7 @@ public final class ConversationCursor implements Cursor {
         // But we don't want to return true on a subsequent "move to first", which we would if we
         // check pos vs mPosition first
         if (mUnderlyingCursor.getPosition() == -1) {
-            LogUtils.i(TAG, "*** Underlying cursor position is -1 asking to move from %d to %d",
+            LogUtils.i(TAG, "*** Underlyig cursor position is -1 asking to move from %d to %d",
                     mPosition, pos);
         }
         if (pos == 0) {
@@ -939,11 +994,15 @@ public final class ConversationCursor implements Cursor {
         @Override
         public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
             throw new IllegalStateException("Unexpected call to ConversationProvider.delete");
+//            updateLocal(uri, values);
+           // return ProviderExecute.opUpdate(uri, values);
         }
 
         @Override
         public int delete(Uri uri, String selection, String[] selectionArgs) {
             throw new IllegalStateException("Unexpected call to ConversationProvider.delete");
+            //deleteLocal(uri);
+           // return ProviderExecute.opDelete(uri);
         }
 
         @Override
