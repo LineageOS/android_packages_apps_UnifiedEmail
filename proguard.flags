@@ -4,6 +4,7 @@
 
 -dontwarn android.support.v4.**
 -dontwarn android.support.v13.**
+-dontwarn com.android.ex.photo.**
 
 # keep names that are used by reflection, from javascript or from unit tests
 
@@ -11,7 +12,7 @@
   *** registerTestSendOrSaveCallback(...);
 }
 
--keepclasseswithmembers class com.android.mail.providers.MockUiProvider {
+-keepclasseswithmembers class com.android.mail.providers.protos.mock.MockUiProvider {
   *** getAccountsUri(...);
 }
 
