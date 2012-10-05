@@ -402,14 +402,18 @@ public class ConversationPagerAdapter extends FragmentStatePagerAdapter2
 
     @Override
     public void onPageSelected(int position) {
-        final AbstractConversationViewFragment f =
-                (AbstractConversationViewFragment) getFragmentAt(position);
-        if (f != null && mController != null) {
-            final Conversation c = f.getConversation();
-            c.position = position;
-            LogUtils.d(LOG_TAG, "pager adapter setting current conv: %s (%s)", c.subject, f);
-            mController.setCurrentConversation(c);
+        if (mController == null) {
+            return;
         }
+        final Cursor cursor = getCursor();
+        if (cursor == null || !cursor.moveToPosition(position)) {
+            // No valid cursor or it doesn't have the position we want. Bail.
+            return;
+        }
+        final Conversation c = new Conversation(cursor);
+        c.position = position;
+        LogUtils.d(LOG_TAG, "pager adapter setting current conv: %s", c.subject);
+        mController.setCurrentConversation(c);
     }
 
     @Override
