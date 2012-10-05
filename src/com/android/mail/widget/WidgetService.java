@@ -30,6 +30,8 @@ import com.android.mail.utils.DelayedTaskHandler;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.android.common.html.parser.HtmlParser;
+import com.google.android.common.html.parser.HtmlTreeBuilder;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -373,7 +375,8 @@ public class WidgetService extends RemoteViewsService {
                 if (conversation.conversationInfo != null) {
                     senderBuilder = ellipsizeStyledSenders(conversation.conversationInfo,
                             MAX_SENDERS_LENGTH, SendersView.format(mContext,
-                                    conversation.conversationInfo, "", MAX_SENDERS_LENGTH));
+                                    conversation.conversationInfo, "", MAX_SENDERS_LENGTH,
+                                    new HtmlParser(), new HtmlTreeBuilder()));
                 } else {
                     senderBuilder.append(conversation.senders);
                     senderBuilder.setSpan(conversation.read ? getReadStyle() : getUnreadStyle(), 0,
@@ -395,7 +398,7 @@ public class WidgetService extends RemoteViewsService {
                 return remoteViews;
             }
         }
-
+ 
         private CharacterStyle getUnreadStyle() {
             if (mUnreadStyle == null) {
                 mUnreadStyle = new TextAppearanceSpan(mContext,
