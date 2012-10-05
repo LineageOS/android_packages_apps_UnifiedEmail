@@ -58,6 +58,10 @@
         <item name="android:textColor">@color/conv_header_text_light</item>
     </style>
 
+    <style name="UnreadCountActionBar" parent="UnreadCountActionBarBase">
+        <item name="android:gravity">center_vertical|left</item>
+    </style>
+
     <style name="AccountSpinnerAnchorTextPrimary" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
     </style>
 
