@@ -158,18 +158,22 @@
         <item name="android:textColor">#bcbcbc</item>
     </style>
 
-    <style name="UnreadCountActionBar" parent="UnreadCount">
+    <style name="UnreadCountActionBarBase" parent="UnreadCount">
         <item name="android:layout_marginRight">8dp</item>
         <item name="android:textColor">#bbbbbb</item>
         <!-- Use dp rather than sp for size since starts large and must not get too large -->
         <item name="android:textSize">36dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:gravity">center_vertical|right</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:onClick">doNothingClickHandler</item>
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
+    </style>
+
+    <style name="UnreadCountActionBar" parent="UnreadCountActionBarBase">
+        <item name="android:gravity">center_vertical|right</item>
     </style>
 
     <!-- No change in the default case. -->
