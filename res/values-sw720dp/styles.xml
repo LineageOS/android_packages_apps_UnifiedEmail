@@ -23,4 +23,12 @@
     <style name="AccountSwitchSpinnerItem" parent="@style/PlainSpinnerDropdown">
         <item name="android:layout_width">364dp</item>
     </style>
+
+    <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderExtraSmallStyle">
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="MessageHeaderAttachmentIconStyle">
+        <item name="android:layout_centerVertical">true</item>
+    </style>
 </resources>

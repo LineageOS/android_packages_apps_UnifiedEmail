@@ -287,6 +287,11 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderExtraSmallStyle">
+        <item name="android:minHeight">24dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
     <style name="MessageAttachmentsHeaderStyle" parent="MessageHeaderExtraSmallStyle">
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">8dp</item>
@@ -294,6 +299,10 @@
 
     <style name="MessageHeaderDateTextStyle" parent="MessageHeaderSmallStyle">
         <item name="android:layout_marginRight">@dimen/message_details_header_date_margin_right</item>
+    </style>
+
+    <style name="MessageHeaderAttachmentIconStyle">
+        <item name="android:layout_marginTop">2dp</item>
     </style>
 
     <style name="MessageDetailsItemStyle" parent="MessageHeaderSmallStyle">
