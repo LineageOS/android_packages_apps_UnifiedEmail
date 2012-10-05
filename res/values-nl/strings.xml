@@ -341,7 +341,7 @@
     <string name="wait_for_sync_body" msgid="7718316938173643688">"Uw e-mail wordt zo weergegeven."</string>
     <string name="not_synced_title" msgid="794279749170198599">"Account niet gesynchroniseerd"</string>
     <string name="wait_for_manual_sync_body" msgid="2003192935254244968">"Automatische synchronisatie is niet ingesteld voor dit account."\n"Raak"<b>"Nu synchroniseren"</b>" aan om e-mail één keer te synchroniseren of raak "<b>"Synchronisatie-instellingen wijzigen"</b>" aan om automatische synchronisatie in te stellen voor dit account."</string>
-    <string name="manual_sync" msgid="6743983544685622800">"Nu synchr."</string>
+    <string name="manual_sync" msgid="6743983544685622800">"Nu synchroniseren"</string>
     <string name="change_sync_settings" msgid="5514293926214426577">"Synchronisatie-inst. wijzigen"</string>
     <string name="photo_load_failed" msgid="8811324070219403896">"Kan afbeelding niet laden"</string>
     <string name="cant_move_or_change_labels" msgid="7997792014816166601">"Verplaatsen is niet mogelijk. Selectie bevat meerdere accounts."</string>
