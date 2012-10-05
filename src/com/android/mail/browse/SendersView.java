@@ -70,8 +70,6 @@ public class SendersView {
     public static CharSequence sElidedString;
     private static Map<Integer, Integer> sPriorityToLength;
     private static BroadcastReceiver sConfigurationChangedReceiver;
-    private static HtmlParser sHtmlParser;
-    private static HtmlTreeBuilder sHtmlBuilder;
 
     public static Typeface getTypeface(boolean isUnread) {
         return isUnread ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT;
@@ -170,16 +168,17 @@ public class SendersView {
     }
 
     @VisibleForTesting
-    public static SpannableString[] format(Context context,
-            ConversationInfo conversationInfo, String messageInfo, int maxChars) {
+    public static SpannableString[] format(Context context, ConversationInfo conversationInfo,
+            String messageInfo, int maxChars, HtmlParser parser, HtmlTreeBuilder builder) {
         getSenderResources(context);
         ArrayList<SpannableString> displays = handlePriority(context, maxChars,
-                messageInfo.toString(), conversationInfo);
+                messageInfo.toString(), conversationInfo, parser, builder);
         return displays.toArray(new SpannableString[displays.size()]);
     }
 
     public static ArrayList<SpannableString> handlePriority(Context context, int maxChars,
-            String messageInfoString, ConversationInfo conversationInfo) {
+            String messageInfoString, ConversationInfo conversationInfo, HtmlParser parser,
+            HtmlTreeBuilder builder) {
         int maxPriorityToInclude = -1; // inclusive
         int numCharsUsed = messageInfoString.length(); // draft, number drafts,
                                                        // count
@@ -232,7 +231,7 @@ public class SendersView {
             if (nameString.length() == 0) {
                 nameString = getMe(context);
             } else {
-                nameString = Utils.convertHtmlToPlainText(nameString, getParser(), getBuilder());
+                nameString = Utils.convertHtmlToPlainText(nameString, parser, builder);
             }
             if (numCharsToRemovePerWord != 0) {
                 nameString = nameString.substring(0,
@@ -270,20 +269,6 @@ public class SendersView {
             }
         }
         return senders;
-    }
-
-    private static HtmlTreeBuilder getBuilder() {
-        if (sHtmlBuilder == null) {
-            sHtmlBuilder = new HtmlTreeBuilder();
-        }
-        return sHtmlBuilder;
-    }
-
-    private static HtmlParser getParser() {
-        if (sHtmlParser == null) {
-            sHtmlParser = new HtmlParser();
-        }
-        return sHtmlParser;
     }
 
     private static CharacterStyle getUnreadStyleSpan() {
