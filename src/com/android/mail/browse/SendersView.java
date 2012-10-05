@@ -45,6 +45,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 import java.util.regex.Pattern;
@@ -66,6 +67,7 @@ public class SendersView {
     private static CharacterStyle sUnreadStyleSpan;
     private static CharacterStyle sReadStyleSpan;
     private static String sMeString;
+    private static Locale sMeStringLocale;
     private static String sMessageCountSpacerString;
     public static CharSequence sElidedString;
     private static Map<Integer, Integer> sPriorityToLength;
@@ -295,8 +297,12 @@ public class SendersView {
     }
 
     static String getMe(Context context) {
-        if (sMeString == null) {
-            sMeString = context.getResources().getString(R.string.me);
+        final Resources resources = context.getResources();
+        final Locale locale = resources.getConfiguration().locale;
+
+        if (sMeString == null || !locale.equals(sMeStringLocale)) {
+            sMeString = resources.getString(R.string.me);
+            sMeStringLocale = locale;
         }
         return sMeString;
     }
