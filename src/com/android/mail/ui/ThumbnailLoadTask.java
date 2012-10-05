@@ -115,7 +115,7 @@ public class ThumbnailLoadTask extends AsyncTask<Uri, Void, Bitmap> {
 
             final BitmapFactory.Options opts = new BitmapFactory.Options();
             opts.inJustDecodeBounds = true;
-            opts.inDensity = DisplayMetrics.DENSITY_DEFAULT;
+            opts.inDensity = DisplayMetrics.DENSITY_LOW;
 
             BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, opts);
             if (isCancelled() || opts.outWidth == -1 || opts.outHeight == -1) {
