@@ -75,6 +75,8 @@ import com.android.mail.ui.ViewMode;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+import com.google.android.common.html.parser.HtmlParser;
+import com.google.android.common.html.parser.HtmlTreeBuilder;
 import com.google.common.annotations.VisibleForTesting;
 
 public class ConversationItemView extends View implements SwipeableItemView, ToggleableItem {
@@ -178,6 +180,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private static Bitmap sDateBackgroundAttachment;
     private static Bitmap sDateBackgroundNoAttachment;
     private static Bitmap MORE_FOLDERS;
+    private static HtmlTreeBuilder sHtmlBuilder;
+    private static HtmlParser sHtmlParser;
 
     static {
         sPaint.setAntiAlias(true);
@@ -591,13 +595,27 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                     mHeader.conversation.hasAttachments);
             mHeader.styledSenders = SendersView.format(context,
                     mHeader.conversation.conversationInfo, mHeader.messageInfoString.toString(),
-                    maxChars);
+                    maxChars, getParser(), getBuilder());
         } else {
             SendersView.formatSenders(mHeader, getContext());
         }
 
         pauseTimer(PERF_TAG_CALCULATE_SENDER_SUBJECT);
         pauseTimer(PERF_TAG_CALCULATE_TEXTS_BITMAPS);
+    }
+
+    private static HtmlTreeBuilder getBuilder() {
+        if (sHtmlBuilder == null) {
+            sHtmlBuilder = new HtmlTreeBuilder();
+        }
+        return sHtmlBuilder;
+    }
+
+    private static HtmlParser getParser() {
+        if (sHtmlParser == null) {
+            sHtmlParser = new HtmlParser();
+        }
+        return sHtmlParser;
     }
 
     private void layoutSenderSpans() {
