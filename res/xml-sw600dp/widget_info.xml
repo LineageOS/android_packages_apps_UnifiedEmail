@@ -23,5 +23,6 @@
     android:previewImage="@drawable/mail_widget_preview"
     android:initialLayout="@layout/widget"
     android:configure="com.android.mail.ui.MailboxSelectionActivity"
-    android:resizeMode="horizontal|vertical">
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen|keyguard" >
 </appwidget-provider>
