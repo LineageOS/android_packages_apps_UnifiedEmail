@@ -515,4 +515,12 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         mAccountObserver.unregisterAndDestroy();
         mRecentFolderObserver.unregisterAndDestroy();
     }
+
+    /**
+     * Returns true if we have any recent folders, false otherwise.
+     * @return
+     */
+    public final boolean hasRecentFolders() {
+        return mRecentFolderList.size() > 0;
+    }
 }
