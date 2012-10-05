@@ -33,19 +33,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:visibility="gone"
-        android:minHeight="24dp"
-        android:layout_marginTop="4dp"
         android:lines="1"
-        style="@style/MessageHeaderExtraSmallStyle" />
+        style="@style/MessageHeaderUpperDateStyle" />
     <ImageView
         android:id="@+id/attachment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/upper_date"
-        android:layout_marginTop="2dp"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
-        android:src="@drawable/ic_attachment_holo_light" />
+        android:src="@drawable/ic_attachment_holo_light"
+        style="@style/MessageHeaderAttachmentIconStyle" />
     <TextView
         android:id="@+id/sender_name"
         android:layout_width="wrap_content"
