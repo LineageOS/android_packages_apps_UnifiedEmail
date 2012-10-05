@@ -274,9 +274,13 @@ public class MailActionBarView extends LinearLayout implements ViewMode.ModeChan
         if (!mIsOnTablet) {
             return;
         }
-        // More than one account, or in conversation view.
-        final boolean enabled = mHasManyAccounts || (mMode == ViewMode.CONVERSATION
-                || mMode == ViewMode.SEARCH_RESULTS_CONVERSATION);
+        // We do not populate default recent folders on tablet, so we need to check that in the
+        // conversation mode we have some recent folders. If we don't have any, then we should
+        // disable the spinner.
+        final boolean hasRecentsInConvView = ViewMode.isConversationMode(mMode)
+                && mSpinnerAdapter.hasRecentFolders();
+        // More than one account, OR has recent folders in conversation view.
+        final boolean enabled = mHasManyAccounts || hasRecentsInConvView;
         mSpinner.changeEnabledState(enabled);
     }
 
