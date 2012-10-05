@@ -22,6 +22,8 @@ import android.text.SpannableString;
 
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.MessageInfo;
+import com.google.android.common.html.parser.HtmlParser;
+import com.google.android.common.html.parser.HtmlTreeBuilder;
 
 public class SendersFormattingTests extends AndroidTestCase {
 
@@ -37,14 +39,16 @@ public class SendersFormattingTests extends AndroidTestCase {
         boolean read = false, starred = false;
         MessageInfo info = new MessageInfo(read, starred, null, -1);
         conv.addMessage(info);
-        SpannableString[] strings = SendersView.format(getContext(), conv, "", 100);
+        SpannableString[] strings = SendersView.format(getContext(), conv, "", 100,
+                new HtmlParser(), new HtmlTreeBuilder());
         assertEquals(strings.length, 1);
         assertEquals(strings[0].toString(), "me");
 
         ConversationInfo conv2 = createConversationInfo(1);
         MessageInfo info2 = new MessageInfo(read, starred, "", -1);
         conv2.addMessage(info2);
-        strings = SendersView.format(getContext(), conv, "", 100);
+        strings = SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
+                new HtmlTreeBuilder());
         assertEquals(strings.length, 1);
         assertEquals(strings[0].toString(), "me");
 
@@ -53,7 +57,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         conv3.addMessage(info3);
         MessageInfo info4 = new MessageInfo(read, starred, "", -1);
         conv3.addMessage(info4);
-        strings = SendersView.format(getContext(), conv, "", 100);
+        strings = SendersView.format(getContext(), conv, "", 100, new HtmlParser(),
+                new HtmlTreeBuilder());
         assertEquals(strings.length, 1);
         assertEquals(strings[0].toString(), "me");
     }
@@ -67,7 +72,8 @@ public class SendersFormattingTests extends AndroidTestCase {
         conv.addMessage(info);
         MessageInfo info2 = new MessageInfo(read, starred, sender, -1);
         conv.addMessage(info2);
-        SpannableString[] strings = SendersView.format(getContext(), conv, "", 100);
+        SpannableString[] strings = SendersView.format(getContext(), conv, "", 100,
+                new HtmlParser(), new HtmlTreeBuilder());
         assertEquals(strings.length, 1);
         assertEquals(strings[0].toString(), sender);
     }
