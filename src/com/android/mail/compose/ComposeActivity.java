@@ -131,7 +131,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private static final String EXTRA_BODY = "body";
 
-    private static final String EXTRA_FROM_ACCOUNT_STRING = "fromAccountString";
+    protected static final String EXTRA_FROM_ACCOUNT_STRING = "fromAccountString";
 
     private static final String EXTRA_ATTACHMENT_PREVIEWS = "attachmentPreviews";
 
