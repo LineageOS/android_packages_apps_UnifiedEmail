@@ -17,6 +17,10 @@
 
 var BLOCKED_SRC_ATTR = "blocked-src";
 
+// the set of Elements currently scheduled for processing in handleAllImageLoads
+// this is an Array, but we treat it like a Set and only insert unique items
+var gImageLoadElements = [];
+
 /**
  * Returns the page offset of an element.
  *
@@ -165,14 +169,41 @@ function attachImageLoadListener(imageElement) {
     imageElement.src = originalSrc;
 }
 
+/**
+ * Handle an onload event for an <img> tag.
+ * The image could be within an elided-text block, or at the top level of a message.
+ * When a new image loads, its new bounds may affect message or elided-text geometry,
+ * so we need to inspect and adjust the enclosing element's zoom level where necessary.
+ *
+ * Because this method can be called really often, and zoom-level adjustment is slow,
+ * we collect the elements to be processed and do them all later in a single deferred pass.
+ */
 function imageOnLoad(e) {
     // normalize the quoted text parent if we're in a quoted text block, or else
     // normalize the parent message content element
     var parent = up(e.target, "elided-text") || up(e.target, "mail-message-content");
-    if (parent) {
-        normalizeElementWidths([parent]);
+    if (!parent) {
+        // sanity check. shouldn't really happen.
+        return;
     }
+
+    // if there was no previous work, schedule a new deferred job
+    if (gImageLoadElements.length == 0) {
+        window.setTimeout(handleAllImageOnLoads, 0);
+    }
+
+    // enqueue the work if it wasn't already enqueued
+    if (gImageLoadElements.indexOf(parent) == -1) {
+        gImageLoadElements.push(parent);
+    }
+}
+
+// handle all deferred work from image onload events
+function handleAllImageOnLoads() {
+    normalizeElementWidths(gImageLoadElements);
     measurePositions();
+    // clear the queue so the next onload event starts a new job
+    gImageLoadElements = [];
 }
 
 function blockImage(imageElement) {
