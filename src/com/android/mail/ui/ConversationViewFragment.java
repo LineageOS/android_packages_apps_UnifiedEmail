@@ -165,6 +165,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
      */
     private boolean mWebViewLoadedData;
 
+    private long mWebViewLoadStartMs;
+
     private final DataSetObserver mLoadedObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
@@ -528,6 +530,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         mWebView.loadDataWithBaseURL(mBaseUri, convHtml, "text/html", "utf-8", null);
         mWebViewLoadedData = true;
+        mWebViewLoadStartMs = SystemClock.uptimeMillis();
     }
 
     /**
@@ -878,8 +881,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 return;
             }
 
-            LogUtils.i(LOG_TAG, "IN CVF.onPageFinished, url=%s fragment=%s act=%s", url,
-                    ConversationViewFragment.this, getActivity());
+            LogUtils.i(LOG_TAG, "IN CVF.onPageFinished, url=%s fragment=%s t=%sms", url,
+                    ConversationViewFragment.this,
+                    (SystemClock.uptimeMillis() - mWebViewLoadStartMs));
 
             super.onPageFinished(view, url);
 
@@ -1004,8 +1008,12 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 getHandler().post(new Runnable() {
                     @Override
                     public void run() {
-                        LogUtils.d(LOG_TAG, "ANIMATION STARTED, ready to draw. t=%s",
-                                SystemClock.uptimeMillis());
+                        if (mWebViewLoadStartMs != 0) {
+                            LogUtils.i(LOG_TAG, "IN CVF.onContentReady, f=%s vis=%s t=%sms",
+                                    ConversationViewFragment.this,
+                                    isUserVisible(),
+                                    (SystemClock.uptimeMillis() - mWebViewLoadStartMs));
+                        }
                         showConversation(conv);
                     }
                 });
