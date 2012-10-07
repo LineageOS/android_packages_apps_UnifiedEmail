@@ -327,7 +327,7 @@ public class MailPhotoViewActivity extends PhotoViewActivity {
      * Helper method to get the currently visible attachment.
      * @return
      */
-    private Attachment getCurrentAttachment() {
+    protected Attachment getCurrentAttachment() {
         final Cursor cursor = getCursorAtProperPosition();
 
         if (cursor == null) {
