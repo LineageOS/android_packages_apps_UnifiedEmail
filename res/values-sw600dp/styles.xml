@@ -68,4 +68,10 @@
     <style name="AccountSpinnerStyle">
         <item name="android:layout_width">@dimen/spinner_frame_width</item>
     </style>
+
+    <style name="FolderListStyle">
+    </style>
+
+    <style name="ConversationListStyle">
+    </style>
 </resources>

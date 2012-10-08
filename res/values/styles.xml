@@ -512,4 +512,12 @@
         <item name="android:textSize">@dimen/subject_font_size</item>
         <item name="android:layout_marginTop">-4sp</item>
     </style>
+
+    <style name="FolderListStyle">
+        <item name="android:background">@color/folder_list_background_color</item>
+    </style>
+
+    <style name="ConversationListStyle">
+        <item name="android:background">@color/conversation_list_background_color</item>
+    </style>
 </resources>
