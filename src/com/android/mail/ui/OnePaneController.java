@@ -174,6 +174,7 @@ public final class OnePaneController extends AbstractActivityController {
         if (!ViewMode.isConversationMode(newMode)) {
             setCurrentConversation(null);
         }
+        resetActionBarIcon();
     }
 
     @Override
