@@ -21,7 +21,7 @@
     android:id="@+id/between_chrome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/conversation_list_background_color" >
+    style="@style/ConversationListStyle" >
 
    <!-- Note: intentionally not called "empty" because we call
         setEmptyView programmatically-->
