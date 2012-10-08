@@ -227,6 +227,27 @@ function restoreScrollPosition() {
     }
 }
 
+function onContentReady(event) {
+    window.mail.onContentReady();
+}
+
+function setupContentReady() {
+    var signalDiv;
+
+    // PAGE READINESS SIGNAL FOR JELLYBEAN AND NEWER
+    // Notify the app on 'webkitAnimationStart' of a simple dummy element with a simple no-op
+    // animation that immediately runs on page load. The app uses this as a signal that the
+    // content is loaded and ready to draw, since WebView delays firing this event until the
+    // layers are composited and everything is ready to draw.
+    //
+    // This code is conditionally enabled on JB+ by setting the ENABLE_CONTENT_READY flag.
+    if (ENABLE_CONTENT_READY) {
+        signalDiv = document.getElementById("initial-load-signal");
+        signalDiv.addEventListener("webkitAnimationStart", onContentReady, false);
+        signalDiv.classList.add("initial-load");
+    }
+}
+
 // BEGIN Java->JavaScript handlers
 function measurePositions() {
     var overlayBottoms;
@@ -329,10 +350,6 @@ function replaceSuperCollapsedBlock(startIndex) {
     measurePositions();
 }
 
-function onContentReady(event) {
-    window.mail.onContentReady();
-}
-
 function replaceMessageBodies(messageIds) {
     var i;
     var id;
@@ -348,24 +365,11 @@ function replaceMessageBodies(messageIds) {
 
 // END Java->JavaScript handlers
 
-window.onload = function() {
-    // PAGE READINESS SIGNAL FOR JELLYBEAN AND NEWER
-    // Notify the app on 'webkitAnimationStart' of a simple dummy element with a simple no-op
-    // animation that immediately runs on page load. The app uses this as a signal that the
-    // content is loaded and ready to draw, since WebView delays firing this event until the
-    // layers are composited and everything is ready to draw.
-    //
-    // This code is conditionally enabled on JB+ by setting the 'initial-load' CSS class on this
-    // dummy element.
-    document.getElementById("initial-load-signal")
-        .addEventListener("webkitAnimationStart", onContentReady, false);
-    document.getElementById("initial-load-signal").style.webkitAnimationName = 'initial-load';
-};
-
 collapseAllQuotedText();
 hideUnsafeImages();
 normalizeAllMessageWidths();
 //setWideViewport();
 restoreScrollPosition();
 measurePositions();
+setupContentReady();
 
