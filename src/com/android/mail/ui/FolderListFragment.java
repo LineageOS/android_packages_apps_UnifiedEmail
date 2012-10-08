@@ -295,7 +295,7 @@ public final class FolderListFragment extends ListFragment implements
         final Folder folder;
         if (item instanceof FolderListAdapter.Item) {
             final FolderListAdapter.Item folderItem = (FolderListAdapter.Item) item;
-            folder = folderItem.mFolder;
+            folder = mCursorAdapter.getFullFolder(folderItem);
             mSelectedFolderType = folderItem.mFolderType;
         } else if (item instanceof Folder) {
             folder = (Folder) item;
@@ -310,6 +310,9 @@ public final class FolderListFragment extends ListFragment implements
             folder.parent = folder.equals(mParentFolder) ? null : mParentFolder;
             // Go to the conversation list for this folder.
             mListener.onFolderSelected(folder);
+        } else {
+            LogUtils.d(LOG_TAG, "FolderListFragment unable to get a full fledged folder" +
+                    " to hand to the listener for position %d", position);
         }
     }
 
@@ -341,6 +344,8 @@ public final class FolderListFragment extends ListFragment implements
     private interface FolderListFragmentCursorAdapter extends ListAdapter {
         /** Update the folder list cursor with the cursor given here. */
         void setCursor(Cursor cursor);
+        /** Get the cursor associated with this adapter **/
+        Folder getFullFolder(FolderListAdapter.Item item);
         /** Remove all observers and destroy the object. */
         void destroy();
         /** Notifies the adapter that the data has changed. */
@@ -370,6 +375,7 @@ public final class FolderListFragment extends ListFragment implements
 
         /** A union of either a folder or a resource string */
         private class Item {
+            public int mPosition;
             public final Folder mFolder;
             public final int mResource;
             /** Either {@link #VIEW_FOLDER} or {@link #VIEW_HEADER} */
@@ -395,11 +401,12 @@ public final class FolderListFragment extends ListFragment implements
              * @param folderType one of {@link #FOLDER_SYSTEM}, {@link #FOLDER_RECENT} or
              * {@link #FOLDER_USER}
              */
-            private Item(Folder folder, int folderType) {
+            private Item(Folder folder, int folderType, int cursorPosition) {
                 mFolder = folder;
                 mResource = -1;
                 mType = VIEW_FOLDER;
                 mFolderType = folderType;
+                mPosition = cursorPosition;
             }
             /**
              * Create a header item with a string resource.
@@ -548,9 +555,9 @@ public final class FolderListFragment extends ListFragment implements
             if (!mIsSectioned) {
                 // Adapter for a flat list. Everything is a FOLDER_USER, and there are no headers.
                 do {
-                    final Folder f = new Folder(mCursor);
+                    final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
                     if (mExcludedFolderTypes == null || !mExcludedFolderTypes.contains(f.type)) {
-                        mItemList.add(new Item(f, Item.FOLDER_USER));
+                        mItemList.add(new Item(f, Item.FOLDER_USER, mCursor.getPosition()));
                     }
                 } while (mCursor.moveToNext());
                 // Ask the list to invalidate its views.
@@ -562,10 +569,10 @@ public final class FolderListFragment extends ListFragment implements
             // First add all the system folders.
             final List<Folder> userFolderList = new ArrayList<Folder>();
             do {
-                final Folder f = new Folder(mCursor);
+                final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
                 if (mExcludedFolderTypes == null || !mExcludedFolderTypes.contains(f.type)) {
                     if (f.isProviderFolder()) {
-                        mItemList.add(new Item(f, Item.FOLDER_SYSTEM));
+                        mItemList.add(new Item(f, Item.FOLDER_SYSTEM, mCursor.getPosition()));
                     } else {
                         userFolderList.add(f);
                     }
@@ -587,14 +594,14 @@ public final class FolderListFragment extends ListFragment implements
             if (recentFolderList.size() > 0) {
                 mItemList.add(new Item(R.string.recent_folders_heading));
                 for (Folder f : recentFolderList) {
-                    mItemList.add(new Item(f, Item.FOLDER_RECENT));
+                    mItemList.add(new Item(f, Item.FOLDER_RECENT, -1));
                 }
             }
             // If there are user folders, add them and a header.
             if (userFolderList.size() > 0) {
                 mItemList.add(new Item(R.string.all_folders_heading));
                 for (final Folder f : userFolderList) {
-                    mItemList.add(new Item(f, Item.FOLDER_USER));
+                    mItemList.add(new Item(f, Item.FOLDER_USER, -1));
                 }
             }
             // Ask the list to invalidate its views.
@@ -621,6 +628,16 @@ public final class FolderListFragment extends ListFragment implements
         public final void destroy() {
             mRecentFolderObserver.unregisterAndDestroy();
         }
+
+        @Override
+        public Folder getFullFolder(Item folderItem) {
+            int pos = folderItem.mPosition;
+            if (pos > -1 && mCursor != null && mCursor.moveToPosition(folderItem.mPosition)) {
+                return new Folder(mCursor);
+            } else {
+                return null;
+            }
+        }
     }
 
     private class HierarchicalFolderListAdapter extends ArrayAdapter<Folder>
@@ -631,6 +648,7 @@ public final class FolderListFragment extends ListFragment implements
         private final Uri mParentUri;
         private final Folder mParent;
         private final FolderItemView.DropHandler mDropHandler;
+        private Cursor mCursor;
 
         public HierarchicalFolderListAdapter(Cursor c, Folder parentFolder) {
             super(mActivity.getActivityContext(), R.layout.folder_item);
@@ -674,6 +692,7 @@ public final class FolderListFragment extends ListFragment implements
 
         @Override
         public void setCursor(Cursor cursor) {
+            mCursor = cursor;
             clear();
             if (mParent != null) {
                 add(mParent);
@@ -691,6 +710,16 @@ public final class FolderListFragment extends ListFragment implements
         @Override
         public void destroy() {
             // Do nothing.
+        }
+
+        @Override
+        public Folder getFullFolder(FolderListAdapter.Item folderItem) {
+            int pos = folderItem.mPosition;
+            if (pos > -1 && mCursor != null && mCursor.moveToPosition(folderItem.mPosition)) {
+                return new Folder(mCursor);
+            } else {
+                return null;
+            }
         }
     }
 
