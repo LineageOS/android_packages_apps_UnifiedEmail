@@ -142,13 +142,8 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private boolean mMissedPointerDown;
 
     /**
-     * A recycler that holds detached scrap views, organized by integer item view type. All views
-     * in this data structure should be detached from their view parent (using
-     * {@link ViewGroup#detachViewFromParent(View)}) prior to insertion.
-     * <p>
-     * N.B. per the framework docs, it is imperative that users of this data structure call either
-     * {@link ViewGroup#removeDetachedView(View, boolean)} on each view immediately after removal.
-     * See b/6905156 for what happens if you don't :).
+     * A recycler that holds removed scrap views, organized by integer item view type. All views
+     * in this data structure should be removed from their view parent prior to insertion.
      */
     private final DequeMap<Integer, View> mScrapViews = new DequeMap<Integer, View>();
 
@@ -493,7 +488,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     /**
-     * Returns an existing scrap view, if available. The view will already be detached from the view
+     * Returns an existing scrap view, if available. The view will already be removed from the view
      * hierarchy. This method will not remove the view from the scrap heap.
      *
      */
@@ -506,24 +501,13 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     private void detachOverlay(OverlayView overlay) {
-        detachViewFromParent(overlay.view);
+        // Prefer removeViewInLayout over removeView. The typical followup layout pass is unneeded
+        // because removing overlay views doesn't affect overall layout.
+        removeViewInLayout(overlay.view);
         mScrapViews.add(overlay.itemType, overlay.view);
         if (overlay.view instanceof DetachListener) {
             ((DetachListener) overlay.view).onDetachedFromParent();
         }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        mScrapViews.visitAll(new DequeMap.Visitor<View>() {
-            @Override
-            public void visit(View item) {
-                removeDetachedView(item, false /* animate */);
-            }
-        });
-        mScrapViews.clear();
     }
 
     @Override
@@ -687,17 +671,12 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
 
         final int index = BOTTOM_LAYER_VIEW_IDS.length;
 
-        // Only re-attach if the view had previously been added to a view hierarchy.
-        // Since external components can contribute to the scrap heap (addScrapView), we can't
-        // assume scrap views had already been attached.
-        if (view.getRootView() != view) {
+        if (convertView == view) {
             LogUtils.d(TAG, "want to REUSE scrolled-in view: index=%d obj=%s", adapterIndex, view);
-            attachViewToParent(view, index, view.getLayoutParams());
         } else {
             LogUtils.d(TAG, "want to CREATE scrolled-in view: index=%d obj=%s", adapterIndex, view);
-            addViewInLayout(view, index, view.getLayoutParams(),
-                    true /* preventRequestLayout */);
         }
+        addViewInLayout(view, index, view.getLayoutParams(), true /* preventRequestLayout */);
 
         mAttachedOverlaySinceLastDraw = true;
 
