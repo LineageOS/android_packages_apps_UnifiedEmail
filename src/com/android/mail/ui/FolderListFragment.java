@@ -545,13 +545,13 @@ public final class FolderListFragment extends ListFragment implements
 
             // Otherwise, this is an adapter for a sectioned list.
             // First add all the system folders.
-            final List<Folder> userFolderList = new ArrayList<Folder>();
+            final List<Item> userFolderList = new ArrayList<Item>();
             do {
                 final Folder f = Folder.getDeficientDisplayOnlyFolder(mCursor);
                 if (f.isProviderFolder()) {
                     mItemList.add(new Item(f, Item.FOLDER_SYSTEM, mCursor.getPosition()));
                 } else {
-                    userFolderList.add(f);
+                    userFolderList.add(new Item(f, Item.FOLDER_USER, mCursor.getPosition()));
                 }
             } while (mCursor.moveToNext());
             // If there are recent folders, add them and a header.
@@ -565,8 +565,8 @@ public final class FolderListFragment extends ListFragment implements
             // If there are user folders, add them and a header.
             if (userFolderList.size() > 0) {
                 mItemList.add(new Item(R.string.all_folders_heading));
-                for (final Folder f : userFolderList) {
-                    mItemList.add(new Item(f, Item.FOLDER_USER, -1));
+                for (final Item i : userFolderList) {
+                    mItemList.add(i);
                 }
             }
             // Ask the list to invalidate its views.
@@ -596,11 +596,15 @@ public final class FolderListFragment extends ListFragment implements
 
         @Override
         public Folder getFullFolder(Item folderItem) {
-            int pos = folderItem.mPosition;
-            if (pos > -1 && mCursor != null && mCursor.moveToPosition(folderItem.mPosition)) {
-                return new Folder(mCursor);
+            if (folderItem.mFolderType == Item.FOLDER_RECENT) {
+                return folderItem.mFolder;
             } else {
-                return null;
+                int pos = folderItem.mPosition;
+                if (pos > -1 && mCursor != null && mCursor.moveToPosition(folderItem.mPosition)) {
+                    return new Folder(mCursor);
+                } else {
+                    return null;
+                }
             }
         }
     }
