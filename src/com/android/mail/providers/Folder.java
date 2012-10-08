@@ -666,4 +666,22 @@ public class Folder implements Parcelable, Comparable<Folder> {
     public final boolean wasSyncSuccessful() {
         return ((lastSyncResult & 0x0f) == UIProvider.LastSyncResult.SUCCESS);
     }
+
+    /**
+     * Don't use this for ANYTHING but the FolderListAdapter. It does not have
+     * all the fields.
+     */
+    public static Folder getDeficientDisplayOnlyFolder(Cursor cursor) {
+        Folder f = Folder.newUnsafeInstance();
+        f.id = cursor.getInt(UIProvider.FOLDER_ID_COLUMN);
+        f.uri = Utils.getValidUri(cursor.getString(UIProvider.FOLDER_URI_COLUMN));
+        f.unreadCount = cursor.getInt(UIProvider.FOLDER_UNREAD_COUNT_COLUMN);
+        f.conversationListUri = Utils.getValidUri(cursor
+                .getString(UIProvider.FOLDER_CONVERSATION_LIST_URI_COLUMN));
+        f.type = cursor.getInt(UIProvider.FOLDER_TYPE_COLUMN);
+        f.capabilities = cursor.getInt(UIProvider.FOLDER_CAPABILITIES_COLUMN);
+        f.bgColor = cursor.getString(UIProvider.FOLDER_BG_COLOR_COLUMN);
+        f.name = cursor.getString(UIProvider.FOLDER_NAME_COLUMN);
+        return f;
+    }
 }
