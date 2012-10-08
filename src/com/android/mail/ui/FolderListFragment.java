@@ -121,7 +121,6 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public void onResume() {
-        Utils.dumpLayoutRequests("FLF(" + this + ").onResume()", getView());
 
         super.onResume();
         // Hacky workaround for http://b/6946182
@@ -213,26 +212,22 @@ public final class FolderListFragment extends ListFragment implements
             mSelectedFolderUri = mParentFolder.uri;
             // No selected folder type required for hierarchical lists.
         }
-        Utils.dumpLayoutRequests("FLF(" + this + ").onCreateView()", rootView);
 
         return rootView;
     }
 
     @Override
     public void onStart() {
-        Utils.dumpLayoutRequests("FLF(" + this + ").onStart()", getView());
         super.onStart();
     }
 
     @Override
     public void onStop() {
-        Utils.dumpLayoutRequests("FLF(" + this + ").onStop()", getView());
         super.onStop();
     }
 
     @Override
     public void onPause() {
-        Utils.dumpLayoutRequests("FLF(" + this + ").onPause()", getView());
         super.onPause();
     }
 
@@ -251,7 +246,6 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public void onDestroyView() {
-        Utils.dumpLayoutRequests("FLF(" + this + ").onDestoryView()", getView());
         if (mCursorAdapter != null) {
             mCursorAdapter.destroy();
         }
