@@ -33,6 +33,7 @@ import com.android.mail.providers.FolderWatcher;
 import com.android.mail.providers.RecentFolderObserver;
 import com.android.mail.ui.ControllableActivity;
 import com.android.mail.ui.ConversationListCallbacks;
+import com.android.mail.ui.RecentFolderController;
 import com.android.mail.ui.RecentFolderList;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
@@ -62,7 +63,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     /**
      * An object that provides a collection of recent folders, per account.
      */
-    private final RecentFolderList mRecentFolders;
+    private RecentFolderList mRecentFolders;
     /**
      * The actual collection of sorted recent folders obtained from {@link #mRecentFolders}
      */
@@ -70,7 +71,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     /**
      * Boolean indicating whether the "Show All Folders" items should be shown
      */
-    private final boolean mShowAllFoldersItem;
+    private boolean mShowAllFoldersItem;
     /**
      * Set to true to enable recent folders, false to disable.
      */
@@ -94,7 +95,13 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public static final int TYPE_FOLDER = 4;
     /** Type indicating the "Show All Folders" view. */
     public static final int TYPE_ALL_FOLDERS = 5;
-
+    private RecentFolderObserver mRecentFolderObserver;
+    private RecentFolderObserver mSpinnerRecentFolderObserver = new RecentFolderObserver() {
+        @Override
+        public void onChanged() {
+            requestRecentFolders();
+        }
+    };
     private static final String LOG_TAG = LogTag.getLogTag();
 
     final AccountObserver mAccountObserver = new AccountObserver() {
@@ -110,21 +117,17 @@ public class AccountSpinnerAdapter extends BaseAdapter {
                 return;
             }
             mCurrentAccount = newAccount;
-            final int pos = Account.findPosition(mAllAccounts, newAccount.uri);
-            LogUtils.d(LOG_TAG, "setCurrentAccount: mCurrentAccountPos = %d", pos);
-            if (pos >= 0) {
-                requestRecentFolders();
+            if (mRecentFoldersVisible) {
+                final int pos = Account.findPosition(mAllAccounts, newAccount.uri);
+                LogUtils.d(LOG_TAG, "setCurrentAccount: mCurrentAccountPos = %d", pos);
+                if (pos >= 0) {
+                    requestRecentFolders();
+                }
             }
             notifyDataSetChanged();
         }
     };
-
-    private final RecentFolderObserver mRecentFolderObserver = new RecentFolderObserver() {
-        @Override
-        public void onChanged() {
-            requestRecentFolders();
-        }
-    };
+    private RecentFolderController mRecentFolderController;
 
     /**
      * There can be three types of views: Accounts (test@android.com, fifi@example.com), folders
@@ -168,30 +171,42 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         final View folder = view.findViewById(R.id.folder);
         final View footer = view.findViewById(R.id.footer);
         // Disable everything initially.
-        anchor.setVisibility(View.GONE);
-        account.setVisibility(View.GONE);
-        header.setVisibility(View.GONE);
-        folder.setVisibility(View.GONE);
-        footer.setVisibility(View.GONE);
+        disableView(anchor);
+        disableView(account);
+        disableView(header);
+        disableView(folder);
+        disableView(footer);
         switch (type) {
             case TYPE_NON_DROPDOWN:
-                anchor.setVisibility(View.VISIBLE);
+                enableView(anchor);
                 break;
             case TYPE_DEAD_HEADER:
                 // Select nothing.
                 break;
             case TYPE_ACCOUNT:
-                account.setVisibility(View.VISIBLE);
+                enableView(account);
                 break;
             case TYPE_HEADER:
-                header.setVisibility(View.VISIBLE);
+                enableView(header);
                 break;
             case TYPE_FOLDER:
-                folder.setVisibility(View.VISIBLE);
+                enableView(folder);
                 break;
             case TYPE_ALL_FOLDERS:
-                footer.setVisibility(View.VISIBLE);
+                enableView(footer);
                 break;
+        }
+    }
+
+    private static void enableView(View view) {
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private static void disableView(View view) {
+        if (view != null) {
+            view.setVisibility(View.GONE);
         }
     }
 
@@ -224,8 +239,6 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             boolean showAllFolders) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
-        mRecentFolders = mRecentFolderObserver.initialize(activity.getRecentFolderController());
-        LogUtils.d(LOG_TAG, "mRecentFolders = %s", mRecentFolders.getRecentFolderList(null));
         mShowAllFoldersItem = showAllFolders;
         // Owned by the AccountSpinnerAdapter since nobody else needed it. Move
         // to controller if required. The folder watcher tells us directly when
@@ -233,6 +246,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         mFolderWatcher = new FolderWatcher(activity, this);
         mCurrentAccount = mAccountObserver.initialize(activity.getAccountController());
         mActivityController = activity.getListHandler();
+        mRecentFolderController = activity.getRecentFolderController();
     }
 
     /**
@@ -274,7 +288,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
     public int getCount() {
         // If the recent folders are visible, then one header, recent folders, plus one if the
         // "show all folders" item should be shown
-        final int numRecents = mRecentFolderList.size();
+        final int numRecents = mRecentFolderList == null? 0 : mRecentFolderList.size();
         final int numFolders = (mRecentFoldersVisible && numRecents > 0) ?
                 (1 + numRecents + (mShowAllFoldersItem ? 1 : 0)) : 0;
         return 1 + mNumAccounts + numFolders;
@@ -363,9 +377,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         // For unknown reasons, using view recycling avoids bugs where the unread count used to
         // disappear.
         final int type = getType(position);
-        if (view == null) {
-            view = mInflater.inflate(R.layout.account_switch_spinner_dropdown_item, null);
-        }
+        view = mInflater.inflate(
+                mRecentFoldersVisible ? R.layout.account_switch_spinner_dropdown_item
+                        : R.layout.account_switch_spinner_simple_dropdown_item, null);
         selectRelevant(view, type);
         switch (type) {
             case TYPE_DEAD_HEADER:
@@ -427,6 +441,9 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     static private void displayOrHide(View v, int resourceId, String toDisplay) {
         final TextView target = (TextView) v.findViewById(resourceId);
+        if (target == null) {
+            return;
+        }
         if (TextUtils.isEmpty(toDisplay)) {
             target.setVisibility(View.GONE);
             return;
@@ -484,8 +501,12 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void requestRecentFolders() {
         final Uri uri = mCurrentFolder == null ? null : mCurrentFolder.uri;
-        mRecentFolderList = mRecentFolders.getRecentFolderList(uri);
-        notifyDataSetChanged();
+        if (mRecentFoldersVisible) {
+            mRecentFolderList = mRecentFolders.getRecentFolderList(uri);
+            notifyDataSetChanged();
+        } else {
+            mRecentFolderList = null;
+        }
     }
 
     /**
@@ -493,6 +514,11 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void disableRecentFolders() {
         if (mRecentFoldersVisible) {
+            if (mRecentFolderObserver != null) {
+                mRecentFolderObserver.unregisterAndDestroy();
+                mRecentFolderObserver = null;
+            }
+            mRecentFolders = null;
             notifyDataSetChanged();
             mRecentFoldersVisible = false;
         }
@@ -503,6 +529,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void enableRecentFolders() {
         if (!mRecentFoldersVisible) {
+            mRecentFolderObserver = mSpinnerRecentFolderObserver;
+            mRecentFolders = mRecentFolderObserver.initialize(mRecentFolderController);
             notifyDataSetChanged();
             mRecentFoldersVisible = true;
         }
@@ -513,6 +541,17 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      */
     public void destroy() {
         mAccountObserver.unregisterAndDestroy();
-        mRecentFolderObserver.unregisterAndDestroy();
+        if (mRecentFolderObserver != null) {
+            mRecentFolderObserver.unregisterAndDestroy();
+            mRecentFolderObserver = null;
+        }
+    }
+
+    /**
+     * Returns true if we have any recent folders, false otherwise.
+     * @return
+     */
+    public final boolean hasRecentFolders() {
+        return mRecentFolderList != null && mRecentFolderList.size() > 0;
     }
 }
