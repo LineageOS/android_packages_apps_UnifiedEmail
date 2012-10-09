@@ -68,4 +68,9 @@ public interface ConversationListCallbacks {
      * possible to undo them.
      */
     void commitDestructiveActions(boolean animate);
+
+    /**
+     * Detect if there are any animations occuring in the conversation list.
+     */
+    boolean isAnimating();
 }
