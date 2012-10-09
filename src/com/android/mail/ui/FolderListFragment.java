@@ -348,6 +348,7 @@ public final class FolderListFragment extends ListFragment implements
             updateCursorAdapter(data);
         } else {
             mFutureData = data;
+            mCursorAdapter.setCursor(null);
         }
     }
 
