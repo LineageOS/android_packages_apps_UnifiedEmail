@@ -290,6 +290,7 @@ public abstract class AbstractActivityController implements ActivityController {
     private Folder mFolderListFolder;
     private boolean mIsDragHappening;
     private int mShowUndoBarDelay;
+    private boolean mRecentsDataUpdated;
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
@@ -1938,8 +1939,7 @@ public abstract class AbstractActivityController implements ActivityController {
                     break;
                 }
                 LogUtils.v(LOG_TAG, "Reading recent folders from the cursor.");
-                mRecentFolderList.loadFromUiProvider(data);
-                mRecentFolderObservers.notifyChanged();
+                loadRecentFolders(data);
                 break;
             case LOADER_ACCOUNT_INBOX:
                 if (data != null && !data.isClosed() && data.moveToFirst()) {
@@ -1970,6 +1970,7 @@ public abstract class AbstractActivityController implements ActivityController {
                 break;
         }
     }
+
 
     /**
      * Destructive actions on Conversations. This class should only be created by controllers, and
@@ -2199,7 +2200,8 @@ public abstract class AbstractActivityController implements ActivityController {
         return mIsDragHappening;
     }
 
-    private boolean isAnimating() {
+    @Override
+    public boolean isAnimating() {
         boolean isAnimating = false;
         ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
@@ -2278,6 +2280,15 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
+    private void loadRecentFolders(Cursor data) {
+        mRecentFolderList.loadFromUiProvider(data);
+        if (isAnimating()) {
+            mRecentsDataUpdated = true;
+        } else {
+            mRecentFolderObservers.notifyChanged();
+        }
+    }
+
     @Override
     public void onAnimationEnd(AnimatedAdapter animatedAdapter) {
         if (mConversationListCursor == null) {
@@ -2292,6 +2303,14 @@ public abstract class AbstractActivityController implements ActivityController {
         if (mConversationListCursor.isRefreshRequired()) {
             LogUtils.d(LOG_TAG, "Stopped animating: refresh");
             mConversationListCursor.refresh();
+        }
+        if (mRecentsDataUpdated) {
+            mRecentsDataUpdated = false;
+            mRecentFolderObservers.notifyChanged();
+        }
+        FolderListFragment frag = this.getFolderListFragment();
+        if (frag != null) {
+            frag.onAnimationEnd();
         }
     }
 
