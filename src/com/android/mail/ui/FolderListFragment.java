@@ -344,7 +344,7 @@ public final class FolderListFragment extends ListFragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (!mConversationListCallback.isAnimating()) {
+        if (mConversationListCallback == null || !mConversationListCallback.isAnimating()) {
             updateCursorAdapter(data);
         } else {
             mFutureData = data;
