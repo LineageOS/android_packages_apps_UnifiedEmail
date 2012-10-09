@@ -715,6 +715,7 @@ public class Utils {
             intent.putExtras(optionalExtras);
         }
         intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
         context.startActivity(intent);
     }
@@ -775,6 +776,7 @@ public class Utils {
             return;
         }
         final Intent settingsIntent = new Intent(Intent.ACTION_EDIT, account.settingsIntentUri);
+        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         context.startActivity(settingsIntent);
     }
 
@@ -791,7 +793,7 @@ public class Utils {
 
          settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
          settingsIntent.putExtra(EditSettingsExtras.EXTRA_FOLDER, folder);
-
+         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
          context.startActivity(settingsIntent);
     }
 
@@ -807,7 +809,7 @@ public class Utils {
 
          settingsIntent.putExtra(EditSettingsExtras.EXTRA_ACCOUNT, account);
          settingsIntent.putExtra(EditSettingsExtras.EXTRA_MANAGE_FOLDERS, true);
-
+         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
          context.startActivity(settingsIntent);
     }
 
