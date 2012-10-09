@@ -251,8 +251,6 @@ public final class OnePaneController extends AbstractActivityController {
         }
         mPagerController.show(mAccount, mFolder, conversation, true /* changeVisibility */);
         onConversationVisibilityChanged(true);
-        resetActionBarIcon();
-
         mConversationListVisible = false;
         onConversationListVisibilityChanged(false);
     }
@@ -303,9 +301,7 @@ public final class OnePaneController extends AbstractActivityController {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.setTransition(transition);
         fragmentTransaction.replace(R.id.content_pane, fragment, tag);
-        final int transactionId = fragmentTransaction.commitAllowingStateLoss();
-        resetActionBarIcon();
-        return transactionId;
+        return fragmentTransaction.commitAllowingStateLoss();
     }
 
     /**
@@ -459,8 +455,6 @@ public final class OnePaneController extends AbstractActivityController {
             onFolderChanged(mInbox);
             showConversationList(listContext);
         }
-        resetActionBarIcon();
-
         mConversationListVisible = true;
         onConversationVisibilityChanged(false);
         onConversationListVisibilityChanged(true);
