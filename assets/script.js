@@ -59,8 +59,12 @@ function up(el, className) {
     return parent || null;
 }
 
-function toggleQuotedText(e) {
-    var toggleElement = e.target;
+function onToggleClick(e) {
+    toggleQuotedText(e.target);
+    measurePositions();
+}
+
+function toggleQuotedText(toggleElement) {
     var elidedTextElement = toggleElement.nextSibling;
     var isHidden = getComputedStyle(elidedTextElement).display == 'none';
     toggleElement.innerHTML = isHidden ? MSG_HIDE_ELIDED : MSG_SHOW_ELIDED;
@@ -71,15 +75,13 @@ function toggleQuotedText(e) {
     if (isHidden) {
         normalizeElementWidths([elidedTextElement]);
     }
-
-    measurePositions();
 }
 
 function collapseAllQuotedText() {
-    collapseQuotedText(document.documentElement);
+    processQuotedText(document.documentElement, false /* showElided */);
 }
 
-function collapseQuotedText(elt) {
+function processQuotedText(elt, showElided) {
     var i;
     var elements = elt.getElementsByClassName("elided-text");
     var elidedElement, toggleElement;
@@ -88,8 +90,12 @@ function collapseQuotedText(elt) {
         toggleElement = document.createElement("div");
         toggleElement.className = "mail-elided-text";
         toggleElement.innerHTML = MSG_SHOW_ELIDED;
-        toggleElement.onclick = toggleQuotedText;
+        toggleElement.onclick = onToggleClick;
+        elidedElement.style.display = 'none';
         elidedElement.parentNode.insertBefore(toggleElement, elidedElement);
+        if (showElided) {
+            toggleQuotedText(toggleElement);
+        }
     }
 }
 
@@ -359,7 +365,7 @@ function replaceMessageBodies(messageIds) {
         id = messageIds[i];
         msgContentDiv = document.querySelector("#" + id + " > .mail-message-content");
         msgContentDiv.innerHTML = window.mail.getMessageBody(id);
-        collapseQuotedText(msgContentDiv);
+        processQuotedText(msgContentDiv, true /* showElided */);
     }
 }
 
