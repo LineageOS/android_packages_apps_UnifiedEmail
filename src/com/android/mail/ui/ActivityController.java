@@ -314,4 +314,9 @@ public interface ActivityController extends LayoutListener,
      * Called when Accessibility is enabled or disabled.
      */
     void onAccessibilityStateChanged();
+
+    /**
+     * Detect if there are any animations occuring in the conversation list.
+     */
+    boolean isAnimating();
 }
