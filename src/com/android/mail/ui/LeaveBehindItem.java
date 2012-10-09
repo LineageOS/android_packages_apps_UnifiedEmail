@@ -47,6 +47,7 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
     private AnimatedAdapter mAdapter;
     private TextView mText;
     private View mSwipeableContent;
+    public int position;
     private static int sShrinkAnimationDuration = -1;
     private static int sFadeInAnimationDuration = -1;
     private static float sScrollSlop;
@@ -94,8 +95,9 @@ public class LeaveBehindItem extends FrameLayout implements OnClickListener,
         }
     }
 
-    public void bindOperations(int position, Account account, AnimatedAdapter adapter,
+    public void bindOperations(int pos, Account account, AnimatedAdapter adapter,
             ToastBarOperation undoOp, Conversation target, Folder folder) {
+        position = pos;
         mUndoOp = undoOp;
         mAccount = account;
         mAdapter = adapter;

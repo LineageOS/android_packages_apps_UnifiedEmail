@@ -53,6 +53,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private static final String LEAVE_BEHIND_ITEM = "leave_behind_item";
     private final static int TYPE_VIEW_CONVERSATION = 0;
     private final static int TYPE_VIEW_FOOTER = 1;
+    private final static int TYPE_VIEW_LEAVEBEHIND = -1;
     private final HashSet<Long> mDeletingItems = new HashSet<Long>();
     private final ArrayList<Long> mLastDeletingItems = new ArrayList<Long>();
     private final HashSet<Long> mUndoingItems = new HashSet<Long>();
@@ -186,6 +187,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         // Try to recycle views.
         if (mShowFooter && position == super.getCount()) {
             return TYPE_VIEW_FOOTER;
+        } else if (hasLeaveBehinds() && mLeaveBehindItem.position == position) {
+            return TYPE_VIEW_LEAVEBEHIND;
         }
         return TYPE_VIEW_CONVERSATION;
     }
@@ -284,7 +287,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         }
         if (convertView != null && !(convertView instanceof SwipeableConversationItemView)) {
             LogUtils.w(LOG_TAG, "Incorrect convert view received; nulling it out");
-            convertView = null;
+            convertView = newView(mContext, cursor, parent);
         } else if (convertView != null) {
             ((SwipeableConversationItemView) convertView).reset();
         }
