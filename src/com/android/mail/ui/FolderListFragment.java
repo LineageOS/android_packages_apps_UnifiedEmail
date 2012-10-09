@@ -94,6 +94,8 @@ public final class FolderListFragment extends ListFragment implements
      */
     // Setting to NOT_A_FOLDER = leaving uninitialized.
     private int mSelectedFolderType = FolderListAdapter.Item.NOT_A_FOLDER;
+    private Cursor mFutureData;
+    private ConversationListCallbacks mConversationListCallback;
 
     /**
      * Listens to folder changes from the controller and updates state accordingly.
@@ -158,6 +160,7 @@ public final class FolderListFragment extends ListFragment implements
                     "create it. Cannot proceed.");
         }
         mActivity = (ControllableActivity) activity;
+        mConversationListCallback = mActivity.getListHandler();
         final FolderController controller = mActivity.getFolderController();
         // Listen to folder changes in the future
         mFolderObserver = new FolderObserver();
@@ -304,12 +307,28 @@ public final class FolderListFragment extends ListFragment implements
                 UIProvider.FOLDERS_PROJECTION, null, null, null);
     }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onAnimationEnd() {
+        if (mFutureData != null) {
+            updateCursorAdapter(mFutureData);
+            mFutureData = null;
+        }
+    }
+
+    private void updateCursorAdapter(Cursor data) {
         mCursorAdapter.setCursor(data);
         if (data == null || data.getCount() == 0) {
             mEmptyView.setVisibility(View.VISIBLE);
             mListView.setEmptyView(mEmptyView);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (mConversationListCallback == null || !mConversationListCallback.isAnimating()) {
+            updateCursorAdapter(data);
+        } else {
+            mFutureData = data;
+            mCursorAdapter.setCursor(null);
         }
     }
 
@@ -528,7 +547,8 @@ public final class FolderListFragment extends ListFragment implements
          * This method modifies all the three lists on every single invocation.
          */
         private void recalculateList() {
-            if (mCursor == null || mCursor.getCount() <= 0 || !mCursor.moveToFirst()) {
+            if (mCursor == null || mCursor.isClosed() || mCursor.getCount() <= 0
+                    || !mCursor.moveToFirst()) {
                 return;
             }
             mItemList.clear();
@@ -600,7 +620,12 @@ public final class FolderListFragment extends ListFragment implements
                 return folderItem.mFolder;
             } else {
                 int pos = folderItem.mPosition;
-                if (pos > -1 && mCursor != null && mCursor.moveToPosition(folderItem.mPosition)) {
+                if (mFutureData != null) {
+                    mCursor = mFutureData;
+                    mFutureData = null;
+                }
+                if (pos > -1 && mCursor != null && !mCursor.isClosed()
+                        && mCursor.moveToPosition(folderItem.mPosition)) {
                     return new Folder(mCursor);
                 } else {
                     return null;
@@ -684,7 +709,13 @@ public final class FolderListFragment extends ListFragment implements
         @Override
         public Folder getFullFolder(FolderListAdapter.Item folderItem) {
             int pos = folderItem.mPosition;
-            if (pos > -1 && mCursor != null && mCursor.moveToPosition(folderItem.mPosition)) {
+            if (mCursor == null || mCursor.isClosed()) {
+                // See if we have a cursor hanging out we can use
+                mCursor = mFutureData;
+                mFutureData = null;
+            }
+            if (pos > -1 && mCursor != null && !mCursor.isClosed()
+                    && mCursor.moveToPosition(folderItem.mPosition)) {
                 return new Folder(mCursor);
             } else {
                 return null;
