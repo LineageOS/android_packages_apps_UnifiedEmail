@@ -499,7 +499,7 @@ public class AccountSpinnerAdapter extends BaseAdapter {
      * Cause a refresh of the recent folders for the current folder and redraw the spinner with
      * the new information.
      */
-    public void requestRecentFolders() {
+    private void requestRecentFolders() {
         final Uri uri = mCurrentFolder == null ? null : mCurrentFolder.uri;
         if (mRecentFoldersVisible) {
             mRecentFolderList = mRecentFolders.getRecentFolderList(uri);
@@ -531,8 +531,8 @@ public class AccountSpinnerAdapter extends BaseAdapter {
         if (!mRecentFoldersVisible) {
             mRecentFolderObserver = mSpinnerRecentFolderObserver;
             mRecentFolders = mRecentFolderObserver.initialize(mRecentFolderController);
-            notifyDataSetChanged();
             mRecentFoldersVisible = true;
+            requestRecentFolders();
         }
     }
 
