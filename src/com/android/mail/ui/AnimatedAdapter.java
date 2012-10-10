@@ -53,7 +53,7 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
     private static final String LEAVE_BEHIND_ITEM = "leave_behind_item";
     private final static int TYPE_VIEW_CONVERSATION = 0;
     private final static int TYPE_VIEW_FOOTER = 1;
-    private final static int TYPE_VIEW_LEAVEBEHIND = -1;
+    private final static int TYPE_VIEW_DONT_RECYCLE = -1;
     private final HashSet<Long> mDeletingItems = new HashSet<Long>();
     private final ArrayList<Long> mLastDeletingItems = new ArrayList<Long>();
     private final HashSet<Long> mUndoingItems = new HashSet<Long>();
@@ -187,8 +187,14 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
         // Try to recycle views.
         if (mShowFooter && position == super.getCount()) {
             return TYPE_VIEW_FOOTER;
-        } else if (hasLeaveBehinds() && mLeaveBehindItem.position == position) {
-            return TYPE_VIEW_LEAVEBEHIND;
+        } else if (hasLeaveBehinds() || isAnimating()) {
+            // Setting as type -1 means the recycler won't take this view and
+            // return it in get view. This is a bit of a "hammer" in that it
+            // won't let even safe views be recycled here,
+            // but its safer and cheaper than trying to determine individual
+            // types. In a future release, use position/id map to try to make
+            // this cleaner / faster to determine if the view is animating.
+            return TYPE_VIEW_DONT_RECYCLE;
         }
         return TYPE_VIEW_CONVERSATION;
     }
