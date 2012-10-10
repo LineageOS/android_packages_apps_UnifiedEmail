@@ -139,6 +139,8 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     // Dimensions and coordinates.
     private int mViewWidth = -1;
+    /** The view mode at which we calculated mViewWidth previously. */
+    private int mPreviousMode;
     private int mMode = -1;
     private int mDateX;
     private int mPaperclipX;
@@ -452,11 +454,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
         super.onLayout(changed, left, top, right, bottom);
 
-        int width = right - left;
-        if (width != mViewWidth) {
+        final int width = right - left;
+        final int currentMode = mActivity.getViewMode().getMode();
+        if (width != mViewWidth || mPreviousMode != currentMode) {
             mViewWidth = width;
+            mPreviousMode = currentMode;
             if (!mTesting) {
-                mMode = ConversationItemViewCoordinates.getMode(mContext, mActivity.getViewMode());
+                mMode = ConversationItemViewCoordinates.getMode(mContext, mPreviousMode);
             }
         }
         mHeader.viewWidth = mViewWidth;
