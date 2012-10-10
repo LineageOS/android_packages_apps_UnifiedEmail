@@ -93,8 +93,6 @@ public class ConversationItemViewModel {
     // Subject
     SpannableStringBuilder subjectText;
 
-    StaticLayout subjectLayout;
-
     // View Width
     public int viewWidth;
 
@@ -114,10 +112,6 @@ public class ConversationItemViewModel {
     public boolean hasBeenRepliedTo;
 
     public boolean isInvite;
-
-    public StaticLayout subjectLayoutActivated;
-
-    public SpannableStringBuilder subjectTextActivated;
 
     public SpannableString[] styledSenders;
 
