@@ -78,4 +78,15 @@ public class MessageInfo {
     public int hashCode() {
         return Objects.hashCode(read, starred, sender);
     }
+
+    public static void createAsString(StringBuilder builder, boolean read,
+            boolean starred, String senderName, int priority) {
+        builder.append(read? 1 : 0);
+        builder.append(MSG_DIVIDER);
+        builder.append(starred ? 1 : 0);
+        builder.append(MSG_DIVIDER);
+        builder.append(senderName);
+        builder.append(MSG_DIVIDER);
+        builder.append(priority);
+    }
 }

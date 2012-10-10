@@ -27,7 +27,7 @@ public class ConversationInfo {
     private static Pattern SPLITTER_REGEX = Pattern.compile("\\^\\*\\^");
     private static final String MESSAGE_CONV_SPLIT = "^**^";
     private static Pattern MESSAGE_CONV_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\^");
-    private static final String MESSAGE_SPLIT = "^***^";
+    public static final String MESSAGE_SPLIT = "^***^";
     private static Pattern MESSAGE_SPLITTER_REGEX = Pattern.compile("\\^\\*\\*\\*\\^");
 
     final public ArrayList<MessageInfo> messageInfos;
@@ -74,13 +74,12 @@ public class ConversationInfo {
         builder.append(SPLITTER);
         builder.append(info.lastSnippet);
         builder.append(MESSAGE_CONV_SPLIT);
-        builder.append(getMessageInfoString(info));
+        getMessageInfoString(info, builder);
         return builder.toString();
     }
 
-    private static String getMessageInfoString(ConversationInfo info) {
+    private static void getMessageInfoString(ConversationInfo info, StringBuilder builder) {
         // Create a string of all the messge infos
-        StringBuilder builder = new StringBuilder();
         int i = 0;
         for (MessageInfo msg : info.messageInfos) {
             builder.append(MessageInfo.toString(msg));
@@ -89,7 +88,6 @@ public class ConversationInfo {
             }
             i++;
         }
-        return builder.toString();
     }
 
     public static ConversationInfo fromString(String inString) {
@@ -141,5 +139,19 @@ public class ConversationInfo {
     public int hashCode() {
         return Objects.hashCode(messageCount, draftCount, messageInfos, firstSnippet,
                 lastSnippet, firstUnreadSnippet);
+    }
+
+    public static void createAsString(StringBuilder builder, int numMessages, int draftCount,
+            String first, String firstUnread, String last) {
+        builder.append(numMessages);
+        builder.append(SPLITTER);
+        builder.append(draftCount);
+        builder.append(SPLITTER);
+        builder.append(first);
+        builder.append(SPLITTER);
+        builder.append(firstUnread);
+        builder.append(SPLITTER);
+        builder.append(last);
+        builder.append(MESSAGE_CONV_SPLIT);
     }
 }
