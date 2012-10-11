@@ -196,6 +196,7 @@ public class Utils {
     private static int sMaxUnreadCount = -1;
     private static String sUnreadText;
     private static int sDefaultFolderBackgroundColor = -1;
+    private static int sUseFolderListFragmentTransition = -1;
 
     public static void getStyledSenderSnippet(Context context, String senderInstructions,
             SpannableStringBuilder senderBuilder, SpannableStringBuilder statusBuilder,
@@ -514,6 +515,19 @@ public class Utils {
      */
     public static boolean useTabletUI(Context context) {
         return context.getResources().getInteger(R.integer.use_tablet_ui) != 0;
+    }
+
+
+    /**
+     * Returns a boolean indicating whether or not we should animate in the
+     * folder list fragment.
+     */
+    public static boolean useFolderListFragmentTransition(Context context) {
+        if (sUseFolderListFragmentTransition == -1) {
+            sUseFolderListFragmentTransition  = context.getResources().getInteger(
+                    R.integer.use_folder_list_fragment_transition);
+        }
+        return sUseFolderListFragmentTransition != 0;
     }
 
     /**
