@@ -503,9 +503,9 @@ public class Folder implements Parcelable, Comparable<Folder> {
         builder.append(SPLITTER);
         builder.append(iconResId);
         builder.append(SPLITTER);
-        builder.append(bgColor);
+        builder.append(bgColor != null ? bgColor : "");
         builder.append(SPLITTER);
-        builder.append(fgColor);
+        builder.append(fgColor != null ? fgColor : "");
         builder.append(SPLITTER);
         builder.append(loadMore);
         builder.append(SPLITTER);
