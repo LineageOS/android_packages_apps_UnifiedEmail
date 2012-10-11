@@ -464,52 +464,68 @@ public class Folder implements Parcelable, Comparable<Folder> {
         return f;
     }
 
-    public static String toString(Folder folderEntry) {
+    /**
+     * Create a string representation of a folder.
+     */
+    public static String createAsString(int id, Uri uri, String name, boolean hasChildren,
+            int capabilities, int syncWindow, Uri convListUri, Uri childFoldersListUri,
+            int unreadCount, int totalCount, Uri refreshUri, int syncStatus, int lastSyncResult,
+            int type, long iconResId, String bgColor, String fgColor, Uri loadMore,
+            String hierarchicalDesc, Folder parent) {
         StringBuilder builder = new StringBuilder();
-        builder.append(folderEntry.id);
+        builder.append(id);
         builder.append(SPLITTER);
-        builder.append(folderEntry.uri);
+        builder.append(uri);
         builder.append(SPLITTER);
-        builder.append(folderEntry.name);
+        builder.append(name);
         builder.append(SPLITTER);
-        builder.append(folderEntry.hasChildren ? 1 : 0);
+        builder.append(hasChildren ? 1 : 0);
         builder.append(SPLITTER);
-        builder.append(folderEntry.capabilities);
+        builder.append(capabilities);
         builder.append(SPLITTER);
-        builder.append(folderEntry.syncWindow);
+        builder.append(syncWindow);
         builder.append(SPLITTER);
-        builder.append(folderEntry.conversationListUri);
+        builder.append(convListUri);
         builder.append(SPLITTER);
-        builder.append(folderEntry.childFoldersListUri);
+        builder.append(childFoldersListUri);
         builder.append(SPLITTER);
-        builder.append(folderEntry.unreadCount);
+        builder.append(unreadCount);
         builder.append(SPLITTER);
-        builder.append(folderEntry.totalCount);
+        builder.append(totalCount);
         builder.append(SPLITTER);
-        builder.append(folderEntry.refreshUri);
+        builder.append(refreshUri);
         builder.append(SPLITTER);
-        builder.append(folderEntry.syncStatus);
+        builder.append(syncStatus);
         builder.append(SPLITTER);
-        builder.append(folderEntry.lastSyncResult);
+        builder.append(lastSyncResult);
         builder.append(SPLITTER);
-        builder.append(folderEntry.type);
+        builder.append(type);
         builder.append(SPLITTER);
-        builder.append(folderEntry.iconResId);
+        builder.append(iconResId);
         builder.append(SPLITTER);
-        builder.append(folderEntry.bgColor);
+        builder.append(bgColor);
         builder.append(SPLITTER);
-        builder.append(folderEntry.fgColor);
+        builder.append(fgColor);
         builder.append(SPLITTER);
-        builder.append(folderEntry.loadMoreUri);
+        builder.append(loadMore);
         builder.append(SPLITTER);
-        builder.append(folderEntry.hierarchicalDesc);
+        builder.append(hierarchicalDesc);
         builder.append(SPLITTER);
-        if (folderEntry.parent != null) {
-            builder.append(Folder.toString(folderEntry.parent));
+        if (parent != null) {
+            builder.append(Folder.toString(parent));
         } else {
             builder.append("");
         }
         return builder.toString();
+    }
+
+    public static String toString(Folder folder) {
+        return createAsString(folder.id, folder.uri, folder.name, folder.hasChildren,
+                folder.capabilities, folder.syncWindow, folder.conversationListUri,
+                folder.childFoldersListUri, folder.unreadCount, folder.totalCount,
+                folder.refreshUri, folder.syncStatus, folder.lastSyncResult, folder.type,
+                folder.iconResId, folder.bgColor, folder.fgColor, folder.loadMoreUri,
+                folder.hierarchicalDesc, folder.parent);
     }
 
     /**
