@@ -104,7 +104,9 @@ public final class TwoPaneController extends AbstractActivityController {
         // Create a sectioned FolderListFragment.
         FolderListFragment folderListFragment = FolderListFragment.newInstance(parent, uri, true);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        if (Utils.useFolderListFragmentTransition(mActivity.getActivityContext())) {
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        }
         fragmentTransaction.replace(R.id.content_pane, folderListFragment, TAG_FOLDER_LIST);
         fragmentTransaction.commitAllowingStateLoss();
         // Since we are showing the folder list, we are at the start of the view
