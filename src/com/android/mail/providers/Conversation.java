@@ -156,6 +156,8 @@ public class Conversation implements Parcelable {
 
     private static String sSendersDelimeter;
 
+    private static String sSubjectAndSnippet;
+
     // Constituents of convFlags below
     // Flag indicating that the item has been deleted, but will continue being
     // shown in the list Delete/Archive of a mostly-dead item will NOT propagate
@@ -527,8 +529,11 @@ public class Conversation implements Parcelable {
      */
     public static SpannableStringBuilder getSubjectAndSnippetForDisplay(Context context,
             String filteredSubject, String snippet) {
+        if (sSubjectAndSnippet == null) {
+            sSubjectAndSnippet = context.getString(R.string.subject_and_snippet);
+        }
         return new SpannableStringBuilder((!TextUtils.isEmpty(snippet)) ?
-                context.getString(R.string.subject_and_snippet, filteredSubject, snippet)
+                String.format(sSubjectAndSnippet, filteredSubject, snippet)
                 : filteredSubject);
     }
 }
