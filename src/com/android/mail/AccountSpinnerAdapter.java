@@ -532,7 +532,15 @@ public class AccountSpinnerAdapter extends BaseAdapter {
             mRecentFolderObserver = mSpinnerRecentFolderObserver;
             mRecentFolders = mRecentFolderObserver.initialize(mRecentFolderController);
             mRecentFoldersVisible = true;
-            requestRecentFolders();
+            // If we don't have any recent folders, request them now. Otherwise, we'll go with
+            // whatever we have, and hope that the freshest ones are received through
+            // requestRecentFolders().
+            if (mRecentFolderList == null || mRecentFolderList.size() <= 0) {
+                // This calls notifyDataSetChanged if a fresh list is available.
+                requestRecentFolders();
+            } else {
+                notifyDataSetChanged();
+            }
         }
     }
 
