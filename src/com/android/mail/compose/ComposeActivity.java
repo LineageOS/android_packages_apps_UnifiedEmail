@@ -42,6 +42,7 @@ import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.text.Editable;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -687,7 +688,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.bcc = formatSenders(mBcc.getText().toString());
         message.replyTo = null;
         message.dateReceivedMs = 0;
-        String htmlBody = Html.toHtml(mBodyView.getText());
+        String htmlBody = Html.toHtml(new SpannableString(mBodyView.getText().toString()));
         StringBuilder fullBody = new StringBuilder(htmlBody);
         message.bodyHtml = fullBody.toString();
         message.bodyText = mBodyView.getText().toString();
@@ -1752,21 +1753,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void doSend() {
-        clearImeText();
         sendOrSaveWithSanityChecks(false, true, false);
     }
 
     private void doSave(boolean showToast) {
-        // Clear the IME composing suggestions from the body and subject before saving.
-        clearImeText();
         sendOrSaveWithSanityChecks(true, showToast, false);
-    }
-
-    private void clearImeText() {
-        mBodyView.clearComposingText();
-        BaseInputConnection.removeComposingSpans(mBodyView.getEditableText());
-        mSubject.clearComposingText();
-        BaseInputConnection.removeComposingSpans(mSubject.getEditableText());
     }
 
     @VisibleForTesting
@@ -2193,7 +2184,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         MessageModification.putCustomFromAddress(values, message.from);
 
         MessageModification.putSubject(values, message.subject);
-        String htmlBody = Html.toHtml(body);
+        String htmlBody = Html.toHtml(new SpannableString(body.toString()));
 
         boolean includeQuotedText = !TextUtils.isEmpty(quotedText);
         StringBuilder fullBody = new StringBuilder(htmlBody);
