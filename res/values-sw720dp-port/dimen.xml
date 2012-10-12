@@ -17,4 +17,5 @@
 -->
 <resources>
     <dimen name="spinner_frame_width">172dip</dimen>
+    <dimen name="compose_scrollview_width">700dip</dimen>
 </resources>
