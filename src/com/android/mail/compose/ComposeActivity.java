@@ -436,7 +436,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             accountExtra = intent.getStringExtra(EXTRA_SELECTED_ACCOUNT);
         }
         if (account == null) {
-            final String lastAccountUri = MailAppProvider.getInstance().getLastSentFromAccount();
+            MailAppProvider provider = MailAppProvider.getInstance();
+            String lastAccountUri = provider.getLastSentFromAccount();
+            if (TextUtils.isEmpty(lastAccountUri)) {
+                lastAccountUri = provider.getLastViewedAccount();
+            }
             if (!TextUtils.isEmpty(lastAccountUri)) {
                 accountExtra = Uri.parse(lastAccountUri);
             }
