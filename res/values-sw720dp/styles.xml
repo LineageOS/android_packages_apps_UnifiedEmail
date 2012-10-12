@@ -21,7 +21,7 @@
         <item name="android:layout_width">wrap_content</item>
     </style>
     <style name="AccountSwitchSpinnerItem" parent="@style/PlainSpinnerDropdown">
-        <item name="android:layout_width">364dp</item>
+        <item name="android:layout_width">368dp</item>
     </style>
 
     <style name="MessageHeaderUpperDateStyle" parent="MessageHeaderExtraSmallStyle">

@@ -55,6 +55,5 @@
     <TextView
         android:id="@+id/account_unread"
         android:layout_toRightOf="@id/account_spinner_container"
-        android:layout_marginLeft="4dp"
-        style="@style/UnreadCountActionBar"/>
+        style="@style/unreadCountActionBarTablet"/>
 </RelativeLayout>
