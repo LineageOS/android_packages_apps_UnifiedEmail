@@ -17,7 +17,7 @@
 -->
 <resources>
     <style name="AccountSwitchSpinnerItem" parent="@style/PlainSpinnerDropdown">
-        <item name="android:layout_width">308dp</item>
+        <item name="android:layout_width">312dp</item>
     </style>
     <style name="PersonalIndicatorStyle">
         <item name="android:layout_width">wrap_content</item>
@@ -68,5 +68,10 @@
     </style>
 
     <style name="ConversationListStyle">
+    </style>
+
+    <style name="unreadCountActionBarTablet" parent="@style/UnreadCountActionBar">
+        <item name="android:layout_marginLeft">26dp</item>
+        <item name="android:layout_width">wrap_content</item>
     </style>
 </resources>
