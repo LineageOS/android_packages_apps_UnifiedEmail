@@ -30,4 +30,7 @@
     <dimen name="undo_bar_width_conv">844dp</dimen>
     <dimen name="undo_bar_width_conv_list">426dp</dimen>
     <dimen name="undo_bar_width_search_list">400dp</dimen>
+
+    <!-- Whether or not to use a nice transition when showing the folder list fragment; used in 2-pane layouts -->
+    <integer name="use_folder_list_fragment_transition">0</integer>
 </resources>
