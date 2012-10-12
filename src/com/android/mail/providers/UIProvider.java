@@ -33,7 +33,6 @@ import android.text.util.Rfc822Tokenizer;
 import com.android.common.contacts.DataUsageStatUpdater;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class UIProvider {
     public static final String EMAIL_SEPARATOR = ",";
@@ -170,7 +169,8 @@ public class UIProvider {
             AccountColumns.SettingsColumns.SWIPE,
             AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
             AccountColumns.SettingsColumns.SETUP_INTENT_URI,
-            AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE
+            AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
+            AccountColumns.UPDATE_SETTINGS_URI
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -217,6 +217,8 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 40;
     public static final int ACCOUNT_SETTINGS_SETUP_INTENT_URI = 41;
     public static final int ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN = 42;
+
+    public static final int ACCOUNT_UPDATE_SETTINGS_URI_COLUMN = 43;
 
     public static final class AccountCapabilities {
         /**
@@ -487,6 +489,12 @@ public class UIProvider {
          * {@link AccountCookieColumns}
          */
         public static final String ACCOUNT_COOKIE_QUERY_URI = "accountCookieUri";
+        /**
+         * URI to be used with an update() ContentResolver call with a {@link ContentValues} object
+         * where the keys are from the {@link AccountColumns.SettingsColumns}, and the values are
+         * the new values.
+         */
+        public static final String UPDATE_SETTINGS_URI = "updateSettingsUri";
 
         public static final class SettingsColumns {
             /**
@@ -649,6 +657,7 @@ public class UIProvider {
                     ACCOUNT_SETTINGS_SETUP_INTENT_URI)
             .put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
                     ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN)
+            .put(AccountColumns.UPDATE_SETTINGS_URI, ACCOUNT_UPDATE_SETTINGS_URI_COLUMN)
             .build();
 
     /**
@@ -1869,6 +1878,10 @@ public class UIProvider {
     // Parameter used to indicate the sequence number for an undoable operation
     public static final String SEQUENCE_QUERY_PARAMETER = "seq";
 
+    public static final String AUTO_ADVANCE_MODE_OLDER = "older";
+    public static final String AUTO_ADVANCE_MODE_NEWER = "newer";
+    public static final String AUTO_ADVANCE_MODE_LIST = "list";
+
     /**
      * Settings for auto advancing when the current conversation has been destroyed.
      */
@@ -1881,6 +1894,27 @@ public class UIProvider {
         public static final int NEWER = 2;
         /** Go back to conversation list*/
         public static final int LIST = 3;
+
+        /**
+         * Gets the int value for the given auto advance setting.
+         *
+         * @param autoAdvanceSetting The string setting, such as "newer", "older", "list"
+         */
+        public static int getAutoAdvanceInt(final String autoAdvanceSetting) {
+            final int autoAdvance;
+
+            if (AUTO_ADVANCE_MODE_NEWER.equals(autoAdvanceSetting)) {
+                autoAdvance = UIProvider.AutoAdvance.NEWER;
+            } else if (AUTO_ADVANCE_MODE_OLDER.equals(autoAdvanceSetting)) {
+                autoAdvance = UIProvider.AutoAdvance.OLDER;
+            } else if (AUTO_ADVANCE_MODE_LIST.equals(autoAdvanceSetting)) {
+                autoAdvance = UIProvider.AutoAdvance.LIST;
+            } else {
+                autoAdvance = UIProvider.AutoAdvance.UNSET;
+            }
+
+            return autoAdvance;
+        }
     }
 
     /**

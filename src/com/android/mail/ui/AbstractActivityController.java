@@ -25,7 +25,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.ContentProviderOperation;
@@ -76,7 +75,9 @@ import com.android.mail.providers.Settings;
 import com.android.mail.providers.SuggestionsProvider;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.providers.UIProvider.AccountCapabilities;
+import com.android.mail.providers.UIProvider.AccountColumns;
 import com.android.mail.providers.UIProvider.AccountCursorExtraKeys;
+import com.android.mail.providers.UIProvider.AutoAdvance;
 import com.android.mail.providers.UIProvider.ConversationColumns;
 import com.android.mail.providers.UIProvider.FolderCapabilities;
 import com.android.mail.ui.ActionableToastBar.ActionClickedListener;
@@ -84,6 +85,7 @@ import com.android.mail.utils.ContentProviderTask;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
 import com.android.mail.utils.Utils;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -1047,12 +1049,23 @@ public abstract class AbstractActivityController implements ActivityController {
         markConversationsRead(targets, read, viewed, true);
     }
 
-    private void markConversationsRead(Collection<Conversation> targets, boolean read,
-            boolean markViewed, boolean showNext) {
+    private void markConversationsRead(final Collection<Conversation> targets, final boolean read,
+            final boolean markViewed, final boolean showNext) {
         // Auto-advance if requested and the current conversation is being marked unread
         if (showNext && !read) {
-            showNextConversation(targets);
+            final Runnable operation = new Runnable() {
+                @Override
+                public void run() {
+                    markConversationsRead(targets, read, markViewed, showNext);
+                }
+            };
+
+            if (!showNextConversation(targets, operation)) {
+                // This method will be called again if the user selects an autoadvance option
+                return;
+            }
         }
+
         final int size = targets.size();
         final List<ConversationOperation> opList = new ArrayList<ConversationOperation>(size);
         for (final Conversation target : targets) {
@@ -1084,20 +1097,102 @@ public abstract class AbstractActivityController implements ActivityController {
      * Auto-advance to a different conversation if the currently visible conversation in
      * conversation mode is affected (deleted, marked unread, etc.).
      *
-     * <p>Does nothing if outside of conversation mode.
+     * <p>Does nothing if outside of conversation mode.</p>
      *
      * @param target the set of conversations being deleted/marked unread
      */
     @Override
-    public void showNextConversation(Collection<Conversation> target) {
+    public void showNextConversation(final Collection<Conversation> target) {
+        showNextConversation(target, null);
+    }
+
+    /**
+     * Auto-advance to a different conversation if the currently visible conversation in
+     * conversation mode is affected (deleted, marked unread, etc.).
+     *
+     * <p>Does nothing if outside of conversation mode.</p>
+     *
+     * @param target the set of conversations being deleted/marked unread
+     * @return <code>false</code> if we aborted because the user has not yet specified a default
+     *         action, <code>true</code> otherwise
+     */
+    private boolean showNextConversation(final Collection<Conversation> target,
+            final Runnable operation) {
         final boolean currentConversationInView = (mViewMode.getMode() == ViewMode.CONVERSATION)
                 && Conversation.contains(target, mCurrentConversation);
+
         if (currentConversationInView) {
-            final Conversation next = mTracker.getNextConversation(
-                    Settings.getAutoAdvanceSetting(mAccount.settings), target);
-            LogUtils.d(LOG_TAG, "showNextConversation: showing %s next.", next);
-            showConversation(next);
+            final int autoAdvanceSetting = mAccount.settings.getAutoAdvanceSetting();
+
+            if (autoAdvanceSetting == AutoAdvance.UNSET && Utils.useTabletUI(mContext)) {
+                displayAutoAdvanceDialogAndPerformAction(operation);
+                return false;
+            } else {
+                // If we don't have one set, but we're here, just take the default
+                final int autoAdvance = (autoAdvanceSetting == AutoAdvance.UNSET) ? Settings
+                        .getAutoAdvanceSetting(null)
+                        : autoAdvanceSetting;
+
+                final Conversation next = mTracker.getNextConversation(autoAdvance, target);
+                LogUtils.d(LOG_TAG, "showNextConversation: showing %s next.", next);
+                showConversation(next);
+                return true;
+            }
         }
+
+        return true;
+    }
+
+    /**
+     * Displays a the auto-advance dialog, and when the user makes a selection, the preference is
+     * stored, and the specified operation is run.
+     */
+    private void displayAutoAdvanceDialogAndPerformAction(final Runnable operation) {
+        final String[] autoAdvanceDisplayOptions =
+                mContext.getResources().getStringArray(R.array.prefEntries_autoAdvance);
+        final String[] autoAdvanceOptionValues =
+                mContext.getResources().getStringArray(R.array.prefValues_autoAdvance);
+
+        final String defaultValue = mContext.getString(R.string.prefDefault_autoAdvance);
+        int initialIndex = 0;
+        for (int i = 0; i < autoAdvanceOptionValues.length; i++) {
+            if (defaultValue.equals(autoAdvanceOptionValues[i])) {
+                initialIndex = i;
+                break;
+            }
+        }
+
+        final DialogInterface.OnClickListener listClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichItem) {
+                        final String autoAdvanceValue = autoAdvanceOptionValues[whichItem];
+                        final int autoAdvanceValueInt =
+                                UIProvider.AutoAdvance.getAutoAdvanceInt(autoAdvanceValue);
+                        mAccount.settings.setAutoAdvanceSetting(autoAdvanceValueInt);
+
+                        // Save the user's setting
+                        final ContentValues values = new ContentValues(1);
+                        values.put(AccountColumns.SettingsColumns.AUTO_ADVANCE, autoAdvanceValue);
+
+                        final ContentResolver resolver = mContext.getContentResolver();
+                        resolver.update(mAccount.updateSettingsUri, values, null, null);
+
+                        // Dismiss the dialog, as clicking the items in the list doesn't close the
+                        // dialog.
+                        dialog.dismiss();
+                        if (operation != null) {
+                            operation.run();
+                        }
+                    }
+                };
+
+        new AlertDialog.Builder(mActivity.getActivityContext()).setTitle(
+                R.string.auto_advance_help_title)
+                .setSingleChoiceItems(autoAdvanceDisplayOptions, initialIndex, listClickListener)
+                .setPositiveButton(null, null)
+                .create()
+                .show();
     }
 
     @Override
@@ -1171,7 +1266,7 @@ public abstract class AbstractActivityController implements ActivityController {
     }
 
     @Override
-    public void delete(int actionId, final Collection<Conversation> target,
+    public void delete(final int actionId, final Collection<Conversation> target,
             final Collection<ConversationItemView> targetViews, final DestructiveAction action) {
         // Order of events is critical! The Conversation View Fragment must be
         // notified of the next conversation with showConversation(next) *before* the
@@ -1180,7 +1275,18 @@ public abstract class AbstractActivityController implements ActivityController {
 
         // Update the conversation fragment if the current conversation is
         // deleted.
-        showNextConversation(target);
+        final Runnable operation = new Runnable() {
+            @Override
+            public void run() {
+                delete(actionId, target, targetViews, action);
+            }
+        };
+
+        if (!showNextConversation(target, operation)) {
+            // This method will be called again if the user selects an autoadvance option
+            return;
+        }
+
         // The conversation list deletes and performs the action if it exists.
         final ConversationListFragment convListFragment = getConversationListFragment();
         if (convListFragment != null) {
