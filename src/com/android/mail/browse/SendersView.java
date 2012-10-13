@@ -38,6 +38,7 @@ import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.MessageInfo;
 import com.android.mail.providers.UIProvider;
+import com.android.mail.utils.ObjectCache;
 import com.android.mail.utils.Utils;
 import com.google.android.common.html.parser.HtmlParser;
 import com.google.android.common.html.parser.HtmlTreeBuilder;
@@ -70,8 +71,26 @@ public class SendersView {
     private static Locale sMeStringLocale;
     private static String sMessageCountSpacerString;
     public static CharSequence sElidedString;
-    private static Map<Integer, Integer> sPriorityToLength;
     private static BroadcastReceiver sConfigurationChangedReceiver;
+
+    // We only want to have at most 2 Priority to length maps.  This will handle the case where
+    // there is a widget installed on the launcher while the user is scrolling in the app
+    private static final int MAX_PRIORITY_LENGTH_MAP_LIST = 2;
+
+    // Cache of priority to length maps.  We can't just use a single instance as it may be
+    // modified from different threads
+    private static final ObjectCache<Map<Integer, Integer>> PRIORITY_LENGTH_MAP_CACHE =
+            new ObjectCache<Map<Integer, Integer>>(
+                    new ObjectCache.Callback<Map<Integer, Integer>>() {
+                        @Override
+                        public Map<Integer, Integer> newInstance() {
+                            return Maps.newHashMap();
+                        }
+                        @Override
+                        public void onObjectReleased(Map<Integer, Integer> object) {
+                            object.clear();
+                        }
+                    }, MAX_PRIORITY_LENGTH_MAP_LIST);
 
     public static Typeface getTypeface(boolean isUnread) {
         return isUnread ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT;
@@ -190,32 +209,34 @@ public class SendersView {
         if (numCharsUsed > maxChars) {
             numCharsToRemovePerWord = numCharsUsed - maxChars;
         }
-        if (sPriorityToLength == null) {
-            sPriorityToLength = Maps.newHashMap();
-        }
-        final Map<Integer, Integer> priorityToLength = sPriorityToLength;
-        priorityToLength.clear();
-        int senderLength;
-        for (MessageInfo info : conversationInfo.messageInfos) {
-            senderLength = !TextUtils.isEmpty(info.sender) ? info.sender.length() : 0;
-            priorityToLength.put(info.priority, senderLength);
-            maxFoundPriority = Math.max(maxFoundPriority, info.priority);
-        }
-        while (maxPriorityToInclude < maxFoundPriority) {
-            if (priorityToLength.containsKey(maxPriorityToInclude + 1)) {
-                int length = numCharsUsed + priorityToLength.get(maxPriorityToInclude + 1);
-                if (numCharsUsed > 0)
-                    length += 2;
-                // We must show at least two senders if they exist. If we don't
-                // have space for both
-                // then we will truncate names.
-                if (length > maxChars && numSendersUsed >= 2) {
-                    break;
-                }
-                numCharsUsed = length;
-                numSendersUsed++;
+
+        final Map<Integer, Integer> priorityToLength = PRIORITY_LENGTH_MAP_CACHE.get();
+        try {
+            priorityToLength.clear();
+            int senderLength;
+            for (MessageInfo info : conversationInfo.messageInfos) {
+                senderLength = !TextUtils.isEmpty(info.sender) ? info.sender.length() : 0;
+                priorityToLength.put(info.priority, senderLength);
+                maxFoundPriority = Math.max(maxFoundPriority, info.priority);
             }
-            maxPriorityToInclude++;
+            while (maxPriorityToInclude < maxFoundPriority) {
+                if (priorityToLength.containsKey(maxPriorityToInclude + 1)) {
+                    int length = numCharsUsed + priorityToLength.get(maxPriorityToInclude + 1);
+                    if (numCharsUsed > 0)
+                        length += 2;
+                    // We must show at least two senders if they exist. If we don't
+                    // have space for both
+                    // then we will truncate names.
+                    if (length > maxChars && numSendersUsed >= 2) {
+                        break;
+                    }
+                    numCharsUsed = length;
+                    numSendersUsed++;
+                }
+                maxPriorityToInclude++;
+            }
+        } finally {
+            PRIORITY_LENGTH_MAP_CACHE.release(priorityToLength);
         }
         // We want to include this entry if
         // 1) The onlyShowUnread flags is not set
