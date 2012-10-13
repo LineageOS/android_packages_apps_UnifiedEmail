@@ -20,6 +20,7 @@ package com.android.mail.browse;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -235,6 +236,13 @@ public class ConversationViewAdapter extends BaseAdapter {
         @Override
         public boolean isContiguous() {
             return true;
+        }
+
+        @Override
+        public int getGravity() {
+            // attachments are top-aligned within their spacer area
+            // Attachments should stay near the body they belong to, even when zoomed far in.
+            return Gravity.TOP;
         }
 
         @Override
