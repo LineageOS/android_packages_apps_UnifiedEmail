@@ -156,8 +156,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     private final AccountObserver mAccountObserver = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
+            final Account oldAccount = mAccount;
             mAccount = newAccount;
-            onAccountChanged();
+            onAccountChanged(newAccount, oldAccount);
         }
     };
     private TextView mSendersView;
@@ -208,7 +209,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     /**
      * Subclasses must override this.
      */
-    protected abstract void onAccountChanged();
+    protected abstract void onAccountChanged(Account newAccount, Account oldAccount);
 
     @Override
     public void onCreate(Bundle savedState) {
