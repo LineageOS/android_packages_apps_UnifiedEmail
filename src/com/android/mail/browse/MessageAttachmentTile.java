@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.android.ex.photo.Intents;
 import com.android.ex.photo.Intents.PhotoViewIntentBuilder;
@@ -58,6 +59,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
     private View mTextContainer;
 
     private final AttachmentActionHandler mActionHandler;
+    private ProgressBar mProgress;
 
     private static final String LOG_TAG = LogTag.getLogTag();
 
@@ -104,6 +106,7 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
         super.onFinishInflate();
 
         mTextContainer = findViewById(R.id.attachment_tile_text_container);
+        mProgress = (ProgressBar) findViewById(R.id.attachment_progress);
 
         setOnClickListener(this);
     }
@@ -146,6 +149,14 @@ public class MessageAttachmentTile extends AttachmentTile implements OnClickList
     }
 
     public void updateProgress(boolean showDeterminateProgress) {
+        if (mAttachment.isDownloading()) {
+            mProgress.setMax(mAttachment.size);
+            mProgress.setProgress(mAttachment.downloadedSize);
+            mProgress.setIndeterminate(!showDeterminateProgress);
+            mProgress.setVisibility(VISIBLE);
+        } else {
+            mProgress.setVisibility(GONE);
+        }
     }
 
     public void onUpdateStatus() {
