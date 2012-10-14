@@ -22,6 +22,7 @@ import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -82,7 +83,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     private static final float SNAP_HEADER_MAX_SCROLL_SPEED = 600f;
 
     private ConversationViewAdapter mOverlayAdapter;
-    private int[] mOverlayBottoms;
+    private OverlayPosition[] mOverlayPositions;
     private ConversationWebView mWebView;
     private MessageHeaderView mSnapHeader;
     private View mTopMostOverlay;
@@ -190,6 +191,16 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
          * {@link ConversationContainer} view recycling.
          */
         void onDetachedFromParent();
+    }
+
+    public static class OverlayPosition {
+        public final int top;
+        public final int bottom;
+
+        public OverlayPosition(int top, int bottom) {
+            this.top = top;
+            this.bottom = bottom;
+        }
     }
 
     private static class OverlayView {
@@ -378,7 +389,7 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         traceLayout("in positionOverlays, raw scale=%f, effective scale=%f", mWebView.getScale(),
                 mScale);
 
-        if (mOverlayBottoms == null || mOverlayAdapter == null) {
+        if (mOverlayPositions == null || mOverlayAdapter == null) {
             return;
         }
 
@@ -390,47 +401,91 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         // in a single stack until you encounter a non-contiguous expanded message header,
         // then decrement to the next spacer.
 
-        traceLayout("IN positionOverlays, spacerCount=%d overlayCount=%d", mOverlayBottoms.length,
+        traceLayout("IN positionOverlays, spacerCount=%d overlayCount=%d", mOverlayPositions.length,
                 mOverlayAdapter.getCount());
 
         mSnapIndex = -1;
 
-        int adapterIndex = mOverlayAdapter.getCount() - 1;
-        int spacerIndex = mOverlayBottoms.length - 1;
-        while (spacerIndex >= 0 && adapterIndex >= 0) {
+        int adapterLoopIndex = mOverlayAdapter.getCount() - 1;
+        int spacerIndex = mOverlayPositions.length - 1;
+        while (spacerIndex >= 0 && adapterLoopIndex >= 0) {
 
-            final int spacerBottomY = getOverlayBottom(spacerIndex);
+            final int spacerTop = getOverlayTop(spacerIndex);
+            final int spacerBottom = getOverlayBottom(spacerIndex);
+
+            final boolean flip;
+            final int flipOffset;
+            final int forceGravity;
+            // flip direction from bottom->top to top->bottom traversal on the very first spacer
+            // to facilitate top-aligned headers at spacer index = 0
+            if (spacerIndex == 0) {
+                flip = true;
+                flipOffset = adapterLoopIndex;
+                forceGravity = Gravity.TOP;
+            } else {
+                flip = false;
+                flipOffset = 0;
+                forceGravity = Gravity.NO_GRAVITY;
+            }
+
+            int adapterIndex = flip ? flipOffset - adapterLoopIndex : adapterLoopIndex;
 
             // always place at least one overlay per spacer
             ConversationOverlayItem adapterItem = mOverlayAdapter.getItem(adapterIndex);
 
-            int overlayBottomY = spacerBottomY;
-            int overlayTopY = overlayBottomY - adapterItem.getHeight();
+            OverlayPosition itemPos = calculatePosition(adapterItem, spacerTop, spacerBottom,
+                    forceGravity);
 
             traceLayout("in loop, spacer=%d overlay=%d t/b=%d/%d (%s)", spacerIndex, adapterIndex,
-                    overlayTopY, overlayBottomY, adapterItem);
-            positionOverlay(adapterIndex, overlayTopY, overlayBottomY);
+                    itemPos.top, itemPos.bottom, adapterItem);
+            positionOverlay(adapterIndex, itemPos.top, itemPos.bottom);
 
-            // and keep stacking overlays as long as they are contiguous
-            while (--adapterIndex >= 0) {
+            // and keep stacking overlays unconditionally if we are on the first spacer, or as long
+            // as overlays are contiguous
+            while (--adapterLoopIndex >= 0) {
+                adapterIndex = flip ? flipOffset - adapterLoopIndex : adapterLoopIndex;
                 adapterItem = mOverlayAdapter.getItem(adapterIndex);
-                if (!adapterItem.isContiguous()) {
+                if (spacerIndex > 0 && !adapterItem.isContiguous()) {
                     // advance to the next spacer, but stay on this adapter item
                     break;
                 }
 
-                overlayBottomY = overlayTopY; // stack on top of previous overlay
-                overlayTopY = overlayBottomY - adapterItem.getHeight();
+                // place this overlay in the region of the spacer above or below the last item,
+                // depending on direction of iteration
+                final int regionTop = flip ? itemPos.bottom : spacerTop;
+                final int regionBottom = flip ? spacerBottom : itemPos.top;
+                itemPos = calculatePosition(adapterItem, regionTop, regionBottom, forceGravity);
 
                 traceLayout("in contig loop, spacer=%d overlay=%d t/b=%d/%d (%s)", spacerIndex,
-                        adapterIndex, overlayTopY, overlayBottomY, adapterItem);
-                positionOverlay(adapterIndex, overlayTopY, overlayBottomY);
+                        adapterIndex, itemPos.top, itemPos.bottom, adapterItem);
+                positionOverlay(adapterIndex, itemPos.top, itemPos.bottom);
             }
 
             spacerIndex--;
         }
 
         positionSnapHeader(mSnapIndex);
+    }
+
+    private OverlayPosition calculatePosition(ConversationOverlayItem adapterItem, int withinTop,
+            int withinBottom, int forceGravity) {
+        if (adapterItem.getHeight() == 0) {
+            // "place" invisible items at the bottom of their region to stay consistent with the
+            // stacking algorithm in positionOverlays(), unless gravity is forced to the top
+            final int y = (forceGravity == Gravity.TOP) ? withinTop : withinBottom;
+            return new OverlayPosition(y, y);
+        }
+
+        final int v = ((forceGravity != Gravity.NO_GRAVITY) ?
+                forceGravity : adapterItem.getGravity()) & Gravity.VERTICAL_GRAVITY_MASK;
+        switch (v) {
+            case Gravity.BOTTOM:
+                return new OverlayPosition(withinBottom - adapterItem.getHeight(), withinBottom);
+            case Gravity.TOP:
+                return new OverlayPosition(withinTop, withinTop + adapterItem.getHeight());
+            default:
+                throw new UnsupportedOperationException("unsupported gravity: " + v);
+        }
     }
 
     /**
@@ -596,9 +651,18 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         return p instanceof MarginLayoutParams;
     }
 
+    private int getOverlayTop(int spacerIndex) {
+        return webPxToScreenPx(mOverlayPositions[spacerIndex].top);
+    }
+
     private int getOverlayBottom(int spacerIndex) {
+        return webPxToScreenPx(mOverlayPositions[spacerIndex].bottom);
+    }
+
+    private int webPxToScreenPx(int webPx) {
         // TODO: round or truncate?
-        return (int) (mOverlayBottoms[spacerIndex] * mScale);
+        // TODO: refactor and unify with ConversationWebView.webPxToScreenPx()
+        return (int) (webPx * mScale);
     }
 
     private void positionOverlay(int adapterIndex, int overlayTopY, int overlayBottomY) {
@@ -733,24 +797,26 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     /**
-     * Prevents any layouts from happening until the next time {@link #onGeometryChange(int[])} is
+     * Prevents any layouts from happening until the next time
+     * {@link #onGeometryChange(OverlayPosition[])} is
      * called. Useful when you know the HTML spacer coordinates are inconsistent with adapter items.
      * <p>
-     * If you call this, you must ensure that a followup call to {@link #onGeometryChange(int[])}
+     * If you call this, you must ensure that a followup call to
+     * {@link #onGeometryChange(OverlayPosition[])}
      * is made later, when the HTML spacer coordinates are updated.
      *
      */
     public void invalidateSpacerGeometry() {
-        mOverlayBottoms = null;
+        mOverlayPositions = null;
     }
 
-    public void onGeometryChange(int[] overlayBottoms) {
-        traceLayout("*** got overlay spacer bottoms:");
-        for (int offsetY : overlayBottoms) {
-            traceLayout("%d", offsetY);
+    public void onGeometryChange(OverlayPosition[] overlayPositions) {
+        traceLayout("*** got overlay spacer positions:");
+        for (OverlayPosition pos : overlayPositions) {
+            traceLayout("top=%d bottom=%d", pos.top, pos.bottom);
         }
 
-        mOverlayBottoms = overlayBottoms;
+        mOverlayPositions = overlayPositions;
         positionOverlays(0, mOffsetY);
     }
 
