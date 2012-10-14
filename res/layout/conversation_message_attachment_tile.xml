@@ -24,11 +24,21 @@
 
     <include layout="@layout/attachment_preview"/>
 
+    <ProgressBar
+        android:id="@+id/attachment_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/attachment_tile_text_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@id/attachment_progress"
+        android:layout_alignWithParentIfMissing="true"
         android:orientation="vertical"
         android:gravity="center_vertical"
         android:paddingLeft="8dip"
