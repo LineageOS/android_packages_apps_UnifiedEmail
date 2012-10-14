@@ -46,9 +46,9 @@ import android.widget.TextView;
 import com.android.mail.FormattedDateBuilder;
 import com.android.mail.R;
 import com.android.mail.browse.ConversationContainer;
+import com.android.mail.browse.ConversationContainer.OverlayPosition;
 import com.android.mail.browse.ConversationOverlayItem;
 import com.android.mail.browse.ConversationViewAdapter;
-import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.ConversationViewAdapter.ConversationAccountController;
 import com.android.mail.browse.ConversationViewAdapter.MessageFooterItem;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
@@ -61,6 +61,7 @@ import com.android.mail.browse.MessageCursor.ConversationController;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
+import com.android.mail.browse.ScrollIndicatorsView;
 import com.android.mail.browse.SuperCollapsedBlock;
 import com.android.mail.browse.WebViewContextMenu;
 import com.android.mail.providers.Account;
@@ -209,7 +210,21 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void onAccountChanged() {
+    public void onAccountChanged(Account newAccount, Account oldAccount) {
+        // if overview mode has changed, re-render completely (no need to also update headers)
+        if (isOverviewMode(newAccount) != isOverviewMode(oldAccount)) {
+            setupOverviewMode();
+            final MessageCursor c = getMessageCursor();
+            if (c != null) {
+                renderConversation(c);
+            } else {
+                // Null cursor means this fragment is either waiting to load or in the middle of
+                // loading. Either way, a future render will happen anyway, and the new setting
+                // will take effect when that happens.
+            }
+            return;
+        }
+
         // settings may have been updated; refresh views that are known to
         // depend on settings
         mConversationContainer.getSnapHeader().onAccountChanged();
@@ -245,6 +260,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mMaxAutoLoadMessages = getResources().getInteger(R.integer.max_auto_load_messages);
 
         mWebView.setOnCreateContextMenuListener(new WebViewContextMenu(getActivity()));
+
+        // set this up here instead of onCreateView to ensure the latest Account is loaded
+        setupOverviewMode();
 
         // Defer the call to initLoader with a Handler.
         // We want to wait until we know which fragments are present and their final visibility
@@ -330,10 +348,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         settings.setJavaScriptEnabled(true);
         settings.setUseWideViewPort(true);
-
-        settings.setSupportZoom(true);
-        settings.setBuiltInZoomControls(true);
-        settings.setDisplayZoomControls(false);
 
         final float fontScale = getResources().getConfiguration().fontScale;
         final int desiredFontSizePx = getResources()
@@ -650,7 +664,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         final String conversationBaseUri = mConversation.conversationBaseUri != null ?
                 mConversation.conversationBaseUri.toString() : mBaseUri;
         return mTemplates.endConversation(mBaseUri, conversationBaseUri, 320,
-                mWebView.getViewportWidth(), enableContentReadySignal);
+                mWebView.getViewportWidth(), enableContentReadySignal, isOverviewMode(mAccount));
     }
 
     private void renderSuperCollapsedBlock(int start, int end) {
@@ -820,13 +834,15 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                                                 // per onLoadFinished()
     }
 
-    private static int[] parseInts(final String[] stringArray) {
-        final int len = stringArray.length;
-        final int[] ints = new int[len];
+    private static OverlayPosition[] parsePositions(final String[] topArray,
+            final String[] bottomArray) {
+        final int len = topArray.length;
+        final OverlayPosition[] positions = new OverlayPosition[len];
         for (int i = 0; i < len; i++) {
-            ints[i] = Integer.parseInt(stringArray[i]);
+            positions[i] = new OverlayPosition(
+                    Integer.parseInt(topArray[i]), Integer.parseInt(bottomArray[i]));
         }
-        return ints;
+        return positions;
     }
 
     @Override
@@ -848,11 +864,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         return addr;
     }
 
-    @Override
-    public Account getAccount() {
-        return mAccount;
-    }
-
     private void ensureContentSizeChangeListener() {
         if (mWebViewSizeChangeListener == null) {
             mWebViewSizeChangeListener = new ConversationWebView.ContentSizeChangeListener() {
@@ -868,6 +879,20 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             };
         }
         mWebView.setContentSizeChangeListener(mWebViewSizeChangeListener);
+    }
+
+    private static boolean isOverviewMode(Account acct) {
+        return acct.settings.conversationViewMode == UIProvider.ConversationViewMode.OVERVIEW;
+    }
+
+    private void setupOverviewMode() {
+        final boolean overviewMode = isOverviewMode(mAccount);
+        final WebSettings settings = mWebView.getSettings();
+        settings.setSupportZoom(overviewMode);
+        if (overviewMode) {
+            settings.setBuiltInZoomControls(true);
+            settings.setDisplayZoomControls(false);
+        }
     }
 
     private class ConversationWebViewClient extends AbstractConversationWebViewClient {
@@ -923,11 +948,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
      * via reflection and not stripped.
      *
      */
+    // TODO: switch these Runnables to FragmentRunnables?
     private class MailJsBridge {
 
         @SuppressWarnings("unused")
         @JavascriptInterface
-        public void onWebContentGeometryChange(final String[] overlayBottomStrs) {
+        public void onWebContentGeometryChange(final String[] overlayTopStrs,
+                final String[] overlayBottomStrs) {
             try {
                 getHandler().post(new Runnable() {
 
@@ -938,7 +965,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                                     + " are gone, %s", ConversationViewFragment.this);
                             return;
                         }
-                        mConversationContainer.onGeometryChange(parseInts(overlayBottomStrs));
+                        mConversationContainer.onGeometryChange(
+                                parsePositions(overlayTopStrs, overlayBottomStrs));
                         if (mDiff != 0) {
                             // SCROLL!
                             int scale = (int) (mWebView.getScale() / mWebView.getInitialScale());

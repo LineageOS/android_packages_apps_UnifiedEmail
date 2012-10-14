@@ -18,6 +18,7 @@
 package com.android.mail.browse;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +60,10 @@ public abstract class ConversationOverlayItem {
      * apart.
      */
     public abstract boolean isContiguous();
+
+    public int getGravity() {
+        return Gravity.BOTTOM;
+    }
 
     /**
      * This method's behavior is critical and requires some 'splainin.
