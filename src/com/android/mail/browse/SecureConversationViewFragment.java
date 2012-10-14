@@ -37,6 +37,7 @@ import com.android.mail.R;
 import com.android.mail.browse.ConversationViewAdapter.MessageHeaderItem;
 import com.android.mail.browse.MessageCursor.ConversationMessage;
 import com.android.mail.browse.MessageHeaderView.MessageHeaderViewCallbacks;
+import com.android.mail.providers.Account;
 import com.android.mail.providers.Conversation;
 import com.android.mail.providers.ConversationInfo;
 import com.android.mail.providers.Message;
@@ -150,7 +151,7 @@ public class SecureConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void onAccountChanged() {
+    public void onAccountChanged(Account newAccount, Account oldAccount) {
         // Do nothing.
     }
 
