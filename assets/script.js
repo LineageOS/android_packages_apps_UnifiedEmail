@@ -111,8 +111,14 @@ function normalizeAllMessageWidths() {
 function normalizeElementWidths(elements) {
     var i;
     var el;
-    var documentWidth = document.body.offsetWidth;
+    var documentWidth;
     var newZoom, oldZoom;
+
+    if (!NORMALIZE_MESSAGE_WIDTHS) {
+        return;
+    }
+
+    documentWidth = document.body.offsetWidth;
 
     for (i = 0; i < elements.length; i++) {
         el = elements[i];
@@ -256,23 +262,32 @@ function setupContentReady() {
 
 // BEGIN Java->JavaScript handlers
 function measurePositions() {
-    var overlayBottoms;
-    var h;
+    var overlayTops, overlayBottoms;
     var i;
     var len;
 
-    var expandedSpacerDivs = document.querySelectorAll(".expanded > .spacer");
+    var expandedBody, headerSpacer;
+    var prevBodyBottom = 0;
+    var expandedBodyDivs = document.querySelectorAll(".expanded > .mail-message-content");
 
-    overlayBottoms = new Array(expandedSpacerDivs.length + 1);
-    for (i = 0, len = expandedSpacerDivs.length; i < len; i++) {
-        h = expandedSpacerDivs[i].offsetHeight;
+    // N.B. offsetTop and offsetHeight of an element with the "zoom:" style applied cannot be
+    // trusted.
+
+    overlayTops = new Array(expandedBodyDivs.length + 1);
+    overlayBottoms = new Array(expandedBodyDivs.length + 1);
+    for (i = 0, len = expandedBodyDivs.length; i < len; i++) {
+        expandedBody = expandedBodyDivs[i];
+        headerSpacer = expandedBody.previousElementSibling;
         // addJavascriptInterface handler only supports string arrays
-        overlayBottoms[i] = "" + (getTotalOffset(expandedSpacerDivs[i]).top + h);
+        overlayTops[i] = "" + prevBodyBottom;
+        overlayBottoms[i] = "" + (getTotalOffset(headerSpacer).top + headerSpacer.offsetHeight);
+        prevBodyBottom = getTotalOffset(expandedBody.nextElementSibling).top;
     }
-    // add an extra one to mark the bottom of the last message
+    // add an extra one to mark the top/bottom of the last message footer spacer
+    overlayTops[i] = "" + prevBodyBottom;
     overlayBottoms[i] = "" + document.body.offsetHeight;
 
-    window.mail.onWebContentGeometryChange(overlayBottoms);
+    window.mail.onWebContentGeometryChange(overlayTops, overlayBottoms);
 }
 
 function unblockImages(messageDomId) {
