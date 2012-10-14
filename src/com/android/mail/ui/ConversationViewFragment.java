@@ -347,7 +347,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         mScrollIndicators.setSourceView(mWebView);
 
         settings.setJavaScriptEnabled(true);
-        settings.setUseWideViewPort(true);
 
         final float fontScale = getResources().getConfiguration().fontScale;
         final int desiredFontSizePx = getResources()
@@ -888,6 +887,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private void setupOverviewMode() {
         final boolean overviewMode = isOverviewMode(mAccount);
         final WebSettings settings = mWebView.getSettings();
+        settings.setUseWideViewPort(overviewMode);
         settings.setSupportZoom(overviewMode);
         if (overviewMode) {
             settings.setBuiltInZoomControls(true);
