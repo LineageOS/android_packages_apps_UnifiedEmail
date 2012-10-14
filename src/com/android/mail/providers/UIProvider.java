@@ -166,7 +166,8 @@ public class UIProvider {
             AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
             AccountColumns.SettingsColumns.SWIPE,
             AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
-            AccountColumns.SettingsColumns.SETUP_INTENT_URI
+            AccountColumns.SettingsColumns.SETUP_INTENT_URI,
+            AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE
     };
 
     public static final int ACCOUNT_ID_COLUMN = 0;
@@ -212,6 +213,7 @@ public class UIProvider {
     public static final int ACCOUNT_SETTINGS_SWIPE_COLUMN = 39;
     public static final int ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN = 40;
     public static final int ACCOUNT_SETTINGS_SETUP_INTENT_URI = 41;
+    public static final int ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN = 42;
 
     public static final class AccountCapabilities {
         /**
@@ -569,6 +571,11 @@ public class UIProvider {
              * in the account, etc.)
              */
             public static final String SETUP_INTENT_URI = "setup_intent_uri";
+            /**
+             * Integer column containing the Conversation view mode.  This value will match one of
+             * constants from  {@link ConversationViewMode}
+             */
+            public static final String CONVERSATION_VIEW_MODE = "conversation_view_mode";
         }
     }
 
@@ -1740,6 +1747,25 @@ public class UIProvider {
         public static final int DISABLED = 2;
         /** Default is delete */
         public static final int DEFAULT = ARCHIVE;
+    }
+
+    /**
+     * Settings for Conversation view mode.
+     */
+    public static final class ConversationViewMode {
+        /**
+         * The user hasn't specified a mode.
+         */
+        public static final int UNDEFINED = -1;
+        /**
+         * Default to fit the conversation to screen view
+         */
+        public static final int OVERVIEW = 0;
+        /**
+         * Conversation text size should be the device default, and wide conversations may
+         * require panning
+         */
+        public static final int READING = 1;
     }
 
     public static final class SnapHeaderValue {
