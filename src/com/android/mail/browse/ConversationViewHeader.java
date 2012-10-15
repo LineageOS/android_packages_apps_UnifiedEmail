@@ -186,10 +186,11 @@ public class ConversationViewHeader extends RelativeLayout implements OnClickLis
         // in the conversation header are the folders and priority indicators.
         // Updating these will resize the space for the header.
         setFolders(conv);
-
-        final int h = measureHeight();
-        if (mHeaderItem.setHeight(h)) {
-            mCallbacks.onConversationViewHeaderHeightChange(h);
+        if (mHeaderItem != null) {
+            final int h = measureHeight();
+            if (mHeaderItem.setHeight(h)) {
+                mCallbacks.onConversationViewHeaderHeightChange(h);
+            }
         }
     }
 
