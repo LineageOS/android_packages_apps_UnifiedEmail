@@ -51,13 +51,15 @@
                 style="@style/WidgetTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:freezesText="true" />
+                android:freezesText="true"
+                android:includeFontPadding="false" />
             <TextView
                 android:id="@+id/widget_account"
                 style="@style/WidgetSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:freezesText="true" />
+                android:freezesText="true"
+                android:includeFontPadding="false" />
         </LinearLayout>
         <!-- Note: We can't set "freezesText" on the widget_unread_count view, as the launcher can
              restore stale data over updated data. -->
@@ -73,7 +75,7 @@
             android:src="@drawable/ic_menu_compose_normal_holo_light"
             android:background="?android:attr/selectableItemBackground"
             android:paddingLeft="4dip"
-            android:paddingBottom="4dip" />
+            android:layout_gravity="center_vertical" />
     </LinearLayout>
     <ListView
         android:id="@+id/conversation_list"

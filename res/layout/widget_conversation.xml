@@ -94,13 +94,14 @@
             android:layout_marginTop="6sp"
             android:paddingRight="16dip"
             android:singleLine="true"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:includeFontPadding="false" />
         <TextView
             android:id="@+id/widget_subject"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/widget_senders"
-            android:layout_marginTop="-2sp"
-            android:maxLines="2" />
+            android:maxLines="2"
+            android:includeFontPadding="false" />
     </RelativeLayout>
 </FrameLayout>
