@@ -518,6 +518,9 @@ public class WidgetService extends RemoteViewsService {
                 } else {
                     LogUtils.e(LOG_TAG, "Empty folder name");
                 }
+                if (!TextUtils.isEmpty(mAccount.name)) {
+                    remoteViews.setTextViewText(R.id.widget_account, mAccount.name);
+                }
                 remoteViews.setViewVisibility(R.id.widget_unread_count, View.VISIBLE);
                 remoteViews.setTextViewText(R.id.widget_unread_count,
                         Utils.getUnreadCountString(mContext, unreadCount));
