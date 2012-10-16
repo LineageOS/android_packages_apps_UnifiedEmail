@@ -972,6 +972,11 @@ public abstract class AbstractActivityController implements ActivityController {
         // to conversation unread)
         conv.read = false;
 
+        if (mConversationListCursor == null) {
+            LogUtils.e(LOG_TAG, "null ConversationCursor in markConversationMessagesUnread");
+            return;
+        }
+
         // only do a granular 'mark unread' if a subset of messages are unread
         final int unreadCount = (unreadMessageUris == null) ? 0 : unreadMessageUris.size();
         final int numMessages = conv.getNumMessages();
