@@ -39,17 +39,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Browser;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.TextView;
 
 import com.android.mail.ContactInfo;
 import com.android.mail.ContactInfoSource;
@@ -89,8 +84,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     private static final String LOG_TAG = LogTag.getLogTag();
     protected static final int MESSAGE_LOADER = 0;
     protected static final int CONTACT_LOADER = 1;
-    private static int sSubjectColor = Integer.MIN_VALUE;
-    private static int sSnippetColor = Integer.MIN_VALUE;
     private static int sMinDelay = -1;
     private static int sMinShowTime = -1;
     protected ControllableActivity mActivity;
@@ -113,7 +106,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     private boolean mUserVisible;
     private View mProgressView;
     private View mBackgroundView;
-    private View mInfoView;
     private final Handler mHandler = new Handler();
 
     /**
@@ -135,15 +127,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         @Override
         public void run() {
             mLoadingShownTime = System.currentTimeMillis();
-            String senders = mConversation.getSenders(getContext());
-            if (!TextUtils.isEmpty(senders) && mConversation.subject != null) {
-                mInfoView.setVisibility(View.VISIBLE);
-                mSendersView.setText(senders);
-                mSubjectView.setText(createSubjectSnippet(mConversation.subject,
-                        mConversation.getSnippet()));
-            } else {
-                mProgressView.setVisibility(View.VISIBLE);
-            }
+            mProgressView.setVisibility(View.VISIBLE);
         }
     };
 
@@ -161,8 +145,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             onAccountChanged(newAccount, oldAccount);
         }
     };
-    private TextView mSendersView;
-    private TextView mSubjectView;
 
     private static final String BUNDLE_VIEW_STATE =
             AbstractConversationViewFragment.class.getName() + "viewstate";
@@ -248,10 +230,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     public void instantiateProgressIndicators(View rootView) {
-        mSendersView = (TextView) rootView.findViewById(R.id.senders_view);
-        mSubjectView = (TextView) rootView.findViewById(R.id.info_subject_view);
         mBackgroundView = rootView.findViewById(R.id.background_view);
-        mInfoView = rootView.findViewById(R.id.info_view);
         mProgressView = rootView.findViewById(R.id.loading_progress);
     }
 
@@ -288,7 +267,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mBackgroundView.setVisibility(View.GONE);
-                    mInfoView.setVisibility(View.GONE);
                     mProgressView.setVisibility(View.GONE);
                 }
 
@@ -305,7 +283,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             animator.start();
         } else {
             mBackgroundView.setVisibility(View.GONE);
-            mInfoView.setVisibility(View.GONE);
             mProgressView.setVisibility(View.GONE);
         }
     }
@@ -349,38 +326,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         mBackgroundView.setVisibility(View.VISIBLE);
         mHandler.removeCallbacks(mDelayedShow);
         mHandler.postDelayed(mDelayedShow, sMinDelay);
-    }
-
-    private CharSequence createSubjectSnippet(CharSequence subject, CharSequence snippet) {
-        if (TextUtils.isEmpty(subject) && TextUtils.isEmpty(snippet)) {
-            return "";
-        }
-        if (subject == null) {
-            subject = "";
-        }
-        if (snippet == null) {
-            snippet = "";
-        }
-        SpannableStringBuilder subjectText = new SpannableStringBuilder(getContext().getString(
-                R.string.subject_and_snippet, subject, snippet));
-        ensureSubjectSnippetColors();
-        int snippetStart = 0;
-        int fontColor = sSubjectColor;
-        subjectText.setSpan(new ForegroundColorSpan(fontColor), 0, subject.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        snippetStart = subject.length() + 1;
-        fontColor = sSnippetColor;
-        subjectText.setSpan(new ForegroundColorSpan(fontColor), snippetStart, subjectText.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return subjectText;
-    }
-
-    private void ensureSubjectSnippetColors() {
-        if (sSubjectColor == Integer.MIN_VALUE) {
-            Resources res = getContext().getResources();
-            sSubjectColor = res.getColor(R.color.subject_text_color_read);
-            sSnippetColor = res.getColor(R.color.snippet_text_color_read);
-        }
     }
 
     public Context getContext() {
