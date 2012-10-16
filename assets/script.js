@@ -99,8 +99,50 @@ function processQuotedText(elt, showElided) {
     }
 }
 
+function isConversationEmpty(bodyDivs) {
+    var i, len;
+    var msgBody;
+    var text;
+
+    // Check if given divs are empty (in appearance), and disable zoom if so.
+    for (i = 0, len = bodyDivs.length; i < len; i++) {
+        msgBody = bodyDivs[i];
+        // use 'textContent' to exclude markup when determining whether bodies are empty
+        // (fall back to more expensive 'innerText' if 'textContent' isn't implemented)
+        text = msgBody.textContent || msgBody.innerText;
+        if (text.trim().length > 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
 function normalizeAllMessageWidths() {
-    normalizeElementWidths(document.querySelectorAll(".expanded > .mail-message-content"));
+    var expandedBodyDivs;
+    var metaViewport;
+    var contentValues;
+    var isEmpty;
+
+    if (!NORMALIZE_MESSAGE_WIDTHS) {
+        return;
+    }
+
+    expandedBodyDivs = document.querySelectorAll(".expanded > .mail-message-content");
+
+    isEmpty = isConversationEmpty(expandedBodyDivs);
+
+    normalizeElementWidths(expandedBodyDivs);
+
+    // assemble a working <meta> viewport "content" value from the base value in the
+    // document, plus any dynamically determined options
+    metaViewport = document.getElementById("meta-viewport");
+    contentValues = [metaViewport.getAttribute("content")];
+    if (isEmpty) {
+        contentValues.push(metaViewport.getAttribute("data-zoom-off"));
+    } else {
+        contentValues.push(metaViewport.getAttribute("data-zoom-on"));
+    }
+    metaViewport.setAttribute("content", contentValues.join(","));
 }
 
 /*
@@ -386,11 +428,14 @@ function replaceMessageBodies(messageIds) {
 
 // END Java->JavaScript handlers
 
+// Do this first to ensure that the readiness signal comes through,
+// even if a stray exception later occurs.
+setupContentReady();
+
 collapseAllQuotedText();
 hideUnsafeImages();
 normalizeAllMessageWidths();
 //setWideViewport();
 restoreScrollPosition();
 measurePositions();
-setupContentReady();
 
