@@ -496,9 +496,11 @@ public class Folder implements Parcelable, Comparable<Folder> {
         builder.append(SPLITTER);
         builder.append(folderEntry.iconResId);
         builder.append(SPLITTER);
-        builder.append(folderEntry.bgColor);
+        final String bgColor = folderEntry.bgColor;
+        builder.append(bgColor != null ? bgColor : "");
         builder.append(SPLITTER);
-        builder.append(folderEntry.fgColor);
+        final String fgColor = folderEntry.fgColor;
+        builder.append(fgColor != null ? fgColor : "");
         builder.append(SPLITTER);
         builder.append(folderEntry.loadMoreUri);
         builder.append(SPLITTER);
