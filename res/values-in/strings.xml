@@ -57,8 +57,8 @@
     <string name="mark_read" msgid="8438349154394313195">"Tandai telah dibaca"</string>
     <string name="mark_unread" msgid="6231373939351125713">"Tandai belum dibaca"</string>
     <string name="mute" msgid="1995954983688603977">"Bungkam"</string>
-    <string name="add_star" msgid="2866003744391266498">"Kilaukan bintang"</string>
-    <string name="remove_star" msgid="4372327933122106128">"Redupkan bintang"</string>
+    <string name="add_star" msgid="2866003744391266498">"Bintangi"</string>
+    <string name="remove_star" msgid="4372327933122106128">"Hapus bintang"</string>
     <string name="remove_folder" msgid="4906542720439865413">"Hapus dari <xliff:g id="FOLDERNAME">%1$s</xliff:g>"</string>
     <string name="archive" msgid="847250094775910499">"Arsipkan"</string>
     <string name="report_spam" msgid="6467567747975393907">"Laporkan spam"</string>
