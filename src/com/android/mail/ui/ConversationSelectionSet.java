@@ -67,6 +67,7 @@ public class ConversationSelectionSet implements Parcelable {
         }
     };
 
+    private final Object mLock = new Object();
     private final HashMap<Long, Conversation> mInternalMap =
             new HashMap<Long, Conversation>();
 
@@ -82,23 +83,27 @@ public class ConversationSelectionSet implements Parcelable {
      *
      * @param observer the observer to register.
      */
-    public synchronized void addObserver(ConversationSetObserver observer) {
-        mObservers.add(observer);
+    public void addObserver(ConversationSetObserver observer) {
+        synchronized (mLock) {
+            mObservers.add(observer);
+        }
     }
 
     /**
      * Clear the selected set entirely.
      */
-    public synchronized void clear() {
-        boolean initiallyNotEmpty = !mInternalMap.isEmpty();
-        mInternalViewMap.clear();
-        mInternalMap.clear();
-        mConversationUriToIdMap.clear();
+    public void clear() {
+        synchronized (mLock) {
+            boolean initiallyNotEmpty = !mInternalMap.isEmpty();
+            mInternalViewMap.clear();
+            mInternalMap.clear();
+            mConversationUriToIdMap.clear();
 
-        if (mInternalMap.isEmpty() && initiallyNotEmpty) {
-            ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
-            dispatchOnChange(observersCopy);
-            dispatchOnEmpty(observersCopy);
+            if (mInternalMap.isEmpty() && initiallyNotEmpty) {
+                ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
+                dispatchOnChange(observersCopy);
+                dispatchOnEmpty(observersCopy);
+            }
         }
     }
 
@@ -108,8 +113,10 @@ public class ConversationSelectionSet implements Parcelable {
      * @param key the id of the conversation
      * @return true if the key exists in this selected set.
      */
-    public synchronized boolean containsKey(Long key) {
-        return mInternalMap.containsKey(key);
+    public boolean containsKey(Long key) {
+        synchronized (mLock) {
+            return mInternalMap.containsKey(key);
+        }
     }
 
     /**
@@ -117,8 +124,10 @@ public class ConversationSelectionSet implements Parcelable {
      * @param conversation
      * @return true if the conversation exists in the selected set.
      */
-    public synchronized boolean contains(Conversation conversation) {
-        return containsKey(conversation.id);
+    public boolean contains(Conversation conversation) {
+        synchronized (mLock) {
+            return containsKey(conversation.id);
+        }
     }
 
     @Override
@@ -126,24 +135,29 @@ public class ConversationSelectionSet implements Parcelable {
         return 0;
     }
 
-    private synchronized void dispatchOnBecomeUnempty(
-            ArrayList<ConversationSetObserver> observers) {
-        for (ConversationSetObserver observer : observers) {
-            observer.onSetPopulated(this);
+    private void dispatchOnBecomeUnempty(ArrayList<ConversationSetObserver> observers) {
+        synchronized (mLock) {
+            for (ConversationSetObserver observer : observers) {
+                observer.onSetPopulated(this);
+            }
         }
     }
 
-    private synchronized void dispatchOnChange(ArrayList<ConversationSetObserver> observers) {
-        // Copy observers so that they may unregister themselves as listeners on
-        // event handling.
-        for (ConversationSetObserver observer : observers) {
-            observer.onSetChanged(this);
+    private void dispatchOnChange(ArrayList<ConversationSetObserver> observers) {
+        synchronized (mLock) {
+            // Copy observers so that they may unregister themselves as listeners on
+            // event handling.
+            for (ConversationSetObserver observer : observers) {
+                observer.onSetChanged(this);
+            }
         }
     }
 
-    private synchronized void dispatchOnEmpty(ArrayList<ConversationSetObserver> observers) {
-        for (ConversationSetObserver observer : observers) {
-            observer.onSetEmpty();
+    private void dispatchOnEmpty(ArrayList<ConversationSetObserver> observers) {
+        synchronized (mLock) {
+            for (ConversationSetObserver observer : observers) {
+                observer.onSetEmpty();
+            }
         }
     }
 
@@ -151,59 +165,69 @@ public class ConversationSelectionSet implements Parcelable {
      * Is this conversation set empty?
      * @return true if the conversation selection set is empty. False otherwise.
      */
-    public synchronized boolean isEmpty() {
-        return mInternalMap.isEmpty();
+    public boolean isEmpty() {
+        synchronized (mLock) {
+            return mInternalMap.isEmpty();
+        }
     }
 
-    private synchronized void put(Long id, Conversation info) {
-        final boolean initiallyEmpty = mInternalMap.isEmpty();
-        mInternalMap.put(id, info);
-        // Fill out the view map with null. The sizes will match, but
-        // we won't have any views available yet to store.
-        mInternalViewMap.put(id, null);
-        mConversationUriToIdMap.put(info.uri.toString(), id);
+    private void put(Long id, Conversation info) {
+        synchronized (mLock) {
+            final boolean initiallyEmpty = mInternalMap.isEmpty();
+            mInternalMap.put(id, info);
+            // Fill out the view map with null. The sizes will match, but
+            // we won't have any views available yet to store.
+            mInternalViewMap.put(id, null);
+            mConversationUriToIdMap.put(info.uri.toString(), id);
 
-        final ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
-        dispatchOnChange(observersCopy);
-        if (initiallyEmpty) {
-            dispatchOnBecomeUnempty(observersCopy);
+            final ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
+            dispatchOnChange(observersCopy);
+            if (initiallyEmpty) {
+                dispatchOnBecomeUnempty(observersCopy);
+            }
         }
     }
 
     /** @see java.util.HashMap#put */
-    private synchronized void put(Long id, ConversationItemView info) {
-        boolean initiallyEmpty = mInternalMap.isEmpty();
-        mInternalViewMap.put(id, info);
-        mInternalMap.put(id, info.mHeader.conversation);
-        mConversationUriToIdMap.put(info.mHeader.conversation.uri.toString(), id);
+    private void put(Long id, ConversationItemView info) {
+        synchronized (mLock) {
+            boolean initiallyEmpty = mInternalMap.isEmpty();
+            mInternalViewMap.put(id, info);
+            mInternalMap.put(id, info.mHeader.conversation);
+            mConversationUriToIdMap.put(info.mHeader.conversation.uri.toString(), id);
 
-        final ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
-        dispatchOnChange(observersCopy);
-        if (initiallyEmpty) {
-            dispatchOnBecomeUnempty(observersCopy);
+            final ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
+            dispatchOnChange(observersCopy);
+            if (initiallyEmpty) {
+                dispatchOnBecomeUnempty(observersCopy);
+            }
         }
     }
 
     /** @see java.util.HashMap#remove */
-    private synchronized void remove(Long id) {
-        removeAll(Collections.singleton(id));
+    private void remove(Long id) {
+        synchronized (mLock) {
+            removeAll(Collections.singleton(id));
+        }
     }
 
-    private synchronized void removeAll(Collection<Long> ids) {
-        final boolean initiallyNotEmpty = !mInternalMap.isEmpty();
+    private void removeAll(Collection<Long> ids) {
+        synchronized (mLock) {
+            final boolean initiallyNotEmpty = !mInternalMap.isEmpty();
 
-        final BiMap<Long, String> inverseMap = mConversationUriToIdMap.inverse();
+            final BiMap<Long, String> inverseMap = mConversationUriToIdMap.inverse();
 
-        for (Long id : ids) {
-            mInternalViewMap.remove(id);
-            mInternalMap.remove(id);
-            inverseMap.remove(id);
-        }
+            for (Long id : ids) {
+                mInternalViewMap.remove(id);
+                mInternalMap.remove(id);
+                inverseMap.remove(id);
+            }
 
-        ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
-        dispatchOnChange(observersCopy);
-        if (mInternalMap.isEmpty() && initiallyNotEmpty) {
-            dispatchOnEmpty(observersCopy);
+            ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
+            dispatchOnChange(observersCopy);
+            if (mInternalMap.isEmpty() && initiallyNotEmpty) {
+                dispatchOnEmpty(observersCopy);
+            }
         }
     }
 
@@ -212,16 +236,20 @@ public class ConversationSelectionSet implements Parcelable {
      *
      * @param observer the observer to unregister.
      */
-    public synchronized void removeObserver(ConversationSetObserver observer) {
-        mObservers.remove(observer);
+    public void removeObserver(ConversationSetObserver observer) {
+        synchronized (mLock) {
+            mObservers.remove(observer);
+        }
     }
 
     /**
      * Returns the number of conversations that are currently selected
      * @return the number of selected conversations.
      */
-    public synchronized int size() {
-        return mInternalMap.size();
+    public int size() {
+        synchronized (mLock) {
+            return mInternalMap.size();
+        }
     }
 
     /**
@@ -243,13 +271,17 @@ public class ConversationSelectionSet implements Parcelable {
     }
 
     /** @see java.util.HashMap#values */
-    public synchronized Collection<Conversation> values() {
-        return mInternalMap.values();
+    public Collection<Conversation> values() {
+        synchronized (mLock) {
+            return mInternalMap.values();
+        }
     }
 
     /** @see java.util.HashMap#keySet() */
-    public synchronized Set<Long> keySet() {
-        return mInternalMap.keySet();
+    public Set<Long> keySet() {
+        synchronized (mLock) {
+            return mInternalMap.keySet();
+        }
     }
 
     /**
@@ -265,6 +297,13 @@ public class ConversationSelectionSet implements Parcelable {
 
         final boolean initiallyEmpty = mInternalMap.isEmpty();
         mInternalMap.putAll(other.mInternalMap);
+
+        final Set<Long> keys = other.mInternalMap.keySet();
+        for (Long key : keys) {
+            // Fill out the view map with null. The sizes will match, but
+            // we won't have any views available yet to store.
+            mInternalViewMap.put(key, null);
+        }
 
         ArrayList<ConversationSetObserver> observersCopy = Lists.newArrayList(mObservers);
         dispatchOnChange(observersCopy);
@@ -297,63 +336,72 @@ public class ConversationSelectionSet implements Parcelable {
      * within the result set denoted by the cursor. Any conversations not foun in the result set
      * is removed from the collection.
      */
-    public synchronized void validateAgainstCursor(ConversationCursor cursor) {
-        if (isEmpty()) {
-            return;
-        }
+    public void validateAgainstCursor(ConversationCursor cursor) {
+        synchronized (mLock) {
+            if (isEmpty()) {
+                return;
+            }
 
-        if (cursor == null) {
-            clear();
-            return;
-        }
+            if (cursor == null) {
+                clear();
+                return;
+            }
 
-        // We don't want iterating over this cusor to trigger a network request
-        final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
+            // We don't want iterating over this cusor to trigger a network request
+            final boolean networkWasEnabled = Utils.disableConversationCursorNetworkAccess(cursor);
 
-        // Get the current position of the cursor, so it can be reset
-        final int currentPosition = cursor.getPosition();
-        if (currentPosition != -1) {
-            // Validate batch selection across all conversations, not just the most
-            // recently loaded set.  See bug 2405138 (Batch selection cleared when
-            // additional conversations are loaded on demand).
-            cursor.moveToPosition(-1);
-        }
+            // Get the current position of the cursor, so it can be reset
+            final int currentPosition = cursor.getPosition();
+            if (currentPosition != -1) {
+                // Validate batch selection across all conversations, not just the most
+                // recently loaded set.  See bug 2405138 (Batch selection cleared when
+                // additional conversations are loaded on demand).
+                cursor.moveToPosition(-1);
+            }
 
-        // First ask the ConversationCursor for the list of conversations that have been deleted
-        final Set<String> deletedConversations = cursor.getDeletedItems();
-        // For each of the uris in the deleted set, add the conversation id to the
-        // itemsToRemoveFromBatch set.
-        final Set<Long> itemsToRemoveFromBatch = Sets.newHashSet();
-        for (String conversationUri : deletedConversations) {
-            final Long conversationId = mConversationUriToIdMap.get(conversationUri);
-            if (conversationId != null) {
-                itemsToRemoveFromBatch.add(conversationId);
+            // First ask the ConversationCursor for the list of conversations that have been deleted
+            final Set<String> deletedConversations = cursor.getDeletedItems();
+            // For each of the uris in the deleted set, add the conversation id to the
+            // itemsToRemoveFromBatch set.
+            final Set<Long> itemsToRemoveFromBatch = Sets.newHashSet();
+            for (String conversationUri : deletedConversations) {
+                final Long conversationId = mConversationUriToIdMap.get(conversationUri);
+                if (conversationId != null) {
+                    itemsToRemoveFromBatch.add(conversationId);
+                }
+            }
+
+            // Get the set of the items that had been in the batch
+            final Set<Long> batchConversationToCheck = new HashSet<Long>(keySet());
+
+            // Remove all of the items that we know are missing.  This will leave the items where
+            // we need to check for existence in the cursor
+            batchConversationToCheck.removeAll(itemsToRemoveFromBatch);
+
+            // While there are items to check, walk through the cursor to determine if the item is
+            // still specified in the cursor.  If it is, we can remove it from the items to check
+            while (!batchConversationToCheck.isEmpty() && cursor.moveToNext()) {
+                batchConversationToCheck.remove(Utils.getConversationId(cursor));
+            }
+
+            // At this point any of the item that are remaining in the batchConversationToCheck set
+            // are to be removed from the selected conversation set
+            itemsToRemoveFromBatch.addAll(batchConversationToCheck);
+
+            removeAll(itemsToRemoveFromBatch);
+
+            cursor.moveToPosition(currentPosition);
+
+            if (networkWasEnabled) {
+                Utils.enableConversationCursorNetworkAccess(cursor);
             }
         }
+    }
 
-        // Get the set of the items that had been in the batch
-        final Set<Long> batchConversationToCheck = new HashSet<Long>(keySet());
-
-        // Remove all of the items that we know are missing.  This will leave the items where
-        // we need to check for existence in the cursor
-        batchConversationToCheck.removeAll(itemsToRemoveFromBatch);
-
-        // While there are items to check, walk through the cursor to determine if the item is
-        // still specified in the cursor.  If it is, we can remove it from the items to check
-        while (!batchConversationToCheck.isEmpty() && cursor.moveToNext()) {
-            batchConversationToCheck.remove(Utils.getConversationId(cursor));
-        }
-
-        // At this point any of the item that are remaining in the batchConversationToCheck set are
-        // to be removed from the selected conversation set
-        itemsToRemoveFromBatch.addAll(batchConversationToCheck);
-
-        removeAll(itemsToRemoveFromBatch);
-
-        cursor.moveToPosition(currentPosition);
-
-        if (networkWasEnabled) {
-            Utils.enableConversationCursorNetworkAccess(cursor);
+    @Override
+    public String toString() {
+        synchronized (mLock) {
+            return String.format("%s:%s", super.toString(), mInternalMap);
         }
     }
 }
