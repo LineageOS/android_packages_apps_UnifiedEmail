@@ -235,6 +235,8 @@ public class AnimatedAdapter extends SimpleCursorAdapter implements
             HashSet<Long> list) {
         // Clear out any remaining items and add the new ones
         mLastDeletingItems.clear();
+        // Since we are deleting new items, clear any remaining undo items
+        mUndoingItems.clear();
 
         final int startPosition = mListView.getFirstVisiblePosition();
         final int endPosition = mListView.getLastVisiblePosition();
