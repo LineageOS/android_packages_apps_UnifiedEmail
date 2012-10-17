@@ -30,7 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -54,7 +54,7 @@ import java.util.List;
  * intents to act on an attachment.
  *
  */
-public class MessageAttachmentBar extends GridLayout implements OnClickListener,
+public class MessageAttachmentBar extends FrameLayout implements OnClickListener,
         OnMenuItemClickListener, AttachmentViewInterface {
 
     private Attachment mAttachment;
@@ -299,8 +299,10 @@ public class MessageAttachmentBar extends GridLayout implements OnClickListener,
             mProgress.setProgress(mAttachment.downloadedSize);
             mProgress.setIndeterminate(!showProgress);
             mProgress.setVisibility(VISIBLE);
+            mSubTitle.setVisibility(INVISIBLE);
         } else {
             mProgress.setVisibility(INVISIBLE);
+            mSubTitle.setVisibility(VISIBLE);
         }
     }
 
