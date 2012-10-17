@@ -51,6 +51,7 @@ import com.android.mail.compose.ComposeActivity;
 import com.android.mail.perf.Timer;
 import com.android.mail.providers.Account;
 import com.android.mail.providers.Address;
+import com.android.mail.providers.Folder;
 import com.android.mail.providers.Message;
 import com.android.mail.providers.UIProvider;
 import com.android.mail.utils.LogTag;
@@ -60,6 +61,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class MessageHeaderView extends LinearLayout implements OnClickListener,
@@ -158,7 +160,8 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
      * visibility. Star is always visible when expanded, but sometimes, like on
      * phones, there isn't enough room to warrant showing star when collapsed.
      */
-    private int mCollapsedStarVis;
+    private boolean mCollapsedStarVisible;
+    private boolean mStarShown;
 
     /**
      * Take the initial right margin of the header title container to mean its
@@ -247,7 +250,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         mUpperDateView = (TextView) findViewById(R.id.upper_date);
         mAttachmentIcon = findViewById(R.id.attachment);
 
-        mCollapsedStarVis = mStarView.getVisibility();
+        mCollapsedStarVisible = mStarView.getVisibility() == VISIBLE;
         mTitleContainerCollapsedMarginRight = ((MarginLayoutParams) mTitleContainerView
                 .getLayoutParams()).rightMargin;
 
@@ -397,6 +400,18 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         }
         mSender = getAddress(from);
 
+        mStarView.setSelected(mMessage.starred);
+        mStarView.setContentDescription(getResources().getString(
+                mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
+        mStarShown = true;
+        ArrayList<Folder> folders = mMessage.conversation.getRawFolders();
+        for (Folder folder : folders) {
+            if (folder.isTrash()) {
+                mStarShown = false;
+                break;
+            }
+        }
+
         updateChildVisibility();
 
         if (mIsDraft || isInOutbox()) {
@@ -411,10 +426,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (mUpperDateView != null) {
             mUpperDateView.setText(mTimestampShort);
         }
-
-        mStarView.setSelected(mMessage.starred);
-        mStarView.setContentDescription(getResources().getString(
-                mStarView.isSelected() ? R.string.remove_star : R.string.add_star));
 
         if (measureOnly) {
             // avoid leaving any state around that would interfere with future regular bind() calls
@@ -570,7 +581,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
                     mSenderEmailView, mOverflowButton);
             setChildVisibility(draftVis, mDraftIcon, mEditDraftButton);
             setChildVisibility(GONE, mAttachmentIcon, mUpperDateView);
-            setChildVisibility(VISIBLE, mStarView);
+            setChildVisibility(mStarShown ? VISIBLE : GONE, mStarView);
 
             setChildMarginRight(mTitleContainerView, 0);
 
@@ -586,7 +597,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             setChildVisibility(mMessage.hasAttachments ? VISIBLE : GONE,
                     mAttachmentIcon);
 
-            setChildVisibility(mCollapsedStarVis, mStarView);
+            setChildVisibility(mCollapsedStarVisible && mStarShown ? VISIBLE : GONE, mStarView);
 
             setChildMarginRight(mTitleContainerView, mTitleContainerCollapsedMarginRight);
 
