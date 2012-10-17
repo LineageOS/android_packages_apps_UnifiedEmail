@@ -165,6 +165,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private Folder mDisplayedFolder;
     private boolean mPriorityMarkersEnabled;
     private boolean mCheckboxesEnabled;
+    private boolean mStarEnabled;
     private boolean mSwipeEnabled;
     private int mLastTouchX;
     private int mLastTouchY;
@@ -414,6 +415,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         mSelectedConversationSet = set;
         mDisplayedFolder = folder;
         mCheckboxesEnabled = !checkboxesDisabled;
+        mStarEnabled = !folder.isTrash();
         mSwipeEnabled = swipeEnabled;
         mPriorityMarkersEnabled = priorityArrowEnabled;
         mAdapter = adapter;
@@ -1079,8 +1081,10 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             canvas.restoreToCount(restoreState);
         }
 
+        if (mStarEnabled) {
         // Star.
-        canvas.drawBitmap(getStarBitmap(), mCoordinates.starX, mCoordinates.starY, sPaint);
+            canvas.drawBitmap(getStarBitmap(), mCoordinates.starX, mCoordinates.starY, sPaint);
+        }
     }
 
     private void drawSenders(Canvas canvas) {
@@ -1268,7 +1272,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
 
     private boolean isTouchInStar(float x, float y) {
         // Everything after the star and include a touch slop.
-        return x > mCoordinates.starX - sTouchSlop;
+        return mStarEnabled && x > mCoordinates.starX - sTouchSlop;
     }
 
     @Override
