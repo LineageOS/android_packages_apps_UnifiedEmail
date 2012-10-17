@@ -165,6 +165,11 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                     mSaveClicked = true;
                 }
                 break;
+            case R.id.download_again:
+                if (mAttachment.isPresentLocally()) {
+                    mActionHandler.startRedownloadingAttachment(mAttachment);
+                }
+                break;
             case R.id.cancel_attachment:
                 mActionHandler.cancelAttachment();
                 mSaveClicked = false;
@@ -172,11 +177,12 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
             case R.id.overflow: {
                 final boolean canSave = mAttachment.canSave() && !mAttachment.isDownloading();
                 final boolean canPreview = mAttachment.canPreview();
+                final boolean canDownloadAgain = mAttachment.isPresentLocally();
 
                 // If no overflow items are visible, just bail out.
                 // We shouldn't be able to get here anyhow since the overflow
                 // button should be hidden.
-                if (!canSave && !canPreview) {
+                if (!canSave && !canPreview && !canDownloadAgain) {
                     break;
                 }
 
@@ -190,6 +196,7 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                 final Menu menu = mPopup.getMenu();
                 menu.findItem(R.id.preview_attachment).setVisible(canPreview);
                 menu.findItem(R.id.save_attachment).setVisible(canSave);
+                menu.findItem(R.id.download_again).setVisible(canDownloadAgain);
 
                 mPopup.show();
                 break;
@@ -278,10 +285,19 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
                         mAttachment.contentUri, mAttachment.contentType);
         final boolean canPreview = mAttachment.canPreview();
         final boolean isInstallable = MimeType.isInstallable(mAttachment.contentType);
+        final boolean canDownloadAgain = mAttachment.isPresentLocally();
 
         setButtonVisible(mCancelButton, isDownloading && mSaveClicked);
-        setButtonVisible(mOverflowButton, !isDownloading && !mSaveClicked
-                && !isInstallable && (canSave || canPreview));
+
+        if (isDownloading) {
+            setButtonVisible(mOverflowButton, false);
+        } else if (canSave && mSaveClicked) {
+            setButtonVisible(mOverflowButton, false);
+        } else if (isInstallable && !canDownloadAgain) {
+            setButtonVisible(mOverflowButton, false);
+        } else {
+            setButtonVisible(mOverflowButton, canSave || canPreview || canDownloadAgain);
+        }
     }
 
     public void onUpdateStatus() {

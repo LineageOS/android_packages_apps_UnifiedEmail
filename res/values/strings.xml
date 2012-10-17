@@ -238,6 +238,8 @@
     <string name="install_attachment">Install</string>
     <!-- Read email screen, button name. Cancel a downloading attachment. [CHAR LIMIT=10] -->
     <string name="cancel_attachment">Cancel</string>
+    <!-- Read email screen, button name. Redownload an attachment [CHAR LIMIT=20]-->
+    <string name="download_again">Download again</string>
     <!-- Dialog box title [CHAR LIMIT=30] -->
     <string name="more_info_attachment">Info</string>
     <!-- Dialog box message, displayed when we block downloading an attachment due to security concerns. [CHAR LIMIT=200]-->

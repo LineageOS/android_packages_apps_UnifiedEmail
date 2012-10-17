@@ -21,4 +21,6 @@
           android:title="@string/preview_attachment" />
     <item android:id="@+id/save_attachment"
           android:title="@string/save_attachment" />
+    <item android:id="@+id/download_again"
+          android:title="@string/download_again" />
 </menu>
