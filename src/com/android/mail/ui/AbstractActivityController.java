@@ -450,6 +450,7 @@ public abstract class AbstractActivityController implements ActivityController {
         if (shouldReloadInbox) {
             loadAccountInbox();
         }
+        perhapsEnterWaitMode();
         restartOptionalLoader(LOADER_RECENT_FOLDERS);
         mActivity.invalidateOptionsMenu();
         disableNotificationsOnAccountChange(mAccount);
@@ -460,6 +461,34 @@ public abstract class AbstractActivityController implements ActivityController {
             Intent intent = new Intent(Intent.ACTION_EDIT);
             intent.setData(mAccount.settings.setupIntentUri);
             mActivity.startActivity(intent);
+        }
+    }
+
+    /**
+     * If required, starts wait mode for the current account.
+     * @param account
+     */
+    final void perhapsEnterWaitMode() {
+        // If the account is not initialized, then show the wait fragment, since nothing can be
+        // shown.
+        if (mAccount.isAccountInitializationRequired()) {
+            showWaitForInitialization();
+            return;
+        }
+
+        final boolean inWaitingMode = inWaitMode();
+        final boolean isSyncRequired = mAccount.isAccountSyncRequired();
+        if (isSyncRequired) {
+            if (inWaitingMode) {
+                // Update the WaitFragment's account object
+                updateWaitMode();
+            } else {
+                // Transition to waiting mode
+                showWaitForInitialization();
+            }
+        } else if (inWaitingMode) {
+            // Dismiss waiting mode
+            hideWaitForInitialization();
         }
     }
 
@@ -1346,6 +1375,7 @@ public abstract class AbstractActivityController implements ActivityController {
             return;
         }
         mAccountObservers.notifyChanged();
+        perhapsEnterWaitMode();
     }
 
     /**
@@ -1879,25 +1909,7 @@ public abstract class AbstractActivityController implements ActivityController {
                         if (!Objects.equal(mAccount.settings, previousSettings)) {
                             mAccountObservers.notifyChanged();
                         }
-
-                        // We only want to enter or exit waiting mode if the account has been
-                        // initialized
-                        if (!updatedAccount.isAccountInitializationRequired()) {
-                            // Got an update for the current account
-                            final boolean inWaitingMode = inWaitMode();
-                            if (updatedAccount.isAccountSyncRequired() && !inWaitingMode) {
-                                // Transition to waiting mode
-                                showWaitForInitialization();
-                            } else if (!updatedAccount.isAccountSyncRequired()) {
-                                if (inWaitingMode) {
-                                    // Dismiss waiting mode
-                                    hideWaitForInitialization();
-                                }
-                            } else if (updatedAccount.isAccountSyncRequired() && inWaitingMode) {
-                                // Update the WaitFragment's account object
-                                updateWaitMode();
-                            }
-                        }
+                        perhapsEnterWaitMode();
                     } else {
                         LogUtils.e(LOG_TAG, "Got update for account: %s with current account: %s",
                                 updatedAccount.uri, mAccount.uri);
