@@ -18,8 +18,8 @@
 package com.android.mail.ui;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -123,7 +123,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     private long mLoadingShownTime = -1;
 
-    private Runnable mDelayedShow = new Runnable() {
+    private final Runnable mDelayedShow = new Runnable() {
         @Override
         public void run() {
             mLoadingShownTime = System.currentTimeMillis();
@@ -131,12 +131,6 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         }
     };
 
-    private Runnable mDelayedDismiss = new Runnable() {
-        @Override
-        public void run() {
-            dismiss();
-        }
-    };
     private final AccountObserver mAccountObserver = new AccountObserver() {
         @Override
         public void onChanged(Account newAccount) {
@@ -235,49 +229,50 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     }
 
     protected void dismissLoadingStatus() {
+        dismissLoadingStatus(null);
+    }
+
+    /**
+     * Begin the fade-out animation to hide the Progress overlay, either immediately or after some
+     * timeout (to ensure that the progress minimum time elapses).
+     *
+     * @param doAfter an optional Runnable action to execute after the animation completes
+     */
+    protected void dismissLoadingStatus(final Runnable doAfter) {
         if (mLoadingShownTime == -1) {
             // The runnable hasn't run yet, so just remove it.
-            mBackgroundView.setVisibility(View.GONE);
             mHandler.removeCallbacks(mDelayedShow);
+            dismiss(doAfter);
             return;
         }
         final long diff = Math.abs(System.currentTimeMillis() - mLoadingShownTime);
         if (diff > sMinShowTime) {
-            dismiss();
+            dismiss(doAfter);
         } else {
-            mHandler.postDelayed(mDelayedDismiss, Math.abs(sMinShowTime - diff));
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dismiss(doAfter);
+                }
+            }, Math.abs(sMinShowTime - diff));
         }
     }
 
-    private void dismiss() {
+    private void dismiss(final Runnable doAfter) {
         // Reset loading shown time.
         mLoadingShownTime = -1;
         // Fade out the info view.
         if (mBackgroundView.getVisibility() == View.VISIBLE) {
-            Animator animator = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
+            mProgressView.setVisibility(View.GONE);
+            final Animator animator = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
             animator.setTarget(mBackgroundView);
-            animator.addListener(new AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    if (mProgressView.getVisibility() != View.VISIBLE) {
-                        mProgressView.setVisibility(View.GONE);
-                    }
-                }
-
+            animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mBackgroundView.setVisibility(View.GONE);
-                    mProgressView.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    // Do nothing.
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                    // Do nothing.
+                    if (doAfter != null) {
+                        doAfter.run();
+                    }
                 }
             });
             animator.start();
