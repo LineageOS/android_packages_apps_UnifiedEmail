@@ -116,6 +116,7 @@ public class AttachmentActionHandler {
     }
 
     public void startRedownloadingAttachment(Attachment attachment) {
+        showDownloadingDialog(attachment.destination);
         final ContentValues params = new ContentValues(2);
         params.put(AttachmentColumns.STATE, AttachmentState.REDOWNLOADING);
         params.put(AttachmentColumns.DESTINATION, attachment.destination);
