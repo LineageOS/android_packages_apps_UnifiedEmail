@@ -1609,6 +1609,19 @@ public class UIProvider {
          * Valid next states: {@link #NOT_SAVED}
          */
         public static final int SAVED = 3;
+        /**
+         * This is only used as a command, not as a state. The attachment is
+         * currently being redownloaded by the provider.
+         * {@link AttachmentColumns#DOWNLOADED_SIZE} should reflect the current
+         * download progress while in this state. When used as a command,
+         * setting this state will tell the provider to initiate a download to
+         * the accompanying destination in {@link AttachmentColumns#DESTINATION}
+         * .
+         * <p>
+         * Valid next states: {@link #NOT_SAVED}, {@link #FAILED},
+         * {@link #SAVED}
+         */
+        public static final int REDOWNLOADING = 4;
 
         private AttachmentState() {}
     }

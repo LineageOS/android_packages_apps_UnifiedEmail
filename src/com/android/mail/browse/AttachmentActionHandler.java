@@ -115,6 +115,14 @@ public class AttachmentActionHandler {
         mCommandHandler.sendCommand(mAttachment.uri, params);
     }
 
+    public void startRedownloadingAttachment(Attachment attachment) {
+        final ContentValues params = new ContentValues(2);
+        params.put(AttachmentColumns.STATE, AttachmentState.REDOWNLOADING);
+        params.put(AttachmentColumns.DESTINATION, attachment.destination);
+
+        mCommandHandler.sendCommand(attachment.uri, params);
+    }
+
     /**
      * Displays a loading dialog to be used for downloading attachments.
      * Must be called on the UI thread.
