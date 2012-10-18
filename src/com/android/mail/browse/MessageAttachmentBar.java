@@ -70,6 +70,13 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
     private final AttachmentActionHandler mActionHandler;
     private boolean mSaveClicked;
 
+    private final Runnable mUpdateRunnable = new Runnable() {
+            @Override
+        public void run() {
+            updateActionsInternal();
+        }
+    };
+
     private static final String LOG_TAG = LogTag.getLogTag();
 
     public MessageAttachmentBar(Context context) {
@@ -271,6 +278,11 @@ public class MessageAttachmentBar extends FrameLayout implements OnClickListener
      * Update all actions based on current downloading state.
      */
     private void updateActions() {
+        removeCallbacks(mUpdateRunnable);
+        post(mUpdateRunnable);
+    }
+
+    private void updateActionsInternal() {
         // If the progress dialog is visible, skip any of the updating
         if (mActionHandler.isProgressDialogVisible() || mActionHandler.dialogJustClosed()) {
             return;
