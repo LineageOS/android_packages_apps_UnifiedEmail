@@ -467,11 +467,20 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
                         LogUtils.i(LOG_TAG, "CVF: offscreen conv has no messages, ignoring update"
                                 + " in anticipation of conv cursor update. c=%s", mConversation.uri);
                     }
+                    // existing mCursor will imminently be closed, must stop referencing it
+                    // since we expect to be kicked out soon, it doesn't matter what mCursor
+                    // becomes
+                    mCursor = null;
                     return;
                 }
 
                 // ignore cursors that are still loading results
                 if (!messageCursor.isLoaded()) {
+                    // existing mCursor will imminently be closed, must stop referencing it
+                    // in this case, the new cursor is also no good, and since don't expect to get
+                    // here except in initial load situations, it's safest to just ensure the
+                    // reference is null
+                    mCursor = null;
                     return;
                 }
                 final MessageCursor oldCursor = mCursor;
