@@ -17,15 +17,9 @@
 
 package com.android.mail.ui;
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
-import android.os.AsyncTask;
-import android.view.View;
-import android.widget.AdapterView;
 
 import com.android.mail.R;
 import com.android.mail.providers.Account;
@@ -42,26 +36,7 @@ import java.util.Collection;
  * Displays a folder selection dialog for the conversation provided. It allows
  * the user to switch a conversation from one folder to another.
  */
-public class SingleFolderSelectionDialog extends FolderSelectionDialog implements OnClickListener {
-    private AlertDialog mDialog;
-    private ConversationUpdater mUpdater;
-    private SeparatedFolderListAdapter mAdapter;
-    private final Collection<Conversation> mTarget;
-    private boolean mBatch;
-    final QueryRunner mRunner;
-    private Folder mExcludeFolder;
-    private Builder mBuilder;
-    private Account mAccount;
-
-    public static SingleFolderSelectionDialog getInstance(final Context context, Account account,
-            final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
-            Folder currentFolder) {
-        if (isShown()) {
-            return null;
-        }
-        return new SingleFolderSelectionDialog(
-                context, account, updater, target, isBatch, currentFolder);
-    }
+public class SingleFolderSelectionDialog extends FolderSelectionDialog {
 
     /**
      * Create a new {@link SingleFolderSelectionDialog}. It is displayed when
@@ -75,100 +50,54 @@ public class SingleFolderSelectionDialog extends FolderSelectionDialog implement
      * @param currentFolder the current folder that the
      *            {@link FolderListFragment} is showing
      */
-    private SingleFolderSelectionDialog(final Context context, Account account,
+    public SingleFolderSelectionDialog(final Context context, Account account,
             final ConversationUpdater updater, Collection<Conversation> target, boolean isBatch,
             Folder currentFolder) {
-        mUpdater = updater;
-        mTarget = target;
-        mBatch = isBatch;
-        mExcludeFolder = currentFolder;
-        mBuilder = new AlertDialog.Builder(context);
-        mBuilder.setTitle(R.string.folder_selection_dialog_title);
-        mBuilder.setNegativeButton(R.string.cancel, this);
-        mAccount = account;
-        mAdapter = new SeparatedFolderListAdapter(context);
-        mRunner = new QueryRunner(context);
+        super(context, account, updater, target, isBatch, currentFolder);
     }
 
-    /**
-     * Class to query the Folder list database in the background and update the adapter with an
-     * open cursor.
-     */
-    private final class QueryRunner extends AsyncTask<Void, Void, Void> {
-        private final Context mContext;
-
-        private QueryRunner(final Context context){
-            mContext = context;
-        }
-
-        @Override
-        protected Void doInBackground(Void... v) {
-            Cursor foldersCursor = null;
-            try {
-                foldersCursor = mContext.getContentResolver().query(
-                        !Utils.isEmpty(mAccount.fullFolderListUri) ? mAccount.fullFolderListUri
-                                : mAccount.folderListUri, UIProvider.FOLDERS_PROJECTION, null,
-                        null, null);
-                // TODO(mindyp) : bring this back in UR8 when Email providers
-                // will have divided folder sections.
-                final String[] headers = mContext.getResources().getStringArray(
-                        R.array.moveto_folder_sections);
-                // Currently, the number of adapters are assumed to match the
-                // number of headers in the string array.
-                mAdapter.addSection(new SystemFolderSelectorAdapter(mContext, foldersCursor,
-                        R.layout.single_folders_view, null, mExcludeFolder));
-
-                // TODO(mindyp): we currently do not support frequently moved to
-                // folders, at headers[1]; need to define what that means.*/
-                mAdapter.addSection(new HierarchicalFolderSelectorAdapter(mContext,
-                        AddableFolderSelectorAdapter.filterFolders(foldersCursor),
-                        R.layout.single_folders_view, headers[2], mExcludeFolder));
-                mBuilder.setAdapter(mAdapter, SingleFolderSelectionDialog.this);
-            } finally {
-                if (foldersCursor != null) {
-                    foldersCursor.close();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            mDialog = mBuilder.create();
-            showInternal();
-        }
-    }
-
-    /**
-     * Shows the {@link SingleFolderSelectionDialog} dialog.
-     */
     @Override
-    public void show() {
-        super.show();
-        mRunner.execute();
+    protected void updateAdapterInBackground(Context context) {
+        Cursor foldersCursor = null;
+        try {
+            foldersCursor = context.getContentResolver().query(
+                    !Utils.isEmpty(mAccount.fullFolderListUri) ? mAccount.fullFolderListUri
+                            : mAccount.folderListUri, UIProvider.FOLDERS_PROJECTION, null,
+                    null, null);
+            // TODO(mindyp) : bring this back in UR8 when Email providers
+            // will have divided folder sections.
+            final String[] headers = context.getResources().getStringArray(
+                    R.array.moveto_folder_sections);
+            // Currently, the number of adapters are assumed to match the
+            // number of headers in the string array.
+            mAdapter.addSection(new SystemFolderSelectorAdapter(context, foldersCursor,
+                    R.layout.single_folders_view, null, mCurrentFolder));
+
+            // TODO(mindyp): we currently do not support frequently moved to
+            // folders, at headers[1]; need to define what that means.*/
+            mAdapter.addSection(new HierarchicalFolderSelectorAdapter(context,
+                    AddableFolderSelectorAdapter.filterFolders(foldersCursor),
+                    R.layout.single_folders_view, headers[2], mCurrentFolder));
+            mBuilder.setAdapter(mAdapter, SingleFolderSelectionDialog.this);
+        } finally {
+            if (foldersCursor != null) {
+                foldersCursor.close();
+            }
+        }
     }
 
-    /**
-     * Shows the dialog after a database query has occurred.
-     */
-    private final void showInternal() {
-        mDialog.show();
-        mDialog.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Object item = mAdapter.getItem(position);
-                if (item instanceof FolderRow) {
-                    final Folder folder = ((FolderRow) item).getFolder();
-                    ArrayList<FolderOperation> ops = new ArrayList<FolderOperation>();
-                    // Remove the current folder and add the new folder.
-                    ops.add(new FolderOperation(mExcludeFolder, false));
-                    ops.add(new FolderOperation(folder, true));
-                    mUpdater.assignFolder(ops, mTarget, mBatch, true);
-                    mDialog.dismiss();
-                }
-            }
-        });
-        mDialog.setOnDismissListener(this);
+    @Override
+    protected void onListItemClick(int position) {
+        final Object item = mAdapter.getItem(position);
+        if (item instanceof FolderRow) {
+            final Folder folder = ((FolderRow) item).getFolder();
+            ArrayList<FolderOperation> ops = new ArrayList<FolderOperation>();
+            // Remove the current folder and add the new folder.
+            ops.add(new FolderOperation(mCurrentFolder, false));
+            ops.add(new FolderOperation(folder, true));
+            mUpdater.assignFolder(ops, mTarget, mBatch, true);
+            mDialog.dismiss();
+        }
     }
 
     @Override

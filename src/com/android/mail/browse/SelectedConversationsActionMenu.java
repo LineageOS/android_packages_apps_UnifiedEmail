@@ -192,17 +192,9 @@ public class SelectedConversationsActionMenu implements ActionMode.Callback,
                     }
                 }
                 if (!cantMove) {
-                    final FolderSelectionDialog dialog;
-                    if (mAccount
-                            .supportsCapability(UIProvider
-                                    .AccountCapabilities.MULTIPLE_FOLDERS_PER_CONV)) {
-                        dialog = MultiFoldersSelectionDialog.getInstance(
-                                mContext, acct, mUpdater, mSelectionSet.values(), true, mFolder);
-                    } else {
-                        dialog = SingleFolderSelectionDialog.getInstance(
-                                mContext, acct, mUpdater, mSelectionSet.values(), true, mFolder);
-                    }
-                    if(dialog != null) {
+                    final FolderSelectionDialog dialog = FolderSelectionDialog.getInstance(
+                            mContext, acct, mUpdater, mSelectionSet.values(), true, mFolder);
+                    if (dialog != null) {
                         dialog.show();
                     }
                 }
