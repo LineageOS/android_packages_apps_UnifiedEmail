@@ -270,7 +270,10 @@ public class SwipeableListView extends ListView implements Callback {
         // Need to find the items in the LIST!
         final ArrayList<Conversation> conversations = new ArrayList<Conversation>();
         for (ConversationItemView view : views) {
-            Conversation conv = view.getConversation();
+            if (view == null) {
+                continue;
+            }
+            final Conversation conv = view.getConversation();
             conv.position = findConversation(view, conv);
             conversations.add(conv);
         }

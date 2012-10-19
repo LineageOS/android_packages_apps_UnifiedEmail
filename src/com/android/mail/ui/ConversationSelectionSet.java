@@ -71,6 +71,10 @@ public class ConversationSelectionSet implements Parcelable {
     private final HashMap<Long, Conversation> mInternalMap =
             new HashMap<Long, Conversation>();
 
+    /**
+     * Map of conversation IDs to {@link ConversationItemView} objects. The views are <b>not</b>
+     * updated when a new list view object is created on orientation change.
+     */
     private final HashMap<Long, ConversationItemView> mInternalViewMap =
             new HashMap<Long, ConversationItemView>();
     private final BiMap<String, Long> mConversationUriToIdMap = HashBiMap.create();
