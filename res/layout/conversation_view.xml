@@ -50,8 +50,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:paddingLeft="@dimen/conversation_view_margin_side"
-                android:paddingRight="@dimen/conversation_view_margin_side" />
+                android:layout_marginLeft="@dimen/conversation_view_margin_side"
+                android:layout_marginRight="@dimen/conversation_view_margin_side" />
 
         </FrameLayout>
 
