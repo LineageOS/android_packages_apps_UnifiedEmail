@@ -70,6 +70,6 @@ public class AutoSendActivity extends ComposeActivity {
         if (mDontSaveOrSend) {
             return false;
         }
-        return super.sendOrSaveWithSanityChecks(save, showToast, false);
+        return super.sendOrSaveWithSanityChecks(save, showToast, false, true);
     }
 }
