@@ -162,13 +162,6 @@ public final class ConversationListFragment extends ListFragment implements
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Hacky workaround for http://b/6946182
-        Utils.fixSubTreeLayoutIfOrphaned(getView(), "ConversationListFragment");
-    }
-
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.

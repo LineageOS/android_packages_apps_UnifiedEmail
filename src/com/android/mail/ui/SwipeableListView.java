@@ -90,12 +90,6 @@ public class SwipeableListView extends ListView implements Callback {
                 isLayoutRequested(), getRootView().isLayoutRequested());
     }
 
-    @Override
-    public void requestLayout() {
-        Utils.checkRequestLayout(this);
-        super.requestLayout();
-    }
-
     /**
      * Enable swipe gestures.
      */

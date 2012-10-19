@@ -377,14 +377,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        // Hacky workaround for http://b/6946182
-        Utils.fixSubTreeLayoutIfOrphaned(getView(), "ConversationViewFragment");
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mConversationContainer.setOverlayAdapter(null);

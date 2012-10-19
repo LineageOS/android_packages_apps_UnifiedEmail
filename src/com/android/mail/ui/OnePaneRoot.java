@@ -36,10 +36,4 @@ public class OnePaneRoot extends FrameLayout {
         LogUtils.d(Utils.VIEW_DEBUGGING_TAG, "OnePaneRoot(%s).onLayout() FINISH", this);
     }
 
-    @Override
-    public void requestLayout() {
-        Utils.checkRequestLayout(this);
-        super.requestLayout();
-    }
-
 }

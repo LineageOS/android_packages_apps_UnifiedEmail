@@ -34,12 +34,10 @@ import android.widget.ScrollView;
 
 import com.android.mail.R;
 import com.android.mail.browse.ScrollNotifier.ScrollListener;
-import com.android.mail.providers.Conversation;
 import com.android.mail.ui.ConversationViewFragment;
 import com.android.mail.utils.DequeMap;
 import com.android.mail.utils.InputSmoother;
 import com.android.mail.utils.LogUtils;
-import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -613,12 +611,6 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
         }
 
         positionOverlays(0, mOffsetY);
-    }
-
-    @Override
-    public void requestLayout() {
-        Utils.checkRequestLayout(this);
-        super.requestLayout();
     }
 
     @Override
