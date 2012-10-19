@@ -344,6 +344,12 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListView.setLayerType(layerType, null);
         mListCopyView.setLayerType(layerType, null);
         mConversationView.setLayerType(layerType, null);
+        if (useHardware) {
+            mFoldersView.buildLayer();
+            mListView.buildLayer();
+            mListCopyView.buildLayer();
+            mConversationView.buildLayer();
+        }
     }
 
     private void fixupListCopyWidth() {

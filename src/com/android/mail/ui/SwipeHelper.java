@@ -262,6 +262,7 @@ public class SwipeHelper {
         int duration = determineDuration(animView, newPos, velocity);
 
         animView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        animView.buildLayer();
         ObjectAnimator anim = createDismissAnimation(animView, newPos, duration);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -292,6 +293,7 @@ public class SwipeHelper {
         ObjectAnimator anim;
         for (final ConversationItemView view : views) {
             view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            view.buildLayer();
             anim = createDismissAnimation(view, newPos, duration);
             anim.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
@@ -300,6 +302,12 @@ public class SwipeHelper {
                         view.setAlpha(getAlphaForOffset(view));
                     }
                     invalidateGlobalRegion(view);
+                }
+            });
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    view.setLayerType(View.LAYER_TYPE_NONE, null);
                 }
             });
             animations.add(anim);

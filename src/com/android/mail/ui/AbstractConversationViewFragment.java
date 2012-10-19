@@ -264,12 +264,15 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         // Fade out the info view.
         if (mBackgroundView.getVisibility() == View.VISIBLE) {
             mProgressView.setVisibility(View.GONE);
+            mBackgroundView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            mBackgroundView.buildLayer();
             final Animator animator = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
             animator.setTarget(mBackgroundView);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mBackgroundView.setVisibility(View.GONE);
+                    mBackgroundView.setLayerType(View.LAYER_TYPE_NONE, null);
                     if (doAfter != null) {
                         doAfter.run();
                     }
