@@ -173,14 +173,13 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
     private int mAnimatedHeight = -1;
     private String mAccount;
     private ControllableActivity mActivity;
-    private CharacterStyle mActivatedTextSpan;
     private int mBackgroundOverride = -1;
     private static TextView sSubjectTextView;
     private static TextView sSendersTextView;
     private static int sScrollSlop;
     private static int sSendersTextViewTopPadding;
     private static int sSendersTextViewHeight;
-    private static ForegroundColorSpan sActivatedTextSpan;
+    private static CharacterStyle sActivatedTextSpan;
     private static Bitmap sDateBackgroundAttachment;
     private static Bitmap sDateBackgroundNoAttachment;
     private static Bitmap MORE_FOLDERS;
@@ -366,7 +365,7 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             // Initialize colors.
             sDefaultTextColor = res.getColor(R.color.default_text_color);
             sActivatedTextColor = res.getColor(android.R.color.white);
-            sActivatedTextSpan = new ForegroundColorSpan(sActivatedTextColor);
+            sActivatedTextSpan = CharacterStyle.wrap(new ForegroundColorSpan(sActivatedTextColor));
             sSubjectTextColorRead = res.getColor(R.color.subject_text_color_read);
             sSubjectTextColorUnead = res.getColor(R.color.subject_text_color_unread);
             sSnippetTextColorRead = res.getColor(R.color.snippet_text_color_read);
@@ -629,10 +628,6 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
             sSubjectTextView = subjectTextView;
         }
         return sSubjectTextView;
-    }
-
-    private CharacterStyle getActivatedTextSpan() {
-        return CharacterStyle.wrap(sActivatedTextSpan);
     }
 
     private void layoutSubjectSpans(boolean isUnread) {
@@ -1092,15 +1087,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
                 + sSendersTextViewTopPadding);
         mHeader.sendersTextView = getSendersTextView();
         if (mHeader.styledSendersString != null) {
-            if (mActivatedTextSpan == null) {
-                mActivatedTextSpan = getActivatedTextSpan();
-            }
             if (isActivated() && showActivatedText()) {
-                mHeader.styledSendersString.setSpan(mActivatedTextSpan, 0,
+                mHeader.styledSendersString.setSpan(sActivatedTextSpan, 0,
                         mHeader.styledMessageInfoStringOffset,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
-                mHeader.styledSendersString.removeSpan(mActivatedTextSpan);
+                mHeader.styledSendersString.removeSpan(sActivatedTextSpan);
             }
 
             mHeader.sendersTextView.setText(mHeader.styledSendersString,
@@ -1117,15 +1109,12 @@ public class ConversationItemView extends View implements SwipeableItemView, Tog
         int subjectWidth = mCoordinates.subjectWidth;
         int subjectHeight = (int) (subjectLayout.getLineHeight() * 2 + sPaint.descent());
         sPaint.setTextSize(mCoordinates.subjectFontSize);
-        if (mActivatedTextSpan == null) {
-            mActivatedTextSpan = getActivatedTextSpan();
-        }
         if (isActivated() && showActivatedText()) {
-            mHeader.subjectText.setSpan(mActivatedTextSpan, 0,
+            mHeader.subjectText.setSpan(sActivatedTextSpan, 0,
                     mHeader.subjectText.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         } else {
-            mHeader.subjectText.removeSpan(mActivatedTextSpan);
+            mHeader.subjectText.removeSpan(sActivatedTextSpan);
         }
         canvas.translate(mCoordinates.subjectX, mCoordinates.subjectY
                 + sSendersTextViewTopPadding);
