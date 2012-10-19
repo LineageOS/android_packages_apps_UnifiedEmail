@@ -2043,6 +2043,11 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      */
     protected boolean sendOrSaveWithSanityChecks(final boolean save, final boolean showToast,
             final boolean orientationChanged) {
+        if (mAccounts == null || mAccount == null) {
+            Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         String[] to, cc, bcc;
         Editable body = mBodyView.getEditableText();
         if (orientationChanged) {
