@@ -1749,13 +1749,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
 
     private void doSend() {
         clearImeText();
-        sendOrSaveWithSanityChecks(false, true, false);
+        sendOrSaveWithSanityChecks(false, true, false, false);
     }
 
     private void doSave(boolean showToast) {
         // Clear the IME composing suggestions from the body and subject before saving.
         clearImeText();
-        sendOrSaveWithSanityChecks(true, showToast, false);
+        sendOrSaveWithSanityChecks(true, showToast, false, false);
     }
 
     private void clearImeText() {
@@ -2047,9 +2047,12 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
      * @return Whether the send or save succeeded.
      */
     protected boolean sendOrSaveWithSanityChecks(final boolean save, final boolean showToast,
-            final boolean orientationChanged) {
+            final boolean orientationChanged, final boolean autoSend) {
         if (mAccounts == null || mAccount == null) {
             Toast.makeText(this, R.string.send_failed, Toast.LENGTH_SHORT).show();
+            if (autoSend) {
+                finish();
+            }
             return false;
         }
 
