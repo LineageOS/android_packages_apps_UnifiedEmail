@@ -492,10 +492,4 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         pane.setLayoutParams(lp);
     }
 
-    @Override
-    public void requestLayout() {
-        Utils.checkRequestLayout(this);
-        super.requestLayout();
-    }
-
 }

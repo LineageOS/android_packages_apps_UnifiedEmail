@@ -127,13 +127,6 @@ public final class FolderListFragment extends ListFragment implements
         super();
     }
 
-    @Override
-    public void onResume() {
-
-        super.onResume();
-        // Hacky workaround for http://b/6946182
-        Utils.fixSubTreeLayoutIfOrphaned(getView(), "FolderListFragment");
-    }
     /**
      * Creates a new instance of {@link ConversationListFragment}, initialized
      * to display conversation list context.

@@ -41,7 +41,6 @@ import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewParent;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -1101,12 +1100,6 @@ public class Utils {
         return sDefaultFolderBackgroundColor;
     }
 
-    public static void fixSubTreeLayoutIfOrphaned(View v, String tag) {
-        if (isLayoutSubTreeOrphaned(v)) {
-            markDirtyTillRoot(tag, v);
-        }
-    }
-
     /**
      * Returns the count that should be shown for the specified folder.  This method should be used
      * when the UI wants to display an "unread" count.  For most labels, the returned value will be
@@ -1132,95 +1125,4 @@ public class Utils {
         return count;
     }
 
-    /**
-     * An orphaned subtree is one where child views have requested layout, but at least one
-     * ancestor is not marked for layout. In this scenario, any future layout requests on the root
-     * will ignore the orphaned subtree, and we have to force the issue.
-     * <p>
-     * Note: this might be okay if it's true while a layout pass is in progress. Callers should
-     * only trust this return value if not currently in layout.
-     *
-     */
-    public static boolean isLayoutSubTreeOrphaned(View v) {
-        if (v == null) {
-            return false;
-        }
-
-        final boolean isLayoutRequested = v.isLayoutRequested();
-        ViewParent parent = v.getParent();
-        while (isLayoutRequested && parent != null) {
-            if (!parent.isLayoutRequested()) {
-                return true;
-            }
-            parent = parent.getParent();
-        }
-        return false;
-    }
-
-    /**
-     * Hacky method to allow invalidating views all the way up the hierarchy.
-     */
-    public static void markDirtyTillRoot(String message, View v) {
-//        LogUtils.d(VIEW_DEBUGGING_TAG, "%s: markingDirtyTillRoot", message);
-//        v.invalidate();
-//        ViewParent parent = v.getParent();
-//        while (parent != null) {
-//            parent.requestLayout();
-//            parent = parent.getParent();
-//        }
-    }
-
-    public static void checkRequestLayout(View v) {
-        boolean inLayout = false;
-        final View root = v.getRootView();
-
-        if (root == null || v.isLayoutRequested()) {
-            return;
-        }
-
-        final Error e = new Error();
-        for (StackTraceElement ste : e.getStackTrace()) {
-            if ("android.view.ViewGroup".equals(ste.getClassName())
-                    && "layout".equals(ste.getMethodName())) {
-                inLayout = true;
-                break;
-            }
-        }
-        if (inLayout && !v.isLayoutRequested()) {
-            LogUtils.i(VIEW_DEBUGGING_TAG,
-                    e, "WARNING: in requestLayout during layout pass, view=%s", v);
-        }
-    }
-
-    /**
-     * Logs extra information about the views to help find the problem with blank fragments.
-     * To turn on this debugging, enable the "MailBlankFragment" tag with
-     * adb shell setprop log.tag.MailBlankFragment VERBOSE
-     * @param message
-     * @param v
-     */
-    public static void dumpLayoutRequests(String message, View v) {
-        LogUtils.d(VIEW_DEBUGGING_TAG, "dumpLayoutRequests: %s", message);
-
-        while (v != null) {
-            LogUtils.d(VIEW_DEBUGGING_TAG,
-                    "view item: %s mw/mh=%d/%d w/h=%d/%d layoutRequested=%s vis=%s id=0x%x",
-                    v.getClass().getSimpleName(), v.getMeasuredWidth(), v.getMeasuredHeight(),
-                    v.getWidth(), v.getHeight(), v.isLayoutRequested(), v.getVisibility(),
-                    v.getId());
-
-            ViewParent vp = v.getParent();
-            if (vp instanceof ViewGroup) {
-                v = (ViewGroup) vp;
-            } else {
-                if (vp != null) {
-                    // this is the root. can't really get access to this guy
-                    LogUtils.d(VIEW_DEBUGGING_TAG,
-                            "view item: (ViewRootImpl) isLayoutRequested=%s\n",
-                            vp.isLayoutRequested());
-                }
-                v = null;
-            }
-        }
-    }
 }

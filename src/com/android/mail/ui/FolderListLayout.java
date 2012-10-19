@@ -32,10 +32,4 @@ public class FolderListLayout extends FrameLayout {
         super.onLayout(changed, left, top, right, bottom);
     }
 
-    @Override
-    public void requestLayout() {
-        Utils.checkRequestLayout(this);
-        super.requestLayout();
-    }
-
 }
