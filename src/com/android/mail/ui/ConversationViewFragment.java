@@ -182,12 +182,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
     };
 
-    private final Runnable mOnSeen = new FragmentRunnable("onConversationSeen") {
+    private final Runnable mOnProgressDismiss = new FragmentRunnable("onProgressDismiss") {
         @Override
         public void go() {
             if (isUserVisible()) {
                 onConversationSeen();
             }
+            mWebView.onRenderComplete();
         }
     };
 
@@ -340,6 +341,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         // This signal does not seem to be reliable, so just use the old method for now.
         mEnableContentReadySignal = Utils.isRunningJellybeanOrLater();
         mWebView.setUseSoftwareLayer(!mEnableContentReadySignal);
+        mWebView.onUserVisibilityChanged(isUserVisible());
         mWebView.setWebViewClient(mWebViewClient);
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -450,13 +452,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 handleDelayedConversationLoad();
             }
         }
-    }
 
-    @Override
-    protected void onConversationSeen() {
-        super.onConversationSeen();
-
-        mWebView.onVisibilityChanged(true);
+        if (mWebView != null) {
+            mWebView.onUserVisibilityChanged(userVisible);
+        }
     }
 
     /**
@@ -519,7 +518,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     }
 
     private void revealConversation() {
-        dismissLoadingStatus(mOnSeen);
+        dismissLoadingStatus(mOnProgressDismiss);
     }
 
     private boolean isLoadWaiting() {
@@ -918,8 +917,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 return;
             }
 
-            LogUtils.i(LOG_TAG, "IN CVF.onPageFinished, url=%s fragment=%s t=%sms", url,
-                    ConversationViewFragment.this,
+            LogUtils.i(LOG_TAG, "IN CVF.onPageFinished, url=%s fragment=%s wv=%s t=%sms", url,
+                    ConversationViewFragment.this, view,
                     (SystemClock.uptimeMillis() - mWebViewLoadStartMs));
 
             super.onPageFinished(view, url);

@@ -282,6 +282,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         } else {
             mBackgroundView.setVisibility(View.GONE);
             mProgressView.setVisibility(View.GONE);
+            if (doAfter != null) {
+                doAfter.run();
+            }
         }
     }
 
