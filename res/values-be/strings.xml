@@ -116,6 +116,8 @@
     <string name="play_attachment" msgid="41143041901432280">"Прайграць"</string>
     <string name="install_attachment" msgid="2803531650273683382">"Усталяваць"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Адмена"</string>
+    <!-- no translation found for download_again (7418568915429156518) -->
+    <skip />
     <string name="more_info_attachment" msgid="717244337981816703">"Інфармацыя"</string>
     <string name="attachment_type_blocked" msgid="7878184764428642891">"На жаль, вы не можаце захоўваць ці адкрываць гэты тып далучэнняў."</string>
     <string name="no_application_found" msgid="1945184804521392093">"Няма прыкладанняў, каб прагледзець гэта далучэнне."</string>
@@ -369,6 +371,5 @@
     <string name="draft_count_format" msgid="4869620346730961822">" (<xliff:g id="COUNT">%1$s</xliff:g>)"</string>
     <string name="all_folders_heading" msgid="2506843494725730618">"Усе папкi"</string>
     <string name="recent_folders_heading" msgid="8613621794529777406">"Апошнія папкi"</string>
-    <!-- no translation found for message_details_title (2183394728494962332) -->
-    <skip />
+    <string name="message_details_title" msgid="2183394728494962332">"Звесткi пра паведамленне"</string>
 </resources>
