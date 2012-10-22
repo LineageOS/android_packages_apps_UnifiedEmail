@@ -315,7 +315,7 @@ public final class TwoPaneController extends AbstractActivityController {
     public void showWaitForInitialization() {
         super.showWaitForInitialization();
 
-        Fragment waitFragment = WaitFragment.newInstance(mAccount);
+        final Fragment waitFragment = WaitFragment.newInstance(mAccount);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.replace(R.id.wait, waitFragment, TAG_WAIT);
@@ -323,7 +323,7 @@ public final class TwoPaneController extends AbstractActivityController {
     }
 
     @Override
-    public void hideWaitForInitialization() {
+    protected void hideWaitForInitialization() {
         final FragmentManager manager = mActivity.getFragmentManager();
         final WaitFragment waitFragment = (WaitFragment)manager.findFragmentByTag(TAG_WAIT);
         if (waitFragment != null) {

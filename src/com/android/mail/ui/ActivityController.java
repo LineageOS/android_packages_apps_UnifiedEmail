@@ -223,16 +223,6 @@ public interface ActivityController extends LayoutListener,
     public void showWaitForInitialization();
 
     /**
-     * Dismiss the wait for account initialization mode.
-     */
-    public void hideWaitForInitialization();
-
-    /**
-     * Update the wait for account initialization mode.
-     */
-    public void updateWaitMode();
-
-    /**
      * Show the folder list associated with the currently selected account.
      */
     void showFolderList();

@@ -263,8 +263,7 @@ public final class OnePaneController extends AbstractActivityController {
                 FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT);
     }
 
-    @Override
-    public void hideWaitForInitialization() {
+    protected void hideWaitForInitialization() {
         transitionToInbox();
     }
 

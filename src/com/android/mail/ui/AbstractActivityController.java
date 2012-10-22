@@ -466,7 +466,6 @@ public abstract class AbstractActivityController implements ActivityController {
 
     /**
      * If required, starts wait mode for the current account.
-     * @param account
      */
     final void perhapsEnterWaitMode() {
         // If the account is not initialized, then show the wait fragment, since nothing can be
@@ -1549,12 +1548,7 @@ public abstract class AbstractActivityController implements ActivityController {
         mViewMode.enterWaitingForInitializationMode();
     }
 
-    @Override
-    public void hideWaitForInitialization() {
-    }
-
-    @Override
-    public void updateWaitMode() {
+    private void updateWaitMode() {
         final FragmentManager manager = mActivity.getFragmentManager();
         final WaitFragment waitFragment =
                 (WaitFragment)manager.findFragmentByTag(TAG_WAIT);
@@ -1563,15 +1557,16 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
+    /** Hide the "Waiting for Initialization" fragment */
+    protected abstract void hideWaitForInitialization();
+
     /**
      * Returns true if we are waiting for the account to sync, and cannot show any folders or
      * conversation for the current account yet.
-     *
      */
-    public boolean inWaitMode() {
+    private boolean inWaitMode() {
         final FragmentManager manager = mActivity.getFragmentManager();
-        final WaitFragment waitFragment =
-                (WaitFragment)manager.findFragmentByTag(TAG_WAIT);
+        final WaitFragment waitFragment = (WaitFragment) manager.findFragmentByTag(TAG_WAIT);
         if (waitFragment != null) {
             final Account fragmentAccount = waitFragment.getAccount();
             return fragmentAccount.uri.equals(mAccount.uri) &&
