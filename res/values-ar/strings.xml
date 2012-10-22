@@ -116,6 +116,7 @@
     <string name="play_attachment" msgid="41143041901432280">"تشغيل"</string>
     <string name="install_attachment" msgid="2803531650273683382">"تثبيت"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"إلغاء"</string>
+    <string name="download_again" msgid="7418568915429156518">"تنزيل مرة أخرى"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"معلومات"</string>
     <string name="attachment_type_blocked" msgid="7878184764428642891">"عذرًا، لا يمكنك حفظ هذا النوع من المرفقات أو فتحه."</string>
     <string name="no_application_found" msgid="1945184804521392093">"ليس هناك تطبيق يمكنه فتح هذا المرفق لمشاهدته"</string>
