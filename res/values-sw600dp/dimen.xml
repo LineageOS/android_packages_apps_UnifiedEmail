@@ -22,7 +22,6 @@
     <dimen name="max_total_folder_width_wide">128dip</dimen>
     <dimen name="wide_subject_margin_right">28dip</dimen>
     <dimen name="subject_width">238dip</dimen>
-    <dimen name="spinner_frame_width">196dp</dimen>
     <dimen name="conversation_view_margin_side">32dp</dimen>
     <dimen name="conversation_header_side_padding">0dip</dimen>
     <dimen name="conversation_header_vertical_padding">12dip</dimen>
@@ -40,11 +39,12 @@
     <dimen name="message_header_action_button_width">56dip</dimen>
     <dimen name="message_header_title_container_margin_right">0dip</dimen>
     <dimen name="super_collapsed_height">32sp</dimen>
-    <dimen name="compose_scrollview_width">800dip</dimen>
-    <dimen name="compose_area_left_padding">100dip</dimen>
-    <dimen name="compose_area_right_padding">100dip</dimen>
-    <dimen name="search_view_width">500dip</dimen>
     <dimen name="attachment_tile_min_size">180dp</dimen>
     <dimen name="attachment_tile_max_size">254dp</dimen>
     <dimen name="wait_padding">32dp</dimen>
+
+    <dimen name="compose_area_left_padding">80dip</dimen>
+    <dimen name="compose_area_right_padding">80dip</dimen>
+    <dimen name="search_view_width">400dip</dimen>
+    <dimen name="spinner_frame_width">170dp</dimen>
 </resources>

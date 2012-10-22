@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2011 Google Inc.
+     Copyright (C) 2012 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,17 +19,22 @@
     <integer name="folder_list_weight">1</integer>
     <integer name="conversation_list_weight">3</integer>
     <integer name="conversation_view_weight">6</integer>
-
     <!-- Whether the list is collapsed in conversation view mode -->
-    <bool name="list_collapsed">false</bool>
+    <bool name="list_collapsed">true</bool>
+
+    <!-- Search results in portrait mode on 10" tablets should still show wide conversation
+         list items.
+         Note: this this value should be set with the same qualifiers where
+         show_two_pane_search_results is set to false -->
+    <integer name="conversation_list_search_header_mode">0</integer>
 
     <!-- Whether to show single or 2 pane search results -->
-    <bool name="show_two_pane_search_results">true</bool>
+    <bool name="show_two_pane_search_results">false</bool>
 
-    <dimen name="undo_bar_width_list">960dp</dimen>
-    <dimen name="undo_bar_width_conv">844dp</dimen>
-    <dimen name="undo_bar_width_conv_list">426dp</dimen>
-    <dimen name="undo_bar_width_search_list">400dp</dimen>
+    <dimen name="undo_bar_width_list">600dp</dimen>
+    <dimen name="undo_bar_width_conv">800dp</dimen>
+    <dimen name="undo_bar_width_conv_list">800dp</dimen>
+    <dimen name="undo_bar_width_search_list">800dp</dimen>
 
     <!-- Whether or not to use a nice transition when showing the folder list fragment; used in 2-pane layouts -->
     <integer name="use_folder_list_fragment_transition">0</integer>

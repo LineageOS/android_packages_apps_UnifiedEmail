@@ -17,5 +17,5 @@
 -->
 
 <resources>
-    <dimen name="folder_list_pane_width">320dip</dimen>
+    <dimen name="folder_list_pane_width">200dip</dimen>
 </resources>
