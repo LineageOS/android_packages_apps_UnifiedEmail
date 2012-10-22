@@ -1810,19 +1810,59 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             }
 
             final long messageIdToSave = messageId;
-            if (messageIdToSave != UIProvider.INVALID_MESSAGE_ID) {
+            sendOrSaveMessage(messageIdToSave, sendOrSaveMessage, selectedAccount, message);
+
+            if (!sendOrSaveMessage.mSave) {
+                UIProvider.incrementRecipientsTimesContacted(mContext,
+                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.TO));
+                UIProvider.incrementRecipientsTimesContacted(mContext,
+                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.CC));
+                UIProvider.incrementRecipientsTimesContacted(mContext,
+                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.BCC));
+            }
+            mSendOrSaveCallback.sendOrSaveFinished(SendOrSaveTask.this, true);
+        }
+
+        /**
+         * Send or Save a message.
+         */
+        private void sendOrSaveMessage(long messageIdToSave, SendOrSaveMessage sendOrSaveMessage,
+                ReplyFromAccount selectedAccount, Message message) {
+            final ContentResolver resolver = mContext.getContentResolver();
+            final boolean updateExistingMessage = messageIdToSave != UIProvider.INVALID_MESSAGE_ID;
+
+            final String accountMethod = sendOrSaveMessage.mSave ?
+                    UIProvider.AccountCallMethods.SAVE_MESSAGE :
+                    UIProvider.AccountCallMethods.SEND_MESSAGE;
+
+            if (updateExistingMessage) {
                 sendOrSaveMessage.mValues.put(BaseColumns._ID, messageIdToSave);
-                mContext.getContentResolver().update(
-                        Uri.parse(sendOrSaveMessage.mSave ? message.saveUri : message.sendUri),
-                        sendOrSaveMessage.mValues, null, null);
+
+                final Bundle result = callAccountSendSaveMethod(resolver, selectedAccount.account,
+                        accountMethod, sendOrSaveMessage);
+                if (result == null) {
+                    // TODO(pwestbro): Once Email supports the call apu, remove this block
+                    // If null was returned, then the provider didn't handle the call method
+                    resolver.update(
+                            Uri.parse(sendOrSaveMessage.mSave ? message.saveUri : message.sendUri),
+                            sendOrSaveMessage.mValues, null, null);
+                }
             } else {
-                ContentResolver resolver = mContext.getContentResolver();
-                Uri messageUri = resolver
-                        .insert(sendOrSaveMessage.mSave ? selectedAccount.account.saveDraftUri
-                                : selectedAccount.account.sendMessageUri,
-                                sendOrSaveMessage.mValues);
+                final Uri messageUri;
+                final Bundle result = callAccountSendSaveMethod(resolver, selectedAccount.account,
+                        accountMethod, sendOrSaveMessage);
+                if (result != null) {
+                    // If a non-null value was returned, then the provider handled the call method
+                    messageUri = result.getParcelable(UIProvider.MessageColumns.URI);
+                } else {
+                    // TODO(pwestbro): Once Email supports the call apu, remove this block
+                    messageUri = resolver.insert(
+                            sendOrSaveMessage.mSave ? selectedAccount.account.saveDraftUri
+                                    : selectedAccount.account.sendMessageUri,
+                            sendOrSaveMessage.mValues);
+                }
                 if (sendOrSaveMessage.mSave && messageUri != null) {
-                    Cursor messageCursor = resolver.query(messageUri,
+                    final Cursor messageCursor = resolver.query(messageUri,
                             UIProvider.MESSAGE_PROJECTION, null, null, null);
                     if (messageCursor != null) {
                         try {
@@ -1838,16 +1878,37 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     }
                 }
             }
+        }
 
-            if (!sendOrSaveMessage.mSave) {
-                UIProvider.incrementRecipientsTimesContacted(mContext,
-                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.TO));
-                UIProvider.incrementRecipientsTimesContacted(mContext,
-                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.CC));
-                UIProvider.incrementRecipientsTimesContacted(mContext,
-                        (String) sendOrSaveMessage.mValues.get(UIProvider.MessageColumns.BCC));
+        /**
+         * Use the {@link ContentResolver#call()} method to send or save the message.
+         *
+         * If this was successful, this method will return an non-null Bundle instance
+         */
+        private Bundle callAccountSendSaveMethod(ContentResolver resolver, Account account,
+                String method, SendOrSaveMessage sendOrSaveMessage) {
+            // Copy all of the values from the content values to the bundle
+            final Bundle methodExtras = new Bundle(sendOrSaveMessage.mValues.size());
+            final Set<Entry<String, Object>> valueSet = sendOrSaveMessage.mValues.valueSet();
+
+            for (Entry<String, Object> entry : valueSet) {
+                final Object entryValue = entry.getValue();
+                final String key = entry.getKey();
+                if (entryValue instanceof String) {
+                    methodExtras.putString(key, (String)entryValue);
+                } else if (entryValue instanceof Boolean) {
+                    methodExtras.putBoolean(key, (Boolean)entryValue);
+                } else if (entryValue instanceof Integer) {
+                    methodExtras.putInt(key, (Integer)entryValue);
+                } else if (entryValue instanceof Long) {
+                    methodExtras.putLong(key, (Long)entryValue);
+                } else {
+                    LogUtils.wtf(LOG_TAG, "Unexpected object type: %s",
+                            entryValue.getClass().getName());
+                }
             }
-            mSendOrSaveCallback.sendOrSaveFinished(SendOrSaveTask.this, true);
+
+            return resolver.call(account.uri, method, account.uri.toString(), methodExtras);
         }
     }
 
