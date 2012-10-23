@@ -1097,10 +1097,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
          * similar to #1) 6. other label change Use MessageCursor.hashCode() to
          * sort out interesting vs. no-op cursor updates.
          */
-        final boolean changed = newCursor != null && oldCursor != null
-                && newCursor.getStateHashCode() != oldCursor.getStateHashCode();
 
-        if (oldCursor != null) {
+        if (oldCursor != null && !oldCursor.isClosed()) {
             final NewMessagesInfo info = getNewIncomingMessagesInfo(newCursor);
 
             if (info.count > 0) {
@@ -1112,6 +1110,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 showNewMessageNotification(info);
                 return;
             }
+
+            final boolean changed = newCursor != null &&
+                    newCursor.getStateHashCode() != oldCursor.getStateHashCode();
 
             if (!changed) {
                 final boolean processedInPlace = processInPlaceUpdates(newCursor, oldCursor);
