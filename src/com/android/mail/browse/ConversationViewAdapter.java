@@ -374,13 +374,11 @@ public class ConversationViewAdapter extends BaseAdapter {
     public int addItem(ConversationOverlayItem item) {
         final int pos = mItems.size();
         mItems.add(item);
-        notifyDataSetChanged();
         return pos;
     }
 
     public void clear() {
         mItems.clear();
-        notifyDataSetChanged();
     }
 
     public int addConversationHeader(Conversation conv) {
@@ -416,7 +414,6 @@ public class ConversationViewAdapter extends BaseAdapter {
 
         mItems.remove(pos);
         mItems.addAll(pos, replacements);
-        notifyDataSetChanged();
     }
 
     public void updateItemsForMessage(ConversationMessage message) {
@@ -425,7 +422,6 @@ public class ConversationViewAdapter extends BaseAdapter {
                 item.setMessage(message);
             }
         }
-        notifyDataSetChanged();
     }
 
 }
