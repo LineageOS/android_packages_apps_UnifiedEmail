@@ -153,11 +153,24 @@ public class MessageCursor extends CursorWrapper {
     }
 
     public int getStateHashCode() {
-        // overriding hashCode() and not equals() is okay, since we don't expect to use
-        // MessageCursors as keys in any hash-based data structures
+        return getStateHashCode(0);
+    }
+
+    /**
+     * Calculate a hash code that compactly summarizes the state of the messages in this cursor,
+     * with respect to the way the messages are displayed in conversation view. This is not a
+     * general-purpose hash code. When the state hash codes of a new cursor differs from the
+     * existing cursor's hash code, the conversation view will re-render from scratch.
+     *
+     * @param exceptLast optional number of messages to exclude iterating through at the end of the
+     * cursor. pass zero to iterate through all messages (or use {@link #getStateHashCode()}).
+     * @return state hash code of the selected messages in this cursor
+     */
+    public int getStateHashCode(int exceptLast) {
         int hashCode = 17;
         int pos = -1;
-        while (moveToPosition(++pos)) {
+        final int stopAt = getCount() - exceptLast;
+        while (moveToPosition(++pos) && pos < stopAt) {
             hashCode = 31 * hashCode + getMessage().getStateHashCode();
         }
         return hashCode;
