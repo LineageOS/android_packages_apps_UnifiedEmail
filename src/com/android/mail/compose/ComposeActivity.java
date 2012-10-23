@@ -39,6 +39,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Parcelable;
+import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
 import android.text.Editable;
 import android.text.Html;
@@ -95,6 +96,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -1835,45 +1838,68 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                     UIProvider.AccountCallMethods.SAVE_MESSAGE :
                     UIProvider.AccountCallMethods.SEND_MESSAGE;
 
-            if (updateExistingMessage) {
-                sendOrSaveMessage.mValues.put(BaseColumns._ID, messageIdToSave);
+            try {
+                if (updateExistingMessage) {
+                    sendOrSaveMessage.mValues.put(BaseColumns._ID, messageIdToSave);
 
-                final Bundle result = callAccountSendSaveMethod(resolver, selectedAccount.account,
-                        accountMethod, sendOrSaveMessage);
-                if (result == null) {
-                    // TODO(pwestbro): Once Email supports the call apu, remove this block
-                    // If null was returned, then the provider didn't handle the call method
-                    resolver.update(
-                            Uri.parse(sendOrSaveMessage.mSave ? message.saveUri : message.sendUri),
-                            sendOrSaveMessage.mValues, null, null);
-                }
-            } else {
-                final Uri messageUri;
-                final Bundle result = callAccountSendSaveMethod(resolver, selectedAccount.account,
-                        accountMethod, sendOrSaveMessage);
-                if (result != null) {
-                    // If a non-null value was returned, then the provider handled the call method
-                    messageUri = result.getParcelable(UIProvider.MessageColumns.URI);
+                    final Bundle result = callAccountSendSaveMethod(resolver,
+                            selectedAccount.account, accountMethod, sendOrSaveMessage);
+                    if (result == null) {
+                        // TODO(pwestbro): Once Email supports the call api, remove this block
+                        // If null was returned, then the provider didn't handle the call method
+                        final Uri updateUri = Uri.parse(sendOrSaveMessage.mSave ?
+                                message.saveUri : message.sendUri);
+                        resolver.update(updateUri, sendOrSaveMessage.mValues, null, null);
+                    }
                 } else {
-                    // TODO(pwestbro): Once Email supports the call apu, remove this block
-                    messageUri = resolver.insert(
-                            sendOrSaveMessage.mSave ? selectedAccount.account.saveDraftUri
-                                    : selectedAccount.account.sendMessageUri,
-                            sendOrSaveMessage.mValues);
-                }
-                if (sendOrSaveMessage.mSave && messageUri != null) {
-                    final Cursor messageCursor = resolver.query(messageUri,
-                            UIProvider.MESSAGE_PROJECTION, null, null, null);
-                    if (messageCursor != null) {
-                        try {
-                            if (messageCursor.moveToFirst()) {
-                                // Broadcast notification that a new message has
-                                // been allocated
-                                mSendOrSaveCallback.notifyMessageIdAllocated(sendOrSaveMessage,
-                                        new Message(messageCursor));
+                    final Uri messageUri;
+                    final Bundle result = callAccountSendSaveMethod(resolver,
+                            selectedAccount.account, accountMethod, sendOrSaveMessage);
+                    if (result != null) {
+                        // If a non-null value was returned, then the provider handled the call
+                        // method
+                        messageUri = result.getParcelable(UIProvider.MessageColumns.URI);
+                    } else {
+                        // TODO(pwestbro): Once Email supports the call api, remove this block
+                        messageUri = resolver.insert(
+                                sendOrSaveMessage.mSave ? selectedAccount.account.saveDraftUri
+                                        : selectedAccount.account.sendMessageUri,
+                                sendOrSaveMessage.mValues);
+                    }
+                    if (sendOrSaveMessage.mSave && messageUri != null) {
+                        final Cursor messageCursor = resolver.query(messageUri,
+                                UIProvider.MESSAGE_PROJECTION, null, null, null);
+                        if (messageCursor != null) {
+                            try {
+                                if (messageCursor.moveToFirst()) {
+                                    // Broadcast notification that a new message has
+                                    // been allocated
+                                    mSendOrSaveCallback.notifyMessageIdAllocated(sendOrSaveMessage,
+                                            new Message(messageCursor));
+                                }
+                            } finally {
+                                messageCursor.close();
                             }
-                        } finally {
-                            messageCursor.close();
+                        }
+                    }
+                }
+            } finally {
+                // Close any opened file descriptors
+                closeOpenedAttachmentFds(sendOrSaveMessage);
+            }
+        }
+
+        private void closeOpenedAttachmentFds(SendOrSaveMessage sendOrSaveMessage) {
+            final Bundle openedFds = sendOrSaveMessage.attachmentFds();
+            if (openedFds != null) {
+                final Set<String> keys = openedFds.keySet();
+                for (String key : keys) {
+                    final ParcelFileDescriptor fd = openedFds.getParcelable(key);
+                    if (fd != null) {
+                        try {
+                            fd.close();
+                        } catch (IOException e) {
+                            // Do nothing
                         }
                     }
                 }
@@ -1908,6 +1934,13 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
                 }
             }
 
+            // If the SendOrSaveMessage has some opened fds, add them to the bundle
+            final Bundle fdMap = sendOrSaveMessage.attachmentFds();
+            if (fdMap != null) {
+                methodExtras.putParcelable(
+                        UIProvider.SendOrSaveMethodParamKeys.OPENED_FD_MAP, fdMap);
+            }
+
             return resolver.call(account.uri, method, account.uri.toString(), methodExtras);
         }
     }
@@ -1929,18 +1962,59 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         @VisibleForTesting
         public final boolean mSave;
         final int mRequestId;
+        private final Bundle mAttachmentFds;
 
-        public SendOrSaveMessage(ReplyFromAccount account, ContentValues values,
-                String refMessageId, boolean save) {
+        public SendOrSaveMessage(Context context, ReplyFromAccount account, ContentValues values,
+                String refMessageId, List<Attachment> attachments, boolean save) {
             mAccount = account;
             mValues = values;
             mRefMessageId = refMessageId;
             mSave = save;
             mRequestId = mValues.hashCode() ^ hashCode();
+
+            mAttachmentFds = initializeAttachmentFds(context, attachments);
         }
 
         int requestId() {
             return mRequestId;
+        }
+
+        Bundle attachmentFds() {
+            return mAttachmentFds;
+        }
+
+        /**
+         * Opens {@link ParcelFileDescriptor} for each of the attachments.  This method must be
+         * called before the ComposeActivity finishes.
+         * Note: The caller is responsible for closing these file descriptors.
+         */
+        private Bundle initializeAttachmentFds(Context context, List<Attachment> attachments) {
+            if (attachments == null || attachments.size() == 0) {
+                return null;
+            }
+
+            final Bundle result = new Bundle(attachments.size());
+            final ContentResolver resolver = context.getContentResolver();
+
+            for (Attachment attachment : attachments) {
+                if (attachment == null || Utils.isEmpty(attachment.contentUri)) {
+                    continue;
+                }
+
+                ParcelFileDescriptor fileDescriptor;
+                try {
+                    fileDescriptor = resolver.openFileDescriptor(attachment.contentUri, "r");
+                } catch (FileNotFoundException e) {
+                    LogUtils.e(LOG_TAG, e, "Exception attempting to open attachment");
+                    fileDescriptor = null;
+                }
+
+                if (fileDescriptor != null) {
+                    result.putParcelable(attachment.contentUri.toString(), fileDescriptor);
+                }
+            }
+
+            return result;
         }
     }
 
@@ -2292,8 +2366,8 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
             MessageModification.putRefMessageId(values, refMessageId);
         }
 
-        SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(replyFromAccount,
-                values, refMessageId, save);
+        SendOrSaveMessage sendOrSaveMessage = new SendOrSaveMessage(context, replyFromAccount,
+                values, refMessageId, message.getAttachments(), save);
         SendOrSaveTask sendOrSaveTask = new SendOrSaveTask(context, sendOrSaveMessage, callback);
 
         callback.initializeSendOrSave(sendOrSaveTask);

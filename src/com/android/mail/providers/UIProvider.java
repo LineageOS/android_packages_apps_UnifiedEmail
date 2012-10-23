@@ -1199,6 +1199,21 @@ public class UIProvider {
         private AccountCallMethods() {}
     }
 
+    /**
+     * Keys used for parameters to {@link AccountCallMethods#SEND_MESSAGE} or
+     * {@link AccountCallMethods#SAVE_MESSAGE} methods.
+     */
+    public static final class SendOrSaveMethodParamKeys {
+        /**
+         * Bundle key used to store any opened file descriptors.
+         * The keys of this Bundle are the contentUri for each attachment, and the
+         * values are {@link android.os.ParcelFileDescriptor} objects.
+         */
+        public static final String OPENED_FD_MAP = "opened_fds";
+
+        private SendOrSaveMethodParamKeys() {}
+    }
+
     public static final class DraftType {
         public static final int NOT_A_DRAFT = 0;
         public static final int COMPOSE = 1;
