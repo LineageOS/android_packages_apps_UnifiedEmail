@@ -16,9 +16,14 @@
      limitations under the License.
 -->
 <resources>
-    <dimen name="compose_scrollview_width">600dip</dimen>
-    <dimen name="compose_area_left_padding">80dip</dimen>
-    <dimen name="compose_area_right_padding">80dip</dimen>
-    <dimen name="search_view_width">400dip</dimen>
-    <dimen name="spinner_frame_width">170dp</dimen>
+    <style name="unreadCountActionBarTablet" parent="@style/UnreadCountActionBar">
+        <item name="android:layout_marginLeft">26dp</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+    <style name="AccountSwitchSpinnerItem" parent="@style/PlainSpinnerDropdown">
+        <item name="android:layout_width">312dp</item>
+    </style>
+    <style name="ComposeArea">
+        <item name="android:layout_width">@dimen/compose_scrollview_width</item>
+    </style>
 </resources>

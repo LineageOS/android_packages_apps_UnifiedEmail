@@ -17,6 +17,6 @@
 -->
 
 <resources>
-    <dimen name="folder_list_pane_width">240dip</dimen>
+    <dimen name="folder_list_pane_width">200dip</dimen>
     <dimen name="empty_view_top_padding">104dip</dimen>
 </resources>
