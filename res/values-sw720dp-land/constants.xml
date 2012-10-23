@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2012 Google Inc.
+     Copyright (C) 2011 Google Inc.
      Licensed to The Android Open Source Project.
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,14 @@
      limitations under the License.
 -->
 <resources>
-    <style name="AccountSwitchSpinnerItem" parent="@style/PlainSpinnerDropdown">
-        <item name="android:layout_width">276dp</item>
-    </style>
-    <style name="unreadCountActionBarTablet" parent="@style/UnreadCountActionBar">
-        <item name="android:layout_marginLeft">12dp</item>
-        <item name="android:layout_width">wrap_content</item>
-    </style>
+    <!-- Whether the list is collapsed in conversation view mode -->
+    <bool name="list_collapsed">false</bool>
+
+    <!-- Whether to show single or 2 pane search results -->
+    <bool name="show_two_pane_search_results">true</bool>
+
+    <dimen name="undo_bar_width_list">960dp</dimen>
+    <dimen name="undo_bar_width_conv">844dp</dimen>
+    <dimen name="undo_bar_width_conv_list">426dp</dimen>
+    <dimen name="undo_bar_width_search_list">400dp</dimen>
 </resources>
