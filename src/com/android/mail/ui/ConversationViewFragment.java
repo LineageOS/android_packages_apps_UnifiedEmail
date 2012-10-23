@@ -182,6 +182,15 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
     };
 
+    private final Runnable mOnSeen = new FragmentRunnable("onConversationSeen") {
+        @Override
+        public void go() {
+            if (isUserVisible()) {
+                onConversationSeen();
+            }
+        }
+    };
+
     private static final boolean DEBUG_DUMP_CONVERSATION_HTML = false;
     private static final boolean DISABLE_OFFSCREEN_LOADING = false;
     private static final boolean DEBUG_DUMP_CURSOR_CONTENTS = false;
@@ -509,6 +518,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         // conversation. Ielieve this is better done by making sure don't show loading status
         // until XX ms have passed without loading completed.
         showLoadingStatus();
+    }
+
+    private void revealConversation() {
+        dismissLoadingStatus(mOnSeen);
     }
 
     private boolean isLoadWaiting() {
@@ -916,14 +929,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
             ensureContentSizeChangeListener();
 
-            // TODO: save off individual message unread state (here, or in onLoadFinished?) so
-            // 'mark unread' restores the original unread state for each individual message
-
-            if (isUserVisible()) {
-                onConversationSeen();
-            }
             if (!mEnableContentReadySignal) {
-                dismissLoadingStatus();
+                revealConversation();
             }
 
             // We are not able to use the loader manager unless this fragment is added to the
@@ -1026,14 +1033,9 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             }
         }
 
-        private void showConversation(Conversation conv) {
-            dismissLoadingStatus();
-        }
-
         @SuppressWarnings("unused")
         @JavascriptInterface
         public void onContentReady() {
-            final Conversation conv = mConversation;
             try {
                 getHandler().post(new Runnable() {
                     @Override
@@ -1044,13 +1046,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                                     isUserVisible(),
                                     (SystemClock.uptimeMillis() - mWebViewLoadStartMs));
                         }
-                        showConversation(conv);
+                        revealConversation();
                     }
                 });
             } catch (Throwable t) {
                 LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onContentReady");
                 // Still try to show the conversation.
-                showConversation(conv);
+                revealConversation();
             }
         }
 
