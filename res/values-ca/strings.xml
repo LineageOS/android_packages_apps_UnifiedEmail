@@ -116,8 +116,7 @@
     <string name="play_attachment" msgid="41143041901432280">"Reprodueix"</string>
     <string name="install_attachment" msgid="2803531650273683382">"Instal·la"</string>
     <string name="cancel_attachment" msgid="4651201258272223650">"Cancel·la"</string>
-    <!-- no translation found for download_again (7418568915429156518) -->
-    <skip />
+    <string name="download_again" msgid="7418568915429156518">"Torna-ho a baixar"</string>
     <string name="more_info_attachment" msgid="717244337981816703">"Informació"</string>
     <string name="attachment_type_blocked" msgid="7878184764428642891">"Aquest tipus de fitxer adjunt no es pot desar ni obrir."</string>
     <string name="no_application_found" msgid="1945184804521392093">"No hi ha cap aplicació que pugui obrir aquest fitxer adjunt per a la visualització."</string>
