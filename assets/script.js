@@ -426,6 +426,15 @@ function replaceMessageBodies(messageIds) {
     }
 }
 
+// handle the special case of adding a single new message at the end of a conversation
+function appendMessageHtml() {
+    var msg = document.createElement("div");
+    msg.innerHTML = window.mail.getTempMessageBodies();
+    msg = msg.children[0];  // toss the outer div, it was just to render innerHTML into
+    document.body.appendChild(msg);
+    processQuotedText(msg, true /* showElided */);
+}
+
 // END Java->JavaScript handlers
 
 // Do this first to ensure that the readiness signal comes through,
