@@ -184,6 +184,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private static final boolean DEBUG_DUMP_CONVERSATION_HTML = false;
     private static final boolean DISABLE_OFFSCREEN_LOADING = false;
+    private static final boolean DEBUG_DUMP_CURSOR_CONTENTS = false;
 
     private static final String BUNDLE_KEY_WEBVIEW_Y_PERCENT =
             ConversationViewFragment.class.getName() + "webview-y-percent";
@@ -727,6 +728,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
 
         mAdapter.replaceSuperCollapsedBlock(blockToReplace, replacements);
+        mAdapter.notifyDataSetChanged();
 
         return mTemplates.emit();
     }
@@ -1066,6 +1068,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
     private class NewMessagesInfo {
         int count;
+        int countFromSelf;
         String senderAddress;
 
         /**
@@ -1111,8 +1114,8 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 return;
             }
 
-            final boolean changed = newCursor != null &&
-                    newCursor.getStateHashCode() != oldCursor.getStateHashCode();
+            final int oldState = oldCursor.getStateHashCode();
+            final boolean changed = newCursor.getStateHashCode() != oldState;
 
             if (!changed) {
                 final boolean processedInPlace = processInPlaceUpdates(newCursor, oldCursor);
@@ -1123,11 +1126,27 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                             + ", ignoring this conversation update (%s)", this);
                 }
                 return;
+            } else if (info.countFromSelf == 1) {
+                // Special-case the very common case of a new cursor that is the same as the old
+                // one, except that there is a new message from yourself. This happens upon send.
+                final boolean sameExceptNewLast = newCursor.getStateHashCode(1) == oldState;
+                if (sameExceptNewLast) {
+                    LogUtils.i(LOG_TAG, "CONV RENDER: update is a single new message from self"
+                            + " (%s)", this);
+                    newCursor.moveToLast();
+                    processNewOutgoingMessage(newCursor.getMessage());
+                    return;
+                }
             }
             // cursors are different, and not due to an incoming message. fall
             // through and render.
             LogUtils.i(LOG_TAG, "CONV RENDER: conversation updated"
                     + ", but not due to incoming message. rendering. (%s)", this);
+
+            if (DEBUG_DUMP_CURSOR_CONTENTS) {
+                LogUtils.i(LOG_TAG, "old cursor: %s", oldCursor.getDebugDump());
+                LogUtils.i(LOG_TAG, "new cursor: %s", newCursor.getDebugDump());
+            }
         } else {
             LogUtils.i(LOG_TAG, "CONV RENDER: initial render. (%s)", this);
         }
@@ -1158,6 +1177,7 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                 // notification
                 if (mAccount.ownsFromAddress(from.getAddress())) {
                     LogUtils.i(LOG_TAG, "found message from self: %s", m.uri);
+                    info.countFromSelf++;
                     continue;
                 }
 
@@ -1198,6 +1218,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             pos++;
         }
 
+        if (changed) {
+            // notify once after the entire adapter is updated
+            mAdapter.notifyDataSetChanged();
+        }
+
         if (!idsOfChangedBodies.isEmpty()) {
             mWebView.loadUrl(String.format("javascript:replaceMessageBodies([%s]);",
                     TextUtils.join(",", idsOfChangedBodies)));
@@ -1205,6 +1230,21 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
 
         return changed;
+    }
+
+    private void processNewOutgoingMessage(ConversationMessage msg) {
+        mTemplates.reset();
+        // this method will add some items to mAdapter, but we deliberately want to avoid notifying
+        // adapter listeners (i.e. ConversationContainer) until onWebContentGeometryChange is next
+        // called, to prevent N+1 headers rendering with N message bodies.
+        renderMessage(msg, true /* expanded */, msg.alwaysShowImages);
+        mTempBodiesHtml = mTemplates.emit();
+
+        mViewState.setExpansionState(msg, ExpansionState.EXPANDED);
+        // FIXME: should the provider set this as initial state?
+        mViewState.setReadState(msg, false /* read */);
+
+        mWebView.loadUrl("javascript:appendMessageHtml();");
     }
 
     private class SetCookieTask extends AsyncTask<Void, Void, Void> {
