@@ -80,6 +80,7 @@ public class Account extends android.accounts.Account implements Parcelable {
      * messages for this account. NOTE: This might be better to be an update
      * operation on the messageUri.
      */
+    @Deprecated
     public final Uri saveDraftUri;
 
     /**
@@ -88,6 +89,7 @@ public class Account extends android.accounts.Account implements Parcelable {
      * NOTE: This might be better to be an update operation on the
      * messageUri.
      */
+    @Deprecated
     public final Uri sendMessageUri;
 
     /**

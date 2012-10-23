@@ -381,6 +381,7 @@ public class UIProvider {
          * new draft messages for this account. NOTE: This might be better to
          * be an update operation on the messageUri.
          */
+        @Deprecated
         public static final String SAVE_DRAFT_URI = "saveDraftUri";
 
         /**
@@ -388,6 +389,7 @@ public class UIProvider {
          * a message for this account.
          * NOTE: This might be better to be an update operation on the messageUri.
          */
+        @Deprecated
         public static final String SEND_MAIL_URI = "sendMailUri";
 
         /**
@@ -1166,6 +1168,37 @@ public class UIProvider {
         }
     }
 
+    /**
+     * Methods that can be "called" using the account uri, through
+     * {@link android.content.ContentResolver#call()}  Note, the arg parmateter of call should be
+     * the account uri.
+     */
+    public static final class AccountCallMethods {
+        /**
+         * Save message method.  The Bundle for the call to
+         * {@link android.content.ContentResolver#call()} should have the columns specified in
+         * {@link MessageColumns}, and if this is a save for an existing message, an entry for the
+         * {@link MessageColumns#URI} should reference the existing message
+         *
+         * The Bundle returned will contain the message uri in the returned bundled with the
+         * {@link MessageColumns#URI} key.
+         */
+        public static final String SAVE_MESSAGE = "save_message";
+
+        /**
+         * Send message method.  The Bundle for the call to
+         * {@link android.content.ContentResolver#call()} should have the columns specified in
+         * {@link MessageColumns}, and if this is a send of an existing message, an entry for the
+         * {@link MessageColumns#URI} should reference the existing message
+         *
+         * The Bundle returned will contain the message uri in the returned bundled with the
+         * {@link MessageColumns#URI} key.
+         */
+        public static final String SEND_MESSAGE = "send_message";
+
+        private AccountCallMethods() {}
+    }
+
     public static final class DraftType {
         public static final int NOT_A_DRAFT = 0;
         public static final int COMPOSE = 1;
@@ -1435,11 +1468,13 @@ public class UIProvider {
          * This string column contains the content provider URI for saving this
          * message.
          */
+        @Deprecated
         public static final String SAVE_MESSAGE_URI = "saveMessageUri";
         /**
          * This string column contains content provider URI for sending this
          * message.
          */
+        @Deprecated
         public static final String SEND_MESSAGE_URI = "sendMessageUri";
 
         /**

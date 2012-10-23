@@ -134,10 +134,12 @@ public class Message implements Parcelable {
     /**
      * @see UIProvider.MessageColumns#SAVE_MESSAGE_URI
      */
+    @Deprecated
     public String saveUri;
     /**
      * @see UIProvider.MessageColumns#SEND_MESSAGE_URI
      */
+    @Deprecated
     public String sendUri;
     /**
      * @see UIProvider.MessageColumns#ALWAYS_SHOW_IMAGES
