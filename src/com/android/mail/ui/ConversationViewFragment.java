@@ -460,6 +460,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         }
     }
 
+    @Override
+    protected void onConversationSeen() {
+        super.onConversationSeen();
+
+        mWebView.onVisibilityChanged(true);
+    }
+
     /**
      * Will either call initLoader now to begin loading, or set {@link #mLoadWaitReason} and do
      * nothing (in which case you should later call {@link #handleDelayedConversationLoad()}).
