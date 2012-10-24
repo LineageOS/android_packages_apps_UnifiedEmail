@@ -382,7 +382,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
          * sender name to "Draft".
          */
         mIsDraft = mMessage.draftType != UIProvider.DraftType.NOT_A_DRAFT;
-        mIsSending = isInOutbox();
+        mIsSending = mMessage.isSending;
 
         // If this was a sent message AND:
         // 1. the account has a custom from, the cursor will populate the
@@ -399,7 +399,7 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
 
         updateChildVisibility();
 
-        if (mIsDraft || isInOutbox()) {
+        if (mIsDraft || mIsSending) {
             mSnippet = makeSnippet(mMessage.snippet);
         } else {
             mSnippet = mMessage.snippet;
@@ -446,11 +446,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
             }
         }
         return addr;
-    }
-
-    private boolean isInOutbox() {
-        // TODO: what should this read? Folder info?
-        return false;
     }
 
     private void updateSpacerHeight() {
@@ -538,11 +533,6 @@ public class MessageHeaderView extends LinearLayout implements OnClickListener,
         if (mMessageHeaderItem != null) {
             mMessageHeaderItem.setExpanded(expanded);
         }
-    }
-
-    // update internal Account- or Settings-related state
-    public void onAccountChanged() {
-        updateChildVisibility();
     }
 
     /**
