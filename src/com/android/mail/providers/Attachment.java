@@ -193,7 +193,13 @@ public class Attachment implements Parcelable {
     @Override
     public String toString() {
         try {
-            return toJSON().toString();
+            final JSONObject jsonObject = toJSON();
+            // Add some additional fields that are helpful when debugging issues
+            jsonObject.put(AttachmentColumns.DOWNLOADED_SIZE, downloadedSize);
+            jsonObject.put(AttachmentColumns.DESTINATION, destination);
+            jsonObject.put(AttachmentColumns.THUMBNAIL_URI, thumbnailUri);
+            jsonObject.put(AttachmentColumns.PREVIEW_INTENT_URI, previewIntentUri);
+            return jsonObject.toString();
         } catch (JSONException e) {
             LogUtils.e(LOG_TAG, e, "JSONException in toString");
             return super.toString();
