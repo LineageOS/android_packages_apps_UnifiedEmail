@@ -918,9 +918,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
     private class ConversationWebViewClient extends AbstractConversationWebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
-            // Ignore unsafe calls made after a fragment is detached from an activity
+            // Ignore unsafe calls made after a fragment is detached from an activity.
+            // This method needs to, for example, get at the loader manager, which needs
+            // the fragment to be added.
             final ControllableActivity activity = (ControllableActivity) getActivity();
-            if (activity == null || !mViewsCreated) {
+            if (!isAdded() || !mViewsCreated) {
                 LogUtils.i(LOG_TAG, "ignoring CVF.onPageFinished, url=%s fragment=%s", url,
                         ConversationViewFragment.this);
                 return;
@@ -930,25 +932,19 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                     ConversationViewFragment.this, view,
                     (SystemClock.uptimeMillis() - mWebViewLoadStartMs));
 
-            super.onPageFinished(view, url);
-
             ensureContentSizeChangeListener();
 
             if (!mEnableContentReadySignal) {
                 revealConversation();
             }
 
-            // We are not able to use the loader manager unless this fragment is added to the
-            // activity
-            if (isAdded()) {
-                final Set<String> emailAddresses = Sets.newHashSet();
-                for (Address addr : mAddressCache.values()) {
-                    emailAddresses.add(addr.getAddress());
-                }
-                ContactLoaderCallbacks callbacks = getContactInfoSource();
-                getContactInfoSource().setSenders(emailAddresses);
-                getLoaderManager().restartLoader(CONTACT_LOADER, Bundle.EMPTY, callbacks);
+            final Set<String> emailAddresses = Sets.newHashSet();
+            for (Address addr : mAddressCache.values()) {
+                emailAddresses.add(addr.getAddress());
             }
+            ContactLoaderCallbacks callbacks = getContactInfoSource();
+            getContactInfoSource().setSenders(emailAddresses);
+            getLoaderManager().restartLoader(CONTACT_LOADER, Bundle.EMPTY, callbacks);
         }
 
         @Override
@@ -962,18 +958,17 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
      * via reflection and not stripped.
      *
      */
-    // TODO: switch these Runnables to FragmentRunnables?
     private class MailJsBridge {
 
         @SuppressWarnings("unused")
         @JavascriptInterface
         public void onWebContentGeometryChange(final String[] overlayTopStrs,
                 final String[] overlayBottomStrs) {
-            try {
-                getHandler().post(new Runnable() {
+            getHandler().post(new FragmentRunnable("onWebContentGeometryChange") {
 
-                    @Override
-                    public void run() {
+                @Override
+                public void go() {
+                    try {
                         if (!mViewsCreated) {
                             LogUtils.d(LOG_TAG, "ignoring webContentGeometryChange because views"
                                     + " are gone, %s", ConversationViewFragment.this);
@@ -989,11 +984,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                             }
                             mDiff = 0;
                         }
+                    } catch (Throwable t) {
+                        LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onWebContentGeometryChange");
                     }
-                });
-            } catch (Throwable t) {
-                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onWebContentGeometryChange");
-            }
+                }
+            });
         }
 
         @SuppressWarnings("unused")
@@ -1041,10 +1036,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         @SuppressWarnings("unused")
         @JavascriptInterface
         public void onContentReady() {
-            try {
-                getHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
+            getHandler().post(new FragmentRunnable("onContentReady") {
+                @Override
+                public void go() {
+                    try {
                         if (mWebViewLoadStartMs != 0) {
                             LogUtils.i(LOG_TAG, "IN CVF.onContentReady, f=%s vis=%s t=%sms",
                                     ConversationViewFragment.this,
@@ -1052,13 +1047,13 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
                                     (SystemClock.uptimeMillis() - mWebViewLoadStartMs));
                         }
                         revealConversation();
+                    } catch (Throwable t) {
+                        LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onContentReady");
+                        // Still try to show the conversation.
+                        revealConversation();
                     }
-                });
-            } catch (Throwable t) {
-                LogUtils.e(LOG_TAG, t, "Error in MailJsBridge.onContentReady");
-                // Still try to show the conversation.
-                revealConversation();
-            }
+                }
+            });
         }
 
         @SuppressWarnings("unused")
