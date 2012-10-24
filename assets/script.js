@@ -174,18 +174,21 @@ function normalizeElementWidths(elements) {
     }
 }
 
-function hideUnsafeImages() {
-    var i, bodyCount;
+function hideAllUnsafeImages() {
+    hideUnsafeImages(document.getElementsByClassName("mail-message-content"));
+}
+
+function hideUnsafeImages(msgContentDivs) {
+    var i, msgContentCount;
     var j, imgCount;
-    var body, image;
+    var msgContentDiv, image;
     var images;
     var showImages;
-    var bodies = document.getElementsByClassName("mail-message-content");
-    for (i = 0, bodyCount = bodies.length; i < bodyCount; i++) {
-        body = bodies[i];
-        showImages = body.classList.contains("mail-show-images");
+    for (i = 0, msgContentCount = msgContentDivs.length; i < msgContentCount; i++) {
+        msgContentDiv = msgContentDivs[i];
+        showImages = msgContentDiv.classList.contains("mail-show-images");
 
-        images = body.getElementsByTagName("img");
+        images = msgContentDiv.getElementsByTagName("img");
         for (j = 0, imgCount = images.length; j < imgCount; j++) {
             image = images[j];
             rewriteRelativeImageSrc(image);
@@ -394,7 +397,7 @@ function setMessageBodyVisible(messageDomId, isVisible, spacerHeight) {
 }
 
 function replaceSuperCollapsedBlock(startIndex) {
-    var parent, block, header;
+    var parent, block, msg;
 
     block = document.querySelector(".mail-super-collapsed-block[index='" + startIndex + "']");
     if (!block) {
@@ -404,10 +407,14 @@ function replaceSuperCollapsedBlock(startIndex) {
     parent = block.parentNode;
     block.innerHTML = window.mail.getTempMessageBodies();
 
-    header = block.firstChild;
-    while (header) {
-        parent.insertBefore(header, block);
-        header = block.firstChild;
+    // process the new block contents in one go before we pluck them out of the common ancestor
+    processQuotedText(block, false /* showElided */);
+    hideUnsafeImages(block.getElementsByClassName("mail-message-content"));
+
+    msg = block.firstChild;
+    while (msg) {
+        parent.insertBefore(msg, block);
+        msg = block.firstChild;
     }
     parent.removeChild(block);
     measurePositions();
@@ -423,6 +430,7 @@ function replaceMessageBodies(messageIds) {
         msgContentDiv = document.querySelector("#" + id + " > .mail-message-content");
         msgContentDiv.innerHTML = window.mail.getMessageBody(id);
         processQuotedText(msgContentDiv, true /* showElided */);
+        hideUnsafeImages([msgContentDiv]);
     }
 }
 
@@ -433,6 +441,7 @@ function appendMessageHtml() {
     msg = msg.children[0];  // toss the outer div, it was just to render innerHTML into
     document.body.appendChild(msg);
     processQuotedText(msg, true /* showElided */);
+    hideUnsafeImages(msg.getElementsByClassName("mail-message-content"));
 }
 
 // END Java->JavaScript handlers
@@ -442,7 +451,7 @@ function appendMessageHtml() {
 setupContentReady();
 
 collapseAllQuotedText();
-hideUnsafeImages();
+hideAllUnsafeImages();
 normalizeAllMessageWidths();
 //setWideViewport();
 restoreScrollPosition();
