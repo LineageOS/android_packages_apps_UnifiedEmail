@@ -280,7 +280,15 @@ public class ConversationContainer extends ViewGroup implements ScrollListener {
     }
 
     private void onDataSetChanged() {
+        // Recycle all views and re-bind them according to the current set of spacer coordinates.
+        // This essentially resets the overlay views and re-renders them.
+        // It's fast enough that it's okay to re-do all views on any small change, as long as
+        // the change isn't too frequent (< ~1Hz).
+
         clearOverlays();
+        // also unbind the snap header view, so this "reset" causes the snap header to re-create
+        // its view, just like all other headers
+        mSnapHeader.unbind();
         positionOverlays(0, mOffsetY);
     }
 
