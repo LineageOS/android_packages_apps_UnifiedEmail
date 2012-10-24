@@ -238,7 +238,6 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
 
         // settings may have been updated; refresh views that are known to
         // depend on settings
-        mConversationContainer.getSnapHeader().onAccountChanged();
         mAdapter.notifyDataSetChanged();
     }
 
@@ -1201,9 +1200,11 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
             final ConversationMessage newMsg = newCursor.getMessage();
             final ConversationMessage oldMsg = oldCursor.getMessage();
 
-            if (!TextUtils.equals(newMsg.from, oldMsg.from)) {
+            if (!TextUtils.equals(newMsg.from, oldMsg.from) ||
+                    newMsg.isSending != oldMsg.isSending) {
                 mAdapter.updateItemsForMessage(newMsg);
-                LogUtils.i(LOG_TAG, "msg #%d (%d): detected sender change", pos, newMsg.id);
+                LogUtils.i(LOG_TAG, "msg #%d (%d): detected from/sending change. isSending=%s",
+                        pos, newMsg.id, newMsg.isSending);
                 changed = true;
             }
 
