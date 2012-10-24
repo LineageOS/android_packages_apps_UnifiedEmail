@@ -123,9 +123,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     private long mLoadingShownTime = -1;
 
-    private final Runnable mDelayedShow = new Runnable() {
+    private final Runnable mDelayedShow = new FragmentRunnable("mDelayedShow") {
         @Override
-        public void run() {
+        public void go() {
             mLoadingShownTime = System.currentTimeMillis();
             mProgressView.setVisibility(View.VISIBLE);
         }
@@ -142,6 +142,10 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
 
     private static final String BUNDLE_VIEW_STATE =
             AbstractConversationViewFragment.class.getName() + "viewstate";
+    /**
+     * We save the user visible flag so the various transitions that occur during rotation do not
+     * cause unnecessary visibility change.
+     */
     private static final String BUNDLE_USER_VISIBLE =
             AbstractConversationViewFragment.class.getName() + "uservisible";
 
@@ -249,9 +253,9 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         if (diff > sMinShowTime) {
             dismiss(doAfter);
         } else {
-            mHandler.postDelayed(new Runnable() {
+            mHandler.postDelayed(new FragmentRunnable("dismissLoadingStatus") {
                 @Override
-                public void run() {
+                public void go() {
                     dismiss(doAfter);
                 }
             }, Math.abs(sMinShowTime - diff));
@@ -261,31 +265,40 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
     private void dismiss(final Runnable doAfter) {
         // Reset loading shown time.
         mLoadingShownTime = -1;
-        // Fade out the info view.
+        mProgressView.setVisibility(View.GONE);
         if (mBackgroundView.getVisibility() == View.VISIBLE) {
-            mProgressView.setVisibility(View.GONE);
-            mBackgroundView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            mBackgroundView.buildLayer();
-            final Animator animator = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
-            animator.setTarget(mBackgroundView);
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mBackgroundView.setVisibility(View.GONE);
-                    mBackgroundView.setLayerType(View.LAYER_TYPE_NONE, null);
-                    if (doAfter != null) {
-                        doAfter.run();
-                    }
-                }
-            });
-            animator.start();
+            animateDismiss(doAfter);
         } else {
-            mBackgroundView.setVisibility(View.GONE);
-            mProgressView.setVisibility(View.GONE);
             if (doAfter != null) {
                 doAfter.run();
             }
         }
+    }
+
+    private void animateDismiss(final Runnable doAfter) {
+        // the animation can only work (and is only worth doing) if this fragment is added
+        // reasons it may not be added: fragment is being destroyed, or in the process of being
+        // restored
+        if (!isAdded()) {
+            mBackgroundView.setVisibility(View.GONE);
+            return;
+        }
+
+        mBackgroundView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        mBackgroundView.buildLayer();
+        final Animator animator = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
+        animator.setTarget(mBackgroundView);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mBackgroundView.setVisibility(View.GONE);
+                mBackgroundView.setLayerType(View.LAYER_TYPE_NONE, null);
+                if (doAfter != null) {
+                    doAfter.run();
+                }
+            }
+        });
+        animator.start();
     }
 
     @Override
@@ -514,10 +527,10 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
         // TODO(mindyp): handle ERROR status by showing an error
         // message to the user that there are no messages in
         // this conversation
-        mHandler.post(new Runnable() {
+        mHandler.post(new FragmentRunnable("onError") {
 
             @Override
-            public void run() {
+            public void go() {
                 mActivity.getListHandler()
                 .onConversationSelected(null, true /* inLoaderCallbacks */);
             }
