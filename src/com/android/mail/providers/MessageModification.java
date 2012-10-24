@@ -154,7 +154,7 @@ public class MessageModification {
      * @param values the ContentValues that will be used to create or update the message
      * @param quoteStartPos the starting position for quoted text
      */
-    public static void putQuoteStartPos(ContentValues values, long quoteStartPos) {
+    public static void putQuoteStartPos(ContentValues values, int quoteStartPos) {
         values.put(MessageColumns.QUOTE_START_POS, quoteStartPos);
     }
 
