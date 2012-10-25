@@ -284,8 +284,7 @@ public abstract class AbstractConversationViewFragment extends Fragment implemen
             return;
         }
 
-        mBackgroundView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        mBackgroundView.buildLayer();
+        Utils.enableHardwareLayer(mBackgroundView);
         final Animator animator = AnimatorInflater.loadAnimator(getContext(), R.anim.fade_out);
         animator.setTarget(mBackgroundView);
         animator.addListener(new AnimatorListenerAdapter() {

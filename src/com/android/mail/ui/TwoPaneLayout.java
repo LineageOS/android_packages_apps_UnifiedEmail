@@ -345,6 +345,8 @@ final class TwoPaneLayout extends FrameLayout implements ModeChangeListener {
         mListCopyView.setLayerType(layerType, null);
         mConversationView.setLayerType(layerType, null);
         if (useHardware) {
+            // these buildLayer calls are safe because layout is the only way we get here
+            // (i.e. these views must already be attached)
             mFoldersView.buildLayer();
             mListView.buildLayer();
             mListCopyView.buildLayer();
