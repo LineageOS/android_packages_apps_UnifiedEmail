@@ -315,23 +315,25 @@ public final class TwoPaneController extends AbstractActivityController {
     public void showWaitForInitialization() {
         super.showWaitForInitialization();
 
-        final Fragment waitFragment = WaitFragment.newInstance(mAccount);
         FragmentTransaction fragmentTransaction = mActivity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.replace(R.id.wait, waitFragment, TAG_WAIT);
+        fragmentTransaction.replace(R.id.wait, getWaitFragment(), TAG_WAIT);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override
     protected void hideWaitForInitialization() {
-        final FragmentManager manager = mActivity.getFragmentManager();
-        final WaitFragment waitFragment = (WaitFragment)manager.findFragmentByTag(TAG_WAIT);
-        if (waitFragment != null) {
-            FragmentTransaction fragmentTransaction =
-                    mActivity.getFragmentManager().beginTransaction();
-            fragmentTransaction.remove(waitFragment);
-            fragmentTransaction.commitAllowingStateLoss();
+        final WaitFragment waitFragment = getWaitFragment();
+        if (waitFragment == null) {
+            // We aren't showing a wait fragment: nothing to do
+            return;
         }
+        // Remove the existing wait fragment from the back stack.
+        final FragmentTransaction fragmentTransaction =
+                mActivity.getFragmentManager().beginTransaction();
+        fragmentTransaction.remove(waitFragment);
+        fragmentTransaction.commitAllowingStateLoss();
+        super.hideWaitForInitialization();
     }
 
     /**
