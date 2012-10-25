@@ -1240,6 +1240,10 @@ public final class ConversationViewFragment extends AbstractConversationViewFrag
         // FIXME: should the provider set this as initial state?
         mViewState.setReadState(msg, false /* read */);
 
+        // From now until the updated spacer geometry is returned, the adapter items are mismatched
+        // with the existing spacers. Do not let them layout.
+        mConversationContainer.invalidateSpacerGeometry();
+
         mWebView.loadUrl("javascript:appendMessageHtml();");
     }
 
