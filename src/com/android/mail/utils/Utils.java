@@ -1086,6 +1086,17 @@ public class Utils {
     }
 
     /**
+     * Sets the layer type of a view to hardware if the view is attached and hardware acceleration
+     * is enabled. Does nothing otherwise.
+     */
+    public static void enableHardwareLayer(View v) {
+        if (v != null && v.isHardwareAccelerated()) {
+            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            v.buildLayer();
+        }
+    }
+
+    /**
      * Return whether menus should show the disabled archive menu item or just
      * remove it when archive is not available.
      */
