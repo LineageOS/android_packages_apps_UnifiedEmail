@@ -34,6 +34,7 @@ import android.view.animation.LinearInterpolator;
 
 import com.android.mail.R;
 import com.android.mail.browse.ConversationItemView;
+import com.android.mail.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -261,8 +262,7 @@ public class SwipeHelper {
         float newPos = determinePos(animView, velocity);
         int duration = determineDuration(animView, newPos, velocity);
 
-        animView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        animView.buildLayer();
+        Utils.enableHardwareLayer(animView);
         ObjectAnimator anim = createDismissAnimation(animView, newPos, duration);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -292,8 +292,7 @@ public class SwipeHelper {
         ArrayList<Animator> animations = new ArrayList<Animator>();
         ObjectAnimator anim;
         for (final ConversationItemView view : views) {
-            view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            view.buildLayer();
+            Utils.enableHardwareLayer(view);
             anim = createDismissAnimation(view, newPos, duration);
             anim.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
