@@ -77,6 +77,17 @@
             android:paddingLeft="4dip"
             android:layout_gravity="center_vertical" />
     </LinearLayout>
+    <TextView
+        android:id="@+id/empty_conversation_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/no_conversations"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@drawable/gradient_bg_widget_holo"
+        android:visibility="gone" />
     <ListView
         android:id="@+id/conversation_list"
         android:layout_width="match_parent"

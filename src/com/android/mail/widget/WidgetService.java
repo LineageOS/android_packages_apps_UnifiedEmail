@@ -105,6 +105,7 @@ public class WidgetService extends RemoteViewsService {
         remoteViews.setViewVisibility(R.id.widget_compose, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.conversation_list, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.widget_folder_not_synced, View.GONE);
+        remoteViews.setEmptyView(R.id.conversation_list, R.id.empty_conversation_list);
 
         WidgetService.configureValidWidgetIntents(context, remoteViews, appWidgetId, account,
                 folder, folderDisplayName, widgetService);
