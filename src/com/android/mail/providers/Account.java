@@ -563,6 +563,24 @@ public class Account extends android.accounts.Account implements Parcelable {
                 Objects.equal(settings, other.settings);
     }
 
+    /**
+     * Returns true if the two accounts differ in sync or server-side settings.
+     * This is <b>not</b> a replacement for {@link #equals(Object)}.
+     * @param other
+     * @return
+     */
+    public final boolean settingsDiffer(Account other) {
+        // If the other object doesn't exist, they differ significantly.
+        if (other == null) {
+            return true;
+        }
+        // Check all the server-side settings, the user-side settings and the sync status.
+        return ((this.syncStatus != other.syncStatus)
+                || !Objects.equal(accountFromAddresses, other.accountFromAddresses)
+                || color != other.color
+                || (this.settings.hashCode() != other.settings.hashCode()));
+    }
+
     @Override
     public int hashCode() {
         return super.hashCode()

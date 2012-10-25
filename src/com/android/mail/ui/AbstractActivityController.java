@@ -497,7 +497,7 @@ public abstract class AbstractActivityController implements ActivityController {
         final boolean firstLoad = mAccount == null;
         LogUtils.d(LOG_TAG, "onAccountChanged (%s) called. firstLoad=%s", account, firstLoad);
         final boolean accountChanged = firstLoad || !account.uri.equals(mAccount.uri);
-        final boolean settingsChanged = firstLoad || !account.settings.equals(mAccount.settings);
+        final boolean settingsChanged = firstLoad || account.settingsDiffer(mAccount);
         if (accountChanged || settingsChanged) {
             if (account != null) {
                 final String accountName = account.name;
