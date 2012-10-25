@@ -432,6 +432,7 @@ function replaceMessageBodies(messageIds) {
         processQuotedText(msgContentDiv, true /* showElided */);
         hideUnsafeImages([msgContentDiv]);
     }
+    measurePositions();
 }
 
 // handle the special case of adding a single new message at the end of a conversation
@@ -442,6 +443,7 @@ function appendMessageHtml() {
     document.body.appendChild(msg);
     processQuotedText(msg, true /* showElided */);
     hideUnsafeImages(msg.getElementsByClassName("mail-message-content"));
+    measurePositions();
 }
 
 // END Java->JavaScript handlers
