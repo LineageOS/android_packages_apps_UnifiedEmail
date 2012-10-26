@@ -17,6 +17,8 @@
 
 package com.android.mail.providers;
 
+import com.google.common.collect.ImmutableMap;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -31,6 +33,7 @@ import android.text.util.Rfc822Tokenizer;
 import com.android.common.contacts.DataUsageStatUpdater;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UIProvider {
     public static final String EMAIL_SEPARATOR = ",";
@@ -579,6 +582,88 @@ public class UIProvider {
              */
             public static final String CONVERSATION_VIEW_MODE = "conversation_view_mode";
         }
+    }
+
+    /**
+     * Map to go from account column name to account column. Can only be used through
+     * {@link #getAccountColumn(String)}.
+     */
+    private static final ImmutableMap<String, Integer> ACCOUNT_TO_ID_MAP =
+            new ImmutableMap.Builder<String, Integer>()
+            .put(BaseColumns._ID, ACCOUNT_ID_COLUMN)
+            .put(AccountColumns.NAME, ACCOUNT_NAME_COLUMN)
+            .put(AccountColumns.TYPE, -1)
+            .put(AccountColumns.PROVIDER_VERSION, ACCOUNT_PROVIDER_VERISON_COLUMN)
+            .put(AccountColumns.URI, ACCOUNT_URI_COLUMN)
+            .put(AccountColumns.CAPABILITIES, ACCOUNT_CAPABILITIES_COLUMN)
+            .put(AccountColumns.FOLDER_LIST_URI, ACCOUNT_FOLDER_LIST_URI_COLUMN)
+            .put(AccountColumns.FULL_FOLDER_LIST_URI, ACCOUNT_FULL_FOLDER_LIST_URI_COLUMN)
+            .put(AccountColumns.SEARCH_URI, ACCOUNT_SEARCH_URI_COLUMN)
+            .put(AccountColumns.ACCOUNT_FROM_ADDRESSES, ACCOUNT_FROM_ADDRESSES_COLUMN)
+            .put(AccountColumns.SAVE_DRAFT_URI, ACCOUNT_SAVE_DRAFT_URI_COLUMN)
+            .put(AccountColumns.SEND_MAIL_URI, ACCOUNT_SEND_MESSAGE_URI_COLUMN)
+            .put(AccountColumns.EXPUNGE_MESSAGE_URI, ACCOUNT_EXPUNGE_MESSAGE_URI_COLUMN)
+            .put(AccountColumns.UNDO_URI, ACCOUNT_UNDO_URI_COLUMN)
+            .put(AccountColumns.SETTINGS_INTENT_URI, ACCOUNT_SETTINGS_INTENT_URI_COLUMN)
+            .put(AccountColumns.HELP_INTENT_URI, ACCOUNT_HELP_INTENT_URI_COLUMN)
+            .put(AccountColumns.SEND_FEEDBACK_INTENT_URI, ACCOUNT_SEND_FEEDBACK_INTENT_URI_COLUMN)
+            .put(AccountColumns.REAUTHENTICATION_INTENT_URI,
+                    ACCOUNT_REAUTHENTICATION_INTENT_URI_COLUMN)
+            .put(AccountColumns.SYNC_STATUS, ACCOUNT_SYNC_STATUS_COLUMN)
+            .put(AccountColumns.COMPOSE_URI, ACCOUNT_COMPOSE_INTENT_URI_COLUMN)
+            .put(AccountColumns.MIME_TYPE, ACCOUNT_MIME_TYPE_COLUMN)
+            .put(AccountColumns.RECENT_FOLDER_LIST_URI, ACCOUNT_RECENT_FOLDER_LIST_URI_COLUMN)
+            .put(AccountColumns.DEFAULT_RECENT_FOLDER_LIST_URI,
+                    ACCOUNT_DEFAULT_RECENT_FOLDER_LIST_URI_COLUMN)
+            .put(AccountColumns.COLOR, ACCOUNT_COLOR_COLUMN)
+            .put(AccountColumns.MANUAL_SYNC_URI, ACCOUNT_MANUAL_SYNC_URI_COLUMN)
+            .put(AccountColumns.VIEW_INTENT_PROXY_URI, ACCOUNT_VIEW_INTENT_PROXY_URI_COLUMN)
+            .put(AccountColumns.ACCOUNT_COOKIE_QUERY_URI, ACCOUNT_COOKIE_QUERY_URI_COLUMN)
+            .put(AccountColumns.SettingsColumns.SIGNATURE, ACCOUNT_SETTINGS_SIGNATURE_COLUMN)
+            .put(AccountColumns.SettingsColumns.AUTO_ADVANCE, ACCOUNT_SETTINGS_AUTO_ADVANCE_COLUMN)
+            .put(AccountColumns.SettingsColumns.MESSAGE_TEXT_SIZE,
+                    ACCOUNT_SETTINGS_MESSAGE_TEXT_SIZE_COLUMN)
+            .put(AccountColumns.SettingsColumns.SNAP_HEADERS,ACCOUNT_SETTINGS_SNAP_HEADERS_COLUMN)
+            .put(AccountColumns.SettingsColumns.REPLY_BEHAVIOR,
+                    ACCOUNT_SETTINGS_REPLY_BEHAVIOR_COLUMN)
+            .put(AccountColumns.SettingsColumns.HIDE_CHECKBOXES,
+                    ACCOUNT_SETTINGS_HIDE_CHECKBOXES_COLUMN)
+            .put(AccountColumns.SettingsColumns.CONFIRM_DELETE,
+                    ACCOUNT_SETTINGS_CONFIRM_DELETE_COLUMN)
+            .put(AccountColumns.SettingsColumns.CONFIRM_ARCHIVE,
+                    ACCOUNT_SETTINGS_CONFIRM_ARCHIVE_COLUMN)
+            .put(AccountColumns.SettingsColumns.CONFIRM_SEND,
+                    ACCOUNT_SETTINGS_CONFIRM_SEND_COLUMN)
+            .put(AccountColumns.SettingsColumns.DEFAULT_INBOX,
+                    ACCOUNT_SETTINGS_DEFAULT_INBOX_COLUMN)
+            .put(AccountColumns.SettingsColumns.DEFAULT_INBOX_NAME,
+                    ACCOUNT_SETTINGS_DEFAULT_INBOX_NAME_COLUMN)
+            .put(AccountColumns.SettingsColumns.FORCE_REPLY_FROM_DEFAULT,
+                    ACCOUNT_SETTINGS_FORCE_REPLY_FROM_DEFAULT_COLUMN)
+            .put(AccountColumns.SettingsColumns.MAX_ATTACHMENT_SIZE,
+                    ACCOUNT_SETTINGS_MAX_ATTACHMENT_SIZE_COLUMN)
+            .put(AccountColumns.SettingsColumns.SWIPE, ACCOUNT_SETTINGS_SWIPE_COLUMN)
+            .put(AccountColumns.SettingsColumns.PRIORITY_ARROWS_ENABLED,
+                    ACCOUNT_SETTINGS_PRIORITY_ARROWS_ENABLED_COLUMN)
+            .put(AccountColumns.SettingsColumns.SETUP_INTENT_URI,
+                    ACCOUNT_SETTINGS_SETUP_INTENT_URI)
+            .put(AccountColumns.SettingsColumns.CONVERSATION_VIEW_MODE,
+                    ACCOUNT_SETTINGS_CONVERSATION_MODE_COLUMN)
+            .build();
+
+    /**
+     * Returns the column number for a given column name. The column numbers are guaranteed to be
+     * unique for distinct column names. Column names are values from {@link AccountColumns} while
+     * columns are integers.
+     * @param columnName
+     * @return
+     */
+    public static final int getAccountColumn(String columnName) {
+        final Integer id = ACCOUNT_TO_ID_MAP.get(columnName);
+        if (id == null) {
+            return -1;
+        }
+        return id.intValue();
     }
 
     public static final String[] ACCOUNT_COOKIE_PROJECTION = {
