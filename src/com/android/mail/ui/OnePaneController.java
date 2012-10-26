@@ -258,13 +258,13 @@ public final class OnePaneController extends AbstractActivityController {
     @Override
     public void showWaitForInitialization() {
         super.showWaitForInitialization();
-
-        replaceFragment(WaitFragment.newInstance(mAccount),
-                FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT);
+        replaceFragment(getWaitFragment(), FragmentTransaction.TRANSIT_FRAGMENT_OPEN, TAG_WAIT);
     }
 
+    @Override
     protected void hideWaitForInitialization() {
         transitionToInbox();
+        super.hideWaitForInitialization();
     }
 
     @Override
