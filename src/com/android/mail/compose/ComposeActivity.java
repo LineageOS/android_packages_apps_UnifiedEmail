@@ -155,6 +155,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     // the previously instantiated map.  If ComposeActivity.onCreate() is called, with a bundle
     // (restoring data from a previous instance), and the map hasn't been created, we will attempt
     // to populate the map with data stored in shared preferences.
+    // FIXME: values in this map are never read.
     private static ConcurrentHashMap<Integer, Long> sRequestMessageIdMap = null;
     // Key used to store the above map
     private static final String CACHED_MESSAGE_REQUEST_IDS_KEY = "cache-message-request-ids";
@@ -645,7 +646,14 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         int mode = getMode();
         state.putInt(EXTRA_ACTION, mode);
 
-        Message message = createMessage(selectedReplyFromAccount, mode);
+        final Message message;
+        // only synthesize a message if a real one isn't already present as a draft
+        if (mDraft != null) {
+            message = mDraft;
+            updateMessage(message, selectedReplyFromAccount, mode);
+        } else {
+            message = createMessage(selectedReplyFromAccount, mode);
+        }
         state.putParcelable(EXTRA_MESSAGE, message);
 
         if (mRefMessage != null) {
@@ -676,8 +684,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.conversationUri = null;
         message.subject = mSubject.getText().toString();
         message.snippet = null;
-        message.from = selectedReplyFromAccount != null ? selectedReplyFromAccount.address
-                : mAccount != null ? mAccount.name : null;
         message.to = formatSenders(mTo.getText().toString());
         message.cc = formatSenders(mCc.getText().toString());
         message.bcc = formatSenders(mBcc.getText().toString());
@@ -689,7 +695,6 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.bodyText = mBodyView.getText().toString();
         message.embedsExternalResources = false;
         message.refMessageId = mRefMessage != null ? mRefMessage.uri.toString() : null;
-        message.draftType = getDraftType(mode);
         message.appendRefMessageContent = mQuotedTextView.getQuotedTextIfIncluded() != null;
         ArrayList<Attachment> attachments = mAttachmentsView.getAttachments();
         message.hasAttachments = attachments != null && attachments.size() > 0;
@@ -703,7 +708,15 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         message.quotedTextOffset = !TextUtils.isEmpty(quotedText) ? QuotedTextView
                 .getQuotedTextOffset(quotedText.toString()) : -1;
         message.accountUri = null;
+        updateMessage(message, selectedReplyFromAccount, mode);
         return message;
+    }
+
+    private void updateMessage(Message message, ReplyFromAccount selectedReplyFromAccount,
+            int mode) {
+        message.from = selectedReplyFromAccount != null ? selectedReplyFromAccount.address
+                : mAccount != null ? mAccount.name : null;
+        message.draftType = getDraftType(mode);
     }
 
     private String formatSenders(String string) {
@@ -1015,7 +1028,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     }
 
     private void initFromDraftMessage(Message message) {
-        LogUtils.d(LOG_TAG, "Intializing draft from previous draft message");
+        LogUtils.d(LOG_TAG, "Intializing draft from previous draft message: %s", message);
 
         mDraft = message;
         mDraftId = message.id;
@@ -1861,6 +1874,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
     /* package for testing */
     @VisibleForTesting
     public ArrayList<SendOrSaveTask> mActiveTasks = Lists.newArrayList();
+    // FIXME: this variable is never read. related to sRequestMessageIdMap.
     private int mRequestId;
     private String mSignature;
     private Account[] mAccounts;
@@ -2286,6 +2300,7 @@ public class ComposeActivity extends Activity implements OnClickListener, OnNavi
         }
 
         SendOrSaveCallback callback = new SendOrSaveCallback() {
+            // FIXME: unused
             private int mRestoredRequestId;
 
             @Override
