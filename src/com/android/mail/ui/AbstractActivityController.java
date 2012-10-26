@@ -25,6 +25,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.ContentProviderOperation;
@@ -291,6 +292,8 @@ public abstract class AbstractActivityController implements ActivityController {
     private boolean mIsDragHappening;
     private int mShowUndoBarDelay;
     private boolean mRecentsDataUpdated;
+    /** A wait fragment we added, if any. */
+    private WaitFragment mWaitFragment;
     public static final String SYNC_ERROR_DIALOG_FRAGMENT_TAG = "SyncErrorDialogFragment";
 
     public AbstractActivityController(MailActivity activity, ViewMode viewMode) {
@@ -1546,6 +1549,7 @@ public abstract class AbstractActivityController implements ActivityController {
     @Override
     public void showWaitForInitialization() {
         mViewMode.enterWaitingForInitializationMode();
+        mWaitFragment = WaitFragment.newInstance(mAccount);
     }
 
     private void updateWaitMode() {
@@ -1557,8 +1561,29 @@ public abstract class AbstractActivityController implements ActivityController {
         }
     }
 
-    /** Hide the "Waiting for Initialization" fragment */
-    protected abstract void hideWaitForInitialization();
+    /**
+     * Remove the "Waiting for Initialization" fragment. Child classes are free to override this
+     * method, though they must call the parent implementation <b>after</b> they do anything.
+     */
+    protected void hideWaitForInitialization() {
+        mWaitFragment = null;
+    }
+
+    /**
+     * Use the instance variable and the wait fragment's tag to get the wait fragment.  This is
+     * far superior to using the value of mWaitFragment, which might be invalid or might refer
+     * to a fragment after it has been destroyed.
+     * @return
+     */
+    protected final WaitFragment getWaitFragment() {
+        final FragmentManager manager = mActivity.getFragmentManager();
+        final WaitFragment waitFrag = (WaitFragment) manager.findFragmentByTag(TAG_WAIT);
+        if (waitFrag != null) {
+            // The Fragment Manager knows better, so use its instance.
+            mWaitFragment = waitFrag;
+        }
+        return mWaitFragment;
+    }
 
     /**
      * Returns true if we are waiting for the account to sync, and cannot show any folders or
@@ -1566,7 +1591,7 @@ public abstract class AbstractActivityController implements ActivityController {
      */
     private boolean inWaitMode() {
         final FragmentManager manager = mActivity.getFragmentManager();
-        final WaitFragment waitFragment = (WaitFragment) manager.findFragmentByTag(TAG_WAIT);
+        final WaitFragment waitFragment = getWaitFragment();
         if (waitFragment != null) {
             final Account fragmentAccount = waitFragment.getAccount();
             return fragmentAccount.uri.equals(mAccount.uri) &&
