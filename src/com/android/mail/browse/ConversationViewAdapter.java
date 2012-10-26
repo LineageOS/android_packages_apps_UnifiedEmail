@@ -379,6 +379,7 @@ public class ConversationViewAdapter extends BaseAdapter {
 
     public void clear() {
         mItems.clear();
+        notifyDataSetChanged();
     }
 
     public int addConversationHeader(Conversation conv) {
