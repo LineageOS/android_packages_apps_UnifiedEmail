@@ -26,6 +26,7 @@ import com.android.mail.providers.UIProvider.AttachmentDestination;
 import com.android.mail.providers.UIProvider.AttachmentState;
 import com.android.mail.utils.LogTag;
 import com.android.mail.utils.LogUtils;
+import com.android.mail.utils.Utils;
 import com.google.common.collect.Lists;
 
 import org.json.JSONArray;
@@ -119,6 +120,8 @@ public class Attachment implements Parcelable {
      */
     @Deprecated
     public String originExtras;
+
+    private transient Uri mIdentifierUri;
 
     public Attachment(Parcel in) {
         name = in.readString();
@@ -280,6 +283,18 @@ public class Attachment implements Parcelable {
 
     public boolean canPreview() {
         return previewIntentUri != null;
+    }
+
+    /**
+     * Returns a stable identifier URI for this attachment.
+     *
+     * TODO: make the uri field stable, and put provider-specific opaque bits and bobs elsewhere
+     */
+    public Uri getIdentifierUri() {
+        if (mIdentifierUri == null) {
+            mIdentifierUri = Utils.isEmpty(uri) ? Uri.EMPTY : uri.buildUpon().clearQuery().build();
+        }
+        return mIdentifierUri;
     }
 
     // Methods to support JSON [de-]serialization of Attachment data
