@@ -299,21 +299,27 @@ public final class ConversationCursor implements Cursor {
         synchronized (mCacheMapLock) {
             // Walk through the cache
             Iterator<HashMap.Entry<String, ContentValues>> iter = mCacheMap.entrySet().iterator();
-            long now = System.currentTimeMillis();
+            final long now = System.currentTimeMillis();
             while (iter.hasNext()) {
                 HashMap.Entry<String, ContentValues> entry = iter.next();
-                ContentValues values = entry.getValue();
-                String key = entry.getKey();
-                long updateTime = values.getAsLong(UPDATE_TIME_COLUMN);
-                if ((now - updateTime) < REQUERY_ALLOWANCE_TIME) {
-                    LogUtils.i(TAG, "IN resetCursor, keep recent changes to %s", key);
-                    continue;
-                }
-                if (values.containsKey(DELETED_COLUMN)) {
-                    // Keep the deleted count up-to-date; remove the cache entry
-                    mDeletedCount--;
-                    LogUtils.i(TAG, "IN resetCursor, sDeletedCount decremented to: %d by %s",
-                            mDeletedCount, key);
+                final ContentValues values = entry.getValue();
+                final String key = entry.getKey();
+                if (values != null) {
+                    Long updateTime = values.getAsLong(UPDATE_TIME_COLUMN);
+                    if (updateTime != null && ((now - updateTime) < REQUERY_ALLOWANCE_TIME)) {
+                        LogUtils.i(TAG, "IN resetCursor, keep recent changes to %s", key);
+                        continue;
+                    } else if (updateTime == null) {
+                        LogUtils.e(TAG, "null updateTime from mCacheMap for key: %s", key);
+                    }
+                    if (values.containsKey(DELETED_COLUMN)) {
+                        // Keep the deleted count up-to-date; remove the cache entry
+                        mDeletedCount--;
+                        LogUtils.i(TAG, "IN resetCursor, sDeletedCount decremented to: %d by %s",
+                                mDeletedCount, key);
+                    }
+                } else {
+                    LogUtils.e(TAG, "null ContentValues from mCacheMap for key: %s", key);
                 }
                 // Remove the entry
                 iter.remove();
