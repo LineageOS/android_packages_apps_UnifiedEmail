@@ -368,9 +368,6 @@ public final class ConversationListFragment extends ListFragment implements
         mListView.setAdapter(null);
 
         mActivity.unsetViewModeListener(this);
-        if (!mActivity.isChangingConfigurations()) {
-            mActivity.getLoaderManager().destroyLoader(mViewContext.hashCode());
-        }
         if (mFolderObserver != null) {
             mActivity.getFolderController().unregisterFolderObserver(mFolderObserver);
             mFolderObserver = null;
