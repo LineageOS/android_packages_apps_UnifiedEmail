@@ -189,12 +189,13 @@ public class MessageFooterView extends LinearLayout implements DetachListener,
         mAttachmentBarList.setVisibility(View.VISIBLE);
 
         for (Attachment attachment : barAttachments) {
+            final Uri id = attachment.getIdentifierUri();
             MessageAttachmentBar barAttachmentView =
-                    (MessageAttachmentBar) mAttachmentBarList.findViewWithTag(attachment.uri);
+                    (MessageAttachmentBar) mAttachmentBarList.findViewWithTag(id);
 
             if (barAttachmentView == null) {
                 barAttachmentView = MessageAttachmentBar.inflate(mInflater, this);
-                barAttachmentView.setTag(attachment.uri);
+                barAttachmentView.setTag(id);
                 barAttachmentView.initialize(mFragmentManager);
                 mAttachmentBarList.addView(barAttachmentView);
             }
